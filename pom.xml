@@ -19,9 +19,16 @@
 		</developer>
 	</developers>
 
-	<!-- <issueManagement> <system>SourceForge Bug Tracker</system> <url>https://sourceforge.net/tracker/?group_id=99914&amp;atid=625723</url> </issueManagement> -->
+	<issueManagement>
+		<system>Google Code Issue Tracker</system>
+		<url>http://code.google.com/p/ez-vcard/issues/list</url>
+	</issueManagement>
 
-	<!-- <scm> <connection>scm:svn:https://cardme.svn.sourceforge.net/svnroot/cardme/trunk</connection> <developerConnection>scm:svn:https://cardme.svn.sourceforge.net/svnroot/cardme/trunk</developerConnection> <url>http://cardme.svn.sourceforge.net/viewvc/cardme/trunk</url> </scm> -->
+	<scm>
+		<connection>scm:svn:http://ez-vcard.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://ez-vcard.googlecode.com/svn/trunk</developerConnection>
+		<url>http://code.google.com/p/ez-vcard/source/browse/</url>
+	</scm>
 
 	<dependencies>
 		<dependency>
