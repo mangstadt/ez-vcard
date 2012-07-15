@@ -1,0 +1,3 @@
+The sample vCards found in this folder come from the Card Me project:
+
+https://sourceforge.net/projects/cardme/
