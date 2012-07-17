@@ -12,7 +12,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ListMultimap;
 
 import ezvcard.io.VCardReader;
 import ezvcard.io.VCardWriter;
@@ -36,6 +36,7 @@ import ezvcard.types.OrgType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.ProfileType;
+import ezvcard.types.RawType;
 import ezvcard.types.RevisionType;
 import ezvcard.types.RoleType;
 import ezvcard.types.SortStringType;
@@ -50,33 +51,33 @@ import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
 
 /*
-Copyright (c) 2012, Michael Angstadt
-All rights reserved.
+ Copyright (c) 2012, Michael Angstadt
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met: 
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer. 
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution. 
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-The views and conclusions contained in the software and documentation are those
-of the authors and should not be interpreted as representing official policies, 
-either expressed or implied, of the FreeBSD Project.
-*/
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies, 
+ either expressed or implied, of the FreeBSD Project.
+ */
 
 /**
  * Represents the data in a vCard.
@@ -115,7 +116,7 @@ public class VCard {
 	private List<UidType> uids = new ArrayList<UidType>();
 	private List<KeyType> keys = new ArrayList<KeyType>();
 	private List<ImppType> impps = new ArrayList<ImppType>();
-	private Multimap<String, VCardType> customTypes = ArrayListMultimap.create();
+	private ListMultimap<String, VCardType> customTypes = ArrayListMultimap.create();
 
 	public static VCard parse(String str) throws VCardException {
 		try {
@@ -139,15 +140,15 @@ public class VCard {
 
 	public String write() throws VCardException {
 		StringWriter sw = new StringWriter();
-		try{
+		try {
 			VCardWriter writer = new VCardWriter(sw, (version == null) ? VCardVersion.V3_0 : version);
 			writer.write(this);
-		} catch (IOException e){
+		} catch (IOException e) {
 			//writing to string
 		}
 		return sw.toString();
 	}
-	
+
 	public void write(File file) throws VCardException, IOException {
 		VCardWriter vcw = null;
 		try {
@@ -427,11 +428,52 @@ public class VCard {
 		this.impps = impps;
 	}
 
+	/**
+	 * Adds a custom type to the vCard.
+	 * @param type the custom type to add
+	 */
 	public void addCustomType(VCardType type) {
 		customTypes.put(type.getTypeName(), type);
 	}
 
-	public Multimap<String, VCardType> getCustomTypes() {
+	/**
+	 * Gets all custom types that have the given name.
+	 * @param typeName the type name
+	 * @return the custom types or empty list if none were found
+	 */
+	public List<RawType> getCustomType(String typeName) {
+		List<VCardType> types = customTypes.get(typeName);
+		List<RawType> list = new ArrayList<RawType>(types.size());
+		for (VCardType type : types) {
+			if (type instanceof RawType) {
+				RawType rt = (RawType) type;
+				list.add(rt);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * Gets all custom types that are wrapped in a custom type class.
+	 * @param clazz the class that the custom type values are wrapped in
+	 * @return the custom types or empty list of none were found
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends VCardType> List<T> getCustomType(Class<T> clazz) {
+		List<T> list = new ArrayList<T>();
+		for (VCardType type : customTypes.values()) {
+			if (clazz.isInstance(type)) {
+				list.add((T) type);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * Gets all of the custom types.
+	 * @return all of the custom types
+	 */
+	public ListMultimap<String, VCardType> getCustomTypes() {
 		return customTypes;
 	}
 }

@@ -58,33 +58,33 @@ import ezvcard.types.VCardType;
 import ezvcard.util.VCardStringUtils;
 
 /*
-Copyright (c) 2012, Michael Angstadt
-All rights reserved.
+ Copyright (c) 2012, Michael Angstadt
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met: 
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer. 
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution. 
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-The views and conclusions contained in the software and documentation are those
-of the authors and should not be interpreted as representing official policies, 
-either expressed or implied, of the FreeBSD Project.
-*/
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies, 
+ either expressed or implied, of the FreeBSD Project.
+ */
 
 /**
  * Unmarshals vCards.
@@ -110,8 +110,20 @@ public class VCardReader implements Closeable {
 		this.compatibilityMode = compatibilityMode;
 	}
 
-	public void addCustomTypeClass(String name, Class<? extends VCardType> clazz) {
-		customTypeClasses.put(name.toUpperCase(), clazz);
+	/**
+	 * Registers a custom type class. These types will be unmarshalled into
+	 * instances of this class.
+	 * @param clazz the custom type class. It MUST contain a public, no-arg
+	 * constructor.
+	 */
+	public void registerCustomType(Class<? extends VCardType> clazz) {
+		try {
+			VCardType t = clazz.newInstance();
+			customTypeClasses.put(t.getTypeName().toUpperCase(), clazz);
+		} catch (Exception e) {
+			//there is no public, no-arg constructor
+			throw new RuntimeException(e);
+		}
 	}
 
 	public List<String> getWarnings() {
@@ -282,7 +294,7 @@ public class VCardReader implements Closeable {
 	 * @param subTypes the Type's Sub Types
 	 * @param value the Type's value
 	 * @return the Type that was created or null if a Type object wasn't created
-	 * @throws VCardException 
+	 * @throws VCardException
 	 */
 	//Note: If this method has a compile error, make sure that you're returning the
 	//      Type that you created in its "if" block
