@@ -3,8 +3,8 @@ package ezvcard.io;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import ezvcard.types.VCardType;
 
@@ -43,23 +43,23 @@ either expressed or implied, of the FreeBSD Project.
  */
 public class VCardReaderBuilder {
 	private CompatibilityMode compatMode = CompatibilityMode.RFC2426;
-	private Map<String, Class<? extends VCardType>> customTypeClasses = new HashMap<String, Class<? extends VCardType>>();
+	private List<Class<? extends VCardType>> customTypeClasses = new ArrayList<Class<? extends VCardType>>();
 
 	public VCardReaderBuilder compatabilityMode(CompatibilityMode compatMode) {
 		this.compatMode = compatMode;
 		return this;
 	}
 
-	public VCardReaderBuilder customType(String typeName, Class<? extends VCardType> clazz) {
-		customTypeClasses.put(typeName.toUpperCase(), clazz);
+	public VCardReaderBuilder customType(Class<? extends VCardType> clazz) {
+		customTypeClasses.add(clazz);
 		return this;
 	}
 	
 	public VCardReader build(Reader reader){
 		VCardReader r = new VCardReader(reader);
 		r.setCompatibilityMode(compatMode);
-		for (Map.Entry<String, Class<? extends VCardType>> entry : customTypeClasses.entrySet()){
-			r.addCustomTypeClass(entry.getKey(), entry.getValue());
+		for (Class<? extends VCardType> clazz : customTypeClasses){
+			r.registerCustomType(clazz);
 		}
 		return r;
 	}
