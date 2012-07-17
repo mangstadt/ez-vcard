@@ -6,6 +6,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.regex.Pattern;
 
+import ezvcard.util.VCardStringUtils;
+
 /*
 Copyright (c) 2012, Michael Angstadt
 All rights reserved.
@@ -87,6 +89,8 @@ public class FoldedLineReader extends BufferedReader {
 			if (line == null) {
 				break;
 			} else if (outlookCraziness) {
+				line = VCardStringUtils.ltrim(line);
+				
 				boolean endsInEquals = line.endsWith("=");
 				if (endsInEquals) {
 					line = line.substring(0, line.length() - 1);

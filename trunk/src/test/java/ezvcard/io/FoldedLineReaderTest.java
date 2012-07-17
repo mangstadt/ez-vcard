@@ -75,7 +75,12 @@ public class FoldedLineReaderTest {
 		
 		//=========
 		
-		//a quoted-printable line whose additional lines *are* folded
+		//a quoted-printable line whose additional lines *are* folded where the lines end in "="
+		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n");
+		sb.append(" New York, New York  12345=0D=0A=\n");
+		sb.append(" USA\n");
+		
+		//a quoted-printable line whose additional lines *are* folded, where the lines don't end in "="
 		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A\n");
 		sb.append(" New York, New York  12345=0D=0A\n");
 		sb.append(" USA\n");
@@ -96,6 +101,7 @@ public class FoldedLineReaderTest {
 		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA", reader.readLine());
 		assertEquals("LABEL;HOME:Some text QUOTED-PRINTABLE more text=", reader.readLine());
 		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA=0D=0A4th line", reader.readLine());
+		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA", reader.readLine());
 		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA", reader.readLine());
 		
 		assertEquals("NOTE:folded line", reader.readLine());
