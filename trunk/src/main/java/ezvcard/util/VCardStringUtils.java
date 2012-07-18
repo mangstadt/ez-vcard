@@ -84,7 +84,7 @@ public class VCardStringUtils {
 		}
 
 		//escape newlines
-		text = text.replaceAll("\\r\\n|\\r|\\n", "\\n");
+		text = text.replaceAll("\\r\\n|\\r|\\n", "\\\\n");
 
 		return text;
 	}
