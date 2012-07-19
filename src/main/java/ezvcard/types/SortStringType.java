@@ -37,6 +37,10 @@ public class SortStringType extends TextType {
 	public static final String NAME = "SORT-STRING";
 
 	public SortStringType() {
-		super(NAME);
+		this(null);
+	}
+	
+	public SortStringType(String value){
+		super(NAME, value);
 	}
 }

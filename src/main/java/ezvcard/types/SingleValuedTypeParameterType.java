@@ -43,7 +43,7 @@ public abstract class SingleValuedTypeParameterType<T extends TypeParameter> ext
 	}
 
 	/**
-	 * Gets the TYPE value.
+	 * Gets the value of the TYPE parameter.
 	 * @return the TYPE value or null if it has no TYPE value
 	 */
 	public T getType() {
@@ -52,7 +52,7 @@ public abstract class SingleValuedTypeParameterType<T extends TypeParameter> ext
 	}
 
 	/**
-	 * Sets the TYPE value.
+	 * Sets the value of the TYPE parameter.
 	 * @param type the TYPE value to set
 	 */
 	public void setType(T type) {

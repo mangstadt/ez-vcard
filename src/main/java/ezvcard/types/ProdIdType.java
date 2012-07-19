@@ -37,6 +37,10 @@ public class ProdIdType extends TextType {
 	public static final String NAME = "PRODID";
 	
 	public ProdIdType(){
-		super(NAME);
+		this(null);
+	}
+	
+	public ProdIdType(String value){
+		super(NAME, value);
 	}
 }

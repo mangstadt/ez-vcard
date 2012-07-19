@@ -41,8 +41,7 @@ public class NoteType extends TextType {
 	}
 	
 	public NoteType(String value){
-		super(NAME);
-		setValue(value);
+		super(NAME, value);
 	}
 	
 	public String getLanguage(){

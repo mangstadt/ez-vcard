@@ -42,15 +42,15 @@ either expressed or implied, of the FreeBSD Project.
 public class GeoType extends VCardType {
 	public static final String NAME = "GEO";
 	private Double latitude, longitude;
+	
+	public GeoType(){
+		this(null, null);
+	}
 
 	public GeoType(Double latitude, Double longitude) {
 		super(NAME);
 		this.latitude = latitude;
 		this.longitude = longitude;
-	}
-	
-	public GeoType(){
-		this(null, null);
 	}
 
 	public Double getLatitude() {

@@ -42,7 +42,7 @@ public class RawType extends VCardType {
 	private String value;
 
 	public RawType(String name) {
-		super(name);
+		this(name, null);
 	}
 
 	public RawType(String name, String value) {

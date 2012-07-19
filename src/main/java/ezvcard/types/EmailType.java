@@ -46,7 +46,12 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	private String email;
 
 	public EmailType() {
+		this(null);
+	}
+	
+	public EmailType(String email) {
 		super(NAME);
+		setEmail(email);
 	}
 
 	@Override

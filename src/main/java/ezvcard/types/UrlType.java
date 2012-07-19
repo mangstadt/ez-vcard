@@ -37,6 +37,10 @@ public class UrlType extends TextType {
 	public static final String NAME = "URL";
 	
 	public UrlType(){
-		super(NAME);
+		this(null);
+	}
+	
+	public UrlType(String value){
+		super(NAME, value);
 	}
 }

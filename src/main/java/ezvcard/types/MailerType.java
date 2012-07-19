@@ -37,6 +37,10 @@ public class MailerType extends TextType {
 	public static final String NAME = "MAILER";
 	
 	public MailerType(){
-		super(NAME);
+		this(null);
+	}
+	
+	public MailerType(String value){
+		super(NAME, value);
 	}
 }

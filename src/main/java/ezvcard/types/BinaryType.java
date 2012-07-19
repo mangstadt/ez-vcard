@@ -59,6 +59,16 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 	public BinaryType(String name) {
 		super(name);
 	}
+	
+	public BinaryType(String name, String url){
+		this(name);
+		setUrl(url);
+	}
+	
+	public BinaryType(String name, byte[] data, T type){
+		this(name);
+		setData(data, type);
+	}
 
 	public byte[] getData() {
 		return data;

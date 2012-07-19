@@ -37,6 +37,10 @@ public class NameType extends TextType {
 	public static final String NAME = "NAME";
 	
 	public NameType(){
-		super(NAME);
+		this(null);
+	}
+	
+	public NameType(String value){
+		super(NAME, value);
 	}
 }

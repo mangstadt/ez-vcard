@@ -46,7 +46,12 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 	private String value;
 
 	public LabelType() {
+		this(null);
+	}
+	
+	public LabelType(String label){
 		super(NAME);
+		setValue(label);
 	}
 
 	@Override

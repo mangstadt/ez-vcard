@@ -42,7 +42,7 @@ public class ProfileType extends TextType {
 	public static final String NAME = "PROFILE";
 
 	public ProfileType() {
-		super(NAME);
+		super(NAME, "vcard");
 	}
 
 	@Override
