@@ -77,7 +77,8 @@ public abstract class VCardType {
 	/**
 	 * Converts this Type object to a string for sending over the wire. This
 	 * method is responsible for escaping all the necessary characters (such as
-	 * commas and semi-colons). It is NOT responsible for folding.
+	 * commas and semi-colons), as well as setting any sub types. It is NOT
+	 * responsible for folding.
 	 * @param version the version vCard that is being generated
 	 * @param warnings if you want to alert the user to any possible problems,
 	 * add the warnings to this list
@@ -94,7 +95,8 @@ public abstract class VCardType {
 	/**
 	 * Converts this Type object to a string for sending over the wire. This
 	 * method is responsible for escaping all the necessary characters (such as
-	 * commas and semi-colons). It is NOT responsible for folding.
+	 * commas and semi-colons), as well as setting any sub types. It is NOT
+	 * responsible for folding.
 	 * @param version the version vCard that is being generated
 	 * @param warnings if you want to alert the user to any possible problems,
 	 * add the warnings to this list
