@@ -39,11 +39,11 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	public static final String NAME = "KEY";
 
 	public KeyType() {
-		this(null);
+		super(NAME);
 	}
 	
-	public KeyType(byte data[]){
-		super(NAME, data, null);
+	public KeyType(byte data[], KeyTypeParameter type){
+		super(NAME, data, type);
 	}
 
 	@Override
