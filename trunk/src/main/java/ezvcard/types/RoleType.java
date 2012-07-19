@@ -37,6 +37,10 @@ public class RoleType extends TextType {
 	public static final String NAME = "ROLE";
 
 	public RoleType() {
-		super(NAME);
+		this(null);
+	}
+	
+	public RoleType(String value){
+		super(NAME, value);
 	}
 }

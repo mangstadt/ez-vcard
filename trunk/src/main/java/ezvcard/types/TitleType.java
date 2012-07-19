@@ -37,6 +37,10 @@ public class TitleType extends TextType {
 	public static final String NAME = "TITLE";
 	
 	public TitleType(){
-		super(NAME);
+		this(null);
+	}
+	
+	public TitleType(String value){
+		super(NAME, value);
 	}
 }

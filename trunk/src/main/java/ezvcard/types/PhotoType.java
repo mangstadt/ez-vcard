@@ -41,6 +41,14 @@ public class PhotoType extends BinaryType<ImageTypeParameter> {
 	public PhotoType() {
 		super(NAME);
 	}
+	
+	public PhotoType(String url){
+		super(NAME, url);
+	}
+	
+	public PhotoType(byte[] data, ImageTypeParameter type){
+		super(NAME, data, type);
+	}
 
 	@Override
 	protected ImageTypeParameter buildTypeObj(String type) {

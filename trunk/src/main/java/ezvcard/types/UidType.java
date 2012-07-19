@@ -37,7 +37,11 @@ public class UidType extends TextType {
 	public static final String NAME = "UID";
 
 	public UidType() {
-		super(NAME);
+		this(null);
+	}
+	
+	public UidType(String value){
+		super(NAME, value);
 	}
 
 	public String getType() {

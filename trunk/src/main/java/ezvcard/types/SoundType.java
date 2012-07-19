@@ -41,6 +41,14 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	public SoundType() {
 		super(NAME);
 	}
+	
+	public SoundType(String url){
+		super(NAME, url);
+	}
+	
+	public SoundType(byte[] data, SoundTypeParameter type){
+		super(NAME, data, type);
+	}
 
 	@Override
 	protected SoundTypeParameter buildTypeObj(String type) {

@@ -41,7 +41,6 @@ public class FormattedNameType extends TextType {
 	}
 	
 	public FormattedNameType(String value){
-		super(NAME);
-		setValue(value);
+		super(NAME, value);
 	}
 }

@@ -41,6 +41,14 @@ public class LogoType extends BinaryType<ImageTypeParameter> {
 	public LogoType() {
 		super(NAME);
 	}
+	
+	public LogoType(String url){
+		super(NAME, url);
+	}
+	
+	public LogoType(byte[] data, ImageTypeParameter type){
+		super(NAME, data, type);
+	}
 
 	@Override
 	protected ImageTypeParameter buildTypeObj(String type) {

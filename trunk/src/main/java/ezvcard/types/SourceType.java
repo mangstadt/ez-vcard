@@ -37,7 +37,11 @@ public class SourceType extends TextType {
 	public static final String NAME = "SOURCE";
 
 	public SourceType() {
-		super(NAME);
+		this(null);
+	}
+	
+	public SourceType(String value){
+		super(NAME, value);
 	}
 
 	public String getContext() {

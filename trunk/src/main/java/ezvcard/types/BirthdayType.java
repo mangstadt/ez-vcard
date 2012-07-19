@@ -45,7 +45,6 @@ public class BirthdayType extends DateType {
 	}
 	
 	public BirthdayType(Date date){
-		super(NAME, ISOFormat.DATE_EXTENDED);
-		setDate(date);
+		super(NAME, ISOFormat.DATE_EXTENDED, date);
 	}
 }

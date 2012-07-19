@@ -50,9 +50,20 @@ public abstract class DateType extends VCardType {
 	 * @param format the ISO format to use when marshalling the Type
 	 */
 	public DateType(String name, ISOFormat format) {
+		this(name, format, null);
+	}
+	
+	/**
+	 * @param name the type name
+	 * @param format the ISO format to use when marshalling the Type
+	 * @param date the date value
+	 */
+	public DateType(String name, ISOFormat format, Date date) {
 		super(name);
 		this.format = format;
+		this.date = date;
 	}
+
 
 	public Date getDate() {
 		return date;
