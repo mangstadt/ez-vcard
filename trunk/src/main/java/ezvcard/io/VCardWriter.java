@@ -138,7 +138,7 @@ public class VCardWriter implements Closeable {
 					Collection<?> collection = (Collection<?>) value;
 					for (Object obj : collection) {
 						if (obj instanceof VCardType) {
-							VCardType type = (VCardType) value;
+							VCardType type = (VCardType) obj;
 							types.add(type);
 						}
 					}
