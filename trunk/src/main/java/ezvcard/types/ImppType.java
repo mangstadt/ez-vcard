@@ -67,7 +67,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	private String uri;
 
 	public ImppType() {
-		this(null, null);
+		this((String) null, null);
 	}
 
 	/**
@@ -78,6 +78,14 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 		super(NAME);
 		this.protocol = protocol;
 		this.uri = uri;
+	}
+
+	/**
+	 * @param protocol the IM protocol
+	 * @param uri the IM URI
+	 */
+	public ImppType(Protocol protocol, String uri) {
+		this(protocol.toString(), uri);
 	}
 
 	/**
