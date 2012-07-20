@@ -41,7 +41,7 @@ either expressed or implied, of the FreeBSD Project.
  * Represents a type whose value is a date.
  * @author Michael Angstadt
  */
-public abstract class DateType extends VCardType {
+public class DateType extends VCardType {
 	protected Date date;
 	private ISOFormat format;
 
