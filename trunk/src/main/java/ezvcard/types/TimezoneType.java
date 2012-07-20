@@ -6,8 +6,9 @@ import java.util.TimeZone;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.VCardStringUtils;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardDateFormatter;
+import ezvcard.util.VCardStringUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -54,10 +55,21 @@ public class TimezoneType extends VCardType {
 		super(NAME);
 	}
 
+	/**
+	 * @param hourOffset the hour offset
+	 * @param minuteOffset the minute offset
+	 */
 	public TimezoneType(int hourOffset, int minuteOffset) {
 		this(hourOffset, minuteOffset, null, null);
 	}
 
+	/**
+	 * 
+	 * @param hourOffset the hour offset
+	 * @param minuteOffset the minute offset
+	 * @param shortText the short text (e.g. "EST")
+	 * @param longText
+	 */
 	public TimezoneType(int hourOffset, int minuteOffset, String shortText, String longText) {
 		super(NAME);
 		setHourOffset(hourOffset);
@@ -129,6 +141,9 @@ public class TimezoneType extends VCardType {
 			if (longText != null) {
 				sb.append(VCardStringUtils.escapeText(longText));
 			}
+
+			//add sub type "VALUE=text"
+			subTypes.setValue(ValueParameter.TEXT);
 		}
 
 		return sb.toString();
@@ -146,13 +161,9 @@ public class TimezoneType extends VCardType {
 		}
 		i++;
 
-		if (split.length > i && split[i].length() > 0) {
-			shortText = split[i];
-		}
+		shortText = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 
-		if (split.length > i && split[i].length() > 0) {
-			longText = split[i];
-		}
+		longText = (split.length > i && split[i].length() > 0) ? split[i] : null;
 	}
 }
