@@ -60,6 +60,5 @@ public class VCardWriterTest {
 
 		VCardWriter vcw = new VCardWriter(new OutputStreamWriter(System.out));
 		vcw.write(vcard);
-		vcw.close();
 	}
 }
