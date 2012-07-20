@@ -171,28 +171,28 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String split[] = VCardStringUtils.splitBy(value, ';', true, false);
+		String split[] = VCardStringUtils.splitBy(value, ';', false, true);
 
 		int i = 0;
 		
-		poBox = (split.length > i && !split[i].isEmpty()) ? VCardStringUtils.unescape(split[i]) : null;
+		poBox = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 		
-		extendedAddr = (split.length > i && !split[i].isEmpty()) ? VCardStringUtils.unescape(split[i]) : null;
+		extendedAddr = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 		
-		streetAddr = (split.length > i && !split[i].isEmpty()) ? VCardStringUtils.unescape(split[i]) : null;
+		streetAddr = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 
-		locality = (split.length > i && !split[i].isEmpty()) ? VCardStringUtils.unescape(split[i]) : null;
+		locality = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 
-		region = (split.length > i && !split[i].isEmpty()) ? VCardStringUtils.unescape(split[i]) : null;
+		region = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 
-		postalCode = (split.length > i && !split[i].isEmpty()) ? VCardStringUtils.unescape(split[i]) : null;
+		postalCode = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 
-		country = (split.length > i && !split[i].isEmpty()) ? VCardStringUtils.unescape(split[i]) : null;
+		country = (split.length > i && split[i].length() > 0) ? split[i] : null;
 	}
 }
