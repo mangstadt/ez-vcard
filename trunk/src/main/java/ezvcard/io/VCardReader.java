@@ -257,10 +257,10 @@ public class VCardReader implements Closeable {
 					List<String> warnings = new ArrayList<String>();
 					type.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
 					this.warnings.addAll(warnings);
+				}
 
-					if (endFound) {
-						return vcard;
-					}
+				if (endFound) {
+					return vcard;
 				}
 			} catch (Throwable e) {
 				if (e instanceof VCardException) {
