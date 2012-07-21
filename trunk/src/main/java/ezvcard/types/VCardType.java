@@ -113,7 +113,7 @@ public abstract class VCardType {
 	 * @param subTypes the Sub Types that were parsed
 	 * @param value the unfolded value from off the wire. If the wire value is
 	 * in the "quoted-printable" encoding, it will be decoded.
-	 * @param version the version vCard that is being generated or null if the
+	 * @param version the version of the vCard that is being read or null if the
 	 * VERSION type has not been parsed yet (v3.0 and v4.0 require that the
 	 * VERSION type come right after the BEGIN type, but v2.1 allows it to be
 	 * anywhere)
@@ -132,7 +132,7 @@ public abstract class VCardType {
 	 * Unmarshals the Type value from off the wire.
 	 * @param value the unfolded value from off the wire. If the wire value is
 	 * in the "quoted-printable" encoding, it will be decoded.
-	 * @param version the version vCard that is being generated or null if the
+	 * @param version the version of the vCard that is being read or null if the
 	 * VERSION type has not been parsed yet (v3.0 and v4.0 require that the
 	 * VERSION type come right after the BEGIN type, but v2.1 allows it to be
 	 * anywhere)
