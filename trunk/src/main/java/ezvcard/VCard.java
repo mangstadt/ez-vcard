@@ -104,7 +104,7 @@ public class VCard {
 	private List<AddressType> addresses = new ArrayList<AddressType>();
 	private List<LabelType> labels = new ArrayList<LabelType>();
 	private List<EmailType> emails = new ArrayList<EmailType>();
-	private List<TelephoneType> phoneNumbers = new ArrayList<TelephoneType>();
+	private List<TelephoneType> telephoneNumbers = new ArrayList<TelephoneType>();
 	private MailerType mailer;
 	private List<UrlType> urls = new ArrayList<UrlType>();
 	private TimezoneType timezone;
@@ -292,11 +292,11 @@ public class VCard {
 		this.birthday = birthday;
 	}
 
-	public RevisionType getRev() {
+	public RevisionType getRevision() {
 		return rev;
 	}
 
-	public void setRev(RevisionType rev) {
+	public void setRevision(RevisionType rev) {
 		this.rev = rev;
 	}
 
@@ -332,12 +332,12 @@ public class VCard {
 		this.emails = emails;
 	}
 
-	public List<TelephoneType> getPhoneNumbers() {
-		return phoneNumbers;
+	public List<TelephoneType> getTelephoneNumbers() {
+		return telephoneNumbers;
 	}
 
-	public void setPhoneNumbers(List<TelephoneType> phoneNumbers) {
-		this.phoneNumbers = phoneNumbers;
+	public void setTelephoneNumbers(List<TelephoneType> telephoneNumbers) {
+		this.telephoneNumbers = telephoneNumbers;
 	}
 
 	public MailerType getMailer() {

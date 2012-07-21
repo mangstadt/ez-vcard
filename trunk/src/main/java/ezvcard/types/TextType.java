@@ -58,10 +58,18 @@ public class TextType extends VCardType {
 		this.value = value;
 	}
 
+	/**
+	 * Gets the value of this type.
+	 * @return the value
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the value of this type.
+	 * @param value the new value
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}

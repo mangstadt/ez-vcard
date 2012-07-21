@@ -46,19 +46,42 @@ public class ValueParameter {
 	 */
 	public static final ValueParameter CONTENT_ID = new ValueParameter("content-id");
 
-	private final String type;
+	private final String value;
 
-	public ValueParameter(String t) {
-		type = t;
+	public ValueParameter(String value) {
+		this.value = value.toLowerCase();
 	}
 
 	public String getType() {
-		return type;
+		return value;
 	}
 
 	@Override
 	public String toString() {
-		return type;
+		return value;
+	}
+	
+	@Override
+	public int hashCode() {
+		return value.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		ValueParameter that = (ValueParameter) obj;
+		return value.equals(that.value);
 	}
 
 	/**
