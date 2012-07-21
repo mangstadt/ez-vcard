@@ -33,6 +33,7 @@ import ezvcard.util.ParameterUtils;
 /**
  * Represents the "ENCODING" sub type.
  * @author George El-Haddad Mar 10, 2010
+ * @author Michael Angstadt
  */
 public class EncodingParameter {
 	public static final String NAME = "ENCODING";
@@ -43,19 +44,42 @@ public class EncodingParameter {
 	public static final EncodingParameter _7BIT = new EncodingParameter("7bit");
 	public static final EncodingParameter B = new EncodingParameter("b");
 
-	private final String type;
+	private final String value;
 
-	public EncodingParameter(String t) {
-		type = t;
+	public EncodingParameter(String value) {
+		this.value = value.toLowerCase();
 	}
 
-	public String getType() {
-		return type;
+	public String getValue() {
+		return value;
 	}
 
 	@Override
 	public String toString() {
-		return type;
+		return value;
+	}
+	
+	@Override
+	public int hashCode() {
+		return value.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		EncodingParameter that = (EncodingParameter) obj;
+		return value.equals(that.value);
 	}
 
 	/**

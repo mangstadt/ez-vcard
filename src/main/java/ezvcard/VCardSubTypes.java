@@ -145,7 +145,7 @@ public class VCardSubTypes {
 	 * @param encoding the value or null to remove
 	 */
 	public void setEncoding(EncodingParameter encoding) {
-		replace(EncodingParameter.NAME, (encoding == null) ? null : encoding.getType());
+		replace(EncodingParameter.NAME, (encoding == null) ? null : encoding.getValue());
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class VCardSubTypes {
 	 */
 	public Set<String> getTypes() {
 		Set<String> types = new HashSet<String>();
-		for (String value : subTypes.get(TypeParameter.NAME)) {
+		for (String value : get(TypeParameter.NAME)) {
 			types.add(value);
 		}
 		return types;

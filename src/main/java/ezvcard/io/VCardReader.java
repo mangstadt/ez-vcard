@@ -217,7 +217,7 @@ public class VCardReader implements Closeable {
 					subTypes.put(subTypeName, subTypeValue);
 				} else {
 					String subTypeName = equalsSplit[0].toUpperCase();
-					String subTypeValue = equalsSplit[1].toLowerCase();
+					String subTypeValue = equalsSplit[1];
 
 					//split the value up if it's a comma-delimited list (i.e. the "TYPE" sub type)
 					String commaSplit[] = VCardStringUtils.splitBy(subTypeValue, ',', true, true);
@@ -383,7 +383,7 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (RevisionType.NAME.equals(name)) {
 			RevisionType t = new RevisionType();
-			vcard.setRev(t);
+			vcard.setRevision(t);
 			return t;
 		} else if (ProdIdType.NAME.equals(name)) {
 			ProdIdType t = new ProdIdType();
@@ -403,7 +403,7 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (TelephoneType.NAME.equals(name)) {
 			TelephoneType t = new TelephoneType();
-			vcard.getPhoneNumbers().add(t);
+			vcard.getTelephoneNumbers().add(t);
 			return t;
 		} else if (MailerType.NAME.equals(name)) {
 			MailerType t = new MailerType();
