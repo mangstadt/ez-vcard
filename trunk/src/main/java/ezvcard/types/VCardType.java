@@ -149,8 +149,7 @@ public abstract class VCardType {
 	 * retrieve any extended, standard, or non-standard Sub Type. It should not
 	 * be used for standard Sub Types--the Type's class <i>should</i> contain
 	 * getter methods for the standard/expected Sub Types (e.g.
-	 * {@link AddressType#getTypes()} retrieves all of the address's "TYPE" Sub
-	 * Types).
+	 * {@link NoteType#getLanguage()} retrieves a note's "LANGUAGE" Sub Type).
 	 * @return all of the Type's Sub Types
 	 */
 	public VCardSubTypes getSubTypes() {
@@ -159,7 +158,7 @@ public abstract class VCardType {
 
 	/**
 	 * Gets this type's group.
-	 * @return the group of null if does not belong to a group
+	 * @return the group or null if it does not belong to a group
 	 */
 	public String getGroup() {
 		return group;
@@ -167,7 +166,7 @@ public abstract class VCardType {
 
 	/**
 	 * Sets this type's group.
-	 * @param group the group or null to remove the group
+	 * @param group the group or null to remove the type's group
 	 */
 	public void setGroup(String group) {
 		this.group = group;
