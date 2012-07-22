@@ -102,6 +102,15 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
+	 * This constructor is used for reading embedded 2.1 vCards (see 2.1 docs,
+	 * p.19)
+	 * @param reader the reader to read the vCards from
+	 */
+	private VCardReader(FoldedLineReader reader) {
+		this.reader = reader;
+	}
+
+	/**
 	 * Gets the compatibility mode.
 	 * @return the compatibility mode
 	 */
@@ -236,6 +245,24 @@ public class VCardReader implements Closeable {
 			}
 
 			typesRead++;
+
+			//parse a v2.1 AGENT type
+			if ((version == null || version == VCardVersion.V2_1) && AgentType.NAME.equals(typeName) && value.length() == 0) {
+				VCardReader agentReader = new VCardReader(reader);
+				agentReader.setCompatibilityMode(compatibilityMode);
+				try {
+					VCard agentVcard = agentReader.readNext();
+					AgentType agent = new AgentType(agentVcard);
+					agent.setGroup(groupName);
+					vcard.setAgent(agent);
+				} finally {
+					for (String w : agentReader.getWarnings()) {
+						warnings.add("AGENT unmarshal warning: " + w);
+					}
+				}
+
+				continue;
+			}
 
 			//create the Type object
 			VCardType type = createAndAddToVCard(vcard, typeName, subTypes, value);
@@ -415,7 +442,6 @@ public class VCardReader implements Closeable {
 			vcard.setCategories(t);
 			return t;
 		} else if (AgentType.NAME.equals(name)) {
-			//TODO support v2.1 AGENT types
 			AgentType t = new AgentType();
 			vcard.setAgent(t);
 			return t;

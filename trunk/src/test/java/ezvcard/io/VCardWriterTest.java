@@ -1,11 +1,16 @@
 package ezvcard.io;
 
-import java.io.OutputStreamWriter;
+import static org.junit.Assert.assertEquals;
+
+import java.io.StringWriter;
 
 import org.junit.Test;
 
 import ezvcard.VCard;
+import ezvcard.VCardVersion;
+import ezvcard.types.AgentType;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.NoteType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.StructuredNameType;
 
@@ -58,7 +63,65 @@ public class VCardWriterTest {
 		photo.setUrl("http://example.com/image.jpg");
 		vcard.getPhotos().add(photo);
 
-		VCardWriter vcw = new VCardWriter(new OutputStreamWriter(System.out));
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.write(vcard);
+		System.out.println(sw.toString());
+	}
+
+	/**
+	 * AGENT types for 2.1 vCards are nested.
+	 */
+	@Test
+	public void nestedAgent() throws Exception {
+		VCard vcard = new VCard();
+
+		FormattedNameType fn = new FormattedNameType("Michael Angstadt");
+		vcard.setFormattedName(fn);
+
+		VCard agentVcard = new VCard();
+		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
+		agentVcard.getNotes().add(new NoteType("Make sure that it properly folds long lines which are part of a nested AGENT type in a version 2.1 vCard."));
+		AgentType agent = new AgentType(agentVcard);
+		vcard.setAgent(agent);
+
+		//i herd u liek AGENTs...
+		VCard secondAgentVCard = new VCard();
+		secondAgentVCard.setFormattedName(new FormattedNameType("Agent 009"));
+		secondAgentVCard.getNotes().add(new NoteType("Make sure that it ALSO properly folds THIS long line because it's part of an AGENT that's inside of an AGENT."));
+		AgentType secondAgent = new AgentType(secondAgentVCard);
+		agentVcard.setAgent(secondAgent);
+
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+		vcw.write(vcard);
+		String actual = sw.toString();
+
+		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN: vcard\r\n");
+		sb.append("VERSION: 2.1\r\n");
+		sb.append("FN: Michael Angstadt\r\n");
+		sb.append("AGENT: \r\n"); //nested types should not have X-GENERATOR
+			sb.append("BEGIN: vcard\r\n");
+			sb.append("VERSION: 2.1\r\n");
+			sb.append("FN: Agent 007\r\n");
+			sb.append("AGENT: \r\n");
+				sb.append("BEGIN: vcard\r\n");
+				sb.append("VERSION: 2.1\r\n");
+				sb.append("FN: Agent 009\r\n");
+				sb.append("NOTE: Make sure that it ALSO properly folds THIS long line because it's par\r\n");
+				sb.append(" t of an AGENT that's inside of an AGENT.\r\n");
+				sb.append("END: vcard\r\n");
+			sb.append("NOTE: Make sure that it properly folds long lines which are part of a neste\r\n");
+			sb.append(" d AGENT type in a version 2.1 vCard.\r\n");
+			sb.append("END: vcard\r\n");
+		sb.append("X-GENERATOR: EZ vCard v0.1 http://code.google.com/p/ez-vcard\r\n");
+		sb.append("END: vcard\r\n");
+		String expected = sb.toString();
+		//@formatter:on
+
+		assertEquals(expected, actual);
 	}
 }
