@@ -48,7 +48,7 @@ public class EncodingParameter {
 
 	/**
 	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * defining non-standard ENCODINGs. Please use one of the predefined static
 	 * objects.
 	 * @param value the type value (e.g. "b")
 	 */
@@ -64,12 +64,12 @@ public class EncodingParameter {
 	public String toString() {
 		return value;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return value.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

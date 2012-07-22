@@ -59,7 +59,7 @@ public class ValueParameter {
 
 	/**
 	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * defining non-standard VALUEs. Please use one of the predefined static
 	 * objects.
 	 * @param value the type value (e.g. "uri")
 	 */
