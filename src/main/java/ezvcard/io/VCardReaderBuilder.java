@@ -43,23 +43,23 @@ either expressed or implied, of the FreeBSD Project.
  */
 public class VCardReaderBuilder {
 	private CompatibilityMode compatMode = CompatibilityMode.RFC2426;
-	private List<Class<? extends VCardType>> customTypeClasses = new ArrayList<Class<? extends VCardType>>();
+	private List<Class<? extends VCardType>> extendedTypeClasses = new ArrayList<Class<? extends VCardType>>();
 
 	public VCardReaderBuilder compatabilityMode(CompatibilityMode compatMode) {
 		this.compatMode = compatMode;
 		return this;
 	}
 
-	public VCardReaderBuilder customType(Class<? extends VCardType> clazz) {
-		customTypeClasses.add(clazz);
+	public VCardReaderBuilder extendedType(Class<? extends VCardType> clazz) {
+		extendedTypeClasses.add(clazz);
 		return this;
 	}
 	
 	public VCardReader build(Reader reader){
 		VCardReader r = new VCardReader(reader);
 		r.setCompatibilityMode(compatMode);
-		for (Class<? extends VCardType> clazz : customTypeClasses){
-			r.registerCustomType(clazz);
+		for (Class<? extends VCardType> clazz : extendedTypeClasses){
+			r.registerExtendedType(clazz);
 		}
 		return r;
 	}

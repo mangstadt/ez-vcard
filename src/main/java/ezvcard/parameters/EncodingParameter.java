@@ -46,6 +46,12 @@ public class EncodingParameter {
 
 	private final String value;
 
+	/**
+	 * Use of this constructor is discouraged and should only be used for
+	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * objects.
+	 * @param value the type value (e.g. "b")
+	 */
 	public EncodingParameter(String value) {
 		this.value = value.toLowerCase();
 	}

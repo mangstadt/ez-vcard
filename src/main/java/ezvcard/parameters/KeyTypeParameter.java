@@ -36,35 +36,38 @@ import ezvcard.util.ParameterUtils;
  * @author Michael Angstadt Jul 06, 2012
  */
 public class KeyTypeParameter extends TypeParameter {
-	public static final KeyTypeParameter PGP = new KeyTypeParameter("PGP", "PGP", "pgp");
-	public static final KeyTypeParameter GPG = new KeyTypeParameter("GPG", "GPG", "gpg");
-	public static final KeyTypeParameter X509 = new KeyTypeParameter("X509", "X509", "");
-	public static final KeyTypeParameter B = new KeyTypeParameter("B", "B", "");
+	public static final KeyTypeParameter PGP = new KeyTypeParameter("PGP", "pgp");
+	public static final KeyTypeParameter GPG = new KeyTypeParameter("GPG", "gpg");
+	public static final KeyTypeParameter X509 = new KeyTypeParameter("X509", null);
 
-	private final String ianaRegisteredName;
 	private final String extension;
 
-	public KeyTypeParameter(String _typeName) {
-		this(_typeName, null, null);
+	/**
+	 * Use of this constructor is discouraged and should only be used for
+	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * objects.
+	 * @param value the type value (e.g. "PGP")
+	 */
+	public KeyTypeParameter(String value) {
+		this(value, null);
 	}
 
 	/**
-	 * Use of this constructor is discouraged. Please use one of the predefined
-	 * static objects.
+	 * Use of this constructor is discouraged and should only be used for
+	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * objects.
 	 * @param _typeName the type name (e.g. "PGP")
-	 * @param _ianaRegisteredName the IANA registered name (e.g. "PGP")
 	 * @param _extension the file extension used for this type (e.g. "pgp")
 	 */
-	public KeyTypeParameter(String _typeName, String _ianaRegisteredName, String _extension) {
-		super(_typeName);
-		ianaRegisteredName = _ianaRegisteredName;
+	public KeyTypeParameter(String value, String _extension) {
+		super(value);
 		extension = _extension;
 	}
 
-	public String getIanaRegisteredName() {
-		return ianaRegisteredName;
-	}
-
+	/**
+	 * Gets the file extension used for this type.
+	 * @return the file extension (e.g. "pgp")
+	 */
 	public String getExtension() {
 		return extension;
 	}

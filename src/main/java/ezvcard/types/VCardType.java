@@ -146,9 +146,9 @@ public abstract class VCardType {
 
 	/**
 	 * Gets all Sub Types associated with this Type. This method can be used to
-	 * retrieve any custom, standard, or non-standard Sub Type. It should not be
-	 * used for standard Sub Types--the Type's class should contain getter
-	 * methods for the standard/expected Sub Types (e.g.
+	 * retrieve any extended, standard, or non-standard Sub Type. It should not
+	 * be used for standard Sub Types--the Type's class <i>should</i> contain
+	 * getter methods for the standard/expected Sub Types (e.g.
 	 * {@link AddressType#getTypes()} retrieves all of the address's "TYPE" Sub
 	 * Types).
 	 * @return all of the Type's Sub Types

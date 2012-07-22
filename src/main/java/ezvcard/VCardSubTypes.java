@@ -169,7 +169,7 @@ public class VCardSubTypes {
 	 * @param value the value or null to remove
 	 */
 	public void setValue(ValueParameter value) {
-		replace(ValueParameter.NAME, (value == null) ? null : value.getType());
+		replace(ValueParameter.NAME, (value == null) ? null : value.getValue());
 	}
 
 	/**

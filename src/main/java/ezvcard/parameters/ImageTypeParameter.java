@@ -74,27 +74,42 @@ public class ImageTypeParameter extends TypeParameter {
 	private final String ianaRegisteredName;
 	private final String extension;
 
-	public ImageTypeParameter(String _typeName) {
-		this(_typeName, null, null);
+	/**
+	 * Use of this constructor is discouraged and should only be used for
+	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * objects.
+	 * @param value the type value (e.g. "JPEG")
+	 */
+	public ImageTypeParameter(String value) {
+		this(value, null, null);
 	}
 
 	/**
-	 * Use of this constructor is discouraged. Please use one of the predefined
-	 * static objects.
-	 * @param _typeName the type name (e.g. "JPEG")
+	 * Use of this constructor is discouraged and should only be used for
+	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * objects.
+	 * @param value the type name (e.g. "JPEG")
 	 * @param _ianaRegisteredName the IANA registered name (e.g. "image/jpeg")
 	 * @param _extension the file extension used for this type (e.g. "jpg")
 	 */
-	public ImageTypeParameter(String _typeName, String _ianaRegisteredName, String _extension) {
-		super(_typeName);
+	public ImageTypeParameter(String value, String _ianaRegisteredName, String _extension) {
+		super(value);
 		ianaRegisteredName = _ianaRegisteredName;
 		extension = _extension;
 	}
 
+	/**
+	 * Gets the content-type.
+	 * @return the content-type (e.g. "image/jpeg")
+	 */
 	public String getIanaRegisteredName() {
 		return ianaRegisteredName;
 	}
 
+	/**
+	 * Gets the file extension used for this type.
+	 * @return the file extension (e.g. "jpg")
+	 */
 	public String getExtension() {
 		return extension;
 	}

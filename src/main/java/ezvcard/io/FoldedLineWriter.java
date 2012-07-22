@@ -44,7 +44,7 @@ public class FoldedLineWriter extends Writer {
 	private final Writer writer;
 
 	/**
-	 * @param _writer the write object to wrap
+	 * @param _writer the writer object to wrap
 	 * @param _maxLen the max line length (excluding newline character(s))
 	 * @param _indent the indent string to use (e.g. a single space character)
 	 * @param _newline the newline sequence to use (e.g. "\r\n")
