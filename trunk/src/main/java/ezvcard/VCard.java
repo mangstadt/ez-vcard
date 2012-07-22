@@ -86,7 +86,7 @@ import ezvcard.types.VCardType;
 public class VCard {
 	private VCardVersion version = VCardVersion.V3_0;
 	private ProfileType profile;
-	private ClassificationType classificationType;
+	private ClassificationType classification;
 	private SourceType source;
 	private DisplayableNameType displayableName;
 	private FormattedNameType formattedName;
@@ -116,18 +116,33 @@ public class VCard {
 	private List<UidType> uids = new ArrayList<UidType>();
 	private List<KeyType> keys = new ArrayList<KeyType>();
 	private List<ImppType> impps = new ArrayList<ImppType>();
-	private ListMultimap<String, VCardType> customTypes = ArrayListMultimap.create();
+	private ListMultimap<String, VCardType> extendedTypes = ArrayListMultimap.create();
 
+	/**
+	 * Parses a vCard string. Use the {@link VCardReader} class for more control
+	 * over how the vCard is parsed.
+	 * @param str the vCard
+	 * @return the parsed vCard
+	 * @throws VCardException if there's a problem parsing the vCard
+	 */
 	public static VCard parse(String str) throws VCardException {
 		try {
 			VCardReader vcr = new VCardReader(new StringReader(str));
 			return vcr.readNext();
 		} catch (IOException e) {
-			//reading from string
+			//never throwing because we're reading from string
 			return null;
 		}
 	}
 
+	/**
+	 * Parses a vCard file. Use the {@link VCardReader} class for more control
+	 * over how the vCard is parsed.
+	 * @param file the vCard
+	 * @return the parsed vCard
+	 * @throws VCardException if there's a problem parsing the vCard
+	 * @throws IOException if there's a problem reading the file
+	 */
 	public static VCard parse(File file) throws VCardException, IOException {
 		VCardReader vcr = null;
 		try {
@@ -138,17 +153,29 @@ public class VCard {
 		}
 	}
 
+	/**
+	 * Writes this vCard to a string. Use the {@link VCardWriter} class for more
+	 * control over how the vCard is written.
+	 * @throws VCardException if there's a problem writing the vCard
+	 */
 	public String write() throws VCardException {
 		StringWriter sw = new StringWriter();
 		try {
 			VCardWriter writer = new VCardWriter(sw, (version == null) ? VCardVersion.V3_0 : version);
 			writer.write(this);
 		} catch (IOException e) {
-			//writing to string
+			//never thrown because we're writing to string
 		}
 		return sw.toString();
 	}
 
+	/**
+	 * Writes this vCard to a file. Use the {@link VCardWriter} class for more
+	 * control over how the vCard is written.
+	 * @param file the file to write to
+	 * @throws VCardException if there's a problem writing the vCard
+	 * @throws IOException if there's a problem writing to the file
+	 */
 	public void write(File file) throws VCardException, IOException {
 		VCardWriter vcw = null;
 		try {
@@ -160,9 +187,7 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the version attached to this vCard. If this VCard object was
-	 * unmarshalled from a data stream, then this method gets the vCard version
-	 * that it was parsed from.
+	 * Gets the version attached to this vCard.
 	 * @return the vCard version
 	 */
 	public VCardVersion getVersion() {
@@ -170,10 +195,11 @@ public class VCard {
 	}
 
 	/**
-	 * Sets the version of this vCard. When marshalling a vCard, please use the
-	 * {@link VCardWriter#setTargetVersion} method to define what version the
-	 * vCard should be marshalled as. The marshalling process <b>does not</b>
-	 * look at the version that is set on the VCard object.
+	 * Sets the version of this vCard. When marshalling a vCard with the
+	 * {@link VCardWriter} class, please use the
+	 * {@link VCardWriter#setTargetVersion setTargetVersion} method to define
+	 * what version the vCard should be marshalled as. {@link VCardWriter}
+	 * <b>does not</b> look at the version that is set on the VCard object.
 	 * @param version the vCard version
 	 */
 	public void setVersion(VCardVersion version) {
@@ -188,12 +214,12 @@ public class VCard {
 		this.profile = profile;
 	}
 
-	public ClassificationType getClassificationType() {
-		return classificationType;
+	public ClassificationType getClassification() {
+		return classification;
 	}
 
-	public void setClassificationType(ClassificationType classificationType) {
-		this.classificationType = classificationType;
+	public void setClassification(ClassificationType classification) {
+		this.classification = classification;
 	}
 
 	public SourceType getSource() {
@@ -429,20 +455,20 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a custom type to the vCard.
-	 * @param type the custom type to add
+	 * Adds an extended type to the vCard.
+	 * @param type the extended type to add
 	 */
-	public void addCustomType(VCardType type) {
-		customTypes.put(type.getTypeName(), type);
+	public void addExtendedType(VCardType type) {
+		extendedTypes.put(type.getTypeName(), type);
 	}
 
 	/**
-	 * Gets all custom types that have the given name.
+	 * Gets all extended types that have the given name.
 	 * @param typeName the type name
-	 * @return the custom types or empty list if none were found
+	 * @return the extended types or empty list if none were found
 	 */
-	public List<RawType> getCustomType(String typeName) {
-		List<VCardType> types = customTypes.get(typeName);
+	public List<RawType> getExtendedType(String typeName) {
+		List<VCardType> types = extendedTypes.get(typeName);
 		List<RawType> list = new ArrayList<RawType>(types.size());
 		for (VCardType type : types) {
 			if (type instanceof RawType) {
@@ -454,14 +480,14 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all custom types that are wrapped in a custom type class.
-	 * @param clazz the class that the custom type values are wrapped in
-	 * @return the custom types or empty list of none were found
+	 * Gets all extended types that are wrapped in a extended type class.
+	 * @param clazz the class that the extended type values are wrapped in
+	 * @return the extended types or empty list of none were found
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends VCardType> List<T> getCustomType(Class<T> clazz) {
+	public <T extends VCardType> List<T> getExtendedType(Class<T> clazz) {
 		List<T> list = new ArrayList<T>();
-		for (VCardType type : customTypes.values()) {
+		for (VCardType type : extendedTypes.values()) {
 			if (clazz.isInstance(type)) {
 				list.add((T) type);
 			}
@@ -470,10 +496,10 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all of the custom types.
-	 * @return all of the custom types
+	 * Gets all of the extended types.
+	 * @return all of the extended types
 	 */
-	public ListMultimap<String, VCardType> getCustomTypes() {
-		return customTypes;
+	public ListMultimap<String, VCardType> getExtendedTypes() {
+		return extendedTypes;
 	}
 }

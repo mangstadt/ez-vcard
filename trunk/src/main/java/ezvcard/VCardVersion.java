@@ -30,32 +30,46 @@ package ezvcard;
 
 /**
  * Contains all possible vCard versions.
+ * @author George El-Haddad
+ * @author Michael Angstadt
  */
 public enum VCardVersion {
-
 	V2_1("2.1"), V3_0("3.0"), V4_0("4.0");
 
 	private String version;
 
+	/**
+	 * @param version the text representation
+	 */
 	private VCardVersion(String version) {
 		this.version = version;
 	}
 
+	/**
+	 * Gets the text representation of this version.
+	 * @return the text representation
+	 */
 	public String getVersion() {
 		return version;
 	}
 
+	/**
+	 * Gets a {@link VCardVersion} instance based on the given text
+	 * representation.
+	 * @param value the text representation
+	 * @return the object or null if not found
+	 */
 	public static VCardVersion valueOfByStr(String value) {
-		for (VCardVersion version : VCardVersion.values()){
-			if (version.getVersion().equals(value)){
+		for (VCardVersion version : VCardVersion.values()) {
+			if (version.getVersion().equals(value)) {
 				return version;
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return version;
 	}
 }

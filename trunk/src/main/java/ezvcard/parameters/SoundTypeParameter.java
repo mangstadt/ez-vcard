@@ -167,27 +167,42 @@ public class SoundTypeParameter extends TypeParameter {
 	private final String ianaRegisteredName;
 	private final String extension;
 
-	public SoundTypeParameter(String _typeName) {
-		this(_typeName, null, null);
+	/**
+	 * Use of this constructor is discouraged and should only be used for
+	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * objects.
+	 * @param value the type value (e.g. "MPEG")
+	 */
+	public SoundTypeParameter(String value) {
+		this(value, null, null);
 	}
 
 	/**
-	 * Use of this constructor is discouraged. Please use one of the predefined
-	 * static objects.
-	 * @param _typeName the type name (e.g. "MPEG")
+	 * Use of this constructor is discouraged and should only be used for
+	 * defining non-standard TYPEs. Please use one of the predefined static
+	 * objects.
+	 * @param value the type name (e.g. "MPEG")
 	 * @param _ianaRegisteredName the IANA registered name (e.g. "audio/mpeg")
 	 * @param _extension the file extension used for this type (e.g. "mpeg")
 	 */
-	public SoundTypeParameter(String _typeName, String _ianaRegisteredName, String _extension) {
-		super(_typeName);
+	public SoundTypeParameter(String value, String _ianaRegisteredName, String _extension) {
+		super(value);
 		ianaRegisteredName = _ianaRegisteredName;
 		extension = _extension;
 	}
 
+	/**
+	 * Gets the content-type.
+	 * @return the content-type (e.g. "audio/ogg")
+	 */
 	public String getIanaRegisteredName() {
 		return ianaRegisteredName;
 	}
 
+	/**
+	 * Gets the file extension used for this type.
+	 * @return the file extension (e.g. "ogg")
+	 */
 	public String getExtension() {
 		return extension;
 	}

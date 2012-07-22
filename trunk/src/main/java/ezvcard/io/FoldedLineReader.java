@@ -42,10 +42,17 @@ import ezvcard.util.VCardStringUtils;
  * @author Michael Angstadt
  */
 public class FoldedLineReader extends BufferedReader {
+	/**
+	 * Regular expression used for the incorrectly folded lines that Outlook can
+	 * generate.
+	 */
 	private static final Pattern outlookQuirk = Pattern.compile("[^:]*?QUOTED-PRINTABLE.*?:.*?=", Pattern.CASE_INSENSITIVE);
 
 	private String lastLine;
 
+	/**
+	 * @param reader the reader object to wrap
+	 */
 	public FoldedLineReader(Reader reader) {
 		super(reader);
 	}

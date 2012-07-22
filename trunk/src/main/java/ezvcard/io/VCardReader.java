@@ -83,7 +83,7 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Unmarshals vCards.
+ * Unmarshals vCards into {@link VCard} objects.
  * @author Michael Angstadt
  */
 public class VCardReader implements Closeable {
@@ -91,37 +91,54 @@ public class VCardReader implements Closeable {
 	private List<String> warnings = new ArrayList<String>();
 	private VCardVersion version;
 	private boolean endFound = false;
-	private Map<String, Class<? extends VCardType>> customTypeClasses = new HashMap<String, Class<? extends VCardType>>();
+	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private FoldedLineReader reader;
 
+	/**
+	 * @param reader the reader to read the vCards from
+	 */
 	public VCardReader(Reader reader) {
 		this.reader = new FoldedLineReader(reader);
 	}
 
+	/**
+	 * Gets the compatibility mode.
+	 * @return the compatibility mode
+	 */
 	public CompatibilityMode getCompatibilityMode() {
 		return compatibilityMode;
 	}
 
+	/**
+	 * Used for customizing the unmarshalling process based on the mail client
+	 * that generated the vCard.
+	 * @param compatibilityMode the compatiblity mode
+	 */
 	public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
 		this.compatibilityMode = compatibilityMode;
 	}
 
 	/**
-	 * Registers a custom type class. These types will be unmarshalled into
+	 * Registers a extended type class. These types will be unmarshalled into
 	 * instances of this class.
-	 * @param clazz the custom type class. It MUST contain a public, no-arg
+	 * @param clazz the extended type class. It MUST contain a public, no-arg
 	 * constructor.
 	 */
-	public void registerCustomType(Class<? extends VCardType> clazz) {
+	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		try {
 			VCardType t = clazz.newInstance();
-			customTypeClasses.put(t.getTypeName().toUpperCase(), clazz);
+			extendedTypeClasses.put(t.getTypeName().toUpperCase(), clazz);
 		} catch (Exception e) {
 			//there is no public, no-arg constructor
 			throw new RuntimeException(e);
 		}
 	}
 
+	/**
+	 * Gets the warnings from the last vCard that was unmarshalled. This list is
+	 * reset every time a new vCard is read.
+	 * @return the warnings or empty list if there were no warnings
+	 */
 	public List<String> getWarnings() {
 		return new ArrayList<String>(warnings);
 	}
@@ -218,31 +235,26 @@ public class VCardReader implements Closeable {
 				warnings.add("vCard does not start with \"BEGIN\".");
 			}
 
-			try {
-				//create the Type object
-				VCardType type = createAndAddToVCard(vcard, typeName, subTypes, value);
+			typesRead++;
 
-				if (type != null) {
-					//set the group
-					type.setGroup(groupName);
+			//create the Type object
+			VCardType type = createAndAddToVCard(vcard, typeName, subTypes, value);
 
-					//unmarshal the text string into the object
-					List<String> warnings = new ArrayList<String>();
+			if (type != null) {
+				//set the group
+				type.setGroup(groupName);
+
+				//unmarshal the text string into the object
+				List<String> warnings = new ArrayList<String>();
+				try {
 					type.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+				} finally {
 					this.warnings.addAll(warnings);
 				}
+			}
 
-				if (endFound) {
-					return vcard;
-				}
-			} catch (Throwable e) {
-				if (e instanceof VCardException) {
-					throw (VCardException) e;
-				} else {
-					throw new VCardException("Error unmarshalling type \"" + typeName + "\".", e);
-				}
-			} finally {
-				typesRead++;
+			if (endFound) {
+				return vcard;
 			}
 		}
 
@@ -300,7 +312,7 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (ClassificationType.NAME.equals(name)) {
 			ClassificationType t = new ClassificationType();
-			vcard.setClassificationType(t);
+			vcard.setClassification(t);
 			return t;
 		} else if (SourceType.NAME.equals(name)) {
 			SourceType t = new SourceType();
@@ -424,21 +436,21 @@ public class VCardReader implements Closeable {
 			vcard.getImpps().add(t);
 			return t;
 		} else {
-			Class<? extends VCardType> customTypeClass = customTypeClasses.get(name);
+			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
 			VCardType t = null;
-			if (customTypeClass != null) {
+			if (extendedTypeClass != null) {
 				try {
-					t = customTypeClass.newInstance();
-					vcard.addCustomType(t);
+					t = extendedTypeClass.newInstance();
+					vcard.addExtendedType(t);
 				} catch (Exception e) {
-					throw new VCardException("Custom type class \"" + customTypeClass.getName() + "\" must have a public, no-arg constructor.");
+					throw new VCardException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
 				}
 			} else {
 				t = new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
-				vcard.addCustomType(t);
+				vcard.addExtendedType(t);
 
 				if (!name.startsWith("X-")) {
-					warnings.add("Non-standard type \"" + name + "\" found.  Treating it as a custom type.");
+					warnings.add("Non-standard type \"" + name + "\" found.  Treating it as an extended type.");
 				}
 			}
 			return t;

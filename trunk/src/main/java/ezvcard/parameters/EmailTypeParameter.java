@@ -56,7 +56,7 @@ public class EmailTypeParameter extends TypeParameter {
 	 * Use of this constructor is discouraged and should only be used for
 	 * defining non-standard TYPEs. Please use one of the predefined static
 	 * objects.
-	 * @param value the type value (e.g. "home")
+	 * @param value the type value (e.g. "internet")
 	 */
 	public EmailTypeParameter(String value) {
 		super(value);
