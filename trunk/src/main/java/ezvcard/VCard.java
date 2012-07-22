@@ -290,24 +290,24 @@ public class VCard {
 		return photos;
 	}
 
-	public void setPhotos(List<PhotoType> photos) {
-		this.photos = photos;
+	public void addPhoto(PhotoType photo) {
+		this.photos.add(photo);
 	}
 
 	public List<LogoType> getLogos() {
 		return logos;
 	}
 
-	public void setLogos(List<LogoType> logos) {
-		this.logos = logos;
+	public void addLogo(LogoType logo) {
+		this.logos.add(logo);
 	}
 
 	public List<SoundType> getSounds() {
 		return sounds;
 	}
 
-	public void setSounds(List<SoundType> sounds) {
-		this.sounds = sounds;
+	public void addSound(SoundType sound) {
+		this.sounds.add(sound);
 	}
 
 	public BirthdayType getBirthday() {
@@ -338,32 +338,32 @@ public class VCard {
 		return addresses;
 	}
 
-	public void setAddresses(List<AddressType> addresses) {
-		this.addresses = addresses;
+	public void addAddress(AddressType address) {
+		this.addresses.add(address);
 	}
 
 	public List<LabelType> getLabels() {
 		return labels;
 	}
 
-	public void setLabels(List<LabelType> labels) {
-		this.labels = labels;
+	public void addLabel(LabelType label) {
+		this.labels.add(label);
 	}
 
 	public List<EmailType> getEmails() {
 		return emails;
 	}
 
-	public void setEmails(List<EmailType> emails) {
-		this.emails = emails;
+	public void addEmail(EmailType email) {
+		this.emails.add(email);
 	}
 
 	public List<TelephoneType> getTelephoneNumbers() {
 		return telephoneNumbers;
 	}
 
-	public void setTelephoneNumbers(List<TelephoneType> telephoneNumbers) {
-		this.telephoneNumbers = telephoneNumbers;
+	public void addTelephoneNumbers(TelephoneType telephoneNumber) {
+		this.telephoneNumbers.add(telephoneNumber);
 	}
 
 	public MailerType getMailer() {
@@ -378,8 +378,8 @@ public class VCard {
 		return urls;
 	}
 
-	public void setUrls(List<UrlType> urls) {
-		this.urls = urls;
+	public void addUrl(UrlType url) {
+		this.urls.add(url);
 	}
 
 	public TimezoneType getTimezone() {
@@ -426,32 +426,32 @@ public class VCard {
 		return notes;
 	}
 
-	public void setNotes(List<NoteType> notes) {
-		this.notes = notes;
+	public void addNote(NoteType note) {
+		this.notes.add(note);
 	}
 
 	public List<UidType> getUids() {
 		return uids;
 	}
 
-	public void setUids(List<UidType> uids) {
-		this.uids = uids;
+	public void addUid(UidType uid) {
+		this.uids.add(uid);
 	}
 
 	public List<KeyType> getKeys() {
 		return keys;
 	}
 
-	public void setKeys(List<KeyType> keys) {
-		this.keys = keys;
+	public void addKey(KeyType key) {
+		this.keys.add(key);
 	}
 
 	public List<ImppType> getImpps() {
 		return impps;
 	}
 
-	public void setImpps(List<ImppType> impps) {
-		this.impps = impps;
+	public void addImpp(ImppType impp) {
+		this.impps.add(impp);
 	}
 
 	/**
