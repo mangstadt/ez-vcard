@@ -362,7 +362,7 @@ public class VCard {
 		return telephoneNumbers;
 	}
 
-	public void addTelephoneNumbers(TelephoneType telephoneNumber) {
+	public void addTelephoneNumber(TelephoneType telephoneNumber) {
 		this.telephoneNumbers.add(telephoneNumber);
 	}
 
