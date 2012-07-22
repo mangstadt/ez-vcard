@@ -86,7 +86,8 @@ public class AgentType extends VCardType {
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		if (url != null) {
-			subTypes.setValue(ValueParameter.URI);
+			ValueParameter vp = (version == VCardVersion.V2_1) ? ValueParameter.URL : ValueParameter.URI;
+			subTypes.setValue(vp);
 			return url;
 		} else {
 			subTypes.setValue(null);
@@ -114,8 +115,7 @@ public class AgentType extends VCardType {
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		value = VCardStringUtils.unescape(value);
 
-		ValueParameter valueSubType = subTypes.getValue();
-		if (valueSubType == ValueParameter.URI || valueSubType == ValueParameter.CONTENT_ID || value.startsWith("http")) {
+		if (subTypes.getValue() != null) {
 			url = value;
 		} else {
 			VCardReader reader = new VCardReader(new StringReader(value));

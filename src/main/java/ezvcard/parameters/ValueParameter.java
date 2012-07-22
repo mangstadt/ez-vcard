@@ -38,11 +38,19 @@ either expressed or implied, of the FreeBSD Project.
 public class ValueParameter {
 	public static final String NAME = "VALUE";
 
+	/**
+	 * vCard 2.1 defines a "VALUE=url" parameter (p.18-9).
+	 */
+	public static final ValueParameter URL = new ValueParameter("url");
+	
+	/**
+	 * vCard 3.0 defines a "VALUE=uri" parameter (p.11,19,24).
+	 */
 	public static final ValueParameter URI = new ValueParameter("uri");
 	public static final ValueParameter TEXT = new ValueParameter("text");
 
 	/**
-	 * See v2.1 docs p.8-9
+	 * vCard v2.1 defines a "VALUE=content-id" parameter (p.8-9)
 	 */
 	public static final ValueParameter CONTENT_ID = new ValueParameter("content-id");
 
