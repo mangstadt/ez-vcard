@@ -353,8 +353,8 @@ public class VCardReaderTest {
 
 			AddressType t = it.next();
 			assertEquals("ASB-123", t.getPoBox());
-			assertEquals(null, t.getExtendedAddr());
-			assertEquals("15 Crescent moon drive", t.getStreetAddr());
+			assertEquals(null, t.getExtendedAddress());
+			assertEquals("15 Crescent moon drive", t.getStreetAddress());
 			assertEquals("Albaney", t.getLocality());
 			assertEquals("New York", t.getRegion());
 			assertEquals("12345", t.getPostalCode());
@@ -510,8 +510,8 @@ public class VCardReaderTest {
 
 			AddressType f = it.next();
 			assertEquals(null, f.getPoBox());
-			assertEquals("Crescent moon drive\r\n555-asd\r\nNice Area, Albaney, New York12345\r\nUnited States of America", f.getExtendedAddr());
-			assertEquals(null, f.getStreetAddr());
+			assertEquals("Crescent moon drive\r\n555-asd\r\nNice Area, Albaney, New York12345\r\nUnited States of America", f.getExtendedAddress());
+			assertEquals(null, f.getStreetAddress());
 			assertEquals(null, f.getLocality());
 			assertEquals(null, f.getRegion());
 			assertEquals(null, f.getPostalCode());
@@ -729,8 +729,8 @@ public class VCardReaderTest {
 			AddressType f = it.next();
 			assertEquals("item3", f.getGroup());
 			assertEquals(null, f.getPoBox());
-			assertEquals(null, f.getExtendedAddr());
-			assertEquals("Silicon Alley 5,", f.getStreetAddr());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("Silicon Alley 5,", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
@@ -743,8 +743,8 @@ public class VCardReaderTest {
 			f = it.next();
 			assertEquals("item4", f.getGroup());
 			assertEquals(null, f.getPoBox());
-			assertEquals(null, f.getExtendedAddr());
-			assertEquals("Street4\r\nBuilding 6\r\nFloor 8", f.getStreetAddr());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("Street4\r\nBuilding 6\r\nFloor 8", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals(null, f.getRegion());
 			assertEquals("12345", f.getPostalCode());
@@ -916,8 +916,8 @@ public class VCardReaderTest {
 			AddressType f = it.next();
 			assertEquals("item1", f.getGroup());
 			assertEquals(null, f.getPoBox());
-			assertEquals(null, f.getExtendedAddr());
-			assertEquals("25334\r\nSouth cresent drive, Building 5, 3rd floo r", f.getStreetAddr());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("25334\r\nSouth cresent drive, Building 5, 3rd floo r", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals("New York", f.getRegion());
 			assertEquals("NYC887", f.getPostalCode());
@@ -1162,8 +1162,8 @@ public class VCardReaderTest {
 
 			AddressType f = it.next();
 			assertEquals(null, f.getPoBox());
-			assertEquals(null, f.getExtendedAddr());
-			assertEquals("Cresent moon drive", f.getStreetAddr());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("Cresent moon drive", f.getStreetAddress());
 			assertEquals("Albaney", f.getLocality());
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
@@ -1175,8 +1175,8 @@ public class VCardReaderTest {
 
 			f = it.next();
 			assertEquals(null, f.getPoBox());
-			assertEquals(null, f.getExtendedAddr());
-			assertEquals("Silicon Alley 5,", f.getStreetAddr());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("Silicon Alley 5,", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
@@ -1425,8 +1425,8 @@ public class VCardReaderTest {
 			AddressType f = it.next();
 			assertEquals("item2", f.getGroup());
 			assertEquals(null, f.getPoBox());
-			assertEquals(null, f.getExtendedAddr());
-			assertEquals("Silicon Alley 5,", f.getStreetAddr());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("Silicon Alley 5,", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
@@ -1440,8 +1440,8 @@ public class VCardReaderTest {
 			f = it.next();
 			assertEquals("item3", f.getGroup());
 			assertEquals(null, f.getPoBox());
-			assertEquals(null, f.getExtendedAddr());
-			assertEquals("Street4\r\nBuilding 6\r\nFloor 8", f.getStreetAddr());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("Street4\r\nBuilding 6\r\nFloor 8", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals(null, f.getRegion());
 			assertEquals("12345", f.getPostalCode());
