@@ -45,7 +45,7 @@ public class FoldedLineReaderTest {
 		//unfolded line
 		sb.append("FN: Michael Angstadt\n");
 
-		//empty line
+		//empty lines should be ignored
 		sb.append("\n");
 
 		//=========
@@ -93,7 +93,7 @@ public class FoldedLineReaderTest {
 
 		FoldedLineReader reader = new FoldedLineReader(sb.toString());
 		assertEquals("FN: Michael Angstadt", reader.readLine());
-		assertEquals("", reader.readLine()); //empty lines are not ignored
+		//assertEquals("", reader.readLine()); //empty lines should be ignored
 		
 		//test the issues Outlook has with folding lines that are QUOTED-PRINTABLE
 		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5", reader.readLine());
