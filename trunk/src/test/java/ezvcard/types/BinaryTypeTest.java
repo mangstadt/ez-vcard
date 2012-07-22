@@ -53,13 +53,23 @@ public class BinaryTypeTest {
 
 	@Test
 	public void doMarshalValue() {
-		VCardVersion version = VCardVersion.V2_1;
+		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
 		BinaryTypeImpl t;
 		String expected, actual;
 
-		//test URL
+		//test URL v2.1
+		version = VCardVersion.V2_1;
+		t = new BinaryTypeImpl();
+		t.setUrl("http://example.com/image.jpg");
+		expected = "http://example.com/image.jpg";
+		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		assertEquals(expected, actual);
+		assertEquals(ValueParameter.URL, t.getSubTypes().getValue());
+		
+		//test URL v3.0
+		version = VCardVersion.V3_0;
 		t = new BinaryTypeImpl();
 		t.setUrl("http://example.com/image.jpg");
 		expected = "http://example.com/image.jpg";
@@ -68,6 +78,7 @@ public class BinaryTypeTest {
 		assertEquals(ValueParameter.URI, t.getSubTypes().getValue());
 
 		//test base64 data
+		version = VCardVersion.V2_1;
 		t = new BinaryTypeImpl();
 		t.setData(dummyData, ImageTypeParameter.JPEG);
 		expected = Base64.encodeBase64String(dummyData);
@@ -87,7 +98,7 @@ public class BinaryTypeTest {
 
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
-		subTypes.setValue(ValueParameter.URI);
+		subTypes.setValue(ValueParameter.URL);
 		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
 
