@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.EmailTypeParameter;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -56,10 +58,16 @@ public class AgentTypeTest {
 
 		VCard agentVcard = new VCard();
 		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
+		EmailType agentEmail = new EmailType("007@mi5.co.uk");
+		agentEmail.addType(EmailTypeParameter.INTERNET);
+		agentVcard.getEmails().add(agentEmail);
 		t = new AgentType(agentVcard);
 
 		VCard agentVcard2 = new VCard();
 		agentVcard2.setFormattedName(new FormattedNameType("Agent 009"));
+		EmailType agentEmail2 = new EmailType("009@mi5.co.uk");
+		agentEmail2.addType(EmailTypeParameter.INTERNET);
+		agentVcard2.getEmails().add(agentEmail2);
 		agentVcard.setAgent(new AgentType(agentVcard2));
 
 		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
@@ -68,16 +76,19 @@ public class AgentTypeTest {
 		sb.append("BEGIN: vcard\\n");
 		sb.append("VERSION: 3.0\\n");
 		sb.append("FN: Agent 007\\n");
+		sb.append("EMAIL\\;TYPE=internet: 007@mi5.co.uk\\n");
 		sb.append("AGENT: ");
 			sb.append("BEGIN: vcard\\\\n");
 			sb.append("VERSION: 3.0\\\\n");
 			sb.append("FN: Agent 009\\\\n");
+			sb.append("EMAIL\\\\\\;TYPE=internet: 009@mi5.co.uk\\\\n");
 			sb.append("END: vcard\\\\n\\n");
 		sb.append("END: vcard\\n");
 		//@formatter:on
 
 		expected = sb.toString();
 		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		System.out.println(actual);
 		assertEquals(expected, actual);
 	}
 
@@ -96,10 +107,12 @@ public class AgentTypeTest {
 		sb.append("BEGIN: vcard\\n");
 		sb.append("VERSION: 3.0\\n");
 		sb.append("FN: Agent 007\\n");
+		sb.append("EMAIL\\;TYPE=internet: 007@mi5.co.uk\\n");
 		sb.append("AGENT: ");
 			sb.append("BEGIN: vcard\\\\n");
 			sb.append("VERSION: 3.0\\\\n");
 			sb.append("FN: Agent 009\\\\n");
+			sb.append("EMAIL\\\\\\;TYPE=internet: 009@mi5.co.uk\\\\n");
 			sb.append("END: vcard\\\\n\\n");
 		sb.append("END: vcard\\n");
 		//@formatter:on
@@ -108,7 +121,11 @@ public class AgentTypeTest {
 		t.unmarshalValue(subTypes, sb.toString(), version, warnings, compatibilityMode);
 		VCard agent1 = t.getVcard();
 		assertEquals("Agent 007", agent1.getFormattedName().getValue());
+		assertEquals("007@mi5.co.uk", agent1.getEmails().get(0).getValue());
+		assertTrue(agent1.getEmails().get(0).getTypes().contains(EmailTypeParameter.INTERNET));
 		VCard agent2 = agent1.getAgent().getVcard();
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
+		assertEquals("009@mi5.co.uk", agent2.getEmails().get(0).getValue());
+		assertTrue(agent2.getEmails().get(0).getTypes().contains(EmailTypeParameter.INTERNET));
 	}
 }
