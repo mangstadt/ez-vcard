@@ -31,7 +31,7 @@ import ezvcard.types.KeyType;
 import ezvcard.types.LabelType;
 import ezvcard.types.LogoType;
 import ezvcard.types.MailerType;
-import ezvcard.types.NameType;
+import ezvcard.types.DisplayableNameType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrgType;
@@ -306,8 +306,8 @@ public class VCardReader implements Closeable {
 			SourceType t = new SourceType();
 			vcard.setSource(t);
 			return t;
-		} else if (NameType.NAME.equals(name)) {
-			NameType t = new NameType();
+		} else if (DisplayableNameType.NAME.equals(name)) {
+			DisplayableNameType t = new DisplayableNameType();
 			vcard.setName(t);
 			return t;
 		} else if (FormattedNameType.NAME.equals(name)) {
