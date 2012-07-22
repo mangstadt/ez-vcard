@@ -33,7 +33,7 @@ import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
 import ezvcard.types.LabelType;
 import ezvcard.types.MailerType;
-import ezvcard.types.NameType;
+import ezvcard.types.DisplayableNameType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrgType;
@@ -1054,7 +1054,7 @@ public class VCardReaderTest {
 
 		//NAME
 		{
-			NameType f = vcard.getName();
+			DisplayableNameType f = vcard.getName();
 			assertEquals("VCard for John Doe", f.getValue());
 		}
 

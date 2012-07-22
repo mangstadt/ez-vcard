@@ -29,7 +29,7 @@ import ezvcard.types.KeyType;
 import ezvcard.types.LabelType;
 import ezvcard.types.LogoType;
 import ezvcard.types.MailerType;
-import ezvcard.types.NameType;
+import ezvcard.types.DisplayableNameType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrgType;
@@ -88,7 +88,7 @@ public class VCard {
 	private ProfileType profile;
 	private ClassType classType;
 	private SourceType source;
-	private NameType name;
+	private DisplayableNameType name;
 	private FormattedNameType formattedName;
 	private StructuredNameType structuredName;
 	private NicknameType nicknames;
@@ -204,11 +204,11 @@ public class VCard {
 		this.source = source;
 	}
 
-	public NameType getName() {
+	public DisplayableNameType getName() {
 		return name;
 	}
 
-	public void setName(NameType name) {
+	public void setName(DisplayableNameType name) {
 		this.name = name;
 	}
 
