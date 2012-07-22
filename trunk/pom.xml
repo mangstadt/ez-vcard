@@ -9,6 +9,13 @@
 	<inceptionYear>2012</inceptionYear>
 	<description>A vCard library that reads and writes vCards, supporting versions 2.1, 3.0, and 4.0</description>
 
+	<licenses>
+		<license>
+			<name>FreeBSD License</name>
+			<url>http://opensource.org/licenses/bsd-license.php</url>
+		</license>
+	</licenses>
+
 	<developers>
 		<developer>
 			<name>Michael Angstadt</name>
