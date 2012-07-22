@@ -44,8 +44,8 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	public static final String NAME = "ADR";
 
 	private String poBox;
-	private String extendedAddr;
-	private String streetAddr;
+	private String extendedAddress;
+	private String streetAddress;
 	private String locality;
 	private String region;
 	private String postalCode;
@@ -72,20 +72,20 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		this.poBox = poBox;
 	}
 
-	public String getExtendedAddr() {
-		return extendedAddr;
+	public String getExtendedAddress() {
+		return extendedAddress;
 	}
 
-	public void setExtendedAddr(String extendedAddr) {
-		this.extendedAddr = extendedAddr;
+	public void setExtendedAddress(String extendedAddress) {
+		this.extendedAddress = extendedAddress;
 	}
 
-	public String getStreetAddr() {
-		return streetAddr;
+	public String getStreetAddress() {
+		return streetAddress;
 	}
 
-	public void setStreetAddr(String streetAddr) {
-		this.streetAddr = streetAddr;
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
 	}
 
 	public String getLocality() {
@@ -137,13 +137,13 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		}
 		sb.append(';');
 
-		if (extendedAddr != null) {
-			sb.append(VCardStringUtils.escapeText(extendedAddr));
+		if (extendedAddress != null) {
+			sb.append(VCardStringUtils.escapeText(extendedAddress));
 		}
 		sb.append(';');
 
-		if (streetAddr != null) {
-			sb.append(VCardStringUtils.escapeText(streetAddr));
+		if (streetAddress != null) {
+			sb.append(VCardStringUtils.escapeText(streetAddress));
 		}
 		sb.append(';');
 
@@ -178,10 +178,10 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		poBox = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 		
-		extendedAddr = (split.length > i && split[i].length() > 0) ? split[i] : null;
+		extendedAddress = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 		
-		streetAddr = (split.length > i && split[i].length() > 0) ? split[i] : null;
+		streetAddress = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 
 		locality = (split.length > i && split[i].length() > 0) ? split[i] : null;

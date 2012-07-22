@@ -55,8 +55,8 @@ public class AddressTypeTest {
 		//all fields present
 		t = new AddressType();
 		t.setPoBox("P.O. Box 1234;");
-		t.setExtendedAddr("Apt, 11");
-		t.setStreetAddr("123 Main St");
+		t.setExtendedAddress("Apt, 11");
+		t.setStreetAddress("123 Main St");
 		t.setLocality("Austin");
 		t.setRegion("TX");
 		t.setPostalCode("12345");
@@ -68,8 +68,8 @@ public class AddressTypeTest {
 		//some nulls
 		t = new AddressType();
 		t.setPoBox("P.O. Box 1234;");
-		t.setExtendedAddr(null);
-		t.setStreetAddr(null);
+		t.setExtendedAddress(null);
+		t.setStreetAddress(null);
 		t.setLocality("Austin");
 		t.setRegion("TX");
 		t.setPostalCode("12345");
@@ -97,8 +97,8 @@ public class AddressTypeTest {
 		t = new AddressType();
 		t.unmarshalValue(subTypes, "P.O. Box 1234\\;;Apt 11;123 Main St;Austin;TX;12345;USA", version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234;", t.getPoBox());
-		assertEquals("Apt 11", t.getExtendedAddr());
-		assertEquals("123 Main St", t.getStreetAddr());
+		assertEquals("Apt 11", t.getExtendedAddress());
+		assertEquals("123 Main St", t.getStreetAddress());
 		assertEquals("Austin", t.getLocality());
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
@@ -108,8 +108,8 @@ public class AddressTypeTest {
 		t = new AddressType();
 		t.unmarshalValue(subTypes, "P.O. Box 1234\\;;;;Austin;TX;12345;USA", version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234;", t.getPoBox());
-		assertEquals(null, t.getExtendedAddr());
-		assertEquals(null, t.getStreetAddr());
+		assertEquals(null, t.getExtendedAddress());
+		assertEquals(null, t.getStreetAddress());
 		assertEquals("Austin", t.getLocality());
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
@@ -119,8 +119,8 @@ public class AddressTypeTest {
 		t = new AddressType();
 		t.unmarshalValue(subTypes, "P.O. Box 1234\\;56;Apt 11;123 Main St;Austin;TX", version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234;56", t.getPoBox());
-		assertEquals("Apt 11", t.getExtendedAddr());
-		assertEquals("123 Main St", t.getStreetAddr());
+		assertEquals("Apt 11", t.getExtendedAddress());
+		assertEquals("123 Main St", t.getStreetAddress());
 		assertEquals("Austin", t.getLocality());
 		assertEquals("TX", t.getRegion());
 		assertEquals(null, t.getPostalCode());
