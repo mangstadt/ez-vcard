@@ -56,7 +56,7 @@ public class KeyTypeParameter extends TypeParameter {
 	 * Use of this constructor is discouraged and should only be used for
 	 * defining non-standard TYPEs. Please use one of the predefined static
 	 * objects.
-	 * @param _typeName the type name (e.g. "PGP")
+	 * @param value the type name (e.g. "PGP")
 	 * @param _extension the file extension used for this type (e.g. "pgp")
 	 */
 	public KeyTypeParameter(String value, String _extension) {

@@ -105,7 +105,7 @@ public class VCardStringUtils {
 	 * @param removeEmpties true to remove empty elements, false not to
 	 * @param unescape true to unescape each split string, false not to
 	 * @return the split string
-	 * @see http://stackoverflow.com/q/820172
+	 * @see <a href="http://stackoverflow.com/q/820172">http://stackoverflow.com/q/820172</a>
 	 */
 	public static String[] splitBy(String str, char ch, boolean removeEmpties, boolean unescape) {
 		str = str.trim();

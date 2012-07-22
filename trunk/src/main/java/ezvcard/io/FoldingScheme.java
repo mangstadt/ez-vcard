@@ -38,7 +38,7 @@ public class FoldingScheme {
 	 * Folds lines at 75 characters (not including CRLF) and uses 1 space as
 	 * indentation.
 	 * </p>
-	 * @see RFC2426 p.8
+	 * @see "RFC2426 p.8"
 	 */
 	public static final FoldingScheme MIME_DIR = new FoldingScheme(75, " ");
 
