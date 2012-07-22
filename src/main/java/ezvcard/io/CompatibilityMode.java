@@ -33,66 +33,17 @@ package ezvcard.io;
  * @author George El-Haddad
  */
 public enum CompatibilityMode {
-
 	/**
 	 * <p>
 	 * Pure RFC-2426 compatibility.
 	 * </p>
-	 * 
-	 * @see BinaryFoldingScheme
-	 * @see FoldingScheme
 	 */
 	RFC2426,
 
-	/**
-	 * <p>
-	 * <ol>
-	 * <li>The parameter type &quot;WORK&quot; is added to the URL feature.</li>
-	 * <li>Encoding parameter type uses BASE64 instead of B.</li>
-	 * <li>Base64 encoded text start on a new line and end with a new line (v2.1
-	 * style)</li>
-	 * <li>Compensates for missing mandatory semi-colons in name (N type) when
-	 * parsing.</li>
-	 * <li>Compensates for missing = sign delimiting parameter types in PHOTO,
-	 * LOGO, SOUND and KEY types when parsing.</li>
-	 * </ol>
-	 * </p>
-	 * 
-	 * @see BinaryFoldingScheme
-	 * @see FoldingScheme
-	 */
 	MS_OUTLOOK,
 
-	/**
-	 * <p>
-	 * iPhone exported vcards
-	 * <ol>
-	 * <li>Encoding parameter type uses BASE64 instead of B.</li>
-	 * <li>Compensates for missing = sign delimiting parameter types in PHOTO,
-	 * LOGO, SOUND and KEY types when parsing.</li>
-	 * <li>Parameter types inside the URL feature.</li>
-	 * <li>Escapes special characters in URL feature.</li>
-	 * </ol>
-	 * </p>
-	 * 
-	 * @see BinaryFoldingScheme
-	 * @see FoldingScheme
-	 */
 	I_PHONE,
 
-	/**
-	 * <p>
-	 * <ol>
-	 * <li>Does not include the ENCODING parameter type for PHOTO, LOGO, SOUND
-	 * or KEY.</li>
-	 * <li>Compensates for missing = sign delimiting parameter types in PHOTO,
-	 * LOGO, SOUND and KEY types when parsing.</li>
-	 * </ol>
-	 * </p>
-	 * 
-	 * @see BinaryFoldingScheme
-	 * @see FoldingScheme
-	 */
 	MAC_ADDRESS_BOOK,
 
 	/**
@@ -105,47 +56,12 @@ public enum CompatibilityMode {
 	 * <li>Escapes commas in CATEGORIES feature when writing vcard.</li>
 	 * </ol>
 	 * </p>
-	 * 
-	 * @see BinaryFoldingScheme
-	 * @see FoldingScheme
 	 */
 	KDE_ADDRESS_BOOK,
 
-	/**
-	 * <p>
-	 * Compatibility mode to emulate iOS Exporter's quirks
-	 * <ol>
-	 * <li>Escapes special characters in the TEL type value.
-	 * </p>
-	 * <li>Escapes special characters in URL feature.</li> </ol> </p>
-	 * 
-	 * @see BinaryFoldingScheme
-	 * @see FoldingScheme
-	 */
 	IOS_EXPORTER,
 
-	/**
-	 * <p>
-	 * <ol>
-	 * <li></li>
-	 * </ol>
-	 * </p>
-	 * 
-	 * @see BinaryFoldingScheme
-	 * @see FoldingScheme
-	 */
 	EVOLUTION,
 
-	/**
-	 * <p>
-	 * <ol>
-	 * <li>Parameter types inside the URL feature.</li>
-	 * <li>Escapes special characters in URL feature.</li>
-	 * </ol>
-	 * </p>
-	 * 
-	 * @see BinaryFoldingScheme
-	 * @see FoldingScheme
-	 */
 	GMAIL;
 }

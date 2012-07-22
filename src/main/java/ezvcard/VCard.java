@@ -480,7 +480,7 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all extended types that are wrapped in a extended type class.
+	 * Gets all extended types that are wrapped in an extended type class.
 	 * @param clazz the class that the extended type values are wrapped in
 	 * @return the extended types or empty list of none were found
 	 */
