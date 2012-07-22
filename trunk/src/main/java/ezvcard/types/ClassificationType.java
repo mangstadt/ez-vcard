@@ -33,14 +33,14 @@ package ezvcard.types;
  * Represents the CLASS type.
  * @author Michael Angstadt
  */
-public class ClassType extends TextType {
+public class ClassificationType extends TextType {
 	public static final String NAME = "CLASS";
 
-	public ClassType() {
+	public ClassificationType() {
 		this(null);
 	}
 
-	public ClassType(String classValue) {
+	public ClassificationType(String classValue) {
 		super(NAME, classValue);
 	}
 }

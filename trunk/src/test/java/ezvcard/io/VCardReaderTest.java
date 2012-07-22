@@ -27,7 +27,7 @@ import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.BirthdayType;
 import ezvcard.types.CategoriesType;
-import ezvcard.types.ClassType;
+import ezvcard.types.ClassificationType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
@@ -996,7 +996,7 @@ public class VCardReaderTest {
 
 		//CLASS
 		{
-			ClassType f = vcard.getClassType();
+			ClassificationType f = vcard.getClassificationType();
 			assertEquals("Public", f.getValue());
 		}
 

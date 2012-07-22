@@ -20,7 +20,7 @@ import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.BirthdayType;
 import ezvcard.types.CategoriesType;
-import ezvcard.types.ClassType;
+import ezvcard.types.ClassificationType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
@@ -86,7 +86,7 @@ import ezvcard.types.VCardType;
 public class VCard {
 	private VCardVersion version = VCardVersion.V3_0;
 	private ProfileType profile;
-	private ClassType classType;
+	private ClassificationType classificationType;
 	private SourceType source;
 	private DisplayableNameType displayableName;
 	private FormattedNameType formattedName;
@@ -188,12 +188,12 @@ public class VCard {
 		this.profile = profile;
 	}
 
-	public ClassType getClassType() {
-		return classType;
+	public ClassificationType getClassificationType() {
+		return classificationType;
 	}
 
-	public void setClassType(ClassType classType) {
-		this.classType = classType;
+	public void setClassificationType(ClassificationType classificationType) {
+		this.classificationType = classificationType;
 	}
 
 	public SourceType getSource() {
