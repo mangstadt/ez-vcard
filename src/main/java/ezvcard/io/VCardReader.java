@@ -308,7 +308,7 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (DisplayableNameType.NAME.equals(name)) {
 			DisplayableNameType t = new DisplayableNameType();
-			vcard.setName(t);
+			vcard.setDisplayableName(t);
 			return t;
 		} else if (FormattedNameType.NAME.equals(name)) {
 			FormattedNameType t = new FormattedNameType();

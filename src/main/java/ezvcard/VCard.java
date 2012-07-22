@@ -88,7 +88,7 @@ public class VCard {
 	private ProfileType profile;
 	private ClassType classType;
 	private SourceType source;
-	private DisplayableNameType name;
+	private DisplayableNameType displayableName;
 	private FormattedNameType formattedName;
 	private StructuredNameType structuredName;
 	private NicknameType nicknames;
@@ -204,12 +204,12 @@ public class VCard {
 		this.source = source;
 	}
 
-	public DisplayableNameType getName() {
-		return name;
+	public DisplayableNameType getDisplayableName() {
+		return displayableName;
 	}
 
-	public void setName(DisplayableNameType name) {
-		this.name = name;
+	public void setDisplayableName(DisplayableNameType displayableName) {
+		this.displayableName = displayableName;
 	}
 
 	public FormattedNameType getFormattedName() {
