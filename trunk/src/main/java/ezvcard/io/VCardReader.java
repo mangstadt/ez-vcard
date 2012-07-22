@@ -15,12 +15,8 @@ import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EncodingParameter;
-import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.parameters.KeyTypeParameter;
-import ezvcard.parameters.SoundTypeParameter;
-import ezvcard.parameters.TelephoneTypeParameter;
+import ezvcard.parameters.TypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
@@ -146,11 +142,6 @@ public class VCardReader implements Closeable {
 		int typesRead = 0;
 		String line;
 		while ((line = reader.readLine()) != null) {
-			//ignore empty lines
-			if (line.length() == 0) {
-				continue;
-			}
-
 			String[] colonSplit = line.split(":", 2);
 			if (colonSplit.length < 2) {
 				warnings.add("Skipping malformed vCard line: \"" + line + "\"");
@@ -191,27 +182,9 @@ public class VCardReader implements Closeable {
 						subTypeName = ValueParameter.NAME;
 					} else if (EncodingParameter.valueOf(subTypeValue) != null) {
 						subTypeName = EncodingParameter.NAME;
-					} else if (AddressType.NAME.equals(typeName)) {
-						//for ADR, assume it's TYPE
-						subTypeName = AddressTypeParameter.NAME;
-					} else if (TelephoneType.NAME.equals(typeName)) {
-						//for TEL, assume it's TYPE
-						subTypeName = TelephoneTypeParameter.NAME;
-					} else if (SoundType.NAME.equals(typeName)) {
-						//for SOUND, assume it's TYPE
-						subTypeName = SoundTypeParameter.NAME;
-					} else if (PhotoType.NAME.equals(typeName)) {
-						//for PHOTO, assume it's TYPE
-						subTypeName = ImageTypeParameter.NAME;
-					} else if (LogoType.NAME.equals(typeName)) {
-						//for LOGO, assume it's TYPE
-						subTypeName = ImageTypeParameter.NAME;
-					} else if (KeyType.NAME.equals(typeName)) {
-						//for KEY, assume it's TYPE
-						subTypeName = KeyTypeParameter.NAME;
 					} else {
-						subTypeName = subTypeValue;
-						warnings.add("Nameless sub type value \"" + subTypeValue + "\" could not be identified.");
+						//otherwise, assume it's a TYPE
+						subTypeName = TypeParameter.NAME;
 					}
 
 					subTypes.put(subTypeName, subTypeValue);
