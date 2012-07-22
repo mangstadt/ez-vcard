@@ -43,15 +43,15 @@ either expressed or implied, of the FreeBSD Project.
 public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> {
 	public static final String NAME = "EMAIL";
 
-	private String email;
+	private String value;
 
 	public EmailType() {
 		this(null);
 	}
 	
-	public EmailType(String email) {
+	public EmailType(String value) {
 		super(NAME);
-		setEmail(email);
+		setValue(value);
 	}
 
 	@Override
@@ -63,12 +63,12 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 		return param;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getValue() {
+		return value;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public boolean isPreferred() {
@@ -85,11 +85,11 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		return VCardStringUtils.escapeText(email);
+		return VCardStringUtils.escapeText(value);
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		email = VCardStringUtils.unescape(value);
+		this.value = VCardStringUtils.unescape(value);
 	}
 }
