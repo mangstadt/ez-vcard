@@ -220,6 +220,72 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
+	/**
+	 * AGENT types for 2.1 vCards are nested.
+	 */
+	@Test
+	public void readNested() throws Exception {
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN: vcard\r\n");
+		sb.append("VERSION: 2.1\r\n");
+		sb.append("AGENT:\r\n");
+			sb.append("BEGIN: vcard\r\n");
+			sb.append("VERSION: 2.1\r\n");
+			sb.append("FN: Agent 007\r\n");
+			sb.append("AGENT:\r\n");
+				sb.append("BEGIN: vcard\r\n");
+				sb.append("VERSION: 2.1\r\n");
+				sb.append("FN: Agent 009\r\n");
+				sb.append("END: vcard\r\n");
+			sb.append("END: vcard\r\n");
+		sb.append("FN: John Doe\r\n");
+		sb.append("END: vcard\r\n");
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCard vcard = reader.readNext();
+
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+		VCard agent1 = vcard.getAgent().getVcard();
+		assertEquals("Agent 007", agent1.getFormattedName().getValue());
+		VCard agent2 = agent1.getAgent().getVcard();
+		assertEquals("Agent 009", agent2.getFormattedName().getValue());
+	}
+	
+	/**
+	 * Make sure it reads AGENT types that are inline instead of nested.
+	 */
+	@Test
+	public void readInlineAgent() throws Exception {
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN: vcard\r\n");
+		sb.append("VERSION: 3.0\r\n");
+		sb.append("AGENT: ");
+			sb.append("BEGIN: vcard\\n");
+			sb.append("VERSION: 3.0\\n");
+			sb.append("FN: Agent 007\\n");
+			sb.append("AGENT: ");
+				sb.append("BEGIN: vcard\\\\n");
+				sb.append("VERSION: 3.0\\\\n");
+				sb.append("FN: Agent 009\\\\n");
+				sb.append("END: vcard\\\\n");
+			sb.append("END: vcard\r\n");
+		sb.append("FN: John Doe\r\n");
+		sb.append("END: vcard\r\n");
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCard vcard = reader.readNext();
+
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+		VCard agent1 = vcard.getAgent().getVcard();
+		assertEquals("Agent 007", agent1.getFormattedName().getValue());
+		VCard agent2 = agent1.getAgent().getVcard();
+		assertEquals("Agent 009", agent2.getFormattedName().getValue());
+	}
+
 	@Test
 	public void evolutionVCard() throws Exception {
 		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_EVOLUTION.vcf")));

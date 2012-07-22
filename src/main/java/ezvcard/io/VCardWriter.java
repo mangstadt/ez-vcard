@@ -13,6 +13,7 @@ import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.TypeParameter;
+import ezvcard.types.AgentType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
 
@@ -95,7 +96,8 @@ public class VCardWriter implements Closeable {
 	 * @param newline the newline sequence to use
 	 */
 	public VCardWriter(Writer writer, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) {
-		if (foldingScheme == null) {
+		if (writer instanceof FoldedLineWriter || foldingScheme == null) {
+			//the check for FoldedLineWriter is for writing nested 2.1 vCards (i.e. the AGENT type)
 			this.writer = writer;
 		} else {
 			this.writer = new FoldedLineWriter(writer, foldingScheme.getMaxChars(), foldingScheme.getIndent(), newline);
@@ -223,17 +225,27 @@ public class VCardWriter implements Closeable {
 		types.add(new TextType("END", "vcard"));
 
 		for (VCardType type : types) {
-			//marshal the type
-			String value;
-			List<String> warnings = new ArrayList<String>();
-			try {
-				value = type.marshalValue(targetVersion, warnings, compatibilityMode);
-			} finally {
-				this.warnings.addAll(warnings);
+			//determine if this type has a nested vCard
+			VCard nested = null;
+			if (targetVersion == VCardVersion.V2_1 && type instanceof AgentType) {
+				//AGENT types for for 2.1 vCards are nested (see 2.1 docs, p.19)
+				AgentType at = (AgentType) type;
+				nested = at.getVcard();
 			}
-			if (value == null) {
-				warnings.add(type.getTypeName() + " type has requested that it not be marshalled.");
-				continue;
+
+			//marshal the type
+			String value = null;
+			if (nested == null) {
+				List<String> warnings = new ArrayList<String>();
+				try {
+					value = type.marshalValue(targetVersion, warnings, compatibilityMode);
+				} finally {
+					this.warnings.addAll(warnings);
+				}
+				if (value == null) {
+					warnings.add(type.getTypeName() + " type has requested that it not be marshalled.");
+					continue;
+				}
 			}
 
 			StringBuilder sb = new StringBuilder();
@@ -306,10 +318,23 @@ public class VCardWriter implements Closeable {
 			sb.append(": ");
 
 			//write the value
-			sb.append(value);
-
+			if (nested == null) {
+				sb.append(value);
+			}
 			writer.write(sb.toString());
 			writer.write(newline);
+			if (nested != null) {
+				//write the nested vCard
+				VCardWriter agentWriter = new VCardWriter(writer, targetVersion);
+				agentWriter.setAddGenerator(false);
+				try {
+					agentWriter.write(nested);
+				} finally {
+					for (String w : agentWriter.getWarnings()) {
+						warnings.add("AGENT marshal warning: " + w);
+					}
+				}
+			}
 		}
 	}
 

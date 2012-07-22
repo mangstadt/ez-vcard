@@ -95,10 +95,11 @@ public class AgentType extends VCardType {
 			StringWriter sw = new StringWriter();
 			VCardWriter writer = new VCardWriter(sw, version, null, "\n");
 			writer.setCompatibilityMode(compatibilityMode);
+			writer.setAddGenerator(false);
 			try {
 				writer.write(vcard);
 			} catch (IOException e) {
-				//writing to string
+				//never thrown because we're writing to a string
 			}
 			String str = sw.toString();
 
