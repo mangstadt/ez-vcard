@@ -43,23 +43,23 @@ either expressed or implied, of the FreeBSD Project.
 public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypeParameter> {
 	public static final String NAME = "TEL";
 
-	private String phoneNumber;
+	private String value;
 
 	public TelephoneType() {
 		this(null);
 	}
 
-	public TelephoneType(String phoneNumber) {
+	public TelephoneType(String value) {
 		super(NAME);
-		this.phoneNumber = phoneNumber;
+		this.value = value;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public String getValue() {
+		return value;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override
@@ -73,12 +73,12 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		return VCardStringUtils.escapeText(phoneNumber);
+		return VCardStringUtils.escapeText(value);
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		phoneNumber = VCardStringUtils.unescape(value);
+		this.value = VCardStringUtils.unescape(value);
 	}
 
 }
