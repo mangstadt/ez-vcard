@@ -1054,7 +1054,7 @@ public class VCardReaderTest {
 
 		//NAME
 		{
-			DisplayableNameType f = vcard.getName();
+			DisplayableNameType f = vcard.getDisplayableName();
 			assertEquals("VCard for John Doe", f.getValue());
 		}
 
