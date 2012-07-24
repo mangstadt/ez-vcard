@@ -53,7 +53,6 @@ import ezvcard.types.VCardType;
 public class VCardWriter implements Closeable {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
 	private VCardVersion targetVersion = VCardVersion.V3_0;
-	private ParameterTypeStyle parameterTypeStyle = ParameterTypeStyle.PARAMETER_VALUE_LIST;
 	private String newline = "\r\n";
 	private boolean addGenerator = true;
 	private List<String> warnings = new ArrayList<String>();
@@ -260,53 +259,26 @@ public class VCardWriter implements Closeable {
 				Set<String> subTypeValues = type.getSubTypes().get(subTypeName);
 				if (!subTypeValues.isEmpty()) {
 					//TODO put quotes around values that have special chars
-
-					if (TypeParameter.NAME.equalsIgnoreCase(subTypeName)) {
-						//handle the TYPE sub type
-
-						if (targetVersion == VCardVersion.V3_0 || targetVersion == VCardVersion.V4_0) {
-							//in v3.0, the TYPE Sub Type can look like this:
-							//ADR;TYPE=home,work: ...
-							//or like this:
-							//ADR;TYPE=home;TYPE=work: ...
-							switch (parameterTypeStyle) {
-							case PARAMETER_VALUE_LIST:
-								sb.append(";").append(subTypeName).append("=");
-								for (String subTypeValue : subTypeValues) {
-									sb.append(subTypeValue).append(',');
-								}
-								sb.deleteCharAt(sb.length() - 1); //chomp last comma
-								break;
-							case PARAMETER_LIST:
-								for (String subTypeValue : subTypeValues) {
-									sb.append(';').append(subTypeName).append('=');
-									sb.append(subTypeValue);
-								}
-								break;
+					if (targetVersion == VCardVersion.V2_1){
+						if (TypeParameter.NAME.equalsIgnoreCase(subTypeName)) {
+							//example: ADR;HOME;WORK:
+							for (String subTypeValue : subTypeValues) {
+								sb.append(';').append(subTypeValue.toUpperCase());
 							}
 						} else {
-							//in v2.1, the TYPE Sub Type looks like this:
-							//ADR;HOME;WORK: ...
-							for (String subTypeValue : subTypeValues) {
-								sb.append(';').append(subTypeValue);
-							}
-						}
-					} else {
-						switch (parameterTypeStyle) {
-						case PARAMETER_VALUE_LIST:
-							sb.append(";").append(subTypeName).append("=");
-							for (String subTypeValue : subTypeValues) {
-								sb.append(subTypeValue).append(',');
-							}
-							sb.deleteCharAt(sb.length() - 1); //chomp last comma
-							break;
-						case PARAMETER_LIST:
+							//example: ADR;FOO=bar;FOO=car:
 							for (String subTypeValue : subTypeValues) {
 								sb.append(';').append(subTypeName).append('=');
 								sb.append(subTypeValue);
 							}
-							break;
 						}
+					} else {
+						//example: ADR;TYPE=home,work:
+						sb.append(";").append(subTypeName).append("=");
+						for (String subTypeValue : subTypeValues) {
+							sb.append(subTypeValue).append(',');
+						}
+						sb.deleteCharAt(sb.length() - 1); //chomp last comma
 					}
 				}
 			}
