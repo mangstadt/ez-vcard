@@ -62,10 +62,10 @@ public class FoldingScheme {
 	private final String indent;
 
 	public FoldingScheme(int _maxChars, String _indent) {
-		if (_maxChars <= 0){
+		if (_maxChars <= 0) {
 			throw new IllegalArgumentException("The max line length must be greater than 0.");
 		}
-		if (_indent.length() > _maxChars){
+		if (_indent.length() > _maxChars) {
 			throw new IllegalArgumentException("The max line length must be greater than the length of the indentation string.");
 		}
 		maxChars = _maxChars;
@@ -73,23 +73,17 @@ public class FoldingScheme {
 	}
 
 	/**
-	 * <p>
-	 * Returns the maximum number of characters that can exist on a line before
+	 * Gets the maximum number of characters that can exist on a line before
 	 * needing to be folded.
-	 * </p>
-	 * 
-	 * @return int
+	 * @return the max line length
 	 */
 	public int getMaxChars() {
 		return maxChars;
 	}
 
 	/**
-	 * <p>
 	 * Returns the string that is used to indent the folded line.
-	 * </p>
-	 * 
-	 * @return {@link String}
+	 * @return the indent string
 	 */
 	public String getIndent() {
 		return indent;
