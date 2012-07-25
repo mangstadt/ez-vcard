@@ -23,6 +23,7 @@ import ezvcard.types.AgentType;
 import ezvcard.types.BirthdayType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
+import ezvcard.types.DisplayableNameType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
@@ -31,7 +32,6 @@ import ezvcard.types.KeyType;
 import ezvcard.types.LabelType;
 import ezvcard.types.LogoType;
 import ezvcard.types.MailerType;
-import ezvcard.types.DisplayableNameType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrgType;
@@ -168,42 +168,21 @@ public class VCardReader implements Closeable {
 		int typesRead = 0;
 		String line;
 		while ((line = reader.readLine()) != null) {
-			String[] colonSplit = line.split(":", 2);
-			if (colonSplit.length < 2) {
+			//parse the components out of the line
+			VCardLine parsedLine = VCardLine.parse(line);
+			if (parsedLine == null) {
 				warnings.add("Skipping malformed vCard line: \"" + line + "\"");
 				continue;
 			}
 
-			String beforeColon = colonSplit[0];
-			String value = VCardStringUtils.ltrim(colonSplit[1]); //remove the whitespace between the colon and the value
-			String[] semicolonSplit = VCardStringUtils.splitBy(beforeColon, ';', true, false);
-
-			//get the group name and the type name
-			String[] dotSplit = semicolonSplit[0].split("\\.", 2);
-			String typeName, groupName;
-			if (dotSplit.length == 1) {
-				groupName = null;
-				typeName = dotSplit[0];
-			} else {
-				groupName = dotSplit[0];
-				typeName = dotSplit[1];
-			}
-			typeName = typeName.toUpperCase();
-
-			//set the sub types
-			//TODO values can be surrounded by double quotes (see RFC 2426 p.29 -- "param-value = ptext / quoted-string")
-			//TODO "A Semi-colon in a property parameter value must be escaped with a Backslash character" 2.1 p.6 
+			//build the sub types 
 			VCardSubTypes subTypes = new VCardSubTypes();
-			for (int i = 1; i < semicolonSplit.length; i++) {
-				String[] equalsSplit = semicolonSplit[i].split("=", 2);
-
-				//if there is no "=", it means the property doesn't have a name
-				//make a guess at what the parameter name is
-				//v3.0 requires all sub types to have names, but v2.1 does not
-				if (equalsSplit.length == 1) {
-					String subTypeValue = equalsSplit[0];
-
-					String subTypeName;
+			for (String[] subTypeStr : parsedLine.getSubTypes()) {
+				//if the parameter is name-less, make a guess at what the name is
+				//v3.0 and v4.0 requires all sub types to have names, but v2.1 does not
+				String subTypeName = subTypeStr[0];
+				String subTypeValue = subTypeStr[1];
+				if (subTypeName == null) {
 					if (ValueParameter.valueOf(subTypeValue) != null) {
 						subTypeName = ValueParameter.NAME;
 					} else if (EncodingParameter.valueOf(subTypeValue) != null) {
@@ -215,8 +194,7 @@ public class VCardReader implements Closeable {
 
 					subTypes.put(subTypeName, subTypeValue);
 				} else {
-					String subTypeName = equalsSplit[0].toUpperCase();
-					String subTypeValue = equalsSplit[1];
+					subTypeName = subTypeName.toUpperCase();
 
 					//split the value up if it's a comma-delimited list (i.e. the "TYPE" sub type)
 					String commaSplit[] = VCardStringUtils.splitBy(subTypeValue, ',', true, true);
@@ -225,6 +203,10 @@ public class VCardReader implements Closeable {
 					}
 				}
 			}
+
+			String typeName = parsedLine.getTypeName().toUpperCase();
+			String value = VCardStringUtils.ltrim(parsedLine.getValue());
+			String groupName = parsedLine.getGroup();
 
 			//if the value is encoded in "quoted-printable", decode it
 			//"quoted-printable" encoding is only supported in v2.1
