@@ -57,7 +57,7 @@ public class VCardLineTest {
 
 	@Test
 	public void parseSubTypes() {
-		VCardLine line = VCardLine.parse("ADR;TyPE=worK;TYPE=dom;LABEL=\"123 \\;Main; St\\n\\\"Austin\\\", :TX: 12345\": ;;123 Main Str;Austin;TX;12345;US");
+		VCardLine line = VCardLine.parse("ADR;TyPE=worK;TYPE=dom;LABEL=\"123 \\;Main; St.\\n\\\"Austin\\\", :TX: 12345\": ;;123 Main Str;Austin;TX;12345;US");
 		assertNull(line.getGroup());
 		assertEquals("ADR", line.getTypeName());
 
@@ -71,7 +71,7 @@ public class VCardLineTest {
 
 		//special chars are OK to use inside of double quotes
 		assertEquals("LABEL", line.getSubTypes().get(2)[0]);
-		assertEquals("123 ;Main; St\r\n\"Austin\", :TX: 12345", line.getSubTypes().get(2)[1]);
+		assertEquals("123 ;Main; St.\r\n\"Austin\", :TX: 12345", line.getSubTypes().get(2)[1]);
 
 		assertEquals(" ;;123 Main Str;Austin;TX;12345;US", line.getValue());
 

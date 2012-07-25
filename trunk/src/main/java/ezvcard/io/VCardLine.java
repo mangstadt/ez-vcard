@@ -73,11 +73,9 @@ public class VCardLine {
 				escaped = false;
 			} else if (ch == '\\') {
 				escaped = true;
-			} else if (ch == '.') {
-				if (lineObj.group == null && lineObj.typeName == null) {
-					lineObj.group = buf.toString();
-					buf = new StringBuilder();
-				}
+			} else if (ch == '.' && lineObj.group == null && lineObj.typeName == null) {
+				lineObj.group = buf.toString();
+				buf = new StringBuilder();
 			} else if ((ch == ';' || ch == ':') && !inQuotes) {
 				if (lineObj.typeName == null) {
 					lineObj.typeName = buf.toString();
