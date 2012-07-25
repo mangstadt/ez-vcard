@@ -259,7 +259,7 @@ public class VCardWriter implements Closeable {
 				Set<String> subTypeValues = type.getSubTypes().get(subTypeName);
 				if (!subTypeValues.isEmpty()) {
 					//TODO put quotes around values that have special chars
-					if (targetVersion == VCardVersion.V2_1){
+					if (targetVersion == VCardVersion.V2_1) {
 						if (TypeParameter.NAME.equalsIgnoreCase(subTypeName)) {
 							//example: ADR;HOME;WORK:
 							for (String subTypeValue : subTypeValues) {
@@ -269,16 +269,42 @@ public class VCardWriter implements Closeable {
 							//example: ADR;FOO=bar;FOO=car:
 							for (String subTypeValue : subTypeValues) {
 								sb.append(';').append(subTypeName).append('=');
-								sb.append(subTypeValue);
+								if (subTypeValueNeedsEscaping(subTypeValue)) {
+									subTypeValue = escapeSubTypeValue(subTypeValue);
+									sb.append('"').append(subTypeValue).append('"');
+								} else {
+									sb.append(subTypeValue);
+								}
 							}
 						}
 					} else {
 						//example: ADR;TYPE=home,work:
-						sb.append(";").append(subTypeName).append("=");
+
+						//check all the values to see if any have special chars in them
+						boolean needsEscaping = false;
 						for (String subTypeValue : subTypeValues) {
-							sb.append(subTypeValue).append(',');
+							if (subTypeValueNeedsEscaping(subTypeValue)) {
+								needsEscaping = true;
+								break;
+							}
 						}
-						sb.deleteCharAt(sb.length() - 1); //chomp last comma
+
+						sb.append(';').append(subTypeName).append('=');
+
+						if (needsEscaping) {
+							sb.append('"');
+							for (String subTypeValue : subTypeValues) {
+								subTypeValue = escapeSubTypeValue(subTypeValue);
+								sb.append(subTypeValue).append(',');
+							}
+							sb.deleteCharAt(sb.length() - 1); //chomp last comma
+							sb.append('"');
+						} else {
+							for (String subTypeValue : subTypeValues) {
+								sb.append(subTypeValue).append(',');
+							}
+							sb.deleteCharAt(sb.length() - 1); //chomp last comma
+						}
 					}
 				}
 			}
@@ -304,6 +330,35 @@ public class VCardWriter implements Closeable {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Determines if a sub type value needs to be escaped.
+	 * @param value the sub type value
+	 * @return true if it needs to be escaped, false if not
+	 */
+	private boolean subTypeValueNeedsEscaping(String value) {
+		String specialChars = "\",;:\\\n\r";
+		for (int i = 0; i < specialChars.length(); i++) {
+			char c = specialChars.charAt(i);
+			if (value.contains(c + "")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Escapes a sub type value for safe inclusion in a vCard string.
+	 * @param value the sub type value
+	 * @return the safely escaped value. This method does NOT enclose the value
+	 * in double quotes
+	 */
+	private String escapeSubTypeValue(String value) {
+		value = value.replace("\\", "\\\\"); //escape backslashes
+		value = value.replace("\"", "\\\""); //escape double quotes
+		value = value.replaceAll("\\r\\n|\\r|\\n", "\\\\\\n"); //escape newlines
+		return value;
 	}
 
 	/**
