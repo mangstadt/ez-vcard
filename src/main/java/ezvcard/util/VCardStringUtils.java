@@ -53,10 +53,6 @@ public class VCardStringUtils {
 				if (ch == 'n' || ch == 'N') {
 					//newlines appear as "\n" or "\N" (see RFC 2426 p.7)
 					sb.append("\r\n");
-				} else if (ch == 't' || ch == 'T') {
-					//just to be consistent with "\n"
-					//don't know if this is part of the standard
-					sb.append('\t');
 				} else {
 					sb.append(ch);
 				}
