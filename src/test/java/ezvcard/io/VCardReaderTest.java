@@ -252,7 +252,7 @@ public class VCardReaderTest {
 		VCard agent2 = agent1.getAgent().getVcard();
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
 	}
-	
+
 	/**
 	 * Make sure it reads AGENT types that are inline instead of nested.
 	 */
@@ -301,11 +301,7 @@ public class VCardReaderTest {
 
 			UrlType t = it.next();
 			assertEquals("http://www.ibm.com", t.getValue());
-			//FIXME double quotes are not removed
-			//parameter values can be enclosed in double quotes to auto-escape special chars
-			//see RFC 2426 p.29 -- "param-value = ptext / quoted-string"
-			//assertEquals("0abc9b8d-0845-47d0-9a91-3db5bb74620d", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
-			assertEquals("\"0abc9b8d-0845-47d0-9a91-3db5bb74620d\"", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
+			assertEquals("0abc9b8d-0845-47d0-9a91-3db5bb74620d", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -319,9 +315,7 @@ public class VCardReaderTest {
 			Set<TelephoneTypeParameter> types = t.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
-			//FIXME double quotes are not removed
-			//assertEquals("c2fa1caa-2926-4087-8971-609cfc7354ce", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
-			assertEquals("\"c2fa1caa-2926-4087-8971-609cfc7354ce\"", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
+			assertEquals("c2fa1caa-2926-4087-8971-609cfc7354ce", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 
 			t = it.next();
 			assertEquals("905-555-1234", t.getValue());
@@ -329,9 +323,7 @@ public class VCardReaderTest {
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
-			//FIXME double quotes are not removed
-			//assertEquals("fbfb2722-4fd8-4dbf-9abd-eeb24072fd8e", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
-			assertEquals("\"fbfb2722-4fd8-4dbf-9abd-eeb24072fd8e\"", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
+			assertEquals("fbfb2722-4fd8-4dbf-9abd-eeb24072fd8e", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -406,9 +398,7 @@ public class VCardReaderTest {
 			Set<EmailTypeParameter> types = t.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(new EmailTypeParameter("work"))); //non-standard type
-			//FIXME double quotes are not removed
-			//assertEquals("83a75a5d-2777-45aa-bab5-76a4bd972490", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
-			assertEquals("\"83a75a5d-2777-45aa-bab5-76a4bd972490\"", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
+			assertEquals("83a75a5d-2777-45aa-bab5-76a4bd972490", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -475,9 +465,7 @@ public class VCardReaderTest {
 			assertEquals("X-AIM", t.getTypeName());
 			assertEquals("johnny5@aol.com", t.getValue());
 			assertEquals("HOME", t.getSubTypes().getType());
-			//FIXME double quotes are not removed
-			//assertEquals("cb9e11fc-bb97-4222-9cd8-99820c1de454", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
-			assertEquals("\"cb9e11fc-bb97-4222-9cd8-99820c1de454\"", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
+			assertEquals("cb9e11fc-bb97-4222-9cd8-99820c1de454", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 			assertFalse(it.hasNext());
 
 			it = vcard.getExtendedType("X-EVOLUTION-FILE-AS").iterator();
