@@ -50,7 +50,7 @@ public class VCardLine {
 	/**
 	 * Parses an unfolded vCard line. It just parses the components out, it
 	 * doesn't modify the components in any way.
-	 * @param line the unfoled line to parse
+	 * @param line the unfolded line to parse
 	 * @return the parsed components or null if the line is not a valid vCard
 	 * line
 	 */
