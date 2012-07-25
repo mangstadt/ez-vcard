@@ -188,16 +188,17 @@ public class VCardWriterTest {
 		vcard.addAddress(adr);
 
 		//three types
+		//make sure it properly escapes sub type values that have special chars
 		adr = new AddressType();
 		adr.getSubTypes().put("X-DOORMAN", "true");
 		adr.getSubTypes().put("LANGUAGE", "FR");
 		adr.getSubTypes().put("LANGUAGE", "es");
-		adr.getSubTypes().put("X-PARKING", "10");
+		adr.getSubTypes().put("LABEL", "123 \"Main\" St\r\nAustin, ;TX; 12345");
 		vcard.addAddress(adr);
 
 		//2.1
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1, null);
 		vcw.setAddGenerator(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -207,7 +208,7 @@ public class VCardWriterTest {
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("ADR;X-DOORMAN=true: ;;;;;;\r\n");
 		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es;LANGUAGE=FR: ;;;;;;\r\n");
-		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es;LANGUAGE=FR;X-PARKING=10: ;;;;;;\r\n");
+		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es;LANGUAGE=FR;LABEL=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\": ;;;;;;\r\n");
 		sb.append("END: vcard\r\n");
 		String expected = sb.toString();
 
@@ -215,7 +216,7 @@ public class VCardWriterTest {
 
 		//3.0
 		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V3_0);
+		vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
 		vcw.setAddGenerator(false);
 		vcw.write(vcard);
 		actual = sw.toString();
@@ -225,7 +226,7 @@ public class VCardWriterTest {
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("ADR;X-DOORMAN=true: ;;;;;;\r\n");
 		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es,FR: ;;;;;;\r\n");
-		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es,FR;X-PARKING=10: ;;;;;;\r\n");
+		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es,FR;LABEL=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\": ;;;;;;\r\n");
 		sb.append("END: vcard\r\n");
 		expected = sb.toString();
 
