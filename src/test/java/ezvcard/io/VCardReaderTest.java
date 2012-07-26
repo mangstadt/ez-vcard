@@ -36,7 +36,7 @@ import ezvcard.types.MailerType;
 import ezvcard.types.DisplayableNameType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
-import ezvcard.types.OrgType;
+import ezvcard.types.OrganizationType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.ProfileType;
@@ -365,7 +365,7 @@ public class VCardReaderTest {
 
 		//ORG
 		{
-			OrgType t = vcard.getOrganizations();
+			OrganizationType t = vcard.getOrganizations();
 			assertEquals(Arrays.asList("IBM", "Accounting", "Dungeon"), t.getValues());
 		}
 
@@ -579,7 +579,7 @@ public class VCardReaderTest {
 
 		//ORG
 		{
-			OrgType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganizations();
 			assertEquals(Arrays.asList("IBM"), f.getValues());
 		}
 
@@ -696,7 +696,7 @@ public class VCardReaderTest {
 
 		//ORG
 		{
-			OrgType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganizations();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
@@ -910,7 +910,7 @@ public class VCardReaderTest {
 
 		//ORG
 		{
-			OrgType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganizations();
 			assertEquals(Arrays.asList("IBM", "SUN"), f.getValues());
 		}
 
@@ -1169,7 +1169,7 @@ public class VCardReaderTest {
 
 		//ORG
 		{
-			OrgType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganizations();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
@@ -1395,7 +1395,7 @@ public class VCardReaderTest {
 
 		//ORG
 		{
-			OrgType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganizations();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
