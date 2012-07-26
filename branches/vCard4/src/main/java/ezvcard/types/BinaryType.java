@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 
+import ezvcard.VCard;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EncodingParameter;
@@ -90,17 +92,55 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 	}
 
 	@Override
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+		VCardSubTypes copy = new VCardSubTypes(subTypes);
+
+		if (url != null) {
+			ValueParameter vp = null;
+			switch (version) {
+			case V2_1:
+				vp = ValueParameter.URL;
+				break;
+			case V3_0:
+			case V4_0:
+				vp = ValueParameter.URI;
+				break;
+			}
+			copy.setValue(vp);
+			copy.setEncoding(null);
+
+			if (version == VCardVersion.V4_0 && getType() != null) {
+				//TODO set MEDIATYPE parameter
+				//copy.replace("MEDIATYPE", getType().getMediaType());
+			}
+		}
+		if (data != null) {
+			if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
+				copy.setEncoding(EncodingParameter.B);
+				copy.setValue(null);
+			} else {
+				copy.setEncoding(null);
+				copy.setValue(ValueParameter.URI);
+			}
+		}
+
+		return copy;
+	}
+
+	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (url != null) {
-			ValueParameter vp = (version == VCardVersion.V2_1) ? ValueParameter.URL : ValueParameter.URI;
-			subTypes.setValue(vp);
-			subTypes.removeAll(EncodingParameter.NAME);
 			return url;
 		}
 		if (data != null) {
-			subTypes.removeAll(ValueParameter.NAME);
-			subTypes.setEncoding(EncodingParameter.B);
-			return new String(Base64.encodeBase64(data));
+			String base64 = new String(Base64.encodeBase64(data));
+			if (version == VCardVersion.V4_0) {
+				//TODO add media type
+				//return "data:" + getType().getMediaType() + ";base64," + base64;
+				return "data:" + "media/type" + ";base64," + base64;
+			} else {
+				return base64;
+			}
 		}
 		return null;
 	}
