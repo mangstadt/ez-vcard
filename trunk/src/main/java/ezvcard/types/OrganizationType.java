@@ -33,10 +33,10 @@ either expressed or implied, of the FreeBSD Project.
  * Represents the ORG type.
  * @author Michael Angstadt
  */
-public class OrgType extends TextListType {
+public class OrganizationType extends TextListType {
 	public static final String NAME = "ORG";
 	
-	public OrgType(){
+	public OrganizationType(){
 		super(NAME, ';');
 	}
 }
