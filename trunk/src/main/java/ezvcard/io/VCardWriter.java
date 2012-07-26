@@ -258,7 +258,6 @@ public class VCardWriter implements Closeable {
 			for (String subTypeName : type.getSubTypes().getNames()) {
 				Set<String> subTypeValues = type.getSubTypes().get(subTypeName);
 				if (!subTypeValues.isEmpty()) {
-					//TODO put quotes around values that have special chars
 					if (targetVersion == VCardVersion.V2_1) {
 						if (TypeParameter.NAME.equalsIgnoreCase(subTypeName)) {
 							//example: ADR;HOME;WORK:
