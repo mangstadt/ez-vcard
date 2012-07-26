@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
+import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -52,40 +53,44 @@ public class BinaryTypeTest {
 	private byte[] dummyData = "dummy data".getBytes();
 
 	@Test
-	public void doMarshalValue() {
+	public void marshal() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
 		BinaryTypeImpl t;
-		String expected, actual;
+		String expectedValue, actualValue;
+		VCardSubTypes subTypes;
 
 		//test URL v2.1
 		version = VCardVersion.V2_1;
 		t = new BinaryTypeImpl();
 		t.setUrl("http://example.com/image.jpg");
-		expected = "http://example.com/image.jpg";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(ValueParameter.URL, t.getSubTypes().getValue());
-		
+		expectedValue = "http://example.com/image.jpg";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.URL, subTypes.getValue());
+
 		//test URL v3.0
 		version = VCardVersion.V3_0;
 		t = new BinaryTypeImpl();
 		t.setUrl("http://example.com/image.jpg");
-		expected = "http://example.com/image.jpg";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(ValueParameter.URI, t.getSubTypes().getValue());
+		expectedValue = "http://example.com/image.jpg";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.URI, subTypes.getValue());
 
 		//test base64 data
 		version = VCardVersion.V2_1;
 		t = new BinaryTypeImpl();
 		t.setData(dummyData, ImageTypeParameter.JPEG);
-		expected = Base64.encodeBase64String(dummyData);
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(EncodingParameter.B, t.getSubTypes().getEncoding());
-		assertEquals(ImageTypeParameter.JPEG.getValue(), t.getSubTypes().getType());
+		expectedValue = Base64.encodeBase64String(dummyData);
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(EncodingParameter.B, subTypes.getEncoding());
+		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 	}
 
 	@Test

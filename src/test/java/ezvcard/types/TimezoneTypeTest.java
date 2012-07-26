@@ -9,6 +9,7 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
+import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -82,47 +83,53 @@ public class TimezoneTypeTest {
 	}
 
 	@Test
-	public void doMarshalValue() {
+	public void marshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
 		TimezoneType t;
-		String expected, actual;
+		String expectedValue, actualValue;
+		VCardSubTypes subTypes;
 
 		//just offset
 		t = new TimezoneType(-5, 30);
-		expected = "-05:30";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertNull(t.getSubTypes().getValue());
+		expectedValue = "-05:30";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertNull(subTypes.getValue());
 
 		//offset and short text
 		t = new TimezoneType(-5, 30, "EST", null);
-		expected = "-05:30;EST;";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(ValueParameter.TEXT, t.getSubTypes().getValue());
+		expectedValue = "-05:30;EST;";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 
 		//offset and long text
 		t = new TimezoneType(-5, 30, null, "America/New;_;York");
-		expected = "-05:30;;America/New\\;_\\;York";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(ValueParameter.TEXT, t.getSubTypes().getValue());
+		expectedValue = "-05:30;;America/New\\;_\\;York";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 
 		//offset and both text
 		t = new TimezoneType(-5, 30, "EST", "America/New;_;York");
-		expected = "-05:30;EST;America/New\\;_\\;York";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(ValueParameter.TEXT, t.getSubTypes().getValue());
+		expectedValue = "-05:30;EST;America/New\\;_\\;York";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 
 		//no offset, no text
 		t = new TimezoneType();
-		expected = "+00:00";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertNull(t.getSubTypes().getValue());
+		expectedValue = "+00:00";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertNull(subTypes.getValue());
 	}
 
 	@Test

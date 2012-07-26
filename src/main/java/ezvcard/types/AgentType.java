@@ -7,6 +7,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardException;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.VCardReader;
@@ -84,14 +85,24 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+		VCardSubTypes copy = new VCardSubTypes(subTypes);
+
 		if (url != null) {
 			ValueParameter vp = (version == VCardVersion.V2_1) ? ValueParameter.URL : ValueParameter.URI;
-			subTypes.setValue(vp);
+			copy.setValue(vp);
+		} else {
+			copy.setValue(null);
+		}
+
+		return copy;
+	}
+
+	@Override
+	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (url != null) {
 			return url;
 		} else {
-			subTypes.setValue(null);
-
 			StringWriter sw = new StringWriter();
 			VCardWriter writer = new VCardWriter(sw, version, null, "\n");
 			writer.setCompatibilityMode(compatibilityMode);

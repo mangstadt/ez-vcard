@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
+import ezvcard.VCard;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
@@ -126,6 +128,18 @@ public class TimezoneType extends VCardType {
 		int rawOffset = rawHourOffset + rawMinuteOffset;
 		return new SimpleTimeZone(rawOffset, "");
 	}
+	
+	@Override
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+		VCardSubTypes copy = new VCardSubTypes(subTypes);
+
+		if (shortText != null || longText != null) {
+			//add sub type "VALUE=text"
+			copy.setValue(ValueParameter.TEXT);
+		}
+
+		return copy;
+	}
 
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
@@ -141,9 +155,6 @@ public class TimezoneType extends VCardType {
 			if (longText != null) {
 				sb.append(VCardStringUtils.escapeText(longText));
 			}
-
-			//add sub type "VALUE=text"
-			subTypes.setValue(ValueParameter.TEXT);
 		}
 
 		return sb.toString();

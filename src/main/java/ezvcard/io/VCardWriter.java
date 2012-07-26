@@ -11,6 +11,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardException;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.types.AgentType;
@@ -228,7 +229,7 @@ public class VCardWriter implements Closeable {
 				nested = at.getVcard();
 			}
 
-			//marshal the type
+			//marshal the value
 			String value = null;
 			if (nested == null) {
 				List<String> warnings = new ArrayList<String>();
@@ -243,6 +244,15 @@ public class VCardWriter implements Closeable {
 				}
 			}
 
+			//marshal the sub types
+			VCardSubTypes subTypes;
+			List<String> warnings = new ArrayList<String>();
+			try {
+				subTypes = type.marshalSubTypes(targetVersion, warnings, compatibilityMode, vcard);
+			} finally {
+				this.warnings.addAll(warnings);
+			}
+
 			StringBuilder sb = new StringBuilder();
 
 			//write the group
@@ -255,10 +265,9 @@ public class VCardWriter implements Closeable {
 			sb.append(type.getTypeName());
 
 			//write the Sub Types
-			for (String subTypeName : type.getSubTypes().getNames()) {
-				Set<String> subTypeValues = type.getSubTypes().get(subTypeName);
+			for (String subTypeName : subTypes.getNames()) {
+				Set<String> subTypeValues = subTypes.get(subTypeName);
 				if (!subTypeValues.isEmpty()) {
-					//TODO put quotes around values that have special chars
 					if (targetVersion == VCardVersion.V2_1) {
 						if (TypeParameter.NAME.equalsIgnoreCase(subTypeName)) {
 							//example: ADR;HOME;WORK:
