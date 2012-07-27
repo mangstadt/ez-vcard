@@ -1,0 +1,3 @@
+#summary Describes how to work with extended types
+
+TODO
