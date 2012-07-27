@@ -99,7 +99,8 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 		}
 		if (data != null) {
 			subTypes.removeAll(ValueParameter.NAME);
-			subTypes.setEncoding(EncodingParameter.B);
+			EncodingParameter encoding = (version == VCardVersion.V2_1) ? EncodingParameter.BASE64 : EncodingParameter.B;
+			subTypes.setEncoding(encoding);
 			return new String(Base64.encodeBase64(data));
 		}
 		return null;
