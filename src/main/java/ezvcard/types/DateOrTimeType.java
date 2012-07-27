@@ -207,8 +207,13 @@ public class DateOrTimeType extends VCardType {
 				try {
 					date = VCardDateFormatter.parse(value);
 				} catch (IllegalArgumentException e) {
-					warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");
-					text = VCardStringUtils.unescape(value);
+					//not all reduced accuracy dates have dashes (e.g. "2012")
+					if (value.matches("\\d+")){
+						reducedAccuracyDate = value;
+					} else {
+						warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");
+						text = VCardStringUtils.unescape(value);
+					}
 				}
 			}
 		} else {
