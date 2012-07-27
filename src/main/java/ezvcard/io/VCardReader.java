@@ -433,7 +433,7 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (UidType.NAME.equals(name)) {
 			UidType t = new UidType();
-			vcard.getUids().add(t);
+			vcard.setUid(t);
 			return t;
 		} else if (KeyType.NAME.equals(name)) {
 			KeyType t = new KeyType();
