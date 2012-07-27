@@ -1,19 +1,15 @@
 package ezvcard.types;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
-import org.junit.Test;
-
+import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.ISOFormat;
+import ezvcard.util.VCardDateFormatter;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -45,50 +41,59 @@ import ezvcard.util.ISOFormat;
  */
 
 /**
+ * Represents a type whose value is timestamp (i.e. a date, time, and timezone)
  * @author Michael Angstadt
  */
-public class DateTypeTest {
-	@Test
-	public void doMarshalValue() {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+public class TimestampType extends VCardType {
+	protected Date timestamp;
 
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		c.set(Calendar.HOUR_OF_DAY, 13);
-		c.set(Calendar.MINUTE, 10);
-		c.set(Calendar.SECOND, 20);
-		Date date = c.getTime();
-		DateType t = new DateType("DATE", ISOFormat.UTC_TIME_BASIC);
-		t.setDate(date);
-
-		String expected = "19800605T131020Z";
-		String actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+	/**
+	 * @param typeName the name of the type
+	 */
+	public TimestampType(String typeName) {
+		this(typeName, null);
 	}
 
-	@Test
-	public void doUnmarshalValue() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
-		VCardSubTypes subTypes = new VCardSubTypes();
+	/**
+	 * @param typeName the name of the type
+	 * @param timestamp the timestamp
+	 */
+	public TimestampType(String typeName, Date timestamp) {
+		super(typeName);
+		this.timestamp = timestamp;
+	}
 
-		DateType t = new DateType("DATE", ISOFormat.UTC_TIME_BASIC);
-		t.unmarshalValue(subTypes, "19800605T081020-0500", version, warnings, compatibilityMode);
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		c.set(Calendar.HOUR_OF_DAY, 13);
-		c.set(Calendar.MINUTE, 10);
-		c.set(Calendar.SECOND, 20);
-		Date expected = c.getTime();
-		assertEquals(expected, t.getDate());
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	@Override
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+		VCardSubTypes copy = new VCardSubTypes(subTypes);
+		if (version == VCardVersion.V4_0) {
+			copy.setValue(ValueParameter.TIMESTAMP);
+		} else {
+			copy.setValue(ValueParameter.DATE_TIME);
+		}
+		return copy;
+	}
+
+	@Override
+	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		//"UTC_TIME_BASIC" works with all vCard versions 
+		return (timestamp == null) ? null : VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_BASIC);
+	}
+
+	@Override
+	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		try {
+			timestamp = VCardDateFormatter.parse(value);
+		} catch (IllegalArgumentException e) {
+			warnings.add("Date string \"" + value + "\" for type \"" + typeName + "\" could not be parsed.");
+		}
 	}
 }

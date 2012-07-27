@@ -10,9 +10,11 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
+import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -46,10 +48,9 @@ import ezvcard.io.CompatibilityMode;
 /**
  * @author Michael Angstadt
  */
-public class RevisionTypeTest {
+public class TimestampTypeTest {
 	@Test
-	public void doMarshalValue() {
-		VCardVersion version = VCardVersion.V2_1;
+	public void marshal() throws Exception {
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
 
@@ -62,23 +63,35 @@ public class RevisionTypeTest {
 		c.set(Calendar.MINUTE, 10);
 		c.set(Calendar.SECOND, 20);
 		Date date = c.getTime();
-		RevisionType t = new RevisionType();
-		t.setDate(date);
+		TimestampType t = new TimestampType("DATE");
+		t.setTimestamp(date);
 
-		String expected = "1980-06-05T13:10:20Z";
-		String actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		//version 2.1
+		VCardVersion version = VCardVersion.V2_1;
+		String expected = "19800605T131020Z";
+		String actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
+
+		//version 4.0
+		version = VCardVersion.V4_0;
+		expected = "19800605T131020Z";
+		actual = t.marshalValue(version, warnings, compatibilityMode);
+		assertEquals(expected, actual);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(ValueParameter.TIMESTAMP, subTypes.getValue());
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
+	public void unmarshalValue() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
 		VCardSubTypes subTypes = new VCardSubTypes();
 
-		BirthdayType t = new BirthdayType();
-		t.unmarshalValue(subTypes, "1980-06-05T08:10:20-05:00", version, warnings, compatibilityMode);
+		TimestampType t = new TimestampType("DATE");
+		t.unmarshalValue(subTypes, "19800605T081020-0500", version, warnings, compatibilityMode);
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		c.clear();
 		c.set(Calendar.YEAR, 1980);
@@ -88,6 +101,6 @@ public class RevisionTypeTest {
 		c.set(Calendar.MINUTE, 10);
 		c.set(Calendar.SECOND, 20);
 		Date expected = c.getTime();
-		assertEquals(expected, t.getDate());
+		assertEquals(expected, t.getTimestamp());
 	}
 }
