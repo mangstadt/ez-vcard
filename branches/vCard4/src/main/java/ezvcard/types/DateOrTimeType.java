@@ -93,6 +93,7 @@ public class DateOrTimeType extends VCardType {
 		this.date = date;
 		this.dateHasTime = dateHasTime;
 		text = null;
+      reducedAccuracyDate = null;
 	}
 
 	/**
@@ -114,6 +115,7 @@ public class DateOrTimeType extends VCardType {
 		this.reducedAccuracyDate = reducedAccuracyDate;
 		dateHasTime = reducedAccuracyDate.contains("T");
 		text = null;
+      date = null;
 	}
 
 	/**
