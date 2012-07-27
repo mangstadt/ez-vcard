@@ -39,21 +39,79 @@ public class ValueParameter {
 	public static final String NAME = "VALUE";
 
 	/**
-	 * vCard 2.1 defines a "VALUE=url" parameter (p.18-9).
+	 * vCard versions: 2.1 (p.18-9)
 	 */
 	public static final ValueParameter URL = new ValueParameter("url");
 
 	/**
-	 * vCard 3.0 defines a "VALUE=uri" parameter (p.11,19,24).
+	 * vCard versions: 2.1 (p.8-9)
+	 */
+	public static final ValueParameter CONTENT_ID = new ValueParameter("content-id");
+
+	/**
+	 * vCard versions: 3.0
+	 */
+	public static final ValueParameter BINARY = new ValueParameter("binary");
+
+	/**
+	 * vCard versions: 3.0, 4.0
 	 */
 	public static final ValueParameter URI = new ValueParameter("uri");
 
+	/**
+	 * vCard versions: 3.0, 4.0
+	 */
 	public static final ValueParameter TEXT = new ValueParameter("text");
 
 	/**
-	 * vCard v2.1 defines a "VALUE=content-id" parameter (p.8-9)
+	 * vCard versions: 3.0, 4.0
 	 */
-	public static final ValueParameter CONTENT_ID = new ValueParameter("content-id");
+	public static final ValueParameter DATE = new ValueParameter("date");
+
+	/**
+	 * vCard versions: 3.0, 4.0
+	 */
+	public static final ValueParameter TIME = new ValueParameter("time");
+
+	/**
+	 * vCard versions: 3.0, 4.0
+	 */
+	public static final ValueParameter DATE_TIME = new ValueParameter("date-time");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter DATE_AND_OR_TIME = new ValueParameter("date-and-or-time");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter TIMESTAMP = new ValueParameter("timestamp");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter BOOLEAN = new ValueParameter("boolean");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter INTEGER = new ValueParameter("integer");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter FLOAT = new ValueParameter("float");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter UTC_OFFSET = new ValueParameter("utc-offset");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter LANGUAGE_TAG = new ValueParameter("language-tag");
 
 	private final String value;
 
@@ -67,6 +125,10 @@ public class ValueParameter {
 		this.value = value.toLowerCase();
 	}
 
+	/**
+	 * Gets the value of this parameter.
+	 * @return the value
+	 */
 	public String getValue() {
 		return value;
 	}

@@ -1,6 +1,6 @@
-package ezvcard.types;
+package ezvcard.parameters;
 
-import java.util.Date;
+import ezvcard.util.ParameterUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -32,20 +32,75 @@ import java.util.Date;
  */
 
 /**
- * Represents the REV type.
+ * Represents a CALSCALE parameter.
+ * <p>
+ * Supported vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
-public class RevisionType extends TimestampType {
-	public static final String NAME = "REV";
+public class CalscaleParameter {
+	public static final String NAME = "CALSCALE";
 
-	public RevisionType() {
-		super(NAME);
+	public static final CalscaleParameter GREGORIAN = new CalscaleParameter("gregorian");
+
+	/**
+	 * The value (e.g. "gregorian").
+	 */
+	private final String value;
+
+	/**
+	 * Use of this constructor is discouraged and should only be used for
+	 * defining non-standard values. Please use one of the predefined static
+	 * objects.
+	 * @param value the type value (e.g. "gregorian")
+	 */
+	public CalscaleParameter(String value) {
+		this.value = value.toLowerCase();
 	}
 
 	/**
-	 * @param date the date value
+	 * Gets the value of the parameter.
+	 * @return the value
 	 */
-	public RevisionType(Date date) {
-		super(NAME, date);
+	public String getValue() {
+		return value;
+	}
+
+	@Override
+	public String toString() {
+		return value;
+	}
+
+	@Override
+	public int hashCode() {
+		return value.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		CalscaleParameter that = (CalscaleParameter) obj;
+		return value.equals(that.value);
+	}
+
+	/**
+	 * Retrieves one of the static objects in this class by name.
+	 * @param value the type value (e.g. "gregorian")
+	 * @return the object associated with the given type name or null if none
+	 * was found
+	 */
+	public static CalscaleParameter valueOf(String value) {
+		return ParameterUtils.valueOf(CalscaleParameter.class, value);
 	}
 }
