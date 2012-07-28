@@ -23,7 +23,7 @@ import ezvcard.types.AgentType;
 import ezvcard.types.BirthdayType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
-import ezvcard.types.DisplayableNameType;
+import ezvcard.types.SourceDisplayTextType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
@@ -327,9 +327,9 @@ public class VCardReader implements Closeable {
 			SourceType t = new SourceType();
 			vcard.setSource(t);
 			return t;
-		} else if (DisplayableNameType.NAME.equals(name)) {
-			DisplayableNameType t = new DisplayableNameType();
-			vcard.setDisplayableName(t);
+		} else if (SourceDisplayTextType.NAME.equals(name)) {
+			SourceDisplayTextType t = new SourceDisplayTextType();
+			vcard.setSourceDisplayText(t);
 			return t;
 		} else if (FormattedNameType.NAME.equals(name)) {
 			FormattedNameType t = new FormattedNameType();
