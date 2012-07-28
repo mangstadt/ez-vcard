@@ -1,3 +1,673 @@
 #summary Contains a listing of all vCard types (such as "ADR" and "N"), along with code samples
 
-TODO
+The page contains a listing of all vCard types, as well as information on how to use these types with EZ-vCard.
+
+EZ-vCard takes care of setting certain parameters for you.  For example, when creating a PHOTO type, you don't have to worry about setting the ENCODING parameter to the correct value.  EZ-vCard's algorithms will determine the correct value based on the vCard version you specify.
+
+=ADR=
+Defines a mailing address.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/AddressType.html AddressType]
+
+{{{
+VCard vcard = new VCard();
+AddressType adr = new AddressType();
+adr.setStreetAddress("123 Main St.");
+adr.setLocality("Austin");
+adr.setRegion("TX");
+adr.setPostalCode("12345");
+adr.setCountry("USA");
+adr.addType(AddressTypeParameter.WORK);
+adr.addType(AddressTypeParameter.DOM);
+vcard.addAddress(adr);
+}}}
+
+=AGENT=
+An embedded vCard or URL containing the information of someone who represents the person.
+
+*vCard versions:* 2.1, 3.0
+
+*Java class:* `AgentType`
+
+{{{
+//URL
+VCard vcard = new VCard();
+AgentType agent = new AgentType("http://mi5.gov.uk/007");
+vcard.setAgent(agent);
+
+//vCard
+VCard vcard = new VCard();
+VCard agentVcard = new VCard();
+agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
+AgentType agent = new AgentType(agentVcard);
+vcard.setAgent(agent);
+}}}
+
+=ANNIVERSARY=
+Defines the person's anniversary.
+
+*vCard versions:* 4.0
+
+*Java class:* `AnniversaryType`
+
+{{{
+VCard vcard = new VCard();
+
+//complete date
+Calendar c = Calendar.getInstance();
+c.set(Calendar.YEAR, 1986);
+c.set(Calendar.MONTH, Calendar.MARCH);
+c.set(Calendar.DAY_OF_MONTH, 21);
+AnniversaryType anniversary = new AnniversaryType();
+anniversary.setDate(c.getTime(), false);
+vcard.setAnniversary(anniversary);
+
+//reduced accuracy date (see RFC 6350 p.12-14)
+anniversary = new AnniversaryType(date);
+anniversary.setReducedAccuracyDate("--0321"); //March 21
+vcard.setAnniversary(anniversary);
+}}}
+
+=BDAY=
+Defines the person's birthday.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `BirthdayType`
+
+{{{
+VCard vcard = new VCard();
+
+//complete date
+Calendar c = Calendar.getInstance();
+c.set(Calendar.YEAR, 1986);
+c.set(Calendar.MONTH, Calendar.MARCH);
+c.set(Calendar.DAY_OF_MONTH, 21);
+BirthdayType bday = new BirthdayType();
+bday.setDate(c.getTime(), false);
+vcard.setBirthday(bday);
+
+//reduced accuracy date (vCard 4.0 only, see RFC 6350 p.12-14)
+bday = new BirthdayType(date);
+bday.setReducedAccuracyDate("--0321"); //March 21
+vcard.setBirthday(bday);
+}}}
+
+=CALENDRURI=
+A URL to use for sending a scheduling request to the person's calendar.
+
+*vCard versions:* 4.0
+
+*Java class:* `CalendarRequestUriType`
+
+{{{
+VCard vcard = new VCard();
+CalendarRequestUriType calendruri = new CalendarRequestUriType("mailto:janedoe@ibm.com");
+calendruri.setPref(1);
+vcard.addCalendarRequestUri(calendruri);
+calendruri = new CalendarRequestUriType("http://www.ibm.com/janedoe/calendar");
+calendruri.setPref(2);
+vcard.addCalendarRequestUri(calendruri);
+}}}
+
+=CALURI=
+A URL to the person's calendar.
+
+*vCard versions:* 4.0
+
+*Java class:* `CalendarUriType`
+
+{{{
+VCard vcard = new VCard();
+CalendarUriType caluri = new CalendarUriType("http://www.ibm.com/janedoe/calendar");
+vcard.addCalendarUri(caluri);
+}}}
+
+=CATEGORIES=
+A list of keywords (aka "tags") that can be used to describe the person.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `CategoriesType`
+
+{{{
+VCard vcard = new VCard();
+CategoriesType categories = new CategoriesType();
+categories.addValue("programmer");
+categories.addValue("developer");
+categories.addValue("java-coder");
+vcard.setCategories(categories);
+}}}
+
+=CLASS=
+Describes the sensitivity of the information in the vCard.
+
+*vCard versions:* 3.0
+
+*Java class:* `ClassificationType`
+
+{{{
+VCard vcard = new VCard();
+ClassificationType classType = new ClassificationType("Private");
+vcard.setClassification(classType);
+}}}
+
+=CLIENTPIDMAP=
+Assigns a URI to types that have a specific PID parameter.
+
+*vCard versions:* 4.0
+
+*Java class:* `ClientPidMapType`
+
+{{{
+VCard vcard = new VCard();
+ClientPidMapType clientpidmap = new ClientPidMapType(1, "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
+vcard.addClientPidMap(clientpidmap);
+clientpidmap = new ClientPidMapType(2, "urn:uuid:d89c9c7a-2e1b-4832-82de-7e992d95faa5");
+vcard.addClientPidMap(clientpidmap);
+}}}
+
+=EMAIL=
+An email address associated with a person.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `EmailType`
+
+{{{
+VCard vcard = new VCard();
+EmailType email = new EmailType("superdude55@hotmail.com");
+email.addType(EmailTypeParameter.HOME);
+vcard.addEmail(email);
+email = new EmailType("doe.john@company.com");
+email.addType(EmailTypeParameter.WORK);
+vcard.addEmail(email);
+}}}
+
+=FBURL=
+A URL that points to the person's calendar and shows when the person is busy.
+
+*vCard versions:* 4.0
+
+*Java class:* `FbUrlType`
+
+{{{
+VCard vcard = new VCard();
+FbUrlType fburl = new FbUrlType("http://www.example.com/busy/janedoe");
+vcard.addFbUrl(fburl);
+}}}
+
+=FN=
+Shows how the person's name should be displayed.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `FormattedNameType`
+
+{{{
+VCard vcard = new VCard();
+FormattedNameType fn = new FormattedNameType("Dr. Gregory House M.D.");
+vcard.setFormattedName(fn);
+}}}
+
+=GENDER=
+Defines the person's sex.
+
+*vCard versions:* 4.0
+
+*Java class:* `GenderType`
+
+{{{
+VCard vcard = new VCard();
+GenderType gender = GenderType.male();
+vcard.setGender(gender);
+}}}
+
+=GEO=
+A set of latitude/longitude coordinates.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `GeoType`
+
+{{{
+VCard vcard = new VCard();
+GeoType geo = new GeoType(-123.456, 12.54);
+vcard.setGeo(geo);
+}}}
+
+=NAME=
+Provides a text representation of the SOURCE type.
+
+*vCard versions:* 3.0
+
+*Java class:* `SourceDisplayTextType`
+
+{{{
+VCard vcard = new VCard();
+SourceDisplayTextType name = new SourceDisplayTextType("My vCard");
+vcard.setSourceDisplayText(name);
+}}}
+
+=IMPP=
+Instant messenger information.
+
+*vCard versions:* 4.0
+
+*Java class:* `ImppType`
+
+{{{
+VCard vcard = new VCard();
+ImppType impp = new ImppType("aim", "hunkydude22@aol.com");
+vcard.addImpp(impp);
+}}}
+
+=KIND=
+Defines the type of entity that this vCard represents, such as individual or an organization.
+
+*vCard versions:* 4.0
+
+*Java class:*  `KindType`
+
+{{{
+//URL
+VCard vcard = new VCard();
+KindType kind = KindType.individual();
+vcard.setKind(kind);
+}}}
+
+=LABEL=
+Defines the mailing label for an address.
+
+*vCard versions:* 2.1, 3.0, 4.0 (LABEL type replaced with LABEL parameter)
+
+Use the `AddressType.setLabel()` method to assign a label to an address.
+
+{{{
+VCard vcard = new VCard();
+AddressType adr = new AddressType();
+adr.setStreetAddress("123 Main St.");
+adr.setLocality("Austin");
+adr.setRegion("TX");
+adr.setPostalCode("12345");
+adr.setLabel("123 Main St.\nAustin, TX 12345");
+vcard.addAddress(adr);
+}}}
+
+The `VCard.addOrphanedLabel()` method adds a LABEL type to the vCard. However, use of this method is discouraged because it creates a LABEL type that's not associated with an address.  Also, orphaned LABELs are ignored when creating a version 4.0 vCard because the LABEL type is not part of the vCard 4.0 standard.
+
+The `VCard.getOrphanedLabels()` method can be used after parsing a version 2.1 or 3.0 vCard to retrieve any LABEL types which the parser could not assign to an address.
+
+{{{
+VCard vcard = new VCard();
+for (LabelType label : vcard.getOrphanedLabels()){
+  System.out.println(label.getValue());
+}
+}}}
+
+=LANG=
+The language(s) that the person speaks.
+
+*vCard versions:* 4.0
+
+*Java class:* `LanguageType`
+
+{{{
+VCard vcard = new VCard();
+LanguageType lang = new LanguageType("en");
+lang.setPref(1);
+vcard.addLanguage(lang);
+lang = new LanguageType("fr");
+lang.setPref(2);
+vcard.addLanguage(lang)
+}}}
+
+
+=LOGO=
+The logo for your company.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+{{{
+VCard vcard = new VCard();
+
+//URL
+LogoType logo = new LogoType("http://www.company.com/logo.png", ImageTypeParameter.PNG);
+vcard.addLogo(logo);
+
+//binary data
+byte data[] = ...
+logo = new LogoType(data, ImageTypeParameter.PNG);
+vcard.addLogo(logo);
+}}}
+
+=MAILER=
+The email client that the person uses.
+
+*vCard versions:* 2.1, 3.0
+
+{{{
+VCard vcard = new VCard();
+MailerType mailer = new MailerType("Thunderbird");
+vcard.setMailer(mailer);
+}}}
+
+=MEMBER=
+The members that make up the group.  This type is only used if the KIND type is set to "group".
+
+*vCard versions:* 4.0
+
+*Java class:* `MemberType`
+
+{{{
+VCard vcard = new VCard();
+MemberType member = new MemberType("mailto:funkyjoe@hotmail.com");
+vcard.addMember(member);
+member = new MemberType("aol:joesmoe@aol.com");
+vcard.addMember(member);
+member = new MemberType("tel:+1-123-555-6789");
+vcard.addMember(member);
+member = new MemberType("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af"); //references the UID from another vCard
+vcard.addMember(member);
+}}}
+  
+=N=
+Contains the separated components of the person's name.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `StructuredNameType`
+
+{{{
+VCard vcard = new VCard();
+StructuredNameType n = new StructuredNameType();
+n.setFamily("House");
+n.setGiven("Gregory");
+n.addPrefix("Dr");
+n.addSuffix("MD");
+vcard.setStructuredName(n);
+}}}
+
+=NAME=
+Provides a text representation of the SOURCE type.
+
+*vCard versions:* 3.0
+
+*Java class:* `SourceDisplayTextType`
+
+{{{
+VCard vcard = new VCard();
+SourceDisplayTextType name = new SourceDisplayTextType("My vCard");
+vcard.setSourceDisplayText(name);
+}}}
+
+=NICKNAME=
+A list of nicknames the person goes by.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `NicknameType`
+
+{{{
+VCard vcard = new VCard();
+NicknameType nickname = new NicknameType();
+nickname.addValue("Rick");
+nickname.addValue("Ricky");
+nickname.addValue("Bobby");
+vcard.setNicknames(nickname);
+}}}
+
+=NOTE=
+A free-form text field that contains miscellaneous information.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `NoteType`
+
+{{{
+VCard vcard = new VCard();
+NoteType note = new NoteType("This is a\nmiscellaneous comment.");
+note.setLanguage("en_us");
+vcard.addNote(note);
+}}}
+
+=ORG=
+A list of organizations the person belongs to.  The list is ordered.  It starts with the broadest organization and ends with the most specific.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+{{{
+VCard vcard = new VCard();
+OrganizationType org = new OrganizationType();
+org.addValue("Google");
+org.addValue("GMail Team");
+org.addValue("Spam Detection Team");
+vcard.setOrganizations(org);
+}}}
+
+=PHOTO=
+A photo attached to the vCard (such as a photo of the person's face).
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+{{{
+//URL
+VCard vcard = new VCard();
+PhotoType photo = new PhotoType("http://www.mywebsite.com/mugshot.jpg", ImageTypeParameter.JPEG);
+vcard.addPhoto(photo);
+
+//binary data
+byte data[] = ...
+logo = new LogoType(data, ImageTypeParameter.JPEG);
+vcard.addPhoto(photo);
+}}}
+
+=PRODID=
+Defines the product that created the vCard.
+
+*vCard versions:* 3.0, 4.0
+
+{{{
+VCard vcard = new VCard();
+ProdIdType prodid = new ProdIdType("-//ONLINE DIRECTORY//NONSGML Version 1//EN");
+vcard.setProdId(prodid);
+}}}
+
+=PROFILE=
+Just says that the vCard is a vCard, not really useful.
+
+*vCard versions:* 3.0
+
+{{{
+VCard vcard = new VCard();
+ProfileType profile = new ProfileType();
+vcard.setProfile(profile);
+}}}
+
+=RELATED=
+Other people that the person is related to.
+
+*vCard versions:* 4.0
+
+*Java class:* `RelatedType`
+
+{{{
+VCard vcard = new VCard();
+RelatedType related = new RelatedType(RelatedTypeParameter.FRIEND);
+related.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
+vcard.addRelated(related);
+related = new RelatedType(RelatedTypeParameter.CO_WORKER);
+related.setUri("http://joesmoe.name/vcard.vcf");
+vcard.addRelated(related);
+related = new RelatedType(RelatedTypeParameter.SPOUSE);
+related.setText("My wife's name is Edna Smith");
+vcard.addRelated(related);
+}}}
+
+=REV=
+The date that the vCard was last modified by the owner.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `RevisionType`
+
+{{{
+VCard vcard = new VCard();
+RevisionType rev = new RevisionType(new Date());
+vcard.setRevision(rev);
+}}}
+
+=ROLE=
+The function that the person plays in his or her organization.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `RoleType`
+
+{{{
+VCard vcard = new VCard();
+RoleType role = new RoleType("Project Leader");
+vcard.addRole(role);
+}}}
+
+=SORT-STRING=
+Defines a string that should be used when an application sorts this vCard in some way.
+
+*vCard versions:* 2.1, 3.0, 4.0 (SORT-STRING type replaced with SORT-AS parameter)
+
+*Java class:* `SortStringType`
+
+{{{
+//2.1 and 3.0
+VCard vcard = new VCard();
+StructuredNameType n = new StructuredNameType();
+n.setFamily("d'Armour");
+n.setGiven("Miles");
+vcard.setStructuredName(n);
+SortStringType sortString = new SortStringType("Armour");
+vcard.setSortString(sortString);
+
+//4.0
+//replaces the SORT-STRING type with the SORT-AS parameter
+VCard vcard = new VCard();
+StructuredNameType n = new StructuredNameType();
+n.setFamily("d'Armour");
+n.setGiven("Miles");
+n.setSortAs("Armour");
+vcard.setStructuredName(n);
+}}}
+
+=SOUND=
+A sound to attach to the vCard.  For example, a pronunciation of the person's name.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+{{{
+//URL
+VCard vcard = new VCard();
+SoundType photo = new SoundType("http://www.mywebsite.com/myname.ogg", SoundTypeParameter.OGG);
+vcard.addSound(sound);
+
+//binary data
+byte data[] = ...
+sound = new SoundType(data, SoundTypeParameter.OGG);
+vcard.addSound(sound);
+}}}
+
+=SOURCE=
+A URL that can be used to retrieve the most up-to-date version of the person's vCard.
+
+*vCard versions:* 3.0, 4.0
+
+*Java class:* `SourceType`
+
+{{{
+VCard vcard = new VCard();
+SourceType source = new SourceType("http://directory.example.com/addressbooks/jdoe/Jean%20Dupont.vcf");
+vcard.addSource(source);
+}}}
+
+=TEL=
+The person's telephone number(s).
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `TelephoneType`
+
+{{{
+VCard vcard = new VCard();
+TelephoneType tel = new TelephoneType("+1 123-555-6789");
+tel.addType(TelephoneTypeParameter.HOME);
+vcard.addTelephoneNumber(tel);
+tel = new TelephoneType("+1 800-555-9876;ext=111");
+tel.addType(TelephoneTypeParameter.WORK);
+vcard.addTelephoneNumber(tel);
+}}}
+
+=TZ=
+Contains the timezone that the person lives/works in.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `TimezoneType`
+
+{{{
+VCard vcard = new VCard();
+TimezoneType tz = new TimezoneType(-5, 0, "EST", "America/New_York");
+vcard.addTimezone(tz);
+}}}
+
+=TITLE=
+The person's position or job in his or her organization.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `TitleType`
+
+{{{
+VCard vcard = new VCard();
+TitleType title = new TitleType("Research Scientist");
+vcard.addTitle(title);
+}}}
+
+=UID=
+A globally unique identifier of the person.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `UidType`
+
+{{{
+VCard vcard = new VCard();
+UidType uid = new UidType();
+uid.setUid("urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519");
+vcard.setUid(uid);
+}}}
+
+=URL=
+A URL pointing to the person's homepage or business website.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* `UrlType`
+
+{{{
+VCard vcard = new VCard();
+UrlType url = new UrlType("http://www.company.com");
+vcard.addUrl(url);
+}}}
+
+=XML=
+Any XML data attached to the vCard.  This is used if the vCard was encoded in XML (xCard standard) and there were some non-standard elements.
+
+*vCard versions:* 4.0
+
+*Java class:* `XmlType`
+
+{{{
+VCard vcard = new VCard();
+XmlType xml = new XmlType("<b>Some xml</b>");
+vcard.addXml(xml);
+}}}
