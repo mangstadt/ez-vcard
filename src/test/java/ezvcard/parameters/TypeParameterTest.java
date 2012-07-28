@@ -1,6 +1,7 @@
-package ezvcard.types;
+package ezvcard.parameters;
 
-import ezvcard.parameters.KeyTypeParameter;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -32,44 +33,42 @@ import ezvcard.parameters.KeyTypeParameter;
  */
 
 /**
- * Represents the KEY type.
  * @author Michael Angstadt
  */
-public class KeyType extends BinaryType<KeyTypeParameter> {
-	public static final String NAME = "KEY";
+public class TypeParameterTest {
+	@Test
+	public void findByTypeParam() {
+		NumberTypeParameter expected = NumberTypeParameter.second;
+		NumberTypeParameter actual = NumberTypeParameter.findByValue("two", NumberTypeParameter.class);
+		assertEquals(expected, actual);
 
-	public KeyType() {
-		super(NAME);
-	}
-	
-	public KeyType(byte data[], KeyTypeParameter type){
-		super(NAME, data, type);
+		actual = NumberTypeParameter.findByValue("five", NumberTypeParameter.class);
+		assertNull(actual);
 	}
 
-	@Override
-	protected KeyTypeParameter buildTypeObj(String type) {
-		KeyTypeParameter param = KeyTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new KeyTypeParameter(type, null, null);
+	@Test
+	public void equals() {
+		NumberTypeParameter two = new NumberTypeParameter("two");
+		assertTrue(two.equals(NumberTypeParameter.second));
+
+		assertFalse(NumberTypeParameter.first.equals(OtherTypeParameter.first));
+	}
+
+	public static class NumberTypeParameter extends TypeParameter {
+		public static final NumberTypeParameter first = new NumberTypeParameter("one");
+		public static final NumberTypeParameter second = new NumberTypeParameter("two");
+		public static final NumberTypeParameter third = new NumberTypeParameter("three");
+
+		public NumberTypeParameter(String value) {
+			super(value);
 		}
-		return param;
 	}
 
-	/**
-	 * URL values are not supported by the KEY type.
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public String getUrl() {
-		throw new UnsupportedOperationException("URL values are not supported by the KEY type.");
-	}
+	public static class OtherTypeParameter extends TypeParameter {
+		public static final OtherTypeParameter first = new OtherTypeParameter("one");
 
-	/**
-	 * URL values are not supported by the KEY type.
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public void setUrl(String url) {
-		throw new UnsupportedOperationException("URL values are not supported by the KEY type.");
+		public OtherTypeParameter(String value) {
+			super(value);
+		}
 	}
 }

@@ -1,7 +1,5 @@
 package ezvcard.parameters;
 
-import ezvcard.util.ParameterUtils;
-
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -35,7 +33,7 @@ import ezvcard.util.ParameterUtils;
  * Represents a VALUE parameter.
  * @author Michael Angstadt
  */
-public class ValueParameter {
+public class ValueParameter extends VCardParameter {
 	public static final String NAME = "VALUE";
 
 	/**
@@ -113,8 +111,6 @@ public class ValueParameter {
 	 */
 	public static final ValueParameter LANGUAGE_TAG = new ValueParameter("language-tag");
 
-	private final String value;
-
 	/**
 	 * Use of this constructor is discouraged and should only be used for
 	 * defining non-standard VALUEs. Please use one of the predefined static
@@ -122,52 +118,16 @@ public class ValueParameter {
 	 * @param value the type value (e.g. "uri")
 	 */
 	public ValueParameter(String value) {
-		this.value = value.toLowerCase();
+		super(NAME, value);
 	}
 
 	/**
-	 * Gets the value of this parameter.
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public String toString() {
-		return value;
-	}
-
-	@Override
-	public int hashCode() {
-		return value.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-
-		if (obj == null) {
-			return false;
-		}
-
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-
-		ValueParameter that = (ValueParameter) obj;
-		return value.equals(that.value);
-	}
-
-	/**
-	 * Retrieves one of the static objects in this class by name.
-	 * @param value the type value (e.g. "home")
-	 * @return the object associated with the given type name or null if none
-	 * was found
+	 * Searches the static objects in this class for one that has a certain type
+	 * value.
+	 * @param value the type value to search for (e.g. "text")
+	 * @return the object or null if not found
 	 */
 	public static ValueParameter valueOf(String value) {
-		return ParameterUtils.valueOf(ValueParameter.class, value);
+		return findByValue(value, ValueParameter.class);
 	}
 }

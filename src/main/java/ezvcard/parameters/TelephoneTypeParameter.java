@@ -1,7 +1,5 @@
 package ezvcard.parameters;
 
-import ezvcard.util.ParameterUtils;
-
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -33,22 +31,90 @@ import ezvcard.util.ParameterUtils;
 
 /**
  * Represents the TYPE parameter of the TEL type.
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class TelephoneTypeParameter extends TypeParameter {
+	/**
+	 * vCard versions: 2.1, 3.0
+	 */
 	public static final TelephoneTypeParameter BBS = new TelephoneTypeParameter("bbs");
+
+	/**
+	 * vCard versions: 2.1, 3.0
+	 */
 	public static final TelephoneTypeParameter CAR = new TelephoneTypeParameter("car");
+
+	/**
+	 * vCard versions: 2.1, 3.0, 4.0
+	 */
 	public static final TelephoneTypeParameter CELL = new TelephoneTypeParameter("cell");
+
+	/**
+	 * vCard versions: 2.1, 3.0, 4.0
+	 */
 	public static final TelephoneTypeParameter FAX = new TelephoneTypeParameter("fax");
+
+	/**
+	 * vCard versions: 2.1, 3.0
+	 */
 	public static final TelephoneTypeParameter HOME = new TelephoneTypeParameter("home");
+
+	/**
+	 * vCard versions: 2.1, 3.0
+	 */
 	public static final TelephoneTypeParameter ISDN = new TelephoneTypeParameter("isdn");
+
+	/**
+	 * vCard versions: 2.1, 3.0
+	 */
 	public static final TelephoneTypeParameter MODEM = new TelephoneTypeParameter("modem");
+
+	/**
+	 * vCard versions: 2.1, 3.0
+	 */
 	public static final TelephoneTypeParameter MSG = new TelephoneTypeParameter("msg");
+
+	/**
+	 * vCard versions: 2.1, 3.0, 4.0
+	 */
 	public static final TelephoneTypeParameter PAGER = new TelephoneTypeParameter("pager");
+
+	/**
+	 * vCard versions: 3.0
+	 */
 	public static final TelephoneTypeParameter PCS = new TelephoneTypeParameter("pcs");
+
+	/**
+	 * vCard versions: 2.1, 3.0
+	 */
 	public static final TelephoneTypeParameter PREF = new TelephoneTypeParameter("pref");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final TelephoneTypeParameter TEXT = new TelephoneTypeParameter("text");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final TelephoneTypeParameter TEXTPHONE = new TelephoneTypeParameter("textphone");
+
+	/**
+	 * vCard versions: 2.1, 3.0, 4.0
+	 */
 	public static final TelephoneTypeParameter VIDEO = new TelephoneTypeParameter("video");
+
+	/**
+	 * vCard versions: 2.1, 3.0, 4.0
+	 */
 	public static final TelephoneTypeParameter VOICE = new TelephoneTypeParameter("voice");
+
+	/**
+	 * vCard versions: 2.1, 3.0
+	 */
 	public static final TelephoneTypeParameter WORK = new TelephoneTypeParameter("work");
 
 	/**
@@ -62,12 +128,12 @@ public class TelephoneTypeParameter extends TypeParameter {
 	}
 
 	/**
-	 * Retrieves one of the static objects in this class by name.
-	 * @param value the type value (e.g. "home")
-	 * @return the object associated with the given type name or null if none
-	 * was found
+	 * Searches the static objects in this class for one that has a certain type
+	 * value.
+	 * @param value the type value to search for (e.g. "work")
+	 * @return the object or null if not found
 	 */
 	public static TelephoneTypeParameter valueOf(String value) {
-		return ParameterUtils.valueOf(TelephoneTypeParameter.class, value);
+		return findByValue(value, TelephoneTypeParameter.class);
 	}
 }

@@ -1,7 +1,5 @@
 package ezvcard.parameters;
 
-import ezvcard.util.ParameterUtils;
-
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
  * 
@@ -30,13 +28,45 @@ import ezvcard.util.ParameterUtils;
  * or implied, of George El-Haddad.
  */
 
+/*
+ Copyright (c) 2012, Michael Angstadt
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met: 
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer. 
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution. 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies, 
+ either expressed or implied, of the FreeBSD Project.
+ */
+
 /**
  * Represents the TYPE parameter of the SOUND type.
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author George El-Haddad Mar 10, 2010
  * @author Michael Angstadt Jul 06, 2012
  * 
  */
-public class SoundTypeParameter extends TypeParameter {
+public class SoundTypeParameter extends MediaTypeParameter {
 	/*
 	 * IANA Registered Sound Types. Some may not have registered an extension.
 	 */
@@ -164,56 +194,35 @@ public class SoundTypeParameter extends TypeParameter {
 	public static final SoundTypeParameter SMP3 = new SoundTypeParameter("SMP3", "audio/vnd.sealedmedia.softseal.mpeg", "smp3"); //smp3, smp, s1m
 	public static final SoundTypeParameter CVSD = new SoundTypeParameter("CVSD", "audio/vnd.vmx.cvsd", "");
 
-	private final String ianaRegisteredName;
-	private final String extension;
-
 	/**
 	 * Use of this constructor is discouraged and should only be used for
 	 * defining non-standard TYPEs. Please use one of the predefined static
 	 * objects.
-	 * @param value the type value (e.g. "MPEG")
+	 * @param value the type value (e.g. "ogg")
+	 * @param mediaType the media type (e.g. "audio/ogg")
+	 * @param extension the file extension used for this type (e.g. "ogg")
 	 */
-	public SoundTypeParameter(String value) {
-		this(value, null, null);
+	public SoundTypeParameter(String value, String mediaType, String extension) {
+		super(value, mediaType, extension);
 	}
 
 	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type name (e.g. "MPEG")
-	 * @param _ianaRegisteredName the IANA registered name (e.g. "audio/mpeg")
-	 * @param _extension the file extension used for this type (e.g. "mpeg")
+	 * Searches the static objects in this class for one that has a certain type
+	 * value.
+	 * @param value the type value to search for (e.g. "ogg")
+	 * @return the object or null if not found
 	 */
-	public SoundTypeParameter(String value, String _ianaRegisteredName, String _extension) {
-		super(value);
-		ianaRegisteredName = _ianaRegisteredName;
-		extension = _extension;
+	public static SoundTypeParameter valueOf(String value) {
+		return findByValue(value, SoundTypeParameter.class);
 	}
 
 	/**
-	 * Gets the content-type.
-	 * @return the content-type (e.g. "audio/ogg")
+	 * Searches the static objects in this class for one that has a certain
+	 * media type.
+	 * @param value the media type to search for (e.g. "audio/ogg")
+	 * @return the object or null if not found
 	 */
-	public String getIanaRegisteredName() {
-		return ianaRegisteredName;
-	}
-
-	/**
-	 * Gets the file extension used for this type.
-	 * @return the file extension (e.g. "ogg")
-	 */
-	public String getExtension() {
-		return extension;
-	}
-
-	/**
-	 * Retrieves one of the static objects in this class by name.
-	 * @param typeName the type name (e.g. "MPEG")
-	 * @return the object associated with the given type name or null if none
-	 * was found
-	 */
-	public static SoundTypeParameter valueOf(String typeName) {
-		return ParameterUtils.valueOf(SoundTypeParameter.class, typeName);
+	public static SoundTypeParameter findByMediaType(String mediaType) {
+		return findByMediaType(mediaType, SoundTypeParameter.class);
 	}
 }
