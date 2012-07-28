@@ -2,7 +2,7 @@
 
 The page contains a listing of all vCard types, as well as information on how to use these types with EZ-vCard.
 
-EZ-vCard takes care of setting certain parameters for you.  For example, when creating a PHOTO type, you don't have to worry about setting the ENCODING parameter to the correct value.  EZ-vCard's algorithms will determine the correct value based on the vCard version you specify.
+EZ-vCard takes care of setting certain parameters for you.  For example, when creating a PHOTO type, you don't have to worry about setting the ENCODING parameter to the correct value.
 
 =ADR=
 Defines a mailing address.
