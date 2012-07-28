@@ -33,14 +33,14 @@ either expressed or implied, of the FreeBSD Project.
  * Represents the NAME type.
  * @author Michael Angstadt
  */
-public class DisplayableNameType extends TextType {
+public class SourceDisplayTextType extends TextType {
 	public static final String NAME = "NAME";
 	
-	public DisplayableNameType(){
+	public SourceDisplayTextType(){
 		this(null);
 	}
 	
-	public DisplayableNameType(String value){
+	public SourceDisplayTextType(String value){
 		super(NAME, value);
 	}
 }
