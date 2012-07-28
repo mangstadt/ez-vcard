@@ -41,7 +41,7 @@ import ezvcard.io.CompatibilityMode;
  * Represents a vCard key/value pair entry (called a "Type").
  * @author Michael Angstadt
  */
-public abstract class VCardType {
+public abstract class VCardType implements Comparable<VCardType> {
 	/**
 	 * The name of the Type.
 	 */
@@ -210,5 +210,23 @@ public abstract class VCardType {
 	 */
 	public void setGroup(String group) {
 		this.group = group;
+	}
+
+	/**
+	 * Sorts a list of types by PREF parameter (if present).
+	 */
+	public int compareTo(VCardType that) {
+		Integer pref0 = this.getSubTypes().getPref();
+		Integer pref1 = that.getSubTypes().getPref();
+		if (pref0 == null && pref1 == null) {
+			return 0;
+		}
+		if (pref0 == null) {
+			return 1;
+		}
+		if (pref1 == null) {
+			return -1;
+		}
+		return pref1.compareTo(pref0);
 	}
 }
