@@ -1096,8 +1096,12 @@ public class VCardReaderTest {
 
 		//SOURCE
 		{
-			SourceType f = vcard.getSource();
+			Iterator<SourceType> it = vcard.getSources().iterator();
+
+			SourceType f = it.next();
 			assertEquals("Whatever", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//MAILER

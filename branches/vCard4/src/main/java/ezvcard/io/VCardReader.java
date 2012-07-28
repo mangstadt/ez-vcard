@@ -325,7 +325,7 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (SourceType.NAME.equals(name)) {
 			SourceType t = new SourceType();
-			vcard.setSource(t);
+			vcard.addSource(t);
 			return t;
 		} else if (DisplayableNameType.NAME.equals(name)) {
 			DisplayableNameType t = new DisplayableNameType();

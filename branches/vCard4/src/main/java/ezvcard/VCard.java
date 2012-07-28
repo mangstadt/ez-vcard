@@ -87,7 +87,7 @@ public class VCard {
 	private VCardVersion version = VCardVersion.V3_0;
 	private ProfileType profile;
 	private ClassificationType classification;
-	private SourceType source;
+	private List<SourceType> sources = new ArrayList<SourceType>();
 	private DisplayableNameType displayableName;
 	private FormattedNameType formattedName;
 	private StructuredNameType structuredName;
@@ -222,12 +222,12 @@ public class VCard {
 		this.classification = classification;
 	}
 
-	public SourceType getSource() {
-		return source;
+	public List<SourceType> getSources() {
+		return sources;
 	}
 
-	public void setSource(SourceType source) {
-		this.source = source;
+	public void addSource(SourceType source) {
+		this.sources.add(source);
 	}
 
 	public DisplayableNameType getDisplayableName() {
