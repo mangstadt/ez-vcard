@@ -1,6 +1,7 @@
-package ezvcard.util;
+package ezvcard.parameters;
 
-import java.lang.reflect.Field;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -32,39 +33,42 @@ import java.lang.reflect.Field;
  */
 
 /**
- * Helper class for the parameter classes (such as
- * {@link ezvcard.parameters.AddressTypeParameter AddressTypeParameter}).
  * @author Michael Angstadt
  */
-public class ParameterUtils {
-	/**
-	 * Retrieves one of the static objects in this class by name.
-	 * @param clazz the class to retrieve the static object from
-	 * @param value the type value (e.g. "home")
-	 * @return the object associated with the given type name or null if none
-	 * was found
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T valueOf(Class<T> clazz, String value) {
-		//turn the value into a valid Java variable name
-		if (Character.isDigit(value.charAt(0))) {
-			value = "_" + value;
-		}
-		value = value.replace("-", "_").toUpperCase();
+public class MediaTypeParameterTest {
+	@Test
+	public void findByMediaType() {
+		TextMediaType expected = TextMediaType.xml;
+		TextMediaType actual = TextMediaType.findByMediaType("TEXT/xml", TextMediaType.class);
+		assertEquals(expected, actual);
 
-		try {
-			Field f = clazz.getField(value);
-			Object obj = f.get(null);
-			if (clazz.isInstance(obj)) {
-				return (T) obj;
-			}
-		} catch (Exception ex) {
-			//static field not found
-		}
-		return null;
+		actual = TextMediaType.findByMediaType("text/rtf", TextMediaType.class);
+		assertNull(actual);
 	}
-	
-	private ParameterUtils(){
-		//hide constructor
+
+	@Test
+	public void equals() {
+		TextMediaType html = new TextMediaType("html", "text/html", "html");
+		assertTrue(html.equals(TextMediaType.html));
+
+		assertFalse(TextMediaType.plain.equals(OtherTextMediaType.plain));
+	}
+
+	public static class TextMediaType extends MediaTypeParameter {
+		public static final TextMediaType plain = new TextMediaType("plain", "text/plain", "txt");
+		public static final TextMediaType xml = new TextMediaType("xml", "text/xml", "xml");
+		public static final TextMediaType html = new TextMediaType("html", "text/html", "html");
+
+		public TextMediaType(String value, String mediaType, String extension) {
+			super(value, mediaType, extension);
+		}
+	}
+
+	public static class OtherTextMediaType extends MediaTypeParameter {
+		public static final OtherTextMediaType plain = new OtherTextMediaType("plain", "text/plain", "txt");
+
+		public OtherTextMediaType(String value, String mediaType, String extension) {
+			super(value, mediaType, extension);
+		}
 	}
 }

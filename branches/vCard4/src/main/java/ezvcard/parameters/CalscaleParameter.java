@@ -1,6 +1,5 @@
 package ezvcard.parameters;
 
-import ezvcard.util.ParameterUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -34,19 +33,14 @@ import ezvcard.util.ParameterUtils;
 /**
  * Represents a CALSCALE parameter.
  * <p>
- * Supported vCard versions: 4.0
+ * vCard versions: 4.0
  * </p>
  * @author Michael Angstadt
  */
-public class CalscaleParameter {
+public class CalscaleParameter extends VCardParameter {
 	public static final String NAME = "CALSCALE";
 
 	public static final CalscaleParameter GREGORIAN = new CalscaleParameter("gregorian");
-
-	/**
-	 * The value (e.g. "gregorian").
-	 */
-	private final String value;
 
 	/**
 	 * Use of this constructor is discouraged and should only be used for
@@ -55,52 +49,16 @@ public class CalscaleParameter {
 	 * @param value the type value (e.g. "gregorian")
 	 */
 	public CalscaleParameter(String value) {
-		this.value = value.toLowerCase();
+		super(NAME, value);
 	}
 
 	/**
-	 * Gets the value of the parameter.
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public String toString() {
-		return value;
-	}
-
-	@Override
-	public int hashCode() {
-		return value.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-
-		if (obj == null) {
-			return false;
-		}
-
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-
-		CalscaleParameter that = (CalscaleParameter) obj;
-		return value.equals(that.value);
-	}
-
-	/**
-	 * Retrieves one of the static objects in this class by name.
-	 * @param value the type value (e.g. "gregorian")
-	 * @return the object associated with the given type name or null if none
-	 * was found
+	 * Searches the static objects in this class for one that has a certain type
+	 * value.
+	 * @param value the type value to search for (e.g. "work")
+	 * @return the object or null if not found
 	 */
 	public static CalscaleParameter valueOf(String value) {
-		return ParameterUtils.valueOf(CalscaleParameter.class, value);
+		return findByValue(value, CalscaleParameter.class);
 	}
 }

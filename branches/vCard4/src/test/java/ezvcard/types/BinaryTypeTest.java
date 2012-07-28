@@ -151,7 +151,7 @@ public class BinaryTypeTest {
 		protected ImageTypeParameter buildTypeObj(String type) {
 			ImageTypeParameter param = ImageTypeParameter.valueOf(type);
 			if (param == null) {
-				param = new ImageTypeParameter(type);
+				param = new ImageTypeParameter(type, null, null);
 			}
 			return param;
 		}
