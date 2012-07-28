@@ -76,6 +76,14 @@ public abstract class VCardType {
 	}
 
 	/**
+	 * Gets the vCard versions that support this type.
+	 * @return the vCard versions that support this type.
+	 */
+	public VCardVersion[] getSupportedVersions() {
+		return VCardVersion.values();
+	}
+
+	/**
 	 * Converts this Type object to a string for sending over the wire. This
 	 * method is responsible for escaping all the necessary characters (such as
 	 * commas and semi-colons). It is NOT responsible for folding.

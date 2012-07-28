@@ -447,7 +447,7 @@ public class VCardReaderTest {
 			c.set(Calendar.HOUR_OF_DAY, 13);
 			c.set(Calendar.MINUTE, 32);
 			c.set(Calendar.SECOND, 54);
-			assertEquals(c.getTime(), t.getDate());
+			assertEquals(c.getTime(), t.getTimestamp());
 		}
 
 		//extended types
@@ -1328,7 +1328,7 @@ public class VCardReaderTest {
 			c.set(Calendar.HOUR_OF_DAY, 13);
 			c.set(Calendar.MINUTE, 19);
 			c.set(Calendar.SECOND, 33);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(c.getTime(), f.getTimestamp());
 		}
 
 		//extended types

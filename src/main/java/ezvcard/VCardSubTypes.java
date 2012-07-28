@@ -1,11 +1,16 @@
 package ezvcard;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
+import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.parameters.ValueParameter;
@@ -259,5 +264,109 @@ public class VCardSubTypes {
 	 */
 	public void removeType(String type) {
 		remove(TypeParameter.NAME, type);
+	}
+
+	public Integer getPref() {
+		String pref = getFirst("PREF");
+		if (pref == null) {
+			return null;
+		}
+
+		try {
+			return Integer.valueOf(pref);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	public void setPref(Integer pref) {
+		String value = (pref == null) ? null : pref.toString();
+		replace("PREF", value);
+	}
+
+	public String getAltId() {
+		return getFirst("ALTID");
+	}
+
+	public void setAltId(String altId) {
+		replace("ALTID", altId);
+	}
+
+	public double[] getGeo() {
+		String value = getFirst("GEO");
+		if (value == null) {
+			return null;
+		}
+
+		Pattern p = Pattern.compile("^geo:(.*?),(.*)$", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(value);
+		if (m.find()) {
+			try {
+				double latitude = Double.parseDouble(m.group(1));
+				double longitude = Double.parseDouble(m.group(2));
+				return new double[] { latitude, longitude };
+			} catch (NumberFormatException e) {
+
+			}
+		}
+		return null;
+	}
+
+	public void setGeo(double latitude, double longitude) {
+		NumberFormat nf = new DecimalFormat("0.####");
+		String value = "geo:" + nf.format(latitude) + "," + nf.format(longitude);
+		replace("GEO", value);
+	}
+
+	public String getSortAs() {
+		return getFirst("SORT-AS");
+	}
+
+	public void setSortAs(String sortAs) {
+		replace("SORT-AS", sortAs);
+	}
+
+	/**
+	 * Gets the CALSCALE sub type.
+	 * @return the value or null if not found
+	 */
+	public CalscaleParameter getCalscale() {
+		String value = getFirst(CalscaleParameter.NAME);
+		if (value == null) {
+			return null;
+		}
+		CalscaleParameter p = CalscaleParameter.valueOf(value);
+		if (p == null) {
+			p = new CalscaleParameter(value);
+		}
+		return p;
+	}
+
+	/**
+	 * Sets the CALSCALE sub type.
+	 * @param value the value or null to remove
+	 */
+	public void setCalscale(CalscaleParameter value) {
+		replace(CalscaleParameter.NAME, (value == null) ? null : value.getValue());
+	}
+
+	public Set<String> getPids() {
+		return get("PID");
+	}
+
+	public void addPid(String pid) {
+		put("PID", pid);
+	}
+
+	public void removePid(String pid) {
+		remove("PID", pid);
+	}
+
+	public String getMediaType() {
+		return getFirst("MEDIATYPE");
+	}
+
+	public void setMediaType(String mediaType) {
+		replace("MEDIATYPE", mediaType);
 	}
 }
