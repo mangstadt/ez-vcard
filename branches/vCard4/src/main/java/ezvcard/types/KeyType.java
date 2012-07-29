@@ -41,8 +41,8 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	public KeyType() {
 		super(NAME);
 	}
-	
-	public KeyType(byte data[], KeyTypeParameter type){
+
+	public KeyType(byte data[], KeyTypeParameter type) {
 		super(NAME, data, type);
 	}
 
@@ -69,7 +69,23 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	 * @throws UnsupportedOperationException
 	 */
 	@Override
-	public void setUrl(String url) {
+	public void setUrl(String url, KeyTypeParameter type) {
 		throw new UnsupportedOperationException("URL values are not supported by the KEY type.");
+	}
+
+	@Override
+	protected KeyTypeParameter unmarshalMediaType(String mediaType) {
+		KeyTypeParameter p = KeyTypeParameter.findByMediaType(mediaType);
+		if (p == null) {
+			int slashPos = mediaType.indexOf('/');
+			String type;
+			if (slashPos == -1 || slashPos < mediaType.length() - 1) {
+				type = "";
+			} else {
+				type = mediaType.substring(slashPos + 1);
+			}
+			p = new KeyTypeParameter(type, mediaType, null);
+		}
+		return p;
 	}
 }

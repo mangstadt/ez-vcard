@@ -2,6 +2,8 @@ package ezvcard.types;
 
 import org.junit.Test;
 
+import ezvcard.parameters.KeyTypeParameter;
+
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -38,7 +40,7 @@ public class KeyTypeTest {
 	@Test(expected = UnsupportedOperationException.class)
 	public void setUrl() {
 		KeyType t = new KeyType();
-		t.setUrl("http://example.com/key.pgp");
+		t.setUrl("http://example.com/key.pgp", KeyTypeParameter.PGP);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)

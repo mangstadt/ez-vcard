@@ -1,6 +1,8 @@
 package ezvcard.types;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -9,7 +11,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EncodingParameter;
-import ezvcard.parameters.TypeParameter;
+import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 
 /*
@@ -47,7 +49,7 @@ import ezvcard.parameters.ValueParameter;
  * 
  * @param <T> the class used for wrapping the value of the TYPE parameter
  */
-public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTypeParameterType<T> {
+public abstract class BinaryType<T extends MediaTypeParameter> extends SingleValuedTypeParameterType<T> {
 	/**
 	 * The decoded data.
 	 */
@@ -62,9 +64,9 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 		super(name);
 	}
 
-	public BinaryType(String name, String url) {
+	public BinaryType(String name, String url, T type) {
 		this(name);
-		setUrl(url);
+		setUrl(url, type);
 	}
 
 	public BinaryType(String name, byte[] data, T type) {
@@ -80,14 +82,23 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 		return url;
 	}
 
-	public void setUrl(String url) {
+	private void setUrl(String url) {
 		this.url = url;
 		this.data = null;
 	}
 
-	public void setData(byte[] data, T type) {
+	public void setUrl(String url, T type) {
+		setUrl(url);
+		setType(type);
+	}
+
+	private void setData(byte[] data) {
 		this.url = null;
 		this.data = data;
+	}
+
+	public void setData(byte[] data, T type) {
+		setData(data);
 		setType(type);
 	}
 
@@ -109,21 +120,24 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 			copy.setValue(vp);
 			copy.setEncoding(null);
 
-			if (version == VCardVersion.V4_0 && getType() != null) {
-				//TODO set MEDIATYPE parameter
-				//copy.replace("MEDIATYPE", getType().getMediaType());
+			if (version == VCardVersion.V4_0) {
+				MediaTypeParameter p = getType();
+				if (p != null) {
+					copy.setMediaType(p.getMediaType());
+				}
 			}
 		}
 		if (data != null) {
 			if (version == VCardVersion.V2_1) {
 				copy.setEncoding(EncodingParameter.BASE64);
 				copy.setValue(null);
-			} else if (version == VCardVersion.V3_0){ 
+			} else if (version == VCardVersion.V3_0) {
 				copy.setEncoding(EncodingParameter.B);
 				copy.setValue(null);
 			} else {
 				copy.setEncoding(null);
 				copy.setValue(ValueParameter.URI);
+				copy.setType(null);
 			}
 		}
 
@@ -138,9 +152,9 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 		if (data != null) {
 			String base64 = new String(Base64.encodeBase64(data));
 			if (version == VCardVersion.V4_0) {
-				//TODO add media type
-				//return "data:" + getType().getMediaType() + ";base64," + base64;
-				return "data:" + "media/type" + ";base64," + base64;
+				MediaTypeParameter p = getType();
+				String mediaType = (p == null) ? "application/octet-stream" : p.getMediaType();
+				return "data:" + mediaType + ";base64," + base64;
 			} else {
 				return base64;
 			}
@@ -150,26 +164,60 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (subTypes.getValue() != null) {
-			//the value is a URI, not binary data
-			url = value;
+		//4.0 uses data URIs
+		Pattern p = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(value);
+		if (m.find()) {
+			String mediaType = m.group(1);
+			String base64 = m.group(2);
+
+			T param = unmarshalMediaType(mediaType);
+			setData(Base64.decodeBase64(base64), param);
 		} else {
-			EncodingParameter encodingSubType = subTypes.getEncoding();
-			if (encodingSubType != null) {
-				if (encodingSubType != EncodingParameter.B && encodingSubType != EncodingParameter.BASE64) {
-					warnings.add("Unrecognized ENCODING type \"" + encodingSubType + "\".  Attempting to decode as base64.");
-				}
-				data = Base64.decodeBase64(value);
-			} else {
-				//the required Sub Types weren't included, make a guess 
-				if (value.startsWith("http")) {
-					warnings.add("No VALUE or ENCODING type given.  Assuming it's a URL.");
-					url = value;
+			ValueParameter valueSubType = subTypes.getValue();
+			if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
+				String mediaType = subTypes.getMediaType();
+				if (mediaType != null) {
+					//4.0 URLs should have a MEDIATYPE parameter
+					T param = unmarshalMediaType(mediaType);
+					setUrl(value, param);
 				} else {
-					warnings.add("No VALUE or ENCODING type given.  Attempting to decode as base64.");
-					data = Base64.decodeBase64(value);
+					setUrl(value);
+				}
+			} else {
+				EncodingParameter encodingSubType = subTypes.getEncoding();
+				if (encodingSubType != null) {
+					if (encodingSubType != EncodingParameter.B && encodingSubType != EncodingParameter.BASE64) {
+						warnings.add("Unrecognized ENCODING type \"" + encodingSubType + "\".  Attempting to decode as base64.");
+					}
+					setData(Base64.decodeBase64(value));
+				} else {
+					//the required Sub Types weren't included, make a guess 
+					if (value.startsWith("http")) {
+						warnings.add("No VALUE or ENCODING type given.  Assuming it's a URL.");
+
+						String mediaType = subTypes.getMediaType();
+						if (mediaType != null) {
+							//4.0 URLs should have a MEDIATYPE parameter
+							T param = unmarshalMediaType(mediaType);
+							setUrl(value, param);
+						} else {
+							setUrl(value);
+						}
+					} else {
+						warnings.add("No VALUE or ENCODING type given.  Attempting to decode as base64.");
+						setData(Base64.decodeBase64(value));
+					}
 				}
 			}
 		}
 	}
+
+	/**
+	 * Gets a {@link MediaTypeParameter} object based on the media type string
+	 * in the data URI of 4.0 vCards.
+	 * @param mediaType the media type string (e.g. "image/jpeg")
+	 * @return the parameter object
+	 */
+	protected abstract T unmarshalMediaType(String mediaType);
 }
