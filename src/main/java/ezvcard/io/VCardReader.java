@@ -34,7 +34,7 @@ import ezvcard.types.LogoType;
 import ezvcard.types.MailerType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
-import ezvcard.types.OrgType;
+import ezvcard.types.OrganizationType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.ProfileType;
@@ -434,8 +434,8 @@ public class VCardReader implements Closeable {
 			GeoType t = new GeoType();
 			vcard.setGeo(t);
 			return t;
-		} else if (OrgType.NAME.equals(name)) {
-			OrgType t = new OrgType();
+		} else if (OrganizationType.NAME.equals(name)) {
+			OrganizationType t = new OrganizationType();
 			vcard.setOrganizations(t);
 			return t;
 		} else if (CategoriesType.NAME.equals(name)) {

@@ -36,7 +36,7 @@ import ezvcard.types.MailerType;
 import ezvcard.types.MemberType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
-import ezvcard.types.OrgType;
+import ezvcard.types.OrganizationType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.ProfileType;
@@ -116,7 +116,7 @@ public class VCard {
 	private List<UrlType> urls = new ArrayList<UrlType>();
 	private TimezoneType timezone;
 	private GeoType geo;
-	private OrgType organizations;
+	private OrganizationType organizations;
 	private CategoriesType categories;
 	private AgentType agent;
 	private List<NoteType> notes = new ArrayList<NoteType>();
@@ -434,11 +434,11 @@ public class VCard {
 		this.geo = geo;
 	}
 
-	public OrgType getOrganizations() {
+	public OrganizationType getOrganizations() {
 		return organizations;
 	}
 
-	public void setOrganizations(OrgType organizations) {
+	public void setOrganizations(OrganizationType organizations) {
 		this.organizations = organizations;
 	}
 
