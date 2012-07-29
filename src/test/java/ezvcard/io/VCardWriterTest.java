@@ -14,6 +14,7 @@ import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.LabelType;
 import ezvcard.types.NoteType;
 
 /*
@@ -142,8 +143,8 @@ public class VCardWriterTest {
 		sb.append("BEGIN: vcard\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("ADR;WORK: ;;;;;;\r\n");
-		sb.append("ADR;WORK;DOM: ;;;;;;\r\n");
-		sb.append("ADR;WORK;PARCEL;DOM: ;;;;;;\r\n");
+		sb.append("ADR;DOM;WORK: ;;;;;;\r\n");
+		sb.append("ADR;DOM;PARCEL;WORK: ;;;;;;\r\n");
 		sb.append("END: vcard\r\n");
 		String expected = sb.toString();
 
@@ -160,8 +161,8 @@ public class VCardWriterTest {
 		sb.append("BEGIN: vcard\r\n");
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("ADR;TYPE=work: ;;;;;;\r\n");
-		sb.append("ADR;TYPE=work,dom: ;;;;;;\r\n");
-		sb.append("ADR;TYPE=work,parcel,dom: ;;;;;;\r\n");
+		sb.append("ADR;TYPE=dom,work: ;;;;;;\r\n");
+		sb.append("ADR;TYPE=dom,parcel,work: ;;;;;;\r\n");
 		sb.append("END: vcard\r\n");
 		expected = sb.toString();
 
@@ -193,7 +194,7 @@ public class VCardWriterTest {
 		adr.getSubTypes().put("X-DOORMAN", "true");
 		adr.getSubTypes().put("LANGUAGE", "FR");
 		adr.getSubTypes().put("LANGUAGE", "es");
-		adr.getSubTypes().put("LABEL", "123 \"Main\" St\r\nAustin, ;TX; 12345");
+		adr.getSubTypes().put("TEXT", "123 \"Main\" St\r\nAustin, ;TX; 12345");
 		vcard.addAddress(adr);
 
 		//2.1
@@ -207,8 +208,8 @@ public class VCardWriterTest {
 		sb.append("BEGIN: vcard\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("ADR;X-DOORMAN=true: ;;;;;;\r\n");
-		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es;LANGUAGE=FR: ;;;;;;\r\n");
-		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es;LANGUAGE=FR;LABEL=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\": ;;;;;;\r\n");
+		sb.append("ADR;LANGUAGE=FR;LANGUAGE=es;X-DOORMAN=true: ;;;;;;\r\n");
+		sb.append("ADR;LANGUAGE=FR;LANGUAGE=es;TEXT=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\";X-DOORMAN=true: ;;;;;;\r\n");
 		sb.append("END: vcard\r\n");
 		String expected = sb.toString();
 
@@ -225,8 +226,8 @@ public class VCardWriterTest {
 		sb.append("BEGIN: vcard\r\n");
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("ADR;X-DOORMAN=true: ;;;;;;\r\n");
-		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es,FR: ;;;;;;\r\n");
-		sb.append("ADR;X-DOORMAN=true;LANGUAGE=es,FR;LABEL=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\": ;;;;;;\r\n");
+		sb.append("ADR;LANGUAGE=FR,es;X-DOORMAN=true: ;;;;;;\r\n");
+		sb.append("ADR;LANGUAGE=FR,es;TEXT=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\";X-DOORMAN=true: ;;;;;;\r\n");
 		sb.append("END: vcard\r\n");
 		expected = sb.toString();
 
@@ -375,6 +376,76 @@ public class VCardWriterTest {
 		sb.append("END: vcard\r\n");
 		String expected = sb.toString();
 		//@formatter:on
+
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test to make sure it marshals LABELs correctly.
+	 */
+	@Test
+	public void labels() throws Exception {
+		VCard vcard = new VCard();
+
+		//address with label
+		AddressType adr = new AddressType();
+		adr.setStreetAddress("123 Main St.");
+		adr.setLocality("Austin");
+		adr.setRegion("TX");
+		adr.setPostalCode("12345");
+		adr.setLabel("123 Main St.\r\nAustin, TX 12345");
+		adr.addType(AddressTypeParameter.HOME);
+		vcard.addAddress(adr);
+
+		//address without label
+		adr = new AddressType();
+		adr.setStreetAddress("222 Broadway");
+		adr.setLocality("New York");
+		adr.setRegion("NY");
+		adr.setPostalCode("99999");
+		adr.addType(AddressTypeParameter.WORK);
+		vcard.addAddress(adr);
+
+		//orphaned label
+		LabelType label = new LabelType("22 Spruce Ln.\r\nChicago, IL 11111");
+		label.addType(AddressTypeParameter.PARCEL);
+		vcard.addOrphanedLabel(label);
+
+		//3.0
+		//LABEL types should be used
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
+		vcw.setAddGenerator(false);
+		vcw.write(vcard);
+		String actual = sw.toString();
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN: vcard\r\n");
+		sb.append("VERSION: 3.0\r\n");
+		sb.append("ADR;TYPE=home: ;;123 Main St.;Austin;TX;12345;\r\n");
+		sb.append("LABEL;TYPE=home: 123 Main St.\\nAustin\\, TX 12345\r\n");
+		sb.append("ADR;TYPE=work: ;;222 Broadway;New York;NY;99999;\r\n");
+		sb.append("LABEL;TYPE=parcel: 22 Spruce Ln.\\nChicago\\, IL 11111\r\n");
+		sb.append("END: vcard\r\n");
+		String expected = sb.toString();
+
+		assertEquals(expected, actual);
+
+		//4.0
+		//LABEL parameters should be used
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V4_0, null);
+		vcw.setAddGenerator(false);
+		vcw.write(vcard);
+		actual = sw.toString();
+
+		sb = new StringBuilder();
+		sb.append("BEGIN: vcard\r\n");
+		sb.append("VERSION: 4.0\r\n");
+		sb.append("ADR;LABEL=\"123 Main St.\\nAustin, TX 12345\";TYPE=home: ;;123 Main St.;Austin;TX;12345;\r\n");
+		sb.append("ADR;TYPE=work: ;;222 Broadway;New York;NY;99999;\r\n");
+		sb.append("END: vcard\r\n");
+		expected = sb.toString();
 
 		assertEquals(expected, actual);
 	}

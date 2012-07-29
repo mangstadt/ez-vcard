@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -13,8 +14,11 @@ import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.TypeParameter;
+import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
+import ezvcard.types.LabelType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
 
@@ -179,7 +183,44 @@ public class VCardWriter implements Closeable {
 			}
 		}
 
-		List<VCardType> types = new ArrayList<VCardType>();
+		@SuppressWarnings("serial")
+		List<VCardType> types = new ArrayList<VCardType>() {
+			@Override
+			public boolean add(VCardType type) {
+				if (type == null) {
+					return true;
+				}
+
+				//determine if this type is supported by the target version
+				boolean supported = false;
+				for (VCardVersion v : type.getSupportedVersions()) {
+					if (v == targetVersion) {
+						supported = true;
+						break;
+					}
+				}
+
+				if (supported) {
+					super.add(type);
+
+					//add LABEL types for each ADR type if the vCard version is not 4.0
+					if (targetVersion != VCardVersion.V4_0 && type instanceof AddressType) {
+						AddressType adr = (AddressType) type;
+						String labelStr = adr.getLabel();
+						if (labelStr != null) {
+							LabelType label = new LabelType(labelStr);
+							for (AddressTypeParameter t : adr.getTypes()) {
+								label.addType(t);
+							}
+							super.add(label);
+						}
+					}
+				} else {
+					warnings.add("The " + type.getTypeName() + " type is not supported by vCard version " + targetVersion + ".  The supported versions are " + Arrays.toString(type.getSupportedVersions()) + ".  This type will not be added to the vCard.");
+				}
+				return true;
+			}
+		};
 		types.add(new TextType("BEGIN", "vcard"));
 		types.add(new TextType("VERSION", targetVersion.getVersion()));
 
