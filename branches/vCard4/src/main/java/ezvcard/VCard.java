@@ -19,17 +19,21 @@ import ezvcard.io.VCardWriter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.BirthdayType;
+import ezvcard.types.CalendarRequestUriType;
+import ezvcard.types.CalendarUriType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
+import ezvcard.types.DisplayableNameType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
 import ezvcard.types.ImppType;
 import ezvcard.types.KeyType;
+import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
 import ezvcard.types.LogoType;
 import ezvcard.types.MailerType;
-import ezvcard.types.DisplayableNameType;
+import ezvcard.types.MemberType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrgType;
@@ -37,6 +41,7 @@ import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.ProfileType;
 import ezvcard.types.RawType;
+import ezvcard.types.RelatedType;
 import ezvcard.types.RevisionType;
 import ezvcard.types.RoleType;
 import ezvcard.types.SortStringType;
@@ -85,6 +90,8 @@ import ezvcard.types.VCardType;
  */
 public class VCard {
 	private VCardVersion version = VCardVersion.V3_0;
+	private KindType kind;
+	private List<MemberType> members = new ArrayList<MemberType>();
 	private ProfileType profile;
 	private ClassificationType classification;
 	private List<SourceType> sources = new ArrayList<SourceType>();
@@ -116,6 +123,9 @@ public class VCard {
 	private List<UidType> uids = new ArrayList<UidType>();
 	private List<KeyType> keys = new ArrayList<KeyType>();
 	private List<ImppType> impps = new ArrayList<ImppType>();
+	private List<RelatedType> relations = new ArrayList<RelatedType>();
+	private List<CalendarRequestUriType> calendarRequestUris = new ArrayList<CalendarRequestUriType>();
+	private List<CalendarUriType> calendarUris = new ArrayList<CalendarUriType>();
 	private ListMultimap<String, VCardType> extendedTypes = ArrayListMultimap.create();
 
 	/**
@@ -204,6 +214,22 @@ public class VCard {
 	 */
 	public void setVersion(VCardVersion version) {
 		this.version = version;
+	}
+
+	public KindType getKind() {
+		return kind;
+	}
+
+	public List<MemberType> getMembers() {
+		return members;
+	}
+
+	public void addMember(MemberType member) {
+		this.members.add(member);
+	}
+
+	public void setKind(KindType kind) {
+		this.kind = kind;
 	}
 
 	public ProfileType getProfile() {
@@ -462,6 +488,30 @@ public class VCard {
 
 	public void addImpp(ImppType impp) {
 		this.impps.add(impp);
+	}
+
+	public List<RelatedType> getRelations() {
+		return relations;
+	}
+
+	public void addRelation(RelatedType relation) {
+		this.relations.add(relation);
+	}
+
+	public List<CalendarRequestUriType> getCalendarRequestUris() {
+		return calendarRequestUris;
+	}
+
+	public void addCalendarRequestUris(CalendarRequestUriType calendarRequestUri) {
+		this.calendarRequestUris.add(calendarRequestUri);
+	}
+
+	public List<CalendarUriType> getCalendarUris() {
+		return calendarUris;
+	}
+
+	public void addCalendarUris(CalendarUriType calendarUri) {
+		this.calendarUris.add(calendarUri);
 	}
 
 	/**

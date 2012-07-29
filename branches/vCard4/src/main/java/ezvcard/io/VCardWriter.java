@@ -20,6 +20,7 @@ import ezvcard.parameters.TypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.LabelType;
+import ezvcard.types.MemberType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
 
@@ -169,7 +170,7 @@ public class VCardWriter implements Closeable {
 	 * @throws VCardException if there's a problem writing the vCard
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
-	public void write(VCard vcard) throws VCardException, IOException {
+	public void write(final VCard vcard) throws VCardException, IOException {
 		warnings.clear();
 
 		if (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0) {
@@ -202,18 +203,22 @@ public class VCardWriter implements Closeable {
 				}
 
 				if (supported) {
-					super.add(type);
+					if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
+						warnings.add("The value of KIND must be set to \"group\" in order to add MEMBERs to the vCard.");
+					} else {
+						super.add(type);
 
-					//add LABEL types for each ADR type if the vCard version is not 4.0
-					if (targetVersion != VCardVersion.V4_0 && type instanceof AddressType) {
-						AddressType adr = (AddressType) type;
-						String labelStr = adr.getLabel();
-						if (labelStr != null) {
-							LabelType label = new LabelType(labelStr);
-							for (AddressTypeParameter t : adr.getTypes()) {
-								label.addType(t);
+						//add LABEL types for each ADR type if the vCard version is not 4.0
+						if (targetVersion != VCardVersion.V4_0 && type instanceof AddressType) {
+							AddressType adr = (AddressType) type;
+							String labelStr = adr.getLabel();
+							if (labelStr != null) {
+								LabelType label = new LabelType(labelStr);
+								for (AddressTypeParameter t : adr.getTypes()) {
+									label.addType(t);
+								}
+								super.add(label);
 							}
-							super.add(label);
 						}
 					}
 				} else {
