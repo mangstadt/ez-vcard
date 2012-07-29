@@ -120,7 +120,7 @@ public class VCard {
 	private CategoriesType categories;
 	private AgentType agent;
 	private List<NoteType> notes = new ArrayList<NoteType>();
-	private List<UidType> uids = new ArrayList<UidType>();
+	private UidType uid;
 	private List<KeyType> keys = new ArrayList<KeyType>();
 	private List<ImppType> impps = new ArrayList<ImppType>();
 	private List<RelatedType> relations = new ArrayList<RelatedType>();
@@ -466,12 +466,12 @@ public class VCard {
 		this.notes.add(note);
 	}
 
-	public List<UidType> getUids() {
-		return uids;
+	public UidType getUid() {
+		return uid;
 	}
 
-	public void addUid(UidType uid) {
-		this.uids.add(uid);
+	public void setUid(UidType uid) {
+		this.uid = uid;
 	}
 
 	public List<KeyType> getKeys() {
