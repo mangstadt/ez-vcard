@@ -33,7 +33,7 @@ import java.lang.reflect.Modifier;
  */
 
 /**
- * Represents a vCard parameter (aka "sub type").
+ * Represents a vCard parameter (aka "sub type") whose values are pre-defined.
  * @author Michael Angstadt
  */
 public class VCardParameter {
