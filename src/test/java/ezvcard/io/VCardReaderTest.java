@@ -28,7 +28,7 @@ import ezvcard.types.AddressType;
 import ezvcard.types.BirthdayType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
-import ezvcard.types.DisplayableNameType;
+import ezvcard.types.SourceDisplayTextType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
@@ -1151,7 +1151,7 @@ public class VCardReaderTest {
 
 		//NAME
 		{
-			DisplayableNameType f = vcard.getDisplayableName();
+			SourceDisplayTextType f = vcard.getSourceDisplayText();
 			assertEquals("VCard for John Doe", f.getValue());
 		}
 
