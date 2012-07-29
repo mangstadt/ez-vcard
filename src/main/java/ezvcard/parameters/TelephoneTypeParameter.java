@@ -58,7 +58,7 @@ public class TelephoneTypeParameter extends TypeParameter {
 	public static final TelephoneTypeParameter FAX = new TelephoneTypeParameter("fax");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * vCard versions: 2.1, 3.0, 4.0
 	 */
 	public static final TelephoneTypeParameter HOME = new TelephoneTypeParameter("home");
 
@@ -113,7 +113,7 @@ public class TelephoneTypeParameter extends TypeParameter {
 	public static final TelephoneTypeParameter VOICE = new TelephoneTypeParameter("voice");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * vCard versions: 2.1, 3.0, 4.0
 	 */
 	public static final TelephoneTypeParameter WORK = new TelephoneTypeParameter("work");
 
