@@ -368,12 +368,8 @@ public class VCardReaderTest {
 
 		//UID
 		{
-			Iterator<UidType> it = vcard.getUids().iterator();
-
-			UidType t = it.next();
+			UidType t = vcard.getUid();
 			assertEquals("477343c8e6bf375a9bac1f96a5000837", t.getValue());
-
-			assertFalse(it.hasNext());
 		}
 
 		//N
@@ -1072,12 +1068,8 @@ public class VCardReaderTest {
 
 		//UID
 		{
-			Iterator<UidType> it = vcard.getUids().iterator();
-
-			UidType f = it.next();
+			UidType f = vcard.getUid();
 			assertEquals("0e7602cc-443e-4b82-b4b1-90f62f99a199", f.getValue());
-
-			assertFalse(it.hasNext());
 		}
 
 		//GEO
