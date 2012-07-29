@@ -29,7 +29,7 @@ An embedded vCard or URL containing the information of someone who represents th
 
 *vCard versions:* 2.1, 3.0
 
-*Java class:* `AgentType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/AgentType.html AgentType]
 
 {{{
 //URL
@@ -50,7 +50,7 @@ Defines the person's anniversary.
 
 *vCard versions:* 4.0
 
-*Java class:* `AnniversaryType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/AnniversaryType.html AnniversaryType]
 
 {{{
 VCard vcard = new VCard();
@@ -75,7 +75,7 @@ Defines the person's birthday.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `BirthdayType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/BirthdayType.html BirthdayType]
 
 {{{
 VCard vcard = new VCard();
@@ -100,7 +100,7 @@ A URL to use for sending a scheduling request to the person's calendar.
 
 *vCard versions:* 4.0
 
-*Java class:* `CalendarRequestUriType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/CalendarRequestUriType.html CalendarRequestUriType]
 
 {{{
 VCard vcard = new VCard();
@@ -117,7 +117,7 @@ A URL to the person's calendar.
 
 *vCard versions:* 4.0
 
-*Java class:* `CalendarUriType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/CalendarUriType.html CalendarUriType]
 
 {{{
 VCard vcard = new VCard();
@@ -130,7 +130,7 @@ A list of keywords (aka "tags") that can be used to describe the person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `CategoriesType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/CategoriesType.html CategoriesType]
 
 {{{
 VCard vcard = new VCard();
@@ -146,7 +146,7 @@ Describes the sensitivity of the information in the vCard.
 
 *vCard versions:* 3.0
 
-*Java class:* `ClassificationType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ClassificationType.html ClassificationType]
 
 {{{
 VCard vcard = new VCard();
@@ -159,7 +159,7 @@ Assigns a URI to types that have a specific PID parameter.
 
 *vCard versions:* 4.0
 
-*Java class:* `ClientPidMapType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ClientPidMapType.html ClientPidMapType]
 
 {{{
 VCard vcard = new VCard();
@@ -174,7 +174,7 @@ An email address associated with a person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `EmailType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/EmailType.html EmailType]
 
 {{{
 VCard vcard = new VCard();
@@ -191,7 +191,7 @@ A URL that points to the person's calendar and shows when the person is busy.
 
 *vCard versions:* 4.0
 
-*Java class:* `FbUrlType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/FbUrlType.html FbUrlType]
 
 {{{
 VCard vcard = new VCard();
@@ -204,7 +204,7 @@ Shows how the person's name should be displayed.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `FormattedNameType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/FormattedNameType.html FormattedNameType]
 
 {{{
 VCard vcard = new VCard();
@@ -217,7 +217,7 @@ Defines the person's sex.
 
 *vCard versions:* 4.0
 
-*Java class:* `GenderType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/GenderType.html GenderType]
 
 {{{
 VCard vcard = new VCard();
@@ -230,7 +230,7 @@ A set of latitude/longitude coordinates.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `GeoType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/GeoType.html GeoType]
 
 {{{
 VCard vcard = new VCard();
@@ -243,7 +243,7 @@ Instant messenger information.
 
 *vCard versions:* 4.0
 
-*Java class:* `ImppType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ImppType.html ImppType]
 
 {{{
 VCard vcard = new VCard();
@@ -251,12 +251,62 @@ ImppType impp = new ImppType("aim", "hunkydude22@aol.com");
 vcard.addImpp(impp);
 }}}
 
+=KEY=
+A public key for encryption.
+
+*vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/KeyType.html KeyType]
+
+{{{
+VCard vcard = new VCard();
+
+//URL (vCard 4.0 only; KEYs cannot have URLs in vCard 2.1 and 3.0)
+KeyType key = new KeyType("http://www.mywebsite.com/pubkey.pgp", KeyTypeParameter.PGP);
+vcard.addKey(key);
+
+//binary data
+byte data[] = ...
+key = new KeyType(data, KeyTypeParameter.PGP);
+vcard.addKey(key);
+}}}
+
+{{{
+VCardReader vcr = ...
+VCard vcard = vcr.readNext();
+
+for (KeyType key : vcard.getKeys()){
+  KeyTypeParameter type = key.getType();
+  if (type == null){
+    //if the key is a URL and the vCard is 2.1 or 3.0, then no type info is included
+  }
+
+  //the key will have either a URL or a binary data
+  //only 4.0 vCards are allowed to use URLs for keys
+  if (key.getData() == null){
+    System.out.println("Key URL: " + key.getUrl());
+  } else {
+    String folder;
+    if (type == KeyTypeParameter.PGP){ //it is safe to use "==" instead of "equals()"
+      folder = "pgp-keys";
+    } else {
+      folder = "other-keys";
+    }
+    System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    byte data[] = key.getData();
+    OutputStream out = new FileOutputStream(new File(folder, "key." + type.getExtension()));
+    out.write(data);
+    out.close();
+  }
+}
+}}}
+
 =KIND=
-Defines the type of entity that this vCard represents, such as individual or an organization.
+Defines the type of entity that this vCard represents, such as an individual or an organization.
 
 *vCard versions:* 4.0
 
-*Java class:*  `KindType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/KindType.html KindType]
 
 {{{
 //URL
@@ -270,7 +320,7 @@ Defines the mailing label for an address.
 
 *vCard versions:* 2.1, 3.0, 4.0`*`
 
-`*`The LABEL type is no longer supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When creating a vCard string, EZ-vCard will use either the type or the parameter, depending on the version requested.
+`*`The LABEL type is no longer supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When creating a vCard string, EZ-vCard will use either the type or the parameter, depending on the requested vCard version.
 
 Use the `AddressType.setLabel()` method to assign a label to an address.
 
@@ -285,9 +335,9 @@ adr.setLabel("123 Main St.\nAustin, TX 12345");
 vcard.addAddress(adr);
 }}}
 
-The `VCard.addOrphanedLabel()` method adds a LABEL type to the vCard. However, use of this method is discouraged because it creates a LABEL type that's not associated with an address.  Also, orphaned LABELs are ignored when creating a version 4.0 vCard because the LABEL type is not part of the vCard 4.0 standard.
+The `VCard.addOrphanedLabel()` method adds a LABEL type to the vCard. However, use of this method is discouraged because it creates a LABEL type that's not associated with an address.  Also, orphaned LABELs are ignored when creating version 4.0 vCards because the LABEL type is not supported by vCard 4.0.
 
-The `VCard.getOrphanedLabels()` method can be used after parsing a version 2.1 or 3.0 vCard to retrieve any LABEL types which the parser could not assign to an address.
+The `VCard.getOrphanedLabels()` method can be used after parsing a version 2.1 or 3.0 vCard to retrieve any LABEL types which the parser could not assign to an address (ADR type).  A LABEL is assigned to an ADR if the LABEL's list of TYPE parameters is identical to the ADR's list of TYPE parameters.
 
 {{{
 VCard vcard = new VCard();
@@ -301,7 +351,7 @@ The language(s) that the person speaks.
 
 *vCard versions:* 4.0
 
-*Java class:* `LanguageType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/LanguageType.html LanguageType]
 
 {{{
 VCard vcard = new VCard();
@@ -313,11 +363,12 @@ lang.setPref(2);
 vcard.addLanguage(lang)
 }}}
 
-
 =LOGO=
 The logo for your company.
 
 *vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/LogoType.html LogoType]
 
 {{{
 VCard vcard = new VCard();
@@ -332,10 +383,41 @@ logo = new LogoType(data, ImageTypeParameter.PNG);
 vcard.addLogo(logo);
 }}}
 
+{{{
+VCardReader vcr = ...
+VCard vcard = vcr.readNext();
+
+for (LogoType photo : vcard.getLogos()){
+  ImageTypeParameter type = logo.getType();
+  if (type == null){
+    //if the logo is a URL and the vCard is 2.1 or 3.0, then no image type info is included
+  }
+
+  //the logo will have either a URL or a binary data
+  if (logo.getData() == null){
+    System.out.println("Logo URL: " + logo.getUrl());
+  } else {
+    String folder;
+    if (type == ImageTypeParameter.JPEG){ //it is safe to use "==" instead of "equals()"
+      folder = "photos";
+    } else {
+      folder = "images";
+    }
+    System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    byte data[] = logo.getData();
+    OutputStream out = new FileOutputStream(new File(folder, "logo." + type.getExtension()));
+    out.write(data);
+    out.close();
+  }
+}
+}}}
+
 =MAILER=
 The email client that the person uses.
 
 *vCard versions:* 2.1, 3.0
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/MailerType.html MailerType]
 
 {{{
 VCard vcard = new VCard();
@@ -348,7 +430,7 @@ The members that make up the group.  This type is only used if the KIND type is 
 
 *vCard versions:* 4.0
 
-*Java class:* `MemberType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/MemberType.html MemberType]
 
 {{{
 VCard vcard = new VCard();
@@ -371,7 +453,7 @@ Contains the separated components of the person's name.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `StructuredNameType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/StructuredNameType.html StructuredNameType]
 
 {{{
 VCard vcard = new VCard();
@@ -388,7 +470,7 @@ Provides a text representation of the SOURCE type.
 
 *vCard versions:* 3.0
 
-*Java class:* `SourceDisplayTextType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/SourceDisplayTextType.html SourceDisplayTextType]
 
 {{{
 VCard vcard = new VCard();
@@ -401,7 +483,7 @@ A list of nicknames the person goes by.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `NicknameType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/NicknameType.html NicknameType]
 
 {{{
 VCard vcard = new VCard();
@@ -417,7 +499,7 @@ A free-form text field that contains miscellaneous information.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `NoteType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/NoteType.html NoteType]
 
 {{{
 VCard vcard = new VCard();
@@ -430,6 +512,8 @@ vcard.addNote(note);
 A list of organizations the person belongs to.  The list is ordered.  It starts with the broadest organization and ends with the most specific.
 
 *vCard versions:* 2.1, 3.0, 4.0
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/OrganizationType.html OrganizationType]
 
 {{{
 VCard vcard = new VCard();
@@ -445,22 +529,56 @@ A photo attached to the vCard (such as a photo of the person's face).
 
 *vCard versions:* 2.1, 3.0, 4.0
 
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/PhotoType.html PhotoType]
+
 {{{
-//URL
 VCard vcard = new VCard();
+
+//URL
 PhotoType photo = new PhotoType("http://www.mywebsite.com/mugshot.jpg", ImageTypeParameter.JPEG);
 vcard.addPhoto(photo);
 
 //binary data
 byte data[] = ...
-logo = new LogoType(data, ImageTypeParameter.JPEG);
+photo = new PhotoType(data, ImageTypeParameter.JPEG);
 vcard.addPhoto(photo);
+}}}
+
+{{{
+VCardReader vcr = ...
+VCard vcard = vcr.readNext();
+
+for (PhotoType photo : vcard.getPhotos()){
+  ImageTypeParameter type = photo.getType();
+  if (type == null){
+    //if the photo is a URL and the vCard is 2.1 or 3.0, then no image type info is included
+  }
+
+  //the photo will have either a URL or a binary data
+  if (photo.getData() == null){
+    System.out.println("Photo URL: " + photo.getUrl());
+  } else {
+    String folder;
+    if (type == ImageTypeParameter.JPEG){ //it is safe to use "==" instead of "equals()"
+      folder = "photos";
+    } else {
+      folder = "images";
+    }
+    System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    byte data[] = photo.getData();
+    OutputStream out = new FileOutputStream(new File(folder, "image." + type.getExtension()));
+    out.write(data);
+    out.close();
+  }
+}
 }}}
 
 =PRODID=
 Defines the product that created the vCard.
 
 *vCard versions:* 3.0, 4.0
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ProdIdType.html ProdIdType]
 
 {{{
 VCard vcard = new VCard();
@@ -473,6 +591,8 @@ Just says that the vCard is a vCard, not really useful.
 
 *vCard versions:* 3.0
 
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ProfileType.html ProfileType]
+
 {{{
 VCard vcard = new VCard();
 ProfileType profile = new ProfileType();
@@ -484,7 +604,7 @@ Other people that the person is related to.
 
 *vCard versions:* 4.0
 
-*Java class:* `RelatedType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/RelatedType.html RelatedType]
 
 {{{
 VCard vcard = new VCard();
@@ -504,7 +624,7 @@ The date that the vCard was last modified by the owner.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `RevisionType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/RevisionType.html RevisionType]
 
 {{{
 VCard vcard = new VCard();
@@ -517,7 +637,7 @@ The function that the person plays in his or her organization.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `RoleType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/RoleType.html RoleType]
 
 {{{
 VCard vcard = new VCard();
@@ -530,7 +650,7 @@ Defines a string that should be used when an application sorts this vCard in som
 
 *vCard versions:* 2.1, 3.0, 4.0 (SORT-STRING type replaced with SORT-AS parameter)
 
-*Java class:* `SortStringType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/SortStringType.html SortStringType]
 
 {{{
 //2.1 and 3.0
@@ -557,10 +677,13 @@ A sound to attach to the vCard.  For example, a pronunciation of the person's na
 
 *vCard versions:* 2.1, 3.0, 4.0
 
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/SoundType.html SoundType]
+
 {{{
-//URL
 VCard vcard = new VCard();
-SoundType photo = new SoundType("http://www.mywebsite.com/myname.ogg", SoundTypeParameter.OGG);
+
+//URL
+SoundType sound = new SoundType("http://www.mywebsite.com/myname.ogg", SoundTypeParameter.OGG);
 vcard.addSound(sound);
 
 //binary data
@@ -569,12 +692,41 @@ sound = new SoundType(data, SoundTypeParameter.OGG);
 vcard.addSound(sound);
 }}}
 
+{{{
+VCardReader vcr = ...
+VCard vcard = vcr.readNext();
+
+for (SoundType sound : vcard.getSounds()){
+  SoundTypeParameter type = sound.getType();
+  if (type == null){
+    //if the sound is a URL and the vCard is 2.1 or 3.0, then no type info is included
+  }
+
+  //the sound will have either a URL or a binary data
+  if (sound.getData() == null){
+    System.out.println("Sound URL: " + sound.getUrl());
+  } else {
+    String folder;
+    if (type == SoundTypeParameter.OGG){ //it is safe to use "==" instead of "equals()"
+      folder = "ogg-files";
+    } else {
+      folder = "sound-files";
+    }
+    System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    byte data[] = sound.getData();
+    OutputStream out = new FileOutputStream(new File(folder, "logo." + type.getExtension()));
+    out.write(data);
+    out.close();
+  }
+}
+}}}
+
 =SOURCE=
 A URL that can be used to retrieve the most up-to-date version of the person's vCard.
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* `SourceType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/SourceType.html SourceType]
 
 {{{
 VCard vcard = new VCard();
@@ -587,7 +739,7 @@ The person's telephone number(s).
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `TelephoneType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/TelephoneType.html TelephoneType]
 
 {{{
 VCard vcard = new VCard();
@@ -604,7 +756,7 @@ Contains the timezone that the person lives/works in.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `TimezoneType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/TimezoneType.html TimezoneType]
 
 {{{
 VCard vcard = new VCard();
@@ -617,7 +769,7 @@ The person's position or job in his or her organization.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `TitleType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/TitleType.html TitleType]
 
 {{{
 VCard vcard = new VCard();
@@ -630,7 +782,7 @@ A globally unique identifier of the person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `UidType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/UidType.html UidType]
 
 {{{
 VCard vcard = new VCard();
@@ -644,7 +796,7 @@ A URL pointing to the person's homepage or business website.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* `UrlType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/UrlType.html UrlType]
 
 {{{
 VCard vcard = new VCard();
@@ -657,7 +809,7 @@ Any XML data attached to the vCard.  This is used if the vCard was encoded in XM
 
 *vCard versions:* 4.0
 
-*Java class:* `XmlType`
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/XmlType.html XmlType]
 
 {{{
 VCard vcard = new VCard();
