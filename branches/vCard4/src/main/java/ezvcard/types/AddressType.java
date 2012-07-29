@@ -2,6 +2,9 @@ package ezvcard.types;
 
 import java.util.List;
 
+import ezvcard.VCard;
+import ezvcard.VCardException;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
@@ -128,6 +131,24 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		subTypes.setLanguage(language);
 	}
 
+	public String getLabel() {
+		return subTypes.getFirst("LABEL");
+	}
+
+	public void setLabel(String label) {
+		subTypes.replace("LABEL", label);
+	}
+
+	@Override
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+		if (version != VCardVersion.V4_0) {
+			VCardSubTypes copy = new VCardSubTypes(subTypes);
+			copy.removeAll("LABEL");
+			return copy;
+		}
+		return super.doMarshalSubTypes(version, warnings, compatibilityMode, vcard);
+	}
+
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
@@ -174,13 +195,13 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		String split[] = VCardStringUtils.splitBy(value, ';', false, true);
 
 		int i = 0;
-		
+
 		poBox = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
-		
+
 		extendedAddress = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
-		
+
 		streetAddress = (split.length > i && split[i].length() > 0) ? split[i] : null;
 		i++;
 

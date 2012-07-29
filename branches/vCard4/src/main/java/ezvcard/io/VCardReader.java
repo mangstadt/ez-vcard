@@ -94,6 +94,8 @@ public class VCardReader implements Closeable {
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private FoldedLineReader reader;
 
+	private List<LabelType> labels = new ArrayList<LabelType>();
+
 	/**
 	 * @param reader the reader to read the vCards from
 	 */
@@ -162,12 +164,13 @@ public class VCardReader implements Closeable {
 		warnings.clear();
 		version = null;
 		endFound = false;
+		labels.clear();
 
 		VCard vcard = new VCard();
 
 		int typesRead = 0;
 		String line;
-		while ((line = reader.readLine()) != null) {
+		while (!endFound && (line = reader.readLine()) != null) {
 			//parse the components out of the line
 			VCardLine parsedLine = VCardLine.parse(line);
 			if (parsedLine == null) {
@@ -262,14 +265,29 @@ public class VCardReader implements Closeable {
 				}
 			}
 
-			if (endFound) {
-				return vcard;
-			}
+//			if (endFound) {
+//				return vcard;
+//			}
 		}
 
 		if (typesRead == 0) {
 			//end of stream reached
 			return null;
+		}
+		
+		//assign labels to their addresses
+		for (LabelType label : labels){
+			boolean orphaned = true;
+			for (AddressType adr : vcard.getAddresses()){
+				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())){
+					adr.setLabel(label.getValue());
+					orphaned = false;
+					break;
+				}
+			}
+			if (orphaned){
+				vcard.addOrphanedLabel(label);
+			}
 		}
 
 		if (!endFound) {
@@ -389,8 +407,9 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (LabelType.NAME.equals(name)) {
 			LabelType t = new LabelType();
-			vcard.getLabels().add(t);
-			return t;
+			t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+			labels.add(t);
+			return null;
 		} else if (EmailType.NAME.equals(name)) {
 			EmailType t = new EmailType();
 			vcard.getEmails().add(t);

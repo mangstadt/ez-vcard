@@ -130,7 +130,7 @@ public class VCard {
 			VCardReader vcr = new VCardReader(new StringReader(str));
 			return vcr.readNext();
 		} catch (IOException e) {
-			//never throwing because we're reading from string
+			//never thrown because we're reading from string
 			return null;
 		}
 	}
@@ -342,11 +342,21 @@ public class VCard {
 		this.addresses.add(address);
 	}
 
-	public List<LabelType> getLabels() {
+	/**
+	 * Gets all LABELs that could not be assigned to an ADR.
+	 * @return the orphaned labels
+	 */
+	public List<LabelType> getOrphanedLabels() {
 		return labels;
 	}
 
-	public void addLabel(LabelType label) {
+	/**
+	 * Adds a LABEL to the vCard which is not associated with any ADR. Use of
+	 * this method is discouraged. To add a LABEL to an ADR, use the
+	 * {@link AddressType#setLabel()} method.
+	 * @param label
+	 */
+	public void addOrphanedLabel(LabelType label) {
 		this.labels.add(label);
 	}
 

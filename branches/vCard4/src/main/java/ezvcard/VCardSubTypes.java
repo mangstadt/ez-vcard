@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import com.google.common.collect.TreeMultimap;
 
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.EncodingParameter;
@@ -52,7 +52,7 @@ public class VCardSubTypes {
 	private final SetMultimap<String, String> subTypes;
 
 	public VCardSubTypes() {
-		subTypes = HashMultimap.create();
+		subTypes = TreeMultimap.create();
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class VCardSubTypes {
 	 * @param orig the object to copy
 	 */
 	public VCardSubTypes(VCardSubTypes orig) {
-		subTypes = HashMultimap.create(orig.subTypes);
+		subTypes = TreeMultimap.create(orig.subTypes);
 	}
 
 	/**

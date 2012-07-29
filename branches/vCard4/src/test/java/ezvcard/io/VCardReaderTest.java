@@ -28,12 +28,12 @@ import ezvcard.types.AddressType;
 import ezvcard.types.BirthdayType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
+import ezvcard.types.DisplayableNameType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
 import ezvcard.types.LabelType;
 import ezvcard.types.MailerType;
-import ezvcard.types.DisplayableNameType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrgType;
@@ -111,7 +111,7 @@ public class VCardReaderTest {
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
 
-		LabelType label = vcard.getLabels().get(0);
+		LabelType label = vcard.getOrphanedLabels().get(0);
 		assertEquals(2, adr.getTypes().size());
 		assertTrue(label.getTypes().contains(AddressTypeParameter.DOM));
 		assertTrue(label.getTypes().contains(AddressTypeParameter.PARCEL));
@@ -132,7 +132,7 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard = reader.readNext();
 
-		LabelType label = vcard.getLabels().get(0);
+		LabelType label = vcard.getOrphanedLabels().get(0);
 		assertEquals("123 Main St.\r\nAustin, TX 91827\r\nUSA", label.getValue());
 		assertNull(label.getSubTypes().getEncoding()); //ENCODING sub type should be removed
 	}
@@ -284,6 +284,44 @@ public class VCardReaderTest {
 		assertEquals("Agent 007", agent1.getFormattedName().getValue());
 		VCard agent2 = agent1.getAgent().getVcard();
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
+	}
+
+	/**
+	 * LABEL types should be assigned to an ADR and stored in the
+	 * "AddressType.getLabel()" field. LABELs that could not be assigned to an
+	 * ADR should go in "VCard.getOrphanedLabels()".
+	 */
+	@Test
+	public void readLabel() throws Exception {
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN: vcard\r\n");
+		sb.append("VERSION: 3.0\r\n");
+		sb.append("ADR;TYPE=home:;;123 Main St.;Austin;TX;91827;USA\r\n");
+		sb.append("LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 91827\\nUSA\r\n");
+		sb.append("ADR;TYPE=work,parcel:;;200 Broadway;New York;NY;12345;USA\r\n");
+		sb.append("LABEL;TYPE=work:200 Broadway\\nNew York\\, NY 12345\\nUSA\r\n");
+		sb.append("END: vcard\r\n");
+		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCard vcard = reader.readNext();
+
+		assertEquals(2, vcard.getAddresses().size());
+
+		AddressType adr = vcard.getAddresses().get(0);
+		assertEquals(1, adr.getTypes().size());
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+		assertEquals("123 Main St.\r\nAustin, TX 91827\r\nUSA", adr.getLabel());
+
+		adr = vcard.getAddresses().get(1);
+		assertEquals(2, adr.getTypes().size());
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.PARCEL));
+		assertNull(adr.getLabel());
+
+		assertEquals(1, vcard.getOrphanedLabels().size());
+		LabelType label = vcard.getOrphanedLabels().get(0);
+		assertEquals("200 Broadway\r\nNew York, NY 12345\r\nUSA", label.getValue());
+		assertEquals(1, label.getTypes().size());
+		assertTrue(label.getTypes().contains(AddressTypeParameter.WORK));
 	}
 
 	@Test
@@ -976,6 +1014,7 @@ public class VCardReaderTest {
 			assertEquals("New York", f.getRegion());
 			assertEquals("NYC887", f.getPostalCode());
 			assertEquals("U.S.A.", f.getCountry());
+			assertNull(f.getLabel());
 
 			Set<AddressTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
@@ -1069,7 +1108,7 @@ public class VCardReaderTest {
 
 		//LABEL
 		{
-			Iterator<LabelType> it = vcard.getLabels().iterator();
+			Iterator<LabelType> it = vcard.getOrphanedLabels().iterator();
 
 			LabelType f = it.next();
 			assertEquals("John Doe\r\nNew York, NewYork,\r\nSouth Crecent Drive,\r\nBuilding 5, floor 3,\r\nUSA", f.getValue());
@@ -1226,6 +1265,7 @@ public class VCardReaderTest {
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
+			assertEquals("Cresent moon drive\r\nAlbaney, New York  12345", f.getLabel());
 			Set<AddressTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(AddressTypeParameter.WORK));
@@ -1239,6 +1279,7 @@ public class VCardReaderTest {
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
+			assertEquals("Silicon Alley 5,\r\nNew York, New York  12345", f.getLabel());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(AddressTypeParameter.HOME));
@@ -1248,22 +1289,7 @@ public class VCardReaderTest {
 
 		//LABEL
 		{
-			Iterator<LabelType> it = vcard.getLabels().iterator();
-
-			LabelType f = it.next();
-			assertEquals("Cresent moon drive\r\nAlbaney, New York  12345", f.getValue());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.WORK));
-			assertTrue(types.contains(AddressTypeParameter.PREF));
-
-			f = it.next();
-			assertEquals("Silicon Alley 5,\r\nNew York, New York  12345", f.getValue());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
-
-			assertFalse(it.hasNext());
+			assertTrue(vcard.getOrphanedLabels().isEmpty());
 		}
 
 		//URL
