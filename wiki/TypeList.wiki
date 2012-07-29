@@ -352,13 +352,17 @@ The members that make up the group.  This type is only used if the KIND type is 
 
 {{{
 VCard vcard = new VCard();
-MemberType member = new MemberType("mailto:funkyjoe@hotmail.com");
+MemberType member = new MemberType();
+member.setUriEmail("funkyjoe@hotmail.com");
 vcard.addMember(member);
-member = new MemberType("aol:joesmoe@aol.com");
+member = new MemberType();
+member.setUriIM("aol", "joesmoe@aol.com");
 vcard.addMember(member);
-member = new MemberType("tel:+1-123-555-6789");
+member = new MemberType();
+member.setUriTelephone("+1-123-555-6789");
 vcard.addMember(member);
-member = new MemberType("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af"); //references the UID from another vCard
+member = new MemberType();
+member.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af"); //references the UID from another vCard
 vcard.addMember(member);
 }}}
   
