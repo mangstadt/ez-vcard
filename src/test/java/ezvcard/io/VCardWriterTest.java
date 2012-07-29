@@ -348,6 +348,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+		vcw.setAddGenerator(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -371,7 +372,6 @@ public class VCardWriterTest {
 			sb.append("NOTE: Make sure that it properly folds long lines which are part of a neste\r\n");
 			sb.append(" d AGENT type in a version 2.1 vCard.\r\n");
 			sb.append("END: vcard\r\n");
-		sb.append("X-GENERATOR: EZ vCard v0.1 http://code.google.com/p/ez-vcard\r\n");
 		sb.append("END: vcard\r\n");
 		String expected = sb.toString();
 		//@formatter:on
