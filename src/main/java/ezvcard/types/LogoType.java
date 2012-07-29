@@ -42,8 +42,8 @@ public class LogoType extends BinaryType<ImageTypeParameter> {
 		super(NAME);
 	}
 	
-	public LogoType(String url){
-		super(NAME, url);
+	public LogoType(String url, ImageTypeParameter type){
+		super(NAME, url, type);
 	}
 	
 	public LogoType(byte[] data, ImageTypeParameter type){
@@ -57,5 +57,21 @@ public class LogoType extends BinaryType<ImageTypeParameter> {
 			param = new ImageTypeParameter(type, null, null);
 		}
 		return param;
+	}
+	
+	@Override
+	protected ImageTypeParameter unmarshalMediaType(String mediaType) {
+		ImageTypeParameter p = ImageTypeParameter.findByMediaType(mediaType);
+		if (p == null) {
+			int slashPos = mediaType.indexOf('/');
+			String type;
+			if (slashPos == -1 || slashPos < mediaType.length() - 1) {
+				type = "";
+			} else {
+				type = mediaType.substring(slashPos + 1);
+			}
+			p = new ImageTypeParameter(type, mediaType, null);
+		}
+		return p;
 	}
 }
