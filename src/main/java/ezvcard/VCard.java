@@ -8,6 +8,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
@@ -23,14 +24,16 @@ import ezvcard.types.CalendarRequestUriType;
 import ezvcard.types.CalendarUriType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
-import ezvcard.types.SourceDisplayTextType;
+import ezvcard.types.ClientPidMapType;
 import ezvcard.types.EmailType;
+import ezvcard.types.FbUrlType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
 import ezvcard.types.ImppType;
 import ezvcard.types.KeyType;
 import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
+import ezvcard.types.LanguageType;
 import ezvcard.types.LogoType;
 import ezvcard.types.MailerType;
 import ezvcard.types.MemberType;
@@ -46,6 +49,7 @@ import ezvcard.types.RevisionType;
 import ezvcard.types.RoleType;
 import ezvcard.types.SortStringType;
 import ezvcard.types.SoundType;
+import ezvcard.types.SourceDisplayTextType;
 import ezvcard.types.SourceType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
@@ -124,8 +128,11 @@ public class VCard {
 	private List<KeyType> keys = new ArrayList<KeyType>();
 	private List<ImppType> impps = new ArrayList<ImppType>();
 	private List<RelatedType> relations = new ArrayList<RelatedType>();
+	private List<LanguageType> languages = new ArrayList<LanguageType>();
 	private List<CalendarRequestUriType> calendarRequestUris = new ArrayList<CalendarRequestUriType>();
 	private List<CalendarUriType> calendarUris = new ArrayList<CalendarUriType>();
+	private List<FbUrlType> fbUrls = new ArrayList<FbUrlType>();
+	private List<ClientPidMapType> clientPidMaps = new ArrayList<ClientPidMapType>();
 	private ListMultimap<String, VCardType> extendedTypes = ArrayListMultimap.create();
 
 	/**
@@ -498,6 +505,14 @@ public class VCard {
 		this.relations.add(relation);
 	}
 
+	public List<LanguageType> getLanguages() {
+		return languages;
+	}
+
+	public void addLanguage(LanguageType language) {
+		this.languages.add(language);
+	}
+
 	public List<CalendarRequestUriType> getCalendarRequestUris() {
 		return calendarRequestUris;
 	}
@@ -512,6 +527,30 @@ public class VCard {
 
 	public void addCalendarUris(CalendarUriType calendarUri) {
 		this.calendarUris.add(calendarUri);
+	}
+
+	public List<FbUrlType> getFbUrls() {
+		return fbUrls;
+	}
+
+	public void addFbUrl(FbUrlType fbUrl) {
+		this.fbUrls.add(fbUrl);
+	}
+
+	public List<ClientPidMapType> getClientPidMaps() {
+		return clientPidMaps;
+	}
+
+	public void addClientPidMap(ClientPidMapType clientPidMap) {
+		this.clientPidMaps.add(clientPidMap);
+	}
+
+	public void addClientPidMaps(Map<Integer, String> clientPidMaps) {
+		for (Map.Entry<Integer, String> entry : clientPidMaps.entrySet()) {
+			Integer pid = entry.getKey();
+			String uri = entry.getValue();
+			this.clientPidMaps.add(new ClientPidMapType(pid, uri));
+		}
 	}
 
 	/**
