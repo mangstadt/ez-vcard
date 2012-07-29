@@ -81,8 +81,19 @@ public class BinaryTypeTest {
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
 
-		//test base64 data
+		//test base64 data v2.1
 		version = VCardVersion.V2_1;
+		t = new BinaryTypeImpl();
+		t.setData(dummyData, ImageTypeParameter.JPEG);
+		expectedValue = Base64.encodeBase64String(dummyData);
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(EncodingParameter.BASE64, subTypes.getEncoding());
+		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
+
+		//test base64 data v3.0
+		version = VCardVersion.V3_0;
 		t = new BinaryTypeImpl();
 		t.setData(dummyData, ImageTypeParameter.JPEG);
 		expectedValue = Base64.encodeBase64String(dummyData);

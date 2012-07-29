@@ -115,7 +115,10 @@ public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTy
 			}
 		}
 		if (data != null) {
-			if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
+			if (version == VCardVersion.V2_1) {
+				copy.setEncoding(EncodingParameter.BASE64);
+				copy.setValue(null);
+			} else if (version == VCardVersion.V3_0){ 
 				copy.setEncoding(EncodingParameter.B);
 				copy.setValue(null);
 			} else {
