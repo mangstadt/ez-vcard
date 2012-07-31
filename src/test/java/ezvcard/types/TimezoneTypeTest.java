@@ -62,6 +62,9 @@ public class TimezoneTypeTest {
 			//should be thrown
 		}
 
+		//nulls allowed
+		new TimezoneType().setMinuteOffset(null);
+
 		try {
 			new TimezoneType(0, -1);
 		} catch (IllegalArgumentException e) {
@@ -80,52 +83,124 @@ public class TimezoneTypeTest {
 		TimezoneType t = new TimezoneType(-5, 30);
 		TimeZone tz = t.toTimeZone();
 		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), tz.getRawOffset());
+
+		t = new TimezoneType("America/New_York");
+		tz = t.toTimeZone();
+		assertNull(tz);
 	}
 
 	@Test
 	public void marshal() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
+		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
 		TimezoneType t;
 		String expectedValue, actualValue;
 		VCardSubTypes subTypes;
 
-		//just offset
+		//just offset=======
 		t = new TimezoneType(-5, 30);
+
+		//2.1
+		version = VCardVersion.V2_1;
 		expectedValue = "-05:30";
 		actualValue = t.marshalValue(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertNull(subTypes.getValue());
 
-		//offset and short text
-		t = new TimezoneType(-5, 30, "EST", null);
-		expectedValue = "-05:30;EST;";
+		//3.0
+		version = VCardVersion.V3_0;
+		expectedValue = "-05:30";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertNull(subTypes.getValue());
+
+		//4.0
+		version = VCardVersion.V4_0;
+		expectedValue = "-05:30";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.UTC_OFFSET, subTypes.getValue());
+
+		//just text======
+		t = new TimezoneType("America/New_York");
+
+		//2.1
+		version = VCardVersion.V2_1;
+		expectedValue = "America/New_York";
 		actualValue = t.marshalValue(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 
-		//offset and long text
-		t = new TimezoneType(-5, 30, null, "America/New;_;York");
-		expectedValue = "-05:30;;America/New\\;_\\;York";
+		//3.0
+		version = VCardVersion.V3_0;
+		expectedValue = "America/New_York";
 		actualValue = t.marshalValue(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 
-		//offset and both text
-		t = new TimezoneType(-5, 30, "EST", "America/New;_;York");
-		expectedValue = "-05:30;EST;America/New\\;_\\;York";
+		//4.0
+		version = VCardVersion.V4_0;
+		expectedValue = "America/New_York";
 		actualValue = t.marshalValue(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 
-		//no offset, no text
+		//offset and text=====
+		t = new TimezoneType(-5, 30, "America/New_York");
+
+		//2.1
+		version = VCardVersion.V2_1;
+		expectedValue = "-05:30;America/New_York";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+
+		//3.0
+		version = VCardVersion.V3_0;
+		expectedValue = "-05:30;America/New_York";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+
+		//4.0
+		version = VCardVersion.V4_0;
+		expectedValue = "America/New_York";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+
+		//no offset, no text====
 		t = new TimezoneType();
-		expectedValue = "+00:00";
+
+		//2.1
+		version = VCardVersion.V2_1;
+		expectedValue = "";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertNull(subTypes.getValue());
+
+		//3.0
+		version = VCardVersion.V3_0;
+		expectedValue = "";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertNull(subTypes.getValue());
+
+		//4.0
+		version = VCardVersion.V4_0;
+		expectedValue = "";
 		actualValue = t.marshalValue(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
@@ -133,8 +208,8 @@ public class TimezoneTypeTest {
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
+	public void unmarshal() throws Exception {
+		VCardVersion version = VCardVersion.V2_1; //unmarshalled the same in all versions
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
 		VCardSubTypes subTypes = new VCardSubTypes();
@@ -143,39 +218,24 @@ public class TimezoneTypeTest {
 		//offset
 		t = new TimezoneType();
 		t.unmarshalValue(subTypes, "-05:30", version, warnings, compatibilityMode);
-		assertEquals(-5, t.getHourOffset());
-		assertEquals(30, t.getMinuteOffset());
+		assertEquals(Integer.valueOf(-5), t.getHourOffset());
+		assertEquals(Integer.valueOf(30), t.getMinuteOffset());
+		assertNull(t.getText());
 
-		//offset and short text
+		//text
+		version = VCardVersion.V2_1;
 		t = new TimezoneType();
-		t.unmarshalValue(subTypes, "-05:30;EST", version, warnings, compatibilityMode);
-		assertEquals(-5, t.getHourOffset());
-		assertEquals(30, t.getMinuteOffset());
-		assertEquals("EST", t.getShortText());
-		assertEquals(null, t.getLongText());
+		t.unmarshalValue(subTypes, "America/New_York", version, warnings, compatibilityMode);
+		assertNull(t.getHourOffset());
+		assertNull(t.getMinuteOffset());
+		assertEquals("America/New_York", t.getText());
 
-		//offset and short text with trailing semicolon
+		//text that starts with offset
+		version = VCardVersion.V2_1;
 		t = new TimezoneType();
-		t.unmarshalValue(subTypes, "-05:30;EST;", version, warnings, compatibilityMode);
-		assertEquals(-5, t.getHourOffset());
-		assertEquals(30, t.getMinuteOffset());
-		assertEquals("EST", t.getShortText());
-		assertEquals(null, t.getLongText());
-
-		//offset and long text
-		t = new TimezoneType();
-		t.unmarshalValue(subTypes, "-05:30;;America/New\\;_\\;York", version, warnings, compatibilityMode);
-		assertEquals(-5, t.getHourOffset());
-		assertEquals(30, t.getMinuteOffset());
-		assertEquals(null, t.getShortText());
-		assertEquals("America/New;_;York", t.getLongText());
-
-		//offset, short text, and long text
-		t = new TimezoneType();
-		t.unmarshalValue(subTypes, "-05:30;EST;America/New\\;_\\;York", version, warnings, compatibilityMode);
-		assertEquals(-5, t.getHourOffset());
-		assertEquals(30, t.getMinuteOffset());
-		assertEquals("EST", t.getShortText());
-		assertEquals("America/New;_;York", t.getLongText());
+		t.unmarshalValue(subTypes, "-05:30; EST; America/New_York", version, warnings, compatibilityMode);
+		assertEquals(Integer.valueOf(-5), t.getHourOffset());
+		assertEquals(Integer.valueOf(30), t.getMinuteOffset());
+		assertEquals("; EST; America/New_York", t.getText());
 	}
 }
