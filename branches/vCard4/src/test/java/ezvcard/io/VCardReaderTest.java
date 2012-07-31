@@ -1094,8 +1094,8 @@ public class VCardReaderTest {
 		//TZ
 		{
 			TimezoneType f = vcard.getTimezone();
-			assertEquals(1, f.getHourOffset());
-			assertEquals(0, f.getMinuteOffset());
+			assertEquals(Integer.valueOf(1), f.getHourOffset());
+			assertEquals(Integer.valueOf(0), f.getMinuteOffset());
 		}
 
 		//LABEL

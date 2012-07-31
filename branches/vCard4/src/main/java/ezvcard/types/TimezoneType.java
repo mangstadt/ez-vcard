@@ -3,6 +3,8 @@ package ezvcard.types;
 import java.util.List;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -44,82 +46,92 @@ import ezvcard.util.VCardStringUtils;
 /**
  * Represents the TZ type.
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a> p.15, <a
+ * href="http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.37
  */
 public class TimezoneType extends VCardType {
 	public static final String NAME = "TZ";
 
-	private int hourOffset;
-	private int minuteOffset;
-	private String shortText;
-	private String longText;
+	private Integer hourOffset;
+	private Integer minuteOffset;
+	private String text;
 
 	public TimezoneType() {
 		super(NAME);
 	}
 
 	/**
-	 * @param hourOffset the hour offset
-	 * @param minuteOffset the minute offset
+	 * This is the recommended constructor for version 4.0 vCards.
+	 * @param text string representing the timezone from the <a
+	 * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Olson
+	 * Database</a> (e.g. "America/New_York")
 	 */
-	public TimezoneType(int hourOffset, int minuteOffset) {
-		this(hourOffset, minuteOffset, null, null);
+	public TimezoneType(String text) {
+		this(null, null, text);
 	}
 
 	/**
-	 * 
+	 * This is the recommended constructor for version 2.1 and 3.0 vCards.
 	 * @param hourOffset the hour offset
 	 * @param minuteOffset the minute offset
-	 * @param shortText the short text (e.g. "EST")
-	 * @param longText
 	 */
-	public TimezoneType(int hourOffset, int minuteOffset, String shortText, String longText) {
+	public TimezoneType(Integer hourOffset, Integer minuteOffset) {
+		this(hourOffset, minuteOffset, null);
+	}
+
+	/**
+	 * Use this constructor for all vCard versions.
+	 * @param hourOffset the hour offset
+	 * @param minuteOffset the minute offset
+	 * @param text can be anything, but should be a string representing the
+	 * timezone from the <a
+	 * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Olson
+	 * Database</a> (e.g. "America/New_York")
+	 */
+	public TimezoneType(Integer hourOffset, Integer minuteOffset, String text) {
 		super(NAME);
 		setHourOffset(hourOffset);
 		setMinuteOffset(minuteOffset);
-		setShortText(shortText);
-		setLongText(longText);
+		setText(text);
 	}
 
-	public int getHourOffset() {
+	public Integer getHourOffset() {
 		return hourOffset;
 	}
 
-	public void setHourOffset(int hourOffset) {
+	public void setHourOffset(Integer hourOffset) {
 		this.hourOffset = hourOffset;
 	}
 
-	public int getMinuteOffset() {
+	public Integer getMinuteOffset() {
 		return minuteOffset;
 	}
 
-	public void setMinuteOffset(int minuteOffset) {
-		if (minuteOffset < 0 || minuteOffset > 59) {
+	public void setMinuteOffset(Integer minuteOffset) {
+		if (minuteOffset != null && (minuteOffset < 0 || minuteOffset > 59)) {
 			throw new IllegalArgumentException("Minute offset must be between 0 and 59.");
 		}
 		this.minuteOffset = minuteOffset;
 	}
 
-	public String getShortText() {
-		return shortText;
+	public String getText() {
+		return text;
 	}
 
-	public void setShortText(String shortText) {
-		this.shortText = shortText;
-	}
-
-	public String getLongText() {
-		return longText;
-	}
-
-	public void setLongText(String longText) {
-		this.longText = longText;
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	/**
 	 * Creates a {@link java.util.TimeZone} representation of this class.
-	 * @return a {@link TimeZone} object
+	 * @return a {@link TimeZone} object or null if this object contains no
+	 * offset data
 	 */
 	public TimeZone toTimeZone() {
+		if (hourOffset == null || minuteOffset == null) {
+			return null;
+		}
+
 		int rawHourOffset = hourOffset * 60 * 60 * 1000;
 		int rawMinuteOffset = minuteOffset * 60 * 1000;
 		if (rawHourOffset < 0) {
@@ -128,14 +140,15 @@ public class TimezoneType extends VCardType {
 		int rawOffset = rawHourOffset + rawMinuteOffset;
 		return new SimpleTimeZone(rawOffset, "");
 	}
-	
+
 	@Override
 	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		VCardSubTypes copy = new VCardSubTypes(subTypes);
 
-		if (shortText != null || longText != null) {
-			//add sub type "VALUE=text"
+		if (text != null) {
 			copy.setValue(ValueParameter.TEXT);
+		} else if (hourOffset != null && minuteOffset != null && version == VCardVersion.V4_0) {
+			copy.setValue(ValueParameter.UTC_OFFSET);
 		}
 
 		return copy;
@@ -145,16 +158,14 @@ public class TimezoneType extends VCardType {
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
-		if (shortText != null || longText != null) {
-			sb.append(';');
-			if (shortText != null) {
-				sb.append(VCardStringUtils.escapeText(shortText));
+		if (text != null) {
+			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && hourOffset != null && minuteOffset != null) {
+				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
+				sb.append(';');
 			}
-			sb.append(';');
-			if (longText != null) {
-				sb.append(VCardStringUtils.escapeText(longText));
-			}
+			sb.append(VCardStringUtils.escapeText(text));
+		} else if (hourOffset != null && minuteOffset != null) {
+			sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
 		}
 
 		return sb.toString();
@@ -162,19 +173,22 @@ public class TimezoneType extends VCardType {
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String split[] = VCardStringUtils.splitBy(value, ';', false, true);
-
-		int i = 0;
-		if (split.length > i && split[i].length() > 0) {
-			int offsets[] = VCardDateFormatter.parseTimeZone(split[i]);
+		Pattern p = Pattern.compile("^([-\\+]?\\d{1,2}(:?\\d{2})?)(.*)");
+		Matcher m = p.matcher(value);
+		if (m.find()) {
+			//do some smart parsing--if the value starts with a timezone, then parse it
+			int offsets[] = VCardDateFormatter.parseTimeZone(m.group(1));
 			hourOffset = offsets[0];
 			minuteOffset = offsets[1];
+
+			String text = m.group(3);
+			if (text != null && text.length() > 0) {
+				this.text = VCardStringUtils.unescape(text);
+			}
+		} else {
+			hourOffset = null;
+			minuteOffset = null;
+			text = VCardStringUtils.unescape(value);
 		}
-		i++;
-
-		shortText = (split.length > i && split[i].length() > 0) ? split[i] : null;
-		i++;
-
-		longText = (split.length > i && split[i].length() > 0) ? split[i] : null;
 	}
 }
