@@ -793,7 +793,7 @@ Contains the timezone that the person lives/works in.
 
 {{{
 VCard vcard = new VCard();
-TimezoneType tz = new TimezoneType(-5, 0, "EST", "America/New_York");
+TimezoneType tz = new TimezoneType(-5, 0, "America/New_York");
 vcard.addTimezone(tz);
 }}}
 
