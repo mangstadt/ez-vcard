@@ -94,4 +94,23 @@ public class VCardSubTypesTest {
 
 		assertTrue(subTypes.get("NUMBERS").isEmpty());
 	}
+
+	@Test
+	public void setPref() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+
+		try {
+			subTypes.setPref(-1);
+			fail();
+		} catch (IllegalArgumentException e) {
+
+		}
+
+		try {
+			subTypes.setPref(101);
+			fail();
+		} catch (IllegalArgumentException e) {
+
+		}
+	}
 }

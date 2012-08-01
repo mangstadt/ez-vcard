@@ -205,22 +205,24 @@ public class VCardWriter implements Closeable {
 				if (supported) {
 					if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
 						warnings.add("The value of KIND must be set to \"group\" in order to add MEMBERs to the vCard.");
-					} else {
-						super.add(type);
+						return true;
+					}
 
-						//add LABEL types for each ADR type if the vCard version is not 4.0
-						if (targetVersion != VCardVersion.V4_0 && type instanceof AddressType) {
-							AddressType adr = (AddressType) type;
-							String labelStr = adr.getLabel();
-							if (labelStr != null) {
-								LabelType label = new LabelType(labelStr);
-								for (AddressTypeParameter t : adr.getTypes()) {
-									label.addType(t);
-								}
-								super.add(label);
+					super.add(type);
+
+					//add LABEL types for each ADR type if the vCard version is not 4.0
+					if (targetVersion != VCardVersion.V4_0 && type instanceof AddressType) {
+						AddressType adr = (AddressType) type;
+						String labelStr = adr.getLabel();
+						if (labelStr != null) {
+							LabelType label = new LabelType(labelStr);
+							for (AddressTypeParameter t : adr.getTypes()) {
+								label.addType(t);
 							}
+							super.add(label);
 						}
 					}
+
 				} else {
 					warnings.add("The " + type.getTypeName() + " type is not supported by vCard version " + targetVersion + ".  The supported versions are " + Arrays.toString(type.getSupportedVersions()) + ".  This type will not be added to the vCard.");
 				}

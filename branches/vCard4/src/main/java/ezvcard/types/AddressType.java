@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardException;
@@ -67,86 +68,300 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		return param;
 	}
 
+	/**
+	 * Gets the P.O. (post office) box.
+	 * @return the P.O. box or null if not set
+	 */
 	public String getPoBox() {
 		return poBox;
 	}
 
+	/**
+	 * Sets the P.O. (post office) box.
+	 * @param poBox the P.O. box or null to remove
+	 */
 	public void setPoBox(String poBox) {
 		this.poBox = poBox;
 	}
 
+	/**
+	 * Gets the extended address.
+	 * @return the extended address (e.g. "Suite 200") or null if not set
+	 */
 	public String getExtendedAddress() {
 		return extendedAddress;
 	}
 
+	/**
+	 * Sets the extended address.
+	 * @param extendedAddress the extended address (e.g. "Suite 200") or null to
+	 * remove
+	 */
 	public void setExtendedAddress(String extendedAddress) {
 		this.extendedAddress = extendedAddress;
 	}
 
+	/**
+	 * Gets the street address
+	 * @return the street address (e.g. "123 Main St")
+	 */
 	public String getStreetAddress() {
 		return streetAddress;
 	}
 
+	/**
+	 * Sets the street address.
+	 * @param streetAddress the street address (e.g. "123 Main St") or null to
+	 * remove
+	 */
 	public void setStreetAddress(String streetAddress) {
 		this.streetAddress = streetAddress;
 	}
 
+	/**
+	 * Gets the locality (city)
+	 * @return the locality (e.g. "Boston") or null if not set
+	 */
 	public String getLocality() {
 		return locality;
 	}
 
+	/**
+	 * Sets the locality (city).
+	 * @param locality the locality or null to remove
+	 */
 	public void setLocality(String locality) {
 		this.locality = locality;
 	}
 
+	/**
+	 * Gets the region.
+	 * @return the region (e.g. "Texas") or null if not set
+	 */
 	public String getRegion() {
 		return region;
 	}
 
+	/**
+	 * Sets the region.
+	 * @param region the region (e.g. "Texas") or null to remove
+	 */
 	public void setRegion(String region) {
 		this.region = region;
 	}
 
+	/**
+	 * Gets the postal code.
+	 * @return the postal code (e.g. "90210") or null if not set
+	 */
 	public String getPostalCode() {
 		return postalCode;
 	}
 
+	/**
+	 * Sets the postal code.
+	 * @param postalCode the postal code (e.g. "90210") or null to remove
+	 */
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 	}
 
+	/**
+	 * Gets the country.
+	 * @return the country (e.g. "USA") or null if not set
+	 */
 	public String getCountry() {
 		return country;
 	}
 
+	/**
+	 * Sets the country.
+	 * @param country the country (e.g. "USA") or null to remove
+	 */
 	public void setCountry(String country) {
 		this.country = country;
 	}
 
+	/**
+	 * Gets the language that the address is written in.
+	 * @return the language or null if not set
+	 * @see VCardSubTypes#getLanguage
+	 */
 	public String getLanguage() {
 		return subTypes.getLanguage();
 	}
 
+	/**
+	 * Sets the language that the address is written in.
+	 * @param language the language or null to remove
+	 * @see VCardSubTypes#setLanguage
+	 */
 	public void setLanguage(String language) {
 		subTypes.setLanguage(language);
 	}
 
+	/**
+	 * Gets the label of the address.
+	 * @return the label or null if it doesn't have one
+	 */
 	public String getLabel() {
 		return subTypes.getFirst("LABEL");
 	}
 
+	/**
+	 * Sets the label of the address.
+	 * @param label the label or null to remove
+	 */
 	public void setLabel(String label) {
 		subTypes.replace("LABEL", label);
 	}
 
+	/**
+	 * Gets the global positioning coordinates that are associated with this
+	 * address.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the latitude (index 0) and longitude (index 1) or null if not set
+	 * or null if the parameter value was in an incorrect format
+	 * @see VCardSubTypes#getGeo
+	 */
+	public double[] getGeo() {
+		return subTypes.getGeo();
+	}
+
+	/**
+	 * Sets the global positioning coordinates that are associated with this
+	 * address.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param latitude the latitude
+	 * @param longitude the longitude
+	 * @see VCardSubTypes#setGeo
+	 */
+	public void setGeo(double latitude, double longitude) {
+		subTypes.setGeo(latitude, longitude);
+	}
+
+	/**
+	 * Gets all PID parameter values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the PID values or empty set if there are none
+	 * @see VCardSubTypes#getPids
+	 */
+	public Set<String> getPids() {
+		return subTypes.getPids();
+	}
+
+	/**
+	 * Adds a PID value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param pid the PID value
+	 * @see VCardSubTypes#addPid
+	 */
+	public void addPid(String pid) {
+		subTypes.addPid(pid);
+	}
+
+	/**
+	 * Removes a PID value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param pid the PID value to remove
+	 * @see VCardSubTypes#removePid
+	 */
+	public void removePid(String pid) {
+		subTypes.removePid(pid);
+	}
+
+	/**
+	 * Gets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the preference value or null if it doesn't exist
+	 * @see VCardSubTypes#getPref
+	 */
+	public Integer getPref() {
+		return subTypes.getPref();
+	}
+
+	/**
+	 * Sets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param pref the preference value or null to remove
+	 * @see VCardSubTypes#setPref
+	 */
+	public void setPref(Integer pref) {
+		subTypes.setPref(pref);
+	}
+
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
+	public String getAltId() {
+		return subTypes.getAltId();
+	}
+
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
+	public void setAltId(String altId) {
+		subTypes.setAltId(altId);
+	}
+
 	@Override
 	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
-		if (version != VCardVersion.V4_0) {
-			VCardSubTypes copy = new VCardSubTypes(subTypes);
-			copy.removeAll("LABEL");
-			return copy;
+		VCardSubTypes copy = new VCardSubTypes(subTypes);
+
+		//replace "TYPE=pref" with "PREF=1"
+		if (version == VCardVersion.V4_0) {
+			if (getTypes().contains(AddressTypeParameter.PREF)) {
+				copy.removeType(AddressTypeParameter.PREF.getValue());
+				copy.setPref(1);
+			}
+		} else {
+			copy.setPref(null);
+
+			//find the ADR with the lowest PREF value in the vCard (and the same ALTID)
+			AddressType mostPreferred = null;
+			for (AddressType adr : vcard.getAddresses()) {
+				Integer pref = adr.getPref();
+				if (pref != null) {
+					if (mostPreferred == null || pref < mostPreferred.getPref()) {
+						mostPreferred = adr;
+					}
+				}
+			}
+			if (this == mostPreferred) {
+				copy.addType(AddressTypeParameter.PREF.getValue());
+			}
 		}
-		return super.doMarshalSubTypes(version, warnings, compatibilityMode, vcard);
+
+		//remove the LABEL parameter
+		if (version != VCardVersion.V4_0) {
+			copy.removeAll("LABEL");
+		}
+
+		return copy;
 	}
 
 	@Override
