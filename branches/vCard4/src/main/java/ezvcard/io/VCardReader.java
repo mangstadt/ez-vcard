@@ -320,7 +320,6 @@ public class VCardReader implements Closeable {
 	//Note: If this method has a compile error, make sure that you're returning the
 	//      Type that you created in its "if" block
 	private VCardType createAndAddToVCard(VCard vcard, String name, VCardSubTypes subTypes, String value) throws VCardException {
-		//TODO add vCard 4.0 types
 		if ("BEGIN".equals(name)) {
 			if (!"vcard".equalsIgnoreCase(value)) {
 				warnings.add("The value of the BEGIN type should be \"vcard\", but it is \"" + value + "\".");
