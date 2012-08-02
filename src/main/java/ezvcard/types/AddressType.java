@@ -252,7 +252,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
 	 */
-	public Set<String> getPids() {
+	public Set<Integer[]> getPids() {
 		return subTypes.getPids();
 	}
 
@@ -261,23 +261,24 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param pid the PID value
-	 * @see VCardSubTypes#addPid
+	 * @param localId the local ID
+	 * @param clientPidMapRef the ID used to reference the property's globally
+	 * unique identifier in the CLIENTPIDMAP property.
+	 * @see VCardSubTypes#addPid(int, int)
 	 */
-	public void addPid(String pid) {
-		subTypes.addPid(pid);
+	public void addPid(int localId, int clientPidMapRef) {
+		subTypes.addPid(localId, clientPidMapRef);
 	}
 
 	/**
-	 * Removes a PID value.
+	 * Removes all PID values.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param pid the PID value to remove
-	 * @see VCardSubTypes#removePid
+	 * @see VCardSubTypes#removePids
 	 */
-	public void removePid(String pid) {
-		subTypes.removePid(pid);
+	public void removePids() {
+		subTypes.removePids();
 	}
 
 	/**

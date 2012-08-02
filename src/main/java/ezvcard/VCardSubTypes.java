@@ -561,36 +561,95 @@ public class VCardSubTypes {
 	}
 
 	/**
-	 * Gets all PID parameter values.
+	 * <p>
+	 * Gets all PID parameter values. PIDs can exist on any property where
+	 * multiple instances are allowed (such as EMAIL or ADR, but not N because
+	 * only 1 instance of N is allowed).
+	 * </p>
+	 * <p>
+	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
+	 * individual property instance to be uniquely identifiable. This feature is
+	 * useful when two different versions of the same vCard have to be merged
+	 * together (called "synchronizing").
+	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @return the values or empty set if there are none
+	 * @return the PID values or empty set if there are none. Index 0 is the
+	 * local ID and index 1 is the ID used to reference the CLIENTPIDMAP
+	 * property. Index 0 will never be null, but index 1 may be null.
 	 */
-	public Set<String> getPids() {
-		return get("PID");
+	public Set<Integer[]> getPids() {
+		Set<String> values = get("PID");
+		Set<Integer[]> pids = new HashSet<Integer[]>();
+		for (String value : values) {
+			try {
+				String split[] = value.split("\\.");
+				Integer pid[] = new Integer[2];
+				pid[0] = Integer.valueOf(split[0]);
+				if (split.length > 1) {
+					pid[1] = Integer.valueOf(split[1]);
+				}
+				pids.add(pid);
+			} catch (NumberFormatException e) {
+				//skip
+			}
+		}
+		return pids;
 	}
 
 	/**
-	 * Adds a PID value.
+	 * <p>
+	 * Adds a PID parameter value. PIDs can exist on any property where multiple
+	 * instances are allowed (such as EMAIL or ADR, but not N because only 1
+	 * instance of N is allowed).
+	 * </p>
+	 * <p>
+	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
+	 * individual property instance to be uniquely identifiable. This feature is
+	 * useful when two different versions of the same vCard have to be merged
+	 * together (called "synchronizing").
+	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param pid the value
+	 * @param localId the local ID
 	 */
-	public void addPid(String pid) {
-		put("PID", pid);
+	public void addPid(int localId) {
+		put("PID", Integer.toString(localId));
 	}
 
 	/**
-	 * Removes a PID value.
+	 * <p>
+	 * Adds a PID parameter value. PIDs can exist on any property where multiple
+	 * instances are allowed (such as EMAIL or ADR, but not N because only 1
+	 * instance of N is allowed).
+	 * </p>
+	 * <p>
+	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
+	 * individual property instance to be uniquely identifiable. This feature is
+	 * useful when two different versions of the same vCard have to be merged
+	 * together (called "synchronizing").
+	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param pid the value to remove
+	 * @param localId the local ID
+	 * @param clientPidMapRef the ID used to reference the property's globally
+	 * unique identifier in the CLIENTPIDMAP property.
 	 */
-	public void removePid(String pid) {
-		remove("PID", pid);
+	public void addPid(int localId, int clientPidMapRef) {
+		put("PID", localId + "." + clientPidMapRef);
+	}
+
+	/**
+	 * Removes all PID values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 */
+	public void removePids() {
+		removeAll("PID");
 	}
 
 	/**
