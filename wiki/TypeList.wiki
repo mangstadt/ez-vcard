@@ -298,16 +298,12 @@ VCardReader vcr = ...
 VCard vcard = vcr.readNext();
 
 for (KeyType key : vcard.getKeys()){
-  KeyTypeParameter type = key.getType();
-  if (type == null){
-    //if the key is a URL and the vCard is 2.1 or 3.0, then no type info is included in the vCard
-  }
-
   //the key will have either a URL or a binary data
   //only 4.0 vCards are allowed to use URLs for keys
   if (key.getData() == null){
     System.out.println("Key URL: " + key.getUrl());
   } else {
+    KeyTypeParameter type = key.getType();
     String folder;
     if (type == KeyTypeParameter.PGP){ //it is safe to use "==" instead of "equals()"
       folder = "pgp-keys";
@@ -425,20 +421,16 @@ VCardReader vcr = ...
 VCard vcard = vcr.readNext();
 
 for (LogoType logo : vcard.getLogos()){
-  ImageTypeParameter type = logo.getType();
-  if (type == null){
-    //if the logo is a URL and the vCard is 2.1 or 3.0, then no image type info is included in the vCard
-  }
-
   //the logo will have either a URL or a binary data
   if (logo.getData() == null){
     System.out.println("Logo URL: " + logo.getUrl());
   } else {
+    ImageTypeParameter type = logo.getType();
     String folder;
-    if (type == ImageTypeParameter.JPEG){ //it is safe to use "==" instead of "equals()"
-      folder = "photos";
+    if (type == ImageTypeParameter.PNG){ //it is safe to use "==" instead of "equals()"
+      folder = "png-files";
     } else {
-      folder = "images";
+      folder = "image-files";
     }
     System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
     byte data[] = logo.getData();
@@ -606,15 +598,11 @@ VCardReader vcr = ...
 VCard vcard = vcr.readNext();
 
 for (PhotoType photo : vcard.getPhotos()){
-  ImageTypeParameter type = photo.getType();
-  if (type == null){
-    //if the photo is a URL and the vCard is 2.1 or 3.0, then no image type info is included in the vCard
-  }
-
   //the photo will have either a URL or a binary data
   if (photo.getData() == null){
     System.out.println("Photo URL: " + photo.getUrl());
   } else {
+    ImageTypeParameter type = photo.getType();
     String folder;
     if (type == ImageTypeParameter.JPEG){ //it is safe to use "==" instead of "equals()"
       folder = "photos";
@@ -756,15 +744,11 @@ VCardReader vcr = ...
 VCard vcard = vcr.readNext();
 
 for (SoundType sound : vcard.getSounds()){
-  SoundTypeParameter type = sound.getType();
-  if (type == null){
-    //if the sound is a URL and the vCard is 2.1 or 3.0, then no type info is included in the vCard
-  }
-
   //the sound will have either a URL or a binary data
   if (sound.getData() == null){
     System.out.println("Sound URL: " + sound.getUrl());
   } else {
+    SoundTypeParameter type = sound.getType();
     String folder;
     if (type == SoundTypeParameter.OGG){ //it is safe to use "==" instead of "equals()"
       folder = "ogg-files";
