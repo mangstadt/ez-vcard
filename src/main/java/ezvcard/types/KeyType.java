@@ -1,5 +1,9 @@
 package ezvcard.types;
 
+import java.util.List;
+
+import ezvcard.VCardVersion;
+import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.KeyTypeParameter;
 
 /*
@@ -55,24 +59,6 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 		return param;
 	}
 
-	/**
-	 * URL values are not supported by the KEY type.
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public String getUrl() {
-		throw new UnsupportedOperationException("URL values are not supported by the KEY type.");
-	}
-
-	/**
-	 * URL values are not supported by the KEY type.
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public void setUrl(String url, KeyTypeParameter type) {
-		throw new UnsupportedOperationException("URL values are not supported by the KEY type.");
-	}
-
 	@Override
 	protected KeyTypeParameter buildMediaTypeObj(String mediaType) {
 		KeyTypeParameter p = KeyTypeParameter.findByMediaType(mediaType);
@@ -87,5 +73,13 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			p = new KeyTypeParameter(type, mediaType, null);
 		}
 		return p;
+	}
+
+	@Override
+	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
+			warnings.add("vCard version " + version + " does not allow URLs to be used in the " + NAME + " type.");
+		}
+		return super.doMarshalValue(version, warnings, compatibilityMode);
 	}
 }
