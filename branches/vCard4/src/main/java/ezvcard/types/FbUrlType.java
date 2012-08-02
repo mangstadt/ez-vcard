@@ -2,6 +2,7 @@ package ezvcard.types;
 
 import java.util.Set;
 
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 
 /*
@@ -51,16 +52,41 @@ public class FbUrlType extends TextType {
 		super(NAME, uri);
 	}
 
-	public Set<String> getPids() {
+	/**
+	 * Gets all PID parameter values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the PID values or empty set if there are none
+	 * @see VCardSubTypes#getPids
+	 */
+	public Set<Integer[]> getPids() {
 		return subTypes.getPids();
 	}
 
-	public void addPid(String pid) {
-		subTypes.addPid(pid);
+	/**
+	 * Adds a PID value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param localId the local ID
+	 * @param clientPidMapRef the ID used to reference the property's globally
+	 * unique identifier in the CLIENTPIDMAP property.
+	 * @see VCardSubTypes#addPid(int, int)
+	 */
+	public void addPid(int localId, int clientPidMapRef) {
+		subTypes.addPid(localId, clientPidMapRef);
 	}
 
-	public void removePid(String pid) {
-		subTypes.removePid(pid);
+	/**
+	 * Removes all PID values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @see VCardSubTypes#removePids
+	 */
+	public void removePids() {
+		subTypes.removePids();
 	}
 
 	public Integer getPref() {

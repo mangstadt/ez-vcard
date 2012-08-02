@@ -103,14 +103,57 @@ public class VCardSubTypesTest {
 			subTypes.setPref(-1);
 			fail();
 		} catch (IllegalArgumentException e) {
-
+			//should be thrown
 		}
 
 		try {
 			subTypes.setPref(101);
 			fail();
 		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
+	}
+	
+	//TODO test GEO
 
+	/**
+	 * Make sure it handles PID values correctly.
+	 */
+	@Test
+	public void pid() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.addPid(1);
+		subTypes.addPid(2, 1);
+
+		//make sure it builds the correct string values
+		{
+			Set<String> actual = subTypes.get("PID");
+			Set<String> expected = new HashSet<String>();
+			expected.add("1");
+			expected.add("2.1");
+			assertEquals(expected, actual);
+		}
+
+		//make sure it unmarshals the string values correctly
+		{
+			Set<Integer[]> actual = subTypes.getPids();
+			Set<Integer[]> expected = new HashSet<Integer[]>();
+			expected.add(new Integer[] { 1, null });
+			expected.add(new Integer[] { 2, 1 });
+
+			assertEquals(2, actual.size());
+			for (Integer[] pid : actual) {
+				boolean found = false;
+				for (Integer[] exPid : expected) {
+					if (Arrays.equals(exPid, pid)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					fail();
+				}
+			}
 		}
 	}
 }
