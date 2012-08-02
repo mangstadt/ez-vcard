@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
@@ -19,6 +18,7 @@ import ezvcard.io.VCardReader;
 import ezvcard.io.VCardWriter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
+import ezvcard.types.AnniversaryType;
 import ezvcard.types.BirthdayType;
 import ezvcard.types.CalendarRequestUriType;
 import ezvcard.types.CalendarUriType;
@@ -110,6 +110,7 @@ public class VCard {
 	private List<LogoType> logos = new ArrayList<LogoType>();
 	private List<SoundType> sounds = new ArrayList<SoundType>();
 	private BirthdayType birthday;
+	private AnniversaryType anniversary;
 	private RevisionType rev;
 	private ProdIdType prodId;
 	private List<AddressType> addresses = new ArrayList<AddressType>();
@@ -378,6 +379,14 @@ public class VCard {
 		this.birthday = birthday;
 	}
 
+	public AnniversaryType getAnniversary() {
+		return anniversary;
+	}
+
+	public void setAnniversary(AnniversaryType anniversary) {
+		this.anniversary = anniversary;
+	}
+
 	public RevisionType getRevision() {
 		return rev;
 	}
@@ -564,8 +573,8 @@ public class VCard {
 		return relations;
 	}
 
-	public void addRelation(RelatedType relation) {
-		this.relations.add(relation);
+	public void addRelated(RelatedType related) {
+		this.relations.add(related);
 	}
 
 	public List<LanguageType> getLanguages() {
@@ -580,7 +589,7 @@ public class VCard {
 		return calendarRequestUris;
 	}
 
-	public void addCalendarRequestUris(CalendarRequestUriType calendarRequestUri) {
+	public void addCalendarRequestUri(CalendarRequestUriType calendarRequestUri) {
 		this.calendarRequestUris.add(calendarRequestUri);
 	}
 
@@ -588,7 +597,7 @@ public class VCard {
 		return calendarUris;
 	}
 
-	public void addCalendarUris(CalendarUriType calendarUri) {
+	public void addCalendarUri(CalendarUriType calendarUri) {
 		this.calendarUris.add(calendarUri);
 	}
 
@@ -606,14 +615,6 @@ public class VCard {
 
 	public void addClientPidMap(ClientPidMapType clientPidMap) {
 		this.clientPidMaps.add(clientPidMap);
-	}
-
-	public void addClientPidMaps(Map<Integer, String> clientPidMaps) {
-		for (Map.Entry<Integer, String> entry : clientPidMaps.entrySet()) {
-			Integer pid = entry.getKey();
-			String uri = entry.getValue();
-			this.clientPidMaps.add(new ClientPidMapType(pid, uri));
-		}
 	}
 
 	/**
