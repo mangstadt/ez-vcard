@@ -2,6 +2,7 @@ package ezvcard.types;
 
 import java.util.List;
 
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.VCardStringUtils;
@@ -36,7 +37,7 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the CLINTPIDMAP type.
+ * Represents the CLIENTPIDMAP type.
  * @author Michael Angstadt
  */
 public class ClientPidMapType extends VCardType {
@@ -45,16 +46,13 @@ public class ClientPidMapType extends VCardType {
 	private int pid;
 	private String uri;
 
-	/**
-	 * @param name the type name
-	 */
 	public ClientPidMapType() {
 		super(NAME);
 	}
 
 	/**
-	 * @param name the type name
-	 * @param value the value
+	 * @param pid the PID
+	 * @param uri the globally unique URI
 	 */
 	public ClientPidMapType(int pid, String uri) {
 		super(NAME);
@@ -62,18 +60,38 @@ public class ClientPidMapType extends VCardType {
 		this.uri = uri;
 	}
 
+	/**
+	 * Gets the value that is used to link the URI in this property to the
+	 * property that the URI belongs to.
+	 * @return the PID
+	 * @see VCardSubTypes#getPids
+	 */
 	public int getPid() {
 		return pid;
 	}
 
+	/**
+	 * Gets the value that is used to link the URI in this property to the
+	 * property that the URI belongs to.
+	 * @pid the PID
+	 * @see VCardSubTypes#getPids
+	 */
 	public void setPid(int pid) {
 		this.pid = pid;
 	}
 
+	/**
+	 * Gets the URI.
+	 * @return the URI
+	 */
 	public String getUri() {
 		return uri;
 	}
 
+	/**
+	 * Sets the URI.
+	 * @param uri the URI
+	 */
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
