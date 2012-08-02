@@ -223,7 +223,7 @@ public class BinaryTypeTest {
 		}
 
 		@Override
-		protected ImageTypeParameter unmarshalMediaType(String mediaType) {
+		protected ImageTypeParameter buildMediaTypeObj(String mediaType) {
 			ImageTypeParameter p = ImageTypeParameter.findByMediaType(mediaType);
 			if (p == null) {
 				int slashPos = mediaType.indexOf('/');

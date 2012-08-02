@@ -60,7 +60,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	}
 
 	@Override
-	protected SoundTypeParameter unmarshalMediaType(String mediaType) {
+	protected SoundTypeParameter buildMediaTypeObj(String mediaType) {
 		SoundTypeParameter p = SoundTypeParameter.findByMediaType(mediaType);
 		if (p == null) {
 			int slashPos = mediaType.indexOf('/');
