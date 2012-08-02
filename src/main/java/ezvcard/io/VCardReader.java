@@ -20,18 +20,25 @@ import ezvcard.parameters.TypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
+import ezvcard.types.AnniversaryType;
 import ezvcard.types.BirthdayType;
+import ezvcard.types.CalendarRequestUriType;
+import ezvcard.types.CalendarUriType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
-import ezvcard.types.SourceDisplayTextType;
+import ezvcard.types.ClientPidMapType;
 import ezvcard.types.EmailType;
+import ezvcard.types.FbUrlType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
 import ezvcard.types.ImppType;
 import ezvcard.types.KeyType;
+import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
+import ezvcard.types.LanguageType;
 import ezvcard.types.LogoType;
 import ezvcard.types.MailerType;
+import ezvcard.types.MemberType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrganizationType;
@@ -39,10 +46,12 @@ import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.ProfileType;
 import ezvcard.types.RawType;
+import ezvcard.types.RelatedType;
 import ezvcard.types.RevisionType;
 import ezvcard.types.RoleType;
 import ezvcard.types.SortStringType;
 import ezvcard.types.SoundType;
+import ezvcard.types.SourceDisplayTextType;
 import ezvcard.types.SourceType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
@@ -463,6 +472,42 @@ public class VCardReader implements Closeable {
 		} else if (ImppType.NAME.equals(name)) {
 			ImppType t = new ImppType();
 			vcard.addImpp(t);
+			return t;
+		} else if (KindType.NAME.equals(name)) {
+			KindType t = new KindType();
+			vcard.setKind(t);
+			return t;
+		} else if (MemberType.NAME.equals(name)) {
+			MemberType t = new MemberType();
+			vcard.addMember(t);
+			return t;
+		} else if (AnniversaryType.NAME.equals(name)) {
+			AnniversaryType t = new AnniversaryType();
+			vcard.setAnniversary(t);
+			return t;
+		} else if (RelatedType.NAME.equals(name)) {
+			RelatedType t = new RelatedType();
+			vcard.addRelated(t);
+			return t;
+		} else if (LanguageType.NAME.equals(name)) {
+			LanguageType t = new LanguageType();
+			vcard.addLanguage(t);
+			return t;
+		} else if (CalendarRequestUriType.NAME.equals(name)) {
+			CalendarRequestUriType t = new CalendarRequestUriType();
+			vcard.addCalendarRequestUri(t);
+			return t;
+		} else if (CalendarUriType.NAME.equals(name)) {
+			CalendarUriType t = new CalendarUriType();
+			vcard.addCalendarUri(t);
+			return t;
+		} else if (FbUrlType.NAME.equals(name)) {
+			FbUrlType t = new FbUrlType();
+			vcard.addFbUrl(t);
+			return t;
+		} else if (ClientPidMapType.NAME.equals(name)) {
+			ClientPidMapType t = new ClientPidMapType();
+			vcard.addClientPidMap(t);
 			return t;
 		} else {
 			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
