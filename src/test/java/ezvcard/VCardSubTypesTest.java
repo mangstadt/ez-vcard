@@ -1,6 +1,9 @@
 package ezvcard;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -113,8 +116,29 @@ public class VCardSubTypesTest {
 			//should be thrown
 		}
 	}
-	
-	//TODO test GEO
+
+	/**
+	 * Make sure it handles GEO values correctly.
+	 */
+	@Test
+	public void geo() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.setGeo(-10.98887888, 20.12344111);
+
+		//make sure it builds the correct text value
+		{
+			String expected = "geo:-10.9889,20.1234"; //it should round to 4 decimal places
+			String actual = subTypes.getFirst("GEO");
+			assertEquals(expected, actual);
+		}
+
+		//make sure it unmarshals the text value correctly
+		{
+			double[] expected = new double[] { -10.9889, 20.1234 };
+			double[] actual = subTypes.getGeo();
+			assertArrayEquals(expected, actual, .00001);
+		}
+	}
 
 	/**
 	 * Make sure it handles PID values correctly.
