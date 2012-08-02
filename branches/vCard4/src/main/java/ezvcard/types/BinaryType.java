@@ -171,7 +171,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 			String mediaType = m.group(1);
 			String base64 = m.group(2);
 
-			T param = unmarshalMediaType(mediaType);
+			T param = buildMediaTypeObj(mediaType);
 			setData(Base64.decodeBase64(base64), param);
 		} else {
 			ValueParameter valueSubType = subTypes.getValue();
@@ -179,7 +179,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 				String mediaType = subTypes.getMediaType();
 				if (mediaType != null) {
 					//4.0 URLs should have a MEDIATYPE parameter
-					T param = unmarshalMediaType(mediaType);
+					T param = buildMediaTypeObj(mediaType);
 					setUrl(value, param);
 				} else {
 					setUrl(value);
@@ -199,7 +199,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 						String mediaType = subTypes.getMediaType();
 						if (mediaType != null) {
 							//4.0 URLs should have a MEDIATYPE parameter
-							T param = unmarshalMediaType(mediaType);
+							T param = buildMediaTypeObj(mediaType);
 							setUrl(value, param);
 						} else {
 							setUrl(value);
@@ -219,5 +219,5 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 	 * @param mediaType the media type string (e.g. "image/jpeg")
 	 * @return the parameter object
 	 */
-	protected abstract T unmarshalMediaType(String mediaType);
+	protected abstract T buildMediaTypeObj(String mediaType);
 }

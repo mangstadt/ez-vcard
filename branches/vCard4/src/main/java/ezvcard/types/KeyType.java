@@ -74,7 +74,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected KeyTypeParameter unmarshalMediaType(String mediaType) {
+	protected KeyTypeParameter buildMediaTypeObj(String mediaType) {
 		KeyTypeParameter p = KeyTypeParameter.findByMediaType(mediaType);
 		if (p == null) {
 			int slashPos = mediaType.indexOf('/');
