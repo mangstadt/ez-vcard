@@ -393,20 +393,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType t = vcard.getNicknames();
+			NicknameType t = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny"), t.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType t = vcard.getOrganizations();
+			OrganizationType t = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "Accounting", "Dungeon"), t.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType t = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType t = it.next();
 			assertEquals("Money Counter", t.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//CATEGORIES
@@ -613,14 +617,18 @@ public class VCardReaderTest {
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Money Counter", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//BDAY
@@ -724,20 +732,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType f = vcard.getNicknames();
+			NicknameType f = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny"), f.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Money Counter", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//EMAIL
@@ -938,20 +950,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType f = vcard.getNicknames();
+			NicknameType f = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny,JayJay"), f.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "SUN"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Generic Accountant", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//EMAIL
@@ -1121,8 +1137,12 @@ public class VCardReaderTest {
 
 		//ROLE
 		{
-			RoleType f = vcard.getRole();
+			Iterator<RoleType> it = vcard.getRoles().iterator();
+
+			RoleType f = it.next();
 			assertEquals("Counting Money", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//SOURCE
@@ -1198,20 +1218,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType f = vcard.getNicknames();
+			NicknameType f = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny"), f.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Money Counter", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//NOTE
@@ -1299,8 +1323,12 @@ public class VCardReaderTest {
 
 		//ROLE
 		{
-			RoleType f = vcard.getRole();
+			Iterator<RoleType> it = vcard.getRoles().iterator();
+
+			RoleType f = it.next();
 			assertEquals("Counting Money", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//BDAY
@@ -1411,20 +1439,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType f = vcard.getNicknames();
+			NicknameType f = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny"), f.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Money Counter", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//EMAIL

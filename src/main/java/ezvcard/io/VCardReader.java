@@ -311,6 +311,7 @@ public class VCardReader implements Closeable {
 	//Note: If this method has a compile error, make sure that you're returning the
 	//      Type that you created in its "if" block
 	private VCardType createAndAddToVCard(VCard vcard, String name, VCardSubTypes subTypes, String value) throws VCardException {
+		//TODO add vCard 4.0 types
 		if ("BEGIN".equals(name)) {
 			if (!"vcard".equalsIgnoreCase(value)) {
 				warnings.add("The value of the BEGIN type should be \"vcard\", but it is \"" + value + "\".");
@@ -351,11 +352,11 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (FormattedNameType.NAME.equals(name)) {
 			FormattedNameType t = new FormattedNameType();
-			vcard.setFormattedName(t);
+			vcard.addFormattedName(t);
 			return t;
 		} else if (StructuredNameType.NAME.equals(name)) {
 			StructuredNameType t = new StructuredNameType();
-			vcard.setStructuredName(t);
+			vcard.addStructuredName(t);
 			return t;
 		} else if (ProdIdType.NAME.equals(name)) {
 			ProdIdType t = new ProdIdType();
@@ -363,7 +364,7 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (NicknameType.NAME.equals(name)) {
 			NicknameType t = new NicknameType();
-			vcard.setNicknames(t);
+			vcard.addNickname(t);
 			return t;
 		} else if (SortStringType.NAME.equals(name)) {
 			SortStringType t = new SortStringType();
@@ -371,23 +372,23 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (TitleType.NAME.equals(name)) {
 			TitleType t = new TitleType();
-			vcard.setTitle(t);
+			vcard.addTitle(t);
 			return t;
 		} else if (RoleType.NAME.equals(name)) {
 			RoleType t = new RoleType();
-			vcard.setRole(t);
+			vcard.addRole(t);
 			return t;
 		} else if (PhotoType.NAME.equals(name)) {
 			PhotoType t = new PhotoType();
-			vcard.getPhotos().add(t);
+			vcard.addPhoto(t);
 			return t;
 		} else if (LogoType.NAME.equals(name)) {
 			LogoType t = new LogoType();
-			vcard.getLogos().add(t);
+			vcard.addLogo(t);
 			return t;
 		} else if (SoundType.NAME.equals(name)) {
 			SoundType t = new SoundType();
-			vcard.getSounds().add(t);
+			vcard.addSound(t);
 			return t;
 		} else if (BirthdayType.NAME.equals(name)) {
 			BirthdayType t = new BirthdayType();
@@ -403,20 +404,21 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (AddressType.NAME.equals(name)) {
 			AddressType t = new AddressType();
-			vcard.getAddresses().add(t);
+			vcard.addAddress(t);
 			return t;
 		} else if (LabelType.NAME.equals(name)) {
+			//LABELs must be matched up with their ADRs
 			LabelType t = new LabelType();
 			t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
 			labels.add(t);
 			return null;
 		} else if (EmailType.NAME.equals(name)) {
 			EmailType t = new EmailType();
-			vcard.getEmails().add(t);
+			vcard.addEmail(t);
 			return t;
 		} else if (TelephoneType.NAME.equals(name)) {
 			TelephoneType t = new TelephoneType();
-			vcard.getTelephoneNumbers().add(t);
+			vcard.addTelephoneNumber(t);
 			return t;
 		} else if (MailerType.NAME.equals(name)) {
 			MailerType t = new MailerType();
@@ -424,23 +426,23 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (UrlType.NAME.equals(name)) {
 			UrlType t = new UrlType();
-			vcard.getUrls().add(t);
+			vcard.addUrl(t);
 			return t;
 		} else if (TimezoneType.NAME.equals(name)) {
 			TimezoneType t = new TimezoneType();
-			vcard.setTimezone(t);
+			vcard.addTimezone(t);
 			return t;
 		} else if (GeoType.NAME.equals(name)) {
 			GeoType t = new GeoType();
-			vcard.setGeo(t);
+			vcard.addGeo(t);
 			return t;
 		} else if (OrganizationType.NAME.equals(name)) {
 			OrganizationType t = new OrganizationType();
-			vcard.setOrganizations(t);
+			vcard.addOrganization(t);
 			return t;
 		} else if (CategoriesType.NAME.equals(name)) {
 			CategoriesType t = new CategoriesType();
-			vcard.setCategories(t);
+			vcard.addCategories(t);
 			return t;
 		} else if (AgentType.NAME.equals(name)) {
 			AgentType t = new AgentType();
@@ -448,7 +450,7 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (NoteType.NAME.equals(name)) {
 			NoteType t = new NoteType();
-			vcard.getNotes().add(t);
+			vcard.addNote(t);
 			return t;
 		} else if (UidType.NAME.equals(name)) {
 			UidType t = new UidType();
@@ -456,11 +458,11 @@ public class VCardReader implements Closeable {
 			return t;
 		} else if (KeyType.NAME.equals(name)) {
 			KeyType t = new KeyType();
-			vcard.getKeys().add(t);
+			vcard.addKey(t);
 			return t;
 		} else if (ImppType.NAME.equals(name)) {
 			ImppType t = new ImppType();
-			vcard.getImpps().add(t);
+			vcard.addImpp(t);
 			return t;
 		} else {
 			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);

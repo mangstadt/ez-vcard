@@ -100,12 +100,12 @@ public class VCard {
 	private ClassificationType classification;
 	private List<SourceType> sources = new ArrayList<SourceType>();
 	private SourceDisplayTextType sourceDisplayText;
-	private FormattedNameType formattedName;
-	private StructuredNameType structuredName;
-	private NicknameType nicknames;
+	private List<FormattedNameType> formattedNames = new ArrayList<FormattedNameType>();
+	private List<StructuredNameType> structuredNames = new ArrayList<StructuredNameType>();
+	private List<NicknameType> nicknames = new ArrayList<NicknameType>();
 	private SortStringType sortString;
-	private TitleType title;
-	private RoleType role;
+	private List<TitleType> titles = new ArrayList<TitleType>();
+	private List<RoleType> roles = new ArrayList<RoleType>();
 	private List<PhotoType> photos = new ArrayList<PhotoType>();
 	private List<LogoType> logos = new ArrayList<LogoType>();
 	private List<SoundType> sounds = new ArrayList<SoundType>();
@@ -118,10 +118,10 @@ public class VCard {
 	private List<TelephoneType> telephoneNumbers = new ArrayList<TelephoneType>();
 	private MailerType mailer;
 	private List<UrlType> urls = new ArrayList<UrlType>();
-	private TimezoneType timezone;
-	private GeoType geo;
-	private OrganizationType organizations;
-	private CategoriesType categories;
+	private List<TimezoneType> timezones = new ArrayList<TimezoneType>();
+	private List<GeoType> geos = new ArrayList<GeoType>();
+	private List<OrganizationType> organizations = new ArrayList<OrganizationType>();
+	private List<CategoriesType> categories = new ArrayList<CategoriesType>();
 	private AgentType agent;
 	private List<NoteType> notes = new ArrayList<NoteType>();
 	private UidType uid;
@@ -271,28 +271,55 @@ public class VCard {
 		this.sourceDisplayText = sourceDisplayText;
 	}
 
+	public List<FormattedNameType> getFormattedNames() {
+		return formattedNames;
+	}
+
 	public FormattedNameType getFormattedName() {
-		return formattedName;
+		return formattedNames.isEmpty() ? null : formattedNames.get(0);
+	}
+
+	public void addFormattedName(FormattedNameType formattedName) {
+		this.formattedNames.add(formattedName);
 	}
 
 	public void setFormattedName(FormattedNameType formattedName) {
-		this.formattedName = formattedName;
+		this.formattedNames.clear();
+		addFormattedName(formattedName);
+	}
+
+	public List<StructuredNameType> getStructuredNames() {
+		return structuredNames;
+	}
+
+	public void addStructuredName(StructuredNameType structuredName) {
+		this.structuredNames.add(structuredName);
 	}
 
 	public StructuredNameType getStructuredName() {
-		return structuredName;
+		return structuredNames.isEmpty() ? null : structuredNames.get(0);
 	}
 
 	public void setStructuredName(StructuredNameType structuredName) {
-		this.structuredName = structuredName;
+		this.structuredNames.clear();
+		addStructuredName(structuredName);
 	}
 
-	public NicknameType getNicknames() {
+	public List<NicknameType> getNicknames() {
 		return nicknames;
 	}
 
-	public void setNicknames(NicknameType nicknames) {
-		this.nicknames = nicknames;
+	public NicknameType getNickname() {
+		return nicknames.isEmpty() ? null : nicknames.get(0);
+	}
+
+	public void addNickname(NicknameType nickname) {
+		this.nicknames.add(nickname);
+	}
+
+	public void setNickname(NicknameType nickname) {
+		this.nicknames.clear();
+		addNickname(nickname);
 	}
 
 	public SortStringType getSortString() {
@@ -303,20 +330,20 @@ public class VCard {
 		this.sortString = sortString;
 	}
 
-	public TitleType getTitle() {
-		return title;
+	public List<TitleType> getTitles() {
+		return titles;
 	}
 
-	public void setTitle(TitleType title) {
-		this.title = title;
+	public void addTitle(TitleType title) {
+		this.titles.add(title);
 	}
 
-	public RoleType getRole() {
-		return role;
+	public List<RoleType> getRoles() {
+		return roles;
 	}
 
-	public void setRole(RoleType role) {
-		this.role = role;
+	public void addRole(RoleType role) {
+		this.roles.add(role);
 	}
 
 	public List<PhotoType> getPhotos() {
@@ -425,36 +452,72 @@ public class VCard {
 		this.urls.add(url);
 	}
 
+	public List<TimezoneType> getTimezones() {
+		return timezones;
+	}
+
 	public TimezoneType getTimezone() {
-		return timezone;
+		return timezones.isEmpty() ? null : timezones.get(0);
 	}
 
 	public void setTimezone(TimezoneType timezone) {
-		this.timezone = timezone;
+		this.timezones.clear();
+		addTimezone(timezone);
+	}
+
+	public void addTimezone(TimezoneType timezone) {
+		this.timezones.add(timezone);
+	}
+
+	public List<GeoType> getGeos() {
+		return geos;
 	}
 
 	public GeoType getGeo() {
-		return geo;
+		return geos.isEmpty() ? null : geos.get(0);
 	}
 
 	public void setGeo(GeoType geo) {
-		this.geo = geo;
+		geos.clear();
+		addGeo(geo);
 	}
 
-	public OrganizationType getOrganizations() {
+	public void addGeo(GeoType geo) {
+		this.geos.add(geo);
+	}
+
+	public OrganizationType getOrganization() {
+		return organizations.isEmpty() ? null : organizations.get(0);
+	}
+
+	public List<OrganizationType> getOrganizations() {
 		return organizations;
 	}
 
-	public void setOrganizations(OrganizationType organizations) {
-		this.organizations = organizations;
+	public void addOrganization(OrganizationType organization) {
+		this.organizations.add(organization);
 	}
 
-	public CategoriesType getCategories() {
+	public void setOrganization(OrganizationType organization) {
+		this.organizations.clear();
+		addOrganization(organization);
+	}
+
+	public List<CategoriesType> getCategoriesList() {
 		return categories;
 	}
 
+	public CategoriesType getCategories() {
+		return categories.isEmpty() ? null : categories.get(0);
+	}
+
+	public void addCategories(CategoriesType categories) {
+		this.categories.add(categories);
+	}
+
 	public void setCategories(CategoriesType categories) {
-		this.categories = categories;
+		this.categories.clear();
+		addCategories(categories);
 	}
 
 	public AgentType getAgent() {
