@@ -164,7 +164,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//4.0 uses data URIs
+		//check for a data URI (v4.0)
 		Pattern p = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(value);
 		if (m.find()) {
@@ -173,43 +173,48 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 
 			T param = buildMediaTypeObj(mediaType);
 			setData(Base64.decodeBase64(base64), param);
-		} else {
-			ValueParameter valueSubType = subTypes.getValue();
-			if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
-				String mediaType = subTypes.getMediaType();
-				if (mediaType != null) {
-					//4.0 URLs should have a MEDIATYPE parameter
-					T param = buildMediaTypeObj(mediaType);
-					setUrl(value, param);
-				} else {
-					setUrl(value);
-				}
-			} else {
-				EncodingParameter encodingSubType = subTypes.getEncoding();
-				if (encodingSubType != null) {
-					if (encodingSubType != EncodingParameter.B && encodingSubType != EncodingParameter.BASE64) {
-						warnings.add("Unrecognized ENCODING type \"" + encodingSubType + "\".  Attempting to decode as base64.");
-					}
-					setData(Base64.decodeBase64(value));
-				} else {
-					//the required Sub Types weren't included, make a guess 
-					if (value.startsWith("http")) {
-						warnings.add("No VALUE or ENCODING type given.  Assuming it's a URL.");
+			return;
+		}
 
-						String mediaType = subTypes.getMediaType();
-						if (mediaType != null) {
-							//4.0 URLs should have a MEDIATYPE parameter
-							T param = buildMediaTypeObj(mediaType);
-							setUrl(value, param);
-						} else {
-							setUrl(value);
-						}
-					} else {
-						warnings.add("No VALUE or ENCODING type given.  Attempting to decode as base64.");
-						setData(Base64.decodeBase64(value));
-					}
-				}
+		//check for a URL
+		ValueParameter valueSubType = subTypes.getValue();
+		if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
+			String mediaType = subTypes.getMediaType();
+			if (mediaType != null) {
+				//4.0 URLs should have a MEDIATYPE parameter
+				T param = buildMediaTypeObj(mediaType);
+				setUrl(value, param);
+			} else {
+				setUrl(value);
 			}
+			return;
+		}
+
+		//check for base64 data
+		EncodingParameter encodingSubType = subTypes.getEncoding();
+		if (encodingSubType != null) {
+			if (encodingSubType != EncodingParameter.B && encodingSubType != EncodingParameter.BASE64) {
+				warnings.add("Unrecognized ENCODING type \"" + encodingSubType + "\".  Attempting to decode as base64.");
+			}
+			setData(Base64.decodeBase64(value));
+			return;
+		}
+
+		//the required parameters weren't defined, make a guess 
+		if (value.matches("(?i)http.*")) {
+			warnings.add("No VALUE or ENCODING type given.  Assuming it's a URL.");
+
+			String mediaType = subTypes.getMediaType();
+			if (mediaType != null) {
+				//4.0 URLs should have a MEDIATYPE parameter
+				T param = buildMediaTypeObj(mediaType);
+				setUrl(value, param);
+			} else {
+				setUrl(value);
+			}
+		} else {
+			warnings.add("No VALUE or ENCODING type given.  Attempting to decode as base64.");
+			setData(Base64.decodeBase64(value));
 		}
 	}
 
