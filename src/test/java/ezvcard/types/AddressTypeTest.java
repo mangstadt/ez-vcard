@@ -90,6 +90,31 @@ public class AddressTypeTest {
 		assertEquals(expected, actual);
 	}
 
+	@Test
+	public void marshalTz() throws Exception {
+		VCardVersion version = VCardVersion.V2_1;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+
+		AddressType t = new AddressType();
+		t.setTimezone("America/New_York");
+		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals("tz:America/New_York", subTypes.getFirst("TZ"));
+	}
+
+	@Test
+	public void unmarshalTz() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.put("TZ", "tz:America/New_York");
+
+		AddressType t = new AddressType();
+		t.unmarshalValue(subTypes, ";;;", version, warnings, compatibilityMode);
+		assertEquals("America/New_York", t.getTimezone());
+	}
+
 	/**
 	 * If a type contains a "TYPE=pref" parameter and it's being marshalled to
 	 * 4.0, it should replace "TYPE=pref" with "PREF=1". <br>
