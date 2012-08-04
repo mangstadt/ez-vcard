@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import ezvcard.VCardSubTypes;
+
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -45,5 +47,29 @@ public class XmlType extends TextType {
 	 */
 	public XmlType(String value) {
 		super(NAME, value);
+	}
+
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
+	public String getAltId() {
+		return subTypes.getAltId();
+	}
+
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
+	public void setAltId(String altId) {
+		subTypes.setAltId(altId);
 	}
 }

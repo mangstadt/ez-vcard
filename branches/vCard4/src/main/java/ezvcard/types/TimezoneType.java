@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import java.util.List;
+import java.util.Set;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -95,18 +96,35 @@ public class TimezoneType extends VCardType {
 		setText(text);
 	}
 
+	/**
+	 * Gets the hour offset.
+	 * @return the hour offset or null if not set
+	 */
 	public Integer getHourOffset() {
 		return hourOffset;
 	}
 
+	/**
+	 * Sets the hour offset.
+	 * @param hourOffset the hour offset or null to remove
+	 */
 	public void setHourOffset(Integer hourOffset) {
 		this.hourOffset = hourOffset;
 	}
 
+	/**
+	 * Gets the minute offset.
+	 * @return the minute offset or null if not set
+	 */
 	public Integer getMinuteOffset() {
 		return minuteOffset;
 	}
 
+	/**
+	 * Sets the minute offest
+	 * @param minuteOffset the minute offset or null to remove
+	 * @throws IllegalArgumentException if the minute offset is not between 0 and 59
+	 */
 	public void setMinuteOffset(Integer minuteOffset) {
 		if (minuteOffset != null && (minuteOffset < 0 || minuteOffset > 59)) {
 			throw new IllegalArgumentException("Minute offset must be between 0 and 59.");
@@ -114,10 +132,18 @@ public class TimezoneType extends VCardType {
 		this.minuteOffset = minuteOffset;
 	}
 
+	/**
+	 * Gets the text portion of the timezone.
+	 * @return the text portion (e.g. "America/New_York")
+	 */
 	public String getText() {
 		return text;
 	}
 
+	/**
+	 * Sets the text portion of the timezone.
+	 * @param text the text portion (e.g. "America/New_York")
+	 */
 	public void setText(String text) {
 		this.text = text;
 	}
@@ -139,6 +165,137 @@ public class TimezoneType extends VCardType {
 		}
 		int rawOffset = rawHourOffset + rawMinuteOffset;
 		return new SimpleTimeZone(rawOffset, "");
+	}
+	
+	/**
+	 * Gets the TYPE parameter.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the TYPE value (typically, this will be either "work" or "home")
+	 * or null if it doesn't exist
+	 */
+	public String getType() {
+		return subTypes.getType();
+	}
+
+	/**
+	 * Sets the TYPE parameter.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param type the TYPE value (this should be either "work" or "home") or
+	 * null to remove
+	 */
+	public void setType(String type) {
+		subTypes.setType(type);
+	}
+
+	/**
+	 * Gets the MEDIATYPE parameter.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the media type or null if not set
+	 */
+	public String getMediaType() {
+		return subTypes.getMediaType();
+	}
+
+	/**
+	 * Sets the MEDIATYPE parameter.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param mediaType the media type or null to remove
+	 */
+	public void setMediaType(String mediaType) {
+		subTypes.setMediaType(mediaType);
+	}
+
+	/**
+	 * Gets all PID parameter values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the PID values or empty set if there are none
+	 * @see VCardSubTypes#getPids
+	 */
+	public Set<Integer[]> getPids() {
+		return subTypes.getPids();
+	}
+
+	/**
+	 * Adds a PID value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param localId the local ID
+	 * @param clientPidMapRef the ID used to reference the property's globally
+	 * unique identifier in the CLIENTPIDMAP property.
+	 * @see VCardSubTypes#addPid(int, int)
+	 */
+	public void addPid(int localId, int clientPidMapRef) {
+		subTypes.addPid(localId, clientPidMapRef);
+	}
+
+	/**
+	 * Removes all PID values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @see VCardSubTypes#removePids
+	 */
+	public void removePids() {
+		subTypes.removePids();
+	}
+
+	/**
+	 * Gets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the preference value or null if it doesn't exist
+	 * @see VCardSubTypes#getPref
+	 */
+	public Integer getPref() {
+		return subTypes.getPref();
+	}
+
+	/**
+	 * Sets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param pref the preference value or null to remove
+	 * @see VCardSubTypes#setPref
+	 */
+	public void setPref(Integer pref) {
+		subTypes.setPref(pref);
+	}
+
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
+	public String getAltId() {
+		return subTypes.getAltId();
+	}
+
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
+	public void setAltId(String altId) {
+		subTypes.setAltId(altId);
 	}
 
 	@Override

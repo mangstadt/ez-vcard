@@ -110,8 +110,8 @@ public class VCard {
 	private List<PhotoType> photos = new ArrayList<PhotoType>();
 	private List<LogoType> logos = new ArrayList<LogoType>();
 	private List<SoundType> sounds = new ArrayList<SoundType>();
-	private BirthdayType birthday;
-	private AnniversaryType anniversary;
+	private BirthdayType birthday; //TODO can be multiple
+	private AnniversaryType anniversary; //TODO can be multiple
 	private RevisionType rev;
 	private ProdIdType prodId;
 	private List<AddressType> addresses = new ArrayList<AddressType>();
