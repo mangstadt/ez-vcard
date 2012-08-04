@@ -296,6 +296,14 @@ vcard.addKey(key);
 key = new KeyType();
 key.setText("...", KeyTypeParameter.PGP);
 vcard.addKey(key);
+
+//if "KeyTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+//arg 1: the value of the 2.1/3.0 TYPE parameter
+//arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
+//arg 3: the file extension of the data type (can be null)
+KeyTypeParameter param = new KeyTypeParameter("mykey", "application/my-key", "mkey");
+key = new KeyType("http://www.mywebsite.com/pubkey.enc", param);
+vcard.addKey(key);
 }}}
 
 {{{
@@ -418,6 +426,14 @@ vcard.addLogo(logo);
 //binary data
 byte data[] = ...
 logo = new LogoType(data, ImageTypeParameter.PNG);
+vcard.addLogo(logo);
+
+//if "ImageTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+//arg 1: the value of the 2.1/3.0 TYPE parameter
+//arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
+//arg 3: the file extension of the data type (can be null)
+ImageKeyTypeParameter param = new ImageTypeParameter("bmp", "image/x-ms-bmp", "bmp");
+logo = new LogoType("http://www.company.com/logo.bmp", param);
 vcard.addLogo(logo);
 }}}
 
@@ -596,6 +612,14 @@ vcard.addPhoto(photo);
 byte data[] = ...
 photo = new PhotoType(data, ImageTypeParameter.JPEG);
 vcard.addPhoto(photo);
+
+//if "ImageTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+//arg 1: the value of the 2.1/3.0 TYPE parameter
+//arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
+//arg 3: the file extension of the data type (can be null)
+ImageKeyTypeParameter param = new ImageTypeParameter("bmp", "image/x-ms-bmp", "bmp");
+photo = new PhotoType("http://www.mywebsite.com/mugshot.bmp", param);
+vcard.addPhoto(photo);
 }}}
 
 {{{
@@ -741,6 +765,14 @@ vcard.addSound(sound);
 //binary data
 byte data[] = ...
 sound = new SoundType(data, SoundTypeParameter.OGG);
+vcard.addSound(sound);
+
+//if "SoundTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+//arg 1: the value of the 2.1/3.0 TYPE parameter
+//arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
+//arg 3: the file extension of the data type (can be null)
+SoundTypeParameter param = new SoundTypeParameter("wav", "audio/wav", "wav");
+sound = new SoundType("http://www.mywebsite.com/myname.wav", SoundTypeParameter.WAV);
 vcard.addSound(sound);
 }}}
 
