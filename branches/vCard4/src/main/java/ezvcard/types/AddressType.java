@@ -329,6 +329,34 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		subTypes.setAltId(altId);
 	}
 
+	/**
+	 * Gets the timezone that's associated with this address.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the timezone (e.g. "America/New_York") or null if it doesn't
+	 * exist
+	 */
+	public String getTimezone() {
+		String value = subTypes.getFirst("TZ");
+		if (value.matches("(?i)tz:.*")) {
+			//remove the "tz:"
+			value = (value.length() > 3) ? value.substring(3) : "";
+		}
+		return value;
+	}
+
+	/**
+	 * Sets the timezone that's associated with this address.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param timezone the timezone (e.g. "America/New_York") or null to remove
+	 */
+	public void setTimezone(String timezone) {
+		subTypes.replace("TZ", "tz:" + timezone);
+	}
+
 	@Override
 	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
 		VCardSubTypes copy = new VCardSubTypes(subTypes);
