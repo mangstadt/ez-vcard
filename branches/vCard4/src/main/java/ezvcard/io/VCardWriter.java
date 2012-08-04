@@ -179,7 +179,7 @@ public class VCardWriter implements Closeable {
 			}
 		}
 
-		if (targetVersion == VCardVersion.V3_0) {
+		if (targetVersion == VCardVersion.V3_0 || targetVersion == VCardVersion.V4_0) {
 			if (vcard.getFormattedName() == null) {
 				warnings.add("vCard version " + targetVersion + " requires that a formatted name be defined.");
 			}
