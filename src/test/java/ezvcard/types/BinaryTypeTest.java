@@ -71,6 +71,7 @@ public class BinaryTypeTest {
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URL, subTypes.getValue());
+		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
 
 		//URL v3.0
@@ -82,6 +83,7 @@ public class BinaryTypeTest {
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
 
 		//URL v4.0
@@ -93,6 +95,7 @@ public class BinaryTypeTest {
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertNull(subTypes.getType());
 		assertEquals("image/jpeg", subTypes.getMediaType());
 
 		//base64 data v2.1
