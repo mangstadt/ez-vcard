@@ -58,6 +58,7 @@ import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
+import ezvcard.types.XmlType;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -134,6 +135,7 @@ public class VCard {
 	private List<CalendarUriType> calendarUris = new ArrayList<CalendarUriType>();
 	private List<FbUrlType> fbUrls = new ArrayList<FbUrlType>();
 	private List<ClientPidMapType> clientPidMaps = new ArrayList<ClientPidMapType>();
+	private List<XmlType> xmls = new ArrayList<XmlType>();
 	private ListMultimap<String, VCardType> extendedTypes = ArrayListMultimap.create();
 
 	/**
@@ -615,6 +617,14 @@ public class VCard {
 
 	public void addClientPidMap(ClientPidMapType clientPidMap) {
 		this.clientPidMaps.add(clientPidMap);
+	}
+
+	public List<XmlType> getXmls() {
+		return xmls;
+	}
+
+	public void addXml(XmlType xml) {
+		this.xmls.add(xml);
 	}
 
 	/**

@@ -60,6 +60,7 @@ import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
+import ezvcard.types.XmlType;
 import ezvcard.util.VCardStringUtils;
 
 /*
@@ -507,6 +508,10 @@ public class VCardReader implements Closeable {
 		} else if (ClientPidMapType.NAME.equals(name)) {
 			ClientPidMapType t = new ClientPidMapType();
 			vcard.addClientPidMap(t);
+			return t;
+		} else if (XmlType.NAME.equals(name)) {
+			XmlType t = new XmlType();
+			vcard.addXml(t);
 			return t;
 		} else {
 			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
