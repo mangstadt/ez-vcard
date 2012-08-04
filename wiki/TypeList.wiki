@@ -291,6 +291,11 @@ vcard.addKey(key);
 byte data[] = ...
 key = new KeyType(data, KeyTypeParameter.PGP);
 vcard.addKey(key);
+
+//plain text value
+key = new KeyType();
+key.setText("...", KeyTypeParameter.PGP);
+vcard.addKey(key);
 }}}
 
 {{{
