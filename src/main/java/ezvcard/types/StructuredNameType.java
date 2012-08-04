@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.VCardStringUtils;
@@ -92,6 +93,72 @@ public class StructuredNameType extends VCardType {
 
 	public void addSuffix(String suffix) {
 		this.suffixes.add(suffix);
+	}
+
+	/**
+	 * Gets the string that determines how this name should be sorted.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the sort string (e.g. "Doe,John") or null if not set
+	 * @see VCardSubTypes#getSortAs
+	 */
+	public String getSortAs() {
+		return subTypes.getSortAs();
+	}
+
+	/**
+	 * Sets the string that determines how this name should be sorted.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param sortAs the sort string (e.g. "Doe,John") or null to remove
+	 * @see VCardSubTypes#setSortAs
+	 */
+	public void setSortAs(String sortAs) {
+		subTypes.setSortAs(sortAs);
+	}
+
+	/**
+	 * Gets the language the name is written in.
+	 * @return the language or null if not set
+	 * @see VCardSubTypes#getLanguage
+	 */
+	public String getLanguage() {
+		return subTypes.getLanguage();
+	}
+
+	/**
+	 * Sets the language the name is written in.
+	 * @param language the language or null to remove
+	 * @see VCardSubTypes#setLanguage
+	 */
+	public void setLanguage(String language) {
+		subTypes.setLanguage(language);
+	}
+
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
+	public String getAltId() {
+		return subTypes.getAltId();
+	}
+
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
+	public void setAltId(String altId) {
+		subTypes.setAltId(altId);
 	}
 
 	@Override

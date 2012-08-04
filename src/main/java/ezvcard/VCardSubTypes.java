@@ -407,7 +407,7 @@ public class VCardSubTypes {
 	 * <pre>
 	 * NOTE;ALTID=1;LANGUAGE=en: Hello world!
 	 * NOTE;ALTID=1;LANGUAGE=fr: Bonjour tout le monde!
-	 * NOTE;ALTID=1;LANGUAGE=es: ÁHola, mundo!
+	 * NOTE;ALTID=1;LANGUAGE=es: ï¿½Hola, mundo!
 	 * NOTE;ALTID=2: My favorite color is blue.
 	 * NOTE: I own a cat.
 	 * </pre>
@@ -438,7 +438,7 @@ public class VCardSubTypes {
 	 * <pre>
 	 * NOTE;ALTID=1;LANGUAGE=en: Hello world!
 	 * NOTE;ALTID=1;LANGUAGE=fr: Bonjour tout le monde!
-	 * NOTE;ALTID=1;LANGUAGE=es: ÁHola, mundo!
+	 * NOTE;ALTID=1;LANGUAGE=es: ï¿½Hola, mundo!
 	 * NOTE;ALTID=2: My favorite color is blue.
 	 * NOTE: I own a cat.
 	 * </pre>
@@ -506,8 +506,8 @@ public class VCardSubTypes {
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @return the value (e.g. "Armour" if the person's family name is
-	 * "d'Armour") or null if it doesn't exist
+	 * @return the value (e.g. "Armour,John" if the person's family name is
+	 * "d'Armour" and given name is "John") or null if it doesn't exist
 	 */
 	public String getSortAs() {
 		return getFirst("SORT-AS");

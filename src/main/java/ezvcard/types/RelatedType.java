@@ -159,18 +159,50 @@ public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParame
 		subTypes.removePids();
 	}
 
+	/**
+	 * Gets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the preference value or null if it doesn't exist
+	 * @see VCardSubTypes#getPref
+	 */
 	public Integer getPref() {
 		return subTypes.getPref();
 	}
 
+	/**
+	 * Sets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param pref the preference value or null to remove
+	 * @see VCardSubTypes#setPref
+	 */
 	public void setPref(Integer pref) {
 		subTypes.setPref(pref);
 	}
 
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
 	public String getAltId() {
 		return subTypes.getAltId();
 	}
 
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}

@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import ezvcard.VCardSubTypes;
 import ezvcard.parameters.SoundTypeParameter;
 
 /*
@@ -48,6 +49,24 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 
 	public SoundType(byte[] data, SoundTypeParameter type) {
 		super(NAME, data, type);
+	}
+
+	/**
+	 * Gets the language.
+	 * @return the language or null if not set
+	 * @see VCardSubTypes#getLanguage
+	 */
+	public String getLanguage() {
+		return subTypes.getLanguage();
+	}
+
+	/**
+	 * Sets the language.
+	 * @param language the language or null to remove
+	 * @see VCardSubTypes#setLanguage
+	 */
+	public void setLanguage(String language) {
+		subTypes.setLanguage(language);
 	}
 
 	@Override
