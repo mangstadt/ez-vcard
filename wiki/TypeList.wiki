@@ -310,6 +310,7 @@ vcard.addKey(key);
 VCardReader vcr = ...
 VCard vcard = vcr.readNext();
 
+int fileCount = 0;
 for (KeyType key : vcard.getKeys()){
   //the key will have either a URL or a binary data
   //only 4.0 vCards are allowed to use URLs for keys
@@ -317,17 +318,30 @@ for (KeyType key : vcard.getKeys()){
     System.out.println("Key URL: " + key.getUrl());
   } else {
     KeyTypeParameter type = key.getType();
+    
+    if (type == null) {
+      //the vCard may not have any type data associated with the key
+      System.out.println("Saving a key file...");
+    } else {
+      System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    }
+    
     String folder;
     if (type == KeyTypeParameter.PGP){ //it is safe to use "==" instead of "equals()"
       folder = "pgp-keys";
     } else {
       folder = "other-keys";
     }
-    System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    
     byte data[] = key.getData();
-    OutputStream out = new FileOutputStream(new File(folder, "key." + type.getExtension()));
+    String filename = "key" + fileCount;
+    if (type != null && type.getExtension() != null){
+    	filename += "." + type.getExtension();
+    }
+    OutputStream out = new FileOutputStream(new File(folder, filename));
     out.write(data);
     out.close();
+    fileCount++;
   }
 }
 }}}
@@ -441,23 +455,37 @@ vcard.addLogo(logo);
 VCardReader vcr = ...
 VCard vcard = vcr.readNext();
 
+int fileCount = 0;
 for (LogoType logo : vcard.getLogos()){
   //the logo will have either a URL or a binary data
   if (logo.getData() == null){
     System.out.println("Logo URL: " + logo.getUrl());
   } else {
     ImageTypeParameter type = logo.getType();
+    
+    if (type == null) {
+      //the vCard may not have any type data associated with the logo
+      System.out.println("Saving a logo file...");
+    } else {
+      System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    }
+    
     String folder;
     if (type == ImageTypeParameter.PNG){ //it is safe to use "==" instead of "equals()"
       folder = "png-files";
     } else {
       folder = "image-files";
     }
-    System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    
     byte data[] = logo.getData();
-    OutputStream out = new FileOutputStream(new File(folder, "logo." + type.getExtension()));
+    String filename = "logo" + fileCount;
+    if (type != null && type.getExtension() != null){
+    	filename += "." + type.getExtension();
+    }
+    OutputStream out = new FileOutputStream(new File(folder, filename));
     out.write(data);
     out.close();
+    fileCount++;
   }
 }
 }}}
@@ -626,23 +654,37 @@ vcard.addPhoto(photo);
 VCardReader vcr = ...
 VCard vcard = vcr.readNext();
 
+int fileCount = 0;
 for (PhotoType photo : vcard.getPhotos()){
   //the photo will have either a URL or a binary data
   if (photo.getData() == null){
     System.out.println("Photo URL: " + photo.getUrl());
   } else {
     ImageTypeParameter type = photo.getType();
+    
+    if (type == null) {
+      //the vCard may not have any type data associated with the photo
+      System.out.println("Saving a photo file...");
+    } else {
+      System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    }
+    
     String folder;
     if (type == ImageTypeParameter.JPEG){ //it is safe to use "==" instead of "equals()"
       folder = "photos";
     } else {
       folder = "images";
     }
-    System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    
     byte data[] = photo.getData();
-    OutputStream out = new FileOutputStream(new File(folder, "image." + type.getExtension()));
+    String filename = "photo" + fileCount;
+    if (type != null && type.getExtension() != null){
+    	filename += "." + type.getExtension();
+    }
+    OutputStream out = new FileOutputStream(new File(folder, filename));
     out.write(data);
     out.close();
+    fileCount++;
   }
 }
 }}}
@@ -780,23 +822,37 @@ vcard.addSound(sound);
 VCardReader vcr = ...
 VCard vcard = vcr.readNext();
 
+int fileCount = 0;
 for (SoundType sound : vcard.getSounds()){
   //the sound will have either a URL or a binary data
   if (sound.getData() == null){
     System.out.println("Sound URL: " + sound.getUrl());
   } else {
     SoundTypeParameter type = sound.getType();
+    
+    if (type == null) {
+      //the vCard may not have any type data associated with the sound
+      System.out.println("Saving a sound file...");
+    } else {
+      System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    }
+    
     String folder;
     if (type == SoundTypeParameter.OGG){ //it is safe to use "==" instead of "equals()"
       folder = "ogg-files";
     } else {
       folder = "sound-files";
     }
-    System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+    
     byte data[] = sound.getData();
-    OutputStream out = new FileOutputStream(new File(folder, "logo." + type.getExtension()));
+    String filename = "sound" + fileCount;
+    if (type != null && type.getExtension() != null){
+    	filename += "." + type.getExtension();
+    }
+    OutputStream out = new FileOutputStream(new File(folder, filename));
     out.write(data);
     out.close();
+    fileCount++;
   }
 }
 }}}
