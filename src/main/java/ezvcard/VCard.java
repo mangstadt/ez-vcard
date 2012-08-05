@@ -392,7 +392,7 @@ public class VCard {
 	 * <p>
 	 * vCard versions: 3.0, 4.0
 	 * </p>
-	 * @param the source
+	 * @param source the source
 	 */
 	public void addSource(SourceType source) {
 		this.sources.add(source);
@@ -552,8 +552,8 @@ public class VCard {
 
 	/**
 	 * Gets all instances of the NICKNAME property. This method should only be
-	 * used if there is expected to be multiple instances of the property.
-	 * Otherwise, use the {@link #getNickname} method.
+	 * used if there are multiple instances of the property. Otherwise, use the
+	 * {@link #getNickname} method.
 	 * <p>
 	 * vCard property name: NICKNAME
 	 * </p>
@@ -1042,8 +1042,8 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the URLs. URLs can point to websites such as the person's personal
-	 * homepage or business website.
+	 * Gets the URLs. URLs can point to websites such as a personal homepage or
+	 * business website.
 	 * <p>
 	 * vCard property name: URL
 	 * </p>
@@ -1057,8 +1057,8 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a URL. URLs can point to websites such as the person's personal
-	 * homepage or business website.
+	 * Adds a URL. URLs can point to websites such as a personal homepage or
+	 * business website.
 	 * <p>
 	 * vCard property name: URL
 	 * </p>
@@ -1264,7 +1264,7 @@ public class VCard {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @return the category properties
+	 * @return the CATEGORIES properties
 	 */
 	public List<CategoriesType> getCategoriesList() {
 		return categories;
@@ -1295,7 +1295,7 @@ public class VCard {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @param categories the category property to add
+	 * @param categories the CATEGORIES property to add
 	 */
 	public void addCategories(CategoriesType categories) {
 		this.categories.add(categories);
@@ -1360,7 +1360,7 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a note. Note contain free-form, miscellaneous text.
+	 * Adds a note. Notes contain free-form, miscellaneous text.
 	 * <p>
 	 * vCard property name: NOTE
 	 * </p>
@@ -1636,8 +1636,8 @@ public class VCard {
 	/**
 	 * Gets any XML data that is attached to the vCard. XML properties may be
 	 * present if the vCard was encoded in XML and the XML document contained
-	 * non-standard elements. The XML properties in this case would contain all
-	 * of the non-standard XML elements.
+	 * non-standard elements. The XML vCard properties in this case would
+	 * contain all of the non-standard XML elements.
 	 * <p>
 	 * vCard property name: XML
 	 * </p>
@@ -1653,8 +1653,8 @@ public class VCard {
 	/**
 	 * Adds XML data to the vCard. XML properties may be present if the vCard
 	 * was encoded in XML and the XML document contained non-standard elements.
-	 * The XML properties in this case would contain all of the non-standard XML
-	 * elements.
+	 * The XML vCard properties in this case would contain all of the
+	 * non-standard XML elements.
 	 * <p>
 	 * vCard property name: XML
 	 * </p>
