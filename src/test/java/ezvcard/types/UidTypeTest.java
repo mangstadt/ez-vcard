@@ -1,6 +1,8 @@
 package ezvcard.types;
 
-import java.util.UUID;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -32,37 +34,12 @@ import java.util.UUID;
  */
 
 /**
- * Represents the UID type.
  * @author Michael Angstadt
  */
-public class UidType extends TextType {
-	public static final String NAME = "UID";
-
-	public UidType() {
-		this(null);
-	}
-
-	/**
-	 * @param uid the UID
-	 */
-	public UidType(String uid) {
-		super(NAME, uid);
-	}
-
-	/**
-	 * Generates a UID type that contain a random UID URI.
-	 * @return a random UID
-	 */
-	public static UidType random() {
-		String uuid = UUID.randomUUID().toString();
-		return new UidType("urn:uuid:" + uuid);
-	}
-
-	public String getType() {
-		return subTypes.getType();
-	}
-
-	public void setType(String type) {
-		subTypes.setType(type);
+public class UidTypeTest {
+	@Test
+	public void random() {
+		UidType uid = UidType.random();
+		assertTrue(uid.getValue().matches("urn:uuid:[-\\da-f]+"));
 	}
 }
