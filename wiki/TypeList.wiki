@@ -589,7 +589,7 @@ NicknameType nickname = new NicknameType();
 nickname.addValue("Rick");
 nickname.addValue("Ricky");
 nickname.addValue("Bobby");
-vcard.setNicknames(nickname);
+vcard.setNickname(nickname);
 }}}
 
 =NOTE=
@@ -926,6 +926,9 @@ A globally unique identifier of the person.
 VCard vcard = new VCard();
 UidType uid = new UidType("urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519");
 vcard.setUid(uid);
+
+//generate a random UID
+vcard.setUid(UidType.random());
 }}}
 
 =URL=
