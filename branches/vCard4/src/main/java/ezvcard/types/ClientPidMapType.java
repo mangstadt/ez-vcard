@@ -73,7 +73,7 @@ public class ClientPidMapType extends VCardType {
 	/**
 	 * Gets the value that is used to link the URI in this property to the
 	 * property that the URI belongs to.
-	 * @pid the PID
+	 * @param pid the PID
 	 * @see VCardSubTypes#getPids
 	 */
 	public void setPid(int pid) {

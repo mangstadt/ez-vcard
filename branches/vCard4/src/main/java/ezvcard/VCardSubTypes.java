@@ -143,7 +143,7 @@ public class VCardSubTypes {
 
 	/**
 	 * Gets the ENCODING sub type. This is used when the type value is encoded
-	 * in a form other than text.
+	 * in a form other than plain text.
 	 * <p>
 	 * vCard versions: 2.1, 3.0
 	 * </p>
@@ -163,7 +163,7 @@ public class VCardSubTypes {
 
 	/**
 	 * Sets the ENCODING sub type. This is used when the type value is encoded
-	 * in a form other than text.
+	 * in a form other than plain text.
 	 * <p>
 	 * vCard versions: 2.1, 3.0
 	 * </p>
@@ -399,17 +399,17 @@ public class VCardSubTypes {
 	 * same ALTID. This means that each NOTE contains a different representation
 	 * of the same information. In the example below, the first three NOTEs have
 	 * the same ALTID. They each contain the same message, but each is written
-	 * in a different language. The fourth and fifth NOTEs have different (or
-	 * absent) ALTIDs, which means they are independent and not associated with
-	 * the top three.
+	 * in a different language. The other NOTEs have different (or absent)
+	 * ALTIDs, which means they are not associated with the top three.
 	 * </p>
 	 * 
 	 * <pre>
 	 * NOTE;ALTID=1;LANGUAGE=en: Hello world!
 	 * NOTE;ALTID=1;LANGUAGE=fr: Bonjour tout le monde!
 	 * NOTE;ALTID=1;LANGUAGE=es: �Hola, mundo!
-	 * NOTE;ALTID=2: My favorite color is blue.
-	 * NOTE: I own a cat.
+	 * NOTE;ALTID=2;LANGUAGE=de: Meine Lieblingsfarbe ist blau.
+	 * NOTE;ALTID=2;LANGUAGE=en: My favorite color is blue.
+	 * NOTE: This vCard will self-destruct in 5 seconds.
 	 * </pre>
 	 * 
 	 * <p>
@@ -430,17 +430,17 @@ public class VCardSubTypes {
 	 * same ALTID. This means that each NOTE contains a different representation
 	 * of the same information. In the example below, the first three NOTEs have
 	 * the same ALTID. They each contain the same message, but each is written
-	 * in a different language. The fourth and fifth NOTEs have different (or
-	 * absent) ALTIDs, which means they are independent and not associated with
-	 * the top three.
+	 * in a different language. The other NOTEs have different (or absent)
+	 * ALTIDs, which means they are not associated with the top three.
 	 * </p>
 	 * 
 	 * <pre>
 	 * NOTE;ALTID=1;LANGUAGE=en: Hello world!
 	 * NOTE;ALTID=1;LANGUAGE=fr: Bonjour tout le monde!
 	 * NOTE;ALTID=1;LANGUAGE=es: �Hola, mundo!
-	 * NOTE;ALTID=2: My favorite color is blue.
-	 * NOTE: I own a cat.
+	 * NOTE;ALTID=2;LANGUAGE=de: Meine Lieblingsfarbe ist blau.
+	 * NOTE;ALTID=2;LANGUAGE=en: My favorite color is blue.
+	 * NOTE: This vCard will self-destruct in 5 seconds.
 	 * </pre>
 	 * 
 	 * <p>
@@ -506,8 +506,8 @@ public class VCardSubTypes {
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @return the value (e.g. "Armour,John" if the person's family name is
-	 * "d'Armour" and given name is "John") or null if it doesn't exist
+	 * @return the value (e.g. "Armour,John" if the family name is "d'Armour"
+	 * and the given name is "John") or null if it doesn't exist
 	 */
 	public String getSortAs() {
 		return getFirst("SORT-AS");
@@ -521,8 +521,8 @@ public class VCardSubTypes {
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param sortAs the value (e.g. "Armour" if the person's family name is
-	 * "d'Armour") or null to remove
+	 * @param sortAs the value (e.g. "Armour,John" if the family name is
+	 * "d'Armour" and the given name is "John") or null to remove
 	 */
 	public void setSortAs(String sortAs) {
 		replace("SORT-AS", sortAs);
@@ -569,8 +569,8 @@ public class VCardSubTypes {
 	 * <p>
 	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
 	 * individual property instance to be uniquely identifiable. This feature is
-	 * useful when two different versions of the same vCard have to be merged
-	 * together (called "synchronizing").
+	 * made use of when two different versions of the same vCard have to be
+	 * merged together (called "synchronizing").
 	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
@@ -607,8 +607,8 @@ public class VCardSubTypes {
 	 * <p>
 	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
 	 * individual property instance to be uniquely identifiable. This feature is
-	 * useful when two different versions of the same vCard have to be merged
-	 * together (called "synchronizing").
+	 * made use of when two different versions of the same vCard have to be
+	 * merged together (called "synchronizing").
 	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
@@ -628,8 +628,8 @@ public class VCardSubTypes {
 	 * <p>
 	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
 	 * individual property instance to be uniquely identifiable. This feature is
-	 * useful when two different versions of the same vCard have to be merged
-	 * together (called "synchronizing").
+	 * made use of when two different versions of the same vCard have to be
+	 * merged together (called "synchronizing").
 	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
@@ -653,9 +653,9 @@ public class VCardSubTypes {
 	}
 
 	/**
-	 * Gets the MEDIATYPE parameter. This is used in the PHOTO, LOGO, KEY, and
-	 * SOUND types when the type value is a URL. It defines the content type of
-	 * the resource.
+	 * Gets the MEDIATYPE parameter. This is used in properties that have a URL
+	 * as a value, such as PHOTO and SOUND. It defines the content type of the
+	 * referenced resource.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
@@ -666,9 +666,9 @@ public class VCardSubTypes {
 	}
 
 	/**
-	 * Sets the MEDIATYPE parameter. This is used in the PHOTO, LOGO, KEY, and
-	 * SOUND types when the type value is a URL. It defines the content type of
-	 * the resource.
+	 * Sets the MEDIATYPE parameter. This is used in properties that have a URL
+	 * as a value, such as PHOTO and SOUND. It defines the content type of the
+	 * referenced resource.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>

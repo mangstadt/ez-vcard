@@ -71,7 +71,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	/**
 	 * Sets a plain text representation of the key.
-	 * @param key the key in plain text
+	 * @param text the key in plain text
 	 * @param type the key type
 	 */
 	public void setText(String text, KeyTypeParameter type) {

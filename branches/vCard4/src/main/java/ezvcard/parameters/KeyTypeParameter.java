@@ -95,7 +95,7 @@ public class KeyTypeParameter extends MediaTypeParameter {
 	/**
 	 * Searches the static objects in this class for one that has a certain
 	 * media type.
-	 * @param value the media type to search for (e.g. "application/pgp-keys")
+	 * @param mediaType the media type to search for (e.g. "application/pgp-keys")
 	 * @return the object or null if not found
 	 */
 	public static KeyTypeParameter findByMediaType(String mediaType) {
