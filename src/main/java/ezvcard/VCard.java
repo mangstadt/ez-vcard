@@ -216,10 +216,10 @@ public class VCard {
 
 	/**
 	 * Sets the version of this vCard. When marshalling a vCard with the
-	 * {@link VCardWriter} class, please use the
-	 * {@link VCardWriter#setTargetVersion setTargetVersion} method to define
-	 * what version the vCard should be marshalled as. {@link VCardWriter}
-	 * <b>does not</b> look at the version that is set on the VCard object.
+	 * {@link VCardWriter} class, use the {@link VCardWriter#setTargetVersion
+	 * setTargetVersion} method to define what version the vCard should be
+	 * marshalled as. {@link VCardWriter} <b>does not</b> look at the version
+	 * that is set on the VCard object.
 	 * @param version the vCard version
 	 */
 	public void setVersion(VCardVersion version) {
@@ -261,9 +261,13 @@ public class VCard {
 	 * <p>
 	 * 
 	 * <pre>
-	 * VCard vcard = new VCard();
-	 * vcard.setKind(KindType.group());
-	 * vcard.addMember(...);
+	 * VCard vcard = ...
+	 * KindType kind = vcard.getKind();
+	 * if (kind != null && kind.isGroup()){
+	 *   for (MemberType member : vcard.getMembers(){
+	 *     ...
+	 *   }
+	 * }
 	 * </pre>
 	 * 
 	 * </p>
@@ -395,7 +399,7 @@ public class VCard {
 	}
 
 	/**
-	 * Gets a textual representation of the vCard source.
+	 * Gets a textual representation of the SOURCE property.
 	 * <p>
 	 * vCard property name: NAME
 	 * </p>
@@ -409,7 +413,7 @@ public class VCard {
 	}
 
 	/**
-	 * Sets a textual representation of the vCard source.
+	 * Sets a textual representation of the SOURCE property.
 	 * <p>
 	 * vCard property name: NAME
 	 * </p>
@@ -423,9 +427,9 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the text values that can be used to display the person's name. This
-	 * method should only be used if there is expected to be multiple instances
-	 * of the property. Otherwise, use the {@link #getFormattedName} method.
+	 * Gets the text values for displaying the person's name. This method should
+	 * only be used if there are multiple instances of the property. Otherwise,
+	 * use the {@link #getFormattedName} method.
 	 * <p>
 	 * vCard property name: FN
 	 * </p>
@@ -439,7 +443,7 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the text value used to display the person's name.
+	 * Gets the text value for displaying the person's name.
 	 * <p>
 	 * vCard property name: FN
 	 * </p>
@@ -453,7 +457,7 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a text value used to display the person's name. This method should
+	 * Adds a text value for displaying the person's name. This method should
 	 * only be used for adding multiple property instances to the vCard.
 	 * Otherwise, use the {@link #setFormattedName} method.
 	 * <p>
@@ -469,7 +473,7 @@ public class VCard {
 	}
 
 	/**
-	 * Sets the text value used to display the person's name.
+	 * Sets the text value used for displaying the person's name.
 	 * <p>
 	 * vCard property name: FN
 	 * </p>
@@ -484,8 +488,9 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all N properties. This method should only be used if there is
-	 * expected to be multiple instances of the property. Otherwise, use the
+	 * Gets all structured name properties. This method should only be used if
+	 * there are multiple instances of the property, which should only happen if
+	 * all instances have the same ALTID value. Otherwise, use the
 	 * {@link #getStructuredName} method.
 	 * <p>
 	 * vCard property name: N
@@ -516,8 +521,8 @@ public class VCard {
 	/**
 	 * Adds a property that contains the individual components of the person's
 	 * name. This method should ONLY be used if all {@link StructuredNameType}
-	 * instances have the same ALTID value. Otherwise, use
-	 * {@link #setStructuredName}.
+	 * instances have the same ALTID value. Otherwise, use the
+	 * {@link #setStructuredName} method.
 	 * <p>
 	 * vCard property name: N
 	 * </p>
@@ -724,7 +729,7 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the logos attached to the vCard, such as the person's company logo.
+	 * Gets the logos attached to the vCard, such a company logo.
 	 * <p>
 	 * vCard property name: LOGO
 	 * </p>
@@ -738,7 +743,7 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a logo to the vCard, such as the person's company logo.
+	 * Adds a logo to the vCard, such as a company logo.
 	 * <p>
 	 * vCard property name: LOGO
 	 * </p>
@@ -767,7 +772,7 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a sounds to the vCard, such as a pronunciation of the person's name.
+	 * Adds a sound to the vCard, such as a pronunciation of the person's name.
 	 * <p>
 	 * vCard property name: SOUND
 	 * </p>
@@ -939,7 +944,7 @@ public class VCard {
 	/**
 	 * Adds a mailing label which is not associated with any address. Use of
 	 * this method is discouraged. To add a mailing label to an address, use the
-	 * {@link AddressType#setLabel()} method.
+	 * {@link AddressType#setLabel} method.
 	 * <p>
 	 * vCard property name: LABEL
 	 * </p>
@@ -1250,7 +1255,7 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all category properties. This method should only be used if there
+	 * Gets all CATEGORIES properties. This method should only be used if there
 	 * are multiple instances of the property. Otherwise, use the
 	 * {@link #getCategories} method.
 	 * <p>
@@ -1281,7 +1286,7 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a category property to the vCard. This method should only be used
+	 * Adds a CATEGORIES property to the vCard. This method should only be used
 	 * for adding multiple property instances to the vCard. Otherwise, use the
 	 * {@link #setCategories} method.
 	 * <p>
@@ -1313,7 +1318,7 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the information on the person's representative.
+	 * Gets information about the person's agent.
 	 * <p>
 	 * vCard property name: AGENT
 	 * </p>
@@ -1327,7 +1332,7 @@ public class VCard {
 	}
 
 	/**
-	 * Sets the information on the person's representative.
+	 * Sets information about the person's agent.
 	 * <p>
 	 * vCard property name: AGENT
 	 * </p>
@@ -1341,7 +1346,7 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the notes. A note contains free-form, miscellaneous text.
+	 * Gets the notes. Notes contain free-form, miscellaneous text.
 	 * <p>
 	 * vCard property name: NOTE
 	 * </p>
@@ -1355,7 +1360,7 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a note. A note contains free-form, miscellaneous text.
+	 * Adds a note. Note contain free-form, miscellaneous text.
 	 * <p>
 	 * vCard property name: NOTE
 	 * </p>
@@ -1455,7 +1460,7 @@ public class VCard {
 	/**
 	 * Gets a list of people that the person is related to.
 	 * <p>
-	 * vCard property name: RELATION
+	 * vCard property name: RELATED
 	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
@@ -1469,7 +1474,7 @@ public class VCard {
 	/**
 	 * Adds someone that the person is related to.
 	 * <p>
-	 * vCard property name: RELATION
+	 * vCard property name: RELATED
 	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
@@ -1553,7 +1558,7 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a URI that point to the person's calendar.
+	 * Adds a URI that points to the person's calendar.
 	 * <p>
 	 * vCard property name: CALURI
 	 * </p>
@@ -1630,7 +1635,7 @@ public class VCard {
 
 	/**
 	 * Gets any XML data that is attached to the vCard. XML properties may be
-	 * present if the vCard was encoded in XML and the XML contained
+	 * present if the vCard was encoded in XML and the XML document contained
 	 * non-standard elements. The XML properties in this case would contain all
 	 * of the non-standard XML elements.
 	 * <p>
@@ -1647,8 +1652,8 @@ public class VCard {
 
 	/**
 	 * Adds XML data to the vCard. XML properties may be present if the vCard
-	 * was encoded in XML and the XML contained non-standard elements. The XML
-	 * properties in this case would contain all of the non-standard XML
+	 * was encoded in XML and the XML document contained non-standard elements.
+	 * The XML properties in this case would contain all of the non-standard XML
 	 * elements.
 	 * <p>
 	 * vCard property name: XML

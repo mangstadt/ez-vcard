@@ -50,8 +50,8 @@ public class UidType extends TextType {
 	}
 
 	/**
-	 * Generates a UID type that contain a random UID URI.
-	 * @return a random UID
+	 * Generates a UID type that contains a random UID URI.
+	 * @return a UID type with a random UID URI
 	 */
 	public static UidType random() {
 		String uuid = UUID.randomUUID().toString();
