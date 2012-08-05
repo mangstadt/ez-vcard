@@ -105,6 +105,7 @@ public class BinaryTypeTest {
 
 		BinaryTypeImpl t = new BinaryTypeImpl();
 		t.setData(dummyData, ImageTypeParameter.JPEG);
+		t.setType("work");
 
 		//2.1
 		version = VCardVersion.V2_1;
@@ -134,7 +135,7 @@ public class BinaryTypeTest {
 		assertEquals(expectedValue, actualValue);
 		assertNull(subTypes.getEncoding());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
-		assertNull(subTypes.getType());
+		assertEquals("work", subTypes.getType());
 	}
 
 	/**
@@ -198,7 +199,7 @@ public class BinaryTypeTest {
 		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
 		assertNull(t.getData());
-		assertNull(t.getType());
+		assertNull(t.getContentType());
 
 		//no VALUE
 		t = new BinaryTypeImpl();
@@ -206,7 +207,7 @@ public class BinaryTypeTest {
 		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
 		assertNull(t.getData());
-		assertNull(t.getType());
+		assertNull(t.getContentType());
 
 		//"B" encoding
 		t = new BinaryTypeImpl();
@@ -216,7 +217,7 @@ public class BinaryTypeTest {
 		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
-		assertEquals(ImageTypeParameter.JPEG, t.getType());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
 
 		//"BASE64" encoding
 		t = new BinaryTypeImpl();
@@ -226,7 +227,7 @@ public class BinaryTypeTest {
 		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
-		assertEquals(ImageTypeParameter.JPEG, t.getType());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
 
 		//no encoding
 		//no type
@@ -235,7 +236,7 @@ public class BinaryTypeTest {
 		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
-		assertNull(t.getType());
+		assertNull(t.getContentType());
 
 		//4.0 URL
 		version = VCardVersion.V4_0;
@@ -245,7 +246,7 @@ public class BinaryTypeTest {
 		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
 		assertNull(t.getData());
-		assertEquals(ImageTypeParameter.JPEG, t.getType());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
 
 		//4.0 data URI
 		version = VCardVersion.V4_0;
@@ -254,7 +255,7 @@ public class BinaryTypeTest {
 		t.unmarshalValue(subTypes, "data:image/jpeg;base64," + Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
-		assertEquals(ImageTypeParameter.JPEG, t.getType());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
 	}
 
 	/**

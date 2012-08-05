@@ -48,11 +48,11 @@ import ezvcard.parameters.ValueParameter;
  * Represents a Type that contains binary data (for example, the "PHOTO" type).
  * @author Michael Angstadt
  * 
- * @param <T> the class used for wrapping the value of the TYPE parameter
+ * @param <T> the class used for representing the content type of the resource
  */
-public abstract class BinaryType<T extends MediaTypeParameter> extends SingleValuedTypeParameterType<T> {
+public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType {
 	/**
-	 * Regex for parsing a data URI.
+	 * Regex for parsing a 4.0 data URI.
 	 */
 	private static final Pattern DATA_URI = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
 
@@ -65,6 +65,11 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 	 * The URL to the resource.
 	 */
 	protected String url;
+
+	/**
+	 * The content type of the resource (e.g. "JPEG image").
+	 */
+	protected T contentType;
 
 	/**
 	 * @param name the type name
@@ -104,20 +109,12 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 	/**
 	 * Sets the binary data of the resource.
 	 * @param data the binary data
-	 */
-	protected void setData(byte[] data) {
-		this.url = null;
-		this.data = data;
-	}
-
-	/**
-	 * Sets the binary data of the resource.
-	 * @param data the binary data
-	 * @param type the content type
+	 * @param type the content type (e.g. "JPEG image")
 	 */
 	public void setData(byte[] data, T type) {
-		setData(data);
-		setType(type);
+		this.url = null;
+		this.data = data;
+		setContentType(type);
 	}
 
 	/**
@@ -131,30 +128,56 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 	/**
 	 * Sets the URL to the resource.
 	 * @param url the URL
+	 * @param type the content type (e.g. "JPEG image")
 	 */
-	protected void setUrl(String url) {
+	public void setUrl(String url, T type) {
 		this.url = url;
 		this.data = null;
+		setContentType(type);
 	}
 
 	/**
-	 * Sets the URL to the resource.
-	 * @param url the URL
-	 * @param type the content type
+	 * Gets the content type of the resource.
+	 * @return the content type (e.g. "JPEG image")
 	 */
-	public void setUrl(String url, T type) {
-		setUrl(url);
-		setType(type);
+	public T getContentType() {
+		return contentType;
 	}
-	
-	//TODO in 2.1/3.0, TYPE is used to store the content type, but in 4.0, it's used to store "work" or "home"
 
-	@Override
-	public void setType(T type) {
-		super.setType(type);
-		subTypes.setMediaType(type.getMediaType());
+	/**
+	 * Sets the content type of the resource.
+	 * @param contentType the content type (e.g. "JPEG image")
+	 */
+	public void setContentType(T contentType) {
+		this.contentType = contentType;
 	}
-	
+
+	/**
+	 * Gets the vCard 4.0 TYPE parameter. This should NOT be used to get the
+	 * TYPE parameter for 2.1/3.0 vCards. Use {@link #getContentType} instead.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the TYPE value (typically, this will be either "work" or "home")
+	 * or null if it doesn't exist
+	 */
+	public String getType() {
+		return subTypes.getType();
+	}
+
+	/**
+	 * Sets the vCard 4.0 TYPE parameter. This should NOT be used to set the
+	 * TYPE parameter for 2.1/3.0 vCards. Use {@link #setContentType} instead.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param type the TYPE value (should be either "work" or "home") or null to
+	 * remove
+	 */
+	public void setType(String type) {
+		subTypes.setType(type);
+	}
+
 	/**
 	 * Gets all PID parameter values.
 	 * <p>
@@ -244,6 +267,11 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		VCardSubTypes copy = new VCardSubTypes(subTypes);
 
+		MediaTypeParameter contentType = this.contentType;
+		if (contentType == null) {
+			contentType = new MediaTypeParameter(null, null, null);
+		}
+
 		if (url != null) {
 			ValueParameter vp = null;
 			switch (version) {
@@ -260,8 +288,10 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 			copy.setEncoding(null);
 
 			if (version == VCardVersion.V4_0) {
-				copy.setType(null);
+				//don't null out TYPE, it could be set to "home" or "work"
+				copy.setMediaType(contentType.getMediaType());
 			} else {
+				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
 			}
 		}
@@ -270,16 +300,15 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 			if (version == VCardVersion.V2_1) {
 				copy.setEncoding(EncodingParameter.BASE64);
 				copy.setValue(null);
-				copy.setMediaType(null);
+				copy.setType(contentType.getValue());
 			} else if (version == VCardVersion.V3_0) {
 				copy.setEncoding(EncodingParameter.B);
 				copy.setValue(null);
-				copy.setMediaType(null);
+				copy.setType(contentType.getValue());
 			} else {
 				copy.setEncoding(null);
 				copy.setValue(ValueParameter.URI);
-				copy.setType(null);
-				copy.setMediaType(null);
+				//don't null out TYPE, it could be set to "home" or "work"
 			}
 		}
 
@@ -294,8 +323,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 		if (data != null) {
 			String base64 = new String(Base64.encodeBase64(data));
 			if (version == VCardVersion.V4_0) {
-				MediaTypeParameter p = getType();
-				String mediaType = (p == null || p.getMediaType() == null) ? "application/octet-stream" : p.getMediaType();
+				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
 				return "data:" + mediaType + ";base64," + base64;
 			} else {
 				return base64;
@@ -306,54 +334,54 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//check for MEDIATYPE parameter
-		//4.0 URLs should have this
-		String mediaType = subTypes.getMediaType();
-		if (mediaType != null) {
-			setType(buildMediaTypeObj(mediaType));
-		} else {
-			//check for TYPE parameter and set the MEDIATYPE parameter so they're synced
-			T type = getType();
-			if (type != null) {
-				subTypes.setMediaType(type.getMediaType());
-			}
-		}
-
-		//check for a data URI (v4.0)
+		//check for a 4.0 data URI
 		Matcher m = DATA_URI.matcher(value);
 		if (m.find()) {
-			mediaType = m.group(1);
+			String mediaType = m.group(1);
 			String base64 = m.group(2);
 
-			T param = buildMediaTypeObj(mediaType);
-			setData(Base64.decodeBase64(base64), param);
+			T contentType = buildMediaTypeObj(mediaType);
+			setData(Base64.decodeBase64(base64), contentType);
 			return;
+		}
+
+		//get content type from 4.0 MEDIATYPE parameter
+		T contentType = null;
+		String mediaType = subTypes.getMediaType();
+		if (mediaType != null) {
+			contentType = buildMediaTypeObj(mediaType);
+		} else {
+			//get content type from 2.1/3.0 TYPE parameter
+			String type = subTypes.getType();
+			if (type != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
+				contentType = buildTypeObj(getType());
+			}
 		}
 
 		//check for a URL
 		ValueParameter valueSubType = subTypes.getValue();
 		if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
-			setUrl(value);
+			setUrl(value, contentType);
 			return;
 		}
 
-		//check for base64 data
+		//check for 2.1/3.0 base64 data
 		EncodingParameter encodingSubType = subTypes.getEncoding();
 		if (encodingSubType != null) {
 			if (encodingSubType != EncodingParameter.B && encodingSubType != EncodingParameter.BASE64) {
-				warnings.add("Unrecognized ENCODING type \"" + encodingSubType + "\".  Attempting to decode as base64.");
+				warnings.add("Unrecognized " + EncodingParameter.NAME + " parameter value \"" + encodingSubType + "\" in " + getTypeName() + " property.  Attempting to decode as base64.");
 			}
-			setData(Base64.decodeBase64(value));
+			setData(Base64.decodeBase64(value), contentType);
 			return;
 		}
 
-		//check the value for a URL
+		//see if the value is a URL incase they didn't set the VALUE parameter
 		if (value.matches("(?i)http.*")) {
-			setUrl(value);
+			setUrl(value, contentType);
 			return;
 		}
 
-		cannotUnmarshalValue(value, version, warnings, compatibilityMode);
+		cannotUnmarshalValue(value, version, warnings, compatibilityMode, contentType);
 	}
 
 	/**
@@ -363,17 +391,26 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends SingleVal
 	 * @param version the version of the vCard
 	 * @param warnings the warnings
 	 * @param compatibilityMode the compatibility mode
+	 * @param contentType the content type of the resource of null if unknown
 	 */
-	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		warnings.add("No VALUE or ENCODING type given.  Attempting to decode as base64.");
-		setData(Base64.decodeBase64(value));
+	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, T contentType) {
+		warnings.add("No " + ValueParameter.NAME + " or " + EncodingParameter.NAME + " parameter given.  Attempting to decode as base64.");
+		setData(Base64.decodeBase64(value), contentType);
 	}
 
 	/**
-	 * Gets a {@link MediaTypeParameter} object based on the media type string
-	 * in the data URI of 4.0 vCards.
+	 * Builds a {@link MediaTypeParameter} object based on the information in
+	 * the MEDIATYPE parameter or data URI of 4.0 vCards.
 	 * @param mediaType the media type string (e.g. "image/jpeg")
 	 * @return the parameter object
 	 */
 	protected abstract T buildMediaTypeObj(String mediaType);
+
+	/**
+	 * Builds a {@link MediaTypeParameter} object based on the value of the TYPE
+	 * parameter in 2.1/3.0 vCards.
+	 * @param type the TYPE value
+	 * @return the parameter object
+	 */
+	protected abstract T buildTypeObj(String type);
 }

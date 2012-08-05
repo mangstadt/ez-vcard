@@ -7,6 +7,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.KeyTypeParameter;
+import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardStringUtils;
 
@@ -74,18 +75,10 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	 * @param type the key type
 	 */
 	public void setText(String text, KeyTypeParameter type) {
-		setText(text);
-		setType(type);
-	}
-
-	/**
-	 * Sets a plain text representation of the key.
-	 * @param key the key in plain text
-	 */
-	private void setText(String text) {
 		this.text = text;
 		data = null;
 		url = null;
+		setContentType(type);
 	}
 
 	/**
@@ -100,7 +93,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	protected KeyTypeParameter buildTypeObj(String type) {
 		KeyTypeParameter param = KeyTypeParameter.valueOf(type);
 		if (param == null) {
-			param = new KeyTypeParameter(type, null, null);
+			param = new KeyTypeParameter(type, "application/" + type, null);
 		}
 		return param;
 	}
@@ -125,11 +118,19 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (text != null) {
 			VCardSubTypes copy = new VCardSubTypes(subTypes);
+			
+			MediaTypeParameter contentType = getContentType();
+			if (contentType == null) {
+				contentType = new MediaTypeParameter(null, null, null);
+			}
+			
 			copy.setValue(ValueParameter.TEXT);
 			copy.setEncoding(null);
 			if (version == VCardVersion.V4_0) {
-				copy.setType(null);
+				//don't null out TYPE, it could be set to "home" or "work"
+				copy.setMediaType(contentType.getMediaType());
 			} else {
+				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
 			}
 			return copy;
@@ -150,8 +151,8 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, KeyTypeParameter contentType) {
 		//unmarshal it as a plain text key
-		setText(VCardStringUtils.unescape(value));
+		setText(VCardStringUtils.unescape(value), contentType);
 	}
 }
