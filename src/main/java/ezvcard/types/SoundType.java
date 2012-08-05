@@ -73,7 +73,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	protected SoundTypeParameter buildTypeObj(String type) {
 		SoundTypeParameter param = SoundTypeParameter.valueOf(type);
 		if (param == null) {
-			param = new SoundTypeParameter(type, null, null);
+			param = new SoundTypeParameter(type, "audio/" + type, null);
 		}
 		return param;
 	}

@@ -887,7 +887,7 @@ public class VCardReaderTest {
 			Iterator<PhotoType> it = vcard.getPhotos().iterator();
 
 			PhotoType f = it.next();
-			assertEquals(ImageTypeParameter.JPEG, f.getType());
+			assertEquals(ImageTypeParameter.JPEG, f.getContentType());
 			assertEquals(32531, f.getData().length);
 		}
 
@@ -1076,7 +1076,7 @@ public class VCardReaderTest {
 			Iterator<PhotoType> it = vcard.getPhotos().iterator();
 
 			PhotoType f = it.next();
-			assertEquals(ImageTypeParameter.JPEG, f.getType());
+			assertEquals(ImageTypeParameter.JPEG, f.getContentType());
 			assertEquals(7957, f.getData().length);
 
 			assertFalse(it.hasNext());
@@ -1361,7 +1361,7 @@ public class VCardReaderTest {
 			Iterator<PhotoType> it = vcard.getPhotos().iterator();
 
 			PhotoType f = it.next();
-			assertEquals(ImageTypeParameter.JPEG, f.getType());
+			assertEquals(ImageTypeParameter.JPEG, f.getContentType());
 			assertEquals(860, f.getData().length);
 
 			assertFalse(it.hasNext());
@@ -1602,7 +1602,7 @@ public class VCardReaderTest {
 			Iterator<PhotoType> it = vcard.getPhotos().iterator();
 
 			PhotoType f = it.next();
-			assertEquals(null, f.getType());
+			assertEquals(null, f.getContentType());
 			assertEquals(18242, f.getData().length);
 
 			assertFalse(it.hasNext());

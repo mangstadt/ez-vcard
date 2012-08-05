@@ -59,6 +59,7 @@ public class KeyTypeTest {
 
 		t = new KeyType();
 		t.setText("abc123", KeyTypeParameter.PGP);
+		t.setType("work"); //4.0 TYPE parameter
 
 		//2.1
 		version = VCardVersion.V2_1;
@@ -87,7 +88,7 @@ public class KeyTypeTest {
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
-		assertNull(subTypes.getType());
+		assertEquals("work", subTypes.getType());
 		assertEquals(KeyTypeParameter.PGP.getMediaType(), subTypes.getMediaType());
 	}
 
@@ -108,7 +109,7 @@ public class KeyTypeTest {
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());
 		assertNull(t.getData());
-		assertEquals(KeyTypeParameter.PGP, t.getType());
+		assertEquals(KeyTypeParameter.PGP, t.getContentType());
 		
 		//3.0
 		version = VCardVersion.V3_0;
@@ -119,7 +120,7 @@ public class KeyTypeTest {
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());
 		assertNull(t.getData());
-		assertEquals(KeyTypeParameter.PGP, t.getType());
+		assertEquals(KeyTypeParameter.PGP, t.getContentType());
 		
 		//4.0
 		version = VCardVersion.V4_0;
@@ -130,6 +131,6 @@ public class KeyTypeTest {
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());
 		assertNull(t.getData());
-		assertEquals(KeyTypeParameter.PGP, t.getType());
+		assertEquals(KeyTypeParameter.PGP, t.getContentType());
 	}
 }
