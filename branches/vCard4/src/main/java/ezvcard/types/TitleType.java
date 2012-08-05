@@ -44,8 +44,11 @@ public class TitleType extends TextType {
 		this(null);
 	}
 
-	public TitleType(String value) {
-		super(NAME, value);
+	/**
+	 * @param title the title (e.g. "Team Lead")
+	 */
+	public TitleType(String title) {
+		super(NAME, title);
 	}
 
 	/**
