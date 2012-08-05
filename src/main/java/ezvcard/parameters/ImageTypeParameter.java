@@ -122,7 +122,7 @@ public class ImageTypeParameter extends MediaTypeParameter {
 	/**
 	 * Searches the static objects in this class for one that has a certain
 	 * media type.
-	 * @param value the media type to search for (e.g. "image/jpeg")
+	 * @param mediaType the media type to search for (e.g. "image/jpeg")
 	 * @return the object or null if not found
 	 */
 	public static ImageTypeParameter findByMediaType(String mediaType) {

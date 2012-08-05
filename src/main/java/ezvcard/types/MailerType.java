@@ -41,7 +41,7 @@ public class MailerType extends TextType {
 	}
 
 	/**
-	 * @param value the name of the email client (e.g. "Thunderbird")
+	 * @param emailClient the name of the email client (e.g. "Thunderbird")
 	 */
 	public MailerType(String emailClient) {
 		super(NAME, emailClient);

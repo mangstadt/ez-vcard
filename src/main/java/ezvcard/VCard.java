@@ -450,7 +450,7 @@ public class VCard {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @return the display text of the person's name
+	 * @return the display text for the person's name
 	 */
 	public FormattedNameType getFormattedName() {
 		return formattedNames.isEmpty() ? null : formattedNames.get(0);
@@ -480,7 +480,7 @@ public class VCard {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @return the display text for the person's name
+	 * @param formattedName the display text for the person's name
 	 */
 	public void setFormattedName(FormattedNameType formattedName) {
 		this.formattedNames.clear();
@@ -1109,7 +1109,7 @@ public class VCard {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @return timezone the timezone
+	 * @param timezone the timezone
 	 */
 	public void setTimezone(TimezoneType timezone) {
 		this.timezones.clear();

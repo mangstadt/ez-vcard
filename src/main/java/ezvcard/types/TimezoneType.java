@@ -47,8 +47,8 @@ import ezvcard.util.VCardStringUtils;
 /**
  * Represents the TZ type.
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a> p.15, <a
- * href="http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.37
+ * @see "<a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a> p.15<br>
+ * <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.37"
  */
 public class TimezoneType extends VCardType {
 	public static final String NAME = "TZ";
@@ -123,7 +123,8 @@ public class TimezoneType extends VCardType {
 	/**
 	 * Sets the minute offest
 	 * @param minuteOffset the minute offset or null to remove
-	 * @throws IllegalArgumentException if the minute offset is not between 0 and 59
+	 * @throws IllegalArgumentException if the minute offset is not between 0
+	 * and 59
 	 */
 	public void setMinuteOffset(Integer minuteOffset) {
 		if (minuteOffset != null && (minuteOffset < 0 || minuteOffset > 59)) {
@@ -166,7 +167,7 @@ public class TimezoneType extends VCardType {
 		int rawOffset = rawHourOffset + rawMinuteOffset;
 		return new SimpleTimeZone(rawOffset, "");
 	}
-	
+
 	/**
 	 * Gets the TYPE parameter.
 	 * <p>

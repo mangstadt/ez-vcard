@@ -219,7 +219,7 @@ public class SoundTypeParameter extends MediaTypeParameter {
 	/**
 	 * Searches the static objects in this class for one that has a certain
 	 * media type.
-	 * @param value the media type to search for (e.g. "audio/ogg")
+	 * @param mediaType the media type to search for (e.g. "audio/ogg")
 	 * @return the object or null if not found
 	 */
 	public static SoundTypeParameter findByMediaType(String mediaType) {
