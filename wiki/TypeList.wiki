@@ -317,10 +317,10 @@ for (KeyType key : vcard.getKeys()){
   if (key.getData() == null){
     System.out.println("Key URL: " + key.getUrl());
   } else {
-    KeyTypeParameter type = key.getType();
+    KeyTypeParameter type = key.getContentType();
     
     if (type == null) {
-      //the vCard may not have any type data associated with the key
+      //the vCard may not have any content type data associated with the key
       System.out.println("Saving a key file...");
     } else {
       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
@@ -461,10 +461,10 @@ for (LogoType logo : vcard.getLogos()){
   if (logo.getData() == null){
     System.out.println("Logo URL: " + logo.getUrl());
   } else {
-    ImageTypeParameter type = logo.getType();
+    ImageTypeParameter type = logo.getContentType();
     
     if (type == null) {
-      //the vCard may not have any type data associated with the logo
+      //the vCard may not have any content type data associated with the logo
       System.out.println("Saving a logo file...");
     } else {
       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
@@ -660,10 +660,10 @@ for (PhotoType photo : vcard.getPhotos()){
   if (photo.getData() == null){
     System.out.println("Photo URL: " + photo.getUrl());
   } else {
-    ImageTypeParameter type = photo.getType();
+    ImageTypeParameter type = photo.getContentType();
     
     if (type == null) {
-      //the vCard may not have any type data associated with the photo
+      //the vCard may not have any content type data associated with the photo
       System.out.println("Saving a photo file...");
     } else {
       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
@@ -828,10 +828,10 @@ for (SoundType sound : vcard.getSounds()){
   if (sound.getData() == null){
     System.out.println("Sound URL: " + sound.getUrl());
   } else {
-    SoundTypeParameter type = sound.getType();
+    SoundTypeParameter type = sound.getContentType();
     
     if (type == null) {
-      //the vCard may not have any type data associated with the sound
+      //the vCard may not have any content type data associated with the sound
       System.out.println("Saving a sound file...");
     } else {
       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
