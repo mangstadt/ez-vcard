@@ -44,8 +44,11 @@ public class RoleType extends TextType {
 		this(null);
 	}
 
-	public RoleType(String value) {
-		super(NAME, value);
+	/**
+	 * @param role the role (e.g. "Software Developer")
+	 */
+	public RoleType(String role) {
+		super(NAME, role);
 	}
 
 	/**

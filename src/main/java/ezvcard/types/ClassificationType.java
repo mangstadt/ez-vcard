@@ -40,6 +40,10 @@ public class ClassificationType extends TextType {
 		this(null);
 	}
 
+	/**
+	 * @param classValue the classification (e.g. "PUBLIC", "PRIVATE",
+	 * "CONFIDENTIAL")
+	 */
 	public ClassificationType(String classValue) {
 		super(NAME, classValue);
 	}
