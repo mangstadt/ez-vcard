@@ -50,24 +50,23 @@ import ezvcard.util.VCardStringUtils;
 public class DateOrTimeType extends VCardType {
 	private String text;
 	private Date date;
-
-	/**
-	 * True if the "date" or "reduceAccuracyDate" fields have a time component,
-	 * false if it just contains a date.
-	 */
-	private boolean dateHasTime;
-
 	private String reducedAccuracyDate;
 
 	/**
-	 * @param typeName the name of the type
+	 * True if the "date" or "reduceAccuracyDate" fields have a time component,
+	 * false if they just contain a date.
+	 */
+	private boolean dateHasTime;
+
+	/**
+	 * @param typeName the name of the type (e.g. "BDAY")
 	 */
 	public DateOrTimeType(String typeName) {
 		super(typeName);
 	}
 
 	/**
-	 * @param typeName the name of the type
+	 * @param typeName the name of the type (e.g. "BDAY")
 	 * @param date the date value
 	 */
 	public DateOrTimeType(String typeName, Date date) {
@@ -93,12 +92,15 @@ public class DateOrTimeType extends VCardType {
 		this.date = date;
 		this.dateHasTime = dateHasTime;
 		text = null;
-      reducedAccuracyDate = null;
+		reducedAccuracyDate = null;
 	}
 
 	/**
-	 * Gets the reduced accuracy date string.
+	 * Gets the reduced accuracy date string. This is only supported by vCard
+	 * 4.0.
 	 * @return the reduced accuracy date string or null if not set
+	 * @see "<a href="
+	 * http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.12-14 for examples"
 	 */
 	public String getReducedAccuracyDate() {
 		return reducedAccuracyDate;
@@ -109,17 +111,18 @@ public class DateOrTimeType extends VCardType {
 	 * supported by vCard 4.0.
 	 * @param reducedAccuracyDate the reduced accuracy date (e.g "--0210" for
 	 * "February 10")
-	 * @see "ISO 8601 specs"
+	 * @see "<a href="
+	 * http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.12-14 for examples"
 	 */
 	public void setReducedAccuracyDate(String reducedAccuracyDate) {
 		this.reducedAccuracyDate = reducedAccuracyDate;
 		dateHasTime = reducedAccuracyDate.contains("T");
 		text = null;
-      date = null;
+		date = null;
 	}
 
 	/**
-	 * Gets the text value.
+	 * Gets the text value of this type. This is only supported by vCard 4.0.
 	 * @return the text value or null if not set
 	 */
 	public String getText() {
@@ -137,12 +140,50 @@ public class DateOrTimeType extends VCardType {
 		reducedAccuracyDate = null;
 	}
 
+	/**
+	 * Gets the type of calendar this date uses.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the type of calendar or null if not set
+	 */
 	public CalscaleParameter getCalscale() {
 		return subTypes.getCalscale();
 	}
 
+	/**
+	 * Sets the type of calendar this date uses.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param calscale the type of calendar or null to remove
+	 */
 	public void setCalsclae(CalscaleParameter value) {
 		subTypes.setCalscale(value);
+	}
+
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
+	public String getAltId() {
+		return subTypes.getAltId();
+	}
+
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
+	public void setAltId(String altId) {
+		subTypes.setAltId(altId);
 	}
 
 	@Override
@@ -208,7 +249,7 @@ public class DateOrTimeType extends VCardType {
 					date = VCardDateFormatter.parse(value);
 				} catch (IllegalArgumentException e) {
 					//not all reduced accuracy dates have dashes (e.g. "2012")
-					if (value.matches("\\d+")){
+					if (value.matches("\\d+")) {
 						reducedAccuracyDate = value;
 					} else {
 						warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");

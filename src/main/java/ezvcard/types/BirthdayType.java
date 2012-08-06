@@ -2,9 +2,6 @@ package ezvcard.types;
 
 import java.util.Date;
 
-import ezvcard.VCardSubTypes;
-import ezvcard.parameters.CalscaleParameter;
-
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -50,51 +47,5 @@ public class BirthdayType extends DateOrTimeType {
 	 */
 	public BirthdayType(Date date) {
 		super(NAME, date);
-	}
-
-	/**
-	 * Gets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
-	 */
-	public String getAltId() {
-		return subTypes.getAltId();
-	}
-
-	/**
-	 * Sets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
-	 */
-	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
-	}
-
-	/**
-	 * Gets the type of calendar this date uses.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the type of calendar or null if not set
-	 */
-	public CalscaleParameter getCalscale() {
-		return subTypes.getCalscale();
-	}
-
-	/**
-	 * Sets the type of calendar this date uses.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param calscale the type of calendar or null to remove
-	 */
-	public void setCalscale(CalscaleParameter calscale) {
-		subTypes.setCalscale(calscale);
 	}
 }
