@@ -32,7 +32,59 @@ import java.util.Date;
  */
 
 /**
- * Represents a BDAY type.
+ * Defines the person's birthday.
+ * 
+ * <p>
+ * <b>Setting the birthday</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * //complete date
+ * Calendar c = Calendar.getInstance();
+ * c.set(Calendar.YEAR, 1986);
+ * c.set(Calendar.MONTH, Calendar.MARCH);
+ * c.set(Calendar.DAY_OF_MONTH, 21);
+ * BirthdayType bday = new BirthdayType();
+ * bday.setDate(c.getTime(), false);
+ * vcard.setBirthday(bday);
+ * 
+ * //reduced accuracy date (vCard 4.0 only, see RFC 6350 p.12-14 for examples)
+ * bday = new BirthdayType();
+ * bday.setReducedAccuracyDate(&quot;--0321&quot;); //March 21
+ * vcard.setBirthday(bday);
+ * 
+ * //plain text value (vCard 4.0 only)
+ * bday = new BirthdayType();
+ * bday.setText(&quot;a long time ago&quot;);
+ * vcard.setBirthday(bday);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting the birthday</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = ...
+ * BirthdayType bday = vcard.getBirthday();
+ * if (bday != null){
+ *   if (bday.getDate() != null){
+ *     System.out.println(bday.getDate());
+ *   } else if (bday.getReducedAccuracyDate() != null){
+ *     System.out.println(bday.getReducedAccuracyDate());
+ *   } else if (bday.getText() != null){
+ *     System.out.println(bday.getText());
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: BDAY
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class BirthdayType extends DateOrTimeType {

@@ -34,7 +34,20 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the FN type.
+ * Shows how the person's name should be displayed.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * FormattedNameType fn = new FormattedNameType(&quot;Dr. Gregory House M.D.&quot;);
+ * vcard.setFormattedName(fn);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: FN
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class FormattedNameType extends TextType {
@@ -44,8 +57,11 @@ public class FormattedNameType extends TextType {
 		this(null);
 	}
 
-	public FormattedNameType(String value) {
-		super(NAME, value);
+	/**
+	 * @param name the person's name
+	 */
+	public FormattedNameType(String name) {
+		super(NAME, name);
 	}
 
 	/**

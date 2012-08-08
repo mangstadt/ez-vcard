@@ -35,7 +35,24 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Represents the CALENDRURI type.
+ * A URL to use for sending a scheduling request to the person's calendar.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * CalendarRequestUriType calendruri = new CalendarRequestUriType(&quot;mailto:janedoe@ibm.com&quot;);
+ * calendruri.setPref(1);
+ * vcard.addCalendarRequestUri(calendruri);
+ * calendruri = new CalendarRequestUriType(&quot;http://www.ibm.com/janedoe/calendar&quot;);
+ * calendruri.setPref(2);
+ * vcard.addCalendarRequestUri(calendruri);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: CALENDRURI
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class CalendarRequestUriType extends TextType {

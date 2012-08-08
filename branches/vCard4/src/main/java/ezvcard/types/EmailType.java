@@ -39,7 +39,27 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the EMAIL type.
+ * An email address associated with a person.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * EmailType email = new EmailType(&quot;superdude55@hotmail.com&quot;);
+ * email.addType(EmailTypeParameter.HOME);
+ * vcard.addEmail(email);
+ * 
+ * email = new EmailType(&quot;doe.john@company.com&quot;);
+ * email.addType(EmailTypeParameter.WORK);
+ * email.setPref(1); //the most preferred email
+ * vcard.addEmail(email);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: EMAIL
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> {

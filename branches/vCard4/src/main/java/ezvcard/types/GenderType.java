@@ -37,7 +37,41 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the GENDER type.
+ * Defines the person's sex.
+ * 
+ * <p>
+ * <b>Setting the gender</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * GenderType gender = GenderType.male();
+ * vcard.setGender(gender);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting the gender</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = ...
+ * GenderType gender = vcard.getGender();
+ * if (gender != null){
+ *   if (gender.isMale()){
+ *     ...
+ *   } else if (gender.isFemale()){
+ *     ...
+ *   }
+ *   ...
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: GENDER
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class GenderType extends VCardType {
@@ -67,7 +101,7 @@ public class GenderType extends VCardType {
 	}
 
 	/**
-	 * Gets the free-form text.
+	 * Gets the additional text associated with this gender type.
 	 * @return the additional text or null if there is no text
 	 */
 	public String getText() {
@@ -75,8 +109,8 @@ public class GenderType extends VCardType {
 	}
 
 	/**
-	 * Sets the free-form text. This is added alongside the gender value.
-	 * @param text free-form text
+	 * Sets the additional text associated with this gender type.
+	 * @param text additional text or null to remove
 	 */
 	public void setText(String text) {
 		this.text = text;
@@ -99,42 +133,84 @@ public class GenderType extends VCardType {
 		this.gender = gender;
 	}
 
+	/**
+	 * Determines if the gender is "male" or not.
+	 * @return true if the gender is "male", false if not
+	 */
 	public boolean isMale() {
 		return MALE.equals(gender);
 	}
 
+	/**
+	 * Determines if the gender is "female" or not.
+	 * @return true if the gender is "female", false if not
+	 */
 	public boolean isFemale() {
 		return FEMALE.equals(gender);
 	}
 
+	/**
+	 * Determines if the gender is "other" or not.
+	 * @return true if the gender is "other", false if not
+	 */
 	public boolean isOther() {
 		return OTHER.equals(gender);
 	}
 
+	/**
+	 * Determines if the gender is "none" or not. A group, organization, or
+	 * location may have this gender type.
+	 * @return true if the gender is "none", false if not
+	 */
 	public boolean isNone() {
 		return NONE.equals(gender);
 	}
 
+	/**
+	 * Determines if the gender is "unknown" or not.
+	 * @return true if the gender is "unknown", false if not
+	 */
 	public boolean isUnknown() {
 		return UNKNOWN.equals(gender);
 	}
 
+	/**
+	 * Creates a gender type whose value is set to "male".
+	 * @return a "male" gender type
+	 */
 	public static GenderType male() {
 		return new GenderType(MALE);
 	}
 
+	/**
+	 * Creates a gender type whose value is set to "female".
+	 * @return a "female" gender type
+	 */
 	public static GenderType female() {
 		return new GenderType(FEMALE);
 	}
 
+	/**
+	 * Creates a gender type whose value is set to "other".
+	 * @return an "other" gender type
+	 */
 	public static GenderType other() {
 		return new GenderType(OTHER);
 	}
 
+	/**
+	 * Creates a gender type whose value is set to "none". Groups,
+	 * organizations, and locations should be given this gender type.
+	 * @return a "none" gender type
+	 */
 	public static GenderType none() {
 		return new GenderType(NONE);
 	}
 
+	/**
+	 * Creates a gender type whose value is set to "unknown".
+	 * @return a "unknown" gender type
+	 */
 	public static GenderType unknown() {
 		return new GenderType(UNKNOWN);
 	}

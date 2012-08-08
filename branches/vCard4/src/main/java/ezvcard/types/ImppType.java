@@ -39,8 +39,20 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the IMPP type for storing instant messaging (IM) info (see RFC
- * 4770).
+ * Contains an instant messenger handle.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * ImppType impp = new ImppType(&quot;aim&quot;, &quot;hunkydude22@aol.com&quot;);
+ * vcard.addImpp(impp);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: IMPP
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {

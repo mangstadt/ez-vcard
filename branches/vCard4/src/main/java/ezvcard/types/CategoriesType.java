@@ -38,7 +38,24 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the CATEGORIES type.
+ * A list of keywords (aka "tags") that can be used to describe the person.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * CategoriesType categories = new CategoriesType();
+ * categories.addValue(&quot;programmer&quot;);
+ * categories.addValue(&quot;developer&quot;);
+ * categories.addValue(&quot;java-coder&quot;);
+ * categories.addValue(&quot;ladies-man&quot;);
+ * vcard.setCategories(categories);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: CATEGORIES
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class CategoriesType extends TextListType {

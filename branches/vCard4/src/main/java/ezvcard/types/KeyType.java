@@ -41,7 +41,87 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the KEY type.
+ * A public key for encryption.
+ * 
+ * <p>
+ * <b>Adding a key</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * //URL (vCard 4.0 only; KEYs cannot have URLs in vCard 2.1 and 3.0)
+ * KeyType key = new KeyType("http://www.mywebsite.com/pubkey.pgp", KeyTypeParameter.PGP);
+ * vcard.addKey(key);
+ * 
+ * //binary data
+ * byte data[] = ...
+ * key = new KeyType(data, KeyTypeParameter.PGP);
+ * vcard.addKey(key);
+ * 
+ * //plain text value
+ * key = new KeyType();
+ * key.setText("...", KeyTypeParameter.PGP);
+ * vcard.addKey(key);
+ * 
+ * //if "KeyTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+ * //arg 1: the value of the 2.1/3.0 TYPE parameter
+ * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
+ * //arg 3: the file extension of the data type (can be null)
+ * KeyTypeParameter param = new KeyTypeParameter("mykey", "application/my-key", "mkey");
+ * key = new KeyType("http://www.mywebsite.com/pubkey.enc", param);
+ * vcard.addKey(key);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting the keys</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = ...
+ * 
+ * int fileCount = 0;
+ * for (KeyType key : vcard.getKeys()){
+ *   //the key will have either a URL or a binary data
+ *   //only 4.0 vCards are allowed to use URLs for keys
+ *   if (key.getData() == null){
+ *     System.out.println("Key URL: " + key.getUrl());
+ *   } else {
+ *     KeyTypeParameter type = key.getContentType();
+ *     
+ *     if (type == null) {
+ *       //the vCard may not have any content type data associated with the key
+ *       System.out.println("Saving a key file...");
+ *     } else {
+ *       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+ *     }
+ *     
+ *     String folder;
+ *     if (type == KeyTypeParameter.PGP){ //it is safe to use "==" instead of "equals()"
+ *       folder = "pgp-keys";
+ *     } else {
+ *       folder = "other-keys";
+ *     }
+ *     
+ *     byte data[] = key.getData();
+ *     String filename = "key" + fileCount;
+ *     if (type != null && type.getExtension() != null){
+ *     	filename += "." + type.getExtension();
+ *     }
+ *     OutputStream out = new FileOutputStream(new File(folder, filename));
+ *     out.write(data);
+ *     out.close();
+ *     fileCount++;
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: KEY
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class KeyType extends BinaryType<KeyTypeParameter> {
@@ -118,12 +198,12 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (text != null) {
 			VCardSubTypes copy = new VCardSubTypes(subTypes);
-			
+
 			MediaTypeParameter contentType = getContentType();
 			if (contentType == null) {
 				contentType = new MediaTypeParameter(null, null, null);
 			}
-			
+
 			copy.setValue(ValueParameter.TEXT);
 			copy.setEncoding(null);
 			if (version == VCardVersion.V4_0) {
