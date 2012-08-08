@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import java.util.List;
+import java.util.UUID;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -58,6 +59,16 @@ public class ClientPidMapType extends VCardType {
 		super(NAME);
 		this.pid = pid;
 		this.uri = uri;
+	}
+
+	/**
+	 * Generates a CLIENTPIDMAP type that contains a random UID URI.
+	 * @param pid the PID
+	 * @return a CLIENTPIDMAP type with a random UID URI
+	 */
+	public static ClientPidMapType random(int pid) {
+		String uuid = UUID.randomUUID().toString();
+		return new ClientPidMapType(pid, "urn:uuid:" + uuid);
 	}
 
 	/**

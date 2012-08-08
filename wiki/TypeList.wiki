@@ -182,9 +182,12 @@ email = new EmailType("my-other-email@yahoo.com");
 emai.addPid(2, 2);
 vcard.addEmail(email);
 
+//specify the URI to use
 ClientPidMapType clientpidmap = new ClientPidMapType(1, "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
 vcard.addClientPidMap(clientpidmap);
-clientpidmap = new ClientPidMapType(2, "urn:uuid:d89c9c7a-2e1b-4832-82de-7e992d95faa5");
+
+//generate a random URI
+clientpidmap = ClientPidMapType.random(2);
 vcard.addClientPidMap(clientpidmap);
 }}}
 
