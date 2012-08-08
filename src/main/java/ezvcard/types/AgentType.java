@@ -45,7 +45,30 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents an AGENT type.
+ * An embedded vCard or URL containing the information of someone who represents
+ * the person.
+ * 
+ * <pre>
+ * //URL
+ * VCard vcard = new VCard();
+ * AgentType agent = new AgentType(&quot;http://mi5.gov.uk/007&quot;);
+ * vcard.setAgent(agent);
+ * 
+ * //vCard
+ * VCard vcard = new VCard();
+ * VCard agentVcard = new VCard();
+ * agentVcard.setFormattedName(new FormattedNameType(&quot;Agent 007&quot;));
+ * AgentType agent = new AgentType(agentVcard);
+ * vcard.setAgent(agent);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: AGENT
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0
+ * </p>
+ * 
  * @author Michael Angstadt
  */
 public class AgentType extends VCardType {
@@ -58,30 +81,54 @@ public class AgentType extends VCardType {
 		super(NAME);
 	}
 
+	/**
+	 * @param url a URL pointing to the agent's information
+	 */
 	public AgentType(String url) {
 		super(NAME);
 		setUrl(url);
 	}
 
+	/**
+	 * @param vcard a vCard containing the agent's information
+	 */
 	public AgentType(VCard vcard) {
 		super(NAME);
 		setVcard(vcard);
 	}
 
+	/**
+	 * Gets the URL to the agent's information.
+	 * @return the URL or null if not set
+	 */
 	public String getUrl() {
 		return url;
 	}
 
+	/**
+	 * Sets the URL to the agent's information.
+	 * @param url the URL
+	 */
 	public void setUrl(String url) {
 		this.url = url;
+		vcard = null;
 	}
 
+	/**
+	 * Gets an embedded vCard with the agent's information.
+	 * @return the vCard or null if not set
+	 */
 	public VCard getVcard() {
 		return vcard;
 	}
 
+	/**
+	 * Sets an embedded vCard with the agent's information.
+	 * @return the vCard
+	 */
 	public void setVcard(VCard vcard) {
 		this.vcard = vcard;
+		url = null;
 	}
 
 	@Override

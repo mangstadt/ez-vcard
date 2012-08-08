@@ -38,7 +38,51 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the CLIENTPIDMAP type.
+ * <p>
+ * Maps a globally-unique URI to a PID parameter value. The PID parameter can be
+ * set on any type where multiple instances are allowed (such as EMAIL or ADR,
+ * but not N because only 1 instance of N is allowed). It allows an individual
+ * type instance to be uniquely identifiable.
+ * </p>
+ * 
+ * <p>
+ * The CLIENTPIDMAP type and the PID parameter are used during the
+ * synchronization (merging) process of two versions of the same vCard. For
+ * example, if the user has a copy of her vCard on her desktop computer and her
+ * smart phone, and she makes different modifications to each copy, then the two
+ * copies could be synchronized in order to merge all the changes into a single,
+ * new vCard.
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * AddressType adr = new AddressType();
+ * adr.addPid(1, 1);
+ * vcard.addAddress(adr);
+ * 
+ * EmailType email = new EmailType(&quot;my-email@hotmail.com&quot;);
+ * emai.addPid(1, 1);
+ * vcard.addEmail(email);
+ * email = new EmailType(&quot;my-other-email@yahoo.com&quot;);
+ * emai.addPid(2, 2);
+ * vcard.addEmail(email);
+ * 
+ * //specify the URI to use
+ * ClientPidMapType clientpidmap = new ClientPidMapType(1, &quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
+ * vcard.addClientPidMap(clientpidmap);
+ * 
+ * //generate a random URI
+ * clientpidmap = ClientPidMapType.random(2);
+ * vcard.addClientPidMap(clientpidmap);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: CLIENTPIDMAP
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class ClientPidMapType extends VCardType {

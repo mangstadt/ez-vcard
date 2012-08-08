@@ -41,7 +41,46 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents an address from the "ADR" type.
+ * A mailing address.
+ * 
+ * <p>
+ * <b>Adding an address</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * AddressType adr = new AddressType();
+ * adr.setStreetAddress(&quot;123 Main St.&quot;);
+ * adr.setLocality(&quot;Austin&quot;);
+ * adr.setRegion(&quot;TX&quot;);
+ * adr.setPostalCode(&quot;12345&quot;);
+ * adr.setCountry(&quot;USA&quot;);
+ * adr.addType(AddressTypeParameter.WORK);
+ * adr.addType(AddressTypeParameter.DOM);
+ * 
+ * //optionally, provide the exact text to print out on the mailing label
+ * adr.setLabel(&quot;123 Main St.\nAustin, Tx 12345\nUSA&quot;);
+ * 
+ * vcard.addAddress(adr);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting the addresses</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = ...
+ * for (AddressType adr : vcard.getAddresses()){
+ *   ...
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: ADR
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class AddressType extends MultiValuedTypeParameterType<AddressTypeParameter> {

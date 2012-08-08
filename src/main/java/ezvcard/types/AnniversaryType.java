@@ -34,9 +34,58 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Represents the ANNIVERSARY type.
+ * Defines the person's anniversary.
+ * 
  * <p>
- * Supported vCard versions: 4.0
+ * <b>Setting the anniversary</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * //complete date
+ * Calendar c = Calendar.getInstance();
+ * c.set(Calendar.YEAR, 1986);
+ * c.set(Calendar.MONTH, Calendar.MARCH);
+ * c.set(Calendar.DAY_OF_MONTH, 21);
+ * AnniversaryType anniversary = new AnniversaryType();
+ * anniversary.setDate(c.getTime(), false);
+ * vcard.setAnniversary(anniversary);
+ * 
+ * //reduced accuracy date (see RFC 6350 p.12-14 for examples)
+ * anniversary = new AnniversaryType();
+ * anniversary.setReducedAccuracyDate(&quot;--0321&quot;); //March 21
+ * vcard.setAnniversary(anniversary);
+ * 
+ * //plain text value
+ * anniversary = new AnniversaryType();
+ * anniversary.setText(&quot;more than 20 years ago&quot;);
+ * vcard.setAnniversary(anniversary);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting the anniversary</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = ...
+ * AnniversaryType anniversary = vcard.getAnniversary();
+ * if (anniversary != null){
+ *   if (anniversary.getDate() != null){
+ *     System.out.println(anniversary.getDate());
+ *   } else if (anniversary.getReducedAccuracyDate() != null){
+ *     System.out.println(anniversary.getReducedAccuracyDate());
+ *   } else if (anniversary.getText() != null){
+ *     System.out.println(anniversary.getText());
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: ANNIVERSARY
+ * </p>
+ * <p>
+ * vCard versions: 4.0
  * </p>
  * @author Michael Angstadt
  */

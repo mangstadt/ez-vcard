@@ -40,7 +40,29 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the GEO type.
+ * A set of latitude/longitude coordinates. There is no rule for what these
+ * coordinates must represent, but the meaning could vary depending on the value
+ * of the vCard KIND type.
+ * 
+ * <ul>
+ * <li>"individual": the location of the person's home or workplace.</li>
+ * <li>"group": the location of the group's meeting place.</li>
+ * <li>"organization": the coordinates of the organization's headquarters.</li>
+ * <li>"location": the coordinates of the location itself.</li>
+ * </ul>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * GeoType geo = new GeoType(-123.456, 12.54);
+ * vcard.setGeo(geo);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: GEO
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class GeoType extends VCardType {

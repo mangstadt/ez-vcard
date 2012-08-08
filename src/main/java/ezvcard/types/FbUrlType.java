@@ -35,7 +35,20 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Represents the FBURL type.
+ * A URL that shows when the person is free/busy on their calendar.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * FbUrlType fburl = new FbUrlType(&quot;http://www.example.com/freebusy/janedoe&quot;);
+ * vcard.addFbUrl(fburl);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: FBURL
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class FbUrlType extends TextType {

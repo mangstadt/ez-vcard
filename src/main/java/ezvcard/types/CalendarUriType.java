@@ -35,7 +35,20 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Represents the CALURI type.
+ * A URL to the person's calendar.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * CalendarUriType caluri = new CalendarUriType(&quot;http://www.ibm.com/janedoe/calendar&quot;);
+ * vcard.addCalendarUri(caluri);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: CALURI
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class CalendarUriType extends TextType {
