@@ -132,6 +132,11 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V2_1, VCardVersion.V3_0 };
+	}
+
+	@Override
 	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
 		VCardSubTypes copy = new VCardSubTypes(subTypes);
 
@@ -147,6 +152,9 @@ public class AgentType extends VCardType {
 
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		//VCardWriter handles 2.1 AGENT types that have an embedded vCard.
+		//this method will not be called for these instances
+
 		if (url != null) {
 			return url;
 		} else {

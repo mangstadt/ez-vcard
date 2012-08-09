@@ -93,11 +93,6 @@ public class KindType extends TextType {
 		super(NAME, kind);
 	}
 
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
-	}
-
 	/**
 	 * Determines if the value is set to "individual".
 	 * @return true if the value is "individual", false if not
@@ -160,5 +155,10 @@ public class KindType extends TextType {
 	 */
 	public static KindType location() {
 		return new KindType(LOCATION);
+	}
+
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 }
