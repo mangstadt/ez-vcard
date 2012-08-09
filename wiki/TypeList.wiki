@@ -367,7 +367,7 @@ vcard.addKey(key);
 //if "KeyTypeParameter" does not have the pre-defined constant that you need, then create a new instance
 //arg 1: the value of the 2.1/3.0 TYPE parameter
 //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
-//arg 3: the file extension of the data type (can be null)
+//arg 3: the file extension of the data type (optional)
 KeyTypeParameter param = new KeyTypeParameter("mykey", "application/my-key", "mkey");
 key = new KeyType("http://www.mywebsite.com/pubkey.enc", param);
 vcard.addKey(key);
@@ -420,33 +420,34 @@ Defines the type of entity that this vCard represents, such as an individual or 
 *Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/KindType.html KindType]
 
 {{{
+//use static methods to create a KindType object
 VCard vcard = new VCard();
 KindType kind = KindType.individual();
 vcard.setKind(kind);
 }}}
 
 {{{
-VCardReader vcr = ...
-VCard vcard = vcr.readNext();
+//use "is*" methods to determine the KindType value
+VCard vcard = ...
 KindType kind = vcard.getKind();
 if (kind != null){
-  if (kind.isGroup()){
-    System.out.println("The group's members are:");
-    for (MemberType member : vcard.getMembers()){
-      System.out.println(member.getUri());
-    }
+  if (kind.isIndividual()){
+    ...
+  } else if (kind.isGroup()){
+    ...
   }
+  ...
 }
 }}}
 
 =LABEL=
-Defines the exact text to put on the box when mailing a package to an address.
+Defines the exact text to put on the mailing label when mailing a package or letter to the person.
 
 *vCard versions:* 2.1, 3.0, 4.0`*`
 
 *Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/LabelType.html LabelType]
 
-`*`The LABEL type is not supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When creating a vCard string, EZ-vCard will use either the type or the parameter, depending on the requested vCard version.
+`*`The LABEL type is not supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When marshalling a vCard, EZ-vCard will use either the LABEL type or the LABEL parameter, depending on the requested vCard version.
 
 Use the `AddressType.setLabel()` method to assign a label to an address.
 
@@ -466,7 +467,7 @@ The `VCard.addOrphanedLabel()` method adds a LABEL type to the vCard. However, u
 The `VCard.getOrphanedLabels()` method can be used after parsing a version 2.1 or 3.0 vCard to retrieve any LABEL types which the parser could not assign to an address (ADR type).  A LABEL is assigned to an ADR if the LABEL's list of TYPE parameters is identical to the ADR's list of TYPE parameters.
 
 {{{
-VCard vcard = new VCard();
+VCard vcard = ...
 for (LabelType label : vcard.getOrphanedLabels()){
   System.out.println(label.getValue());
 }
@@ -486,11 +487,11 @@ lang.setPref(1); //most preferred
 vcard.addLanguage(lang);
 lang = new LanguageType("fr");
 lang.setPref(2); //second-most preferred
-vcard.addLanguage(lang)
+vcard.addLanguage(lang);
 }}}
 
 =LOGO=
-The logo for your company.
+A company logo.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -511,15 +512,14 @@ vcard.addLogo(logo);
 //if "ImageTypeParameter" does not have the pre-defined constant that you need, then create a new instance
 //arg 1: the value of the 2.1/3.0 TYPE parameter
 //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
-//arg 3: the file extension of the data type (can be null)
+//arg 3: the file extension of the data type (optional)
 ImageKeyTypeParameter param = new ImageTypeParameter("bmp", "image/x-ms-bmp", "bmp");
 logo = new LogoType("http://www.company.com/logo.bmp", param);
 vcard.addLogo(logo);
 }}}
 
 {{{
-VCardReader vcr = ...
-VCard vcard = vcr.readNext();
+VCard vcard = ...
 
 int fileCount = 0;
 for (LogoType logo : vcard.getLogos()){
@@ -597,8 +597,7 @@ vcard.addMember(member);
 }}}
 
 {{{
-VCardReader vcr = ...
-VCard vcard = vcr.readNext();
+VCard vcard = ...
 KindType kind = vcard.getKind();
 if (kind != null){
   if (kind.isGroup()){
@@ -626,11 +625,11 @@ n.setFamily("House");
 n.setGiven("Gregory");
 n.addPrefix("Dr");
 n.addSuffix("MD");
-vcard.addStructuredName(n);
+vcard.setStructuredName(n);
 }}}
 
 =NAME=
-Provides a text representation of the SOURCE type.
+Provides a textual representation of the SOURCE type.
 
 *vCard versions:* 3.0
 
@@ -668,7 +667,7 @@ A free-form text field that contains miscellaneous information.
 {{{
 VCard vcard = new VCard();
 NoteType note = new NoteType("This is a\nmiscellaneous comment."); //can contain newlines
-note.setLanguage("en_us");
+note.setLanguage("en-us");
 vcard.addNote(note);
 }}}
 
@@ -710,15 +709,14 @@ vcard.addPhoto(photo);
 //if "ImageTypeParameter" does not have the pre-defined constant that you need, then create a new instance
 //arg 1: the value of the 2.1/3.0 TYPE parameter
 //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
-//arg 3: the file extension of the data type (can be null)
+//arg 3: the file extension of the data type (optional)
 ImageKeyTypeParameter param = new ImageTypeParameter("bmp", "image/x-ms-bmp", "bmp");
 photo = new PhotoType("http://www.mywebsite.com/mugshot.bmp", param);
 vcard.addPhoto(photo);
 }}}
 
 {{{
-VCardReader vcr = ...
-VCard vcard = vcr.readNext();
+VCard vcard = ...
 
 int fileCount = 0;
 for (PhotoType photo : vcard.getPhotos()){
@@ -790,19 +788,22 @@ Other people that the person is related to.  It can contain either a URI or a pl
 
 {{{
 VCard vcard = new VCard();
+
 RelatedType related = new RelatedType(RelatedTypeParameter.FRIEND);
 related.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
 vcard.addRelated(related);
+
 related = new RelatedType(RelatedTypeParameter.CO_WORKER);
 related.setUri("http://joesmoe.name/vcard.vcf");
 vcard.addRelated(related);
+
 related = new RelatedType(RelatedTypeParameter.SPOUSE);
 related.setText("My wife's name is Edna Smith");
 vcard.addRelated(related);
 }}}
 
 =REV=
-The date that the vCard was last modified by the owner.
+The date that the vCard was last modified by its owner.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -847,7 +848,6 @@ SortStringType sortString = new SortStringType("Armour");
 vcard.setSortString(sortString);
 
 //4.0
-//replaces the SORT-STRING type with the SORT-AS parameter
 VCard vcard = new VCard();
 StructuredNameType n = new StructuredNameType();
 n.setFamily("d'Armour");
@@ -857,7 +857,7 @@ vcard.setStructuredName(n);
 }}}
 
 =SOUND=
-A sound to attach to the vCard.  For example, a pronunciation of the person's name.
+A sound to attach to the vCard, such as a pronunciation of the person's name.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -878,15 +878,14 @@ vcard.addSound(sound);
 //if "SoundTypeParameter" does not have the pre-defined constant that you need, then create a new instance
 //arg 1: the value of the 2.1/3.0 TYPE parameter
 //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
-//arg 3: the file extension of the data type (can be null)
+//arg 3: the file extension of the data type (optional)
 SoundTypeParameter param = new SoundTypeParameter("wav", "audio/wav", "wav");
 sound = new SoundType("http://www.mywebsite.com/myname.wav", SoundTypeParameter.WAV);
 vcard.addSound(sound);
 }}}
 
 {{{
-VCardReader vcr = ...
-VCard vcard = vcr.readNext();
+VCard vcard = ...
 
 int fileCount = 0;
 for (SoundType sound : vcard.getSounds()){
@@ -932,7 +931,7 @@ A URL that can be used to retrieve the most up-to-date version of the person's v
 
 {{{
 VCard vcard = new VCard();
-SourceType source = new SourceType("http://directory.example.com/addressbooks/jdoe/Jean%20Dupont.vcf");
+SourceType source = new SourceType("http://www.company.com/employees/doe_john.vcf");
 vcard.addSource(source);
 }}}
 
@@ -990,11 +989,13 @@ A globally unique identifier of the person.
 
 {{{
 VCard vcard = new VCard();
+
 UidType uid = new UidType("urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519");
 vcard.setUid(uid);
 
 //generate a random UID
-vcard.setUid(UidType.random());
+uid = UidType.random();
+vcard.setUid(uid);
 }}}
 
 =URL=
