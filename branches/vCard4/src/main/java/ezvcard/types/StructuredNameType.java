@@ -123,7 +123,7 @@ public class StructuredNameType extends VCardType {
 
 	/**
 	 * Adds an additional name the person goes by.
-	 * @param addition the additional name to add
+	 * @param additional the additional name to add
 	 */
 	public void addAdditional(String additional) {
 		this.additional.add(additional);

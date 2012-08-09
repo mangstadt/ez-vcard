@@ -158,8 +158,8 @@ public class DateOrTimeType extends VCardType {
 	 * </p>
 	 * @param calscale the type of calendar or null to remove
 	 */
-	public void setCalsclae(CalscaleParameter value) {
-		subTypes.setCalscale(value);
+	public void setCalsclae(CalscaleParameter calscale) {
+		subTypes.setCalscale(calscale);
 	}
 
 	/**
