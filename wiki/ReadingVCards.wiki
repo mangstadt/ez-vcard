@@ -1,0 +1,44 @@
+#summary Describes how to parse a vCard.
+
+=VCard.parse()=
+For simple read operations, the static `VCard.parse()` method can be used to read a vCard from either a string or a file.
+
+{{{
+String vcardStr = ...
+VCard vcard = VCard.parse(vcardStr);
+}}}
+
+{{{
+File file = new File("vcard.vcf");
+VCard vcard = VCard.parse(file);
+}}}
+
+=VCardReader=
+For more control over how a vCard is read, the `VCardReader` class can be used.  This is what `VCard.parse()` uses under the covers.  Instead of just accepting a string or file as input, it accepts a `java.io.Reader` object, allowing a vCard to be read from a wide variety of inputs.
+
+It also gives the programmer access to warnings that the parser generates.  A warning is generated when the vCard breaks the standard in some way and/or EZ-vCard has to make a guess as to how to parse the vCard.  The warnings are accessed by calling `getWarnings()` after the vCard is read.  The list of warnings is reset every time a new vCard is read from the input stream.
+
+{{{
+Reader reader = ...
+try {
+  VCardReader vcr = new VCardReader(reader);
+  VCard vcard;
+  while ((vcard = vcr.readNext()) != null){
+    //warnings are generated if the vCard breaks any standards
+    for (String warning : vcr.getWarnings()){
+      System.out.println(warning);
+    }
+    System.out.println(vcard.getFormattedName().getValue());
+  }
+} finally {
+  if (reader != null){
+    try {
+      reader.close();
+    } catch (IOException e){}
+  }
+}
+}}}
+
+As shown in the example above, `VCardReader` iterates over each vCard that is present in the stream.  The `readNext()` method will return `null` when it has reached the end of the input stream.  This iteration pattern should be a familiar sight to most Java programmers, as it is identical in behavior to the `java.io.BufferedReader.readLine()` method.
+
+As with all Java IO operations, the programmer must remember to close the `Reader` object after all vCards have been read.
