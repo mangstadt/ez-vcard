@@ -38,7 +38,56 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the MEMBER type.
+ * The members that make up the group. This type can only be used if the KIND
+ * type is set to "group".
+ * 
+ * <p>
+ * <b>Adding members</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * //KIND must be set to &quot;group&quot; in order to add MEMBERs
+ * vcard.setKind(KindType.group());
+ * 
+ * MemberType member = new MemberType();
+ * member.setUriEmail(&quot;funkyjoe@hotmail.com&quot;);
+ * vcard.addMember(member);
+ * member = new MemberType();
+ * member.setUriIM(&quot;aol&quot;, &quot;joesmoe@aol.com&quot;);
+ * vcard.addMember(member);
+ * member = new MemberType();
+ * member.setUriTelephone(&quot;+1-123-555-6789&quot;);
+ * vcard.addMember(member);
+ * member = new MemberType();
+ * member.setUri(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;); //references the UID from another vCard
+ * vcard.addMember(member);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting members</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = ...
+ * KindType kind = vcard.getKind();
+ * if (kind != null){
+ *   if (kind.isGroup()){
+ *     System.out.println("The group's members are:");
+ *     for (MemberType member : vcard.getMembers()){
+ *       System.out.println(member.getUri());
+ *     }
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: MEMBER
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class MemberType extends VCardType {
@@ -51,7 +100,7 @@ public class MemberType extends VCardType {
 	}
 
 	/**
-	 * @param uri the URI
+	 * @param uri the URI representing the member
 	 */
 	public MemberType(String uri) {
 		super(NAME);

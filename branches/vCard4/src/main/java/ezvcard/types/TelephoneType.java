@@ -41,7 +41,26 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the TEL type.
+ * A telephone number.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * TelephoneType tel = new TelephoneType(&quot;+1 123-555-6789&quot;);
+ * tel.addType(TelephoneTypeParameter.HOME);
+ * tel.setPref(2); //the second-most preferred
+ * vcard.addTelephoneNumber(tel);
+ * tel = new TelephoneType(&quot;+1 800-555-9876;ext=111&quot;);
+ * tel.addType(TelephoneTypeParameter.WORK);
+ * tel.setPref(1); //the most preferred
+ * vcard.addTelephoneNumber(tel);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: TEL
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypeParameter> {
@@ -53,15 +72,26 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		this(null);
 	}
 
-	public TelephoneType(String value) {
+	/**
+	 * @param value the telephone number
+	 */
+	public TelephoneType(String telNumber) {
 		super(NAME);
-		this.value = value;
+		this.value = telNumber;
 	}
 
+	/**
+	 * Gets the telephone number.
+	 * @return the telephone number
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the telephone number.
+	 * @param value the telephone number
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}

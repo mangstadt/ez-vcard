@@ -72,14 +72,14 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	protected T contentType;
 
 	/**
-	 * @param name the type name
+	 * @param name the type name (e.g. "PHOTO")
 	 */
 	public BinaryType(String name) {
 		super(name);
 	}
 
 	/**
-	 * @param name the type name
+	 * @param name the type name (e.g. "PHOTO")
 	 * @param url the URL to the resource
 	 * @param type the content type
 	 */
@@ -89,7 +89,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	/**
-	 * @param name the type name
+	 * @param name the type name (e.g. "PHOTO")
 	 * @param data the binary data
 	 * @param type the content type
 	 */

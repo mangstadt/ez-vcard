@@ -32,7 +32,20 @@ import java.util.Date;
  */
 
 /**
- * Represents the REV type.
+ * The date that the vCard was last modified by its owner.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * RevisionType rev = new RevisionType(new Date());
+ * vcard.setRevision(rev);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: REV
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class RevisionType extends TimestampType {
@@ -43,7 +56,7 @@ public class RevisionType extends TimestampType {
 	}
 
 	/**
-	 * @param date the date value
+	 * @param date the date
 	 */
 	public RevisionType(Date date) {
 		super(NAME, date);

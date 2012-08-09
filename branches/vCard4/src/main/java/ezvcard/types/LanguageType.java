@@ -35,7 +35,25 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Represents the LANG MAILER type.
+ * A language that the person speaks.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * LanguageType lang = new LanguageType(&quot;en&quot;);
+ * lang.setPref(1); //most preferred
+ * vcard.addLanguage(lang);
+ * lang = new LanguageType(&quot;fr&quot;);
+ * lang.setPref(2); //second-most preferred
+ * vcard.addLanguage(lang);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: LANG
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
+ * 
  * @author Michael Angstadt
  */
 public class LanguageType extends TextType {
@@ -45,8 +63,11 @@ public class LanguageType extends TextType {
 		super(NAME);
 	}
 
-	public LanguageType(String value) {
-		super(NAME, value);
+	/**
+	 * @param language the language (e.g. "en-ca")
+	 */
+	public LanguageType(String language) {
+		super(NAME, language);
 	}
 
 	/**

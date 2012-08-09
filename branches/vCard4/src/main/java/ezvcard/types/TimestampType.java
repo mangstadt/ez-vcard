@@ -63,10 +63,18 @@ public class TimestampType extends VCardType {
 		this.timestamp = timestamp;
 	}
 
+	/**
+	 * Gets the timestamp.
+	 * @return the timestamp
+	 */
 	public Date getTimestamp() {
 		return timestamp;
 	}
 
+	/**
+	 * Sets the timestamp.
+	 * @param timestamp the timestamp
+	 */
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}

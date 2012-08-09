@@ -43,15 +43,15 @@ public class TextType extends VCardType {
 	protected String value;
 
 	/**
-	 * @param name the type name
+	 * @param name the type name (e.g. "NOTE")
 	 */
 	public TextType(String name) {
 		this(name, null);
 	}
 
 	/**
-	 * @param name the type name
-	 * @param value the value
+	 * @param name the type name (e.g. "NOTE")
+	 * @param value the type value
 	 */
 	public TextType(String name, String value) {
 		super(name);

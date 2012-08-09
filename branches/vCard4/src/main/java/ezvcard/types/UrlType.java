@@ -34,7 +34,20 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the URL type.
+ * A URL pointing to the person's homepage or business website.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * UrlType url = new UrlType(&quot;http://www.company.com&quot;);
+ * vcard.addUrl(url);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: URL
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class UrlType extends TextType {
@@ -44,8 +57,11 @@ public class UrlType extends TextType {
 		this(null);
 	}
 
-	public UrlType(String value) {
-		super(NAME, value);
+	/**
+	 * @param url the URL
+	 */
+	public UrlType(String url) {
+		super(NAME, url);
 	}
 
 	/**
@@ -158,8 +174,14 @@ public class UrlType extends TextType {
 	/**
 	 * Gets the TYPE parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * vCard versions: 4.0*
 	 * </p>
+	 * 
+	 * <p>
+	 * <i>* Some mail clients will add this parameter to URL types in 2.1 and
+	 * 3.0 vCards, however.</i>
+	 * </p>
+	 * 
 	 * @return the TYPE value (typically, this will be either "work" or "home")
 	 * or null if it doesn't exist
 	 */
@@ -170,7 +192,12 @@ public class UrlType extends TextType {
 	/**
 	 * Sets the TYPE parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * vCard versions: 4.0*
+	 * </p>
+	 * 
+	 * <p>
+	 * <i>* Some mail clients will add this parameter to URL types in 2.1 and
+	 * 3.0 vCards, however.</i>
 	 * </p>
 	 * @param type the TYPE value (this should be either "work" or "home") or
 	 * null to remove

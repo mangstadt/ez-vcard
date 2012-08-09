@@ -95,7 +95,7 @@ public class BirthdayType extends DateOrTimeType {
 	}
 
 	/**
-	 * @param date the date value
+	 * @param date the birthday
 	 */
 	public BirthdayType(Date date) {
 		super(NAME, date);

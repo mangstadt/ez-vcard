@@ -34,7 +34,24 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the ORG type.
+ * A list of organizations the person belongs to. The list is ordered. It starts
+ * with the broadest organization and ends with the most specific.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * OrganizationType org = new OrganizationType();
+ * org.addValue(&quot;Google&quot;);
+ * org.addValue(&quot;GMail Team&quot;);
+ * org.addValue(&quot;Spam Detection Team&quot;);
+ * vcard.setOrganizations(org);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: ORG
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class OrganizationType extends TextListType {

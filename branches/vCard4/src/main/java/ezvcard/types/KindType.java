@@ -32,7 +32,44 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Represents the KIND type.
+ * Defines the type of entity that this vCard represents, such as an individual
+ * or an organization.
+ * 
+ * <p>
+ * <b>Setting the KIND</b>
+ * </p>
+ * 
+ * <pre>
+ * //use static methods to create a KindType object
+ * VCard vcard = new VCard();
+ * KindType kind = KindType.individual();
+ * vcard.setKind(kind);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting the KIND</b>
+ * </p>
+ * 
+ * <pre>
+ * //use "is*" methods to determine the KindType value
+ * VCard vcard = ...
+ * KindType kind = vcard.getKind();
+ * if (kind != null){
+ *   if (kind.isIndividual()){
+ *     ...
+ *   } else if (kind.isGroup()){
+ *     ...
+ *   }
+ *   ...
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: KIND
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class KindType extends TextType {
@@ -50,7 +87,7 @@ public class KindType extends TextType {
 	/**
 	 * Use of this constructor is discouraged. Please use one of the static
 	 * methods to create a new KIND type.
-	 * @param kind the kind value
+	 * @param kind the kind value (e.g. "group")
 	 */
 	public KindType(String kind) {
 		super(NAME, kind);
@@ -61,34 +98,66 @@ public class KindType extends TextType {
 		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 
+	/**
+	 * Determines if the value is set to "individual".
+	 * @return true if the value is "individual", false if not
+	 */
 	public boolean isIndividual() {
 		return INDIVIDUAL.equals(value);
 	}
 
+	/**
+	 * Determines if the value is set to "group".
+	 * @return true if the value is "group", false if not
+	 */
 	public boolean isGroup() {
 		return GROUP.equals(value);
 	}
 
+	/**
+	 * Determines if the value is set to "org".
+	 * @return true if the value is "org", false if not
+	 */
 	public boolean isOrg() {
 		return ORG.equals(value);
 	}
 
+	/**
+	 * Determines if the value is set to "location".
+	 * @return true if the value is "location", false if not
+	 */
 	public boolean isLocation() {
 		return LOCATION.equals(value);
 	}
 
+	/**
+	 * Creates a new KIND type whose value is set to "individual".
+	 * @return the new KIND type
+	 */
 	public static KindType individual() {
 		return new KindType(INDIVIDUAL);
 	}
 
+	/**
+	 * Creates a new KIND type whose value is set to "group".
+	 * @return the new KIND type
+	 */
 	public static KindType group() {
 		return new KindType(GROUP);
 	}
 
+	/**
+	 * Creates a new KIND type whose value is set to "org".
+	 * @return the new KIND type
+	 */
 	public static KindType org() {
 		return new KindType(ORG);
 	}
 
+	/**
+	 * Creates a new KIND type whose value is set to "location".
+	 * @return the new KIND type
+	 */
 	public static KindType location() {
 		return new KindType(LOCATION);
 	}

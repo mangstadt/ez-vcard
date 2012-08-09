@@ -34,7 +34,21 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the TITLE type.
+ * The person's position or job in his or her organization.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * TitleType title = new TitleType(&quot;Research Scientist&quot;);
+ * vcard.addTitle(title);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: TITLE
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
+ * 
  * @author Michael Angstadt
  */
 public class TitleType extends TextType {

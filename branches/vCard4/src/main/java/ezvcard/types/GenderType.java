@@ -93,7 +93,7 @@ public class GenderType extends VCardType {
 	/**
 	 * Use of this constructor is discouraged. Please use one of the static
 	 * methods to create a new GENDER type.
-	 * @param gender the gender value
+	 * @param gender the gender value (e.g. "F")
 	 */
 	public GenderType(String gender) {
 		super(NAME);
