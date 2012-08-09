@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import ezvcard.VCardVersion;
+
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -60,5 +62,10 @@ public class ClassificationType extends TextType {
 	 */
 	public ClassificationType(String classValue) {
 		super(NAME, classValue);
+	}
+	
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V3_0 };
 	}
 }

@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import ezvcard.VCardVersion;
+
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -58,5 +60,10 @@ public class MailerType extends TextType {
 	 */
 	public MailerType(String emailClient) {
 		super(NAME, emailClient);
+	}
+
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V2_1, VCardVersion.V3_0 };
 	}
 }

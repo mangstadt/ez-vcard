@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import ezvcard.VCardSubTypes;
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -85,5 +86,10 @@ public class XmlType extends TextType {
 	 */
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
+	}
+
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 }

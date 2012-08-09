@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import ezvcard.VCardVersion;
+
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -80,5 +82,10 @@ public class SortStringType extends TextType {
 	 */
 	public SortStringType(String sortString) {
 		super(NAME, sortString);
+	}
+	
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V2_1, VCardVersion.V3_0 };
 	}
 }

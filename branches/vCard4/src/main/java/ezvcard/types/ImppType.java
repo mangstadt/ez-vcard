@@ -282,6 +282,11 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
+	
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V4_0 };
+	}
 
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {

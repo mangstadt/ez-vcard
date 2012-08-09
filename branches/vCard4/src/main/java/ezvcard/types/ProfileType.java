@@ -75,4 +75,9 @@ public class ProfileType extends TextType {
 		}
 		super.doUnmarshalValue(value, version, warnings, compatibilityMode);
 	}
+	
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V3_0 };
+	}
 }
