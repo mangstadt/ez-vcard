@@ -73,7 +73,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	/**
-	 * @param value the telephone number
+	 * @param telNumber the telephone number
 	 */
 	public TelephoneType(String telNumber) {
 		super(NAME);

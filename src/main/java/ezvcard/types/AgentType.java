@@ -124,7 +124,7 @@ public class AgentType extends VCardType {
 
 	/**
 	 * Sets an embedded vCard with the agent's information.
-	 * @return the vCard
+	 * @param vcard the vCard
 	 */
 	public void setVcard(VCard vcard) {
 		this.vcard = vcard;
