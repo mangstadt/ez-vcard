@@ -30,7 +30,20 @@ package ezvcard.types;
  */
 
 /**
- * Represents the MAILER type.
+ * The email client that the person uses.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * MailerType mailer = new MailerType(&quot;Thunderbird&quot;);
+ * vcard.setMailer(mailer);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: MAILER
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0
+ * </p>
  * @author Michael Angstadt
  */
 public class MailerType extends TextType {

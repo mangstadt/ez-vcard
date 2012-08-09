@@ -33,7 +33,81 @@ import ezvcard.parameters.SoundTypeParameter;
  */
 
 /**
- * Represents the SOUND type.
+ * A sound to attach to the vCard, such as a pronunciation of the person's name.
+ * 
+ * <p>
+ * <b>Adding a sound</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * //URL
+ * SoundType sound = new SoundType("http://www.mywebsite.com/myname.ogg", SoundTypeParameter.OGG);
+ * vcard.addSound(sound);
+ * 
+ * //binary data
+ * byte data[] = ...
+ * sound = new SoundType(data, SoundTypeParameter.OGG);
+ * vcard.addSound(sound);
+ * 
+ * //if "SoundTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+ * //arg 1: the value of the 2.1/3.0 TYPE parameter
+ * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
+ * //arg 3: the file extension of the data type (optional)
+ * SoundTypeParameter param = new SoundTypeParameter("wav", "audio/wav", "wav");
+ * sound = new SoundType("http://www.mywebsite.com/myname.wav", SoundTypeParameter.WAV);
+ * vcard.addSound(sound);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting the sounds</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = ...
+ * 
+ * int fileCount = 0;
+ * for (SoundType sound : vcard.getSounds()){
+ *   //the sound will have either a URL or a binary data
+ *   if (sound.getData() == null){
+ *     System.out.println("Sound URL: " + sound.getUrl());
+ *   } else {
+ *     SoundTypeParameter type = sound.getContentType();
+ *     
+ *     if (type == null) {
+ *       //the vCard may not have any content type data associated with the sound
+ *       System.out.println("Saving a sound file...");
+ *     } else {
+ *       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+ *     }
+ *     
+ *     String folder;
+ *     if (type == SoundTypeParameter.OGG){ //it is safe to use "==" instead of "equals()"
+ *       folder = "ogg-files";
+ *     } else {
+ *       folder = "sound-files";
+ *     }
+ *     
+ *     byte data[] = sound.getData();
+ *     String filename = "sound" + fileCount;
+ *     if (type != null && type.getExtension() != null){
+ *     	filename += "." + type.getExtension();
+ *     }
+ *     OutputStream out = new FileOutputStream(new File(folder, filename));
+ *     out.write(data);
+ *     out.close();
+ *     fileCount++;
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: SOUND
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class SoundType extends BinaryType<SoundTypeParameter> {
@@ -43,10 +117,18 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 		super(NAME);
 	}
 
+	/**
+	 * @param url the URL to the sound file
+	 * @param type the content type (e.g. OGG)
+	 */
 	public SoundType(String url, SoundTypeParameter type) {
 		super(NAME, url, type);
 	}
 
+	/**
+	 * @param data the binary data of the sound file
+	 * @param type the content type (e.g. OGG)
+	 */
 	public SoundType(byte[] data, SoundTypeParameter type) {
 		super(NAME, data, type);
 	}

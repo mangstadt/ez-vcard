@@ -97,7 +97,7 @@ public class AnniversaryType extends DateOrTimeType {
 	}
 
 	/**
-	 * @param date the date value
+	 * @param date the anniversary date
 	 */
 	public AnniversaryType(Date date) {
 		super(NAME, date);

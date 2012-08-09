@@ -39,7 +39,33 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the "N" type.
+ * <p>
+ * Contains the separated components of the person's name.
+ * </p>
+ * 
+ * <p>
+ * Multiple instances of this type can be added ONLY if each instance has an
+ * ALTID parameter and the value of the ALTID parameter is the same across all
+ * instances. However, this is a border-case; under most circumstances, you will
+ * only need to add one instance.
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * StructuredNameType n = new StructuredNameType();
+ * n.setFamily(&quot;House&quot;);
+ * n.setGiven(&quot;Gregory&quot;);
+ * n.addPrefix(&quot;Dr&quot;);
+ * n.addSuffix(&quot;MD&quot;);
+ * vcard.setStructuredName(n);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: N
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class StructuredNameType extends VCardType {
@@ -55,42 +81,82 @@ public class StructuredNameType extends VCardType {
 		super(NAME);
 	}
 
+	/**
+	 * Gets the family name (aka "last name").
+	 * @return the family name or null if not set
+	 */
 	public String getFamily() {
 		return family;
 	}
 
+	/**
+	 * Sets the family name (aka "last name").
+	 * @param family the family name or null to remove
+	 */
 	public void setFamily(String family) {
 		this.family = family;
 	}
 
+	/**
+	 * Gets the given name (aka "first name").
+	 * @return the given name or null if not set
+	 */
 	public String getGiven() {
 		return given;
 	}
 
+	/**
+	 * Sets the given name (aka "first name").
+	 * @param given the given name or null to remove
+	 */
 	public void setGiven(String given) {
 		this.given = given;
 	}
 
+	/**
+	 * Gets any additional names the person goes by.
+	 * @return the additional names or empty list if there are none
+	 */
 	public List<String> getAdditional() {
 		return additional;
 	}
 
+	/**
+	 * Adds an additional name the person goes by.
+	 * @param addition the additional name to add
+	 */
 	public void addAdditional(String additional) {
 		this.additional.add(additional);
 	}
 
+	/**
+	 * Gets the prefixes.
+	 * @return the prefixes (e.g. "Mr.") or empty list if there are none
+	 */
 	public List<String> getPrefixes() {
 		return prefixes;
 	}
 
+	/**
+	 * Adds a prefix.
+	 * @param prefix the prefix to add (e.g. "Mr.")
+	 */
 	public void addPrefix(String prefix) {
 		this.prefixes.add(prefix);
 	}
 
+	/**
+	 * Gets the suffixes.
+	 * @return the suffixes (e.g. "Jr.") or empty list if there are none
+	 */
 	public List<String> getSuffixes() {
 		return suffixes;
 	}
 
+	/**
+	 * Adds a suffix.
+	 * @param suffix the suffix to add (e.g. "Jr.")
+	 */
 	public void addSuffix(String suffix) {
 		this.suffixes.add(suffix);
 	}
@@ -164,6 +230,7 @@ public class StructuredNameType extends VCardType {
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder value = new StringBuilder();
+
 		if (family != null) {
 			value.append(VCardStringUtils.escapeText(family));
 		}

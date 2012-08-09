@@ -47,7 +47,7 @@ import ezvcard.util.VCardStringUtils;
  * <ul>
  * <li>"individual": the location of the person's home or workplace.</li>
  * <li>"group": the location of the group's meeting place.</li>
- * <li>"organization": the coordinates of the organization's headquarters.</li>
+ * <li>"org": the coordinates of the organization's headquarters.</li>
  * <li>"location": the coordinates of the location itself.</li>
  * </ul>
  * 

@@ -34,7 +34,21 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the SOURCE type.
+ * A URL that can be used to retrieve the most up-to-date version of the
+ * person's vCard.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * SourceType source = new SourceType(&quot;http://www.company.com/employees/doe_john.vcf&quot;);
+ * vcard.addSource(source);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: SOURCE
+ * </p>
+ * <p>
+ * vCard versions: 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class SourceType extends TextType {
@@ -44,8 +58,11 @@ public class SourceType extends TextType {
 		this(null);
 	}
 
-	public SourceType(String value) {
-		super(NAME, value);
+	/**
+	 * @param url the URL
+	 */
+	public SourceType(String url) {
+		super(NAME, url);
 	}
 
 	/**

@@ -41,19 +41,34 @@ import ezvcard.io.CompatibilityMode;
 public class RawType extends VCardType {
 	private String value;
 
+	/**
+	 * @param name the type name (e.g. "NOTE")
+	 */
 	public RawType(String name) {
 		this(name, null);
 	}
 
+	/**
+	 * @param name the type name (e.g. "NOTE")
+	 * @param value the type value
+	 */
 	public RawType(String name, String value) {
 		super(name);
 		this.value = value;
 	}
 
+	/**
+	 * Gets the raw value of the property.
+	 * @return the value
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the raw value of the property.
+	 * @param value the value
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}

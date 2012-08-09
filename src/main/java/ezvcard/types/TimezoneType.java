@@ -45,10 +45,22 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the TZ type.
+ * Contains the timezone that the person lives/works in.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * TimezoneType tz = new TimezoneType(-5, 0, &quot;America/New_York&quot;);
+ * vcard.addTimezone(tz);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: TZ
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
+ * 
  * @author Michael Angstadt
- * @see "<a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a> p.15<br>
- * <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.37"
  */
 public class TimezoneType extends VCardType {
 	public static final String NAME = "TZ";
@@ -81,7 +93,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	/**
-	 * Use this constructor for all vCard versions.
+	 * This constructor can be used for all vCard versions.
 	 * @param hourOffset the hour offset
 	 * @param minuteOffset the minute offset
 	 * @param text can be anything, but should be a string representing the
@@ -121,7 +133,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	/**
-	 * Sets the minute offest
+	 * Sets the minute offset.
 	 * @param minuteOffset the minute offset or null to remove
 	 * @throws IllegalArgumentException if the minute offset is not between 0
 	 * and 59

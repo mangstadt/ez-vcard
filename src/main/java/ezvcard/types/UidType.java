@@ -32,7 +32,25 @@ import java.util.UUID;
  */
 
 /**
- * Represents the UID type.
+ * A globally unique identifier of the person.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * UidType uid = new UidType(&quot;urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519&quot;);
+ * vcard.setUid(uid);
+ * 
+ * //generate a random UID
+ * uid = UidType.random();
+ * vcard.setUid(uid);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: UID
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class UidType extends TextType {
@@ -56,13 +74,5 @@ public class UidType extends TextType {
 	public static UidType random() {
 		String uuid = UUID.randomUUID().toString();
 		return new UidType("urn:uuid:" + uuid);
-	}
-
-	public String getType() {
-		return subTypes.getType();
-	}
-
-	public void setType(String type) {
-		subTypes.setType(type);
 	}
 }

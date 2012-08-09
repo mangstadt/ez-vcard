@@ -32,7 +32,21 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the XML type.
+ * Any XML data attached to the vCard. This is used if the vCard was encoded in
+ * XML (xCard standard) and it contained some non-standard elements.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * XmlType xml = new XmlType(&quot;&lt;b&gt;Some xml&lt;/b&gt;&quot;);
+ * vcard.addXml(xml);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: XML
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class XmlType extends TextType {
@@ -43,10 +57,10 @@ public class XmlType extends TextType {
 	}
 
 	/**
-	 * @param value the XML value
+	 * @param xml the XML element
 	 */
-	public XmlType(String value) {
-		super(NAME, value);
+	public XmlType(String xml) {
+		super(NAME, xml);
 	}
 
 	/**

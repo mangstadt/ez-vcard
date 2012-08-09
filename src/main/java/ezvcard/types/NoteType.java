@@ -34,7 +34,21 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the NOTE type.
+ * A free-form text field that contains miscellaneous information.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * NoteType note = new NoteType(&quot;This is a\nmiscellaneous comment.&quot;); //can contain newlines
+ * note.setLanguage(&quot;en-us&quot;);
+ * vcard.addNote(note);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: NOTE
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class NoteType extends TextType {
@@ -44,8 +58,11 @@ public class NoteType extends TextType {
 		this(null);
 	}
 
-	public NoteType(String value) {
-		super(NAME, value);
+	/**
+	 * @param note the note text
+	 */
+	public NoteType(String note) {
+		super(NAME, note);
 	}
 
 	/**

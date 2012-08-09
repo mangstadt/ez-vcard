@@ -34,7 +34,23 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the NICKNAME type.
+ * A list of nicknames the person goes by.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * NicknameType nickname = new NicknameType();
+ * nickname.addValue(&quot;Rick&quot;);
+ * nickname.addValue(&quot;Ricky&quot;);
+ * nickname.addValue(&quot;Bobby&quot;);
+ * vcard.setNickname(nickname);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: NICKNAME
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class NicknameType extends TextListType {

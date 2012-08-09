@@ -71,9 +71,12 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 		this(null);
 	}
 
-	public EmailType(String value) {
+	/**
+	 * @param email the email
+	 */
+	public EmailType(String email) {
 		super(NAME);
-		setValue(value);
+		setValue(email);
 	}
 
 	@Override
@@ -86,19 +89,19 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	}
 
 	/**
-	 * Gets the value of this type.
-	 * @return the value
+	 * Gets the email address.
+	 * @return the email address
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Sets the value of this type.
-	 * @param value the value
+	 * Sets the email address
+	 * @param email the email address
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public void setValue(String email) {
+		this.value = email;
 	}
 
 	/**

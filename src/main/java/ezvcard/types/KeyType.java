@@ -67,7 +67,7 @@ import ezvcard.util.VCardStringUtils;
  * //if "KeyTypeParameter" does not have the pre-defined constant that you need, then create a new instance
  * //arg 1: the value of the 2.1/3.0 TYPE parameter
  * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
- * //arg 3: the file extension of the data type (can be null)
+ * //arg 3: the file extension of the data type (optional)
  * KeyTypeParameter param = new KeyTypeParameter("mykey", "application/my-key", "mkey");
  * key = new KeyType("http://www.mywebsite.com/pubkey.enc", param);
  * vcard.addKey(key);
@@ -135,7 +135,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	/**
 	 * @param data the binary data
-	 * @param type the type of key
+	 * @param type the type of key (e.g. PGP)
 	 */
 	public KeyType(byte data[], KeyTypeParameter type) {
 		super(NAME, data, type);
@@ -143,7 +143,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	/**
 	 * @param url the URL to the key (vCard 4.0 only)
-	 * @param type the type of key
+	 * @param type the type of key (e.g. PGP)
 	 */
 	public KeyType(String url, KeyTypeParameter type) {
 		super(NAME, url, type);

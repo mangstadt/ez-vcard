@@ -34,7 +34,20 @@ import ezvcard.VCardSubTypes;
  */
 
 /**
- * Represents the ROLE type.
+ * The function that the person plays in his or her organization.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * RoleType role = new RoleType(&quot;Project Leader&quot;);
+ * vcard.addRole(role);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: ROLE
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class RoleType extends TextType {

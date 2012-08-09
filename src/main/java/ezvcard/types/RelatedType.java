@@ -42,7 +42,31 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the RELATED type.
+ * Someone that the person is related to. It can contain either a URI or a plain
+ * text value.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * RelatedType related = new RelatedType(RelatedTypeParameter.FRIEND);
+ * related.setUri(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
+ * vcard.addRelated(related);
+ * 
+ * related = new RelatedType(RelatedTypeParameter.CO_WORKER);
+ * related.setUri(&quot;http://joesmoe.name/vcard.vcf&quot;);
+ * vcard.addRelated(related);
+ * 
+ * related = new RelatedType(RelatedTypeParameter.SPOUSE);
+ * related.setText(&quot;My wife's name is Edna Smith&quot;);
+ * vcard.addRelated(related);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: RELATED
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParameter> {
@@ -56,7 +80,7 @@ public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParame
 	}
 
 	/**
-	 * @param type the type of relation
+	 * @param type the type of relation (e.g. spouse)
 	 */
 	public RelatedType(RelatedTypeParameter type) {
 		super(NAME);
