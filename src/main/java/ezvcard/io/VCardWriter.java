@@ -367,7 +367,7 @@ public class VCardWriter implements Closeable {
 				}
 			}
 
-			sb.append(": ");
+			sb.append(':');
 
 			//write the value
 			if (nested == null) {
