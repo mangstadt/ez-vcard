@@ -229,7 +229,7 @@ public class VCardWriter implements Closeable {
 				return true;
 			}
 		};
-		types.add(new TextType("BEGIN", "vcard"));
+		types.add(new TextType("BEGIN", "VCARD"));
 		types.add(new TextType("VERSION", targetVersion.getVersion()));
 
 		//use reflection to get all VCardType fields in the VCard class
@@ -267,7 +267,7 @@ public class VCardWriter implements Closeable {
 			types.add(new TextType("X-GENERATOR", "EZ vCard v" + EZVCard.VERSION + " " + EZVCard.URL));
 		}
 
-		types.add(new TextType("END", "vcard"));
+		types.add(new TextType("END", "VCARD"));
 
 		for (VCardType type : types) {
 			//determine if this type has a nested vCard

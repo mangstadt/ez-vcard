@@ -55,23 +55,23 @@ public class ProfileType extends TextType {
 	public static final String NAME = "PROFILE";
 
 	public ProfileType() {
-		super(NAME, "vcard");
+		super(NAME, "VCARD");
 	}
 
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if ("vcard".equalsIgnoreCase(value)) {
+		if ("VCARD".equalsIgnoreCase(value)) {
 			//see RFC 2426 p.5
-			warnings.add("The value of the " + ProfileType.NAME + " type should be \"vcard\", but it is \"" + value + "\"");
+			warnings.add("The value of the " + ProfileType.NAME + " type should be \"VCARD\", but it is \"" + value + "\"");
 		}
 		return super.doMarshalValue(version, warnings, compatibilityMode);
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if ("vcard".equalsIgnoreCase(value)) {
+		if ("VCARD".equalsIgnoreCase(value)) {
 			//see RFC 2426 p.5
-			warnings.add("The value of the " + ProfileType.NAME + " type should be \"vcard\", but it is \"" + value + "\"");
+			warnings.add("The value of the " + ProfileType.NAME + " type should be \"VCARD\", but it is \"" + value + "\"");
 		}
 		super.doUnmarshalValue(value, version, warnings, compatibilityMode);
 	}
