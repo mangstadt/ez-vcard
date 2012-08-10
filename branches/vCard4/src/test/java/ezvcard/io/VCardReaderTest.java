@@ -95,12 +95,12 @@ public class VCardReaderTest {
 	@Test
 	public void getSubTypes() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("NOTE;x-size=8: The note\r\n");
 		sb.append("ADR;HOME;WORK: ;;;;\r\n"); //nameless parameters
 		sb.append("LABEL;type=dOm;TyPE=parcel: \r\n"); //repeated parameter name
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard = reader.readNext();
 
@@ -126,12 +126,12 @@ public class VCardReaderTest {
 	@Test
 	public void decodeQuotedPrintable() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:123 Main St.=0D=0A\r\n");
 		sb.append(" Austin, TX 91827=0D=0A\r\n");
 		sb.append(" USA\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard = reader.readNext();
 
@@ -146,7 +146,7 @@ public class VCardReaderTest {
 	@Test
 	public void unfold() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("NOTE: The vCard MIME Directory Profile also provides support for represent\r\n");
 		sb.append(" ing other important information about the person associated with the dire\r\n");
@@ -157,7 +157,7 @@ public class VCardReaderTest {
 		sb.append(" directory entry\\; date and time that the directory information was last up\r\n");
 		sb.append(" dated\\; annotations often written on a business card\\; Uniform Resource Loc\r\n");
 		sb.append(" ators (URL) for a website\\; public key information.\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard = reader.readNext();
 
@@ -172,12 +172,12 @@ public class VCardReaderTest {
 	@Test
 	public void readExtendedType() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("X-LUCKY-NUM: 24\r\n");
 		sb.append("X-GENDER: ma\\,le\r\n");
 		sb.append("X-LUCKY-NUM: 22\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		reader.registerExtendedType(LuckyNumType.class);
 		VCard vcard = reader.readNext();
@@ -201,14 +201,14 @@ public class VCardReaderTest {
 	@Test
 	public void readMultiple() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("FN: John Doe\r\n");
-		sb.append("END: vcard\r\n");
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("END: VCARD\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("FN: Jane Doe\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard;
 
@@ -230,20 +230,20 @@ public class VCardReaderTest {
 	public void readNested() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("AGENT:\r\n");
-			sb.append("BEGIN: vcard\r\n");
+			sb.append("BEGIN: VCARD\r\n");
 			sb.append("VERSION: 2.1\r\n");
 			sb.append("FN: Agent 007\r\n");
 			sb.append("AGENT:\r\n");
-				sb.append("BEGIN: vcard\r\n");
+				sb.append("BEGIN: VCARD\r\n");
 				sb.append("VERSION: 2.1\r\n");
 				sb.append("FN: Agent 009\r\n");
-				sb.append("END: vcard\r\n");
-			sb.append("END: vcard\r\n");
+				sb.append("END: VCARD\r\n");
+			sb.append("END: VCARD\r\n");
 		sb.append("FN: John Doe\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
@@ -263,20 +263,20 @@ public class VCardReaderTest {
 	public void readInlineAgent() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("AGENT: ");
-			sb.append("BEGIN: vcard\\n");
+			sb.append("BEGIN: VCARD\\n");
 			sb.append("VERSION: 3.0\\n");
 			sb.append("FN: Agent 007\\n");
 			sb.append("AGENT: ");
-				sb.append("BEGIN: vcard\\\\n");
+				sb.append("BEGIN: VCARD\\\\n");
 				sb.append("VERSION: 3.0\\\\n");
 				sb.append("FN: Agent 009\\\\n");
-				sb.append("END: vcard\\\\n");
-			sb.append("END: vcard\r\n");
+				sb.append("END: VCARD\\\\n");
+			sb.append("END: VCARD\r\n");
 		sb.append("FN: John Doe\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
@@ -297,13 +297,13 @@ public class VCardReaderTest {
 	@Test
 	public void readLabel() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("ADR;TYPE=home:;;123 Main St.;Austin;TX;91827;USA\r\n");
 		sb.append("LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 91827\\nUSA\r\n");
 		sb.append("ADR;TYPE=work,parcel:;;200 Broadway;New York;NY;12345;USA\r\n");
 		sb.append("LABEL;TYPE=work:200 Broadway\\nNew York\\, NY 12345\\nUSA\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard = reader.readNext();
 
