@@ -1,0 +1,164 @@
+#summary Describes how to work with extended vCard properties
+
+The vCard standard allows for "extended" properties to exist in a vCard.  An extended property is simply a property whose name starts with "X-" and is not part of the vCard specification.  Many email clients make use of extended properties to store platform-specific data.
+
+|| *Note:*<br><br>The terms "type" and "property" are equivalent and are used interchangeably throughout the documentation and source code.  Both terms refer to a<br> vCard data entry, such as an email address or phone number. The 3.0 specs use the term "type", while the 2.1 and 4.0 specs use the term<br> "property".<br><br>Similarly, the terms "sub type" (from the 3.0 specs) and "parameter" (from the 2.1/4.0 specs) are equivalent.  They both refer to the<br> additional attributes that are attached to a type/property.||
+
+=Basic Usage=
+
+To retrieve extended properties from a `VCard` object by name, use the `getExtendedType()` method.  It returns a list of `RawType` objects.  Use the `RawType.getValue()` method to retrieve the value of the extended property.
+
+{{{
+VCard vcard = ...
+List<RawType> icq = vcard.getExtendedType("X-ICQ");
+for (RawType raw : icq){
+  System.out.println("ICQ handle: " + raw.getValue());
+}
+}}}
+
+A complete list of all the `VCard`'s extended properties can be retrieved using the `getExtendedTypes()` method.
+
+{{{
+VCard vcard = ...
+ListMultimap<String, VCardType> extendedTypes = vcard.getExtendedTypes();
+for (VCardType type : extendedTypes.values()){
+  if (type instanceof RawType){
+    RawType raw = (RawType)type;
+    System.out.println(raw.getValue());
+  }
+}
+}}}
+
+To add an extended property to a `VCard` object, create a new instance of the `RawType` class and pass it to the `addExtendedType()` method.
+
+{{{
+VCard vcard = new VCard();
+RawType raw = new RawType("X-ICQ", "123456789");
+vcard.addExtendedType(raw);
+}}}
+
+=VCardType class=
+
+In addition to using the `RawType` class to directly get/set the value of an extended property, the programmer also can create an implementation of the `VCardType` class to marshal and unmarshal the property.  This is useful if the property value is in a format that requires some sort of special parsing.  The `FavColorsType` class below shows how such a class is designed.
+
+{{{
+public class FavColorsType extends VCardType {
+  private List<String> favColors = new ArrayList<String>();
+
+  //default constructor required
+  public FavColorsType(){
+    super("X-FAV-COLORS");
+  }
+
+  public List<String> getFavColors(){
+    return favColors;
+  }
+
+  public void addFavColor(String color){
+    favColors.add(color);
+  }
+  
+  //use of this method is optional
+  //use it to tweak the property's parameters when it is marshalled
+  @Override
+  protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+    VCardSubTypes copy = new VCardSubTypes(subTypes);
+    if (version == VCardVersion.V4_0){
+      //add a "VALUE=text" parameter
+      copy.setValue(ValueParameter.TEXT);
+    } else {
+      //remove the "VALUE" parameter if it exists
+      copy.setValue(null);
+    }
+    return copy;
+  }
+
+  @Override
+  protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+    StringBuilder sb = new StringBuilder();
+    if (!favColors.isEmpty()) {
+      for (String color : favColors) {
+        //Microsoft uses "azure" instead of "blue"...
+        if (compatibilityMode == CompatibilityMode.MS_OUTLOOK && color.equals("blue")){
+          color = "azure";
+        }
+        sb.append(VCardStringUtils.escapeText(color)).append(',');
+      }
+      sb.deleteCharAt(sb.length() - 1); //chomp last comma
+    }
+    return sb.toString();
+  }
+
+  @Override
+  protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+    String split[] = VCardStringUtils.splitBy(value, ',', true, true);
+    favColors = new ArrayList<String>(Arrays.asList(split));
+    if (favColors.contains("periwinkle") && version == VCardVersion.V4_0){
+      warnings.add("Periwinkle is deprecated in vCard 4.0.");
+    }
+  }
+}
+}}}
+
+==Constructor==
+
+The constructor calls the parent class constructor, passing in the name of the property.  *The extended parameter class MUST define a public, no-arg constructor*.
+
+==doMarshalSubTypes==
+
+The `doMarshalSubTypes()` method allows the property's parameters (aka "sub types") to be tweaked before being marshalled (i.e. written to a string, file, etc).  This method is not abstract and does not have to be overridden.  By default, it will simply return the object's `subTypes` field (a protected field that is defined in the parent `VCardType` class).  If this method is overridden, it is recommended that a copy of the property's sub types be created, so as not to taint the original state of the object.
+
+In the above example, a "VALUE" parameter is added if the vCard version is 4.0.
+
+==doMarshalValue==
+
+The `doMarshalValue()` method creates the raw property value that will be included in the final vCard.  It SHOULD escape all characters that have special meanings inside of a vCard property value.  These characters are: comma, semicolon, and backslash.  It MUST replace all newline characters with the string "\n", otherwise it will severely break the vCard.  The `VCardStringUtils.escapeText()` method can be used to safely escape the special characters and encode the newline characters.
+
+Warning messages can be added to the `warnings` list if any problems occurred during the marshalling process.
+
+The `CompatibilityMode` object defines the expected consumer of the vCard and can be used to customize the marshalling of the property value.  It is manually set by the programmer with the `VCardWriter.setCompatibilityMode()` method.
+
+This method SHOULD NOT fold the value--folding is handled by `VCardWriter`.  If `null` is returned, the extended property will NOT be marshalled into the final vCard.
+
+==doUnmarshalValue==
+
+The `doUnmarshalValue()` method allows the programmer to take the raw property value from the vCard and parse it however he or she wishes.  In this example, the value is split by comma and saved to a `List`.  The `VCardStringUtils.splitBy()` method is an enhanced splitting function that takes escaped characters into account (see the Javadocs for more details).  The property's sub types are parsed before `doUnmarshalValue` is called.  They can be accessed using the protected `subTypes` field, defined in the parent `VCardType` class.
+
+The `VCardVersion` argument defines the version of the vCard that is being parsed and can be used to customize the unmarshalling process.  If a 2.1 vCard is being parsed, then this MAY be null, as the 2.1 specs don't require the version number to be located at the top of the vCard file.
+
+Warning messages can be added to the `warnings` list if any problems occurred during the unmarshalling process.
+
+The `CompatibilityMode` argument defines the application that generated the vCard.  This is manually set by the programmer by calling the `VCardReader.setCompatibilityMode()` method.
+
+==Using the extended property class==
+
+===Reading===
+
+Before a vCard is parsed, the extended property class must be added to the `VCardReader` object with the `registerExtendedType()` method.  Then, once a vCard has been read, use the `VCard.getExtendedType()` method to get all instances of the extended property class.
+
+{{{
+Reader reader = ...
+VCardReader vcr = new VCardReader(reader);
+vcr.registerExtendedType(FavColorsType.class);
+VCard vcard = vcr.readNext();
+List<FavColorsType> favColorsTypes = vcard.getExtendedType(FavColorsType.class);
+}}}
+
+===Writing===
+
+To add an instance of an extended property class to a `VCard` object, just pass the object into the `VCard.addExtendedType()` method.  Then, use the `VCardWriter` class like normal.  Unlike `VCardReader`, no registration of the extended property class is required.
+
+{{{
+VCard vcard = new VCard();
+
+FavColorsType favColors = new FavColorsType();
+favColors.addFavColor("green");
+favColors.addFavColor("yellow");
+vcard.addExtendedType(favColors);
+
+Writer writer = ...
+VCardWriter vcw = new VCardWriter(writer);
+vcw.write(vcard);
+vcw.close();
+}}}
+
