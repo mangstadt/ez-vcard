@@ -1,13 +1,18 @@
 package ezvcard.types;
 
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 
+import ezvcard.VCard;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EncodingParameter;
-import ezvcard.parameters.TypeParameter;
+import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 
 /*
@@ -43,91 +48,369 @@ import ezvcard.parameters.ValueParameter;
  * Represents a Type that contains binary data (for example, the "PHOTO" type).
  * @author Michael Angstadt
  * 
- * @param <T> the class used for wrapping the value of the TYPE parameter
+ * @param <T> the class used for representing the content type of the resource
  */
-public abstract class BinaryType<T extends TypeParameter> extends SingleValuedTypeParameterType<T> {
+public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType {
+	/**
+	 * Regex for parsing a 4.0 data URI.
+	 */
+	private static final Pattern DATA_URI = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
+
 	/**
 	 * The decoded data.
 	 */
-	private byte[] data;
+	protected byte[] data;
 
 	/**
 	 * The URL to the resource.
 	 */
-	private String url;
+	protected String url;
 
+	/**
+	 * The content type of the resource (e.g. "JPEG image").
+	 */
+	protected T contentType;
+
+	/**
+	 * @param name the type name (e.g. "PHOTO")
+	 */
 	public BinaryType(String name) {
 		super(name);
 	}
 
-	public BinaryType(String name, String url) {
+	/**
+	 * @param name the type name (e.g. "PHOTO")
+	 * @param url the URL to the resource
+	 * @param type the content type
+	 */
+	public BinaryType(String name, String url, T type) {
 		this(name);
-		setUrl(url);
+		setUrl(url, type);
 	}
 
+	/**
+	 * @param name the type name (e.g. "PHOTO")
+	 * @param data the binary data
+	 * @param type the content type
+	 */
 	public BinaryType(String name, byte[] data, T type) {
 		this(name);
 		setData(data, type);
 	}
 
+	/**
+	 * Gets the binary data of the resource.
+	 * @return the binary data or null if there is none
+	 */
 	public byte[] getData() {
 		return data;
 	}
 
+	/**
+	 * Sets the binary data of the resource.
+	 * @param data the binary data
+	 * @param type the content type (e.g. "JPEG image")
+	 */
+	public void setData(byte[] data, T type) {
+		this.url = null;
+		this.data = data;
+		setContentType(type);
+	}
+
+	/**
+	 * Gets the URL to the resource
+	 * @return the URL or null if there is none
+	 */
 	public String getUrl() {
 		return url;
 	}
 
-	public void setUrl(String url) {
+	/**
+	 * Sets the URL to the resource.
+	 * @param url the URL
+	 * @param type the content type (e.g. "JPEG image")
+	 */
+	public void setUrl(String url, T type) {
 		this.url = url;
 		this.data = null;
+		setContentType(type);
 	}
 
-	public void setData(byte[] data, T type) {
-		this.url = null;
-		this.data = data;
-		setType(type);
+	/**
+	 * Gets the content type of the resource.
+	 * @return the content type (e.g. "JPEG image")
+	 */
+	public T getContentType() {
+		return contentType;
+	}
+
+	/**
+	 * Sets the content type of the resource.
+	 * @param contentType the content type (e.g. "JPEG image")
+	 */
+	public void setContentType(T contentType) {
+		this.contentType = contentType;
+	}
+
+	/**
+	 * Gets the vCard 4.0 TYPE parameter. This should NOT be used to get the
+	 * TYPE parameter for 2.1/3.0 vCards. Use {@link #getContentType} instead.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the TYPE value (typically, this will be either "work" or "home")
+	 * or null if it doesn't exist
+	 */
+	public String getType() {
+		return subTypes.getType();
+	}
+
+	/**
+	 * Sets the vCard 4.0 TYPE parameter. This should NOT be used to set the
+	 * TYPE parameter for 2.1/3.0 vCards. Use {@link #setContentType} instead.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param type the TYPE value (should be either "work" or "home") or null to
+	 * remove
+	 */
+	public void setType(String type) {
+		subTypes.setType(type);
+	}
+
+	/**
+	 * Gets all PID parameter values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the PID values or empty set if there are none
+	 * @see VCardSubTypes#getPids
+	 */
+	public Set<Integer[]> getPids() {
+		return subTypes.getPids();
+	}
+
+	/**
+	 * Adds a PID value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param localId the local ID
+	 * @param clientPidMapRef the ID used to reference the property's globally
+	 * unique identifier in the CLIENTPIDMAP property.
+	 * @see VCardSubTypes#addPid(int, int)
+	 */
+	public void addPid(int localId, int clientPidMapRef) {
+		subTypes.addPid(localId, clientPidMapRef);
+	}
+
+	/**
+	 * Removes all PID values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @see VCardSubTypes#removePids
+	 */
+	public void removePids() {
+		subTypes.removePids();
+	}
+
+	/**
+	 * Gets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the preference value or null if it doesn't exist
+	 * @see VCardSubTypes#getPref
+	 */
+	public Integer getPref() {
+		return subTypes.getPref();
+	}
+
+	/**
+	 * Sets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param pref the preference value or null to remove
+	 * @see VCardSubTypes#setPref
+	 */
+	public void setPref(Integer pref) {
+		subTypes.setPref(pref);
+	}
+
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
+	public String getAltId() {
+		return subTypes.getAltId();
+	}
+
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
+	public void setAltId(String altId) {
+		subTypes.setAltId(altId);
+	}
+
+	@Override
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+		VCardSubTypes copy = new VCardSubTypes(subTypes);
+
+		MediaTypeParameter contentType = this.contentType;
+		if (contentType == null) {
+			contentType = new MediaTypeParameter(null, null, null);
+		}
+
+		if (url != null) {
+			ValueParameter vp = null;
+			switch (version) {
+			case V2_1:
+				vp = ValueParameter.URL;
+				break;
+			case V3_0:
+			case V4_0:
+				vp = ValueParameter.URI;
+				break;
+			}
+			copy.setValue(vp);
+
+			copy.setEncoding(null);
+
+			if (version == VCardVersion.V4_0) {
+				//don't null out TYPE, it could be set to "home" or "work"
+				copy.setMediaType(contentType.getMediaType());
+			} else {
+				copy.setType(contentType.getValue());
+				copy.setMediaType(null);
+			}
+		}
+		if (data != null) {
+			copy.setMediaType(null);
+			if (version == VCardVersion.V2_1) {
+				copy.setEncoding(EncodingParameter.BASE64);
+				copy.setValue(null);
+				copy.setType(contentType.getValue());
+			} else if (version == VCardVersion.V3_0) {
+				copy.setEncoding(EncodingParameter.B);
+				copy.setValue(null);
+				copy.setType(contentType.getValue());
+			} else {
+				copy.setEncoding(null);
+				copy.setValue(ValueParameter.URI);
+				//don't null out TYPE, it could be set to "home" or "work"
+			}
+		}
+
+		return copy;
 	}
 
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (url != null) {
-			ValueParameter vp = (version == VCardVersion.V2_1) ? ValueParameter.URL : ValueParameter.URI;
-			subTypes.setValue(vp);
-			subTypes.removeAll(EncodingParameter.NAME);
 			return url;
 		}
 		if (data != null) {
-			subTypes.removeAll(ValueParameter.NAME);
-			EncodingParameter encoding = (version == VCardVersion.V2_1) ? EncodingParameter.BASE64 : EncodingParameter.B;
-			subTypes.setEncoding(encoding);
-			return new String(Base64.encodeBase64(data));
+			String base64 = new String(Base64.encodeBase64(data));
+			if (version == VCardVersion.V4_0) {
+				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
+				return "data:" + mediaType + ";base64," + base64;
+			} else {
+				return base64;
+			}
 		}
 		return null;
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (subTypes.getValue() != null) {
-			//the value is a URI, not binary data
-			url = value;
+		//check for a 4.0 data URI
+		Matcher m = DATA_URI.matcher(value);
+		if (m.find()) {
+			String mediaType = m.group(1);
+			String base64 = m.group(2);
+
+			T contentType = buildMediaTypeObj(mediaType);
+			setData(Base64.decodeBase64(base64), contentType);
+			return;
+		}
+
+		//get content type from 4.0 MEDIATYPE parameter
+		T contentType = null;
+		String mediaType = subTypes.getMediaType();
+		if (mediaType != null) {
+			contentType = buildMediaTypeObj(mediaType);
 		} else {
-			EncodingParameter encodingSubType = subTypes.getEncoding();
-			if (encodingSubType != null) {
-				if (encodingSubType != EncodingParameter.B && encodingSubType != EncodingParameter.BASE64) {
-					warnings.add("Unrecognized ENCODING type \"" + encodingSubType + "\".  Attempting to decode as base64.");
-				}
-				data = Base64.decodeBase64(value);
-			} else {
-				//the required Sub Types weren't included, make a guess 
-				if (value.startsWith("http")) {
-					warnings.add("No VALUE or ENCODING type given.  Assuming it's a URL.");
-					url = value;
-				} else {
-					warnings.add("No VALUE or ENCODING type given.  Attempting to decode as base64.");
-					data = Base64.decodeBase64(value);
-				}
+			//get content type from 2.1/3.0 TYPE parameter
+			String type = subTypes.getType();
+			if (type != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
+				contentType = buildTypeObj(getType());
 			}
 		}
+
+		//check for a URL
+		ValueParameter valueSubType = subTypes.getValue();
+		if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
+			setUrl(value, contentType);
+			return;
+		}
+
+		//check for 2.1/3.0 base64 data
+		EncodingParameter encodingSubType = subTypes.getEncoding();
+		if (encodingSubType != null) {
+			if (encodingSubType != EncodingParameter.B && encodingSubType != EncodingParameter.BASE64) {
+				warnings.add("Unrecognized " + EncodingParameter.NAME + " parameter value \"" + encodingSubType + "\" in " + getTypeName() + " property.  Attempting to decode as base64.");
+			}
+			setData(Base64.decodeBase64(value), contentType);
+			return;
+		}
+
+		//see if the value is a URL incase they didn't set the VALUE parameter
+		if (value.matches("(?i)http.*")) {
+			setUrl(value, contentType);
+			return;
+		}
+
+		cannotUnmarshalValue(value, version, warnings, compatibilityMode, contentType);
 	}
+
+	/**
+	 * Called if the unmarshalling code cannot determine how to unmarshal the
+	 * value.
+	 * @param value the value
+	 * @param version the version of the vCard
+	 * @param warnings the warnings
+	 * @param compatibilityMode the compatibility mode
+	 * @param contentType the content type of the resource of null if unknown
+	 */
+	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, T contentType) {
+		warnings.add("No " + ValueParameter.NAME + " or " + EncodingParameter.NAME + " parameter given.  Attempting to decode as base64.");
+		setData(Base64.decodeBase64(value), contentType);
+	}
+
+	/**
+	 * Builds a {@link MediaTypeParameter} object based on the information in
+	 * the MEDIATYPE parameter or data URI of 4.0 vCards.
+	 * @param mediaType the media type string (e.g. "image/jpeg")
+	 * @return the parameter object
+	 */
+	protected abstract T buildMediaTypeObj(String mediaType);
+
+	/**
+	 * Builds a {@link MediaTypeParameter} object based on the value of the TYPE
+	 * parameter in 2.1/3.0 vCards.
+	 * @param type the TYPE value
+	 * @return the parameter object
+	 */
+	protected abstract T buildTypeObj(String type);
 }

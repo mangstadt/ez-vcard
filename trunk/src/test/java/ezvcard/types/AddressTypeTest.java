@@ -1,15 +1,20 @@
 package ezvcard.types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
+import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.AddressTypeParameter;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -45,7 +50,7 @@ import ezvcard.io.CompatibilityMode;
  */
 public class AddressTypeTest {
 	@Test
-	public void doMarshalValue() {
+	public void marshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
@@ -62,7 +67,7 @@ public class AddressTypeTest {
 		t.setPostalCode("12345");
 		t.setCountry("USA");
 		expected = "P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//some nulls
@@ -75,14 +80,92 @@ public class AddressTypeTest {
 		t.setPostalCode("12345");
 		t.setCountry(null);
 		expected = "P.O. Box 1234\\;;;;Austin;TX;12345;";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//all nulls
 		t = new AddressType();
 		expected = ";;;;;;";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void marshalTz() throws Exception {
+		VCardVersion version = VCardVersion.V2_1;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+
+		AddressType t = new AddressType();
+		t.setTimezone("America/New_York");
+		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals("tz:America/New_York", subTypes.getFirst("TZ"));
+	}
+
+	@Test
+	public void unmarshalTz() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.put("TZ", "tz:America/New_York");
+
+		AddressType t = new AddressType();
+		t.unmarshalValue(subTypes, ";;;", version, warnings, compatibilityMode);
+		assertEquals("America/New_York", t.getTimezone());
+	}
+
+	/**
+	 * If a type contains a "TYPE=pref" parameter and it's being marshalled to
+	 * 4.0, it should replace "TYPE=pref" with "PREF=1". <br>
+	 * <br>
+	 * Conversely, if types contain "PREF" parameters and they're being
+	 * marshalled to 2.1/3.0, then it should find the type with the lowest PREF
+	 * value and add "TYPE=pref" to it.
+	 */
+	@Test
+	public void marshalPref() throws Exception {
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+
+		//ADR has "TYPE=pref"==========
+		AddressType t = new AddressType();
+		t.addType(AddressTypeParameter.PREF);
+
+		VCardVersion version = VCardVersion.V2_1;
+		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertNull(subTypes.getPref());
+		assertTrue(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
+
+		version = VCardVersion.V4_0;
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
+
+		//ADR has PREF parameter=======
+		VCard vcard = new VCard();
+		AddressType t1 = new AddressType();
+		t1.setPref(1);
+		vcard.addAddress(t1);
+		AddressType t2 = new AddressType();
+		t2.setPref(2);
+		vcard.addAddress(t2);
+
+		version = VCardVersion.V2_1;
+		subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertNull(subTypes.getPref());
+		assertTrue(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
+		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertNull(subTypes.getPref());
+		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
+
+		version = VCardVersion.V4_0;
+		subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
+		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(Integer.valueOf(2), subTypes.getPref());
+		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
 	}
 
 	@Test

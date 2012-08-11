@@ -73,17 +73,17 @@ public class AgentTypeTest {
 		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\\n");
-		sb.append("VERSION: 3.0\\n");
-		sb.append("FN: Agent 007\\n");
-		sb.append("EMAIL\\;TYPE=internet: 007@mi5.co.uk\\n");
-		sb.append("AGENT: ");
-			sb.append("BEGIN: vcard\\\\n");
-			sb.append("VERSION: 3.0\\\\n");
-			sb.append("FN: Agent 009\\\\n");
-			sb.append("EMAIL\\\\\\;TYPE=internet: 009@mi5.co.uk\\\\n");
-			sb.append("END: vcard\\\\n\\n");
-		sb.append("END: vcard\\n");
+		sb.append("BEGIN:VCARD\\n");
+		sb.append("VERSION:3.0\\n");
+		sb.append("FN:Agent 007\\n");
+		sb.append("EMAIL\\;TYPE=internet:007@mi5.co.uk\\n");
+		sb.append("AGENT:");
+			sb.append("BEGIN:VCARD\\\\n");
+			sb.append("VERSION:3.0\\\\n");
+			sb.append("FN:Agent 009\\\\n");
+			sb.append("EMAIL\\\\\\;TYPE=internet:009@mi5.co.uk\\\\n");
+			sb.append("END:VCARD\\\\n\\n");
+		sb.append("END:VCARD\\n");
 		//@formatter:on
 
 		expected = sb.toString();
@@ -103,17 +103,17 @@ public class AgentTypeTest {
 
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\\n");
+		sb.append("BEGIN: VCARD\\n");
 		sb.append("VERSION: 3.0\\n");
 		sb.append("FN: Agent 007\\n");
 		sb.append("EMAIL\\;TYPE=internet: 007@mi5.co.uk\\n");
 		sb.append("AGENT: ");
-			sb.append("BEGIN: vcard\\\\n");
+			sb.append("BEGIN: VCARD\\\\n");
 			sb.append("VERSION: 3.0\\\\n");
 			sb.append("FN: Agent 009\\\\n");
 			sb.append("EMAIL\\\\\\;TYPE=internet: 009@mi5.co.uk\\\\n");
-			sb.append("END: vcard\\\\n\\n");
-		sb.append("END: vcard\\n");
+			sb.append("END: VCARD\\\\n\\n");
+		sb.append("END: VCARD\\n");
 		//@formatter:on
 
 		t = new AgentType();

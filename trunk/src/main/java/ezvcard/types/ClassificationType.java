@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import ezvcard.VCardVersion;
+
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -30,7 +32,21 @@ package ezvcard.types;
  */
 
 /**
- * Represents the CLASS type.
+ * Describes the sensitivity of the information in the vCard.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * //sample values: PUBLIC, PRIVATE, CONFIDENTIAL
+ * ClassificationType classType = new ClassificationType(&quot;PUBLIC&quot;);
+ * vcard.setClassification(classType);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: CLASS
+ * </p>
+ * <p>
+ * vCard versions: 3.0
+ * </p>
  * @author Michael Angstadt
  */
 public class ClassificationType extends TextType {
@@ -40,7 +56,16 @@ public class ClassificationType extends TextType {
 		this(null);
 	}
 
+	/**
+	 * @param classValue the classification (e.g. "PUBLIC", "PRIVATE",
+	 * "CONFIDENTIAL")
+	 */
 	public ClassificationType(String classValue) {
 		super(NAME, classValue);
+	}
+	
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V3_0 };
 	}
 }

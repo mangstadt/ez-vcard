@@ -1,6 +1,7 @@
-package ezvcard.util;
+package ezvcard.types;
 
-import java.lang.reflect.Field;
+import ezvcard.VCardSubTypes;
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -32,39 +33,63 @@ import java.lang.reflect.Field;
  */
 
 /**
- * Helper class for the parameter classes (such as
- * {@link ezvcard.parameters.AddressTypeParameter AddressTypeParameter}).
+ * Any XML data attached to the vCard. This is used if the vCard was encoded in
+ * XML (xCard standard) and it contained some non-standard elements.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * XmlType xml = new XmlType(&quot;&lt;b&gt;Some xml&lt;/b&gt;&quot;);
+ * vcard.addXml(xml);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: XML
+ * </p>
+ * <p>
+ * vCard versions: 4.0
+ * </p>
  * @author Michael Angstadt
  */
-public class ParameterUtils {
-	/**
-	 * Retrieves one of the static objects in this class by name.
-	 * @param clazz the class to retrieve the static object from
-	 * @param value the type value (e.g. "home")
-	 * @return the object associated with the given type name or null if none
-	 * was found
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T valueOf(Class<T> clazz, String value) {
-		//turn the value into a valid Java variable name
-		if (Character.isDigit(value.charAt(0))) {
-			value = "_" + value;
-		}
-		value = value.replace("-", "_").toUpperCase();
+public class XmlType extends TextType {
+	public static final String NAME = "XML";
 
-		try {
-			Field f = clazz.getField(value);
-			Object obj = f.get(null);
-			if (clazz.isInstance(obj)) {
-				return (T) obj;
-			}
-		} catch (Exception ex) {
-			//static field not found
-		}
-		return null;
+	public XmlType() {
+		super(NAME);
 	}
-	
-	private ParameterUtils(){
-		//hide constructor
+
+	/**
+	 * @param xml the XML element
+	 */
+	public XmlType(String xml) {
+		super(NAME, xml);
+	}
+
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
+	public String getAltId() {
+		return subTypes.getAltId();
+	}
+
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
+	public void setAltId(String altId) {
+		subTypes.setAltId(altId);
+	}
+
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 }

@@ -45,19 +45,35 @@ public class TextListType extends VCardType {
 	protected List<String> values = new ArrayList<String>();
 	private final char separator;
 
+	/**
+	 * @param name the type name (e.g. "NICKNAME")
+	 * @param separator the delimiter to use (e.g. ",")
+	 */
 	public TextListType(String name, char separator) {
 		super(name);
 		this.separator = separator;
 	}
 
+	/**
+	 * Gest the list of values.
+	 * @return the list of values
+	 */
 	public List<String> getValues() {
 		return values;
 	}
 
+	/**
+	 * Adds a value to the list.
+	 * @param value the value to add
+	 */
 	public void addValue(String value) {
 		values.add(value);
 	}
 
+	/**
+	 * Removes a value from the list.
+	 * @param value the value to remove
+	 */
 	public void removeValue(String value) {
 		values.remove(value);
 	}

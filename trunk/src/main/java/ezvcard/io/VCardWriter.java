@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -12,9 +13,14 @@ import java.util.Set;
 import ezvcard.EZVCard;
 import ezvcard.VCard;
 import ezvcard.VCardException;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.TypeParameter;
+import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
+import ezvcard.types.LabelType;
+import ezvcard.types.MemberType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
 
@@ -164,7 +170,7 @@ public class VCardWriter implements Closeable {
 	 * @throws VCardException if there's a problem writing the vCard
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
-	public void write(VCard vcard) throws VCardException, IOException {
+	public void write(final VCard vcard) throws VCardException, IOException {
 		warnings.clear();
 
 		if (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0) {
@@ -173,14 +179,57 @@ public class VCardWriter implements Closeable {
 			}
 		}
 
-		if (targetVersion == VCardVersion.V3_0) {
+		if (targetVersion == VCardVersion.V3_0 || targetVersion == VCardVersion.V4_0) {
 			if (vcard.getFormattedName() == null) {
 				warnings.add("vCard version " + targetVersion + " requires that a formatted name be defined.");
 			}
 		}
 
-		List<VCardType> types = new ArrayList<VCardType>();
-		types.add(new TextType("BEGIN", "vcard"));
+		@SuppressWarnings("serial")
+		List<VCardType> types = new ArrayList<VCardType>() {
+			@Override
+			public boolean add(VCardType type) {
+				if (type == null) {
+					return true;
+				}
+
+				//determine if this type is supported by the target version
+				boolean supported = false;
+				for (VCardVersion v : type.getSupportedVersions()) {
+					if (v == targetVersion) {
+						supported = true;
+						break;
+					}
+				}
+
+				if (supported) {
+					if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
+						warnings.add("The value of KIND must be set to \"group\" in order to add MEMBERs to the vCard.");
+						return true;
+					}
+
+					super.add(type);
+
+					//add LABEL types for each ADR type if the vCard version is not 4.0
+					if (targetVersion != VCardVersion.V4_0 && type instanceof AddressType) {
+						AddressType adr = (AddressType) type;
+						String labelStr = adr.getLabel();
+						if (labelStr != null) {
+							LabelType label = new LabelType(labelStr);
+							for (AddressTypeParameter t : adr.getTypes()) {
+								label.addType(t);
+							}
+							super.add(label);
+						}
+					}
+
+				} else {
+					warnings.add("The " + type.getTypeName() + " type is not supported by vCard version " + targetVersion + ".  The supported versions are " + Arrays.toString(type.getSupportedVersions()) + ".  This type will not be added to the vCard.");
+				}
+				return true;
+			}
+		};
+		types.add(new TextType("BEGIN", "VCARD"));
 		types.add(new TextType("VERSION", targetVersion.getVersion()));
 
 		//use reflection to get all VCardType fields in the VCard class
@@ -218,7 +267,7 @@ public class VCardWriter implements Closeable {
 			types.add(new TextType("X-GENERATOR", "EZ vCard v" + EZVCard.VERSION + " " + EZVCard.URL));
 		}
 
-		types.add(new TextType("END", "vcard"));
+		types.add(new TextType("END", "VCARD"));
 
 		for (VCardType type : types) {
 			//determine if this type has a nested vCard
@@ -229,7 +278,7 @@ public class VCardWriter implements Closeable {
 				nested = at.getVcard();
 			}
 
-			//marshal the type
+			//marshal the value
 			String value = null;
 			if (nested == null) {
 				List<String> warnings = new ArrayList<String>();
@@ -244,6 +293,15 @@ public class VCardWriter implements Closeable {
 				}
 			}
 
+			//marshal the sub types
+			VCardSubTypes subTypes;
+			List<String> warnings = new ArrayList<String>();
+			try {
+				subTypes = type.marshalSubTypes(targetVersion, warnings, compatibilityMode, vcard);
+			} finally {
+				this.warnings.addAll(warnings);
+			}
+
 			StringBuilder sb = new StringBuilder();
 
 			//write the group
@@ -256,8 +314,8 @@ public class VCardWriter implements Closeable {
 			sb.append(type.getTypeName());
 
 			//write the Sub Types
-			for (String subTypeName : type.getSubTypes().getNames()) {
-				Set<String> subTypeValues = type.getSubTypes().get(subTypeName);
+			for (String subTypeName : subTypes.getNames()) {
+				Set<String> subTypeValues = subTypes.get(subTypeName);
 				if (!subTypeValues.isEmpty()) {
 					if (targetVersion == VCardVersion.V2_1) {
 						if (TypeParameter.NAME.equalsIgnoreCase(subTypeName)) {
@@ -309,7 +367,7 @@ public class VCardWriter implements Closeable {
 				}
 			}
 
-			sb.append(": ");
+			sb.append(':');
 
 			//write the value
 			if (nested == null) {

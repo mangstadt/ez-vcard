@@ -2,6 +2,7 @@ package ezvcard.types;
 
 import java.util.List;
 
+import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -40,7 +41,7 @@ import ezvcard.io.CompatibilityMode;
  * Represents a vCard key/value pair entry (called a "Type").
  * @author Michael Angstadt
  */
-public abstract class VCardType {
+public abstract class VCardType implements Comparable<VCardType> {
 	/**
 	 * The name of the Type.
 	 */
@@ -75,10 +76,17 @@ public abstract class VCardType {
 	}
 
 	/**
+	 * Gets the vCard versions that support this type.
+	 * @return the vCard versions that support this type.
+	 */
+	public VCardVersion[] getSupportedVersions() {
+		return VCardVersion.values();
+	}
+
+	/**
 	 * Converts this Type object to a string for sending over the wire. This
 	 * method is responsible for escaping all the necessary characters (such as
-	 * commas and semi-colons), as well as setting any sub types. It is NOT
-	 * responsible for folding.
+	 * commas and semi-colons). It is NOT responsible for folding.
 	 * @param version the version vCard that is being generated
 	 * @param warnings if you want to alert the user to any possible problems,
 	 * add the warnings to this list
@@ -88,15 +96,14 @@ public abstract class VCardType {
 	 * type
 	 * @throws VCardException if there's a problem marshalling the value
 	 */
-	public String marshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	public final String marshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		return doMarshalValue(version, warnings, compatibilityMode);
 	}
 
 	/**
 	 * Converts this Type object to a string for sending over the wire. This
 	 * method is responsible for escaping all the necessary characters (such as
-	 * commas and semi-colons), as well as setting any sub types. It is NOT
-	 * responsible for folding.
+	 * commas and semi-colons). It is NOT responsible for folding.
 	 * @param version the version vCard that is being generated
 	 * @param warnings if you want to alert the user to any possible problems,
 	 * add the warnings to this list
@@ -107,6 +114,39 @@ public abstract class VCardType {
 	 * @throws VCardException if there's a problem marshalling the value
 	 */
 	protected abstract String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException;
+
+	/**
+	 * Gets the Sub Types to send over the wire.
+	 * @param version the version vCard that is being generated
+	 * @param warnings if you want to alert the user to any possible problems,
+	 * add the warnings to this list
+	 * @param compatibilityMode allows you to customize the marshalling process
+	 * depending on the expected consumer of the vCard
+	 * @param vcard the vCard that is being marshalled
+	 * @return the sub types for sending over the wire
+	 * @throws VCardException if there's a problem marshalling a sub type
+	 */
+	public final VCardSubTypes marshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+		return doMarshalSubTypes(version, warnings, compatibilityMode, vcard);
+	}
+
+	/**
+	 * Gets the Sub Types to send over the wire. Child classes should override
+	 * this method if the sub types need to be modified in any way. Child
+	 * classes may also choose to return a <i>copy</i> of the object's
+	 * {@link VCardSubTypes} object if they wish to preserve the original data.
+	 * @param version the version vCard that is being generated
+	 * @param warnings if you want to alert the user to any possible problems,
+	 * add the warnings to this list
+	 * @param compatibilityMode allows you to customize the marshalling process
+	 * depending on the expected consumer of the vCard
+	 * @param vcard the vCard that is being marshalled
+	 * @return the sub types for sending over the wire
+	 * @throws VCardException if there's a problem marshalling a sub type
+	 */
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+		return subTypes;
+	}
 
 	/**
 	 * Unmarshals the Type value from off the wire.
@@ -123,7 +163,7 @@ public abstract class VCardType {
 	 * process depending on where the vCard came from
 	 * @throws VCardException if there's a problem unmarshalling the value
 	 */
-	public void unmarshalValue(VCardSubTypes subTypes, String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	public final void unmarshalValue(VCardSubTypes subTypes, String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		this.subTypes = subTypes;
 		doUnmarshalValue(value, version, warnings, compatibilityMode);
 	}
@@ -170,5 +210,23 @@ public abstract class VCardType {
 	 */
 	public void setGroup(String group) {
 		this.group = group;
+	}
+
+	/**
+	 * Sorts a list of types by PREF parameter (if present).
+	 */
+	public int compareTo(VCardType that) {
+		Integer pref0 = this.getSubTypes().getPref();
+		Integer pref1 = that.getSubTypes().getPref();
+		if (pref0 == null && pref1 == null) {
+			return 0;
+		}
+		if (pref0 == null) {
+			return 1;
+		}
+		if (pref1 == null) {
+			return -1;
+		}
+		return pref1.compareTo(pref0);
 	}
 }

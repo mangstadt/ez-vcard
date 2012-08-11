@@ -2,6 +2,7 @@ package ezvcard.types;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
+import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -52,54 +54,139 @@ public class BinaryTypeTest {
 	private byte[] dummyData = "dummy data".getBytes();
 
 	@Test
-	public void doMarshalValue() {
+	public void marshalUrl() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
-		BinaryTypeImpl t;
-		String expected, actual;
+		String expectedValue, actualValue;
+		VCardSubTypes subTypes;
 
-		//test URL v2.1
+		BinaryTypeImpl t = new BinaryTypeImpl();
+		t.setUrl("http://example.com/image.jpg", ImageTypeParameter.JPEG);
+
+		//2.1
 		version = VCardVersion.V2_1;
-		t = new BinaryTypeImpl();
-		t.setUrl("http://example.com/image.jpg");
-		expected = "http://example.com/image.jpg";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(ValueParameter.URL, t.getSubTypes().getValue());
+		expectedValue = "http://example.com/image.jpg";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.URL, subTypes.getValue());
+		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
+		assertNull(subTypes.getMediaType());
 
-		//test URL v3.0
+		//3.0
 		version = VCardVersion.V3_0;
-		t = new BinaryTypeImpl();
-		t.setUrl("http://example.com/image.jpg");
-		expected = "http://example.com/image.jpg";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(ValueParameter.URI, t.getSubTypes().getValue());
+		expectedValue = "http://example.com/image.jpg";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
+		assertNull(subTypes.getMediaType());
 
-		//test base64 data v2.1
-		version = VCardVersion.V2_1;
-		t = new BinaryTypeImpl();
-		t.setData(dummyData, ImageTypeParameter.JPEG);
-		expected = Base64.encodeBase64String(dummyData);
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(EncodingParameter.BASE64, t.getSubTypes().getEncoding());
-		assertEquals(ImageTypeParameter.JPEG.getValue(), t.getSubTypes().getType());
-
-		//test base64 data v3.0
-		version = VCardVersion.V3_0;
-		t = new BinaryTypeImpl();
-		t.setData(dummyData, ImageTypeParameter.JPEG);
-		expected = Base64.encodeBase64String(dummyData);
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		assertEquals(EncodingParameter.B, t.getSubTypes().getEncoding());
-		assertEquals(ImageTypeParameter.JPEG.getValue(), t.getSubTypes().getType());
+		//4.0
+		version = VCardVersion.V4_0;
+		expectedValue = "http://example.com/image.jpg";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertNull(subTypes.getType());
+		assertEquals("image/jpeg", subTypes.getMediaType());
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
+	public void marshalBinary() throws Exception {
+		VCardVersion version;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		String expectedValue, actualValue;
+		VCardSubTypes subTypes;
+
+		BinaryTypeImpl t = new BinaryTypeImpl();
+		t.setData(dummyData, ImageTypeParameter.JPEG);
+		t.setType("work");
+
+		//2.1
+		version = VCardVersion.V2_1;
+		expectedValue = Base64.encodeBase64String(dummyData);
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(EncodingParameter.BASE64, subTypes.getEncoding());
+		assertNull(subTypes.getValue());
+		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
+
+		//3.0
+		version = VCardVersion.V3_0;
+		expectedValue = Base64.encodeBase64String(dummyData);
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(EncodingParameter.B, subTypes.getEncoding());
+		assertNull(subTypes.getValue());
+		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
+
+		//4.0
+		version = VCardVersion.V4_0;
+		expectedValue = "data:image/jpeg;base64," + Base64.encodeBase64String(dummyData);
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertNull(subTypes.getEncoding());
+		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals("work", subTypes.getType());
+	}
+
+	/**
+	 * Tests to make sure if can handle types that are not a pre-defined
+	 * constant.
+	 */
+	@Test
+	public void marshalCustomType() throws Exception {
+		VCardVersion version;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		String expectedValue, actualValue;
+		VCardSubTypes subTypes;
+
+		BinaryTypeImpl t = new BinaryTypeImpl();
+		ImageTypeParameter param = new ImageTypeParameter("aaa", "image/aaa", "aaa");
+		t.setUrl("http://example.com/image.aaa", param);
+
+		//2.1
+		version = VCardVersion.V2_1;
+		expectedValue = "http://example.com/image.aaa";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.URL, subTypes.getValue());
+		assertEquals(param.getValue(), subTypes.getType());
+		assertNull(subTypes.getMediaType());
+
+		//3.0
+		version = VCardVersion.V3_0;
+		expectedValue = "http://example.com/image.aaa";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(param.getValue(), subTypes.getType());
+		assertNull(subTypes.getMediaType());
+
+		//4.0
+		version = VCardVersion.V4_0;
+		expectedValue = "http://example.com/image.aaa";
+		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(expectedValue, actualValue);
+		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertNull(subTypes.getType());
+		assertEquals(param.getMediaType(), subTypes.getMediaType());
+	}
+
+	@Test
+	public void unmarshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
@@ -111,12 +198,16 @@ public class BinaryTypeTest {
 		subTypes.setValue(ValueParameter.URL);
 		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
+		assertNull(t.getData());
+		assertNull(t.getContentType());
 
 		//no VALUE
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
 		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
+		assertNull(t.getData());
+		assertNull(t.getContentType());
 
 		//"B" encoding
 		t = new BinaryTypeImpl();
@@ -124,8 +215,9 @@ public class BinaryTypeTest {
 		subTypes.setType(ImageTypeParameter.JPEG.getValue());
 		subTypes.setEncoding(EncodingParameter.B);
 		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
-		assertEquals(ImageTypeParameter.JPEG, t.getType());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
 
 		//"BASE64" encoding
 		t = new BinaryTypeImpl();
@@ -133,15 +225,37 @@ public class BinaryTypeTest {
 		subTypes.setType(ImageTypeParameter.JPEG.getValue());
 		subTypes.setEncoding(EncodingParameter.BASE64);
 		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
-		assertEquals(ImageTypeParameter.JPEG, t.getType());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
 
 		//no encoding
 		//no type
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
 		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
+		assertNull(t.getContentType());
+
+		//4.0 URL
+		version = VCardVersion.V4_0;
+		t = new BinaryTypeImpl();
+		subTypes = new VCardSubTypes();
+		subTypes.setMediaType("image/jpeg");
+		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
+		assertEquals("http://example.com/image.jpg", t.getUrl());
+		assertNull(t.getData());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
+
+		//4.0 data URI
+		version = VCardVersion.V4_0;
+		t = new BinaryTypeImpl();
+		subTypes = new VCardSubTypes();
+		t.unmarshalValue(subTypes, "data:image/jpeg;base64," + Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		assertNull(t.getUrl());
+		assertArrayEquals(dummyData, t.getData());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
 	}
 
 	/**
@@ -156,9 +270,25 @@ public class BinaryTypeTest {
 		protected ImageTypeParameter buildTypeObj(String type) {
 			ImageTypeParameter param = ImageTypeParameter.valueOf(type);
 			if (param == null) {
-				param = new ImageTypeParameter(type);
+				param = new ImageTypeParameter(type, null, null);
 			}
 			return param;
+		}
+
+		@Override
+		protected ImageTypeParameter buildMediaTypeObj(String mediaType) {
+			ImageTypeParameter p = ImageTypeParameter.findByMediaType(mediaType);
+			if (p == null) {
+				int slashPos = mediaType.indexOf('/');
+				String type;
+				if (slashPos == -1 || slashPos < mediaType.length() - 1) {
+					type = "";
+				} else {
+					type = mediaType.substring(slashPos + 1);
+				}
+				p = new ImageTypeParameter(type, mediaType, null);
+			}
+			return p;
 		}
 	}
 }

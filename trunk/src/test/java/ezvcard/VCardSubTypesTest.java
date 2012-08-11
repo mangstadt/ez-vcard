@@ -1,6 +1,9 @@
 package ezvcard;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -93,5 +96,88 @@ public class VCardSubTypesTest {
 		subTypes.removeAll("NuMBERs");
 
 		assertTrue(subTypes.get("NUMBERS").isEmpty());
+	}
+
+	@Test
+	public void setPref() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+
+		try {
+			subTypes.setPref(-1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
+
+		try {
+			subTypes.setPref(101);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
+	}
+
+	/**
+	 * Make sure it handles GEO values correctly.
+	 */
+	@Test
+	public void geo() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.setGeo(-10.98887888, 20.12344111);
+
+		//make sure it builds the correct text value
+		{
+			String expected = "geo:-10.9889,20.1234"; //it should round to 4 decimal places
+			String actual = subTypes.getFirst("GEO");
+			assertEquals(expected, actual);
+		}
+
+		//make sure it unmarshals the text value correctly
+		{
+			double[] expected = new double[] { -10.9889, 20.1234 };
+			double[] actual = subTypes.getGeo();
+			assertArrayEquals(expected, actual, .00001);
+		}
+	}
+
+	/**
+	 * Make sure it handles PID values correctly.
+	 */
+	@Test
+	public void pid() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.addPid(1);
+		subTypes.addPid(2, 1);
+
+		//make sure it builds the correct string values
+		{
+			Set<String> actual = subTypes.get("PID");
+			Set<String> expected = new HashSet<String>();
+			expected.add("1");
+			expected.add("2.1");
+			assertEquals(expected, actual);
+		}
+
+		//make sure it unmarshals the string values correctly
+		{
+			Set<Integer[]> actual = subTypes.getPids();
+			Set<Integer[]> expected = new HashSet<Integer[]>();
+			expected.add(new Integer[] { 1, null });
+			expected.add(new Integer[] { 2, 1 });
+
+			assertEquals(2, actual.size());
+			for (Integer[] pid : actual) {
+				boolean found = false;
+				for (Integer[] exPid : expected) {
+					if (Arrays.equals(exPid, pid)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					fail();
+				}
+			}
+		}
 	}
 }

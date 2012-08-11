@@ -1,17 +1,9 @@
 package ezvcard.types;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import ezvcard.VCardSubTypes;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -45,42 +37,11 @@ import ezvcard.io.CompatibilityMode;
 /**
  * @author Michael Angstadt
  */
-public class BirthdayTypeTest {
+public class ClientPidMapTypeTest {
 	@Test
-	public void doMarshalValue() {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
-
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		Date date = c.getTime();
-		BirthdayType t = new BirthdayType();
-		t.setDate(date);
-
-		String expected = "1980-06-05";
-		String actual = t.doMarshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void doUnmarshalValue() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
-		VCardSubTypes subTypes = new VCardSubTypes();
-
-		BirthdayType t = new BirthdayType();
-		t.unmarshalValue(subTypes, "1980-06-05", version, warnings, compatibilityMode);
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		Date expected = c.getTime();
-		assertEquals(expected, t.getDate());
+	public void random() {
+		ClientPidMapType clientpidmap = ClientPidMapType.random(2);
+		assertEquals(2, clientpidmap.getPid());
+		assertTrue(clientpidmap.getUri().matches("urn:uuid:[-\\da-f]+"));
 	}
 }
