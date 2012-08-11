@@ -42,7 +42,7 @@ import ezvcard.parameters.TypeParameter;
  */
 public abstract class MultiValuedTypeParameterType<T extends TypeParameter> extends TypeParameterType<T> {
 	/**
-	 * @param typeName the type name
+	 * @param typeName the type name  (e.g. "ADR")
 	 */
 	public MultiValuedTypeParameterType(String typeName) {
 		super(typeName);

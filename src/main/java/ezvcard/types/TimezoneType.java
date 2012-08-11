@@ -1,9 +1,14 @@
 package ezvcard.types;
 
 import java.util.List;
+import java.util.Set;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import ezvcard.VCard;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
@@ -40,84 +45,132 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
- * Represents the TZ type.
+ * Contains the timezone that the person lives/works in.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * TimezoneType tz = new TimezoneType(-5, 0, &quot;America/New_York&quot;);
+ * vcard.addTimezone(tz);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: TZ
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
+ * 
  * @author Michael Angstadt
  */
 public class TimezoneType extends VCardType {
 	public static final String NAME = "TZ";
 
-	private int hourOffset;
-	private int minuteOffset;
-	private String shortText;
-	private String longText;
+	private Integer hourOffset;
+	private Integer minuteOffset;
+	private String text;
 
 	public TimezoneType() {
 		super(NAME);
 	}
 
 	/**
-	 * @param hourOffset the hour offset
-	 * @param minuteOffset the minute offset
+	 * This is the recommended constructor for version 4.0 vCards.
+	 * @param text string representing the timezone from the <a
+	 * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Olson
+	 * Database</a> (e.g. "America/New_York")
 	 */
-	public TimezoneType(int hourOffset, int minuteOffset) {
-		this(hourOffset, minuteOffset, null, null);
+	public TimezoneType(String text) {
+		this(null, null, text);
 	}
 
 	/**
-	 * 
+	 * This is the recommended constructor for version 2.1 and 3.0 vCards.
 	 * @param hourOffset the hour offset
 	 * @param minuteOffset the minute offset
-	 * @param shortText the short text (e.g. "EST")
-	 * @param longText
 	 */
-	public TimezoneType(int hourOffset, int minuteOffset, String shortText, String longText) {
+	public TimezoneType(Integer hourOffset, Integer minuteOffset) {
+		this(hourOffset, minuteOffset, null);
+	}
+
+	/**
+	 * This constructor can be used for all vCard versions.
+	 * @param hourOffset the hour offset
+	 * @param minuteOffset the minute offset
+	 * @param text can be anything, but should be a string representing the
+	 * timezone from the <a
+	 * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Olson
+	 * Database</a> (e.g. "America/New_York")
+	 */
+	public TimezoneType(Integer hourOffset, Integer minuteOffset, String text) {
 		super(NAME);
 		setHourOffset(hourOffset);
 		setMinuteOffset(minuteOffset);
-		setShortText(shortText);
-		setLongText(longText);
+		setText(text);
 	}
 
-	public int getHourOffset() {
+	/**
+	 * Gets the hour offset.
+	 * @return the hour offset or null if not set
+	 */
+	public Integer getHourOffset() {
 		return hourOffset;
 	}
 
-	public void setHourOffset(int hourOffset) {
+	/**
+	 * Sets the hour offset.
+	 * @param hourOffset the hour offset or null to remove
+	 */
+	public void setHourOffset(Integer hourOffset) {
 		this.hourOffset = hourOffset;
 	}
 
-	public int getMinuteOffset() {
+	/**
+	 * Gets the minute offset.
+	 * @return the minute offset or null if not set
+	 */
+	public Integer getMinuteOffset() {
 		return minuteOffset;
 	}
 
-	public void setMinuteOffset(int minuteOffset) {
-		if (minuteOffset < 0 || minuteOffset > 59) {
+	/**
+	 * Sets the minute offset.
+	 * @param minuteOffset the minute offset or null to remove
+	 * @throws IllegalArgumentException if the minute offset is not between 0
+	 * and 59
+	 */
+	public void setMinuteOffset(Integer minuteOffset) {
+		if (minuteOffset != null && (minuteOffset < 0 || minuteOffset > 59)) {
 			throw new IllegalArgumentException("Minute offset must be between 0 and 59.");
 		}
 		this.minuteOffset = minuteOffset;
 	}
 
-	public String getShortText() {
-		return shortText;
+	/**
+	 * Gets the text portion of the timezone.
+	 * @return the text portion (e.g. "America/New_York")
+	 */
+	public String getText() {
+		return text;
 	}
 
-	public void setShortText(String shortText) {
-		this.shortText = shortText;
-	}
-
-	public String getLongText() {
-		return longText;
-	}
-
-	public void setLongText(String longText) {
-		this.longText = longText;
+	/**
+	 * Sets the text portion of the timezone.
+	 * @param text the text portion (e.g. "America/New_York")
+	 */
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	/**
 	 * Creates a {@link java.util.TimeZone} representation of this class.
-	 * @return a {@link TimeZone} object
+	 * @return a {@link TimeZone} object or null if this object contains no
+	 * offset data
 	 */
 	public TimeZone toTimeZone() {
+		if (hourOffset == null || minuteOffset == null) {
+			return null;
+		}
+
 		int rawHourOffset = hourOffset * 60 * 60 * 1000;
 		int rawMinuteOffset = minuteOffset * 60 * 1000;
 		if (rawHourOffset < 0) {
@@ -127,23 +180,162 @@ public class TimezoneType extends VCardType {
 		return new SimpleTimeZone(rawOffset, "");
 	}
 
+	/**
+	 * Gets the TYPE parameter.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the TYPE value (typically, this will be either "work" or "home")
+	 * or null if it doesn't exist
+	 */
+	public String getType() {
+		return subTypes.getType();
+	}
+
+	/**
+	 * Sets the TYPE parameter.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param type the TYPE value (this should be either "work" or "home") or
+	 * null to remove
+	 */
+	public void setType(String type) {
+		subTypes.setType(type);
+	}
+
+	/**
+	 * Gets the MEDIATYPE parameter.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the media type or null if not set
+	 */
+	public String getMediaType() {
+		return subTypes.getMediaType();
+	}
+
+	/**
+	 * Sets the MEDIATYPE parameter.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param mediaType the media type or null to remove
+	 */
+	public void setMediaType(String mediaType) {
+		subTypes.setMediaType(mediaType);
+	}
+
+	/**
+	 * Gets all PID parameter values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the PID values or empty set if there are none
+	 * @see VCardSubTypes#getPids
+	 */
+	public Set<Integer[]> getPids() {
+		return subTypes.getPids();
+	}
+
+	/**
+	 * Adds a PID value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param localId the local ID
+	 * @param clientPidMapRef the ID used to reference the property's globally
+	 * unique identifier in the CLIENTPIDMAP property.
+	 * @see VCardSubTypes#addPid(int, int)
+	 */
+	public void addPid(int localId, int clientPidMapRef) {
+		subTypes.addPid(localId, clientPidMapRef);
+	}
+
+	/**
+	 * Removes all PID values.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @see VCardSubTypes#removePids
+	 */
+	public void removePids() {
+		subTypes.removePids();
+	}
+
+	/**
+	 * Gets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the preference value or null if it doesn't exist
+	 * @see VCardSubTypes#getPref
+	 */
+	public Integer getPref() {
+		return subTypes.getPref();
+	}
+
+	/**
+	 * Sets the preference value.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param pref the preference value or null to remove
+	 * @see VCardSubTypes#setPref
+	 */
+	public void setPref(Integer pref) {
+		subTypes.setPref(pref);
+	}
+
+	/**
+	 * Gets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the ALTID or null if it doesn't exist
+	 * @see VCardSubTypes#getAltId
+	 */
+	public String getAltId() {
+		return subTypes.getAltId();
+	}
+
+	/**
+	 * Sets the ALTID.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altId the ALTID or null to remove
+	 * @see VCardSubTypes#setAltId
+	 */
+	public void setAltId(String altId) {
+		subTypes.setAltId(altId);
+	}
+
+	@Override
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+		VCardSubTypes copy = new VCardSubTypes(subTypes);
+
+		if (text != null) {
+			copy.setValue(ValueParameter.TEXT);
+		} else if (hourOffset != null && minuteOffset != null && version == VCardVersion.V4_0) {
+			copy.setValue(ValueParameter.UTC_OFFSET);
+		}
+
+		return copy;
+	}
+
 	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
-		if (shortText != null || longText != null) {
-			sb.append(';');
-			if (shortText != null) {
-				sb.append(VCardStringUtils.escapeText(shortText));
+		if (text != null) {
+			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && hourOffset != null && minuteOffset != null) {
+				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
+				sb.append(';');
 			}
-			sb.append(';');
-			if (longText != null) {
-				sb.append(VCardStringUtils.escapeText(longText));
-			}
-
-			//add sub type "VALUE=text"
-			subTypes.setValue(ValueParameter.TEXT);
+			sb.append(VCardStringUtils.escapeText(text));
+		} else if (hourOffset != null && minuteOffset != null) {
+			sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
 		}
 
 		return sb.toString();
@@ -151,19 +343,22 @@ public class TimezoneType extends VCardType {
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String split[] = VCardStringUtils.splitBy(value, ';', false, true);
-
-		int i = 0;
-		if (split.length > i && split[i].length() > 0) {
-			int offsets[] = VCardDateFormatter.parseTimeZone(split[i]);
+		Pattern p = Pattern.compile("^([-\\+]?\\d{1,2}(:?\\d{2})?)(.*)");
+		Matcher m = p.matcher(value);
+		if (m.find()) {
+			//do some smart parsing--if the value starts with a timezone, then parse it
+			int offsets[] = VCardDateFormatter.parseTimeZone(m.group(1));
 			hourOffset = offsets[0];
 			minuteOffset = offsets[1];
+
+			String text = m.group(3);
+			if (text != null && text.length() > 0) {
+				this.text = VCardStringUtils.unescape(text);
+			}
+		} else {
+			hourOffset = null;
+			minuteOffset = null;
+			text = VCardStringUtils.unescape(value);
 		}
-		i++;
-
-		shortText = (split.length > i && split[i].length() > 0) ? split[i] : null;
-		i++;
-
-		longText = (split.length > i && split[i].length() > 0) ? split[i] : null;
 	}
 }

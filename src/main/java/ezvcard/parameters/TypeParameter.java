@@ -33,54 +33,13 @@ package ezvcard.parameters;
  * Represents a TYPE parameter.
  * @author Michael Angstadt
  */
-public abstract class TypeParameter {
+public abstract class TypeParameter extends VCardParameter {
 	public static final String NAME = "TYPE";
-
-	/**
-	 * The value (e.g. "home").
-	 */
-	protected final String value;
 
 	/**
 	 * @param value the value (e.g. "home")
 	 */
 	public TypeParameter(String value) {
-		this.value = value.toLowerCase();
-	}
-
-	/**
-	 * Gets the value of the TYPE parameter.
-	 * @return the value of the TYPE parameter (e.g. "home")
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public String toString() {
-		return value;
-	}
-
-	@Override
-	public int hashCode() {
-		return value.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-
-		if (obj == null) {
-			return false;
-		}
-
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-
-		TypeParameter that = (TypeParameter) obj;
-		return value.equals(that.value);
+		super(NAME, value);
 	}
 }

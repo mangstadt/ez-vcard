@@ -2,8 +2,6 @@ package ezvcard.types;
 
 import java.util.Date;
 
-import ezvcard.util.ISOFormat;
-
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -34,17 +32,33 @@ import ezvcard.util.ISOFormat;
  */
 
 /**
- * Represents the REV type.
+ * The date that the vCard was last modified by its owner.
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * RevisionType rev = new RevisionType(new Date());
+ * vcard.setRevision(rev);
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: REV
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
-public class RevisionType extends DateType {
+public class RevisionType extends TimestampType {
 	public static final String NAME = "REV";
 
 	public RevisionType() {
-		this(null);
+		super(NAME);
 	}
 
+	/**
+	 * @param date the date
+	 */
 	public RevisionType(Date date) {
-		super(NAME, ISOFormat.UTC_TIME_EXTENDED, date);
+		super(NAME, date);
 	}
 }

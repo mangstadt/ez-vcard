@@ -1,6 +1,15 @@
 package ezvcard.types;
 
+import java.util.List;
+
+import ezvcard.VCard;
+import ezvcard.VCardSubTypes;
+import ezvcard.VCardVersion;
+import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.KeyTypeParameter;
+import ezvcard.parameters.MediaTypeParameter;
+import ezvcard.parameters.ValueParameter;
+import ezvcard.util.VCardStringUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -32,44 +41,198 @@ import ezvcard.parameters.KeyTypeParameter;
  */
 
 /**
- * Represents the KEY type.
+ * A public key for encryption.
+ * 
+ * <p>
+ * <b>Adding a key</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = new VCard();
+ * 
+ * //URL (vCard 4.0 only; KEYs cannot have URLs in vCard 2.1 and 3.0)
+ * KeyType key = new KeyType("http://www.mywebsite.com/pubkey.pgp", KeyTypeParameter.PGP);
+ * vcard.addKey(key);
+ * 
+ * //binary data
+ * byte data[] = ...
+ * key = new KeyType(data, KeyTypeParameter.PGP);
+ * vcard.addKey(key);
+ * 
+ * //plain text value
+ * key = new KeyType();
+ * key.setText("...", KeyTypeParameter.PGP);
+ * vcard.addKey(key);
+ * 
+ * //if "KeyTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+ * //arg 1: the value of the 2.1/3.0 TYPE parameter
+ * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
+ * //arg 3: the file extension of the data type (optional)
+ * KeyTypeParameter param = new KeyTypeParameter("mykey", "application/my-key", "mkey");
+ * key = new KeyType("http://www.mywebsite.com/pubkey.enc", param);
+ * vcard.addKey(key);
+ * </pre>
+ * 
+ * <p>
+ * <b>Getting the keys</b>
+ * </p>
+ * 
+ * <pre>
+ * VCard vcard = ...
+ * 
+ * int fileCount = 0;
+ * for (KeyType key : vcard.getKeys()){
+ *   //the key will have either a URL or a binary data
+ *   //only 4.0 vCards are allowed to use URLs for keys
+ *   if (key.getData() == null){
+ *     System.out.println("Key URL: " + key.getUrl());
+ *   } else {
+ *     KeyTypeParameter type = key.getContentType();
+ *     
+ *     if (type == null) {
+ *       //the vCard may not have any content type data associated with the key
+ *       System.out.println("Saving a key file...");
+ *     } else {
+ *       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
+ *     }
+ *     
+ *     String folder;
+ *     if (type == KeyTypeParameter.PGP){ //it is safe to use "==" instead of "equals()"
+ *       folder = "pgp-keys";
+ *     } else {
+ *       folder = "other-keys";
+ *     }
+ *     
+ *     byte data[] = key.getData();
+ *     String filename = "key" + fileCount;
+ *     if (type != null && type.getExtension() != null){
+ *     	filename += "." + type.getExtension();
+ *     }
+ *     OutputStream out = new FileOutputStream(new File(folder, filename));
+ *     out.write(data);
+ *     out.close();
+ *     fileCount++;
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * vCard property name: KEY
+ * </p>
+ * <p>
+ * vCard versions: 2.1, 3.0, 4.0
+ * </p>
  * @author Michael Angstadt
  */
 public class KeyType extends BinaryType<KeyTypeParameter> {
 	public static final String NAME = "KEY";
 
+	private String text;
+
 	public KeyType() {
 		super(NAME);
 	}
-	
-	public KeyType(byte data[], KeyTypeParameter type){
+
+	/**
+	 * @param data the binary data
+	 * @param type the type of key (e.g. PGP)
+	 */
+	public KeyType(byte data[], KeyTypeParameter type) {
 		super(NAME, data, type);
+	}
+
+	/**
+	 * @param url the URL to the key (vCard 4.0 only)
+	 * @param type the type of key (e.g. PGP)
+	 */
+	public KeyType(String url, KeyTypeParameter type) {
+		super(NAME, url, type);
+	}
+
+	/**
+	 * Sets a plain text representation of the key.
+	 * @param text the key in plain text
+	 * @param type the key type
+	 */
+	public void setText(String text, KeyTypeParameter type) {
+		this.text = text;
+		data = null;
+		url = null;
+		setContentType(type);
+	}
+
+	/**
+	 * Gets the plain text representation of the key.
+	 * @return the key in plain text
+	 */
+	public String getText() {
+		return text;
 	}
 
 	@Override
 	protected KeyTypeParameter buildTypeObj(String type) {
 		KeyTypeParameter param = KeyTypeParameter.valueOf(type);
 		if (param == null) {
-			param = new KeyTypeParameter(type);
+			param = new KeyTypeParameter(type, "application/" + type, null);
 		}
 		return param;
 	}
 
-	/**
-	 * URL values are not supported by the KEY type.
-	 * @throws UnsupportedOperationException
-	 */
 	@Override
-	public String getUrl() {
-		throw new UnsupportedOperationException("URL values are not supported by the KEY type.");
+	protected KeyTypeParameter buildMediaTypeObj(String mediaType) {
+		KeyTypeParameter p = KeyTypeParameter.findByMediaType(mediaType);
+		if (p == null) {
+			int slashPos = mediaType.indexOf('/');
+			String type;
+			if (slashPos == -1 || slashPos < mediaType.length() - 1) {
+				type = "";
+			} else {
+				type = mediaType.substring(slashPos + 1);
+			}
+			p = new KeyTypeParameter(type, mediaType, null);
+		}
+		return p;
 	}
 
-	/**
-	 * URL values are not supported by the KEY type.
-	 * @throws UnsupportedOperationException
-	 */
 	@Override
-	public void setUrl(String url) {
-		throw new UnsupportedOperationException("URL values are not supported by the KEY type.");
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+		if (text != null) {
+			VCardSubTypes copy = new VCardSubTypes(subTypes);
+
+			MediaTypeParameter contentType = getContentType();
+			if (contentType == null) {
+				contentType = new MediaTypeParameter(null, null, null);
+			}
+
+			copy.setValue(ValueParameter.TEXT);
+			copy.setEncoding(null);
+			if (version == VCardVersion.V4_0) {
+				//don't null out TYPE, it could be set to "home" or "work"
+				copy.setMediaType(contentType.getMediaType());
+			} else {
+				copy.setType(contentType.getValue());
+				copy.setMediaType(null);
+			}
+			return copy;
+		}
+		return super.doMarshalSubTypes(version, warnings, compatibilityMode, vcard);
+	}
+
+	@Override
+	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		if (text != null) {
+			return VCardStringUtils.escapeText(text);
+		}
+
+		if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
+			warnings.add("vCard version " + version + " does not allow URLs to be used in the " + NAME + " type.");
+		}
+		return super.doMarshalValue(version, warnings, compatibilityMode);
+	}
+
+	@Override
+	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, KeyTypeParameter contentType) {
+		//unmarshal it as a plain text key
+		setText(VCardStringUtils.unescape(value), contentType);
 	}
 }

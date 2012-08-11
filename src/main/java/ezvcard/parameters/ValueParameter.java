@@ -1,7 +1,5 @@
 package ezvcard.parameters;
 
-import ezvcard.util.ParameterUtils;
-
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -35,27 +33,83 @@ import ezvcard.util.ParameterUtils;
  * Represents a VALUE parameter.
  * @author Michael Angstadt
  */
-public class ValueParameter {
+public class ValueParameter extends VCardParameter {
 	public static final String NAME = "VALUE";
 
 	/**
-	 * vCard 2.1 defines a "VALUE=url" parameter (p.18-9).
+	 * vCard versions: 2.1 (p.18-9)
 	 */
 	public static final ValueParameter URL = new ValueParameter("url");
 
 	/**
-	 * vCard 3.0 defines a "VALUE=uri" parameter (p.11,19,24).
-	 */
-	public static final ValueParameter URI = new ValueParameter("uri");
-
-	public static final ValueParameter TEXT = new ValueParameter("text");
-
-	/**
-	 * vCard v2.1 defines a "VALUE=content-id" parameter (p.8-9)
+	 * vCard versions: 2.1 (p.8-9)
 	 */
 	public static final ValueParameter CONTENT_ID = new ValueParameter("content-id");
 
-	private final String value;
+	/**
+	 * vCard versions: 3.0
+	 */
+	public static final ValueParameter BINARY = new ValueParameter("binary");
+
+	/**
+	 * vCard versions: 3.0, 4.0
+	 */
+	public static final ValueParameter URI = new ValueParameter("uri");
+
+	/**
+	 * vCard versions: 3.0, 4.0
+	 */
+	public static final ValueParameter TEXT = new ValueParameter("text");
+
+	/**
+	 * vCard versions: 3.0, 4.0
+	 */
+	public static final ValueParameter DATE = new ValueParameter("date");
+
+	/**
+	 * vCard versions: 3.0, 4.0
+	 */
+	public static final ValueParameter TIME = new ValueParameter("time");
+
+	/**
+	 * vCard versions: 3.0, 4.0
+	 */
+	public static final ValueParameter DATE_TIME = new ValueParameter("date-time");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter DATE_AND_OR_TIME = new ValueParameter("date-and-or-time");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter TIMESTAMP = new ValueParameter("timestamp");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter BOOLEAN = new ValueParameter("boolean");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter INTEGER = new ValueParameter("integer");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter FLOAT = new ValueParameter("float");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter UTC_OFFSET = new ValueParameter("utc-offset");
+
+	/**
+	 * vCard versions: 4.0
+	 */
+	public static final ValueParameter LANGUAGE_TAG = new ValueParameter("language-tag");
 
 	/**
 	 * Use of this constructor is discouraged and should only be used for
@@ -64,48 +118,16 @@ public class ValueParameter {
 	 * @param value the type value (e.g. "uri")
 	 */
 	public ValueParameter(String value) {
-		this.value = value.toLowerCase();
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public String toString() {
-		return value;
-	}
-
-	@Override
-	public int hashCode() {
-		return value.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-
-		if (obj == null) {
-			return false;
-		}
-
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-
-		ValueParameter that = (ValueParameter) obj;
-		return value.equals(that.value);
+		super(NAME, value);
 	}
 
 	/**
-	 * Retrieves one of the static objects in this class by name.
-	 * @param value the type value (e.g. "home")
-	 * @return the object associated with the given type name or null if none
-	 * was found
+	 * Searches the static objects in this class for one that has a certain type
+	 * value.
+	 * @param value the type value to search for (e.g. "text")
+	 * @return the object or null if not found
 	 */
 	public static ValueParameter valueOf(String value) {
-		return ParameterUtils.valueOf(ValueParameter.class, value);
+		return findByValue(value, ValueParameter.class);
 	}
 }

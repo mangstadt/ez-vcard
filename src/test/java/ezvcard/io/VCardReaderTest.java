@@ -23,17 +23,19 @@ import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.ImageTypeParameter;
+import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.BirthdayType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
 import ezvcard.types.EmailType;
+import ezvcard.types.FbUrlType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
+import ezvcard.types.KeyType;
 import ezvcard.types.LabelType;
 import ezvcard.types.MailerType;
-import ezvcard.types.SourceDisplayTextType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrganizationType;
@@ -44,6 +46,7 @@ import ezvcard.types.RawType;
 import ezvcard.types.RevisionType;
 import ezvcard.types.RoleType;
 import ezvcard.types.SortStringType;
+import ezvcard.types.SourceDisplayTextType;
 import ezvcard.types.SourceType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
@@ -92,12 +95,12 @@ public class VCardReaderTest {
 	@Test
 	public void getSubTypes() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("NOTE;x-size=8: The note\r\n");
 		sb.append("ADR;HOME;WORK: ;;;;\r\n"); //nameless parameters
 		sb.append("LABEL;type=dOm;TyPE=parcel: \r\n"); //repeated parameter name
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard = reader.readNext();
 
@@ -111,7 +114,7 @@ public class VCardReaderTest {
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
 
-		LabelType label = vcard.getLabels().get(0);
+		LabelType label = vcard.getOrphanedLabels().get(0);
 		assertEquals(2, adr.getTypes().size());
 		assertTrue(label.getTypes().contains(AddressTypeParameter.DOM));
 		assertTrue(label.getTypes().contains(AddressTypeParameter.PARCEL));
@@ -123,16 +126,16 @@ public class VCardReaderTest {
 	@Test
 	public void decodeQuotedPrintable() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:123 Main St.=0D=0A\r\n");
 		sb.append(" Austin, TX 91827=0D=0A\r\n");
 		sb.append(" USA\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard = reader.readNext();
 
-		LabelType label = vcard.getLabels().get(0);
+		LabelType label = vcard.getOrphanedLabels().get(0);
 		assertEquals("123 Main St.\r\nAustin, TX 91827\r\nUSA", label.getValue());
 		assertNull(label.getSubTypes().getEncoding()); //ENCODING sub type should be removed
 	}
@@ -143,7 +146,7 @@ public class VCardReaderTest {
 	@Test
 	public void unfold() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("NOTE: The vCard MIME Directory Profile also provides support for represent\r\n");
 		sb.append(" ing other important information about the person associated with the dire\r\n");
@@ -154,7 +157,7 @@ public class VCardReaderTest {
 		sb.append(" directory entry\\; date and time that the directory information was last up\r\n");
 		sb.append(" dated\\; annotations often written on a business card\\; Uniform Resource Loc\r\n");
 		sb.append(" ators (URL) for a website\\; public key information.\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard = reader.readNext();
 
@@ -169,12 +172,12 @@ public class VCardReaderTest {
 	@Test
 	public void readExtendedType() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("X-LUCKY-NUM: 24\r\n");
 		sb.append("X-GENDER: ma\\,le\r\n");
 		sb.append("X-LUCKY-NUM: 22\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		reader.registerExtendedType(LuckyNumType.class);
 		VCard vcard = reader.readNext();
@@ -198,14 +201,14 @@ public class VCardReaderTest {
 	@Test
 	public void readMultiple() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("FN: John Doe\r\n");
-		sb.append("END: vcard\r\n");
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("END: VCARD\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("FN: Jane Doe\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
 		VCard vcard;
 
@@ -227,20 +230,20 @@ public class VCardReaderTest {
 	public void readNested() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 2.1\r\n");
 		sb.append("AGENT:\r\n");
-			sb.append("BEGIN: vcard\r\n");
+			sb.append("BEGIN: VCARD\r\n");
 			sb.append("VERSION: 2.1\r\n");
 			sb.append("FN: Agent 007\r\n");
 			sb.append("AGENT:\r\n");
-				sb.append("BEGIN: vcard\r\n");
+				sb.append("BEGIN: VCARD\r\n");
 				sb.append("VERSION: 2.1\r\n");
 				sb.append("FN: Agent 009\r\n");
-				sb.append("END: vcard\r\n");
-			sb.append("END: vcard\r\n");
+				sb.append("END: VCARD\r\n");
+			sb.append("END: VCARD\r\n");
 		sb.append("FN: John Doe\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
@@ -260,20 +263,20 @@ public class VCardReaderTest {
 	public void readInlineAgent() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: vcard\r\n");
+		sb.append("BEGIN: VCARD\r\n");
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("AGENT: ");
-			sb.append("BEGIN: vcard\\n");
+			sb.append("BEGIN: VCARD\\n");
 			sb.append("VERSION: 3.0\\n");
 			sb.append("FN: Agent 007\\n");
 			sb.append("AGENT: ");
-				sb.append("BEGIN: vcard\\\\n");
+				sb.append("BEGIN: VCARD\\\\n");
 				sb.append("VERSION: 3.0\\\\n");
 				sb.append("FN: Agent 009\\\\n");
-				sb.append("END: vcard\\\\n");
-			sb.append("END: vcard\r\n");
+				sb.append("END: VCARD\\\\n");
+			sb.append("END: VCARD\r\n");
 		sb.append("FN: John Doe\r\n");
-		sb.append("END: vcard\r\n");
+		sb.append("END: VCARD\r\n");
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
@@ -284,6 +287,44 @@ public class VCardReaderTest {
 		assertEquals("Agent 007", agent1.getFormattedName().getValue());
 		VCard agent2 = agent1.getAgent().getVcard();
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
+	}
+
+	/**
+	 * LABEL types should be assigned to an ADR and stored in the
+	 * "AddressType.getLabel()" field. LABELs that could not be assigned to an
+	 * ADR should go in "VCard.getOrphanedLabels()".
+	 */
+	@Test
+	public void readLabel() throws Exception {
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN: VCARD\r\n");
+		sb.append("VERSION: 3.0\r\n");
+		sb.append("ADR;TYPE=home:;;123 Main St.;Austin;TX;91827;USA\r\n");
+		sb.append("LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 91827\\nUSA\r\n");
+		sb.append("ADR;TYPE=work,parcel:;;200 Broadway;New York;NY;12345;USA\r\n");
+		sb.append("LABEL;TYPE=work:200 Broadway\\nNew York\\, NY 12345\\nUSA\r\n");
+		sb.append("END: VCARD\r\n");
+		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCard vcard = reader.readNext();
+
+		assertEquals(2, vcard.getAddresses().size());
+
+		AddressType adr = vcard.getAddresses().get(0);
+		assertEquals(1, adr.getTypes().size());
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+		assertEquals("123 Main St.\r\nAustin, TX 91827\r\nUSA", adr.getLabel());
+
+		adr = vcard.getAddresses().get(1);
+		assertEquals(2, adr.getTypes().size());
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.PARCEL));
+		assertNull(adr.getLabel());
+
+		assertEquals(1, vcard.getOrphanedLabels().size());
+		LabelType label = vcard.getOrphanedLabels().get(0);
+		assertEquals("200 Broadway\r\nNew York, NY 12345\r\nUSA", label.getValue());
+		assertEquals(1, label.getTypes().size());
+		assertTrue(label.getTypes().contains(AddressTypeParameter.WORK));
 	}
 
 	@Test
@@ -355,20 +396,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType t = vcard.getNicknames();
+			NicknameType t = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny"), t.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType t = vcard.getOrganizations();
+			OrganizationType t = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "Accounting", "Dungeon"), t.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType t = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType t = it.next();
 			assertEquals("Money Counter", t.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//CATEGORIES
@@ -443,7 +488,7 @@ public class VCardReaderTest {
 			c.set(Calendar.HOUR_OF_DAY, 13);
 			c.set(Calendar.MINUTE, 32);
 			c.set(Calendar.SECOND, 54);
-			assertEquals(c.getTime(), t.getDate());
+			assertEquals(c.getTime(), t.getTimestamp());
 		}
 
 		//extended types
@@ -575,14 +620,18 @@ public class VCardReaderTest {
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Money Counter", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//BDAY
@@ -653,6 +702,318 @@ public class VCardReaderTest {
 		}
 	}
 
+	/**
+	 * This vCard was generated when selecting a list of contacts and exporting
+	 * them as a vCard.
+	 */
+	@Test
+	public void gmailList() throws Exception {
+		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("gmail-list.vcf")));
+		reader.setCompatibilityMode(CompatibilityMode.GMAIL);
+		VCard vcard = reader.readNext();
+
+		//VERSION
+		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+
+		//FN
+		{
+			FormattedNameType f = vcard.getFormattedName();
+			assertEquals("Arnold Smith", f.getValue());
+		}
+
+		//N
+		{
+			StructuredNameType f = vcard.getStructuredName();
+			assertEquals("Smith", f.getFamily());
+			assertEquals("Arnold", f.getGiven());
+			assertTrue(f.getAdditional().isEmpty());
+			assertTrue(f.getPrefixes().isEmpty());
+			assertTrue(f.getSuffixes().isEmpty());
+		}
+
+		//EMAIL
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType f = it.next();
+			assertEquals("asmithk@gmail.com", f.getValue());
+			Set<EmailTypeParameter> types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			assertFalse(it.hasNext());
+		}
+
+		vcard = reader.readNext();
+
+		//VERSION
+		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+
+		//FN
+		{
+			FormattedNameType f = vcard.getFormattedName();
+			assertEquals("Chris Beatle", f.getValue());
+		}
+
+		//N
+		{
+			StructuredNameType f = vcard.getStructuredName();
+			assertEquals("Beatle", f.getFamily());
+			assertEquals("Chris", f.getGiven());
+			assertTrue(f.getAdditional().isEmpty());
+			assertTrue(f.getPrefixes().isEmpty());
+			assertTrue(f.getSuffixes().isEmpty());
+		}
+
+		//EMAIL
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType f = it.next();
+			assertEquals("chrisy55d@yahoo.com", f.getValue());
+			Set<EmailTypeParameter> types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			assertFalse(it.hasNext());
+		}
+
+		vcard = reader.readNext();
+
+		//VERSION
+		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+
+		//FN
+		{
+			FormattedNameType f = vcard.getFormattedName();
+			assertEquals("Doug White", f.getValue());
+		}
+
+		//N
+		{
+			StructuredNameType f = vcard.getStructuredName();
+			assertEquals("White", f.getFamily());
+			assertEquals("Doug", f.getGiven());
+			assertTrue(f.getAdditional().isEmpty());
+			assertTrue(f.getPrefixes().isEmpty());
+			assertTrue(f.getSuffixes().isEmpty());
+		}
+
+		//EMAIL
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType f = it.next();
+			assertEquals("dwhite@gmail.com", f.getValue());
+			Set<EmailTypeParameter> types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			assertFalse(it.hasNext());
+		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void gmailSingle() throws Exception {
+		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("gmail-single.vcf")));
+		reader.setCompatibilityMode(CompatibilityMode.GMAIL);
+		VCard vcard = reader.readNext();
+
+		//VERSION
+		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+
+		//FN
+		{
+			FormattedNameType f = vcard.getFormattedName();
+			assertEquals("Greg Dartmouth", f.getValue());
+		}
+
+		//N
+		{
+			StructuredNameType f = vcard.getStructuredName();
+			assertEquals("Dartmouth", f.getFamily());
+			assertEquals("Greg", f.getGiven());
+			assertTrue(f.getAdditional().isEmpty());
+			assertTrue(f.getPrefixes().isEmpty());
+			assertTrue(f.getSuffixes().isEmpty());
+		}
+
+		//EMAIL
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType f = it.next();
+			assertEquals("gdartmouth@hotmail.com", f.getValue());
+			Set<EmailTypeParameter> types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			assertFalse(it.hasNext());
+		}
+
+		//TEL
+		{
+			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+
+			TelephoneType f = it.next();
+			assertEquals("555 555 1111", f.getValue());
+			Set<TelephoneTypeParameter> types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.CELL));
+
+			f = it.next();
+			assertEquals("item1", f.getGroup());
+			assertEquals("555 555 2222", f.getValue());
+			types = f.getTypes();
+			assertTrue(types.isEmpty());
+
+			assertFalse(it.hasNext());
+		}
+
+		//ADR
+		{
+			Iterator<AddressType> it = vcard.getAddresses().iterator();
+
+			AddressType f = it.next();
+			assertEquals(null, f.getPoBox());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("123 Home St\r\nHome City, HM 12345", f.getStreetAddress());
+			assertEquals(null, f.getLocality());
+			assertEquals(null, f.getRegion());
+			assertEquals(null, f.getPostalCode());
+			assertEquals(null, f.getCountry());
+			Set<AddressTypeParameter> types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(AddressTypeParameter.HOME));
+
+			f = it.next();
+			assertEquals("item2", f.getGroup());
+			assertEquals(null, f.getPoBox());
+			assertEquals(null, f.getExtendedAddress());
+			assertEquals("321 Custom St", f.getStreetAddress());
+			assertEquals("Custom City", f.getLocality());
+			assertEquals("TX", f.getRegion());
+			assertEquals("98765", f.getPostalCode());
+			assertEquals("USA", f.getCountry());
+			types = f.getTypes();
+			assertTrue(types.isEmpty());
+
+			assertFalse(it.hasNext());
+		}
+
+		//ORG
+		{
+			OrganizationType f = vcard.getOrganization();
+			assertEquals(Arrays.asList("TheCompany"), f.getValues());
+		}
+
+		//TITLE
+		{
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
+			assertEquals("TheJobTitle", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//BDAY
+		{
+			BirthdayType f = vcard.getBirthday();
+			Calendar c = Calendar.getInstance();
+			c.clear();
+			c.set(Calendar.YEAR, 1960);
+			c.set(Calendar.MONTH, Calendar.SEPTEMBER);
+			c.set(Calendar.DAY_OF_MONTH, 10);
+			assertEquals(c.getTime(), f.getDate());
+		}
+
+		//URL
+		{
+			Iterator<UrlType> it = vcard.getUrls().iterator();
+
+			UrlType f = it.next();
+			assertEquals("http://TheProfile.com", f.getValue());
+			Set<String> types = f.getSubTypes().getTypes();
+			assertTrue(types.isEmpty());
+
+			assertFalse(it.hasNext());
+		}
+
+		//NOTE
+		{
+			Iterator<NoteType> it = vcard.getNotes().iterator();
+
+			NoteType f = it.next();
+			assertEquals("This is GMail's note field.\r\nIt should be added as a NOTE type.\r\nACustomField: CustomField", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//extended types
+		{
+			assertEquals(12, vcard.getExtendedTypes().values().size());
+
+			RawType f = vcard.getExtendedType("X-PHONETIC-FIRST-NAME").get(0);
+			assertEquals("X-PHONETIC-FIRST-NAME", f.getTypeName());
+			assertEquals("Grregg", f.getValue());
+
+			f = vcard.getExtendedType("X-PHONETIC-LAST-NAME").get(0);
+			assertEquals("X-PHONETIC-LAST-NAME", f.getTypeName());
+			assertEquals("Dart-mowth", f.getValue());
+
+			f = vcard.getExtendedType("X-ICQ").get(0);
+			assertEquals("X-ICQ", f.getTypeName());
+			assertEquals("123456789", f.getValue());
+
+			Iterator<RawType> abLabelIt = vcard.getExtendedType("X-ABLABEL").iterator();
+			{
+				f = abLabelIt.next();
+				assertEquals("item1", f.getGroup());
+				assertEquals("GRAND_CENTRAL", f.getValue());
+
+				f = abLabelIt.next();
+				assertEquals("item2", f.getGroup());
+				assertEquals("CustomAdrType", f.getValue());
+
+				f = abLabelIt.next();
+				assertEquals("item3", f.getGroup());
+				assertEquals("PROFILE", f.getValue());
+
+				f = abLabelIt.next();
+				assertEquals("item4", f.getGroup());
+				assertEquals("_$!<Anniversary>!$_", f.getValue());
+
+				f = abLabelIt.next();
+				assertEquals("item5", f.getGroup());
+				assertEquals("_$!<Spouse>!$_", f.getValue());
+
+				f = abLabelIt.next();
+				assertEquals("item6", f.getGroup());
+				assertEquals("CustomRelationship", f.getValue());
+
+				assertFalse(abLabelIt.hasNext());
+			}
+
+			f = vcard.getExtendedType("X-ABDATE").get(0);
+			assertEquals("item4", f.getGroup());
+			assertEquals("X-ABDATE", f.getTypeName());
+			assertEquals("1970-06-02", f.getValue());
+
+			f = vcard.getExtendedType("X-ABRELATEDNAMES").get(0);
+			assertEquals("item5", f.getGroup());
+			assertEquals("X-ABRELATEDNAMES", f.getTypeName());
+			assertEquals("MySpouse", f.getValue());
+
+			f = vcard.getExtendedType("X-ABRELATEDNAMES").get(1);
+			assertEquals("item6", f.getGroup());
+			assertEquals("X-ABRELATEDNAMES", f.getTypeName());
+			assertEquals("MyCustom", f.getValue());
+		}
+	}
+
 	@Test
 	public void iPhoneVCard() throws Exception {
 		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_IPHONE.vcf")));
@@ -686,20 +1047,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType f = vcard.getNicknames();
+			NicknameType f = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny"), f.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Money Counter", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//EMAIL
@@ -837,7 +1202,7 @@ public class VCardReaderTest {
 			Iterator<PhotoType> it = vcard.getPhotos().iterator();
 
 			PhotoType f = it.next();
-			assertEquals(ImageTypeParameter.JPEG, f.getType());
+			assertEquals(ImageTypeParameter.JPEG, f.getContentType());
 			assertEquals(32531, f.getData().length);
 		}
 
@@ -900,20 +1265,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType f = vcard.getNicknames();
+			NicknameType f = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny,JayJay"), f.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "SUN"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Generic Accountant", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//EMAIL
@@ -972,6 +1341,7 @@ public class VCardReaderTest {
 			assertEquals("New York", f.getRegion());
 			assertEquals("NYC887", f.getPostalCode());
 			assertEquals("U.S.A.", f.getCountry());
+			assertNull(f.getLabel());
 
 			Set<AddressTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
@@ -1021,7 +1391,7 @@ public class VCardReaderTest {
 			Iterator<PhotoType> it = vcard.getPhotos().iterator();
 
 			PhotoType f = it.next();
-			assertEquals(ImageTypeParameter.JPEG, f.getType());
+			assertEquals(ImageTypeParameter.JPEG, f.getContentType());
 			assertEquals(7957, f.getData().length);
 
 			assertFalse(it.hasNext());
@@ -1055,13 +1425,13 @@ public class VCardReaderTest {
 		//TZ
 		{
 			TimezoneType f = vcard.getTimezone();
-			assertEquals(1, f.getHourOffset());
-			assertEquals(0, f.getMinuteOffset());
+			assertEquals(Integer.valueOf(1), f.getHourOffset());
+			assertEquals(Integer.valueOf(0), f.getMinuteOffset());
 		}
 
 		//LABEL
 		{
-			Iterator<LabelType> it = vcard.getLabels().iterator();
+			Iterator<LabelType> it = vcard.getOrphanedLabels().iterator();
 
 			LabelType f = it.next();
 			assertEquals("John Doe\r\nNew York, NewYork,\r\nSouth Crecent Drive,\r\nBuilding 5, floor 3,\r\nUSA", f.getValue());
@@ -1082,14 +1452,22 @@ public class VCardReaderTest {
 
 		//ROLE
 		{
-			RoleType f = vcard.getRole();
+			Iterator<RoleType> it = vcard.getRoles().iterator();
+
+			RoleType f = it.next();
 			assertEquals("Counting Money", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//SOURCE
 		{
-			SourceType f = vcard.getSource();
+			Iterator<SourceType> it = vcard.getSources().iterator();
+
+			SourceType f = it.next();
 			assertEquals("Whatever", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//MAILER
@@ -1155,20 +1533,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType f = vcard.getNicknames();
+			NicknameType f = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny"), f.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Money Counter", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//NOTE
@@ -1214,6 +1596,7 @@ public class VCardReaderTest {
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
+			assertEquals("Cresent moon drive\r\nAlbaney, New York  12345", f.getLabel());
 			Set<AddressTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(AddressTypeParameter.WORK));
@@ -1227,6 +1610,7 @@ public class VCardReaderTest {
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
+			assertEquals("Silicon Alley 5,\r\nNew York, New York  12345", f.getLabel());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(AddressTypeParameter.HOME));
@@ -1236,22 +1620,7 @@ public class VCardReaderTest {
 
 		//LABEL
 		{
-			Iterator<LabelType> it = vcard.getLabels().iterator();
-
-			LabelType f = it.next();
-			assertEquals("Cresent moon drive\r\nAlbaney, New York  12345", f.getValue());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.WORK));
-			assertTrue(types.contains(AddressTypeParameter.PREF));
-
-			f = it.next();
-			assertEquals("Silicon Alley 5,\r\nNew York, New York  12345", f.getValue());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
-
-			assertFalse(it.hasNext());
+			assertTrue(vcard.getOrphanedLabels().isEmpty());
 		}
 
 		//URL
@@ -1269,8 +1638,12 @@ public class VCardReaderTest {
 
 		//ROLE
 		{
-			RoleType f = vcard.getRole();
+			Iterator<RoleType> it = vcard.getRoles().iterator();
+
+			RoleType f = it.next();
 			assertEquals("Counting Money", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//BDAY
@@ -1303,7 +1676,7 @@ public class VCardReaderTest {
 			Iterator<PhotoType> it = vcard.getPhotos().iterator();
 
 			PhotoType f = it.next();
-			assertEquals(ImageTypeParameter.JPEG, f.getType());
+			assertEquals(ImageTypeParameter.JPEG, f.getContentType());
 			assertEquals(860, f.getData().length);
 
 			assertFalse(it.hasNext());
@@ -1320,7 +1693,7 @@ public class VCardReaderTest {
 			c.set(Calendar.HOUR_OF_DAY, 13);
 			c.set(Calendar.MINUTE, 19);
 			c.set(Calendar.SECOND, 33);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(c.getTime(), f.getTimestamp());
 		}
 
 		//extended types
@@ -1355,6 +1728,269 @@ public class VCardReaderTest {
 	}
 
 	@Test
+	public void outlook2007VCard() throws Exception {
+		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("outlook-2007.vcf")));
+		VCard vcard = reader.readNext();
+
+		//VERSION
+		assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+		//N
+		{
+			StructuredNameType f = vcard.getStructuredName();
+			assertEquals("en-us", f.getSubTypes().getLanguage());
+			assertEquals("Angstadt", f.getFamily());
+			assertEquals("Michael", f.getGiven());
+			assertTrue(f.getAdditional().isEmpty());
+			assertEquals(Arrays.asList("Mr."), f.getPrefixes());
+			assertEquals(Arrays.asList("Jr."), f.getSuffixes());
+		}
+
+		//FN
+		{
+			FormattedNameType f = vcard.getFormattedName();
+			assertEquals("Mr. Michael Angstadt Jr.", f.getValue());
+		}
+
+		//NICKNAME
+		{
+			NicknameType f = vcard.getNickname();
+			assertEquals(Arrays.asList("Mike"), f.getValues());
+		}
+
+		//ORG
+		{
+			OrganizationType f = vcard.getOrganization();
+			assertEquals(Arrays.asList("TheCompany", "TheDepartment"), f.getValues());
+		}
+
+		//TITLE
+		{
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
+			assertEquals("TheJobTitle", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//NOTE
+		{
+			Iterator<NoteType> it = vcard.getNotes().iterator();
+
+			NoteType f = it.next();
+			assertEquals("This is the NOTE field	\r\nI assume it encodes this text inside a NOTE vCard type.\r\nBut I'm not sure because there's text formatting going on here.\r\nIt does not preserve the formatting", f.getValue());
+			assertEquals("us-ascii", f.getSubTypes().getCharset());
+
+			assertFalse(it.hasNext());
+		}
+
+		//TEL
+		{
+			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+			TelephoneType f = it.next();
+
+			assertEquals("(111) 555-1111", f.getValue());
+			Set<TelephoneTypeParameter> types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.WORK));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("(111) 555-2222", f.getValue());
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.HOME));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("(111) 555-4444", f.getValue());
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.CELL));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("(111) 555-3333", f.getValue());
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+			assertTrue(types.contains(TelephoneTypeParameter.WORK));
+
+			assertFalse(it.hasNext());
+		}
+
+		//ADR
+		{
+			Iterator<AddressType> it = vcard.getAddresses().iterator();
+
+			AddressType f = it.next();
+			assertEquals(null, f.getPoBox());
+			assertEquals("TheOffice", f.getExtendedAddress());
+			assertEquals("222 Broadway", f.getStreetAddress());
+			assertEquals("New York", f.getLocality());
+			assertEquals("NY", f.getRegion());
+			assertEquals("99999", f.getPostalCode());
+			assertEquals("USA", f.getCountry());
+			assertEquals("222 Broadway\r\nNew York, NY 99999\r\nUSA", f.getLabel());
+			Set<AddressTypeParameter> types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(AddressTypeParameter.WORK));
+			assertTrue(types.contains(AddressTypeParameter.PREF));
+
+			assertFalse(it.hasNext());
+		}
+
+		//LABEL
+		{
+			assertTrue(vcard.getOrphanedLabels().isEmpty());
+		}
+
+		//URL
+		{
+			Iterator<UrlType> it = vcard.getUrls().iterator();
+
+			UrlType f = it.next();
+			assertEquals("http://mikeangstadt.name", f.getValue());
+			Set<String> types = f.getSubTypes().getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains("HOME"));
+
+			f = it.next();
+			assertEquals("http://mikeangstadt.name", f.getValue());
+			types = f.getSubTypes().getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains("WORK"));
+
+			assertFalse(it.hasNext());
+		}
+
+		//ROLE
+		{
+			Iterator<RoleType> it = vcard.getRoles().iterator();
+
+			RoleType f = it.next();
+			assertEquals("TheProfession", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//BDAY
+		{
+			BirthdayType f = vcard.getBirthday();
+			Calendar c = Calendar.getInstance();
+			c.clear();
+			c.set(Calendar.YEAR, 1922);
+			c.set(Calendar.MONTH, Calendar.MARCH);
+			c.set(Calendar.DAY_OF_MONTH, 10);
+			assertEquals(c.getTime(), f.getDate());
+		}
+
+		//KEY
+		{
+			Iterator<KeyType> it = vcard.getKeys().iterator();
+
+			KeyType f = it.next();
+			assertEquals(KeyTypeParameter.X509, f.getContentType());
+			assertEquals(514, f.getData().length);
+
+			assertFalse(it.hasNext());
+		}
+
+		//EMAIL
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType f = it.next();
+			assertEquals("mike.angstadt@gmail.com", f.getValue());
+			Set<EmailTypeParameter> types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(EmailTypeParameter.PREF));
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			assertFalse(it.hasNext());
+		}
+
+		//PHOTO
+		{
+			Iterator<PhotoType> it = vcard.getPhotos().iterator();
+
+			PhotoType f = it.next();
+			assertEquals(ImageTypeParameter.JPEG, f.getContentType());
+			assertEquals(2324, f.getData().length);
+
+			assertFalse(it.hasNext());
+		}
+
+		//FBURL
+		{
+			//a 4.0 property in a 2.1 vCard...
+			Iterator<FbUrlType> it = vcard.getFbUrls().iterator();
+
+			FbUrlType f = it.next();
+			assertEquals("http://website.com/mycal", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//REV
+		{
+			RevisionType f = vcard.getRevision();
+			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			c.clear();
+			c.set(Calendar.YEAR, 2012);
+			c.set(Calendar.MONTH, Calendar.AUGUST);
+			c.set(Calendar.DAY_OF_MONTH, 1);
+			c.set(Calendar.HOUR_OF_DAY, 18);
+			c.set(Calendar.MINUTE, 46);
+			c.set(Calendar.SECOND, 31);
+			assertEquals(c.getTime(), f.getTimestamp());
+		}
+
+		//extended types
+		{
+			assertEquals(8, vcard.getExtendedTypes().values().size());
+
+			RawType f = vcard.getExtendedType("X-MS-TEL").get(0);
+			assertEquals("X-MS-TEL", f.getTypeName());
+			assertEquals("(111) 555-4444", f.getValue());
+			Set<String> types = f.getSubTypes().getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains("VOICE"));
+			assertTrue(types.contains("CALLBACK"));
+
+			f = vcard.getExtendedType("X-MS-OL-DEFAULT-POSTAL-ADDRESS").get(0);
+			assertEquals("X-MS-OL-DEFAULT-POSTAL-ADDRESS", f.getTypeName());
+			assertEquals("2", f.getValue());
+
+			f = vcard.getExtendedType("X-MS-ANNIVERSARY").get(0);
+			assertEquals("X-MS-ANNIVERSARY", f.getTypeName());
+			assertEquals("20120801", f.getValue());
+
+			f = vcard.getExtendedType("X-MS-IMADDRESS").get(0);
+			assertEquals("X-MS-IMADDRESS", f.getTypeName());
+			assertEquals("im@aim.com", f.getValue());
+
+			f = vcard.getExtendedType("X-MS-OL-DESIGN").get(0);
+			assertEquals("X-MS-OL-DESIGN", f.getTypeName());
+			assertEquals("<card xmlns=\"http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards\" ver=\"1.0\" layout=\"left\" bgcolor=\"ffffff\"><img xmlns=\"\" align=\"tleft\" area=\"32\" use=\"photo\"/><fld xmlns=\"\" prop=\"name\" align=\"left\" dir=\"ltr\" style=\"b\" color=\"000000\" size=\"10\"/><fld xmlns=\"\" prop=\"org\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"title\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"dept\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"telwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Work</label></fld><fld xmlns=\"\" prop=\"telcell\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Mobile</label></fld><fld xmlns=\"\" prop=\"telhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Home</label></fld><fld xmlns=\"\" prop=\"email\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"webwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/></card>", f.getValue());
+			assertEquals("utf-8", f.getSubTypes().getCharset());
+
+			f = vcard.getExtendedType("X-MS-MANAGER").get(0);
+			assertEquals("X-MS-MANAGER", f.getTypeName());
+			assertEquals("TheManagerName", f.getValue());
+
+			f = vcard.getExtendedType("X-MS-ASSISTANT").get(0);
+			assertEquals("X-MS-ASSISTANT", f.getTypeName());
+			assertEquals("TheAssistantName", f.getValue());
+
+			f = vcard.getExtendedType("X-MS-SPOUSE").get(0);
+			assertEquals("X-MS-SPOUSE", f.getTypeName());
+			assertEquals("TheSpouse", f.getValue());
+		}
+	}
+
+	@Test
 	public void macAddressBookVCard() throws Exception {
 		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_MAC_ADDRESS_BOOK.vcf")));
 		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
@@ -1381,20 +2017,24 @@ public class VCardReaderTest {
 
 		//NICKNAME
 		{
-			NicknameType f = vcard.getNicknames();
+			NicknameType f = vcard.getNickname();
 			assertEquals(Arrays.asList("Johny"), f.getValues());
 		}
 
 		//ORG
 		{
-			OrganizationType f = vcard.getOrganizations();
+			OrganizationType f = vcard.getOrganization();
 			assertEquals(Arrays.asList("IBM", "Accounting"), f.getValues());
 		}
 
 		//TITLE
 		{
-			TitleType f = vcard.getTitle();
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
 			assertEquals("Money Counter", f.getValue());
+
+			assertFalse(it.hasNext());
 		}
 
 		//EMAIL
@@ -1540,7 +2180,7 @@ public class VCardReaderTest {
 			Iterator<PhotoType> it = vcard.getPhotos().iterator();
 
 			PhotoType f = it.next();
-			assertEquals(null, f.getType());
+			assertEquals(null, f.getContentType());
 			assertEquals(18242, f.getData().length);
 
 			assertFalse(it.hasNext());
