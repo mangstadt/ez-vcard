@@ -57,7 +57,7 @@ public class BinaryTypeTest {
 	public void marshalUrl() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		String expectedValue, actualValue;
 		VCardSubTypes subTypes;
 
@@ -99,7 +99,7 @@ public class BinaryTypeTest {
 	public void marshalBinary() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		String expectedValue, actualValue;
 		VCardSubTypes subTypes;
 
@@ -146,7 +146,7 @@ public class BinaryTypeTest {
 	public void marshalCustomType() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		String expectedValue, actualValue;
 		VCardSubTypes subTypes;
 
@@ -189,7 +189,7 @@ public class BinaryTypeTest {
 	public void unmarshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes;
 		BinaryTypeImpl t;
 
