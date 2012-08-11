@@ -52,7 +52,7 @@ public class AgentTypeTest {
 		//Note: Marshalling of 2.1 AGENT types is tested in VCardWriterTest
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		AgentType t;
 		String expected, actual;
 
@@ -97,7 +97,7 @@ public class AgentTypeTest {
 
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		AgentType t;
 

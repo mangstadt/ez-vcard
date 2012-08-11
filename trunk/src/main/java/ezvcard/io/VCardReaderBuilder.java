@@ -42,7 +42,7 @@ either expressed or implied, of the FreeBSD Project.
  * @author Michael Angstadt
  */
 public class VCardReaderBuilder {
-	private CompatibilityMode compatMode = CompatibilityMode.RFC2426;
+	private CompatibilityMode compatMode = CompatibilityMode.RFC;
 	private List<Class<? extends VCardType>> extendedTypeClasses = new ArrayList<Class<? extends VCardType>>();
 
 	public VCardReaderBuilder compatabilityMode(CompatibilityMode compatMode) {

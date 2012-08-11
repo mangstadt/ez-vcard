@@ -54,7 +54,7 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void marshalDate() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 
 		Calendar c = Calendar.getInstance();
 		c.clear();
@@ -93,7 +93,7 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void marshalDateTime() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 
 		Calendar c = Calendar.getInstance();
 		c.clear();
@@ -137,7 +137,7 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void marshalReducedAccuracyDate() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 
 		DateOrTimeType t = new DateOrTimeType("DATE");
 		t.setReducedAccuracyDate("--0214");
@@ -166,7 +166,7 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void marshalText() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 
 		DateOrTimeType t = new DateOrTimeType("DATE");
 		t.setText("Sometime around ;1980;");
@@ -195,7 +195,7 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalDate() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 
 		Calendar c = Calendar.getInstance();
@@ -240,7 +240,7 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalReducedAccuracyDate() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 
 		String value = "--0201";
@@ -274,7 +274,7 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalText() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setValue(ValueParameter.TEXT);
 

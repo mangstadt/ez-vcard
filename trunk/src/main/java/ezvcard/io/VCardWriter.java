@@ -58,7 +58,7 @@ import ezvcard.types.VCardType;
  * @author Michael Angstadt
  */
 public class VCardWriter implements Closeable {
-	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private VCardVersion targetVersion = VCardVersion.V3_0;
 	private String newline = "\r\n";
 	private boolean addGenerator = true;

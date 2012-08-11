@@ -53,7 +53,7 @@ public class AddressTypeTest {
 	public void marshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		AddressType t;
 		String expected, actual;
 
@@ -94,7 +94,7 @@ public class AddressTypeTest {
 	public void marshalTz() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 
 		AddressType t = new AddressType();
 		t.setTimezone("America/New_York");
@@ -106,7 +106,7 @@ public class AddressTypeTest {
 	public void unmarshalTz() throws Exception {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.put("TZ", "tz:America/New_York");
 
@@ -126,7 +126,7 @@ public class AddressTypeTest {
 	@Test
 	public void marshalPref() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 
 		//ADR has "TYPE=pref"==========
 		AddressType t = new AddressType();
@@ -172,7 +172,7 @@ public class AddressTypeTest {
 	public void doUnmarshalValue() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		AddressType t;
 

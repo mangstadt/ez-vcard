@@ -97,7 +97,7 @@ import ezvcard.util.VCardStringUtils;
  * @author Michael Angstadt
  */
 public class VCardReader implements Closeable {
-	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
 	private VCardVersion version;
 	private boolean endFound = false;

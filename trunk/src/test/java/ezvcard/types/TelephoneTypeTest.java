@@ -52,7 +52,7 @@ public class TelephoneTypeTest {
 	public void marshal() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		String expectedValue, actualValue;
 		VCardSubTypes subTypes;
 
@@ -91,7 +91,7 @@ public class TelephoneTypeTest {
 	public void unmarshal() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		TelephoneType t;
 		String expectedValue, actualValue;

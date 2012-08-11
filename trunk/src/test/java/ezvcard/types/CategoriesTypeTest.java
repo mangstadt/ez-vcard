@@ -63,7 +63,7 @@ public class CategoriesTypeTest {
 		actual = t.doMarshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
-		compatibilityMode = CompatibilityMode.RFC2426;
+		compatibilityMode = CompatibilityMode.RFC;
 		t = new CategoriesType();
 		t.addValue("One");
 		t.addValue("T,wo");
@@ -90,7 +90,7 @@ public class CategoriesTypeTest {
 		actual = t.getValues();
 		assertEquals(expected, actual);
 
-		compatibilityMode = CompatibilityMode.RFC2426;
+		compatibilityMode = CompatibilityMode.RFC;
 		t = new CategoriesType();
 		t.unmarshalValue(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
 		expected = Arrays.asList("One,T,wo,Thr;ee");

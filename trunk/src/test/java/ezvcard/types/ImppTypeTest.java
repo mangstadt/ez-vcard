@@ -48,7 +48,7 @@ public class ImppTypeTest {
 	public void doMarshalValue() {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		ImppType t;
 		String expected, actual;
 
@@ -62,7 +62,7 @@ public class ImppTypeTest {
 	public void doUnmarshalValue() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		ImppType t;
 

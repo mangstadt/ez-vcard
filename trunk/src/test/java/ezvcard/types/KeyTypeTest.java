@@ -52,7 +52,7 @@ public class KeyTypeTest {
 	public void marshalTextValue() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		KeyType t;
 		String expectedValue, actualValue;
 		VCardSubTypes subTypes;
@@ -96,7 +96,7 @@ public class KeyTypeTest {
 	public void unmarshalText() throws Exception {
 		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes;
 		KeyType t;
 

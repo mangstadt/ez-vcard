@@ -52,7 +52,7 @@ public class TimestampTypeTest {
 	@Test
 	public void marshal() throws Exception {
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		c.clear();
@@ -87,7 +87,7 @@ public class TimestampTypeTest {
 	public void unmarshalValue() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC2426;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 
 		TimestampType t = new TimestampType("DATE");
