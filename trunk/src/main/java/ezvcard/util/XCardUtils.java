@@ -1,13 +1,11 @@
-package ezvcard.types;
+package ezvcard.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Element;
-
-import ezvcard.VCardException;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -39,61 +37,51 @@ import ezvcard.util.XCardUtils;
  */
 
 /**
- * Holds the type value as-is. No escaping or unescaping is done on the value.
+ * Contains utility methods for the xCard standard.
  * @author Michael Angstadt
  */
-public class RawType extends VCardType {
-	private String value;
-
+public class XCardUtils {
 	/**
-	 * @param name the type name (e.g. "NOTE")
+	 * Converts a {@link NodeList} object to a {@link List} object containing
+	 * the {@link Element} objects that are inside the NodeList.
+	 * @param nl the node list
+	 * @return the list of elements
 	 */
-	public RawType(String name) {
-		this(name, null);
-	}
-
-	/**
-	 * @param name the type name (e.g. "NOTE")
-	 * @param value the type value
-	 */
-	public RawType(String name, String value) {
-		super(name);
-		this.value = value;
-	}
-
-	/**
-	 * Gets the raw value of the property.
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * Sets the raw value of the property.
-	 * @param value the value
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		return value;
-	}
-
-	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		this.value = value;
-	}
-
-	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		Element value = XCardUtils.getFirstElement(element.getChildNodes());
-		if (value == null) {
-			this.value = element.getTextContent();
-		} else {
-			this.value = value.getTextContent();
+	public static List<Element> toElementList(NodeList nl) {
+		List<Element> elements = new ArrayList<Element>();
+		for (int i = 0; i < nl.getLength(); i++) {
+			Node node = nl.item(i);
+			if (node instanceof Element) {
+				elements.add((Element) node);
+			}
 		}
+		return elements;
+	}
+
+	/**
+	 * Gets the first {@link Element} in a {@link NodeList}.
+	 * @param nl the node list
+	 * @return the first element or null if there are no elements in the node
+	 * list
+	 */
+	public static Element getFirstElement(NodeList nl) {
+		return getFirstElement(nl, null);
+	}
+
+	/**
+	 * Gets the first {@link Element} in a {@link NodeList} that has a certain
+	 * name.
+	 * @param nl the node list
+	 * @param elementName the name of the element to look for
+	 * @return the first element that has the name or null if not found
+	 */
+	public static Element getFirstElement(NodeList nl, String elementName) {
+		for (int i = 0; i < nl.getLength(); i++) {
+			Node node = nl.item(i);
+			if (node instanceof Element && (elementName == null || elementName.equals(node.getNodeName()))) {
+				return (Element) node;
+			}
+		}
+		return null;
 	}
 }

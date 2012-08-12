@@ -3,13 +3,17 @@ package ezvcard.types;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Element;
+
 import ezvcard.VCard;
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -217,6 +221,16 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			value = (value.length() > 4) ? value.substring(4) : "";
 		}
 		this.value = VCardStringUtils.unescape(value.trim());
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		Element ele = XCardUtils.getFirstElement(element.getChildNodes());
+		value = ele.getTextContent();
+		if (value.matches("(?i)tel:.*")) {
+			//remove "tel:"
+			value = (value.length() > 4) ? value.substring(4) : "";
+		}
 	}
 
 }

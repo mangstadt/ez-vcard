@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -300,5 +304,43 @@ public class StructuredNameType extends VCardType {
 			suffixes = new ArrayList<String>();
 		}
 		i++;
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		Element value = XCardUtils.getFirstElement(element.getElementsByTagName("surname"));
+		if (value != null) {
+			family = value.getTextContent();
+		}
+
+		value = XCardUtils.getFirstElement(element.getElementsByTagName("given"));
+		if (value != null) {
+			given = value.getTextContent();
+		}
+
+		List<Element> elements = XCardUtils.toElementList(element.getElementsByTagName("additional"));
+		for (Element e : elements) {
+			String text = e.getTextContent();
+			if (text.length() > 0) {
+				additional.add(text);
+			}
+		}
+
+		elements = XCardUtils.toElementList(element.getElementsByTagName("prefix"));
+		for (Element e : elements) {
+			String text = e.getTextContent();
+			if (text.length() > 0) {
+				prefixes.add(text);
+			}
+		}
+
+		elements = XCardUtils.toElementList(element.getElementsByTagName("suffix"));
+		for (Element e : elements) {
+			String text = e.getTextContent();
+			if (text.length() > 0) {
+				suffixes.add(text);
+			}
+		}
+
 	}
 }

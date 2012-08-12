@@ -18,7 +18,6 @@ import java.util.TimeZone;
 import org.junit.Test;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
@@ -54,7 +53,6 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
-import ezvcard.types.VCardType;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -2234,24 +2232,6 @@ public class VCardReaderTest {
 			f = vcard.getExtendedType("X-ABUID").get(0);
 			assertEquals("X-ABUID", f.getTypeName());
 			assertEquals("6B29A774-D124-4822-B8D0-2780EC117F60\\:ABPerson", f.getValue());
-		}
-	}
-
-	public static class LuckyNumType extends VCardType {
-		public int luckyNum;
-
-		public LuckyNumType() {
-			super("X-LUCKY-NUM");
-		}
-
-		@Override
-		protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-			return "" + luckyNum;
-		}
-
-		@Override
-		protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-			luckyNum = Integer.parseInt(value);
 		}
 	}
 }
