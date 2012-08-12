@@ -1,4 +1,4 @@
-package ezvcard.types;
+package ezvcard.io;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.w3c.dom.Element;
 
 import ezvcard.VCardException;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
+import ezvcard.types.VCardType;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -39,61 +39,29 @@ import ezvcard.util.XCardUtils;
  */
 
 /**
- * Holds the type value as-is. No escaping or unescaping is done on the value.
+ * An extended type class used for testing.
  * @author Michael Angstadt
  */
-public class RawType extends VCardType {
-	private String value;
+public class LuckyNumType extends VCardType {
+	public int luckyNum;
 
-	/**
-	 * @param name the type name (e.g. "NOTE")
-	 */
-	public RawType(String name) {
-		this(name, null);
-	}
-
-	/**
-	 * @param name the type name (e.g. "NOTE")
-	 * @param value the type value
-	 */
-	public RawType(String name, String value) {
-		super(name);
-		this.value = value;
-	}
-
-	/**
-	 * Gets the raw value of the property.
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * Sets the raw value of the property.
-	 * @param value the value
-	 */
-	public void setValue(String value) {
-		this.value = value;
+	public LuckyNumType() {
+		super("X-LUCKY-NUM");
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		return value;
+	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		return "" + luckyNum;
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		this.value = value;
+	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		luckyNum = Integer.parseInt(value);
 	}
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		Element value = XCardUtils.getFirstElement(element.getChildNodes());
-		if (value == null) {
-			this.value = element.getTextContent();
-		} else {
-			this.value = value.getTextContent();
-		}
+		Element ele = XCardUtils.getFirstElement(element.getElementsByTagName("integer"));
+		luckyNum = Integer.parseInt(ele.getTextContent());
 	}
 }

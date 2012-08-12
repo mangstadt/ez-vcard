@@ -2,9 +2,13 @@ package ezvcard.types;
 
 import java.util.List;
 
+import org.w3c.dom.Element;
+
+import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -82,5 +86,17 @@ public class TextType extends VCardType {
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		this.value = VCardStringUtils.unescape(value);
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		Element value = XCardUtils.getFirstElement(element.getElementsByTagName("text"));
+		if (value == null) {
+			warnings.add("No \"<text>\" element present.");
+			this.value = element.getTextContent();
+		}
+		if (value != null) {
+			this.value = value.getTextContent();
+		}
 	}
 }

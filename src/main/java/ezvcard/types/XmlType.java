@@ -1,7 +1,29 @@
 package ezvcard.types;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CompatibilityMode;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -91,5 +113,46 @@ public class XmlType extends TextType {
 	@Override
 	public VCardVersion[] getSupportedVersions() {
 		return new VCardVersion[] { VCardVersion.V4_0 };
+	}
+
+	/**
+	 * Converts the text value of this property to an XML {@link Element}
+	 * object.
+	 * @return the element object or null if this property's value is null
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public Element asElement() throws SAXException {
+		if (value == null) {
+			return null;
+		}
+
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document document = db.parse(new InputSource(new StringReader(value)));
+			return document.getDocumentElement();
+		} catch (IOException e) {
+			//never thrown because we're reading from a string
+			return null;
+		} catch (ParserConfigurationException e) {
+			//never thrown because we're not doing anything fancy with the configuration
+			return null;
+		}
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		try {
+			StringWriter writer = new StringWriter();
+			DOMSource source = new DOMSource(element);
+			StreamResult result = new StreamResult(writer);
+			Transformer t = TransformerFactory.newInstance().newTransformer();
+			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			t.transform(source, result);
+			value = writer.toString();
+		} catch (TransformerException e) {
+			warnings.add("Problem transforming XML element to string for " + NAME + " property: " + e.getMessage());
+		}
 	}
 }
