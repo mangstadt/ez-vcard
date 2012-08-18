@@ -4,11 +4,15 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import ezvcard.VCard;
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.VCardStringUtils;
+import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -247,31 +251,50 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
+	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+		if (version == VCardVersion.V4_0) {
+			VCardSubTypes copy = new VCardSubTypes(subTypes);
+			copy.setValue(ValueParameter.URI);
+			return copy;
+		}
+
+		return super.doMarshalSubTypes(version, warnings, compatibilityMode, vcard);
+	}
+
+	@Override
 	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		NumberFormat nf = new DecimalFormat("0.####");
-
 		StringBuilder sb = new StringBuilder();
-		if (latitude != null) {
+
+		if (version == VCardVersion.V4_0) {
+			sb.append("geo:");
 			sb.append(nf.format(latitude));
-		}
-		sb.append(';');
-		if (longitude != null) {
+			sb.append(',');
+			sb.append(nf.format(longitude));
+		} else {
+			sb.append(nf.format(latitude));
+			sb.append(';');
 			sb.append(nf.format(longitude));
 		}
+
 		return sb.toString();
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String split[] = VCardStringUtils.splitBy(value, ';', false, true);
-		if (split.length < 2) {
-			warnings.add("Invalid format of " + NAME + " type: \"" + value + "\"");
-		}
-		if (split.length > 0) {
-			latitude = Double.parseDouble(split[0]);
-		}
-		if (split.length > 1) {
-			longitude = Double.parseDouble(split[1]);
+		//2.1/3.0 syntax:	GEO:12;34
+		//4.0 syntax:		GEO;VALUE=uri:geo:12,23
+		Pattern p = Pattern.compile("^(geo:)?(.*?)[,;](.*)$", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(value);
+		if (m.find()) {
+			try {
+				latitude = Double.parseDouble(m.group(2));
+				longitude = Double.parseDouble(m.group(3));
+			} catch (NumberFormatException e) {
+				warnings.add("Cannot parse latitude and longitude numbers out of " + NAME + " type value: \"" + value + "\"");
+			}
+		} else {
+			warnings.add("Unrecognized format of " + NAME + " type: \"" + value + "\"");
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -45,38 +47,78 @@ import ezvcard.io.CompatibilityMode;
  */
 public class GeoTypeTest {
 	@Test
-	public void doMarshalValue() {
-		VCardVersion version = VCardVersion.V2_1;
+	public void marshal() throws Exception {
+		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		GeoType t;
 		String expected, actual;
+		GeoType t = new GeoType(-12.34, 56.78777);
+		VCardSubTypes subTypes;
 
-		t = new GeoType(-12.34, 56.78777);
+		//2.1
+		version = VCardVersion.V2_1;
 		expected = "-12.34;56.7878";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
 		assertEquals(expected, actual);
+		assertNull(subTypes.getValue());
+
+		//3.0
+		version = VCardVersion.V3_0;
+		expected = "-12.34;56.7878";
+		actual = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
+		assertEquals(expected, actual);
+		assertNull(subTypes.getValue());
+
+		//4.0
+		version = VCardVersion.V4_0;
+		expected = "geo:-12.34,56.7878";
+		actual = t.marshalValue(version, warnings, compatibilityMode);
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
+		assertEquals(expected, actual);
+		assertEquals(ValueParameter.URI, subTypes.getValue());
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
+	public void unmarshal() throws Exception {
+		VCardVersion version;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		GeoType t;
 
+		//2.1
+		version = VCardVersion.V2_1;
 		t = new GeoType();
 		t.unmarshalValue(subTypes, "-12.34;56.7878", version, warnings, compatibilityMode);
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);
 
-		//bad value
+		//3.0
+		version = VCardVersion.V3_0;
 		t = new GeoType();
-		try {
-			t.unmarshalValue(subTypes, "bad;value", version, warnings, compatibilityMode);
-		} catch (NumberFormatException e) {
-			//should be thrown
-		}
+		t.unmarshalValue(subTypes, "-12.34;56.7878", version, warnings, compatibilityMode);
+		assertEquals(-12.34, t.getLatitude(), 0.00001);
+		assertEquals(56.7878, t.getLongitude(), 0.00001);
+
+		//4.0
+		version = VCardVersion.V4_0;
+		t = new GeoType();
+		t.unmarshalValue(subTypes, "geo:-12.34,56.7878", version, warnings, compatibilityMode);
+		assertEquals(-12.34, t.getLatitude(), 0.00001);
+		assertEquals(56.7878, t.getLongitude(), 0.00001);
+
+		//bad value
+		warnings.clear();
+		t = new GeoType();
+		t.unmarshalValue(subTypes, "not a;number", version, warnings, compatibilityMode);
+		assertEquals(1, warnings.size());
+
+		//bad value
+		warnings.clear();
+		t = new GeoType();
+		t.unmarshalValue(subTypes, "bad-value", version, warnings, compatibilityMode);
+		assertEquals(1, warnings.size());
 	}
 }
