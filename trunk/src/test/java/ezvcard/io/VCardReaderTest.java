@@ -2234,4 +2234,231 @@ public class VCardReaderTest {
 			assertEquals("6B29A774-D124-4822-B8D0-2780EC117F60\\:ABPerson", f.getValue());
 		}
 	}
+
+	@Test
+	public void thunderbird() throws Exception {
+		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("thunderbird-MoreFunctionsForAddressBook-extension.vcf")));
+		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
+		VCard vcard = reader.readNext();
+
+		//VERSION
+		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+
+		//N
+		{
+			StructuredNameType f = vcard.getStructuredName();
+			assertEquals("Doe", f.getFamily());
+			assertEquals("John", f.getGiven());
+			assertTrue(f.getAdditional().isEmpty());
+			assertTrue(f.getPrefixes().isEmpty());
+			assertTrue(f.getSuffixes().isEmpty());
+		}
+
+		//FN
+		{
+			FormattedNameType f = vcard.getFormattedName();
+			assertEquals("John Doe", f.getValue());
+		}
+
+		//ORG
+		{
+			OrganizationType f = vcard.getOrganization();
+			assertEquals(Arrays.asList("TheOrganization", "TheDepartment"), f.getValues());
+		}
+
+		//NICKNAME
+		{
+			NicknameType f = vcard.getNickname();
+			assertEquals(Arrays.asList("Johnny"), f.getValues());
+		}
+
+		//ADR
+		{
+			Iterator<AddressType> it = vcard.getAddresses().iterator();
+
+			AddressType f = it.next();
+			assertEquals(null, f.getPoBox());
+			assertEquals("222 Broadway", f.getExtendedAddress());
+			assertEquals("Suite 100", f.getStreetAddress());
+			assertEquals("New York", f.getLocality());
+			assertEquals("NY", f.getRegion());
+			assertEquals("98765", f.getPostalCode());
+			assertEquals("USA", f.getCountry());
+			Set<AddressTypeParameter> types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(AddressTypeParameter.WORK));
+			assertTrue(types.contains(AddressTypeParameter.POSTAL));
+
+			f = it.next();
+			assertEquals(null, f.getPoBox());
+			assertEquals("123 Main St", f.getExtendedAddress());
+			assertEquals("Apt 10", f.getStreetAddress());
+			assertEquals("Austin", f.getLocality());
+			assertEquals("TX", f.getRegion());
+			assertEquals("12345", f.getPostalCode());
+			assertEquals("USA", f.getCountry());
+
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(AddressTypeParameter.HOME));
+			assertTrue(types.contains(AddressTypeParameter.POSTAL));
+
+			assertFalse(it.hasNext());
+		}
+
+		//TEL
+		{
+			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+
+			TelephoneType f = it.next();
+			assertEquals("555-555-1111", f.getValue());
+			Set<TelephoneTypeParameter> types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.WORK));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("555-555-2222", f.getValue());
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.HOME));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("555-555-5555", f.getValue());
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.CELL));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("555-555-3333", f.getValue());
+			types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+
+			f = it.next();
+			assertEquals("555-555-4444", f.getValue());
+			types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.PAGER));
+
+			assertFalse(it.hasNext());
+		}
+
+		//EMAIL
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType f = it.next();
+			assertEquals("doe.john@hotmail.com", f.getValue());
+			Set<EmailTypeParameter> types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertTrue(types.contains(EmailTypeParameter.PREF));
+
+			f = it.next();
+			assertEquals("additional-email@company.com", f.getValue());
+			types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			f = it.next();
+			assertEquals("additional-email1@company.com", f.getValue());
+			types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			f = it.next();
+			assertEquals("additional-email2@company.com", f.getValue());
+			types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			f = it.next();
+			assertEquals("additional-email3@company.com", f.getValue());
+			types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			assertFalse(it.hasNext());
+		}
+
+		//URL
+		{
+			Iterator<UrlType> it = vcard.getUrls().iterator();
+
+			UrlType f = it.next();
+			assertEquals("http://www.private-webpage.com", f.getValue());
+			assertEquals("HOME", f.getType());
+
+			f = it.next();
+			assertEquals("http://www.work-webpage.com", f.getValue());
+			assertEquals("WORK", f.getType());
+
+			assertFalse(it.hasNext());
+		}
+
+		//TITLE
+		{
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
+			assertEquals("TheTitle", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//CATEGORIES
+		{
+			//commas are incorrectly escaped, so there is only 1 item
+			CategoriesType f = vcard.getCategories();
+			assertEquals(Arrays.asList("category1, category2, category3"), f.getValues());
+		}
+
+		//BDAY
+		{
+			BirthdayType f = vcard.getBirthday();
+			Calendar c = Calendar.getInstance();
+			c.clear();
+			c.set(Calendar.YEAR, 1970);
+			c.set(Calendar.MONTH, Calendar.SEPTEMBER);
+			c.set(Calendar.DAY_OF_MONTH, 21);
+			assertEquals(c.getTime(), f.getDate());
+		}
+
+		//NOTE
+		{
+			Iterator<NoteType> it = vcard.getNotes().iterator();
+
+			NoteType f = it.next();
+			assertEquals("This is the notes field.\r\nSecond Line\r\n\r\nFourth Line\r\nYou can put anything in the \"note\" field; even curse words.", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//PHOTO
+		{
+			Iterator<PhotoType> it = vcard.getPhotos().iterator();
+
+			PhotoType f = it.next();
+			assertEquals(ImageTypeParameter.JPEG, f.getContentType());
+			assertEquals(8940, f.getData().length);
+
+			assertFalse(it.hasNext());
+		}
+
+		//extended types
+		{
+			assertEquals(2, vcard.getExtendedTypes().values().size());
+
+			RawType f = vcard.getExtendedType("X-SPOUSE").get(0);
+			assertEquals("X-SPOUSE", f.getTypeName());
+			assertEquals("TheSpouse", f.getValue());
+
+			f = vcard.getExtendedType("X-ANNIVERSARY").get(0);
+			assertEquals("X-ANNIVERSARY", f.getTypeName());
+			assertEquals("1990-04-30", f.getValue());
+		}
+	}
 }
