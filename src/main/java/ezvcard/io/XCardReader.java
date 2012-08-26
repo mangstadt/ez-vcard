@@ -2,6 +2,7 @@ package ezvcard.io;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,11 +27,8 @@ import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.types.FormattedNameType;
-import ezvcard.types.NoteType;
 import ezvcard.types.RawType;
-import ezvcard.types.StructuredNameType;
-import ezvcard.types.TelephoneType;
+import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
 import ezvcard.util.XCardUtils;
@@ -65,8 +63,9 @@ import ezvcard.util.XCardUtils;
  */
 
 /**
- * Unmarshals vCards into {@link VCard} objects.
+ * Unmarshals XML-encoded vCards into {@link VCard} objects.
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
 public class XCardReader {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -250,23 +249,24 @@ public class XCardReader {
 	 * @return the type that was created or null if a type object wasn't created
 	 */
 	private VCardType createTypeObject(String name) {
-		//TODO do other types
 		name = name.toUpperCase();
-		if (FormattedNameType.NAME.equals(name)) {
-			return new FormattedNameType();
-		} else if (StructuredNameType.NAME.equals(name)) {
-			return new StructuredNameType();
-		} else if (NoteType.NAME.equals(name)) {
-			return new NoteType();
-		} else if (TelephoneType.NAME.equals(name)) {
-			return new TelephoneType();
+
+		Class<? extends VCardType> clazz = TypeList.nameToTypeClass.get(name);
+		if (clazz != null) {
+			try {
+				return clazz.newInstance();
+			} catch (Exception e) {
+				//it is the responsibility of the EZ-vCard developer to ensure that this exception is never thrown
+				//all type classes defined in the EZ-vCard library MUST have public, no-arg constructors
+				return null;
+			}
 		} else {
 			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
 			if (extendedTypeClass != null) {
 				try {
 					return extendedTypeClass.newInstance();
 				} catch (Exception e) {
-					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
+					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" MUST have a public, no-arg constructor.");
 				}
 			} else if (name.startsWith("X-")) {
 				return new RawType(name);
@@ -283,17 +283,14 @@ public class XCardReader {
 	 * @param vcard the vCard
 	 */
 	private void addToVCard(VCardType t, VCard vcard) {
-		//TODO do other types
-		if (t instanceof FormattedNameType) {
-			vcard.addFormattedName((FormattedNameType) t);
-		} else if (t instanceof StructuredNameType) {
-			vcard.addStructuredName((StructuredNameType) t);
-		} else if (t instanceof NoteType) {
-			vcard.addNote((NoteType) t);
-		} else if (t instanceof TelephoneType) {
-			vcard.addTelephoneNumber((TelephoneType) t);
-		} else if (t instanceof XmlType) {
-			vcard.addXml((XmlType) t);
+		Method method = TypeList.typeClassToAddMethod.get(t.getClass());
+		if (method != null) {
+			try {
+				method.invoke(vcard, t);
+			} catch (Exception e) {
+				//this should NEVER be thrown because the method MUST be public
+				throw new RuntimeException(e);
+			}
 		} else {
 			vcard.addExtendedType(t);
 		}
