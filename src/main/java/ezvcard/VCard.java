@@ -28,6 +28,7 @@ import ezvcard.types.ClientPidMapType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FbUrlType;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.GenderType;
 import ezvcard.types.GeoType;
 import ezvcard.types.ImppType;
 import ezvcard.types.KeyType;
@@ -96,6 +97,7 @@ import ezvcard.types.XmlType;
 public class VCard {
 	private VCardVersion version = VCardVersion.V3_0;
 	private KindType kind;
+	private GenderType gender;
 	private List<MemberType> members = new ArrayList<MemberType>();
 	private ProfileType profile;
 	private ClassificationType classification;
@@ -252,6 +254,34 @@ public class VCard {
 	 */
 	public void setKind(KindType kind) {
 		this.kind = kind;
+	}
+
+	/**
+	 * Gets the gender of the person.
+	 * <p>
+	 * vCard property name: GENDER
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the gender
+	 */
+	public GenderType getGender() {
+		return gender;
+	}
+
+	/**
+	 * Sets the gender of the person.
+	 * <p>
+	 * vCard property name: GENDER
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param gender the gender
+	 */
+	public void setGender(GenderType gender) {
+		this.gender = gender;
 	}
 
 	/**
