@@ -87,6 +87,7 @@ public class XCardMarshallerTest extends XMLTestCase {
 		note.setLanguage("en");
 		note.addPid(1, 1);
 		note.addPid(2, 2);
+		note.getSubTypes().put("X-CUSTOM", "xxx");
 		vcard.addNote(note);
 
 		XCardMarshaller xcm = new XCardMarshaller();
@@ -101,8 +102,9 @@ public class XCardMarshallerTest extends XMLTestCase {
 			sb.append("<vcard>");
 				sb.append("<note>");
 					sb.append("<parameters>");
-						sb.append("<language><text>en</text></language>");
+						sb.append("<language><language-tag>en</language-tag></language>");
 						sb.append("<pid><text>1.1</text><text>2.2</text></pid>");
+						sb.append("<x-custom><unknown>xxx</unknown></x-custom>");
 					sb.append("</parameters>");
 					sb.append("<text>This is a\\nnote.</text>");
 				sb.append("</note>");
@@ -149,7 +151,7 @@ public class XCardMarshallerTest extends XMLTestCase {
 				sb.append("<fn><text>John Doe</text></fn>");
 				sb.append("<group name=\"group1\">");
 					sb.append("<photo><parameters><mediatype><text>image/jpeg</text></mediatype></parameters><text>http://example.com/image.jpg</text></photo>");
-					sb.append("<note><parameters><language><text>en</text></language></parameters><text>This is a\\nnote.</text></note>");
+					sb.append("<note><parameters><language><language-tag>en</language-tag></language></parameters><text>This is a\\nnote.</text></note>");
 				sb.append("</group>");
 				sb.append("<group name=\"group2\">");
 					sb.append("<note><text>Bonjour.</text></note>");

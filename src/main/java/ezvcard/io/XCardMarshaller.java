@@ -6,7 +6,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -70,6 +73,27 @@ import ezvcard.types.VCardType;
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
 public class XCardMarshaller {
+	/**
+	 * Defines the names of the XML elements that are used to hold each
+	 * parameter's value.
+	 */
+	private static final Map<String, String> parameterChildElementNames;
+	static {
+		Map<String, String> m = new HashMap<String, String>();
+		m.put("altid", "text");
+		m.put("calscale", "text");
+		m.put("geo", "uri");
+		m.put("label", "text");
+		m.put("language", "language-tag");
+		m.put("mediatype", "text");
+		m.put("pid", "text");
+		m.put("pref", "integer");
+		m.put("sort-as", "text");
+		m.put("type", "text");
+		m.put("tz", "uri");
+		parameterChildElementNames = Collections.unmodifiableMap(m);
+	}
+
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private boolean addGenerator = true;
 	private VCardVersion targetVersion = VCardVersion.V4_0; //xCard standard only supports 4.0
@@ -162,7 +186,7 @@ public class XCardMarshaller {
 
 		//use reflection to get all VCardType fields in the VCard class
 		//the order that the Types are in doesn't matter
-		ListMultimap<String, VCardType> types = ArrayListMultimap.create();
+		ListMultimap<String, VCardType> types = ArrayListMultimap.create(); //group the types by group
 		for (Field f : vcard.getClass().getDeclaredFields()) {
 			try {
 				f.setAccessible(true);
@@ -245,10 +269,15 @@ public class XCardMarshaller {
 					//don't include the VALUE parameter
 					continue;
 				}
-				Element parameterElement = createElement(paramName.toLowerCase());
+
+				paramName = paramName.toLowerCase();
+				Element parameterElement = createElement(paramName);
 				for (String paramValue : subTypes.get(paramName)) {
-					//TODO determine what XML element name should be used for each parameter
-					Element parameterValueElement = createElement("text");
+					String valueElementName = parameterChildElementNames.get(paramName);
+					if (valueElementName == null) {
+						valueElementName = "unknown";
+					}
+					Element parameterValueElement = createElement(valueElementName);
 					parameterValueElement.setTextContent(paramValue);
 					parameterElement.appendChild(parameterValueElement);
 				}
