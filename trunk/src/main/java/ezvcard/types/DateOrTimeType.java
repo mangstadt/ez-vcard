@@ -3,7 +3,10 @@ package ezvcard.types;
 import java.util.Date;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
 import ezvcard.VCard;
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -12,6 +15,7 @@ import ezvcard.parameters.ValueParameter;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -263,6 +267,27 @@ public class DateOrTimeType extends VCardType {
 			} catch (IllegalArgumentException e) {
 				warnings.add("Date string \"" + value + "\" for type \"" + typeName + "\" could not be parsed.");
 			}
+		}
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		Element child = XCardUtils.getFirstElement(element.getElementsByTagName("date-and-or-time"));
+		String value = null;
+		if (child != null) {
+			value = child.getTextContent();
+		} else {
+			child = XCardUtils.getFirstElement(element.getElementsByTagName("text"));
+			if (child != null) {
+				subTypes.setValue(ValueParameter.TEXT);
+				value = child.getTextContent();
+			}
+		}
+
+		if (value != null) {
+			doUnmarshalValue(child.getTextContent(), version, warnings, compatibilityMode);
+		} else {
+			warnings.add("The <" + element.getNodeName() + "> element could not be parsed because its value must be within a <date-and-or-time> or <text> tag.");
 		}
 	}
 }

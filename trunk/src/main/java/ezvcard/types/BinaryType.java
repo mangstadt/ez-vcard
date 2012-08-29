@@ -6,8 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
+import org.w3c.dom.Element;
 
 import ezvcard.VCard;
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -382,6 +384,14 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 		}
 
 		cannotUnmarshalValue(value, version, warnings, compatibilityMode, contentType);
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = parseChildElement(element, "uri", warnings);
+		if (value != null) {
+			doUnmarshalValue(value, version, warnings, compatibilityMode);
+		}
 	}
 
 	/**

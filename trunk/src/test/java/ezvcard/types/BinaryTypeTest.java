@@ -51,6 +51,8 @@ import ezvcard.parameters.ValueParameter;
  * @author Michael Angstadt
  */
 public class BinaryTypeTest {
+	//TODO test XML
+	
 	private byte[] dummyData = "dummy data".getBytes();
 
 	@Test
