@@ -51,6 +51,8 @@ import ezvcard.parameters.ValueParameter;
  * @author Michael Angstadt
  */
 public class DateOrTimeTypeTest {
+	//TODO test XML
+	
 	@Test
 	public void marshalDate() throws Exception {
 		List<String> warnings = new ArrayList<String>();

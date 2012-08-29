@@ -309,16 +309,13 @@ public class StructuredNameType extends VCardType {
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		Element value = XCardUtils.getFirstElement(element.getElementsByTagName("surname"));
-		if (value != null) {
-			family = value.getTextContent();
-		}
+		family = (value != null) ? value.getTextContent() : null;
 
 		value = XCardUtils.getFirstElement(element.getElementsByTagName("given"));
-		if (value != null) {
-			given = value.getTextContent();
-		}
+		given = (value != null) ? value.getTextContent() : null;
 
 		List<Element> elements = XCardUtils.toElementList(element.getElementsByTagName("additional"));
+		additional.clear();
 		for (Element e : elements) {
 			String text = e.getTextContent();
 			if (text.length() > 0) {
@@ -327,6 +324,7 @@ public class StructuredNameType extends VCardType {
 		}
 
 		elements = XCardUtils.toElementList(element.getElementsByTagName("prefix"));
+		prefixes.clear();
 		for (Element e : elements) {
 			String text = e.getTextContent();
 			if (text.length() > 0) {
@@ -335,6 +333,7 @@ public class StructuredNameType extends VCardType {
 		}
 
 		elements = XCardUtils.toElementList(element.getElementsByTagName("suffix"));
+		suffixes.clear();
 		for (Element e : elements) {
 			String text = e.getTextContent();
 			if (text.length() > 0) {

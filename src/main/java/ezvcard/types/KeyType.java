@@ -2,7 +2,10 @@ package ezvcard.types;
 
 import java.util.List;
 
+import org.w3c.dom.Element;
+
 import ezvcard.VCard;
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -10,6 +13,7 @@ import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -228,6 +232,21 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			warnings.add("vCard version " + version + " does not allow URLs to be used in the " + NAME + " type.");
 		}
 		return super.doMarshalValue(version, warnings, compatibilityMode);
+	}
+	
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		Element child = XCardUtils.getFirstElement(element.getElementsByTagName("uri"));
+		if (child != null) {
+			super.doUnmarshalValue(child.getTextContent(), version, warnings, compatibilityMode);
+		} else {
+			child = XCardUtils.getFirstElement(element.getElementsByTagName("text"));
+			if (child != null){
+				String mediaType = subTypes.getMediaType();
+				KeyTypeParameter contentType = (mediaType != null) ? buildMediaTypeObj(mediaType) : null;
+				setText(child.getTextContent(), contentType);
+			}
+		}
 	}
 
 	@Override

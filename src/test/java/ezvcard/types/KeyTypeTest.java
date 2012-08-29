@@ -48,6 +48,8 @@ import ezvcard.parameters.ValueParameter;
  * @author Michael Angstadt
  */
 public class KeyTypeTest {
+	//TODO test XML
+	
 	@Test
 	public void marshalTextValue() throws Exception {
 		VCardVersion version;

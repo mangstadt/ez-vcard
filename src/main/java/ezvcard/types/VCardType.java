@@ -9,6 +9,7 @@ import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -117,6 +118,44 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 */
 	protected abstract String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException;
 
+//	/**
+//	 * Creates an XML element from this type.
+//	 * @param parent the XML element for this type, which was created by the
+//	 * {@link XCardMarshaller}. For example, for the "FN" type, this will be the
+//	 * "&lt;fn&gt;" tag. This method is responsible for adding all the necessary
+//	 * child elements to this element (except for the &lt;parameters&gt;
+//	 * element, which is handled by {@link XCardMarshaller}).
+//	 * @param version the version vCard that is being generated
+//	 * @param warnings if you want to alert the user to any possible problems,
+//	 * add the warnings to this list
+//	 * @param compatibilityMode allows the programmer to customize the
+//	 * marshalling process depending on the expected consumer of the vCard
+//	 * @throws VCardException if there's a problem marshalling the value
+//	 */
+//	public final void marshalValueXml(TypeElement parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+//		doMarshalValueXml(parent, version, warnings, compatibilityMode);
+//	}
+//
+//	/**
+//	 * Creates an XML element from this type.
+//	 * @param parent the XML element for this type, which was created by the
+//	 * {@link XCardMarshaller}. For example, for the "FN" type, this will be the
+//	 * "&lt;fn&gt;" tag. This method is responsible for adding all the necessary
+//	 * child elements to this element (except for the &lt;parameters&gt;
+//	 * element, which is handled by {@link XCardMarshaller}).
+//	 * @param version the version vCard that is being generated
+//	 * @param warnings if you want to alert the user to any possible problems,
+//	 * add the warnings to this list
+//	 * @param compatibilityMode allows the programmer to customize the
+//	 * marshalling process depending on the expected consumer of the vCard
+//	 * @throws VCardException if there's a problem marshalling the value
+//	 */
+//	protected void doMarshalValueXml(TypeElement parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+//		String value = marshalValue(version, warnings, compatibilityMode);
+//		Element unknown = parent.addChild("unknown");
+//		unknown.setTextContent(value);
+//	}
+
 	/**
 	 * Gets the Sub Types to send over the wire.
 	 * @param version the version vCard that is being generated
@@ -202,6 +241,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws UnsupportedOperationException if the type class does not support
 	 * xCard parsing
 	 */
+	//TODO change method name
 	public final void unmarshalValue(VCardSubTypes subTypes, Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		this.subTypes = subTypes;
 		doUnmarshalValue(element, version, warnings, compatibilityMode);
@@ -224,6 +264,25 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 */
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		throw new UnsupportedOperationException("This type class does not support the parsing of xCards.");
+	}
+
+	/**
+	 * Returns the text value of the given child element or generates a warning
+	 * if the given child element does not exist.
+	 * @param element the parent element
+	 * @param childName the name of the child element
+	 * @param warnings the warning list
+	 * @return the text value of the child element or null if the child element
+	 * doesn't exist
+	 */
+	protected String parseChildElement(Element element, String childName, List<String> warnings) {
+		Element child = XCardUtils.getFirstElement(element.getElementsByTagName(childName));
+		if (child == null) {
+			warnings.add("The <" + element.getNodeName() + "> element could not be parsed because its value must be within a <" + childName + "> tag.");
+			return null;
+		} else {
+			return child.getTextContent();
+		}
 	}
 
 	/**

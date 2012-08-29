@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
+import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -96,5 +100,14 @@ public class TextListType extends VCardType {
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String split[] = VCardStringUtils.splitBy(value, separator, true, true);
 		values = new ArrayList<String>(Arrays.asList(split));
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		List<Element> children = XCardUtils.toElementList(element.getElementsByTagName("text"));
+		values.clear();
+		for (Element child : children) {
+			values.add(child.getTextContent());
+		}
 	}
 }

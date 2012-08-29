@@ -2,15 +2,25 @@ package ezvcard.types;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -46,7 +56,7 @@ import ezvcard.io.CompatibilityMode;
  */
 public class TextListTypeTest {
 	@Test
-	public void doMarshalValue() {
+	public void marshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -61,7 +71,7 @@ public class TextListTypeTest {
 		t.removeValue("One and a half"); //test "removeValue"
 		t.addValue("Thr;ee");
 		expected = "One,T\\,wo,Thr\\;ee";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//two items
@@ -69,25 +79,25 @@ public class TextListTypeTest {
 		t.addValue("One");
 		t.addValue("Two");
 		expected = "One,Two";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//one item
 		t = new TextListType("NAME", ',');
 		t.addValue("One");
 		expected = "One";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//zero items
 		t = new TextListType("NAME", ',');
 		expected = "";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
+	public void unmarshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -122,5 +132,64 @@ public class TextListTypeTest {
 		expected = Arrays.asList();
 		actual = t.getValues();
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void unmarshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		VCardSubTypes subTypes = new VCardSubTypes();
+		TextListType t;
+		List<String> expected, actual;
+		Element element;
+
+		//three values
+		element = toElement("<name><text>One</text><foo>bar</foo><text>Two</text><text>Three</text></name>");
+		t = new TextListType("NAME", ',');
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		expected = Arrays.asList("One", "Two", "Three");
+		actual = t.getValues();
+		assertEquals(expected, actual);
+
+		//two values
+		element = toElement("<name><text>One</text><foo>bar</foo><text>Two</text></name>");
+		t = new TextListType("NAME", ',');
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		expected = Arrays.asList("One", "Two");
+		actual = t.getValues();
+		assertEquals(expected, actual);
+
+		//one value
+		element = toElement("<name><text>One</text><foo>bar</foo></name>");
+		t = new TextListType("NAME", ',');
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		expected = Arrays.asList("One");
+		actual = t.getValues();
+		assertEquals(expected, actual);
+
+		//zero values
+		element = toElement("<name><foo>bar</foo></name>");
+		t = new TextListType("NAME", ',');
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		expected = Arrays.asList();
+		actual = t.getValues();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Parses an XML string into an {@link Element}.
+	 * @param xml the XML string
+	 * @return the element
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	private Element toElement(String xml) throws ParserConfigurationException, SAXException, IOException {
+		DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+		fact.setNamespaceAware(true);
+		DocumentBuilder db = fact.newDocumentBuilder();
+		Document doc = db.parse(new ByteArrayInputStream(xml.getBytes()));
+		return XCardUtils.getFirstElement(doc.getChildNodes());
 	}
 }
