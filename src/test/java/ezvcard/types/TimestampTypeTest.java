@@ -10,11 +10,9 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -71,16 +69,12 @@ public class TimestampTypeTest {
 		String expected = "19800605T131020Z";
 		String actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
 
 		//version 4.0
 		version = VCardVersion.V4_0;
 		expected = "19800605T131020Z";
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.TIMESTAMP, subTypes.getValue());
 	}
 
 	@Test

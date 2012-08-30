@@ -3,11 +3,8 @@ package ezvcard.types;
 import java.util.Date;
 import java.util.List;
 
-import ezvcard.VCard;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
 
@@ -77,17 +74,6 @@ public class TimestampType extends VCardType {
 	 */
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardSubTypes copy = new VCardSubTypes(subTypes);
-		if (version == VCardVersion.V4_0) {
-			copy.setValue(ValueParameter.TIMESTAMP);
-		} else {
-			copy.setValue(ValueParameter.DATE_TIME);
-		}
-		return copy;
 	}
 
 	@Override
