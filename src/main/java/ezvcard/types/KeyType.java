@@ -199,10 +199,8 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (text != null) {
-			VCardSubTypes copy = new VCardSubTypes(subTypes);
-
 			MediaTypeParameter contentType = getContentType();
 			if (contentType == null) {
 				contentType = new MediaTypeParameter(null, null, null);
@@ -217,23 +215,21 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
 			}
-			return copy;
 		}
-		return super.doMarshalSubTypes(version, warnings, compatibilityMode, vcard);
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		if (text != null) {
-			return VCardStringUtils.escapeText(text);
+			sb.append(VCardStringUtils.escapeText(text));
+		} else {
+			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
+				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");
+			}
+			super.doMarshalValue(sb, version, warnings, compatibilityMode);
 		}
-
-		if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
-			warnings.add("vCard version " + version + " does not allow URLs to be used in the " + NAME + " type.");
-		}
-		return super.doMarshalValue(version, warnings, compatibilityMode);
 	}
-	
+
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		Element child = XCardUtils.getFirstElement(element.getElementsByTagName("uri"));
@@ -241,7 +237,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			super.doUnmarshalValue(child.getTextContent(), version, warnings, compatibilityMode);
 		} else {
 			child = XCardUtils.getFirstElement(element.getElementsByTagName("text"));
-			if (child != null){
+			if (child != null) {
 				String mediaType = subTypes.getMediaType();
 				KeyTypeParameter contentType = (mediaType != null) ? buildMediaTypeObj(mediaType) : null;
 				setText(child.getTextContent(), contentType);

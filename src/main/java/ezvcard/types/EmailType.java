@@ -190,8 +190,8 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		return VCardStringUtils.escapeText(value);
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		sb.append(VCardStringUtils.escapeText(value));
 	}
 
 	@Override

@@ -195,23 +195,20 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardSubTypes copy = new VCardSubTypes(subTypes);
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (version == VCardVersion.V4_0) {
 			copy.setValue(ValueParameter.URI);
 		} else {
 			copy.setValue(null);
 		}
-		return copy;
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = VCardStringUtils.escapeText(this.value);
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		sb.append(VCardStringUtils.escapeText(this.value));
 		if (version == VCardVersion.V4_0) {
-			value = "tel:" + value;
+			sb.insert(0, "tel:");
 		}
-		return value;
 	}
 
 	@Override

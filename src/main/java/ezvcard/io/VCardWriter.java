@@ -284,12 +284,11 @@ public class VCardWriter implements Closeable {
 				List<String> warnings = new ArrayList<String>();
 				try {
 					value = type.marshalValue(targetVersion, warnings, compatibilityMode);
+				} catch (SkipMeException e){
+					this.warnings.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+					continue;
 				} finally {
 					this.warnings.addAll(warnings);
-				}
-				if (value == null) {
-					warnings.add(type.getTypeName() + " type has requested that it not be marshalled.");
-					continue;
 				}
 			}
 

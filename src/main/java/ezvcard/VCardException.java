@@ -43,4 +43,8 @@ public class VCardException extends Exception {
 	public VCardException(String msg) {
 		super(msg);
 	}
+
+	public VCardException() {
+		super();
+	}
 }

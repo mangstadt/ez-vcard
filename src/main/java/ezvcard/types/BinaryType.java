@@ -13,6 +13,7 @@ import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
@@ -266,9 +267,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardSubTypes copy = new VCardSubTypes(subTypes);
-
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		MediaTypeParameter contentType = this.contentType;
 		if (contentType == null) {
 			contentType = new MediaTypeParameter(null, null, null);
@@ -313,25 +312,23 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 				//don't null out TYPE, it could be set to "home" or "work"
 			}
 		}
-
-		return copy;
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		if (url != null) {
-			return url;
-		}
-		if (data != null) {
+			sb.append(url);
+		} else if (data != null) {
 			String base64 = new String(Base64.encodeBase64(data));
 			if (version == VCardVersion.V4_0) {
 				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
-				return "data:" + mediaType + ";base64," + base64;
+				sb.append("data:" + mediaType + ";base64," + base64);
 			} else {
-				return base64;
+				sb.append(base64);
 			}
+		} else {
+			throw new SkipMeException("Property has neither a URL nor binary data attached to it.");
 		}
-		return null;
 	}
 
 	@Override

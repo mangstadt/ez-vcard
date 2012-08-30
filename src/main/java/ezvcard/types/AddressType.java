@@ -397,9 +397,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
-		VCardSubTypes copy = new VCardSubTypes(subTypes);
-
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
 		//replace "TYPE=pref" with "PREF=1"
 		if (version == VCardVersion.V4_0) {
 			if (getTypes().contains(AddressTypeParameter.PREF)) {
@@ -428,14 +426,10 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		if (version != VCardVersion.V4_0) {
 			copy.removeAll("LABEL");
 		}
-
-		return copy;
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		StringBuilder sb = new StringBuilder();
-
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (poBox != null) {
 			sb.append(VCardStringUtils.escapeText(poBox));
 		}
@@ -469,8 +463,6 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		if (country != null) {
 			sb.append(VCardStringUtils.escapeText(country));
 		}
-
-		return sb.toString();
 	}
 
 	@Override

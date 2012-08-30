@@ -289,14 +289,12 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		StringBuilder sb = new StringBuilder();
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (protocol != null) {
 			sb.append(VCardStringUtils.escapeText(protocol));
 			sb.append(':');
 		}
 		sb.append(VCardStringUtils.escapeText(uri));
-		return sb.toString();
 	}
 
 	@Override

@@ -354,8 +354,8 @@ public class XCardReaderTest {
 		}
 
 		@Override
-		protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-			return age + "";
+		protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+			sb.append(age);
 		}
 
 		@Override

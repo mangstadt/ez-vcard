@@ -221,9 +221,7 @@ public class GenderType extends VCardType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		StringBuilder sb = new StringBuilder();
-
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		if (gender != null) {
 			sb.append(gender);
 		}
@@ -231,8 +229,6 @@ public class GenderType extends VCardType {
 			sb.append(';');
 			sb.append(VCardStringUtils.escapeText(text));
 		}
-
-		return sb.toString();
 	}
 
 	@Override

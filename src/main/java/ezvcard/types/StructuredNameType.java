@@ -232,9 +232,7 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		StringBuilder value = new StringBuilder();
-
+	protected void doMarshalValue(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (family != null) {
 			value.append(VCardStringUtils.escapeText(family));
 		}
@@ -267,8 +265,6 @@ public class StructuredNameType extends VCardType {
 			}
 			value.deleteCharAt(value.length() - 1);
 		}
-
-		return value.toString();
 	}
 
 	@Override

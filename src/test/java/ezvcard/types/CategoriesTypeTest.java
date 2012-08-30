@@ -46,7 +46,7 @@ import ezvcard.io.CompatibilityMode;
  */
 public class CategoriesTypeTest {
 	@Test
-	public void doMarshalValue() {
+	public void doMarshalValue() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode;
@@ -60,7 +60,7 @@ public class CategoriesTypeTest {
 		t.addValue("T,wo");
 		t.addValue("Thr;ee");
 		expected = "One\\,T\\,wo\\,Thr\\;ee";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		compatibilityMode = CompatibilityMode.RFC;
@@ -69,7 +69,7 @@ public class CategoriesTypeTest {
 		t.addValue("T,wo");
 		t.addValue("Thr;ee");
 		expected = "One,T\\,wo,Thr\\;ee";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 

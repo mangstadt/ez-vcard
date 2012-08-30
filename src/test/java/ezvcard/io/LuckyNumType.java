@@ -50,8 +50,8 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		return "" + luckyNum;
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		sb.append(luckyNum);
 	}
 
 	@Override
