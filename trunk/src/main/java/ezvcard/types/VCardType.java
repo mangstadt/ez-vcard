@@ -41,12 +41,12 @@ import ezvcard.util.XCardUtils;
  */
 
 /**
- * Represents a vCard key/value pair entry (called a "Type").
+ * Represents a vCard key/value pair entry (called a "type" or "property").
  * @author Michael Angstadt
  */
 public abstract class VCardType implements Comparable<VCardType> {
 	/**
-	 * The name of the Type.
+	 * The name of the type.
 	 */
 	protected final String typeName;
 
@@ -57,8 +57,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	protected String group;
 
 	/**
-	 * The list of name/value pairs that are associated with this Type (called
-	 * "Sub Types").
+	 * The list of attributes that are associated with this type (called
+	 * "sub types" or "parameters").
 	 */
 	protected VCardSubTypes subTypes = new VCardSubTypes();
 
@@ -67,12 +67,11 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 */
 	public VCardType(String typeName) {
 		this.typeName = typeName;
-
 	}
 
 	/**
-	 * Gets the name of this Type.
-	 * @return the Type name
+	 * Gets the name of this type.
+	 * @return the type name (e.g. "ADR")
 	 */
 	public String getTypeName() {
 		return typeName;
@@ -87,50 +86,62 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Converts this Type object to a string for sending over the wire. This
+	 * Converts this type object to a string for sending over the wire. This
 	 * method is responsible for escaping all the necessary characters (such as
-	 * commas and semi-colons). It is NOT responsible for folding.
+	 * commas, semi-colons, and ESPECIALLY newlines). It is NOT responsible for
+	 * folding.
 	 * @param version the version vCard that is being generated
-	 * @param warnings if you want to alert the user to any possible problems,
-	 * add the warnings to this list
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
-	 * @return the string for sending over the wire or null to NOT marshal the
-	 * type
-	 * @throws VCardException if there's a problem marshalling the value
+	 * @return the string for sending over the wire
+	 * @throws SkipMeException if this type should NOT be marshalled into the
+	 * vCard
+	 * @throws VCardException if there's a critical problem marshalling the
+	 * value
 	 */
 	public final String marshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		return doMarshalValue(version, warnings, compatibilityMode);
+		StringBuilder sb = new StringBuilder();
+		doMarshalValue(sb, version, warnings, compatibilityMode);
+		return sb.toString();
 	}
 
 	/**
-	 * Converts this Type object to a string for sending over the wire. This
+	 * Converts this type object to a string for sending over the wire. This
 	 * method is responsible for escaping all the necessary characters (such as
-	 * commas and semi-colons). It is NOT responsible for folding.
+	 * commas, semi-colons, and ESPECIALLY newlines). It is NOT responsible for
+	 * folding.
+	 * @param value the buffer to add the marshalled value to
 	 * @param version the version vCard that is being generated
-	 * @param warnings if you want to alert the user to any possible problems,
-	 * add the warnings to this list
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
-	 * @return the string for sending over the wire or null to NOT marshal the
-	 * type
-	 * @throws VCardException if there's a problem marshalling the value
+	 * @throws SkipMeException if this type should NOT be marshalled into the
+	 * vCard
+	 * @throws VCardException if there's a critical problem marshalling the
+	 * value
 	 */
-	protected abstract String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException;
+	protected abstract void doMarshalValue(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException;
 
 //	/**
 //	 * Creates an XML element from this type.
-//	 * @param parent the XML element for this type, which was created by the
-//	 * {@link XCardMarshaller}. For example, for the "FN" type, this will be the
-//	 * "&lt;fn&gt;" tag. This method is responsible for adding all the necessary
-//	 * child elements to this element (except for the &lt;parameters&gt;
-//	 * element, which is handled by {@link XCardMarshaller}).
+//	 * @param parent the XML element that the type's parameters and value will
+//	 * be inserted into. For example, this would be "&lt;fn&gt;" for the "FN"
+//	 * type.
 //	 * @param version the version vCard that is being generated
-//	 * @param warnings if you want to alert the user to any possible problems,
-//	 * add the warnings to this list
+//	 * @param warnings allows the programmer to alert the user to any
+//	 * note-worthy (but non-critical) issues that occurred during the
+//	 * marshalling process
 //	 * @param compatibilityMode allows the programmer to customize the
 //	 * marshalling process depending on the expected consumer of the vCard
-//	 * @throws VCardException if there's a problem marshalling the value
+//	 * @throws SkipMeException if this type should NOT be marshalled into the
+//	 * vCard
+//	 * @throws VCardException if there's a critical problem marshalling the
+//	 * value
 //	 */
 //	public final void marshalValueXml(TypeElement parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 //		doMarshalValueXml(parent, version, warnings, compatibilityMode);
@@ -138,17 +149,19 @@ public abstract class VCardType implements Comparable<VCardType> {
 //
 //	/**
 //	 * Creates an XML element from this type.
-//	 * @param parent the XML element for this type, which was created by the
-//	 * {@link XCardMarshaller}. For example, for the "FN" type, this will be the
-//	 * "&lt;fn&gt;" tag. This method is responsible for adding all the necessary
-//	 * child elements to this element (except for the &lt;parameters&gt;
-//	 * element, which is handled by {@link XCardMarshaller}).
+//	 * @param parent the XML element that the type's parameters and value will
+//	 * be inserted into. For example, this would be "&lt;fn&gt;" for the "FN"
+//	 * type.
 //	 * @param version the version vCard that is being generated
-//	 * @param warnings if you want to alert the user to any possible problems,
-//	 * add the warnings to this list
+//	 * @param warnings allows the programmer to alert the user to any
+//	 * note-worthy (but non-critical) issues that occurred during the
+//	 * marshalling process
 //	 * @param compatibilityMode allows the programmer to customize the
 //	 * marshalling process depending on the expected consumer of the vCard
-//	 * @throws VCardException if there's a problem marshalling the value
+//	 * @throws SkipMeException if this type should NOT be marshalled into the
+//	 * vCard
+//	 * @throws VCardException if there's a critical problem marshalling the
+//	 * value
 //	 */
 //	protected void doMarshalValueXml(TypeElement parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 //		String value = marshalValue(version, warnings, compatibilityMode);
@@ -159,50 +172,66 @@ public abstract class VCardType implements Comparable<VCardType> {
 	/**
 	 * Gets the Sub Types to send over the wire.
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any possible
-	 * problems
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
 	 * @param vcard the vCard that is being marshalled
-	 * @return the sub types for sending over the wire
-	 * @throws VCardException if there's a problem marshalling a sub type
+	 * @return the sub types that will be sent
+	 * @throws VCardException if there's a critical problem marshalling the sub
+	 * types
 	 */
 	public final VCardSubTypes marshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
-		return doMarshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes copy = new VCardSubTypes(subTypes);
+		doMarshalSubTypes(copy, version, warnings, compatibilityMode, vcard);
+		return copy;
 	}
 
 	/**
-	 * Gets the Sub Types to send over the wire. Child classes should override
-	 * this method if the sub types need to be modified in any way. Child
-	 * classes may also choose to return a <i>copy</i> of the object's
-	 * {@link VCardSubTypes} object if they wish to preserve the original data.
+	 * Gets the sub types that will be sent over the wire.
+	 * 
+	 * <p>
+	 * If this method is NOT overridden, then the type's sub types will be sent
+	 * over the wire as-is. In other words, whatever is in the
+	 * {@link VCardType#subTypes} field will be sent. Child classes can override
+	 * this method in order to modify the sub types before they are marshalled.
+	 * </p>
+	 * @param subTypes the sub types that will be marshalled into the vCard.
+	 * This object is a copy of the {@link VCardType#subTypes} field, so any
+	 * modifications done to this object will not effect the state of the field.
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any possible
-	 * problems
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
-	 * @param vcard the vCard that is being marshalled
-	 * @return the sub types for sending over the wire
-	 * @throws VCardException if there's a problem marshalling a sub type
+	 * @param vcard the {@link VCard} object that is being marshalled
+	 * @throws VCardException if there's a critical problem marshalling the sub
+	 * types
 	 */
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
-		return subTypes;
+	protected void doMarshalSubTypes(VCardSubTypes subTypes, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+		//do nothing
 	}
 
 	/**
-	 * Unmarshals the Type value from off the wire.
-	 * @param subTypes the Sub Types that were parsed
+	 * Unmarshals the type value from off the wire.
+	 * @param subTypes the sub types that were parsed
 	 * @param value the unfolded value from off the wire. If the wire value is
-	 * in the "quoted-printable" encoding, it will be decoded.
+	 * in "quoted-printable" encoding, it will be decoded.
 	 * @param version the version of the vCard that is being read or null if the
 	 * VERSION type has not been parsed yet (v3.0 and v4.0 require that the
-	 * VERSION type come right after the BEGIN type, but v2.1 allows it to be
-	 * anywhere)
-	 * @param warnings allows the programmer to alert the user to any possible
-	 * problems
+	 * VERSION type be at the top of the vCard, but v2.1 has no such
+	 * requirement)
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * unmarshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * unmarshalling process depending on where the vCard came from
-	 * @throws VCardException if there's a problem unmarshalling the value
+	 * @throws SkipMeException if this type should NOT be added to the
+	 * {@link VCard} object
+	 * @throws VCardException if there's a critical problem unmarshalling the
+	 * value
 	 */
 	public final void unmarshalValue(VCardSubTypes subTypes, String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		this.subTypes = subTypes;
@@ -210,57 +239,66 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Unmarshals the Type value from off the wire.
+	 * Unmarshals the type value from off the wire.
 	 * @param value the unfolded value from off the wire. If the wire value is
 	 * in the "quoted-printable" encoding, it will be decoded.
 	 * @param version the version of the vCard that is being read or null if the
 	 * VERSION type has not been parsed yet (v3.0 and v4.0 require that the
-	 * VERSION type come right after the BEGIN type, but v2.1 allows it to be
-	 * anywhere)
-	 * @param warnings allows the programmer to alert the user to any possible
-	 * problems
+	 * VERSION type be at the top of the vCard, but v2.1 has no such
+	 * requirement)
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * unmarshalling process
 	 * @param compatibilityMode allows you to customize the unmarshalling
 	 * process depending on where the vCard came from
-	 * @throws VCardException if there's a problem unmarshalling the value
+	 * @throws SkipMeException if this type should NOT be added to the
+	 * {@link VCard} object
+	 * @throws VCardException if there's a critical problem unmarshalling the
+	 * value
 	 */
 	protected abstract void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException;
 
 	/**
-	 * Unmarshals the Type from an xCard (XML document).
-	 * @param subTypes the Sub Types that were parsed
+	 * Unmarshals the type from an xCard (XML document).
+	 * @param subTypes the sub types that were parsed
 	 * @param element the XML element that contains the type data. For example,
-	 * this would be the "&lt;fn&gt;" element for the formatted name type. This
-	 * element does NOT include the "&lt;parameters&gt;" child element. The
-	 * "&lt;parameters&gt;" child element is removed after it parsed.
+	 * this would be the "&lt;fn&gt;" element for the "FN" type. This object
+	 * will NOT include the "&lt;parameters&gt;" child element (it is removed
+	 * after being unmarshalled into a {@link VCardSubTypes} object).
 	 * @param version the version of the xCard
-	 * @param warnings allows the programmer to alert the user to any possible
-	 * problems
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * unmarshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * unmarshalling process depending on where the vCard came from
-	 * @throws VCardException if there's a problem unmarshalling the type
+	 * @throws SkipMeException if this type should NOT be added to the
+	 * {@link VCard} object
 	 * @throws UnsupportedOperationException if the type class does not support
 	 * xCard parsing
+	 * @throws VCardException if there's a problem unmarshalling the type
 	 */
-	//TODO change method name
 	public final void unmarshalValue(VCardSubTypes subTypes, Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		this.subTypes = subTypes;
 		doUnmarshalValue(element, version, warnings, compatibilityMode);
 	}
 
 	/**
-	 * Unmarshals the Type from an xCard (XML document).
+	 * Unmarshals the type from an xCard (XML document).
 	 * @param element the XML element that contains the type data. For example,
-	 * this would be the "&lt;fn&gt;" element for the formatted name type. This
-	 * element does NOT include the "&lt;parameters&gt;" child element. The
-	 * "&lt;parameters&gt;" child element is removed after it parsed.
+	 * this would be the "&lt;fn&gt;" element for the "FN" type. This object
+	 * will NOT include the "&lt;parameters&gt;" child element (it is removed
+	 * after being unmarshalled into a {@link VCardSubTypes} object).
 	 * @param version the version of the xCard
-	 * @param warnings allows the programmer to alert the user to any possible
-	 * problems
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * unmarshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * unmarshalling process depending on where the vCard came from
-	 * @throws VCardException if there's a problem unmarshalling the type
+	 * @throws SkipMeException if this type should NOT be added to the
+	 * {@link VCard} object
 	 * @throws UnsupportedOperationException if the type class does not support
 	 * xCard parsing
+	 * @throws VCardException if there's a problem unmarshalling the type
 	 */
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		throw new UnsupportedOperationException("This type class does not support the parsing of xCards.");
@@ -286,12 +324,19 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Gets all Sub Types associated with this Type. This method can be used to
-	 * retrieve any extended, standard, or non-standard Sub Type. It should not
-	 * be used for standard Sub Types--the Type's class <i>should</i> contain
-	 * getter methods for the standard/expected Sub Types (e.g.
-	 * {@link NoteType#getLanguage()} retrieves a note's "LANGUAGE" Sub Type).
-	 * @return all of the Type's Sub Types
+	 * Gets all sub types (a.k.a "parameters") associated with this type. This
+	 * method can be used to retrieve any extended, standard, or non-standard
+	 * sub type.
+	 * 
+	 * <p>
+	 * Ideally, this method should NOT be used to retrieve the values of
+	 * standard sub types because the type class should contain getter/setter
+	 * methods for each standard sub type. For example, instead of calling
+	 * <code>NoteType.getSubTypes().getLanguage()</code> to retrieve the
+	 * "LANGUAGE" sub type of a NOTE, the {@link NoteType#getLanguage()} method
+	 * should be called instead.
+	 * </p>
+	 * @return the type's sub types
 	 */
 	public VCardSubTypes getSubTypes() {
 		return subTypes;
@@ -314,7 +359,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Sorts a list of types by PREF parameter (if present).
+	 * Sorts by PREF parameter ascending. Types that do not have a PREF
+	 * parameter are pushed to the end of the list.
 	 */
 	public int compareTo(VCardType that) {
 		Integer pref0 = this.getSubTypes().getPref();

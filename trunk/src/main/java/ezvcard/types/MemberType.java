@@ -261,8 +261,8 @@ public class MemberType extends VCardType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		return VCardStringUtils.escapeText(uri);
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		sb.append(VCardStringUtils.escapeText(uri));
 	}
 
 	@Override

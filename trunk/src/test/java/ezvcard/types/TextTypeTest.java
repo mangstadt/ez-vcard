@@ -45,7 +45,7 @@ import ezvcard.io.CompatibilityMode;
  */
 public class TextTypeTest {
 	@Test
-	public void doMarshalValue() {
+	public void doMarshalValue() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -54,7 +54,7 @@ public class TextTypeTest {
 
 		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 		expected = "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 

@@ -251,20 +251,15 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
 		if (version == VCardVersion.V4_0) {
-			VCardSubTypes copy = new VCardSubTypes(subTypes);
 			copy.setValue(ValueParameter.URI);
-			return copy;
 		}
-
-		return super.doMarshalSubTypes(version, warnings, compatibilityMode, vcard);
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		NumberFormat nf = new DecimalFormat("0.####");
-		StringBuilder sb = new StringBuilder();
 
 		if (version == VCardVersion.V4_0) {
 			sb.append("geo:");
@@ -276,8 +271,6 @@ public class GeoType extends VCardType {
 			sb.append(';');
 			sb.append(nf.format(longitude));
 		}
-
-		return sb.toString();
 	}
 
 	@Override

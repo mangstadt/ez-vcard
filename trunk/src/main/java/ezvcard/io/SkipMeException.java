@@ -1,13 +1,7 @@
-package ezvcard.types;
+package ezvcard.io;
 
-import java.util.List;
-
-import org.w3c.dom.Element;
-
+import ezvcard.VCard;
 import ezvcard.VCardException;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -39,61 +33,21 @@ import ezvcard.util.XCardUtils;
  */
 
 /**
- * Holds the type value as-is. No escaping or unescaping is done on the value.
+ * Thrown during the marshalling/unmarshalling of a vCard property to show that
+ * the property should NOT be included in the marshalled vCard or the
+ * unmarshalled {@link VCard} object.
  * @author Michael Angstadt
  */
-public class RawType extends VCardType {
-	private String value;
-
-	/**
-	 * @param name the type name (e.g. "NOTE")
-	 */
-	public RawType(String name) {
-		this(name, null);
+@SuppressWarnings("serial")
+public class SkipMeException extends VCardException {
+	public SkipMeException() {
+		super();
 	}
 
 	/**
-	 * @param name the type name (e.g. "NOTE")
-	 * @param value the type value
+	 * @param msg the reason why this property cannot be marshalled/unmarshalled
 	 */
-	public RawType(String name, String value) {
-		super(name);
-		this.value = value;
-	}
-
-	/**
-	 * Gets the raw value of the property.
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * Sets the raw value of the property.
-	 * @param value the value
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		sb.append(value);
-	}
-
-	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		this.value = value;
-	}
-
-	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		Element value = XCardUtils.getFirstElement(element.getChildNodes());
-		if (value == null) {
-			this.value = element.getTextContent();
-		} else {
-			this.value = value.getTextContent();
-		}
+	public SkipMeException(String msg) {
+		super(msg);
 	}
 }

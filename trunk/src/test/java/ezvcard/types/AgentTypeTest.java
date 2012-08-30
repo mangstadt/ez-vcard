@@ -87,7 +87,7 @@ public class AgentTypeTest {
 		//@formatter:on
 
 		expected = sb.toString();
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 

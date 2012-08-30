@@ -8,6 +8,7 @@ import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.RelatedTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardStringUtils;
@@ -246,26 +247,23 @@ public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParame
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardSubTypes copy = new VCardSubTypes(subTypes);
-
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (uri != null) {
 			copy.setValue(ValueParameter.URI);
 		} else if (text != null) {
 			copy.setValue(ValueParameter.TEXT);
 		}
-
-		return copy;
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		if (uri != null) {
-			return VCardStringUtils.escapeText(uri);
+			sb.append(VCardStringUtils.escapeText(uri));
 		} else if (text != null) {
-			return VCardStringUtils.escapeText(text);
+			sb.append(VCardStringUtils.escapeText(text));
+		} else {
+			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
-		return null;
 	}
 
 	@Override

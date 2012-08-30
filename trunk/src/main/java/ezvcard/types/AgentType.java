@@ -137,26 +137,22 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
-		VCardSubTypes copy = new VCardSubTypes(subTypes);
-
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
 		if (url != null) {
 			ValueParameter vp = (version == VCardVersion.V2_1) ? ValueParameter.URL : ValueParameter.URI;
 			copy.setValue(vp);
 		} else {
 			copy.setValue(null);
 		}
-
-		return copy;
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		//VCardWriter handles 2.1 AGENT types that have an embedded vCard.
 		//this method will not be called for these instances
 
 		if (url != null) {
-			return url;
+			sb.append(url);
 		} else {
 			StringWriter sw = new StringWriter();
 			VCardWriter writer = new VCardWriter(sw, version, null, "\n");
@@ -173,8 +169,7 @@ public class AgentType extends VCardType {
 				warnings.add("AGENT marshal warning: " + w);
 			}
 
-			str = VCardStringUtils.escapeText(str);
-			return str;
+			sb.append(VCardStringUtils.escapeText(str));
 		}
 	}
 

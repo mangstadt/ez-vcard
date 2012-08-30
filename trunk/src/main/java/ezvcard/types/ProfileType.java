@@ -59,12 +59,12 @@ public class ProfileType extends TextType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if ("VCARD".equalsIgnoreCase(value)) {
 			//see RFC 2426 p.5
-			warnings.add("The value of the " + ProfileType.NAME + " type should be \"VCARD\", but it is \"" + value + "\"");
+			warnings.add("The value of the " + NAME + " property should be \"VCARD\", but it is \"" + value + "\"");
 		}
-		return super.doMarshalValue(version, warnings, compatibilityMode);
+		super.doMarshalValue(sb, version, warnings, compatibilityMode);
 	}
 
 	@Override

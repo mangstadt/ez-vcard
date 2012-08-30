@@ -45,7 +45,7 @@ import ezvcard.io.CompatibilityMode;
  */
 public class StructuredNameTypeTest {
 	@Test
-	public void doMarshalValue() {
+	public void doMarshalValue() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -60,7 +60,7 @@ public class StructuredNameTypeTest {
 		t.addPrefix("Mr.");
 		t.addSuffix("III");
 		expected = "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//some empty values
@@ -71,13 +71,13 @@ public class StructuredNameTypeTest {
 		t.addAdditional("John");
 		t.addSuffix("III");
 		expected = ";Jonathan;Joh\\;nny\\,,John;;III";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//all empty values
 		t = new StructuredNameType();
 		expected = ";;;;";
-		actual = t.doMarshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 

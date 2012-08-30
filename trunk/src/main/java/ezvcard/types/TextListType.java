@@ -83,8 +83,7 @@ public class TextListType extends VCardType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		StringBuilder sb = new StringBuilder();
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (!values.isEmpty()) {
 			for (String value : values) {
 				value = VCardStringUtils.escapeText(value);
@@ -93,7 +92,6 @@ public class TextListType extends VCardType {
 			}
 			sb.deleteCharAt(sb.length() - 1);
 		}
-		return sb.toString();
 	}
 
 	@Override

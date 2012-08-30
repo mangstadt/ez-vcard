@@ -3,6 +3,7 @@ package ezvcard.types;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
 
@@ -52,7 +54,7 @@ import ezvcard.parameters.ValueParameter;
  */
 public class DateOrTimeTypeTest {
 	//TODO test XML
-	
+
 	@Test
 	public void marshalDate() throws Exception {
 		List<String> warnings = new ArrayList<String>();
@@ -148,17 +150,27 @@ public class DateOrTimeTypeTest {
 
 		//v2.1
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = t.marshalValue(version, warnings, compatibilityMode);
-		assertNull(actual); //not supported
+		try {
+			t.marshalValue(version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+			//reduced accuracy dates are not supported in 2.1
+		}
 
 		//v3.0
 		version = VCardVersion.V3_0;
-		actual = t.marshalValue(version, warnings, compatibilityMode);
-		assertNull(actual); //not supported
+		try {
+			t.marshalValue(version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+			//reduced accuracy dates are not supported in 3.0
+		}
 
 		//v4.0
 		version = VCardVersion.V4_0;
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		String actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(actual, expected);
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
@@ -177,17 +189,27 @@ public class DateOrTimeTypeTest {
 
 		//v2.1
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = t.marshalValue(version, warnings, compatibilityMode);
-		assertNull(actual); //not supported
+		try {
+			t.marshalValue(version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e){
+			//should be thrown
+			//text values are not supported in 2.1
+		}
 
 		//v3.0
 		version = VCardVersion.V3_0;
-		actual = t.marshalValue(version, warnings, compatibilityMode);
-		assertNull(actual); //not supported
+		try {
+			t.marshalValue(version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e){
+			//should be thrown
+			//text values are not supported in 3.0
+		}
 
 		//v4.0
 		version = VCardVersion.V4_0;
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		String actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(actual, expected);
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());

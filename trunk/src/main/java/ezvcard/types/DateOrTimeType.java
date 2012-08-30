@@ -10,6 +10,7 @@ import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.ISOFormat;
@@ -191,8 +192,7 @@ public class DateOrTimeType extends VCardType {
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardSubTypes copy = new VCardSubTypes(subTypes);
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (version == VCardVersion.V4_0) {
 			if (date != null || reducedAccuracyDate != null) {
 				copy.setValue(ValueParameter.DATE_AND_OR_TIME);
@@ -209,34 +209,31 @@ public class DateOrTimeType extends VCardType {
 				copy.setValue(ValueParameter.DATE);
 			}
 		}
-		return copy;
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
 			if (text != null) {
-				warnings.add("Text values for the " + typeName + " type are not allowed in vCard version " + version + ".  This type will not be added to the vCard.");
-				return null;
+				throw new SkipMeException("Text values are not allowed in vCard version " + version + ".");
 			} else if (reducedAccuracyDate != null) {
-				warnings.add("Reduced accuracy dates for the " + typeName + " type are not allowed in vCard version " + version + ".  This type will not be added to the vCard.");
-				return null;
+				throw new SkipMeException("Reduced accuracy dates are not allowed in vCard version " + version + ".");
 			} else if (date != null) {
 				ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
-				return VCardDateFormatter.format(date, format);
+				sb.append(VCardDateFormatter.format(date, format));
 			} else {
-				return null;
+				throw new SkipMeException("Property has no date value associated with it.");
 			}
 		} else {
 			if (text != null) {
-				return VCardStringUtils.escapeText(text);
+				sb.append(VCardStringUtils.escapeText(text));
 			} else if (reducedAccuracyDate != null) {
-				return reducedAccuracyDate;
+				sb.append(reducedAccuracyDate);
 			} else if (date != null) {
 				ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
-				return VCardDateFormatter.format(date, format);
+				sb.append(VCardDateFormatter.format(date, format));
 			} else {
-				return null;
+				throw new SkipMeException("Property has no date, reduced accuracy date, or text value associated with it.");
 			}
 		}
 	}

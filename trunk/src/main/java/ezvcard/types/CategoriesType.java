@@ -175,8 +175,7 @@ public class CategoriesType extends TextListType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		StringBuilder sb = new StringBuilder();
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (!values.isEmpty()) {
 			for (String value : values) {
 				sb.append(VCardStringUtils.escapeText(value));
@@ -191,7 +190,6 @@ public class CategoriesType extends TextListType {
 			}
 			sb.deleteCharAt(sb.length() - 1);
 		}
-		return sb.toString();
 	}
 
 	@Override

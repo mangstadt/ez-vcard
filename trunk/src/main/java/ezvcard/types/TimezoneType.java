@@ -312,22 +312,16 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected VCardSubTypes doMarshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardSubTypes copy = new VCardSubTypes(subTypes);
-
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (text != null) {
 			copy.setValue(ValueParameter.TEXT);
 		} else if (hourOffset != null && minuteOffset != null && version == VCardVersion.V4_0) {
 			copy.setValue(ValueParameter.UTC_OFFSET);
 		}
-
-		return copy;
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		StringBuilder sb = new StringBuilder();
-
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && hourOffset != null && minuteOffset != null) {
 				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
@@ -337,8 +331,6 @@ public class TimezoneType extends VCardType {
 		} else if (hourOffset != null && minuteOffset != null) {
 			sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
 		}
-
-		return sb.toString();
 	}
 
 	@Override

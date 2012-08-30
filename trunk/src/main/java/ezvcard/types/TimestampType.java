@@ -3,8 +3,10 @@ package ezvcard.types;
 import java.util.Date;
 import java.util.List;
 
+import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
 
@@ -77,9 +79,12 @@ public class TimestampType extends VCardType {
 	}
 
 	@Override
-	protected String doMarshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//"UTC_TIME_BASIC" works with all vCard versions 
-		return (timestamp == null) ? null : VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_BASIC);
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		//"UTC_TIME_BASIC" works with all vCard versions
+		if (timestamp == null){
+			throw new SkipMeException("Property has no timestamp value associated with it.");
+		}
+		sb.append(VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_BASIC));
 	}
 
 	@Override
