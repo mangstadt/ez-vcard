@@ -9,8 +9,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -171,7 +169,13 @@ public class VCard {
 			vcr = new VCardReader(new FileReader(file));
 			return vcr.readNext();
 		} finally {
-			IOUtils.closeQuietly(vcr);
+			if (vcr != null) {
+				try {
+					vcr.close();
+				} catch (IOException e) {
+					//ignore
+				}
+			}
 		}
 	}
 
@@ -204,7 +208,13 @@ public class VCard {
 			vcw = new VCardWriter(new FileWriter(file), (version == null) ? VCardVersion.V3_0 : version);
 			vcw.write(this);
 		} finally {
-			IOUtils.closeQuietly(vcw);
+			if (vcw != null) {
+				try {
+					vcw.close();
+				} catch (IOException e) {
+					//ignore
+				}
+			}
 		}
 	}
 

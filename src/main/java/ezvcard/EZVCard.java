@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -61,7 +59,13 @@ public class EZVCard {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
-			IOUtils.closeQuietly(in);
+			if (in != null){
+				try {
+					in.close();
+				} catch (IOException e){
+					//ignore
+				}
+			}
 		}
 	}
 }
