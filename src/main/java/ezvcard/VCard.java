@@ -8,9 +8,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import java.util.Map;
 
 import ezvcard.io.VCardReader;
 import ezvcard.io.VCardWriter;
@@ -58,6 +56,7 @@ import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
+import ezvcard.util.ListMultimap;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -136,7 +135,7 @@ public class VCard {
 	private List<FbUrlType> fbUrls = new ArrayList<FbUrlType>();
 	private List<ClientPidMapType> clientPidMaps = new ArrayList<ClientPidMapType>();
 	private List<XmlType> xmls = new ArrayList<XmlType>();
-	private ListMultimap<String, VCardType> extendedTypes = ArrayListMultimap.create();
+	private ListMultimap<String, VCardType> extendedTypes = new ListMultimap<String, VCardType>();
 
 	/**
 	 * Parses a vCard string. Use the {@link VCardReader} class for more control
@@ -1754,7 +1753,7 @@ public class VCard {
 	 * @return all of the extended types. The key is the type name and the value
 	 * is the list of type objects.
 	 */
-	public ListMultimap<String, VCardType> getExtendedTypes() {
-		return extendedTypes;
+	public Map<String, List<VCardType>> getExtendedTypes() {
+		return extendedTypes.getMap();
 	}
 }

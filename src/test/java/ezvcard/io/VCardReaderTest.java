@@ -53,6 +53,7 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
+import ezvcard.types.VCardType;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -491,7 +492,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(7, vcard.getExtendedTypes().values().size());
+			assertEquals(7, countExtTypes(vcard));
 
 			Iterator<RawType> it = vcard.getExtendedType("X-COUCHDB-APPLICATION-ANNOTATIONS").iterator();
 			RawType t = it.next();
@@ -668,7 +669,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(6, vcard.getExtendedTypes().values().size());
+			assertEquals(6, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedType("X-PHONETIC-FIRST-NAME").get(0);
 			assertEquals("X-PHONETIC-FIRST-NAME", f.getTypeName());
@@ -952,7 +953,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(12, vcard.getExtendedTypes().values().size());
+			assertEquals(12, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedType("X-PHONETIC-FIRST-NAME").get(0);
 			assertEquals("X-PHONETIC-FIRST-NAME", f.getTypeName());
@@ -1206,7 +1207,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(4, vcard.getExtendedTypes().values().size());
+			assertEquals(4, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedType("X-ABLABEL").get(0);
 			assertEquals("item2", f.getGroup());
@@ -1482,7 +1483,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(4, vcard.getExtendedTypes().values().size());
+			assertEquals(4, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedType("X-ABLABEL").get(0);
 			assertEquals("item2", f.getGroup());
@@ -1696,7 +1697,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(6, vcard.getExtendedTypes().values().size());
+			assertEquals(6, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedType("X-MS-OL-DEFAULT-POSTAL-ADDRESS").get(0);
 			assertEquals("X-MS-OL-DEFAULT-POSTAL-ADDRESS", f.getTypeName());
@@ -1947,7 +1948,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(8, vcard.getExtendedTypes().values().size());
+			assertEquals(8, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedType("X-MS-TEL").get(0);
 			assertEquals("X-MS-TEL", f.getTypeName());
@@ -2186,7 +2187,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(9, vcard.getExtendedTypes().values().size());
+			assertEquals(9, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedType("X-PHONETIC-FIRST-NAME").get(0);
 			assertEquals("X-PHONETIC-FIRST-NAME", f.getTypeName());
@@ -2450,7 +2451,7 @@ public class VCardReaderTest {
 
 		//extended types
 		{
-			assertEquals(2, vcard.getExtendedTypes().values().size());
+			assertEquals(2, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedType("X-SPOUSE").get(0);
 			assertEquals("X-SPOUSE", f.getTypeName());
@@ -2460,5 +2461,18 @@ public class VCardReaderTest {
 			assertEquals("X-ANNIVERSARY", f.getTypeName());
 			assertEquals("1990-04-30", f.getValue());
 		}
+	}
+
+	/**
+	 * Counts the number of extended types in a vCard.
+	 * @param vcard the vCard
+	 * @return the number of extended types
+	 */
+	private int countExtTypes(VCard vcard) {
+		int count = 0;
+		for (List<VCardType> list : vcard.getExtendedTypes().values()) {
+			count += list.size();
+		}
+		return count;
 	}
 }

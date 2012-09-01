@@ -7,13 +7,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.SetMultimap;
-import com.google.common.collect.TreeMultimap;
-
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.TreeMultimap;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -49,10 +47,10 @@ import ezvcard.parameters.ValueParameter;
  * @author Michael Angstadt
  */
 public class VCardSubTypes {
-	private final SetMultimap<String, String> subTypes;
+	private final TreeMultimap<String, String> subTypes;
 
 	public VCardSubTypes() {
-		subTypes = TreeMultimap.create();
+		subTypes = new TreeMultimap<String, String>();
 	}
 
 	/**
@@ -60,7 +58,7 @@ public class VCardSubTypes {
 	 * @param orig the object to copy
 	 */
 	public VCardSubTypes(VCardSubTypes orig) {
-		subTypes = TreeMultimap.create(orig.subTypes);
+		subTypes = new TreeMultimap<String, String>(orig.subTypes);
 	}
 
 	/**
@@ -93,7 +91,7 @@ public class VCardSubTypes {
 	 * @return the values of the Sub Type that were removed
 	 */
 	public Set<String> removeAll(String name) {
-		return subTypes.removeAll(name.toUpperCase());
+		return subTypes.remove(name.toUpperCase());
 	}
 
 	/**
@@ -137,7 +135,7 @@ public class VCardSubTypes {
 	 * Gets the object used to store the Sub Types.
 	 * @return the object used to store the Sub Types
 	 */
-	public SetMultimap<String, String> getMultimap() {
+	public TreeMultimap<String, String> getMultimap() {
 		return subTypes;
 	}
 
