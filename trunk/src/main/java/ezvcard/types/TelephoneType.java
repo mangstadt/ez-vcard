@@ -213,21 +213,23 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (value.matches("(?i)tel:.*")) {
-			//remove "tel:"
-			value = (value.length() > 4) ? value.substring(4) : "";
-		}
-		this.value = VCardStringUtils.unescape(value.trim());
+		value = VCardStringUtils.unescape(value.trim());
+		parseValue(value);
 	}
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		Element ele = XCardUtils.getFirstElement(element.getChildNodes());
-		value = ele.getTextContent();
+		String value = XCardUtils.getFirstChildText(element, "text", "uri");
+		if (value != null) {
+			parseValue(value);
+		}
+	}
+	
+	private void parseValue(String value){
 		if (value.matches("(?i)tel:.*")) {
 			//remove "tel:"
 			value = (value.length() > 4) ? value.substring(4) : "";
 		}
+		setValue(value);
 	}
-
 }

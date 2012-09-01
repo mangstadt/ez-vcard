@@ -232,15 +232,15 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		Element child = XCardUtils.getFirstElement(element.getElementsByTagName("uri"));
-		if (child != null) {
-			super.doUnmarshalValue(child.getTextContent(), version, warnings, compatibilityMode);
+		String value = XCardUtils.getFirstChildText(element, "uri");
+		if (value != null) {
+			super.doUnmarshalValue(value, version, warnings, compatibilityMode);
 		} else {
-			child = XCardUtils.getFirstElement(element.getElementsByTagName("text"));
-			if (child != null) {
+			value = XCardUtils.getFirstChildText(element, "text");
+			if (value != null) {
 				String mediaType = subTypes.getMediaType();
 				KeyTypeParameter contentType = (mediaType != null) ? buildMediaTypeObj(mediaType) : null;
-				setText(child.getTextContent(), contentType);
+				setText(value, contentType);
 			}
 		}
 	}

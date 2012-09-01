@@ -9,6 +9,7 @@ import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -158,6 +159,6 @@ public class SourceType extends TextType {
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		setValue(parseChildElement(element, "uri", warnings));
+		setValue(XCardUtils.getFirstChildText(element, "uri"));
 	}
 }

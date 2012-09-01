@@ -3,6 +3,8 @@ package ezvcard.types;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Element;
+
 import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
@@ -12,6 +14,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.RelatedTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -276,6 +279,18 @@ public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParame
 		} else {
 			warnings.add("No valid VALUE parameter specified for " + NAME + " type.  Assuming it's text.");
 			setText(value);
+		}
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = XCardUtils.getFirstChildText(element, "uri");
+		if (value != null) {
+			setUri(value);
+			setText(null);
+		} else {
+			setUri(null);
+			setText(XCardUtils.getFirstChildText(element, "text"));
 		}
 	}
 }

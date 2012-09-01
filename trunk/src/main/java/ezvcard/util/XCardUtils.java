@@ -84,4 +84,25 @@ public class XCardUtils {
 		}
 		return null;
 	}
+
+	/**
+	 * Given a list of child element names, this method returns the text content
+	 * of the first child element it can find.
+	 * @param parent the parent element
+	 * @param childNames the names of the child elements to search for
+	 * @return the text content of the first child element it finds or null if
+	 * none were found
+	 */
+	public static String getFirstChildText(Element parent, String... childNames) {
+		List<Element> children = toElementList(parent.getChildNodes());
+		for (Element child : children) {
+			String curName = child.getNodeName();
+			for (String childName : childNames) {
+				if (childName.equals(curName)) {
+					return child.getTextContent();
+				}
+			}
+		}
+		return null;
+	}
 }

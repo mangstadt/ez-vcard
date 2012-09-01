@@ -17,6 +17,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -385,7 +386,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		String value = parseChildElement(element, "uri", warnings);
+		String value = XCardUtils.getFirstChildText(element, "uri");
 		if (value != null) {
 			doUnmarshalValue(value, version, warnings, compatibilityMode);
 		}

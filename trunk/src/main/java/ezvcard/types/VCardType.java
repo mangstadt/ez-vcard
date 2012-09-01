@@ -9,7 +9,7 @@ import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
+import ezvcard.io.SkipMeException;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -302,25 +302,6 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 */
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		throw new UnsupportedOperationException("This type class does not support the parsing of xCards.");
-	}
-
-	/**
-	 * Returns the text value of the given child element or generates a warning
-	 * if the given child element does not exist.
-	 * @param element the parent element
-	 * @param childName the name of the child element
-	 * @param warnings the warning list
-	 * @return the text value of the child element or null if the child element
-	 * doesn't exist
-	 */
-	protected String parseChildElement(Element element, String childName, List<String> warnings) {
-		Element child = XCardUtils.getFirstElement(element.getElementsByTagName(childName));
-		if (child == null) {
-			warnings.add("The <" + element.getNodeName() + "> element could not be parsed because its value must be within a <" + childName + "> tag.");
-			return null;
-		} else {
-			return child.getTextContent();
-		}
 	}
 
 	/**

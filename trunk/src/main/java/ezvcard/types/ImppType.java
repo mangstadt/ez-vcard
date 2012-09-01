@@ -3,11 +3,15 @@ package ezvcard.types;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Element;
+
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ImppTypeParameter;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -300,6 +304,18 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
+		parseValue(value, warnings);
+	}
+	
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = XCardUtils.getFirstChildText(element, "uri");
+		if (value != null){
+			parseValue(value, warnings);
+		}
+	}
+	
+	private void parseValue(String value, List<String> warnings){
 		String split[] = value.split(":", 2);
 		if (split.length < 2) {
 			warnings.add(NAME + " type is not in the correct format.  Assuming that the entire value is a URI.");
