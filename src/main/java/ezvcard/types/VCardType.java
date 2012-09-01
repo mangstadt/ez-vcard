@@ -10,6 +10,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -127,47 +128,46 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 */
 	protected abstract void doMarshalValue(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException;
 
-//	/**
-//	 * Creates an XML element from this type.
-//	 * @param parent the XML element that the type's parameters and value will
-//	 * be inserted into. For example, this would be "&lt;fn&gt;" for the "FN"
-//	 * type.
-//	 * @param version the version vCard that is being generated
-//	 * @param warnings allows the programmer to alert the user to any
-//	 * note-worthy (but non-critical) issues that occurred during the
-//	 * marshalling process
-//	 * @param compatibilityMode allows the programmer to customize the
-//	 * marshalling process depending on the expected consumer of the vCard
-//	 * @throws SkipMeException if this type should NOT be marshalled into the
-//	 * vCard
-//	 * @throws VCardException if there's a critical problem marshalling the
-//	 * value
-//	 */
-//	public final void marshalValueXml(TypeElement parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-//		doMarshalValueXml(parent, version, warnings, compatibilityMode);
-//	}
-//
-//	/**
-//	 * Creates an XML element from this type.
-//	 * @param parent the XML element that the type's parameters and value will
-//	 * be inserted into. For example, this would be "&lt;fn&gt;" for the "FN"
-//	 * type.
-//	 * @param version the version vCard that is being generated
-//	 * @param warnings allows the programmer to alert the user to any
-//	 * note-worthy (but non-critical) issues that occurred during the
-//	 * marshalling process
-//	 * @param compatibilityMode allows the programmer to customize the
-//	 * marshalling process depending on the expected consumer of the vCard
-//	 * @throws SkipMeException if this type should NOT be marshalled into the
-//	 * vCard
-//	 * @throws VCardException if there's a critical problem marshalling the
-//	 * value
-//	 */
-//	protected void doMarshalValueXml(TypeElement parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-//		String value = marshalValue(version, warnings, compatibilityMode);
-//		Element unknown = parent.addChild("unknown");
-//		unknown.setTextContent(value);
-//	}
+	/**
+	 * Marshals this type for inclusion in an xCard (XML document).
+	 * @param parent the XML element that the type's value will be inserted
+	 * into. For example, this would be the "&lt;fn&gt;" element for the "FN"
+	 * type.
+	 * @param version the version vCard that is being generated
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
+	 * @param compatibilityMode allows the programmer to customize the
+	 * marshalling process depending on the expected consumer of the vCard
+	 * @throws SkipMeException if this type should NOT be marshalled into the
+	 * vCard
+	 * @throws VCardException if there's a critical problem marshalling the
+	 * value
+	 */
+	public final void marshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		doMarshalValue(parent, version, warnings, compatibilityMode);
+	}
+
+	/**
+	 * Marshals this type for inclusion in an xCard (XML document).
+	 * @param parent the XML element that the type's value will be inserted
+	 * into. For example, this would be the "&lt;fn&gt;" element for the "FN"
+	 * type. All child classes SHOULD override this, but are not required to.
+	 * @param version the version vCard that is being generated
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
+	 * @param compatibilityMode allows the programmer to customize the
+	 * marshalling process depending on the expected consumer of the vCard
+	 * @throws SkipMeException if this type should NOT be marshalled into the
+	 * vCard
+	 * @throws VCardException if there's a critical problem marshalling the
+	 * value
+	 */
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = marshalValue(version, warnings, compatibilityMode);
+		XCardUtils.appendChild(parent, "unknown", value, version);
+	}
 
 	/**
 	 * Gets the Sub Types to send over the wire.

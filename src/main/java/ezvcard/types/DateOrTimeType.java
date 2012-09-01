@@ -268,10 +268,25 @@ public class DateOrTimeType extends VCardType {
 	}
 
 	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (text != null) {
+			XCardUtils.appendChild(parent, "text", text, version);
+		} else if (reducedAccuracyDate != null) {
+			XCardUtils.appendChild(parent, "date-and-or-time", reducedAccuracyDate, version);
+		} else if (date != null) {
+			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
+			String value = VCardDateFormatter.format(date, format);
+			XCardUtils.appendChild(parent, "date-and-or-time", value, version);
+		} else {
+			throw new SkipMeException("Property has no date, reduced accuracy date, or text value associated with it.");
+		}
+	}
+
+	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		String value = XCardUtils.getFirstChildText(element, "date-and-or-time");
 		if (value != null) {
-			if (value.contains("-")){
+			if (value.contains("-")) {
 				setReducedAccuracyDate(value);
 			} else {
 				try {

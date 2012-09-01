@@ -231,6 +231,18 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (text != null) {
+			XCardUtils.appendChild(parent, "text", text, version);
+		} else {
+			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
+				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");
+			}
+			super.doMarshalValue(parent, version, warnings, compatibilityMode);
+		}
+	}
+
+	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		String value = XCardUtils.getFirstChildText(element, "uri");
 		if (value != null) {

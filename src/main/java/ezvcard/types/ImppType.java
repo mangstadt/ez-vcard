@@ -286,7 +286,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
-	
+
 	@Override
 	public VCardVersion[] getSupportedVersions() {
 		return new VCardVersion[] { VCardVersion.V4_0 };
@@ -294,11 +294,8 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (protocol != null) {
-			sb.append(VCardStringUtils.escapeText(protocol));
-			sb.append(':');
-		}
-		sb.append(VCardStringUtils.escapeText(uri));
+		String value = writeValue();
+		sb.append(VCardStringUtils.escapeText(value));
 	}
 
 	@Override
@@ -306,16 +303,32 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 		value = VCardStringUtils.unescape(value);
 		parseValue(value, warnings);
 	}
-	
+
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = writeValue();
+		XCardUtils.appendChild(parent, "uri", value, version);
+	}
+
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		String value = XCardUtils.getFirstChildText(element, "uri");
-		if (value != null){
+		if (value != null) {
 			parseValue(value, warnings);
 		}
 	}
-	
-	private void parseValue(String value, List<String> warnings){
+
+	private String writeValue() {
+		StringBuilder sb = new StringBuilder();
+		if (protocol != null) {
+			sb.append(protocol);
+			sb.append(':');
+		}
+		sb.append(uri);
+		return sb.toString();
+	}
+
+	private void parseValue(String value, List<String> warnings) {
 		String split[] = value.split(":", 2);
 		if (split.length < 2) {
 			warnings.add(NAME + " type is not in the correct format.  Assuming that the entire value is a URI.");

@@ -244,6 +244,14 @@ public class GenderType extends VCardType {
 	}
 
 	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		XCardUtils.appendChild(parent, "sex", (gender == null) ? "" : gender, version);
+		if (text != null) {
+			XCardUtils.appendChild(parent, "identity", text, version);
+		}
+	}
+
+	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		setGender(XCardUtils.getFirstChildText(element, "sex"));
 		setText(XCardUtils.getFirstChildText(element, "identity"));

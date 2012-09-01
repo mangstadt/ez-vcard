@@ -385,6 +385,13 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		StringBuilder sb = new StringBuilder();
+		doMarshalValue(sb, version, warnings, compatibilityMode);
+		XCardUtils.appendChild(parent, "uri", sb.toString(), version);
+	}
+
+	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		String value = XCardUtils.getFirstChildText(element, "uri");
 		if (value != null) {

@@ -205,16 +205,20 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		sb.append(VCardStringUtils.escapeText(this.value));
-		if (version == VCardVersion.V4_0) {
-			sb.insert(0, "tel:");
-		}
+		String value = writeValue(version);
+		sb.append(VCardStringUtils.escapeText(value));
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value.trim());
 		parseValue(value);
+	}
+	
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = writeValue(version);
+		XCardUtils.appendChild(parent, "uri", value, version);
 	}
 
 	@Override
@@ -231,5 +235,13 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			value = (value.length() > 4) ? value.substring(4) : "";
 		}
 		setValue(value);
+	}
+	
+	private String writeValue(VCardVersion version){
+		String value = this.value;
+		if (version == VCardVersion.V4_0) {
+			value = "tel:" + value;
+		}
+		return value;
 	}
 }

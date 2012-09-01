@@ -303,6 +303,25 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (family != null) {
+			XCardUtils.appendChild(parent, "surname", family, version);
+		}
+		if (given != null) {
+			XCardUtils.appendChild(parent, "given", given, version);
+		}
+		for (String s : additional) {
+			XCardUtils.appendChild(parent, "additional", s, version);
+		}
+		for (String s : prefixes) {
+			XCardUtils.appendChild(parent, "prefix", s, version);
+		}
+		for (String s : suffixes) {
+			XCardUtils.appendChild(parent, "suffix", s, version);
+		}
+	}
+
+	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		family = XCardUtils.getFirstChildText(element, "surname");
 		given = XCardUtils.getFirstChildText(element, "given");

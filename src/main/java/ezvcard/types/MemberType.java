@@ -1,16 +1,9 @@
 package ezvcard.types;
 
-import java.util.List;
 import java.util.Set;
 
-import org.w3c.dom.Element;
-
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -94,10 +87,8 @@ import ezvcard.util.XCardUtils;
  * </p>
  * @author Michael Angstadt
  */
-public class MemberType extends VCardType {
+public class MemberType extends UriType {
 	public static final String NAME = "MEMBER";
-
-	private String uri;
 
 	public MemberType() {
 		super(NAME);
@@ -116,7 +107,7 @@ public class MemberType extends VCardType {
 	 * @return the URI value or null if no URI value is set
 	 */
 	public String getUri() {
-		return uri;
+		return getValue();
 	}
 
 	/**
@@ -149,7 +140,7 @@ public class MemberType extends VCardType {
 	 * @param uri the URI
 	 */
 	public void setUri(String uri) {
-		this.uri = uri;
+		setValue(uri);
 	}
 
 	/**
@@ -262,20 +253,5 @@ public class MemberType extends VCardType {
 	@Override
 	public VCardVersion[] getSupportedVersions() {
 		return new VCardVersion[] { VCardVersion.V4_0 };
-	}
-
-	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		sb.append(VCardStringUtils.escapeText(uri));
-	}
-
-	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setUri(VCardStringUtils.unescape(value));
-	}
-
-	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		setUri(XCardUtils.getFirstChildText(element, "uri"));
 	}
 }

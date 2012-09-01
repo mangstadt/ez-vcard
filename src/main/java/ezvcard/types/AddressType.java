@@ -494,7 +494,32 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 		country = (split.length > i && split[i].length() > 0) ? split[i] : null;
 	}
-	
+
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (poBox != null) {
+			XCardUtils.appendChild(parent, "pobox", poBox, version);
+		}
+		if (extendedAddress != null) {
+			XCardUtils.appendChild(parent, "ext", extendedAddress, version);
+		}
+		if (streetAddress != null) {
+			XCardUtils.appendChild(parent, "street", streetAddress, version);
+		}
+		if (locality != null) {
+			XCardUtils.appendChild(parent, "locality", locality, version);
+		}
+		if (region != null) {
+			XCardUtils.appendChild(parent, "region", region, version);
+		}
+		if (postalCode != null) {
+			XCardUtils.appendChild(parent, "code", postalCode, version);
+		}
+		if (country != null) {
+			XCardUtils.appendChild(parent, "country", country, version);
+		}
+	}
+
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		poBox = XCardUtils.getFirstChildText(element, "pobox");

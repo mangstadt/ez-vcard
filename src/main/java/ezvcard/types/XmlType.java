@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -17,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -24,6 +26,8 @@ import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -139,6 +143,33 @@ public class XmlType extends TextType {
 			//never thrown because we're not doing anything fancy with the configuration
 			return null;
 		}
+	}
+
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (value == null) {
+			throw new SkipMeException("Property does not have a value associated with it.");
+		}
+
+		//parse the XML string
+		Element root = null;
+		try {
+			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+			fact.setNamespaceAware(true);
+			DocumentBuilder builder = fact.newDocumentBuilder();
+			Document document = builder.parse(new ByteArrayInputStream(value.getBytes()));
+			root = XCardUtils.getFirstElement(document.getChildNodes());
+		} catch (IOException e) {
+			//never thrown because reading from a string
+		} catch (ParserConfigurationException e) {
+			//should never be thrown
+		} catch (SAXException e) {
+			throw new SkipMeException("Property value is not valid XML.");
+		}
+		
+		//add XML element to marshalled document
+		Node imported = parent.getOwnerDocument().importNode(root, true);
+		parent.appendChild(imported);
 	}
 
 	@Override
