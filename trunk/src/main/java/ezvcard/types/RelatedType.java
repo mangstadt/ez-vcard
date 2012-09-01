@@ -281,6 +281,17 @@ public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParame
 			setText(value);
 		}
 	}
+	
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (uri != null) {
+			XCardUtils.appendChild(parent, "uri", uri, version);
+		} else if (text != null) {
+			XCardUtils.appendChild(parent, "text", text, version);
+		} else {
+			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		}
+	}
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {

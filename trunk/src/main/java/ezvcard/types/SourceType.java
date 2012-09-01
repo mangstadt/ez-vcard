@@ -1,15 +1,8 @@
 package ezvcard.types;
 
-import java.util.List;
 import java.util.Set;
 
-import org.w3c.dom.Element;
-
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -58,7 +51,7 @@ import ezvcard.util.XCardUtils;
  * </p>
  * @author Michael Angstadt
  */
-public class SourceType extends TextType {
+public class SourceType extends UriType {
 	public static final String NAME = "SOURCE";
 
 	public SourceType() {
@@ -155,10 +148,5 @@ public class SourceType extends TextType {
 	 */
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		setValue(XCardUtils.getFirstChildText(element, "uri"));
 	}
 }

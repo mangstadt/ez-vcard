@@ -191,6 +191,11 @@ public class LanguageType extends TextType {
 	}
 
 	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		XCardUtils.appendChild(parent, "language-tag", getValue(), version);
+	}
+
+	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		setValue(XCardUtils.getFirstChildText(element, "language-tag"));
 	}

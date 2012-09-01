@@ -1,9 +1,19 @@
 package ezvcard.types;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import ezvcard.VCardVersion;
+import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -37,11 +47,28 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class ClientPidMapTypeTest {
+public class XmlTypeTest {
 	@Test
-	public void random() {
-		ClientPidMapType clientpidmap = ClientPidMapType.random(2);
-		assertEquals(Integer.valueOf(2), clientpidmap.getPid());
-		assertTrue(clientpidmap.getUri().matches("urn:uuid:[-\\da-f]+"));
+	public void marshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		List<String> warnings = new ArrayList<String>();
+
+		Document actual = XCardUtils.toDocument("<root></root>");
+		Element root = XCardUtils.getFirstElement(actual.getChildNodes());
+		XmlType xml = new XmlType("<a href=\"http://www.example.com\">some html</a>");
+		xml.marshalValue(root, version, warnings, compatibilityMode);
+
+		Document expected = XCardUtils.toDocument("<root><a href=\"http://www.example.com\">some html</a></root>");
+
+		assertXMLEqual(expected, actual);
+
+		xml = new XmlType("not valid XML");
+		try {
+			xml.marshalValue(root, version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+		}
 	}
 }

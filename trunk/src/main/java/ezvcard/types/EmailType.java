@@ -202,7 +202,12 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		this.value = VCardStringUtils.unescape(value);
 	}
-	
+
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		XCardUtils.appendChild(parent, "text", getValue(), version);
+	}
+
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		setValue(XCardUtils.getFirstChildText(element, "text"));

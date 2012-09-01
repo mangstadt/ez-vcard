@@ -1,9 +1,13 @@
 package ezvcard.types;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.List;
 
-import org.junit.Test;
+import org.w3c.dom.Element;
+
+import ezvcard.VCardException;
+import ezvcard.VCardVersion;
+import ezvcard.io.CompatibilityMode;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -35,13 +39,32 @@ import org.junit.Test;
  */
 
 /**
+ * Represents a type whose value is a URI.
  * @author Michael Angstadt
  */
-public class ClientPidMapTypeTest {
-	@Test
-	public void random() {
-		ClientPidMapType clientpidmap = ClientPidMapType.random(2);
-		assertEquals(Integer.valueOf(2), clientpidmap.getPid());
-		assertTrue(clientpidmap.getUri().matches("urn:uuid:[-\\da-f]+"));
+public class UriType extends TextType {
+	/**
+	 * @param name the type name (e.g. "URL")
+	 */
+	public UriType(String name) {
+		super(name);
+	}
+
+	/**
+	 * @param name the type name (e.g. "URL")
+	 * @param uri the type value
+	 */
+	public UriType(String name, String uri) {
+		super(name, uri);
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		setValue(XCardUtils.getFirstChildText(element, "uri"));
+	}
+
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		XCardUtils.appendChild(parent, "uri", getValue(), version);
 	}
 }

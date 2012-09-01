@@ -92,7 +92,7 @@ import ezvcard.util.XCardUtils;
 public class ClientPidMapType extends VCardType {
 	public static final String NAME = "CLIENTPIDMAP";
 
-	private int pid;
+	private Integer pid;
 	private String uri;
 
 	public ClientPidMapType() {
@@ -125,7 +125,7 @@ public class ClientPidMapType extends VCardType {
 	 * @return the PID
 	 * @see VCardSubTypes#getPids
 	 */
-	public int getPid() {
+	public Integer getPid() {
 		return pid;
 	}
 
@@ -135,7 +135,7 @@ public class ClientPidMapType extends VCardType {
 	 * @param pid the PID
 	 * @see VCardSubTypes#getPids
 	 */
-	public void setPid(int pid) {
+	public void setPid(Integer pid) {
 		this.pid = pid;
 	}
 
@@ -173,6 +173,16 @@ public class ClientPidMapType extends VCardType {
 		} else {
 			pid = Integer.parseInt(split[0]);
 			uri = VCardStringUtils.unescape(split[1]);
+		}
+	}
+
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (uri != null) {
+			XCardUtils.appendChild(parent, "uri", uri, version);
+		}
+		if (pid != null) {
+			XCardUtils.appendChild(parent, "sourceid", pid.toString(), version);
 		}
 	}
 

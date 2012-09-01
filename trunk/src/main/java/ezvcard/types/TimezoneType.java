@@ -346,6 +346,16 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (text != null) {
+			XCardUtils.appendChild(parent, "text", text, version);
+		} else if (hourOffset != null && minuteOffset != null) {
+			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
+			XCardUtils.appendChild(parent, "utc-offset", offset, version);
+		}
+	}
+
+	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		String value = XCardUtils.getFirstChildText(element, "text", "uri", "utc-offset");
 		if (value != null) {

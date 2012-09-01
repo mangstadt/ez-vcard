@@ -1,11 +1,21 @@
 package ezvcard.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -104,5 +114,62 @@ public class XCardUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Creates an XML element and appends it as a child to a parent XML element.
+	 * @param parent the parent element
+	 * @param childName the name of the new child element
+	 * @param text the text content of the new child element
+	 * @param version the vCard version
+	 * @return the new child element
+	 */
+	public static Element appendChild(Element parent, String childName, String text, VCardVersion version) {
+		return appendChild(parent, childName, text, getXCardNs(version));
+	}
+
+	/**
+	 * Creates an XML element and appends it as a child to a parent XML element.
+	 * @param parent the parent element
+	 * @param childName the name of the new child element
+	 * @param text the text content of the new child element
+	 * @param ns the namespace of the new child element
+	 * @return the new child element
+	 */
+	public static Element appendChild(Element parent, String childName, String text, String ns) {
+		Element child = parent.getOwnerDocument().createElementNS(ns, childName);
+		child.setTextContent(text);
+		parent.appendChild(child);
+		return child;
+	}
+
+	/**
+	 * Gets the xCard namespace for a particular vCard version.
+	 * @param version the vCard version
+	 * @return the namespace
+	 */
+	public static String getXCardNs(VCardVersion version) {
+		return "urn:ietf:params:xml:ns:vcard-" + version.getVersion();
+	}
+
+	/**
+	 * Parses an XML string into a DOM.
+	 * @param xml the XML string
+	 * @return the parsed XML
+	 * @throws SAXException if the string is not valid XML
+	 */
+	public static Document toDocument(String xml) throws SAXException {
+		try {
+			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+			fact.setNamespaceAware(true);
+			DocumentBuilder db = fact.newDocumentBuilder();
+			return db.parse(new ByteArrayInputStream(xml.getBytes()));
+		} catch (ParserConfigurationException e) {
+			//should never be thrown
+			return null;
+		} catch (IOException e) {
+			//never thrown because it's reading from a string
+			return null;
+		}
 	}
 }

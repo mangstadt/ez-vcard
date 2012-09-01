@@ -1,22 +1,19 @@
 package ezvcard.io;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringWriter;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.PhotoType;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -50,11 +47,12 @@ import ezvcard.types.PhotoType;
 /**
  * @author Michael Angstadt
  */
-public class XCardMarshallerTest extends XMLTestCase {
+public class XCardMarshallerTest {
 	/**
 	 * A basic test with one type.
 	 */
-	public void testBasicType() throws Exception {
+	@Test
+	public void basicType() throws Exception {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
@@ -72,7 +70,7 @@ public class XCardMarshallerTest extends XMLTestCase {
 				sb.append("<fn><text>John Doe</text></fn>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = toDocument(sb.toString());
+		Document expected = XCardUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -81,7 +79,8 @@ public class XCardMarshallerTest extends XMLTestCase {
 	/**
 	 * Makes sure it can marshal parameters.
 	 */
-	public void testParameters() throws Exception {
+	@Test
+	public void parameters() throws Exception {
 		VCard vcard = new VCard();
 		NoteType note = new NoteType("This is a\nnote.");
 		note.setLanguage("en");
@@ -110,7 +109,7 @@ public class XCardMarshallerTest extends XMLTestCase {
 				sb.append("</note>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = toDocument(sb.toString());
+		Document expected = XCardUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -119,7 +118,8 @@ public class XCardMarshallerTest extends XMLTestCase {
 	/**
 	 * Makes sure it can marshal groups.
 	 */
-	public void testGroup() throws Exception {
+	@Test
+	public void group() throws Exception {
 		VCard vcard = new VCard();
 
 		FormattedNameType fn = new FormattedNameType("John Doe");
@@ -158,7 +158,7 @@ public class XCardMarshallerTest extends XMLTestCase {
 				sb.append("</group>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = toDocument(sb.toString());
+		Document expected = XCardUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -167,7 +167,8 @@ public class XCardMarshallerTest extends XMLTestCase {
 	/**
 	 * Makes sure it can add multiple vCards to the same document.
 	 */
-	public void testMultiple() throws Exception {
+	@Test
+	public void multiple() throws Exception {
 		VCard vcard1 = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard1.setFormattedName(fn);
@@ -193,7 +194,7 @@ public class XCardMarshallerTest extends XMLTestCase {
 				sb.append("<note><text>Hello world!</text></note>");
 				sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = toDocument(sb.toString());
+		Document expected = XCardUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -202,7 +203,8 @@ public class XCardMarshallerTest extends XMLTestCase {
 	/**
 	 * Makes sure the {@link XCardMarshaller#setAddGenerator} method works.
 	 */
-	public void testSetAddGenerator() throws Exception {
+	@Test
+	public void setAddGenerator() throws Exception {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
@@ -216,20 +218,5 @@ public class XCardMarshallerTest extends XMLTestCase {
 		String xml = sw.toString();
 
 		assertTrue(xml.matches(".*?<x-generator><text>.*?</text></x-generator>.*"));
-	}
-
-	/**
-	 * Parses an XML string into a DOM.
-	 * @param xml the XML string
-	 * @return the parsed XML
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
-	 */
-	private Document toDocument(String xml) throws ParserConfigurationException, SAXException, IOException {
-		DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-		fact.setNamespaceAware(true);
-		DocumentBuilder db = fact.newDocumentBuilder();
-		return db.parse(new ByteArrayInputStream(xml.getBytes()));
 	}
 }
