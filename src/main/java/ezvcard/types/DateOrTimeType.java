@@ -269,22 +269,26 @@ public class DateOrTimeType extends VCardType {
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		Element child = XCardUtils.getFirstElement(element.getElementsByTagName("date-and-or-time"));
-		String value = null;
-		if (child != null) {
-			value = child.getTextContent();
-		} else {
-			child = XCardUtils.getFirstElement(element.getElementsByTagName("text"));
-			if (child != null) {
-				subTypes.setValue(ValueParameter.TEXT);
-				value = child.getTextContent();
-			}
-		}
-
+		String value = XCardUtils.getFirstChildText(element, "date-and-or-time");
 		if (value != null) {
-			doUnmarshalValue(child.getTextContent(), version, warnings, compatibilityMode);
+			if (value.contains("-")){
+				setReducedAccuracyDate(value);
+			} else {
+				try {
+					boolean hasTime = value.contains("T");
+					setDate(VCardDateFormatter.parse(value), hasTime);
+				} catch (IllegalArgumentException e) {
+					//not all reduced accuracy dates have dashes (e.g. "2012")
+					if (value.matches("\\d+")) {
+						setReducedAccuracyDate(value);
+					} else {
+						warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");
+						setText(value);
+					}
+				}
+			}
 		} else {
-			warnings.add("The <" + element.getNodeName() + "> element could not be parsed because its value must be within a <date-and-or-time> or <text> tag.");
+			setText(XCardUtils.getFirstChildText(element, "text"));
 		}
 	}
 }

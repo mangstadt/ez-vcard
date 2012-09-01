@@ -90,13 +90,6 @@ public class TextType extends VCardType {
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		Element value = XCardUtils.getFirstElement(element.getElementsByTagName("text"));
-		if (value == null) {
-			warnings.add("No \"<text>\" element present.");
-			this.value = element.getTextContent();
-		}
-		if (value != null) {
-			this.value = value.getTextContent();
-		}
+		setValue(XCardUtils.getFirstChildText(element, "text"));
 	}
 }

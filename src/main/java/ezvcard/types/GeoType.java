@@ -7,12 +7,15 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.w3c.dom.Element;
+
 import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -288,6 +291,14 @@ public class GeoType extends VCardType {
 			}
 		} else {
 			warnings.add("Unrecognized format of " + NAME + " type: \"" + value + "\"");
+		}
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = XCardUtils.getFirstChildText(element, "uri");
+		if (value != null) {
+			doUnmarshalValue(value, version, warnings, compatibilityMode);
 		}
 	}
 }

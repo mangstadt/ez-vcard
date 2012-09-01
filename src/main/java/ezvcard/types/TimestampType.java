@@ -3,12 +3,15 @@ package ezvcard.types;
 import java.util.Date;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
 import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -81,7 +84,7 @@ public class TimestampType extends VCardType {
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		//"UTC_TIME_BASIC" works with all vCard versions
-		if (timestamp == null){
+		if (timestamp == null) {
 			throw new SkipMeException("Property has no timestamp value associated with it.");
 		}
 		sb.append(VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_BASIC));
@@ -93,6 +96,14 @@ public class TimestampType extends VCardType {
 			timestamp = VCardDateFormatter.parse(value);
 		} catch (IllegalArgumentException e) {
 			warnings.add("Date string \"" + value + "\" for type \"" + typeName + "\" could not be parsed.");
+		}
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = XCardUtils.getFirstChildText(element, "timestamp");
+		if (value != null) {
+			doUnmarshalValue(value, version, warnings, compatibilityMode);
 		}
 	}
 }

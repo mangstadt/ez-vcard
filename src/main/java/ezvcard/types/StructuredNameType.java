@@ -304,11 +304,8 @@ public class StructuredNameType extends VCardType {
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		Element value = XCardUtils.getFirstElement(element.getElementsByTagName("surname"));
-		family = (value != null) ? value.getTextContent() : null;
-
-		value = XCardUtils.getFirstElement(element.getElementsByTagName("given"));
-		given = (value != null) ? value.getTextContent() : null;
+		family = XCardUtils.getFirstChildText(element, "surname");
+		given = XCardUtils.getFirstChildText(element, "given");
 
 		List<Element> elements = XCardUtils.toElementList(element.getElementsByTagName("additional"));
 		additional.clear();

@@ -3,10 +3,14 @@ package ezvcard.types;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Element;
+
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -268,5 +272,10 @@ public class MemberType extends VCardType {
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setUri(VCardStringUtils.unescape(value));
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		setUri(XCardUtils.getFirstChildText(element, "uri"));
 	}
 }

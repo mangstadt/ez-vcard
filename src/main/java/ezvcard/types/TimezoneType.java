@@ -7,13 +7,17 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.w3c.dom.Element;
+
 import ezvcard.VCard;
+import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -335,6 +339,21 @@ public class TimezoneType extends VCardType {
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		parseValue(value);
+		if (text != null) {
+			text = VCardStringUtils.unescape(text);
+		}
+	}
+
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		String value = XCardUtils.getFirstChildText(element, "text", "uri", "utc-offset");
+		if (value != null) {
+			parseValue(value);
+		}
+	}
+
+	private void parseValue(String value) {
 		Pattern p = Pattern.compile("^([-\\+]?\\d{1,2}(:?\\d{2})?)(.*)");
 		Matcher m = p.matcher(value);
 		if (m.find()) {
@@ -344,13 +363,14 @@ public class TimezoneType extends VCardType {
 			minuteOffset = offsets[1];
 
 			String text = m.group(3);
-			if (text != null && text.length() > 0) {
-				this.text = VCardStringUtils.unescape(text);
+			if (text != null && text.length() == 0) {
+				text = null;
 			}
+			this.text = text;
 		} else {
 			hourOffset = null;
 			minuteOffset = null;
-			text = VCardStringUtils.unescape(value);
+			text = value;
 		}
 	}
 }

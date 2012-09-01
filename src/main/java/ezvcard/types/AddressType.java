@@ -3,6 +3,8 @@ package ezvcard.types;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Element;
+
 import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
@@ -10,6 +12,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -490,5 +493,16 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		i++;
 
 		country = (split.length > i && split[i].length() > 0) ? split[i] : null;
+	}
+	
+	@Override
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		poBox = XCardUtils.getFirstChildText(element, "pobox");
+		extendedAddress = XCardUtils.getFirstChildText(element, "ext");
+		streetAddress = XCardUtils.getFirstChildText(element, "street");
+		locality = XCardUtils.getFirstChildText(element, "locality");
+		region = XCardUtils.getFirstChildText(element, "region");
+		postalCode = XCardUtils.getFirstChildText(element, "code");
+		country = XCardUtils.getFirstChildText(element, "country");
 	}
 }
