@@ -30,7 +30,6 @@ import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.types.MemberType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
@@ -260,14 +259,10 @@ public class XCardMarshaller {
 
 			//marshal the sub types
 			VCardSubTypes subTypes = type.marshalSubTypes(targetVersion, warnings, compatibilityMode, vcard);
+			subTypes.setValue(null); //don't include the VALUE parameter (modification of the "VCardSubTypes" object is safe because it's a copy)
 			if (!subTypes.getMultimap().isEmpty()) {
 				Element parametersElement = createElement("parameters");
 				for (String paramName : subTypes.getNames()) {
-					if (paramName.equalsIgnoreCase(ValueParameter.NAME)) {
-						//don't include the VALUE parameter
-						continue;
-					}
-
 					Element parameterElement = createElement(paramName.toLowerCase());
 					for (String paramValue : subTypes.get(paramName)) {
 						String valueElementName = parameterChildElementNames.get(paramName.toLowerCase());
