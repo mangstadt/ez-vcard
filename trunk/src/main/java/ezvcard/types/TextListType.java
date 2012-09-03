@@ -101,6 +101,13 @@ public class TextListType extends VCardType {
 	}
 
 	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		for (String value : values) {
+			XCardUtils.appendChild(parent, "text", value, version);
+		}
+	}
+
+	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		List<Element> children = XCardUtils.toElementList(element.getElementsByTagName("text"));
 		values.clear();
