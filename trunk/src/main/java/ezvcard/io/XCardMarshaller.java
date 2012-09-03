@@ -284,11 +284,7 @@ public class XCardMarshaller {
 			}
 
 			//marshal the value
-			//TODO add a new method to "VCardType" so each type class can handle how it is marshalled to XML
-			Element valueElement = createElement("text");
-			String value = type.marshalValue(targetVersion, warnings, compatibilityMode);
-			valueElement.setTextContent(value);
-			typeElement.appendChild(valueElement);
+			type.marshalValue(typeElement, targetVersion, warnings, compatibilityMode);
 
 			return typeElement;
 		} finally {
