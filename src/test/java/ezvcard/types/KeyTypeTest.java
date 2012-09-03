@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -7,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -14,6 +17,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -48,8 +52,6 @@ import ezvcard.parameters.ValueParameter;
  * @author Michael Angstadt
  */
 public class KeyTypeTest {
-	//TODO test XML
-	
 	@Test
 	public void marshalTextValue() throws Exception {
 		VCardVersion version;
@@ -72,7 +74,7 @@ public class KeyTypeTest {
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
-		
+
 		//3.0
 		version = VCardVersion.V3_0;
 		expectedValue = "abc123";
@@ -92,6 +94,17 @@ public class KeyTypeTest {
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 		assertEquals("work", subTypes.getType());
 		assertEquals(KeyTypeParameter.PGP.getMediaType(), subTypes.getMediaType());
+
+		//xCard
+		version = VCardVersion.V4_0;
+		String expectedXml = "<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<text>abc123</text>";
+		expectedXml += "</key>";
+		Document expectedDoc = XCardUtils.toDocument(expectedXml);
+		Document actualDoc = XCardUtils.toDocument("<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
 	@Test
@@ -112,7 +125,7 @@ public class KeyTypeTest {
 		assertNull(t.getUrl());
 		assertNull(t.getData());
 		assertEquals(KeyTypeParameter.PGP, t.getContentType());
-		
+
 		//3.0
 		version = VCardVersion.V3_0;
 		t = new KeyType();
@@ -123,13 +136,26 @@ public class KeyTypeTest {
 		assertNull(t.getUrl());
 		assertNull(t.getData());
 		assertEquals(KeyTypeParameter.PGP, t.getContentType());
-		
+
 		//4.0
 		version = VCardVersion.V4_0;
 		t = new KeyType();
 		subTypes = new VCardSubTypes();
 		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
 		t.unmarshalValue(subTypes, "abc123", version, warnings, compatibilityMode);
+		assertEquals("abc123", t.getText());
+		assertNull(t.getUrl());
+		assertNull(t.getData());
+		assertEquals(KeyTypeParameter.PGP, t.getContentType());
+
+		//xCard
+		version = VCardVersion.V4_0;
+		t = new KeyType();
+		String xml = "<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<text>abc123</text>";
+		xml += "</key>";
+		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());
 		assertNull(t.getData());

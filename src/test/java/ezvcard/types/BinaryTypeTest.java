@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -17,6 +19,8 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.XCardUtils;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -51,8 +55,6 @@ import ezvcard.parameters.ValueParameter;
  * @author Michael Angstadt
  */
 public class BinaryTypeTest {
-	//TODO test XML
-	
 	private byte[] dummyData = "dummy data".getBytes();
 
 	@Test
@@ -95,6 +97,17 @@ public class BinaryTypeTest {
 		assertEquals(ValueParameter.URI, subTypes.getValue());
 		assertNull(subTypes.getType());
 		assertEquals("image/jpeg", subTypes.getMediaType());
+
+		//xCard
+		version = VCardVersion.V4_0;
+		String expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<uri>http://example.com/image.jpg</uri>";
+		expectedXml += "</name>";
+		Document expected = XCardUtils.toDocument(expectedXml);
+		Document actual = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XCardUtils.getFirstElement(actual.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expected, actual);
 	}
 
 	@Test
@@ -138,6 +151,19 @@ public class BinaryTypeTest {
 		assertNull(subTypes.getEncoding());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
 		assertEquals("work", subTypes.getType());
+
+		//xCard
+		version = VCardVersion.V4_0;
+		String expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<uri>data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) + "</uri>";
+		expectedXml += "</name>";
+		Document expected = XCardUtils.toDocument(expectedXml);
+
+		Document actual = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XCardUtils.getFirstElement(actual.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
 	}
 
 	/**
@@ -185,6 +211,8 @@ public class BinaryTypeTest {
 		assertEquals(ValueParameter.URI, subTypes.getValue());
 		assertNull(subTypes.getType());
 		assertEquals(param.getMediaType(), subTypes.getMediaType());
+
+		//xCard (N/A -- "<parameters>" element is added by the "XCardMarshaller" class)
 	}
 
 	@Test
@@ -255,6 +283,38 @@ public class BinaryTypeTest {
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
 		t.unmarshalValue(subTypes, "data:image/jpeg;base64," + Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		assertNull(t.getUrl());
+		assertArrayEquals(dummyData, t.getData());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
+
+		//xCard URL
+		version = VCardVersion.V4_0;
+		t = new BinaryTypeImpl();
+		subTypes = new VCardSubTypes();
+		subTypes.setMediaType("image/jpeg");
+
+		String xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<uri>http://example.com/image.jpg</uri>";
+		xml += "</name>";
+		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		assertEquals("http://example.com/image.jpg", t.getUrl());
+		assertNull(t.getData());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
+
+		//xCard data URI
+		version = VCardVersion.V4_0;
+		t = new BinaryTypeImpl();
+		subTypes = new VCardSubTypes();
+		subTypes.setMediaType("image/jpeg");
+
+		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<uri>data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) + "</uri>";
+		xml += "</name>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
 		assertEquals(ImageTypeParameter.JPEG, t.getContentType());

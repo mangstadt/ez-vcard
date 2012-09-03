@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -9,13 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
-
+import ezvcard.util.XCardUtils;
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -88,6 +91,79 @@ public class AddressTypeTest {
 		expected = ";;;;;;";
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void marshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		AddressType t;
+		Document expected, actual;
+		Element element;
+		String expectedXml;
+
+		//all fields present
+		t = new AddressType();
+		t.setPoBox("P.O. Box 1234");
+		t.setExtendedAddress("Apt 11");
+		t.setStreetAddress("123 Main St");
+		t.setLocality("Austin");
+		t.setRegion("TX");
+		t.setPostalCode("12345");
+		t.setCountry("USA");
+		
+		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<pobox>P.O. Box 1234</pobox>";
+		expectedXml += "<ext>Apt 11</ext>";
+		expectedXml += "<street>123 Main St</street>";
+		expectedXml += "<locality>Austin</locality>";
+		expectedXml += "<region>TX</region>";
+		expectedXml += "<code>12345</code>";
+		expectedXml += "<country>USA</country>";
+		expectedXml += "</adr>";
+		expected = XCardUtils.toDocument(expectedXml);
+		
+		actual = XCardUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		
+		assertXMLEqual(expected, actual);
+
+		//some nulls
+		t = new AddressType();
+		t.setPoBox("P.O. Box 1234");
+		t.setExtendedAddress(null);
+		t.setStreetAddress(null);
+		t.setLocality("Austin");
+		t.setRegion("TX");
+		t.setPostalCode("12345");
+		t.setCountry(null);
+		
+		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<pobox>P.O. Box 1234</pobox>";
+		expectedXml += "<locality>Austin</locality>";
+		expectedXml += "<region>TX</region>";
+		expectedXml += "<code>12345</code>";
+		expectedXml += "</adr>";
+		expected = XCardUtils.toDocument(expectedXml);
+		
+		actual = XCardUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expected, actual);
+
+		//all nulls
+		t = new AddressType();
+		
+		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "</adr>";
+		expected = XCardUtils.toDocument(expectedXml);
+		
+		actual = XCardUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expected, actual);
 	}
 
 	@Test
@@ -169,7 +245,7 @@ public class AddressTypeTest {
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
+	public void unmarshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -208,5 +284,56 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals(null, t.getPostalCode());
 		assertEquals(null, t.getCountry());
+	}
+	
+	@Test
+	public void unmarshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		VCardSubTypes subTypes = new VCardSubTypes();
+		AddressType t;
+		String xml;
+		Element element;
+
+		//all fields present
+		xml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<pobox>P.O. Box 1234</pobox>";
+		xml += "<ext>Apt 11</ext>";
+		xml += "<street>123 Main St</street>";
+		xml += "<locality>Austin</locality>";
+		xml += "<region>TX</region>";
+		xml += "<code>12345</code>";
+		xml += "<country>USA</country>";
+		xml += "</adr>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		t = new AddressType();
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		assertEquals("P.O. Box 1234", t.getPoBox());
+		assertEquals("Apt 11", t.getExtendedAddress());
+		assertEquals("123 Main St", t.getStreetAddress());
+		assertEquals("Austin", t.getLocality());
+		assertEquals("TX", t.getRegion());
+		assertEquals("12345", t.getPostalCode());
+		assertEquals("USA", t.getCountry());
+
+		//some missing fields
+		xml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<pobox>P.O. Box 1234</pobox>";
+		xml += "<locality>Austin</locality>";
+		xml += "<region>TX</region>";
+		xml += "<code>12345</code>";
+		xml += "<country>USA</country>";
+		xml += "</adr>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		t = new AddressType();
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		assertEquals("P.O. Box 1234", t.getPoBox());
+		assertEquals(null, t.getExtendedAddress());
+		assertEquals(null, t.getStreetAddress());
+		assertEquals("Austin", t.getLocality());
+		assertEquals("TX", t.getRegion());
+		assertEquals("12345", t.getPostalCode());
+		assertEquals("USA", t.getCountry());
 	}
 }

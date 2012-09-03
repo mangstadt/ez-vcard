@@ -1,15 +1,21 @@
 package ezvcard.types;
 
-import static org.junit.Assert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -45,7 +51,7 @@ import ezvcard.io.CompatibilityMode;
  */
 public class StructuredNameTypeTest {
 	@Test
-	public void doMarshalValue() throws Exception {
+	public void marshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -82,7 +88,64 @@ public class StructuredNameTypeTest {
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
+	public void marshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		StructuredNameType t;
+		Document expected, actual;
+		Element element;
+		String expectedXml;
+
+		t = new StructuredNameType();
+		t.setGiven("Jonathan");
+		t.setFamily("Doe");
+		t.addAdditional("Joh;nny,");
+		t.addAdditional("John");
+		t.addPrefix("Mr.");
+		t.addSuffix("III");
+
+		expectedXml = "<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<surname>Doe</surname>";
+		expectedXml += "<given>Jonathan</given>";
+		expectedXml += "<additional>Joh;nny,</additional>";
+		expectedXml += "<additional>John</additional>";
+		expectedXml += "<prefix>Mr.</prefix>";
+		expectedXml += "<suffix>III</suffix>";
+		expectedXml += "</n>";
+		expected = XCardUtils.toDocument(expectedXml);
+
+		actual = XCardUtils.toDocument("<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
+
+		//some empty values
+		t = new StructuredNameType();
+		t.setGiven("Jonathan");
+		t.setFamily(null);
+		t.addAdditional("Joh;nny,");
+		t.addAdditional("John");
+		t.addSuffix("III");
+
+		expectedXml = "<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<given>Jonathan</given>";
+		expectedXml += "<additional>Joh;nny,</additional>";
+		expectedXml += "<additional>John</additional>";
+		expectedXml += "<suffix>III</suffix>";
+		expectedXml += "</n>";
+		expected = XCardUtils.toDocument(expectedXml);
+
+		actual = XCardUtils.toDocument("<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void unmarshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -132,5 +195,56 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getAdditional().isEmpty());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
+	}
+
+	@Test
+	public void unmarshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		VCardSubTypes subTypes = new VCardSubTypes();
+		StructuredNameType t;
+		String xml;
+		Element element;
+
+		xml = "<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<surname>Doe</surname>";
+		xml += "<given>Jonathan</given>";
+		xml += "<additional>Joh;nny,</additional>";
+		xml += "<additional>John</additional>";
+		xml += "<prefix>Mr.</prefix>";
+		xml += "<suffix>III</suffix>";
+		xml += "</n>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		t = new StructuredNameType();
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		assertEquals("Doe", t.getFamily());
+		assertEquals("Jonathan", t.getGiven());
+		assertEquals(2, t.getAdditional().size());
+		assertTrue(t.getAdditional().contains("Joh;nny,"));
+		assertTrue(t.getAdditional().contains("John"));
+		assertEquals(1, t.getPrefixes().size());
+		assertTrue(t.getPrefixes().contains("Mr."));
+		assertEquals(1, t.getSuffixes().size());
+		assertTrue(t.getSuffixes().contains("III"));
+
+		//some empty values
+		xml = "<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<given>Jonathan</given>";
+		xml += "<additional>Joh;nny,</additional>";
+		xml += "<additional>John</additional>";
+		xml += "<suffix>III</suffix>";
+		xml += "</n>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		t = new StructuredNameType();
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		assertNull(t.getFamily());
+		assertEquals("Jonathan", t.getGiven());
+		assertEquals(2, t.getAdditional().size());
+		assertTrue(t.getAdditional().contains("Joh;nny,"));
+		assertTrue(t.getAdditional().contains("John"));
+		assertTrue(t.getPrefixes().isEmpty());
+		assertEquals(1, t.getSuffixes().size());
+		assertTrue(t.getSuffixes().contains("III"));
 	}
 }

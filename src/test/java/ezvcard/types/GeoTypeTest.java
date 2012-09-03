@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -7,11 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -78,6 +82,17 @@ public class GeoTypeTest {
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
 		assertEquals(expected, actual);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
+
+		//xCard
+		version = VCardVersion.V4_0;
+		String expectedXml = "<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<uri>geo:-12.34,56.7878</uri>";
+		expectedXml += "</geo>";
+		Document expectedDoc = XCardUtils.toDocument(expectedXml);
+		Document actualDoc = XCardUtils.toDocument("<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
 	@Test
@@ -109,13 +124,26 @@ public class GeoTypeTest {
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);
 
+		//xCard
+		version = VCardVersion.V4_0;
+		t = new GeoType();
+		String xml = "<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<uri>geo:-12.34,56.7878</uri>";
+		xml += "</geo>";
+		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		assertEquals(-12.34, t.getLatitude(), 0.00001);
+		assertEquals(56.7878, t.getLongitude(), 0.00001);
+
 		//bad value
+		//TODO should throw SkipMeException
 		warnings.clear();
 		t = new GeoType();
 		t.unmarshalValue(subTypes, "not a;number", version, warnings, compatibilityMode);
 		assertEquals(1, warnings.size());
 
 		//bad value
+		//TODO should throw SkipMeException
 		warnings.clear();
 		t = new GeoType();
 		t.unmarshalValue(subTypes, "bad-value", version, warnings, compatibilityMode);
