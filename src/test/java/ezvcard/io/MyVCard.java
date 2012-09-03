@@ -82,10 +82,27 @@ public class MyVCard {
 		vcard.setRevision(new RevisionType(new Date()));
 
 		//write vCard to file
-		Writer writer = new FileWriter("mike-angstadt.vcf");
+		File file = new File("mike-angstadt.vcf");
+		System.out.println("Writing " + file.getName() + "...");
+		Writer writer = new FileWriter(file);
 		VCardWriter vcw = new VCardWriter(writer, VCardVersion.V3_0);
 		vcw.write(vcard);
 		List<String> warnings = vcw.getWarnings();
+		System.out.println("Completed with " + warnings.size() + " warnings.");
+		for (String warning : warnings) {
+			System.out.println("* " + warning);
+		}
+		writer.close();
+		
+		System.out.println();
+		
+		file = new File("mike-angstadt.xml");
+		System.out.println("Writing " + file.getName() + "...");
+		writer = new FileWriter(file);
+		XCardMarshaller xcm = new XCardMarshaller();
+		xcm.addVCard(vcard);
+		xcm.write(writer);
+		warnings = xcm.getWarnings();
 		System.out.println("Completed with " + warnings.size() + " warnings.");
 		for (String warning : warnings) {
 			System.out.println("* " + warning);
