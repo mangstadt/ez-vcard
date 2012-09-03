@@ -2,12 +2,20 @@ package ezvcard.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -169,6 +177,28 @@ public class XCardUtils {
 			return null;
 		} catch (IOException e) {
 			//never thrown because it's reading from a string
+			return null;
+		}
+	}
+	
+	/**
+	 * Converts a DOM to a string.
+	 * @param document the DOM
+	 * @return the string
+	 */
+	public static String toString(Document document){
+		try {
+			Transformer t = TransformerFactory.newInstance().newTransformer();
+			DOMSource source = new DOMSource(document);
+			StringWriter writer = new StringWriter();
+			StreamResult result = new StreamResult(writer);
+			t.transform(source, result);
+			return writer.toString();
+		} catch (TransformerConfigurationException e) {
+			return null;
+		} catch (TransformerFactoryConfigurationError e) {
+			return null;
+		} catch (TransformerException e) {
 			return null;
 		}
 	}
