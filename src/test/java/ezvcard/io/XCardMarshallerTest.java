@@ -105,7 +105,7 @@ public class XCardMarshallerTest {
 						sb.append("<pid><text>1.1</text><text>2.2</text></pid>");
 						sb.append("<x-custom><unknown>xxx</unknown></x-custom>");
 					sb.append("</parameters>");
-					sb.append("<text>This is a\\nnote.</text>");
+					sb.append("<text>This is a\nnote.</text>");
 				sb.append("</note>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
@@ -150,8 +150,8 @@ public class XCardMarshallerTest {
 			sb.append("<vcard>");
 				sb.append("<fn><text>John Doe</text></fn>");
 				sb.append("<group name=\"group1\">");
-					sb.append("<photo><parameters><mediatype><text>image/jpeg</text></mediatype></parameters><text>http://example.com/image.jpg</text></photo>");
-					sb.append("<note><parameters><language><language-tag>en</language-tag></language></parameters><text>This is a\\nnote.</text></note>");
+					sb.append("<photo><parameters><mediatype><text>image/jpeg</text></mediatype></parameters><uri>http://example.com/image.jpg</uri></photo>");
+					sb.append("<note><parameters><language><language-tag>en</language-tag></language></parameters><text>This is a\nnote.</text></note>");
 				sb.append("</group>");
 				sb.append("<group name=\"group2\">");
 					sb.append("<note><text>Bonjour.</text></note>");
