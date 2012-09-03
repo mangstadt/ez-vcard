@@ -143,7 +143,7 @@ public class XCardReaderTest {
 				//one param
 				sb.append("<note>");
 					sb.append("<parameters>");
-						sb.append("<altid>1</altid>");
+						sb.append("<altid><text>1</text></altid>");
 					sb.append("</parameters>");
 					sb.append("<text>Hello world!</text>");
 				sb.append("</note>");
@@ -151,8 +151,8 @@ public class XCardReaderTest {
 				//two params
 				sb.append("<note>");
 					sb.append("<parameters>");
-						sb.append("<altid>1</altid>");
-						sb.append("<language>fr</language>");
+						sb.append("<altid><text>1</text></altid>");
+						sb.append("<language><language-tag>fr</language-tag></language>");
 					sb.append("</parameters>");
 					sb.append("<text>Bonjour tout le monde!</text>");
 				sb.append("</note>");
