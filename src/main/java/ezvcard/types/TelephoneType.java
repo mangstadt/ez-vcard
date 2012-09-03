@@ -201,6 +201,30 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		} else {
 			copy.setValue(null);
 		}
+
+		//replace "TYPE=pref" with "PREF=1"
+		if (version == VCardVersion.V4_0) {
+			if (getTypes().contains(TelephoneTypeParameter.PREF)) {
+				copy.removeType(TelephoneTypeParameter.PREF.getValue());
+				copy.setPref(1);
+			}
+		} else {
+			copy.setPref(null);
+
+			//find the TEL with the lowest PREF value in the vCard
+			TelephoneType mostPreferred = null;
+			for (TelephoneType tel : vcard.getTelephoneNumbers()) {
+				Integer pref = tel.getPref();
+				if (pref != null) {
+					if (mostPreferred == null || pref < mostPreferred.getPref()) {
+						mostPreferred = tel;
+					}
+				}
+			}
+			if (this == mostPreferred) {
+				copy.addType(TelephoneTypeParameter.PREF.getValue());
+			}
+		}
 	}
 
 	@Override
@@ -214,7 +238,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		value = VCardStringUtils.unescape(value.trim());
 		parseValue(value);
 	}
-	
+
 	@Override
 	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		String value = writeValue(version);
@@ -228,16 +252,16 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			parseValue(value);
 		}
 	}
-	
-	private void parseValue(String value){
+
+	private void parseValue(String value) {
 		if (value.matches("(?i)tel:.*")) {
 			//remove "tel:"
 			value = (value.length() > 4) ? value.substring(4) : "";
 		}
 		setValue(value);
 	}
-	
-	private String writeValue(VCardVersion version){
+
+	private String writeValue(VCardVersion version) {
 		String value = this.value;
 		if (version == VCardVersion.V4_0) {
 			value = "tel:" + value;

@@ -410,7 +410,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		} else {
 			copy.setPref(null);
 
-			//find the ADR with the lowest PREF value in the vCard (and the same ALTID)
+			//find the ADR with the lowest PREF value in the vCard
 			AddressType mostPreferred = null;
 			for (AddressType adr : vcard.getAddresses()) {
 				Integer pref = adr.getPref();
