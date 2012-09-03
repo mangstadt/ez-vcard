@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.w3c.dom.Element;
 
+import ezvcard.VCard;
 import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -191,6 +192,33 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	 */
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
+	}
+	
+	@Override
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+		//replace "TYPE=pref" with "PREF=1"
+		if (version == VCardVersion.V4_0) {
+			if (getTypes().contains(EmailTypeParameter.PREF)) {
+				copy.removeType(EmailTypeParameter.PREF.getValue());
+				copy.setPref(1);
+			}
+		} else {
+			copy.setPref(null);
+
+			//find the EMAIL with the lowest PREF value in the vCard
+			EmailType mostPreferred = null;
+			for (EmailType email : vcard.getEmails()) {
+				Integer pref = email.getPref();
+				if (pref != null) {
+					if (mostPreferred == null || pref < mostPreferred.getPref()) {
+						mostPreferred = email;
+					}
+				}
+			}
+			if (this == mostPreferred) {
+				copy.addType(EmailTypeParameter.PREF.getValue());
+			}
+		}
 	}
 
 	@Override

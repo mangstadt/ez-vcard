@@ -2,7 +2,9 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +102,59 @@ public class TelephoneTypeTest {
 		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
+	}
+
+	/**
+	 * If a type contains a "TYPE=pref" parameter and it's being marshalled to
+	 * 4.0, it should replace "TYPE=pref" with "PREF=1". <br>
+	 * <br>
+	 * Conversely, if types contain "PREF" parameters and they're being
+	 * marshalled to 2.1/3.0, then it should find the type with the lowest PREF
+	 * value and add "TYPE=pref" to it.
+	 */
+	@Test
+	public void marshalPref() throws Exception {
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+
+		//EMAIL has "TYPE=pref"==========
+		TelephoneType t = new TelephoneType();
+		t.addType(TelephoneTypeParameter.PREF);
+
+		VCardVersion version = VCardVersion.V2_1;
+		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertNull(subTypes.getPref());
+		assertTrue(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
+
+		version = VCardVersion.V4_0;
+		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
+
+		//EMAIL has PREF parameter=======
+		VCard vcard = new VCard();
+		TelephoneType t1 = new TelephoneType();
+		t1.setPref(1);
+		vcard.addTelephoneNumber(t1);
+		TelephoneType t2 = new TelephoneType();
+		t2.setPref(2);
+		vcard.addTelephoneNumber(t2);
+
+		version = VCardVersion.V2_1;
+		subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertNull(subTypes.getPref());
+		assertTrue(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
+		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertNull(subTypes.getPref());
+		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
+
+		version = VCardVersion.V4_0;
+		subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
+		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		assertEquals(Integer.valueOf(2), subTypes.getPref());
+		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
 	}
 
 	@Test
