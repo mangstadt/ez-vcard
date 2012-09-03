@@ -47,54 +47,29 @@ import ezvcard.util.XCardUtils;
 /**
  * @author Michael Angstadt
  */
-public class ImppTypeTest {
-	@Test
-	public void marshal() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		ImppType t;
-		String expected, actual;
-
-		t = new ImppType(ImppType.Protocol.AIM, "john.doe@aol.com");
-		expected = "aim:john.doe@aol.com";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-	}
-
+public class UriTypeTest {
 	@Test
 	public void marshalXml() throws Exception {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		ImppType t;
+		UriType t;
 		Document expected, actual;
 		Element element;
 		String expectedXml;
 
-		t = new ImppType(ImppType.Protocol.AIM, "john.doe@aol.com");
-		expectedXml = "<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
-		expectedXml += "<uri>aim:john.doe@aol.com</uri>";
-		expectedXml += "</impp>";
+		t = new UriType("NAME", "http://www.example.com");
+
+		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<uri>http://www.example.com</uri>";
+		expectedXml += "</name>";
 		expected = XCardUtils.toDocument(expectedXml);
-		actual = XCardUtils.toDocument("<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+
+		actual = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
 		element = XCardUtils.getFirstElement(actual.getChildNodes());
 		t.marshalValue(element, version, warnings, compatibilityMode);
+
 		assertXMLEqual(expected, actual);
-	}
-
-	@Test
-	public void unmarshal() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		ImppType t;
-
-		t = new ImppType();
-		t.unmarshalValue(subTypes, "aim:john.doe@aol.com", version, warnings, compatibilityMode);
-		assertEquals("aim", t.getProtocol());
-		assertEquals("john.doe@aol.com", t.getUri());
 	}
 
 	@Test
@@ -103,17 +78,19 @@ public class ImppTypeTest {
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
-		ImppType t;
+		UriType t;
+		String expected, actual;
 		String xml;
 		Element element;
 
-		xml = "<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
-		xml += "<uri>aim:john.doe@aol.com</uri>";
-		xml += "</impp>";
+		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<uri>http://www.example.com</uri>";
+		xml += "</name>";
 		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
-		t = new ImppType();
+		t = new UriType("NAME");
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
-		assertEquals("aim", t.getProtocol());
-		assertEquals("john.doe@aol.com", t.getUri());
+		expected = "http://www.example.com";
+		actual = t.getValue();
+		assertEquals(expected, actual);
 	}
 }

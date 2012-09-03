@@ -1,19 +1,25 @@
 package ezvcard.types;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -125,6 +131,17 @@ public class TimezoneTypeTest {
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.UTC_OFFSET, subTypes.getValue());
 
+		//xCard
+		version = VCardVersion.V4_0;
+		String expectedXml = "<tz xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<utc-offset>-05:30</utc-offset>";
+		expectedXml += "</tz>";
+		Document expectedDoc = XCardUtils.toDocument(expectedXml);
+		Document actualDoc = XCardUtils.toDocument("<tz xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
+
 		//just text======
 		t = new TimezoneType("America/New_York");
 
@@ -151,6 +168,17 @@ public class TimezoneTypeTest {
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+
+		//xCard
+		version = VCardVersion.V4_0;
+		expectedXml = "<tz xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<text>America/New_York</text>";
+		expectedXml += "</tz>";
+		expectedDoc = XCardUtils.toDocument(expectedXml);
+		actualDoc = XCardUtils.toDocument("<tz xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
 
 		//offset and text=====
 		t = new TimezoneType(-5, 30, "America/New_York");
@@ -179,32 +207,57 @@ public class TimezoneTypeTest {
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 
+		//xCard
+		version = VCardVersion.V4_0;
+		expectedXml = "<tz xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<text>America/New_York</text>";
+		expectedXml += "</tz>";
+		expectedDoc = XCardUtils.toDocument(expectedXml);
+		actualDoc = XCardUtils.toDocument("<tz xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
+
 		//no offset, no text====
 		t = new TimezoneType();
 
 		//2.1
 		version = VCardVersion.V2_1;
-		expectedValue = "";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(expectedValue, actualValue);
-		assertNull(subTypes.getValue());
+		try {
+			actualValue = t.marshalValue(version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+		}
 
 		//3.0
 		version = VCardVersion.V3_0;
-		expectedValue = "";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(expectedValue, actualValue);
-		assertNull(subTypes.getValue());
+		try {
+			actualValue = t.marshalValue(version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+		}
 
 		//4.0
 		version = VCardVersion.V4_0;
-		expectedValue = "";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(expectedValue, actualValue);
-		assertNull(subTypes.getValue());
+		try {
+			actualValue = t.marshalValue(version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+		}
+
+		//xCard
+		version = VCardVersion.V4_0;
+		actualDoc = XCardUtils.toDocument("<tz xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		try {
+			t.marshalValue(element, version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+		}
 	}
 
 	@Test

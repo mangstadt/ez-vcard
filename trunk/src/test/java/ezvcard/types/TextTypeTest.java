@@ -1,15 +1,19 @@
 package ezvcard.types;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -45,7 +49,7 @@ import ezvcard.io.CompatibilityMode;
  */
 public class TextTypeTest {
 	@Test
-	public void doMarshalValue() throws Exception {
+	public void marshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -59,7 +63,31 @@ public class TextTypeTest {
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
+	public void marshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		TextType t;
+		Document expected, actual;
+		Element element;
+		String expectedXml;
+
+		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
+
+		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<text>This is a test of the TextType.\nOne, two, three; and \\four\\.</text>";
+		expectedXml += "</name>";
+		expected = XCardUtils.toDocument(expectedXml);
+
+		actual = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void unmarshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -70,6 +98,28 @@ public class TextTypeTest {
 		t = new TextType("NAME");
 		t.unmarshalValue(subTypes, "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.", version, warnings, compatibilityMode);
 		expected = "This is a test of the TextType.\r\nOne, two, three; and \\four\\.";
+		actual = t.getValue();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void unmarshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		VCardSubTypes subTypes = new VCardSubTypes();
+		TextType t;
+		String expected, actual;
+		String xml;
+		Element element;
+
+		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<text>This is a test of the TextType.\nOne, two, three; and \\four\\.</text>";
+		xml += "</name>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		t = new TextType("NAME");
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
 		actual = t.getValue();
 		assertEquals(expected, actual);
 	}

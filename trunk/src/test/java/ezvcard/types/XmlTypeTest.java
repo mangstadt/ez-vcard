@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
@@ -70,5 +72,19 @@ public class XmlTypeTest {
 		} catch (SkipMeException e) {
 			//should be thrown
 		}
+	}
+	
+	@Test
+	public void unmarshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		VCardSubTypes subTypes = new VCardSubTypes();
+
+		String xml = "<a href=\"http://www.example.com\">some html</a>";
+		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		XmlType t = new XmlType();
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		assertEquals("<a href=\"http://www.example.com\">some html</a>", t.getValue());
 	}
 }

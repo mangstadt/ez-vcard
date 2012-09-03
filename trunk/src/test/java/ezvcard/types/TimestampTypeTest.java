@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -9,10 +10,13 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -75,17 +79,25 @@ public class TimestampTypeTest {
 		expected = "19800605T131020Z";
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
+
+		//xCard
+		version = VCardVersion.V4_0;
+		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<timestamp>19800605T131020Z</timestamp>";
+		expectedXml += "</date>";
+		Document expectedDoc = XCardUtils.toDocument(expectedXml);
+		Document actualDoc = XCardUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
 	@Test
 	public void unmarshalValue() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 
-		TimestampType t = new TimestampType("DATE");
-		t.unmarshalValue(subTypes, "19800605T081020-0500", version, warnings, compatibilityMode);
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		c.clear();
 		c.set(Calendar.YEAR, 1980);
@@ -95,6 +107,20 @@ public class TimestampTypeTest {
 		c.set(Calendar.MINUTE, 10);
 		c.set(Calendar.SECOND, 20);
 		Date expected = c.getTime();
+
+		VCardVersion version = VCardVersion.V2_1;
+		TimestampType t = new TimestampType("DATE");
+		t.unmarshalValue(subTypes, "19800605T081020-0500", version, warnings, compatibilityMode);
+		assertEquals(expected, t.getTimestamp());
+
+		//xCard
+		version = VCardVersion.V4_0;
+		t = new TimestampType("DATE");
+		String xml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<timestamp>19800605T131020Z</timestamp>";
+		xml += "</date>";
+		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getTimestamp());
 	}
 }

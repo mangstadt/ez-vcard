@@ -1,21 +1,15 @@
 package ezvcard.types;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -97,6 +91,67 @@ public class TextListTypeTest {
 	}
 
 	@Test
+	public void marshalXml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+
+		//three items
+		TextListType t = new TextListType("NAME", ',');
+		t.addValue("One");
+		t.addValue("One and a half");
+		t.addValue("Two");
+		t.removeValue("One and a half"); //test "removeValue"
+		t.addValue("Three");
+		String expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<text>One</text>";
+		expectedXml += "<text>Two</text>";
+		expectedXml += "<text>Three</text>";
+		expectedXml += "</name>";
+		Document expectedDoc = XCardUtils.toDocument(expectedXml);
+		Document actualDoc = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
+
+		//two items
+		t = new TextListType("NAME", ',');
+		t.addValue("One");
+		t.addValue("Two");
+		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<text>One</text>";
+		expectedXml += "<text>Two</text>";
+		expectedXml += "</name>";
+		expectedDoc = XCardUtils.toDocument(expectedXml);
+		actualDoc = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
+
+		//one item
+		t = new TextListType("NAME", ',');
+		t.addValue("One");
+		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "<text>One</text>";
+		expectedXml += "</name>";
+		expectedDoc = XCardUtils.toDocument(expectedXml);
+		actualDoc = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
+
+		//zero items
+		t = new TextListType("NAME", ',');
+		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml += "</name>";
+		expectedDoc = XCardUtils.toDocument(expectedXml);
+		actualDoc = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		t.marshalValue(element, version, warnings, compatibilityMode);
+		assertXMLEqual(expectedDoc, actualDoc);
+	}
+
+	@Test
 	public void unmarshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
@@ -143,9 +198,15 @@ public class TextListTypeTest {
 		TextListType t;
 		List<String> expected, actual;
 		Element element;
+		String xml;
 
 		//three values
-		element = toElement("<name><text>One</text><foo>bar</foo><text>Two</text><text>Three</text></name>");
+		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<text>One</text>";
+		xml += "<text>Two</text>";
+		xml += "<text>Three</text>";
+		xml += "</name>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
 		t = new TextListType("NAME", ',');
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two", "Three");
@@ -153,7 +214,11 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//two values
-		element = toElement("<name><text>One</text><foo>bar</foo><text>Two</text></name>");
+		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<text>One</text>";
+		xml += "<text>Two</text>";
+		xml += "</name>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
 		t = new TextListType("NAME", ',');
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two");
@@ -161,7 +226,10 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//one value
-		element = toElement("<name><text>One</text><foo>bar</foo></name>");
+		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "<text>One</text>";
+		xml += "</name>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
 		t = new TextListType("NAME", ',');
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One");
@@ -169,27 +237,13 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//zero values
-		element = toElement("<name><foo>bar</foo></name>");
+		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml += "</name>";
+		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
 		t = new TextListType("NAME", ',');
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList();
 		actual = t.getValues();
 		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Parses an XML string into an {@link Element}.
-	 * @param xml the XML string
-	 * @return the element
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
-	 */
-	private Element toElement(String xml) throws ParserConfigurationException, SAXException, IOException {
-		DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-		fact.setNamespaceAware(true);
-		DocumentBuilder db = fact.newDocumentBuilder();
-		Document doc = db.parse(new ByteArrayInputStream(xml.getBytes()));
-		return XCardUtils.getFirstElement(doc.getChildNodes());
 	}
 }
