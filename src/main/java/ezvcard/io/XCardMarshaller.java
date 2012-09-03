@@ -34,6 +34,7 @@ import ezvcard.types.MemberType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
 import ezvcard.util.ListMultimap;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -255,7 +256,11 @@ public class XCardMarshaller {
 	private Element marshalType(VCardType type, VCard vcard) throws VCardException {
 		List<String> warnings = new ArrayList<String>();
 		try {
-			Element typeElement = createElement(type.getTypeName().toLowerCase());
+			String ns = type.getXmlNamespace();
+			if (ns == null){
+				ns = XCardUtils.getXCardNs(targetVersion);
+			}
+			Element typeElement = createElement(type.getTypeName().toLowerCase(), ns);
 
 			//marshal the sub types
 			VCardSubTypes subTypes = type.marshalSubTypes(targetVersion, warnings, compatibilityMode, vcard);
@@ -326,6 +331,16 @@ public class XCardMarshaller {
 	 * @return the new XML element
 	 */
 	private Element createElement(String name) {
-		return document.createElementNS("urn:ietf:params:xml:ns:vcard-" + targetVersion.getVersion(), name);
+		return createElement(name, XCardUtils.getXCardNs(targetVersion));
+	}
+	
+	/**
+	 * Creates a new XML element.
+	 * @param name the name of the XML element
+	 * @param ns the namespace of the XML element
+	 * @return the new XML element
+	 */
+	private Element createElement(String name, String ns) {
+		return document.createElementNS(ns, name);
 	}
 }

@@ -96,7 +96,7 @@ public class XCardUtils {
 	public static Element getFirstElement(NodeList nl, String elementName) {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
-			if (node instanceof Element && (elementName == null || elementName.equals(node.getNodeName()))) {
+			if (node instanceof Element && (elementName == null || elementName.equals(node.getLocalName()))) {
 				return (Element) node;
 			}
 		}
@@ -114,7 +114,7 @@ public class XCardUtils {
 	public static String getFirstChildText(Element parent, String... childNames) {
 		List<Element> children = toElementList(parent.getChildNodes());
 		for (Element child : children) {
-			String curName = child.getNodeName();
+			String curName = child.getLocalName();
 			for (String childName : childNames) {
 				if (childName.equals(curName)) {
 					return child.getTextContent();
