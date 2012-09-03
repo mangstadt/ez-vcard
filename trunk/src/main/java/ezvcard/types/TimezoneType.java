@@ -14,6 +14,7 @@ import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
@@ -325,7 +326,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		if (text != null) {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && hourOffset != null && minuteOffset != null) {
 				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
@@ -334,6 +335,8 @@ public class TimezoneType extends VCardType {
 			sb.append(VCardStringUtils.escapeText(text));
 		} else if (hourOffset != null && minuteOffset != null) {
 			sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
+		} else {
+			throw new SkipMeException("Property does not have text or a UTC offset associated with it.");
 		}
 	}
 
@@ -352,6 +355,8 @@ public class TimezoneType extends VCardType {
 		} else if (hourOffset != null && minuteOffset != null) {
 			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
 			XCardUtils.appendChild(parent, "utc-offset", offset, version);
+		} else {
+			throw new SkipMeException("Property does not have text or a UTC offset associated with it.");
 		}
 	}
 
