@@ -260,8 +260,8 @@ public class XCardReaderTest {
 				//XmlType
 				sb.append("<a href=\"http://www.website.com\">website</a>");
 				
-				//LuckyNumType
-				sb.append("<x-lucky-num><integer>21</integer></x-lucky-num>");
+				//LuckyNumType (with namespace)
+				sb.append("<a:x-lucky-num xmlns:a=\"http://luckynum.com\"><integer>21</integer></a:x-lucky-num>");
 				
 				//extended type class that does not support xCard
 				sb.append("<x-age><integer>24</integer></x-age>");
@@ -280,9 +280,9 @@ public class XCardReaderTest {
 
 		List<XmlType> xmlTypes = vcard.getXmls();
 		assertEquals(2, xmlTypes.size());
-		assertEquals("<a href=\"http://www.website.com\">website</a>", xmlTypes.get(0).getValue());
+		assertEquals("<a href=\"http://www.website.com\" xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">website</a>", xmlTypes.get(0).getValue());
 		//X-AGE was not unmarshalled because its type class does not support xCard;
-		assertEquals("<x-age><integer>24</integer></x-age>", xmlTypes.get(1).getValue());
+		assertEquals("<x-age xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\"><integer>24</integer></x-age>", xmlTypes.get(1).getValue());
 
 		List<LuckyNumType> luckyNum = vcard.getExtendedType(LuckyNumType.class);
 		assertEquals(1, luckyNum.size());

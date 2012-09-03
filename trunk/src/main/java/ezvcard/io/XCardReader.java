@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -70,7 +73,7 @@ import ezvcard.util.XCardUtils;
 public class XCardReader {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
-	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
+	private Map<QName, Class<? extends VCardType>> extendedTypeClasses = new HashMap<QName, Class<? extends VCardType>>();
 	private Document document;
 	private Iterator<Element> vcardElements;
 
@@ -84,16 +87,37 @@ public class XCardReader {
 		try {
 			//parse the XML document
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			//dbf.setNamespaceAware(true);
+			dbf.setNamespaceAware(true);
 			dbf.setIgnoringComments(true);
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			document = db.parse(new InputSource(reader));
 
-			//TODO check for correct namespace?
-
 			//get the "<vcard>" elements
 			XPath xpath = XPathFactory.newInstance().newXPath();
-			vcardElements = XCardUtils.toElementList((NodeList) xpath.evaluate("/vcards/vcard", document, XPathConstants.NODESET)).iterator();
+			xpath.setNamespaceContext(new NamespaceContext() {
+				public String getNamespaceURI(String prefix) {
+					if (prefix.equals("v")) {
+						return XCardUtils.getXCardNs(VCardVersion.V4_0);
+					}
+					return null;
+				}
+
+				public String getPrefix(String ns) {
+					if (ns.equals(XCardUtils.getXCardNs(VCardVersion.V4_0))) {
+						return "v";
+					}
+					return null;
+				}
+
+				public Iterator<String> getPrefixes(String ns) {
+					if (ns.equals(XCardUtils.getXCardNs(VCardVersion.V4_0))) {
+						return Arrays.asList("v").iterator();
+					}
+					return null;
+				}
+			});
+
+			vcardElements = XCardUtils.toElementList((NodeList) xpath.evaluate("/v:vcards/v:vcard", document, XPathConstants.NODESET)).iterator();
 		} catch (XPathExpressionException e) {
 			//never thrown, xpath expression is hard coded
 		} catch (ParserConfigurationException e) {
@@ -127,7 +151,14 @@ public class XCardReader {
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		try {
 			VCardType t = clazz.newInstance();
-			extendedTypeClasses.put(t.getTypeName().toUpperCase(), clazz);
+			String ns = t.getXmlNamespace();
+			if (ns == null) {
+				ns = XCardUtils.getXCardNs(VCardVersion.V4_0);
+			}
+			String localName = t.getTypeName().toLowerCase();
+
+			QName qname = new QName(ns, localName);
+			extendedTypeClasses.put(qname, clazz);
 		} catch (Exception e) {
 			//there is no public, no-arg constructor
 			throw new RuntimeException(e);
@@ -164,9 +195,10 @@ public class XCardReader {
 
 		Element vcardElement = vcardElements.next();
 
+		String ns = XCardUtils.getXCardNs(version);
 		List<Element> children = XCardUtils.toElementList(vcardElement.getChildNodes());
 		for (Element child : children) {
-			if ("group".equals(child.getNodeName())) {
+			if ("group".equals(child.getLocalName()) && ns.equals(child.getNamespaceURI())) {
 				String group = child.getAttribute("name");
 				if (group.length() == 0) {
 					group = null;
@@ -194,7 +226,7 @@ public class XCardReader {
 	 */
 	private void parseAndAddElement(Element element, String group, VCardVersion version, VCard vcard) throws VCardException {
 		VCardSubTypes subTypes = parseSubTypes(element);
-		VCardType t = createTypeObject(element.getNodeName());
+		VCardType t = createTypeObject(element.getLocalName(), element.getNamespaceURI());
 		if (t != null) {
 			try {
 				t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
@@ -222,7 +254,7 @@ public class XCardReader {
 		for (Element parametersElement : parametersElements) { // foreach "<parameters>" element (there should only be 1 though)
 			List<Element> paramElements = XCardUtils.toElementList(parametersElement.getChildNodes());
 			for (Element paramElement : paramElements) {
-				String name = paramElement.getNodeName().toUpperCase();
+				String name = paramElement.getLocalName().toUpperCase();
 				List<Element> valueElements = XCardUtils.toElementList(paramElement.getChildNodes());
 				if (valueElements.isEmpty()) {
 					String value = paramElement.getTextContent();
@@ -246,13 +278,14 @@ public class XCardReader {
 	 * Creates the appropriate VCardType instance given the vCard property name.
 	 * This method does not unmarshal the type, it just creates the type object.
 	 * @param name the property name (e.g. "fn")
+	 * @param ns the namespace of the element
 	 * @return the type that was created or null if a type object wasn't created
 	 */
-	private VCardType createTypeObject(String name) {
+	private VCardType createTypeObject(String name, String ns) {
 		name = name.toUpperCase();
 
 		Class<? extends VCardType> clazz = TypeList.nameToTypeClass.get(name);
-		if (clazz != null) {
+		if (clazz != null && XCardUtils.getXCardNs(VCardVersion.V4_0).equals(ns)) {
 			try {
 				return clazz.newInstance();
 			} catch (Exception e) {
@@ -261,7 +294,7 @@ public class XCardReader {
 				return null;
 			}
 		} else {
-			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
+			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(new QName(ns, name.toLowerCase()));
 			if (extendedTypeClass != null) {
 				try {
 					return extendedTypeClass.newInstance();

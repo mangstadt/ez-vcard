@@ -64,4 +64,9 @@ public class LuckyNumType extends VCardType {
 		Element ele = XCardUtils.getFirstElement(element.getElementsByTagName("integer"));
 		luckyNum = Integer.parseInt(ele.getTextContent());
 	}
+	
+	@Override
+	public String getXmlNamespace(){
+		return "http://luckynum.com";
+	}
 }

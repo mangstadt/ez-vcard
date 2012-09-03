@@ -305,6 +305,16 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
+	 * Gets the XML namespace to use for this type when marshalling it to an
+	 * xCard (XML document). Extended type classes can override this method if
+	 * they use their own, custom namespace.
+	 * @return the namespace or null to use the default xCard namespace
+	 */
+	public String getXmlNamespace() {
+		return null;
+	}
+
+	/**
 	 * Gets all sub types (a.k.a "parameters") associated with this type. This
 	 * method can be used to retrieve any extended, standard, or non-standard
 	 * sub type.
