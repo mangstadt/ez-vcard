@@ -34,7 +34,6 @@ import ezvcard.types.MemberType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
 import ezvcard.util.ListMultimap;
-import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -258,7 +257,7 @@ public class XCardMarshaller {
 		try {
 			String ns = type.getXmlNamespace();
 			if (ns == null){
-				ns = XCardUtils.getXCardNs(targetVersion);
+				ns = targetVersion.getXmlNamespace();
 			}
 			Element typeElement = createElement(type.getTypeName().toLowerCase(), ns);
 
@@ -331,7 +330,7 @@ public class XCardMarshaller {
 	 * @return the new XML element
 	 */
 	private Element createElement(String name) {
-		return createElement(name, XCardUtils.getXCardNs(targetVersion));
+		return createElement(name, targetVersion.getXmlNamespace());
 	}
 	
 	/**

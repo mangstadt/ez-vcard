@@ -133,7 +133,7 @@ public class XCardUtils {
 	 * @return the new child element
 	 */
 	public static Element appendChild(Element parent, String childName, String text, VCardVersion version) {
-		return appendChild(parent, childName, text, getXCardNs(version));
+		return appendChild(parent, childName, text, version.getXmlNamespace());
 	}
 
 	/**
@@ -149,15 +149,6 @@ public class XCardUtils {
 		child.setTextContent(text);
 		parent.appendChild(child);
 		return child;
-	}
-
-	/**
-	 * Gets the xCard namespace for a particular vCard version.
-	 * @param version the vCard version
-	 * @return the namespace
-	 */
-	public static String getXCardNs(VCardVersion version) {
-		return "urn:ietf:params:xml:ns:vcard-" + version.getVersion();
 	}
 
 	/**

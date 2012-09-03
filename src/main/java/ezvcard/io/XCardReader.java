@@ -97,20 +97,20 @@ public class XCardReader {
 			xpath.setNamespaceContext(new NamespaceContext() {
 				public String getNamespaceURI(String prefix) {
 					if (prefix.equals("v")) {
-						return XCardUtils.getXCardNs(VCardVersion.V4_0);
+						return VCardVersion.V4_0.getXmlNamespace();
 					}
 					return null;
 				}
 
 				public String getPrefix(String ns) {
-					if (ns.equals(XCardUtils.getXCardNs(VCardVersion.V4_0))) {
+					if (ns.equals(VCardVersion.V4_0.getXmlNamespace())) {
 						return "v";
 					}
 					return null;
 				}
 
 				public Iterator<String> getPrefixes(String ns) {
-					if (ns.equals(XCardUtils.getXCardNs(VCardVersion.V4_0))) {
+					if (ns.equals(VCardVersion.V4_0.getXmlNamespace())) {
 						return Arrays.asList("v").iterator();
 					}
 					return null;
@@ -153,7 +153,7 @@ public class XCardReader {
 			VCardType t = clazz.newInstance();
 			String ns = t.getXmlNamespace();
 			if (ns == null) {
-				ns = XCardUtils.getXCardNs(VCardVersion.V4_0);
+				ns = VCardVersion.V4_0.getXmlNamespace();
 			}
 			String localName = t.getTypeName().toLowerCase();
 
@@ -195,7 +195,7 @@ public class XCardReader {
 
 		Element vcardElement = vcardElements.next();
 
-		String ns = XCardUtils.getXCardNs(version);
+		String ns = version.getXmlNamespace();
 		List<Element> children = XCardUtils.toElementList(vcardElement.getChildNodes());
 		for (Element child : children) {
 			if ("group".equals(child.getLocalName()) && ns.equals(child.getNamespaceURI())) {
@@ -285,7 +285,7 @@ public class XCardReader {
 		name = name.toUpperCase();
 
 		Class<? extends VCardType> clazz = TypeList.nameToTypeClass.get(name);
-		if (clazz != null && XCardUtils.getXCardNs(VCardVersion.V4_0).equals(ns)) {
+		if (clazz != null && VCardVersion.V4_0.getXmlNamespace().equals(ns)) {
 			try {
 				return clazz.newInstance();
 			} catch (Exception e) {
