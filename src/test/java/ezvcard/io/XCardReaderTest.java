@@ -346,6 +346,40 @@ public class XCardReaderTest {
 		assertNull(xcr.readNext());
 	}
 
+	/**
+	 * xCards without the proper namespace will not be parsed.
+	 */
+	@Test
+	public void namespace() throws Exception {
+		//no namespace
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("<vcards>");
+			sb.append("<vcard>");
+				sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
+			sb.append("</vcard>");
+		sb.append("</vcards>");
+		//@formatter:on
+
+		Reader reader = new StringReader(sb.toString());
+		XCardReader xcr = new XCardReader(reader);
+		assertNull(xcr.readNext());
+
+		//wrong namespace
+		//@formatter:off
+		sb = new StringBuilder();
+		sb.append("<vcards xmlns=\"wrong\">");
+			sb.append("<vcard>");
+				sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
+			sb.append("</vcard>");
+		sb.append("</vcards>");
+		//@formatter:on
+
+		reader = new StringReader(sb.toString());
+		xcr = new XCardReader(reader);
+		assertNull(xcr.readNext());
+	}
+
 	private static class AgeType extends VCardType {
 		public int age;
 

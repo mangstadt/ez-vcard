@@ -71,37 +71,19 @@ import ezvcard.util.XCardUtils;
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
 public class XCardReader {
-	private static final NamespaceContext nsContext;
-	static {
-		nsContext = new NamespaceContext() {
-			public String getNamespaceURI(String prefix) {
-				if (prefix.equals("v")) {
-					return VCardVersion.V4_0.getXmlNamespace();
-				}
-				return null;
-			}
-
-			public String getPrefix(String ns) {
-				if (ns.equals(VCardVersion.V4_0.getXmlNamespace())) {
-					return "v";
-				}
-				return null;
-			}
-
-			public Iterator<String> getPrefixes(String ns) {
-				if (ns.equals(VCardVersion.V4_0.getXmlNamespace())) {
-					return Arrays.asList("v").iterator();
-				}
-				return null;
-			}
-		};
-	}
-
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
 	private Map<QName, Class<? extends VCardType>> extendedTypeClasses = new HashMap<QName, Class<? extends VCardType>>();
-	private Document document;
+
+	/**
+	 * The <code>&lt;vcard&gt;</code> elements within the XML document.
+	 */
 	private Iterator<Element> vcardElements;
+
+	/**
+	 * The version of the vCard, as determined by the XML namespace.
+	 */
+	private VCardVersion version;
 
 	/**
 	 * @param reader the reader to read the vCards from
@@ -115,11 +97,39 @@ public class XCardReader {
 			dbf.setNamespaceAware(true);
 			dbf.setIgnoringComments(true);
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			document = db.parse(new InputSource(reader));
+			Document document = db.parse(new InputSource(reader));
+
+			//get the vCard version
+			Element root = XCardUtils.getFirstElement(document.getChildNodes());
+			String ns = root.getNamespaceURI();
+			version = VCardVersion.valueOfByXmlNamespace(ns);
 
 			//get the "<vcard>" elements
 			XPath xpath = XPathFactory.newInstance().newXPath();
-			xpath.setNamespaceContext(nsContext);
+			if (version != null) {
+				xpath.setNamespaceContext(new NamespaceContext() {
+					public String getNamespaceURI(String prefix) {
+						if (prefix.equals("v")) {
+							return version.getXmlNamespace();
+						}
+						return null;
+					}
+
+					public String getPrefix(String ns) {
+						if (ns.equals(version.getXmlNamespace())) {
+							return "v";
+						}
+						return null;
+					}
+
+					public Iterator<String> getPrefixes(String ns) {
+						if (ns.equals(version.getXmlNamespace())) {
+							return Arrays.asList("v").iterator();
+						}
+						return null;
+					}
+				});
+			}
 			vcardElements = XCardUtils.toElementList((NodeList) xpath.evaluate("/v:vcards/v:vcard", document, XPathConstants.NODESET)).iterator();
 		} catch (XPathExpressionException e) {
 			//never thrown, xpath expression is hard coded
