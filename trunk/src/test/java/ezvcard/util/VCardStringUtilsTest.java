@@ -50,7 +50,16 @@ public class VCardStringUtilsTest {
 		String actual, expected;
 
 		actual = VCardStringUtils.escapeText("One; Two, Three\\ Four\n Five\r\n Six\r");
-		expected = "One\\; Two\\, Three\\\\ Four\\n Five\\n Six\\n";
+		expected = "One\\; Two\\, Three\\\\ Four\n Five\r\n Six\r";
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void escapeNewlines() {
+		String actual, expected;
+
+		actual = VCardStringUtils.escapeNewlines("One; Two, Three\\ Four\n Five\r\n Six\r");
+		expected = "One; Two, Three\\ Four\\n Five\\n Six\\n";
 		assertEquals(expected, actual);
 	}
 

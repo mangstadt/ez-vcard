@@ -87,10 +87,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Converts this type object to a string for sending over the wire. This
-	 * method is responsible for escaping all the necessary characters (such as
-	 * commas, semi-colons, and ESPECIALLY newlines). It is NOT responsible for
-	 * folding.
+	 * Converts this type object to a string for sending over the wire. It is
+	 * NOT responsible for folding.
 	 * @param version the version vCard that is being generated
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
@@ -110,10 +108,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Converts this type object to a string for sending over the wire. This
-	 * method is responsible for escaping all the necessary characters (such as
-	 * commas, semi-colons, and ESPECIALLY newlines). It is NOT responsible for
-	 * folding.
+	 * Converts this type object to a string for sending over the wire. It is
+	 * NOT responsible for folding.
 	 * @param value the buffer to add the marshalled value to
 	 * @param version the version vCard that is being generated
 	 * @param warnings allows the programmer to alert the user to any

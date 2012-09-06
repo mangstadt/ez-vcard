@@ -23,6 +23,7 @@ import ezvcard.types.LabelType;
 import ezvcard.types.MemberType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
+import ezvcard.util.VCardStringUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -372,6 +373,7 @@ public class VCardWriter implements Closeable {
 
 			//write the value
 			if (nested == null) {
+				value = VCardStringUtils.escapeNewlines(value);
 				sb.append(value);
 			}
 			writer.write(sb.toString());
