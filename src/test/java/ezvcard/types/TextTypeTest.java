@@ -57,7 +57,7 @@ public class TextTypeTest {
 		String expected, actual;
 
 		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		expected = "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.";
+		expected = "This is a test of the TextType.\nOne\\, two\\, three\\; and \\\\four\\\\."; //newlines are escaped in the VCardWriter
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}

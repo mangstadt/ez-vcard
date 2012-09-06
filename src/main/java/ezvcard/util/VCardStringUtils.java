@@ -67,22 +67,42 @@ public class VCardStringUtils {
 	}
 
 	/**
-	 * Escapes text for safe inclusion in a vCard value.
+	 * Escapes all special characters within a vCard value.
+	 * <p>
+	 * These characters are:
+	 * </p>
+	 * <ul>
+	 * <li>backslashes (<code>\</code>)</li>
+	 * <li>commas (<code>,</code>)</li>
+	 * <li>semi-colons (<code>;</code>)</li>
+	 * </ul>
 	 * @param text the text to escape
 	 * @return the escaped text
 	 */
 	public static String escapeText(String text) {
-		//escape backslashes, commas, and semi-colons
 		String chars = "\\,;";
 		for (int i = 0; i < chars.length(); i++) {
 			String ch = chars.substring(i, i + 1);
 			text = text.replace(ch, "\\" + ch);
 		}
-
-		//escape newlines
-		text = text.replaceAll("\\r\\n|\\r|\\n", "\\\\n");
-
 		return text;
+	}
+
+	/**
+	 * Escapes all newline characters within a vCard value.
+	 * <p>
+	 * This method escapes the following newline sequences:
+	 * </p>
+	 * <ul>
+	 * <li><code>\r\n</code></li>
+	 * <li><code>\r</code></li>
+	 * <li><code>\n</code></li>
+	 * </ul>
+	 * @param text the text to escape
+	 * @return the escaped text
+	 */
+	public static String escapeNewlines(String text) {
+		return text.replaceAll("\\r\\n|\\r|\\n", "\\\\n");
 	}
 
 	/**
