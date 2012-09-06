@@ -107,6 +107,21 @@ public enum VCardVersion {
 		return null;
 	}
 
+	/**
+	 * Gets a {@link VCardVersion} instance based on the given XML namespace.
+	 * @param ns the XML namespace
+	 * @return the object or null if not found
+	 */
+	public static VCardVersion valueOfByXmlNamespace(String ns) {
+		for (VCardVersion version : VCardVersion.values()) {
+			String versionNs = version.getXmlNamespace();
+			if (versionNs != null && versionNs.equals(ns)) {
+				return version;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		return version;
