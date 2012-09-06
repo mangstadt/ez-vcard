@@ -50,6 +50,7 @@ import ezvcard.types.SourceDisplayTextType;
 import ezvcard.types.SourceType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
+import ezvcard.types.TextType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
@@ -1715,16 +1716,43 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all extended types that have the given name.
+	 * Adds an extended type to the vCard.
+	 * @param name the name of the extended type. It MUST begin with "X-" (for
+	 * example, "X-GENDER").
+	 * @param value the value of the extended type
+	 * @return the extended type object that was created
+	 */
+	public TextType addExtendedType(String name, String value) {
+		TextType type = new TextType(name, value);
+		extendedTypes.put(type.getTypeName(), type);
+		return type;
+	}
+
+	/**
+	 * Gets all extended types that have a particular name. Use this method to
+	 * retrieve the extended types that have NOT been unmarshalled into a
+	 * custom, extended type class.
 	 * @param typeName the type name
 	 * @return the extended types or empty list if none were found
 	 */
 	public List<RawType> getExtendedType(String typeName) {
+		return getExtendedType(typeName, RawType.class);
+	}
+
+	/**
+	 * Gets all extended types that have a particular name and that are an
+	 * instance of a particular class.
+	 * @param typeName the type name
+	 * @param clazz the type class
+	 * @return the extended types or empty list if none were found
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends VCardType> List<T> getExtendedType(String typeName, Class<T> clazz) {
 		List<VCardType> types = extendedTypes.get(typeName);
-		List<RawType> list = new ArrayList<RawType>(types.size());
+		List<T> list = new ArrayList<T>();
 		for (VCardType type : types) {
-			if (type instanceof RawType) {
-				RawType rt = (RawType) type;
+			if (clazz.isInstance(type)) {
+				T rt = (T) type;
 				list.add(rt);
 			}
 		}
@@ -1732,9 +1760,8 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all extended types that have been unmarshalled into an extended type
-	 * class.
-	 * @param clazz the class that the extended type was unmarshalled into
+	 * Gets all extended types that are an instance of a particular class.
+	 * @param clazz the type class
 	 * @return the extended types or empty list of none were found
 	 */
 	@SuppressWarnings("unchecked")
@@ -1749,9 +1776,9 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all of the extended types.
-	 * @return all of the extended types. The key is the type name and the value
-	 * is the list of type objects.
+	 * Gets all extended types.
+	 * @return the extended types (key = the type name, value = the list of type
+	 * objects that have that name)
 	 */
 	public Map<String, List<VCardType>> getExtendedTypes() {
 		return extendedTypes.getMap();
