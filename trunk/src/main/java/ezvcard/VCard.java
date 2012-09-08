@@ -4,14 +4,22 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.transform.TransformerException;
+
+import org.xml.sax.SAXException;
+
 import ezvcard.io.VCardReader;
 import ezvcard.io.VCardWriter;
+import ezvcard.io.XCardMarshaller;
+import ezvcard.io.XCardReader;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.AnniversaryType;
@@ -180,6 +188,50 @@ public class VCard {
 	}
 
 	/**
+	 * Parses a vCard XML document (xCard). Use the {@link XCardReader} class
+	 * for more control over how the vCard is parsed.
+	 * @param xml the vCard XML string
+	 * @return the parsed vCard
+	 * @throws VCardException if there's a problem parsing the vCard
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public static VCard parseXml(String xml) throws VCardException, SAXException {
+		try {
+			XCardReader xcr = new XCardReader(new StringReader(xml));
+			return xcr.readNext();
+		} catch (IOException e) {
+			//never thrown because we're reading from string
+			return null;
+		}
+	}
+
+	/**
+	 * Parses a vCard XML file (xCard). Use the {@link XCardReader} class for
+	 * more control over how the vCard is parsed.
+	 * @param file the vCard XML file
+	 * @return the parsed vCard
+	 * @throws VCardException if there's a problem parsing the vCard
+	 * @throws IOException if there's a problem reading the file
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public static VCard parseXml(File file) throws VCardException, IOException, SAXException {
+		Reader reader = null;
+		try {
+			reader = new FileReader(file);
+			XCardReader xcr = new XCardReader(reader);
+			return xcr.readNext();
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					//ignore
+				}
+			}
+		}
+	}
+
+	/**
 	 * Writes this vCard to a string. Use the {@link VCardWriter} class for more
 	 * control over how the vCard is written.
 	 * @throws VCardException if there's a problem writing the vCard
@@ -211,6 +263,52 @@ public class VCard {
 			if (vcw != null) {
 				try {
 					vcw.close();
+				} catch (IOException e) {
+					//ignore
+				}
+			}
+		}
+	}
+
+	/**
+	 * Writes this vCard to an XML document (xCard). Use the
+	 * {@link XCardMarshaller} class for more control over how the vCard is
+	 * written.
+	 * @throws VCardException if there's a problem writing the vCard
+	 */
+	public String writeXml() throws VCardException {
+		XCardMarshaller xcm = new XCardMarshaller();
+		xcm.addVCard(this);
+
+		StringWriter sw = new StringWriter();
+		try {
+			xcm.write(sw);
+		} catch (TransformerException e) {
+			//never thrown because we're writing to string
+		}
+		return sw.toString();
+	}
+
+	/**
+	 * Writes this vCard to an XML file (xCard). Use the {@link XCardMarshaller}
+	 * class for more control over how the vCard is written.
+	 * @param file the file to write to
+	 * @throws VCardException if there's a problem writing the vCard
+	 * @throws IOException if there's a problem writing to the file
+	 * @throws TransformerException if there's a problem writing the vCard
+	 */
+	public void writeXml(File file) throws VCardException, IOException, TransformerException {
+		XCardMarshaller xcm = new XCardMarshaller();
+		xcm.addVCard(this);
+
+		Writer writer = null;
+		try {
+			writer = new FileWriter(file);
+			xcm.write(writer);
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
 				} catch (IOException e) {
 					//ignore
 				}
