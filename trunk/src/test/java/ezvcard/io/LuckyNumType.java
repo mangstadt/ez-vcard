@@ -51,7 +51,18 @@ public class LuckyNumType extends VCardType {
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (luckyNum == 13){
+			throw new SkipMeException("Invalid lucky number.");
+		}
 		sb.append(luckyNum);
+	}
+	
+	@Override
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		if (luckyNum == 13){
+			throw new SkipMeException("Invalid lucky number.");
+		}
+		parent.setTextContent(luckyNum + "");
 	}
 
 	@Override
