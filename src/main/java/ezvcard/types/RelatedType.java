@@ -73,7 +73,7 @@ import ezvcard.util.XCardUtils;
  * </p>
  * @author Michael Angstadt
  */
-public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParameter> {
+public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParameter> {
 	public static final String NAME = "RELATED";
 
 	private String uri;
@@ -81,14 +81,6 @@ public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParame
 
 	public RelatedType() {
 		super(NAME);
-	}
-
-	/**
-	 * @param type the type of relation (e.g. spouse)
-	 */
-	public RelatedType(RelatedTypeParameter type) {
-		super(NAME);
-		setType(type);
 	}
 
 	/**
@@ -281,7 +273,7 @@ public class RelatedType extends SingleValuedTypeParameterType<RelatedTypeParame
 			setText(value);
 		}
 	}
-	
+
 	@Override
 	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		if (uri != null) {
