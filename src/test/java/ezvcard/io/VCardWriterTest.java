@@ -16,6 +16,7 @@ import ezvcard.types.AgentType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.LabelType;
 import ezvcard.types.NoteType;
+import ezvcard.types.StructuredNameType;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -448,5 +449,47 @@ public class VCardWriterTest {
 		expected = sb.toString();
 
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * If the type's marshal method throws a {@link SkipMeException}, then a
+	 * warning should be added to the warnings list and the type object should
+	 * NOT be marshalled.
+	 */
+	@Test
+	public void skipMeException() throws Exception {
+		VCard vcard = new VCard();
+
+		//add N property so a warning isn't generated (2.1 requires N to be present)
+		StructuredNameType n = new StructuredNameType();
+		vcard.setStructuredName(n);
+
+		LuckyNumType num = new LuckyNumType();
+		num.luckyNum = 24;
+		vcard.addExtendedType(num);
+
+		//should be skipped
+		num = new LuckyNumType();
+		num.luckyNum = 13;
+		vcard.addExtendedType(num);
+
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+		vcw.setAddGenerator(false);
+		vcw.write(vcard);
+
+		assertEquals(vcw.getWarnings().toString(), 1, vcw.getWarnings().size());
+
+		String actual = sw.toString();
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN:VCARD\r\n");
+		sb.append("VERSION:2.1\r\n");
+		sb.append("N:;;;;\r\n");
+		sb.append("X-LUCKY-NUM:24\r\n");
+		sb.append("END:VCARD\r\n");
+		String expected = sb.toString();
+
+		assertEquals(actual, expected);
 	}
 }
