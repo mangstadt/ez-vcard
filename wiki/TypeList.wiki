@@ -789,15 +789,19 @@ Other people that the person is related to.  It can contain either a URI or a pl
 {{{
 VCard vcard = new VCard();
 
-RelatedType related = new RelatedType(RelatedTypeParameter.FRIEND);
+RelatedType related = new RelatedType();
+related.addType(RelatedTypeParameter.FRIEND);
 related.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
 vcard.addRelated(related);
 
-related = new RelatedType(RelatedTypeParameter.CO_WORKER);
+related = new RelatedType();
+related.addType(RelatedTypeParameter.CO_WORKER);
+related.addType(RelatedTypeParameter.FRIEND);
 related.setUri("http://joesmoe.name/vcard.vcf");
 vcard.addRelated(related);
 
-related = new RelatedType(RelatedTypeParameter.SPOUSE);
+related = new RelatedType();
+related.addType(RelatedTypeParameter.SPOUSE);
 related.setText("My wife's name is Edna Smith");
 vcard.addRelated(related);
 }}}
