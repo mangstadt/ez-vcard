@@ -52,15 +52,19 @@ import ezvcard.util.XCardUtils;
  * <pre>
  * VCard vcard = new VCard();
  * 
- * RelatedType related = new RelatedType(RelatedTypeParameter.FRIEND);
+ * RelatedType related = new RelatedType();
+ * related.addType(RelatedTypeParameter.FRIEND);
  * related.setUri(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
  * vcard.addRelated(related);
  * 
- * related = new RelatedType(RelatedTypeParameter.CO_WORKER);
+ * related = new RelatedType();
+ * related.addType(RelatedTypeParameter.CO_WORKER);
+ * related.addType(RelatedTypeParameter.FRIEND);
  * related.setUri(&quot;http://joesmoe.name/vcard.vcf&quot;);
  * vcard.addRelated(related);
  * 
- * related = new RelatedType(RelatedTypeParameter.SPOUSE);
+ * related = new RelatedType();
+ * related.addType(RelatedTypeParameter.SPOUSE);
  * related.setText(&quot;My wife's name is Edna Smith&quot;);
  * vcard.addRelated(related);
  * </pre>
