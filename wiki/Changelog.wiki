@@ -1,0 +1,31 @@
+#summary Documents all the changes that were made to every version of the library
+
+= 0.3.0 =
+
+ * +Added support for [http://tools.ietf.org/html/rfc6351 xCard] (an XML representation for vCards).
+ * +Added the `SkipMeException`, which can be thrown from a type class's marshal or unmarshal methods.  If thrown from a marshal method, it will prevent the property from being marshalled.  If thrown from an unmarshal method, it will prevent the type object from being added to the `VCard` object.
+ * +Added logic to the `EMAIL` and `TEL` properties to determine whether to use the "`TYPE=pref`" or "`PREF=1`" parameter (depending on the vCard version) when marshalling.
+ * @Fixed the `TYPE` parameter of the `RELATED` property so that it is (1) optional and (2) multi-valued.
+ * @Fixed the `GEO` property so it properly marshals/unmarshals its value for 4.0 vCards.
+ * @Fixed the `VCard` object so it no longer is missing getters/setters for the `GENDER` property.
+ * -Removed the "guava" dependency.
+ * -Removed the "commons-io" dependency.
+
+= 0.2.0 =
+
+ * Added support for vCard 4.0
+ * Removed the space that EZ-vCard added after the colon in the marshalled vCard.  This prevented some mail clients from reading the vCard (see Issue 1).
+ * Values for the BEGIN, END, and PROFILE types are now in upper-case (i.e. "BEGIN:VCARD").  The 2.1/3.0 specs appear to require it to be in upper-case, so better safe than sorry (see Issue 1).
+ * Fleshed out the Javadocs.
+
+= 0.1.1 =
+
+  * Removed SLF4J dependency.
+  * Modified `VCard` class to only allow one UID type in accordance with the specs.
+  * Binary vCard types such as PHOTO and LOGO now use the proper ENCODING value when marshalled ("base64" for 2.1 and "b" for 3.0). 
+  * Renamed `DisplayableNameType` class to `SourceDisplayTextType`.
+  * Renamed `OrgType` class to `OrganizationType`.
+
+= 0.1.0 =
+
+First release
