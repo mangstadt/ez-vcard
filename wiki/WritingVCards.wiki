@@ -88,7 +88,7 @@ for (VCard vcard : vcards){
   xcm.addVCard(vcard);
   
   //warnings are generated if there are version compatibility problems
-  for (String warning : vcr.getWarnings()){
+  for (String warning : xcm.getWarnings()){
     System.out.println(warning);
   }
 }
