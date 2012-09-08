@@ -63,12 +63,8 @@ import ezvcard.util.VCardStringUtils;
 public class VCardReader implements Closeable {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
-	private VCardVersion version;
-	private boolean endFound = false;
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private FoldedLineReader reader;
-
-	private List<LabelType> labels = new ArrayList<LabelType>();
 
 	/**
 	 * @param reader the reader to read the vCards from
@@ -136,14 +132,15 @@ public class VCardReader implements Closeable {
 	 */
 	public VCard readNext() throws VCardException, IOException {
 		warnings.clear();
-		version = null;
-		endFound = false;
-		labels.clear();
 
 		VCard vcard = new VCard();
 
+		List<LabelType> labels = new ArrayList<LabelType>();
+		VCardVersion version = null;
+		boolean endFound = false;
 		int typesRead = 0;
 		String line;
+
 		while (!endFound && (line = reader.readLine()) != null) {
 			//parse the components out of the line
 			VCardLine parsedLine = VCardLine.parse(line);
@@ -216,138 +213,137 @@ public class VCardReader implements Closeable {
 					vcard.setAgent(agent);
 				} finally {
 					for (String w : agentReader.getWarnings()) {
-						warnings.add("AGENT unmarshal warning: " + w);
+						warnings.add(AgentType.NAME + " unmarshal warning: " + w);
 					}
 				}
 
 				continue;
 			}
 
-			//create the Type object
-			VCardType type = createAndAddToVCard(vcard, typeName, subTypes, value);
-
-			if (type != null) {
-				//set the group
+			if ("BEGIN".equals(typeName)) {
+				if (!"vcard".equalsIgnoreCase(value)) {
+					warnings.add("The value of the BEGIN property should be \"vcard\", but it is \"" + value + "\".");
+				}
+			} else if ("END".equals(typeName)) {
+				endFound = true;
+				if (!"vcard".equalsIgnoreCase(value)) {
+					warnings.add("The value of the END property should be \"vcard\", but it is \"" + value + "\".");
+				}
+			} else if ("VERSION".equals(typeName)) {
+				if (version == null) {
+					version = VCardVersion.valueOfByStr(value);
+					if (version == null) {
+						warnings.add("Invalid value of VERSION property: " + value);
+					}
+				} else {
+					warnings.add("Additional VERSION property encountered: \"" + value + "\".  It will be ignored.");
+				}
+				vcard.setVersion(version);
+			} else {
+				//create the type object
+				VCardType type = createTypeObject(typeName);
 				type.setGroup(groupName);
 
 				//unmarshal the text string into the object
 				List<String> warnings = new ArrayList<String>();
 				try {
 					type.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+
+					//add to vcard
+					if (type instanceof LabelType) {
+						//LABELs must be treated specially so they can be matched up with their ADRs
+						labels.add((LabelType) type);
+					} else {
+						addToVCard(type, vcard);
+					}
+				} catch (SkipMeException e) {
+					warnings.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
 				} finally {
 					this.warnings.addAll(warnings);
 				}
 			}
-
-//			if (endFound) {
-//				return vcard;
-//			}
 		}
 
 		if (typesRead == 0) {
 			//end of stream reached
 			return null;
 		}
-		
+
 		//assign labels to their addresses
-		for (LabelType label : labels){
+		for (LabelType label : labels) {
 			boolean orphaned = true;
-			for (AddressType adr : vcard.getAddresses()){
-				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())){
+			for (AddressType adr : vcard.getAddresses()) {
+				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
 					adr.setLabel(label.getValue());
 					orphaned = false;
 					break;
 				}
 			}
-			if (orphaned){
+			if (orphaned) {
 				vcard.addOrphanedLabel(label);
 			}
 		}
 
 		if (!endFound) {
-			warnings.add("vCard does not end with the END type.");
+			warnings.add("vCard does not terminate with the END property.");
 		}
 
 		return vcard;
 	}
 
 	/**
-	 * Creates the appropriate VCardType instance and adds it to the vCard. This
-	 * method does not unmarshal the type, it just creates the type object and
-	 * adds it to the VCard bean.
-	 * @param vcard the vCard
-	 * @param name the Type's name
-	 * @param subTypes the Type's Sub Types
-	 * @param value the Type's value
-	 * @return the Type that was created or null if a Type object wasn't created
-	 * @throws VCardException
+	 * Creates the appropriate {@link VCardType} instance, given the type name.
+	 * This method does not unmarshal the type, it just creates the type object.
+	 * @param name the type name (e.g. "FN")
+	 * @return the Type that was created
 	 */
-	//Note: If this method has a compile error, make sure that you're returning the
-	//      Type that you created in its "if" block
-	private VCardType createAndAddToVCard(VCard vcard, String name, VCardSubTypes subTypes, String value) throws VCardException {
-		if ("BEGIN".equals(name)) {
-			if (!"vcard".equalsIgnoreCase(value)) {
-				warnings.add("The value of the BEGIN type should be \"vcard\", but it is \"" + value + "\".");
+	private VCardType createTypeObject(String name) {
+		Class<? extends VCardType> clazz = TypeList.nameToTypeClass.get(name);
+		VCardType t;
+		if (clazz != null) {
+			try {
+				//create a new instance of the class
+				t = clazz.newInstance();
+			} catch (Exception e) {
+				//it is the responsibility of the EZ-vCard developer to ensure that this exception is never thrown
+				//all type classes defined in the EZ-vCard library MUST have public, no-arg constructors
+				throw new RuntimeException(e);
 			}
-			return null;
-		} else if ("END".equals(name)) {
-			endFound = true;
-			if (!"vcard".equalsIgnoreCase(value)) {
-				warnings.add("The value of the END type should be \"vcard\", but it is \"" + value + "\".");
-			}
-			return null;
-		} else if ("VERSION".equals(name)) {
-			if (version == null) {
-				version = VCardVersion.valueOfByStr(value);
-				if (version == null) {
-					warnings.add("Invalid VERSION: " + value);
-				}
-			} else {
-				warnings.add("Additional VERSION type encountered: \"" + value + "\".  It will be ignored.");
-			}
-			vcard.setVersion(version);
-			return null;
-		} else if (LabelType.NAME.equals(name)) {
-			//LABELs must be matched up with their ADRs
-			LabelType t = new LabelType();
-			t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
-			labels.add(t);
-			return null;
 		} else {
-			Class<? extends VCardType> clazz = TypeList.nameToTypeClass.get(name);
-			VCardType t;
-			if (clazz != null) {
+			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
+			if (extendedTypeClass != null) {
 				try {
-					//create a new instance of the class
-					t = clazz.newInstance();
-					
-					//add the type object to the "VCard" object
-					Method method = TypeList.typeClassToAddMethod.get(clazz);
-					method.invoke(vcard, t);
+					t = extendedTypeClass.newInstance();
 				} catch (Exception e) {
-					//it is the responsibility of the EZ-vCard developer to ensure that this exception is never thrown
-					//all type classes defined in the EZ-vCard library MUST have public, no-arg constructors
-					throw new RuntimeException(e);
+					//this should never happen because the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
+					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
 				}
 			} else {
-				Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
-				if (extendedTypeClass != null) {
-					try {
-						t = extendedTypeClass.newInstance();
-						vcard.addExtendedType(t);
-					} catch (Exception e) {
-						throw new VCardException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
-					}
-				} else {
-					t = new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
-					vcard.addExtendedType(t);
-
-					if (!name.startsWith("X-")) {
-						warnings.add("Non-standard type \"" + name + "\" found.  Treating it as an extended type.");
-					}
+				t = new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
+				if (!name.startsWith("X-")) {
+					warnings.add("Non-standard type \"" + name + "\" found.  Treating it as an extended type.");
 				}
 			}
-			return t;
+		}
+		return t;
+	}
+
+	/**
+	 * Adds a type object to the vCard.
+	 * @param t the type object
+	 * @param vcard the vCard
+	 */
+	private void addToVCard(VCardType t, VCard vcard) {
+		Method method = TypeList.typeClassToAddMethod.get(t.getClass());
+		if (method != null) {
+			try {
+				method.invoke(vcard, t);
+			} catch (Exception e) {
+				//this should NEVER be thrown because the method MUST be public
+				throw new RuntimeException(e);
+			}
+		} else {
+			vcard.addExtendedType(t);
 		}
 	}
 

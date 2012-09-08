@@ -57,12 +57,18 @@ public class LuckyNumType extends VCardType {
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		luckyNum = Integer.parseInt(value);
+		if (luckyNum == 13){
+			throw new SkipMeException("Invalid lucky number.");
+		}
 	}
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
 		Element ele = XCardUtils.getFirstElement(element.getElementsByTagName("integer"));
 		luckyNum = Integer.parseInt(ele.getTextContent());
+		if (luckyNum == 13){
+			throw new SkipMeException("Invalid lucky number.");
+		}
 	}
 	
 	@Override

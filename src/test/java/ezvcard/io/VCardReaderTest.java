@@ -326,6 +326,30 @@ public class VCardReaderTest {
 		assertTrue(label.getTypes().contains(AddressTypeParameter.WORK));
 	}
 
+	/**
+	 * If the type's unmarshal method throws a {@link SkipMeException}, then a
+	 * warning should be added to the warnings list and the type object should
+	 * NOT be added to the {@link VCard} object.
+	 */
+	@Test
+	public void skipMeException() throws Exception {
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN: VCARD\r\n");
+		sb.append("VERSION: 3.0\r\n");
+		sb.append("X-LUCKY-NUM: 24\r\n");
+		sb.append("X-LUCKY-NUM: 13\r\n");
+		sb.append("END: VCARD\r\n");
+		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		reader.registerExtendedType(LuckyNumType.class);
+		VCard vcard = reader.readNext();
+
+		assertEquals(1, reader.getWarnings().size());
+
+		List<LuckyNumType> luckyNumTypes = vcard.getExtendedType(LuckyNumType.class);
+		assertEquals(1, luckyNumTypes.size());
+		assertEquals(24, luckyNumTypes.get(0).luckyNum);
+	}
+
 	@Test
 	public void evolutionVCard() throws Exception {
 		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_EVOLUTION.vcf")));

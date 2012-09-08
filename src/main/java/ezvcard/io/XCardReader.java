@@ -163,12 +163,12 @@ public class XCardReader {
 	 */
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		try {
-			VCardType t = clazz.newInstance();
-			String ns = t.getXmlNamespace();
+			VCardType type = clazz.newInstance();
+			String ns = type.getXmlNamespace();
 			if (ns == null) {
 				ns = VCardVersion.V4_0.getXmlNamespace();
 			}
-			String localName = t.getTypeName().toLowerCase();
+			String localName = type.getTypeName().toLowerCase();
 
 			QName qname = new QName(ns, localName);
 			extendedTypeClasses.put(qname, clazz);
@@ -232,26 +232,32 @@ public class XCardReader {
 	 * Parses a property element from the XML document and adds the property to
 	 * the vCard.
 	 * @param element the element to parse
-	 * @param group the group or null if the property does not belong to a group
+	 * @param group the group name or null if the property does not belong to a
+	 * group
 	 * @param version the vCard version
 	 * @param vcard the vCard object
 	 * @throws VCardException
 	 */
 	private void parseAndAddElement(Element element, String group, VCardVersion version, VCard vcard) throws VCardException {
+		List<String> warnings = new ArrayList<String>();
 		VCardSubTypes subTypes = parseSubTypes(element);
-		VCardType t = createTypeObject(element.getLocalName(), element.getNamespaceURI());
-		if (t != null) {
+		VCardType type = createTypeObject(element.getLocalName(), element.getNamespaceURI());
+		type.setGroup(group);
+		try {
 			try {
-				t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+				type.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 			} catch (UnsupportedOperationException e) {
 				//type class does not support xCard
-
-				warnings.add("Type class \"" + t.getClass().getName() + "\" does not support xCard.  It will be parsed as a XML property.");
-				t = new XmlType();
-				t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+				warnings.add("Type class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property.");
+				type = new XmlType();
+				type.setGroup(group);
+				type.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 			}
-			t.setGroup(group);
-			addToVCard(t, vcard);
+			addToVCard(type, vcard);
+		} catch (SkipMeException e) {
+			warnings.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+		} finally {
+			this.warnings.addAll(warnings);
 		}
 	}
 
@@ -292,7 +298,7 @@ public class XCardReader {
 	 * This method does not unmarshal the type, it just creates the type object.
 	 * @param name the property name (e.g. "fn")
 	 * @param ns the namespace of the element
-	 * @return the type that was created or null if a type object wasn't created
+	 * @return the type that was created
 	 */
 	private VCardType createTypeObject(String name, String ns) {
 		name = name.toUpperCase();
@@ -304,7 +310,7 @@ public class XCardReader {
 			} catch (Exception e) {
 				//it is the responsibility of the EZ-vCard developer to ensure that this exception is never thrown
 				//all type classes defined in the EZ-vCard library MUST have public, no-arg constructors
-				return null;
+				throw new RuntimeException(e);
 			}
 		} else {
 			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(new QName(ns, name.toLowerCase()));
@@ -312,6 +318,7 @@ public class XCardReader {
 				try {
 					return extendedTypeClass.newInstance();
 				} catch (Exception e) {
+					//this should never happen because the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
 					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" MUST have a public, no-arg constructor.");
 				}
 			} else if (name.startsWith("X-")) {
