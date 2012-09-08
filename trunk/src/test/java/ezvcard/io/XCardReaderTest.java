@@ -380,6 +380,37 @@ public class XCardReaderTest {
 		assertNull(xcr.readNext());
 	}
 
+	/**
+	 * If the type's unmarshal method throws a {@link SkipMeException}, then a
+	 * warning should be added to the warnings list and the type object should
+	 * NOT be added to the {@link VCard} object.
+	 */
+	@Test
+	public void skipMeException() throws Exception {
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" xmlns:a=\"http://luckynum.com\">");
+			sb.append("<vcard>");
+				sb.append("<a:x-lucky-num><integer>24</integer></a:x-lucky-num>");
+				sb.append("<a:x-lucky-num><integer>13</integer></a:x-lucky-num>");
+			sb.append("</vcard>");
+		sb.append("</vcards>");
+		//@formatter:on
+
+		Reader reader = new StringReader(sb.toString());
+		XCardReader xcr = new XCardReader(reader);
+		xcr.registerExtendedType(LuckyNumType.class);
+		VCard vcard = xcr.readNext();
+
+		assertEquals(1, xcr.getWarnings().size());
+
+		List<LuckyNumType> luckyNum = vcard.getExtendedType(LuckyNumType.class);
+		assertEquals(1, luckyNum.size());
+		assertEquals(24, luckyNum.get(0).luckyNum);
+
+		assertNull(xcr.readNext());
+	}
+
 	private static class AgeType extends VCardType {
 		public int age;
 
