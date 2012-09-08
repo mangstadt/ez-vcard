@@ -1,6 +1,5 @@
 package ezvcard.io;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -174,7 +173,7 @@ public class XCardMarshaller {
 	 * @param vcard the vCard to add
 	 * @throws VCardException if there's a problem marshalling the vCard
 	 */
-	public void addVCard(VCard vcard) throws VCardException, IOException {
+	public void addVCard(VCard vcard) throws VCardException {
 		warnings.clear();
 
 		if (vcard.getFormattedName() == null) {
