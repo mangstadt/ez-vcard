@@ -16,7 +16,10 @@ import ezvcard.parameters.SoundTypeParameter;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.GenderType;
 import ezvcard.types.GeoType;
+import ezvcard.types.KindType;
+import ezvcard.types.LanguageType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.RevisionType;
@@ -36,6 +39,12 @@ public class MyVCard {
 	public static void main(String[] args) throws Exception {
 		VCard vcard = new VCard();
 
+		vcard.setKind(KindType.individual());
+
+		vcard.setGender(GenderType.male());
+
+		vcard.addLanguage(new LanguageType("en-US"));
+
 		StructuredNameType n = new StructuredNameType();
 		n.setFamily("Angstadt");
 		n.setGiven("Michael");
@@ -50,11 +59,10 @@ public class MyVCard {
 
 		vcard.addTitle(new TitleType("Software Engineer"));
 
-		EmailType email = new EmailType("mike.angstadt@gmail.com");
-		vcard.addEmail(email);
+		vcard.addEmail(new EmailType("mike.angstadt@gmail.com"));
 
-		UrlType url = new UrlType("http://mikeangstadt.name");
-		vcard.addUrl(url);
+		vcard.addUrl(new UrlType("http://mikeangstadt.name"));
+		vcard.addUrl(new UrlType("http://code.google.com/p/ez-vcard"));
 
 		CategoriesType categories = new CategoriesType();
 		categories.addValue("Java software engineer");
@@ -77,12 +85,14 @@ public class MyVCard {
 		//vcard.setUid(UidType.random());
 		vcard.setUid(new UidType("urn:uuid:dd418720-c754-4631-a869-db89d02b831b"));
 
-		vcard.addSource(new SourceType("http://mikeangstadt.name/mike-angstadt.vcf"));
+		SourceType source = new SourceType();
+		vcard.addSource(source);
 
 		vcard.setRevision(new RevisionType(new Date()));
 
-		//write vCard to file
+		//write to file
 		File file = new File("mike-angstadt.vcf");
+		source.setValue("http://mikeangstadt.name/" + file.getName());
 		System.out.println("Writing " + file.getName() + "...");
 		Writer writer = new FileWriter(file);
 		VCardWriter vcw = new VCardWriter(writer, VCardVersion.V3_0);
@@ -93,10 +103,12 @@ public class MyVCard {
 			System.out.println("* " + warning);
 		}
 		writer.close();
-		
+
 		System.out.println();
-		
+
+		//write to XML file
 		file = new File("mike-angstadt.xml");
+		source.setValue("http://mikeangstadt.name/" + file.getName());
 		System.out.println("Writing " + file.getName() + "...");
 		writer = new FileWriter(file);
 		XCardMarshaller xcm = new XCardMarshaller();
