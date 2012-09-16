@@ -80,11 +80,14 @@ public class TypeList {
 		typeClasses.put(AgentType.class, null);
 		typeClasses.put(AnniversaryType.class, null);
 		typeClasses.put(BirthdayType.class, null);
+		typeClasses.put(BirthplaceType.class, null);
 		typeClasses.put(CalendarRequestUriType.class, null);
 		typeClasses.put(CalendarUriType.class, null);
 		typeClasses.put(CategoriesType.class, null);
 		typeClasses.put(ClassificationType.class, null);
 		typeClasses.put(ClientPidMapType.class, null);
+		typeClasses.put(DeathdateType.class, null);
+		typeClasses.put(DeathplaceType.class, null);
 		typeClasses.put(EmailType.class, null);
 		typeClasses.put(FbUrlType.class, null);
 		typeClasses.put(FormattedNameType.class, null);
