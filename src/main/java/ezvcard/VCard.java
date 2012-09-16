@@ -33,11 +33,14 @@ import ezvcard.types.ClientPidMapType;
 import ezvcard.types.DeathdateType;
 import ezvcard.types.DeathplaceType;
 import ezvcard.types.EmailType;
+import ezvcard.types.ExpertiseType;
 import ezvcard.types.FbUrlType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GenderType;
 import ezvcard.types.GeoType;
+import ezvcard.types.HobbyType;
 import ezvcard.types.ImppType;
+import ezvcard.types.InterestType;
 import ezvcard.types.KeyType;
 import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
@@ -47,6 +50,7 @@ import ezvcard.types.MailerType;
 import ezvcard.types.MemberType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
+import ezvcard.types.OrgDirectoryType;
 import ezvcard.types.OrganizationType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
@@ -150,6 +154,10 @@ public class VCard {
 	private List<FbUrlType> fbUrls = new ArrayList<FbUrlType>();
 	private List<ClientPidMapType> clientPidMaps = new ArrayList<ClientPidMapType>();
 	private List<XmlType> xmls = new ArrayList<XmlType>();
+	private List<ExpertiseType> expertises = new ArrayList<ExpertiseType>();
+	private List<HobbyType> hobbies = new ArrayList<HobbyType>();
+	private List<InterestType> interests = new ArrayList<InterestType>();
+	private List<OrgDirectoryType> orgDirectories = new ArrayList<OrgDirectoryType>();
 	private ListMultimap<String, VCardType> extendedTypes = new ListMultimap<String, VCardType>();
 
 	/**
@@ -2091,6 +2099,128 @@ public class VCard {
 	 */
 	public void addXml(XmlType xml) {
 		this.xmls.add(xml);
+	}
+
+	/**
+	 * Gets the professional subject areas of which the the person is
+	 * knowledgeable.
+	 * <p>
+	 * vCard property name: EXPERTISE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the professional skills
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public List<ExpertiseType> getExpertise() {
+		return expertises;
+	}
+
+	/**
+	 * Adds a professional subject area of which the the person is
+	 * knowledgeable.
+	 * <p>
+	 * vCard property name: EXPERTISE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param expertise the professional skill to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public void addExpertise(ExpertiseType expertise) {
+		expertises.add(expertise);
+	}
+
+	/**
+	 * Gets the hobbies that the person actively engages in.
+	 * <p>
+	 * vCard property name: HOBBY
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the hobbies
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public List<HobbyType> getHobbies() {
+		return hobbies;
+	}
+
+	/**
+	 * Adds a hobby that the person actively engages in.
+	 * <p>
+	 * vCard property name: HOBBY
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param hobby the hobby to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public void addHobby(HobbyType hobby) {
+		hobbies.add(hobby);
+	}
+
+	/**
+	 * Gets the person's interests.
+	 * <p>
+	 * vCard property name: INTEREST
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the interests
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public List<InterestType> getInterests() {
+		return interests;
+	}
+
+	/**
+	 * Adds an interest.
+	 * <p>
+	 * vCard property name: INTEREST
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param interest the interest to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public void addInterest(InterestType interest) {
+		interests.add(interest);
+	}
+
+	/**
+	 * Gets the organization directories.
+	 * <p>
+	 * vCard property name: ORG-DIRECTORY
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the organization directories
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public List<OrgDirectoryType> getOrgDirectories() {
+		return orgDirectories;
+	}
+
+	/**
+	 * Adds an organization directory.
+	 * <p>
+	 * vCard property name: ORG-DIRECTORY
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param orgDirectory the organization directory to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public void addOrgDirectory(OrgDirectoryType orgDirectory) {
+		orgDirectories.add(orgDirectory);
 	}
 
 	/**
