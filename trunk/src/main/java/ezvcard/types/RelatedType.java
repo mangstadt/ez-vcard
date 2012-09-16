@@ -294,9 +294,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 		String value = XCardUtils.getFirstChildText(element, "uri");
 		if (value != null) {
 			setUri(value);
-			setText(null);
 		} else {
-			setUri(null);
 			setText(XCardUtils.getFirstChildText(element, "text"));
 		}
 	}
