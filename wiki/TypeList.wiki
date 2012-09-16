@@ -144,6 +144,37 @@ if (bday != null){
 }
 }}}
 
+=BIRTHPLACE=
+Defines the location of the person's birth.
+
+*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/BirthplaceType.html BirthplaceType]
+
+{{{
+VCard vcard = new VCard();
+
+//URI (geo)
+BirthplaceType birthplace = new BirthplaceType();
+birthplace.setUri(&quot;geo:39.970806,-75.174809&quot;);
+vcard.setBirthplace(birthplace);
+
+//URI (website)
+birthplace = new BirthplaceType();
+birthplace.setUri(&quot;http://www.chop.edu&quot;);
+vcard.setBirthplace(birthplace);
+
+//text
+birthplace = new BirthplaceType();
+birthplace.setText(&quot;The Children's Hospital of Philadelphia&quot;);
+vcard.setBirthplace(birthplace);
+
+//text
+birthplace = new BirthplaceType();
+birthplace.setText(&quot;Philadelphia, PA&quot;);
+vcard.setBirthplace(birthplace);
+}}}
+
 =CALENDRURI=
 A URL to use for sending a scheduling request to the person's calendar.
 
@@ -235,6 +266,88 @@ vcard.addClientPidMap(clientpidmap);
 //generate a random URI
 clientpidmap = ClientPidMapType.random(2);
 vcard.addClientPidMap(clientpidmap);
+}}}
+
+=DEATHDATE=
+Defines the person's time of death.
+
+*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/DeathdateType.html DeathdateType]
+
+{{{
+VCard vcard = new VCard();
+
+//complete date
+Calendar c = Calendar.getInstance();
+c.set(Calendar.YEAR, 1954);
+c.set(Calendar.MONTH, Calendar.JUNE);
+c.set(Calendar.DAY_OF_MONTH, 7);
+DeathdateType deathdate = new DeathdateType();
+deathdate.setDate(c.getTime(), false);
+vcard.setDeathdate(deathdate);
+
+//reduced accuracy date
+deathdate = new DeathdateType();
+deathdate.setReducedAccuracyDate(&quot;--0607&quot;); //June 7
+vcard.setDeathdate(deathdate);
+
+//plain text value
+deathdate = new DeathdateType();
+deathdate.setText(&quot;circa 1954&quot;);
+vcard.setDeathdate(deathdate);
+}}}
+
+{{{
+VCard vcard = ...
+DeathdateType deathdate = vcard.getDeathdate();
+if (deathdate != null){
+  if (deathdate.getDate() != null){
+    System.out.println(deathdate.getDate());
+  } else if (deathdate.getReducedAccuracyDate() != null){
+    System.out.println(deathdate.getReducedAccuracyDate());
+  } else if (deathdate.getText() != null){
+    System.out.println(deathdate.getText());
+  }
+}
+}}}
+
+=DEATHPLACE=
+Defines the location of the person's death.
+
+*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/DeathplaceType.html DeathplaceType]
+
+{{{
+VCard vcard = new VCard();
+
+//URI (geo)
+DeathplaceType deathplace = new DeathplaceType();
+deathplace.setUri(&quot;geo:46.176502,-122.191658&quot;);
+vcard.setDeathplace(deathplace);
+
+//text
+deathplace = new DeathplaceType();
+deathplace.setText(&quot;Mount St. Helens&quot;);
+vcard.setDeathplace(deathplace);
+}}}
+
+=CALENDRURI=
+A URL to use for sending a scheduling request to the person's calendar.
+
+*vCard versions:* 4.0
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/CalendarRequestUriType.html CalendarRequestUriType]
+
+{{{
+VCard vcard = new VCard();
+CalendarRequestUriType calendruri = new CalendarRequestUriType("mailto:janedoe@ibm.com");
+calendruri.setPref(1);
+vcard.addCalendarRequestUri(calendruri);
+calendruri = new CalendarRequestUriType("http://www.ibm.com/janedoe/calendar");
+calendruri.setPref(2);
+vcard.addCalendarRequestUri(calendruri);
 }}}
 
 =EMAIL=

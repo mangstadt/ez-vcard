@@ -24,11 +24,14 @@ import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.AnniversaryType;
 import ezvcard.types.BirthdayType;
+import ezvcard.types.BirthplaceType;
 import ezvcard.types.CalendarRequestUriType;
 import ezvcard.types.CalendarUriType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.ClassificationType;
 import ezvcard.types.ClientPidMapType;
+import ezvcard.types.DeathdateType;
+import ezvcard.types.DeathplaceType;
 import ezvcard.types.EmailType;
 import ezvcard.types.FbUrlType;
 import ezvcard.types.FormattedNameType;
@@ -118,6 +121,9 @@ public class VCard {
 	private List<PhotoType> photos = new ArrayList<PhotoType>();
 	private List<LogoType> logos = new ArrayList<LogoType>();
 	private List<SoundType> sounds = new ArrayList<SoundType>();
+	private List<BirthplaceType> birthplaces = new ArrayList<BirthplaceType>();
+	private List<DeathplaceType> deathplaces = new ArrayList<DeathplaceType>();
+	private List<DeathdateType> deathdates = new ArrayList<DeathdateType>();
 	private BirthdayType birthday; //TODO can be multiple
 	private AnniversaryType anniversary; //TODO can be multiple
 	private RevisionType rev;
@@ -921,6 +927,288 @@ public class VCard {
 	 */
 	public void addSound(SoundType sound) {
 		this.sounds.add(sound);
+	}
+
+	/**
+	 * <p>
+	 * Gets all birthplace property instances.
+	 * </p>
+	 * <p>
+	 * This method if useful for when there are multiple instances of this
+	 * property and each instance has its own ALTID value. But in most cases,
+	 * there will only be one instance of this property, so the
+	 * {@link getBirthplace} method can be used (usage of the ALTID parameter is
+	 * uncommon).
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: BIRTHPLACE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the birthplace properties
+	 * @see BirthplaceType#getAltId
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public List<BirthplaceType> getBirthplaces() {
+		return birthplaces;
+	}
+
+	/**
+	 * <p>
+	 * Adds a birthplace property.
+	 * </p>
+	 * <p>
+	 * This method must only be used if each property instance has its own ALTID
+	 * value. Otherwise, use {@link #setBirthplace}.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: BIRTHPLACE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param birthplace the birthplace to add
+	 * @see BirthplaceType#setAltId
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public void addBirthplace(BirthplaceType birthplace) {
+		birthplaces.add(birthplace);
+	}
+
+	/**
+	 * <p>
+	 * Gets the person's birthplace.
+	 * </p>
+	 * <p>
+	 * Use {@link getBirthplaces} to get the alternate representations of the
+	 * property.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: BIRTHPLACE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the birthplace
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public BirthplaceType getBirthplace() {
+		return birthplaces.isEmpty() ? null : birthplaces.get(0);
+	}
+
+	/**
+	 * <p>
+	 * Sets the person's birthplace.
+	 * </p>
+	 * <p>
+	 * Use {@link addBirthplace} to add alternate representations of the
+	 * property.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: BIRTHPLACE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param birthday the birthplace
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public void setBirthplace(BirthplaceType birthplace) {
+		birthplaces.clear();
+		birthplaces.add(birthplace);
+	}
+
+	/**
+	 * <p>
+	 * Gets all deathplace property instances.
+	 * </p>
+	 * <p>
+	 * This method if useful for when there are multiple instances of this
+	 * property and each instance has its own ALTID value. But in most cases,
+	 * there will only be one instance of this property, so the
+	 * {@link getDeathplace} method can be used (usage of the ALTID parameter is
+	 * uncommon).
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: DEATHPLACE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the deathplace properties
+	 * @see DeathplaceType#getAltId
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public List<DeathplaceType> getDeathplaces() {
+		return deathplaces;
+	}
+
+	/**
+	 * <p>
+	 * Adds a deathplace property.
+	 * </p>
+	 * <p>
+	 * This method must only be used if each property instance has its own ALTID
+	 * value. Otherwise, use {@link #setDeathplace}.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: DEATHPLACE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param deathplace the deathplace to add
+	 * @see DeathplaceType#setAltId
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public void addDeathplace(DeathplaceType deathplace) {
+		deathplaces.add(deathplace);
+	}
+
+	/**
+	 * <p>
+	 * Gets the person's deathplace.
+	 * </p>
+	 * <p>
+	 * Use {@link getDeathplaces} to get the alternate representations of the
+	 * property.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: DEATHPLACE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the deathplace
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public DeathplaceType getDeathplace() {
+		return deathplaces.isEmpty() ? null : deathplaces.get(0);
+	}
+
+	/**
+	 * <p>
+	 * Sets the person's deathplace.
+	 * </p>
+	 * <p>
+	 * Use {@link addDeathplace} to add alternate representations of the
+	 * property.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: DEATHPLACE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param deathplace the deathplace
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public void setDeathplace(DeathplaceType deathplace) {
+		deathplaces.clear();
+		deathplaces.add(deathplace);
+	}
+
+	/**
+	 * <p>
+	 * Gets all death date property instances.
+	 * </p>
+	 * <p>
+	 * This method if useful for when there are multiple instances of this
+	 * property and each instance has its own ALTID value. But in most cases,
+	 * there will only be one instance of this property, so the
+	 * {@link getDeathdate} method can be used (usage of the ALTID parameter is
+	 * uncommon).
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: DEATHDATE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the death date properties
+	 * @see DeathdateType#getAltId
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public List<DeathdateType> getDeathdates() {
+		return deathdates;
+	}
+
+	/**
+	 * <p>
+	 * Adds a death date property.
+	 * </p>
+	 * <p>
+	 * This method must only be used if each property instance has its own ALTID
+	 * value. Otherwise, use {@link #setDeathdate}.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: DEATHDATE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param deathdate the death date to add
+	 * @see DeathdateType#setAltId
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public void addDeathdate(DeathdateType deathdate) {
+		deathdates.add(deathdate);
+	}
+
+	/**
+	 * <p>
+	 * Gets the person's time of death.
+	 * </p>
+	 * <p>
+	 * Use {@link getDeathdates} to get the alternate representations of the
+	 * property.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: DEATHDATE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the time of death
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public DeathdateType getDeathdate() {
+		return deathdates.isEmpty() ? null : deathdates.get(0);
+	}
+
+	/**
+	 * <p>
+	 * Sets the person's time of death.
+	 * </p>
+	 * <p>
+	 * Use {@link addDeathdate} to add alternate representations of the
+	 * property.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: DEATHDATE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param deathdate the time of death
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 */
+	public void setDeathdate(DeathdateType deathdate) {
+		deathdates.clear();
+		deathdates.add(deathdate);
 	}
 
 	/**
