@@ -2,6 +2,7 @@ package ezvcard;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -99,6 +100,17 @@ public class VCardSubTypesTest {
 	}
 
 	@Test
+	public void getPref() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+
+		subTypes.replace("PREF", "1");
+		assertEquals(Integer.valueOf(1), subTypes.getPref());
+
+		subTypes.replace("PREF", "invalid");
+		assertNull(subTypes.getPref());
+	}
+
+	@Test
 	public void setPref() {
 		VCardSubTypes subTypes = new VCardSubTypes();
 
@@ -115,6 +127,9 @@ public class VCardSubTypesTest {
 		} catch (IllegalArgumentException e) {
 			//should be thrown
 		}
+
+		subTypes.setPref(1);
+		assertEquals("1", subTypes.getFirst("PREF"));
 	}
 
 	/**
@@ -179,5 +194,38 @@ public class VCardSubTypesTest {
 				}
 			}
 		}
+	}
+
+	@Test
+	public void getIndex() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+
+		subTypes.replace("INDEX", "1");
+		assertEquals(Integer.valueOf(1), subTypes.getIndex());
+
+		subTypes.replace("INDEX", "invalid");
+		assertNull(subTypes.getIndex());
+	}
+
+	@Test
+	public void setIndex() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+
+		try {
+			subTypes.setIndex(-1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
+
+		try {
+			subTypes.setIndex(0);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
+
+		subTypes.setIndex(1);
+		assertEquals("1", subTypes.getFirst("INDEX"));
 	}
 }

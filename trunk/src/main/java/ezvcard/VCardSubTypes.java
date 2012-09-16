@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.EncodingParameter;
+import ezvcard.parameters.LevelParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.TreeMultimap;
@@ -674,5 +675,78 @@ public class VCardSubTypes {
 	 */
 	public void setMediaType(String mediaType) {
 		replace("MEDIATYPE", mediaType);
+	}
+
+	/**
+	 * Gets the LEVEL parameter. This is used to define the level of skill or
+	 * level of interest the person has towards something.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the level (e.g. "beginner") or null if not found
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public String getLevel() {
+		return getFirst(LevelParameter.NAME);
+	}
+
+	/**
+	 * Sets the LEVEL parameter. This is used to define the level of skill or
+	 * level of interest the person has towards something.
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param level the level (e.g. "beginner") or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public void setLevel(String level) {
+		replace(LevelParameter.NAME, level);
+	}
+
+	/**
+	 * Gets the INDEX parameter. When present, it specifies the order in which a
+	 * collection of multi-valued property instances should be sorted.
+	 * Properties with low INDEX values are put at the beginning of the sorted
+	 * list.
+	 * 
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the INDEX value or null if it doesn't exist or null if it
+	 * couldn't be parsed into a number
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public Integer getIndex() {
+		String index = getFirst("INDEX");
+		if (index == null) {
+			return null;
+		}
+
+		try {
+			return Integer.valueOf(index);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Sets the INDEX parameter. When present, it specifies the order in which a
+	 * collection of multi-valued property instances should be sorted.
+	 * Properties with low INDEX values are put at the beginning of the sorted
+	 * list.
+	 * 
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param index the INDEX value (must be greater than 0) or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @throws IllegalArgumentException if the value is not greater than 0
+	 */
+	public void setIndex(Integer index) {
+		if (index != null && index <= 0) {
+			throw new IllegalArgumentException("INDEX value must be greater than 0.");
+		}
+		String value = (index == null) ? null : index.toString();
+		replace("INDEX", value);
 	}
 }

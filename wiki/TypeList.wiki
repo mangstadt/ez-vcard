@@ -370,6 +370,20 @@ email.setPref(1); //the most preferred email
 vcard.addEmail(email);
 }}}
 
+=EXPERTISE=
+Defines a professional subject area that the person has knowledge of. For example, if the person is a Java software engineer, he or she might list technologies such as "servlets", "SOAP", and "Spring".
+
+*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ExpertiseType.html ExpertiseType]
+
+{{{
+VCard vcard = new VCard();
+ExpertiseType expertise = new ExpertiseType("Java programming");
+expertise.setLevel(ExpertiseLevelParameter.EXPERT);
+vcard.addExpertise(expertise);
+}}}
+
 =FBURL=
 A URL that shows when the person is free/busy on their calendar.
 
@@ -440,6 +454,21 @@ GeoType geo = new GeoType(-123.456, 12.54);
 vcard.setGeo(geo);
 }}}
 
+=HOBBY=
+Defines a recreational activity that the person actively engages in. For example, if a person has a HOBBY of "hockey", it would mean that he likes to play hockey. Someone who just likes to _watch_ hockey would list "hockey" as an INTEREST instead.
+
+*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/HobbyType.html HobbyType]
+
+{{{
+//someone who likes to wind surf during the summer, but rents a boat instead of owning one
+VCard vcard = new VCard();
+HobbyType hobby = new HobbyType("wind surfing");
+hobby.setLevel(HobbyLevelParameter.LOW);
+vcard.addHobby(hobby);
+}}}
+
 =IMPP=
 Instant messenger handle.
 
@@ -451,6 +480,21 @@ Instant messenger handle.
 VCard vcard = new VCard();
 ImppType impp = new ImppType("aim", "hunkydude22@aol.com");
 vcard.addImpp(impp);
+}}}
+
+=INTEREST=
+Defines a recreational activity that the person is interested in. For example, if a person has a INTEREST of "hockey", it would mean that he likes to watch hockey games. Someone who likes to actually _play_ hockey would list "hockey" as a HOBBY instead.
+
+*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/InterestType.html InterestType]
+
+{{{
+//someone who attends all of his favorite hockey team's games in person.
+VCard vcard = new VCard();
+InterestType interest = new InterestType("hockey");
+interest.setLevel(InterestLevelParameter.HIGH);
+vcard.addInterest(interest);
 }}}
 
 =KEY=
@@ -798,6 +842,19 @@ org.addValue("Google");
 org.addValue("GMail Team");
 org.addValue("Spam Detection Team");
 vcard.setOrganizations(org);
+}}}
+
+=ORG-DIRECTORY=
+Defines a URI representing the person's work place, which can be used to lookup information on the person's co-workers.
+
+*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
+
+*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/OrgDirectoryType.html OrgDirectoryType]
+
+{{{
+VCard vcard = new VCard();
+OrgDirectoryType orgDirectory = new OrgDirectoryType("http://www.company.com/staff");
+vcard.addOrgDirectory(orgDirectory);
 }}}
 
 =PHOTO=

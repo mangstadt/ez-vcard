@@ -89,11 +89,14 @@ public class TypeList {
 		typeClasses.put(DeathdateType.class, null);
 		typeClasses.put(DeathplaceType.class, null);
 		typeClasses.put(EmailType.class, null);
+		typeClasses.put(ExpertiseType.class, null);
 		typeClasses.put(FbUrlType.class, null);
 		typeClasses.put(FormattedNameType.class, null);
 		typeClasses.put(GenderType.class, null);
 		typeClasses.put(GeoType.class, null);
+		typeClasses.put(HobbyType.class, null);
 		typeClasses.put(ImppType.class, null);
+		typeClasses.put(InterestType.class, null);
 		typeClasses.put(KeyType.class, null);
 		typeClasses.put(KindType.class, null);
 		typeClasses.put(LabelType.class, "addOrphanedLabel");
@@ -104,6 +107,7 @@ public class TypeList {
 		typeClasses.put(NicknameType.class, null);
 		typeClasses.put(NoteType.class, null);
 		typeClasses.put(OrganizationType.class, null);
+		typeClasses.put(OrgDirectoryType.class, null);
 		typeClasses.put(PhotoType.class, null);
 		typeClasses.put(ProdIdType.class, null);
 		typeClasses.put(ProfileType.class, null);
