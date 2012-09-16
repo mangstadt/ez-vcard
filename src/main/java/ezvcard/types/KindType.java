@@ -79,6 +79,7 @@ public class KindType extends TextType {
 	public static final String GROUP = "group";
 	public static final String ORG = "org";
 	public static final String LOCATION = "location";
+	public static final String APPLICATION = "application";
 
 	public KindType() {
 		super(NAME);
@@ -126,6 +127,15 @@ public class KindType extends TextType {
 	}
 
 	/**
+	 * Determines if the value is set to "application".
+	 * @return true if the value is "application", false if not
+	 * @see <a href="http://tools.ietf.org/html/rfc6473">RFC 6473</a>
+	 */
+	public boolean isApplication() {
+		return APPLICATION.equals(value);
+	}
+
+	/**
 	 * Creates a new KIND type whose value is set to "individual".
 	 * @return the new KIND type
 	 */
@@ -155,6 +165,15 @@ public class KindType extends TextType {
 	 */
 	public static KindType location() {
 		return new KindType(LOCATION);
+	}
+
+	/**
+	 * Creates a new KIND type whose value is set to "application".
+	 * @return the new KIND type
+	 * @see <a href="http://tools.ietf.org/html/rfc6473">RFC 6473</a>
+	 */
+	public static KindType application() {
+		return new KindType(APPLICATION);
 	}
 
 	@Override
