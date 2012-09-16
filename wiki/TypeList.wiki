@@ -333,23 +333,6 @@ deathplace.setText(&quot;Mount St. Helens&quot;);
 vcard.setDeathplace(deathplace);
 }}}
 
-=CALENDRURI=
-A URL to use for sending a scheduling request to the person's calendar.
-
-*vCard versions:* 4.0
-
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/CalendarRequestUriType.html CalendarRequestUriType]
-
-{{{
-VCard vcard = new VCard();
-CalendarRequestUriType calendruri = new CalendarRequestUriType("mailto:janedoe@ibm.com");
-calendruri.setPref(1);
-vcard.addCalendarRequestUri(calendruri);
-calendruri = new CalendarRequestUriType("http://www.ibm.com/janedoe/calendar");
-calendruri.setPref(2);
-vcard.addCalendarRequestUri(calendruri);
-}}}
-
 =EMAIL=
 An email address associated with a person.
 
@@ -441,7 +424,7 @@ A set of latitude/longitude coordinates. There is no rule for what these coordin
  
  * "individual": the location of the person's home or workplace.
  * "group": the location of the group's meeting place.
- * "organization": the coordinates of the organization's headquarters.
+ * "org": the coordinates of the organization's headquarters.
  * "location": the coordinates of the location itself.
 
 *vCard versions:* 2.1, 3.0, 4.0
