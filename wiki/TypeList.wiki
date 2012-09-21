@@ -1,4 +1,5 @@
 #summary Contains a listing of all vCard types (such as "ADR" and "N"), along with code samples
+#labels Featured
 
 The page contains a listing of all vCard types, as well as information on how to use these types with EZ-vCard.
 
