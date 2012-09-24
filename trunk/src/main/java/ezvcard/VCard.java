@@ -945,8 +945,8 @@ public class VCard {
 	 * This method if useful for when there are multiple instances of this
 	 * property and each instance has its own ALTID value. But in most cases,
 	 * there will only be one instance of this property, so the
-	 * {@link getBirthplace} method can be used (usage of the ALTID parameter is
-	 * uncommon).
+	 * {@link #getBirthplace} method can be used (usage of the ALTID parameter
+	 * is uncommon).
 	 * </p>
 	 * 
 	 * <p>
@@ -991,7 +991,7 @@ public class VCard {
 	 * Gets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * Use {@link getBirthplaces} to get the alternate representations of the
+	 * Use {@link #getBirthplaces} to get the alternate representations of the
 	 * property.
 	 * </p>
 	 * 
@@ -1013,7 +1013,7 @@ public class VCard {
 	 * Sets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * Use {@link addBirthplace} to add alternate representations of the
+	 * Use {@link #addBirthplace} to add alternate representations of the
 	 * property.
 	 * </p>
 	 * 
@@ -1023,7 +1023,7 @@ public class VCard {
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param birthday the birthplace
+	 * @param birthplace the birthplace
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public void setBirthplace(BirthplaceType birthplace) {
@@ -1039,8 +1039,8 @@ public class VCard {
 	 * This method if useful for when there are multiple instances of this
 	 * property and each instance has its own ALTID value. But in most cases,
 	 * there will only be one instance of this property, so the
-	 * {@link getDeathplace} method can be used (usage of the ALTID parameter is
-	 * uncommon).
+	 * {@link #getDeathplace} method can be used (usage of the ALTID parameter
+	 * is uncommon).
 	 * </p>
 	 * 
 	 * <p>
@@ -1085,7 +1085,7 @@ public class VCard {
 	 * Gets the person's deathplace.
 	 * </p>
 	 * <p>
-	 * Use {@link getDeathplaces} to get the alternate representations of the
+	 * Use {@link #getDeathplaces} to get the alternate representations of the
 	 * property.
 	 * </p>
 	 * 
@@ -1107,7 +1107,7 @@ public class VCard {
 	 * Sets the person's deathplace.
 	 * </p>
 	 * <p>
-	 * Use {@link addDeathplace} to add alternate representations of the
+	 * Use {@link #addDeathplace} to add alternate representations of the
 	 * property.
 	 * </p>
 	 * 
@@ -1133,7 +1133,7 @@ public class VCard {
 	 * This method if useful for when there are multiple instances of this
 	 * property and each instance has its own ALTID value. But in most cases,
 	 * there will only be one instance of this property, so the
-	 * {@link getDeathdate} method can be used (usage of the ALTID parameter is
+	 * {@link #getDeathdate} method can be used (usage of the ALTID parameter is
 	 * uncommon).
 	 * </p>
 	 * 
@@ -1179,7 +1179,7 @@ public class VCard {
 	 * Gets the person's time of death.
 	 * </p>
 	 * <p>
-	 * Use {@link getDeathdates} to get the alternate representations of the
+	 * Use {@link #getDeathdates} to get the alternate representations of the
 	 * property.
 	 * </p>
 	 * 
@@ -1201,7 +1201,7 @@ public class VCard {
 	 * Sets the person's time of death.
 	 * </p>
 	 * <p>
-	 * Use {@link addDeathdate} to add alternate representations of the
+	 * Use {@link #addDeathdate} to add alternate representations of the
 	 * property.
 	 * </p>
 	 * 
@@ -1227,7 +1227,7 @@ public class VCard {
 	 * This method if useful for when there are multiple instances of this
 	 * property and each instance has its own ALTID value. But in most cases,
 	 * there will only be one instance of this property, so the
-	 * {@link getBirthday} method can be used (usage of the ALTID parameter is
+	 * {@link #getBirthday} method can be used (usage of the ALTID parameter is
 	 * uncommon).
 	 * </p>
 	 * 
@@ -1269,7 +1269,7 @@ public class VCard {
 	/**
 	 * Gets the person's birthday.
 	 * <p>
-	 * Use {@link getBirthdays} to get the alternate representations of the
+	 * Use {@link #getBirthdays} to get the alternate representations of the
 	 * property.
 	 * </p>
 	 * 
@@ -1288,7 +1288,8 @@ public class VCard {
 	/**
 	 * Sets the person's birthday.
 	 * <p>
-	 * Use {@link addBirthday} to add alternate representations of the property.
+	 * Use {@link #addBirthday} to add alternate representations of the
+	 * property.
 	 * </p>
 	 * 
 	 * <p>
@@ -1312,7 +1313,7 @@ public class VCard {
 	 * This method if useful for when there are multiple instances of this
 	 * property and each instance has its own ALTID value. But in most cases,
 	 * there will only be one instance of this property, so the
-	 * {@link getAnniversary} method can be used (usage of the ALTID parameter
+	 * {@link #getAnniversary} method can be used (usage of the ALTID parameter
 	 * is uncommon).
 	 * </p>
 	 * 
@@ -1354,7 +1355,7 @@ public class VCard {
 	/**
 	 * Gets the person's anniversary.
 	 * <p>
-	 * Use {@link getAnniversaries} to get the alternate representations of the
+	 * Use {@link #getAnniversaries} to get the alternate representations of the
 	 * property.
 	 * </p>
 	 * 
@@ -1373,7 +1374,7 @@ public class VCard {
 	/**
 	 * Sets the person's anniversary.
 	 * <p>
-	 * Use {@link addAnniversary} to add alternate representations of the
+	 * Use {@link #addAnniversary} to add alternate representations of the
 	 * property.
 	 * </p>
 	 * 
