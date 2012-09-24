@@ -157,22 +157,22 @@ VCard vcard = new VCard();
 
 //URI (geo)
 BirthplaceType birthplace = new BirthplaceType();
-birthplace.setUri(&quot;geo:39.970806,-75.174809&quot;);
+birthplace.setUri("geo:39.970806,-75.174809");
 vcard.setBirthplace(birthplace);
 
 //URI (website)
 birthplace = new BirthplaceType();
-birthplace.setUri(&quot;http://www.chop.edu&quot;);
+birthplace.setUri("http://www.chop.edu");
 vcard.setBirthplace(birthplace);
 
 //text
 birthplace = new BirthplaceType();
-birthplace.setText(&quot;The Children's Hospital of Philadelphia&quot;);
+birthplace.setText("The Children's Hospital of Philadelphia");
 vcard.setBirthplace(birthplace);
 
 //text
 birthplace = new BirthplaceType();
-birthplace.setText(&quot;Philadelphia, PA&quot;);
+birthplace.setText("Philadelphia, PA");
 vcard.setBirthplace(birthplace);
 }}}
 
@@ -290,12 +290,12 @@ vcard.setDeathdate(deathdate);
 
 //reduced accuracy date
 deathdate = new DeathdateType();
-deathdate.setReducedAccuracyDate(&quot;--0607&quot;); //June 7
+deathdate.setReducedAccuracyDate("--0607"); //June 7
 vcard.setDeathdate(deathdate);
 
 //plain text value
 deathdate = new DeathdateType();
-deathdate.setText(&quot;circa 1954&quot;);
+deathdate.setText("circa 1954");
 vcard.setDeathdate(deathdate);
 }}}
 
@@ -325,12 +325,12 @@ VCard vcard = new VCard();
 
 //URI (geo)
 DeathplaceType deathplace = new DeathplaceType();
-deathplace.setUri(&quot;geo:46.176502,-122.191658&quot;);
+deathplace.setUri("geo:46.176502,-122.191658");
 vcard.setDeathplace(deathplace);
 
 //text
 deathplace = new DeathplaceType();
-deathplace.setText(&quot;Mount St. Helens&quot;);
+deathplace.setText("Mount St. Helens");
 vcard.setDeathplace(deathplace);
 }}}
 
