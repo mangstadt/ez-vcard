@@ -1,5 +1,14 @@
 #summary Documents all the changes that were made to every version of the library
 
+= 0.4.0 =
+
+ * Added support for [http://tools.ietf.org/html/rfc6473 RFC 6473] (KIND:application)
+ * Added support for [http://tools.ietf.org/html/rfc6474 RFC 6474] (BIRTHPLACE, DEATHPLACE, DEATHDATE)
+ * Added support for [http://tools.ietf.org/html/rfc6715 RFC 6715] (Open Mobile Alliance Converged Address Book extensions)
+ * Added convenience methods to `VCard` class for reading/writing xCards.
+ * Fixed bug in the RELATED property that prevented URI values from being read.
+ * Multiple instances of the BDAY and ANNIVERSARY properties can now be added to the `VCard` object.  This is necessary because these properties support the ALTID parameter.
+
 = 0.3.0 =
 
  * +Added support for [http://tools.ietf.org/html/rfc6351 xCard] (an XML representation for vCards).
