@@ -128,8 +128,8 @@ public class VCard {
 	private List<BirthplaceType> birthplaces = new ArrayList<BirthplaceType>();
 	private List<DeathplaceType> deathplaces = new ArrayList<DeathplaceType>();
 	private List<DeathdateType> deathdates = new ArrayList<DeathdateType>();
-	private BirthdayType birthday; //TODO can be multiple
-	private AnniversaryType anniversary; //TODO can be multiple
+	private List<BirthdayType> birthdays = new ArrayList<BirthdayType>();
+	private List<AnniversaryType> anniversaries = new ArrayList<AnniversaryType>();
 	private RevisionType rev;
 	private ProdIdType prodId;
 	private List<AddressType> addresses = new ArrayList<AddressType>();
@@ -1220,7 +1220,59 @@ public class VCard {
 	}
 
 	/**
+	 * <p>
+	 * Gets all birthday property instances.
+	 * </p>
+	 * <p>
+	 * This method if useful for when there are multiple instances of this
+	 * property and each instance has its own ALTID value. But in most cases,
+	 * there will only be one instance of this property, so the
+	 * {@link getBirthday} method can be used (usage of the ALTID parameter is
+	 * uncommon).
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: BDAY
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @return the birthday properties
+	 * @see BirthdayType#getAltId
+	 */
+	public List<BirthdayType> getBirthdays() {
+		return birthdays;
+	}
+
+	/**
+	 * <p>
+	 * Adds a birthday property.
+	 * </p>
+	 * <p>
+	 * This method must only be used if each property instance has its own ALTID
+	 * value. Otherwise, use {@link #setBirthday}.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: BDAY
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param birthday the birthday to add
+	 * @see BirthdayType#setAltId
+	 */
+	public void addBirthday(BirthdayType birthday) {
+		birthdays.add(birthday);
+	}
+
+	/**
 	 * Gets the person's birthday.
+	 * <p>
+	 * Use {@link getBirthdays} to get the alternate representations of the
+	 * property.
+	 * </p>
+	 * 
 	 * <p>
 	 * vCard property name: BDAY
 	 * </p>
@@ -1230,11 +1282,15 @@ public class VCard {
 	 * @return the birthday
 	 */
 	public BirthdayType getBirthday() {
-		return birthday;
+		return birthdays.isEmpty() ? null : birthdays.get(0);
 	}
 
 	/**
 	 * Sets the person's birthday.
+	 * <p>
+	 * Use {@link addBirthday} to add alternate representations of the property.
+	 * </p>
+	 * 
 	 * <p>
 	 * vCard property name: BDAY
 	 * </p>
@@ -1244,11 +1300,64 @@ public class VCard {
 	 * @param birthday the birthday
 	 */
 	public void setBirthday(BirthdayType birthday) {
-		this.birthday = birthday;
+		birthdays.clear();
+		birthdays.add(birthday);
+	}
+
+	/**
+	 * <p>
+	 * Gets all anniversary property instances.
+	 * </p>
+	 * <p>
+	 * This method if useful for when there are multiple instances of this
+	 * property and each instance has its own ALTID value. But in most cases,
+	 * there will only be one instance of this property, so the
+	 * {@link getAnniversary} method can be used (usage of the ALTID parameter
+	 * is uncommon).
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: ANNIVERSARY
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @return the death date properties
+	 * @see AnniversaryType#getAltId
+	 */
+	public List<AnniversaryType> getAnniversaries() {
+		return anniversaries;
+	}
+
+	/**
+	 * <p>
+	 * Adds an anniversary property.
+	 * </p>
+	 * <p>
+	 * This method must only be used if each property instance has its own ALTID
+	 * value. Otherwise, use {@link #setAnniversary}.
+	 * </p>
+	 * 
+	 * <p>
+	 * vCard property name: ANNIVERSARY
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param anniversary the anniversary to add
+	 * @see AnniversaryType#setAltId
+	 */
+	public void addAnniversary(AnniversaryType anniversary) {
+		anniversaries.add(anniversary);
 	}
 
 	/**
 	 * Gets the person's anniversary.
+	 * <p>
+	 * Use {@link getAnniversaries} to get the alternate representations of the
+	 * property.
+	 * </p>
+	 * 
 	 * <p>
 	 * vCard property name: ANNIVERSARY
 	 * </p>
@@ -1258,11 +1367,16 @@ public class VCard {
 	 * @return the anniversary
 	 */
 	public AnniversaryType getAnniversary() {
-		return anniversary;
+		return anniversaries.isEmpty() ? null : anniversaries.get(0);
 	}
 
 	/**
 	 * Sets the person's anniversary.
+	 * <p>
+	 * Use {@link addAnniversary} to add alternate representations of the
+	 * property.
+	 * </p>
+	 * 
 	 * <p>
 	 * vCard property name: ANNIVERSARY
 	 * </p>
@@ -1272,7 +1386,8 @@ public class VCard {
 	 * @param anniversary the anniversary
 	 */
 	public void setAnniversary(AnniversaryType anniversary) {
-		this.anniversary = anniversary;
+		anniversaries.clear();
+		anniversaries.add(anniversary);
 	}
 
 	/**
