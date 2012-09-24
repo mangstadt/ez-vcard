@@ -4,7 +4,7 @@
 	<groupId>ezvcard</groupId>
 	<artifactId>ezvcard</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3.1-SNAPSHOT</version>
+	<version>0.4</version>
 	<name>EZ vCard</name>
 	<url>http://code.google.com/p/ez-vcard</url>
 	<inceptionYear>2012</inceptionYear>
