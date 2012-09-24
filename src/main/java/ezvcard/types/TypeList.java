@@ -45,14 +45,14 @@ public class TypeList {
 	 * Maps each type name to its corresponding type class. For example, "NOTE"
 	 * is mapped to "NoteType".
 	 */
-	public final static Map<String, Class<? extends VCardType>> nameToTypeClass;
+	private final static Map<String, Class<? extends VCardType>> nameToTypeClass;
 
 	/**
 	 * Maps each type class to the "VCard" class method that is used to add an
 	 * instance of the type class to a "VCard" object. For example the
 	 * "NoteType" class is mapped to the "VCard.addNote" method.
 	 */
-	public final static Map<Class<? extends VCardType>, Method> typeClassToAddMethod;
+	private final static Map<Class<? extends VCardType>, Method> typeClassToAddMethod;
 
 	static {
 		/*
@@ -167,5 +167,25 @@ public class TypeList {
 
 		nameToTypeClass = Collections.unmodifiableMap(_nameToType);
 		typeClassToAddMethod = Collections.unmodifiableMap(_typeToMethod);
+	}
+
+	/**
+	 * Gets the class that represents a vCard type.
+	 * @param typeName the name of the vCard type (e.g. "ADR")
+	 * @return the type class or null if not found
+	 */
+	public static Class<? extends VCardType> getTypeClass(String typeName) {
+		typeName = typeName.toUpperCase();
+		return nameToTypeClass.get(typeName);
+	}
+
+	/**
+	 * Gets the method of the {@link VCard} class that's used to add a vCard
+	 * type object to the {@link VCard}.
+	 * @param typeClass the type class
+	 * @return the method or null if not found
+	 */
+	public static Method getAddMethod(Class<? extends VCardType> typeClass) {
+		return typeClassToAddMethod.get(typeClass);
 	}
 }

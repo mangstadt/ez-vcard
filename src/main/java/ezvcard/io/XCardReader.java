@@ -303,7 +303,7 @@ public class XCardReader {
 	private VCardType createTypeObject(String name, String ns) {
 		name = name.toUpperCase();
 
-		Class<? extends VCardType> clazz = TypeList.nameToTypeClass.get(name);
+		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
 		if (clazz != null && VCardVersion.V4_0.getXmlNamespace().equals(ns)) {
 			try {
 				return clazz.newInstance();
@@ -336,7 +336,7 @@ public class XCardReader {
 	 * @param vcard the vCard
 	 */
 	private void addToVCard(VCardType t, VCard vcard) {
-		Method method = TypeList.typeClassToAddMethod.get(t.getClass());
+		Method method = TypeList.getAddMethod(t.getClass());
 		if (method != null) {
 			try {
 				method.invoke(vcard, t);
