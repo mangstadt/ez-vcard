@@ -298,7 +298,7 @@ public class VCardReader implements Closeable {
 	 * @return the Type that was created
 	 */
 	private VCardType createTypeObject(String name) {
-		Class<? extends VCardType> clazz = TypeList.nameToTypeClass.get(name);
+		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
 		VCardType t;
 		if (clazz != null) {
 			try {
@@ -334,7 +334,7 @@ public class VCardReader implements Closeable {
 	 * @param vcard the vCard
 	 */
 	private void addToVCard(VCardType t, VCard vcard) {
-		Method method = TypeList.typeClassToAddMethod.get(t.getClass());
+		Method method = TypeList.getAddMethod(t.getClass());
 		if (method != null) {
 			try {
 				method.invoke(vcard, t);
