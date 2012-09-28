@@ -132,30 +132,6 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	}
 
 	/**
-	 * Gets the TYPE parameter.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the TYPE value (typically, this will be either "work" or "home")
-	 * or null if it doesn't exist
-	 */
-	public String getType() {
-		return subTypes.getType();
-	}
-
-	/**
-	 * Sets the TYPE parameter.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param type the TYPE value (this should be either "work" or "home") or
-	 * null to remove
-	 */
-	public void setType(String type) {
-		subTypes.setType(type);
-	}
-
-	/**
 	 * Gets the MEDIATYPE parameter.
 	 * <p>
 	 * vCard versions: 4.0
