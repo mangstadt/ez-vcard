@@ -10,6 +10,12 @@
 	<inceptionYear>2012</inceptionYear>
 	<description>A vCard library that reads and writes vCards, supporting all versions of the vCard standard (2.1, 3.0, and 4.0) as well as the xCard standard (an XML representation for vCards).</description>
 
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<licenses>
 		<license>
 			<name>FreeBSD License</name>
