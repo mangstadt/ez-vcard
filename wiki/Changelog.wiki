@@ -1,5 +1,10 @@
 #summary Documents all the changes that were made to every version of the library
 
+= 0.4.1 =
+
+ * Tweaked POM file for inclusion in Maven Central.
+ * Removed the `getType()` and `setType()` methods from the `ImppType` class.  These methods were not necessary because `ImppType` inherits from `MultiValuedTypeParameterType`.
+
 = 0.4.0 =
 
  * Added support for [http://tools.ietf.org/html/rfc6473 RFC 6473] (KIND:application)
