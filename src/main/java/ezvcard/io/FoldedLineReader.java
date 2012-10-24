@@ -107,6 +107,7 @@ public class FoldedLineReader extends BufferedReader {
 		}
 
 		//long lines are folded
+		StringBuilder wholeLineSb = new StringBuilder(wholeLine);
 		while (true) {
 			String line = readNonEmptyLine();
 			if (line == null) {
@@ -119,7 +120,7 @@ public class FoldedLineReader extends BufferedReader {
 					line = line.substring(0, line.length() - 1);
 				}
 
-				wholeLine += line;
+				wholeLineSb.append(line);
 
 				if (!endsInEquals) {
 					break;
@@ -132,12 +133,12 @@ public class FoldedLineReader extends BufferedReader {
 				while (lastWhitespace < line.length() && Character.isWhitespace(line.charAt(lastWhitespace))) {
 					lastWhitespace++;
 				}
-				wholeLine += line.substring(lastWhitespace);
+				wholeLineSb.append(line.substring(lastWhitespace));
 			} else {
 				lastLine = line;
 				break;
 			}
 		}
-		return wholeLine;
+		return wholeLineSb.toString();
 	}
 }
