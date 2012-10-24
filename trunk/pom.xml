@@ -141,6 +141,28 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!--
+			FindBugs plugin
+			To run: mvn findbugs:findbugs
+			To view the results: mvn findbugs:gui
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.2</version>
+			</plugin>
+
+			<!--
+			PMD plugin
+			To run: mvn -DtargetJdk=1.5 pmd:pmd
+			Code duplication report: mvn pmd:cpd
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.7.1</version>
+			</plugin>
 		</plugins>
 	</build>
 
