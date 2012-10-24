@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import ezvcard.VCardSubTypes;
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -62,6 +63,11 @@ public class OrgDirectoryType extends UriType {
 	 */
 	public OrgDirectoryType(String uri) {
 		super(NAME, uri);
+	}
+
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 
 	/**
