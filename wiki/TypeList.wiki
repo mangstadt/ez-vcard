@@ -615,7 +615,7 @@ for (LabelType label : vcard.getOrphanedLabels()){
 }}}
 
 =LANG=
-The language(s) that the person speaks.
+A language that the person reads/speaks.
 
 *vCard versions:* 4.0
 
@@ -921,7 +921,7 @@ vcard.setProdId(prodid);
 }}}
 
 =PROFILE=
-This just says that the vCard is a vCard, it's not really necessary.
+Marks the vCard as being a vCard (it is generally not needed).
 
 *vCard versions:* 3.0
 
@@ -1094,7 +1094,7 @@ vcard.addSource(source);
 }}}
 
 =TEL=
-The person's telephone number(s).
+A telephone number that the person can be reached at.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -1170,7 +1170,7 @@ vcard.addUrl(url);
 }}}
 
 =XML=
-Any XML data attached to the vCard.  This is used if the vCard was encoded in XML (xCard standard) and it contained some non-standard elements.
+Any XML data that is attached to the vCard.  This is used if the vCard was encoded in XML (xCard standard) and the XML document contained elements which are not part of the xCard standard.
 
 *vCard versions:* 4.0
 
