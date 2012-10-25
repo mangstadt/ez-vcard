@@ -2261,6 +2261,208 @@ public class VCardReaderTest {
 	}
 
 	@Test
+	public void outlook2003VCard() throws Exception {
+		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("outlook-2003.vcf")));
+		VCard vcard = reader.readNext();
+
+		//VERSION
+		assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+		//N
+		{
+			StructuredNameType f = vcard.getStructuredName();
+			assertEquals("Doe", f.getFamily());
+			assertEquals("John", f.getGiven());
+			assertTrue(f.getAdditional().isEmpty());
+			assertEquals(Arrays.asList("Mr."), f.getPrefixes());
+			assertEquals(Arrays.asList("III"), f.getSuffixes());
+		}
+
+		//FN
+		{
+			FormattedNameType f = vcard.getFormattedName();
+			assertEquals("John Doe III", f.getValue());
+		}
+
+		//NICKNAME
+		{
+			NicknameType f = vcard.getNickname();
+			assertEquals(Arrays.asList("Joey"), f.getValues());
+		}
+
+		//ORG
+		{
+			OrganizationType f = vcard.getOrganization();
+			assertEquals(Arrays.asList("Company, The", "TheDepartment"), f.getValues());
+		}
+
+		//TITLE
+		{
+			Iterator<TitleType> it = vcard.getTitles().iterator();
+
+			TitleType f = it.next();
+			assertEquals("The Job Title", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//NOTE
+		{
+			Iterator<NoteType> it = vcard.getNotes().iterator();
+
+			NoteType f = it.next();
+			assertEquals("This is the note field!!\r\nSecond line\r\n\r\nThird line is empty\r\n", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//TEL
+		{
+			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+			TelephoneType f = it.next();
+
+			assertEquals("BusinessPhone", f.getValue());
+			Set<TelephoneTypeParameter> types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.WORK));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("HomePhone", f.getValue());
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.HOME));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("MobilePhone", f.getValue());
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.CELL));
+			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+
+			f = it.next();
+			assertEquals("BusinessFaxPhone", f.getValue());
+			types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+			assertTrue(types.contains(TelephoneTypeParameter.WORK));
+
+			assertFalse(it.hasNext());
+		}
+
+		//ADR
+		{
+			Iterator<AddressType> it = vcard.getAddresses().iterator();
+
+			AddressType f = it.next();
+			assertEquals(null, f.getPoBox());
+			assertEquals("TheOffice", f.getExtendedAddress());
+			assertEquals("123 Main St", f.getStreetAddress());
+			assertEquals("Austin", f.getLocality());
+			assertEquals("TX", f.getRegion());
+			assertEquals("12345", f.getPostalCode());
+			assertEquals("United States of America", f.getCountry());
+			assertEquals("TheOffice\r\n123 Main St\r\nAustin, TX 12345\r\nUnited States of America", f.getLabel());
+			Set<AddressTypeParameter> types = f.getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains(AddressTypeParameter.WORK));
+
+			assertFalse(it.hasNext());
+		}
+
+		//LABEL
+		{
+			assertTrue(vcard.getOrphanedLabels().isEmpty());
+		}
+
+		//URL
+		{
+			Iterator<UrlType> it = vcard.getUrls().iterator();
+
+			UrlType f = it.next();
+			assertEquals("http://web-page-address.com", f.getValue());
+			Set<String> types = f.getSubTypes().getTypes();
+			assertEquals(1, types.size());
+			assertTrue(types.contains("WORK"));
+
+			assertFalse(it.hasNext());
+		}
+
+		//ROLE
+		{
+			Iterator<RoleType> it = vcard.getRoles().iterator();
+
+			RoleType f = it.next();
+			assertEquals("TheProfession", f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//BDAY
+		{
+			BirthdayType f = vcard.getBirthday();
+			Calendar c = Calendar.getInstance();
+			c.clear();
+			c.set(Calendar.YEAR, 1980);
+			c.set(Calendar.MONTH, Calendar.MARCH);
+			c.set(Calendar.DAY_OF_MONTH, 21);
+			assertEquals(c.getTime(), f.getDate());
+		}
+
+		//KEY
+		{
+			Iterator<KeyType> it = vcard.getKeys().iterator();
+
+			KeyType f = it.next();
+			assertEquals(KeyTypeParameter.X509, f.getContentType());
+			assertEquals(805, f.getData().length);
+
+			assertFalse(it.hasNext());
+		}
+
+		//EMAIL
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType f = it.next();
+			assertEquals("jdoe@hotmail.com", f.getValue());
+			Set<EmailTypeParameter> types = f.getTypes();
+			assertEquals(2, types.size());
+			assertTrue(types.contains(EmailTypeParameter.PREF));
+			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+
+			assertFalse(it.hasNext());
+		}
+
+		//FBURL
+		{
+			Iterator<FbUrlType> it = vcard.getFbUrls().iterator();
+
+			//Outlook 2003 apparently doesn't output FBURL correctly:
+			//http://help.lockergnome.com/office/BUG-Outlook-2003-exports-FBURL-vCard-incorrectly--ftopict423660.html
+			FbUrlType f = it.next();
+			assertEquals("????????????????s????????????" + (char) 12, f.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		//REV
+		{
+			RevisionType f = vcard.getRevision();
+			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			c.clear();
+			c.set(Calendar.YEAR, 2012);
+			c.set(Calendar.MONTH, Calendar.OCTOBER);
+			c.set(Calendar.DAY_OF_MONTH, 12);
+			c.set(Calendar.HOUR_OF_DAY, 21);
+			c.set(Calendar.MINUTE, 5);
+			c.set(Calendar.SECOND, 25);
+			assertEquals(c.getTime(), f.getTimestamp());
+		}
+	}
+
+	@Test
 	public void thunderbird() throws Exception {
 		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("thunderbird-MoreFunctionsForAddressBook-extension.vcf")));
 		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
