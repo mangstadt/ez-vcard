@@ -1,9 +1,7 @@
 #summary Contains a listing of all vCard types (such as "ADR" and "N"), along with code samples
 #labels Featured
 
-The page contains a listing of all vCard types, as well as information on how to use these types with EZ-vCard.
-
-EZ-vCard takes care of setting certain parameters for you.  For example, when creating a PHOTO type, you don't have to worry about setting the ENCODING parameter to the correct value.
+The page contains a listing of all vCard types, as well as information on how to use these types with ez-vcard.
 
 =ADR=
 Defines a mailing address.
@@ -603,7 +601,7 @@ Defines the exact text to put on the mailing label when mailing a package or let
 
 *Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/LabelType.html LabelType]
 
-`*`The LABEL type is not supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When marshalling a vCard, EZ-vCard will use either the LABEL type or the LABEL parameter, depending on the requested vCard version.
+`*`The LABEL type is not supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When marshalling a vCard, ez-vcard will use either the LABEL type or the LABEL parameter, depending on the requested vCard version.
 
 Use the `AddressType.setLabel()` method to assign a label to an address.
 

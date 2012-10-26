@@ -16,7 +16,7 @@ VCard vcard = VCard.parse(file);
 =VCardReader=
 For more control over how a vCard is read, the `VCardReader` class can be used.  This is what `VCard.parse()` uses under the covers.  Instead of just accepting a string or file as input, it accepts a `java.io.Reader` object, allowing a vCard to be read from a wide variety of inputs.
 
-It also gives the programmer access to warnings that the parser generates.  A warning is generated when the vCard breaks the standard in some way and/or EZ-vCard has to make a guess as to how to parse the vCard.  The warnings are accessed by calling `getWarnings()` after the vCard is read.  The list of warnings is reset every time a new vCard is read from the input stream.
+It also gives the programmer access to warnings that the parser generates.  A warning is generated when the vCard breaks the standard in some way and/or ez-vcard has to make a guess as to how to parse the vCard.  The warnings are accessed by calling `getWarnings()` after the vCard is read.  The list of warnings is reset every time a new vCard is read from the input stream.
 
 {{{
 Reader reader = ...
@@ -46,7 +46,7 @@ As with all Java IO operations, the programmer must remember to close the `Reade
 =XCardReader=
 A vCard can also be encoded as an XML document (this specification is called "xCard").  The `XCardReader` class is used to read XML-encoded vCards and it works in exactly the same way as the `VCardReader` class.
 
-`XCardReader` gives the programmer access to warnings that the parser generates.  A warning is generated when the vCard breaks the standard in some way and/or EZ-vCard has to make a guess as to how to parse the vCard.  The warnings are accessed by calling `getWarnings()` after the vCard is read.  The list of warnings is reset every time a new vCard is read from the input stream.
+`XCardReader` gives the programmer access to warnings that the parser generates.  A warning is generated when the vCard breaks the standard in some way and/or ez-vcard has to make a guess as to how to parse the vCard.  The warnings are accessed by calling `getWarnings()` after the vCard is read.  The list of warnings is reset every time a new vCard is read from the input stream.
 
 {{{
 Reader reader = ...

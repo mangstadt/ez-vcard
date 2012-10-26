@@ -28,7 +28,7 @@
 = 0.2.0 =
 
  * Added support for vCard 4.0
- * Removed the space that EZ-vCard added after the colon in the marshalled vCard.  This prevented some mail clients from reading the vCard (see Issue 1).
+ * Removed the space that ez-vcard added after the colon in the marshalled vCard.  This prevented some mail clients from reading the vCard (see Issue 1).
  * Values for the BEGIN, END, and PROFILE types are now in upper-case (i.e. "BEGIN:VCARD").  The 2.1/3.0 specs appear to require it to be in upper-case, so better safe than sorry (see Issue 1).
  * Fleshed out the Javadocs.
 
