@@ -12,7 +12,6 @@ import java.util.Set;
 
 import ezvcard.EZVCard;
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
@@ -168,10 +167,9 @@ public class VCardWriter implements Closeable {
 	/**
 	 * Writes a vCard
 	 * @param vcard the vCard to write
-	 * @throws VCardException if there's a problem writing the vCard
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
-	public void write(final VCard vcard) throws VCardException, IOException {
+	public void write(final VCard vcard) throws IOException {
 		warnings.clear();
 
 		if (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0) {

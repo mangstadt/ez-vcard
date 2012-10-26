@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -254,7 +253,7 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (version == VCardVersion.V4_0) {
 			copy.setValue(ValueParameter.URI);
 		}
@@ -295,14 +294,14 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
 		doMarshalValue(sb, version, warnings, compatibilityMode);
 		XCardUtils.appendChild(parent, "uri", sb.toString(), version);
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = XCardUtils.getFirstChildText(element, "uri");
 		if (value != null) {
 			doUnmarshalValue(value, version, warnings, compatibilityMode);

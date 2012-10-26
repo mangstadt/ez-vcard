@@ -165,9 +165,8 @@ public class VCard {
 	 * over how the vCard is parsed.
 	 * @param str the vCard
 	 * @return the parsed vCard
-	 * @throws VCardException if there's a problem parsing the vCard
 	 */
-	public static VCard parse(String str) throws VCardException {
+	public static VCard parse(String str) {
 		try {
 			VCardReader vcr = new VCardReader(new StringReader(str));
 			return vcr.readNext();
@@ -182,10 +181,9 @@ public class VCard {
 	 * over how the vCard is parsed.
 	 * @param file the vCard
 	 * @return the parsed vCard
-	 * @throws VCardException if there's a problem parsing the vCard
 	 * @throws IOException if there's a problem reading the file
 	 */
-	public static VCard parse(File file) throws VCardException, IOException {
+	public static VCard parse(File file) throws IOException {
 		VCardReader vcr = null;
 		try {
 			vcr = new VCardReader(new FileReader(file));
@@ -206,10 +204,9 @@ public class VCard {
 	 * for more control over how the vCard is parsed.
 	 * @param xml the vCard XML string
 	 * @return the parsed vCard
-	 * @throws VCardException if there's a problem parsing the vCard
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
-	public static VCard parseXml(String xml) throws VCardException, SAXException {
+	public static VCard parseXml(String xml) throws SAXException {
 		try {
 			XCardReader xcr = new XCardReader(new StringReader(xml));
 			return xcr.readNext();
@@ -224,11 +221,10 @@ public class VCard {
 	 * more control over how the vCard is parsed.
 	 * @param file the vCard XML file
 	 * @return the parsed vCard
-	 * @throws VCardException if there's a problem parsing the vCard
 	 * @throws IOException if there's a problem reading the file
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
-	public static VCard parseXml(File file) throws VCardException, IOException, SAXException {
+	public static VCard parseXml(File file) throws IOException, SAXException {
 		Reader reader = null;
 		try {
 			reader = new FileReader(file);
@@ -248,9 +244,8 @@ public class VCard {
 	/**
 	 * Writes this vCard to a string. Use the {@link VCardWriter} class for more
 	 * control over how the vCard is written.
-	 * @throws VCardException if there's a problem writing the vCard
 	 */
-	public String write() throws VCardException {
+	public String write() {
 		StringWriter sw = new StringWriter();
 		try {
 			VCardWriter writer = new VCardWriter(sw, (version == null) ? VCardVersion.V3_0 : version);
@@ -265,10 +260,9 @@ public class VCard {
 	 * Writes this vCard to a file. Use the {@link VCardWriter} class for more
 	 * control over how the vCard is written.
 	 * @param file the file to write to
-	 * @throws VCardException if there's a problem writing the vCard
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void write(File file) throws VCardException, IOException {
+	public void write(File file) throws IOException {
 		VCardWriter vcw = null;
 		try {
 			vcw = new VCardWriter(new FileWriter(file), (version == null) ? VCardVersion.V3_0 : version);
@@ -288,9 +282,8 @@ public class VCard {
 	 * Writes this vCard to an XML document (xCard). Use the
 	 * {@link XCardMarshaller} class for more control over how the vCard is
 	 * written.
-	 * @throws VCardException if there's a problem writing the vCard
 	 */
-	public String writeXml() throws VCardException {
+	public String writeXml() {
 		XCardMarshaller xcm = new XCardMarshaller();
 		xcm.addVCard(this);
 
@@ -307,11 +300,10 @@ public class VCard {
 	 * Writes this vCard to an XML file (xCard). Use the {@link XCardMarshaller}
 	 * class for more control over how the vCard is written.
 	 * @param file the file to write to
-	 * @throws VCardException if there's a problem writing the vCard
 	 * @throws IOException if there's a problem writing to the file
 	 * @throws TransformerException if there's a problem writing the vCard
 	 */
-	public void writeXml(File file) throws VCardException, IOException, TransformerException {
+	public void writeXml(File file) throws IOException, TransformerException {
 		XCardMarshaller xcm = new XCardMarshaller();
 		xcm.addVCard(this);
 

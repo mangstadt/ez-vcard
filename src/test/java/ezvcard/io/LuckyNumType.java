@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
 import ezvcard.util.XCardUtils;
@@ -50,40 +49,40 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		if (luckyNum == 13){
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
 		sb.append(luckyNum);
 	}
-	
+
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
-		if (luckyNum == 13){
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
 		parent.setTextContent(luckyNum + "");
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		luckyNum = Integer.parseInt(value);
-		if (luckyNum == 13){
+		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		Element ele = XCardUtils.getFirstElement(element.getElementsByTagName("integer"));
 		luckyNum = Integer.parseInt(ele.getTextContent());
-		if (luckyNum == 13){
+		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
 	}
-	
+
 	@Override
-	public String getXmlNamespace(){
+	public String getXmlNamespace() {
 		return "http://luckynum.com";
 	}
 }

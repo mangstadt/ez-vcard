@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -326,7 +325,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && hourOffset != null && minuteOffset != null) {
 				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
@@ -349,7 +348,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			XCardUtils.appendChild(parent, "text", text, version);
 		} else if (hourOffset != null && minuteOffset != null) {
@@ -361,7 +360,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = XCardUtils.getFirstChildText(element, "text", "uri", "utc-offset");
 		if (value != null) {
 			parseValue(value);

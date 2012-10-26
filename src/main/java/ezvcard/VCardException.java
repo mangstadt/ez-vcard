@@ -30,12 +30,11 @@ package ezvcard;
  */
 
 /**
- * Generic exception that's thrown if there's a problem marshalling or
- * unmarshalling a vCard.
+ * Base exception for all ez-vcard exceptions.
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
-public class VCardException extends Exception {
+public class VCardException extends RuntimeException {
 	public VCardException(String msg, Throwable t) {
 		super(msg, t);
 	}

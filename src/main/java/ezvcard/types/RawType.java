@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.XCardUtils;
@@ -88,7 +87,7 @@ public class RawType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		Element value = XCardUtils.getFirstElement(element.getChildNodes());
 		if (value == null) {
 			this.value = element.getTextContent();

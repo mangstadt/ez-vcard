@@ -26,7 +26,6 @@ import org.w3c.dom.Element;
 
 import ezvcard.EZVCard;
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.types.MemberType;
@@ -171,9 +170,8 @@ public class XCardMarshaller {
 	/**
 	 * Adds a vCard to the XML document
 	 * @param vcard the vCard to add
-	 * @throws VCardException if there's a problem marshalling the vCard
 	 */
-	public void addVCard(VCard vcard) throws VCardException {
+	public void addVCard(VCard vcard) {
 		warnings.clear();
 
 		if (vcard.getFormattedName() == null) {
@@ -249,13 +247,12 @@ public class XCardMarshaller {
 	 * @param vcard the vcard the type belongs to
 	 * @return the XML element or null not to add anything to the final XML
 	 * document
-	 * @throws VCardException
 	 */
-	private Element marshalType(VCardType type, VCard vcard) throws VCardException {
+	private Element marshalType(VCardType type, VCard vcard) {
 		List<String> warnings = new ArrayList<String>();
 		try {
 			String ns = type.getXmlNamespace();
-			if (ns == null){
+			if (ns == null) {
 				ns = targetVersion.getXmlNamespace();
 			}
 			Element typeElement = createElement(type.getTypeName().toLowerCase(), ns);
@@ -331,7 +328,7 @@ public class XCardMarshaller {
 	private Element createElement(String name) {
 		return createElement(name, targetVersion.getXmlNamespace());
 	}
-	
+
 	/**
 	 * Creates a new XML element.
 	 * @param name the name of the XML element

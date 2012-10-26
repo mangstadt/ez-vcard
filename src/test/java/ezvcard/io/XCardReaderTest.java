@@ -14,7 +14,6 @@ import java.util.List;
 import org.junit.Test;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.FormattedNameType;
@@ -419,12 +418,12 @@ public class XCardReaderTest {
 		}
 
 		@Override
-		protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 			sb.append(age);
 		}
 
 		@Override
-		protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+		protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 			age = Integer.parseInt(value);
 		}
 

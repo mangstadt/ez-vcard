@@ -6,7 +6,6 @@ import java.util.Set;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -400,7 +399,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		//replace "TYPE=pref" with "PREF=1"
 		if (version == VCardVersion.V4_0) {
 			if (getTypes().contains(AddressTypeParameter.PREF)) {
@@ -496,7 +495,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (poBox != null) {
 			XCardUtils.appendChild(parent, "pobox", poBox, version);
 		}
@@ -521,7 +520,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		poBox = XCardUtils.getFirstChildText(element, "pobox");
 		extendedAddress = XCardUtils.getFirstChildText(element, "ext");
 		streetAddress = XCardUtils.getFirstChildText(element, "street");
