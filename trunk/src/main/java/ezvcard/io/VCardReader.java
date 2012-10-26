@@ -13,7 +13,6 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.QuotedPrintableCodec;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.EncodingParameter;
@@ -127,10 +126,9 @@ public class VCardReader implements Closeable {
 	/**
 	 * Reads the next vCard.
 	 * @return the next vCard or null if there are no more
-	 * @throws VCardException if there's a problem parsing the vCard
 	 * @throws IOException if there's a problem reading from the stream
 	 */
-	public VCard readNext() throws VCardException, IOException {
+	public VCard readNext() throws IOException {
 		warnings.clear();
 
 		VCard vcard = new VCard();

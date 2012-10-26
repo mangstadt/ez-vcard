@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import java.util.List;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -137,7 +136,7 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) throws VCardException {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (url != null) {
 			ValueParameter vp = (version == VCardVersion.V2_1) ? ValueParameter.URL : ValueParameter.URI;
 			copy.setValue(vp);
@@ -147,7 +146,7 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		//VCardWriter handles 2.1 AGENT types that have an embedded vCard.
 		//this method will not be called for these instances
 
@@ -174,7 +173,7 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
 
 		if (subTypes.getValue() != null) {

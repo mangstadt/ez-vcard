@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.VCardStringUtils;
@@ -224,7 +223,7 @@ public class GenderType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (gender != null) {
 			sb.append(gender);
 		}
@@ -235,7 +234,7 @@ public class GenderType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String split[] = value.split(";", 2);
 		setGender(split[0].toUpperCase());
 		if (split.length > 1) {
@@ -244,7 +243,7 @@ public class GenderType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		XCardUtils.appendChild(parent, "sex", (gender == null) ? "" : gender, version);
 		if (text != null) {
 			XCardUtils.appendChild(parent, "identity", text, version);
@@ -252,7 +251,7 @@ public class GenderType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setGender(XCardUtils.getFirstChildText(element, "sex"));
 		setText(XCardUtils.getFirstChildText(element, "identity"));
 	}

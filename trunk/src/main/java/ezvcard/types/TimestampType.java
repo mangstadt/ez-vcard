@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
@@ -83,7 +82,7 @@ public class TimestampType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = writeValue();
 		sb.append(VCardStringUtils.escapeText(value));
 	}
@@ -98,20 +97,20 @@ public class TimestampType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = writeValue();
 		XCardUtils.appendChild(parent, "timestamp", value, version);
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = XCardUtils.getFirstChildText(element, "timestamp");
 		if (value != null) {
 			doUnmarshalValue(value, version, warnings, compatibilityMode);
 		}
 	}
 
-	private String writeValue() throws VCardException {
+	private String writeValue() {
 		if (timestamp == null) {
 			throw new SkipMeException("Property has no timestamp value associated with it.");
 		}

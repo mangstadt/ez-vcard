@@ -5,7 +5,6 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -170,7 +169,7 @@ public class DeathplaceType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			sb.append(VCardStringUtils.escapeText(uri));
 		} else if (text != null) {
@@ -181,7 +180,7 @@ public class DeathplaceType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
 		if (subTypes.getValue() == ValueParameter.URI) {
 			setUri(value);
@@ -194,7 +193,7 @@ public class DeathplaceType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			XCardUtils.appendChild(parent, "uri", uri, version);
 		} else if (text != null) {
@@ -205,7 +204,7 @@ public class DeathplaceType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = XCardUtils.getFirstChildText(element, "uri");
 		if (value != null) {
 			setUri(value);

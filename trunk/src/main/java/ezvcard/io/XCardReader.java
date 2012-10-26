@@ -27,7 +27,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.types.RawType;
@@ -190,9 +189,8 @@ public class XCardReader {
 	/**
 	 * Reads the next vCard.
 	 * @return the next vCard or null if there are no more
-	 * @throws VCardException if there's a problem parsing the vCard
 	 */
-	public VCard readNext() throws VCardException {
+	public VCard readNext() {
 		warnings.clear();
 
 		if (!vcardElements.hasNext()) {
@@ -236,9 +234,8 @@ public class XCardReader {
 	 * group
 	 * @param version the vCard version
 	 * @param vcard the vCard object
-	 * @throws VCardException
 	 */
-	private void parseAndAddElement(Element element, String group, VCardVersion version, VCard vcard) throws VCardException {
+	private void parseAndAddElement(Element element, String group, VCardVersion version, VCard vcard) {
 		List<String> warnings = new ArrayList<String>();
 		VCardSubTypes subTypes = parseSubTypes(element);
 		VCardType type = createTypeObject(element.getLocalName(), element.getNamespaceURI());

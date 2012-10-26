@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import ezvcard.VCardException;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -303,7 +302,7 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (family != null) {
 			XCardUtils.appendChild(parent, "surname", family, version);
 		}
@@ -322,7 +321,7 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) throws VCardException {
+	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		family = XCardUtils.getFirstChildText(element, "surname");
 		given = XCardUtils.getFirstChildText(element, "given");
 
