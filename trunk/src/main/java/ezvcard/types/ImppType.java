@@ -42,13 +42,34 @@ import ezvcard.util.XCardUtils;
  */
 
 /**
- * Contains an instant messenger handle.
+ * An instant message handle. The handle is represented as a URI in the format "
+ * <code>&lt;IM-PROTOCOL&gt;:&lt;IM-HANDLE&gt;</code>". For example, someone
+ * with a Yahoo! Messenger handle of "jdoe@yahoo.com" would have an IMPP vCard
+ * property value of "ymsgr:jdoe@yahoo.com".
  * 
  * <pre>
  * VCard vcard = new VCard();
- * ImppType impp = new ImppType(&quot;aim&quot;, &quot;hunkydude22@aol.com&quot;);
+ * 
+ * //URI
+ * ImppType impp = new ImppType(&quot;aim:hunkydude22@aol.com&quot;);
+ * vcard.addImpp(impp);
+ * 
+ * //static helper constructors
+ * impp = ImppType.msn(&quot;steve99@msn.com&quot;);
  * vcard.addImpp(impp);
  * </pre>
+ * 
+ * <p>
+ * Suggested URI protocols (from RFC 4770):
+ * <ul>
+ * <li>"aim:" - AOL Instant Messenger</li>
+ * <li>"ymsgr:" - Yahoo! Messenger</li>
+ * <li>"msn:" - MSN</li>
+ * <li>"irc:" - IRC handle</li>
+ * <li>"sip:" - Session Initiation Protocol</li>
+ * <li>"xmpp:" - Extensible Messaging and Presence Protocol</li>
+ * </ul>
+ * </p>
  * 
  * <p>
  * vCard property name: IMPP
@@ -61,73 +82,130 @@ import ezvcard.util.XCardUtils;
 public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	public static final String NAME = "IMPP";
 
-	/**
-	 * A list of possible IM protocols, as listed in RFC 4770 p.2.
-	 */
-	public static enum Protocol {
-		SIP, XMPP, IRC, YMSGR, MSN, AIM, IM, PRES;
+	private static final String AIM = "aim:";
+	private static final String YAHOO = "ymsgr:";
+	private static final String MSN = "msn:";
+	private static final String IRC = "irc:";
+	private static final String SIP = "sip:";
+	private static final String XMPP = "xmpp:";
 
-		@Override
-		public String toString() {
-			return super.toString().toLowerCase();
-		}
-	}
-
-	/**
-	 * The IM protocol (e.g. "aim").
-	 */
-	private String protocol;
-
-	/**
-	 * The IM URI.
-	 */
 	private String uri;
 
 	public ImppType() {
-		this((String) null, null);
+		this(null);
 	}
 
 	/**
-	 * @param protocol the IM protocol
-	 * @param uri the IM URI
+	 * @param uri the IM URI (e.g. "aim:johndoe@aol.com")
 	 */
-	public ImppType(String protocol, String uri) {
+	public ImppType(String uri) {
 		super(NAME);
-		this.protocol = protocol;
 		this.uri = uri;
 	}
 
 	/**
-	 * @param protocol the IM protocol
-	 * @param uri the IM URI
+	 * Creates an AOL Instant Messenger IMPP property.
+	 * @param handle the IM handle
+	 * @return the IMPP property instance
 	 */
-	public ImppType(Protocol protocol, String uri) {
-		this(protocol.toString(), uri);
+	public static ImppType aim(String handle) {
+		return new ImppType(AIM + handle);
 	}
 
 	/**
-	 * Gets the IM protocol.
-	 * @return the IM protocol (e.g. "aim")
+	 * Determines if this IMPP property represents an AOL Instant Messenger
+	 * handle.
+	 * @return true if it's an AOL Instant Messenger handle, false if not
 	 */
-	public String getProtocol() {
-		return protocol;
+	public boolean isAim() {
+		return uri != null && uri.startsWith(AIM);
 	}
 
 	/**
-	 * Sets the IM protocol.
-	 * @param protocol the IM protocol
+	 * Creates an Yahoo! Messenger IMPP property.
+	 * @param handle the IM handle
+	 * @return the IMPP property instance
 	 */
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
+	public static ImppType yahoo(String handle) {
+		return new ImppType(YAHOO + handle);
 	}
 
 	/**
-	 * Sets the IM protocol using example protocols provided by the
-	 * {@link ImppType.Protocol} enum.
-	 * @param protocol the IM protocol
+	 * Determines if this IMPP property represents a Yahoo! Messenger handle.
+	 * @return true if it's a Yahoo! Messenger handle, false if not
 	 */
-	public void setProtocol(Protocol protocol) {
-		setProtocol(protocol.toString());
+	public boolean isYahoo() {
+		return uri != null && uri.startsWith(YAHOO);
+	}
+
+	/**
+	 * Creates an MSN IMPP property.
+	 * @param handle the IM handle
+	 * @return the IMPP property instance
+	 */
+	public static ImppType msn(String handle) {
+		return new ImppType(MSN + handle);
+	}
+
+	/**
+	 * Determines if this IMPP property represents an MSN handle.
+	 * @return true if it's an MSN handle, false if not
+	 */
+	public boolean isMsn() {
+		return uri != null && uri.startsWith(MSN);
+	}
+
+	/**
+	 * Creates an IRC IMPP property.
+	 * @param handle the IM handle
+	 * @return the IMPP property instance
+	 */
+	public static ImppType irc(String handle) {
+		return new ImppType(IRC + handle);
+	}
+
+	/**
+	 * Determines if this IMPP property represents an IRC handle.
+	 * @return true if it's an IRC handle, false if not
+	 */
+	public boolean isIrc() {
+		return uri != null && uri.startsWith(IRC);
+	}
+
+	/**
+	 * Creates a Session Initiation Protocol IMPP property.
+	 * @param handle the IM handle
+	 * @return the IMPP property instance
+	 */
+	public static ImppType sip(String handle) {
+		return new ImppType(SIP + handle);
+	}
+
+	/**
+	 * Determines if this IMPP property represents a Session Initiation Protocol
+	 * handle.
+	 * @return true if it's a SIP handle, false if not
+	 */
+	public boolean isSip() {
+		return uri != null && uri.startsWith(SIP);
+	}
+
+	/**
+	 * Creates an Extensible Messaging and Presence Protocol IMPP property.
+	 * @param handle the IM handle
+	 * @return the IMPP property instance
+	 */
+	public static ImppType xmpp(String handle) {
+		return new ImppType(XMPP + handle);
+	}
+
+	/**
+	 * Determines if this IMPP property represents an Extensible Messaging and
+	 * Presence Protocol handle.
+	 * @return true if it's an XMPP handle, false if not
+	 */
+	public boolean isXmpp() {
+		return uri != null && uri.startsWith(XMPP);
 	}
 
 	/**
@@ -269,48 +347,25 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = writeValue();
-		sb.append(VCardStringUtils.escapeText(value));
+		if (uri != null) {
+			sb.append(VCardStringUtils.escapeText(uri));
+		}
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value);
-		parseValue(value, warnings);
+		uri = VCardStringUtils.unescape(value);
 	}
 
 	@Override
 	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = writeValue();
-		XCardUtils.appendChild(parent, "uri", value, version);
+		if (uri != null) {
+			XCardUtils.appendChild(parent, "uri", uri, version);
+		}
 	}
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = XCardUtils.getFirstChildText(element, "uri");
-		if (value != null) {
-			parseValue(value, warnings);
-		}
-	}
-
-	private String writeValue() {
-		StringBuilder sb = new StringBuilder();
-		if (protocol != null) {
-			sb.append(protocol);
-			sb.append(':');
-		}
-		sb.append(uri);
-		return sb.toString();
-	}
-
-	private void parseValue(String value, List<String> warnings) {
-		String split[] = value.split(":", 2);
-		if (split.length < 2) {
-			warnings.add(NAME + " type is not in the correct format.  Assuming that the entire value is a URI.");
-			uri = split[0];
-		} else {
-			protocol = split[0];
-			uri = split[1];
-		}
+		uri = XCardUtils.getFirstChildText(element, "uri");
 	}
 }

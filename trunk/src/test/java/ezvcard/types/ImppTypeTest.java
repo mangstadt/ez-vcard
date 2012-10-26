@@ -2,6 +2,8 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,78 @@ import ezvcard.util.XCardUtils;
  */
 public class ImppTypeTest {
 	@Test
+	public void aim() {
+		ImppType t = ImppType.aim("handle");
+		assertEquals("aim:handle", t.getUri());
+		assertTrue(t.isAim());
+		assertFalse(t.isIrc());
+		assertFalse(t.isMsn());
+		assertFalse(t.isSip());
+		assertFalse(t.isXmpp());
+		assertFalse(t.isYahoo());
+	}
+
+	@Test
+	public void irc() {
+		ImppType t = ImppType.irc("handle");
+		assertEquals("irc:handle", t.getUri());
+		assertFalse(t.isAim());
+		assertTrue(t.isIrc());
+		assertFalse(t.isMsn());
+		assertFalse(t.isSip());
+		assertFalse(t.isXmpp());
+		assertFalse(t.isYahoo());
+	}
+
+	@Test
+	public void msn() {
+		ImppType t = ImppType.msn("handle");
+		assertEquals("msn:handle", t.getUri());
+		assertFalse(t.isAim());
+		assertFalse(t.isIrc());
+		assertTrue(t.isMsn());
+		assertFalse(t.isSip());
+		assertFalse(t.isXmpp());
+		assertFalse(t.isYahoo());
+	}
+
+	@Test
+	public void sip() {
+		ImppType t = ImppType.sip("handle");
+		assertEquals("sip:handle", t.getUri());
+		assertFalse(t.isAim());
+		assertFalse(t.isIrc());
+		assertFalse(t.isMsn());
+		assertTrue(t.isSip());
+		assertFalse(t.isXmpp());
+		assertFalse(t.isYahoo());
+	}
+
+	@Test
+	public void xmpp() {
+		ImppType t = ImppType.xmpp("handle");
+		assertEquals("xmpp:handle", t.getUri());
+		assertFalse(t.isAim());
+		assertFalse(t.isIrc());
+		assertFalse(t.isMsn());
+		assertFalse(t.isSip());
+		assertTrue(t.isXmpp());
+		assertFalse(t.isYahoo());
+	}
+
+	@Test
+	public void yahoo() {
+		ImppType t = ImppType.yahoo("handle");
+		assertEquals("ymsgr:handle", t.getUri());
+		assertFalse(t.isAim());
+		assertFalse(t.isIrc());
+		assertFalse(t.isMsn());
+		assertFalse(t.isSip());
+		assertFalse(t.isXmpp());
+		assertTrue(t.isYahoo());
+	}
+
+	@Test
 	public void marshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
@@ -56,7 +130,7 @@ public class ImppTypeTest {
 		ImppType t;
 		String expected, actual;
 
-		t = new ImppType(ImppType.Protocol.AIM, "john.doe@aol.com");
+		t = new ImppType("aim:john.doe@aol.com");
 		expected = "aim:john.doe@aol.com";
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
@@ -72,7 +146,7 @@ public class ImppTypeTest {
 		Element element;
 		String expectedXml;
 
-		t = new ImppType(ImppType.Protocol.AIM, "john.doe@aol.com");
+		t = new ImppType("aim:john.doe@aol.com");
 		expectedXml = "<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>aim:john.doe@aol.com</uri>";
 		expectedXml += "</impp>";
@@ -93,8 +167,7 @@ public class ImppTypeTest {
 
 		t = new ImppType();
 		t.unmarshalValue(subTypes, "aim:john.doe@aol.com", version, warnings, compatibilityMode);
-		assertEquals("aim", t.getProtocol());
-		assertEquals("john.doe@aol.com", t.getUri());
+		assertEquals("aim:john.doe@aol.com", t.getUri());
 	}
 
 	@Test
@@ -113,7 +186,6 @@ public class ImppTypeTest {
 		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
 		t = new ImppType();
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
-		assertEquals("aim", t.getProtocol());
-		assertEquals("john.doe@aol.com", t.getUri());
+		assertEquals("aim:john.doe@aol.com", t.getUri());
 	}
 }
