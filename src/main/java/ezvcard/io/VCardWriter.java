@@ -106,7 +106,7 @@ public class VCardWriter implements Closeable {
 			//the check for FoldedLineWriter is for writing nested 2.1 vCards (i.e. the AGENT type)
 			this.writer = writer;
 		} else {
-			this.writer = new FoldedLineWriter(writer, foldingScheme.getMaxChars(), foldingScheme.getIndent(), newline);
+			this.writer = new FoldedLineWriter(writer, foldingScheme.getLineLength(), foldingScheme.getIndent(), newline);
 		}
 		this.targetVersion = targetVersion;
 		this.newline = newline;
