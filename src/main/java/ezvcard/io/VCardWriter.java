@@ -270,6 +270,7 @@ public class VCardWriter implements Closeable {
 
 		types.add(new TextType("END", "VCARD"));
 
+		List<String> warningsBuf = new ArrayList<String>();
 		for (VCardType type : types) {
 			//determine if this type has a nested vCard
 			VCard nested = null;
@@ -280,26 +281,26 @@ public class VCardWriter implements Closeable {
 			}
 
 			//marshal the value
+			warningsBuf.clear();
 			String value = null;
 			if (nested == null) {
-				List<String> warnings = new ArrayList<String>();
 				try {
-					value = type.marshalValue(targetVersion, warnings, compatibilityMode);
+					value = type.marshalValue(targetVersion, warningsBuf, compatibilityMode);
 				} catch (SkipMeException e) {
-					this.warnings.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+					warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
 					continue;
 				} finally {
-					this.warnings.addAll(warnings);
+					warnings.addAll(warningsBuf);
 				}
 			}
 
 			//marshal the sub types
+			warningsBuf.clear();
 			VCardSubTypes subTypes;
-			List<String> warnings = new ArrayList<String>();
 			try {
-				subTypes = type.marshalSubTypes(targetVersion, warnings, compatibilityMode, vcard);
+				subTypes = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);
 			} finally {
-				this.warnings.addAll(warnings);
+				warnings.addAll(warningsBuf);
 			}
 
 			StringBuilder sb = new StringBuilder();
