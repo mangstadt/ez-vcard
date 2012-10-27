@@ -138,6 +138,7 @@ public class VCardReader implements Closeable {
 		boolean endFound = false;
 		int typesRead = 0;
 		String line;
+		List<String> warningsBuf = new ArrayList<String>();
 
 		while (!endFound && (line = reader.readLine()) != null) {
 			//parse the components out of the line
@@ -243,9 +244,9 @@ public class VCardReader implements Closeable {
 				type.setGroup(groupName);
 
 				//unmarshal the text string into the object
-				List<String> warnings = new ArrayList<String>();
+				warningsBuf.clear();
 				try {
-					type.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+					type.unmarshalValue(subTypes, value, version, warningsBuf, compatibilityMode);
 
 					//add to vcard
 					if (type instanceof LabelType) {
@@ -255,9 +256,9 @@ public class VCardReader implements Closeable {
 						addToVCard(type, vcard);
 					}
 				} catch (SkipMeException e) {
-					warnings.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+					warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
 				} finally {
-					this.warnings.addAll(warnings);
+					warnings.addAll(warningsBuf);
 				}
 			}
 		}

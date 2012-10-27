@@ -229,12 +229,16 @@ public class XCardMarshaller {
 				parent = vcardElement;
 			}
 
+			List<String> warningsBuf = new ArrayList<String>();
 			for (VCardType type : types.get(groupName)) {
+				warningsBuf.clear();
 				try {
-					Element typeElement = marshalType(type, vcard);
+					Element typeElement = marshalType(type, vcard, warningsBuf);
 					parent.appendChild(typeElement);
 				} catch (SkipMeException e) {
-					warnings.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+					warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+				} finally {
+					warnings.addAll(warningsBuf);
 				}
 			}
 		}
@@ -245,46 +249,42 @@ public class XCardMarshaller {
 	 * Marshals a type object to an XML element.
 	 * @param type the type object to marshal
 	 * @param vcard the vcard the type belongs to
+	 * @param warningsBuf the list to add the warnings to
 	 * @return the XML element or null not to add anything to the final XML
 	 * document
 	 */
-	private Element marshalType(VCardType type, VCard vcard) {
-		List<String> warnings = new ArrayList<String>();
-		try {
-			String ns = type.getXmlNamespace();
-			if (ns == null) {
-				ns = targetVersion.getXmlNamespace();
-			}
-			Element typeElement = createElement(type.getTypeName().toLowerCase(), ns);
-
-			//marshal the sub types
-			VCardSubTypes subTypes = type.marshalSubTypes(targetVersion, warnings, compatibilityMode, vcard);
-			subTypes.setValue(null); //don't include the VALUE parameter (modification of the "VCardSubTypes" object is safe because it's a copy)
-			if (!subTypes.getMultimap().isEmpty()) {
-				Element parametersElement = createElement("parameters");
-				for (String paramName : subTypes.getNames()) {
-					Element parameterElement = createElement(paramName.toLowerCase());
-					for (String paramValue : subTypes.get(paramName)) {
-						String valueElementName = parameterChildElementNames.get(paramName.toLowerCase());
-						if (valueElementName == null) {
-							valueElementName = "unknown";
-						}
-						Element parameterValueElement = createElement(valueElementName);
-						parameterValueElement.setTextContent(paramValue);
-						parameterElement.appendChild(parameterValueElement);
-					}
-					parametersElement.appendChild(parameterElement);
-				}
-				typeElement.appendChild(parametersElement);
-			}
-
-			//marshal the value
-			type.marshalValue(typeElement, targetVersion, warnings, compatibilityMode);
-
-			return typeElement;
-		} finally {
-			this.warnings.addAll(warnings);
+	private Element marshalType(VCardType type, VCard vcard, List<String> warningsBuf) {
+		String ns = type.getXmlNamespace();
+		if (ns == null) {
+			ns = targetVersion.getXmlNamespace();
 		}
+		Element typeElement = createElement(type.getTypeName().toLowerCase(), ns);
+
+		//marshal the sub types
+		VCardSubTypes subTypes = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);
+		subTypes.setValue(null); //don't include the VALUE parameter (modification of the "VCardSubTypes" object is safe because it's a copy)
+		if (!subTypes.getMultimap().isEmpty()) {
+			Element parametersElement = createElement("parameters");
+			for (String paramName : subTypes.getNames()) {
+				Element parameterElement = createElement(paramName.toLowerCase());
+				for (String paramValue : subTypes.get(paramName)) {
+					String valueElementName = parameterChildElementNames.get(paramName.toLowerCase());
+					if (valueElementName == null) {
+						valueElementName = "unknown";
+					}
+					Element parameterValueElement = createElement(valueElementName);
+					parameterValueElement.setTextContent(paramValue);
+					parameterElement.appendChild(parameterValueElement);
+				}
+				parametersElement.appendChild(parameterElement);
+			}
+			typeElement.appendChild(parametersElement);
+		}
+
+		//marshal the value
+		type.marshalValue(typeElement, targetVersion, warningsBuf, compatibilityMode);
+
+		return typeElement;
 	}
 
 	/**

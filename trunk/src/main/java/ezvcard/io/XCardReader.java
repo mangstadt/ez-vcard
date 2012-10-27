@@ -208,6 +208,7 @@ public class XCardReader {
 
 		String ns = version.getXmlNamespace();
 		List<Element> children = XCardUtils.toElementList(vcardElement.getChildNodes());
+		List<String> warningsBuf = new ArrayList<String>();
 		for (Element child : children) {
 			if ("group".equals(child.getLocalName()) && ns.equals(child.getNamespaceURI())) {
 				String group = child.getAttribute("name");
@@ -216,10 +217,10 @@ public class XCardReader {
 				}
 				List<Element> propElements = XCardUtils.toElementList(child.getChildNodes());
 				for (Element propElement : propElements) {
-					parseAndAddElement(propElement, group, version, vcard);
+					parseAndAddElement(propElement, group, version, vcard, warningsBuf);
 				}
 			} else {
-				parseAndAddElement(child, null, version, vcard);
+				parseAndAddElement(child, null, version, vcard, warningsBuf);
 			}
 		}
 
@@ -234,27 +235,29 @@ public class XCardReader {
 	 * group
 	 * @param version the vCard version
 	 * @param vcard the vCard object
+	 * @param warningsBuf the list to add the warnings to
 	 */
-	private void parseAndAddElement(Element element, String group, VCardVersion version, VCard vcard) {
-		List<String> warnings = new ArrayList<String>();
+	private void parseAndAddElement(Element element, String group, VCardVersion version, VCard vcard, List<String> warningsBuf) {
+		warningsBuf.clear();
+
 		VCardSubTypes subTypes = parseSubTypes(element);
 		VCardType type = createTypeObject(element.getLocalName(), element.getNamespaceURI());
 		type.setGroup(group);
 		try {
 			try {
-				type.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+				type.unmarshalValue(subTypes, element, version, warningsBuf, compatibilityMode);
 			} catch (UnsupportedOperationException e) {
 				//type class does not support xCard
-				warnings.add("Type class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property.");
+				warningsBuf.add("Type class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property.");
 				type = new XmlType();
 				type.setGroup(group);
-				type.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+				type.unmarshalValue(subTypes, element, version, warningsBuf, compatibilityMode);
 			}
 			addToVCard(type, vcard);
 		} catch (SkipMeException e) {
-			warnings.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+			warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
 		} finally {
-			this.warnings.addAll(warnings);
+			warnings.addAll(warningsBuf);
 		}
 	}
 
