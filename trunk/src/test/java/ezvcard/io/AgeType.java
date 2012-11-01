@@ -2,13 +2,8 @@ package ezvcard.io;
 
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
-import org.w3c.dom.Element;
-
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
-import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -40,52 +35,28 @@ import ezvcard.util.XCardUtils;
  */
 
 /**
- * An extended type class used for testing that contains XML marshalling methods
- * and a QName.
+ * An extended type class used for testing that does NOT contain XML marshalling
+ * methods, nor a QName.
  * @author Michael Angstadt
  */
-public class LuckyNumType extends VCardType {
-	public int luckyNum;
+public class AgeType extends VCardType {
+	public int age;
 
-	public LuckyNumType() {
-		super("X-LUCKY-NUM");
+	public AgeType() {
+		super("X-AGE");
 	}
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
-		sb.append(luckyNum);
-	}
-
-	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
-		parent.setTextContent(luckyNum + "");
+		sb.append(age);
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		luckyNum = Integer.parseInt(value);
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
+		age = Integer.parseInt(value);
 	}
 
-	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		Element ele = XCardUtils.getFirstElement(element.getElementsByTagName("integer"));
-		luckyNum = Integer.parseInt(ele.getTextContent());
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
-	}
-
-	@Override
-	public QName getQName() {
-		return new QName("http://luckynum.com", "lucky-num");
-	}
+	//	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode);
+	//	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode);
+	//	public QName getQName();
 }

@@ -264,4 +264,49 @@ public class XCardMarshallerTest {
 
 		assertXMLEqual(expected, actual);
 	}
+
+	/**
+	 * Tests how extended types are marshalled.
+	 */
+	@Test
+	public void extendedTypes() throws Exception {
+		VCard vcard = new VCard();
+
+		//contains marshal methods and QName
+		LuckyNumType num = new LuckyNumType();
+		num.luckyNum = 24;
+		vcard.addExtendedType(num);
+
+		//contains marshal methods, but does not have a QName
+		SalaryType salary = new SalaryType();
+		salary.salary = 1000000;
+		vcard.addExtendedType(salary);
+
+		//does not contain marshal methods nor QName
+		AgeType age = new AgeType();
+		age.age = 22;
+		vcard.addExtendedType(age);
+
+		XCardMarshaller xcm = new XCardMarshaller();
+		xcm.setAddGenerator(false);
+		xcm.addVCard(vcard);
+
+		assertEquals(xcm.getWarnings().toString(), 1, xcm.getWarnings().size());
+
+		Document actual = xcm.getDocument();
+
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+			sb.append("<vcard>");
+				sb.append("<a:lucky-num xmlns:a=\"http://luckynum.com\">24</a:lucky-num>");
+				sb.append("<x-salary>1000000</x-salary>");
+				sb.append("<x-age><unknown>22</unknown></x-age>");
+			sb.append("</vcard>");
+		sb.append("</vcards>");
+		Document expected = XCardUtils.toDocument(sb.toString());
+		//@formatter:on
+
+		assertXMLEqual(expected, actual);
+	}
 }

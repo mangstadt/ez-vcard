@@ -21,7 +21,6 @@ import ezvcard.types.NoteType;
 import ezvcard.types.RawType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
-import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
 
 /*
@@ -102,7 +101,7 @@ public class XCardReaderTest {
 	 * The parser should preserve whitespace and newlines in the element text.
 	 */
 	@Test
-	public void whitespace() throws Exception {
+	public void preserveWhitespace() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
 		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
@@ -256,16 +255,20 @@ public class XCardReaderTest {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
 			sb.append("<vcard>");
-				//XmlType
+				//XmlType (non-standard type that does not start with "x-")
 				sb.append("<a href=\"http://www.website.com\">website</a>");
 				
-				//LuckyNumType (with namespace)
+				//LuckyNumType (with marshal methods and with QName)
 				sb.append("<a:lucky-num xmlns:a=\"http://luckynum.com\"><integer>21</integer></a:lucky-num>");
 				
-				//extended type class that does not support xCard
+				//SalaryType (with marshal methods and without QName)
+				sb.append("<x-salary><integer>1000000</integer></x-salary>");
+				
+				//AgeType (without marshal methods and without QName)
+				//should be unmarshalled as XmlType
 				sb.append("<x-age><integer>24</integer></x-age>");
 				
-				//RawType
+				//RawType (extended type that starts with "x-")
 				sb.append("<x-gender><text>m</text></x-gender>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
@@ -274,6 +277,7 @@ public class XCardReaderTest {
 		Reader reader = new StringReader(sb.toString());
 		XCardReader xcr = new XCardReader(reader);
 		xcr.registerExtendedType(LuckyNumType.class);
+		xcr.registerExtendedType(SalaryType.class);
 		xcr.registerExtendedType(AgeType.class);
 		VCard vcard = xcr.readNext();
 
@@ -286,6 +290,10 @@ public class XCardReaderTest {
 		List<LuckyNumType> luckyNum = vcard.getExtendedType(LuckyNumType.class);
 		assertEquals(1, luckyNum.size());
 		assertEquals(21, luckyNum.get(0).luckyNum);
+
+		List<SalaryType> salary = vcard.getExtendedType(SalaryType.class);
+		assertEquals(1, salary.size());
+		assertEquals(1000000, salary.get(0).salary);
 
 		List<RawType> gender = vcard.getExtendedType("X-GENDER");
 		assertEquals(1, gender.size());
@@ -408,25 +416,5 @@ public class XCardReaderTest {
 		assertEquals(24, luckyNum.get(0).luckyNum);
 
 		assertNull(xcr.readNext());
-	}
-
-	private static class AgeType extends VCardType {
-		public int age;
-
-		public AgeType() {
-			super("X-AGE");
-		}
-
-		@Override
-		protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			sb.append(age);
-		}
-
-		@Override
-		protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			age = Integer.parseInt(value);
-		}
-
-		//the unmarshal method for xCard is not implemented
 	}
 }

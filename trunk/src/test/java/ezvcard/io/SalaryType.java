@@ -2,8 +2,6 @@ package ezvcard.io;
 
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import org.w3c.dom.Element;
 
 import ezvcard.VCardVersion;
@@ -40,52 +38,37 @@ import ezvcard.util.XCardUtils;
  */
 
 /**
- * An extended type class used for testing that contains XML marshalling methods
- * and a QName.
+ * An extended type class used for testing that contains XML marshalling
+ * methods, but not a QName.
  * @author Michael Angstadt
  */
-public class LuckyNumType extends VCardType {
-	public int luckyNum;
+public class SalaryType extends VCardType {
+	public int salary;
 
-	public LuckyNumType() {
-		super("X-LUCKY-NUM");
+	public SalaryType() {
+		super("X-SALARY");
 	}
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
-		sb.append(luckyNum);
+		sb.append(salary);
 	}
 
 	@Override
 	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
-		parent.setTextContent(luckyNum + "");
+		parent.setTextContent(salary + "");
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		luckyNum = Integer.parseInt(value);
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
+		salary = Integer.parseInt(value);
 	}
 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		Element ele = XCardUtils.getFirstElement(element.getElementsByTagName("integer"));
-		luckyNum = Integer.parseInt(ele.getTextContent());
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
+		salary = Integer.parseInt(ele.getTextContent());
 	}
 
-	@Override
-	public QName getQName() {
-		return new QName("http://luckynum.com", "lucky-num");
-	}
+	//	public QName getQName();
 }
