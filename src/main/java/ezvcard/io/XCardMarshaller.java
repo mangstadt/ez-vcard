@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -254,11 +255,16 @@ public class XCardMarshaller {
 	 * document
 	 */
 	private Element marshalType(VCardType type, VCard vcard, List<String> warningsBuf) {
-		String ns = type.getXmlNamespace();
-		if (ns == null) {
+		QName qname = type.getQName();
+		String ns, localPart;
+		if (qname == null) {
+			localPart = type.getTypeName().toLowerCase();
 			ns = targetVersion.getXmlNamespace();
+		} else {
+			localPart = qname.getLocalPart();
+			ns = qname.getNamespaceURI();
 		}
-		Element typeElement = createElement(type.getTypeName().toLowerCase(), ns);
+		Element typeElement = createElement(localPart, ns);
 
 		//marshal the sub types
 		VCardSubTypes subTypes = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);

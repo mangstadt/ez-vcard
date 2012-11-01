@@ -2,6 +2,8 @@ package ezvcard.io;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.w3c.dom.Element;
 
 import ezvcard.VCardVersion;
@@ -82,7 +84,7 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	public String getXmlNamespace() {
-		return "http://luckynum.com";
+	public QName getQName() {
+		return new QName("http://luckynum.com", "lucky-num");
 	}
 }

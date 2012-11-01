@@ -220,7 +220,7 @@ public class XCardMarshallerTest {
 
 		assertTrue(xml.matches(".*?<x-generator><text>.*?</text></x-generator>.*"));
 	}
-	
+
 	/**
 	 * If the type's marshal method throws a {@link SkipMeException}, then a
 	 * warning should be added to the warnings list and the type object should
@@ -229,11 +229,11 @@ public class XCardMarshallerTest {
 	@Test
 	public void skipMeException() throws Exception {
 		VCard vcard = new VCard();
-		
+
 		//add FN property so a warning isn't generated (4.0 requires FN to be present)
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
-		
+
 		LuckyNumType num = new LuckyNumType();
 		num.luckyNum = 24;
 		vcard.addExtendedType(num);
@@ -246,7 +246,7 @@ public class XCardMarshallerTest {
 		XCardMarshaller xcm = new XCardMarshaller();
 		xcm.setAddGenerator(false);
 		xcm.addVCard(vcard);
-		
+
 		assertEquals(xcm.getWarnings().toString(), 1, xcm.getWarnings().size());
 
 		Document actual = xcm.getDocument();
@@ -256,7 +256,7 @@ public class XCardMarshallerTest {
 		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" xmlns:a=\"http://luckynum.com\">");
 			sb.append("<vcard>");
 				sb.append("<fn><text>John Doe</text></fn>");
-				sb.append("<a:x-lucky-num>24</a:x-lucky-num>");
+				sb.append("<a:lucky-num>24</a:lucky-num>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
 		Document expected = XCardUtils.toDocument(sb.toString());
