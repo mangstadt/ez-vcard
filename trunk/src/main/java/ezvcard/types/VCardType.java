@@ -2,6 +2,8 @@ package ezvcard.types;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
@@ -282,12 +284,21 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Gets the XML namespace to use for this type when marshalling it to an
-	 * xCard (XML document). Extended type classes can override this method if
-	 * they use their own, custom namespace.
-	 * @return the namespace or null to use the default xCard namespace
+	 * <p>
+	 * Gets the qualified name (XML namespace and local part) for
+	 * marshalling the type to an XML document (xCard).
+	 * </p>
+	 * <p>
+	 * Extended type classes should override this method. By default, this
+	 * method returns <code>null</code>, which instructs the marshallers to
+	 * assign the following qualified name to the type:<br>
+	 * <br>
+	 * Namespace: xCard namespace<br>
+	 * Local part: a lower-cased version of the type name
+	 * </p>
+	 * @return the XML qualified name or null to use the default qualified name
 	 */
-	public String getXmlNamespace() {
+	public QName getQName() {
 		return null;
 	}
 

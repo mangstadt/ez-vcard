@@ -163,13 +163,10 @@ public class XCardReader {
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		try {
 			VCardType type = clazz.newInstance();
-			String ns = type.getXmlNamespace();
-			if (ns == null) {
-				ns = VCardVersion.V4_0.getXmlNamespace();
+			QName qname = type.getQName();
+			if (qname == null) {
+				qname = new QName(version.getXmlNamespace(), type.getTypeName().toLowerCase());
 			}
-			String localName = type.getTypeName().toLowerCase();
-
-			QName qname = new QName(ns, localName);
 			extendedTypeClasses.put(qname, clazz);
 		} catch (Exception e) {
 			//there is no public, no-arg constructor

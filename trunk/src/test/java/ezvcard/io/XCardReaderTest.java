@@ -260,7 +260,7 @@ public class XCardReaderTest {
 				sb.append("<a href=\"http://www.website.com\">website</a>");
 				
 				//LuckyNumType (with namespace)
-				sb.append("<a:x-lucky-num xmlns:a=\"http://luckynum.com\"><integer>21</integer></a:x-lucky-num>");
+				sb.append("<a:lucky-num xmlns:a=\"http://luckynum.com\"><integer>21</integer></a:lucky-num>");
 				
 				//extended type class that does not support xCard
 				sb.append("<x-age><integer>24</integer></x-age>");
@@ -390,8 +390,8 @@ public class XCardReaderTest {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" xmlns:a=\"http://luckynum.com\">");
 			sb.append("<vcard>");
-				sb.append("<a:x-lucky-num><integer>24</integer></a:x-lucky-num>");
-				sb.append("<a:x-lucky-num><integer>13</integer></a:x-lucky-num>");
+				sb.append("<a:lucky-num><integer>24</integer></a:lucky-num>");
+				sb.append("<a:lucky-num><integer>13</integer></a:lucky-num>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
 		//@formatter:on
