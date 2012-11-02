@@ -63,39 +63,12 @@ package ezvcard.parameters;
  * vCard versions: 2.1, 3.0, 4.0
  * </p>
  * @author George El-Haddadt Mar 10, 2010
- * @author Michael Angstadt Jul 06, 2012
+ * @author Michael Angstadt
  */
 public class ImageTypeParameter extends MediaTypeParameter {
-	public static final ImageTypeParameter CGM = new ImageTypeParameter("CGM", "image/cgm", "cgm");
-	public static final ImageTypeParameter JP2 = new ImageTypeParameter("JP2", "image/jp2", "jp2");
-	public static final ImageTypeParameter JPM = new ImageTypeParameter("JPM", "image/jpm", "jpm");
-	public static final ImageTypeParameter JPX = new ImageTypeParameter("JPX", "image/jpx", "jpf");
-	public static final ImageTypeParameter NAPLPS = new ImageTypeParameter("NAPLPS", "image/naplps", "");
-	public static final ImageTypeParameter PNG = new ImageTypeParameter("PNG", "image/png", "png");
-	public static final ImageTypeParameter BTIF = new ImageTypeParameter("BTIF", ".image/prs.btif", "btif");
-	public static final ImageTypeParameter PTI = new ImageTypeParameter("PTI", "image/prs.pti", "pti");
-	public static final ImageTypeParameter DJVU = new ImageTypeParameter("DJVU", "image/vnd.djvu", "djvu");
-	public static final ImageTypeParameter SVF = new ImageTypeParameter("SVF", "image/vnd.svf", "svf");
-	public static final ImageTypeParameter WBMP = new ImageTypeParameter("WBMP", "image/vnd.wap.wbmp", "wbmp");
-	public static final ImageTypeParameter PSD = new ImageTypeParameter("PSD", "image/vnd.adobe.photoshop", "psd");
-	public static final ImageTypeParameter INF2 = new ImageTypeParameter("INF2", "image/vnd.cns.inf2", "");
-	public static final ImageTypeParameter DWG = new ImageTypeParameter("DWG", "image/vnd.dwg", "dwg");
-	public static final ImageTypeParameter DXF = new ImageTypeParameter("DXF", "image/vnd.dxf", "dxf");
-	public static final ImageTypeParameter FBS = new ImageTypeParameter("FBS", "image/vnd.fastbidsheet", "fbs");
-	public static final ImageTypeParameter FPX = new ImageTypeParameter("FPX", "image/vnd.fpx", "fpx");
-	public static final ImageTypeParameter FST = new ImageTypeParameter("FST", "image/vnd.fst", "fst");
-	public static final ImageTypeParameter MMR = new ImageTypeParameter("MMR", "image/vnd.fujixerox.edmics-mmr", "mmr");
-	public static final ImageTypeParameter RLC = new ImageTypeParameter("RLC", "image/vnd.fujixerox.edmics-rlc", "rlc");
-	public static final ImageTypeParameter PGB = new ImageTypeParameter("PGB", "image/vnd.globalgraphics.pgb", "pgb");
-	public static final ImageTypeParameter ICO = new ImageTypeParameter("ICO", "image/vnd.microsoft.icon", "ico");
-	public static final ImageTypeParameter MIX = new ImageTypeParameter("MIX", "image/vnd.mix", "");
-	public static final ImageTypeParameter MDI = new ImageTypeParameter("MDI", "image/vnd.ms-modi", "mdi");
-	public static final ImageTypeParameter PIC = new ImageTypeParameter("PIC", "image/vnd.radiance", "pic");
-	public static final ImageTypeParameter SPNG = new ImageTypeParameter("SPNG", "image/vnd.sealed.png", "spng");
-	public static final ImageTypeParameter SGIF = new ImageTypeParameter("SGIF", "image/vnd.sealedmedia.softseal.gif", "sgif");
-	public static final ImageTypeParameter SJPG = new ImageTypeParameter("SJPG", "image/vnd.sealedmedia.softseal.jpg", "sjpg");
-	public static final ImageTypeParameter XIF = new ImageTypeParameter("XIF", "image/vnd.xiff", "xif");
+	public static final ImageTypeParameter GIF = new ImageTypeParameter("GIF", "image/gif", "gif");
 	public static final ImageTypeParameter JPEG = new ImageTypeParameter("JPEG", "image/jpeg", "jpg");
+	public static final ImageTypeParameter PNG = new ImageTypeParameter("PNG", "image/png", "png");
 
 	/**
 	 * Use of this constructor is discouraged and should only be used for
