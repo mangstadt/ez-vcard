@@ -71,6 +71,7 @@ public class SoundTypeParameter extends MediaTypeParameter {
 	public static final SoundTypeParameter MP3 = new SoundTypeParameter("MP3", "audio/mp3", "mp3");
 	public static final SoundTypeParameter MPEG = new SoundTypeParameter("MPEG", "audio/mpeg", "mpeg");
 	public static final SoundTypeParameter OGG = new SoundTypeParameter("OGG", "audio/ogg", "ogg");
+	public static final SoundTypeParameter WAV = new SoundTypeParameter("WAV", "audio/wav", "wav");
 
 	/**
 	 * Use of this constructor is discouraged and should only be used for
