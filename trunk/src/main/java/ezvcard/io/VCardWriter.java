@@ -2,6 +2,7 @@ package ezvcard.io;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.types.AddressType;
-import ezvcard.types.AgentType;
 import ezvcard.types.LabelType;
 import ezvcard.types.MemberType;
 import ezvcard.types.TextType;
@@ -229,26 +229,19 @@ public class VCardWriter implements Closeable {
 
 		List<String> warningsBuf = new ArrayList<String>();
 		for (VCardType type : typesToAdd) {
-			//determine if this type has a nested vCard
-			VCard nested = null;
-			if (targetVersion == VCardVersion.V2_1 && type instanceof AgentType) {
-				//AGENT types for for 2.1 vCards are nested (see 2.1 docs, p.19)
-				AgentType at = (AgentType) type;
-				nested = at.getVcard();
-			}
-
 			//marshal the value
 			warningsBuf.clear();
 			String value = null;
-			if (nested == null) {
-				try {
-					value = type.marshalValue(targetVersion, warningsBuf, compatibilityMode);
-				} catch (SkipMeException e) {
-					warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
-					continue;
-				} finally {
-					warnings.addAll(warningsBuf);
-				}
+			VCard nested = null;
+			try {
+				value = type.marshalValue(targetVersion, warningsBuf, compatibilityMode);
+			} catch (SkipMeException e) {
+				warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+				continue;
+			} catch (EmbeddedVCardException e) {
+				nested = e.getVCard();
+			} finally {
+				warnings.addAll(warningsBuf);
 			}
 
 			//marshal the sub types
@@ -327,23 +320,47 @@ public class VCardWriter implements Closeable {
 
 			sb.append(':');
 
+			writer.write(sb.toString());
+
 			//write the value
 			if (nested == null) {
 				value = VCardStringUtils.escapeNewlines(value);
-				sb.append(value);
-			}
-			writer.write(sb.toString());
-			writer.write(newline);
-			if (nested != null) {
-				//write the nested vCard
-				VCardWriter agentWriter = new VCardWriter(writer, targetVersion);
-				agentWriter.setAddGenerator(false);
-				try {
-					agentWriter.write(nested);
-				} finally {
-					for (String w : agentWriter.getWarnings()) {
-						warnings.add("AGENT marshal warning: " + w);
+				writer.write(value);
+				writer.write(newline);
+			} else {
+				if (targetVersion == VCardVersion.V2_1) {
+					writer.write(newline);
+
+					//write a nested vCard (2.1 style)
+					VCardWriter agentWriter = new VCardWriter(writer, targetVersion);
+					agentWriter.setAddGenerator(false);
+					agentWriter.setCompatibilityMode(compatibilityMode);
+					try {
+						agentWriter.write(nested);
+					} finally {
+						for (String w : agentWriter.getWarnings()) {
+							warnings.add(type.getTypeName() + " marshal warning: " + w);
+						}
 					}
+				} else {
+					//write an embedded vCard (3.0 style)
+					StringWriter sw = new StringWriter();
+					VCardWriter agentWriter = new VCardWriter(sw, targetVersion, null, "\n");
+					agentWriter.setAddGenerator(false);
+					agentWriter.setCompatibilityMode(compatibilityMode);
+					try {
+						agentWriter.write(nested);
+					} finally {
+						for (String w : agentWriter.getWarnings()) {
+							warnings.add("Problem marshalling nested vCard for " + type.getTypeName() + ": " + w);
+						}
+					}
+
+					String vCardStr = sw.toString();
+					vCardStr = VCardStringUtils.escapeText(vCardStr);
+					vCardStr = VCardStringUtils.escapeNewlines(vCardStr);
+					writer.write(vCardStr);
+					writer.write(newline);
 				}
 			}
 		}

@@ -238,6 +238,8 @@ public class XCardMarshaller {
 					parent.appendChild(typeElement);
 				} catch (SkipMeException e) {
 					warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+				} catch (EmbeddedVCardException e) {
+					warningsBuf.add(type.getTypeName() + " property will not be marshalled: xCard does not supported embedded vCards.");
 				} finally {
 					warnings.addAll(warningsBuf);
 				}

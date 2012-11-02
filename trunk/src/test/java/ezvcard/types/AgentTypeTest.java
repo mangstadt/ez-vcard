@@ -1,7 +1,8 @@
 package ezvcard.types;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,8 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.EmailTypeParameter;
+import ezvcard.io.EmbeddedVCardException;
+import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -49,82 +51,58 @@ import ezvcard.parameters.EmailTypeParameter;
 public class AgentTypeTest {
 	@Test
 	public void doMarshalValue() throws Exception {
-		//Note: Marshalling of 2.1 AGENT types is tested in VCardWriterTest
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		AgentType t;
 		String expected, actual;
 
-		VCard agentVcard = new VCard();
-		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
-		EmailType agentEmail = new EmailType("007@mi5.co.uk");
-		agentEmail.addType(EmailTypeParameter.INTERNET);
-		agentVcard.getEmails().add(agentEmail);
-		t = new AgentType(agentVcard);
-
-		VCard agentVcard2 = new VCard();
-		agentVcard2.setFormattedName(new FormattedNameType("Agent 009"));
-		EmailType agentEmail2 = new EmailType("009@mi5.co.uk");
-		agentEmail2.addType(EmailTypeParameter.INTERNET);
-		agentVcard2.getEmails().add(agentEmail2);
-		agentVcard.setAgent(new AgentType(agentVcard2));
-
-		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
-		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\n");
-		sb.append("VERSION:3.0\n");
-		sb.append("FN:Agent 007\n");
-		sb.append("EMAIL\\;TYPE=internet:007@mi5.co.uk\n");
-		sb.append("AGENT:");
-			sb.append("BEGIN:VCARD\\\\n");
-			sb.append("VERSION:3.0\\\\n");
-			sb.append("FN:Agent 009\\\\n");
-			sb.append("EMAIL\\\\\\;TYPE=internet:009@mi5.co.uk\\\\n");
-			sb.append("END:VCARD\\\\n\n");
-		sb.append("END:VCARD\n");
-		//@formatter:on
-
-		expected = sb.toString();
+		//with URL
+		t = new AgentType("http://mi5.co.uk/007");
+		expected = "http://mi5.co.uk/007";
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
+
+		//with vCard
+		VCard vcard = new VCard();
+		t = new AgentType(vcard);
+		try {
+			t.marshalValue(version, warnings, compatibilityMode);
+			fail();
+		} catch (EmbeddedVCardException e) {
+			//should be thrown
+			assertEquals(vcard, e.getVCard());
+		}
 	}
 
 	@Test
 	public void doUnmarshalValue() throws Exception {
-		//Note: Marshalling of 2.1 AGENT types is tested in VCardWriterTest
-
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
+		VCardSubTypes subTypes;
 		AgentType t;
 
-		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\\n");
-		sb.append("VERSION: 3.0\\n");
-		sb.append("FN: Agent 007\\n");
-		sb.append("EMAIL\\;TYPE=internet: 007@mi5.co.uk\\n");
-		sb.append("AGENT: ");
-			sb.append("BEGIN: VCARD\\\\n");
-			sb.append("VERSION: 3.0\\\\n");
-			sb.append("FN: Agent 009\\\\n");
-			sb.append("EMAIL\\\\\\;TYPE=internet: 009@mi5.co.uk\\\\n");
-			sb.append("END: VCARD\\\\n\\n");
-		sb.append("END: VCARD\\n");
-		//@formatter:on
-
+		//with URL
 		t = new AgentType();
-		t.unmarshalValue(subTypes, sb.toString(), version, warnings, compatibilityMode);
-		VCard agent1 = t.getVcard();
-		assertEquals("Agent 007", agent1.getFormattedName().getValue());
-		assertEquals("007@mi5.co.uk", agent1.getEmails().get(0).getValue());
-		assertTrue(agent1.getEmails().get(0).getTypes().contains(EmailTypeParameter.INTERNET));
-		VCard agent2 = agent1.getAgent().getVcard();
-		assertEquals("Agent 009", agent2.getFormattedName().getValue());
-		assertEquals("009@mi5.co.uk", agent2.getEmails().get(0).getValue());
-		assertTrue(agent2.getEmails().get(0).getTypes().contains(EmailTypeParameter.INTERNET));
+		subTypes = new VCardSubTypes();
+		subTypes.setValue(ValueParameter.URL);
+		t.unmarshalValue(subTypes, "http://mi5.co.uk/007", version, warnings, compatibilityMode);
+		assertEquals("http://mi5.co.uk/007", t.getUrl());
+		assertNull(t.getVcard());
+
+		//with vCard
+		VCard vcard = new VCard();
+		t = new AgentType();
+		subTypes = new VCardSubTypes();
+		try {
+			t.unmarshalValue(subTypes, "BEGIN:VCARD\\nEND:VCARD", version, warnings, compatibilityMode);
+			fail();
+		} catch (EmbeddedVCardException e) {
+			//should be thrown
+			e.injectVCard(vcard);
+		}
+		assertNull(t.getUrl());
+		assertEquals(vcard, t.getVcard());
 	}
 }

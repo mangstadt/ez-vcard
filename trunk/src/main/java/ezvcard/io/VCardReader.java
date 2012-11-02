@@ -3,6 +3,7 @@ package ezvcard.io;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,6 @@ import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.types.AddressType;
-import ezvcard.types.AgentType;
 import ezvcard.types.LabelType;
 import ezvcard.types.RawType;
 import ezvcard.types.TypeList;
@@ -201,24 +201,6 @@ public class VCardReader implements Closeable {
 
 			typesRead++;
 
-			//parse a v2.1 AGENT type
-			if ((version == null || version == VCardVersion.V2_1) && AgentType.NAME.equals(typeName) && value.length() == 0) {
-				VCardReader agentReader = new VCardReader(reader);
-				agentReader.setCompatibilityMode(compatibilityMode);
-				try {
-					VCard agentVcard = agentReader.readNext();
-					AgentType agent = new AgentType(agentVcard);
-					agent.setGroup(groupName);
-					vcard.setAgent(agent);
-				} finally {
-					for (String w : agentReader.getWarnings()) {
-						warnings.add(AgentType.NAME + " unmarshal warning: " + w);
-					}
-				}
-
-				continue;
-			}
-
 			if ("BEGIN".equals(typeName)) {
 				if (!"vcard".equalsIgnoreCase(value)) {
 					warnings.add("The value of the BEGIN property should be \"vcard\", but it is \"" + value + "\".");
@@ -257,6 +239,30 @@ public class VCardReader implements Closeable {
 					}
 				} catch (SkipMeException e) {
 					warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+				} catch (EmbeddedVCardException e) {
+					//parse an embedded vCard (i.e. the AGENT type)
+
+					VCardReader agentReader;
+					if (version == null || version == VCardVersion.V2_1) {
+						//vCard will be added as a nested vCard (2.1 style)
+						agentReader = new VCardReader(reader);
+					} else {
+						//vCard will be contained within the type value (3.0 style)
+						value = VCardStringUtils.unescape(value);
+						agentReader = new VCardReader(new StringReader(value));
+					}
+
+					agentReader.setCompatibilityMode(compatibilityMode);
+					try {
+						VCard agentVcard = agentReader.readNext();
+						e.injectVCard(agentVcard);
+					} finally {
+						for (String w : agentReader.getWarnings()) {
+							warnings.add("Problem unmarshalling nested vCard value from " + type.getTypeName() + ": " + w);
+						}
+					}
+
+					addToVCard(type, vcard);
 				} finally {
 					warnings.addAll(warningsBuf);
 				}
