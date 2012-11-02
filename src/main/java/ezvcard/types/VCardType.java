@@ -10,6 +10,7 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.XCardUtils;
 
@@ -99,6 +100,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @return the string for sending over the wire
 	 * @throws SkipMeException if this type should NOT be marshalled into the
 	 * vCard
+	 * @throws EmbeddedVCardException if the value of this type is an embedded
+	 * vCard (i.e. the AGENT type)
 	 */
 	public final String marshalValue(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
@@ -118,6 +121,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * marshalling process depending on the expected consumer of the vCard
 	 * @throws SkipMeException if this type should NOT be marshalled into the
 	 * vCard
+	 * @throws EmbeddedVCardException if the value of this type is an embedded
+	 * vCard (i.e. the AGENT type)
 	 */
 	protected abstract void doMarshalValue(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode);
 
@@ -215,6 +220,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * unmarshalling process depending on where the vCard came from
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws EmbeddedVCardException if the value of this type is an embedded
+	 * vCard (i.e. the AGENT type)
 	 */
 	public final void unmarshalValue(VCardSubTypes subTypes, String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		this.subTypes = subTypes;
@@ -236,6 +243,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * process depending on where the vCard came from
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws EmbeddedVCardException if the value of this type is an embedded
+	 * vCard (i.e. the AGENT type)
 	 */
 	protected abstract void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode);
 
@@ -285,8 +294,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 
 	/**
 	 * <p>
-	 * Gets the qualified name (XML namespace and local part) for
-	 * marshalling the type to an XML document (xCard).
+	 * Gets the qualified name (XML namespace and local part) for marshalling
+	 * the type to an XML document (xCard).
 	 * </p>
 	 * <p>
 	 * Extended type classes should override this method. By default, this

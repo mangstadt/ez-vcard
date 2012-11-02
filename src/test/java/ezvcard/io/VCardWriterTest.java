@@ -326,10 +326,10 @@ public class VCardWriterTest {
 	}
 
 	/**
-	 * Tests the AGENT types for 2.1 vCards (they are nested).
+	 * Tests types with nested vCards (i.e AGENT type) in version 2.1.
 	 */
 	@Test
-	public void nestedAgent() throws Exception {
+	public void nestedVCard() throws Exception {
 		VCard vcard = new VCard();
 
 		FormattedNameType fn = new FormattedNameType("Michael Angstadt");
@@ -374,6 +374,64 @@ public class VCardWriterTest {
 			sb.append("NOTE:Make sure that it properly folds long lines which are part of a nested \r\n");
 			sb.append(" AGENT type in a version 2.1 vCard.\r\n");
 			sb.append("END:VCARD\r\n");
+		sb.append("END:VCARD\r\n");
+		String expected = sb.toString();
+		//@formatter:on
+
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Tests types with embedded vCards (i.e AGENT type) in version 3.0.
+	 */
+	@Test
+	public void embeddedVCard() throws Exception {
+		VCard vcard = new VCard();
+
+		FormattedNameType fn = new FormattedNameType("Michael Angstadt");
+		vcard.setFormattedName(fn);
+
+		VCard agentVcard = new VCard();
+		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
+		NoteType note = new NoteType("Bonne soirée, 007.");
+		note.setLanguage("fr");
+		agentVcard.getNotes().add(note);
+		AgentType agent = new AgentType(agentVcard);
+		vcard.setAgent(agent);
+
+		//i herd u liek AGENTs...
+		VCard secondAgentVCard = new VCard();
+		secondAgentVCard.setFormattedName(new FormattedNameType("Agent 009"));
+		note = new NoteType("Good evening, 009.");
+		note.setLanguage("en");
+		secondAgentVCard.getNotes().add(note);
+		AgentType secondAgent = new AgentType(secondAgentVCard);
+		agentVcard.setAgent(secondAgent);
+
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
+		vcw.setAddGenerator(false);
+		vcw.write(vcard);
+		String actual = sw.toString();
+
+		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("BEGIN:VCARD\r\n");
+		sb.append("VERSION:3.0\r\n");
+		sb.append("FN:Michael Angstadt\r\n");
+		sb.append("AGENT:"); //nested types should not have X-GENERATOR
+			sb.append("BEGIN:VCARD\\n");
+			sb.append("VERSION:3.0\\n");
+			sb.append("FN:Agent 007\\n");
+			sb.append("AGENT:");
+				sb.append("BEGIN:VCARD\\\\n");
+				sb.append("VERSION:3.0\\\\n");
+				sb.append("FN:Agent 009\\\\n");
+				sb.append("NOTE\\\\\\;LANGUAGE=en:Good evening\\\\\\\\\\\\\\, 009.\\\\n");
+				sb.append("END:VCARD\\\\n\\n");
+			sb.append("NOTE\\;LANGUAGE=fr:Bonne soirée\\\\\\, 007.\\n");
+			sb.append("END:VCARD\\n\r\n");
 		sb.append("END:VCARD\r\n");
 		String expected = sb.toString();
 		//@formatter:on

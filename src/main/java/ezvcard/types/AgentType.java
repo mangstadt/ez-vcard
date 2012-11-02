@@ -1,16 +1,13 @@
 package ezvcard.types;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.VCardReader;
-import ezvcard.io.VCardWriter;
+import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardStringUtils;
 
@@ -147,49 +144,26 @@ public class AgentType extends VCardType {
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//VCardWriter handles 2.1 AGENT types that have an embedded vCard.
-		//this method will not be called for these instances
-
 		if (url != null) {
 			sb.append(url);
+		} else if (vcard != null) {
+			throw new EmbeddedVCardException(vcard);
 		} else {
-			StringWriter sw = new StringWriter();
-			VCardWriter writer = new VCardWriter(sw, version, null, "\n");
-			writer.setCompatibilityMode(compatibilityMode);
-			writer.setAddGenerator(false);
-			try {
-				writer.write(vcard);
-			} catch (IOException e) {
-				//never thrown because we're writing to a string
-			}
-			String str = sw.toString();
-
-			for (String w : writer.getWarnings()) {
-				warnings.add("AGENT marshal warning: " + w);
-			}
-
-			sb.append(VCardStringUtils.escapeText(str));
+			throw new SkipMeException("Property has neither a URL nor an embedded vCard.");
 		}
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value);
-
 		if (subTypes.getValue() != null) {
-			url = value;
+			setUrl(VCardStringUtils.unescape(value));
 		} else {
-			VCardReader reader = new VCardReader(new StringReader(value));
-			reader.setCompatibilityMode(compatibilityMode);
-			try {
-				vcard = reader.readNext();
-			} catch (IOException e) {
-				//reading from a string
-			}
-			for (String w : reader.getWarnings()) {
-				warnings.add("AGENT unmarshal warning: " + w);
-			}
+			//instruct the marshaller to look for an embedded vCard
+			throw new EmbeddedVCardException(new EmbeddedVCardException.InjectionCallback() {
+				public void injectVCard(VCard vcard) {
+					setVcard(vcard);
+				}
+			});
 		}
 	}
-
 }

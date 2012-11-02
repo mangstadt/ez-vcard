@@ -223,10 +223,10 @@ public class VCardReaderTest {
 	}
 
 	/**
-	 * AGENT types for 2.1 vCards are nested.
+	 * Tests types with nested vCards (i.e AGENT type) in version 2.1.
 	 */
 	@Test
-	public void readNested() throws Exception {
+	public void nestedVCard() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
 		sb.append("BEGIN: VCARD\r\n");
@@ -256,10 +256,10 @@ public class VCardReaderTest {
 	}
 
 	/**
-	 * Make sure it reads AGENT types that are inline instead of nested.
+	 * Tests types with embedded vCards (i.e. AGENT type) in version 3.0.
 	 */
 	@Test
-	public void readInlineAgent() throws Exception {
+	public void embeddedVCard() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
 		sb.append("BEGIN: VCARD\r\n");

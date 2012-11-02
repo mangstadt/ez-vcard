@@ -253,6 +253,8 @@ public class XCardReader {
 			addToVCard(type, vcard);
 		} catch (SkipMeException e) {
 			warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+		} catch (EmbeddedVCardException e) {
+			warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: xCard does not supported embedded vCards.");
 		} finally {
 			warnings.addAll(warningsBuf);
 		}
