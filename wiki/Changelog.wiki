@@ -1,11 +1,13 @@
 #summary Documents all the changes that were made to every version of the library
 
 = 0.4.1 =
+_October 2, 2012_
 
  * Tweaked POM file for inclusion in Maven Central.
  * Removed the `getType()` and `setType()` methods from the `ImppType` class.  These methods were not necessary because `ImppType` inherits from `MultiValuedTypeParameterType`.
 
 = 0.4.0 =
+_September 24, 2012_
 
  * Added support for [http://tools.ietf.org/html/rfc6473 RFC 6473] (KIND:application)
  * Added support for [http://tools.ietf.org/html/rfc6474 RFC 6474] (BIRTHPLACE, DEATHPLACE, DEATHDATE)
@@ -15,6 +17,7 @@
  * Multiple instances of the BDAY and ANNIVERSARY properties can now be added to the `VCard` object.  This is necessary because these properties support the ALTID parameter.
 
 = 0.3.0 =
+_September 8, 2012_
 
  * +Added support for [http://tools.ietf.org/html/rfc6351 xCard] (an XML representation for vCards).
  * +Added the `SkipMeException`, which can be thrown from a type class's marshal or unmarshal methods.  If thrown from a marshal method, it will prevent the property from being marshalled.  If thrown from an unmarshal method, it will prevent the type object from being added to the `VCard` object.
@@ -26,6 +29,7 @@
  * -Removed the "commons-io" dependency.
 
 = 0.2.0 =
+_August 11, 2012_
 
  * Added support for vCard 4.0
  * Removed the space that ez-vcard added after the colon in the marshalled vCard.  This prevented some mail clients from reading the vCard (see Issue 1).
@@ -33,6 +37,7 @@
  * Fleshed out the Javadocs.
 
 = 0.1.1 =
+_July 28, 2012_
 
   * Removed SLF4J dependency.
   * Modified `VCard` class to only allow one UID type in accordance with the specs.
@@ -41,5 +46,6 @@
   * Renamed `OrgType` class to `OrganizationType`.
 
 = 0.1.0 =
+_July 23, 2012_
 
 First release
