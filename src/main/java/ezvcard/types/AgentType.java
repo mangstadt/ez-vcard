@@ -90,7 +90,7 @@ public class AgentType extends VCardType {
 	 */
 	public AgentType(VCard vcard) {
 		super(NAME);
-		setVcard(vcard);
+		setVCard(vcard);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class AgentType extends VCardType {
 	 * Gets an embedded vCard with the agent's information.
 	 * @return the vCard or null if not set
 	 */
-	public VCard getVcard() {
+	public VCard getVCard() {
 		return vcard;
 	}
 
@@ -122,7 +122,7 @@ public class AgentType extends VCardType {
 	 * Sets an embedded vCard with the agent's information.
 	 * @param vcard the vCard
 	 */
-	public void setVcard(VCard vcard) {
+	public void setVCard(VCard vcard) {
 		this.vcard = vcard;
 		url = null;
 	}
@@ -161,7 +161,7 @@ public class AgentType extends VCardType {
 			//instruct the marshaller to look for an embedded vCard
 			throw new EmbeddedVCardException(new EmbeddedVCardException.InjectionCallback() {
 				public void injectVCard(VCard vcard) {
-					setVcard(vcard);
+					setVCard(vcard);
 				}
 			});
 		}
