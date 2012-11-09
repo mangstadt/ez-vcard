@@ -19,14 +19,14 @@ _September 24, 2012_
 = 0.3.0 =
 _September 8, 2012_
 
- * +Added support for [http://tools.ietf.org/html/rfc6351 xCard] (an XML representation for vCards).
- * +Added the `SkipMeException`, which can be thrown from a type class's marshal or unmarshal methods.  If thrown from a marshal method, it will prevent the property from being marshalled.  If thrown from an unmarshal method, it will prevent the type object from being added to the `VCard` object.
- * +Added logic to the `EMAIL` and `TEL` properties to determine whether to use the "`TYPE=pref`" or "`PREF=1`" parameter (depending on the vCard version) when marshalling.
- * @Fixed the `TYPE` parameter of the `RELATED` property so that it is (1) optional and (2) multi-valued.
- * @Fixed the `GEO` property so it properly marshals/unmarshals its value for 4.0 vCards.
- * @Fixed the `VCard` object so it no longer is missing getters/setters for the `GENDER` property.
- * -Removed the "guava" dependency.
- * -Removed the "commons-io" dependency.
+ * Added support for [http://tools.ietf.org/html/rfc6351 xCard] (an XML representation for vCards).
+ * Added the `SkipMeException`, which can be thrown from a type class's marshal or unmarshal methods.  If thrown from a marshal method, it will prevent the property from being marshalled.  If thrown from an unmarshal method, it will prevent the type object from being added to the `VCard` object.
+ * Added logic to the `EMAIL` and `TEL` properties to determine whether to use the "`TYPE=pref`" or "`PREF=1`" parameter (depending on the vCard version) when marshalling.
+ * Fixed the `TYPE` parameter of the `RELATED` property so that it is (1) optional and (2) multi-valued.
+ * Fixed the `GEO` property so it properly marshals/unmarshals its value for 4.0 vCards.
+ * Fixed the `VCard` object so it no longer is missing getters/setters for the `GENDER` property.
+ * Removed the "guava" dependency.
+ * Removed the "commons-io" dependency.
 
 = 0.2.0 =
 _August 11, 2012_
@@ -39,11 +39,11 @@ _August 11, 2012_
 = 0.1.1 =
 _July 28, 2012_
 
-  * Removed SLF4J dependency.
-  * Modified `VCard` class to only allow one UID type in accordance with the specs.
-  * Binary vCard types such as PHOTO and LOGO now use the proper ENCODING value when marshalled ("base64" for 2.1 and "b" for 3.0). 
-  * Renamed `DisplayableNameType` class to `SourceDisplayTextType`.
-  * Renamed `OrgType` class to `OrganizationType`.
+ * Removed SLF4J dependency.
+ * Modified `VCard` class to only allow one UID type in accordance with the specs.
+ * Binary vCard types such as PHOTO and LOGO now use the proper ENCODING value when marshalled ("base64" for 2.1 and "b" for 3.0). 
+ * Renamed `DisplayableNameType` class to `SourceDisplayTextType`.
+ * Renamed `OrgType` class to `OrganizationType`.
 
 = 0.1.0 =
 _July 23, 2012_
