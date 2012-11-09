@@ -1,5 +1,19 @@
 #summary Documents all the changes that were made to every version of the library
 
+= 0.5.0 =
+_November 8, 2012_
+
+ * Marshalling classes (`VCardReader`, `VCardWriter`, `XCardReader`, `XCardMarshaller`) no longer throw a checked `VCardException`.
+ * ORG-DIRECTORY type class was missing the `getSupportedVersions()` method.
+ * Added the ability to specify the XML element name of extended types (xCard).
+ * Improved the performance of the marshaller classes.  The same `List` object is now used for collecting the marshalling warnings of each vCard type (previously, a new `List` object was created for every vCard type).
+ * Refactored the way in which AGENT is marshalled to make the marshalling of embedded vCards more generic.  An `EmbeddedVCardException` is now thrown from the `AgentType` class, which the marshaller catches and then uses to marshal/unmarshal the embedded vCard.
+ * Renamed `AgentType.get/setVcard()` to `AgentType.get/setVCard()` (capitalized the "C")
+ * `VCard.addExtendedType(String, String)` now builds a `RawType` instead of a `TextType`.
+ * Removed the `VCardReaderBuilder` class.
+ * Removed the more obscure image and sound types from `ImageTypeParameter` and `SoundTypeParameter` and added a couple new ones.
+ * Removed the `Protocol` enum from the `ImppType` class and added helper methods for reading/creating handles for common IM clients (e.g. AIM and Yahoo! Messenger).
+
 = 0.4.1 =
 _October 2, 2012_
 
