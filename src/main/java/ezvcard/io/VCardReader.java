@@ -243,7 +243,7 @@ public class VCardReader implements Closeable {
 					//parse an embedded vCard (i.e. the AGENT type)
 
 					VCardReader agentReader;
-					if (version == null || version == VCardVersion.V2_1) {
+					if (value.length() == 0 || version == null || version == VCardVersion.V2_1) {
 						//vCard will be added as a nested vCard (2.1 style)
 						agentReader = new VCardReader(reader);
 					} else {
