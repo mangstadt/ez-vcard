@@ -249,9 +249,9 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		VCard agent1 = vcard.getAgent().getVcard();
+		VCard agent1 = vcard.getAgent().getVCard();
 		assertEquals("Agent 007", agent1.getFormattedName().getValue());
-		VCard agent2 = agent1.getAgent().getVcard();
+		VCard agent2 = agent1.getAgent().getVCard();
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
 	}
 
@@ -282,9 +282,9 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		VCard agent1 = vcard.getAgent().getVcard();
+		VCard agent1 = vcard.getAgent().getVCard();
 		assertEquals("Agent 007", agent1.getFormattedName().getValue());
-		VCard agent2 = agent1.getAgent().getVcard();
+		VCard agent2 = agent1.getAgent().getVCard();
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
 	}
 

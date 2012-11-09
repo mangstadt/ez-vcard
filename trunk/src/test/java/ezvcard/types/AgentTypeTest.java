@@ -89,7 +89,7 @@ public class AgentTypeTest {
 		subTypes.setValue(ValueParameter.URL);
 		t.unmarshalValue(subTypes, "http://mi5.co.uk/007", version, warnings, compatibilityMode);
 		assertEquals("http://mi5.co.uk/007", t.getUrl());
-		assertNull(t.getVcard());
+		assertNull(t.getVCard());
 
 		//with vCard
 		VCard vcard = new VCard();
@@ -103,6 +103,6 @@ public class AgentTypeTest {
 			e.injectVCard(vcard);
 		}
 		assertNull(t.getUrl());
-		assertEquals(vcard, t.getVcard());
+		assertEquals(vcard, t.getVCard());
 	}
 }
