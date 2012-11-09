@@ -65,7 +65,6 @@ import ezvcard.types.SourceDisplayTextType;
 import ezvcard.types.SourceType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
-import ezvcard.types.TextType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
@@ -2346,9 +2345,9 @@ public class VCard {
 	 * @param value the value of the extended type
 	 * @return the extended type object that was created
 	 */
-	public TextType addExtendedType(String name, String value) {
-		TextType type = new TextType(name, value);
-		extendedTypes.put(type.getTypeName(), type);
+	public RawType addExtendedType(String name, String value) {
+		RawType type = new RawType(name, value);
+		addExtendedType(type);
 		return type;
 	}
 
