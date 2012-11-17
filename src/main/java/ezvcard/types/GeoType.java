@@ -4,8 +4,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.w3c.dom.Element;
 
@@ -13,7 +11,9 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.GeoUri;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -73,7 +73,7 @@ import ezvcard.util.XCardUtils;
  */
 public class GeoType extends VCardType {
 	public static final String NAME = "GEO";
-	private Double latitude, longitude;
+	private GeoUri uri = new GeoUri();
 
 	public GeoType() {
 		this(null, null);
@@ -85,8 +85,8 @@ public class GeoType extends VCardType {
 	 */
 	public GeoType(Double latitude, Double longitude) {
 		super(NAME);
-		this.latitude = latitude;
-		this.longitude = longitude;
+		setLatitude(latitude);
+		setLongitude(longitude);
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class GeoType extends VCardType {
 	 * @return the latitude
 	 */
 	public Double getLatitude() {
-		return latitude;
+		return uri.getCoordA();
 	}
 
 	/**
@@ -102,15 +102,15 @@ public class GeoType extends VCardType {
 	 * @param latitude the latitude
 	 */
 	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
+		uri.setCoordA(latitude);
 	}
 
 	/**
-	 * Gets the longitude
+	 * Gets the longitude.
 	 * @return the longitude
 	 */
 	public Double getLongitude() {
-		return longitude;
+		return uri.getCoordB();
 	}
 
 	/**
@@ -118,7 +118,20 @@ public class GeoType extends VCardType {
 	 * @param longitude the longitude
 	 */
 	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
+		uri.setCoordB(longitude);
+	}
+
+	/**
+	 * Gets the raw object used for storing the GEO information. This can be
+	 * used to supplement the GEO value with additional information (such as the
+	 * altitude). Geo URIs are only supported by vCard version 4.0. Everything
+	 * but latitude and longitude will be lost when marshalling to an earlier
+	 * vCard version.
+	 * @return the geo URI object
+	 * @see <a href="http://tools.ietf.org/html/rfc5870">RFC 5870</a>
+	 */
+	public GeoUri getGeoUri() {
+		return uri;
 	}
 
 	/**
@@ -261,35 +274,56 @@ public class GeoType extends VCardType {
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		NumberFormat nf = new DecimalFormat("0.####");
+		if (getLatitude() == null || getLongitude() == null) {
+			throw new SkipMeException("Latitude and/or longitude is missing.");
+		}
 
 		if (version == VCardVersion.V4_0) {
-			sb.append("geo:");
-			sb.append(nf.format(latitude));
-			sb.append(',');
-			sb.append(nf.format(longitude));
+			sb.append(uri.toString(6));
 		} else {
-			sb.append(nf.format(latitude));
+			NumberFormat nf = new DecimalFormat("0.######");
+			sb.append(nf.format(getLatitude()));
 			sb.append(';');
-			sb.append(nf.format(longitude));
+			sb.append(nf.format(getLongitude()));
 		}
 	}
 
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//2.1/3.0 syntax:	GEO:12;34
-		//4.0 syntax:		GEO;VALUE=uri:geo:12,23
-		Pattern p = Pattern.compile("^(geo:)?(.*?)[,;](.*)$", Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(value);
-		if (m.find()) {
+		try {
+			//4.0 syntax: GEO;VALUE=uri:geo:12,23
+			uri = new GeoUri(value);
+		} catch (IllegalArgumentException e) {
+			//2.1/3.0 syntax: GEO:12;34
+			String split[] = value.split(";");
+			uri = new GeoUri();
+
 			try {
-				latitude = Double.parseDouble(m.group(2));
-				longitude = Double.parseDouble(m.group(3));
-			} catch (NumberFormatException e) {
-				warnings.add("Cannot parse latitude and longitude numbers out of " + NAME + " type value: \"" + value + "\"");
+				setLatitude(Double.valueOf(split[0]));
+			} catch (NumberFormatException e2) {
+				//do nothing (handled below)
 			}
-		} else {
-			warnings.add("Unrecognized format of " + NAME + " type: \"" + value + "\"");
+
+			boolean longMissing = false;
+			if (split.length > 1) {
+				try {
+					setLongitude(Double.valueOf(split[1]));
+				} catch (NumberFormatException e2) {
+					//do nothing (handled below)
+				}
+			} else {
+				longMissing = true;
+			}
+
+			if (getLatitude() == null && getLongitude() == null) {
+				throw new SkipMeException("Unparseable value: \"" + value + "\"");
+			} else if (longMissing) {
+				warnings.add("Longitude missing from " + NAME + " type value: \"" + value + "\"");
+			} else if (getLatitude() == null) {
+				warnings.add("Could not parse latitude from " + NAME + " type value: \"" + value + "\"");
+			} else if (getLongitude() == null) {
+				warnings.add("Could not parse longitude from " + NAME + " type value: \"" + value + "\"");
+			}
 		}
 	}
 

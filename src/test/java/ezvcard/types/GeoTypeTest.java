@@ -3,6 +3,7 @@ package ezvcard.types;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.XCardUtils;
 
@@ -56,12 +58,12 @@ public class GeoTypeTest {
 		List<String> warnings = new ArrayList<String>();
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		String expected, actual;
-		GeoType t = new GeoType(-12.34, 56.78777);
+		GeoType t = new GeoType(-12.34, 56.7777777777777);
 		VCardSubTypes subTypes;
 
 		//2.1
 		version = VCardVersion.V2_1;
-		expected = "-12.34;56.7878";
+		expected = "-12.34;56.777778";
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
 		assertEquals(expected, actual);
@@ -69,7 +71,7 @@ public class GeoTypeTest {
 
 		//3.0
 		version = VCardVersion.V3_0;
-		expected = "-12.34;56.7878";
+		expected = "-12.34;56.777778";
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
 		assertEquals(expected, actual);
@@ -77,7 +79,7 @@ public class GeoTypeTest {
 
 		//4.0
 		version = VCardVersion.V4_0;
-		expected = "geo:-12.34,56.7878";
+		expected = "geo:-12.34,56.777778";
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
 		assertEquals(expected, actual);
@@ -86,7 +88,7 @@ public class GeoTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		String expectedXml = "<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
-		expectedXml += "<uri>geo:-12.34,56.7878</uri>";
+		expectedXml += "<uri>geo:-12.34,56.777778</uri>";
 		expectedXml += "</geo>";
 		Document expectedDoc = XCardUtils.toDocument(expectedXml);
 		Document actualDoc = XCardUtils.toDocument("<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
@@ -135,18 +137,48 @@ public class GeoTypeTest {
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);
 
-		//bad value
-		//TODO should throw SkipMeException
+		//bad latitude
 		warnings.clear();
 		t = new GeoType();
-		t.unmarshalValue(subTypes, "not a;number", version, warnings, compatibilityMode);
+		t.unmarshalValue(subTypes, "12.34;not-a-number", version, warnings, compatibilityMode);
+		assertEquals(12.34, t.getLatitude(), 0.00001);
+		assertNull(t.getLongitude());
 		assertEquals(1, warnings.size());
 
-		//bad value
-		//TODO should throw SkipMeException
+		//bad longitude
 		warnings.clear();
 		t = new GeoType();
-		t.unmarshalValue(subTypes, "bad-value", version, warnings, compatibilityMode);
+		t.unmarshalValue(subTypes, "not-a-number;12.34", version, warnings, compatibilityMode);
+		assertNull(t.getLatitude());
+		assertEquals(12.34, t.getLongitude(), 0.00001);
 		assertEquals(1, warnings.size());
+
+		//missing longitude
+		warnings.clear();
+		t = new GeoType();
+		t.unmarshalValue(subTypes, "12.34", version, warnings, compatibilityMode);
+		assertEquals(12.34, t.getLatitude(), 0.00001);
+		assertNull(t.getLongitude());
+		assertEquals(1, warnings.size());
+
+		//bad latitude and longitude
+		warnings.clear();
+		t = new GeoType();
+		try {
+			t.unmarshalValue(subTypes, "not a;number", version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+		}
+
+		//not even close
+		warnings.clear();
+		t = new GeoType();
+		try {
+			t.unmarshalValue(subTypes, "123!! bad-value **&z", version, warnings, compatibilityMode);
+			fail();
+		} catch (SkipMeException e) {
+			//should be thrown
+		}
 	}
 }
