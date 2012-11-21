@@ -225,7 +225,7 @@ public class DateOrTimeType extends VCardType {
 			}
 		} else {
 			if (text != null) {
-				sb.append(VCardStringUtils.escapeText(text));
+				sb.append(VCardStringUtils.escape(text));
 			} else if (reducedAccuracyDate != null) {
 				sb.append(reducedAccuracyDate);
 			} else if (date != null) {

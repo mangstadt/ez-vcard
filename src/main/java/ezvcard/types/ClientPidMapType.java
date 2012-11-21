@@ -161,7 +161,7 @@ public class ClientPidMapType extends VCardType {
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		sb.append(pid + ";" + VCardStringUtils.escapeText(uri));
+		sb.append(pid + ";" + VCardStringUtils.escape(uri));
 	}
 
 	@Override

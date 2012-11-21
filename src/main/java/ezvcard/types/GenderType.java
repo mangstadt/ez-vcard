@@ -229,7 +229,7 @@ public class GenderType extends VCardType {
 		}
 		if (text != null) {
 			sb.append(';');
-			sb.append(VCardStringUtils.escapeText(text));
+			sb.append(VCardStringUtils.escape(text));
 		}
 	}
 

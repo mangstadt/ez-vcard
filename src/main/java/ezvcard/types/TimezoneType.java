@@ -331,7 +331,7 @@ public class TimezoneType extends VCardType {
 				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
 				sb.append(';');
 			}
-			sb.append(VCardStringUtils.escapeText(text));
+			sb.append(VCardStringUtils.escape(text));
 		} else if (hourOffset != null && minuteOffset != null) {
 			sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
 		} else {

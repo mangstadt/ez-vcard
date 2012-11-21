@@ -178,7 +178,7 @@ public class CategoriesType extends TextListType {
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (!values.isEmpty()) {
 			for (String value : values) {
-				sb.append(VCardStringUtils.escapeText(value));
+				sb.append(VCardStringUtils.escape(value));
 				if (compatibilityMode == CompatibilityMode.KDE_ADDRESS_BOOK) {
 					//KDE escapes all the comma delimiters
 					sb.append('\\');

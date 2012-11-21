@@ -79,7 +79,7 @@ public class TextType extends VCardType {
 
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		sb.append(VCardStringUtils.escapeText(value));
+		sb.append(VCardStringUtils.escape(value));
 	}
 
 	@Override

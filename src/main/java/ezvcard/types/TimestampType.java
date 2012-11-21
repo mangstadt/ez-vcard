@@ -84,7 +84,7 @@ public class TimestampType extends VCardType {
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = writeValue();
-		sb.append(VCardStringUtils.escapeText(value));
+		sb.append(VCardStringUtils.escape(value));
 	}
 
 	@Override
