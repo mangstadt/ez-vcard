@@ -90,6 +90,18 @@ public class XCardReader {
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
 	public XCardReader(Reader reader) throws SAXException, IOException {
+		this(reader, CompatibilityMode.RFC);
+	}
+
+	/**
+	 * @param reader the reader to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 * @throws IOException if there's a problem reading from the input stream
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardReader(Reader reader, CompatibilityMode compatibilityMode) throws SAXException, IOException {
+		this.compatibilityMode = compatibilityMode;
+
 		try {
 			//parse the XML document
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -138,7 +150,8 @@ public class XCardReader {
 	}
 
 	/**
-	 * Gets the compatibility mode.
+	 * Gets the compatibility mode. Used for customizing the unmarshalling
+	 * process based on the application that generated the vCard.
 	 * @return the compatibility mode
 	 */
 	public CompatibilityMode getCompatibilityMode() {
@@ -146,8 +159,8 @@ public class XCardReader {
 	}
 
 	/**
-	 * Used for customizing the unmarshalling process based on the mail client
-	 * that generated the vCard.
+	 * Sets the compatibility mode. Used for customizing the unmarshalling
+	 * process based on the application that generated the vCard.
 	 * @param compatibilityMode the compatibility mode
 	 */
 	public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
@@ -155,23 +168,21 @@ public class XCardReader {
 	}
 
 	/**
-	 * Registers a extended type class. These types will be unmarshalled into
-	 * instances of this class.
-	 * @param clazz the extended type class. It MUST contain a public, no-arg
-	 * constructor.
+	 * Registers an extended type class.
+	 * @param clazz the extended type class to register (MUST have a public,
+	 * no-arg constructor)
 	 */
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
-		try {
-			VCardType type = clazz.newInstance();
-			QName qname = type.getQName();
-			if (qname == null) {
-				qname = new QName(version.getXmlNamespace(), type.getTypeName().toLowerCase());
-			}
-			extendedTypeClasses.put(qname, clazz);
-		} catch (Exception e) {
-			//there is no public, no-arg constructor
-			throw new RuntimeException(e);
-		}
+		extendedTypeClasses.put(getQNameFromTypeClass(clazz), clazz);
+	}
+
+	/**
+	 * Removes an extended type class that was previously registered.
+	 * @param clazz the extended type class to remove (MUST have a public,
+	 * no-arg constructor)
+	 */
+	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
+		extendedTypeClasses.remove(getQNameFromTypeClass(clazz));
 	}
 
 	/**
@@ -345,6 +356,25 @@ public class XCardReader {
 			}
 		} else {
 			vcard.addExtendedType(t);
+		}
+	}
+
+	/**
+	 * Gets the QName from a type class.
+	 * @param clazz the type class
+	 * @return the QName
+	 */
+	private QName getQNameFromTypeClass(Class<? extends VCardType> clazz) {
+		try {
+			VCardType type = clazz.newInstance();
+			QName qname = type.getQName();
+			if (qname == null) {
+				qname = new QName(version.getXmlNamespace(), type.getTypeName().toLowerCase());
+			}
+			return qname;
+		} catch (Exception e) {
+			//there is no public, no-arg constructor
+			throw new RuntimeException(e);
 		}
 	}
 }
