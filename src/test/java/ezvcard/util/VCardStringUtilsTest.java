@@ -1,7 +1,9 @@
 package ezvcard.util;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -36,12 +38,14 @@ import static org.junit.Assert.*;
  * @author Michael Angstadt
  */
 public class VCardStringUtilsTest {
+	private static final String newline = System.getProperty("line.separator");
+
 	@Test
 	public void unescape() {
 		String expected, actual;
 
 		actual = VCardStringUtils.unescape("\\\\ \\, \\; \\n \\\\\\,");
-		expected = "\\ , ; \r\n \\,";
+		expected = "\\ , ; " + newline + " \\,";
 		assertEquals(expected, actual);
 	}
 

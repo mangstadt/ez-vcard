@@ -52,7 +52,7 @@ public class VCardStringUtils {
 			if (escaped) {
 				if (ch == 'n' || ch == 'N') {
 					//newlines appear as "\n" or "\N" (see RFC 2426 p.7)
-					sb.append("\r\n");
+					sb.append(System.getProperty("line.separator"));
 				} else {
 					sb.append(ch);
 				}
@@ -121,7 +121,8 @@ public class VCardStringUtils {
 	 * @param removeEmpties true to remove empty elements, false not to
 	 * @param unescape true to unescape each split string, false not to
 	 * @return the split string
-	 * @see <a href="http://stackoverflow.com/q/820172">http://stackoverflow.com/q/820172</a>
+	 * @see <a
+	 * href="http://stackoverflow.com/q/820172">http://stackoverflow.com/q/820172</a>
 	 */
 	public static String[] splitBy(String str, char ch, boolean removeEmpties, boolean unescape) {
 		str = str.trim();

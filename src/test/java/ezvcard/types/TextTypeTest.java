@@ -48,6 +48,8 @@ import ezvcard.util.XCardUtils;
  * @author Michael Angstadt
  */
 public class TextTypeTest {
+	private static final String newline = System.getProperty("line.separator");
+
 	@Test
 	public void marshal() throws Exception {
 		VCardVersion version = VCardVersion.V2_1;
@@ -97,7 +99,7 @@ public class TextTypeTest {
 
 		t = new TextType("NAME");
 		t.unmarshalValue(subTypes, "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.", version, warnings, compatibilityMode);
-		expected = "This is a test of the TextType.\r\nOne, two, three; and \\four\\.";
+		expected = "This is a test of the TextType." + newline + "One, two, three; and \\four\\.";
 		actual = t.getValue();
 		assertEquals(expected, actual);
 	}
