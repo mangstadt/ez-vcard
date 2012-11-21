@@ -60,7 +60,7 @@ import ezvcard.util.VCardStringUtils;
  * @author Michael Angstadt
  */
 public class VCardReader implements Closeable {
-	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private CompatibilityMode compatibilityMode;
 	private List<String> warnings = new ArrayList<String>();
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private FoldedLineReader reader;
@@ -69,7 +69,16 @@ public class VCardReader implements Closeable {
 	 * @param reader the reader to read the vCards from
 	 */
 	public VCardReader(Reader reader) {
+		this(reader, CompatibilityMode.RFC);
+	}
+
+	/**
+	 * @param reader the reader to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 */
+	public VCardReader(Reader reader, CompatibilityMode compatibilityMode) {
 		this.reader = new FoldedLineReader(reader);
+		this.compatibilityMode = compatibilityMode;
 	}
 
 	/**
@@ -79,10 +88,12 @@ public class VCardReader implements Closeable {
 	 */
 	private VCardReader(FoldedLineReader reader) {
 		this.reader = reader;
+		this.compatibilityMode = CompatibilityMode.RFC;
 	}
 
 	/**
-	 * Gets the compatibility mode.
+	 * Gets the compatibility mode. Used for customizing the unmarshalling
+	 * process based on the application that generated the vCard.
 	 * @return the compatibility mode
 	 */
 	public CompatibilityMode getCompatibilityMode() {
@@ -90,28 +101,30 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
-	 * Used for customizing the unmarshalling process based on the mail client
-	 * that generated the vCard.
-	 * @param compatibilityMode the compatiblity mode
+	 * Sets the compatibility mode. Used for customizing the unmarshalling
+	 * process based on the application that generated the vCard.
+	 * @param compatibilityMode the compatibility mode
 	 */
 	public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
 		this.compatibilityMode = compatibilityMode;
 	}
 
 	/**
-	 * Registers a extended type class. These types will be unmarshalled into
-	 * instances of this class.
-	 * @param clazz the extended type class. It MUST contain a public, no-arg
-	 * constructor.
+	 * Registers an extended type class.
+	 * @param clazz the extended type class to register (MUST have a public,
+	 * no-arg constructor)
 	 */
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
-		try {
-			VCardType t = clazz.newInstance();
-			extendedTypeClasses.put(t.getTypeName().toUpperCase(), clazz);
-		} catch (Exception e) {
-			//there is no public, no-arg constructor
-			throw new RuntimeException(e);
-		}
+		extendedTypeClasses.put(getTypeNameFromTypeClass(clazz), clazz);
+	}
+
+	/**
+	 * Removes an extended type class that was previously registered.
+	 * @param clazz the extended type class to remove (MUST have a public,
+	 * no-arg constructor)
+	 */
+	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
+		extendedTypeClasses.remove(getTypeNameFromTypeClass(clazz));
 	}
 
 	/**
@@ -349,6 +362,21 @@ public class VCardReader implements Closeable {
 			}
 		} else {
 			vcard.addExtendedType(t);
+		}
+	}
+
+	/**
+	 * Gets the type name from a type class.
+	 * @param clazz the type class
+	 * @return the type name
+	 */
+	private String getTypeNameFromTypeClass(Class<? extends VCardType> clazz) {
+		try {
+			VCardType t = clazz.newInstance();
+			return t.getTypeName().toUpperCase();
+		} catch (Exception e) {
+			//there is no public, no-arg constructor
+			throw new RuntimeException(e);
 		}
 	}
 
