@@ -357,7 +357,7 @@ public class VCardWriter implements Closeable {
 					}
 
 					String vCardStr = sw.toString();
-					vCardStr = VCardStringUtils.escapeText(vCardStr);
+					vCardStr = VCardStringUtils.escape(vCardStr);
 					vCardStr = VCardStringUtils.escapeNewlines(vCardStr);
 					writer.write(vCardStr);
 					writer.write(newline);

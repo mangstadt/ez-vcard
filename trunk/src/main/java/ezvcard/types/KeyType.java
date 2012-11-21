@@ -220,7 +220,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			sb.append(VCardStringUtils.escapeText(text));
+			sb.append(VCardStringUtils.escape(text));
 		} else {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
 				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");

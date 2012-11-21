@@ -181,9 +181,9 @@ public class BirthplaceType extends VCardType {
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			sb.append(VCardStringUtils.escapeText(uri));
+			sb.append(VCardStringUtils.escape(uri));
 		} else if (text != null) {
-			sb.append(VCardStringUtils.escapeText(text));
+			sb.append(VCardStringUtils.escape(text));
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}

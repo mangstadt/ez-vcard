@@ -433,37 +433,37 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (poBox != null) {
-			sb.append(VCardStringUtils.escapeText(poBox));
+			sb.append(VCardStringUtils.escape(poBox));
 		}
 		sb.append(';');
 
 		if (extendedAddress != null) {
-			sb.append(VCardStringUtils.escapeText(extendedAddress));
+			sb.append(VCardStringUtils.escape(extendedAddress));
 		}
 		sb.append(';');
 
 		if (streetAddress != null) {
-			sb.append(VCardStringUtils.escapeText(streetAddress));
+			sb.append(VCardStringUtils.escape(streetAddress));
 		}
 		sb.append(';');
 
 		if (locality != null) {
-			sb.append(VCardStringUtils.escapeText(locality));
+			sb.append(VCardStringUtils.escape(locality));
 		}
 		sb.append(';');
 
 		if (region != null) {
-			sb.append(VCardStringUtils.escapeText(region));
+			sb.append(VCardStringUtils.escape(region));
 		}
 		sb.append(';');
 
 		if (postalCode != null) {
-			sb.append(VCardStringUtils.escapeText(postalCode));
+			sb.append(VCardStringUtils.escape(postalCode));
 		}
 		sb.append(';');
 
 		if (country != null) {
-			sb.append(VCardStringUtils.escapeText(country));
+			sb.append(VCardStringUtils.escape(country));
 		}
 	}
 

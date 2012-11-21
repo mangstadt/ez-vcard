@@ -229,7 +229,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = writeValue(version);
-		sb.append(VCardStringUtils.escapeText(value));
+		sb.append(VCardStringUtils.escape(value));
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class VCardStringUtils {
 	 * @param text the text to escape
 	 * @return the escaped text
 	 */
-	public static String escapeText(String text) {
+	public static String escape(String text) {
 		String chars = "\\,;";
 		for (int i = 0; i < chars.length(); i++) {
 			String ch = chars.substring(i, i + 1);

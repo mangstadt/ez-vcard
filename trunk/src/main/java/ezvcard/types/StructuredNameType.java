@@ -233,18 +233,18 @@ public class StructuredNameType extends VCardType {
 	@Override
 	protected void doMarshalValue(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (family != null) {
-			value.append(VCardStringUtils.escapeText(family));
+			value.append(VCardStringUtils.escape(family));
 		}
 
 		value.append(';');
 		if (given != null) {
-			value.append(VCardStringUtils.escapeText(given));
+			value.append(VCardStringUtils.escape(given));
 		}
 
 		value.append(';');
 		if (!additional.isEmpty()) {
 			for (String s : additional) {
-				value.append(VCardStringUtils.escapeText(s)).append(',');
+				value.append(VCardStringUtils.escape(s)).append(',');
 			}
 			value.deleteCharAt(value.length() - 1);
 		}
@@ -252,7 +252,7 @@ public class StructuredNameType extends VCardType {
 		value.append(';');
 		if (!prefixes.isEmpty()) {
 			for (String s : prefixes) {
-				value.append(VCardStringUtils.escapeText(s)).append(',');
+				value.append(VCardStringUtils.escape(s)).append(',');
 			}
 			value.deleteCharAt(value.length() - 1);
 		}
@@ -260,7 +260,7 @@ public class StructuredNameType extends VCardType {
 		value.append(';');
 		if (!suffixes.isEmpty()) {
 			for (String s : suffixes) {
-				value.append(VCardStringUtils.escapeText(s)).append(',');
+				value.append(VCardStringUtils.escape(s)).append(',');
 			}
 			value.deleteCharAt(value.length() - 1);
 		}

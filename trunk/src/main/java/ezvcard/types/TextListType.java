@@ -85,7 +85,7 @@ public class TextListType extends VCardType {
 	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (!values.isEmpty()) {
 			for (String value : values) {
-				value = VCardStringUtils.escapeText(value);
+				value = VCardStringUtils.escape(value);
 				sb.append(value);
 				sb.append(separator);
 			}
