@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
@@ -115,5 +116,11 @@ public class TimestampType extends VCardType {
 			throw new SkipMeException("Property has no timestamp value associated with it.");
 		}
 		return VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_BASIC); //"UTC_TIME_BASIC" works with all vCard versions
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String value = HCardUtils.getElementValue(element);
+		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}
 }

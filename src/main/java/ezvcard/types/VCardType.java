@@ -293,6 +293,40 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
+	 * Unmarshals the type from an hCard (HTML document).
+	 * @param element the HTML element that contains the type data.
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * unmarshalling process
+	 * @throws SkipMeException if this type should NOT be added to the
+	 * {@link VCard} object
+	 * @throws EmbeddedVCardException if the value of this type is an embedded
+	 * vCard (i.e. the AGENT type)
+	 * @throws UnsupportedOperationException if the type class does not support
+	 * hCard parsing
+	 */
+	public void unmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		doUnmarshalHtml(element, warnings);
+	}
+
+	/**
+	 * Unmarshals the type from an hCard (HTML document).
+	 * @param element the HTML element that contains the type data.
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * unmarshalling process
+	 * @throws SkipMeException if this type should NOT be added to the
+	 * {@link VCard} object
+	 * @throws EmbeddedVCardException if the value of this type is an embedded
+	 * vCard (i.e. the AGENT type)
+	 * @throws UnsupportedOperationException if the type class does not support
+	 * hCard parsing
+	 */
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		throw new UnsupportedOperationException("This type class does not support the parsing of hCards.");
+	}
+
+	/**
 	 * <p>
 	 * Gets the qualified name (XML namespace and local part) for marshalling
 	 * the type to an XML document (xCard).

@@ -2,6 +2,8 @@ package ezvcard.types;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Element;
 
@@ -11,6 +13,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardUtils;
 
@@ -250,6 +253,28 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		if (value != null) {
 			parseValue(value);
 		}
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		List<String> types = HCardUtils.getTypes(element);
+		for (String type : types) {
+			subTypes.addType(type);
+		}
+
+		String tel = null;
+		String href = element.attr("href");
+		if (href.length() > 0) {
+			Pattern p = Pattern.compile("^tel:(.*?)$", Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(href);
+			if (m.find()) {
+				tel = m.group(1);
+			}
+		}
+		if (tel == null) {
+			tel = HCardUtils.getElementValue(element);
+		}
+		setValue(tel);
 	}
 
 	private void parseValue(String value) {

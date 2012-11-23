@@ -6,6 +6,7 @@ import org.w3c.dom.Element;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardUtils;
 
@@ -86,7 +87,7 @@ public class TextType extends VCardType {
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		this.value = VCardStringUtils.unescape(value);
 	}
-	
+
 	@Override
 	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		XCardUtils.appendChild(parent, "text", value, version);
@@ -95,5 +96,10 @@ public class TextType extends VCardType {
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setValue(XCardUtils.getFirstChildText(element, "text"));
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		setValue(HCardUtils.getElementValue(element));
 	}
 }

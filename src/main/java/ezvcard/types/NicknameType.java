@@ -1,8 +1,10 @@
 package ezvcard.types;
 
+import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCardSubTypes;
+import ezvcard.util.HCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -185,5 +187,10 @@ public class NicknameType extends TextListType {
 	 */
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		addValue(HCardUtils.getElementValue(element));
 	}
 }

@@ -2,6 +2,8 @@ package ezvcard.types;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Element;
 
@@ -10,6 +12,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EmailTypeParameter;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardUtils;
 
@@ -192,7 +195,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}
-	
+
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		//replace "TYPE=pref" with "PREF=1"
@@ -238,5 +241,28 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setValue(XCardUtils.getFirstChildText(element, "text"));
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		List<String> types = HCardUtils.getTypes(element);
+		for (String type : types) {
+			subTypes.addType(type);
+		}
+
+		//check to see if the email address is within in "mailto:" link
+		String email = null;
+		String href = element.attr("href");
+		if (href.length() > 0) {
+			Pattern p = Pattern.compile("^mailto:(.*)$", Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(href);
+			if (m.find()) {
+				email = m.group(1);
+			}
+		}
+		if (email == null) {
+			email = HCardUtils.getElementValue(element);
+		}
+		setValue(email);
 	}
 }
