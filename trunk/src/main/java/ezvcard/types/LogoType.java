@@ -1,6 +1,12 @@
 package ezvcard.types;
 
+import java.util.List;
+import java.util.regex.Matcher;
+
+import org.apache.commons.codec.binary.Base64;
+
 import ezvcard.VCardSubTypes;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImageTypeParameter;
 
 /*
@@ -149,6 +155,28 @@ public class LogoType extends BinaryType<ImageTypeParameter> {
 	 */
 	public void setLanguage(String language) {
 		subTypes.setLanguage(language);
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String elementName = element.tagName();
+		if ("img".equalsIgnoreCase(elementName)) {
+			String src = element.absUrl("src");
+			if (src.length() > 0) {
+				Matcher m = DATA_URI.matcher(src);
+				if (m.find()) {
+					ImageTypeParameter mediaType = buildMediaTypeObj(m.group(1));
+					setData(Base64.decodeBase64(m.group(2)), mediaType);
+				} else {
+					//TODO create buildTypeObjFromExtension() method
+					setUrl(src, null);
+				}
+			} else {
+				throw new SkipMeException("<img> tag does not have a \"src\" attribute.");
+			}
+		} else {
+			super.doUnmarshalHtml(element, warnings);
+		}
 	}
 
 	@Override

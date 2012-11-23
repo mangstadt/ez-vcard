@@ -6,6 +6,7 @@ import org.w3c.dom.Element;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -94,5 +95,10 @@ public class RawType extends VCardType {
 		} else {
 			this.value = value.getTextContent();
 		}
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		setValue(HCardUtils.getElementValue(element));
 	}
 }

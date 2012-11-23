@@ -66,4 +66,14 @@ public class UriType extends TextType {
 	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		XCardUtils.appendChild(parent, "uri", getValue(), version);
 	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String href = element.absUrl("href");
+		if (href.length() > 0) {
+			setValue(href);
+		} else {
+			super.doUnmarshalHtml(element, warnings);
+		}
+	}
 }

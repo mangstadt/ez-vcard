@@ -6,6 +6,7 @@ import java.util.Set;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 
 /*
@@ -199,5 +200,15 @@ public class CategoriesType extends TextListType {
 			value = VCardStringUtils.unescape(value);
 		}
 		super.doUnmarshalValue(value, version, warnings, compatibilityMode);
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String rel = element.attr("rel");
+		if (rel.length() > 0) {
+			addValue(rel);
+		} else {
+			addValue(HCardUtils.getElementValue(element));
+		}
 	}
 }

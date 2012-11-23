@@ -7,6 +7,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 
 /*
@@ -171,5 +172,15 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setValue(VCardStringUtils.unescape(value));
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		List<String> types = HCardUtils.getTypes(element);
+		for (String type : types) {
+			subTypes.addType(type);
+		}
+
+		setValue(HCardUtils.getElementValue(element));
 	}
 }

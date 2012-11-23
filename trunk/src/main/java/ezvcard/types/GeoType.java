@@ -14,6 +14,8 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
+import ezvcard.util.HCardUtils;
+import ezvcard.util.ListMultimap;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -339,6 +341,37 @@ public class GeoType extends VCardType {
 		String value = XCardUtils.getFirstChildText(element, "uri");
 		if (value != null) {
 			doUnmarshalValue(value, version, warnings, compatibilityMode);
+		}
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		ListMultimap<String, String> map = HCardUtils.getElementValuesAndIndexByCssClass(element.children());
+
+		List<String> values = map.get("latitude");
+		if (values.isEmpty()) {
+			warnings.add("Latitude missing from " + NAME + " type.");
+		} else {
+			try {
+				setLatitude(Double.parseDouble(values.get(0)));
+			} catch (NumberFormatException e) {
+				warnings.add("Could not parse latitude from " + NAME + " type.");
+			}
+		}
+
+		values = map.get("longitude");
+		if (values.isEmpty()) {
+			warnings.add("Longitude missing from " + NAME + " type.");
+		} else {
+			try {
+				setLongitude(Double.parseDouble(values.get(0)));
+			} catch (NumberFormatException e) {
+				warnings.add("Could not parse longitude from " + NAME + " type.");
+			}
+		}
+
+		if (getLatitude() == null && getLongitude() == null) {
+			throw new SkipMeException("Unparsable value.");
 		}
 	}
 }

@@ -9,6 +9,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ImppTypeParameter;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardUtils;
 
@@ -367,5 +368,14 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	@Override
 	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		uri = XCardUtils.getFirstChildText(element, "uri");
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String href = element.attr("href");
+		if (href.length() == 0) {
+			href = HCardUtils.getElementValue(element);
+		}
+		setUri(href);
 	}
 }

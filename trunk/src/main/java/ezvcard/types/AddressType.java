@@ -10,6 +10,8 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.util.HCardUtils;
+import ezvcard.util.ListMultimap;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardUtils;
 
@@ -528,5 +530,36 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		region = XCardUtils.getFirstChildText(element, "region");
 		postalCode = XCardUtils.getFirstChildText(element, "code");
 		country = XCardUtils.getFirstChildText(element, "country");
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		ListMultimap<String, String> map = HCardUtils.getElementValuesAndIndexByCssClass(element.children());
+
+		List<String> values = map.get("post-office-box");
+		poBox = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("extended-address");
+		extendedAddress = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("street-address");
+		streetAddress = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("locality");
+		locality = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("region");
+		region = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("postal-code");
+		postalCode = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("country-name");
+		country = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("type");
+		for (String v : values) {
+			subTypes.addType(v);
+		}
 	}
 }

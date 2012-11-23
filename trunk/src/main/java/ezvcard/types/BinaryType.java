@@ -57,7 +57,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	/**
 	 * Regex for parsing a 4.0 data URI.
 	 */
-	private static final Pattern DATA_URI = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
+	protected static final Pattern DATA_URI = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * The decoded data.
@@ -395,6 +395,39 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 		String value = XCardUtils.getFirstChildText(element, "uri");
 		if (value != null) {
 			doUnmarshalValue(value, version, warnings, compatibilityMode);
+		}
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String elementName = element.tagName();
+		String error = null;
+		if ("object".equalsIgnoreCase(elementName)) {
+			T mediaType = null;
+			String type = element.attr("type");
+			if (type.length() > 0) {
+				mediaType = buildMediaTypeObj(type);
+			}
+
+			String data = element.absUrl("data");
+			if (data.length() > 0) {
+				Matcher m = DATA_URI.matcher(data);
+				if (m.find()) {
+					mediaType = buildMediaTypeObj(m.group(1));
+					setData(Base64.decodeBase64(m.group(2)), mediaType);
+				} else {
+					//TODO create buildTypeObjFromExtension() method
+					setUrl(data, null);
+				}
+			} else {
+				error = "<object> tag does not have a \"data\" attribute.";
+			}
+		} else {
+			error = "Cannot parse HTML tag \"" + elementName + "\".";
+		}
+
+		if (error != null) {
+			throw new SkipMeException(error);
 		}
 	}
 

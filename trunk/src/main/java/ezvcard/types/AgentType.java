@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -9,6 +10,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 
 /*
@@ -158,12 +160,27 @@ public class AgentType extends VCardType {
 		if (subTypes.getValue() != null) {
 			setUrl(VCardStringUtils.unescape(value));
 		} else {
-			//instruct the marshaller to look for an embedded vCard
-			throw new EmbeddedVCardException(new EmbeddedVCardException.InjectionCallback() {
-				public void injectVCard(VCard vcard) {
-					setVCard(vcard);
-				}
-			});
+			throw new EmbeddedVCardException(new Injector());
+		}
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		Set<String> classes = element.classNames();
+		if (classes.contains("vcard")) {
+			throw new EmbeddedVCardException(new Injector());
+		} else {
+			String href = element.absUrl("href");
+			if (href.length() > 0) {
+				href = HCardUtils.getElementValue(element);
+			}
+			setUrl(href);
+		}
+	}
+
+	private class Injector implements EmbeddedVCardException.InjectionCallback {
+		public void injectVCard(VCard vcard) {
+			setVCard(vcard);
 		}
 	}
 }

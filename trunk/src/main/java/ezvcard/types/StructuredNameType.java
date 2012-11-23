@@ -9,6 +9,8 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.HCardUtils;
+import ezvcard.util.ListMultimap;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardUtils;
 
@@ -351,6 +353,28 @@ public class StructuredNameType extends VCardType {
 				suffixes.add(text);
 			}
 		}
+	}
 
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		ListMultimap<String, String> map = HCardUtils.getElementValuesAndIndexByCssClass(element.children());
+
+		List<String> values = map.get("family-name");
+		family = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("given-name");
+		given = values.isEmpty() ? null : values.get(0);
+
+		values = map.get("additional-name");
+		additional.clear();
+		additional.addAll(values);
+
+		values = map.get("honorific-prefix");
+		prefixes.clear();
+		prefixes.addAll(values);
+
+		values = map.get("honorific-suffix");
+		suffixes.clear();
+		suffixes.addAll(values);
 	}
 }
