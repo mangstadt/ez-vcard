@@ -505,6 +505,8 @@ public class HCardReaderTest {
 
 			LabelType label = it.next();
 			assertEquals("456 Wall St., New York, NY 67890", label.getValue());
+			assertEquals(1, label.getTypes().size());
+			assertTrue(label.getTypes().contains(AddressTypeParameter.WORK));
 
 			assertFalse(it.hasNext());
 		}
