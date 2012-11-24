@@ -199,6 +199,24 @@ public class HCardUtilsTest {
 	}
 
 	@Test
+	public void getTypes_not_direct_descendant() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<div class=\"adr\">");
+			html.append("<span class=\"type\">work</span>");
+			html.append("<div>");
+				html.append("<span class=\"type\">pref</span>");
+			html.append("<div>");
+		html.append("</div>");
+		//@formatter:on
+
+		Element element = buildElement(html.toString());
+		List<String> actual = HCardUtils.getTypes(element);
+		List<String> expected = Arrays.asList("work", "pref");
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void getAbsUrl() {
 		Element element = buildElement("<a href=\"data:foo\" />", "http://example.com");
 		assertEquals("data:foo", HCardUtils.getAbsUrl(element, "href"));
