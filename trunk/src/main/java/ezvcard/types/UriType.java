@@ -6,6 +6,7 @@ import org.w3c.dom.Element;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -69,7 +70,7 @@ public class UriType extends TextType {
 
 	@Override
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		String href = element.absUrl("href");
+		String href = HCardUtils.getAbsUrl(element, "href");
 		if (href.length() > 0) {
 			setValue(href);
 		} else {

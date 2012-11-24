@@ -170,7 +170,7 @@ public class AgentType extends VCardType {
 		if (classes.contains("vcard")) {
 			throw new EmbeddedVCardException(new Injector());
 		} else {
-			String href = element.absUrl("href");
+			String href = HCardUtils.getAbsUrl(element, "href");
 			if (href.length() > 0) {
 				href = HCardUtils.getElementValue(element);
 			}

@@ -188,12 +188,34 @@ public class HCardReaderTest {
 		html.append("</html>");
 		//@formatter:on
 
-		//TODO fix this
 		HCardReader reader = new HCardReader(html.toString());
 		VCard vcard = reader.readNext();
-		assertNull(vcard.getFormattedName());
-		assertTrue(vcard.getUrls().isEmpty());
-		assertTrue(vcard.getTelephoneNumbers().isEmpty());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+		assertEquals("http://johndoe.com", vcard.getUrls().get(0).getValue());
+		assertEquals("(555) 555-1234", vcard.getTelephoneNumbers().get(0).getValue());
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void property_tags_within_other_property_tags() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<div class=\"n\">");
+						html.append("<span class=\"family-name org\">Smith</span>");
+					html.append("</div>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+		VCard vcard = reader.readNext();
+		assertEquals("Smith", vcard.getStructuredName().getFamily());
+		assertEquals("Smith", vcard.getOrganization().getValues().get(0));
 
 		assertNull(reader.readNext());
 	}
@@ -263,11 +285,12 @@ public class HCardReaderTest {
 		html.append("</html>");
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com");
+		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html");
 
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertEquals("http://johndoe.com", vcard.getSources().get(0).getValue());
+		assertEquals("http://johndoe.com/index.html", vcard.getUrls().get(0).getValue());
+		assertEquals("http://johndoe.com/vcard.html", vcard.getSources().get(0).getValue());
 
 		assertNull(reader.readNext());
 	}
@@ -295,6 +318,142 @@ public class HCardReaderTest {
 
 			ImppType impp = it.next();
 			assertEquals("aim:goim?screenname=ShoppingBuddy", impp.getUri());
+
+			assertFalse(it.hasNext());
+		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void convert_mailto_urls_to_email_types() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<a class=\"url\" href=\"mailto:jdoe@hotmail.com\">Email me</a>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+
+		VCard vcard = reader.readNext();
+		assertTrue(vcard.getUrls().isEmpty());
+
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType email = it.next();
+			assertEquals("jdoe@hotmail.com", email.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void convert_tel_urls_to_tel_types() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<a class=\"url\" href=\"tel:+15555551234\">Call me</a>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+
+		VCard vcard = reader.readNext();
+		assertTrue(vcard.getUrls().isEmpty());
+
+		{
+			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+
+			TelephoneType tel = it.next();
+			assertEquals("+15555551234", tel.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void mailto_url_with_email_and_url_class_names() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<a class=\"email url\" href=\"mailto:jdoe@hotmail.com\">Email me</a>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+
+		VCard vcard = reader.readNext();
+
+		{
+			Iterator<UrlType> it = vcard.getUrls().iterator();
+
+			UrlType url = it.next();
+			assertEquals("mailto:jdoe@hotmail.com", url.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		{
+			Iterator<EmailType> it = vcard.getEmails().iterator();
+
+			EmailType email = it.next();
+			assertEquals("jdoe@hotmail.com", email.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void tel_url_with_tel_and_url_class_names() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<a class=\"tel url\" href=\"tel:+15555551234\">Call me</a>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+
+		VCard vcard = reader.readNext();
+
+		{
+			Iterator<UrlType> it = vcard.getUrls().iterator();
+
+			UrlType url = it.next();
+			assertEquals("tel:+15555551234", url.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		{
+			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+
+			TelephoneType tel = it.next();
+			assertEquals("+15555551234", tel.getValue());
 
 			assertFalse(it.hasNext());
 		}
@@ -384,10 +543,8 @@ public class HCardReaderTest {
 		{
 			Iterator<EmailType> it = vcard.getEmails().iterator();
 
-			//TODO fix me
-
-			//			EmailType email = it.next();
-			//			assertEquals("info@commerce.net", email.getValue());
+			EmailType email = it.next();
+			assertEquals("info@commerce.net", email.getValue());
 
 			assertFalse(it.hasNext());
 		}

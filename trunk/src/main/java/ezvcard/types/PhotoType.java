@@ -7,6 +7,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImageTypeParameter;
+import ezvcard.util.HCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -167,7 +168,7 @@ public class PhotoType extends BinaryType<ImageTypeParameter> {
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
 		String elementName = element.tagName();
 		if ("img".equals(elementName)) {
-			String src = element.absUrl("src");
+			String src = HCardUtils.getAbsUrl(element, "src");
 			if (src.length() > 0) {
 				Matcher m = DATA_URI.matcher(src);
 				if (m.find()) {
