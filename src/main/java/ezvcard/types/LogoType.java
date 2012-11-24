@@ -160,7 +160,7 @@ public class LogoType extends BinaryType<ImageTypeParameter> {
 	@Override
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
 		String elementName = element.tagName();
-		if ("img".equalsIgnoreCase(elementName)) {
+		if ("img".equals(elementName)) {
 			String src = element.absUrl("src");
 			if (src.length() > 0) {
 				Matcher m = DATA_URI.matcher(src);
