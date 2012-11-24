@@ -89,7 +89,7 @@ public class HCardUtils {
 				visitForValue(valueElement, value);
 			}
 		}
-		return value.toString();
+		return value.toString().trim();
 	}
 
 	private static void visitForValue(Element element, StringBuilder value) {
