@@ -16,6 +16,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -409,7 +410,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 				mediaType = buildMediaTypeObj(type);
 			}
 
-			String data = element.absUrl("data");
+			String data = HCardUtils.getAbsUrl(element, "data");
 			if (data.length() > 0) {
 				Matcher m = DATA_URI.matcher(data);
 				if (m.find()) {

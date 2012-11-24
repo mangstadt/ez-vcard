@@ -154,6 +154,21 @@ public class HCardUtils {
 		return types;
 	}
 
+	/**
+	 * Gets the absolute version of a URL. Takes into account obsure protocols,
+	 * such as "tel:" and "data:".
+	 * @param element the HTML element
+	 * @param attribute the name of the attribute that contains the URL
+	 * @return the absolute URL or empty string if the attribute doesn't exist
+	 */
+	public static String getAbsUrl(Element element, String attribute) {
+		String url = element.absUrl(attribute); //returns empty string for some protocols like "tel:" and "data:", but not for "http:" or "mailto:"
+		if (url.length() == 0) {
+			url = element.attr(attribute);
+		}
+		return url;
+	}
+
 	private HCardUtils() {
 		//hide constructor
 	}

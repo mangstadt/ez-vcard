@@ -198,8 +198,27 @@ public class HCardUtilsTest {
 		assertEquals(expected, actual);
 	}
 
+	@Test
+	public void getAbsUrl() {
+		Element element = buildElement("<a href=\"data:foo\" />", "http://example.com");
+		assertEquals("data:foo", HCardUtils.getAbsUrl(element, "href"));
+
+		element = buildElement("<a href=\"index.html\" />", "http://example.com");
+		assertEquals("http://example.com/index.html", HCardUtils.getAbsUrl(element, "href"));
+
+		element = buildElement("<a href=\"mailto:jdoe@hotmail.com\" />", "http://example.com");
+		assertEquals("mailto:jdoe@hotmail.com", HCardUtils.getAbsUrl(element, "href"));
+
+		element = buildElement("<a href=\"http://foobar.com/index.html\" />", "http://example.com");
+		assertEquals("http://foobar.com/index.html", HCardUtils.getAbsUrl(element, "href"));
+	}
+
 	private Element buildElement(String html) {
-		Document d = Jsoup.parse(html);
+		return buildElement(html, null);
+	}
+
+	private Element buildElement(String html, String baseUrl) {
+		Document d = (baseUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, baseUrl);
 		return d.getElementsByTag("body").first().child(0);
 	}
 }
