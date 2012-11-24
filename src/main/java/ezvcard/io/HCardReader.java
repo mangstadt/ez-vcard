@@ -77,6 +77,7 @@ public class HCardReader {
 	protected List<LabelType> labels = new ArrayList<LabelType>();
 	protected List<String> warningsBuffer = new ArrayList<String>();
 	protected VCard curVCard;
+	protected Elements embeddedVCards = new Elements();
 
 	/**
 	 * Reads vCards from a webpage.
@@ -130,6 +131,17 @@ public class HCardReader {
 		init(document, anchor);
 	}
 
+	/**
+	 * Constructor for reading embedded vCards.
+	 * @param embeddedVCard the HTML element of the embedded vCard
+	 * @param pageUrl the URL of the page
+	 */
+	private HCardReader(Element embeddedVCard, String pageUrl) {
+		this.pageUrl = pageUrl;
+		vcardElements = new Elements(embeddedVCard);
+		it = vcardElements.iterator();
+	}
+
 	private void init(Document document, String anchor) {
 		Element searchIn = null;
 		if (anchor != null) {
@@ -170,6 +182,10 @@ public class HCardReader {
 		return new ArrayList<String>(warnings);
 	}
 
+	/**
+	 * Reads the next vCard.
+	 * @return the next vCard or null if there are no more
+	 */
 	public VCard readNext() {
 		Element vcardElement = null;
 		while (it.hasNext() && vcardElement == null) {
@@ -251,7 +267,21 @@ public class HCardReader {
 				} catch (SkipMeException e) {
 					warningsBuffer.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
 				} catch (EmbeddedVCardException e) {
-					//TODO implement this
+					if (HCardUtils.isChildOf(element, embeddedVCards)) {
+						//prevents multiple-nested embedded elements from overwriting each other
+						continue;
+					}
+
+					embeddedVCards.add(element);
+					HCardReader embeddedReader = new HCardReader(element, pageUrl);
+					try {
+						VCard embeddedVCard = embeddedReader.readNext();
+						e.injectVCard(embeddedVCard);
+					} finally {
+						for (String w : embeddedReader.getWarnings()) {
+							warnings.add("Problem unmarshalling nested vCard value from " + type.getTypeName() + ": " + w);
+						}
+					}
 					addToVCard(type, curVCard);
 				} catch (UnsupportedOperationException e) {
 					//type class does not support hCard
