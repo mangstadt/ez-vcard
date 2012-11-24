@@ -18,6 +18,7 @@ import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.EmailType;
 import ezvcard.types.ImppType;
+import ezvcard.types.LabelType;
 import ezvcard.types.TelephoneType;
 import ezvcard.types.UrlType;
 
@@ -454,6 +455,56 @@ public class HCardReaderTest {
 
 			TelephoneType tel = it.next();
 			assertEquals("+15555551234", tel.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void assign_labels_to_addresses() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<div class=\"adr\">");
+						html.append("<span class=\"type\">Home</span>:<br>");
+						html.append("<span class=\"street-address\">123 Main St.</span><br>");
+						html.append("<span class=\"locality\">Austin</span>, <span class=\"region\">TX</span> <span class=\"postal-code\">12345</span>");
+					html.append("</div>");
+					html.append("<div class=\"label\"><abbr class=\"type\" title=\"home\"></abbr>123 Main St.\nAustin, TX 12345</div>");
+					html.append("<abbr class=\"label\" title=\"456 Wall St., New York, NY 67890\"><abbr class=\"type\" title=\"work\"></abbr></abbr>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+
+		VCard vcard = reader.readNext();
+
+		{
+			Iterator<AddressType> it = vcard.getAddresses().iterator();
+
+			AddressType adr = it.next();
+			assertEquals("123 Main St.", adr.getStreetAddress());
+			assertEquals("Austin", adr.getLocality());
+			assertEquals("TX", adr.getRegion());
+			assertEquals("12345", adr.getPostalCode());
+			assertEquals("123 Main St. Austin, TX 12345", adr.getLabel());
+			assertEquals(1, adr.getTypes().size());
+			assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+
+			assertFalse(it.hasNext());
+		}
+
+		{
+			Iterator<LabelType> it = vcard.getOrphanedLabels().iterator();
+
+			LabelType label = it.next();
+			assertEquals("456 Wall St., New York, NY 67890", label.getValue());
 
 			assertFalse(it.hasNext());
 		}
