@@ -171,6 +171,27 @@ public class HCardUtils {
 		return url;
 	}
 
+	/**
+	 * Appends text to the given element, replacing newlines with "&lt;br&gt;"
+	 * tags.
+	 * @param element the element
+	 * @param text the text to append
+	 */
+	public static void appendTextAndEncodeNewlines(Element element, String text) {
+		//replace newlines with "<br>" tags
+		String split[] = text.split("\\r\\n|\\n|\\r");
+		if (split[0].length() > 0) {
+			element.appendText(split[0]);
+		}
+		for (int i = 1; i < split.length; i++) {
+			String s = split[i];
+			element.appendElement("br");
+			if (s.length() > 0) {
+				element.appendText(s);
+			}
+		}
+	}
+
 	private HCardUtils() {
 		//hide constructor
 	}

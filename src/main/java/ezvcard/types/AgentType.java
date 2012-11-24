@@ -178,6 +178,19 @@ public class AgentType extends VCardType {
 		}
 	}
 
+	@Override
+	protected void doMarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		if (url != null) {
+			org.jsoup.nodes.Element a = element.appendElement("a");
+			a.attr("href", url);
+			a.text(url);
+		} else if (vcard != null) {
+			throw new EmbeddedVCardException(vcard);
+		} else {
+			throw new SkipMeException("Property has neither a URL nor an embedded vCard.");
+		}
+	}
+
 	private class Injector implements EmbeddedVCardException.InjectionCallback {
 		public void injectVCard(VCard vcard) {
 			setVCard(vcard);

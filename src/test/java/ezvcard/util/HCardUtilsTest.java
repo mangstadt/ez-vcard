@@ -9,6 +9,8 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.junit.Test;
 
 /*
@@ -248,6 +250,32 @@ public class HCardUtilsTest {
 
 		element = buildElement("<a href=\"http://foobar.com/index.html\" />", "http://example.com");
 		assertEquals("http://foobar.com/index.html", HCardUtils.getAbsUrl(element, "href"));
+	}
+
+	@Test
+	public void appendTextAndEncodeNewLines() {
+		Element element = buildElement("<div />");
+		HCardUtils.appendTextAndEncodeNewlines(element, "Append\rthis\n\ntext\r\nplease.");
+
+		List<Node> nodes = element.childNodes();
+		assertEquals(8, nodes.size());
+		int i = 0;
+		assertEquals("Append", ((TextNode) nodes.get(i++)).text());
+		assertEquals("br", ((Element) nodes.get(i++)).tagName());
+		assertEquals("this", ((TextNode) nodes.get(i++)).text());
+		assertEquals("br", ((Element) nodes.get(i++)).tagName());
+		assertEquals("br", ((Element) nodes.get(i++)).tagName());
+		assertEquals("text", ((TextNode) nodes.get(i++)).text());
+		assertEquals("br", ((Element) nodes.get(i++)).tagName());
+		assertEquals("please.", ((TextNode) nodes.get(i++)).text());
+
+		element = buildElement("<div />");
+		HCardUtils.appendTextAndEncodeNewlines(element, "Without newlines.");
+
+		nodes = element.childNodes();
+		assertEquals(1, nodes.size());
+		i = 0;
+		assertEquals("Without newlines.", ((TextNode) nodes.get(i++)).text());
 	}
 
 	private Element buildElement(String html) {
