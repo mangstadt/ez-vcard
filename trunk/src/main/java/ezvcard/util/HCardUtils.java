@@ -74,22 +74,19 @@ public class HCardUtils {
 		} else {
 			//append together all children whose CSS class is "value"
 			for (Element valueElement : valueElements) {
-				//ignore "value" elements that are descendants of other "value" elements
 				if (isChildOf(valueElement, valueElements)) {
+					//ignore "value" elements that are descendants of other "value" elements
 					continue;
 				}
 
-				String text = null;
 				if ("abbr".equals(valueElement.tagName())) {
 					String title = valueElement.attr("title");
 					if (title.length() > 0) {
-						text = title;
+						value.append(title);
+						continue;
 					}
 				}
-				if (text == null) {
-					text = valueElement.text();
-				}
-				value.append(text);
+				visitForValue(valueElement, value);
 			}
 		}
 		return value.toString();
@@ -99,8 +96,13 @@ public class HCardUtils {
 		for (Node node : element.childNodes()) {
 			if (node instanceof Element) {
 				Element e = (Element) node;
-				if (!e.classNames().contains("type")) {
-					visitForValue(e, value);
+				if (!e.classNames().contains("type")) { //ignore "type" elements
+					if ("br".equals(e.tagName())) {
+						//convert "<br>" to a newline
+						value.append(System.getProperty("line.separator"));
+					} else {
+						visitForValue(e, value);
+					}
 				}
 			} else if (node instanceof TextNode) {
 				TextNode t = (TextNode) node;

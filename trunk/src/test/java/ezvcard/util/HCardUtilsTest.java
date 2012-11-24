@@ -44,6 +44,8 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class HCardUtilsTest {
+	private static final String newline = System.getProperty("line.separator");
+
 	@Test
 	public void getElementValue_text_content() {
 		Element element = buildElement("<div>The text</div>");
@@ -51,8 +53,22 @@ public class HCardUtilsTest {
 	}
 
 	@Test
+	public void getElementValue_line_breaks() {
+		Element element = buildElement("<div>The<br>text</div>");
+		assertEquals("The" + newline + "text", HCardUtils.getElementValue(element));
+
+		//"value" element
+		element = buildElement("<div>The <span class=\"value\">real<br>text</span></div>");
+		assertEquals("real" + newline + "text", HCardUtils.getElementValue(element));
+
+		//nested "value" element
+		element = buildElement("<div>The <span class=\"value\">real<br>text <span class=\"value\">goes<br>here</span></span></div>");
+		assertEquals("real" + newline + "text goes" + newline + "here", HCardUtils.getElementValue(element));
+	}
+
+	@Test
 	public void getElementValue_ignore_child_tags() {
-		Element element = buildElement("<div>The<br><b>text</b></div>");
+		Element element = buildElement("<div>The<b>text</b></div>");
 		assertEquals("Thetext", HCardUtils.getElementValue(element));
 	}
 
