@@ -249,14 +249,18 @@ public class HCardReaderTest {
 	}
 
 	@Test
-	public void embedded() {
+	public void embedded_vcards() {
 		//@formatter:off
 		StringBuilder html = new StringBuilder();
 		html.append("<html>");
 			html.append("<body>");
 				html.append("<div class=\"vcard\">");
+					html.append("<div class=\"fn\">John Doe</div>");
 					html.append("<div class=\"agent vcard\">");
-						html.append("<span class=\"fn\">John Doe</span>");
+						html.append("<span class=\"fn\">Jane Doe</span>");
+						html.append("<div class=\"agent vcard\">");
+							html.append("<span class=\"fn\">Joseph Doe</span>");
+						html.append("</div>");
 					html.append("</div>");
 				html.append("</div>");
 			html.append("</body>");
@@ -266,9 +270,9 @@ public class HCardReaderTest {
 		HCardReader reader = new HCardReader(html.toString());
 
 		VCard vcard = reader.readNext();
-		assertNotNull(vcard.getAgent());
-		//TODO finish
-		//assertEquals("John Doe", vcard.getAgent().getVCard().getFormattedName().getValue());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+		assertEquals("Jane Doe", vcard.getAgent().getVCard().getFormattedName().getValue());
+		assertEquals("Joseph Doe", vcard.getAgent().getVCard().getAgent().getVCard().getFormattedName().getValue());
 
 		assertNull(reader.readNext());
 	}
