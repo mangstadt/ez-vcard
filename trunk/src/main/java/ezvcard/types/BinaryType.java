@@ -402,7 +402,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
 		String elementName = element.tagName();
 		String error = null;
-		if ("object".equalsIgnoreCase(elementName)) {
+		if ("object".equals(elementName)) {
 			T mediaType = null;
 			String type = element.attr("type");
 			if (type.length() > 0) {
