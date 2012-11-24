@@ -274,7 +274,7 @@ public class HCardReaderTest {
 	}
 
 	@Test
-	public void base_url() {
+	public void url_of_vcard_specified() {
 		//@formatter:off
 		StringBuilder html = new StringBuilder();
 		html.append("<html>");
@@ -508,6 +508,61 @@ public class HCardReaderTest {
 
 			assertFalse(it.hasNext());
 		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void anchor_in_url() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<span class=\"fn\">John Doe</span>");
+				html.append("</div>");
+				html.append("<div id=\"anchor\">");
+					html.append("<div class=\"vcard\">");
+						html.append("<span class=\"fn\">Jane Doe</span>");
+					html.append("</div>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html#anchor");
+
+		VCard vcard = reader.readNext();
+		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void non_existant_anchor() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<span class=\"fn\">John Doe</span>");
+				html.append("</div>");
+				html.append("<div id=\"anchor\">");
+					html.append("<div class=\"vcard\">");
+						html.append("<span class=\"fn\">Jane Doe</span>");
+					html.append("</div>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html#non-existant");
+
+		VCard vcard = reader.readNext();
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+
+		vcard = reader.readNext();
+		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
 		assertNull(reader.readNext());
 	}

@@ -3,6 +3,7 @@ package ezvcard.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +65,8 @@ import ezvcard.util.HCardUtils;
  * @author Michael Angstadt
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
+ * @see <a
+ * href="http://microformats.org/wiki/hcard-parsing">http://microformats.org/wiki/hcard-parsing</a>
  */
 public class HCardReader {
 	protected String pageUrl;
@@ -94,7 +97,7 @@ public class HCardReader {
 			}
 		}
 
-		init(document);
+		init(document, url.getRef());
 	}
 
 	/**
@@ -112,12 +115,31 @@ public class HCardReader {
 	 */
 	public HCardReader(String html, String pageUrl) {
 		this.pageUrl = pageUrl;
+
+		String anchor = null;
+		if (pageUrl != null) {
+			try {
+				URL url = new URL(pageUrl);
+				anchor = url.getRef();
+			} catch (MalformedURLException e) {
+				//ignore
+			}
+		}
+
 		Document document = (pageUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, pageUrl);
-		init(document);
+		init(document, anchor);
 	}
 
-	private void init(Document document) {
-		vcardElements = document.getElementsByClass("vcard");
+	private void init(Document document, String anchor) {
+		Element searchIn = null;
+		if (anchor != null) {
+			searchIn = document.getElementById(anchor);
+		}
+		if (searchIn == null) {
+			searchIn = document;
+		}
+
+		vcardElements = searchIn.getElementsByClass("vcard");
 		it = vcardElements.iterator();
 	}
 
