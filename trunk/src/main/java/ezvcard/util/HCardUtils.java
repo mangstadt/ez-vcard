@@ -70,21 +70,11 @@ public class HCardUtils {
 		Elements valueElements = element.getElementsByClass("value");
 		if (valueElements.isEmpty()) {
 			//get the text content of all child nodes except "type" elements
-			for (Node node : element.childNodes()) {
-				if (node instanceof Element) {
-					Element e = (Element) node;
-					if (!e.classNames().contains("type")) {
-						value.append(e.text());
-					}
-				} else if (node instanceof TextNode) {
-					TextNode t = (TextNode) node;
-					value.append(t.text());
-				}
-			}
+			visitForValue(element, value);
 		} else {
 			//append together all children whose CSS class is "value"
 			for (Element valueElement : valueElements) {
-				//ignore "value" elements that are descendents of other "value" elements
+				//ignore "value" elements that are descendants of other "value" elements
 				if (isChildOf(valueElement, valueElements)) {
 					continue;
 				}
@@ -103,6 +93,20 @@ public class HCardUtils {
 			}
 		}
 		return value.toString();
+	}
+
+	private static void visitForValue(Element element, StringBuilder value) {
+		for (Node node : element.childNodes()) {
+			if (node instanceof Element) {
+				Element e = (Element) node;
+				if (!e.classNames().contains("type")) {
+					visitForValue(e, value);
+				}
+			} else if (node instanceof TextNode) {
+				TextNode t = (TextNode) node;
+				value.append(t.text());
+			}
+		}
 	}
 
 	/**
