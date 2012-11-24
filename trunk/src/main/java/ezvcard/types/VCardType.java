@@ -12,6 +12,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -145,10 +146,11 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Marshals this type for inclusion in an xCard (XML document).
+	 * Marshals this type for inclusion in an xCard (XML document). All child
+	 * classes SHOULD override this, but are not required to.
 	 * @param parent the XML element that the type's value will be inserted
 	 * into. For example, this would be the "&lt;fn&gt;" element for the "FN"
-	 * type. All child classes SHOULD override this, but are not required to.
+	 * type.
 	 * @param version the version vCard that is being generated
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
@@ -305,7 +307,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws UnsupportedOperationException if the type class does not support
 	 * hCard parsing
 	 */
-	public void unmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+	public final void unmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
 		doUnmarshalHtml(element, warnings);
 	}
 
@@ -324,6 +326,40 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 */
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
 		throw new UnsupportedOperationException("This type class does not support the parsing of hCards.");
+	}
+
+	/**
+	 * Marshals this type for inclusion in an hCard (HTML document).
+	 * @param element the HTML element that the type's value will be inserted
+	 * into.
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
+	 * @throws SkipMeException if this type should NOT be marshalled into the
+	 * vCard
+	 * @throws EmbeddedVCardException if the value of this type is an embedded
+	 * vCard (i.e. the AGENT type)
+	 */
+	public final void marshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		element.addClass(typeName.toLowerCase());
+		doMarshalHtml(element, warnings);
+	}
+
+	/**
+	 * Marshals this type for inclusion in an hCard (HTML document).
+	 * @param element the HTML element that the type's value will be inserted
+	 * into.
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
+	 * @throws SkipMeException if this type should NOT be marshalled into the
+	 * vCard
+	 * @throws EmbeddedVCardException if the value of this type is an embedded
+	 * vCard (i.e. the AGENT type)
+	 */
+	protected void doMarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String value = marshalValue(VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
+		HCardUtils.appendTextAndEncodeNewlines(element, value);
 	}
 
 	/**
