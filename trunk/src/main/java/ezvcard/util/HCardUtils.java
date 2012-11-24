@@ -2,7 +2,6 @@ package ezvcard.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -145,11 +144,8 @@ public class HCardUtils {
 	 */
 	public static List<String> getTypes(Element element) {
 		List<String> types = new ArrayList<String>();
-		for (Element child : element.children()) {
-			Set<String> classes = child.classNames();
-			if (classes.contains("type")) {
-				types.add(getElementValue(child).toLowerCase());
-			}
+		for (Element child : element.getElementsByClass("type")) {
+			types.add(getElementValue(child).toLowerCase());
 		}
 		return types;
 	}
