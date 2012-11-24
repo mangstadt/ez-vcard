@@ -68,8 +68,8 @@ public class HCardUtils {
 		}
 
 		StringBuilder value = new StringBuilder();
-		Elements children = element.getElementsByClass("value");
-		if (children.isEmpty()) {
+		Elements valueElements = element.getElementsByClass("value");
+		if (valueElements.isEmpty()) {
 			//get the text content of all child nodes except "type" elements
 			for (Node node : element.childNodes()) {
 				if (node instanceof Element) {
@@ -84,21 +84,42 @@ public class HCardUtils {
 			}
 		} else {
 			//append together all children whose CSS class is "value"
-			for (Element child : children) {
+			for (Element valueElement : valueElements) {
+				//ignore "value" elements that are descendents of other "value" elements
+				if (isChildOf(valueElement, valueElements)) {
+					continue;
+				}
+
 				String text = null;
-				if ("abbr".equals(child.tagName())) {
-					String title = child.attr("title");
+				if ("abbr".equals(valueElement.tagName())) {
+					String title = valueElement.attr("title");
 					if (title.length() > 0) {
 						text = title;
 					}
 				}
 				if (text == null) {
-					text = child.text();
+					text = valueElement.text();
 				}
 				value.append(text);
 			}
 		}
 		return value.toString();
+	}
+
+	/**
+	 * Determines whether the given element is a child of one of the given
+	 * parent elements.
+	 * @param child the child HTML element
+	 * @param possibleParents the possible parent HTML elements
+	 * @return true if it is a child, false if not
+	 */
+	public static boolean isChildOf(Element child, Elements possibleParents) {
+		for (Element p : child.parents()) {
+			if (possibleParents.contains(p)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

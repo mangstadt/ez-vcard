@@ -94,6 +94,19 @@ public class HCardUtilsTest {
 	}
 	
 	@Test
+	public void getElementValue_nested_value_tags() {
+		//@formatter:off
+		String html = "";
+		html += "<div>";
+			html += "<div class=\"value\">the value<span class=\"value\">nested</span></div>";
+		html += "</div>";
+		//@formatter:on
+
+		Element element = buildElement(html);
+		assertEquals("the valuenested", HCardUtils.getElementValue(element));
+	}
+
+	@Test
 	public void getElementValue_abbr_value() {
 		Element element = buildElement("<div>This is <abbr class=\"value\" title=\"1234\">the text</abbr>.</div>");
 		assertEquals("1234", HCardUtils.getElementValue(element));
