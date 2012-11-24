@@ -15,7 +15,6 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardUtils;
-import ezvcard.util.ListMultimap;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -346,9 +345,7 @@ public class GeoType extends VCardType {
 
 	@Override
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		ListMultimap<String, String> map = HCardUtils.getElementValuesAndIndexByCssClass(element.children());
-
-		List<String> values = map.get("latitude");
+		List<String> values = HCardUtils.getElementValuesByCssClass(element, "latitude");
 		if (values.isEmpty()) {
 			warnings.add("Latitude missing from " + NAME + " type.");
 		} else {
@@ -359,7 +356,7 @@ public class GeoType extends VCardType {
 			}
 		}
 
-		values = map.get("longitude");
+		values = HCardUtils.getElementValuesByCssClass(element, "longitude");
 		if (values.isEmpty()) {
 			warnings.add("Longitude missing from " + NAME + " type.");
 		} else {

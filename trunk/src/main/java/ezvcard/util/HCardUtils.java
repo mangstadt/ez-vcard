@@ -59,8 +59,8 @@ public class HCardUtils {
 	 */
 	public static String getElementValue(Element element) {
 		//value of "title" attribute should be returned if it's a "<abbr>" tag
-		//example: <abbr class="latitude" title="48.816667">N 48¡ 81.6667</abbr>
-		if ("abbr".equalsIgnoreCase(element.tagName())) {
+		//example: <abbr class="latitude" title="48.816667">N 48ï¿½ 81.6667</abbr>
+		if ("abbr".equals(element.tagName())) {
 			String title = element.attr("title");
 			if (title.length() > 0) {
 				return title;
@@ -85,33 +85,36 @@ public class HCardUtils {
 		} else {
 			//append together all children whose CSS class is "value"
 			for (Element child : children) {
-				value.append(child.text());
+				String text = null;
+				if ("abbr".equals(child.tagName())) {
+					String title = child.attr("title");
+					if (title.length() > 0) {
+						text = title;
+					}
+				}
+				if (text == null) {
+					text = child.text();
+				}
+				value.append(text);
 			}
 		}
 		return value.toString();
-
 	}
 
 	/**
-	 * Gets the hCard values of all the given elements and indexes them by CSS
-	 * class.
-	 * @param elements the HTML elements to get the values of
-	 * @return the values of all the elements, indexed by CSS class
+	 * Searches for all descendant elements that have a given CSS class name,
+	 * and gets their hCard values.
+	 * @param element the parent HTML element
+	 * @param className the CSS class name
+	 * @return the hCard values of all elements that have the given class name
 	 */
-	public static ListMultimap<String, String> getElementValuesAndIndexByCssClass(Elements elements) {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
-		for (Element element : elements) {
-			Set<String> classNames = element.classNames();
-			if (classNames.isEmpty()) {
-				continue;
-			}
-
-			String value = getElementValue(element);
-			for (String className : classNames) {
-				map.put(className, value);
-			}
+	public static List<String> getElementValuesByCssClass(Element element, String className) {
+		Elements elements = element.getElementsByClass(className);
+		List<String> values = new ArrayList<String>(elements.size());
+		for (Element e : elements) {
+			values.add(getElementValue(e));
 		}
-		return map;
+		return values;
 	}
 
 	/**

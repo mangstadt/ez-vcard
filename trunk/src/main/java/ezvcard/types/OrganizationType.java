@@ -5,7 +5,6 @@ import java.util.Set;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.util.HCardUtils;
-import ezvcard.util.ListMultimap;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -217,14 +216,12 @@ public class OrganizationType extends TextListType {
 
 	@Override
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		ListMultimap<String, String> map = HCardUtils.getElementValuesAndIndexByCssClass(element.children());
-
-		List<String> values = map.get("organization-name");
+		List<String> values = HCardUtils.getElementValuesByCssClass(element, "organization-name");
 		if (!values.isEmpty()) {
 			addValue(values.get(0));
 		}
 
-		values = map.get("organization-unit");
+		values = HCardUtils.getElementValuesByCssClass(element, "organization-unit");
 		if (!values.isEmpty()) {
 			addValue(values.get(0));
 		}
