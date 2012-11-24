@@ -75,33 +75,71 @@ public class HCardUtilsTest {
 	}
 
 	@Test
+	public void getElementValue_multiple_value_tags_not_direct_child() {
+		//@formatter:off
+		String html = "";
+		html += "<div>";
+			html += "<div>Some text</div>";
+			html += "<div>";
+				html += "<span class=\"value\">This is</span>";
+				html += "<div>";
+					html += "<div class=\"value\">the value</div>";
+				html += "</div>";
+				html += "<div class=\"value\">of the element.</div>";
+			html += "</div>";
+		html += "</div>";
+		
+		Element element = buildElement(html);
+		assertEquals("This isthe valueof the element.", HCardUtils.getElementValue(element));
+	}
+	
+	@Test
+	public void getElementValue_abbr_value() {
+		Element element = buildElement("<div>This is <abbr class=\"value\" title=\"1234\">the text</abbr>.</div>");
+		assertEquals("1234", HCardUtils.getElementValue(element));
+	}
+
+	@Test
 	public void getElementValue_abbr_tag_with_title() {
-		Element element = buildElement("<abbr class=\"latitude\" title=\"48.816667\">N 48¡ 81.6667</abbr>");
+		Element element = buildElement("<abbr class=\"latitude\" title=\"48.816667\">N 48ï¿½ 81.6667</abbr>");
 		assertEquals("48.816667", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_abbr_tag_without_title() {
-		Element element = buildElement("<abbr class=\"latitude\">N 48¡ 81.6667</abbr>");
-		assertEquals("N 48¡ 81.6667", HCardUtils.getElementValue(element));
+		Element element = buildElement("<abbr class=\"latitude\">N 48ï¿½ 81.6667</abbr>");
+		assertEquals("N 48ï¿½ 81.6667", HCardUtils.getElementValue(element));
 	}
 
 	@Test
-	public void getElementValuesAndIndexByCssClass() {
+	public void getElementValuesByCssClass() {
 		//@formatter:off
 		StringBuilder html = new StringBuilder();
 		html.append("<div class=\"n\">");
-			html.append("<span class=\"family-name\"><b>Doe</b></span>");
-			html.append("<span class=\"additional-name\">Smith</span>");
+			html.append("<div>");
+				html.append("<span class=\"family-name\"><b>Doe</b></span>");
+			html.append("</div>");
+			html.append("<div>");
+				html.append("<div>");
+					html.append("<span class=\"additional-name\">Smith</span>");
+				html.append("</div>");
+			html.append("</div>");
 			html.append("<span class=\"additional-name\">(<span class=\"value\">Barney</span>)</span>");
 		html.append("</div>");
 		//@formatter:on
 
 		Element element = buildElement(html.toString());
-		ListMultimap<String, String> map = HCardUtils.getElementValuesAndIndexByCssClass(element.children());
-		assertEquals(2, map.keySet().size());
-		assertEquals(Arrays.asList("Doe"), map.get("family-name"));
-		assertEquals(Arrays.asList("Smith", "Barney"), map.get("additional-name"));
+
+		List<String> actual = HCardUtils.getElementValuesByCssClass(element, "family-name");
+		List<String> expected = Arrays.asList("Doe");
+		assertEquals(expected, actual);
+
+		actual = HCardUtils.getElementValuesByCssClass(element, "additional-name");
+		expected = Arrays.asList("Smith", "Barney");
+		assertEquals(expected, actual);
+
+		actual = HCardUtils.getElementValuesByCssClass(element, "non-existant-class");
+		assertTrue(actual.isEmpty());
 	}
 
 	@Test
