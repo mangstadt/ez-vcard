@@ -27,6 +27,7 @@ import ezvcard.types.SourceType;
 import ezvcard.types.TypeList;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
+import ezvcard.util.HCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -139,12 +140,10 @@ public class HCardReader {
 		Element vcardElement = null;
 		while (it.hasNext() && vcardElement == null) {
 			vcardElement = it.next();
-			for (Element parent : vcardElement.parents()) {
-				if (vcardElements.contains(parent)) {
-					//if this element is a child of another "vcard" element, then ignore it because it's an embedded vcard
-					vcardElement = null;
-					break;
-				}
+
+			//if this element is a child of another "vcard" element, then ignore it because it's an embedded vcard
+			if (HCardUtils.isChildOf(vcardElement, vcardElements)) {
+				vcardElement = null;
 			}
 		}
 		if (vcardElement == null) {
