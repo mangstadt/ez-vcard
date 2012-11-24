@@ -554,7 +554,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		values = HCardUtils.getElementValuesByCssClass(element, "country-name");
 		country = values.isEmpty() ? null : values.get(0);
 
-		values = HCardUtils.getElementValuesByCssClass(element, "type");
+		values = HCardUtils.getTypes(element);
 		for (String v : values) {
 			subTypes.addType(v);
 		}
