@@ -75,7 +75,7 @@ public class HCardUtilsTest {
 	@Test
 	public void getElementValue_ignore_type_text() {
 		Element element = buildElement("<div><span class=\"type\">Work</span> is boring.</div>");
-		assertEquals(" is boring.", HCardUtils.getElementValue(element));
+		assertEquals("is boring.", HCardUtils.getElementValue(element));
 
 		element = buildElement("<div><b>All <span class=\"type\">work</span> is boring.</b></div>");
 		assertEquals("All  is boring.", HCardUtils.getElementValue(element));

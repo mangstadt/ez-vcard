@@ -641,12 +641,12 @@ public class HCardReaderTest {
 			TelephoneType tel = it.next();
 			assertEquals(1, tel.getTypes().size());
 			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.WORK));
-			assertEquals(" +1-650-289-4040", tel.getValue());
+			assertEquals("+1-650-289-4040", tel.getValue());
 
 			tel = it.next();
 			assertEquals(1, tel.getTypes().size());
 			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.FAX));
-			assertEquals(" +1-650-289-4041", tel.getValue());
+			assertEquals("+1-650-289-4041", tel.getValue());
 
 			assertFalse(it.hasNext());
 		}
