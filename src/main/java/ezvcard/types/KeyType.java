@@ -1,16 +1,20 @@
 package ezvcard.types;
 
 import java.util.List;
+import java.util.regex.Matcher;
 
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardUtils;
 
@@ -253,6 +257,28 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 				KeyTypeParameter contentType = (mediaType != null) ? buildMediaTypeObj(mediaType) : null;
 				setText(value, contentType);
 			}
+		}
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String elementName = element.tagName();
+		if ("a".equals(elementName)) {
+			String href = HCardUtils.getAbsUrl(element, "href");
+			if (href.length() > 0) {
+				Matcher m = DATA_URI.matcher(href);
+				if (m.find()) {
+					KeyTypeParameter mediaType = buildMediaTypeObj(m.group(1));
+					setData(Base64.decodeBase64(m.group(2)), mediaType);
+				} else {
+					//TODO create buildTypeObjFromExtension() method
+					setUrl(href, null);
+				}
+			} else {
+				throw new SkipMeException("<a> tag does not have a \"href\" attribute.");
+			}
+		} else {
+			super.doUnmarshalHtml(element, warnings);
 		}
 	}
 
