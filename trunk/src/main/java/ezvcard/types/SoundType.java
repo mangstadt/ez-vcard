@@ -1,7 +1,14 @@
 package ezvcard.types;
 
+import java.util.List;
+import java.util.regex.Matcher;
+
+import org.apache.commons.codec.binary.Base64;
+
 import ezvcard.VCardSubTypes;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.SoundTypeParameter;
+import ezvcard.util.HCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -174,5 +181,39 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 			p = new SoundTypeParameter(type, mediaType, null);
 		}
 		return p;
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		String elementName = element.tagName();
+		if ("audio".equals(elementName)) {
+			element = element.getElementsByTag("source").first();
+			if (element == null) {
+				throw new SkipMeException("No <source> element found beneath <audio> element.");
+			}
+		}
+		if ("source".equals(elementName)) {
+			SoundTypeParameter mediaType = null;
+			String type = element.attr("type");
+			if (type.length() > 0) {
+				mediaType = buildMediaTypeObj(type);
+			}
+
+			String src = HCardUtils.getAbsUrl(element, "src");
+			if (src.length() > 0) {
+				Matcher m = DATA_URI.matcher(src);
+				if (m.find()) {
+					mediaType = buildMediaTypeObj(m.group(1));
+					setData(Base64.decodeBase64(m.group(2)), mediaType);
+				} else {
+					//TODO create buildTypeObjFromExtension() method
+					setUrl(src, null);
+				}
+			} else {
+				throw new SkipMeException("<source> tag does not have a \"src\" attribute.");
+			}
+		} else {
+			super.doUnmarshalHtml(element, warnings);
+		}
 	}
 }
