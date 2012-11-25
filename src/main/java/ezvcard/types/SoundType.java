@@ -1,13 +1,11 @@
 package ezvcard.types;
 
 import java.util.List;
-import java.util.regex.Matcher;
-
-import org.apache.commons.codec.binary.Base64;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.SoundTypeParameter;
+import ezvcard.util.DataUri;
 import ezvcard.util.HCardUtils;
 
 /*
@@ -201,11 +199,11 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 
 			String src = HCardUtils.getAbsUrl(element, "src");
 			if (src.length() > 0) {
-				Matcher m = DATA_URI.matcher(src);
-				if (m.find()) {
-					mediaType = buildMediaTypeObj(m.group(1));
-					setData(Base64.decodeBase64(m.group(2)), mediaType);
-				} else {
+				try {
+					DataUri uri = new DataUri(src);
+					mediaType = buildMediaTypeObj(uri.getContentType());
+					setData(uri.getData(), mediaType);
+				} catch (IllegalArgumentException e) {
 					//TODO create buildTypeObjFromExtension() method
 					setUrl(src, null);
 				}
