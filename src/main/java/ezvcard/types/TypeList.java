@@ -180,6 +180,19 @@ public class TypeList {
 	}
 
 	/**
+	 * Gets the class that represents a vCard type using its hCard type name.
+	 * @param typeName the hCard name of the vCard type (e.g. "adr")
+	 * @return the type class or null if not found
+	 */
+	public static Class<? extends VCardType> getTypeClassByHCardTypeName(String typeName) {
+		//TODO refactor
+		if ("category".equalsIgnoreCase(typeName)) {
+			return CategoriesType.class;
+		}
+		return getTypeClass(typeName);
+	}
+
+	/**
 	 * Gets the method of the {@link VCard} class that's used to add a vCard
 	 * type object to the {@link VCard}.
 	 * @param typeClass the type class

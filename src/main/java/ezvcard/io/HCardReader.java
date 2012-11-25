@@ -20,9 +20,11 @@ import org.jsoup.select.Elements;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.types.AddressType;
+import ezvcard.types.CategoriesType;
 import ezvcard.types.EmailType;
 import ezvcard.types.ImppType;
 import ezvcard.types.LabelType;
+import ezvcard.types.NicknameType;
 import ezvcard.types.RawType;
 import ezvcard.types.SourceType;
 import ezvcard.types.TelephoneType;
@@ -65,8 +67,6 @@ import ezvcard.util.HCardUtils;
  * @author Michael Angstadt
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
- * @see <a
- * href="http://microformats.org/wiki/hcard-parsing">http://microformats.org/wiki/hcard-parsing</a>
  */
 public class HCardReader {
 	protected String pageUrl;
@@ -78,6 +78,8 @@ public class HCardReader {
 	protected List<String> warningsBuffer = new ArrayList<String>();
 	protected VCard curVCard;
 	protected Elements embeddedVCards = new Elements();
+	protected NicknameType nickname;
+	protected CategoriesType categories;
 
 	/**
 	 * Reads vCards from a webpage.
@@ -203,8 +205,8 @@ public class HCardReader {
 		warnings.clear();
 		warningsBuffer.clear();
 		labels.clear();
-
-		//TODO store all CATEGORIES and NICKNAMEs into the same object
+		nickname = null;
+		categories = null;
 
 		curVCard = new VCard();
 		curVCard.setVersion(VCardVersion.V3_0);
@@ -263,6 +265,24 @@ public class HCardReader {
 					if (type instanceof LabelType) {
 						//LABELs must be treated specially so they can be matched up with their ADRs
 						labels.add((LabelType) type);
+					} else if (type instanceof NicknameType) {
+						//add all NICKNAMEs to the same type object
+						NicknameType nn = (NicknameType) type;
+						if (nickname == null) {
+							nickname = nn;
+							addToVCard(nickname, curVCard);
+						} else {
+							nickname.getValues().addAll(nn.getValues());
+						}
+					} else if (type instanceof CategoriesType) {
+						//add all CATEGORIES to the same type object
+						CategoriesType c = (CategoriesType) type;
+						if (categories == null) {
+							categories = c;
+							addToVCard(categories, curVCard);
+						} else {
+							categories.getValues().addAll(c.getValues());
+						}
 					} else {
 						addToVCard(type, curVCard);
 					}
@@ -308,7 +328,7 @@ public class HCardReader {
 	private VCardType createTypeObject(String typeName) {
 		typeName = typeName.toLowerCase();
 		VCardType t = null;
-		Class<? extends VCardType> clazz = TypeList.getTypeClass(typeName);
+		Class<? extends VCardType> clazz = TypeList.getTypeClassByHCardTypeName(typeName);
 		if (clazz != null) {
 			try {
 				//create a new instance of the class

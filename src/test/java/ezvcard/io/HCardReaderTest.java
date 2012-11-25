@@ -574,6 +574,58 @@ public class HCardReaderTest {
 	}
 
 	@Test
+	public void add_all_nicknames_to_the_same_object() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<span class=\"fn\">John Doe</span>");
+					html.append("<span class=\"nickname\">Johnny</span>");
+					html.append("<span class=\"nickname\">Johnny 5</span>");
+					html.append("<span class=\"nickname\">Johnster</span>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+
+		VCard vcard = reader.readNext();
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+		assertEquals(1, vcard.getNicknames().size());
+		assertEquals(Arrays.asList("Johnny", "Johnny 5", "Johnster"), vcard.getNickname().getValues());
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void add_all_categories_to_the_same_object() {
+		//@formatter:off
+		StringBuilder html = new StringBuilder();
+		html.append("<html>");
+			html.append("<body>");
+				html.append("<div class=\"vcard\">");
+					html.append("<span class=\"fn\">John Doe</span>");
+					html.append("<span class=\"category\">programmer</span>");
+					html.append("<span class=\"category\">swimmer</span>");
+					html.append("<span class=\"category\" rel=\"singer\">I also sing</span>");
+				html.append("</div>");
+			html.append("</body>");
+		html.append("</html>");
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+
+		VCard vcard = reader.readNext();
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+		assertEquals(1, vcard.getCategoriesList().size());
+		assertEquals(Arrays.asList("programmer", "swimmer", "singer"), vcard.getCategories().getValues());
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
 	public void complete_vcard() {
 		//@formatter:off
 		StringBuilder html = new StringBuilder();
