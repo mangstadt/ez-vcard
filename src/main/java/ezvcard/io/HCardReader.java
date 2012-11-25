@@ -204,6 +204,8 @@ public class HCardReader {
 		warningsBuffer.clear();
 		labels.clear();
 
+		//TODO store all CATEGORIES and NICKNAMEs into the same object
+
 		curVCard = new VCard();
 		curVCard.setVersion(VCardVersion.V3_0);
 		if (pageUrl != null) {

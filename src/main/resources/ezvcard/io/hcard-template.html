@@ -1,0 +1,470 @@
+<html>
+	<head>
+		<#if vcards?size == 1 && vcards?first.formattedName?? && vcards?first.formattedName.value??>
+			<title>hCard - ${vcards?first.formattedName.value}</title>
+		<#else>
+			<title>hCard - ${vcards?size} vCards</title>
+		</#if>
+		<link rel="profile" href="http://microformats.org/profile/hcard" />
+	</head>
+	<body>
+		<#list vcards as v>
+			<div class="vcard">
+				<#if v.formattedName?? && v.formattedName.value??>
+					<h1 class="fn">${v.formattedName.value}</h1>
+				<#else>
+					<h1>VCard #${v_index + 1}</h1>
+				</#if>
+				
+				<#if v.sortString?? && v.sortString.value??>
+					<#assign sortString=v.sortString.value>
+				<#elseif v.structuredName?? && v.structuredName.sortAs??>
+					<#assign sortString=v.structuredName.sortAs>
+				</#if>
+				<#if sortString??>
+					<abbr class="sort-string" title="${sortString}"></abbr>
+				</#if>
+				
+				<#if v.uid?? && v.uid.value??>
+					<abbr class="uid" title="${v.uid.value}"></abbr>
+				</#if>
+				
+				<#if v.revision?? && v.revision.timestamp??>
+					<i>
+						vCard last updated <time class="rev" datetime="${v.revision.timestamp?string("yyyy-MM-dd'T'HH:mm:ssZ")}">${v.revision.timestamp?string("MMMM d, yyyy 'at' h:mm aa z")}</time>
+					</i>
+					<br /><br />
+				</#if>
+				
+				<#if v.classification?? && v.classification.value??>
+					<strong>Classification: </strong>
+					<span class="class">${v.classification.value}</span>
+					<br />
+				</#if>
+				
+				<#if v.nickname?? && v.nickname.values?has_content>
+					<strong>Nicknames: </strong>
+					<#list v.nickname.values as nickname>
+						<span class="nickname">${nickname}</span><#if nickname_has_next>, </#if>
+					</#list>
+					<br />
+				</#if>
+				
+				<#if v.categories?? && v.categories.values?has_content>
+					<strong>Categories: </strong>
+					<#list v.categories.values as category>
+						<span class="category">${category}</span><#if category_has_next>, </#if>
+					</#list>
+					<br />
+				</#if>
+				
+				<#if v.timezone?? && v.timezone.hourOffset??>
+					<strong>Timezone: </strong>
+					<span class="tz">
+						${v.timezone.hourOffset?string("00")}<#if v.timezone.minuteOffset??>${v.timezone.minuteOffset?string("00")}<#else>00</#if>
+					</span>
+					<br />
+				</#if>
+				
+				<#if v.geo?? && v.geo.latitude?? && v.geo.longitude??>
+					<strong>GPS coordinates: </strong>
+					<span class="geo">
+						<span class="latitude">${v.geo.latitude?string("0.######")}</span>
+						<span class="longitude">${v.geo.longitude?string("0.######")}</span>
+					</span>
+					<br />
+				</#if>
+
+				<#if v.mailer?? && v.mailer.value??>
+					<strong>Mailer: </strong>
+					<span class="mailer">${v.mailer.value}</span>
+					<br />
+				</#if>
+				
+				<#if v.birthday?? && v.birthday.date??>
+					<strong>Birthday: </strong>
+					<time class="bday" datetime="${v.birthday.date?string("yyyy-MM-dd")}">${v.birthday.date?string("MMMM d, yyyy")}</time><br />
+				</#if>
+				
+				<#if v.organization?? && v.organization.values?has_content>
+					<strong>Organization: </strong>
+					<span class="org">
+						<#list v.organization.values as org>
+							<#if org_index == 0>
+								<span class="organization-name">${org}</span>
+							<#elseif org_index == 1>
+								<span class="organization-unit">${org}</span>
+							<#else>
+								${org}
+							</#if>
+							<#if org_has_next>, </#if>
+						</#list>
+					</span>
+					<br />
+				</#if>
+				
+				<#if v.roles?has_content>
+					<strong>Roles: </strong>
+					<#list v.roles as role>
+						<span class="role">${role.value}</span><#if role_has_next>, </#if>
+					</#list>
+					<br />
+				</#if>
+				
+				<#if v.titles?has_content>
+					<strong>Titles: </strong>
+					<#list v.titles as title>
+						<span class="title">${title.value}</span><#if title_has_next>, </#if>
+					</#list>
+					<br />
+				</#if>
+				
+				<#if v.agent?? && v.agent.url??>
+					<strong>Agent: <a class="agent" href="${v.agent.url}">${v.agent.url}</a></strong>
+				</#if>
+				
+				<#if v.structuredName??>
+					<div class="n">
+						<h2>Structured Name</h2>
+						<table>
+							<#if v.structuredName.family??>
+								<tr>
+									<td>Family:</td>
+									<td class="family-name">${v.structuredName.family}</td>
+								</tr>
+							</#if>
+							
+							<#if v.structuredName.given??>
+								<tr>
+									<td>Given:</td>
+									<td class="given-name">${v.structuredName.given}</td>
+								</tr>
+							</#if>
+							
+							<#if v.structuredName.additional?has_content>
+								<tr>
+									<td valign="top">Additional:</td>
+									<td>
+										<#list v.structuredName.additional as n>
+											<span class="additional-name">${n}</span><br />
+										</#list>
+									</td>
+								</tr>
+							</#if>
+							
+							<#if v.structuredName.prefixes?has_content>
+								<tr>
+									<td valign="top">Honorific prefixes:</td>
+									<td>
+										<#list v.structuredName.prefixes as n>
+											<span class="honorific-prefix">${n}</span><br />
+										</#list>
+									</td>
+								</tr>
+							</#if>
+							
+							<#if v.structuredName.suffixes?has_content>
+								<tr>
+									<td valign="top">Honorific suffixes:</td>
+									<td>
+										<#list v.structuredName.suffixes as n>
+											<span class="honorific-suffix">${n}</span><br />
+										</#list>
+									</td>
+								</tr>
+							</#if>
+						</table>
+					</div>
+				</#if>
+				
+				<#if v.addresses?has_content>
+					<h2>Addresses</h2>
+					<#list v.addresses as adr>
+						<div class="adr">
+							<#if adr.label??>
+								<span class="label"><span class="value" style="display:none">${adr.label?html?replace("\n", "<br />")}</span>
+							</#if>
+							
+							<strong>
+							<#if adr.types?has_content>
+								<#list adr.types as t>
+									<span class="type">${t.value?capitalize}</span><#if t_has_next>, </#if>
+								</#list>
+							<#else>
+								Address ${adr_index + 1}
+							</#if>
+							</strong><br />
+							
+							<#if adr.label??>
+								</span>
+							</#if>
+							<div style="margin-left:10px;">
+								<#if adr.poBox??>
+									P.O. Box <span class="post-office-box">${adr.poBox}</span><br />
+								</#if>
+								<#if adr.streetAddress??>
+									<span class="street-address">${adr.streetAddress?html?replace("\n", "<br />")}</span><br />
+								</#if>
+								<#if adr.extendedAddress??>
+									<span class="extended-address">${adr.extendedAddress?html?replace("\n", "<br />")}</span><br />
+								</#if>
+								<#if adr.locality??>
+									<span class="locality">${adr.locality}</span><#if adr.region??>, </#if>
+								</#if>
+								<#if adr.region??>
+									<span class="region">${adr.region}</span> 
+								</#if>
+								<#if adr.postalCode??>
+									<span class="postal-code">${adr.postalCode}</span>
+								</#if>
+								<#if adr.country??>
+									<br /><span class="country-name">${adr.country}</span>
+								</#if>
+							</div>
+							<br />
+						</div>
+					</#list>
+				</#if>
+				
+				<#if v.emails?has_content>
+					<h2>Emails</h2>
+					<ul>
+						<#list v.emails as email>
+							<li class="email">
+								<#if email.types?has_content>
+									<strong>
+										<#list email.types as t>
+											<span class="type">${t.value?capitalize}</span><#if t_has_next>, </#if>
+										</#list>
+									</strong>: 
+								</#if>
+								<a class="value" href="mailto:${email.value}">${email.value}</a>
+							</li>
+						</#list>
+					</ul>
+				</#if>
+				
+				<#if v.telephoneNumbers?has_content>
+					<h2>Phone numbers</h2>
+					<ul>
+						<#list v.telephoneNumbers as tel>
+							<li class="tel">
+								<#if tel.types?has_content>
+									<strong>
+										<#list tel.types as t>
+											<span class="type">${t.value?capitalize}</span><#if t_has_next>, </#if>
+										</#list>
+									</strong>: 
+								</#if>
+								<span class="value">${tel.value}</span>
+							</li>
+						</#list>
+					</ul>
+				</#if>
+				
+				<#if v.urls?has_content>
+					<h2>URLs</h2>
+					<ul>
+						<#list v.urls as url>
+							<li><a class="url" href="${url.value}">${url.value}</a></li>
+						</#list>
+					</ul>
+				</#if>
+				
+				<#if v.impps?has_content>
+					<h2>IMPPs</h2>
+					<ul>
+						<#list v.impps as impp>
+							<li><a class="url" href="${impp.uri}">${impp.uri}</a></li>
+						</#list>
+					</ul>
+				</#if>
+				
+				<#if v.notes?has_content>
+					<h2>Notes</h2>
+					<#list v.notes as note>
+					<strong>Note ${note_index + 1}</strong>
+						<div class="note" style="font-family:monospace">
+							${note.value?html?replace("\n", "<br />")}
+						</div>
+					</#list>
+				</#if>
+				
+				<#if v.photos?has_content>
+					<h2>Photos</h2>
+					<#list v.photos as photo>
+						<#if photo.url??>
+							<img class="photo" src="${photo.url}" /><br />
+						<#elseif photo.data??>
+							<img class="photo" src="${dataUri(photo.contentType.mediaType, photo.data, base64)}" /><br />
+						</#if>
+					</#list>
+				</#if>
+
+				<#if v.logos?has_content>
+					<h2>Logos</h2>
+					<#list v.logos as logo>
+						<#if logo.url??>
+							<img class="logo" src="${logo.url}" /><br />
+						<#elseif logo.data??>
+							<img class="logo" src="${dataUri(logo.contentType.mediaType, logo.data, base64)}" /><br />
+						</#if>
+					</#list>
+				</#if>
+
+				<#if v.sounds?has_content>
+					<h2>Sounds</h2>
+					<#list v.sounds as sound>
+						<#if sound.url??>
+							<audio controls="controls">
+								<source class="sound" src="${sound.url}" <#if sound.contentType?? && sound.contentType.mediaType??>type="${sound.contentType.mediaType}"</#if> />
+							</audio>
+							<br />
+						<#elseif sound.data??>
+							<audio controls="controls">
+								<source class="sound" src="${dataUri(sound.contentType.mediaType, sound.data, base64)}" <#if sound.contentType?? && sound.contentType.mediaType??>type="${sound.contentType.mediaType}"</#if> />
+							</audio>
+							<br />	
+						</#if>
+					</#list>
+				</#if>
+				
+				<#if v.keys?has_content>
+					<h2>Keys</h2>
+					<ul>
+						<#list v.keys as key>
+							<#if key.url??>
+								<li>
+									<a class="key" href="${key.url}">Key ${key_index + 1}</a>
+								</li>
+							<#elseif key.data??>
+								<li>
+									<a class="key" href="${dataUri(key.contentType.mediaType, key.data, base64)}">Key ${key_index + 1}</a>
+								</li>
+							</#if>
+						</#list>
+					</ul>
+				</#if>
+				
+				<#if v.agent?? && v.agent.VCard??>
+					<#assign va=v.agent.VCard>
+					<h2>Agent</h2>
+					<div class="agent vcard" style="margin-left:10px">
+						<#if va.formattedName?? && va.formattedName.value??>
+							<strong>Name: </strong><span class="fn">${va.formattedName.value}</span><br />
+						</#if>
+						
+						<#if va.emails?has_content>
+							<strong>Email addresses</strong>
+							<ul>
+								<#list va.emails as email>
+									<li><a class="email" href="mailto:${email.value}">${email.value}</a></li>
+								</#list>
+							</ul>
+						</#if>
+						
+						<#if va.telephoneNumbers?has_content>
+							<strong>Phone numbers</strong>
+							<ul>
+								<#list va.telephoneNumbers as tel>
+									<li class="tel">
+										<#if tel.types?has_content>
+											<strong>
+												<#list tel.types as t>
+													<span class="type">${t.value?capitalize}</span><#if t_has_next>, </#if>
+												</#list>
+											</strong>: 
+										</#if>
+										<span class="value">${tel.value}</span>
+									</li>
+								</#list>
+							</ul>
+						</#if>
+						
+						<#if va.addresses?has_content>
+							<strong>Addresses</strong>
+							<#list va.addresses as adr>
+								<div class="adr" style="border:1px solid #000">
+									<#if adr.label??>
+										<span class="label"><span class="value" style="display:none">${adr.label?html?replace("\n", "<br />")}</span>
+									</#if>
+									
+									<strong>
+									<#if adr.types?has_content>
+										<#list adr.types as t>
+											<span class="type">${t.value?capitalize}</span><#if t_has_next>, </#if>
+										</#list>
+									<#else>
+										Address ${adr_index + 1}
+									</#if>
+									</strong><br /><br />
+							
+									<#if adr.label??>
+										</span>
+									</#if>
+									<#if adr.poBox??>
+										P.O. Box <span class="post-office-box">${adr.poBox}</span><br />
+									</#if>
+									<#if adr.streetAddress??>
+										<span class="street-address">${adr.streetAddress?html?replace("\n", "<br />")}</span><br />
+									</#if>
+									<#if adr.extendedAddress??>
+										<span class="extended-address">${adr.extendedAddress?html?replace("\n", "<br />")}</span><br />
+									</#if>
+									<#if adr.locality??>
+										<span class="locality">${adr.locality}</span><#if adr.region??>, </#if>
+									</#if>
+									<#if adr.region??>
+										<span class="region">${adr.region}</span> 
+									</#if>
+									<#if adr.postalCode??>
+										<span class="postal-code">${adr.postalCode}</span>
+									</#if>
+									<#if adr.country??>
+										<br /><span class="country-name">${adr.country}</span>
+									</#if>
+								</div>
+							</#list>
+						</#if>
+						
+						
+						<#if va.urls?has_content>
+							<strong>URLs</strong>
+							<ul>
+								<#list va.urls as url>
+									<li><a class="url" href="${url.value}">${url.value}</a></li>
+								</#list>
+							</ul>
+						</#if>
+						
+						<#if va.photos?has_content>
+							<strong>Photos</strong><br />
+							<#list va.photos as photo>
+								<#if photo.url??>
+									<img class="photo" src="${photo.url}" /><br />
+								<#elseif photo.data??>
+									<img class="photo" src="${dataUri(photo.contentType.mediaType, photo.data, base64)}" /><br />
+								</#if>
+							</#list>
+						</#if>
+		
+						<#if va.logos?has_content>
+							<strong>Logos</strong><br />
+							<#list va.logos as logo>
+								<#if logo.url??>
+									<img class="logo" src="${logo.url}" /><br />
+								<#elseif logo.data??>
+									<img class="logo" src="${dataUri(logo.contentType.mediaType, logo.data, base64)}" /><br />
+								</#if>
+							</#list>
+						</#if>
+					</div>
+				</#if>
+			</div>
+		</#list>
+	</body>
+</html>
+
+<#function dataUri mediaType data base64>
+	<#return "data:" + mediaType + ";base64," + base64.encode(data)>
+</#function>
