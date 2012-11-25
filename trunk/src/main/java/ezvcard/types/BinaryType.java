@@ -2,8 +2,6 @@ package ezvcard.types;
 
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
@@ -16,6 +14,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.DataUri;
 import ezvcard.util.HCardUtils;
 import ezvcard.util.XCardUtils;
 
@@ -55,11 +54,6 @@ import ezvcard.util.XCardUtils;
  * @param <T> the class used for representing the content type of the resource
  */
 public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType {
-	/**
-	 * Regex for parsing a 4.0 data URI.
-	 */
-	protected static final Pattern DATA_URI = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
-
 	/**
 	 * The decoded data.
 	 */
@@ -323,7 +317,8 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 			String base64 = new String(Base64.encodeBase64(data));
 			if (version == VCardVersion.V4_0) {
 				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
-				sb.append("data:" + mediaType + ";base64," + base64);
+				DataUri uri = new DataUri(mediaType, data);
+				sb.append(uri.toString());
 			} else {
 				sb.append(base64);
 			}
@@ -335,14 +330,13 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	@Override
 	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		//check for a 4.0 data URI
-		Matcher m = DATA_URI.matcher(value);
-		if (m.find()) {
-			String mediaType = m.group(1);
-			String base64 = m.group(2);
-
-			T contentType = buildMediaTypeObj(mediaType);
-			setData(Base64.decodeBase64(base64), contentType);
+		try {
+			DataUri uri = new DataUri(value);
+			T contentType = buildMediaTypeObj(uri.getContentType());
+			setData(uri.getData(), contentType);
 			return;
+		} catch (IllegalArgumentException e) {
+			//not a data URI
 		}
 
 		//get content type from 4.0 MEDIATYPE parameter
@@ -412,11 +406,11 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 
 			String data = HCardUtils.getAbsUrl(element, "data");
 			if (data.length() > 0) {
-				Matcher m = DATA_URI.matcher(data);
-				if (m.find()) {
-					mediaType = buildMediaTypeObj(m.group(1));
-					setData(Base64.decodeBase64(m.group(2)), mediaType);
-				} else {
+				try {
+					DataUri uri = new DataUri(data);
+					mediaType = buildMediaTypeObj(uri.getContentType());
+					setData(uri.getData(), mediaType);
+				} catch (IllegalArgumentException e) {
 					//TODO create buildTypeObjFromExtension() method
 					setUrl(data, null);
 				}

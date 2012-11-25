@@ -1,12 +1,10 @@
 package ezvcard.types;
 
 import java.util.List;
-import java.util.regex.Matcher;
-
-import org.apache.commons.codec.binary.Base64;
 
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImageTypeParameter;
+import ezvcard.util.DataUri;
 import ezvcard.util.HCardUtils;
 
 /*
@@ -170,11 +168,11 @@ public class PhotoType extends BinaryType<ImageTypeParameter> {
 		if ("img".equals(elementName)) {
 			String src = HCardUtils.getAbsUrl(element, "src");
 			if (src.length() > 0) {
-				Matcher m = DATA_URI.matcher(src);
-				if (m.find()) {
-					ImageTypeParameter mediaType = buildMediaTypeObj(m.group(1));
-					setData(Base64.decodeBase64(m.group(2)), mediaType);
-				} else {
+				try {
+					DataUri uri = new DataUri(src);
+					ImageTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
+					setData(uri.getData(), mediaType);
+				} catch (IllegalArgumentException e) {
 					//TODO create buildTypeObjFromExtension() method
 					setUrl(src, null);
 				}

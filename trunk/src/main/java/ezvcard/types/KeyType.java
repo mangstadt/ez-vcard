@@ -1,9 +1,7 @@
 package ezvcard.types;
 
 import java.util.List;
-import java.util.regex.Matcher;
 
-import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
@@ -14,6 +12,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.DataUri;
 import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardUtils;
@@ -266,11 +265,11 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 		if ("a".equals(elementName)) {
 			String href = HCardUtils.getAbsUrl(element, "href");
 			if (href.length() > 0) {
-				Matcher m = DATA_URI.matcher(href);
-				if (m.find()) {
-					KeyTypeParameter mediaType = buildMediaTypeObj(m.group(1));
-					setData(Base64.decodeBase64(m.group(2)), mediaType);
-				} else {
+				try {
+					DataUri uri = new DataUri(href);
+					KeyTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
+					setData(uri.getData(), mediaType);
+				} catch (IllegalArgumentException e) {
 					//TODO create buildTypeObjFromExtension() method
 					setUrl(href, null);
 				}
