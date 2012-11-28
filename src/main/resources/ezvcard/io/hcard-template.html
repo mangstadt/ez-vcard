@@ -296,7 +296,7 @@
 						<#if photo.url??>
 							<img class="photo" src="${photo.url}" /><br />
 						<#elseif photo.data??>
-							<img class="photo" src="${dataUri(photo.contentType.mediaType, photo.data, base64)}" /><br />
+							<img class="photo" src="${dataUri.generate(photo.contentType.mediaType, photo.data)}" /><br />
 						</#if>
 					</#list>
 				</#if>
@@ -307,7 +307,7 @@
 						<#if logo.url??>
 							<img class="logo" src="${logo.url}" /><br />
 						<#elseif logo.data??>
-							<img class="logo" src="${dataUri(logo.contentType.mediaType, logo.data, base64)}" /><br />
+							<img class="logo" src="${dataUri.generate(logo.contentType.mediaType, logo.data)}" /><br />
 						</#if>
 					</#list>
 				</#if>
@@ -322,7 +322,7 @@
 							<br />
 						<#elseif sound.data??>
 							<audio controls="controls">
-								<source class="sound" src="${dataUri(sound.contentType.mediaType, sound.data, base64)}" <#if sound.contentType?? && sound.contentType.mediaType??>type="${sound.contentType.mediaType}"</#if> />
+								<source class="sound" src="${dataUri.generate(sound.contentType.mediaType, sound.data)}" <#if sound.contentType?? && sound.contentType.mediaType??>type="${sound.contentType.mediaType}"</#if> />
 							</audio>
 							<br />	
 						</#if>
@@ -339,7 +339,7 @@
 								</li>
 							<#elseif key.data??>
 								<li>
-									<a class="key" href="${dataUri(key.contentType.mediaType, key.data, base64)}">Key ${key_index + 1}</a>
+									<a class="key" href="${dataUri.generate(key.contentType.mediaType, key.data)}">Key ${key_index + 1}</a>
 								</li>
 							</#if>
 						</#list>
@@ -443,7 +443,7 @@
 								<#if photo.url??>
 									<img class="photo" src="${photo.url}" /><br />
 								<#elseif photo.data??>
-									<img class="photo" src="${dataUri(photo.contentType.mediaType, photo.data, base64)}" /><br />
+									<img class="photo" src="${dataUri.generate(photo.contentType.mediaType, photo.data)}" /><br />
 								</#if>
 							</#list>
 						</#if>
@@ -454,7 +454,7 @@
 								<#if logo.url??>
 									<img class="logo" src="${logo.url}" /><br />
 								<#elseif logo.data??>
-									<img class="logo" src="${dataUri(logo.contentType.mediaType, logo.data, base64)}" /><br />
+									<img class="logo" src="${dataUri.generate(logo.contentType.mediaType, logo.data)}" /><br />
 								</#if>
 							</#list>
 						</#if>
@@ -464,7 +464,3 @@
 		</#list>
 	</body>
 </html>
-
-<#function dataUri mediaType data base64>
-	<#return "data:" + mediaType + ";base64," + base64.encode(data)>
-</#function>

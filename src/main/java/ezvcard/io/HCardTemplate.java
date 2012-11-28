@@ -8,9 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Base64;
-
 import ezvcard.VCard;
+import ezvcard.util.DataUri;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -102,18 +101,18 @@ public class HCardTemplate {
 	public void write(Writer writer) throws IOException, TemplateException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("vcards", vcards);
-		map.put("base64", new Base64Encoder());
-
+		map.put("dataUri", new DataUriGenerator());
 		template.process(map, writer);
 		writer.flush();
 	}
 
 	/**
-	 * Used for base64-encoding binary data in the freemarker template.
+	 * Generates data URIs for the freemarker template.
+	 * @author Michael Angstadt
 	 */
-	public static class Base64Encoder {
-		public String encode(byte data[]) {
-			return new String(Base64.encodeBase64(data));
+	public static class DataUriGenerator {
+		public String generate(String contentType, byte[] data) {
+			return new DataUri(contentType, data).toString();
 		}
 	}
 }
