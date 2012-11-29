@@ -1,13 +1,12 @@
 package ezvcard.util;
 
+import static ezvcard.util.HCardUnitTestUtils.toHtmlElement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
@@ -50,48 +49,48 @@ public class HCardUtilsTest {
 
 	@Test
 	public void getElementValue_text_content() {
-		Element element = buildElement("<div>The text</div>");
+		Element element = toHtmlElement("<div>The text</div>");
 		assertEquals("The text", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_line_breaks() {
-		Element element = buildElement("<div>The<br>text</div>");
+		Element element = toHtmlElement("<div>The<br>text</div>");
 		assertEquals("The" + newline + "text", HCardUtils.getElementValue(element));
 
 		//"value" element
-		element = buildElement("<div>The <span class=\"value\">real<br>text</span></div>");
+		element = toHtmlElement("<div>The <span class=\"value\">real<br>text</span></div>");
 		assertEquals("real" + newline + "text", HCardUtils.getElementValue(element));
 
 		//nested "value" element
-		element = buildElement("<div>The <span class=\"value\">real<br>text <span class=\"value\">goes<br>here</span></span></div>");
+		element = toHtmlElement("<div>The <span class=\"value\">real<br>text <span class=\"value\">goes<br>here</span></span></div>");
 		assertEquals("real" + newline + "text goes" + newline + "here", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_ignore_child_tags() {
-		Element element = buildElement("<div>The<b>text</b></div>");
+		Element element = toHtmlElement("<div>The<b>text</b></div>");
 		assertEquals("Thetext", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_ignore_type_text() {
-		Element element = buildElement("<div><span class=\"type\">Work</span> is boring.</div>");
+		Element element = toHtmlElement("<div><span class=\"type\">Work</span> is boring.</div>");
 		assertEquals("is boring.", HCardUtils.getElementValue(element));
 
-		element = buildElement("<div><b>All <span class=\"type\">work</span> is boring.</b></div>");
+		element = toHtmlElement("<div><b>All <span class=\"type\">work</span> is boring.</b></div>");
 		assertEquals("All  is boring.", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_value_tag() {
-		Element element = buildElement("<div>This is <span class=\"value\">the text</span>.</div>");
+		Element element = toHtmlElement("<div>This is <span class=\"value\">the text</span>.</div>");
 		assertEquals("the text", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_multiple_value_tags() {
-		Element element = buildElement("<div><span class=\"value\">+1</span>.<span class=\"value\">415</span>.<span class=\"value\">555</span>.<span class=\"value\">1212</span></div>");
+		Element element = toHtmlElement("<div><span class=\"value\">+1</span>.<span class=\"value\">415</span>.<span class=\"value\">555</span>.<span class=\"value\">1212</span></div>");
 		assertEquals("+14155551212", HCardUtils.getElementValue(element));
 	}
 
@@ -110,7 +109,7 @@ public class HCardUtilsTest {
 			html += "</div>";
 		html += "</div>";
 		
-		Element element = buildElement(html);
+		Element element = toHtmlElement(html);
 		assertEquals("This isthe valueof the element.", HCardUtils.getElementValue(element));
 	}
 	
@@ -123,25 +122,25 @@ public class HCardUtilsTest {
 		html += "</div>";
 		//@formatter:on
 
-		Element element = buildElement(html);
+		Element element = toHtmlElement(html);
 		assertEquals("the valuenested", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_abbr_value() {
-		Element element = buildElement("<div>This is <abbr class=\"value\" title=\"1234\">the text</abbr>.</div>");
+		Element element = toHtmlElement("<div>This is <abbr class=\"value\" title=\"1234\">the text</abbr>.</div>");
 		assertEquals("1234", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_abbr_tag_with_title() {
-		Element element = buildElement("<abbr class=\"latitude\" title=\"48.816667\">N 48� 81.6667</abbr>");
+		Element element = toHtmlElement("<abbr class=\"latitude\" title=\"48.816667\">N 48� 81.6667</abbr>");
 		assertEquals("48.816667", HCardUtils.getElementValue(element));
 	}
 
 	@Test
 	public void getElementValue_abbr_tag_without_title() {
-		Element element = buildElement("<abbr class=\"latitude\">N 48� 81.6667</abbr>");
+		Element element = toHtmlElement("<abbr class=\"latitude\">N 48� 81.6667</abbr>");
 		assertEquals("N 48� 81.6667", HCardUtils.getElementValue(element));
 	}
 
@@ -162,7 +161,7 @@ public class HCardUtilsTest {
 		html.append("</div>");
 		//@formatter:on
 
-		Element element = buildElement(html.toString());
+		Element element = toHtmlElement(html.toString());
 
 		List<String> actual = HCardUtils.getElementValuesByCssClass(element, "family-name");
 		List<String> expected = Arrays.asList("Doe");
@@ -182,7 +181,7 @@ public class HCardUtilsTest {
 		html.append("<div class=\"adr\">");
 		html.append("</div>");
 
-		Element element = buildElement(html.toString());
+		Element element = toHtmlElement(html.toString());
 		List<String> actual = HCardUtils.getTypes(element);
 		assertTrue(actual.isEmpty());
 	}
@@ -197,7 +196,7 @@ public class HCardUtilsTest {
 		html.append("</div>");
 		//@formatter:on
 
-		Element element = buildElement(html.toString());
+		Element element = toHtmlElement(html.toString());
 		List<String> actual = HCardUtils.getTypes(element);
 		List<String> expected = Arrays.asList("work", "pref");
 		assertEquals(expected, actual);
@@ -213,7 +212,7 @@ public class HCardUtilsTest {
 		html.append("</div>");
 		//@formatter:on
 
-		Element element = buildElement(html.toString());
+		Element element = toHtmlElement(html.toString());
 		List<String> actual = HCardUtils.getTypes(element);
 		List<String> expected = Arrays.asList("work", "pref");
 		assertEquals(expected, actual);
@@ -231,7 +230,7 @@ public class HCardUtilsTest {
 		html.append("</div>");
 		//@formatter:on
 
-		Element element = buildElement(html.toString());
+		Element element = toHtmlElement(html.toString());
 		List<String> actual = HCardUtils.getTypes(element);
 		List<String> expected = Arrays.asList("work", "pref");
 		assertEquals(expected, actual);
@@ -239,22 +238,22 @@ public class HCardUtilsTest {
 
 	@Test
 	public void getAbsUrl() {
-		Element element = buildElement("<a href=\"data:foo\" />", "http://example.com");
+		Element element = toHtmlElement("<a href=\"data:foo\" />", "http://example.com");
 		assertEquals("data:foo", HCardUtils.getAbsUrl(element, "href"));
 
-		element = buildElement("<a href=\"index.html\" />", "http://example.com");
+		element = toHtmlElement("<a href=\"index.html\" />", "http://example.com");
 		assertEquals("http://example.com/index.html", HCardUtils.getAbsUrl(element, "href"));
 
-		element = buildElement("<a href=\"mailto:jdoe@hotmail.com\" />", "http://example.com");
+		element = toHtmlElement("<a href=\"mailto:jdoe@hotmail.com\" />", "http://example.com");
 		assertEquals("mailto:jdoe@hotmail.com", HCardUtils.getAbsUrl(element, "href"));
 
-		element = buildElement("<a href=\"http://foobar.com/index.html\" />", "http://example.com");
+		element = toHtmlElement("<a href=\"http://foobar.com/index.html\" />", "http://example.com");
 		assertEquals("http://foobar.com/index.html", HCardUtils.getAbsUrl(element, "href"));
 	}
 
 	@Test
 	public void appendTextAndEncodeNewLines() {
-		Element element = buildElement("<div />");
+		Element element = toHtmlElement("<div />");
 		HCardUtils.appendTextAndEncodeNewlines(element, "Append\rthis\n\ntext\r\nplease.");
 
 		List<Node> nodes = element.childNodes();
@@ -269,21 +268,12 @@ public class HCardUtilsTest {
 		assertEquals("br", ((Element) nodes.get(i++)).tagName());
 		assertEquals("please.", ((TextNode) nodes.get(i++)).text());
 
-		element = buildElement("<div />");
+		element = toHtmlElement("<div />");
 		HCardUtils.appendTextAndEncodeNewlines(element, "Without newlines.");
 
 		nodes = element.childNodes();
 		assertEquals(1, nodes.size());
 		i = 0;
 		assertEquals("Without newlines.", ((TextNode) nodes.get(i++)).text());
-	}
-
-	private Element buildElement(String html) {
-		return buildElement(html, null);
-	}
-
-	private Element buildElement(String html, String baseUrl) {
-		Document d = (baseUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, baseUrl);
-		return d.getElementsByTag("body").first().child(0);
 	}
 }
