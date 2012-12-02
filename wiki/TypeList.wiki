@@ -454,7 +454,7 @@ vcard.addHobby(hobby);
 =IMPP=
 An instant message handle.  The handle is represented as a URI in the format "`<IM-PROTOCOL>:<IM-HANDLE>`".  For example, someone with a Yahoo! Messenger handle of "johndoe@yahoo.com" would have an IMPP vCard property value of "ymsgr:johndoe@yahoo.com".
 
-*vCard versions:* 4.0
+*vCard versions:* 3.0, 4.0
 
 *Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ImppType.html ImppType]
 

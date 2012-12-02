@@ -70,7 +70,7 @@ import ezvcard.util.XCardUtils;
  * vCard property name: IMPP
  * </p>
  * <p>
- * vCard versions: 4.0
+ * vCard versions: 3.0, 4.0
  * </p>
  * @author Michael Angstadt
  */
@@ -482,7 +482,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 
 	@Override
 	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
+		return new VCardVersion[] { VCardVersion.V3_0, VCardVersion.V4_0 };
 	}
 
 	@Override
