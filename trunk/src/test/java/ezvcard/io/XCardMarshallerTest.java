@@ -2,6 +2,7 @@ package ezvcard.io;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
@@ -59,7 +60,7 @@ public class XCardMarshallerTest {
 		vcard.setFormattedName(fn);
 
 		XCardMarshaller xcm = new XCardMarshaller();
-		xcm.setAddGenerator(false);
+		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
 		Document actual = xcm.getDocument();
@@ -91,7 +92,7 @@ public class XCardMarshallerTest {
 		vcard.addNote(note);
 
 		XCardMarshaller xcm = new XCardMarshaller();
-		xcm.setAddGenerator(false);
+		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
 		Document actual = xcm.getDocument();
@@ -140,7 +141,7 @@ public class XCardMarshallerTest {
 		vcard.addNote(note);
 
 		XCardMarshaller xcm = new XCardMarshaller();
-		xcm.setAddGenerator(false);
+		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
 		Document actual = xcm.getDocument();
@@ -179,7 +180,7 @@ public class XCardMarshallerTest {
 		vcard2.addNote(note);
 
 		XCardMarshaller xcm = new XCardMarshaller();
-		xcm.setAddGenerator(false);
+		xcm.setAddProdId(false);
 		xcm.addVCard(vcard1);
 		xcm.addVCard(vcard2);
 
@@ -201,24 +202,34 @@ public class XCardMarshallerTest {
 		assertXMLEqual(expected, actual);
 	}
 
-	/**
-	 * Makes sure the {@link XCardMarshaller#setAddGenerator} method works.
-	 */
 	@Test
-	public void setAddGenerator() throws Exception {
+	public void setAddProdId() throws Exception {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
 
 		XCardMarshaller xcm = new XCardMarshaller();
-		xcm.setAddGenerator(true);
 		xcm.addVCard(vcard);
-
 		StringWriter sw = new StringWriter();
 		xcm.write(sw);
 		String xml = sw.toString();
+		assertTrue(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
 
-		assertTrue(xml.matches(".*?<x-generator><text>.*?</text></x-generator>.*"));
+		xcm = new XCardMarshaller();
+		xcm.setAddProdId(true);
+		xcm.addVCard(vcard);
+		sw = new StringWriter();
+		xcm.write(sw);
+		xml = sw.toString();
+		assertTrue(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
+
+		xcm = new XCardMarshaller();
+		xcm.setAddProdId(false);
+		xcm.addVCard(vcard);
+		sw = new StringWriter();
+		xcm.write(sw);
+		xml = sw.toString();
+		assertFalse(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
 	}
 
 	/**
@@ -244,7 +255,7 @@ public class XCardMarshallerTest {
 		vcard.addExtendedType(num);
 
 		XCardMarshaller xcm = new XCardMarshaller();
-		xcm.setAddGenerator(false);
+		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
 		assertEquals(xcm.getWarnings().toString(), 1, xcm.getWarnings().size());
@@ -288,7 +299,7 @@ public class XCardMarshallerTest {
 		vcard.addExtendedType(age);
 
 		XCardMarshaller xcm = new XCardMarshaller();
-		xcm.setAddGenerator(false);
+		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
 		assertEquals(xcm.getWarnings().toString(), 1, xcm.getWarnings().size());

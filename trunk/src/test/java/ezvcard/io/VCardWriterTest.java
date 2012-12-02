@@ -62,7 +62,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -76,28 +76,71 @@ public class VCardWriterTest {
 		assertEquals(actual, expected);
 	}
 
-	/**
-	 * Make sure it does not print out the X-GENERATOR type if you don't want it
-	 * to.
-	 */
 	@Test
-	public void setAddGenerated() throws Exception {
+	public void setAddProdId() throws Exception {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
 
-		//with X-GENERATOR
+		//with X-PRODID (2.1)
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.write(vcard);
-		assertTrue(sw.toString().contains("X-GENERATOR:"));
+		assertTrue(sw.toString().contains("X-PRODID:"));
 
-		//without X-GENERATOR
+		//with PRODID (3.0)
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V3_0);
+		vcw.write(vcard);
+		assertTrue(sw.toString().contains("PRODID:"));
+
+		//with PRODID (4.0)
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V4_0);
+		vcw.write(vcard);
+		assertTrue(sw.toString().contains("PRODID:"));
+
+		//with X-PRODID (2.1)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(true);
 		vcw.write(vcard);
-		assertFalse(sw.toString().contains("X-GENERATOR:"));
+		assertTrue(sw.toString().contains("X-PRODID:"));
+
+		//with PRODID (3.0)
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V3_0);
+		vcw.setAddProdId(true);
+		vcw.write(vcard);
+		assertTrue(sw.toString().contains("PRODID:"));
+
+		//with PRODID (4.0)
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V4_0);
+		vcw.setAddProdId(true);
+		vcw.write(vcard);
+		assertTrue(sw.toString().contains("PRODID:"));
+
+		//without X-PRODID (2.1)
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V2_1);
+		vcw.setAddProdId(false);
+		vcw.write(vcard);
+		assertFalse(sw.toString().contains("X-PRODID:"));
+
+		//without PRODID (3.0)
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V3_0);
+		vcw.setAddProdId(false);
+		vcw.write(vcard);
+		assertFalse(sw.toString().contains("PRODID:"));
+
+		//without PRODID (4.0)
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V4_0);
+		vcw.setAddProdId(false);
+		vcw.write(vcard);
+		assertFalse(sw.toString().contains("PRODID:"));
 	}
 
 	/**
@@ -136,7 +179,7 @@ public class VCardWriterTest {
 		//2.1
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -154,7 +197,7 @@ public class VCardWriterTest {
 		//3.0
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V3_0);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		actual = sw.toString();
 
@@ -201,7 +244,7 @@ public class VCardWriterTest {
 		//2.1
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1, null);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -219,7 +262,7 @@ public class VCardWriterTest {
 		//3.0
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		actual = sw.toString();
 
@@ -247,7 +290,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1, fs);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -285,7 +328,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1, FoldingScheme.MIME_DIR, "*");
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -311,7 +354,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -350,7 +393,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -393,7 +436,7 @@ public class VCardWriterTest {
 
 		VCard agentVcard = new VCard();
 		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
-		NoteType note = new NoteType("Bonne soirŽe, 007.");
+		NoteType note = new NoteType("Bonne soirï¿½e, 007.");
 		note.setLanguage("fr");
 		agentVcard.getNotes().add(note);
 		AgentType agent = new AgentType(agentVcard);
@@ -410,7 +453,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -430,7 +473,7 @@ public class VCardWriterTest {
 				sb.append("FN:Agent 009\\\\n");
 				sb.append("NOTE\\\\\\;LANGUAGE=en:Good evening\\\\\\\\\\\\\\, 009.\\\\n");
 				sb.append("END:VCARD\\\\n\\n");
-			sb.append("NOTE\\;LANGUAGE=fr:Bonne soirŽe\\\\\\, 007.\\n");
+			sb.append("NOTE\\;LANGUAGE=fr:Bonne soirï¿½e\\\\\\, 007.\\n");
 			sb.append("END:VCARD\\n\r\n");
 		sb.append("END:VCARD\r\n");
 		String expected = sb.toString();
@@ -474,7 +517,7 @@ public class VCardWriterTest {
 		//LABEL types should be used
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
 
@@ -494,7 +537,7 @@ public class VCardWriterTest {
 		//LABEL parameters should be used
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V4_0, null);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		actual = sw.toString();
 
@@ -533,7 +576,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.setAddGenerator(false);
+		vcw.setAddProdId(false);
 		vcw.write(vcard);
 
 		assertEquals(vcw.getWarnings().toString(), 1, vcw.getWarnings().size());
