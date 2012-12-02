@@ -1976,7 +1976,7 @@ public class VCard {
 	 * vCard property name: IMPP
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * vCard versions: 3.0, 4.0
 	 * </p>
 	 * @return the instant messaging handles
 	 */
@@ -1990,7 +1990,7 @@ public class VCard {
 	 * vCard property name: IMPP
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * vCard versions: 3.0, 4.0
 	 * </p>
 	 * @param impp the instant messaging handle to add
 	 */
