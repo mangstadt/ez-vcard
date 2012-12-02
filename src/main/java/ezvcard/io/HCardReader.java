@@ -254,6 +254,7 @@ public class HCardReader {
 						try {
 							impp.unmarshalHtml(element, warningsBuffer);
 							addToVCard(impp, curVCard);
+							warnings.addAll(warningsBuffer);
 							continue;
 						} catch (SkipMeException e) {
 							//URL is not an instant messenger URL
