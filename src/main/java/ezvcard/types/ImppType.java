@@ -64,6 +64,7 @@ import ezvcard.util.XCardUtils;
  * //static helper constructors
  * impp = ImppType.msn(&quot;janedoe@msn.com&quot;);
  * vcard.addImpp(impp);
+ * </pre>
  * 
  * <p>
  * vCard property name: IMPP
