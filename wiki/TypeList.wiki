@@ -452,16 +452,7 @@ vcard.addHobby(hobby);
 }}}
 
 =IMPP=
-An instant message handle.  The handle is represented as a URI in the format "`<IM-PROTOCOL>:<IM-HANDLE>`".  For example, someone with a Yahoo! Messenger handle of "jdoe@yahoo.com" would have an IMPP vCard property value of "ymsgr:jdoe@yahoo.com".
-
-Suggested protocols (from [http://tools.ietf.org/html/rfc4770 RFC 4770]):
-
-  * `aim:` - AOL Instant Messenger
-  * `irc:` - Internet Relay Chat
-  * `msn:` - MSN Messenger
-  * `sip:` - Session Initiation Protocol
-  * `xmpp:` - Extensible Messaging and Presence Protocol
-  * `ymsgr:` - Yahoo! Messenger
+An instant message handle.  The handle is represented as a URI in the format "`<IM-PROTOCOL>:<IM-HANDLE>`".  For example, someone with a Yahoo! Messenger handle of "johndoe@yahoo.com" would have an IMPP vCard property value of "ymsgr:johndoe@yahoo.com".
 
 *vCard versions:* 4.0
 
@@ -471,11 +462,11 @@ Suggested protocols (from [http://tools.ietf.org/html/rfc4770 RFC 4770]):
 VCard vcard = new VCard();
 
 //URI
-ImppType impp = new ImppType("aim:hunkydude22@aol.com");
+ImppType impp = new ImppType("aim:johndoe@aol.com");
 vcard.addImpp(impp);
 
 //static helper constructors
-impp = ImppType.msn("steve99@msn.com");
+impp = ImppType.msn("janedoe@msn.com");
 vcard.addImpp(impp);
 }}}
 

@@ -51,32 +51,19 @@ import ezvcard.util.XCardUtils;
 /**
  * An instant message handle. The handle is represented as a URI in the format "
  * <code>&lt;IM-PROTOCOL&gt;:&lt;IM-HANDLE&gt;</code>". For example, someone
- * with a Yahoo! Messenger handle of "jdoe@yahoo.com" would have an IMPP vCard
- * property value of "ymsgr:jdoe@yahoo.com".
+ * with a Yahoo! Messenger handle of "johndoe@yahoo.com" would have an IMPP
+ * vCard property value of "ymsgr:johndoe@yahoo.com".
  * 
  * <pre>
  * VCard vcard = new VCard();
  * 
  * //URI
- * ImppType impp = new ImppType(&quot;aim:hunkydude22@aol.com&quot;);
+ * ImppType impp = new ImppType(&quot;aim:johndoe@aol.com&quot;);
  * vcard.addImpp(impp);
  * 
  * //static helper constructors
- * impp = ImppType.msn(&quot;steve99@msn.com&quot;);
+ * impp = ImppType.msn(&quot;janedoe@msn.com&quot;);
  * vcard.addImpp(impp);
- * </pre>
- * 
- * <p>
- * Suggested URI protocols (from RFC 4770):
- * <ul>
- * <li>"aim:" - AOL Instant Messenger</li>
- * <li>"ymsgr:" - Yahoo! Messenger</li>
- * <li>"msn:" - MSN</li>
- * <li>"irc:" - IRC handle</li>
- * <li>"sip:" - Session Initiation Protocol</li>
- * <li>"xmpp:" - Extensible Messaging and Presence Protocol</li>
- * </ul>
- * </p>
  * 
  * <p>
  * vCard property name: IMPP
