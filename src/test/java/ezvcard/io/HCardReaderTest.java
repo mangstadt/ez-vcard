@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -322,7 +323,7 @@ public class HCardReaderTest {
 			Iterator<ImppType> it = vcard.getImpps().iterator();
 
 			ImppType impp = it.next();
-			assertEquals("aim:goim?screenname=ShoppingBuddy", impp.getUri());
+			assertEquals(URI.create("aim:ShoppingBuddy"), impp.getUri());
 
 			assertFalse(it.hasNext());
 		}
