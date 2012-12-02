@@ -174,7 +174,7 @@ birthplace.setText("Philadelphia, PA");
 vcard.setBirthplace(birthplace);
 }}}
 
-=CALENDRURI=
+=CALADRURI=
 A URL to use for sending a scheduling request to the person's calendar.
 
 *vCard versions:* 4.0
@@ -183,12 +183,12 @@ A URL to use for sending a scheduling request to the person's calendar.
 
 {{{
 VCard vcard = new VCard();
-CalendarRequestUriType calendruri = new CalendarRequestUriType("mailto:janedoe@ibm.com");
-calendruri.setPref(1);
-vcard.addCalendarRequestUri(calendruri);
-calendruri = new CalendarRequestUriType("http://www.ibm.com/janedoe/calendar");
-calendruri.setPref(2);
-vcard.addCalendarRequestUri(calendruri);
+CalendarRequestUriType caladruri = new CalendarRequestUriType("mailto:janedoe@ibm.com");
+caladruri.setPref(1);
+vcard.addCalendarRequestUri(caladruri);
+caladruri = new CalendarRequestUriType("http://www.ibm.com/janedoe/calendar");
+caladruri.setPref(2);
+vcard.addCalendarRequestUri(caladruri);
 }}}
 
 =CALURI=
