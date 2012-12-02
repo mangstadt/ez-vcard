@@ -240,77 +240,87 @@ public class HCardReader {
 	private void visit(Element element) {
 		Set<String> classNames = element.classNames();
 		for (String className : classNames) {
-			//check for a URL that points to an instant messenger address or email address
 			if (UrlType.NAME.equalsIgnoreCase(className)) {
 				String href = element.attr("href");
 				if (href.length() > 0) {
-					if (href.matches("(?i)(aim:|ymsgr:|msnim:|xmpp:|skype:|https?://(www\\.)?icq\\.com).*")) {
-						className = ImppType.NAME;
-					} else if (!classNames.contains(EmailType.NAME.toLowerCase()) && href.matches("(?i)mailto:.*")) {
+					if (!classNames.contains(EmailType.NAME.toLowerCase()) && href.matches("(?i)mailto:.*")) {
 						className = EmailType.NAME;
 					} else if (!classNames.contains(TelephoneType.NAME.toLowerCase()) && href.matches("(?i)tel:.*")) {
 						className = TelephoneType.NAME;
+					} else {
+						//try parsing as IMPP
+						warningsBuffer.clear();
+						ImppType impp = new ImppType();
+						try {
+							impp.unmarshalHtml(element, warningsBuffer);
+							addToVCard(impp, curVCard);
+							continue;
+						} catch (SkipMeException e) {
+							//URL is not an instant messenger URL
+						}
 					}
 				}
 			}
 
-			//if no type class is found, then it must be an arbitrary CSS class that has nothing to do with vCard
 			VCardType type = createTypeObject(className);
-			if (type != null) {
-				warningsBuffer.clear();
-				try {
-					type.unmarshalHtml(element, warningsBuffer);
+			if (type == null) {
+				//if no type class is found, then it must be an arbitrary CSS class that has nothing to do with vCard
+				continue;
+			}
 
-					//add to vcard
-					if (type instanceof LabelType) {
-						//LABELs must be treated specially so they can be matched up with their ADRs
-						labels.add((LabelType) type);
-					} else if (type instanceof NicknameType) {
-						//add all NICKNAMEs to the same type object
-						NicknameType nn = (NicknameType) type;
-						if (nickname == null) {
-							nickname = nn;
-							addToVCard(nickname, curVCard);
-						} else {
-							nickname.getValues().addAll(nn.getValues());
-						}
-					} else if (type instanceof CategoriesType) {
-						//add all CATEGORIES to the same type object
-						CategoriesType c = (CategoriesType) type;
-						if (categories == null) {
-							categories = c;
-							addToVCard(categories, curVCard);
-						} else {
-							categories.getValues().addAll(c.getValues());
-						}
+			warningsBuffer.clear();
+			try {
+				type.unmarshalHtml(element, warningsBuffer);
+
+				//add to vcard
+				if (type instanceof LabelType) {
+					//LABELs must be treated specially so they can be matched up with their ADRs
+					labels.add((LabelType) type);
+				} else if (type instanceof NicknameType) {
+					//add all NICKNAMEs to the same type object
+					NicknameType nn = (NicknameType) type;
+					if (nickname == null) {
+						nickname = nn;
+						addToVCard(nickname, curVCard);
 					} else {
-						addToVCard(type, curVCard);
+						nickname.getValues().addAll(nn.getValues());
 					}
-				} catch (SkipMeException e) {
-					warningsBuffer.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
-				} catch (EmbeddedVCardException e) {
-					if (HCardUtils.isChildOf(element, embeddedVCards)) {
-						//prevents multiple-nested embedded elements from overwriting each other
-						continue;
+				} else if (type instanceof CategoriesType) {
+					//add all CATEGORIES to the same type object
+					CategoriesType c = (CategoriesType) type;
+					if (categories == null) {
+						categories = c;
+						addToVCard(categories, curVCard);
+					} else {
+						categories.getValues().addAll(c.getValues());
 					}
-
-					embeddedVCards.add(element);
-					HCardReader embeddedReader = new HCardReader(element, pageUrl);
-					try {
-						VCard embeddedVCard = embeddedReader.readNext();
-						e.injectVCard(embeddedVCard);
-					} finally {
-						for (String w : embeddedReader.getWarnings()) {
-							warnings.add("Problem unmarshalling nested vCard value from " + type.getTypeName() + ": " + w);
-						}
-					}
+				} else {
 					addToVCard(type, curVCard);
-				} catch (UnsupportedOperationException e) {
-					//type class does not support hCard
-					warningsBuffer.add("Type class \"" + type.getClass().getName() + "\" does not support hCard unmarshalling.");
-				} finally {
-					warnings.addAll(warningsBuffer);
 				}
+			} catch (SkipMeException e) {
+				warningsBuffer.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+			} catch (EmbeddedVCardException e) {
+				if (HCardUtils.isChildOf(element, embeddedVCards)) {
+					//prevents multiple-nested embedded elements from overwriting each other
+					continue;
+				}
+
+				embeddedVCards.add(element);
+				HCardReader embeddedReader = new HCardReader(element, pageUrl);
+				try {
+					VCard embeddedVCard = embeddedReader.readNext();
+					e.injectVCard(embeddedVCard);
+				} finally {
+					for (String w : embeddedReader.getWarnings()) {
+						warnings.add("Problem unmarshalling nested vCard value from " + type.getTypeName() + ": " + w);
+					}
+				}
+				addToVCard(type, curVCard);
+			} catch (UnsupportedOperationException e) {
+				//type class does not support hCard
+				warningsBuffer.add("Type class \"" + type.getClass().getName() + "\" does not support hCard unmarshalling.");
+			} finally {
+				warnings.addAll(warningsBuffer);
 			}
 		}
 
