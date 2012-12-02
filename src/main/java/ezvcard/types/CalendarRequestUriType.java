@@ -39,16 +39,16 @@ import ezvcard.VCardVersion;
  * 
  * <pre>
  * VCard vcard = new VCard();
- * CalendarRequestUriType calendruri = new CalendarRequestUriType(&quot;mailto:janedoe@ibm.com&quot;);
- * calendruri.setPref(1);
- * vcard.addCalendarRequestUri(calendruri);
- * calendruri = new CalendarRequestUriType(&quot;http://www.ibm.com/janedoe/calendar&quot;);
- * calendruri.setPref(2);
- * vcard.addCalendarRequestUri(calendruri);
+ * CalendarRequestUriType caladruri = new CalendarRequestUriType(&quot;mailto:janedoe@ibm.com&quot;);
+ * caladruri.setPref(1);
+ * vcard.addCalendarRequestUri(caladruri);
+ * caladruri = new CalendarRequestUriType(&quot;http://www.ibm.com/janedoe/calendar&quot;);
+ * caladruri.setPref(2);
+ * vcard.addCalendarRequestUri(caladruri);
  * </pre>
  * 
  * <p>
- * vCard property name: CALENDRURI
+ * vCard property name: CALADRURI
  * </p>
  * <p>
  * vCard versions: 4.0
@@ -56,7 +56,7 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class CalendarRequestUriType extends UriType {
-	public static final String NAME = "CALENDRURI";
+	public static final String NAME = "CALADRURI";
 
 	public CalendarRequestUriType() {
 		super(NAME);

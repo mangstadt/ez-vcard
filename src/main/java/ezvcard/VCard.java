@@ -2058,7 +2058,7 @@ public class VCard {
 	 * Gets the URIs that can be used to schedule a meeting with the person on
 	 * his or her calendar.
 	 * <p>
-	 * vCard property name: CALENDRURI
+	 * vCard property name: CALADRURI
 	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
@@ -2073,7 +2073,7 @@ public class VCard {
 	 * Adds a URI that can be used to schedule a meeting with the person on his
 	 * or her calendar.
 	 * <p>
-	 * vCard property name: CALENDRURI
+	 * vCard property name: CALADRURI
 	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
