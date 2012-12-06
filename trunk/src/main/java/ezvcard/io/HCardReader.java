@@ -1,7 +1,6 @@
 package ezvcard.io;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -88,18 +87,7 @@ public class HCardReader {
 	 */
 	public HCardReader(URL url) throws IOException {
 		pageUrl = url.toString();
-
-		Document document;
-		InputStream in = null;
-		try {
-			in = url.openStream();
-			document = Jsoup.parse(in, "UTF-8", pageUrl);
-		} finally {
-			if (in != null) {
-				in.close();
-			}
-		}
-
+		Document document = Jsoup.connect(pageUrl).get();
 		init(document, url.getRef());
 	}
 
