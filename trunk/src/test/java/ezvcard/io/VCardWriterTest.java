@@ -86,61 +86,61 @@ public class VCardWriterTest {
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.write(vcard);
-		assertTrue(sw.toString().contains("X-PRODID:"));
+		assertTrue(sw.toString().contains("\r\nX-PRODID:"));
 
 		//with PRODID (3.0)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V3_0);
 		vcw.write(vcard);
-		assertTrue(sw.toString().contains("PRODID:"));
+		assertTrue(sw.toString().contains("\r\nPRODID:"));
 
 		//with PRODID (4.0)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V4_0);
 		vcw.write(vcard);
-		assertTrue(sw.toString().contains("PRODID:"));
+		assertTrue(sw.toString().contains("\r\nPRODID:"));
 
 		//with X-PRODID (2.1)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.setAddProdId(true);
 		vcw.write(vcard);
-		assertTrue(sw.toString().contains("X-PRODID:"));
+		assertTrue(sw.toString().contains("\r\nX-PRODID:"));
 
 		//with PRODID (3.0)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V3_0);
 		vcw.setAddProdId(true);
 		vcw.write(vcard);
-		assertTrue(sw.toString().contains("PRODID:"));
+		assertTrue(sw.toString().contains("\r\nPRODID:"));
 
 		//with PRODID (4.0)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V4_0);
 		vcw.setAddProdId(true);
 		vcw.write(vcard);
-		assertTrue(sw.toString().contains("PRODID:"));
+		assertTrue(sw.toString().contains("\r\nPRODID:"));
 
 		//without X-PRODID (2.1)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
-		assertFalse(sw.toString().contains("X-PRODID:"));
+		assertFalse(sw.toString().contains("\r\nX-PRODID:"));
 
 		//without PRODID (3.0)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V3_0);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
-		assertFalse(sw.toString().contains("PRODID:"));
+		assertFalse(sw.toString().contains("\r\nPRODID:"));
 
 		//without PRODID (4.0)
 		sw = new StringWriter();
 		vcw = new VCardWriter(sw, VCardVersion.V4_0);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
-		assertFalse(sw.toString().contains("PRODID:"));
+		assertFalse(sw.toString().contains("\r\nPRODID:"));
 	}
 
 	/**
