@@ -417,6 +417,11 @@ public class VCardWriter implements Closeable {
 			return;
 		}
 
+		if (addProdId && type instanceof ProdIdType) {
+			//do not add the PRODID in the vCard if "addProdId" is true
+			return;
+		}
+
 		//determine if this type is supported by the target version
 		boolean supported = false;
 		for (VCardVersion v : type.getSupportedVersions()) {

@@ -16,6 +16,7 @@ import ezvcard.types.AgentType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.LabelType;
 import ezvcard.types.NoteType;
+import ezvcard.types.ProdIdType;
 import ezvcard.types.StructuredNameType;
 
 /*
@@ -141,6 +142,29 @@ public class VCardWriterTest {
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		assertFalse(sw.toString().contains("\r\nPRODID:"));
+	}
+
+	@Test
+	public void setAddProdId_overwrites_existing_prodId() throws Exception {
+		VCard vcard = new VCard();
+
+		FormattedNameType fn = new FormattedNameType("John Doe");
+		vcard.setFormattedName(fn);
+
+		ProdIdType prodId = new ProdIdType("Acme Co.");
+		vcard.setProdId(prodId);
+
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
+		vcw.setAddProdId(false);
+		vcw.write(vcard);
+		assertTrue(sw.toString().contains("\r\nPRODID:Acme Co."));
+
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V3_0);
+		vcw.setAddProdId(true);
+		vcw.write(vcard);
+		assertFalse(sw.toString().contains("\r\nPRODID:Acme Co."));
 	}
 
 	/**
