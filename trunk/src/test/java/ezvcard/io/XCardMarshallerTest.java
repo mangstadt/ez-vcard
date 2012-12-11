@@ -15,6 +15,7 @@ import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.PhotoType;
+import ezvcard.types.ProdIdType;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -230,6 +231,31 @@ public class XCardMarshallerTest {
 		xcm.write(sw);
 		xml = sw.toString();
 		assertFalse(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
+	}
+
+	@Test
+	public void setAddProdId_overwrites_existing_prodId() throws Exception {
+		VCard vcard = new VCard();
+
+		FormattedNameType fn = new FormattedNameType("John Doe");
+		vcard.setFormattedName(fn);
+
+		ProdIdType prodId = new ProdIdType("Acme Co.");
+		vcard.setProdId(prodId);
+
+		StringWriter sw = new StringWriter();
+		XCardMarshaller xcm = new XCardMarshaller();
+		xcm.setAddProdId(false);
+		xcm.addVCard(vcard);
+		xcm.write(sw);
+		assertTrue(sw.toString().matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
+
+		sw = new StringWriter();
+		xcm = new XCardMarshaller();
+		xcm.setAddProdId(true);
+		xcm.addVCard(vcard);
+		xcm.write(sw);
+		assertFalse(sw.toString().matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
 	}
 
 	/**
