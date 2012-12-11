@@ -61,4 +61,12 @@ public class RevisionType extends TimestampType {
 	public RevisionType(Date date) {
 		super(NAME, date);
 	}
+
+	/**
+	 * Creates a REV property whose value is the current time.
+	 * @return the REV property instance
+	 */
+	public static RevisionType now() {
+		return new RevisionType(new Date());
+	}
 }
