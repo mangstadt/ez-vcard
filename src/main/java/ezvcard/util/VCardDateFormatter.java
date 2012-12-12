@@ -111,6 +111,7 @@ public class VCardDateFormatter {
 		//tweak the date string to make it work with SimpleDateFormat
 		switch (format) {
 		case TIME_EXTENDED:
+		case HCARD_TIME_TAG:
 			//SimpleDateFormat doesn't recognize timezone offsets that have colons
 			//so remove the colon from the timezone offset
 			dateStr = dateStr.replaceAll("([-\\+]\\d{2}):(\\d{2})$", "$1$2");

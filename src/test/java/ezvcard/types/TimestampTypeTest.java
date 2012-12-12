@@ -2,6 +2,7 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.HCardUnitTestUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -122,5 +124,53 @@ public class TimestampTypeTest {
 		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getTimestamp());
+	}
+
+	@Test
+	public void unmarshalHtml() throws Exception {
+		List<String> warnings = new ArrayList<String>();
+
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		c.clear();
+		c.set(Calendar.YEAR, 1970);
+		c.set(Calendar.MONTH, Calendar.MARCH);
+		c.set(Calendar.DAY_OF_MONTH, 10);
+		c.set(Calendar.HOUR_OF_DAY, 13);
+		c.set(Calendar.MINUTE, 21);
+		c.set(Calendar.SECOND, 3);
+		Date expected = c.getTime();
+
+		//valid date string
+		{
+			warnings.clear();
+			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time datetime=\"1970-03-10T13:21:03Z\">March 10, 1970 at 1:21:03 PM</time>");
+			TimestampType t = new TimestampType("DATE");
+			t.unmarshalHtml(element, warnings);
+
+			assertEquals(expected, t.getTimestamp());
+			assertEquals(0, warnings.size());
+		}
+
+		//date string in tag text
+		{
+			warnings.clear();
+			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time>1970-03-10T13:21:03Z</time>");
+			TimestampType t = new TimestampType("DATE");
+			t.unmarshalHtml(element, warnings);
+
+			assertEquals(expected, t.getTimestamp());
+			assertEquals(0, warnings.size());
+		}
+
+		//invalid date string
+		{
+			warnings.clear();
+			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time>March 10, 1970 at 1:21:03 PM</time>");
+			TimestampType t = new TimestampType("DATE");
+			t.unmarshalHtml(element, warnings);
+
+			assertNull(t.getTimestamp());
+			assertEquals(1, warnings.size());
+		}
 	}
 }
