@@ -81,7 +81,7 @@ import freemarker.template.TemplateException;
 /**
  * @author Michael Angstadt
  */
-public class HCardTemplateTest {
+public class HCardPageTest {
 	private byte[] mockData = "data".getBytes();
 
 	@Test
@@ -223,7 +223,7 @@ public class HCardTemplateTest {
 	public void create_then_parse() throws Exception {
 		//create template
 		VCard expected = createFullVCard();
-		HCardTemplate template = new HCardTemplate();
+		HCardPage template = new HCardPage();
 		template.addVCard(expected);
 		String html = template.write();
 
@@ -495,7 +495,7 @@ public class HCardTemplateTest {
 	private byte[] readBytes(String fileName) throws IOException {
 		InputStream in = null;
 		try {
-			in = HCardTemplateTest.class.getResourceAsStream(fileName);
+			in = HCardPageTest.class.getResourceAsStream(fileName);
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			byte buffer[] = new byte[4092];
 			int read;
@@ -515,7 +515,7 @@ public class HCardTemplateTest {
 	 * @throws TemplateException
 	 */
 	private Document generate(VCard... vcards) throws TemplateException {
-		HCardTemplate template = new HCardTemplate();
+		HCardPage template = new HCardPage();
 		for (VCard vcard : vcards) {
 			template.addVCard(vcard);
 		}

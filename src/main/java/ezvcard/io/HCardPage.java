@@ -55,11 +55,11 @@ import freemarker.template.TemplateException;
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
-public class HCardTemplate {
+public class HCardPage {
 	protected static final Template template;
 	static {
 		Configuration cfg = new Configuration();
-		cfg.setClassForTemplateLoading(HCardTemplate.class, "");
+		cfg.setClassForTemplateLoading(HCardPage.class, "");
 		cfg.setObjectWrapper(new DefaultObjectWrapper());
 		cfg.setWhitespaceStripping(true);
 		try {
@@ -125,7 +125,7 @@ public class HCardTemplate {
 	protected PhotoType readImage(String name, ImageTypeParameter mediaType) {
 		InputStream in = null;
 		try {
-			in = HCardTemplate.class.getResourceAsStream(name);
+			in = HCardPage.class.getResourceAsStream(name);
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			byte buffer[] = new byte[4092];
 			int read;
