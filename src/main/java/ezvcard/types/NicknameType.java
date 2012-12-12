@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCardSubTypes;
+import ezvcard.VCardVersion;
 import ezvcard.util.HCardUtils;
 
 /*
@@ -51,7 +52,7 @@ import ezvcard.util.HCardUtils;
  * vCard property name: NICKNAME
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * vCard versions: 3.0, 4.0
  * </p>
  * @author Michael Angstadt
  */
@@ -187,6 +188,11 @@ public class NicknameType extends TextListType {
 	 */
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
+	}
+
+	@Override
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V3_0, VCardVersion.V4_0 };
 	}
 
 	@Override

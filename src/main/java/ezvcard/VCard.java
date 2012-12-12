@@ -701,7 +701,7 @@ public class VCard {
 	 * vCard property name: NICKNAME
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * vCard versions: 3.0, 4.0
 	 * </p>
 	 * @return the person's nicknames
 	 */
@@ -715,7 +715,7 @@ public class VCard {
 	 * vCard property name: NICKNAME
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * vCard versions: 3.0, 4.0
 	 * </p>
 	 * @return the person's nicknames
 	 */
@@ -731,7 +731,7 @@ public class VCard {
 	 * vCard property name: NICKNAME
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * vCard versions: 3.0, 4.0
 	 * </p>
 	 * @param nickname the NICKNAME property to add
 	 */
@@ -745,7 +745,7 @@ public class VCard {
 	 * vCard property name: NICKNAME
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * vCard versions: 3.0, 4.0
 	 * </p>
 	 * @param nickname the person's nicknames
 	 */
