@@ -1,6 +1,8 @@
 package ezvcard.io;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -81,18 +83,65 @@ public class HCardReader {
 	protected CategoriesType categories;
 
 	/**
-	 * Reads vCards from a webpage.
 	 * @param url the URL of the webpage
-	 * @throws IOException if there's a problem opening the webpage
+	 * @throws IOException if there's a problem loading the webpage
 	 */
 	public HCardReader(URL url) throws IOException {
 		pageUrl = url.toString();
-		Document document = Jsoup.connect(pageUrl).get();
+		Document document = Jsoup.parse(url, 30000);
 		init(document, url.getRef());
 	}
 
 	/**
-	 * Reads vCards from an HTML page.
+	 * @param in the input stream to the HTML page
+	 * @throws IOException if there's a problem reading the HTML page
+	 */
+	public HCardReader(InputStream in) throws IOException {
+		this(in, null);
+	}
+
+	/**
+	 * @param in the input stream to the HTML page
+	 * @param pageUrl the original URL of the HTML page
+	 * @throws IOException if there's a problem reading the HTML page
+	 */
+	public HCardReader(InputStream in, String pageUrl) throws IOException {
+		this.pageUrl = pageUrl;
+		Document document = (pageUrl == null) ? Jsoup.parse(in, null, "") : Jsoup.parse(in, null, pageUrl);
+		String anchor = getAnchor(pageUrl);
+		init(document, anchor);
+	}
+
+	/**
+	 * @param reader the input stream to the HTML page
+	 * @throws IOException if there's a problem reading the HTML page
+	 */
+	public HCardReader(Reader reader) throws IOException {
+		this(reader, null);
+	}
+
+	/**
+	 * @param reader the input stream to the HTML page
+	 * @param pageUrl the original URL of the HTML page
+	 * @throws IOException if there's a problem reading the HTML page
+	 */
+	public HCardReader(Reader reader, String pageUrl) throws IOException {
+		this.pageUrl = pageUrl;
+
+		StringBuilder sb = new StringBuilder();
+		char buffer[] = new char[4096];
+		int read;
+		while ((read = reader.read(buffer)) != -1) {
+			sb.append(buffer, 0, read);
+		}
+		String html = sb.toString();
+
+		Document document = (pageUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, pageUrl);
+		String anchor = getAnchor(pageUrl);
+		init(document, anchor);
+	}
+
+	/**
 	 * @param html the HTML page
 	 */
 	public HCardReader(String html) {
@@ -100,31 +149,21 @@ public class HCardReader {
 	}
 
 	/**
-	 * Reads vCards from an HTML page.
 	 * @param html the HTML page
-	 * @param pageUrl the URL of the page
+	 * @param pageUrl the original URL of the HTML page
 	 */
 	public HCardReader(String html, String pageUrl) {
 		this.pageUrl = pageUrl;
 
-		String anchor = null;
-		if (pageUrl != null) {
-			try {
-				URL url = new URL(pageUrl);
-				anchor = url.getRef();
-			} catch (MalformedURLException e) {
-				//ignore
-			}
-		}
-
 		Document document = (pageUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, pageUrl);
+		String anchor = getAnchor(pageUrl);
 		init(document, anchor);
 	}
 
 	/**
 	 * Constructor for reading embedded vCards.
 	 * @param embeddedVCard the HTML element of the embedded vCard
-	 * @param pageUrl the URL of the page
+	 * @param pageUrl the original URL of the HTML page
 	 */
 	private HCardReader(Element embeddedVCard, String pageUrl) {
 		this.pageUrl = pageUrl;
@@ -143,6 +182,25 @@ public class HCardReader {
 
 		vcardElements = searchIn.getElementsByClass("vcard");
 		it = vcardElements.iterator();
+	}
+
+	/**
+	 * Gets the anchor part of a URL.
+	 * @param urlStr the URL
+	 * @return the anchor (e.g. "foo" from the URL
+	 * "http://example.com/index.php#foo")
+	 */
+	private String getAnchor(String urlStr) {
+		if (urlStr == null) {
+			return null;
+		}
+
+		try {
+			URL url = new URL(urlStr);
+			return url.getRef();
+		} catch (MalformedURLException e) {
+			return null;
+		}
 	}
 
 	/**
