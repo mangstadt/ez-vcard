@@ -1,6 +1,8 @@
 package ezvcard.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -8,7 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ezvcard.EZVCard;
 import ezvcard.VCard;
+import ezvcard.parameters.ImageTypeParameter;
+import ezvcard.types.PhotoType;
 import ezvcard.util.DataUri;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -51,10 +56,8 @@ import freemarker.template.TemplateException;
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
 public class HCardTemplate {
-	protected Template template;
-	protected final List<VCard> vcards = new ArrayList<VCard>();
-
-	public HCardTemplate() {
+	protected static final Template template;
+	static {
 		Configuration cfg = new Configuration();
 		cfg.setClassForTemplateLoading(HCardTemplate.class, "");
 		cfg.setObjectWrapper(new DefaultObjectWrapper());
@@ -63,8 +66,11 @@ public class HCardTemplate {
 			template = cfg.getTemplate("hcard-template.html");
 		} catch (IOException e) {
 			//should never be thrown because it's always on the classpath
+			throw new RuntimeException(e);
 		}
 	}
+
+	protected final List<VCard> vcards = new ArrayList<VCard>();
 
 	/**
 	 * Adds a vCard to the HTML page.
@@ -102,13 +108,44 @@ public class HCardTemplate {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("vcards", vcards);
 		map.put("dataUri", new DataUriGenerator());
+		map.put("translucentBg", readImage("translucent-bg.png", ImageTypeParameter.PNG));
+		map.put("noProfile", readImage("no-profile.png", ImageTypeParameter.PNG));
+		map.put("ezVCardVersion", EZVCard.VERSION);
+		map.put("ezVCardUrl", EZVCard.URL);
 		template.process(map, writer);
 		writer.flush();
 	}
 
 	/**
+	 * Reads an image from the classpath.
+	 * @param name the file name, relative to this class
+	 * @param mediaType the media type of the image
+	 * @return the image
+	 */
+	protected PhotoType readImage(String name, ImageTypeParameter mediaType) {
+		InputStream in = null;
+		try {
+			in = HCardTemplate.class.getResourceAsStream(name);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			byte buffer[] = new byte[4092];
+			int read;
+			while ((read = in.read(buffer)) != -1) {
+				out.write(buffer, 0, read);
+			}
+			return new PhotoType(out.toByteArray(), mediaType);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	/**
 	 * Generates data URIs for the freemarker template.
-	 * @author Michael Angstadt
 	 */
 	public static class DataUriGenerator {
 		public String generate(String contentType, byte[] data) {
