@@ -22,6 +22,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.HCardUnitTestUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -417,5 +418,50 @@ public class DateOrTimeTypeTest {
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertEquals(expected, t.getText());
+	}
+
+	@Test
+	public void unmarshalHtml() throws Exception {
+		List<String> warnings = new ArrayList<String>();
+
+		Calendar c = Calendar.getInstance();
+		c.clear();
+		c.set(Calendar.YEAR, 1970);
+		c.set(Calendar.MONTH, Calendar.MARCH);
+		c.set(Calendar.DAY_OF_MONTH, 10);
+		Date expected = c.getTime();
+
+		//valid date string
+		{
+			warnings.clear();
+			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time datetime=\"1970-03-10\">March 10, 1970</time>");
+			DateOrTimeType t = new DateOrTimeType("DATE");
+			t.unmarshalHtml(element, warnings);
+
+			assertEquals(expected, t.getDate());
+			assertEquals(0, warnings.size());
+		}
+
+		//date string in tag text
+		{
+			warnings.clear();
+			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time>1970-03-10</time>");
+			DateOrTimeType t = new DateOrTimeType("DATE");
+			t.unmarshalHtml(element, warnings);
+
+			assertEquals(expected, t.getDate());
+			assertEquals(0, warnings.size());
+		}
+
+		//invalid date string
+		{
+			warnings.clear();
+			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time>March 10, 1970</time>");
+			DateOrTimeType t = new DateOrTimeType("DATE");
+			t.unmarshalHtml(element, warnings);
+
+			assertNull(t.getDate());
+			assertEquals(1, warnings.size());
+		}
 	}
 }
