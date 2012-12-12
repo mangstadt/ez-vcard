@@ -120,7 +120,16 @@ public class TimestampType extends VCardType {
 
 	@Override
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		String value = HCardUtils.getElementValue(element);
+		String value = null;
+		if ("time".equals(element.tagName())) {
+			String datetime = element.attr("datetime");
+			if (datetime.length() > 0) {
+				value = datetime;
+			}
+		}
+		if (value == null) {
+			value = HCardUtils.getElementValue(element);
+		}
 		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}
 }

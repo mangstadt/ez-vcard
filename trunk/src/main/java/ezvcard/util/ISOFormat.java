@@ -97,7 +97,12 @@ public enum ISOFormat {
 	/**
 	 * Example: 2012-07-01T19:21:10Z
 	 */
-	UTC_TIME_EXTENDED("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z", "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss'Z'");
+	UTC_TIME_EXTENDED("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z", "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+	
+	/**
+	 * Example: 2012-07-01T14:21:10-0500
+	 */
+	HCARD_TIME_TAG("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[-\\+]\\d{2}:?\\d{2}", "yyyy-MM-dd'T'HH:mm:ssZ");
 	//@formatter:on
 
 	/**
