@@ -145,6 +145,18 @@ public class HCardUtilsTest {
 	}
 
 	@Test
+	public void getElementValue_skip_del_tags() {
+		Element element = toHtmlElement("<div>This element contains <del>a lot of</del> text</div>");
+		assertEquals("This element contains  text", HCardUtils.getElementValue(element));
+	}
+
+	@Test
+	public void getElementValue_skip_del_tags_in_value() {
+		Element element = toHtmlElement("<div>This element <span class=\"value\">contains <del>a lot of</del> text</span></div>");
+		assertEquals("contains  text", HCardUtils.getElementValue(element));
+	}
+
+	@Test
 	public void getElementValuesByCssClass() {
 		//@formatter:off
 		StringBuilder html = new StringBuilder();
