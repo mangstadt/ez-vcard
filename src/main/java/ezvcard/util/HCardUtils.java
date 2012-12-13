@@ -100,6 +100,8 @@ public class HCardUtils {
 					if ("br".equals(e.tagName())) {
 						//convert "<br>" to a newline
 						value.append(System.getProperty("line.separator"));
+					} else if ("del".equals(e.tagName())) {
+						//skip "<del>" tags
 					} else {
 						visitForValue(e, value);
 					}
