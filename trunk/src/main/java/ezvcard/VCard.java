@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 
 import ezvcard.io.VCardReader;
 import ezvcard.io.VCardWriter;
-import ezvcard.io.XCardMarshaller;
+import ezvcard.io.XCardDocument;
 import ezvcard.io.XCardReader;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
@@ -279,11 +279,11 @@ public class VCard {
 
 	/**
 	 * Writes this vCard to an XML document (xCard). Use the
-	 * {@link XCardMarshaller} class for more control over how the vCard is
+	 * {@link XCardDocument} class for more control over how the vCard is
 	 * written.
 	 */
 	public String writeXml() {
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.addVCard(this);
 
 		StringWriter sw = new StringWriter();
@@ -296,14 +296,14 @@ public class VCard {
 	}
 
 	/**
-	 * Writes this vCard to an XML file (xCard). Use the {@link XCardMarshaller}
+	 * Writes this vCard to an XML file (xCard). Use the {@link XCardDocument}
 	 * class for more control over how the vCard is written.
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
 	 * @throws TransformerException if there's a problem writing the vCard
 	 */
 	public void writeXml(File file) throws IOException, TransformerException {
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.addVCard(this);
 
 		Writer writer = null;
