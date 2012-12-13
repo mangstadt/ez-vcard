@@ -68,7 +68,7 @@ import ezvcard.util.ListMultimap;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
-public class XCardMarshaller {
+public class XCardDocument {
 	/**
 	 * Defines the names of the XML elements that are used to hold each
 	 * parameter's value.
@@ -97,14 +97,14 @@ public class XCardMarshaller {
 	private final Document document;
 	private final Element root;
 
-	public XCardMarshaller() {
+	public XCardDocument() {
 		this(CompatibilityMode.RFC);
 	}
 
 	/**
 	 * @param compatibilityMode the compatibility mode
 	 */
-	public XCardMarshaller(CompatibilityMode compatibilityMode) {
+	public XCardDocument(CompatibilityMode compatibilityMode) {
 		this.compatibilityMode = compatibilityMode;
 
 		DocumentBuilder builder = null;

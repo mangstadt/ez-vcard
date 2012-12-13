@@ -50,7 +50,7 @@ import ezvcard.util.XCardUtils;
 /**
  * @author Michael Angstadt
  */
-public class XCardMarshallerTest {
+public class XCardDocumentTest {
 	/**
 	 * A basic test with one type.
 	 */
@@ -60,7 +60,7 @@ public class XCardMarshallerTest {
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
 
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
@@ -92,7 +92,7 @@ public class XCardMarshallerTest {
 		note.getSubTypes().put("X-CUSTOM", "xxx");
 		vcard.addNote(note);
 
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
@@ -141,7 +141,7 @@ public class XCardMarshallerTest {
 		note.setGroup("group2");
 		vcard.addNote(note);
 
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
@@ -180,7 +180,7 @@ public class XCardMarshallerTest {
 		NoteType note = new NoteType("Hello world!");
 		vcard2.addNote(note);
 
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard1);
 		xcm.addVCard(vcard2);
@@ -209,14 +209,14 @@ public class XCardMarshallerTest {
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
 
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.addVCard(vcard);
 		StringWriter sw = new StringWriter();
 		xcm.write(sw);
 		String xml = sw.toString();
 		assertTrue(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
 
-		xcm = new XCardMarshaller();
+		xcm = new XCardDocument();
 		xcm.setAddProdId(true);
 		xcm.addVCard(vcard);
 		sw = new StringWriter();
@@ -224,7 +224,7 @@ public class XCardMarshallerTest {
 		xml = sw.toString();
 		assertTrue(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
 
-		xcm = new XCardMarshaller();
+		xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 		sw = new StringWriter();
@@ -244,14 +244,14 @@ public class XCardMarshallerTest {
 		vcard.setProdId(prodId);
 
 		StringWriter sw = new StringWriter();
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 		xcm.write(sw);
 		assertTrue(sw.toString().matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
 
 		sw = new StringWriter();
-		xcm = new XCardMarshaller();
+		xcm = new XCardDocument();
 		xcm.setAddProdId(true);
 		xcm.addVCard(vcard);
 		xcm.write(sw);
@@ -280,7 +280,7 @@ public class XCardMarshallerTest {
 		num.luckyNum = 13;
 		vcard.addExtendedType(num);
 
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
@@ -324,7 +324,7 @@ public class XCardMarshallerTest {
 		age.age = 22;
 		vcard.addExtendedType(age);
 
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 

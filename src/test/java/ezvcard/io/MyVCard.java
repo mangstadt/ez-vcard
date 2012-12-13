@@ -111,7 +111,7 @@ public class MyVCard {
 		source.setValue("http://mikeangstadt.name/" + file.getName());
 		System.out.println("Writing " + file.getName() + "...");
 		writer = new FileWriter(file);
-		XCardMarshaller xcm = new XCardMarshaller();
+		XCardDocument xcm = new XCardDocument();
 		xcm.addVCard(vcard);
 		xcm.write(writer);
 		warnings = xcm.getWarnings();
