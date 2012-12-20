@@ -56,7 +56,7 @@ public class EZVCardTest {
 		vb.prop("FN").value("John Doe");
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		VCard vcard = EZVCard.parse(vb.toString()).warnings(warnings).first();
+		VCard vcard = Ezvcard.parse(vb.toString()).warnings(warnings).first();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals(1, warnings.size());
@@ -70,7 +70,7 @@ public class EZVCardTest {
 		vb.prop("FN").value("Jane Doe");
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		List<VCard> vcards = EZVCard.parse(vb.toString()).warnings(warnings).all();
+		List<VCard> vcards = Ezvcard.parse(vb.toString()).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
@@ -91,7 +91,7 @@ public class EZVCardTest {
 		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
 		vb.prop("X-LUCKY-NUM").value("22");
 
-		VCard vcard = EZVCard.parse(vb.toString()).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parse(vb.toString()).register(LuckyNumType.class).first();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getExtendedType(LuckyNumType.class);
 		assertEquals(1, ext.size());
@@ -104,7 +104,7 @@ public class EZVCardTest {
 		xb.prop("fn", "<text>John Doe</text>");
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		VCard vcard = EZVCard.parseXml(xb.toString()).warnings(warnings).first();
+		VCard vcard = Ezvcard.parseXml(xb.toString()).warnings(warnings).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals(1, warnings.size());
@@ -118,7 +118,7 @@ public class EZVCardTest {
 		xb.prop("fn", "<text>Jane Doe</text>");
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		List<VCard> vcards = EZVCard.parseXml(xb.toString()).warnings(warnings).all();
+		List<VCard> vcards = Ezvcard.parseXml(xb.toString()).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
@@ -139,7 +139,7 @@ public class EZVCardTest {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("http://luckynum.com", "lucky-num", "<integer>22</integer>");
 
-		VCard vcard = EZVCard.parseXml(xb.toString()).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseXml(xb.toString()).register(LuckyNumType.class).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getExtendedType(LuckyNumType.class);
 		assertEquals(1, ext.size());
@@ -154,7 +154,7 @@ public class EZVCardTest {
 		sb.append("</div>");
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		VCard vcard = EZVCard.parseHtml(sb.toString()).warnings(warnings).first();
+		VCard vcard = Ezvcard.parseHtml(sb.toString()).warnings(warnings).first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals(1, warnings.size());
@@ -173,7 +173,7 @@ public class EZVCardTest {
 		sb.append("</html>");
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		List<VCard> vcards = EZVCard.parseHtml(sb.toString()).warnings(warnings).all();
+		List<VCard> vcards = Ezvcard.parseHtml(sb.toString()).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
@@ -196,7 +196,7 @@ public class EZVCardTest {
 		sb.append("<div class=\"x-lucky-num\">22</div>");
 		sb.append("</div>");
 
-		VCard vcard = EZVCard.parseHtml(sb.toString()).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseHtml(sb.toString()).register(LuckyNumType.class).first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getExtendedType(LuckyNumType.class);
 		assertEquals(1, ext.size());
@@ -212,14 +212,14 @@ public class EZVCardTest {
 		String html = sb.toString();
 
 		//without
-		VCard vcard = EZVCard.parseHtml(html).first();
+		VCard vcard = Ezvcard.parseHtml(html).first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertTrue(vcard.getSources().isEmpty());
 		assertEquals("profile.html", vcard.getUrls().get(0).getValue());
 
 		//with
-		vcard = EZVCard.parseHtml(html).pageUrl("http://www.example.com/index.html").first();
+		vcard = Ezvcard.parseHtml(html).pageUrl("http://www.example.com/index.html").first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals("http://www.example.com/index.html", vcard.getSources().get(0).getValue());
@@ -233,7 +233,7 @@ public class EZVCardTest {
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		String actual = EZVCard.write(vcard).warnings(warnings).go();
+		String actual = Ezvcard.write(vcard).warnings(warnings).go();
 		assertTrue(actual.contains("VERSION:2.1"));
 		assertTrue(actual.contains("FN:John Doe"));
 		assertEquals(1, warnings.size());
@@ -252,7 +252,7 @@ public class EZVCardTest {
 		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		String actual = EZVCard.write(vcard1, vcard2, vcard3).warnings(warnings).go();
+		String actual = Ezvcard.write(vcard1, vcard2, vcard3).warnings(warnings).go();
 		assertTrue(actual.matches("(?s)BEGIN:VCARD.*?VERSION:2\\.1.*?FN:John Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:3\\.0.*?FN:Jane Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:4\\.0.*?FN:Janet Doe.*?END:VCARD.*"));
 		assertEquals(3, warnings.size());
 	}
@@ -266,7 +266,7 @@ public class EZVCardTest {
 		VCard vcard3 = new VCard();
 		vcard3.setVersion(VCardVersion.V4_0);
 
-		String actual = EZVCard.write(vcard1, vcard2, vcard3).version(VCardVersion.V4_0).go();
+		String actual = Ezvcard.write(vcard1, vcard2, vcard3).version(VCardVersion.V4_0).go();
 		assertTrue(actual.matches("(?s)(.*?VERSION:4\\.0){3}.*"));
 	}
 
@@ -275,13 +275,13 @@ public class EZVCardTest {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V3_0);
 
-		String actual = EZVCard.write(vcard).go();
+		String actual = Ezvcard.write(vcard).go();
 		assertTrue(actual.contains("\r\nPRODID:"));
 
-		actual = EZVCard.write(vcard).prodId(true).go();
+		actual = Ezvcard.write(vcard).prodId(true).go();
 		assertTrue(actual.contains("\r\nPRODID:"));
 
-		actual = EZVCard.write(vcard).prodId(false).go();
+		actual = Ezvcard.write(vcard).prodId(false).go();
 		assertFalse(actual.contains("\r\nPRODID:"));
 	}
 
@@ -291,7 +291,7 @@ public class EZVCardTest {
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		String actual = EZVCard.writeXml(vcard).warnings(warnings).go();
+		String actual = Ezvcard.writeXml(vcard).warnings(warnings).go();
 		assertTrue(actual.contains("<fn><text>John Doe</text></fn>"));
 		assertEquals(1, warnings.size());
 	}
@@ -306,7 +306,7 @@ public class EZVCardTest {
 		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		String actual = EZVCard.writeXml(vcard1, vcard2, vcard3).warnings(warnings).go();
+		String actual = Ezvcard.writeXml(vcard1, vcard2, vcard3).warnings(warnings).go();
 		assertTrue(actual.matches("(?s).*?<vcard>.*?<fn><text>John Doe</text></fn>.*?</vcard>.*?<vcard>.*?<fn><text>Jane Doe</text></fn>.*?</vcard>*?<vcard>.*?<fn><text>Janet Doe</text></fn>.*?</vcard>.*"));
 		assertEquals(3, warnings.size());
 	}
@@ -315,13 +315,13 @@ public class EZVCardTest {
 	public void writeXml_prodId() throws Exception {
 		VCard vcard = new VCard();
 
-		String actual = EZVCard.writeXml(vcard).go();
+		String actual = Ezvcard.writeXml(vcard).go();
 		assertTrue(actual.contains("<prodid>"));
 
-		actual = EZVCard.writeXml(vcard).prodId(true).go();
+		actual = Ezvcard.writeXml(vcard).prodId(true).go();
 		assertTrue(actual.contains("<prodid>"));
 
-		actual = EZVCard.writeXml(vcard).prodId(false).go();
+		actual = Ezvcard.writeXml(vcard).prodId(false).go();
 		assertFalse(actual.contains("<prodid>"));
 	}
 
@@ -330,7 +330,7 @@ public class EZVCardTest {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
 
-		String actual = EZVCard.writeHtml(vcard).go();
+		String actual = Ezvcard.writeHtml(vcard).go();
 		Document document = Jsoup.parse(actual);
 		assertEquals(1, document.select(".vcard").size());
 		assertEquals(1, document.select(".vcard .fn").size());
@@ -345,7 +345,7 @@ public class EZVCardTest {
 		VCard vcard3 = new VCard();
 		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
 
-		String actual = EZVCard.writeHtml(vcard1, vcard2, vcard3).go();
+		String actual = Ezvcard.writeHtml(vcard1, vcard2, vcard3).go();
 		Document document = Jsoup.parse(actual);
 		assertEquals(3, document.select(".vcard").size());
 		assertEquals(3, document.select(".vcard .fn").size());
