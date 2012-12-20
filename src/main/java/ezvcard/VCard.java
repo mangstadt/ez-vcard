@@ -172,7 +172,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
 	 */
 	public String write() {
-		return EZVCard.write(this).go();
+		return Ezvcard.write(this).go();
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
 	 */
 	public void write(File file) throws IOException {
-		EZVCard.write(this).go(file);
+		Ezvcard.write(this).go(file);
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
 	 */
 	public void write(OutputStream out) throws IOException {
-		EZVCard.write(this).go(out);
+		Ezvcard.write(this).go(out);
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
 	 */
 	public void write(Writer writer) throws IOException {
-		EZVCard.write(this).go(writer);
+		Ezvcard.write(this).go(writer);
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public String writeXml() {
-		return EZVCard.writeXml(this).go();
+		return Ezvcard.writeXml(this).go();
 	}
 
 	/**
@@ -273,7 +273,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(File file) throws IOException, TransformerException {
-		EZVCard.writeXml(this).go(file);
+		Ezvcard.writeXml(this).go(file);
 	}
 
 	/**
@@ -290,7 +290,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(OutputStream out) throws TransformerException {
-		EZVCard.writeXml(this).go(out);
+		Ezvcard.writeXml(this).go(out);
 	}
 
 	/**
@@ -306,7 +306,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(Writer writer) throws TransformerException {
-		EZVCard.writeXml(this).go(writer);
+		Ezvcard.writeXml(this).go(writer);
 	}
 
 	/**
@@ -321,7 +321,7 @@ public class VCard {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public String writeHtml() throws TemplateException {
-		return EZVCard.writeHtml(this).go();
+		return Ezvcard.writeHtml(this).go();
 	}
 
 	/**
@@ -339,7 +339,7 @@ public class VCard {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(File file) throws IOException, TemplateException {
-		EZVCard.writeHtml(this).go(file);
+		Ezvcard.writeHtml(this).go(file);
 	}
 
 	/**
@@ -357,7 +357,7 @@ public class VCard {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(OutputStream out) throws IOException, TemplateException {
-		EZVCard.writeHtml(this).go(out);
+		Ezvcard.writeHtml(this).go(out);
 	}
 
 	/**
@@ -375,7 +375,7 @@ public class VCard {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(Writer writer) throws IOException, TemplateException {
-		EZVCard.writeHtml(this).go(writer);
+		Ezvcard.writeHtml(this).go(writer);
 	}
 
 	/**

@@ -16,7 +16,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 
-import ezvcard.EZVCard;
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
@@ -355,7 +355,7 @@ public class HCardPageTest {
 			assertArrayEquals(e.getData(), a.getData());
 		}
 
-		assertEquals("ez-vcard " + EZVCard.VERSION, actual.getProdId().getValue());
+		assertEquals("ez-vcard " + Ezvcard.VERSION, actual.getProdId().getValue());
 
 		assertNull(reader.readNext());
 	}

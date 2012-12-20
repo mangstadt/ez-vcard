@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ezvcard.EZVCard;
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.PhotoType;
@@ -110,8 +110,8 @@ public class HCardPage {
 		map.put("dataUri", new DataUriGenerator());
 		map.put("translucentBg", readImage("translucent-bg.png", ImageTypeParameter.PNG));
 		map.put("noProfile", readImage("no-profile.png", ImageTypeParameter.PNG));
-		map.put("ezVCardVersion", EZVCard.VERSION);
-		map.put("ezVCardUrl", EZVCard.URL);
+		map.put("ezVCardVersion", Ezvcard.VERSION);
+		map.put("ezVCardUrl", Ezvcard.URL);
 		template.process(map, writer);
 		writer.flush();
 	}
