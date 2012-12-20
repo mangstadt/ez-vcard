@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -87,5 +88,10 @@ public class LuckyNumType extends VCardType {
 	@Override
 	public QName getQName() {
 		return new QName("http://luckynum.com", "lucky-num");
+	}
+
+	@Override
+	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+		luckyNum = Integer.parseInt(HCardUtils.getElementValue(element));
 	}
 }

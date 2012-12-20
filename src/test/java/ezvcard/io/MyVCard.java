@@ -6,8 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.Date;
 import java.util.List;
+
+import javax.xml.transform.TransformerException;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -88,33 +89,43 @@ public class MyVCard {
 		SourceType source = new SourceType();
 		vcard.addSource(source);
 
-		vcard.setRevision(new RevisionType(new Date()));
+		vcard.setRevision(RevisionType.now());
 
-		//write to file
 		File file = new File("mike-angstadt.vcf");
-		source.setValue("http://mikeangstadt.name/" + file.getName());
+		writeVCard(vcard, file, VCardVersion.V3_0);
+
+		System.out.println();
+
+		file = new File("mike-angstadt.xml");
+		writeXCard(vcard, file);
+	}
+
+	private static void writeVCard(VCard vcard, File file, VCardVersion version) throws IOException {
+		vcard.getSources().get(0).setValue("http://mikeangstadt.name/" + file.getName());
+
 		System.out.println("Writing " + file.getName() + "...");
 		Writer writer = new FileWriter(file);
-		VCardWriter vcw = new VCardWriter(writer, VCardVersion.V3_0);
+		VCardWriter vcw = new VCardWriter(writer, version);
 		vcw.write(vcard);
+
 		List<String> warnings = vcw.getWarnings();
 		System.out.println("Completed with " + warnings.size() + " warnings.");
 		for (String warning : warnings) {
 			System.out.println("* " + warning);
 		}
 		writer.close();
+	}
 
-		System.out.println();
+	private static void writeXCard(VCard vcard, File file) throws IOException, TransformerException {
+		vcard.getSources().get(0).setValue("http://mikeangstadt.name/" + file.getName());
 
-		//write to XML file
-		file = new File("mike-angstadt.xml");
-		source.setValue("http://mikeangstadt.name/" + file.getName());
 		System.out.println("Writing " + file.getName() + "...");
-		writer = new FileWriter(file);
-		XCardDocument xcm = new XCardDocument();
-		xcm.addVCard(vcard);
-		xcm.write(writer);
-		warnings = xcm.getWarnings();
+		Writer writer = new FileWriter(file);
+		XCardDocument xcardDoc = new XCardDocument();
+		xcardDoc.addVCard(vcard);
+		xcardDoc.write(writer);
+
+		List<String> warnings = xcardDoc.getWarnings();
 		System.out.println("Completed with " + warnings.size() + " warnings.");
 		for (String warning : warnings) {
 			System.out.println("* " + warning);
