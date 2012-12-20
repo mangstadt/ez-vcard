@@ -1,12 +1,8 @@
 package ezvcard;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +10,9 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
-import org.xml.sax.SAXException;
-
-import ezvcard.io.VCardReader;
+import ezvcard.io.HCardPage;
 import ezvcard.io.VCardWriter;
 import ezvcard.io.XCardDocument;
-import ezvcard.io.XCardReader;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.AnniversaryType;
@@ -72,6 +65,7 @@ import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
 import ezvcard.util.ListMultimap;
+import freemarker.template.TemplateException;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -160,165 +154,228 @@ public class VCard {
 	private ListMultimap<String, VCardType> extendedTypes = new ListMultimap<String, VCardType>();
 
 	/**
-	 * Parses a vCard string. Use the {@link VCardReader} class for more control
-	 * over how the vCard is parsed.
-	 * @param str the vCard
-	 * @return the parsed vCard
-	 */
-	public static VCard parse(String str) {
-		try {
-			VCardReader vcr = new VCardReader(new StringReader(str));
-			return vcr.readNext();
-		} catch (IOException e) {
-			//never thrown because we're reading from string
-			return null;
-		}
-	}
-
-	/**
-	 * Parses a vCard file. Use the {@link VCardReader} class for more control
-	 * over how the vCard is parsed.
-	 * @param file the vCard
-	 * @return the parsed vCard
-	 * @throws IOException if there's a problem reading the file
-	 */
-	public static VCard parse(File file) throws IOException {
-		VCardReader vcr = null;
-		try {
-			vcr = new VCardReader(new FileReader(file));
-			return vcr.readNext();
-		} finally {
-			if (vcr != null) {
-				try {
-					vcr.close();
-				} catch (IOException e) {
-					//ignore
-				}
-			}
-		}
-	}
-
-	/**
-	 * Parses a vCard XML document (xCard). Use the {@link XCardReader} class
-	 * for more control over how the vCard is parsed.
-	 * @param xml the vCard XML string
-	 * @return the parsed vCard
-	 * @throws SAXException if there's a problem parsing the XML
-	 */
-	public static VCard parseXml(String xml) throws SAXException {
-		try {
-			XCardReader xcr = new XCardReader(new StringReader(xml));
-			return xcr.readNext();
-		} catch (IOException e) {
-			//never thrown because we're reading from string
-			return null;
-		}
-	}
-
-	/**
-	 * Parses a vCard XML file (xCard). Use the {@link XCardReader} class for
-	 * more control over how the vCard is parsed.
-	 * @param file the vCard XML file
-	 * @return the parsed vCard
-	 * @throws IOException if there's a problem reading the file
-	 * @throws SAXException if there's a problem parsing the XML
-	 */
-	public static VCard parseXml(File file) throws IOException, SAXException {
-		Reader reader = null;
-		try {
-			reader = new FileReader(file);
-			XCardReader xcr = new XCardReader(reader);
-			return xcr.readNext();
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					//ignore
-				}
-			}
-		}
-	}
-
-	/**
-	 * Writes this vCard to a string. Use the {@link VCardWriter} class for more
-	 * control over how the vCard is written.
+	 * <p>
+	 * Marshals this vCard to its text representation.
+	 * </p>
+	 * <p>
+	 * The vCard will be marshalled to whatever version is attached to this
+	 * VCard object (see {@link #setVersion(VCardVersion)}). If no version is
+	 * set, then it will be marshalled to 3.0.
+	 * </p>
+	 * <p>
+	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * </p>
+	 * @return the vCard string
+	 * @see VCardWriter
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
 	 */
 	public String write() {
-		StringWriter sw = new StringWriter();
-		try {
-			VCardWriter writer = new VCardWriter(sw, (version == null) ? VCardVersion.V3_0 : version);
-			writer.write(this);
-		} catch (IOException e) {
-			//never thrown because we're writing to string
-		}
-		return sw.toString();
+		return EZVCard.write(this).go();
 	}
 
 	/**
-	 * Writes this vCard to a file. Use the {@link VCardWriter} class for more
-	 * control over how the vCard is written.
-	 * @param file the file to write to
+	 * <p>
+	 * Marshals this vCard to its text representation.
+	 * </p>
+	 * <p>
+	 * The vCard will be marshalled to whatever version is attached to this
+	 * VCard object (see {@link #setVersion(VCardVersion)}). If no version is
+	 * set, then it will be marshalled to 3.0.
+	 * </p>
+	 * <p>
+	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * </p>
+	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem writing to the file
+	 * @see VCardWriter
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
 	 */
 	public void write(File file) throws IOException {
-		VCardWriter vcw = null;
-		try {
-			vcw = new VCardWriter(new FileWriter(file), (version == null) ? VCardVersion.V3_0 : version);
-			vcw.write(this);
-		} finally {
-			if (vcw != null) {
-				try {
-					vcw.close();
-				} catch (IOException e) {
-					//ignore
-				}
-			}
-		}
+		EZVCard.write(this).go(file);
 	}
 
 	/**
-	 * Writes this vCard to an XML document (xCard). Use the
-	 * {@link XCardDocument} class for more control over how the vCard is
-	 * written.
+	 * <p>
+	 * Marshals this vCard to its text representation.
+	 * </p>
+	 * <p>
+	 * The vCard will be marshalled to whatever version is attached to this
+	 * VCard object (see {@link #setVersion(VCardVersion)}). If no version is
+	 * set, then it will be marshalled to 3.0.
+	 * </p>
+	 * <p>
+	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * </p>
+	 * @param out the output stream to write the vCard to
+	 * @see VCardWriter
+	 * @throws IOException if there's a problem writing to the output stream
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 */
+	public void write(OutputStream out) throws IOException {
+		EZVCard.write(this).go(out);
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to its text representation.
+	 * </p>
+	 * <p>
+	 * The vCard will be marshalled to whatever version is attached to this
+	 * VCard object (see {@link #setVersion(VCardVersion)}). If no version is
+	 * set, then it will be marshalled to 3.0.
+	 * </p>
+	 * <p>
+	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * </p>
+	 * @param writer the writer to write the vCard to
+	 * @throws IOException if there's a problem writing to the writer
+	 * @see VCardWriter
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 */
+	public void write(Writer writer) throws IOException {
+		EZVCard.write(this).go(writer);
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to its XML representation (xCard).
+	 * </p>
+	 * <p>
+	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * </p>
+	 * @return the vCard XML document
+	 * @see XCardDocument
+	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public String writeXml() {
-		XCardDocument xcm = new XCardDocument();
-		xcm.addVCard(this);
-
-		StringWriter sw = new StringWriter();
-		try {
-			xcm.write(sw);
-		} catch (TransformerException e) {
-			//never thrown because we're writing to string
-		}
-		return sw.toString();
+		return EZVCard.writeXml(this).go();
 	}
 
 	/**
-	 * Writes this vCard to an XML file (xCard). Use the {@link XCardDocument}
-	 * class for more control over how the vCard is written.
+	 * <p>
+	 * Marshals this vCard to its XML representation (xCard).
+	 * </p>
+	 * <p>
+	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * </p>
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
 	 * @throws TransformerException if there's a problem writing the vCard
+	 * @see XCardDocument
+	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(File file) throws IOException, TransformerException {
-		XCardDocument xcm = new XCardDocument();
-		xcm.addVCard(this);
+		EZVCard.writeXml(this).go(file);
+	}
 
-		Writer writer = null;
-		try {
-			writer = new FileWriter(file);
-			xcm.write(writer);
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					//ignore
-				}
-			}
-		}
+	/**
+	 * <p>
+	 * Marshals this vCard to its XML representation (xCard).
+	 * </p>
+	 * <p>
+	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * </p>
+	 * @param out the output stream to write the vCard to
+	 * @throws TransformerException if there's a problem writing to the output
+	 * stream
+	 * @see XCardDocument
+	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
+	 */
+	public void writeXml(OutputStream out) throws TransformerException {
+		EZVCard.writeXml(this).go(out);
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to its XML representation (xCard).
+	 * </p>
+	 * <p>
+	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * </p>
+	 * @param writer the writer to write the vCard to
+	 * @throws TransformerException if there's a problem writing to the writer
+	 * @see XCardDocument
+	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
+	 */
+	public void writeXml(Writer writer) throws TransformerException {
+		EZVCard.writeXml(this).go(writer);
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to a basic HTML page (hCard).
+	 * </p>
+	 * <p>
+	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * </p>
+	 * @return the HTML page
+	 * @see HCardPage
+	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
+	 */
+	public String writeHtml() throws TemplateException {
+		return EZVCard.writeHtml(this).go();
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to a basic HTML page (hCard).
+	 * </p>
+	 * <p>
+	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * </p>
+	 * @param file the file to write to
+	 * @throws IOException if there's a problem writing to the file
+	 * @throws TemplateException if there's a problem with the freemarker
+	 * template
+	 * @see HCardPage
+	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
+	 */
+	public void writeHtml(File file) throws IOException, TemplateException {
+		EZVCard.writeHtml(this).go(file);
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to a basic HTML page (hCard).
+	 * </p>
+	 * <p>
+	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * </p>
+	 * @param out the output stream to write to
+	 * @throws IOException if there's a problem writing to the output stream
+	 * @throws TemplateException if there's a problem with the freemarker
+	 * template
+	 * @see HCardPage
+	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
+	 */
+	public void writeHtml(OutputStream out) throws IOException, TemplateException {
+		EZVCard.writeHtml(this).go(out);
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to a basic HTML page (hCard).
+	 * </p>
+	 * <p>
+	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * </p>
+	 * @param writer the writer to write to
+	 * @throws IOException if there's a problem writing to the writer
+	 * @throws TemplateException if there's a problem with the freemarker
+	 * template
+	 * @see HCardPage
+	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
+	 */
+	public void writeHtml(Writer writer) throws IOException, TemplateException {
+		EZVCard.writeHtml(this).go(writer);
 	}
 
 	/**
