@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
 import org.jsoup.Jsoup;
@@ -45,7 +46,6 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
-import ezvcard.util.IOUtils;
 import freemarker.template.TemplateException;
 
 /*
@@ -462,12 +462,12 @@ public class HCardPageTest {
 
 		vcard.setTimezone(new TimezoneType(-6, 0, "America/Chicago"));
 
-		byte portrait[] = IOUtils.toByteArray(getClass().getResourceAsStream("hcard-portrait.jpg"), true);
-		PhotoType photo = new PhotoType(portrait, ImageTypeParameter.JPEG);
+		InputStream in = getClass().getResourceAsStream("hcard-portrait.jpg");
+		PhotoType photo = new PhotoType(in, ImageTypeParameter.JPEG);
 		vcard.addPhoto(photo);
 
-		byte pronunciation[] = IOUtils.toByteArray(getClass().getResourceAsStream("hcard-sound.ogg"), true);
-		SoundType sound = new SoundType(pronunciation, SoundTypeParameter.OGG);
+		in = getClass().getResourceAsStream("hcard-sound.ogg");
+		SoundType sound = new SoundType(in, SoundTypeParameter.OGG);
 		vcard.addSound(sound);
 
 		vcard.setUid(new UidType("urn:uuid:ffce1595-cbe9-4418-9d0d-b015655d45f6"));

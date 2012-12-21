@@ -1,5 +1,8 @@
 package ezvcard.types;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import ezvcard.VCardSubTypes;
@@ -136,6 +139,24 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	 */
 	public SoundType(byte[] data, SoundTypeParameter type) {
 		super(NAME, data, type);
+	}
+
+	/**
+	 * @param in an input stream to the binary data (will be closed)
+	 * @param type the content type (e.g. OGG)
+	 * @throws IOException if there's a problem reading from the input stream
+	 */
+	public SoundType(InputStream in, SoundTypeParameter type) throws IOException {
+		super(NAME, in, type);
+	}
+
+	/**
+	 * @param file the sound file
+	 * @param type the content type (e.g. OGG)
+	 * @throws IOException if there's a problem reading from the file
+	 */
+	public SoundType(File file, SoundTypeParameter type) throws IOException {
+		super(NAME, file, type);
 	}
 
 	/**

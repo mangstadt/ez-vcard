@@ -1,5 +1,8 @@
 package ezvcard.types;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import ezvcard.VCardSubTypes;
@@ -136,6 +139,24 @@ public class LogoType extends BinaryType<ImageTypeParameter> {
 	 */
 	public LogoType(byte[] data, ImageTypeParameter type) {
 		super(NAME, data, type);
+	}
+
+	/**
+	 * @param in an input stream to the binary data (will be closed)
+	 * @param type the content type (e.g. PNG)
+	 * @throws IOException if there's a problem reading from the input stream
+	 */
+	public LogoType(InputStream in, ImageTypeParameter type) throws IOException {
+		super(NAME, in, type);
+	}
+
+	/**
+	 * @param file the image file
+	 * @param type the content type (e.g. PNG)
+	 * @throws IOException if there's a problem reading from the file
+	 */
+	public LogoType(File file, ImageTypeParameter type) throws IOException {
+		super(NAME, file, type);
 	}
 
 	/**
