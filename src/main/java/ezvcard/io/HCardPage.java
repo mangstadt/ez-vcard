@@ -1,6 +1,5 @@
 package ezvcard.io;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -15,6 +14,7 @@ import ezvcard.VCard;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.PhotoType;
 import ezvcard.util.DataUri;
+import ezvcard.util.IOUtils;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -121,27 +121,12 @@ public class HCardPage {
 	 * @param name the file name, relative to this class
 	 * @param mediaType the media type of the image
 	 * @return the image
+	 * @throws IOException
 	 */
-	protected PhotoType readImage(String name, ImageTypeParameter mediaType) {
-		InputStream in = null;
-		try {
-			in = HCardPage.class.getResourceAsStream(name);
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			byte buffer[] = new byte[4092];
-			int read;
-			while ((read = in.read(buffer)) != -1) {
-				out.write(buffer, 0, read);
-			}
-			return new PhotoType(out.toByteArray(), mediaType);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	protected PhotoType readImage(String name, ImageTypeParameter mediaType) throws IOException {
+		InputStream in = getClass().getResourceAsStream(name);
+		byte[] data = IOUtils.toByteArray(in, true);
+		return new PhotoType(data, mediaType);
 	}
 
 	/**

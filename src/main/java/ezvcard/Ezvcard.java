@@ -30,6 +30,7 @@ import ezvcard.io.VCardWriter;
 import ezvcard.io.XCardDocument;
 import ezvcard.io.XCardReader;
 import ezvcard.types.VCardType;
+import ezvcard.util.IOUtils;
 import freemarker.template.TemplateException;
 
 /*
@@ -114,13 +115,7 @@ public class Ezvcard {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					//ignore
-				}
-			}
+			IOUtils.closeQuietly(in);
 		}
 	}
 
