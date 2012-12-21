@@ -1,10 +1,8 @@
 package ezvcard.io;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
 
@@ -75,12 +73,10 @@ public class MyVCard {
 
 		vcard.setTimezone(new TimezoneType(-5, 0, "America/New_York"));
 
-		byte portrait[] = getFileBytes("portrait.jpg");
-		PhotoType photo = new PhotoType(portrait, ImageTypeParameter.JPEG);
+		PhotoType photo = new PhotoType(new File("portrait.jpg"), ImageTypeParameter.JPEG);
 		vcard.addPhoto(photo);
 
-		byte pronunciation[] = getFileBytes("pronunciation.ogg");
-		SoundType sound = new SoundType(pronunciation, SoundTypeParameter.OGG);
+		SoundType sound = new SoundType(new File("pronunciation.ogg"), SoundTypeParameter.OGG);
 		vcard.addSound(sound);
 
 		//vcard.setUid(UidType.random());
@@ -131,14 +127,5 @@ public class MyVCard {
 			System.out.println("* " + warning);
 		}
 		writer.close();
-	}
-
-	private static byte[] getFileBytes(String path) throws IOException {
-		File file = new File(path);
-		byte data[] = new byte[(int) file.length()];
-		InputStream in = new FileInputStream(file);
-		in.read(data);
-		in.close();
-		return data;
 	}
 }

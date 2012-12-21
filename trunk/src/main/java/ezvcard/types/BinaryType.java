@@ -1,5 +1,9 @@
 package ezvcard.types;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +20,7 @@ import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardUtils;
+import ezvcard.util.IOUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -94,6 +99,26 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	public BinaryType(String name, byte[] data, T type) {
 		this(name);
 		setData(data, type);
+	}
+
+	/**
+	 * @param name the type name (e.g. "PHOTO")
+	 * @param in an input stream to the binary data (will be closed)
+	 * @param type the content type
+	 * @throws IOException
+	 */
+	public BinaryType(String name, InputStream in, T type) throws IOException {
+		this(name, IOUtils.toByteArray(in, true), type);
+	}
+
+	/**
+	 * @param name the type name (e.g. "PHOTO")
+	 * @param file the file containing the binary data
+	 * @param type the content type
+	 * @throws IOException
+	 */
+	public BinaryType(String name, File file, T type) throws IOException {
+		this(name, new FileInputStream(file), type);
 	}
 
 	/**

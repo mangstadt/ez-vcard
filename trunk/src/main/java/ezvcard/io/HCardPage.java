@@ -1,7 +1,6 @@
 package ezvcard.io;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import ezvcard.VCard;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.PhotoType;
 import ezvcard.util.DataUri;
-import ezvcard.util.IOUtils;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -124,9 +122,7 @@ public class HCardPage {
 	 * @throws IOException
 	 */
 	protected PhotoType readImage(String name, ImageTypeParameter mediaType) throws IOException {
-		InputStream in = getClass().getResourceAsStream(name);
-		byte[] data = IOUtils.toByteArray(in, true);
-		return new PhotoType(data, mediaType);
+		return new PhotoType(getClass().getResourceAsStream(name), mediaType);
 	}
 
 	/**

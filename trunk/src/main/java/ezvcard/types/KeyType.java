@@ -1,5 +1,8 @@
 package ezvcard.types;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -153,6 +156,24 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	 */
 	public KeyType(String url, KeyTypeParameter type) {
 		super(NAME, url, type);
+	}
+
+	/**
+	 * @param in an input stream to the binary data (will be closed)
+	 * @param type the content type (e.g. PGP)
+	 * @throws IOException if there's a problem reading from the input stream
+	 */
+	public KeyType(InputStream in, KeyTypeParameter type) throws IOException {
+		super(NAME, in, type);
+	}
+
+	/**
+	 * @param file the key file
+	 * @param type the content type (e.g. PGP)
+	 * @throws IOException if there's a problem reading from the file
+	 */
+	public KeyType(File file, KeyTypeParameter type) throws IOException {
+		super(NAME, file, type);
 	}
 
 	/**
