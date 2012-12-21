@@ -14,6 +14,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -174,15 +175,34 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to an output stream.
+	 * Writes the XML document to an output stream without pretty-printing it.
 	 * @param writer the output stream
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
 	 */
 	public void write(Writer writer) throws TransformerException {
+		write(writer, -1);
+	}
+
+	/**
+	 * Writes the XML document to an output stream and pretty-prints it.
+	 * @param writer the output stream
+	 * @param indent the number of indent spaces to use for pretty-printing
+	 * @throws TransformerException if there's a problem writing to the output
+	 * stream
+	 */
+	public void write(Writer writer, int indent) throws TransformerException {
 		Transformer t = TransformerFactory.newInstance().newTransformer();
 		Source source = new DOMSource(document);
 		Result result = new StreamResult(writer);
+		if (indent >= 0) {
+			t.setOutputProperty(OutputKeys.INDENT, "yes");
+			try {
+				t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", indent + "");
+			} catch (IllegalArgumentException e) {
+				//in-case this property is not supported on other systems
+			}
+		}
 		t.transform(source, result);
 	}
 

@@ -326,6 +326,16 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void writeXml_indent() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName(new FormattedNameType("John Doe"));
+
+		String actual = Ezvcard.writeXml(vcard).indent(2).go();
+		String newline = System.getProperty("line.separator");
+		assertTrue(actual.contains("    <fn>" + newline + "      <text>John Doe</text>" + newline + "    </fn>"));
+	}
+
+	@Test
 	public void writeHtml_one() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
