@@ -5,10 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 
 import org.jsoup.Jsoup;
@@ -47,6 +45,7 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
+import ezvcard.util.IOUtils;
 import freemarker.template.TemplateException;
 
 /*
@@ -463,11 +462,11 @@ public class HCardPageTest {
 
 		vcard.setTimezone(new TimezoneType(-6, 0, "America/Chicago"));
 
-		byte portrait[] = readBytes("hcard-portrait.jpg");
+		byte portrait[] = IOUtils.toByteArray(getClass().getResourceAsStream("hcard-portrait.jpg"), true);
 		PhotoType photo = new PhotoType(portrait, ImageTypeParameter.JPEG);
 		vcard.addPhoto(photo);
 
-		byte pronunciation[] = readBytes("hcard-sound.ogg");
+		byte pronunciation[] = IOUtils.toByteArray(getClass().getResourceAsStream("hcard-sound.ogg"), true);
 		SoundType sound = new SoundType(pronunciation, SoundTypeParameter.OGG);
 		vcard.addSound(sound);
 
@@ -484,28 +483,6 @@ public class HCardPageTest {
 		vcard.setRevision(new RevisionType(c.getTime()));
 
 		return vcard;
-	}
-
-	/**
-	 * Reads the bytes from a file on the classpath.
-	 * @param fileName the file name, relative to this class
-	 * @return the file bytes
-	 * @throws IOException
-	 */
-	private byte[] readBytes(String fileName) throws IOException {
-		InputStream in = null;
-		try {
-			in = HCardPageTest.class.getResourceAsStream(fileName);
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			byte buffer[] = new byte[4092];
-			int read;
-			while ((read = in.read(buffer)) != -1) {
-				out.write(buffer, 0, read);
-			}
-			return out.toByteArray();
-		} finally {
-			in.close();
-		}
 	}
 
 	/**
