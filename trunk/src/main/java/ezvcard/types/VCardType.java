@@ -12,6 +12,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
+import ezvcard.util.HCardUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -320,11 +321,10 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * {@link VCard} object
 	 * @throws EmbeddedVCardException if the value of this type is an embedded
 	 * vCard (i.e. the AGENT type)
-	 * @throws UnsupportedOperationException if the type class does not support
-	 * hCard parsing
 	 */
 	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		throw new UnsupportedOperationException("This type class does not support the parsing of hCards.");
+		String value = HCardUtils.getElementValue(element);
+		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}
 
 	/**
