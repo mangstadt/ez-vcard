@@ -838,6 +838,7 @@ public class Ezvcard {
 	 */
 	public static class XmlWriterChain extends WriterChain {
 		private boolean prodId = true;
+		private int indent = -1;
 		private List<List<String>> warnings;
 
 		private XmlWriterChain(Collection<VCard> vcards) {
@@ -852,6 +853,17 @@ public class Ezvcard {
 		 */
 		public XmlWriterChain prodId(boolean prodId) {
 			this.prodId = prodId;
+			return this;
+		}
+
+		/**
+		 * Sets the number of indent spaces to use for pretty-printing. If not
+		 * set, then the XML will not be pretty-printed.
+		 * @param indent the number of spaces in the indent string
+		 * @return this
+		 */
+		public XmlWriterChain indent(int indent) {
+			this.indent = indent;
 			return this;
 		}
 
@@ -920,7 +932,7 @@ public class Ezvcard {
 				}
 			}
 
-			doc.write(writer);
+			doc.write(writer, indent);
 		}
 	}
 

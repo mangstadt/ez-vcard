@@ -346,4 +346,34 @@ public class XCardDocumentTest {
 
 		assertXMLEqual(expected, actual);
 	}
+
+	@Test
+	public void prettyPrint() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName(new FormattedNameType("John Doe"));
+
+		XCardDocument xcm = new XCardDocument();
+		xcm.setAddProdId(false);
+		xcm.addVCard(vcard);
+
+		StringWriter sw = new StringWriter();
+		xcm.write(sw, 2);
+		String actual = sw.toString();
+
+		//@formatter:off
+		String newline = System.getProperty("line.separator");
+		StringBuilder sb = new StringBuilder();
+		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">").append(newline);
+			sb.append("  <vcard>").append(newline);
+				sb.append("    <fn>").append(newline);
+					sb.append("      <text>John Doe</text>").append(newline);
+				sb.append("    </fn>").append(newline);
+			sb.append("  </vcard>").append(newline);
+		sb.append("</vcards>");
+		String expected = sb.toString();
+		//@formatter:on
+
+		//use "String.contains()" to ignore the XML declaration at the top
+		assertTrue("Expected:" + newline + expected + newline + newline + "Actual:" + newline + actual, actual.contains(expected));
+	}
 }
