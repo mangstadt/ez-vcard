@@ -800,7 +800,13 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the file
 		 */
 		public void go(File file) throws IOException {
-			go(new FileWriter(file));
+			FileWriter writer = null;
+			try {
+				writer = new FileWriter(file);
+				go(writer);
+			} finally {
+				IOUtils.closeQuietly(writer);
+			}
 		}
 
 		/**
@@ -908,7 +914,13 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the file
 		 */
 		public void go(File file) throws IOException, TransformerException {
-			go(new FileWriter(file));
+			FileWriter writer = null;
+			try {
+				writer = new FileWriter(file);
+				go(writer);
+			} finally {
+				IOUtils.closeQuietly(writer);
+			}
 		}
 
 		/**
@@ -968,7 +980,13 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the file
 		 */
 		public void go(File file) throws IOException, TemplateException {
-			go(new FileWriter(file));
+			FileWriter writer = null;
+			try {
+				writer = new FileWriter(file);
+				go(writer);
+			} finally {
+				IOUtils.closeQuietly(writer);
+			}
 		}
 
 		/**
