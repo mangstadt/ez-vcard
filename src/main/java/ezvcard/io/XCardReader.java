@@ -1,7 +1,12 @@
 package ezvcard.io;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +38,7 @@ import ezvcard.types.RawType;
 import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
+import ezvcard.util.IOUtils;
 import ezvcard.util.XCardUtils;
 
 /*
@@ -85,8 +91,75 @@ public class XCardReader {
 	private VCardVersion version;
 
 	/**
-	 * @param reader the reader to read the vCards from
+	 * @param xml the XML string to read the vCards from
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardReader(String xml) throws SAXException {
+		this(xml, CompatibilityMode.RFC);
+	}
+
+	/**
+	 * @param xml the XML string to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardReader(String xml, CompatibilityMode compatibilityMode) throws SAXException {
+		this.compatibilityMode = compatibilityMode;
+		try {
+			parse(new StringReader(xml));
+		} catch (IOException e) {
+			//reading from string
+		}
+	}
+
+	/**
+	 * @param in the input stream to read the vCards from
 	 * @throws IOException if there's a problem reading from the input stream
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardReader(InputStream in) throws SAXException, IOException {
+		this(in, CompatibilityMode.RFC);
+	}
+
+	/**
+	 * @param in the input stream to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 * @throws IOException if there's a problem reading from the input stream
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardReader(InputStream in, CompatibilityMode compatibilityMode) throws SAXException, IOException {
+		this(new InputStreamReader(in), compatibilityMode);
+	}
+
+	/**
+	 * @param file the file to read the vCards from
+	 * @throws IOException if there's a problem reading from the file
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardReader(File file) throws SAXException, IOException {
+		this(file, CompatibilityMode.RFC);
+	}
+
+	/**
+	 * @param file the file to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 * @throws IOException if there's a problem reading from the file
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardReader(File file, CompatibilityMode compatibilityMode) throws SAXException, IOException {
+		this.compatibilityMode = compatibilityMode;
+		FileReader reader = null;
+		try {
+			reader = new FileReader(file);
+			parse(reader);
+		} finally {
+			IOUtils.closeQuietly(reader);
+		}
+	}
+
+	/**
+	 * @param reader the reader to read the vCards from
+	 * @throws IOException if there's a problem reading from the reader
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
 	public XCardReader(Reader reader) throws SAXException, IOException {
@@ -96,12 +169,15 @@ public class XCardReader {
 	/**
 	 * @param reader the reader to read the vCards from
 	 * @param compatibilityMode the compatibility mode
-	 * @throws IOException if there's a problem reading from the input stream
+	 * @throws IOException if there's a problem reading from the reader
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
 	public XCardReader(Reader reader, CompatibilityMode compatibilityMode) throws SAXException, IOException {
 		this.compatibilityMode = compatibilityMode;
+		parse(reader);
+	}
 
+	private void parse(Reader reader) throws SAXException, IOException {
 		try {
 			//parse the XML document
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

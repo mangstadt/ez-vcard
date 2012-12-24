@@ -5,8 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -78,8 +76,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		Reader reader = new StringReader(sb.toString());
-		XCardReader xcr = new XCardReader(reader);
+		XCardReader xcr = new XCardReader(sb.toString());
 		VCard vcard = xcr.readNext();
 
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -111,8 +108,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		Reader reader = new StringReader(sb.toString());
-		XCardReader xcr = new XCardReader(reader);
+		XCardReader xcr = new XCardReader(sb.toString());
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 
@@ -169,8 +165,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		Reader reader = new StringReader(sb.toString());
-		XCardReader xcr = new XCardReader(reader);
+		XCardReader xcr = new XCardReader(sb.toString());
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 
@@ -224,8 +219,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		Reader reader = new StringReader(sb.toString());
-		XCardReader xcr = new XCardReader(reader);
+		XCardReader xcr = new XCardReader(sb.toString());
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 
@@ -274,8 +268,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		Reader reader = new StringReader(sb.toString());
-		XCardReader xcr = new XCardReader(reader);
+		XCardReader xcr = new XCardReader(sb.toString());
 		xcr.registerExtendedType(LuckyNumType.class);
 		xcr.registerExtendedType(SalaryType.class);
 		xcr.registerExtendedType(AgeType.class);
@@ -329,8 +322,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		Reader reader = new StringReader(sb.toString());
-		XCardReader xcr = new XCardReader(reader);
+		XCardReader xcr = new XCardReader(sb.toString());
 
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -368,8 +360,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		Reader reader = new StringReader(sb.toString());
-		XCardReader xcr = new XCardReader(reader);
+		XCardReader xcr = new XCardReader(sb.toString());
 		assertNull(xcr.readNext());
 
 		//wrong namespace
@@ -382,8 +373,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		reader = new StringReader(sb.toString());
-		xcr = new XCardReader(reader);
+		xcr = new XCardReader(sb.toString());
 		assertNull(xcr.readNext());
 	}
 
@@ -404,8 +394,7 @@ public class XCardReaderTest {
 		sb.append("</vcards>");
 		//@formatter:on
 
-		Reader reader = new StringReader(sb.toString());
-		XCardReader xcr = new XCardReader(reader);
+		XCardReader xcr = new XCardReader(sb.toString());
 		xcr.registerExtendedType(LuckyNumType.class);
 		VCard vcard = xcr.readNext();
 

@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.StringWriter;
-
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -211,25 +209,19 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.addVCard(vcard);
-		StringWriter sw = new StringWriter();
-		xcm.write(sw);
-		String xml = sw.toString();
+		String xml = xcm.write();
 		assertTrue(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
 
 		xcm = new XCardDocument();
 		xcm.setAddProdId(true);
 		xcm.addVCard(vcard);
-		sw = new StringWriter();
-		xcm.write(sw);
-		xml = sw.toString();
+		xml = xcm.write();
 		assertTrue(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
 
 		xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
-		sw = new StringWriter();
-		xcm.write(sw);
-		xml = sw.toString();
+		xml = xcm.write();
 		assertFalse(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
 	}
 
@@ -243,19 +235,17 @@ public class XCardDocumentTest {
 		ProdIdType prodId = new ProdIdType("Acme Co.");
 		vcard.setProdId(prodId);
 
-		StringWriter sw = new StringWriter();
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
-		xcm.write(sw);
-		assertTrue(sw.toString().matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
+		String xml = xcm.write();
+		assertTrue(xml.matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
 
-		sw = new StringWriter();
 		xcm = new XCardDocument();
 		xcm.setAddProdId(true);
 		xcm.addVCard(vcard);
-		xcm.write(sw);
-		assertFalse(sw.toString().matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
+		xml = xcm.write();
+		assertFalse(xml.matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
 	}
 
 	/**
@@ -356,9 +346,7 @@ public class XCardDocumentTest {
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
-		StringWriter sw = new StringWriter();
-		xcm.write(sw, 2);
-		String actual = sw.toString();
+		String actual = xcm.write(2);
 
 		//@formatter:off
 		String newline = System.getProperty("line.separator");

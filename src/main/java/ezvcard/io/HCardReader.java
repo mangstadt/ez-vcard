@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -108,6 +109,26 @@ public class HCardReader {
 	public HCardReader(InputStream in, String pageUrl) throws IOException {
 		this.pageUrl = pageUrl;
 		Document document = (pageUrl == null) ? Jsoup.parse(in, null, "") : Jsoup.parse(in, null, pageUrl);
+		String anchor = getAnchor(pageUrl);
+		init(document, anchor);
+	}
+
+	/**
+	 * @param file the HTML file
+	 * @throws IOException if there's a problem reading the HTML file
+	 */
+	public HCardReader(File file) throws IOException {
+		this(file, null);
+	}
+
+	/**
+	 * @param file the HTML file
+	 * @param pageUrl the original URL of the HTML page
+	 * @throws IOException if there's a problem reading the HTML file
+	 */
+	public HCardReader(File file, String pageUrl) throws IOException {
+		this.pageUrl = pageUrl;
+		Document document = (pageUrl == null) ? Jsoup.parse(file, null, "") : Jsoup.parse(file, null, pageUrl);
 		String anchor = getAnchor(pageUrl);
 		init(document, anchor);
 	}
