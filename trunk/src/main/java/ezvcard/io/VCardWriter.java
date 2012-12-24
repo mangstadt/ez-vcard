@@ -1,7 +1,11 @@
 package ezvcard.io;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -70,6 +74,69 @@ public class VCardWriter implements Closeable {
 	/**
 	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
 	 * scheme and newline sequence).
+	 * @param out the output stream to write the vCard to
+	 */
+	public VCardWriter(OutputStream out) {
+		this(new OutputStreamWriter(out));
+	}
+
+	/**
+	 * Creates a vCard writer (uses the standard folding scheme and newline
+	 * sequence).
+	 * @param out the output stream to write the vCard to
+	 * @param targetVersion the version that the vCards should conform to
+	 */
+	public VCardWriter(OutputStream out, VCardVersion targetVersion) {
+		this(new OutputStreamWriter(out), targetVersion);
+	}
+
+	/**
+	 * Creates a vCard writer.
+	 * @param out the output stream to write the vCard to
+	 * @param targetVersion the version that the vCards should conform to
+	 * @param foldingScheme the folding scheme to use or null not to fold at all
+	 * @param newline the newline sequence to use
+	 */
+	public VCardWriter(OutputStream out, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) {
+		this(new OutputStreamWriter(out), targetVersion, foldingScheme, newline);
+	}
+
+	/**
+	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
+	 * scheme and newline sequence).
+	 * @param file the file to write the vCard to
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public VCardWriter(File file) throws IOException {
+		this(new FileWriter(file));
+	}
+
+	/**
+	 * Creates a vCard writer (uses the standard folding scheme and newline
+	 * sequence).
+	 * @param file the file to write the vCard to
+	 * @param targetVersion the version that the vCards should conform to
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public VCardWriter(File file, VCardVersion targetVersion) throws IOException {
+		this(new FileWriter(file), targetVersion);
+	}
+
+	/**
+	 * Creates a vCard writer.
+	 * @param file the file to write the vCard to
+	 * @param targetVersion the version that the vCards should conform to
+	 * @param foldingScheme the folding scheme to use or null not to fold at all
+	 * @param newline the newline sequence to use
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public VCardWriter(File file, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) throws IOException {
+		this(new FileWriter(file), targetVersion, foldingScheme, newline);
+	}
+
+	/**
+	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
+	 * scheme and newline sequence).
 	 * @param writer the writer to write the vCard to
 	 */
 	public VCardWriter(Writer writer) {
@@ -83,17 +150,7 @@ public class VCardWriter implements Closeable {
 	 * @param targetVersion the version that the vCards should conform to
 	 */
 	public VCardWriter(Writer writer, VCardVersion targetVersion) {
-		this(writer, targetVersion, FoldingScheme.MIME_DIR);
-	}
-
-	/**
-	 * Creates a vCard writer (uses the standard newline sequence).
-	 * @param writer the writer to write the vCard to
-	 * @param targetVersion the version that the vCards should conform to
-	 * @param foldingScheme the folding scheme to use or null not to fold at all
-	 */
-	public VCardWriter(Writer writer, VCardVersion targetVersion, FoldingScheme foldingScheme) {
-		this(writer, targetVersion, foldingScheme, "\r\n");
+		this(writer, targetVersion, FoldingScheme.MIME_DIR, "\r\n");
 	}
 
 	/**

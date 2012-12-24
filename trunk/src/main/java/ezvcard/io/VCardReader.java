@@ -1,7 +1,12 @@
 package ezvcard.io;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
@@ -64,6 +69,53 @@ public class VCardReader implements Closeable {
 	private List<String> warnings = new ArrayList<String>();
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private FoldedLineReader reader;
+
+	/**
+	 * @param str the string to read the vCards from
+	 */
+	public VCardReader(String str) {
+		this(new StringReader(str));
+	}
+
+	/**
+	 * @param str the string to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 */
+	public VCardReader(String str, CompatibilityMode compatibilityMode) {
+		this(new StringReader(str), compatibilityMode);
+	}
+
+	/**
+	 * @param in the input stream to read the vCards from
+	 */
+	public VCardReader(InputStream in) {
+		this(new InputStreamReader(in));
+	}
+
+	/**
+	 * @param in the input stream to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 */
+	public VCardReader(InputStream in, CompatibilityMode compatibilityMode) {
+		this(new InputStreamReader(in), compatibilityMode);
+	}
+
+	/**
+	 * @param file the file to read the vCards from
+	 * @throws FileNotFoundException if the file doesn't exist
+	 */
+	public VCardReader(File file) throws FileNotFoundException {
+		this(new FileReader(file));
+	}
+
+	/**
+	 * @param file the file to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 * @throws FileNotFoundException if the file doesn't exist
+	 */
+	public VCardReader(File file, CompatibilityMode compatibilityMode) throws FileNotFoundException {
+		this(new FileReader(file), compatibilityMode);
+	}
 
 	/**
 	 * @param reader the reader to read the vCards from

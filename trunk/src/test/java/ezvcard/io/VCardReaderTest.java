@@ -5,8 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -102,7 +100,7 @@ public class VCardReaderTest {
 		sb.append("ADR;HOME;WORK: ;;;;\r\n"); //nameless parameters
 		sb.append("LABEL;type=dOm;TyPE=parcel: \r\n"); //repeated parameter name
 		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		VCard vcard = reader.readNext();
 
 		NoteType note = vcard.getNotes().get(0);
@@ -133,7 +131,7 @@ public class VCardReaderTest {
 		sb.append(" Austin, TX 91827=0D=0A\r\n");
 		sb.append(" USA\r\n");
 		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		VCard vcard = reader.readNext();
 
 		LabelType label = vcard.getOrphanedLabels().get(0);
@@ -159,7 +157,7 @@ public class VCardReaderTest {
 		sb.append(" dated\\; annotations often written on a business card\\; Uniform Resource Loc\r\n");
 		sb.append(" ators (URL) for a website\\; public key information.\r\n");
 		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		VCard vcard = reader.readNext();
 
 		String expected = "The vCard MIME Directory Profile also provides support for representing other important information about the person associated with the directory entry. For instance, the date of birth of the person; an audio clip describing the pronunciation of the name associated with the directory entry, or some other application of the digital sound; longitude and latitude geo-positioning information related to the person associated with the directory entry; date and time that the directory information was last updated; annotations often written on a business card; Uniform Resource Locators (URL) for a website; public key information.";
@@ -179,7 +177,7 @@ public class VCardReaderTest {
 		sb.append("X-GENDER: ma\\,le\r\n");
 		sb.append("X-LUCKY-NUM: 22\r\n");
 		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		reader.registerExtendedType(LuckyNumType.class);
 		VCard vcard = reader.readNext();
 
@@ -210,7 +208,7 @@ public class VCardReaderTest {
 		sb.append("VERSION: 3.0\r\n");
 		sb.append("FN: Jane Doe\r\n");
 		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		VCard vcard;
 
 		vcard = reader.readNext();
@@ -247,7 +245,7 @@ public class VCardReaderTest {
 		sb.append("END: VCARD\r\n");
 		//@formatter:on
 
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		VCard vcard = reader.readNext();
 
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -280,7 +278,7 @@ public class VCardReaderTest {
 		sb.append("END: VCARD\r\n");
 		//@formatter:on
 
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		VCard vcard = reader.readNext();
 
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -305,7 +303,7 @@ public class VCardReaderTest {
 		sb.append("ADR;TYPE=work,parcel:;;200 Broadway;New York;NY;12345;USA\r\n");
 		sb.append("LABEL;TYPE=work:200 Broadway\\nNew York\\, NY 12345\\nUSA\r\n");
 		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		VCard vcard = reader.readNext();
 
 		assertEquals(2, vcard.getAddresses().size());
@@ -341,7 +339,7 @@ public class VCardReaderTest {
 		sb.append("X-LUCKY-NUM: 24\r\n");
 		sb.append("X-LUCKY-NUM: 13\r\n");
 		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(new StringReader(sb.toString()));
+		VCardReader reader = new VCardReader(sb.toString());
 		reader.registerExtendedType(LuckyNumType.class);
 		VCard vcard = reader.readNext();
 
@@ -354,7 +352,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void evolutionVCard() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_EVOLUTION.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_EVOLUTION.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.EVOLUTION);
 		VCard vcard = reader.readNext();
 
@@ -568,7 +566,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void gmailVCard() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_GMAIL.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_GMAIL.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.GMAIL);
 		VCard vcard = reader.readNext();
 
@@ -733,7 +731,7 @@ public class VCardReaderTest {
 	 */
 	@Test
 	public void gmailList() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("gmail-list.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("gmail-list.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.GMAIL);
 		VCard vcard = reader.readNext();
 
@@ -842,7 +840,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void gmailSingle() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("gmail-single.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("gmail-single.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.GMAIL);
 		VCard vcard = reader.readNext();
 
@@ -1041,7 +1039,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void iPhoneVCard() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_IPHONE.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_IPHONE.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.I_PHONE);
 		VCard vcard = reader.readNext();
 
@@ -1259,7 +1257,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void lotusNotesVCard() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_LOTUS_NOTES.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_LOTUS_NOTES.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
 		VCard vcard = reader.readNext();
 
@@ -1532,7 +1530,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void msOutlookVCard() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_MS_OUTLOOK.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_MS_OUTLOOK.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.MS_OUTLOOK);
 		VCard vcard = reader.readNext();
 
@@ -1754,7 +1752,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void outlook2007VCard() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("outlook-2007.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("outlook-2007.vcf"));
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -2017,7 +2015,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void macAddressBookVCard() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("John_Doe_MAC_ADDRESS_BOOK.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_MAC_ADDRESS_BOOK.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
 		VCard vcard = reader.readNext();
 
@@ -2264,7 +2262,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void outlook2003VCard() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("outlook-2003.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("outlook-2003.vcf"));
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -2466,7 +2464,7 @@ public class VCardReaderTest {
 
 	@Test
 	public void thunderbird() throws Exception {
-		VCardReader reader = new VCardReader(new InputStreamReader(getClass().getResourceAsStream("thunderbird-MoreFunctionsForAddressBook-extension.vcf")));
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("thunderbird-MoreFunctionsForAddressBook-extension.vcf"));
 		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
 		VCard vcard = reader.readNext();
 

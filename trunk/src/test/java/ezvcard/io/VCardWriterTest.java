@@ -267,7 +267,7 @@ public class VCardWriterTest {
 
 		//2.1
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1, null);
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1, null, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -285,7 +285,7 @@ public class VCardWriterTest {
 
 		//3.0
 		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
+		vcw = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		actual = sw.toString();
@@ -313,7 +313,7 @@ public class VCardWriterTest {
 		FoldingScheme fs = new FoldingScheme(50, "  ");
 
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1, fs);
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1, fs, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -476,7 +476,7 @@ public class VCardWriterTest {
 		agentVcard.setAgent(secondAgent);
 
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -540,7 +540,7 @@ public class VCardWriterTest {
 		//3.0
 		//LABEL types should be used
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null);
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -560,7 +560,7 @@ public class VCardWriterTest {
 		//4.0
 		//LABEL parameters should be used
 		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V4_0, null);
+		vcw = new VCardWriter(sw, VCardVersion.V4_0, null, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		actual = sw.toString();

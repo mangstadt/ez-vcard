@@ -1,6 +1,10 @@
 package ezvcard.io;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -13,6 +17,7 @@ import ezvcard.VCard;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.PhotoType;
 import ezvcard.util.DataUri;
+import ezvcard.util.IOUtils;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -85,20 +90,47 @@ public class HCardPage {
 	 * template
 	 */
 	public String write() throws TemplateException {
+		StringWriter sw = new StringWriter();
 		try {
-			StringWriter sw = new StringWriter();
 			write(sw);
-			return sw.toString();
 		} catch (IOException e) {
 			//never thrown because we're writing to a string
 		}
-		return null;
+		return sw.toString();
 	}
 
 	/**
-	 * Writes the HTML document to an output stream
-	 * @param writer the output stream
+	 * Writes the HTML document to an output stream.
+	 * @param out the output stream
 	 * @throws IOException if there's a problem writing to the output stream
+	 * @throws TemplateException if there's a problem with the freemarker
+	 * template
+	 */
+	public void write(OutputStream out) throws IOException, TemplateException {
+		write(new OutputStreamWriter(out));
+	}
+
+	/**
+	 * Writes the HTML document to a file.
+	 * @param file the file
+	 * @throws IOException if there's a problem writing to the file
+	 * @throws TemplateException if there's a problem with the freemarker
+	 * template
+	 */
+	public void write(File file) throws IOException, TemplateException {
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter(file);
+			write(writer);
+		} finally {
+			IOUtils.closeQuietly(writer);
+		}
+	}
+
+	/**
+	 * Writes the HTML document to a writer.
+	 * @param writer the writer
+	 * @throws IOException if there's a problem writing to the writer
 	 * @throws TemplateException if there's a problem with the freemarker
 	 * template
 	 */

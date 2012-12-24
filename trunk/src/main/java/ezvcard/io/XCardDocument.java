@@ -1,5 +1,11 @@
 package ezvcard.io;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -33,6 +39,7 @@ import ezvcard.VCardVersion;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.VCardType;
+import ezvcard.util.IOUtils;
 import ezvcard.util.ListMultimap;
 
 /*
@@ -175,21 +182,88 @@ public class XCardDocument {
 	}
 
 	/**
+	 * Writes the XML document to a string without pretty-printing it.
+	 * @return the XML string
+	 */
+	public String write() {
+		return write(-1);
+	}
+
+	/**
+	 * Writes the XML document to a string and pretty-prints it.
+	 * @param indent the number of indent spaces to use for pretty-printing
+	 * @return the XML string
+	 */
+	public String write(int indent) {
+		StringWriter sw = new StringWriter();
+		try {
+			write(sw, indent);
+		} catch (TransformerException e) {
+			//writing to string
+		}
+		return sw.toString();
+	}
+
+	/**
 	 * Writes the XML document to an output stream without pretty-printing it.
-	 * @param writer the output stream
+	 * @param out the output stream
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
+	 */
+	public void write(OutputStream out) throws TransformerException {
+		write(out, -1);
+	}
+
+	/**
+	 * Writes the XML document to an output stream and pretty-prints it.
+	 * @param out the output stream
+	 * @param indent the number of indent spaces to use for pretty-printing
+	 * @throws TransformerException if there's a problem writing to the output
+	 * stream
+	 */
+	public void write(OutputStream out, int indent) throws TransformerException {
+		write(new OutputStreamWriter(out), indent);
+	}
+
+	/**
+	 * Writes the XML document to a file without pretty-printing it.
+	 * @param file the file
+	 * @throws TransformerException if there's a problem writing to the file
+	 */
+	public void write(File file) throws TransformerException, IOException {
+		write(file, -1);
+	}
+
+	/**
+	 * Writes the XML document to a file and pretty-prints it.
+	 * @param file the file stream
+	 * @param indent the number of indent spaces to use for pretty-printing
+	 * @throws TransformerException if there's a problem writing to the file
+	 */
+	public void write(File file, int indent) throws TransformerException, IOException {
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter(file);
+			write(writer, indent);
+		} finally {
+			IOUtils.closeQuietly(writer);
+		}
+	}
+
+	/**
+	 * Writes the XML document to a writer without pretty-printing it.
+	 * @param writer the writer
+	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer) throws TransformerException {
 		write(writer, -1);
 	}
 
 	/**
-	 * Writes the XML document to an output stream and pretty-prints it.
-	 * @param writer the output stream
+	 * Writes the XML document to a writer and pretty-prints it.
+	 * @param writer the writer
 	 * @param indent the number of indent spaces to use for pretty-printing
-	 * @throws TransformerException if there's a problem writing to the output
-	 * stream
+	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer, int indent) throws TransformerException {
 		Transformer t = TransformerFactory.newInstance().newTransformer();
