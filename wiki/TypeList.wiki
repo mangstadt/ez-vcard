@@ -920,7 +920,7 @@ Defines the product that created the vCard.
 
 {{{
 VCard vcard = new VCard();
-ProdIdType prodid = new ProdIdType("-//ONLINE DIRECTORY//NONSGML Version 1//EN");
+ProdIdType prodid = new ProdIdType("ez-vcard 0.6.0");
 vcard.setProdId(prodid);
 }}}
 

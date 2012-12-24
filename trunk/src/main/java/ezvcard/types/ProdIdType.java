@@ -36,7 +36,7 @@ import ezvcard.VCardVersion;
  * 
  * <pre>
  * VCard vcard = new VCard();
- * ProdIdType prodid = new ProdIdType(&quot;-//ONLINE DIRECTORY//NONSGML Version 1//EN&quot;);
+ * ProdIdType prodid = new ProdIdType(&quot;ez-vcard 0.6.0&quot;);
  * vcard.setProdId(prodid);
  * </pre>
  * 
