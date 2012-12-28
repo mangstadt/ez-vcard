@@ -70,7 +70,7 @@ import ezvcard.util.HCardUtils;
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
-public class HCardReader {
+public class HCardReader implements IParser {
 	protected String pageUrl;
 	protected List<String> warnings = new ArrayList<String>();
 	protected Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
@@ -224,37 +224,22 @@ public class HCardReader {
 		}
 	}
 
-	/**
-	 * Registers an extended type class.
-	 * @param clazz the extended type class to register (MUST have a public,
-	 * no-arg constructor)
-	 */
+	//@Override
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.put(getTypeNameFromTypeClass(clazz), clazz);
 	}
 
-	/**
-	 * Removes an extended type class that was previously registered.
-	 * @param clazz the extended type class to remove (MUST have a public,
-	 * no-arg constructor)
-	 */
+	//@Override
 	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.remove(getTypeNameFromTypeClass(clazz));
 	}
 
-	/**
-	 * Gets the warnings from the last vCard that was unmarshalled. This list is
-	 * reset every time a new vCard is read.
-	 * @return the warnings or empty list if there were no warnings
-	 */
+	//@Override
 	public List<String> getWarnings() {
 		return new ArrayList<String>(warnings);
 	}
 
-	/**
-	 * Reads the next vCard.
-	 * @return the next vCard or null if there are no more
-	 */
+	//@Override
 	public VCard readNext() {
 		Element vcardElement = null;
 		while (it.hasNext() && vcardElement == null) {

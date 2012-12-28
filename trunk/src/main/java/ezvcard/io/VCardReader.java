@@ -64,7 +64,7 @@ import ezvcard.util.VCardStringUtils;
  * Unmarshals vCards into {@link VCard} objects.
  * @author Michael Angstadt
  */
-public class VCardReader implements Closeable {
+public class VCardReader implements Closeable, IParser {
 	private CompatibilityMode compatibilityMode;
 	private List<String> warnings = new ArrayList<String>();
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
@@ -161,38 +161,22 @@ public class VCardReader implements Closeable {
 		this.compatibilityMode = compatibilityMode;
 	}
 
-	/**
-	 * Registers an extended type class.
-	 * @param clazz the extended type class to register (MUST have a public,
-	 * no-arg constructor)
-	 */
+	//@Override
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.put(getTypeNameFromTypeClass(clazz), clazz);
 	}
 
-	/**
-	 * Removes an extended type class that was previously registered.
-	 * @param clazz the extended type class to remove (MUST have a public,
-	 * no-arg constructor)
-	 */
+	//@Override
 	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.remove(getTypeNameFromTypeClass(clazz));
 	}
 
-	/**
-	 * Gets the warnings from the last vCard that was unmarshalled. This list is
-	 * reset every time a new vCard is read.
-	 * @return the warnings or empty list if there were no warnings
-	 */
+	//@Override
 	public List<String> getWarnings() {
 		return new ArrayList<String>(warnings);
 	}
 
-	/**
-	 * Reads the next vCard.
-	 * @return the next vCard or null if there are no more
-	 * @throws IOException if there's a problem reading from the stream
-	 */
+	//@Override
 	public VCard readNext() throws IOException {
 		warnings.clear();
 
