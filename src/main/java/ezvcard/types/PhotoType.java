@@ -40,7 +40,7 @@ import ezvcard.util.HCardUtils;
  */
 
 /**
- * A photo attached to the vCard (such as a photo of the person's face).
+ * A photo attached to the vCard (such as a portrait of the person).
  * 
  * <p>
  * <b>Adding a photo</b>
