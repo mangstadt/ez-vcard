@@ -1,6 +1,7 @@
 package ezvcard;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,7 +10,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
@@ -124,22 +124,17 @@ public class Ezvcard {
 	 * Parses plain text vCards.
 	 * </p>
 	 * <p>
-	 * Use {@link VCardReader} for fine-grained control over the parsing.
+	 * Use {@link VCardReader} for more control over the parsing.
 	 * </p>
 	 * @param str the vCard string
 	 * @return chainer object for completing the parse operation
 	 * @see VCardReader
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static TextParserChain parse(String str) {
-		try {
-			return parse(new StringReader(str));
-		} catch (IOException e) {
-			//reading string
-			return null;
-		}
+	public static TextStringParserChain parse(String str) {
+		return new TextStringParserChain(str);
 	}
 
 	/**
@@ -147,17 +142,18 @@ public class Ezvcard {
 	 * Parses plain text vCards.
 	 * </p>
 	 * <p>
-	 * Use {@link VCardReader} for fine-grained control over the parsing.
+	 * Use {@link VCardReader} for more control over the parsing.
 	 * </p>
 	 * @param file the vCard file
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the file
+	 * @throws FileNotFoundException if the file does not exist or cannot be
+	 * accessed
 	 * @see VCardReader
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static TextParserChain parse(File file) throws IOException {
+	public static TextParserChain parse(File file) throws FileNotFoundException {
 		return parse(new FileReader(file));
 	}
 
@@ -166,17 +162,16 @@ public class Ezvcard {
 	 * Parses plain text vCards.
 	 * </p>
 	 * <p>
-	 * Use {@link VCardReader} for fine-grained control over the parsing.
+	 * Use {@link VCardReader} for more control over the parsing.
 	 * </p>
 	 * @param in the input stream
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the input stream
 	 * @see VCardReader
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static TextParserChain parse(InputStream in) throws IOException {
+	public static TextParserChain parse(InputStream in) {
 		return parse(new InputStreamReader(in));
 	}
 
@@ -185,17 +180,16 @@ public class Ezvcard {
 	 * Parses plain text vCards.
 	 * </p>
 	 * <p>
-	 * Use {@link VCardReader} for fine-grained control over the parsing.
+	 * Use {@link VCardReader} for more control over the parsing.
 	 * </p>
 	 * @param reader the reader
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the reader
 	 * @see VCardReader
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static TextParserChain parse(Reader reader) throws IOException {
+	public static TextParserChain parse(Reader reader) {
 		return new TextParserChain(reader);
 	}
 
@@ -204,21 +198,15 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for fine-grained control over the parsing.
+	 * Use {@link XCardReader} for more control over the parsing.
 	 * </p>
 	 * @param xml the XML document
 	 * @return chainer object for completing the parse operation
-	 * @throws SAXException if there's a problem parsing the XML
 	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static XmlParserChain parseXml(String xml) throws SAXException {
-		try {
-			return parseXml(new StringReader(xml));
-		} catch (IOException e) {
-			//reading string
-			return null;
-		}
+	public static XmlStringParserChain parseXml(String xml) {
+		return new XmlStringParserChain(xml);
 	}
 
 	/**
@@ -226,16 +214,16 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for fine-grained control over the parsing.
+	 * Use {@link XCardReader} for more control over the parsing.
 	 * </p>
 	 * @param file the XML file
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the file
-	 * @throws SAXException if there's a problem parsing the XML
+	 * @throws FileNotFoundException if the file does not exist or cannot be
+	 * accessed
 	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static XmlParserChain parseXml(File file) throws IOException, SAXException {
+	public static XmlParserChain parseXml(File file) throws FileNotFoundException {
 		return parseXml(new FileReader(file));
 	}
 
@@ -244,16 +232,14 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for fine-grained control over the parsing.
+	 * Use {@link XCardReader} for more control over the parsing.
 	 * </p>
 	 * @param in the input stream to the XML document
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the input stream
-	 * @throws SAXException if there's a problem parsing the XML
 	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static XmlParserChain parseXml(InputStream in) throws IOException, SAXException {
+	public static XmlParserChain parseXml(InputStream in) {
 		return parseXml(new InputStreamReader(in));
 	}
 
@@ -262,16 +248,14 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for fine-grained control over the parsing.
+	 * Use {@link XCardReader} for more control over the parsing.
 	 * </p>
 	 * @param reader the reader to the XML document
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the reader
-	 * @throws SAXException if there's a problem parsing the XML
 	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static XmlParserChain parseXml(Reader reader) throws IOException, SAXException {
+	public static XmlParserChain parseXml(Reader reader) {
 		return new XmlParserChain(reader);
 	}
 
@@ -280,20 +264,15 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for fine-grained control over the parsing.
+	 * Use {@link HCardReader} for more control over the parsing.
 	 * </p>
 	 * @param html the HTML page
 	 * @return chainer object for completing the parse operation
 	 * @see HCardReader
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public static HtmlParserChain parseHtml(String html) {
-		try {
-			return parseHtml(new StringReader(html));
-		} catch (IOException e) {
-			//reading string
-			return null;
-		}
+	public static HtmlStringParserChain parseHtml(String html) {
+		return new HtmlStringParserChain(html);
 	}
 
 	/**
@@ -301,15 +280,16 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for fine-grained control over the parsing.
+	 * Use {@link HCardReader} for more control over the parsing.
 	 * </p>
 	 * @param file the HTML file
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the file
+	 * @throws FileNotFoundException if the file does not exist or cannot be
+	 * accessed
 	 * @see HCardReader
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public static HtmlParserChain parseHtml(File file) throws IOException {
+	public static HtmlParserChain parseHtml(File file) throws FileNotFoundException {
 		return parseHtml(new FileReader(file));
 	}
 
@@ -318,15 +298,14 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for fine-grained control over the parsing.
+	 * Use {@link HCardReader} for more control over the parsing.
 	 * </p>
 	 * @param in the input stream to the HTML page
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the input stream
 	 * @see HCardReader
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public static HtmlParserChain parseHtml(InputStream in) throws IOException {
+	public static HtmlParserChain parseHtml(InputStream in) {
 		return parseHtml(new InputStreamReader(in));
 	}
 
@@ -335,15 +314,14 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for fine-grained control over the parsing.
+	 * Use {@link HCardReader} for more control over the parsing.
 	 * </p>
 	 * @param reader the reader to the HTML page
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem reading from the reader
 	 * @see HCardReader
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public static HtmlParserChain parseHtml(Reader reader) throws IOException {
+	public static HtmlParserChain parseHtml(Reader reader) {
 		return new HtmlParserChain(reader);
 	}
 
@@ -352,15 +330,14 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for fine-grained control over the parsing.
+	 * Use {@link HCardReader} for more control over the parsing.
 	 * </p>
 	 * @param url the URL of the webpage
 	 * @return chainer object for completing the parse operation
-	 * @throws IOException if there's a problem loading the URL
 	 * @see HCardReader
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public static HtmlParserChain parseHtml(URL url) throws IOException {
+	public static HtmlParserChain parseHtml(URL url) {
 		return new HtmlParserChain(url);
 	}
 
@@ -370,15 +347,14 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link VCardWriter} for fine-grained control over how the vCard is
-	 * written.
+	 * Use {@link VCardWriter} for more control over how the vCard is written.
 	 * </p>
 	 * @param vcards the vCard(s) to marshal
 	 * @return chainer object for completing the write operation
 	 * @see VCardWriter
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public static TextWriterChain write(VCard... vcards) {
 		return write(Arrays.asList(vcards));
@@ -390,15 +366,14 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link VCardWriter} for fine-grained control over how the vCard is
-	 * written.
+	 * Use {@link VCardWriter} for more control over how the vCard is written.
 	 * </p>
 	 * @param vcards the vCard(s) to marshal
 	 * @return chainer object for completing the write operation
 	 * @see VCardWriter
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public static TextWriterChain write(Collection<VCard> vcards) {
 		return new TextWriterChain(vcards);
@@ -410,8 +385,7 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link XCardDocument} for fine-grained control over how the vCard is
-	 * written.
+	 * Use {@link XCardDocument} for more control over how the vCard is written.
 	 * </p>
 	 * @param vcards the vCard(s) to marshal
 	 * @return chainer object for completing the write operation
@@ -428,8 +402,7 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link XCardDocument} for fine-grained control over how the vCard is
-	 * written.
+	 * Use {@link XCardDocument} for more control over how the vCard is written.
 	 * </p>
 	 * @param vcards the vCard(s) to marshal
 	 * @return chainer object for completing the write operation
@@ -446,8 +419,7 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link HCardPage} for fine-grained control over how the vCard is
-	 * written.
+	 * Use {@link HCardPage} for more control over how the vCard is written.
 	 * </p>
 	 * @param vcards the vCard(s) to marshal
 	 * @return chainer object for completing the write operation
@@ -464,8 +436,7 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link HCardPage} for fine-grained control over how the vCard is
-	 * written.
+	 * Use {@link HCardPage} for more control over how the vCard is written.
 	 * </p>
 	 * @param vcards the vCard(s) to marshal
 	 * @return chainer object for completing the write operation
@@ -477,14 +448,16 @@ public class Ezvcard {
 	}
 
 	public static abstract class ParserChain {
-		protected List<List<String>> warnings;
+		final List<Class<? extends VCardType>> extendedTypes = new ArrayList<Class<? extends VCardType>>();
+		List<List<String>> warnings;
 
 		/**
 		 * Reads the first vCard from the stream.
 		 * @return the vCard or null if there are no vCards
-		 * @throws IOException I/O problem
+		 * @throws IOException if there's an I/O problem
+		 * @throws SAXException if there's a problem parsing the XML
 		 */
-		public VCard first() throws IOException {
+		public VCard first() throws IOException, SAXException {
 			ready();
 			VCard vcard = readNext();
 			if (warnings != null) {
@@ -496,9 +469,10 @@ public class Ezvcard {
 		/**
 		 * Reads all vCards from the stream.
 		 * @return the parsed vCards
-		 * @throws IOException I/O problem
+		 * @throws IOException if there's an I/O problem
+		 * @throws SAXException if there's a problem parsing the XML
 		 */
-		public List<VCard> all() throws IOException {
+		public List<VCard> all() throws IOException, SAXException {
 			ready();
 			List<VCard> vcards = new ArrayList<VCard>();
 			VCard vcard;
@@ -511,36 +485,46 @@ public class Ezvcard {
 			return vcards;
 		}
 
+		private void ready() throws IOException, SAXException {
+			init();
+			for (Class<? extends VCardType> extendedType : extendedTypes) {
+				registerExtendedType(extendedType);
+			}
+		}
+
 		/**
 		 * Reads the next vCard from the stream.
 		 * @return the next vCard or null if there are no more
-		 * @throws IOException I/O problem
 		 */
-		protected abstract VCard readNext() throws IOException;
+		abstract VCard readNext() throws IOException;
 
 		/**
 		 * Gets the warnings from the last vCard that was read from the stream.
 		 * @return the unmarshal warnings
 		 */
-		protected abstract List<String> getWarnings();
+		abstract List<String> getWarnings();
 
 		/**
-		 * Called when the stream is about to be parsed.
-		 * @throws IOException
+		 * Registers an extended type class.
+		 * @param typeClass the extended type class
 		 */
-		protected void ready() throws IOException {
-			//do nothing
-		}
+		abstract void registerExtendedType(Class<? extends VCardType> typeClass);
+
+		/**
+		 * Initializes the parser.
+		 */
+		abstract void init() throws IOException, SAXException;
 	}
 
 	/**
 	 * Convenience chainer class for parsing plain text vCards.
 	 */
 	public static class TextParserChain extends ParserChain {
-		private final VCardReader reader;
+		private Reader reader;
+		private VCardReader vcardReader;
 
-		private TextParserChain(Reader reader) throws IOException {
-			this.reader = new VCardReader(reader);
+		private TextParserChain(Reader reader) {
+			this.reader = reader;
 		}
 
 		/**
@@ -549,7 +533,7 @@ public class Ezvcard {
 		 * @return this
 		 */
 		public TextParserChain register(Class<? extends VCardType> typeClass) {
-			reader.registerExtendedType(typeClass);
+			extendedTypes.add(typeClass);
 			return this;
 		}
 
@@ -557,11 +541,10 @@ public class Ezvcard {
 		 * Provides a list object that any unmarshal warnings will be put into.
 		 * @param warnings the list object that will be populated with the
 		 * warnings of each unmarshalled vCard. Each element of the list is the
-		 * list of warnings that were generated for one of the vCards. The size
-		 * of this list will be equal to the number of parsed vCards. If a vCard
-		 * does not have any warnings, then its warning list will be empty.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
+		 * list of warnings for one of the unmarshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
 		 * @return this
 		 */
 		public TextParserChain warnings(List<List<String>> warnings) {
@@ -570,13 +553,124 @@ public class Ezvcard {
 		}
 
 		@Override
-		protected VCard readNext() throws IOException {
-			return reader.readNext();
+		VCard readNext() throws IOException {
+			return vcardReader.readNext();
 		}
 
 		@Override
-		protected List<String> getWarnings() {
-			return reader.getWarnings();
+		List<String> getWarnings() {
+			return vcardReader.getWarnings();
+		}
+
+		@Override
+		void init() {
+			vcardReader = new VCardReader(reader);
+		}
+
+		@Override
+		void registerExtendedType(Class<? extends VCardType> typeClass) {
+			vcardReader.registerExtendedType(typeClass);
+		}
+
+		@Override
+		public VCard first() throws IOException {
+			try {
+				return super.first();
+			} catch (SAXException e) {
+				//not parsing XML
+			}
+			return null;
+		}
+
+		@Override
+		public List<VCard> all() throws IOException {
+			try {
+				return super.all();
+			} catch (SAXException e) {
+				//not parsing XML
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * Convenience chainer class for parsing plain text vCards.
+	 */
+	public static class TextStringParserChain extends ParserChain {
+		private String text;
+		private VCardReader vcardReader;
+
+		private TextStringParserChain(String text) {
+			this.text = text;
+		}
+
+		/**
+		 * Registers an extended type class.
+		 * @param typeClass the extended type class
+		 * @return this
+		 */
+		public TextStringParserChain register(Class<? extends VCardType> typeClass) {
+			extendedTypes.add(typeClass);
+			return this;
+		}
+
+		/**
+		 * Provides a list object that any unmarshal warnings will be put into.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of each unmarshalled vCard. Each element of the list is the
+		 * list of warnings for one of the unmarshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
+		 * @return this
+		 */
+		public TextStringParserChain warnings(List<List<String>> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		@Override
+		VCard readNext() throws IOException {
+			return vcardReader.readNext();
+		}
+
+		@Override
+		List<String> getWarnings() {
+			return vcardReader.getWarnings();
+		}
+
+		@Override
+		void init() {
+			vcardReader = new VCardReader(text);
+		}
+
+		@Override
+		void registerExtendedType(Class<? extends VCardType> typeClass) {
+			vcardReader.registerExtendedType(typeClass);
+		}
+
+		@Override
+		public VCard first() {
+			try {
+				return super.first();
+			} catch (SAXException e) {
+				//not parsing XML
+			} catch (IOException e) {
+				//reading from string
+			}
+			return null;
+		}
+
+		@Override
+		public List<VCard> all() {
+			try {
+				return super.all();
+			} catch (SAXException e) {
+				//not parsing XML
+			} catch (IOException e) {
+				//reading from string
+			}
+			return null;
 		}
 	}
 
@@ -584,10 +678,11 @@ public class Ezvcard {
 	 * Convenience chainer class for parsing XML vCards.
 	 */
 	public static class XmlParserChain extends ParserChain {
-		private final XCardReader reader;
+		private Reader reader;
+		private XCardReader xcardDocument;
 
-		private XmlParserChain(Reader reader) throws IOException, SAXException {
-			this.reader = new XCardReader(reader);
+		private XmlParserChain(Reader reader) {
+			this.reader = reader;
 		}
 
 		/**
@@ -596,7 +691,7 @@ public class Ezvcard {
 		 * @return this
 		 */
 		public XmlParserChain register(Class<? extends VCardType> typeClass) {
-			reader.registerExtendedType(typeClass);
+			extendedTypes.add(typeClass);
 			return this;
 		}
 
@@ -604,11 +699,10 @@ public class Ezvcard {
 		 * Provides a list object that any unmarshal warnings will be put into.
 		 * @param warnings the list object that will be populated with the
 		 * warnings of each unmarshalled vCard. Each element of the list is the
-		 * list of warnings that were generated for one of the vCards. The size
-		 * of this list will be equal to the number of parsed vCards. If a vCard
-		 * does not have any warnings, then its warning list will be empty.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
+		 * list of warnings for one of the unmarshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
 		 * @return this
 		 */
 		public XmlParserChain warnings(List<List<String>> warnings) {
@@ -617,13 +711,110 @@ public class Ezvcard {
 		}
 
 		@Override
-		protected VCard readNext() throws IOException {
-			return reader.readNext();
+		VCard readNext() {
+			return xcardDocument.readNext();
 		}
 
 		@Override
-		protected List<String> getWarnings() {
-			return reader.getWarnings();
+		List<String> getWarnings() {
+			return xcardDocument.getWarnings();
+		}
+
+		@Override
+		void init() throws IOException, SAXException {
+			xcardDocument = new XCardReader(reader);
+		}
+
+		@Override
+		void registerExtendedType(Class<? extends VCardType> typeClass) {
+			xcardDocument.registerExtendedType(typeClass);
+		}
+
+		@Override
+		public VCard first() throws SAXException, IOException {
+			return super.first();
+		}
+
+		@Override
+		public List<VCard> all() throws SAXException, IOException {
+			return super.all();
+		}
+	}
+
+	/**
+	 * Convenience chainer class for parsing XML vCards.
+	 */
+	public static class XmlStringParserChain extends ParserChain {
+		private String xml;
+		private XCardReader xcardDocument;
+
+		private XmlStringParserChain(String xml) {
+			this.xml = xml;
+		}
+
+		/**
+		 * Registers an extended type class.
+		 * @param typeClass the extended type class
+		 * @return this
+		 */
+		public XmlStringParserChain register(Class<? extends VCardType> typeClass) {
+			extendedTypes.add(typeClass);
+			return this;
+		}
+
+		/**
+		 * Provides a list object that any unmarshal warnings will be put into.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of each unmarshalled vCard. Each element of the list is the
+		 * list of warnings for one of the unmarshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
+		 * @return this
+		 */
+		public XmlStringParserChain warnings(List<List<String>> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		@Override
+		VCard readNext() {
+			return xcardDocument.readNext();
+		}
+
+		@Override
+		List<String> getWarnings() {
+			return xcardDocument.getWarnings();
+		}
+
+		@Override
+		void init() throws IOException, SAXException {
+			xcardDocument = new XCardReader(xml);
+		}
+
+		@Override
+		void registerExtendedType(Class<? extends VCardType> typeClass) {
+			xcardDocument.registerExtendedType(typeClass);
+		}
+
+		@Override
+		public VCard first() throws SAXException {
+			try {
+				return super.first();
+			} catch (IOException e) {
+				//reading from string
+			}
+			return null;
+		}
+
+		@Override
+		public List<VCard> all() throws SAXException {
+			try {
+				return super.all();
+			} catch (IOException e) {
+				//reading from string
+			}
+			return null;
 		}
 	}
 
@@ -633,7 +824,6 @@ public class Ezvcard {
 	public static class HtmlParserChain extends ParserChain {
 		private Reader reader;
 		private URL url;
-		private final List<Class<? extends VCardType>> extTypes = new ArrayList<Class<? extends VCardType>>();
 		private String pageUrl;
 		private HCardReader hcardReader;
 
@@ -651,7 +841,7 @@ public class Ezvcard {
 		 * @return this
 		 */
 		public HtmlParserChain register(Class<? extends VCardType> typeClass) {
-			extTypes.add(typeClass);
+			extendedTypes.add(typeClass);
 			return this;
 		}
 
@@ -659,11 +849,10 @@ public class Ezvcard {
 		 * Provides a list object that any unmarshal warnings will be put into.
 		 * @param warnings the list object that will be populated with the
 		 * warnings of each unmarshalled vCard. Each element of the list is the
-		 * list of warnings that were generated for one of the vCards. The size
-		 * of this list will be equal to the number of parsed vCards. If a vCard
-		 * does not have any warnings, then its warning list will be empty.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
+		 * list of warnings for one of the unmarshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
 		 * @return this
 		 */
 		public HtmlParserChain warnings(List<List<String>> warnings) {
@@ -684,26 +873,147 @@ public class Ezvcard {
 		}
 
 		@Override
-		protected VCard readNext() throws IOException {
+		VCard readNext() throws IOException {
 			return hcardReader.readNext();
 		}
 
 		@Override
-		protected List<String> getWarnings() {
+		List<String> getWarnings() {
 			return hcardReader.getWarnings();
 		}
 
 		@Override
-		protected void ready() throws IOException {
+		void registerExtendedType(Class<? extends VCardType> typeClass) {
+			hcardReader.registerExtendedType(typeClass);
+		}
+
+		@Override
+		void init() throws IOException {
 			hcardReader = (url == null) ? new HCardReader(reader, pageUrl) : new HCardReader(url);
-			for (Class<? extends VCardType> extType : extTypes) {
-				hcardReader.registerExtendedType(extType);
+		}
+
+		@Override
+		public VCard first() throws IOException {
+			try {
+				return super.first();
+			} catch (SAXException e) {
+				//not parsing XML
 			}
+			return null;
+		}
+
+		@Override
+		public List<VCard> all() throws IOException {
+			try {
+				return super.all();
+			} catch (SAXException e) {
+				//not parsing XML
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * Convenience chainer class for parsing HTML vCards.
+	 */
+	public static class HtmlStringParserChain extends ParserChain {
+		private String html;
+		private URL url;
+		private String pageUrl;
+		private HCardReader hcardReader;
+
+		private HtmlStringParserChain(String html) {
+			this.html = html;
+		}
+
+		private HtmlStringParserChain(URL url) {
+			this.url = url;
+		}
+
+		/**
+		 * Registers an extended type class.
+		 * @param typeClass the extended type class
+		 * @return this
+		 */
+		public HtmlStringParserChain register(Class<? extends VCardType> typeClass) {
+			extendedTypes.add(typeClass);
+			return this;
+		}
+
+		/**
+		 * Provides a list object that any unmarshal warnings will be put into.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of each unmarshalled vCard. Each element of the list is the
+		 * list of warnings for one of the unmarshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
+		 * @return this
+		 */
+		public HtmlStringParserChain warnings(List<List<String>> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		/**
+		 * Sets the original URL of the webpage. This is used to resolve
+		 * relative links and to set the SOURCE property on the vCard. Setting
+		 * this property has no effect if reading from a {@link URL}.
+		 * @param pageUrl the webpage URL
+		 * @return this
+		 */
+		public HtmlStringParserChain pageUrl(String pageUrl) {
+			this.pageUrl = pageUrl;
+			return this;
+		}
+
+		@Override
+		VCard readNext() throws IOException {
+			return hcardReader.readNext();
+		}
+
+		@Override
+		List<String> getWarnings() {
+			return hcardReader.getWarnings();
+		}
+
+		@Override
+		void registerExtendedType(Class<? extends VCardType> typeClass) {
+			hcardReader.registerExtendedType(typeClass);
+		}
+
+		@Override
+		void init() throws IOException {
+			hcardReader = (url == null) ? new HCardReader(html, pageUrl) : new HCardReader(url);
+		}
+
+		@Override
+		public VCard first() {
+			try {
+				return super.first();
+			} catch (IOException e) {
+				//reading from string
+			} catch (SAXException e) {
+				//not parsing XML
+			}
+			return null;
+		}
+
+		@Override
+		public List<VCard> all() {
+			try {
+				return super.all();
+			} catch (IOException e) {
+				//reading from string
+			} catch (SAXException e) {
+				//not parsing XML
+			}
+			return null;
 		}
 	}
 
 	public static abstract class WriterChain {
-		protected Collection<VCard> vcards;
+		final Collection<VCard> vcards;
 
 		private WriterChain(Collection<VCard> vcards) {
 			this.vcards = vcards;
@@ -724,15 +1034,15 @@ public class Ezvcard {
 
 		/**
 		 * <p>
-		 * Sets the version that the vCards should be marshalled to. The version
-		 * that is attached to each individual {@link VCard} object will be
-		 * ignored.
+		 * Sets the version that all the vCards will be marshalled to. The
+		 * version that is attached to each individual {@link VCard} object will
+		 * be ignored.
 		 * </p>
 		 * <p>
-		 * If no version is specified here, the writer will look at the version
-		 * attached to each individual {@link VCard} object and marshal it to
-		 * that version. And if a {@link VCard} object has no version attached
-		 * to it, then it will be marshalled to version 3.0.
+		 * If no version is passed into this method, the writer will look at the
+		 * version attached to each individual {@link VCard} object and marshal
+		 * it to that version. And if a {@link VCard} object has no version
+		 * attached to it, then it will be marshalled to version 3.0.
 		 * </p>
 		 * @param version the version to marshal the vCards to
 		 * @return this
@@ -755,15 +1065,15 @@ public class Ezvcard {
 		}
 
 		/**
-		 * Provides a list object that the marshal warnings will be put into.
+		 * Provides a list object that any marshal warnings will be put into.
+		 * Warnings usually occur when there is a property in the VCard that is
+		 * not supported by the version to which the vCard is being marshalled.
 		 * @param warnings the list object that will be populated with the
 		 * warnings of each marshalled vCard. Each element of the list is the
-		 * list of warnings that were generated for one of the vCards. The size
-		 * of this list will be equal to the number of marshalled vCards. If a
+		 * list of warnings for one of the marshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
 		 * vCard does not have any warnings, then its warning list will be
-		 * empty. Warnings usually occur when there is a property in the VCard
-		 * that is not supported by the version to which the vCard is being
-		 * marshalled.
+		 * empty.
 		 * @return this
 		 */
 		public TextWriterChain warnings(List<List<String>> warnings) {
@@ -869,15 +1179,15 @@ public class Ezvcard {
 		}
 
 		/**
-		 * Provides a list object that the marshal warnings will be put into.
+		 * Provides a list object that any marshal warnings will be put into.
+		 * Warnings usually occur when there is a property in the VCard that is
+		 * not supported by the version to which the vCard is being marshalled.
 		 * @param warnings the list object that will be populated with the
 		 * warnings of each marshalled vCard. Each element of the list is the
-		 * list of warnings that were generated for one of the vCards. The size
-		 * of this list will be equal to the number of marshalled vCards. If a
+		 * list of warnings for one of the marshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
 		 * vCard does not have any warnings, then its warning list will be
-		 * empty. Warnings usually occur when there is a property in the VCard
-		 * that is not supported by the version to which the vCard is being
-		 * marshalled.
+		 * empty.
 		 * @return this
 		 */
 		public XmlWriterChain warnings(List<List<String>> warnings) {
