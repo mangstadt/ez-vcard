@@ -846,7 +846,7 @@ vcard.addOrgDirectory(orgDirectory);
 }}}
 
 =PHOTO=
-A photo attached to the vCard (such as a photo of the person's face).
+A photo attached to the vCard (such as a portrait of the person).
 
 *vCard versions:* 2.1, 3.0, 4.0
 
