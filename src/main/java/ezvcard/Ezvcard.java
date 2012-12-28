@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 
 import ezvcard.io.HCardPage;
 import ezvcard.io.HCardReader;
+import ezvcard.io.IParser;
 import ezvcard.io.VCardReader;
 import ezvcard.io.VCardWriter;
 import ezvcard.io.XCardDocument;
@@ -458,10 +459,10 @@ public class Ezvcard {
 		 * @throws SAXException if there's a problem parsing the XML
 		 */
 		public VCard first() throws IOException, SAXException {
-			ready();
-			VCard vcard = readNext();
+			IParser parser = ready();
+			VCard vcard = parser.readNext();
 			if (warnings != null) {
-				warnings.add(getWarnings());
+				warnings.add(parser.getWarnings());
 			}
 			return vcard;
 		}
@@ -473,47 +474,31 @@ public class Ezvcard {
 		 * @throws SAXException if there's a problem parsing the XML
 		 */
 		public List<VCard> all() throws IOException, SAXException {
-			ready();
+			IParser parser = ready();
 			List<VCard> vcards = new ArrayList<VCard>();
 			VCard vcard;
-			while ((vcard = readNext()) != null) {
+			while ((vcard = parser.readNext()) != null) {
 				if (warnings != null) {
-					warnings.add(getWarnings());
+					warnings.add(parser.getWarnings());
 				}
 				vcards.add(vcard);
 			}
 			return vcards;
 		}
 
-		private void ready() throws IOException, SAXException {
-			init();
+		private IParser ready() throws IOException, SAXException {
+			IParser parser = init();
 			for (Class<? extends VCardType> extendedType : extendedTypes) {
-				registerExtendedType(extendedType);
+				parser.registerExtendedType(extendedType);
 			}
+			return parser;
 		}
 
 		/**
-		 * Reads the next vCard from the stream.
-		 * @return the next vCard or null if there are no more
+		 * Creates the parser.
+		 * @return the parser object
 		 */
-		abstract VCard readNext() throws IOException;
-
-		/**
-		 * Gets the warnings from the last vCard that was read from the stream.
-		 * @return the unmarshal warnings
-		 */
-		abstract List<String> getWarnings();
-
-		/**
-		 * Registers an extended type class.
-		 * @param typeClass the extended type class
-		 */
-		abstract void registerExtendedType(Class<? extends VCardType> typeClass);
-
-		/**
-		 * Initializes the parser.
-		 */
-		abstract void init() throws IOException, SAXException;
+		abstract IParser init() throws IOException, SAXException;
 	}
 
 	/**
@@ -521,7 +506,6 @@ public class Ezvcard {
 	 */
 	public static class TextParserChain extends ParserChain {
 		private Reader reader;
-		private VCardReader vcardReader;
 
 		private TextParserChain(Reader reader) {
 			this.reader = reader;
@@ -553,23 +537,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		VCard readNext() throws IOException {
-			return vcardReader.readNext();
-		}
-
-		@Override
-		List<String> getWarnings() {
-			return vcardReader.getWarnings();
-		}
-
-		@Override
-		void init() {
-			vcardReader = new VCardReader(reader);
-		}
-
-		@Override
-		void registerExtendedType(Class<? extends VCardType> typeClass) {
-			vcardReader.registerExtendedType(typeClass);
+		IParser init() {
+			return new VCardReader(reader);
 		}
 
 		@Override
@@ -598,7 +567,6 @@ public class Ezvcard {
 	 */
 	public static class TextStringParserChain extends ParserChain {
 		private String text;
-		private VCardReader vcardReader;
 
 		private TextStringParserChain(String text) {
 			this.text = text;
@@ -630,23 +598,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		VCard readNext() throws IOException {
-			return vcardReader.readNext();
-		}
-
-		@Override
-		List<String> getWarnings() {
-			return vcardReader.getWarnings();
-		}
-
-		@Override
-		void init() {
-			vcardReader = new VCardReader(text);
-		}
-
-		@Override
-		void registerExtendedType(Class<? extends VCardType> typeClass) {
-			vcardReader.registerExtendedType(typeClass);
+		IParser init() {
+			return new VCardReader(text);
 		}
 
 		@Override
@@ -679,7 +632,6 @@ public class Ezvcard {
 	 */
 	public static class XmlParserChain extends ParserChain {
 		private Reader reader;
-		private XCardReader xcardDocument;
 
 		private XmlParserChain(Reader reader) {
 			this.reader = reader;
@@ -711,23 +663,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		VCard readNext() {
-			return xcardDocument.readNext();
-		}
-
-		@Override
-		List<String> getWarnings() {
-			return xcardDocument.getWarnings();
-		}
-
-		@Override
-		void init() throws IOException, SAXException {
-			xcardDocument = new XCardReader(reader);
-		}
-
-		@Override
-		void registerExtendedType(Class<? extends VCardType> typeClass) {
-			xcardDocument.registerExtendedType(typeClass);
+		IParser init() throws IOException, SAXException {
+			return new XCardReader(reader);
 		}
 
 		@Override
@@ -746,7 +683,6 @@ public class Ezvcard {
 	 */
 	public static class XmlStringParserChain extends ParserChain {
 		private String xml;
-		private XCardReader xcardDocument;
 
 		private XmlStringParserChain(String xml) {
 			this.xml = xml;
@@ -778,23 +714,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		VCard readNext() {
-			return xcardDocument.readNext();
-		}
-
-		@Override
-		List<String> getWarnings() {
-			return xcardDocument.getWarnings();
-		}
-
-		@Override
-		void init() throws IOException, SAXException {
-			xcardDocument = new XCardReader(xml);
-		}
-
-		@Override
-		void registerExtendedType(Class<? extends VCardType> typeClass) {
-			xcardDocument.registerExtendedType(typeClass);
+		IParser init() throws IOException, SAXException {
+			return new XCardReader(xml);
 		}
 
 		@Override
@@ -825,7 +746,6 @@ public class Ezvcard {
 		private Reader reader;
 		private URL url;
 		private String pageUrl;
-		private HCardReader hcardReader;
 
 		private HtmlParserChain(Reader reader) {
 			this.reader = reader;
@@ -873,23 +793,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		VCard readNext() throws IOException {
-			return hcardReader.readNext();
-		}
-
-		@Override
-		List<String> getWarnings() {
-			return hcardReader.getWarnings();
-		}
-
-		@Override
-		void registerExtendedType(Class<? extends VCardType> typeClass) {
-			hcardReader.registerExtendedType(typeClass);
-		}
-
-		@Override
-		void init() throws IOException {
-			hcardReader = (url == null) ? new HCardReader(reader, pageUrl) : new HCardReader(url);
+		IParser init() throws IOException {
+			return (url == null) ? new HCardReader(reader, pageUrl) : new HCardReader(url);
 		}
 
 		@Override
@@ -920,7 +825,6 @@ public class Ezvcard {
 		private String html;
 		private URL url;
 		private String pageUrl;
-		private HCardReader hcardReader;
 
 		private HtmlStringParserChain(String html) {
 			this.html = html;
@@ -968,23 +872,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		VCard readNext() throws IOException {
-			return hcardReader.readNext();
-		}
-
-		@Override
-		List<String> getWarnings() {
-			return hcardReader.getWarnings();
-		}
-
-		@Override
-		void registerExtendedType(Class<? extends VCardType> typeClass) {
-			hcardReader.registerExtendedType(typeClass);
-		}
-
-		@Override
-		void init() throws IOException {
-			hcardReader = (url == null) ? new HCardReader(html, pageUrl) : new HCardReader(url);
+		IParser init() throws IOException {
+			return (url == null) ? new HCardReader(html, pageUrl) : new HCardReader(url);
 		}
 
 		@Override

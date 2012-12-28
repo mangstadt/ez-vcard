@@ -75,7 +75,7 @@ import ezvcard.util.XCardUtils;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
-public class XCardReader {
+public class XCardReader implements IParser {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
 	private Map<QName, Class<? extends VCardType>> extendedTypeClasses = new HashMap<QName, Class<? extends VCardType>>();
@@ -243,37 +243,22 @@ public class XCardReader {
 		this.compatibilityMode = compatibilityMode;
 	}
 
-	/**
-	 * Registers an extended type class.
-	 * @param clazz the extended type class to register (MUST have a public,
-	 * no-arg constructor)
-	 */
+	//@Override
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.put(getQNameFromTypeClass(clazz), clazz);
 	}
 
-	/**
-	 * Removes an extended type class that was previously registered.
-	 * @param clazz the extended type class to remove (MUST have a public,
-	 * no-arg constructor)
-	 */
+	//@Override
 	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.remove(getQNameFromTypeClass(clazz));
 	}
 
-	/**
-	 * Gets the warnings from the last vCard that was unmarshalled. This list is
-	 * reset every time a new vCard is read.
-	 * @return the warnings or empty list if there were no warnings
-	 */
+	//@Override
 	public List<String> getWarnings() {
 		return new ArrayList<String>(warnings);
 	}
 
-	/**
-	 * Reads the next vCard.
-	 * @return the next vCard or null if there are no more
-	 */
+	//@Override
 	public VCard readNext() {
 		warnings.clear();
 
