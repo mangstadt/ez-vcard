@@ -66,7 +66,7 @@ public class VCardLine {
 			if (escaped) {
 				if (ch == 'n' || ch == 'N') {
 					//newlines appear as "\n" or "\N" (see RFC 2426 p.7)
-					buf.append("\r\n");
+					buf.append(System.getProperty("line.separator"));
 				} else {
 					buf.append(ch);
 				}
