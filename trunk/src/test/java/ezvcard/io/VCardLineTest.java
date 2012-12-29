@@ -1,8 +1,10 @@
 package ezvcard.io;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -57,6 +59,8 @@ public class VCardLineTest {
 
 	@Test
 	public void parseSubTypes() {
+		String newline = System.getProperty("line.separator");
+
 		VCardLine line = VCardLine.parse("ADR;TyPE=worK;TYPE=dom;LABEL=\"123 \\;Main; St.\\n\\\"Austin\\\", :TX: 12345\": ;;123 Main Str;Austin;TX;12345;US");
 		assertNull(line.getGroup());
 		assertEquals("ADR", line.getTypeName());
@@ -71,7 +75,7 @@ public class VCardLineTest {
 
 		//special chars are OK to use inside of double quotes
 		assertEquals("LABEL", line.getSubTypes().get(2)[0]);
-		assertEquals("123 ;Main; St.\r\n\"Austin\", :TX: 12345", line.getSubTypes().get(2)[1]);
+		assertEquals("123 ;Main; St." + newline + "\"Austin\", :TX: 12345", line.getSubTypes().get(2)[1]);
 
 		assertEquals(" ;;123 Main Str;Austin;TX;12345;US", line.getValue());
 
