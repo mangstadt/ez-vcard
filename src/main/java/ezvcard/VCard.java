@@ -1086,7 +1086,7 @@ public class VCard {
 	 */
 	public void setBirthplace(BirthplaceType birthplace) {
 		birthplaces.clear();
-		birthplaces.add(birthplace);
+		addBirthplace(birthplace);
 	}
 
 	/**
@@ -1180,7 +1180,7 @@ public class VCard {
 	 */
 	public void setDeathplace(DeathplaceType deathplace) {
 		deathplaces.clear();
-		deathplaces.add(deathplace);
+		addDeathplace(deathplace);
 	}
 
 	/**
@@ -1274,7 +1274,7 @@ public class VCard {
 	 */
 	public void setDeathdate(DeathdateType deathdate) {
 		deathdates.clear();
-		deathdates.add(deathdate);
+		addDeathdate(deathdate);
 	}
 
 	/**
@@ -1360,7 +1360,7 @@ public class VCard {
 	 */
 	public void setBirthday(BirthdayType birthday) {
 		birthdays.clear();
-		birthdays.add(birthday);
+		addBirthday(birthday);
 	}
 
 	/**
@@ -1446,7 +1446,7 @@ public class VCard {
 	 */
 	public void setAnniversary(AnniversaryType anniversary) {
 		anniversaries.clear();
-		anniversaries.add(anniversary);
+		addAnniversary(anniversary);
 	}
 
 	/**
