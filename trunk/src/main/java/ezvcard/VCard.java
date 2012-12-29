@@ -637,60 +637,86 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the text values for displaying the person's name. This method should
-	 * only be used if there are multiple instances of the property. Otherwise,
-	 * use the {@link #getFormattedName} method.
+	 * <p>
+	 * Gets the text values for displaying the person's name.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getFormattedName}.
+	 * </p>
 	 * <p>
 	 * vCard property name: FN
 	 * </p>
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @return the display texts of the person's name
+	 * @return the formatted name property
+	 * @see FormattedNameType#getAltId
 	 */
 	public List<FormattedNameType> getFormattedNames() {
 		return formattedNames;
 	}
 
 	/**
-	 * Gets the text value for displaying the person's name.
+	 * <p>
+	 * Gets the text value used for displaying the person's name.
+	 * </p>
+	 * <p>
+	 * Use {@link #getFormattedNames} to get the alternative representations of
+	 * this property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: FN
 	 * </p>
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @return the display text for the person's name
+	 * @return the formatted name property
 	 */
 	public FormattedNameType getFormattedName() {
 		return formattedNames.isEmpty() ? null : formattedNames.get(0);
 	}
 
 	/**
-	 * Adds a text value for displaying the person's name. This method should
-	 * only be used for adding multiple property instances to the vCard.
-	 * Otherwise, use the {@link #setFormattedName} method.
+	 * <p>
+	 * Adds a text value used for displaying the person's name.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setFormattedName}.
+	 * </p>
 	 * <p>
 	 * vCard property name: FN
 	 * </p>
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @param formattedName the display text for the person's name
+	 * @param formattedName the formatted name property
+	 * @see FormattedNameType#setAltId
 	 */
 	public void addFormattedName(FormattedNameType formattedName) {
 		formattedNames.add(formattedName);
 	}
 
 	/**
+	 * <p>
 	 * Sets the text value used for displaying the person's name.
+	 * </p>
+	 * <p>
+	 * Use {@link #addFormattedName} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: FN
 	 * </p>
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @param formattedName the display text for the person's name
+	 * @param formattedName the formatted name property
 	 */
 	public void setFormattedName(FormattedNameType formattedName) {
 		formattedNames.clear();
@@ -698,10 +724,15 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all structured name properties. This method should only be used if
-	 * there are multiple instances of the property, which should only happen if
-	 * all instances have the same ALTID value. Otherwise, use the
-	 * {@link #getStructuredName} method.
+	 * <p>
+	 * Gets all structured name properties.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getStructuredName}.
+	 * </p>
 	 * <p>
 	 * vCard property name: N
 	 * </p>
@@ -709,13 +740,20 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @return the N properties
+	 * @see StructuredNameType#getAltId
 	 */
 	public List<StructuredNameType> getStructuredNames() {
 		return structuredNames;
 	}
 
 	/**
+	 * <p>
 	 * Gets the individual components of the person's name.
+	 * </p>
+	 * <p>
+	 * Use {@link #getStructuredNames} to get the alternative representations of
+	 * this property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: N
 	 * </p>
@@ -729,10 +767,16 @@ public class VCard {
 	}
 
 	/**
+	 * <p>
 	 * Adds a property that contains the individual components of the person's
-	 * name. This method should ONLY be used if all {@link StructuredNameType}
-	 * instances have the same ALTID value. Otherwise, use the
-	 * {@link #setStructuredName} method.
+	 * name.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setStructuredName}.
+	 * </p>
 	 * <p>
 	 * vCard property name: N
 	 * </p>
@@ -740,6 +784,7 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @param structuredName the components of the person's name
+	 * @see StructuredNameType#setAltId
 	 */
 	public void addStructuredName(StructuredNameType structuredName) {
 		structuredNames.add(structuredName);
@@ -761,9 +806,15 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all instances of the NICKNAME property. This method should only be
-	 * used if there are multiple instances of the property. Otherwise, use the
-	 * {@link #getNickname} method.
+	 * <p>
+	 * Gets all instances of the NICKNAME property.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getNickname}.
+	 * </p>
 	 * <p>
 	 * vCard property name: NICKNAME
 	 * </p>
@@ -771,13 +822,20 @@ public class VCard {
 	 * vCard versions: 3.0, 4.0
 	 * </p>
 	 * @return the person's nicknames
+	 * @see NicknameType#getAltId
 	 */
 	public List<NicknameType> getNicknames() {
 		return nicknames;
 	}
 
 	/**
+	 * <p>
 	 * Gets the person's nicknames.
+	 * </p>
+	 * <p>
+	 * Use {@link #getNicknames} to get the alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: NICKNAME
 	 * </p>
@@ -791,9 +849,15 @@ public class VCard {
 	}
 
 	/**
-	 * Adds an instance of the NICKNAME property to the vCard. This method
-	 * should only be used for adding multiple property instances to the vCard.
-	 * Otherwise, use the {@link #setNickname} method.
+	 * <p>
+	 * Adds an instance of the NICKNAME property to the vCard.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setNickname}.
+	 * </p>
 	 * <p>
 	 * vCard property name: NICKNAME
 	 * </p>
@@ -801,13 +865,20 @@ public class VCard {
 	 * vCard versions: 3.0, 4.0
 	 * </p>
 	 * @param nickname the NICKNAME property to add
+	 * @see NicknameType#setAltId
 	 */
 	public void addNickname(NicknameType nickname) {
 		nicknames.add(nickname);
 	}
 
 	/**
+	 * <p>
 	 * Sets the person's nicknames.
+	 * </p>
+	 * <p>
+	 * Use {@link #addNickname} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: NICKNAME
 	 * </p>
@@ -1000,13 +1071,11 @@ public class VCard {
 	 * Gets all birthplace property instances.
 	 * </p>
 	 * <p>
-	 * This method if useful for when there are multiple instances of this
-	 * property and each instance has its own ALTID value. But in most cases,
-	 * there will only be one instance of this property, so the
-	 * {@link #getBirthplace} method can be used (usage of the ALTID parameter
-	 * is uncommon).
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getBirthplace}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: BIRTHPLACE
 	 * </p>
@@ -1026,10 +1095,11 @@ public class VCard {
 	 * Adds a birthplace property.
 	 * </p>
 	 * <p>
-	 * This method must only be used if each property instance has its own ALTID
-	 * value. Otherwise, use {@link #setBirthplace}.
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setBirthplace}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: BIRTHPLACE
 	 * </p>
@@ -1049,10 +1119,9 @@ public class VCard {
 	 * Gets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * Use {@link #getBirthplaces} to get the alternate representations of the
-	 * property.
+	 * Use {@link #getBirthplaces} to get the alternative representations of
+	 * this property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: BIRTHPLACE
 	 * </p>
@@ -1071,10 +1140,9 @@ public class VCard {
 	 * Sets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * Use {@link #addBirthplace} to add alternate representations of the
-	 * property.
+	 * Use {@link #addBirthplace} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: BIRTHPLACE
 	 * </p>
@@ -1094,13 +1162,11 @@ public class VCard {
 	 * Gets all deathplace property instances.
 	 * </p>
 	 * <p>
-	 * This method if useful for when there are multiple instances of this
-	 * property and each instance has its own ALTID value. But in most cases,
-	 * there will only be one instance of this property, so the
-	 * {@link #getDeathplace} method can be used (usage of the ALTID parameter
-	 * is uncommon).
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getDeathplace}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: DEATHPLACE
 	 * </p>
@@ -1120,10 +1186,11 @@ public class VCard {
 	 * Adds a deathplace property.
 	 * </p>
 	 * <p>
-	 * This method must only be used if each property instance has its own ALTID
-	 * value. Otherwise, use {@link #setDeathplace}.
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setDeathplace}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: DEATHPLACE
 	 * </p>
@@ -1143,10 +1210,9 @@ public class VCard {
 	 * Gets the person's deathplace.
 	 * </p>
 	 * <p>
-	 * Use {@link #getDeathplaces} to get the alternate representations of the
-	 * property.
+	 * Use {@link #getDeathplaces} to get the alternative representations of
+	 * this property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: DEATHPLACE
 	 * </p>
@@ -1165,10 +1231,9 @@ public class VCard {
 	 * Sets the person's deathplace.
 	 * </p>
 	 * <p>
-	 * Use {@link #addDeathplace} to add alternate representations of the
-	 * property.
+	 * Use {@link #addDeathplace} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: DEATHPLACE
 	 * </p>
@@ -1188,13 +1253,11 @@ public class VCard {
 	 * Gets all death date property instances.
 	 * </p>
 	 * <p>
-	 * This method if useful for when there are multiple instances of this
-	 * property and each instance has its own ALTID value. But in most cases,
-	 * there will only be one instance of this property, so the
-	 * {@link #getDeathdate} method can be used (usage of the ALTID parameter is
-	 * uncommon).
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getDeathdate}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: DEATHDATE
 	 * </p>
@@ -1214,10 +1277,11 @@ public class VCard {
 	 * Adds a death date property.
 	 * </p>
 	 * <p>
-	 * This method must only be used if each property instance has its own ALTID
-	 * value. Otherwise, use {@link #setDeathdate}.
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setDeathdate}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: DEATHDATE
 	 * </p>
@@ -1237,10 +1301,9 @@ public class VCard {
 	 * Gets the person's time of death.
 	 * </p>
 	 * <p>
-	 * Use {@link #getDeathdates} to get the alternate representations of the
-	 * property.
+	 * Use {@link #getDeathdates} to get the alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: DEATHDATE
 	 * </p>
@@ -1259,10 +1322,9 @@ public class VCard {
 	 * Sets the person's time of death.
 	 * </p>
 	 * <p>
-	 * Use {@link #addDeathdate} to add alternate representations of the
-	 * property.
+	 * Use {@link #addDeathdate} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: DEATHDATE
 	 * </p>
@@ -1282,13 +1344,11 @@ public class VCard {
 	 * Gets all birthday property instances.
 	 * </p>
 	 * <p>
-	 * This method if useful for when there are multiple instances of this
-	 * property and each instance has its own ALTID value. But in most cases,
-	 * there will only be one instance of this property, so the
-	 * {@link #getBirthday} method can be used (usage of the ALTID parameter is
-	 * uncommon).
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getBirthday}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: BDAY
 	 * </p>
@@ -1307,10 +1367,11 @@ public class VCard {
 	 * Adds a birthday property.
 	 * </p>
 	 * <p>
-	 * This method must only be used if each property instance has its own ALTID
-	 * value. Otherwise, use {@link #setBirthday}.
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setBirthday}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: BDAY
 	 * </p>
@@ -1325,12 +1386,13 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the person's birthday.
 	 * <p>
-	 * Use {@link #getBirthdays} to get the alternate representations of the
-	 * property.
+	 * Gets the person's birthday.
 	 * </p>
-	 * 
+	 * <p>
+	 * Use {@link #getBirthdays} to get the alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: BDAY
 	 * </p>
@@ -1344,12 +1406,13 @@ public class VCard {
 	}
 
 	/**
-	 * Sets the person's birthday.
 	 * <p>
-	 * Use {@link #addBirthday} to add alternate representations of the
-	 * property.
+	 * Sets the person's birthday.
 	 * </p>
-	 * 
+	 * <p>
+	 * Use {@link #addBirthday} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: BDAY
 	 * </p>
@@ -1368,13 +1431,11 @@ public class VCard {
 	 * Gets all anniversary property instances.
 	 * </p>
 	 * <p>
-	 * This method if useful for when there are multiple instances of this
-	 * property and each instance has its own ALTID value. But in most cases,
-	 * there will only be one instance of this property, so the
-	 * {@link #getAnniversary} method can be used (usage of the ALTID parameter
-	 * is uncommon).
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getAnniversary}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: ANNIVERSARY
 	 * </p>
@@ -1393,10 +1454,11 @@ public class VCard {
 	 * Adds an anniversary property.
 	 * </p>
 	 * <p>
-	 * This method must only be used if each property instance has its own ALTID
-	 * value. Otherwise, use {@link #setAnniversary}.
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setAnniversary}.
 	 * </p>
-	 * 
 	 * <p>
 	 * vCard property name: ANNIVERSARY
 	 * </p>
@@ -1411,12 +1473,13 @@ public class VCard {
 	}
 
 	/**
-	 * Gets the person's anniversary.
 	 * <p>
-	 * Use {@link #getAnniversaries} to get the alternate representations of the
-	 * property.
+	 * Gets the person's anniversary.
 	 * </p>
-	 * 
+	 * <p>
+	 * Use {@link #getAnniversaries} to get the alternative representations of
+	 * this property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: ANNIVERSARY
 	 * </p>
@@ -1430,12 +1493,13 @@ public class VCard {
 	}
 
 	/**
-	 * Sets the person's anniversary.
 	 * <p>
-	 * Use {@link #addAnniversary} to add alternate representations of the
-	 * property.
+	 * Sets the person's anniversary.
 	 * </p>
-	 * 
+	 * <p>
+	 * Use {@link #addAnniversary} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: ANNIVERSARY
 	 * </p>
@@ -1680,9 +1744,15 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all instances of the timezone property. This method should only be
-	 * used if there are multiple instances of the property. Otherwise, use the
-	 * {@link #getTimezone} method.
+	 * <p>
+	 * Gets all instances of the timezone property.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getTimezone}.
+	 * </p>
 	 * <p>
 	 * vCard property name: TZ
 	 * </p>
@@ -1690,13 +1760,20 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @return the timezones
+	 * @see TimezoneType#getAltId
 	 */
 	public List<TimezoneType> getTimezones() {
 		return timezones;
 	}
 
 	/**
+	 * <p>
 	 * Gets the timezone the person lives/works in.
+	 * </p>
+	 * <p>
+	 * Use {@link #getTimezones} to get the alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: TZ
 	 * </p>
@@ -1710,7 +1787,13 @@ public class VCard {
 	}
 
 	/**
+	 * <p>
 	 * Sets the timezone the person lives/works in.
+	 * </p>
+	 * <p>
+	 * Use {@link #addTimezone} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: TZ
 	 * </p>
@@ -1725,9 +1808,15 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a timezone to the vCard. This method should only be used for adding
-	 * multiple property instances to the vCard. Otherwise, use the
-	 * {@link #setTimezone} method.
+	 * <p>
+	 * Adds a timezone to the vCard.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setTimezone}.
+	 * </p>
 	 * <p>
 	 * vCard property name: TZ
 	 * </p>
@@ -1735,15 +1824,22 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @param timezone the timezone to add
+	 * @see TimezoneType#setAltId
 	 */
 	public void addTimezone(TimezoneType timezone) {
 		timezones.add(timezone);
 	}
 
 	/**
-	 * Gets all geographical position properties. This method should only be
-	 * used if there are multiple instances of the property. Otherwise, use the
-	 * {@link #getGeo} method.
+	 * <p>
+	 * Gets all geographical position properties.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getGeo}.
+	 * </p>
 	 * <p>
 	 * vCard property name: GEO
 	 * </p>
@@ -1751,13 +1847,20 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @return the geographical positions
+	 * @see GeoType#getAltId
 	 */
 	public List<GeoType> getGeos() {
 		return geos;
 	}
 
 	/**
+	 * <p>
 	 * Gets the geographical position of where the person lives/works.
+	 * </p>
+	 * <p>
+	 * Use {@link #getGeos} to get the alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: GEO
 	 * </p>
@@ -1771,7 +1874,13 @@ public class VCard {
 	}
 
 	/**
+	 * <p>
 	 * Sets the geographical position of where the person lives/works.
+	 * </p>
+	 * <p>
+	 * Use {@link #addGeo} to add alternative representations of this property
+	 * (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: GEO
 	 * </p>
@@ -1786,9 +1895,15 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a geographical position to the vCard. This method should only be
-	 * used for adding multiple property instances to the vCard. Otherwise, use
-	 * the {@link #setGeo} method.
+	 * <p>
+	 * Adds a geographical position to the vCard.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setGeo}.
+	 * </p>
 	 * <p>
 	 * vCard property name: GEO
 	 * </p>
@@ -1796,13 +1911,20 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @param geo the geographical position to add
+	 * @see GeoType#setAltId
 	 */
 	public void addGeo(GeoType geo) {
 		geos.add(geo);
 	}
 
 	/**
+	 * <p>
 	 * Gets the hierarchy of organizations the person belongs to.
+	 * </p>
+	 * <p>
+	 * Use {@link #getOrganizations} to get the alternative representations of
+	 * this property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: ORG
 	 * </p>
@@ -1816,9 +1938,15 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all organization properties. This method should only be used if
-	 * there are multiple instances of the property. Otherwise, use the
-	 * {@link #getOrganization} method.
+	 * <p>
+	 * Gets all organization properties.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getOrganization}.
+	 * </p>
 	 * <p>
 	 * vCard property name: ORG
 	 * </p>
@@ -1826,15 +1954,22 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @return the organization properties
+	 * @see OrganizationType#getAltId
 	 */
 	public List<OrganizationType> getOrganizations() {
 		return organizations;
 	}
 
 	/**
-	 * Adds an organization property to the vCard. This method should only be
-	 * used for adding multiple property instances to the vCard. Otherwise, use
-	 * the {@link #setOrganization} method.
+	 * <p>
+	 * Adds an organization property to the vCard.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setOrganization}.
+	 * </p>
 	 * <p>
 	 * vCard property name: ORG
 	 * </p>
@@ -1842,13 +1977,20 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @param organization the organization property to add
+	 * @see OrganizationType#setAltId
 	 */
 	public void addOrganization(OrganizationType organization) {
 		organizations.add(organization);
 	}
 
 	/**
+	 * <p>
 	 * Sets the hierarchy of organizations the person belongs to.
+	 * </p>
+	 * <p>
+	 * Use {@link #addOrganization} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: ORG
 	 * </p>
@@ -1863,9 +2005,15 @@ public class VCard {
 	}
 
 	/**
-	 * Gets all CATEGORIES properties. This method should only be used if there
-	 * are multiple instances of the property. Otherwise, use the
-	 * {@link #getCategories} method.
+	 * <p>
+	 * Gets all CATEGORIES properties.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when there are
+	 * alternative representations of this property (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #getCategories}.
+	 * </p>
 	 * <p>
 	 * vCard property name: CATEGORIES
 	 * </p>
@@ -1873,14 +2021,21 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @return the CATEGORIES properties
+	 * @see CategoriesType#getAltId
 	 */
 	public List<CategoriesType> getCategoriesList() {
 		return categories;
 	}
 
 	/**
+	 * <p>
 	 * Gets the list of keywords (aka "tags") that can be used to describe the
 	 * person.
+	 * </p>
+	 * <p>
+	 * Use {@link #getCategoriesList} to get the alternative representations of
+	 * this property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: CATEGORIES
 	 * </p>
@@ -1894,9 +2049,15 @@ public class VCard {
 	}
 
 	/**
-	 * Adds a CATEGORIES property to the vCard. This method should only be used
-	 * for adding multiple property instances to the vCard. Otherwise, use the
-	 * {@link #setCategories} method.
+	 * <p>
+	 * Adds a CATEGORIES property to the vCard.
+	 * </p>
+	 * <p>
+	 * This method should only be used on the rare occasion when alternative
+	 * representations of this property are needed (see:
+	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
+	 * {@link #setCategories}.
+	 * </p>
 	 * <p>
 	 * vCard property name: CATEGORIES
 	 * </p>
@@ -1904,14 +2065,21 @@ public class VCard {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @param categories the CATEGORIES property to add
+	 * @see CategoriesType#setAltId
 	 */
 	public void addCategories(CategoriesType categories) {
 		this.categories.add(categories);
 	}
 
 	/**
+	 * <p>
 	 * Sets the list of keywords (aka "tags") that can be used to describe the
 	 * person.
+	 * </p>
+	 * <p>
+	 * Use {@link #addCategories} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
 	 * <p>
 	 * vCard property name: CATEGORIES
 	 * </p>
