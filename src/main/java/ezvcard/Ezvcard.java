@@ -1153,6 +1153,8 @@ public class Ezvcard {
 		/**
 		 * Writes the hCards to a string.
 		 * @return the HTML page
+		 * @throws TemplateException if there's a problem with the freemarker
+		 * template
 		 */
 		public String go() throws TemplateException {
 			StringWriter sw = new StringWriter();
@@ -1168,6 +1170,8 @@ public class Ezvcard {
 		 * Writes the hCards to an output stream.
 		 * @param out the output stream to write to
 		 * @throws IOException if there's a problem writing to the output stream
+		 * @throws TemplateException if there's a problem with the freemarker
+		 * template
 		 */
 		public void go(OutputStream out) throws IOException, TemplateException {
 			go(new OutputStreamWriter(out));
@@ -1177,6 +1181,8 @@ public class Ezvcard {
 		 * Writes the hCards to a file.
 		 * @param file the file to write to
 		 * @throws IOException if there's a problem writing to the file
+		 * @throws TemplateException if there's a problem with the freemarker
+		 * template
 		 */
 		public void go(File file) throws IOException, TemplateException {
 			FileWriter writer = null;
@@ -1192,6 +1198,8 @@ public class Ezvcard {
 		 * Writes the hCards to a writer.
 		 * @param writer the writer to write to
 		 * @throws IOException if there's a problem writing to the writer
+		 * @throws TemplateException if there's a problem with the freemarker
+		 * template
 		 */
 		public void go(Writer writer) throws IOException, TemplateException {
 			HCardPage page = new HCardPage();
