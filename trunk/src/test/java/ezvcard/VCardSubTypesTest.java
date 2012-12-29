@@ -142,14 +142,14 @@ public class VCardSubTypesTest {
 
 		//make sure it builds the correct text value
 		{
-			String expected = "geo:-10.9889,20.1234"; //it should round to 4 decimal places
+			String expected = "geo:-10.988879,20.123441"; //it should round to 6 decimal places
 			String actual = subTypes.getFirst("GEO");
 			assertEquals(expected, actual);
 		}
 
 		//make sure it unmarshals the text value correctly
 		{
-			double[] expected = new double[] { -10.9889, 20.1234 };
+			double[] expected = new double[] { -10.988879, 20.123441 };
 			double[] actual = subTypes.getGeo();
 			assertArrayEquals(expected, actual, .00001);
 		}

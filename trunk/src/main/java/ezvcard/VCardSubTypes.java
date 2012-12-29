@@ -1,17 +1,14 @@
 package ezvcard;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.LevelParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.GeoUri;
 import ezvcard.util.TreeMultimap;
 
 /*
@@ -467,18 +464,12 @@ public class VCardSubTypes {
 			return null;
 		}
 
-		Pattern p = Pattern.compile("^geo:(.*?),(.*)$", Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(value);
-		if (m.find()) {
-			try {
-				double latitude = Double.parseDouble(m.group(1));
-				double longitude = Double.parseDouble(m.group(2));
-				return new double[] { latitude, longitude };
-			} catch (NumberFormatException e) {
-				return null;
-			}
+		try {
+			GeoUri geoUri = new GeoUri(value);
+			return new double[] { geoUri.getCoordA(), geoUri.getCoordB() };
+		} catch (IllegalArgumentException e) {
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -492,9 +483,8 @@ public class VCardSubTypes {
 	 * @param longitude the longitude
 	 */
 	public void setGeo(double latitude, double longitude) {
-		NumberFormat nf = new DecimalFormat("0.####");
-		String value = "geo:" + nf.format(latitude) + "," + nf.format(longitude);
-		replace("GEO", value);
+		GeoUri geoUri = new GeoUri(latitude, longitude, null, null, null);
+		replace("GEO", geoUri.toString());
 	}
 
 	/**
