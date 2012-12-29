@@ -259,7 +259,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public String writeXml() {
-		return Ezvcard.writeXml(this).go();
+		return Ezvcard.writeXml(this).indent(2).go();
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(File file) throws IOException, TransformerException {
-		Ezvcard.writeXml(this).go(file);
+		Ezvcard.writeXml(this).indent(2).go(file);
 	}
 
 	/**
@@ -295,7 +295,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(OutputStream out) throws TransformerException {
-		Ezvcard.writeXml(this).go(out);
+		Ezvcard.writeXml(this).indent(2).go(out);
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class VCard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(Writer writer) throws TransformerException {
-		Ezvcard.writeXml(this).go(writer);
+		Ezvcard.writeXml(this).indent(2).go(writer);
 	}
 
 	/**
