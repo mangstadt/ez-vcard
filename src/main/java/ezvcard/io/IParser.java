@@ -42,10 +42,10 @@ import ezvcard.types.VCardType;
 public interface IParser {
 	/**
 	 * Registers an extended type class.
-	 * @param typeClass the extended type class to register (MUST have a public,
+	 * @param clazz the extended type class to register (MUST have a public,
 	 * no-arg constructor)
 	 */
-	void registerExtendedType(Class<? extends VCardType> typeClass);
+	void registerExtendedType(Class<? extends VCardType> clazz);
 
 	/**
 	 * Removes an extended type class that was previously registered.
