@@ -10,9 +10,7 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
-import ezvcard.io.HCardPage;
 import ezvcard.io.VCardWriter;
-import ezvcard.io.XCardDocument;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.AnniversaryType;
@@ -163,13 +161,14 @@ public class VCard {
 	 * set, then it will be marshalled to 3.0.
 	 * </p>
 	 * <p>
-	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @return the vCard string
-	 * @see VCardWriter
+	 * @see Ezvcard
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public String write() {
 		return Ezvcard.write(this).go();
@@ -185,14 +184,15 @@ public class VCard {
 	 * set, then it will be marshalled to 3.0.
 	 * </p>
 	 * <p>
-	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem writing to the file
-	 * @see VCardWriter
+	 * @see Ezvcard
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public void write(File file) throws IOException {
 		Ezvcard.write(this).go(file);
@@ -208,14 +208,15 @@ public class VCard {
 	 * set, then it will be marshalled to 3.0.
 	 * </p>
 	 * <p>
-	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param out the output stream to write the vCard to
-	 * @see VCardWriter
+	 * @see Ezvcard
 	 * @throws IOException if there's a problem writing to the output stream
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public void write(OutputStream out) throws IOException {
 		Ezvcard.write(this).go(out);
@@ -231,14 +232,15 @@ public class VCard {
 	 * set, then it will be marshalled to 3.0.
 	 * </p>
 	 * <p>
-	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param writer the writer to write the vCard to
 	 * @throws IOException if there's a problem writing to the writer
-	 * @see VCardWriter
+	 * @see Ezvcard
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public void write(Writer writer) throws IOException {
 		Ezvcard.write(this).go(writer);
@@ -249,10 +251,11 @@ public class VCard {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @return the vCard XML document
-	 * @see XCardDocument
+	 * @see Ezvcard
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public String writeXml() {
@@ -264,12 +267,13 @@ public class VCard {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
 	 * @throws TransformerException if there's a problem writing the vCard
-	 * @see XCardDocument
+	 * @see Ezvcard
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(File file) throws IOException, TransformerException {
@@ -281,12 +285,13 @@ public class VCard {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param out the output stream to write the vCard to
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
-	 * @see XCardDocument
+	 * @see Ezvcard
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(OutputStream out) throws TransformerException {
@@ -298,11 +303,12 @@ public class VCard {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param writer the writer to write the vCard to
 	 * @throws TransformerException if there's a problem writing to the writer
-	 * @see XCardDocument
+	 * @see Ezvcard
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(Writer writer) throws TransformerException {
@@ -314,10 +320,11 @@ public class VCard {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @return the HTML page
-	 * @see HCardPage
+	 * @see Ezvcard
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public String writeHtml() throws TemplateException {
@@ -329,13 +336,14 @@ public class VCard {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
 	 * @throws TemplateException if there's a problem with the freemarker
 	 * template
-	 * @see HCardPage
+	 * @see Ezvcard
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(File file) throws IOException, TemplateException {
@@ -347,13 +355,14 @@ public class VCard {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param out the output stream to write to
 	 * @throws IOException if there's a problem writing to the output stream
 	 * @throws TemplateException if there's a problem with the freemarker
 	 * template
-	 * @see HCardPage
+	 * @see Ezvcard
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(OutputStream out) throws IOException, TemplateException {
@@ -365,13 +374,14 @@ public class VCard {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param writer the writer to write to
 	 * @throws IOException if there's a problem writing to the writer
 	 * @throws TemplateException if there's a problem with the freemarker
 	 * template
-	 * @see HCardPage
+	 * @see Ezvcard
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(Writer writer) throws IOException, TemplateException {
