@@ -1093,7 +1093,7 @@ public class Ezvcard {
 			try {
 				go(sw);
 			} catch (TransformerException e) {
-				//writing string
+				//writing to a string
 			}
 			return sw.toString();
 		}
@@ -1101,7 +1101,8 @@ public class Ezvcard {
 		/**
 		 * Writes the xCards to an output stream.
 		 * @param out the output stream to write to
-		 * @throws IOException if there's a problem writing to the output stream
+		 * @throws TransformerException if there's a problem writing to the
+		 * output stream
 		 */
 		public void go(OutputStream out) throws TransformerException {
 			go(new OutputStreamWriter(out));
@@ -1110,7 +1111,8 @@ public class Ezvcard {
 		/**
 		 * Writes the xCards to a file.
 		 * @param file the file to write to
-		 * @throws IOException if there's a problem writing to the file
+		 * @throws IOException if the file can't be opened
+		 * @throws TransformerException if there's a problem writing to the file
 		 */
 		public void go(File file) throws IOException, TransformerException {
 			FileWriter writer = null;
@@ -1125,7 +1127,8 @@ public class Ezvcard {
 		/**
 		 * Writes the xCards to a writer.
 		 * @param writer the writer to write to
-		 * @throws IOException if there's a problem writing to the writer
+		 * @throws TransformerException if there's a problem writing to the
+		 * writer
 		 */
 		public void go(Writer writer) throws TransformerException {
 			XCardDocument doc = new XCardDocument();
