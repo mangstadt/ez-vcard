@@ -517,7 +517,7 @@ public class VCard {
 	 * @param member the member to add
 	 */
 	public void addMember(MemberType member) {
-		this.members.add(member);
+		members.add(member);
 	}
 
 	/**
@@ -605,7 +605,7 @@ public class VCard {
 	 * @param source the source
 	 */
 	public void addSource(SourceType source) {
-		this.sources.add(source);
+		sources.add(source);
 	}
 
 	/**
@@ -679,7 +679,7 @@ public class VCard {
 	 * @param formattedName the display text for the person's name
 	 */
 	public void addFormattedName(FormattedNameType formattedName) {
-		this.formattedNames.add(formattedName);
+		formattedNames.add(formattedName);
 	}
 
 	/**
@@ -693,7 +693,7 @@ public class VCard {
 	 * @param formattedName the display text for the person's name
 	 */
 	public void setFormattedName(FormattedNameType formattedName) {
-		this.formattedNames.clear();
+		formattedNames.clear();
 		addFormattedName(formattedName);
 	}
 
@@ -742,7 +742,7 @@ public class VCard {
 	 * @param structuredName the components of the person's name
 	 */
 	public void addStructuredName(StructuredNameType structuredName) {
-		this.structuredNames.add(structuredName);
+		structuredNames.add(structuredName);
 	}
 
 	/**
@@ -756,7 +756,7 @@ public class VCard {
 	 * @param structuredName the components of the person's name
 	 */
 	public void setStructuredName(StructuredNameType structuredName) {
-		this.structuredNames.clear();
+		structuredNames.clear();
 		addStructuredName(structuredName);
 	}
 
@@ -803,7 +803,7 @@ public class VCard {
 	 * @param nickname the NICKNAME property to add
 	 */
 	public void addNickname(NicknameType nickname) {
-		this.nicknames.add(nickname);
+		nicknames.add(nickname);
 	}
 
 	/**
@@ -817,7 +817,7 @@ public class VCard {
 	 * @param nickname the person's nicknames
 	 */
 	public void setNickname(NicknameType nickname) {
-		this.nicknames.clear();
+		nicknames.clear();
 		addNickname(nickname);
 	}
 
@@ -878,7 +878,7 @@ public class VCard {
 	 * @param title the title
 	 */
 	public void addTitle(TitleType title) {
-		this.titles.add(title);
+		titles.add(title);
 	}
 
 	/**
@@ -906,7 +906,7 @@ public class VCard {
 	 * @param role the role
 	 */
 	public void addRole(RoleType role) {
-		this.roles.add(role);
+		roles.add(role);
 	}
 
 	/**
@@ -935,7 +935,7 @@ public class VCard {
 	 * @param photo the photo to add
 	 */
 	public void addPhoto(PhotoType photo) {
-		this.photos.add(photo);
+		photos.add(photo);
 	}
 
 	/**
@@ -963,7 +963,7 @@ public class VCard {
 	 * @param logo the logo to add
 	 */
 	public void addLogo(LogoType logo) {
-		this.logos.add(logo);
+		logos.add(logo);
 	}
 
 	/**
@@ -992,7 +992,7 @@ public class VCard {
 	 * @param sound the sound to add
 	 */
 	public void addSound(SoundType sound) {
-		this.sounds.add(sound);
+		sounds.add(sound);
 	}
 
 	/**
@@ -1530,7 +1530,7 @@ public class VCard {
 	 * @param address the mailing address to add
 	 */
 	public void addAddress(AddressType address) {
-		this.addresses.add(address);
+		addresses.add(address);
 	}
 
 	/**
@@ -1562,7 +1562,7 @@ public class VCard {
 	 * @param label the orphaned label to add
 	 */
 	public void addOrphanedLabel(LabelType label) {
-		this.labels.add(label);
+		labels.add(label);
 	}
 
 	/**
@@ -1590,7 +1590,7 @@ public class VCard {
 	 * @param email the email address to add
 	 */
 	public void addEmail(EmailType email) {
-		this.emails.add(email);
+		emails.add(email);
 	}
 
 	/**
@@ -1618,7 +1618,7 @@ public class VCard {
 	 * @param telephoneNumber the telephone number to add
 	 */
 	public void addTelephoneNumber(TelephoneType telephoneNumber) {
-		this.telephoneNumbers.add(telephoneNumber);
+		telephoneNumbers.add(telephoneNumber);
 	}
 
 	/**
@@ -1676,7 +1676,7 @@ public class VCard {
 	 * @param url the URL to add
 	 */
 	public void addUrl(UrlType url) {
-		this.urls.add(url);
+		urls.add(url);
 	}
 
 	/**
@@ -1720,7 +1720,7 @@ public class VCard {
 	 * @param timezone the timezone
 	 */
 	public void setTimezone(TimezoneType timezone) {
-		this.timezones.clear();
+		timezones.clear();
 		addTimezone(timezone);
 	}
 
@@ -1737,7 +1737,7 @@ public class VCard {
 	 * @param timezone the timezone to add
 	 */
 	public void addTimezone(TimezoneType timezone) {
-		this.timezones.add(timezone);
+		timezones.add(timezone);
 	}
 
 	/**
@@ -1798,7 +1798,7 @@ public class VCard {
 	 * @param geo the geographical position to add
 	 */
 	public void addGeo(GeoType geo) {
-		this.geos.add(geo);
+		geos.add(geo);
 	}
 
 	/**
@@ -1844,7 +1844,7 @@ public class VCard {
 	 * @param organization the organization property to add
 	 */
 	public void addOrganization(OrganizationType organization) {
-		this.organizations.add(organization);
+		organizations.add(organization);
 	}
 
 	/**
@@ -1858,7 +1858,7 @@ public class VCard {
 	 * @param organization the organizations
 	 */
 	public void setOrganization(OrganizationType organization) {
-		this.organizations.clear();
+		organizations.clear();
 		addOrganization(organization);
 	}
 
@@ -1978,7 +1978,7 @@ public class VCard {
 	 * @param note the note to add
 	 */
 	public void addNote(NoteType note) {
-		this.notes.add(note);
+		notes.add(note);
 	}
 
 	/**
@@ -2034,7 +2034,7 @@ public class VCard {
 	 * @param key the key to add
 	 */
 	public void addKey(KeyType key) {
-		this.keys.add(key);
+		keys.add(key);
 	}
 
 	/**
@@ -2062,7 +2062,7 @@ public class VCard {
 	 * @param impp the instant messaging handle to add
 	 */
 	public void addImpp(ImppType impp) {
-		this.impps.add(impp);
+		impps.add(impp);
 	}
 
 	/**
@@ -2090,7 +2090,7 @@ public class VCard {
 	 * @param related the relation to add
 	 */
 	public void addRelated(RelatedType related) {
-		this.relations.add(related);
+		relations.add(related);
 	}
 
 	/**
@@ -2118,7 +2118,7 @@ public class VCard {
 	 * @param language the language to add
 	 */
 	public void addLanguage(LanguageType language) {
-		this.languages.add(language);
+		languages.add(language);
 	}
 
 	/**
@@ -2148,7 +2148,7 @@ public class VCard {
 	 * @param calendarRequestUri the calendar request URI to add
 	 */
 	public void addCalendarRequestUri(CalendarRequestUriType calendarRequestUri) {
-		this.calendarRequestUris.add(calendarRequestUri);
+		calendarRequestUris.add(calendarRequestUri);
 	}
 
 	/**
@@ -2176,7 +2176,7 @@ public class VCard {
 	 * @param calendarUri the calendar URI to add
 	 */
 	public void addCalendarUri(CalendarUriType calendarUri) {
-		this.calendarUris.add(calendarUri);
+		calendarUris.add(calendarUri);
 	}
 
 	/**
@@ -2206,7 +2206,7 @@ public class VCard {
 	 * @param fbUrl the free-busy URL to add
 	 */
 	public void addFbUrl(FbUrlType fbUrl) {
-		this.fbUrls.add(fbUrl);
+		fbUrls.add(fbUrl);
 	}
 
 	/**
@@ -2238,7 +2238,7 @@ public class VCard {
 	 * @param clientPidMap the client PID map to add
 	 */
 	public void addClientPidMap(ClientPidMapType clientPidMap) {
-		this.clientPidMaps.add(clientPidMap);
+		clientPidMaps.add(clientPidMap);
 	}
 
 	/**
@@ -2272,7 +2272,7 @@ public class VCard {
 	 * @param xml the XML data to add
 	 */
 	public void addXml(XmlType xml) {
-		this.xmls.add(xml);
+		xmls.add(xml);
 	}
 
 	/**
