@@ -75,7 +75,7 @@ public class VCardLine {
 				escaped = true;
 			} else if (ch == '.' && lineObj.group == null && lineObj.typeName == null) {
 				lineObj.group = buf.toString();
-				buf = new StringBuilder();
+				buf.setLength(0);
 			} else if ((ch == ';' || ch == ':') && !inQuotes) {
 				if (lineObj.typeName == null) {
 					lineObj.typeName = buf.toString();
@@ -86,7 +86,7 @@ public class VCardLine {
 					lineObj.subTypes.add(curSubType);
 					curSubType = new String[2];
 				}
-				buf = new StringBuilder();
+				buf.setLength(0);
 
 				if (ch == ':') {
 					if (i < line.length() - 1) {
@@ -99,7 +99,7 @@ public class VCardLine {
 			} else if (ch == '=' && !inQuotes) {
 				//sub type name
 				curSubType[0] = buf.toString();
-				buf = new StringBuilder();
+				buf.setLength(0);
 			} else if (ch == '"') {
 				inQuotes = !inQuotes;
 			} else {
