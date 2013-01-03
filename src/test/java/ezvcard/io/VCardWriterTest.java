@@ -617,4 +617,77 @@ public class VCardWriterTest {
 
 		assertEquals(actual, expected);
 	}
+
+	/**
+	 * If newline characters exist in a property value in 2.1, then that
+	 * property value should be "quoted-printable" encoded. The escape sequence
+	 * "\n" should ONLY be used for 3.0 and 4.0. See the "Delimiters" subsection
+	 * in section 2 of the 2.1 specs.
+	 */
+	@Test
+	public void newlines_in_property_values() throws Exception {
+		VCard vcard = new VCard();
+		vcard.addNote("One\r\nTwo");
+		vcard.addNote("Three Four");
+
+		//2.1
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+			vcw.setAddProdId(false);
+			vcw.write(vcard);
+
+			String actual = sw.toString();
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("BEGIN:VCARD\r\n");
+			sb.append("VERSION:2.1\r\n");
+			sb.append("NOTE;ENCODING=quoted-printable:One=0D=0ATwo\r\n");
+			sb.append("NOTE:Three Four\r\n");
+			sb.append("END:VCARD\r\n");
+			String expected = sb.toString();
+
+			assertEquals(actual, expected);
+		}
+
+		//3.0
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
+			vcw.setAddProdId(false);
+			vcw.write(vcard);
+
+			String actual = sw.toString();
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("BEGIN:VCARD\r\n");
+			sb.append("VERSION:3.0\r\n");
+			sb.append("NOTE:One\\nTwo\r\n");
+			sb.append("NOTE:Three Four\r\n");
+			sb.append("END:VCARD\r\n");
+			String expected = sb.toString();
+
+			assertEquals(actual, expected);
+		}
+
+		//4.0
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
+			vcw.setAddProdId(false);
+			vcw.write(vcard);
+
+			String actual = sw.toString();
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("BEGIN:VCARD\r\n");
+			sb.append("VERSION:4.0\r\n");
+			sb.append("NOTE:One\\nTwo\r\n");
+			sb.append("NOTE:Three Four\r\n");
+			sb.append("END:VCARD\r\n");
+			String expected = sb.toString();
+
+			assertEquals(actual, expected);
+		}
+	}
 }

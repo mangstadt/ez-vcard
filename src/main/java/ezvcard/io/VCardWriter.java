@@ -13,11 +13,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.QuotedPrintableCodec;
+
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.LabelType;
@@ -349,6 +353,25 @@ public class VCardWriter implements Closeable {
 				warnings.addAll(warningsBuf);
 			}
 
+			//sanitize value for safe inclusion in the vCard
+			if (value != null) {
+				if (targetVersion == VCardVersion.V2_1) {
+					if (VCardStringUtils.containsNewlines(value)) {
+						//2.1 does not support the "\n" escape sequence (see "Delimiters" sub-section in section 2 of the specs)
+						QuotedPrintableCodec codec = new QuotedPrintableCodec();
+						try {
+							value = codec.encode(value);
+							subTypes.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
+						} catch (EncoderException e) {
+							warnings.add("A unexpected error occurred while encoding the value of the " + type.getTypeName() + " property in \"quoted-printable\" encoding.  Value will not be encoded.\n" + e.getMessage());
+							value = VCardStringUtils.escapeNewlines(value);
+						}
+					}
+				} else {
+					value = VCardStringUtils.escapeNewlines(value);
+				}
+			}
+
 			StringBuilder sb = new StringBuilder();
 
 			//write the group
@@ -420,7 +443,6 @@ public class VCardWriter implements Closeable {
 
 			//write the value
 			if (nested == null) {
-				value = VCardStringUtils.escapeNewlines(value);
 				writer.write(value);
 				writer.write(newline);
 			} else {
