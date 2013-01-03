@@ -7,6 +7,7 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -552,8 +553,8 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
-	 * Gets the classification of the vCard. It describes the sensitivity of the
-	 * information in the vCard.
+	 * Gets the classification of the vCard, which describes the sensitivity of
+	 * the information in the vCard.
 	 * <p>
 	 * vCard property name: CLASS
 	 * </p>
@@ -567,8 +568,8 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
-	 * Sets the classification of the vCard. It describes the sensitivity of the
-	 * information in the vCard.
+	 * Sets the classification of the vCard, which describes the sensitivity of
+	 * the information in the vCard.
 	 * <p>
 	 * vCard property name: CLASS
 	 * </p>
@@ -579,6 +580,28 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void setClassification(ClassificationType classification) {
 		this.classification = classification;
+	}
+
+	/**
+	 * Sets the classification of the vCard, which describes the sensitivity of
+	 * the information in the vCard. This is a convenience method for
+	 * {@link #setClassification(ClassificationType)}.
+	 * <p>
+	 * </p>
+	 * <p>
+	 * vCard property name: CLASS
+	 * </p>
+	 * <p>
+	 * vCard versions: 3.0
+	 * </p>
+	 * @param classification the classification (e.g. "PUBLIC", "PRIVATE",
+	 * "CONFIDENTIAL")
+	 * @return the type object that was created
+	 */
+	public ClassificationType setClassification(String classification) {
+		ClassificationType type = new ClassificationType(classification);
+		setClassification(type);
+		return type;
 	}
 
 	/**
@@ -612,6 +635,25 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * Adds a URI that can be used to retrieve the most up-to-date version of
+	 * the person's vCard. This is a convenience method for
+	 * {@link #addSource(SourceType)} .
+	 * <p>
+	 * vCard property name: SOURCE
+	 * </p>
+	 * <p>
+	 * vCard versions: 3.0, 4.0
+	 * </p>
+	 * @param source the source URI (e.g. "http://example.com/vcard.vcf")
+	 * @return the type object that was created
+	 */
+	public SourceType addSource(String source) {
+		SourceType type = new SourceType(source);
+		addSource(type);
+		return type;
+	}
+
+	/**
 	 * Gets a textual representation of the SOURCE property.
 	 * <p>
 	 * vCard property name: NAME
@@ -637,6 +679,25 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void setSourceDisplayText(SourceDisplayTextType sourceDisplayText) {
 		this.sourceDisplayText = sourceDisplayText;
+	}
+
+	/**
+	 * Sets a textual representation of the SOURCE property. This is a
+	 * convenience method for
+	 * {@link #setSourceDisplayText(SourceDisplayTextType)}.
+	 * <p>
+	 * vCard property name: NAME
+	 * </p>
+	 * <p>
+	 * vCard versions: 3.0
+	 * </p>
+	 * @param sourceDisplayText a textual representation of the vCard source
+	 * @return the type object that was created
+	 */
+	public SourceDisplayTextType setSourceDisplayText(String sourceDisplayText) {
+		SourceDisplayTextType type = new SourceDisplayTextType(sourceDisplayText);
+		setSourceDisplayText(sourceDisplayText);
+		return type;
 	}
 
 	/**
@@ -690,7 +751,7 @@ public class VCard implements Iterable<VCardType> {
 	 * This method should only be used on the rare occasion when alternative
 	 * representations of this property are needed (see:
 	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
-	 * {@link #setFormattedName}.
+	 * {@link #setFormattedName(FormattedNameType)}.
 	 * </p>
 	 * <p>
 	 * vCard property name: FN
@@ -724,6 +785,30 @@ public class VCard implements Iterable<VCardType> {
 	public void setFormattedName(FormattedNameType formattedName) {
 		formattedNames.clear();
 		addFormattedName(formattedName);
+	}
+
+	/**
+	 * <p>
+	 * Sets the text value used for displaying the person's name. This is a
+	 * convenience method for {@link #setFormattedName(FormattedNameType)}.
+	 * </p>
+	 * <p>
+	 * Use {@link #addFormattedName} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
+	 * <p>
+	 * vCard property name: FN
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param formattedName the formatted name (e.g. "John Doe")
+	 * @return the type object that was created
+	 */
+	public FormattedNameType setFormattedName(String formattedName) {
+		FormattedNameType type = new FormattedNameType(formattedName);
+		setFormattedName(type);
+		return type;
 	}
 
 	/**
@@ -859,7 +944,7 @@ public class VCard implements Iterable<VCardType> {
 	 * This method should only be used on the rare occasion when alternative
 	 * representations of this property are needed (see:
 	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
-	 * {@link #setNickname}.
+	 * {@link #setNickname(NicknameType)}.
 	 * </p>
 	 * <p>
 	 * vCard property name: NICKNAME
@@ -876,7 +961,7 @@ public class VCard implements Iterable<VCardType> {
 
 	/**
 	 * <p>
-	 * Sets the person's nicknames.
+	 * Sets one or more nicknames.
 	 * </p>
 	 * <p>
 	 * Use {@link #addNickname} to add alternative representations of this
@@ -888,7 +973,8 @@ public class VCard implements Iterable<VCardType> {
 	 * <p>
 	 * vCard versions: 3.0, 4.0
 	 * </p>
-	 * @param nickname the person's nicknames
+	 * @param nickname the nicknames (multiple nicknames can be added to this
+	 * object)
 	 */
 	public void setNickname(NicknameType nickname) {
 		nicknames.clear();
@@ -896,35 +982,95 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
-	 * Gets the string that should be used to sort the vCard. For 4.0 vCards,
-	 * use the {@link StructuredNameType#getSortAs} and/or
+	 * <p>
+	 * Sets one or more nicknames. This is a convenience method for
+	 * {@link #setNickname(NicknameType)}.
+	 * </p>
+	 * <p>
+	 * Use {@link #addNickname} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
+	 * <p>
+	 * vCard property name: NICKNAME
+	 * </p>
+	 * <p>
+	 * vCard versions: 3.0, 4.0
+	 * </p>
+	 * @param nicknames the nickname(s)
+	 * @return the type object that was created
+	 */
+	public NicknameType setNickname(String... nicknames) {
+		NicknameType type = new NicknameType();
+		for (String nickname : nicknames) {
+			type.addValue(nickname);
+		}
+		setNickname(type);
+		return type;
+	}
+
+	/**
+	 * <p>
+	 * Gets the string that should be used to sort the vCard.
+	 * </p>
+	 * <p>
+	 * For 4.0 vCards, use the {@link StructuredNameType#getSortAs} and/or
 	 * {@link OrganizationType#getSortAs} methods.
+	 * </p>
 	 * <p>
 	 * vCard property name: SORT-STRING
 	 * </p>
 	 * <p>
 	 * vCard versions: 2.1, 3.0
 	 * </p>
-	 * @return the string that's used to sort the vCard
+	 * @return the sort string
 	 */
 	public SortStringType getSortString() {
 		return sortString;
 	}
 
 	/**
-	 * Sets the string that should be used to sort the vCard. For 4.0 vCards,
-	 * use the {@link StructuredNameType#setSortAs} and/or
+	 * <p>
+	 * Sets the string that should be used to sort the vCard.
+	 * </p>
+	 * <p>
+	 * For 4.0 vCards, use the {@link StructuredNameType#setSortAs} and/or
 	 * {@link OrganizationType#setSortAs} methods.
+	 * </p>
 	 * <p>
 	 * vCard property name: SORT-STRING
 	 * </p>
 	 * <p>
 	 * vCard versions: 2.1, 3.0
 	 * </p>
-	 * @param sortString the string that's used to sort the vCard
+	 * @param sortString the sort string
 	 */
 	public void setSortString(SortStringType sortString) {
 		this.sortString = sortString;
+	}
+
+	/**
+	 * <p>
+	 * Sets the string that should be used to sort the vCard. This is a
+	 * convenience method for {@link #setSortString(SortStringType)}.
+	 * </p>
+	 * <p>
+	 * For 4.0 vCards, use the {@link StructuredNameType#setSortAs} and/or
+	 * {@link OrganizationType#setSortAs} methods.
+	 * </p>
+	 * <p>
+	 * vCard property name: SORT-STRING
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0
+	 * </p>
+	 * @param sortString the sort string (e.g. "Armour" if the person's last
+	 * name is "d'Armour")
+	 * @return the type object that was created
+	 */
+	public SortStringType setSortString(String sortString) {
+		SortStringType type = new SortStringType(sortString);
+		setSortString(type);
+		return type;
 	}
 
 	/**
@@ -956,6 +1102,24 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * Adds a title associated with the person. This is a convenience method for
+	 * {@link #addTitle(TitleType)}.
+	 * <p>
+	 * vCard property name: TITLE
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param title the title (e.g. "V.P. Research and Development")
+	 * @return the type object that was created
+	 */
+	public TitleType addTitle(String title) {
+		TitleType type = new TitleType(title);
+		addTitle(type);
+		return type;
+	}
+
+	/**
 	 * Gets the roles associated with the person.
 	 * <p>
 	 * vCard property name: ROLE
@@ -981,6 +1145,24 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void addRole(RoleType role) {
 		roles.add(role);
+	}
+
+	/**
+	 * Adds a role associated with the person. This is a convenience method for
+	 * {@link #addRole(RoleType)}.
+	 * <p>
+	 * vCard property name: ROLE
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param role the role (e.g. "Executive")
+	 * @return the type object that was created
+	 */
+	public RoleType addRole(String role) {
+		RoleType type = new RoleType(role);
+		addRole(type);
+		return type;
 	}
 
 	/**
@@ -1545,7 +1727,26 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
-	 * Gets the product ID.
+	 * Sets the time that the vCard was last modified. This is a convenience
+	 * method for {@link #setRevision(RevisionType)}.
+	 * <p>
+	 * vCard property name: REV
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param rev the last modified time
+	 * @return the type object that was created
+	 */
+	public RevisionType setRevision(Date rev) {
+		RevisionType type = new RevisionType(rev);
+		setRevision(type);
+		return type;
+	}
+
+	/**
+	 * Gets the product ID, which identifies the software that created the
+	 * vCard.
 	 * <p>
 	 * vCard property name: PRODID
 	 * </p>
@@ -1559,7 +1760,8 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
-	 * Sets the product ID.
+	 * Sets the product ID, which identifies the software that created the
+	 * vCard.
 	 * <p>
 	 * vCard property name: PRODID
 	 * </p>
@@ -1570,6 +1772,24 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void setProdId(ProdIdType prodId) {
 		this.prodId = prodId;
+	}
+
+	/**
+	 * Sets the product ID, which identifies the software that created the
+	 * vCard. This is a convenience method for {@link #setProdId(ProdIdType)}.
+	 * <p>
+	 * vCard property name: PRODID
+	 * </p>
+	 * <p>
+	 * vCard versions: 3.0, 4.0
+	 * </p>
+	 * @param prodId the product ID (e.g. "ez-vcard 1.0")
+	 * @return the type object that was created
+	 */
+	public ProdIdType setProdId(String prodId) {
+		ProdIdType type = new ProdIdType(prodId);
+		setProdId(type);
+		return type;
 	}
 
 	/**
@@ -1661,6 +1881,24 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * Adds an email address. This is a convenience method for
+	 * {@link #addEmail(EmailType)}.
+	 * <p>
+	 * vCard property name: EMAIL
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param email the email address to add (e.g. "johndoe@aol.com")
+	 * @return the type object that was created
+	 */
+	public EmailType addEmail(String email) {
+		EmailType type = new EmailType(email);
+		addEmail(type);
+		return type;
+	}
+
+	/**
 	 * Gets the telephone numbers.
 	 * <p>
 	 * vCard property name: TEL
@@ -1686,6 +1924,25 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void addTelephoneNumber(TelephoneType telephoneNumber) {
 		telephoneNumbers.add(telephoneNumber);
+	}
+
+	/**
+	 * Adds a telephone number. This is a convenience method for
+	 * {@link #addTelephoneNumber(TelephoneType)}.
+	 * <p>
+	 * vCard property name: TEL
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param telephoneNumber the telephone number to add (e.g.
+	 * "+1 555-555-5555")
+	 * @return the type object that was created
+	 */
+	public TelephoneType addTelephoneNumber(String telephoneNumber) {
+		TelephoneType type = new TelephoneType(telephoneNumber);
+		addTelephoneNumber(type);
+		return type;
 	}
 
 	/**
@@ -1717,6 +1974,24 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * Sets the email client that the person uses. This is a convenience method
+	 * for {@link #setMailer(MailerType)}.
+	 * <p>
+	 * vCard property name: MAILER
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0
+	 * </p>
+	 * @param mailer the email client (e.g. "Thunderbird")
+	 * @return the type object that was created
+	 */
+	public MailerType setMailer(String mailer) {
+		MailerType type = new MailerType(mailer);
+		setMailer(type);
+		return type;
+	}
+
+	/**
 	 * Gets the URLs. URLs can point to websites such as a personal homepage or
 	 * business website.
 	 * <p>
@@ -1744,6 +2019,25 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void addUrl(UrlType url) {
 		urls.add(url);
+	}
+
+	/**
+	 * Adds a URL. URLs can point to websites such as a personal homepage or
+	 * business website. This is a convenience method for
+	 * {@link #addUrl(UrlType)}.
+	 * <p>
+	 * vCard property name: URL
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param url the URL to add (e.g. "http://example.com")
+	 * @return the type object that was created
+	 */
+	public UrlType addUrl(String url) {
+		UrlType type = new UrlType(url);
+		addUrl(type);
+		return type;
 	}
 
 	/**
@@ -1899,13 +2193,38 @@ public class VCard implements Iterable<VCardType> {
 
 	/**
 	 * <p>
+	 * Sets the geographical position of where the person lives/works. This is a
+	 * convenience method for {@link #setGeo(GeoType)}.
+	 * </p>
+	 * <p>
+	 * Use {@link #addGeo} to add alternative representations of this property
+	 * (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
+	 * <p>
+	 * vCard property name: GEO
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param latitude the latitude
+	 * @param longitude the longitude
+	 * @return the type object that was created
+	 */
+	public GeoType setGeo(double latitude, double longitude) {
+		GeoType type = new GeoType(latitude, longitude);
+		setGeo(type);
+		return type;
+	}
+
+	/**
+	 * <p>
 	 * Adds a geographical position to the vCard.
 	 * </p>
 	 * <p>
 	 * This method should only be used on the rare occasion when alternative
 	 * representations of this property are needed (see:
 	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
-	 * {@link #setGeo}.
+	 * {@link #setGeo(GeoType)}.
 	 * </p>
 	 * <p>
 	 * vCard property name: GEO
@@ -1922,7 +2241,7 @@ public class VCard implements Iterable<VCardType> {
 
 	/**
 	 * <p>
-	 * Gets the hierarchy of organizations the person belongs to.
+	 * Gets the hierarchy of department(s) to which the person belongs.
 	 * </p>
 	 * <p>
 	 * Use {@link #getOrganizations} to get the alternative representations of
@@ -1934,7 +2253,7 @@ public class VCard implements Iterable<VCardType> {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @return the organizations
+	 * @return the department(s)
 	 */
 	public OrganizationType getOrganization() {
 		return organizations.isEmpty() ? null : organizations.get(0);
@@ -1971,7 +2290,7 @@ public class VCard implements Iterable<VCardType> {
 	 * This method should only be used on the rare occasion when alternative
 	 * representations of this property are needed (see:
 	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
-	 * {@link #setOrganization}.
+	 * {@link #setOrganization(OrganizationType)}.
 	 * </p>
 	 * <p>
 	 * vCard property name: ORG
@@ -1979,7 +2298,7 @@ public class VCard implements Iterable<VCardType> {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @param organization the organization property to add
+	 * @param organization the organization type object to add
 	 * @see OrganizationType#setAltId
 	 */
 	public void addOrganization(OrganizationType organization) {
@@ -1988,7 +2307,7 @@ public class VCard implements Iterable<VCardType> {
 
 	/**
 	 * <p>
-	 * Sets the hierarchy of organizations the person belongs to.
+	 * Sets the hierarchy of departments to which the person belongs.
 	 * </p>
 	 * <p>
 	 * Use {@link #addOrganization} to add alternative representations of this
@@ -2000,11 +2319,39 @@ public class VCard implements Iterable<VCardType> {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @param organization the organizations
+	 * @param organization the organization type object
 	 */
 	public void setOrganization(OrganizationType organization) {
 		organizations.clear();
 		addOrganization(organization);
+	}
+
+	/**
+	 * <p>
+	 * Sets the hierarchy of departments to which the person belongs. This is a
+	 * convenience method for {@link #setOrganization(OrganizationType)}.
+	 * </p>
+	 * <p>
+	 * Use {@link #addOrganization} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
+	 * <p>
+	 * vCard property name: ORG
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param departments the ordered list of department(s), starting with the
+	 * broadest and ending with the most specific (e.g. "Google", "GMail Team",
+	 * "Spam Detection Squad")
+	 */
+	public OrganizationType setOrganization(String... departments) {
+		OrganizationType type = new OrganizationType();
+		for (String department : departments) {
+			type.addValue(department);
+		}
+		setOrganization(type);
+		return type;
 	}
 
 	/**
@@ -2059,7 +2406,7 @@ public class VCard implements Iterable<VCardType> {
 	 * This method should only be used on the rare occasion when alternative
 	 * representations of this property are needed (see:
 	 * {@link VCardSubTypes#getAltId explanation of ALTID}). Otherwise, use
-	 * {@link #setCategories}.
+	 * {@link #setCategories(CategoriesType)}.
 	 * </p>
 	 * <p>
 	 * vCard property name: CATEGORIES
@@ -2089,11 +2436,39 @@ public class VCard implements Iterable<VCardType> {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @param categories the categories
+	 * @param categories the categories (multiple categories can be added to this object)
 	 */
 	public void setCategories(CategoriesType categories) {
 		this.categories.clear();
 		addCategories(categories);
+	}
+
+	/**
+	 * <p>
+	 * Sets the list of keywords (aka "tags") that can be used to describe the
+	 * person. This is a convenience method for
+	 * {@link #setCategories(CategoriesType)}.
+	 * </p>
+	 * <p>
+	 * Use {@link #addCategories} to add alternative representations of this
+	 * property (see: {@link VCardSubTypes#getAltId explanation of ALTID}).
+	 * </p>
+	 * <p>
+	 * vCard property name: CATEGORIES
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param categories the category or categories (e.g. "swimmer", "biker", "knitter")
+	 * @retur the type object that was created
+	 */
+	public CategoriesType setCategories(String... categories) {
+		CategoriesType type = new CategoriesType();
+		for (String category : categories) {
+			type.addValue(category);
+		}
+		setCategories(type);
+		return type;
 	}
 
 	/**
@@ -2150,6 +2525,24 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void addNote(NoteType note) {
 		notes.add(note);
+	}
+
+	/**
+	 * Adds a note. Notes contain free-form, miscellaneous text. This is a
+	 * convenience method for {@link #addNote(NoteType)}.
+	 * <p>
+	 * vCard property name: NOTE
+	 * </p>
+	 * <p>
+	 * vCard versions: 2.1, 3.0, 4.0
+	 * </p>
+	 * @param note the note to add
+	 * @return the type object that was created
+	 */
+	public NoteType addNote(String note) {
+		NoteType type = new NoteType(note);
+		addNote(type);
+		return type;
 	}
 
 	/**
@@ -2290,6 +2683,24 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void addLanguage(LanguageType language) {
 		languages.add(language);
+	}
+
+	/**
+	 * Adds a language that the person speaks. This is a convenience method for
+	 * {@link #addLanguage(LanguageType)}.
+	 * <p>
+	 * vCard property name: LANG
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param language the language to add (e.g. "en-us")
+	 * @return the type object that was created
+	 */
+	public LanguageType addLanguage(String language) {
+		LanguageType type = new LanguageType(language);
+		addLanguage(type);
+		return type;
 	}
 
 	/**
@@ -2479,6 +2890,26 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * Adds a professional subject area of which the the person is
+	 * knowledgeable. This is a convenience method for
+	 * {@link #addExpertise(ExpertiseType)}.
+	 * <p>
+	 * vCard property name: EXPERTISE
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param expertise the professional skill to add (e.g. "programming")
+	 * @return the type object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public ExpertiseType addExpertise(String expertise) {
+		ExpertiseType type = new ExpertiseType(expertise);
+		addExpertise(type);
+		return type;
+	}
+
+	/**
 	 * Gets the hobbies that the person actively engages in.
 	 * <p>
 	 * vCard property name: HOBBY
@@ -2506,6 +2937,25 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void addHobby(HobbyType hobby) {
 		hobbies.add(hobby);
+	}
+
+	/**
+	 * Adds a hobby that the person actively engages in. This is a convenience
+	 * method for {@link #addHobby(HobbyType)}.
+	 * <p>
+	 * vCard property name: HOBBY
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param hobby the hobby to add (e.g. "photography")
+	 * @return the type objec that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public HobbyType addHobby(String hobby) {
+		HobbyType type = new HobbyType(hobby);
+		addHobby(type);
+		return type;
 	}
 
 	/**
@@ -2539,6 +2989,25 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * Adds an interest. This is a convenience method for
+	 * {@link #addInterest(InterestType)}.
+	 * <p>
+	 * vCard property name: INTEREST
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param interest the interest to add (e.g. "football")
+	 * @return the type object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public InterestType addInterest(String interest) {
+		InterestType type = new InterestType(interest);
+		addInterest(type);
+		return type;
+	}
+
+	/**
 	 * Gets the organization directories.
 	 * <p>
 	 * vCard property name: ORG-DIRECTORY
@@ -2566,6 +3035,26 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public void addOrgDirectory(OrgDirectoryType orgDirectory) {
 		orgDirectories.add(orgDirectory);
+	}
+
+	/**
+	 * Adds an organization directory. This is a convenience method for
+	 * {@link #addOrgDirectory(OrgDirectoryType)}.
+	 * <p>
+	 * vCard property name: ORG-DIRECTORY
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param orgDirectory the organization directory to add (e.g.
+	 * "http://company.com/staff")
+	 * @return the type object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 */
+	public OrgDirectoryType addOrgDirectory(String orgDirectory) {
+		OrgDirectoryType type = new OrgDirectoryType(orgDirectory);
+		addOrgDirectory(type);
+		return type;
 	}
 
 	/**
