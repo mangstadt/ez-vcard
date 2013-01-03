@@ -2,6 +2,8 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -65,6 +67,14 @@ public class VCardStringUtilsTest {
 		actual = VCardStringUtils.escapeNewlines("One; Two, Three\\ Four\n Five\r\n Six\r");
 		expected = "One; Two, Three\\ Four\\n Five\\n Six\\n";
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void containsNewlines() {
+		assertTrue(VCardStringUtils.containsNewlines("One\nTwo"));
+		assertTrue(VCardStringUtils.containsNewlines("One\rTwo"));
+		assertTrue(VCardStringUtils.containsNewlines("One\r\nTwo"));
+		assertFalse(VCardStringUtils.containsNewlines("One, Two"));
 	}
 
 	@Test

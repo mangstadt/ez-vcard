@@ -106,6 +106,15 @@ public class VCardStringUtils {
 	}
 
 	/**
+	 * Determines if a string contains one or more newline characters.
+	 * @param text the string
+	 * @return true if it contains one or more newline characters, false if not
+	 */
+	public static boolean containsNewlines(String text) {
+		return text.contains("\n") || text.contains("\r");
+	}
+
+	/**
 	 * Splits a string by a character, taking escaped characters into account.
 	 * Each split value is also trimmed.
 	 * <p>
