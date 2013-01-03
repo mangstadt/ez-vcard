@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +101,7 @@ import freemarker.template.TemplateException;
  * Represents the data in a vCard.
  * @author Michael Angstadt
  */
-public class VCard {
+public class VCard implements Iterable<VCardType> {
 	private VCardVersion version = VCardVersion.V3_0;
 	private KindType kind;
 	private GenderType gender;
@@ -2640,5 +2643,52 @@ public class VCard {
 	 */
 	public Map<String, List<VCardType>> getExtendedTypes() {
 		return extendedTypes.getMap();
+	}
+
+	/**
+	 * Gets all of the vCard's properties. Does not include the "BEGIN", "END",
+	 * or "VERSION" properties.
+	 * @return the vCard properties
+	 */
+	public Collection<VCardType> getAllTypes() {
+		Collection<VCardType> allTypes = new ArrayList<VCardType>();
+
+		for (Field field : getClass().getDeclaredFields()) {
+			try {
+				field.setAccessible(true);
+				Object value = field.get(this);
+				if (value instanceof VCardType) {
+					VCardType type = (VCardType) value;
+					allTypes.add(type);
+				} else if (value instanceof Collection) {
+					Collection<?> collection = (Collection<?>) value;
+					for (Object obj : collection) {
+						if (obj instanceof VCardType) {
+							VCardType type = (VCardType) obj;
+							allTypes.add(type);
+						}
+					}
+				}
+			} catch (IllegalArgumentException e) {
+				//shouldn't be thrown because we're passing the correct object into Field.get()
+			} catch (IllegalAccessException e) {
+				//shouldn't be thrown because we're calling Field.setAccessible(true)
+			}
+		}
+
+		for (VCardType extendedType : extendedTypes.values()) {
+			allTypes.add(extendedType);
+		}
+
+		return allTypes;
+	}
+
+	/**
+	 * Iterates through each of the vCard's properties in no particular order.
+	 * Does not include the "BEGIN", "END", or "VERSION" properties.
+	 * @return the iterator
+	 */
+	public Iterator<VCardType> iterator() {
+		return getAllTypes().iterator();
 	}
 }

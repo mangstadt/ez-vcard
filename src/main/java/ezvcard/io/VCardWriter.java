@@ -8,10 +8,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -277,35 +275,37 @@ public class VCardWriter implements Closeable {
 		typesToAdd.add(new TextType("BEGIN", "VCARD"));
 		typesToAdd.add(new TextType("VERSION", targetVersion.getVersion()));
 
-		//use reflection to get all VCardType fields in the VCard class
-		//the order that the Types are in doesn't matter (except for BEGIN, END, and VERSION)
-		for (Field f : vcard.getClass().getDeclaredFields()) {
-			try {
-				f.setAccessible(true);
-				Object value = f.get(vcard);
-				if (value instanceof VCardType) {
-					VCardType type = (VCardType) value;
-					validateAndAddToList(type, vcard, typesToAdd);
-				} else if (value instanceof Collection) {
-					Collection<?> collection = (Collection<?>) value;
-					for (Object obj : collection) {
-						if (obj instanceof VCardType) {
-							VCardType type = (VCardType) obj;
-							validateAndAddToList(type, vcard, typesToAdd);
-						}
-					}
-				}
-			} catch (IllegalArgumentException e) {
-				//shouldn't be thrown because we're passing the correct object into Field.get()
-			} catch (IllegalAccessException e) {
-				//shouldn't be thrown because we're calling Field.setAccessible(true)
+		for (VCardType type : vcard.getAllTypes()) {
+			if (addProdId && type instanceof ProdIdType) {
+				//do not add the PRODID in the vCard if "addProdId" is true
+				continue;
 			}
-		}
 
-		//add extended types
-		for (List<VCardType> list : vcard.getExtendedTypes().values()) {
-			for (VCardType extendedType : list) {
-				validateAndAddToList(extendedType, vcard, typesToAdd);
+			//determine if this type is supported by the target version
+			if (!supportsTargetVersion(type)) {
+				warnings.add(type.getTypeName() + " is not supported by vCard version " + targetVersion + " and will not be added to the vCard.  Supported versions are: " + Arrays.toString(type.getSupportedVersions()));
+				continue;
+			}
+
+			//check for correct KIND value if there are MEMBER types
+			if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
+				warnings.add("KIND must be set to \"group\" in order to add MEMBER properties to the vCard.");
+				continue;
+			}
+
+			typesToAdd.add(type);
+
+			//add LABEL types for each ADR type if the target version is 2.1 or 3.0
+			if (type instanceof AddressType && targetVersion != VCardVersion.V4_0) {
+				AddressType adr = (AddressType) type;
+				String labelStr = adr.getLabel();
+				if (labelStr != null) {
+					LabelType label = new LabelType(labelStr);
+					for (AddressTypeParameter t : adr.getTypes()) {
+						label.addType(t);
+					}
+					typesToAdd.add(label);
+				}
 			}
 		}
 
@@ -463,55 +463,17 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Validates a type instance and adds it to a list if it is determined that
-	 * the type should be marshalled.
-	 * @param type the type instance
-	 * @param vcard the vCard that is being marshalled
-	 * @param typesToAdd the list of types to marshal
+	 * Determines if a type supports the target version.
+	 * @param type the type
+	 * @return true if it supports the target version, false if not
 	 */
-	private void validateAndAddToList(VCardType type, VCard vcard, List<VCardType> typesToAdd) {
-		if (type == null) {
-			return;
-		}
-
-		if (addProdId && type instanceof ProdIdType) {
-			//do not add the PRODID in the vCard if "addProdId" is true
-			return;
-		}
-
-		//determine if this type is supported by the target version
-		boolean supported = false;
-		for (VCardVersion v : type.getSupportedVersions()) {
-			if (v == targetVersion) {
-				supported = true;
-				break;
+	private boolean supportsTargetVersion(VCardType type) {
+		for (VCardVersion version : type.getSupportedVersions()) {
+			if (version == targetVersion) {
+				return true;
 			}
 		}
-		if (!supported) {
-			warnings.add(type.getTypeName() + " is not supported by vCard version " + targetVersion + " and will not be added to the vCard.  Supported versions are: " + Arrays.toString(type.getSupportedVersions()));
-			return;
-		}
-
-		//check for correct KIND value if there are MEMBER types
-		if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
-			warnings.add("KIND must be set to \"group\" in order to add MEMBER properties to the vCard.");
-			return;
-		}
-
-		typesToAdd.add(type);
-
-		//add LABEL types for each ADR type if the vCard version is not 4.0
-		if (type instanceof AddressType && targetVersion != VCardVersion.V4_0) {
-			AddressType adr = (AddressType) type;
-			String labelStr = adr.getLabel();
-			if (labelStr != null) {
-				LabelType label = new LabelType(labelStr);
-				for (AddressTypeParameter t : adr.getTypes()) {
-					label.addType(t);
-				}
-				typesToAdd.add(label);
-			}
-		}
+		return false;
 	}
 
 	/**
