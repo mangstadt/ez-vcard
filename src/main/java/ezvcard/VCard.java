@@ -696,7 +696,7 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public SourceDisplayTextType setSourceDisplayText(String sourceDisplayText) {
 		SourceDisplayTextType type = new SourceDisplayTextType(sourceDisplayText);
-		setSourceDisplayText(sourceDisplayText);
+		setSourceDisplayText(type);
 		return type;
 	}
 
@@ -2436,7 +2436,8 @@ public class VCard implements Iterable<VCardType> {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @param categories the categories (multiple categories can be added to this object)
+	 * @param categories the categories (multiple categories can be added to
+	 * this object)
 	 */
 	public void setCategories(CategoriesType categories) {
 		this.categories.clear();
@@ -2459,7 +2460,8 @@ public class VCard implements Iterable<VCardType> {
 	 * <p>
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
-	 * @param categories the category or categories (e.g. "swimmer", "biker", "knitter")
+	 * @param categories the category or categories (e.g. "swimmer", "biker",
+	 * "knitter")
 	 * @retur the type object that was created
 	 */
 	public CategoriesType setCategories(String... categories) {
