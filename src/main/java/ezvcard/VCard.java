@@ -2462,7 +2462,7 @@ public class VCard implements Iterable<VCardType> {
 	 * </p>
 	 * @param categories the category or categories (e.g. "swimmer", "biker",
 	 * "knitter")
-	 * @retur the type object that was created
+	 * @return the type object that was created
 	 */
 	public CategoriesType setCategories(String... categories) {
 		CategoriesType type = new CategoriesType();
