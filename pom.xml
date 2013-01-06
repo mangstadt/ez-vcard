@@ -141,10 +141,10 @@
 				<version>2.8.1</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
-					<!--
-					It's never able to find the dependencies' javadocs, so just disable this setting.
-					<detectLinks>true</detectLinks>
-					-->
+					<linksource>true</linksource>
+					<links>
+						<link>http://freemarker.sourceforge.net/docs/api/</link>
+					</links>
 				</configuration>
 				<executions>
 					<execution>
