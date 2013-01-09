@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import ezvcard.io.HCardPage;
@@ -1131,6 +1132,20 @@ public class Ezvcard {
 		 * writer
 		 */
 		public void go(Writer writer) throws TransformerException {
+			XCardDocument doc = createXCardDocument();
+			doc.write(writer, indent);
+		}
+
+		/**
+		 * Generates an XML document object model (DOM) containing the xCards.
+		 * @return the DOM
+		 */
+		public Document dom() {
+			XCardDocument doc = createXCardDocument();
+			return doc.getDocument();
+		}
+
+		private XCardDocument createXCardDocument() {
 			XCardDocument doc = new XCardDocument();
 			doc.setAddProdId(prodId);
 
@@ -1141,7 +1156,7 @@ public class Ezvcard {
 				}
 			}
 
-			doc.write(writer, indent);
+			return doc;
 		}
 	}
 

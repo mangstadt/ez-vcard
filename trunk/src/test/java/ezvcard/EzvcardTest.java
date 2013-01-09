@@ -1,5 +1,6 @@
 package ezvcard;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -9,13 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 import ezvcard.io.LuckyNumType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.util.VCardBuilder;
 import ezvcard.util.XCardBuilder;
+import ezvcard.util.XCardUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -336,12 +338,32 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void writeXml_dom() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName(new FormattedNameType("John Doe"));
+
+		Document actual = Ezvcard.writeXml(vcard).prodId(false).dom();
+
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
+			sb.append("<vcard>");
+				sb.append("<fn><text>John Doe</text></fn>");
+			sb.append("</vcard>");
+		sb.append("</vcards>");
+		Document expected = XCardUtils.toDocument(sb.toString());
+		//@formatter:on
+
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
 	public void writeHtml_one() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
 
 		String actual = Ezvcard.writeHtml(vcard).go();
-		Document document = Jsoup.parse(actual);
+		org.jsoup.nodes.Document document = Jsoup.parse(actual);
 		assertEquals(1, document.select(".vcard").size());
 		assertEquals(1, document.select(".vcard .fn").size());
 	}
@@ -356,7 +378,7 @@ public class EzvcardTest {
 		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
 
 		String actual = Ezvcard.writeHtml(vcard1, vcard2, vcard3).go();
-		Document document = Jsoup.parse(actual);
+		org.jsoup.nodes.Document document = Jsoup.parse(actual);
 		assertEquals(3, document.select(".vcard").size());
 		assertEquals(3, document.select(".vcard .fn").size());
 	}
