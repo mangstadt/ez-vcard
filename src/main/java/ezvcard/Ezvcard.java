@@ -1086,7 +1086,7 @@ public class Ezvcard {
 		}
 
 		/**
-		 * Writes the vCards to a string.
+		 * Writes the xCards to a string.
 		 * @return the XML document
 		 */
 		public String go() {
