@@ -263,6 +263,22 @@ public class Ezvcard {
 
 	/**
 	 * <p>
+	 * Parses XML-encoded vCards (xCard).
+	 * </p>
+	 * <p>
+	 * Use {@link XCardReader} for more control over the parsing.
+	 * </p>
+	 * @param document the XML document
+	 * @return chainer object for completing the parse operation
+	 * @see XCardReader
+	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
+	 */
+	public static XmlDomParserChain parseXml(Document document) {
+		return new XmlDomParserChain(document);
+	}
+
+	/**
+	 * <p>
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
@@ -715,7 +731,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		IParser init() throws IOException, SAXException {
+		IParser init() throws SAXException {
 			return new XCardReader(xml);
 		}
 
@@ -735,6 +751,71 @@ public class Ezvcard {
 				return super.all();
 			} catch (IOException e) {
 				//reading from string
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * Convenience chainer class for parsing XML vCards.
+	 */
+	public static class XmlDomParserChain extends ParserChain {
+		private Document document;
+
+		private XmlDomParserChain(Document document) {
+			this.document = document;
+		}
+
+		/**
+		 * Registers an extended type class.
+		 * @param typeClass the extended type class
+		 * @return this
+		 */
+		public XmlDomParserChain register(Class<? extends VCardType> typeClass) {
+			extendedTypes.add(typeClass);
+			return this;
+		}
+
+		/**
+		 * Provides a list object that any unmarshal warnings will be put into.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of each unmarshalled vCard. Each element of the list is the
+		 * list of warnings for one of the unmarshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
+		 * @return this
+		 */
+		public XmlDomParserChain warnings(List<List<String>> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		@Override
+		IParser init() {
+			return new XCardReader(document);
+		}
+
+		@Override
+		public VCard first() {
+			try {
+				return super.first();
+			} catch (IOException e) {
+				//reading from string
+			} catch (SAXException e) {
+				//reading from DOM
+			}
+			return null;
+		}
+
+		@Override
+		public List<VCard> all() {
+			try {
+				return super.all();
+			} catch (IOException e) {
+				//reading from string
+			} catch (SAXException e) {
+				//reading from DOM
 			}
 			return null;
 		}
@@ -824,15 +905,10 @@ public class Ezvcard {
 	 */
 	public static class HtmlStringParserChain extends ParserChain {
 		private String html;
-		private URL url;
 		private String pageUrl;
 
 		private HtmlStringParserChain(String html) {
 			this.html = html;
-		}
-
-		private HtmlStringParserChain(URL url) {
-			this.url = url;
 		}
 
 		/**
@@ -873,8 +949,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		IParser init() throws IOException {
-			return (url == null) ? new HCardReader(html, pageUrl) : new HCardReader(url);
+		IParser init() {
+			return new HCardReader(html, pageUrl);
 		}
 
 		@Override

@@ -406,4 +406,43 @@ public class XCardReaderTest {
 
 		assertNull(xcr.readNext());
 	}
+
+	@Test
+	public void notRoot() throws Exception {
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("<foo xmlns=\"http://foobar.com\">");
+			sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+				sb.append("<vcard>");
+					sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
+					sb.append("<n>");
+						sb.append("<surname>House</surname>");
+						sb.append("<given>Gregory</given>");
+						sb.append("<additional />");
+						sb.append("<prefix>Dr</prefix>");
+						sb.append("<prefix>Mr</prefix>");
+						sb.append("<suffix>MD</suffix>");
+					sb.append("</n>");
+				sb.append("</vcard>");
+			sb.append("</vcards>");
+		sb.append("</foo>");
+		//@formatter:on
+
+		XCardReader xcr = new XCardReader(sb.toString());
+		VCard vcard = xcr.readNext();
+
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+
+		FormattedNameType fn = vcard.getFormattedName();
+		assertEquals("Dr. Gregory House M.D.", fn.getValue());
+
+		StructuredNameType n = vcard.getStructuredName();
+		assertEquals("House", n.getFamily());
+		assertEquals("Gregory", n.getGiven());
+		assertTrue(n.getAdditional().isEmpty());
+		assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
+		assertEquals(Arrays.asList("MD"), n.getSuffixes());
+
+		assertNull(xcr.readNext());
+	}
 }
