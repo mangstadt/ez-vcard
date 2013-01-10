@@ -77,7 +77,7 @@ import ezvcard.util.XCardUtils;
  */
 public class XCardReader implements IParser {
 	private static final VCardVersion version = VCardVersion.V4_0;
-	private static final VCardNamespaceContext nsContext = new VCardNamespaceContext(version);
+	private static final VCardNamespaceContext nsContext = new VCardNamespaceContext(version, "v");
 
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
@@ -209,7 +209,8 @@ public class XCardReader implements IParser {
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			xpath.setNamespaceContext(nsContext);
 
-			NodeList nodeList = (NodeList) xpath.evaluate("//v:vcards/v:vcard", document, XPathConstants.NODESET);
+			String prefix = nsContext.prefix;
+			NodeList nodeList = (NodeList) xpath.evaluate("//" + prefix + ":vcards/" + prefix + ":vcard", document, XPathConstants.NODESET);
 			vcardElements = XCardUtils.toElementList(nodeList).iterator();
 		} catch (XPathExpressionException e) {
 			//never thrown, xpath expression is hard coded
@@ -428,14 +429,16 @@ public class XCardReader implements IParser {
 
 	private static class VCardNamespaceContext implements NamespaceContext {
 		private final String ns;
+		private final String prefix;
 
-		public VCardNamespaceContext(VCardVersion version) {
+		public VCardNamespaceContext(VCardVersion version, String prefix) {
 			ns = version.getXmlNamespace();
+			this.prefix = prefix;
 		}
 
 		//@Override
 		public String getNamespaceURI(String prefix) {
-			if (prefix.equals("v")) {
+			if (prefix.equals(prefix)) {
 				return ns;
 			}
 			return null;
@@ -444,7 +447,7 @@ public class XCardReader implements IParser {
 		//@Override
 		public String getPrefix(String ns) {
 			if (ns.equals(this.ns)) {
-				return "v";
+				return prefix;
 			}
 			return null;
 		}
@@ -452,7 +455,7 @@ public class XCardReader implements IParser {
 		//@Override
 		public Iterator<String> getPrefixes(String ns) {
 			if (ns.equals(this.ns)) {
-				return Arrays.asList("v").iterator();
+				return Arrays.asList(prefix).iterator();
 			}
 			return null;
 		}
