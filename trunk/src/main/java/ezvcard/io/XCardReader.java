@@ -76,6 +76,9 @@ import ezvcard.util.XCardUtils;
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
 public class XCardReader implements IParser {
+	private static final VCardVersion version = VCardVersion.V4_0;
+	private static final VCardNamespaceContext nsContext = new VCardNamespaceContext(version);
+
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
 	private Map<QName, Class<? extends VCardType>> extendedTypeClasses = new HashMap<QName, Class<? extends VCardType>>();
@@ -84,11 +87,6 @@ public class XCardReader implements IParser {
 	 * The <code>&lt;vcard&gt;</code> elements within the XML document.
 	 */
 	private Iterator<Element> vcardElements;
-
-	/**
-	 * The version of the vCard, as determined by the XML namespace.
-	 */
-	private VCardVersion version;
 
 	/**
 	 * @param xml the XML string to read the vCards from
@@ -106,7 +104,7 @@ public class XCardReader implements IParser {
 	public XCardReader(String xml, CompatibilityMode compatibilityMode) throws SAXException {
 		this.compatibilityMode = compatibilityMode;
 		try {
-			parse(new StringReader(xml));
+			init(new StringReader(xml));
 		} catch (IOException e) {
 			//reading from string
 		}
@@ -151,7 +149,7 @@ public class XCardReader implements IParser {
 		FileReader reader = null;
 		try {
 			reader = new FileReader(file);
-			parse(reader);
+			init(reader);
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
@@ -174,54 +172,47 @@ public class XCardReader implements IParser {
 	 */
 	public XCardReader(Reader reader, CompatibilityMode compatibilityMode) throws SAXException, IOException {
 		this.compatibilityMode = compatibilityMode;
-		parse(reader);
+		init(reader);
 	}
 
-	private void parse(Reader reader) throws SAXException, IOException {
+	/**
+	 * @param document the XML document to read the vCards from
+	 */
+	public XCardReader(Document document) {
+		this(document, CompatibilityMode.RFC);
+	}
+
+	/**
+	 * @param document the XML document to read the vCards from
+	 * @param compatibilityMode the compatibility mode
+	 */
+	public XCardReader(Document document, CompatibilityMode compatibilityMode) {
+		this.compatibilityMode = compatibilityMode;
+		init(document);
+	}
+
+	private void init(Reader reader) throws SAXException, IOException {
 		try {
-			//parse the XML document
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setNamespaceAware(true);
 			dbf.setIgnoringComments(true);
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document document = db.parse(new InputSource(reader));
-
-			//get the vCard version
-			Element root = XCardUtils.getFirstElement(document.getChildNodes());
-			String ns = root.getNamespaceURI();
-			version = VCardVersion.valueOfByXmlNamespace(ns);
-
-			//get the "<vcard>" elements
-			XPath xpath = XPathFactory.newInstance().newXPath();
-			if (version != null) {
-				xpath.setNamespaceContext(new NamespaceContext() {
-					public String getNamespaceURI(String prefix) {
-						if (prefix.equals("v")) {
-							return version.getXmlNamespace();
-						}
-						return null;
-					}
-
-					public String getPrefix(String ns) {
-						if (ns.equals(version.getXmlNamespace())) {
-							return "v";
-						}
-						return null;
-					}
-
-					public Iterator<String> getPrefixes(String ns) {
-						if (ns.equals(version.getXmlNamespace())) {
-							return Arrays.asList("v").iterator();
-						}
-						return null;
-					}
-				});
-			}
-			vcardElements = XCardUtils.toElementList((NodeList) xpath.evaluate("/v:vcards/v:vcard", document, XPathConstants.NODESET)).iterator();
-		} catch (XPathExpressionException e) {
-			//never thrown, xpath expression is hard coded
+			init(document);
 		} catch (ParserConfigurationException e) {
 			//never thrown because we're not doing anything fancy with the configuration
+		}
+	}
+
+	private void init(Document document) {
+		try {
+			XPath xpath = XPathFactory.newInstance().newXPath();
+			xpath.setNamespaceContext(nsContext);
+
+			NodeList nodeList = (NodeList) xpath.evaluate("//v:vcards/v:vcard", document, XPathConstants.NODESET);
+			vcardElements = XCardUtils.toElementList(nodeList).iterator();
+		} catch (XPathExpressionException e) {
+			//never thrown, xpath expression is hard coded
 		}
 	}
 
@@ -267,10 +258,6 @@ public class XCardReader implements IParser {
 		}
 
 		VCard vcard = new VCard();
-
-		//only 4.0 supports xCards
-		//TODO look at namespace for the version?
-		VCardVersion version = VCardVersion.V4_0;
 		vcard.setVersion(version);
 
 		Element vcardElement = vcardElements.next();
@@ -436,6 +423,38 @@ public class XCardReader implements IParser {
 		} catch (Exception e) {
 			//there is no public, no-arg constructor
 			throw new RuntimeException(e);
+		}
+	}
+
+	private static class VCardNamespaceContext implements NamespaceContext {
+		private final String ns;
+
+		public VCardNamespaceContext(VCardVersion version) {
+			ns = version.getXmlNamespace();
+		}
+
+		//@Override
+		public String getNamespaceURI(String prefix) {
+			if (prefix.equals("v")) {
+				return ns;
+			}
+			return null;
+		}
+
+		//@Override
+		public String getPrefix(String ns) {
+			if (ns.equals(this.ns)) {
+				return "v";
+			}
+			return null;
+		}
+
+		//@Override
+		public Iterator<String> getPrefixes(String ns) {
+			if (ns.equals(this.ns)) {
+				return Arrays.asList("v").iterator();
+			}
+			return null;
 		}
 	}
 }
