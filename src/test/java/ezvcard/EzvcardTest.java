@@ -233,12 +233,34 @@ public class EzvcardTest {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1);
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
-		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		String actual = Ezvcard.write(vcard).warnings(warnings).go();
+		String actual = Ezvcard.write(vcard).go();
 		assertTrue(actual.contains("VERSION:2.1"));
 		assertTrue(actual.contains("FN:John Doe"));
-		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void write_one_with_warnings() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setVersion(VCardVersion.V4_0);
+		//missing "FN" property will cause a warning
+
+		List<String> warnings = new ArrayList<String>();
+		Ezvcard.write(vcard).warnings(warnings).go();
+
+		assertFalse(warnings.isEmpty());
+	}
+
+	@Test
+	public void write_one_without_warnings() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setVersion(VCardVersion.V4_0);
+		vcard.setFormattedName("John Doe");
+
+		List<String> warnings = new ArrayList<String>();
+		Ezvcard.write(vcard).warnings(warnings).go();
+
+		assertTrue(warnings.isEmpty());
 	}
 
 	@Test
@@ -252,11 +274,33 @@ public class EzvcardTest {
 		VCard vcard3 = new VCard();
 		vcard3.setVersion(VCardVersion.V4_0);
 		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
-		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		String actual = Ezvcard.write(vcard1, vcard2, vcard3).warnings(warnings).go();
+		String actual = Ezvcard.write(vcard1, vcard2, vcard3).go();
 		assertTrue(actual.matches("(?s)BEGIN:VCARD.*?VERSION:2\\.1.*?FN:John Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:3\\.0.*?FN:Jane Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:4\\.0.*?FN:Janet Doe.*?END:VCARD.*"));
+	}
+
+	@Test
+	public void write_multiple_warnings() throws Exception {
+		VCard vcard1 = new VCard();
+		vcard1.setVersion(VCardVersion.V2_1);
+		//missing "N" property will cause a warning
+
+		VCard vcard2 = new VCard();
+		vcard2.setVersion(VCardVersion.V3_0);
+		//missing "N" and "FN" properties will cause 2 warnings
+
+		VCard vcard3 = new VCard();
+		vcard3.setVersion(VCardVersion.V4_0);
+		vcard3.setFormattedName("John Doe");
+		//no warnings should be generated
+
+		List<List<String>> warnings = new ArrayList<List<String>>();
+		Ezvcard.write(vcard1, vcard2, vcard3).warnings(warnings).go();
+
 		assertEquals(3, warnings.size());
+		assertFalse(warnings.get(0).isEmpty());
+		assertFalse(warnings.get(1).isEmpty());
+		assertTrue(warnings.get(2).isEmpty());
 	}
 
 	@Test
@@ -291,26 +335,65 @@ public class EzvcardTest {
 	public void writeXml_one() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
-		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		String actual = Ezvcard.writeXml(vcard).warnings(warnings).go();
+		String actual = Ezvcard.writeXml(vcard).go();
 		assertTrue(actual.contains("<fn><text>John Doe</text></fn>"));
-		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void writeXml_one_with_warnings() throws Exception {
+		VCard vcard = new VCard();
+		//missing "FN" property will cause a warning
+
+		List<String> warnings = new ArrayList<String>();
+		Ezvcard.writeXml(vcard).warnings(warnings).go();
+
+		assertFalse(warnings.isEmpty());
+	}
+
+	@Test
+	public void writeXml_one_without_warnings() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+
+		List<String> warnings = new ArrayList<String>();
+		Ezvcard.writeXml(vcard).warnings(warnings).go();
+
+		assertTrue(warnings.isEmpty());
 	}
 
 	@Test
 	public void writeXml_multiple() throws Exception {
 		VCard vcard1 = new VCard();
-		vcard1.setFormattedName(new FormattedNameType("John Doe"));
+		vcard1.setFormattedName("John Doe");
 		VCard vcard2 = new VCard();
-		vcard2.setFormattedName(new FormattedNameType("Jane Doe"));
+		vcard2.setFormattedName("Jane Doe");
 		VCard vcard3 = new VCard();
-		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		vcard3.setFormattedName("Janet Doe");
 
-		String actual = Ezvcard.writeXml(vcard1, vcard2, vcard3).warnings(warnings).go();
+		String actual = Ezvcard.writeXml(vcard1, vcard2, vcard3).go();
+
 		assertTrue(actual.matches("(?s).*?<vcard>.*?<fn><text>John Doe</text></fn>.*?</vcard>.*?<vcard>.*?<fn><text>Jane Doe</text></fn>.*?</vcard>*?<vcard>.*?<fn><text>Janet Doe</text></fn>.*?</vcard>.*"));
+	}
+
+	@Test
+	public void writeXml_multiple_warnings() throws Exception {
+		VCard vcard1 = new VCard();
+		//missing "FN" property will cause a warning
+
+		VCard vcard2 = new VCard();
+		//missing "FN" property will cause a warning
+
+		VCard vcard3 = new VCard();
+		vcard3.setFormattedName("Janet Doe");
+
+		List<List<String>> warnings = new ArrayList<List<String>>();
+		Ezvcard.writeXml(vcard1, vcard2, vcard3).warnings(warnings).go();
+
 		assertEquals(3, warnings.size());
+		assertFalse(warnings.get(0).isEmpty());
+		assertFalse(warnings.get(1).isEmpty());
+		assertTrue(warnings.get(2).isEmpty());
 	}
 
 	@Test

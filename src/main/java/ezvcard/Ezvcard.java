@@ -361,74 +361,112 @@ public class Ezvcard {
 
 	/**
 	 * <p>
-	 * Marshals one or more vCards their text representation.
+	 * Marshals a vCard to its traditional, plain-text representation.
 	 * </p>
 	 * 
 	 * <p>
 	 * Use {@link VCardWriter} for more control over how the vCard is written.
 	 * </p>
-	 * @param vcards the vCard(s) to marshal
+	 * @param vcard the vCard to marshal
 	 * @return chainer object for completing the write operation
 	 * @see VCardWriter
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static TextWriterChain write(VCard... vcards) {
+	public static TextWriterChainSingle write(VCard vcard) {
+		return new TextWriterChainSingle(vcard);
+	}
+
+	/**
+	 * <p>
+	 * Marshals multiple vCards to their traditional, plain-text representation.
+	 * </p>
+	 * 
+	 * <p>
+	 * Use {@link VCardWriter} for more control over how the vCards are written.
+	 * </p>
+	 * @param vcards the vCards to marshal
+	 * @return chainer object for completing the write operation
+	 * @see VCardWriter
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
+	 */
+	public static TextWriterChainMulti write(VCard... vcards) {
 		return write(Arrays.asList(vcards));
 	}
 
 	/**
 	 * <p>
-	 * Marshals one or more vCards their text representation.
+	 * Marshals multiple vCards to their traditional, plain-text representation.
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link VCardWriter} for more control over how the vCard is written.
+	 * Use {@link VCardWriter} for more control over how the vCards are written.
 	 * </p>
-	 * @param vcards the vCard(s) to marshal
+	 * @param vcards the vCards to marshal
 	 * @return chainer object for completing the write operation
 	 * @see VCardWriter
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static TextWriterChain write(Collection<VCard> vcards) {
-		return new TextWriterChain(vcards);
+	public static TextWriterChainMulti write(Collection<VCard> vcards) {
+		return new TextWriterChainMulti(vcards);
 	}
 
 	/**
 	 * <p>
-	 * Marshals one or more vCards their XML representation (xCard).
+	 * Marshals a vCard to its XML representation (xCard).
 	 * </p>
 	 * 
 	 * <p>
 	 * Use {@link XCardDocument} for more control over how the vCard is written.
 	 * </p>
-	 * @param vcards the vCard(s) to marshal
+	 * @param vcards the vCard to marshal
 	 * @return chainer object for completing the write operation
 	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static XmlWriterChain writeXml(VCard... vcards) {
+	public static XmlWriterChainSingle writeXml(VCard vcard) {
+		return new XmlWriterChainSingle(vcard);
+	}
+
+	/**
+	 * <p>
+	 * Marshals multiple vCards to their XML representation (xCard).
+	 * </p>
+	 * 
+	 * <p>
+	 * Use {@link XCardDocument} for more control over how the vCards are
+	 * written.
+	 * </p>
+	 * @param vcards the vCards to marshal
+	 * @return chainer object for completing the write operation
+	 * @see XCardDocument
+	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
+	 */
+	public static XmlWriterChainMulti writeXml(VCard... vcards) {
 		return writeXml(Arrays.asList(vcards));
 	}
 
 	/**
 	 * <p>
-	 * Marshals one or more vCards their XML representation (xCard).
+	 * Marshals multiple vCards to their XML representation (xCard).
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link XCardDocument} for more control over how the vCard is written.
+	 * Use {@link XCardDocument} for more control over how the vCards are
+	 * written.
 	 * </p>
-	 * @param vcards the vCard(s) to marshal
+	 * @param vcards the vCard to marshal
 	 * @return chainer object for completing the write operation
 	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static XmlWriterChain writeXml(Collection<VCard> vcards) {
-		return new XmlWriterChain(vcards);
+	public static XmlWriterChainMulti writeXml(Collection<VCard> vcards) {
+		return new XmlWriterChainMulti(vcards);
 	}
 
 	/**
@@ -437,7 +475,7 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * Use {@link HCardPage} for more control over how the vCards are written.
 	 * </p>
 	 * @param vcards the vCard(s) to marshal
 	 * @return chainer object for completing the write operation
@@ -454,7 +492,7 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link HCardPage} for more control over how the vCard is written.
+	 * Use {@link HCardPage} for more control over how the vCards are written.
 	 * </p>
 	 * @param vcards the vCard(s) to marshal
 	 * @return chainer object for completing the write operation
@@ -981,70 +1019,17 @@ public class Ezvcard {
 	public static abstract class WriterChain {
 		final Collection<VCard> vcards;
 
-		private WriterChain(Collection<VCard> vcards) {
+		WriterChain(Collection<VCard> vcards) {
 			this.vcards = vcards;
 		}
 	}
 
-	/**
-	 * Convenience chainer class for writing plain text vCards
-	 */
-	public static class TextWriterChain extends WriterChain {
-		private VCardVersion version;
-		private boolean prodId = true;
-		private List<List<String>> warnings;
+	public static abstract class TextWriterChain extends WriterChain {
+		VCardVersion version;
+		boolean prodId = true;
 
-		private TextWriterChain(Collection<VCard> vcards) {
+		TextWriterChain(Collection<VCard> vcards) {
 			super(vcards);
-		}
-
-		/**
-		 * <p>
-		 * Sets the version that all the vCards will be marshalled to. The
-		 * version that is attached to each individual {@link VCard} object will
-		 * be ignored.
-		 * </p>
-		 * <p>
-		 * If no version is passed into this method, the writer will look at the
-		 * version attached to each individual {@link VCard} object and marshal
-		 * it to that version. And if a {@link VCard} object has no version
-		 * attached to it, then it will be marshalled to version 3.0.
-		 * </p>
-		 * @param version the version to marshal the vCards to
-		 * @return this
-		 */
-		public TextWriterChain version(VCardVersion version) {
-			this.version = version;
-			return this;
-		}
-
-		/**
-		 * Sets whether or not to add a PRODID type to each vCard, saying that
-		 * the vCard was generated by this library. For 2.1 vCards, the extended
-		 * type X-PRODID is used, since PRODID is not supported by that version.
-		 * @param prodId true to add PRODID (default), false not to
-		 * @return this
-		 */
-		public TextWriterChain prodId(boolean prodId) {
-			this.prodId = prodId;
-			return this;
-		}
-
-		/**
-		 * Provides a list object that any marshal warnings will be put into.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
-		 * @param warnings the list object that will be populated with the
-		 * warnings of each marshalled vCard. Each element of the list is the
-		 * list of warnings for one of the marshalled vCards. Therefore, the
-		 * size of this list will be equal to the number of parsed vCards. If a
-		 * vCard does not have any warnings, then its warning list will be
-		 * empty.
-		 * @return this
-		 */
-		public TextWriterChain warnings(List<List<String>> warnings) {
-			this.warnings = warnings;
-			return this;
 		}
 
 		/**
@@ -1103,44 +1088,52 @@ public class Ezvcard {
 					vcardWriter.setTargetVersion((vcardVersion == null) ? VCardVersion.V3_0 : vcardVersion);
 				}
 				vcardWriter.write(vcard);
-				if (warnings != null) {
-					warnings.add(vcardWriter.getWarnings());
-				}
+				addWarnings(vcardWriter.getWarnings());
 			}
 		}
+
+		abstract void addWarnings(List<String> warnings);
 	}
 
 	/**
-	 * Convenience chainer class for writing XML vCards (xCard).
+	 * Convenience chainer class for writing plain text vCards
 	 */
-	public static class XmlWriterChain extends WriterChain {
-		private boolean prodId = true;
-		private int indent = -1;
+	public static class TextWriterChainMulti extends TextWriterChain {
 		private List<List<String>> warnings;
 
-		private XmlWriterChain(Collection<VCard> vcards) {
+		private TextWriterChainMulti(Collection<VCard> vcards) {
 			super(vcards);
 		}
 
 		/**
-		 * Sets whether or not to add a PRODID type to each vCard, saying that
-		 * the vCard was generated by this library.
-		 * @param prodId true to add PRODID (default), false not to
+		 * <p>
+		 * Sets the version that all the vCards will be marshalled to. The
+		 * version that is attached to each individual {@link VCard} object will
+		 * be ignored.
+		 * </p>
+		 * <p>
+		 * If no version is passed into this method, the writer will look at the
+		 * version attached to each individual {@link VCard} object and marshal
+		 * it to that version. And if a {@link VCard} object has no version
+		 * attached to it, then it will be marshalled to version 3.0.
+		 * </p>
+		 * @param version the version to marshal the vCards to
 		 * @return this
 		 */
-		public XmlWriterChain prodId(boolean prodId) {
-			this.prodId = prodId;
+		public TextWriterChainMulti version(VCardVersion version) {
+			super.version = version;
 			return this;
 		}
 
 		/**
-		 * Sets the number of indent spaces to use for pretty-printing. If not
-		 * set, then the XML will not be pretty-printed.
-		 * @param indent the number of spaces in the indent string
+		 * Sets whether or not to add a PRODID type to each vCard, saying that
+		 * the vCard was generated by this library. For 2.1 vCards, the extended
+		 * type X-PRODID is used, since PRODID is not supported by that version.
+		 * @param prodId true to add PRODID (default), false not to
 		 * @return this
 		 */
-		public XmlWriterChain indent(int indent) {
-			this.indent = indent;
+		public TextWriterChainMulti prodId(boolean prodId) {
+			super.prodId = prodId;
 			return this;
 		}
 
@@ -1156,9 +1149,88 @@ public class Ezvcard {
 		 * empty.
 		 * @return this
 		 */
-		public XmlWriterChain warnings(List<List<String>> warnings) {
+		public TextWriterChainMulti warnings(List<List<String>> warnings) {
 			this.warnings = warnings;
 			return this;
+		}
+
+		@Override
+		void addWarnings(List<String> warnings) {
+			if (this.warnings != null) {
+				this.warnings.add(warnings);
+			}
+		}
+	}
+
+	/**
+	 * Convenience chainer class for writing plain text vCards
+	 */
+	public static class TextWriterChainSingle extends TextWriterChain {
+		private List<String> warnings;
+
+		private TextWriterChainSingle(VCard vcard) {
+			super(Arrays.asList(vcard));
+		}
+
+		/**
+		 * <p>
+		 * Sets the version that all the vCards will be marshalled to. The
+		 * version that is attached to each individual {@link VCard} object will
+		 * be ignored.
+		 * </p>
+		 * <p>
+		 * If no version is passed into this method, the writer will look at the
+		 * version attached to each individual {@link VCard} object and marshal
+		 * it to that version. And if a {@link VCard} object has no version
+		 * attached to it, then it will be marshalled to version 3.0.
+		 * </p>
+		 * @param version the version to marshal the vCards to
+		 * @return this
+		 */
+		public TextWriterChainSingle version(VCardVersion version) {
+			super.version = version;
+			return this;
+		}
+
+		/**
+		 * Sets whether or not to add a PRODID type to each vCard, saying that
+		 * the vCard was generated by this library. For 2.1 vCards, the extended
+		 * type X-PRODID is used, since PRODID is not supported by that version.
+		 * @param prodId true to add PRODID (default), false not to
+		 * @return this
+		 */
+		public TextWriterChainSingle prodId(boolean prodId) {
+			super.prodId = prodId;
+			return this;
+		}
+
+		/**
+		 * Provides a list object that any marshal warnings will be put into.
+		 * Warnings usually occur when there is a property in the VCard that is
+		 * not supported by the version to which the vCard is being marshalled.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of the marshalled vCard.
+		 * @return this
+		 */
+		public TextWriterChainSingle warnings(List<String> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		@Override
+		void addWarnings(List<String> warnings) {
+			if (this.warnings != null) {
+				this.warnings.addAll(warnings);
+			}
+		}
+	}
+
+	public static abstract class XmlWriterChain extends WriterChain {
+		boolean prodId = true;
+		int indent = -1;
+
+		XmlWriterChain(Collection<VCard> vcards) {
+			super(vcards);
 		}
 
 		/**
@@ -1227,12 +1299,122 @@ public class Ezvcard {
 
 			for (VCard vcard : vcards) {
 				doc.addVCard(vcard);
-				if (warnings != null) {
-					warnings.add(doc.getWarnings());
-				}
+				addWarnings(doc.getWarnings());
 			}
 
 			return doc;
+		}
+
+		abstract void addWarnings(List<String> warnings);
+	}
+
+	/**
+	 * Convenience chainer class for writing XML vCards (xCard).
+	 */
+	public static class XmlWriterChainMulti extends XmlWriterChain {
+		private List<List<String>> warnings;
+
+		private XmlWriterChainMulti(Collection<VCard> vcards) {
+			super(vcards);
+		}
+
+		/**
+		 * Sets whether or not to add a PRODID type to each vCard, saying that
+		 * the vCard was generated by this library.
+		 * @param prodId true to add PRODID (default), false not to
+		 * @return this
+		 */
+		public XmlWriterChainMulti prodId(boolean prodId) {
+			super.prodId = prodId;
+			return this;
+		}
+
+		/**
+		 * Sets the number of indent spaces to use for pretty-printing. If not
+		 * set, then the XML will not be pretty-printed.
+		 * @param indent the number of spaces in the indent string
+		 * @return this
+		 */
+		public XmlWriterChainMulti indent(int indent) {
+			super.indent = indent;
+			return this;
+		}
+
+		/**
+		 * Provides a list object that any marshal warnings will be put into.
+		 * Warnings usually occur when there is a property in the VCard that is
+		 * not supported by the version to which the vCard is being marshalled.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of each marshalled vCard. Each element of the list is the
+		 * list of warnings for one of the marshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
+		 * @return this
+		 */
+		public XmlWriterChainMulti warnings(List<List<String>> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		@Override
+		void addWarnings(List<String> warnings) {
+			if (this.warnings != null) {
+				this.warnings.add(warnings);
+			}
+		}
+	}
+
+	/**
+	 * Convenience chainer class for writing XML vCards (xCard).
+	 */
+	public static class XmlWriterChainSingle extends XmlWriterChain {
+		private List<String> warnings;
+
+		private XmlWriterChainSingle(VCard vcard) {
+			super(Arrays.asList(vcard));
+		}
+
+		/**
+		 * Sets whether or not to add a PRODID type to each vCard, saying that
+		 * the vCard was generated by this library.
+		 * @param prodId true to add PRODID (default), false not to
+		 * @return this
+		 */
+		public XmlWriterChainSingle prodId(boolean prodId) {
+			super.prodId = prodId;
+			return this;
+		}
+
+		/**
+		 * Sets the number of indent spaces to use for pretty-printing. If not
+		 * set, then the XML will not be pretty-printed.
+		 * @param indent the number of spaces in the indent string
+		 * @return this
+		 */
+		public XmlWriterChainSingle indent(int indent) {
+			super.indent = indent;
+			return this;
+		}
+
+		/**
+		 * Provides a list object that any marshal warnings will be put into.
+		 * Warnings usually occur when there is a property in the VCard that is
+		 * not supported by the version to which the vCard is being marshalled.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of each marshalled vCard.
+		 * @return this
+		 */
+		public XmlWriterChainSingle warnings(List<String> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		@Override
+		void addWarnings(List<String> warnings) {
+			if (this.warnings != null) {
+				this.warnings.addAll(warnings);
+			}
 		}
 	}
 
