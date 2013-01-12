@@ -253,7 +253,7 @@ public class XCardReaderTest {
 				sb.append("<a href=\"http://www.website.com\">website</a>");
 				
 				//LuckyNumType (with marshal methods and with QName)
-				sb.append("<a:lucky-num xmlns:a=\"http://luckynum.com\"><integer>21</integer></a:lucky-num>");
+				sb.append("<a:lucky-num xmlns:a=\"http://luckynum.com\"><a:num>21</a:num></a:lucky-num>");
 				
 				//SalaryType (with marshal methods and without QName)
 				sb.append("<x-salary><integer>1000000</integer></x-salary>");
@@ -388,8 +388,8 @@ public class XCardReaderTest {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" xmlns:a=\"http://luckynum.com\">");
 			sb.append("<vcard>");
-				sb.append("<a:lucky-num><integer>24</integer></a:lucky-num>");
-				sb.append("<a:lucky-num><integer>13</integer></a:lucky-num>");
+				sb.append("<a:lucky-num><a:num>24</a:num></a:lucky-num>");
+				sb.append("<a:lucky-num><a:num>13</a:num></a:lucky-num>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
 		//@formatter:on

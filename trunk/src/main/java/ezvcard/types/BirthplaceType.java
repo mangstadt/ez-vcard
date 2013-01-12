@@ -2,8 +2,6 @@ package ezvcard.types;
 
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -11,7 +9,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -203,23 +201,23 @@ public class BirthplaceType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			XCardUtils.appendChild(parent, "uri", uri, version);
+			parent.appendUri(uri);
 		} else if (text != null) {
-			XCardUtils.appendChild(parent, "text", text, version);
+			parent.appendText(text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = XCardUtils.getFirstChildText(element, "uri");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		String value = element.getUri();
 		if (value != null) {
 			setUri(value);
 		} else {
-			setText(XCardUtils.getFirstChildText(element, "text"));
+			setText(element.getText());
 		}
 	}
 }

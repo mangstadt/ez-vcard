@@ -5,11 +5,12 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
 import ezvcard.util.HCardUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -46,6 +47,7 @@ import ezvcard.util.XCardUtils;
  * @author Michael Angstadt
  */
 public class LuckyNumType extends VCardType {
+	private static final QName qname = new QName("http://luckynum.com", "lucky-num");
 	public int luckyNum;
 
 	public LuckyNumType() {
@@ -61,11 +63,11 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
-		parent.setTextContent(luckyNum + "");
+		parent.getElement().setTextContent(luckyNum + "");
 	}
 
 	@Override
@@ -77,17 +79,20 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		Element ele = XCardUtils.getFirstElement(element.getElementsByTagName("integer"));
-		luckyNum = Integer.parseInt(ele.getTextContent());
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		NodeList nodeList = element.getElement().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
+		if (nodeList.getLength() > 0) {
+			Element num = (Element) nodeList.item(0);
+			luckyNum = Integer.parseInt(num.getTextContent());
+			if (luckyNum == 13) {
+				throw new SkipMeException("Invalid lucky number.");
+			}
 		}
 	}
 
 	@Override
 	public QName getQName() {
-		return new QName("http://luckynum.com", "lucky-num");
+		return qname;
 	}
 
 	@Override

@@ -39,7 +39,7 @@ import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
 import ezvcard.util.IOUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -211,7 +211,7 @@ public class XCardReader implements IParser {
 
 			String prefix = nsContext.prefix;
 			NodeList nodeList = (NodeList) xpath.evaluate("//" + prefix + ":vcards/" + prefix + ":vcard", document, XPathConstants.NODESET);
-			vcardElements = XCardUtils.toElementList(nodeList).iterator();
+			vcardElements = XmlUtils.toElementList(nodeList).iterator();
 		} catch (XPathExpressionException e) {
 			//never thrown, xpath expression is hard coded
 		}
@@ -264,7 +264,7 @@ public class XCardReader implements IParser {
 		Element vcardElement = vcardElements.next();
 
 		String ns = version.getXmlNamespace();
-		List<Element> children = XCardUtils.toElementList(vcardElement.getChildNodes());
+		List<Element> children = XmlUtils.toElementList(vcardElement.getChildNodes());
 		List<String> warningsBuf = new ArrayList<String>();
 		for (Element child : children) {
 			if ("group".equals(child.getLocalName()) && ns.equals(child.getNamespaceURI())) {
@@ -272,7 +272,7 @@ public class XCardReader implements IParser {
 				if (group.length() == 0) {
 					group = null;
 				}
-				List<Element> propElements = XCardUtils.toElementList(child.getChildNodes());
+				List<Element> propElements = XmlUtils.toElementList(child.getChildNodes());
 				for (Element propElement : propElements) {
 					parseAndAddElement(propElement, group, version, vcard, warningsBuf);
 				}
@@ -328,12 +328,12 @@ public class XCardReader implements IParser {
 	private VCardSubTypes parseSubTypes(Element element) {
 		VCardSubTypes subTypes = new VCardSubTypes();
 
-		List<Element> parametersElements = XCardUtils.toElementList(element.getElementsByTagName("parameters"));
+		List<Element> parametersElements = XmlUtils.toElementList(element.getElementsByTagNameNS(version.getXmlNamespace(), "parameters"));
 		for (Element parametersElement : parametersElements) { // foreach "<parameters>" element (there should only be 1 though)
-			List<Element> paramElements = XCardUtils.toElementList(parametersElement.getChildNodes());
+			List<Element> paramElements = XmlUtils.toElementList(parametersElement.getChildNodes());
 			for (Element paramElement : paramElements) {
 				String name = paramElement.getLocalName().toUpperCase();
-				List<Element> valueElements = XCardUtils.toElementList(paramElement.getChildNodes());
+				List<Element> valueElements = XmlUtils.toElementList(paramElement.getChildNodes());
 				if (valueElements.isEmpty()) {
 					String value = paramElement.getTextContent();
 					subTypes.put(name, value);

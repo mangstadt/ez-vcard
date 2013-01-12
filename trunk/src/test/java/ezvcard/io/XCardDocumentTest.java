@@ -14,7 +14,7 @@ import ezvcard.types.FormattedNameType;
 import ezvcard.types.NoteType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -71,7 +71,7 @@ public class XCardDocumentTest {
 				sb.append("<fn><text>John Doe</text></fn>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = XCardUtils.toDocument(sb.toString());
+		Document expected = XmlUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -110,7 +110,7 @@ public class XCardDocumentTest {
 				sb.append("</note>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = XCardUtils.toDocument(sb.toString());
+		Document expected = XmlUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -159,7 +159,7 @@ public class XCardDocumentTest {
 				sb.append("</group>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = XCardUtils.toDocument(sb.toString());
+		Document expected = XmlUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -195,7 +195,7 @@ public class XCardDocumentTest {
 				sb.append("<note><text>Hello world!</text></note>");
 				sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = XCardUtils.toDocument(sb.toString());
+		Document expected = XmlUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -286,7 +286,7 @@ public class XCardDocumentTest {
 				sb.append("<a:lucky-num>24</a:lucky-num>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = XCardUtils.toDocument(sb.toString());
+		Document expected = XmlUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -331,7 +331,7 @@ public class XCardDocumentTest {
 				sb.append("<x-age><unknown>22</unknown></x-age>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = XCardUtils.toDocument(sb.toString());
+		Document expected = XmlUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);

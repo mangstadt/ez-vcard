@@ -16,7 +16,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -88,9 +88,9 @@ public class BirthplaceTypeTest {
 		String expectedXml = "<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<text>Philadelphia, PA</text>";
 		expectedXml += "</birthplace>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -100,9 +100,9 @@ public class BirthplaceTypeTest {
 		expectedXml = "<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>geo:39.970806,-75.174809</uri>";
 		expectedXml += "</birthplace>";
-		expectedDoc = XCardUtils.toDocument(expectedXml);
-		actualDoc = XCardUtils.toDocument("<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		expectedDoc = XmlUtils.toDocument(expectedXml);
+		actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -140,7 +140,7 @@ public class BirthplaceTypeTest {
 		String xml = "<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<text>Philadelphia, PA</text>";
 		xml += "</birthplace>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Philadelphia, PA", t.getText());
 		assertNull(t.getUri());
@@ -150,7 +150,7 @@ public class BirthplaceTypeTest {
 		xml = "<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>geo:39.970806,-75.174809</uri>";
 		xml += "</birthplace>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:39.970806,-75.174809", t.getUri());

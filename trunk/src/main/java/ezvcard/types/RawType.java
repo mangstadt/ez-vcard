@@ -7,7 +7,8 @@ import org.w3c.dom.Element;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -88,12 +89,13 @@ public class RawType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		Element value = XCardUtils.getFirstElement(element.getChildNodes());
-		if (value == null) {
-			this.value = element.getTextContent();
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		Element theElement = element.getElement();
+		Element child = XmlUtils.getFirstChildElement(theElement);
+		if (child == null) {
+			value = theElement.getTextContent();
 		} else {
-			this.value = value.getTextContent();
+			value = child.getTextContent();
 		}
 	}
 

@@ -56,7 +56,7 @@ public class AgeType extends VCardType {
 		age = Integer.parseInt(value);
 	}
 
-	//	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode);
+	//	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode);
+	//	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode);
 	//	public QName getQName();
 }

@@ -17,7 +17,7 @@ import ezvcard.io.LuckyNumType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.util.VCardBuilder;
 import ezvcard.util.XCardBuilder;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -139,7 +139,7 @@ public class EzvcardTest {
 	@Test
 	public void parseXml_register() throws Exception {
 		XCardBuilder xb = new XCardBuilder();
-		xb.prop("http://luckynum.com", "lucky-num", "<integer>22</integer>");
+		xb.prop("http://luckynum.com", "lucky-num", "<num>22</num>");
 
 		VCard vcard = Ezvcard.parseXml(xb.toString()).register(LuckyNumType.class).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -351,7 +351,7 @@ public class EzvcardTest {
 				sb.append("<fn><text>John Doe</text></fn>");
 			sb.append("</vcard>");
 		sb.append("</vcards>");
-		Document expected = XCardUtils.toDocument(sb.toString());
+		Document expected = XmlUtils.toDocument(sb.toString());
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);

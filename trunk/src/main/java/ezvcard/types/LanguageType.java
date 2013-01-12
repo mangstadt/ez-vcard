@@ -3,12 +3,10 @@ package ezvcard.types;
 import java.util.List;
 import java.util.Set;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -190,12 +188,12 @@ public class LanguageType extends TextType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		XCardUtils.appendChild(parent, "language-tag", getValue(), version);
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+		parent.append("language-tag", getValue());
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(XCardUtils.getFirstChildText(element, "language-tag"));
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		setValue(element.get("language-tag"));
 	}
 }

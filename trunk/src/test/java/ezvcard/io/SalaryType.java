@@ -2,11 +2,9 @@ package ezvcard.io;
 
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -55,8 +53,8 @@ public class SalaryType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.setTextContent(salary + "");
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+		parent.getElement().setTextContent(salary + "");
 	}
 
 	@Override
@@ -65,9 +63,8 @@ public class SalaryType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		Element ele = XCardUtils.getFirstElement(element.getElementsByTagName("integer"));
-		salary = Integer.parseInt(ele.getTextContent());
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		salary = Integer.parseInt(element.get("integer"));
 	}
 
 	//	public QName getQName();

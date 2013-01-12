@@ -2,12 +2,9 @@ package ezvcard.types;
 
 import java.util.List;
 
-import org.w3c.dom.Element;
-
-import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -59,13 +56,13 @@ public class UriType extends TextType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(XCardUtils.getFirstChildText(element, "uri"));
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		setValue(element.getUri());
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		XCardUtils.appendChild(parent, "uri", getValue(), version);
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+		parent.appendUri(getValue());
 	}
 
 	@Override

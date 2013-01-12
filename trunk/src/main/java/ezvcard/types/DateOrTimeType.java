@@ -3,8 +3,6 @@ package ezvcard.types;
 import java.util.Date;
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -16,7 +14,7 @@ import ezvcard.util.HCardUtils;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -268,23 +266,23 @@ public class DateOrTimeType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			XCardUtils.appendChild(parent, "text", text, version);
+			parent.appendText(text);
 		} else if (reducedAccuracyDate != null) {
-			XCardUtils.appendChild(parent, "date-and-or-time", reducedAccuracyDate, version);
+			parent.appendDateAndOrTime(reducedAccuracyDate);
 		} else if (date != null) {
 			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
 			String value = VCardDateFormatter.format(date, format);
-			XCardUtils.appendChild(parent, "date-and-or-time", value, version);
+			parent.appendDateAndOrTime(value);
 		} else {
 			throw new SkipMeException("Property has no date, reduced accuracy date, or text value associated with it.");
 		}
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = XCardUtils.getFirstChildText(element, "date-and-or-time");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		String value = element.getDateAndOrTime();
 		if (value != null) {
 			if (value.contains("-")) {
 				setReducedAccuracyDate(value);
@@ -303,7 +301,7 @@ public class DateOrTimeType extends VCardType {
 				}
 			}
 		} else {
-			setText(XCardUtils.getFirstChildText(element, "text"));
+			setText(element.getText());
 		}
 	}
 

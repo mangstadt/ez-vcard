@@ -15,7 +15,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -56,12 +56,12 @@ public class XmlTypeTest {
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		List<String> warnings = new ArrayList<String>();
 
-		Document actual = XCardUtils.toDocument("<root></root>");
-		Element root = XCardUtils.getFirstElement(actual.getChildNodes());
+		Document actual = XmlUtils.toDocument("<root></root>");
+		Element root = XmlUtils.getRootElement(actual);
 		XmlType xml = new XmlType("<a href=\"http://www.example.com\">some html</a>");
 		xml.marshalValue(root, version, warnings, compatibilityMode);
 
-		Document expected = XCardUtils.toDocument("<root><a href=\"http://www.example.com\">some html</a></root>");
+		Document expected = XmlUtils.toDocument("<root><a href=\"http://www.example.com\">some html</a></root>");
 
 		assertXMLEqual(expected, actual);
 
@@ -73,7 +73,7 @@ public class XmlTypeTest {
 			//should be thrown
 		}
 	}
-	
+
 	@Test
 	public void unmarshalXml() throws Exception {
 		VCardVersion version = VCardVersion.V4_0;
@@ -82,7 +82,8 @@ public class XmlTypeTest {
 		VCardSubTypes subTypes = new VCardSubTypes();
 
 		String xml = "<a href=\"http://www.example.com\">some html</a>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Document document = XmlUtils.toDocument(xml);
+		Element element = XmlUtils.getRootElement(document);
 		XmlType t = new XmlType();
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("<a href=\"http://www.example.com\">some html</a>", t.getValue());
