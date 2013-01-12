@@ -33,7 +33,7 @@ import ezvcard.types.TelephoneType;
 import ezvcard.types.TypeList;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HtmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -246,7 +246,7 @@ public class HCardReader implements IParser {
 			vcardElement = it.next();
 
 			//if this element is a child of another "vcard" element, then ignore it because it's an embedded vcard
-			if (HCardUtils.isChildOf(vcardElement, vcardElements)) {
+			if (HtmlUtils.isChildOf(vcardElement, vcardElements)) {
 				vcardElement = null;
 			}
 		}
@@ -353,7 +353,7 @@ public class HCardReader implements IParser {
 			} catch (SkipMeException e) {
 				warningsBuffer.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
 			} catch (EmbeddedVCardException e) {
-				if (HCardUtils.isChildOf(element, embeddedVCards)) {
+				if (HtmlUtils.isChildOf(element, embeddedVCards)) {
 					//prevents multiple-nested embedded elements from overwriting each other
 					continue;
 				}

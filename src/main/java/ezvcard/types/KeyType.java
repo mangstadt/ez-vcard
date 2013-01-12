@@ -14,7 +14,7 @@ import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -280,10 +280,10 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
 		if ("a".equals(elementName)) {
-			String href = HCardUtils.getAbsUrl(element, "href");
+			String href = element.absUrl("href");
 			if (href.length() > 0) {
 				try {
 					DataUri uri = new DataUri(href);

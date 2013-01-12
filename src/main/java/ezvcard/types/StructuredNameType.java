@@ -7,7 +7,7 @@ import java.util.List;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -329,23 +329,17 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		List<String> values = HCardUtils.getElementValuesByCssClass(element, "family-name");
-		family = values.isEmpty() ? null : values.get(0);
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		family = element.firstValue("family-name");
+		given = element.firstValue("given-name");
 
-		values = HCardUtils.getElementValuesByCssClass(element, "given-name");
-		given = values.isEmpty() ? null : values.get(0);
-
-		values = HCardUtils.getElementValuesByCssClass(element, "additional-name");
 		additional.clear();
-		additional.addAll(values);
+		additional.addAll(element.allValues("additional-name"));
 
-		values = HCardUtils.getElementValuesByCssClass(element, "honorific-prefix");
 		prefixes.clear();
-		prefixes.addAll(values);
+		prefixes.addAll(element.allValues("honorific-prefix"));
 
-		values = HCardUtils.getElementValuesByCssClass(element, "honorific-suffix");
 		suffixes.clear();
-		suffixes.addAll(values);
+		suffixes.addAll(element.allValues("honorific-suffix"));
 	}
 }

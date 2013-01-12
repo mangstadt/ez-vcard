@@ -11,7 +11,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -254,8 +254,8 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		List<String> types = HCardUtils.getTypes(element);
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		List<String> types = element.types();
 		for (String type : types) {
 			subTypes.addType(type);
 		}
@@ -270,7 +270,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			}
 		}
 		if (tel == null) {
-			tel = HCardUtils.getElementValue(element);
+			tel = element.value();
 		}
 		setValue(tel);
 	}

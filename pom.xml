@@ -144,6 +144,7 @@
 					<linksource>true</linksource>
 					<links>
 						<link>http://freemarker.sourceforge.net/docs/api/</link>
+						<link>http://jsoup.org/apidocs/</link>
 					</links>
 				</configuration>
 				<executions>

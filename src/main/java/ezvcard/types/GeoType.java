@@ -12,7 +12,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.XCardElement;
 
 /*
@@ -342,24 +342,24 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		List<String> values = HCardUtils.getElementValuesByCssClass(element, "latitude");
-		if (values.isEmpty()) {
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		String latitude = element.firstValue("latitude");
+		if (latitude == null) {
 			warnings.add("Latitude missing from " + NAME + " type.");
 		} else {
 			try {
-				setLatitude(Double.parseDouble(values.get(0)));
+				setLatitude(Double.parseDouble(latitude));
 			} catch (NumberFormatException e) {
 				warnings.add("Could not parse latitude from " + NAME + " type.");
 			}
 		}
 
-		values = HCardUtils.getElementValuesByCssClass(element, "longitude");
-		if (values.isEmpty()) {
+		String longitude = element.firstValue("longitude");
+		if (longitude == null) {
 			warnings.add("Longitude missing from " + NAME + " type.");
 		} else {
 			try {
-				setLongitude(Double.parseDouble(values.get(0)));
+				setLongitude(Double.parseDouble(longitude));
 			} catch (NumberFormatException e) {
 				warnings.add("Could not parse longitude from " + NAME + " type.");
 			}

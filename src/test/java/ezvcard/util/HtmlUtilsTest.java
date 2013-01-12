@@ -1,13 +1,17 @@
-package ezvcard.types;
+package ezvcard.util;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardElement;
-import ezvcard.util.XCardElement;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.junit.Test;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,42 +40,44 @@ import ezvcard.util.XCardElement;
  */
 
 /**
- * Represents a type whose value is a URI.
  * @author Michael Angstadt
  */
-public class UriType extends TextType {
-	/**
-	 * @param name the type name (e.g. "URL")
-	 */
-	public UriType(String name) {
-		super(name);
+public class HtmlUtilsTest {
+	@Test
+	public void isChildOf() {
+		//@formatter:off
+		String html =
+		"<html><body>" +
+			"<div id=\"one\"></div>" +
+			"<div id=\"two\">" +
+				"<div id=\"three\"></div>" +
+			"</div>" +
+		"</body></html>";
+		//@formatter:on
+		Document document = Jsoup.parse(html);
+
+		Element one = document.getElementById("one");
+		Element two = document.getElementById("two");
+		Element three = document.getElementById("three");
+
+		Elements elements = new Elements(one, two);
+		assertTrue(HtmlUtils.isChildOf(three, elements));
+
+		elements = new Elements(one, three);
+		assertFalse(HtmlUtils.isChildOf(two, elements));
 	}
 
-	/**
-	 * @param name the type name (e.g. "URL")
-	 * @param uri the type value
-	 */
-	public UriType(String name, String uri) {
-		super(name, uri);
+	@Test
+	public void toElement_without_base_url() {
+		Element element = HtmlUtils.toElement("<img src=\"image.png\" />");
+		assertEquals(element.tagName(), "img");
+		assertEquals("", element.absUrl("src"));
 	}
 
-	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(element.getUri());
-	}
-
-	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.appendUri(getValue());
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String href = element.absUrl("href");
-		if (href.length() > 0) {
-			setValue(href);
-		} else {
-			super.doUnmarshalHtml(element, warnings);
-		}
+	@Test
+	public void toElement_with_base_url() {
+		Element element = HtmlUtils.toElement("<img src=\"image.png\" />", "http://example.com/");
+		assertEquals(element.tagName(), "img");
+		assertEquals("http://example.com/image.png", element.absUrl("src"));
 	}
 }

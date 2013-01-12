@@ -8,7 +8,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -530,31 +530,17 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		List<String> values = HCardUtils.getElementValuesByCssClass(element, "post-office-box");
-		poBox = values.isEmpty() ? null : values.get(0);
-
-		values = HCardUtils.getElementValuesByCssClass(element, "extended-address");
-		extendedAddress = values.isEmpty() ? null : values.get(0);
-
-		values = HCardUtils.getElementValuesByCssClass(element, "street-address");
-		streetAddress = values.isEmpty() ? null : values.get(0);
-
-		values = HCardUtils.getElementValuesByCssClass(element, "locality");
-		locality = values.isEmpty() ? null : values.get(0);
-
-		values = HCardUtils.getElementValuesByCssClass(element, "region");
-		region = values.isEmpty() ? null : values.get(0);
-
-		values = HCardUtils.getElementValuesByCssClass(element, "postal-code");
-		postalCode = values.isEmpty() ? null : values.get(0);
-
-		values = HCardUtils.getElementValuesByCssClass(element, "country-name");
-		country = values.isEmpty() ? null : values.get(0);
-
-		values = HCardUtils.getTypes(element);
-		for (String v : values) {
-			subTypes.addType(v);
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		poBox = element.firstValue("post-office-box");
+		extendedAddress = element.firstValue("extended-address");
+		streetAddress = element.firstValue("street-address");
+		locality = element.firstValue("locality");
+		region = element.firstValue("region");
+		postalCode = element.firstValue("postal-code");
+		country = element.firstValue("country-name");
+		List<String> types = element.types();
+		for (String type : types) {
+			subTypes.addType(type);
 		}
 	}
 }

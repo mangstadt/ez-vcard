@@ -18,7 +18,7 @@ import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.IOUtils;
 import ezvcard.util.XCardElement;
 
@@ -418,7 +418,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
 		String error = null;
 		if ("object".equals(elementName)) {
@@ -428,7 +428,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 				mediaType = buildMediaTypeObj(type);
 			}
 
-			String data = HCardUtils.getAbsUrl(element, "data");
+			String data = element.absUrl("data");
 			if (data.length() > 0) {
 				try {
 					DataUri uri = new DataUri(data);

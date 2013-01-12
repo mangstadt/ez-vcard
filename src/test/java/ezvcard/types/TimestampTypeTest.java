@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardUnitTestUtils;
+import ezvcard.util.HtmlUtils;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -143,7 +143,7 @@ public class TimestampTypeTest {
 		//valid date string
 		{
 			warnings.clear();
-			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time datetime=\"1970-03-10T13:21:03Z\">March 10, 1970 at 1:21:03 PM</time>");
+			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"1970-03-10T13:21:03Z\">March 10, 1970 at 1:21:03 PM</time>");
 			TimestampType t = new TimestampType("DATE");
 			t.unmarshalHtml(element, warnings);
 
@@ -154,7 +154,7 @@ public class TimestampTypeTest {
 		//date string in tag text
 		{
 			warnings.clear();
-			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time>1970-03-10T13:21:03Z</time>");
+			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>1970-03-10T13:21:03Z</time>");
 			TimestampType t = new TimestampType("DATE");
 			t.unmarshalHtml(element, warnings);
 
@@ -165,7 +165,7 @@ public class TimestampTypeTest {
 		//invalid date string
 		{
 			warnings.clear();
-			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time>March 10, 1970 at 1:21:03 PM</time>");
+			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>March 10, 1970 at 1:21:03 PM</time>");
 			TimestampType t = new TimestampType("DATE");
 			t.unmarshalHtml(element, warnings);
 

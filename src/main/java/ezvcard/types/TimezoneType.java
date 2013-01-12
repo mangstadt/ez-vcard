@@ -13,7 +13,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -388,8 +388,8 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		String value = HCardUtils.getElementValue(element);
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		String value = element.value();
 		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}
 }
