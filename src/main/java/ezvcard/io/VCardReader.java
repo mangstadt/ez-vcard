@@ -65,7 +65,7 @@ import ezvcard.util.VCardStringUtils;
  * @author Michael Angstadt
  */
 public class VCardReader implements Closeable, IParser {
-	private CompatibilityMode compatibilityMode;
+	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private FoldedLineReader reader;
@@ -78,26 +78,10 @@ public class VCardReader implements Closeable, IParser {
 	}
 
 	/**
-	 * @param str the string to read the vCards from
-	 * @param compatibilityMode the compatibility mode
-	 */
-	public VCardReader(String str, CompatibilityMode compatibilityMode) {
-		this(new StringReader(str), compatibilityMode);
-	}
-
-	/**
 	 * @param in the input stream to read the vCards from
 	 */
 	public VCardReader(InputStream in) {
 		this(new InputStreamReader(in));
-	}
-
-	/**
-	 * @param in the input stream to read the vCards from
-	 * @param compatibilityMode the compatibility mode
-	 */
-	public VCardReader(InputStream in, CompatibilityMode compatibilityMode) {
-		this(new InputStreamReader(in), compatibilityMode);
 	}
 
 	/**
@@ -109,28 +93,10 @@ public class VCardReader implements Closeable, IParser {
 	}
 
 	/**
-	 * @param file the file to read the vCards from
-	 * @param compatibilityMode the compatibility mode
-	 * @throws FileNotFoundException if the file doesn't exist
-	 */
-	public VCardReader(File file, CompatibilityMode compatibilityMode) throws FileNotFoundException {
-		this(new FileReader(file), compatibilityMode);
-	}
-
-	/**
 	 * @param reader the reader to read the vCards from
 	 */
 	public VCardReader(Reader reader) {
-		this(reader, CompatibilityMode.RFC);
-	}
-
-	/**
-	 * @param reader the reader to read the vCards from
-	 * @param compatibilityMode the compatibility mode
-	 */
-	public VCardReader(Reader reader, CompatibilityMode compatibilityMode) {
 		this.reader = new FoldedLineReader(reader);
-		this.compatibilityMode = compatibilityMode;
 	}
 
 	/**
@@ -140,7 +106,6 @@ public class VCardReader implements Closeable, IParser {
 	 */
 	private VCardReader(FoldedLineReader reader) {
 		this.reader = reader;
-		this.compatibilityMode = CompatibilityMode.RFC;
 	}
 
 	/**
@@ -148,6 +113,7 @@ public class VCardReader implements Closeable, IParser {
 	 * process based on the application that generated the vCard.
 	 * @return the compatibility mode
 	 */
+	@Deprecated
 	public CompatibilityMode getCompatibilityMode() {
 		return compatibilityMode;
 	}
@@ -157,6 +123,7 @@ public class VCardReader implements Closeable, IParser {
 	 * process based on the application that generated the vCard.
 	 * @param compatibilityMode the compatibility mode
 	 */
+	@Deprecated
 	public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
 		this.compatibilityMode = compatibilityMode;
 	}

@@ -179,6 +179,7 @@ public class VCardWriter implements Closeable {
 	 * to target a particular application.
 	 * @return the compatibility mode
 	 */
+	@Deprecated
 	public CompatibilityMode getCompatibilityMode() {
 		return compatibilityMode;
 	}
@@ -188,6 +189,7 @@ public class VCardWriter implements Closeable {
 	 * to target a particular application.
 	 * @param compatibilityMode the compatibility mode
 	 */
+	@Deprecated
 	public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
 		this.compatibilityMode = compatibilityMode;
 	}
