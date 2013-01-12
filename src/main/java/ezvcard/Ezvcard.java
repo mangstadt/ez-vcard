@@ -424,7 +424,7 @@ public class Ezvcard {
 	 * <p>
 	 * Use {@link XCardDocument} for more control over how the vCard is written.
 	 * </p>
-	 * @param vcards the vCard to marshal
+	 * @param vcard the vCard to marshal
 	 * @return chainer object for completing the write operation
 	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
