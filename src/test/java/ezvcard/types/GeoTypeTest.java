@@ -17,7 +17,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -90,9 +90,9 @@ public class GeoTypeTest {
 		String expectedXml = "<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>geo:-12.34,56.777778</uri>";
 		expectedXml += "</geo>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -132,7 +132,7 @@ public class GeoTypeTest {
 		String xml = "<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>geo:-12.34,56.7878</uri>";
 		xml += "</geo>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);

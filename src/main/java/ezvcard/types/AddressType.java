@@ -3,8 +3,6 @@ package ezvcard.types;
 import java.util.List;
 import java.util.Set;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -12,7 +10,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -496,39 +494,39 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (poBox != null) {
-			XCardUtils.appendChild(parent, "pobox", poBox, version);
+			parent.append("pobox", poBox);
 		}
 		if (extendedAddress != null) {
-			XCardUtils.appendChild(parent, "ext", extendedAddress, version);
+			parent.append("ext", extendedAddress);
 		}
 		if (streetAddress != null) {
-			XCardUtils.appendChild(parent, "street", streetAddress, version);
+			parent.append("street", streetAddress);
 		}
 		if (locality != null) {
-			XCardUtils.appendChild(parent, "locality", locality, version);
+			parent.append("locality", locality);
 		}
 		if (region != null) {
-			XCardUtils.appendChild(parent, "region", region, version);
+			parent.append("region", region);
 		}
 		if (postalCode != null) {
-			XCardUtils.appendChild(parent, "code", postalCode, version);
+			parent.append("code", postalCode);
 		}
 		if (country != null) {
-			XCardUtils.appendChild(parent, "country", country, version);
+			parent.append("country", country);
 		}
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		poBox = XCardUtils.getFirstChildText(element, "pobox");
-		extendedAddress = XCardUtils.getFirstChildText(element, "ext");
-		streetAddress = XCardUtils.getFirstChildText(element, "street");
-		locality = XCardUtils.getFirstChildText(element, "locality");
-		region = XCardUtils.getFirstChildText(element, "region");
-		postalCode = XCardUtils.getFirstChildText(element, "code");
-		country = XCardUtils.getFirstChildText(element, "country");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		poBox = element.get("pobox");
+		extendedAddress = element.get("ext");
+		streetAddress = element.get("street");
+		locality = element.get("locality");
+		region = element.get("region");
+		postalCode = element.get("code");
+		country = element.get("country");
 	}
 
 	@Override

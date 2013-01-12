@@ -26,7 +26,8 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -145,7 +146,7 @@ public class XmlType extends TextType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (value == null) {
 			throw new SkipMeException("Property does not have a value associated with it.");
 		}
@@ -157,7 +158,7 @@ public class XmlType extends TextType {
 			fact.setNamespaceAware(true);
 			DocumentBuilder builder = fact.newDocumentBuilder();
 			Document document = builder.parse(new ByteArrayInputStream(value.getBytes()));
-			root = XCardUtils.getFirstElement(document.getChildNodes());
+			root = XmlUtils.getRootElement(document);
 		} catch (IOException e) {
 			//never thrown because reading from a string
 		} catch (ParserConfigurationException e) {
@@ -165,17 +166,17 @@ public class XmlType extends TextType {
 		} catch (SAXException e) {
 			throw new SkipMeException("Property value is not valid XML.");
 		}
-		
+
 		//add XML element to marshalled document
-		Node imported = parent.getOwnerDocument().importNode(root, true);
-		parent.appendChild(imported);
+		Node imported = parent.getElement().getOwnerDocument().importNode(root, true);
+		parent.getElement().appendChild(imported);
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		try {
 			StringWriter writer = new StringWriter();
-			DOMSource source = new DOMSource(element);
+			DOMSource source = new DOMSource(element.getElement());
 			StreamResult result = new StreamResult(writer);
 			Transformer t = TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");

@@ -3,13 +3,11 @@ package ezvcard.types;
 import java.util.List;
 import java.util.UUID;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -176,20 +174,20 @@ public class ClientPidMapType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			XCardUtils.appendChild(parent, "uri", uri, version);
+			parent.appendUri(uri);
 		}
 		if (pid != null) {
-			XCardUtils.appendChild(parent, "sourceid", pid.toString(), version);
+			parent.append("sourceid", pid.toString());
 		}
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		uri = XCardUtils.getFirstChildText(element, "uri");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		uri = element.getUri();
 
-		String value = XCardUtils.getFirstChildText(element, "sourceid");
+		String value = element.get("sourceid");
 		pid = (value != null) ? Integer.parseInt(value) : null;
 	}
 }

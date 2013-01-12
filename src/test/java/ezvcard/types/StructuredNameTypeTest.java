@@ -15,7 +15,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -113,10 +113,10 @@ public class StructuredNameTypeTest {
 		expectedXml += "<prefix>Mr.</prefix>";
 		expectedXml += "<suffix>III</suffix>";
 		expectedXml += "</n>";
-		expected = XCardUtils.toDocument(expectedXml);
+		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XCardUtils.toDocument("<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		actual = XmlUtils.toDocument("<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -135,10 +135,10 @@ public class StructuredNameTypeTest {
 		expectedXml += "<additional>John</additional>";
 		expectedXml += "<suffix>III</suffix>";
 		expectedXml += "</n>";
-		expected = XCardUtils.toDocument(expectedXml);
+		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XCardUtils.toDocument("<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		actual = XmlUtils.toDocument("<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -215,7 +215,7 @@ public class StructuredNameTypeTest {
 		xml += "<prefix>Mr.</prefix>";
 		xml += "<suffix>III</suffix>";
 		xml += "</n>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new StructuredNameType();
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Doe", t.getFamily());
@@ -235,7 +235,7 @@ public class StructuredNameTypeTest {
 		xml += "<additional>John</additional>";
 		xml += "<suffix>III</suffix>";
 		xml += "</n>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new StructuredNameType();
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getFamily());

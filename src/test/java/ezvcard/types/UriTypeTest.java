@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -63,10 +63,10 @@ public class UriTypeTest {
 		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>http://www.example.com</uri>";
 		expectedXml += "</name>";
-		expected = XCardUtils.toDocument(expectedXml);
+		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		actual = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -86,7 +86,7 @@ public class UriTypeTest {
 		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>http://www.example.com</uri>";
 		xml += "</name>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new UriType("NAME");
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = "http://www.example.com";

@@ -13,7 +13,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -142,7 +142,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * vCard
 	 */
 	public final void marshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		doMarshalValue(parent, version, warnings, compatibilityMode);
+		XCardElement wrapper = new XCardElement(parent, version);
+		doMarshalValue(wrapper, warnings, compatibilityMode);
 	}
 
 	/**
@@ -151,7 +152,6 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @param parent the XML element that the type's value will be inserted
 	 * into. For example, this would be the "&lt;fn&gt;" element for the "FN"
 	 * type.
-	 * @param version the version vCard that is being generated
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
 	 * marshalling process
@@ -160,9 +160,9 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws SkipMeException if this type should NOT be marshalled into the
 	 * vCard
 	 */
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = marshalValue(version, warnings, compatibilityMode);
-		XCardUtils.appendChild(parent, "unknown", value, version);
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+		String value = marshalValue(parent.getVersion(), warnings, compatibilityMode);
+		parent.append("unknown", value);
 	}
 
 	/**
@@ -270,7 +270,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 */
 	public final void unmarshalValue(VCardSubTypes subTypes, Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		this.subTypes = subTypes;
-		doUnmarshalValue(element, version, warnings, compatibilityMode);
+		XCardElement wrapper = new XCardElement(element, version);
+		doUnmarshalValue(wrapper, warnings, compatibilityMode);
 	}
 
 	/**
@@ -279,7 +280,6 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * this would be the "&lt;fn&gt;" element for the "FN" type. This object
 	 * will NOT include the "&lt;parameters&gt;" child element (it is removed
 	 * after being unmarshalled into a {@link VCardSubTypes} object).
-	 * @param version the version of the xCard
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
 	 * unmarshalling process
@@ -290,7 +290,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws UnsupportedOperationException if the type class does not support
 	 * xCard parsing
 	 */
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		throw new UnsupportedOperationException("This type class does not support the parsing of xCards.");
 	}
 

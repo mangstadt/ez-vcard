@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -108,9 +108,9 @@ public class TextListTypeTest {
 		expectedXml += "<text>Two</text>";
 		expectedXml += "<text>Three</text>";
 		expectedXml += "</name>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -122,9 +122,9 @@ public class TextListTypeTest {
 		expectedXml += "<text>One</text>";
 		expectedXml += "<text>Two</text>";
 		expectedXml += "</name>";
-		expectedDoc = XCardUtils.toDocument(expectedXml);
-		actualDoc = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		expectedDoc = XmlUtils.toDocument(expectedXml);
+		actualDoc = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -134,9 +134,9 @@ public class TextListTypeTest {
 		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<text>One</text>";
 		expectedXml += "</name>";
-		expectedDoc = XCardUtils.toDocument(expectedXml);
-		actualDoc = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		expectedDoc = XmlUtils.toDocument(expectedXml);
+		actualDoc = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -144,9 +144,9 @@ public class TextListTypeTest {
 		t = new TextListType("NAME", ',');
 		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "</name>";
-		expectedDoc = XCardUtils.toDocument(expectedXml);
-		actualDoc = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		expectedDoc = XmlUtils.toDocument(expectedXml);
+		actualDoc = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -206,7 +206,7 @@ public class TextListTypeTest {
 		xml += "<text>Two</text>";
 		xml += "<text>Three</text>";
 		xml += "</name>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two", "Three");
@@ -218,7 +218,7 @@ public class TextListTypeTest {
 		xml += "<text>One</text>";
 		xml += "<text>Two</text>";
 		xml += "</name>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two");
@@ -229,7 +229,7 @@ public class TextListTypeTest {
 		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<text>One</text>";
 		xml += "</name>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One");
@@ -239,7 +239,7 @@ public class TextListTypeTest {
 		//zero values
 		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "</name>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList();

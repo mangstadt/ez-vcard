@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -303,55 +301,31 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (family != null) {
-			XCardUtils.appendChild(parent, "surname", family, version);
+			parent.append("surname", family);
 		}
 		if (given != null) {
-			XCardUtils.appendChild(parent, "given", given, version);
+			parent.append("given", given);
 		}
-		for (String s : additional) {
-			XCardUtils.appendChild(parent, "additional", s, version);
-		}
-		for (String s : prefixes) {
-			XCardUtils.appendChild(parent, "prefix", s, version);
-		}
-		for (String s : suffixes) {
-			XCardUtils.appendChild(parent, "suffix", s, version);
-		}
+		parent.append("additional", additional);
+		parent.append("prefix", prefixes);
+		parent.append("suffix", suffixes);
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		family = XCardUtils.getFirstChildText(element, "surname");
-		given = XCardUtils.getFirstChildText(element, "given");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		family = element.get("surname");
+		given = element.get("given");
 
-		List<Element> elements = XCardUtils.toElementList(element.getElementsByTagName("additional"));
 		additional.clear();
-		for (Element e : elements) {
-			String text = e.getTextContent();
-			if (text.length() > 0) {
-				additional.add(text);
-			}
-		}
+		additional.addAll(element.getAll("additional"));
 
-		elements = XCardUtils.toElementList(element.getElementsByTagName("prefix"));
 		prefixes.clear();
-		for (Element e : elements) {
-			String text = e.getTextContent();
-			if (text.length() > 0) {
-				prefixes.add(text);
-			}
-		}
+		prefixes.addAll(element.getAll("prefix"));
 
-		elements = XCardUtils.toElementList(element.getElementsByTagName("suffix"));
 		suffixes.clear();
-		for (Element e : elements) {
-			String text = e.getTextContent();
-			if (text.length() > 0) {
-				suffixes.add(text);
-			}
-		}
+		suffixes.addAll(element.getAll("suffix"));
 	}
 
 	@Override

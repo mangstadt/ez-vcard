@@ -18,7 +18,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardUnitTestUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -87,9 +87,9 @@ public class TimestampTypeTest {
 		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<timestamp>19800605T131020Z</timestamp>";
 		expectedXml += "</date>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -121,7 +121,7 @@ public class TimestampTypeTest {
 		String xml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<timestamp>19800605T131020Z</timestamp>";
 		xml += "</date>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getTimestamp());
 	}

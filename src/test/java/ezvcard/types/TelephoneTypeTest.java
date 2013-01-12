@@ -19,7 +19,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -97,9 +97,9 @@ public class TelephoneTypeTest {
 		String expectedXml = "<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>tel:+1 555-555-1234</uri>";
 		expectedXml += "</tel>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -189,7 +189,7 @@ public class TelephoneTypeTest {
 		String xml = "<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>tel:+1 555-555-1234.</uri>";
 		xml += "</tel>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 
@@ -198,7 +198,7 @@ public class TelephoneTypeTest {
 		xml = "<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<text>+1 555-555-1234.</text>";
 		xml += "</tel>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 	}

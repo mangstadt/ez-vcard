@@ -16,7 +16,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -88,9 +88,9 @@ public class DeathplaceTypeTest {
 		String expectedXml = "<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<text>Mount St. Helens</text>";
 		expectedXml += "</deathplace>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -100,9 +100,9 @@ public class DeathplaceTypeTest {
 		expectedXml = "<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>geo:46.176502,-122.191658</uri>";
 		expectedXml += "</deathplace>";
-		expectedDoc = XCardUtils.toDocument(expectedXml);
-		actualDoc = XCardUtils.toDocument("<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		expectedDoc = XmlUtils.toDocument(expectedXml);
+		actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -140,7 +140,7 @@ public class DeathplaceTypeTest {
 		String xml = "<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<text>Mount St. Helens</text>";
 		xml += "</deathplace>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Mount St. Helens", t.getText());
 		assertNull(t.getUri());
@@ -150,7 +150,7 @@ public class DeathplaceTypeTest {
 		xml = "<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>geo:46.176502,-122.191658</uri>";
 		xml += "</deathplace>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:46.176502,-122.191658", t.getUri());

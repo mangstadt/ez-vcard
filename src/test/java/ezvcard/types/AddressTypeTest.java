@@ -18,7 +18,8 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
+
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -92,7 +93,7 @@ public class AddressTypeTest {
 		actual = t.marshalValue(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	public void marshalXml() throws Exception {
 		VCardVersion version = VCardVersion.V4_0;
@@ -112,7 +113,7 @@ public class AddressTypeTest {
 		t.setRegion("TX");
 		t.setPostalCode("12345");
 		t.setCountry("USA");
-		
+
 		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<pobox>P.O. Box 1234</pobox>";
 		expectedXml += "<ext>Apt 11</ext>";
@@ -122,12 +123,12 @@ public class AddressTypeTest {
 		expectedXml += "<code>12345</code>";
 		expectedXml += "<country>USA</country>";
 		expectedXml += "</adr>";
-		expected = XCardUtils.toDocument(expectedXml);
-		
-		actual = XCardUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		expected = XmlUtils.toDocument(expectedXml);
+
+		actual = XmlUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
-		
+
 		assertXMLEqual(expected, actual);
 
 		//some nulls
@@ -139,29 +140,29 @@ public class AddressTypeTest {
 		t.setRegion("TX");
 		t.setPostalCode("12345");
 		t.setCountry(null);
-		
+
 		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<pobox>P.O. Box 1234</pobox>";
 		expectedXml += "<locality>Austin</locality>";
 		expectedXml += "<region>TX</region>";
 		expectedXml += "<code>12345</code>";
 		expectedXml += "</adr>";
-		expected = XCardUtils.toDocument(expectedXml);
-		
-		actual = XCardUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		expected = XmlUtils.toDocument(expectedXml);
+
+		actual = XmlUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 
 		//all nulls
 		t = new AddressType();
-		
+
 		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "</adr>";
-		expected = XCardUtils.toDocument(expectedXml);
-		
-		actual = XCardUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		expected = XmlUtils.toDocument(expectedXml);
+
+		actual = XmlUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
@@ -285,7 +286,7 @@ public class AddressTypeTest {
 		assertEquals(null, t.getPostalCode());
 		assertEquals(null, t.getCountry());
 	}
-	
+
 	@Test
 	public void unmarshalXml() throws Exception {
 		VCardVersion version = VCardVersion.V4_0;
@@ -306,7 +307,7 @@ public class AddressTypeTest {
 		xml += "<code>12345</code>";
 		xml += "<country>USA</country>";
 		xml += "</adr>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new AddressType();
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234", t.getPoBox());
@@ -325,7 +326,7 @@ public class AddressTypeTest {
 		xml += "<code>12345</code>";
 		xml += "<country>USA</country>";
 		xml += "</adr>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new AddressType();
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234", t.getPoBox());

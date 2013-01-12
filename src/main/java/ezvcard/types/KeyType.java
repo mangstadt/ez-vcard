@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -18,7 +16,7 @@ import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -254,24 +252,25 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			XCardUtils.appendChild(parent, "text", text, version);
+			parent.appendText(text);
 		} else {
+			VCardVersion version = parent.getVersion();
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
 				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");
 			}
-			super.doMarshalValue(parent, version, warnings, compatibilityMode);
+			super.doMarshalValue(parent, warnings, compatibilityMode);
 		}
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = XCardUtils.getFirstChildText(element, "uri");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		String value = element.getUri();
 		if (value != null) {
-			super.doUnmarshalValue(value, version, warnings, compatibilityMode);
+			super.doUnmarshalValue(value, element.getVersion(), warnings, compatibilityMode);
 		} else {
-			value = XCardUtils.getFirstChildText(element, "text");
+			value = element.getText();
 			if (value != null) {
 				String mediaType = subTypes.getMediaType();
 				KeyTypeParameter contentType = (mediaType != null) ? buildMediaTypeObj(mediaType) : null;

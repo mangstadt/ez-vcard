@@ -20,7 +20,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -195,9 +195,9 @@ public class ImppTypeTest {
 		expectedXml = "<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>aim:john.doe@aol.com</uri>";
 		expectedXml += "</impp>";
-		expected = XCardUtils.toDocument(expectedXml);
-		actual = XCardUtils.toDocument("<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actual.getChildNodes());
+		expected = XmlUtils.toDocument(expectedXml);
+		actual = XmlUtils.toDocument("<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
@@ -228,7 +228,7 @@ public class ImppTypeTest {
 		xml = "<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>aim:john.doe@aol.com</uri>";
 		xml += "</impp>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new ImppType();
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("aim:john.doe@aol.com", t.getUri().toString());

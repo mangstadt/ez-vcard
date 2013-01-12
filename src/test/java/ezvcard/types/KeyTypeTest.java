@@ -17,7 +17,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -100,9 +100,9 @@ public class KeyTypeTest {
 		String expectedXml = "<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<text>abc123</text>";
 		expectedXml += "</key>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -154,7 +154,7 @@ public class KeyTypeTest {
 		String xml = "<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<text>abc123</text>";
 		xml += "</key>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());

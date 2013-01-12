@@ -5,8 +5,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -15,7 +13,7 @@ import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -242,14 +240,14 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = writeValue(version);
-		XCardUtils.appendChild(parent, "uri", value, version);
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+		String value = writeValue(parent.getVersion());
+		parent.appendUri(value);
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = XCardUtils.getFirstChildText(element, "text", "uri");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		String value = element.get("text", "uri");
 		if (value != null) {
 			parseValue(value);
 		}

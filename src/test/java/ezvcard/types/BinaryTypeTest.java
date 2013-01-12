@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -19,8 +20,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XCardUtils;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -103,9 +103,9 @@ public class BinaryTypeTest {
 		String expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>http://example.com/image.jpg</uri>";
 		expectedXml += "</name>";
-		Document expected = XCardUtils.toDocument(expectedXml);
-		Document actual = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actual.getChildNodes());
+		Document expected = XmlUtils.toDocument(expectedXml);
+		Document actual = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
@@ -157,10 +157,10 @@ public class BinaryTypeTest {
 		String expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) + "</uri>";
 		expectedXml += "</name>";
-		Document expected = XCardUtils.toDocument(expectedXml);
+		Document expected = XmlUtils.toDocument(expectedXml);
 
-		Document actual = XCardUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actual.getChildNodes());
+		Document actual = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -296,7 +296,7 @@ public class BinaryTypeTest {
 		String xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>http://example.com/image.jpg</uri>";
 		xml += "</name>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
@@ -312,7 +312,7 @@ public class BinaryTypeTest {
 		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) + "</uri>";
 		xml += "</name>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getUrl());

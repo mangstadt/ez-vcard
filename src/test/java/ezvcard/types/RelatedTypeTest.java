@@ -18,7 +18,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.RelatedTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -94,9 +94,9 @@ public class RelatedTypeTest {
 		String expectedXml = "<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<text>Edna Smith</text>";
 		expectedXml += "</related>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -106,9 +106,9 @@ public class RelatedTypeTest {
 		expectedXml = "<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<uri>urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af</uri>";
 		expectedXml += "</related>";
-		expectedDoc = XCardUtils.toDocument(expectedXml);
-		actualDoc = XCardUtils.toDocument("<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		expectedDoc = XmlUtils.toDocument(expectedXml);
+		actualDoc = XmlUtils.toDocument("<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -152,7 +152,7 @@ public class RelatedTypeTest {
 		String xml = "<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<text>Edna Smith</text>";
 		xml += "</related>";
-		Element element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Edna Smith", t.getText());
 		assertNull(t.getUri());
@@ -165,7 +165,7 @@ public class RelatedTypeTest {
 		xml = "<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		xml += "<uri>urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af</uri>";
 		xml += "</related>";
-		element = XCardUtils.getFirstElement(XCardUtils.toDocument(xml).getChildNodes());
+		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af", t.getUri());

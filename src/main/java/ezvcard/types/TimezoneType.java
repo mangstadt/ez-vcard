@@ -7,8 +7,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -18,7 +16,7 @@ import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardUtils;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -349,20 +347,20 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			XCardUtils.appendChild(parent, "text", text, version);
+			parent.appendText(text);
 		} else if (hourOffset != null && minuteOffset != null) {
 			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
-			XCardUtils.appendChild(parent, "utc-offset", offset, version);
+			parent.append("utc-offset", offset);
 		} else {
 			throw new SkipMeException("Property does not have text or a UTC offset associated with it.");
 		}
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = XCardUtils.getFirstChildText(element, "text", "uri", "utc-offset");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		String value = element.get("text", "uri", "utc-offset");
 		if (value != null) {
 			parseValue(value);
 		}

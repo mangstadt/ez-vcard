@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -74,10 +74,10 @@ public class ClientPidMapTypeTest {
 		expectedXml += "<sourceid>1</sourceid>";
 		expectedXml += "<uri>urn:uuid:1234</uri>";
 		expectedXml += "</clientpidmap>";
-		Document expected = XCardUtils.toDocument(expectedXml);
+		Document expected = XmlUtils.toDocument(expectedXml);
 
-		Document actual = XCardUtils.toDocument("<clientpidmap xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actual.getChildNodes());
+		Document actual = XmlUtils.toDocument("<clientpidmap xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actual);
 
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
@@ -92,7 +92,7 @@ public class ClientPidMapTypeTest {
 		VCardSubTypes subTypes = new VCardSubTypes();
 
 		String input = "1;urn:uuid:1234";
-		
+
 		ClientPidMapType t = new ClientPidMapType();
 		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
 
@@ -111,7 +111,7 @@ public class ClientPidMapTypeTest {
 		inputXml += "<sourceid>1</sourceid>";
 		inputXml += "<uri>urn:uuid:1234</uri>";
 		inputXml += "</clientpidmap>";
-		Element input = XCardUtils.getFirstElement(XCardUtils.toDocument(inputXml).getChildNodes());
+		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
 
 		ClientPidMapType t = new ClientPidMapType();
 		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);

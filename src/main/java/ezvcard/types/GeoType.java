@@ -5,8 +5,6 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Set;
 
-import org.w3c.dom.Element;
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -15,7 +13,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -329,17 +327,17 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
-		doMarshalValue(sb, version, warnings, compatibilityMode);
-		XCardUtils.appendChild(parent, "uri", sb.toString(), version);
+		doMarshalValue(sb, parent.getVersion(), warnings, compatibilityMode);
+		parent.appendUri(sb.toString());
 	}
 
 	@Override
-	protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = XCardUtils.getFirstChildText(element, "uri");
+	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+		String value = element.getUri();
 		if (value != null) {
-			doUnmarshalValue(value, version, warnings, compatibilityMode);
+			doUnmarshalValue(value, element.getVersion(), warnings, compatibilityMode);
 		}
 	}
 

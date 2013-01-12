@@ -23,7 +23,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardUnitTestUtils;
-import ezvcard.util.XCardUtils;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -101,9 +101,9 @@ public class DateOrTimeTypeTest {
 		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<date-and-or-time>" + expected + "</date-and-or-time>";
 		expectedXml += "</date>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -153,10 +153,10 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		Document actualDoc = XCardUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
-		assertTrue(XCardUtils.getFirstElement(element.getChildNodes()).getTextContent().matches(expected));
+		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(expected));
 	}
 
 	@Test
@@ -202,9 +202,9 @@ public class DateOrTimeTypeTest {
 		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<date-and-or-time>" + expected + "</date-and-or-time>";
 		expectedXml += "</date>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -252,9 +252,9 @@ public class DateOrTimeTypeTest {
 		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		expectedXml += "<text>Sometime around ;1980;</text>";
 		expectedXml += "</date>";
-		Document expectedDoc = XCardUtils.toDocument(expectedXml);
-		Document actualDoc = XCardUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
-		Element element = XCardUtils.getFirstElement(actualDoc.getChildNodes());
+		Document expectedDoc = XmlUtils.toDocument(expectedXml);
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -309,7 +309,7 @@ public class DateOrTimeTypeTest {
 		String inputXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		inputXml += "<date-and-or-time>1980-06-05</date-and-or-time>";
 		inputXml += "</date>";
-		Element input = XCardUtils.getFirstElement(XCardUtils.toDocument(inputXml).getChildNodes());
+		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
 		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals("1980-06-05", t.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
@@ -320,7 +320,7 @@ public class DateOrTimeTypeTest {
 		inputXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		inputXml += "<date-and-or-time>19800605</date-and-or-time>";
 		inputXml += "</date>";
-		input = XCardUtils.getFirstElement(XCardUtils.toDocument(inputXml).getChildNodes());
+		input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
 		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getDate());
 		assertNull(t.getReducedAccuracyDate());
@@ -366,7 +366,7 @@ public class DateOrTimeTypeTest {
 		String inputXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		inputXml += "<date-and-or-time>" + value + "</date-and-or-time>";
 		inputXml += "</date>";
-		Element input = XCardUtils.getFirstElement(XCardUtils.toDocument(inputXml).getChildNodes());
+		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
 		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals(expected, t.getReducedAccuracyDate());
@@ -413,7 +413,7 @@ public class DateOrTimeTypeTest {
 		String inputXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
 		inputXml += "<date-and-or-time>Some ;text;.</date-and-or-time>";
 		inputXml += "</date>";
-		Element input = XCardUtils.getFirstElement(XCardUtils.toDocument(inputXml).getChildNodes());
+		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
 		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());
