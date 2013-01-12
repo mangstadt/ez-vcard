@@ -192,11 +192,11 @@ public class ImppTypeTest {
 		String expectedXml;
 
 		t = new ImppType("aim:john.doe@aol.com");
-		expectedXml = "<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<impp xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>aim:john.doe@aol.com</uri>";
 		expectedXml += "</impp>";
 		expected = XmlUtils.toDocument(expectedXml);
-		actual = XmlUtils.toDocument("<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actual = XmlUtils.toDocument("<impp xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
@@ -225,7 +225,7 @@ public class ImppTypeTest {
 		String xml;
 		Element element;
 
-		xml = "<impp xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<impp xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>aim:john.doe@aol.com</uri>";
 		xml += "</impp>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

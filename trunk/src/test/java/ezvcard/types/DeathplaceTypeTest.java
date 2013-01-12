@@ -85,11 +85,11 @@ public class DeathplaceTypeTest {
 		//text
 		DeathplaceType t = new DeathplaceType();
 		t.setText("Mount St. Helens");
-		String expectedXml = "<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>Mount St. Helens</text>";
 		expectedXml += "</deathplace>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -97,11 +97,11 @@ public class DeathplaceTypeTest {
 		//URI
 		t = new DeathplaceType();
 		t.setUri("geo:46.176502,-122.191658");
-		expectedXml = "<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>geo:46.176502,-122.191658</uri>";
 		expectedXml += "</deathplace>";
 		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -137,7 +137,7 @@ public class DeathplaceTypeTest {
 
 		//text
 		DeathplaceType t = new DeathplaceType();
-		String xml = "<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String xml = "<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>Mount St. Helens</text>";
 		xml += "</deathplace>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
@@ -147,7 +147,7 @@ public class DeathplaceTypeTest {
 
 		//URI
 		t = new DeathplaceType();
-		xml = "<deathplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>geo:46.176502,-122.191658</uri>";
 		xml += "</deathplace>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

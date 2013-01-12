@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import ezvcard.VCard;
+import ezvcard.VCardVersion;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.NoteType;
@@ -66,7 +67,7 @@ public class XCardDocumentTest {
 
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<fn><text>John Doe</text></fn>");
 			sb.append("</vcard>");
@@ -98,7 +99,7 @@ public class XCardDocumentTest {
 
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<note>");
 					sb.append("<parameters>");
@@ -147,7 +148,7 @@ public class XCardDocumentTest {
 
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<fn><text>John Doe</text></fn>");
 				sb.append("<group name=\"group1\">");
@@ -187,7 +188,7 @@ public class XCardDocumentTest {
 
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<fn><text>John Doe</text></fn>");
 			sb.append("</vcard>");
@@ -280,7 +281,7 @@ public class XCardDocumentTest {
 
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" xmlns:a=\"http://luckynum.com\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">");
 			sb.append("<vcard>");
 				sb.append("<fn><text>John Doe</text></fn>");
 				sb.append("<a:lucky-num>24</a:lucky-num>");
@@ -324,7 +325,7 @@ public class XCardDocumentTest {
 
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<a:lucky-num xmlns:a=\"http://luckynum.com\">24</a:lucky-num>");
 				sb.append("<x-salary>1000000</x-salary>");
@@ -351,7 +352,7 @@ public class XCardDocumentTest {
 		//@formatter:off
 		String newline = System.getProperty("line.separator");
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">").append(newline);
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">").append(newline);
 			sb.append("  <vcard>").append(newline);
 				sb.append("    <fn>").append(newline);
 					sb.append("      <text>John Doe</text>").append(newline);

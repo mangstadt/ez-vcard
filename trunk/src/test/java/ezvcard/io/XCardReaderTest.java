@@ -61,7 +61,7 @@ public class XCardReaderTest {
 	public void basic() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
 				sb.append("<n>");
@@ -101,7 +101,7 @@ public class XCardReaderTest {
 	public void preserveWhitespace() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<note><text>  This \t  is \n   a   note </text></note>");
 			sb.append("</vcard>");
@@ -127,7 +127,7 @@ public class XCardReaderTest {
 	public void parameters() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				//zero params
 				sb.append("<note>");
@@ -208,7 +208,7 @@ public class XCardReaderTest {
 	public void group() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<group name=\"item1\">");
 					sb.append("<fn><text>John Doe</text></fn>");
@@ -247,7 +247,7 @@ public class XCardReaderTest {
 	public void readNonStandardElements() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				//XmlType (non-standard type that does not start with "x-")
 				sb.append("<a href=\"http://www.website.com\">website</a>");
@@ -276,9 +276,9 @@ public class XCardReaderTest {
 
 		List<XmlType> xmlTypes = vcard.getXmls();
 		assertEquals(2, xmlTypes.size());
-		assertEquals("<a href=\"http://www.website.com\" xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">website</a>", xmlTypes.get(0).getValue());
+		assertEquals("<a href=\"http://www.website.com\" xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">website</a>", xmlTypes.get(0).getValue());
 		//X-AGE was not unmarshalled because its type class does not support xCard;
-		assertEquals("<x-age xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\"><integer>24</integer></x-age>", xmlTypes.get(1).getValue());
+		assertEquals("<x-age xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><integer>24</integer></x-age>", xmlTypes.get(1).getValue());
 
 		List<LuckyNumType> luckyNum = vcard.getExtendedType(LuckyNumType.class);
 		assertEquals(1, luckyNum.size());
@@ -305,7 +305,7 @@ public class XCardReaderTest {
 	public void readMultipleVCards() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 			sb.append("<vcard>");
 				sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
 			sb.append("</vcard>");
@@ -386,7 +386,7 @@ public class XCardReaderTest {
 	public void skipMeException() throws Exception {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" xmlns:a=\"http://luckynum.com\">");
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">");
 			sb.append("<vcard>");
 				sb.append("<a:lucky-num><a:num>24</a:num></a:lucky-num>");
 				sb.append("<a:lucky-num><a:num>13</a:num></a:lucky-num>");
@@ -412,7 +412,7 @@ public class XCardReaderTest {
 		//@formatter:off
 		StringBuilder sb = new StringBuilder();
 		sb.append("<foo xmlns=\"http://foobar.com\">");
-			sb.append("<vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">");
+			sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
 				sb.append("<vcard>");
 					sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
 					sb.append("<n>");

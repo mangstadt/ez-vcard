@@ -60,12 +60,12 @@ public class UriTypeTest {
 
 		t = new UriType("NAME", "http://www.example.com");
 
-		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>http://www.example.com</uri>";
 		expectedXml += "</name>";
 		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
@@ -83,7 +83,7 @@ public class UriTypeTest {
 		String xml;
 		Element element;
 
-		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>http://www.example.com</uri>";
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

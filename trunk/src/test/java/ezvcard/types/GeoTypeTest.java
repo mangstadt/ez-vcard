@@ -87,11 +87,11 @@ public class GeoTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<geo xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>geo:-12.34,56.777778</uri>";
 		expectedXml += "</geo>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<geo xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -129,7 +129,7 @@ public class GeoTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new GeoType();
-		String xml = "<geo xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String xml = "<geo xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>geo:-12.34,56.7878</uri>";
 		xml += "</geo>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

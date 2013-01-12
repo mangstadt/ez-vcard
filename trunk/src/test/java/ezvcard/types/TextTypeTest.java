@@ -76,12 +76,12 @@ public class TextTypeTest {
 
 		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 
-		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>This is a test of the TextType.\nOne, two, three; and \\four\\.</text>";
 		expectedXml += "</name>";
 		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
@@ -115,7 +115,7 @@ public class TextTypeTest {
 		String xml;
 		Element element;
 
-		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>This is a test of the TextType.\nOne, two, three; and \\four\\.</text>";
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

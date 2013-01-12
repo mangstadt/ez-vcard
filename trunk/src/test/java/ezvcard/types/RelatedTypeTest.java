@@ -91,11 +91,11 @@ public class RelatedTypeTest {
 		//text
 		RelatedType t = new RelatedType();
 		t.setText("Edna Smith");
-		String expectedXml = "<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>Edna Smith</text>";
 		expectedXml += "</related>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -103,11 +103,11 @@ public class RelatedTypeTest {
 		//URI
 		t = new RelatedType();
 		t.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
-		expectedXml = "<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af</uri>";
 		expectedXml += "</related>";
 		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actualDoc = XmlUtils.toDocument("<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -149,7 +149,7 @@ public class RelatedTypeTest {
 		RelatedType t = new RelatedType();
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setType(RelatedTypeParameter.SPOUSE.getValue());
-		String xml = "<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String xml = "<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>Edna Smith</text>";
 		xml += "</related>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
@@ -162,7 +162,7 @@ public class RelatedTypeTest {
 		t = new RelatedType();
 		subTypes = new VCardSubTypes();
 		subTypes.setType(RelatedTypeParameter.SPOUSE.getValue());
-		xml = "<related xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af</uri>";
 		xml += "</related>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

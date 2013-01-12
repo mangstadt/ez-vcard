@@ -105,7 +105,7 @@ public class StructuredNameTypeTest {
 		t.addPrefix("Mr.");
 		t.addSuffix("III");
 
-		expectedXml = "<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<surname>Doe</surname>";
 		expectedXml += "<given>Jonathan</given>";
 		expectedXml += "<additional>Joh;nny,</additional>";
@@ -115,7 +115,7 @@ public class StructuredNameTypeTest {
 		expectedXml += "</n>";
 		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XmlUtils.toDocument("<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actual = XmlUtils.toDocument("<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
@@ -129,7 +129,7 @@ public class StructuredNameTypeTest {
 		t.addAdditional("John");
 		t.addSuffix("III");
 
-		expectedXml = "<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<given>Jonathan</given>";
 		expectedXml += "<additional>Joh;nny,</additional>";
 		expectedXml += "<additional>John</additional>";
@@ -137,7 +137,7 @@ public class StructuredNameTypeTest {
 		expectedXml += "</n>";
 		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XmlUtils.toDocument("<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actual = XmlUtils.toDocument("<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
@@ -207,7 +207,7 @@ public class StructuredNameTypeTest {
 		String xml;
 		Element element;
 
-		xml = "<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<surname>Doe</surname>";
 		xml += "<given>Jonathan</given>";
 		xml += "<additional>Joh;nny,</additional>";
@@ -229,7 +229,7 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getSuffixes().contains("III"));
 
 		//some empty values
-		xml = "<n xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<given>Jonathan</given>";
 		xml += "<additional>Joh;nny,</additional>";
 		xml += "<additional>John</additional>";
