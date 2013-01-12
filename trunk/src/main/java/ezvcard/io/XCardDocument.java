@@ -96,7 +96,7 @@ public class XCardDocument {
 		parameterChildElementNames = Collections.unmodifiableMap(m);
 	}
 
-	private CompatibilityMode compatibilityMode;
+	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private boolean addProdId = true;
 	private VCardVersion targetVersion = VCardVersion.V4_0; //xCard standard only supports 4.0
 	private List<String> warnings = new ArrayList<String>();
@@ -104,15 +104,6 @@ public class XCardDocument {
 	private final Element root;
 
 	public XCardDocument() {
-		this(CompatibilityMode.RFC);
-	}
-
-	/**
-	 * @param compatibilityMode the compatibility mode
-	 */
-	public XCardDocument(CompatibilityMode compatibilityMode) {
-		this.compatibilityMode = compatibilityMode;
-
 		DocumentBuilder builder = null;
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -131,6 +122,7 @@ public class XCardDocument {
 	 * to target a particular application.
 	 * @return the compatibility mode
 	 */
+	@Deprecated
 	public CompatibilityMode getCompatibilityMode() {
 		return compatibilityMode;
 	}
@@ -140,6 +132,7 @@ public class XCardDocument {
 	 * to target a particular application.
 	 * @param compatibilityMode the compatibility mode
 	 */
+	@Deprecated
 	public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
 		this.compatibilityMode = compatibilityMode;
 	}

@@ -353,7 +353,6 @@ public class VCardReaderTest {
 	@Test
 	public void evolutionVCard() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_EVOLUTION.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.EVOLUTION);
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -567,7 +566,6 @@ public class VCardReaderTest {
 	@Test
 	public void gmailVCard() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_GMAIL.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.GMAIL);
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -732,7 +730,6 @@ public class VCardReaderTest {
 	@Test
 	public void gmailList() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("gmail-list.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.GMAIL);
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -841,7 +838,6 @@ public class VCardReaderTest {
 	@Test
 	public void gmailSingle() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("gmail-single.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.GMAIL);
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -1040,7 +1036,6 @@ public class VCardReaderTest {
 	@Test
 	public void iPhoneVCard() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_IPHONE.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.I_PHONE);
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -1258,7 +1253,6 @@ public class VCardReaderTest {
 	@Test
 	public void lotusNotesVCard() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_LOTUS_NOTES.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -1531,7 +1525,6 @@ public class VCardReaderTest {
 	@Test
 	public void msOutlookVCard() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_MS_OUTLOOK.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.MS_OUTLOOK);
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -2016,7 +2009,6 @@ public class VCardReaderTest {
 	@Test
 	public void macAddressBookVCard() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_MAC_ADDRESS_BOOK.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
 		VCard vcard = reader.readNext();
 
 		//VERSION
@@ -2465,7 +2457,6 @@ public class VCardReaderTest {
 	@Test
 	public void thunderbird() throws Exception {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("thunderbird-MoreFunctionsForAddressBook-extension.vcf"));
-		reader.setCompatibilityMode(CompatibilityMode.MAC_ADDRESS_BOOK);
 		VCard vcard = reader.readNext();
 
 		//VERSION
