@@ -9,7 +9,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.util.DataUri;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -178,10 +178,10 @@ public class LogoType extends BinaryType<ImageTypeParameter> {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
 		if ("img".equals(elementName)) {
-			String src = HCardUtils.getAbsUrl(element, "src");
+			String src = element.absUrl("src");
 			if (src.length() > 0) {
 				try {
 					DataUri uri = new DataUri(src);

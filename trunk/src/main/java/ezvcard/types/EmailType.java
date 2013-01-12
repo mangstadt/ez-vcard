@@ -10,7 +10,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EmailTypeParameter;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -242,8 +242,8 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		List<String> types = HCardUtils.getTypes(element);
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		List<String> types = element.types();
 		for (String type : types) {
 			subTypes.addType(type);
 		}
@@ -259,7 +259,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 			}
 		}
 		if (email == null) {
-			email = HCardUtils.getElementValue(element);
+			email = element.value();
 		}
 		setValue(email);
 	}

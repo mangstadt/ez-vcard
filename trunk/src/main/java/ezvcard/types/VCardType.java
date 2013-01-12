@@ -12,7 +12,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.XCardElement;
 
 /*
@@ -308,7 +308,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * hCard parsing
 	 */
 	public final void unmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		doUnmarshalHtml(element, warnings);
+		HCardElement hcardElement = new HCardElement(element);
+		doUnmarshalHtml(hcardElement, warnings);
 	}
 
 	/**
@@ -322,8 +323,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws EmbeddedVCardException if the value of this type is an embedded
 	 * vCard (i.e. the AGENT type)
 	 */
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		String value = HCardUtils.getElementValue(element);
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		String value = element.value();
 		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}
 

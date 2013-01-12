@@ -9,7 +9,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.SoundTypeParameter;
 import ezvcard.util.DataUri;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -203,11 +203,11 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
 		if ("audio".equals(elementName)) {
-			element = element.getElementsByTag("source").first();
-			if (element == null) {
+			org.jsoup.nodes.Element sourceElement = element.getElement().getElementsByTag("source").first();
+			if (sourceElement == null) {
 				throw new SkipMeException("No <source> element found beneath <audio> element.");
 			}
 		}
@@ -218,7 +218,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 				mediaType = buildMediaTypeObj(type);
 			}
 
-			String src = HCardUtils.getAbsUrl(element, "src");
+			String src = element.absUrl("src");
 			if (src.length() > 0) {
 				try {
 					DataUri uri = new DataUri(src);

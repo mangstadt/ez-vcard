@@ -22,7 +22,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.HCardUnitTestUtils;
+import ezvcard.util.HtmlUtils;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -434,7 +434,7 @@ public class DateOrTimeTypeTest {
 		//valid date string
 		{
 			warnings.clear();
-			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time datetime=\"1970-03-10\">March 10, 1970</time>");
+			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"1970-03-10\">March 10, 1970</time>");
 			DateOrTimeType t = new DateOrTimeType("DATE");
 			t.unmarshalHtml(element, warnings);
 
@@ -445,7 +445,7 @@ public class DateOrTimeTypeTest {
 		//date string in tag text
 		{
 			warnings.clear();
-			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time>1970-03-10</time>");
+			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>1970-03-10</time>");
 			DateOrTimeType t = new DateOrTimeType("DATE");
 			t.unmarshalHtml(element, warnings);
 
@@ -456,7 +456,7 @@ public class DateOrTimeTypeTest {
 		//invalid date string
 		{
 			warnings.clear();
-			org.jsoup.nodes.Element element = HCardUnitTestUtils.toHtmlElement("<time>March 10, 1970</time>");
+			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>March 10, 1970</time>");
 			DateOrTimeType t = new DateOrTimeType("DATE");
 			t.unmarshalHtml(element, warnings);
 

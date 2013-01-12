@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCardSubTypes;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -215,19 +215,19 @@ public class OrganizationType extends TextListType {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		List<String> values = HCardUtils.getElementValuesByCssClass(element, "organization-name");
-		if (!values.isEmpty()) {
-			addValue(values.get(0));
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		String orgName = element.firstValue("organization-name");
+		if (orgName != null) {
+			addValue(orgName);
 		}
 
-		values = HCardUtils.getElementValuesByCssClass(element, "organization-unit");
-		if (!values.isEmpty()) {
-			addValue(values.get(0));
+		String orgUnit = element.firstValue("organization-unit");
+		if (orgUnit != null) {
+			addValue(orgUnit);
 		}
 
 		if (getValues().isEmpty()) {
-			addValue(HCardUtils.getElementValue(element));
+			addValue(element.value());
 		}
 	}
 }

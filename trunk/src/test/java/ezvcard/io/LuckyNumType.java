@@ -9,7 +9,7 @@ import org.w3c.dom.NodeList;
 
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.XCardElement;
 
 /*
@@ -96,7 +96,7 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		luckyNum = Integer.parseInt(HCardUtils.getElementValue(element));
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		luckyNum = Integer.parseInt(element.value());
 	}
 }

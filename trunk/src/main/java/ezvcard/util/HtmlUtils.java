@@ -3,9 +3,10 @@ package ezvcard.util;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,17 +35,33 @@ import org.jsoup.nodes.Element;
  */
 
 /**
- * Contains utility methods for unit testing hCards.
+ * Generic HTML utility methods.
  * @author Michael Angstadt
  */
-public class HCardUnitTestUtils {
+public class HtmlUtils {
+	/**
+	 * Determines whether the given element is a child of one of the given
+	 * parent elements.
+	 * @param child the child element
+	 * @param possibleParents the possible parents
+	 * @return true if it is a child, false if not
+	 */
+	public static boolean isChildOf(Element child, Elements possibleParents) {
+		for (Element parent : child.parents()) {
+			if (possibleParents.contains(parent)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Converts an HTML string to an HTML element.
 	 * @param html the HTML
 	 * @return the HTML element
 	 */
-	public static Element toHtmlElement(String html) {
-		return toHtmlElement(html, null);
+	public static Element toElement(String html) {
+		return toElement(html, null);
 	}
 
 	/**
@@ -53,7 +70,7 @@ public class HCardUnitTestUtils {
 	 * @param baseUrl the base URL
 	 * @return the HTML element
 	 */
-	public static Element toHtmlElement(String html, String baseUrl) {
+	public static Element toElement(String html, String baseUrl) {
 		Document d = (baseUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, baseUrl);
 		return d.getElementsByTag("body").first().children().first();
 	}

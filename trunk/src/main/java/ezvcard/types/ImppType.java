@@ -13,7 +13,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImppTypeParameter;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -518,10 +518,10 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String href = element.attr("href");
 		if (href.length() == 0) {
-			href = HCardUtils.getElementValue(element);
+			href = element.value();
 		}
 
 		try {

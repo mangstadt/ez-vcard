@@ -6,7 +6,7 @@ import java.util.List;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
@@ -117,7 +117,7 @@ public class TimestampType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String value = null;
 		if ("time".equals(element.tagName())) {
 			String datetime = element.attr("datetime");
@@ -126,7 +126,7 @@ public class TimestampType extends VCardType {
 			}
 		}
 		if (value == null) {
-			value = HCardUtils.getElementValue(element);
+			value = element.value();
 		}
 		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}

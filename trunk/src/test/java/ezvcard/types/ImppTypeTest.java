@@ -1,6 +1,5 @@
 package ezvcard.types;
 
-import static ezvcard.util.HCardUnitTestUtils.toHtmlElement;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,6 +19,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.util.HtmlUtils;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -238,19 +238,19 @@ public class ImppTypeTest {
 	public void unmarshalHtml() throws Exception {
 		List<String> warnings = new ArrayList<String>();
 
-		org.jsoup.nodes.Element element = toHtmlElement("<a href=\"aim:goim?screenname=theuser\">IM me</a>");
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<a href=\"aim:goim?screenname=theuser\">IM me</a>");
 		ImppType t = new ImppType();
 		t.unmarshalHtml(element, warnings);
 		assertEquals("aim:theuser", t.getUri().toString());
 
 		//no "href" attribute
-		element = toHtmlElement("<div>aim:goim?screenname=theuser</div>");
+		element = HtmlUtils.toElement("<div>aim:goim?screenname=theuser</div>");
 		t = new ImppType();
 		t.unmarshalHtml(element, warnings);
 		assertEquals("aim:theuser", t.getUri().toString());
 
 		//not a valid URI
-		element = toHtmlElement("<div>theuser</div>");
+		element = HtmlUtils.toElement("<div>theuser</div>");
 		t = new ImppType();
 		try {
 			t.unmarshalHtml(element, warnings);

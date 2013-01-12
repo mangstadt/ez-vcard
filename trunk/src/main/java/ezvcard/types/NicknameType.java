@@ -5,7 +5,7 @@ import java.util.Set;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.util.HCardUtils;
+import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -196,7 +196,7 @@ public class NicknameType extends TextListType {
 	}
 
 	@Override
-	protected void doUnmarshalHtml(org.jsoup.nodes.Element element, List<String> warnings) {
-		addValue(HCardUtils.getElementValue(element));
+	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		addValue(element.value());
 	}
 }
