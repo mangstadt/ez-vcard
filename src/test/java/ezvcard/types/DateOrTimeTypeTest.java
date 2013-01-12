@@ -98,11 +98,11 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<date-and-or-time>" + expected + "</date-and-or-time>";
 		expectedXml += "</date>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -153,7 +153,7 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(expected));
@@ -199,11 +199,11 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<date-and-or-time>" + expected + "</date-and-or-time>";
 		expectedXml += "</date>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -249,11 +249,11 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>Sometime around ;1980;</text>";
 		expectedXml += "</date>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -306,7 +306,7 @@ public class DateOrTimeTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		String inputXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String inputXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		inputXml += "<date-and-or-time>1980-06-05</date-and-or-time>";
 		inputXml += "</date>";
 		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
@@ -317,7 +317,7 @@ public class DateOrTimeTypeTest {
 
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		inputXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		inputXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		inputXml += "<date-and-or-time>19800605</date-and-or-time>";
 		inputXml += "</date>";
 		input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
@@ -363,7 +363,7 @@ public class DateOrTimeTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		String inputXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String inputXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		inputXml += "<date-and-or-time>" + value + "</date-and-or-time>";
 		inputXml += "</date>";
 		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
@@ -410,7 +410,7 @@ public class DateOrTimeTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		String inputXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String inputXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		inputXml += "<date-and-or-time>Some ;text;.</date-and-or-time>";
 		inputXml += "</date>";
 		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));

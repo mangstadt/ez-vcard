@@ -84,11 +84,11 @@ public class TimestampTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<timestamp>19800605T131020Z</timestamp>";
 		expectedXml += "</date>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -118,7 +118,7 @@ public class TimestampTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new TimestampType("DATE");
-		String xml = "<date xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String xml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<timestamp>19800605T131020Z</timestamp>";
 		xml += "</date>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

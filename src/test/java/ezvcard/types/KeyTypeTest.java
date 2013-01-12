@@ -97,11 +97,11 @@ public class KeyTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<key xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>abc123</text>";
 		expectedXml += "</key>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<key xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -151,7 +151,7 @@ public class KeyTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new KeyType();
-		String xml = "<key xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String xml = "<key xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>abc123</text>";
 		xml += "</key>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

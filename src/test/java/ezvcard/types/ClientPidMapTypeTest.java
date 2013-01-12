@@ -70,13 +70,13 @@ public class ClientPidMapTypeTest {
 
 		ClientPidMapType t = new ClientPidMapType(1, "urn:uuid:1234");
 
-		String expectedXml = "<clientpidmap xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<clientpidmap xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<sourceid>1</sourceid>";
 		expectedXml += "<uri>urn:uuid:1234</uri>";
 		expectedXml += "</clientpidmap>";
 		Document expected = XmlUtils.toDocument(expectedXml);
 
-		Document actual = XmlUtils.toDocument("<clientpidmap xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actual = XmlUtils.toDocument("<clientpidmap xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actual);
 
 		t.marshalValue(element, version, warnings, compatibilityMode);
@@ -107,7 +107,7 @@ public class ClientPidMapTypeTest {
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 
-		String inputXml = "<clientpidmap xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String inputXml = "<clientpidmap xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		inputXml += "<sourceid>1</sourceid>";
 		inputXml += "<uri>urn:uuid:1234</uri>";
 		inputXml += "</clientpidmap>";

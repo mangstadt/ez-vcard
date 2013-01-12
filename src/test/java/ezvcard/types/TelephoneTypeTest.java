@@ -94,11 +94,11 @@ public class TelephoneTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>tel:+1 555-555-1234</uri>";
 		expectedXml += "</tel>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -186,7 +186,7 @@ public class TelephoneTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new TelephoneType();
-		String xml = "<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String xml = "<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>tel:+1 555-555-1234.</uri>";
 		xml += "</tel>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
@@ -195,7 +195,7 @@ public class TelephoneTypeTest {
 
 		version = VCardVersion.V4_0;
 		t = new TelephoneType();
-		xml = "<tel xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>+1 555-555-1234.</text>";
 		xml += "</tel>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

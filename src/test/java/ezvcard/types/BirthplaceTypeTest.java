@@ -85,11 +85,11 @@ public class BirthplaceTypeTest {
 		//text
 		BirthplaceType t = new BirthplaceType();
 		t.setText("Philadelphia, PA");
-		String expectedXml = "<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>Philadelphia, PA</text>";
 		expectedXml += "</birthplace>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -97,11 +97,11 @@ public class BirthplaceTypeTest {
 		//URI
 		t = new BirthplaceType();
 		t.setUri("geo:39.970806,-75.174809");
-		expectedXml = "<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>geo:39.970806,-75.174809</uri>";
 		expectedXml += "</birthplace>";
 		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -137,7 +137,7 @@ public class BirthplaceTypeTest {
 
 		//text
 		BirthplaceType t = new BirthplaceType();
-		String xml = "<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String xml = "<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>Philadelphia, PA</text>";
 		xml += "</birthplace>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
@@ -147,7 +147,7 @@ public class BirthplaceTypeTest {
 
 		//URI
 		t = new BirthplaceType();
-		xml = "<birthplace xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>geo:39.970806,-75.174809</uri>";
 		xml += "</birthplace>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

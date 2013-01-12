@@ -100,11 +100,11 @@ public class BinaryTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>http://example.com/image.jpg</uri>";
 		expectedXml += "</name>";
 		Document expected = XmlUtils.toDocument(expectedXml);
-		Document actual = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
@@ -154,12 +154,12 @@ public class BinaryTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<uri>data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) + "</uri>";
 		expectedXml += "</name>";
 		Document expected = XmlUtils.toDocument(expectedXml);
 
-		Document actual = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
@@ -293,7 +293,7 @@ public class BinaryTypeTest {
 		subTypes = new VCardSubTypes();
 		subTypes.setMediaType("image/jpeg");
 
-		String xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>http://example.com/image.jpg</uri>";
 		xml += "</name>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
@@ -309,7 +309,7 @@ public class BinaryTypeTest {
 		subTypes = new VCardSubTypes();
 		subTypes.setMediaType("image/jpeg");
 
-		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<uri>data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) + "</uri>";
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));

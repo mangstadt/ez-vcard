@@ -114,7 +114,7 @@ public class AddressTypeTest {
 		t.setPostalCode("12345");
 		t.setCountry("USA");
 
-		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<pobox>P.O. Box 1234</pobox>";
 		expectedXml += "<ext>Apt 11</ext>";
 		expectedXml += "<street>123 Main St</street>";
@@ -125,7 +125,7 @@ public class AddressTypeTest {
 		expectedXml += "</adr>";
 		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XmlUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 
@@ -141,7 +141,7 @@ public class AddressTypeTest {
 		t.setPostalCode("12345");
 		t.setCountry(null);
 
-		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<pobox>P.O. Box 1234</pobox>";
 		expectedXml += "<locality>Austin</locality>";
 		expectedXml += "<region>TX</region>";
@@ -149,7 +149,7 @@ public class AddressTypeTest {
 		expectedXml += "</adr>";
 		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XmlUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
@@ -157,11 +157,11 @@ public class AddressTypeTest {
 		//all nulls
 		t = new AddressType();
 
-		expectedXml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "</adr>";
 		expected = XmlUtils.toDocument(expectedXml);
 
-		actual = XmlUtils.toDocument("<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
@@ -298,7 +298,7 @@ public class AddressTypeTest {
 		Element element;
 
 		//all fields present
-		xml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<pobox>P.O. Box 1234</pobox>";
 		xml += "<ext>Apt 11</ext>";
 		xml += "<street>123 Main St</street>";
@@ -319,7 +319,7 @@ public class AddressTypeTest {
 		assertEquals("USA", t.getCountry());
 
 		//some missing fields
-		xml = "<adr xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<pobox>P.O. Box 1234</pobox>";
 		xml += "<locality>Austin</locality>";
 		xml += "<region>TX</region>";

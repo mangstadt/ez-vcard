@@ -103,13 +103,13 @@ public class TextListTypeTest {
 		t.addValue("Two");
 		t.removeValue("One and a half"); //test "removeValue"
 		t.addValue("Three");
-		String expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		String expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>One</text>";
 		expectedXml += "<text>Two</text>";
 		expectedXml += "<text>Three</text>";
 		expectedXml += "</name>";
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		Document actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -118,12 +118,12 @@ public class TextListTypeTest {
 		t = new TextListType("NAME", ',');
 		t.addValue("One");
 		t.addValue("Two");
-		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>One</text>";
 		expectedXml += "<text>Two</text>";
 		expectedXml += "</name>";
 		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -131,21 +131,21 @@ public class TextListTypeTest {
 		//one item
 		t = new TextListType("NAME", ',');
 		t.addValue("One");
-		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "<text>One</text>";
 		expectedXml += "</name>";
 		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//zero items
 		t = new TextListType("NAME", ',');
-		expectedXml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		expectedXml += "</name>";
 		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\" />");
+		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
 		t.marshalValue(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
@@ -201,7 +201,7 @@ public class TextListTypeTest {
 		String xml;
 
 		//three values
-		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>One</text>";
 		xml += "<text>Two</text>";
 		xml += "<text>Three</text>";
@@ -214,7 +214,7 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//two values
-		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>One</text>";
 		xml += "<text>Two</text>";
 		xml += "</name>";
@@ -226,7 +226,7 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//one value
-		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "<text>One</text>";
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
@@ -237,7 +237,7 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//zero values
-		xml = "<name xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\">";
+		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
