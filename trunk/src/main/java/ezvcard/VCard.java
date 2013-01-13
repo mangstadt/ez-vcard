@@ -15,6 +15,8 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import ezvcard.io.VCardWriter;
+import ezvcard.parameters.EmailTypeParameter;
+import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.AnniversaryType;
@@ -1890,10 +1892,14 @@ public class VCard implements Iterable<VCardType> {
 	 * vCard versions: 2.1, 3.0, 4.0
 	 * </p>
 	 * @param email the email address to add (e.g. "johndoe@aol.com")
+	 * @param types the type(s) to assign to the email
 	 * @return the type object that was created
 	 */
-	public EmailType addEmail(String email) {
+	public EmailType addEmail(String email, EmailTypeParameter... types) {
 		EmailType type = new EmailType(email);
+		for (EmailTypeParameter t : types) {
+			type.addType(t);
+		}
 		addEmail(type);
 		return type;
 	}
@@ -1937,10 +1943,15 @@ public class VCard implements Iterable<VCardType> {
 	 * </p>
 	 * @param telephoneNumber the telephone number to add (e.g.
 	 * "+1 555-555-5555")
+	 * @param types the type(s) to assign to the telephone number (e.g. "cell",
+	 * "work", etc)
 	 * @return the type object that was created
 	 */
-	public TelephoneType addTelephoneNumber(String telephoneNumber) {
+	public TelephoneType addTelephoneNumber(String telephoneNumber, TelephoneTypeParameter... types) {
 		TelephoneType type = new TelephoneType(telephoneNumber);
+		for (TelephoneTypeParameter t : types) {
+			type.addType(t);
+		}
 		addTelephoneNumber(type);
 		return type;
 	}
