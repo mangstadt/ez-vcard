@@ -281,7 +281,7 @@ public class VCardWriter implements Closeable {
 		typesToAdd.add(new TextType("BEGIN", "VCARD"));
 		typesToAdd.add(new TextType("VERSION", targetVersion.getVersion()));
 
-		for (VCardType type : vcard.getAllTypes()) {
+		for (VCardType type : vcard) {
 			if (addProdId && type instanceof ProdIdType) {
 				//do not add the PRODID in the vCard if "addProdId" is true
 				continue;
