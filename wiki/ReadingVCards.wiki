@@ -113,7 +113,7 @@ If your application does not require hCard parsing functionality, you can exclud
 
 Most of the functionality in the reader classes can be accessed from [http://mikeangstadt.name/ezvcard/latest/ezvcard/Ezvcard.html Ezvcard].  However, there are some exceptions.
 
-==CompatibilityMode==
+==!CompatibilityMode==
 
 [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/VCardReader.html VCardReader] and [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/XCardReader.html XCardReader] allow a `CompatibilityMode` to be specified using the `setCompatibilityMode()` method.  The idea behind `CompatibilityMode` was to provide a way of tweaking how a vCard is parsed based on what application generated the vCard (e.g. Outlook, GMail, etc).  However, this has proven to be of little use because the differences that do exist can generally be accounted for without needing to specify a `CompatibilityMode`.  `CompatibilityMode` may be removed in a future release.
 
@@ -124,7 +124,7 @@ vcr.setCompatibilityMode(CompatibilityMode.KDE_ADDRESS_BOOK);
 VCard vcard = vcr.readNext();
 }}}
 
-See the [CompatibilityMode] wiki page for more information.
+See the [CompatibilityModes] wiki page for more information.
 
 ==Streaming==
 

@@ -137,7 +137,7 @@ If your application does not require hCard writing functionality, you can exclud
 
 Most of the functionality in the writer classes can be accessed from [http://mikeangstadt.name/ezvcard/latest/ezvcard/Ezvcard.html Ezvcard].  However, there are some exceptions.
 
-==CompatibilityMode==
+==!CompatibilityMode==
 
 [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/VCardWriter.html VCardWriter] and [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/XCardDocument.html XCardDocument] allow a `CompatibilityMode` to be specified.  The idea behind `CompatibilityMode` was to provide a way of tweaking how a vCard is written based on the expected consumer of the vCard (e.g. Outlook, GMail, etc).  However, this has proven to be of little use because there doesn't appear to be many differences in how consumers parse vCards.  `CompatibilityMode` may be removed in a future release.
 
@@ -149,7 +149,7 @@ vcw.setCompatibilityMode(CompatibilityMode.KDE_ADDRESS_BOOK);
 vcw.write(vcard);
 }}}
 
-See the [CompatibilityMode] wiki page for more information.
+See the [CompatibilityModes] wiki page for more information.
 
 ==Streaming==
 
