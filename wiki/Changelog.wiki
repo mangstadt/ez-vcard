@@ -2,7 +2,7 @@
 #labels Featured
 
 = 0.7.0 =
-_January 13, 2012_
+_January 13, 2013_
 
  * It's the *Usability Update!*
   * Added a method chaining interface for reading/writing vCards (`Ezvcard` class).
