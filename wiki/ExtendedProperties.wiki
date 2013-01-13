@@ -1,22 +1,22 @@
 #summary Describes how to work with extended vCard properties
 
-The vCard standard allows for "extended" properties to exist in a vCard.  An extended property is simply a property whose name starts with "X-" and is not part of the vCard specification.  Many email clients make use of extended properties to store platform-specific data.
+The vCard standard allows for "extended" properties to exist in a vCard.  An extended property is a custom property whose name starts with "X-" and is not part of the vCard specification.  Many email clients make use of extended properties to store platform-specific data.
 
-|| *Note:*<br><br>The terms "type" and "property" are equivalent and are used interchangeably throughout the documentation and source code.  Both terms refer to a<br> vCard data entry, such as an email address or phone number. The 3.0 specs use the term "type", while the 2.1 and 4.0 specs use the term<br> "property".<br><br>Similarly, the terms "sub type" (from the 3.0 specs) and "parameter" (from the 2.1/4.0 specs) are equivalent.  They both refer to the<br> additional attributes that are attached to a type/property.||
+|| *Note:*<br><br>The terms "type" and "property" are equivalent and are used interchangeably throughout the documentation and API.  Both terms refer to a<br> vCard data entry, such as an email address or phone number. The 3.0 specs use the term "type", while the 2.1 and 4.0 specs use the term<br> "property".<br><br>Similarly, the terms "sub type" (from the 3.0 specs) and "parameter" (from the 2.1/4.0 specs) are equivalent.  They both refer to the<br> additional attributes that are attached to a type/property.||
 
 =Basic Usage=
 
-To retrieve extended properties from a `VCard` object by name, use the `getExtendedType()` method.  It returns a list of `RawType` objects.  Use the `RawType.getValue()` method to retrieve the value of the extended property.
+To retrieve extended properties from a `VCard` object, use the `getExtendedType(String)` method.  This will return a list of `RawType` objects.  Use the `RawType.getValue()` method to retrieve the value of the extended property.
 
 {{{
 VCard vcard = ...
-List<RawType> icq = vcard.getExtendedType("X-ICQ");
-for (RawType raw : icq){
-  System.out.println("ICQ handle: " + raw.getValue());
+List<RawType> managers = vcard.getExtendedType("X-MS-MANAGER");
+for (RawType manager : managers){
+  System.out.println("Manager: " + manager.getValue());
 }
 }}}
 
-A complete list of all the `VCard`'s extended properties can be retrieved using the `getExtendedTypes()` method.
+A complete list of all the `VCard`'s extended properties, indexed by name, can be retrieved using the `getExtendedTypes()` method.
 
 {{{
 VCard vcard = ...
@@ -31,21 +31,21 @@ for (List<VCardType> types : extendedTypes.values()){
 }
 }}}
 
-To add an extended property to a `VCard` object, create a new instance of the `RawType` class and pass it to the `addExtendedType()` method.
+To add an extended property to a `VCard` object, call the `addExtendedType(String, String)` method.  This method returns a `RawType` object representing the property that was added.  You can make further modifications to the property by modifying this object.
 
 {{{
 VCard vcard = new VCard();
-RawType raw = new RawType("X-ICQ", "123456789");
-vcard.addExtendedType(raw);
+RawType type = vcard.addExtendedType("X-SPOUSE", "Jane Doe");
+type.getSubTypes().put("X-GENDER", "female");
 }}}
 
 =Creating an extended type class=
 
-In addition to using the `RawType` class to directly get/set the value of an extended property, the programmer also can create an implementation of the `VCardType` class to marshal and unmarshal the property.  This is useful if the property value is in a format that requires some sort of special parsing.
+In addition to using the `RawType` class to get/set the value of an extended property, you can also can create an implementation of the `VCardType` class.  This is useful if the property value is in a format that requires some sort of special parsing.
 
 ==Example==
 
-The `FavColorsType` class below demonstrates how to create such a class.
+The `FavColorsType` class below demonstrates how to create such a class.  It stores a list of the person's favorite colors.
 
 {{{
 import ezvcard.*;
@@ -53,12 +53,14 @@ import ezvcard.io.*;
 import ezvcard.types.*;
 import ezvcard.util.*;
 import java.util.*;
+import javax.xml.namespace.QName;
 import org.w3c.dom.*;
 
 public class FavColorsType extends VCardType {
+  private static final QName qname = new QName("http://fav-colors.net", "fav-colors");
   private List<String> favColors = new ArrayList<String>();
 
-  //default constructor required!
+  //default constructor required
   public FavColorsType(){
     super("X-FAV-COLORS");
   }
@@ -71,18 +73,15 @@ public class FavColorsType extends VCardType {
     favColors.add(color);
   }
   
-  //gets the "LANGUAGE" parameter
   public String getLanguage() {
   	return subTypes.getLanguage();
   }
   
-  //sets the "LANGUAGE" parameter
   public void setLanguage(String language) {
     subTypes.setLanguage(language);
   }
   
-  //use of this method is optional
-  //it is used to tweak the property's parameters when they are marshalled
+  //modifies the property's parameters before the property is written
   @Override
   protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
     if (version == VCardVersion.V2_1){
@@ -90,58 +89,81 @@ public class FavColorsType extends VCardType {
     }
   }
 
+  //writes the property value to a plain-text vCard
   @Override
   protected void doMarshalValue(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
     if (!favColors.isEmpty()) {
-      for (String color : favColors) {
-        //Microsoft uses "azure" instead of "blue"
-        if (compatibilityMode == CompatibilityMode.MS_OUTLOOK && "blue".equals(color)){
-          color = "azure";
-        } else if ("pink".equals(color)){
-          throw new SkipMeException("This property will not be marshalled because pink is for girls.");
-        }
-        value.append(VCardStringUtils.escapeText(color)).append(',');
+      for (String color : sanitizeColors(compatibilityMode)) {
+        value.append(VCardStringUtils.escape(color)).append(',');
       }
-      value.deleteCharAt(value.length() - 1); //chomp last comma
+      value.deleteCharAt(value.length() - 1); //remove last comma
     }
   }
 
+  //parses the property's value from a plain-text vCard
   @Override
   protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+    favColors.clear();
     String split[] = VCardStringUtils.splitBy(value, ',', true, true);
-    favColors = new ArrayList<String>(Arrays.asList(split));
+    favColors.addAll(Arrays.asList(split));
     if (favColors.contains("periwinkle") && version == VCardVersion.V4_0){
       warnings.add("Periwinkle is deprecated in vCard 4.0.");
     }
   }
   
-  //optional, for marshalling/unmarshalling XML-encoded vCards (called "xCards")
+  //the XML namespace and element name to use when reading/writing from/to an XML document
   @Override
-  public String getXmlNamespace() {
-    return "http://fav-colors.net";
+  public QName getQName() {
+    return qname;
   }
   
-  //optional, for marshalling an XML-encoded vCard (called an "xCard")
+  //writes the property to an XML document
   @Override
-  protected void doMarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-    for (String color : favColors) {
-      //Microsoft uses "azure" instead of "blue"
-      if (compatibilityMode == CompatibilityMode.MS_OUTLOOK && color.equals("blue")){
-        color = "azure";
-      }
-      XCardUtils.appendChild(element, "color", color, getXmlNamespace());
+  protected void doMarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+    Element theElement = element.getElement();
+    for (String color : sanitizeColors(compatibilityMode)) {
+      Element colorElement = theElement.getOwnerDocument().createElementNS(qname.getNamespaceURI(), "color");
+      theElement.appendChild(colorElement);
     }
   }
   
-  //optional, for unmarshalling an XML-encoded vCard (called an "xCard")
+  //parses the property from an XML document
   @Override
-  protected void doUnmarshalValue(Element element, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+  protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
     favColors.clear();
-    NodeList nl = element.getElementsByTagNameNS(getXmlNamespace(), "color");
-    List<Element> colorElements = XCardUtils.toElementList(nl);
+    NodeList nl = element.getElement().getElementsByTagNameNS(qname.getNamespaceURI(), "color");
+    List<Element> colorElements = XmlUtils.toElementList(nl);
     for (Element colorElement : colorElements) {
       favColors.add(colorElement.getTextContent());
     }
+    if (favColors.contains("periwinkle")){
+      warnings.add("Periwinkle is deprecated in vCard 4.0.");
+    }
+  }
+  
+  //parses the property value from an HTML page
+  @Override
+  protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+    String lang = element.attr("lang");
+    setLanguage((lang.length() == 0) ? null : lang);
+    
+    favColors.clear();
+    favColors.addAll(element.allValues("color")); //gets the hCard values of all descendant elements that have a CSS class named "color"
+  }
+  
+  private List<String> sanitizeColors(CompatibilityMode compatibilityMode){
+    List<String> colors = new ArrayList<String>(favColors.size());
+    for (String color : favColors) {
+      if (compatibilityMode == CompatibilityMode.MS_OUTLOOK && "blue".equals(color)){
+        //Microsoft uses "azure" instead of "blue"
+        color = "azure";
+      } else if ("apple".equals(color)){
+        //this exception will prevent the property from being written to the vCard
+        throw new SkipMeException("This property will not be marshalled because \"apple\" is not a color.");
+      }
+      colors.add(color);
+    }
+    return colors; 
   }
 }
 }}}
@@ -150,17 +172,19 @@ Below is a description of each method in the class:
 
 ===Constructor===
 
-The constructor calls the parent class constructor, passing in the name of the property.  Extended property names MUST begin with "X-".  The extended parameter class *MUST define a public, no-arg constructor*.
+The constructor calls the parent class constructor, passing in the name of the property.  Extended property names MUST begin with "X-".  The extended property class *MUST define a public, no-arg constructor*.
 
 ===doMarshalSubTypes===
 
-The `doMarshalSubTypes()` method allows the property's parameters (aka "sub types") to be tweaked before being marshalled.  Modifications are made to the `VCardSubTypes` object that is passed into the method.  This object is a copy of the property's parameters (stored in the `VCardType.subTypes` field).  In the above example, the "LANGUAGE" parameter is removed if the version of the generated vCard is 2.1.
+The `doMarshalSubTypes()` method allows the property's parameters (aka "sub types") to be tweaked before the property is marshalled.  Modifications can safely be made to the `VCardSubTypes` object that is passed into the method because it is a _copy_ of the property's parameters (which are stored in the `VCardType.subTypes` field).
+
+In the above example, the "LANGUAGE" parameter is removed if the version of the generated vCard is 2.1.
 
 ===doMarshalValue(!StringBuilder value, ...)===
 
-The first `doMarshalValue()` method is used with text-based vCards (the most common type of vCard).  This method is abstract and must be implemented.  It creates the raw property value that will be included in the final vCard.  The value is appended to the `StringBuilder` object that is passed into the method.
+The `doMarshalValue(!StringBuilder value, ...)` method is used to write the property value to a plain-text vCard (the most common type of vCard).  This method is abstract and must be implemented.  The value is appended to the `StringBuilder` object that is passed into the method.
 
-It is recommended that all special vCard characters be escaped in order to be consistent with the vCard standard.  These special characters are: comma, semicolon, and backslash.  The `VCardStringUtils.escapeText()` method can be used to safely escape these special characters.
+It is recommended that all special vCard characters be escaped in order to be consistent with the vCard standard.  These special characters are: comma, semicolon, and backslash.  The `VCardStringUtils.escape()` method can be used to safely escape these special characters.  Newlines are also special characters, but they do not need to be escaped in this method (they are escaped in the `VCardWriter` class).
 
 Warning messages can be added to the `warnings` list if any problems occurred during the marshalling process.
 
@@ -168,93 +192,106 @@ The `CompatibilityMode` object defines the expected consumer of the vCard and ca
 
 If it is determined that the property should NOT be included in the vCard, a `SkipMeException` can be thrown.  This exception will prevent the marshaller from adding the property to the final vCard string.  The exception message will be logged as a warning.  Warnings can be retrieved using the `VCardWriter.getWarnings()` method.
 
-This method is not responsible for newline escaping or line folding.  These things are handled by the `VCardWriter` class.
+This method is *not* responsible for line folding.  This is handled by the `VCardWriter` class.
 
-An example of a marshalled X-FAV-COLORS property:
+An example of a marshalled `X-FAV-COLORS` property is below:
 
-`X-FAV-COLORS:red,green,azure`
+`X-FAV-COLORS;LANGUAGE=en:red,green,azure`
 
 ===doUnmarshalValue(String value, ...)===
 
-The first `doUnmarshalValue()` method is used with text-based vCards (the most common type of vCard).  This method is abstract and must be implemented.  It allows the programmer to take the raw property value from the vCard and parse it however he or she wishes.  In the example above, the value is split by comma and saved to a `List` object.  The `VCardStringUtils.splitBy()` method is an enhanced splitting function that takes escaped characters into account (see the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/VCardStringUtils.html Javadocs] for more details).
+The `doUnmarshalValue(String value, ...)` method is used to read the property value from a plain-text vCard (the most common type of vCard).  This method is abstract and must be implemented.  In the example above, the value is split by comma and saved to a `List` object.  The `VCardStringUtils.splitBy()` method is an enhanced splitting function that takes escaped characters into account (see the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/VCardStringUtils.html Javadocs] for more details).
 
-The property's parameters (aka "sub types") are parsed BEFORE `doUnmarshalValue()` is called.  They are saved to the protected `subTypes` field, defined in the parent `VCardType` class.
+The property's parameters (aka "sub types") are parsed before `doUnmarshalValue()` is called.  They can be accessed from the protected `subTypes` field, defined in the parent `VCardType` class.
 
-The `VCardVersion` argument defines the version of the vCard that is being parsed.  If a 2.1 vCard is being parsed, then this MAY be null, as the 2.1 specs don't require the version number to be located at the top of the vCard file.
+The `VCardVersion` argument defines the version of the vCard that is being parsed.  If a 2.1 vCard is being parsed, then this MAY be null, as the 2.1 specification doesn't require the version number to be located at the top of the vCard file.
 
 Warning messages can be added to the `warnings` list if any problems occurred during the unmarshalling process.
 
 The `CompatibilityMode` argument defines the application that generated the vCard and can be used to customize the unmarshalling of the property value.  It is set with the `VCardReader.setCompatibilityMode()` method.  Its default value is `CompatibilityMode.RFC`.
 
-If it is determined that the property should NOT be unmarshalled into the resultant `VCard` object, a `SkipMeException` can be thrown.  This will prevent the unmarshaller from adding the property to the unmarshalled `VCard` object.  The exception message will be logged as a warning.  Warnings can be retrieved using the `VCardReader.getWarnings()` method.
+If it is determined that the property should NOT be unmarshalled into the `VCard` object, a `SkipMeException` can be thrown.  This will prevent the reader from adding the property to the unmarshalled `VCard` object.  The exception message will be logged as a warning.  Warnings can be retrieved using the `VCardReader.getWarnings()` method.
 
-===getXmlNamespace()===
+===getQName()===
 
-The `getXmlNamespace()` method defines the XML namespace that should be used when dealing with XML-encoded vCards (called "xCards").  If this method is not overridden, then the default xCard namespace will be used.
+The `getQName()` method defines the namespace and element name of the property's XML element for XML-encoded vCards ("xCards").  If this method is not overridden, then the namespace will default to the xCard namespace and the element name will default to the property's type name, converted to lower-case.
 
-===doMarshalValue(Element element, ...)===
+===doMarshalValue(XCardElement element, ...)===
 
-The second `doMarshalValue()` method is used with XML-based vCards (called "xCards").  The first parameter to this method is the element which represents the vCard property.  The element's name is based on the property name passed into the super constructor.  The element's namespace is retrieved from the `getXmlNamespace()` method.  So in this example, the element would be called "x-fav-colors" and have a namespace of "http://fav-colors.net".
-
-Child elements can then be appended to this element.  The `XCardUtils` class contains helper methods for doing this, or they can be added to the `Element` object directly.
+The `doMarshalValue(XCardElement element, ...)` method is used to write the property to an XML document ("xCard").  The `XCardElement` parameter is the element which contains the vCard property.  It is a wrapper class that contains xCard-specific functionality.  Since this is an extended property class, you will most likely want to work with the raw `org.w3c.dom.Element` object.  To retrieve this, call the `getElement()` method.
 
 Warning messages can be added to the `warnings` list if any problems occurred during the marshalling process.
 
 The `CompatibilityMode` object defines the expected consumer of the vCard and can be used to customize the marshalling of the property value.  It is set with the `XCardDocument.setCompatibilityMode()` method.  Its default value is `CompatibilityMode.RFC`.
 
-If it is determined that the property should NOT be included in the vCard, a `SkipMeException` can be thrown.  This exception will prevent the marshaller from adding the property to the final XML document.  The exception message will be logged as a warning.  Warnings can be retrieved using the `XCardDocument.getWarnings()` method.
+If it is determined that the property should NOT be included in the vCard, a `SkipMeException` can be thrown.  This exception will prevent the writer from adding the property to the XML document.  The exception message will be logged as a warning.  Warnings can be retrieved using the `XCardDocument.getWarnings()` method.
 
-An example of a marshalled X-FAV-COLORS property:
+An example of a marshalled `X-FAV-COLORS` property is below:
 
 {{{
-<x-fav-colors xmlns="http://fav-colors.net">
+<fav-colors xmlns="http://fav-colors.net">
+  <parameters xmlns="urn:ietf:params:xml:ns:vcard-4.0">
+    <language>
+      <language-tag>en-US</language-tag>
+    </language>
+  </parameters>
   <color>red</color>
   <color>green</color>
   <color>azure</color>
-</x-fav-colors>
+</fav-colors>
 }}}
 
-===doUnmarshalValue(Element element, ...)===
+===doUnmarshalValue(XCardElement element, ...)===
 
-The second `doUnmarshalValue()` method is used with XML-based vCards (called "xCards").  The first parameter to this method is the element which contains the value of the vCard property.
+The `doUnmarshalValue(XCardElement element, ...)` method is used to parse a property from an XML document ("xCard").  The `XCardElement` parameter is the element which contains the vCard property.  It is a wrapper class that contains xCard-specific functionality.  Since this is an extended property class, you will most likely want to work with the raw `org.w3c.dom.Element` object.  To retrieve this, call the `getElement()` method.
 
-The property's parameters (aka "sub types") are parsed BEFORE `doUnmarshalValue()` is called.  They are saved to the protected `subTypes` field, defined in the parent `VCardType` class.  Their corresponding XML elements are REMOVED from the property element before the property element is passed into the method.
-
-The `VCardVersion` argument defines the version of the vCard that is being parsed.  This will always be "4.0" because this is the only version that supports XML-encoded vCards.
+The property's parameters (aka "sub types") are parsed before `doUnmarshalValue()` is called.  They can be accessed from the protected `subTypes` field, defined in the parent `VCardType` class.  The XML elements that the properties are stored in are removed from the `XCardElement` object before `doUnmarshalValue()` is called.
 
 Warning messages can be added to the `warnings` list if any problems occurred during the unmarshalling process.
 
-The `CompatibilityMode` argument defines the application that generated the vCard and can be used to customize the unmarshalling of the property value.  It is set with the `XCardReader.setCompatibilityMode()` method.  Its default value is `CompatibilityMode.RFC`.
+The `CompatibilityMode` argument defines the application that generated the vCard and can be used to customize the parsing of the property value.  It is set with the `XCardReader.setCompatibilityMode()` method.  Its default value is `CompatibilityMode.RFC`.
 
-If it is determined that the property should NOT be unmarshalled into the resultant `VCard` object, a `SkipMeException` can be thrown.  This will prevent the unmarshaller from adding the property to the unmarshalled `VCard` object.  The exception message will be logged as a warning.  Warnings can be retrieved using the `XCardReader.getWarnings()` method.
+If it is determined that the property should NOT be unmarshalled into the resultant `VCard` object, a `SkipMeException` can be thrown.  This will prevent the reader from adding the property to the unmarshalled `VCard` object.  The exception message will be logged as a warning.  Warnings can be retrieved using the `XCardReader.getWarnings()` method.
+
+===doUnmarshalHtml(HCardElement element, ...)===
+
+The `doUnmarshalHtml(HCardElement element, ...)` method is used to parse a property from an HTML document ("hCard").  The `HCardElement` object represents the HTML element that contains the vCard property.
+
+Unlike plain-text and XML vCards, the vCard parameters of HTML-encoded properties cannot be parsed automatically.  They must be parsed from inside of this method.
+
+Warning messages can be added to the `warnings` list if any problems occurred during the unmarshalling process.
 
 ==Usage==
 
 ===Reading===
 
-Before a vCard is parsed, the extended property class must be added to the `VCardReader` or `XCardReader` object with the `registerExtendedType()` method.  Then, once a vCard has been read, the instances of the extended property can be retrieved using the `VCard.getExtendedType()` method.
+Before a vCard is parsed, the extended property class must be registered with the reader object.  Then, once a vCard has been read, the instances of the extended property can be retrieved using the `VCard.getExtendedType(Class<? extends VCardType>)` method.
 
 {{{
-//plain text vCards
+//using "Ezvcard" class
+Reader reader = ...
+VCard vcard = Ezvcard.parse(reader).register(FavColorsType.class).first();
+reader.close();
+
+List<FavColorsType> favColorsTypes = vcard.getExtendedType(FavColorsType.class);
+}}}
+
+{{{
+//using reader class
 Reader reader = ...
 VCardReader vcr = new VCardReader(reader);
 vcr.registerExtendedType(FavColorsType.class);
 VCard vcard = vcr.readNext();
 reader.close();
 
-//XML-encoded vCards
-reader = ...
-XCardReader xcr = new XCardReader(reader);
-xcr.registerExtendedType(FavColorsType.class);
-vcard = xcr.readNext();
-reader.close();
-
 List<FavColorsType> favColorsTypes = vcard.getExtendedType(FavColorsType.class);
 }}}
 
+See the [ReadingVCards Reading vCards] wiki page for more information on how to read a vCard.
+
 ===Writing===
 
-To add an instance of an extended property class to a `VCard`, the instance is passed into the `VCard.addExtendedType()` method.  Unlike `VCardReader` and `XCardReader`, no registration of the extended property class is required.
+To add an instance of an extended property class to a `VCard`, call the `VCard.addExtendedType(VCardType)` method.  No registration of the extended property class is required for writing.
 
 {{{
 VCard vcard = new VCard();
@@ -264,16 +301,9 @@ favColors.addFavColor("green");
 favColors.addFavColor("yellow");
 vcard.addExtendedType(favColors);
 
-//plain text vCards
 Writer writer = ...
-VCardWriter vcw = new VCardWriter(writer);
-vcw.write(vcard);
-writer.close();
-
-//XML-encoded vCards
-writer = ...
-XCardDocument xcardDoc = new XCardDocument();
-xcardDoc.addVCard(vcard);
-xcardDoc.write(writer);
+Ezvcard.write(vcard).go(writer);
 writer.close();
 }}}
+
+See the [WritingVCards Writing vCards] wiki page for more information on how to write a vCard.

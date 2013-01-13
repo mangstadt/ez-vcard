@@ -1,6 +1,23 @@
 #summary Documents all the changes that were made to every version of the library
 #labels Featured
 
+= 0.7.0 =
+_January 13, 2012_
+
+ * It's the *Usability Update!*
+  * Added a method chaining interface for reading/writing vCards (`Ezvcard` class).
+  * Added convenience constructors to `KeyType`, `LogoType`, `PhotoType`, and `SoundType` classes for getting the binary data from a `File` or `InputStream` object (in addition to the original `byte` array).
+  * Added convenience constructors to the reader classes so that the vCards can be read from a `String`, `File`, or `InputStream` (in addition the original `Reader`).
+  * Added convenience methods to the writer classes so that the vCards can be written to a `String`, `File`, or `OutputStream` (in addition the original `Writer`).
+  * Added convenience methods to the `VCard` class to make it easier to add certain basic properties.  For example, to set the `FN` property, a `String` can be passed into the `setFormattedName()` method instead of a `FormattedNameType` object.
+  * Added the `Iterable` interface to the `VCard` class, which allows you to iterate over each of the properties in the vCard.
+  * Added the `VCard.getAllTypes()` method to get all properties in the vCard.
+ * Added support for pretty-printing xCard XML documents.
+ * Made xCard parsing more flexible by allowing the xCard XML element to exist anywhere inside the XML document.
+ * Fixed namespace-related bugs in the xCard parsing code.
+ * Fixed how newlines are encoded in 2.1 vCards: property values that contain newlines are now "quoted-printable" encoded (see Issue 3).
+ * Deprecated the `get/setCompatibilityMode()` methods on the readers/writers.
+ 
 = 0.6.0 =
 _December 12, 2012_
 
