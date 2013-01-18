@@ -188,12 +188,12 @@ public class LanguageType extends TextType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		parent.append("language-tag", getValue());
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setValue(element.get("language-tag"));
 	}
 }

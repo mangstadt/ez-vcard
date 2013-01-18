@@ -110,7 +110,7 @@ public class TimezoneTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		expectedValue = "-05:30";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertNull(subTypes.getValue());
@@ -118,7 +118,7 @@ public class TimezoneTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		expectedValue = "-05:30";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertNull(subTypes.getValue());
@@ -126,7 +126,7 @@ public class TimezoneTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		expectedValue = "-05:30";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.UTC_OFFSET, subTypes.getValue());
@@ -139,7 +139,7 @@ public class TimezoneTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//just text======
@@ -148,7 +148,7 @@ public class TimezoneTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		expectedValue = "America/New_York";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -156,7 +156,7 @@ public class TimezoneTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		expectedValue = "America/New_York";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -164,7 +164,7 @@ public class TimezoneTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		expectedValue = "America/New_York";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -177,7 +177,7 @@ public class TimezoneTypeTest {
 		expectedDoc = XmlUtils.toDocument(expectedXml);
 		actualDoc = XmlUtils.toDocument("<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//offset and text=====
@@ -186,7 +186,7 @@ public class TimezoneTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		expectedValue = "-05:30;America/New_York";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -194,7 +194,7 @@ public class TimezoneTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		expectedValue = "-05:30;America/New_York";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -202,7 +202,7 @@ public class TimezoneTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		expectedValue = "America/New_York";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -215,7 +215,7 @@ public class TimezoneTypeTest {
 		expectedDoc = XmlUtils.toDocument(expectedXml);
 		actualDoc = XmlUtils.toDocument("<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//no offset, no text====
@@ -224,7 +224,7 @@ public class TimezoneTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		try {
-			actualValue = t.marshalValue(version, warnings, compatibilityMode);
+			actualValue = t.marshalText(version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -233,7 +233,7 @@ public class TimezoneTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		try {
-			actualValue = t.marshalValue(version, warnings, compatibilityMode);
+			actualValue = t.marshalText(version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -242,7 +242,7 @@ public class TimezoneTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		try {
-			actualValue = t.marshalValue(version, warnings, compatibilityMode);
+			actualValue = t.marshalText(version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -253,7 +253,7 @@ public class TimezoneTypeTest {
 		actualDoc = XmlUtils.toDocument("<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
 		try {
-			t.marshalValue(element, version, warnings, compatibilityMode);
+			t.marshalXml(element, version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -270,7 +270,7 @@ public class TimezoneTypeTest {
 
 		//offset
 		t = new TimezoneType();
-		t.unmarshalValue(subTypes, "-05:30", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "-05:30", version, warnings, compatibilityMode);
 		assertEquals(Integer.valueOf(-5), t.getHourOffset());
 		assertEquals(Integer.valueOf(30), t.getMinuteOffset());
 		assertNull(t.getText());
@@ -278,7 +278,7 @@ public class TimezoneTypeTest {
 		//text
 		version = VCardVersion.V2_1;
 		t = new TimezoneType();
-		t.unmarshalValue(subTypes, "America/New_York", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "America/New_York", version, warnings, compatibilityMode);
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals("America/New_York", t.getText());
@@ -286,7 +286,7 @@ public class TimezoneTypeTest {
 		//text that starts with offset
 		version = VCardVersion.V2_1;
 		t = new TimezoneType();
-		t.unmarshalValue(subTypes, "-05:30; EST; America/New_York", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "-05:30; EST; America/New_York", version, warnings, compatibilityMode);
 		assertEquals(Integer.valueOf(-5), t.getHourOffset());
 		assertEquals(Integer.valueOf(30), t.getMinuteOffset());
 		assertEquals("; EST; America/New_York", t.getText());

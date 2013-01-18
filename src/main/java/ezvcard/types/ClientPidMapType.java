@@ -158,12 +158,12 @@ public class ClientPidMapType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		sb.append(pid + ";" + VCardStringUtils.escape(uri));
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String split[] = value.split(";", 2);
 		if (split.length < 2) {
 			warnings.add("Incorrect format of " + NAME + " type value: \"" + value + "\"");
@@ -174,7 +174,7 @@ public class ClientPidMapType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			parent.appendUri(uri);
 		}
@@ -184,7 +184,7 @@ public class ClientPidMapType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		uri = element.getUri();
 
 		String value = element.get("sourceid");

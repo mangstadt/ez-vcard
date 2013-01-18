@@ -60,7 +60,7 @@ public class TextTypeTest {
 
 		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 		expected = "This is a test of the TextType.\nOne\\, two\\, three\\; and \\\\four\\\\."; //newlines are escaped in the VCardWriter
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 
@@ -83,7 +83,7 @@ public class TextTypeTest {
 
 		actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
 	}
@@ -98,7 +98,7 @@ public class TextTypeTest {
 		String expected, actual;
 
 		t = new TextType("NAME");
-		t.unmarshalValue(subTypes, "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.", version, warnings, compatibilityMode);
 		expected = "This is a test of the TextType." + newline + "One, two, three; and \\four\\.";
 		actual = t.getValue();
 		assertEquals(expected, actual);
@@ -120,7 +120,7 @@ public class TextTypeTest {
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextType("NAME");
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
 		actual = t.getValue();
 		assertEquals(expected, actual);

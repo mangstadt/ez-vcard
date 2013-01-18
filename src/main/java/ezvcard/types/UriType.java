@@ -56,12 +56,12 @@ public class UriType extends TextType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setValue(element.getUri());
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		parent.appendUri(getValue());
 	}
 

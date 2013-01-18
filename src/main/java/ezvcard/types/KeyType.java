@@ -240,19 +240,19 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			sb.append(VCardStringUtils.escape(text));
 		} else {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
 				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");
 			}
-			super.doMarshalValue(sb, version, warnings, compatibilityMode);
+			super.doMarshalText(sb, version, warnings, compatibilityMode);
 		}
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			parent.appendText(text);
 		} else {
@@ -260,15 +260,15 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
 				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");
 			}
-			super.doMarshalValue(parent, warnings, compatibilityMode);
+			super.doMarshalXml(parent, warnings, compatibilityMode);
 		}
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.getUri();
 		if (value != null) {
-			super.doUnmarshalValue(value, element.getVersion(), warnings, compatibilityMode);
+			super.doUnmarshalText(value, element.getVersion(), warnings, compatibilityMode);
 		} else {
 			value = element.getText();
 			if (value != null) {

@@ -62,7 +62,7 @@ public class DeathplaceTypeTest {
 		//text
 		DeathplaceType t = new DeathplaceType();
 		t.setText("Mount St. Helens");
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals("Mount St. Helens", actual);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -70,7 +70,7 @@ public class DeathplaceTypeTest {
 		//URI
 		t = new DeathplaceType();
 		t.setUri("geo:46.176502,-122.191658");
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals("geo:46.176502\\,-122.191658", actual);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -91,7 +91,7 @@ public class DeathplaceTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//URI
@@ -103,7 +103,7 @@ public class DeathplaceTypeTest {
 		expectedDoc = XmlUtils.toDocument(expectedXml);
 		actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -116,14 +116,14 @@ public class DeathplaceTypeTest {
 
 		//text
 		DeathplaceType t = new DeathplaceType();
-		t.unmarshalValue(subTypes, "Mount St. Helens", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "Mount St. Helens", version, warnings, compatibilityMode);
 		assertEquals("Mount St. Helens", t.getText());
 		assertNull(t.getUri());
 
 		//URI
 		t = new DeathplaceType();
 		subTypes.setValue(ValueParameter.URI);
-		t.unmarshalValue(subTypes, "geo:46.176502\\,-122.191658", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "geo:46.176502\\,-122.191658", version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:46.176502,-122.191658", t.getUri());
 	}
@@ -141,7 +141,7 @@ public class DeathplaceTypeTest {
 		xml += "<text>Mount St. Helens</text>";
 		xml += "</deathplace>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Mount St. Helens", t.getText());
 		assertNull(t.getUri());
 
@@ -151,7 +151,7 @@ public class DeathplaceTypeTest {
 		xml += "<uri>geo:46.176502,-122.191658</uri>";
 		xml += "</deathplace>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:46.176502,-122.191658", t.getUri());
 	}

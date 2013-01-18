@@ -79,17 +79,17 @@ public class RawType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		sb.append(value);
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		this.value = value;
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		Element theElement = element.getElement();
 		Element child = XmlUtils.getFirstChildElement(theElement);
 		if (child == null) {

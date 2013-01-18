@@ -253,13 +253,13 @@ public class XCardReader implements IParser {
 		type.setGroup(group);
 		try {
 			try {
-				type.unmarshalValue(subTypes, element, version, warningsBuf, compatibilityMode);
+				type.unmarshalXml(subTypes, element, version, warningsBuf, compatibilityMode);
 			} catch (UnsupportedOperationException e) {
 				//type class does not support xCard
 				warningsBuf.add("Type class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property.");
 				type = new XmlType();
 				type.setGroup(group);
-				type.unmarshalValue(subTypes, element, version, warningsBuf, compatibilityMode);
+				type.unmarshalXml(subTypes, element, version, warningsBuf, compatibilityMode);
 			}
 			addToVCard(type, vcard);
 		} catch (SkipMeException e) {

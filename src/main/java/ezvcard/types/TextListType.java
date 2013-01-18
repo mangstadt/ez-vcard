@@ -80,7 +80,7 @@ public class TextListType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (!values.isEmpty()) {
 			for (String value : values) {
 				value = VCardStringUtils.escape(value);
@@ -92,18 +92,18 @@ public class TextListType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String split[] = VCardStringUtils.splitBy(value, separator, true, true);
 		values = new ArrayList<String>(Arrays.asList(split));
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		parent.append("text", values);
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		values.clear();
 		values.addAll(element.getAll("text"));
 	}

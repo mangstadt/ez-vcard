@@ -272,7 +272,7 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (getLatitude() == null || getLongitude() == null) {
 			throw new SkipMeException("Latitude and/or longitude is missing.");
 		}
@@ -288,7 +288,7 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		try {
 			//4.0 syntax: GEO;VALUE=uri:geo:12,23
 			uri = new GeoUri(value);
@@ -327,17 +327,17 @@ public class GeoType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
-		doMarshalValue(sb, parent.getVersion(), warnings, compatibilityMode);
+		doMarshalText(sb, parent.getVersion(), warnings, compatibilityMode);
 		parent.appendUri(sb.toString());
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.getUri();
 		if (value != null) {
-			doUnmarshalValue(value, element.getVersion(), warnings, compatibilityMode);
+			doUnmarshalText(value, element.getVersion(), warnings, compatibilityMode);
 		}
 	}
 

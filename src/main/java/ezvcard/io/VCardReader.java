@@ -244,7 +244,7 @@ public class VCardReader implements Closeable, IParser {
 				//unmarshal the text string into the object
 				warningsBuf.clear();
 				try {
-					type.unmarshalValue(subTypes, value, version, warningsBuf, compatibilityMode);
+					type.unmarshalText(subTypes, value, version, warningsBuf, compatibilityMode);
 
 					//add to vcard
 					if (type instanceof LabelType) {

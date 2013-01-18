@@ -145,7 +145,7 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (url != null) {
 			sb.append(url);
 		} else if (vcard != null) {
@@ -156,7 +156,7 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (subTypes.getValue() != null) {
 			setUrl(VCardStringUtils.unescape(value));
 		} else {

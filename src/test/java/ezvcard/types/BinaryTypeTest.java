@@ -71,7 +71,7 @@ public class BinaryTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		expectedValue = "http://example.com/image.jpg";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URL, subTypes.getValue());
@@ -81,7 +81,7 @@ public class BinaryTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		expectedValue = "http://example.com/image.jpg";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -91,7 +91,7 @@ public class BinaryTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		expectedValue = "http://example.com/image.jpg";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -106,7 +106,7 @@ public class BinaryTypeTest {
 		Document expected = XmlUtils.toDocument(expectedXml);
 		Document actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
 
@@ -125,7 +125,7 @@ public class BinaryTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		expectedValue = Base64.encodeBase64String(dummyData);
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(EncodingParameter.BASE64, subTypes.getEncoding());
@@ -135,7 +135,7 @@ public class BinaryTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		expectedValue = Base64.encodeBase64String(dummyData);
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(EncodingParameter.B, subTypes.getEncoding());
@@ -145,7 +145,7 @@ public class BinaryTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		expectedValue = "data:image/jpeg;base64," + Base64.encodeBase64String(dummyData);
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertNull(subTypes.getEncoding());
@@ -161,7 +161,7 @@ public class BinaryTypeTest {
 
 		Document actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
 	}
@@ -185,7 +185,7 @@ public class BinaryTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		expectedValue = "http://example.com/image.aaa";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URL, subTypes.getValue());
@@ -195,7 +195,7 @@ public class BinaryTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		expectedValue = "http://example.com/image.aaa";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -205,7 +205,7 @@ public class BinaryTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		expectedValue = "http://example.com/image.aaa";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -226,7 +226,7 @@ public class BinaryTypeTest {
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
 		subTypes.setValue(ValueParameter.URL);
-		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
 		assertNull(t.getData());
 		assertNull(t.getContentType());
@@ -234,7 +234,7 @@ public class BinaryTypeTest {
 		//no VALUE
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
-		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
 		assertNull(t.getData());
 		assertNull(t.getContentType());
@@ -244,7 +244,7 @@ public class BinaryTypeTest {
 		subTypes = new VCardSubTypes();
 		subTypes.setType(ImageTypeParameter.JPEG.getValue());
 		subTypes.setEncoding(EncodingParameter.B);
-		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
 		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
@@ -254,7 +254,7 @@ public class BinaryTypeTest {
 		subTypes = new VCardSubTypes();
 		subTypes.setType(ImageTypeParameter.JPEG.getValue());
 		subTypes.setEncoding(EncodingParameter.BASE64);
-		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
 		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
@@ -263,7 +263,7 @@ public class BinaryTypeTest {
 		//no type
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
-		t.unmarshalValue(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
 		assertNull(t.getContentType());
@@ -273,7 +273,7 @@ public class BinaryTypeTest {
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
 		subTypes.setMediaType("image/jpeg");
-		t.unmarshalValue(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "http://example.com/image.jpg", version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
 		assertNull(t.getData());
 		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
@@ -282,7 +282,7 @@ public class BinaryTypeTest {
 		version = VCardVersion.V4_0;
 		t = new BinaryTypeImpl();
 		subTypes = new VCardSubTypes();
-		t.unmarshalValue(subTypes, "data:image/jpeg;base64," + Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "data:image/jpeg;base64," + Base64.encodeBase64String(dummyData), version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
 		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
@@ -298,7 +298,7 @@ public class BinaryTypeTest {
 		xml += "</name>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
 		assertNull(t.getData());
 		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
@@ -314,7 +314,7 @@ public class BinaryTypeTest {
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
 		assertEquals(ImageTypeParameter.JPEG, t.getContentType());

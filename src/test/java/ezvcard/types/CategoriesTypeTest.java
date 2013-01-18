@@ -60,7 +60,7 @@ public class CategoriesTypeTest {
 		t.addValue("T,wo");
 		t.addValue("Thr;ee");
 		expected = "One\\,T\\,wo\\,Thr\\;ee";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		compatibilityMode = CompatibilityMode.RFC;
@@ -69,7 +69,7 @@ public class CategoriesTypeTest {
 		t.addValue("T,wo");
 		t.addValue("Thr;ee");
 		expected = "One,T\\,wo,Thr\\;ee";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 
@@ -85,14 +85,14 @@ public class CategoriesTypeTest {
 		//comma delimiters are escaped for KDE
 		compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
 		t = new CategoriesType();
-		t.unmarshalValue(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "T", "wo", "Thr;ee");
 		actual = t.getValues();
 		assertEquals(expected, actual);
 
 		compatibilityMode = CompatibilityMode.RFC;
 		t = new CategoriesType();
-		t.unmarshalValue(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
 		expected = Arrays.asList("One,T,wo,Thr;ee");
 		actual = t.getValues();
 		assertEquals(expected, actual);

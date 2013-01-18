@@ -146,7 +146,7 @@ public class XmlType extends TextType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (value == null) {
 			throw new SkipMeException("Property does not have a value associated with it.");
 		}
@@ -173,7 +173,7 @@ public class XmlType extends TextType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		try {
 			StringWriter writer = new StringWriter();
 			DOMSource source = new DOMSource(element.getElement());

@@ -67,7 +67,7 @@ public class UriTypeTest {
 
 		actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
 	}
@@ -88,7 +88,7 @@ public class UriTypeTest {
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new UriType("NAME");
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = "http://www.example.com";
 		actual = t.getValue();
 		assertEquals(expected, actual);

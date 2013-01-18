@@ -66,7 +66,7 @@ public class StructuredNameTypeTest {
 		t.addPrefix("Mr.");
 		t.addSuffix("III");
 		expected = "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//some empty values
@@ -77,13 +77,13 @@ public class StructuredNameTypeTest {
 		t.addAdditional("John");
 		t.addSuffix("III");
 		expected = ";Jonathan;Joh\\;nny\\,,John;;III";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//all empty values
 		t = new StructuredNameType();
 		expected = ";;;;";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 
@@ -117,7 +117,7 @@ public class StructuredNameTypeTest {
 
 		actual = XmlUtils.toDocument("<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
 
@@ -139,7 +139,7 @@ public class StructuredNameTypeTest {
 
 		actual = XmlUtils.toDocument("<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
 	}
@@ -153,7 +153,7 @@ public class StructuredNameTypeTest {
 		StructuredNameType t;
 
 		t = new StructuredNameType();
-		t.unmarshalValue(subTypes, "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III", version, warnings, compatibilityMode);
 		assertEquals("Doe", t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
 		assertEquals(2, t.getAdditional().size());
@@ -166,7 +166,7 @@ public class StructuredNameTypeTest {
 
 		//some empty values
 		t = new StructuredNameType();
-		t.unmarshalValue(subTypes, ";Jonathan;Joh\\;nny\\,,John;;III", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, ";Jonathan;Joh\\;nny\\,,John;;III", version, warnings, compatibilityMode);
 		assertNull(t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
 		assertEquals(2, t.getAdditional().size());
@@ -178,7 +178,7 @@ public class StructuredNameTypeTest {
 
 		//values missing off the end
 		t = new StructuredNameType();
-		t.unmarshalValue(subTypes, "Doe;Jonathan;Joh\\;nny\\,,John", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "Doe;Jonathan;Joh\\;nny\\,,John", version, warnings, compatibilityMode);
 		assertEquals("Doe", t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
 		assertEquals(2, t.getAdditional().size());
@@ -189,7 +189,7 @@ public class StructuredNameTypeTest {
 
 		//all empty values
 		t = new StructuredNameType();
-		t.unmarshalValue(subTypes, ";;;;", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, ";;;;", version, warnings, compatibilityMode);
 		assertNull(t.getFamily());
 		assertNull(t.getGiven());
 		assertTrue(t.getAdditional().isEmpty());
@@ -217,7 +217,7 @@ public class StructuredNameTypeTest {
 		xml += "</n>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new StructuredNameType();
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Doe", t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
 		assertEquals(2, t.getAdditional().size());
@@ -237,7 +237,7 @@ public class StructuredNameTypeTest {
 		xml += "</n>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new StructuredNameType();
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
 		assertEquals(2, t.getAdditional().size());

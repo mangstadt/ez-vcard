@@ -65,7 +65,7 @@ public class TextListTypeTest {
 		t.removeValue("One and a half"); //test "removeValue"
 		t.addValue("Thr;ee");
 		expected = "One,T\\,wo,Thr\\;ee";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//two items
@@ -73,20 +73,20 @@ public class TextListTypeTest {
 		t.addValue("One");
 		t.addValue("Two");
 		expected = "One,Two";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//one item
 		t = new TextListType("NAME", ',');
 		t.addValue("One");
 		expected = "One";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//zero items
 		t = new TextListType("NAME", ',');
 		expected = "";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 
@@ -111,7 +111,7 @@ public class TextListTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//two items
@@ -125,7 +125,7 @@ public class TextListTypeTest {
 		expectedDoc = XmlUtils.toDocument(expectedXml);
 		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//one item
@@ -137,7 +137,7 @@ public class TextListTypeTest {
 		expectedDoc = XmlUtils.toDocument(expectedXml);
 		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//zero items
@@ -147,7 +147,7 @@ public class TextListTypeTest {
 		expectedDoc = XmlUtils.toDocument(expectedXml);
 		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -162,28 +162,28 @@ public class TextListTypeTest {
 
 		//three values
 		t = new TextListType("NAME", ',');
-		t.unmarshalValue(subTypes, "One,T\\,wo,Thr\\;ee", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "One,T\\,wo,Thr\\;ee", version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "T,wo", "Thr;ee");
 		actual = t.getValues();
 		assertEquals(expected, actual);
 
 		//two values
 		t = new TextListType("NAME", ',');
-		t.unmarshalValue(subTypes, "One,Two", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "One,Two", version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two");
 		actual = t.getValues();
 		assertEquals(expected, actual);
 
 		//one value
 		t = new TextListType("NAME", ',');
-		t.unmarshalValue(subTypes, "One", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "One", version, warnings, compatibilityMode);
 		expected = Arrays.asList("One");
 		actual = t.getValues();
 		assertEquals(expected, actual);
 
 		//zero values
 		t = new TextListType("NAME", ',');
-		t.unmarshalValue(subTypes, "", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "", version, warnings, compatibilityMode);
 		expected = Arrays.asList();
 		actual = t.getValues();
 		assertEquals(expected, actual);
@@ -208,7 +208,7 @@ public class TextListTypeTest {
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two", "Three");
 		actual = t.getValues();
 		assertEquals(expected, actual);
@@ -220,7 +220,7 @@ public class TextListTypeTest {
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two");
 		actual = t.getValues();
 		assertEquals(expected, actual);
@@ -231,7 +231,7 @@ public class TextListTypeTest {
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One");
 		actual = t.getValues();
 		assertEquals(expected, actual);
@@ -241,7 +241,7 @@ public class TextListTypeTest {
 		xml += "</name>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new TextListType("NAME", ',');
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList();
 		actual = t.getValues();
 		assertEquals(expected, actual);

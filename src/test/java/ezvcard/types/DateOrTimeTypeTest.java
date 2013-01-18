@@ -76,21 +76,21 @@ public class DateOrTimeTypeTest {
 
 		//v2.1
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = t.marshalValue(version, warnings, compatibilityMode);
+		String actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.DATE, subTypes.getValue());
 
 		//v3.0
 		version = VCardVersion.V3_0;
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.DATE, subTypes.getValue());
 
 		//v4.0
 		version = VCardVersion.V4_0;
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
@@ -104,7 +104,7 @@ public class DateOrTimeTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -131,21 +131,21 @@ public class DateOrTimeTypeTest {
 
 		//v2.1
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = t.marshalValue(version, warnings, compatibilityMode);
+		String actual = t.marshalText(version, warnings, compatibilityMode);
 		assertTrue(actual.matches(expected));
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
 
 		//v3.0
 		version = VCardVersion.V3_0;
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertTrue(actual.matches(expected));
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
 
 		//v4.0
 		version = VCardVersion.V4_0;
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertTrue(actual.matches(expected));
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
@@ -155,7 +155,7 @@ public class DateOrTimeTypeTest {
 		version = VCardVersion.V4_0;
 		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(expected));
 	}
 
@@ -172,7 +172,7 @@ public class DateOrTimeTypeTest {
 		//v2.1
 		VCardVersion version = VCardVersion.V2_1;
 		try {
-			t.marshalValue(version, warnings, compatibilityMode);
+			t.marshalText(version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -182,7 +182,7 @@ public class DateOrTimeTypeTest {
 		//v3.0
 		version = VCardVersion.V3_0;
 		try {
-			t.marshalValue(version, warnings, compatibilityMode);
+			t.marshalText(version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -191,7 +191,7 @@ public class DateOrTimeTypeTest {
 
 		//v4.0
 		version = VCardVersion.V4_0;
-		String actual = t.marshalValue(version, warnings, compatibilityMode);
+		String actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(actual, expected);
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
@@ -205,7 +205,7 @@ public class DateOrTimeTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -222,7 +222,7 @@ public class DateOrTimeTypeTest {
 		//v2.1
 		VCardVersion version = VCardVersion.V2_1;
 		try {
-			t.marshalValue(version, warnings, compatibilityMode);
+			t.marshalText(version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -232,7 +232,7 @@ public class DateOrTimeTypeTest {
 		//v3.0
 		version = VCardVersion.V3_0;
 		try {
-			t.marshalValue(version, warnings, compatibilityMode);
+			t.marshalText(version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -241,7 +241,7 @@ public class DateOrTimeTypeTest {
 
 		//v4.0
 		version = VCardVersion.V4_0;
-		String actual = t.marshalValue(version, warnings, compatibilityMode);
+		String actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(actual, expected);
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -255,7 +255,7 @@ public class DateOrTimeTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -275,7 +275,7 @@ public class DateOrTimeTypeTest {
 		//2.1
 		VCardVersion version = VCardVersion.V2_1;
 		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, "1980-06-05", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "1980-06-05", version, warnings, compatibilityMode);
 		assertEquals(expected, t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -283,7 +283,7 @@ public class DateOrTimeTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, "1980-06-05", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "1980-06-05", version, warnings, compatibilityMode);
 		assertEquals(expected, t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -291,14 +291,14 @@ public class DateOrTimeTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, "1980-06-05", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "1980-06-05", version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals("1980-06-05", t.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
 		assertNull(t.getText());
 
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, "19800605", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "19800605", version, warnings, compatibilityMode);
 		assertEquals(expected, t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -310,7 +310,7 @@ public class DateOrTimeTypeTest {
 		inputXml += "<date-and-or-time>1980-06-05</date-and-or-time>";
 		inputXml += "</date>";
 		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
-		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals("1980-06-05", t.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
 		assertNull(t.getText());
@@ -321,7 +321,7 @@ public class DateOrTimeTypeTest {
 		inputXml += "<date-and-or-time>19800605</date-and-or-time>";
 		inputXml += "</date>";
 		input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
-		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -339,7 +339,7 @@ public class DateOrTimeTypeTest {
 		//2.1
 		VCardVersion version = VCardVersion.V2_1;
 		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -347,7 +347,7 @@ public class DateOrTimeTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -355,7 +355,7 @@ public class DateOrTimeTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals(expected, t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -367,7 +367,7 @@ public class DateOrTimeTypeTest {
 		inputXml += "<date-and-or-time>" + value + "</date-and-or-time>";
 		inputXml += "</date>";
 		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
-		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals(expected, t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -386,7 +386,7 @@ public class DateOrTimeTypeTest {
 		//2.1
 		VCardVersion version = VCardVersion.V2_1;
 		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -394,7 +394,7 @@ public class DateOrTimeTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertNull(t.getText());
@@ -402,7 +402,7 @@ public class DateOrTimeTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		t.unmarshalValue(subTypes, value, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertEquals(expected, t.getText());
@@ -414,7 +414,7 @@ public class DateOrTimeTypeTest {
 		inputXml += "<date-and-or-time>Some ;text;.</date-and-or-time>";
 		inputXml += "</date>";
 		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
-		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());
 		assertEquals(expected, t.getText());

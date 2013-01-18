@@ -62,7 +62,7 @@ public class BirthplaceTypeTest {
 		//text
 		BirthplaceType t = new BirthplaceType();
 		t.setText("Philadelphia, PA");
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals("Philadelphia\\, PA", actual);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -70,7 +70,7 @@ public class BirthplaceTypeTest {
 		//URI
 		t = new BirthplaceType();
 		t.setUri("geo:39.970806,-75.174809");
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals("geo:39.970806\\,-75.174809", actual);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -91,7 +91,7 @@ public class BirthplaceTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//URI
@@ -103,7 +103,7 @@ public class BirthplaceTypeTest {
 		expectedDoc = XmlUtils.toDocument(expectedXml);
 		actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -116,14 +116,14 @@ public class BirthplaceTypeTest {
 
 		//text
 		BirthplaceType t = new BirthplaceType();
-		t.unmarshalValue(subTypes, "Philadelphia\\, PA", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "Philadelphia\\, PA", version, warnings, compatibilityMode);
 		assertEquals("Philadelphia, PA", t.getText());
 		assertNull(t.getUri());
 
 		//URI
 		t = new BirthplaceType();
 		subTypes.setValue(ValueParameter.URI);
-		t.unmarshalValue(subTypes, "geo:39.970806\\,-75.174809", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "geo:39.970806\\,-75.174809", version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:39.970806,-75.174809", t.getUri());
 	}
@@ -141,7 +141,7 @@ public class BirthplaceTypeTest {
 		xml += "<text>Philadelphia, PA</text>";
 		xml += "</birthplace>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Philadelphia, PA", t.getText());
 		assertNull(t.getUri());
 
@@ -151,7 +151,7 @@ public class BirthplaceTypeTest {
 		xml += "<uri>geo:39.970806,-75.174809</uri>";
 		xml += "</birthplace>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:39.970806,-75.174809", t.getUri());
 	}

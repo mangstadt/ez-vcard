@@ -59,7 +59,7 @@ public class XmlTypeTest {
 		Document actual = XmlUtils.toDocument("<root></root>");
 		Element root = XmlUtils.getRootElement(actual);
 		XmlType xml = new XmlType("<a href=\"http://www.example.com\">some html</a>");
-		xml.marshalValue(root, version, warnings, compatibilityMode);
+		xml.marshalXml(root, version, warnings, compatibilityMode);
 
 		Document expected = XmlUtils.toDocument("<root><a href=\"http://www.example.com\">some html</a></root>");
 
@@ -67,7 +67,7 @@ public class XmlTypeTest {
 
 		xml = new XmlType("not valid XML");
 		try {
-			xml.marshalValue(root, version, warnings, compatibilityMode);
+			xml.marshalXml(root, version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -85,7 +85,7 @@ public class XmlTypeTest {
 		Document document = XmlUtils.toDocument(xml);
 		Element element = XmlUtils.getRootElement(document);
 		XmlType t = new XmlType();
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("<a href=\"http://www.example.com\">some html</a>", t.getValue());
 	}
 }
