@@ -81,13 +81,13 @@ public class TimestampType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = writeValue();
 		sb.append(VCardStringUtils.escape(value));
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		try {
 			timestamp = VCardDateFormatter.parse(value);
 		} catch (IllegalArgumentException e) {
@@ -96,16 +96,16 @@ public class TimestampType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = writeValue();
 		parent.appendTimestamp(value);
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.getTimestamp();
 		if (value != null) {
-			doUnmarshalValue(value, element.getVersion(), warnings, compatibilityMode);
+			doUnmarshalText(value, element.getVersion(), warnings, compatibilityMode);
 		}
 	}
 
@@ -128,6 +128,6 @@ public class TimestampType extends VCardType {
 		if (value == null) {
 			value = element.value();
 		}
-		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
+		doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}
 }

@@ -68,7 +68,7 @@ public class KeyTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		expectedValue = "abc123";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -78,7 +78,7 @@ public class KeyTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		expectedValue = "abc123";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -88,7 +88,7 @@ public class KeyTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		expectedValue = "abc123";
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals(expectedValue, actualValue);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -103,7 +103,7 @@ public class KeyTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<key xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -120,7 +120,7 @@ public class KeyTypeTest {
 		t = new KeyType();
 		subTypes = new VCardSubTypes();
 		subTypes.setType(KeyTypeParameter.PGP.getValue());
-		t.unmarshalValue(subTypes, "abc123", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "abc123", version, warnings, compatibilityMode);
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());
 		assertNull(t.getData());
@@ -131,7 +131,7 @@ public class KeyTypeTest {
 		t = new KeyType();
 		subTypes = new VCardSubTypes();
 		subTypes.setType(KeyTypeParameter.PGP.getValue());
-		t.unmarshalValue(subTypes, "abc123", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "abc123", version, warnings, compatibilityMode);
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());
 		assertNull(t.getData());
@@ -142,7 +142,7 @@ public class KeyTypeTest {
 		t = new KeyType();
 		subTypes = new VCardSubTypes();
 		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
-		t.unmarshalValue(subTypes, "abc123", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "abc123", version, warnings, compatibilityMode);
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());
 		assertNull(t.getData());
@@ -155,7 +155,7 @@ public class KeyTypeTest {
 		xml += "<text>abc123</text>";
 		xml += "</key>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());
 		assertNull(t.getData());

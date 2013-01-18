@@ -252,7 +252,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			sb.append(VCardStringUtils.escape(uri));
 		} else if (text != null) {
@@ -263,7 +263,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
 		if (subTypes.getValue() == ValueParameter.URI) {
 			setUri(value);
@@ -276,7 +276,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			parent.appendUri(uri);
 		} else if (text != null) {
@@ -287,7 +287,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.getUri();
 		if (value != null) {
 			setUri(value);

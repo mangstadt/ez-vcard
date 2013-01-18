@@ -230,7 +230,7 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (family != null) {
 			value.append(VCardStringUtils.escape(family));
 		}
@@ -266,7 +266,7 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		//preserve empty items and don't unescape escaped characters(e.g. "additional" might have escaped commas)
 		String split[] = VCardStringUtils.splitBy(value, ';', false, false);
 
@@ -301,7 +301,7 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (family != null) {
 			parent.append("surname", family);
 		}
@@ -314,7 +314,7 @@ public class StructuredNameType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		family = element.get("surname");
 		given = element.get("given");
 

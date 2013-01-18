@@ -60,14 +60,14 @@ public class AgentTypeTest {
 		//with URL
 		t = new AgentType("http://mi5.co.uk/007");
 		expected = "http://mi5.co.uk/007";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//with vCard
 		VCard vcard = new VCard();
 		t = new AgentType(vcard);
 		try {
-			t.marshalValue(version, warnings, compatibilityMode);
+			t.marshalText(version, warnings, compatibilityMode);
 			fail();
 		} catch (EmbeddedVCardException e) {
 			//should be thrown
@@ -87,7 +87,7 @@ public class AgentTypeTest {
 		t = new AgentType();
 		subTypes = new VCardSubTypes();
 		subTypes.setValue(ValueParameter.URL);
-		t.unmarshalValue(subTypes, "http://mi5.co.uk/007", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "http://mi5.co.uk/007", version, warnings, compatibilityMode);
 		assertEquals("http://mi5.co.uk/007", t.getUrl());
 		assertNull(t.getVCard());
 
@@ -96,7 +96,7 @@ public class AgentTypeTest {
 		t = new AgentType();
 		subTypes = new VCardSubTypes();
 		try {
-			t.unmarshalValue(subTypes, "BEGIN:VCARD\\nEND:VCARD", version, warnings, compatibilityMode);
+			t.unmarshalText(subTypes, "BEGIN:VCARD\\nEND:VCARD", version, warnings, compatibilityMode);
 			fail();
 		} catch (EmbeddedVCardException e) {
 			//should be thrown

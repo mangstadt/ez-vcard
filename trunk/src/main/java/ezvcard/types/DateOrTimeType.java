@@ -210,7 +210,7 @@ public class DateOrTimeType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
 			if (text != null) {
 				throw new SkipMeException("Text values are not allowed in vCard version " + version + ".");
@@ -237,7 +237,7 @@ public class DateOrTimeType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (version == VCardVersion.V4_0) {
 			if (subTypes.getValue() == ValueParameter.TEXT) {
 				text = VCardStringUtils.unescape(value);
@@ -266,7 +266,7 @@ public class DateOrTimeType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			parent.appendText(text);
 		} else if (reducedAccuracyDate != null) {
@@ -281,7 +281,7 @@ public class DateOrTimeType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.getDateAndOrTime();
 		if (value != null) {
 			if (value.contains("-")) {
@@ -317,6 +317,6 @@ public class DateOrTimeType extends VCardType {
 		if (value == null) {
 			value = element.value();
 		}
-		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
+		doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}
 }

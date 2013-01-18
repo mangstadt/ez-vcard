@@ -67,7 +67,7 @@ public class TelephoneTypeTest {
 
 		//2.1
 		version = VCardVersion.V2_1;
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		expectedValue = "+1 555-555-1234";
 		assertEquals(expectedValue, actualValue);
@@ -76,7 +76,7 @@ public class TelephoneTypeTest {
 
 		//3.0
 		version = VCardVersion.V3_0;
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		expectedValue = "+1 555-555-1234";
 		assertEquals(expectedValue, actualValue);
@@ -85,7 +85,7 @@ public class TelephoneTypeTest {
 
 		//4.0
 		version = VCardVersion.V4_0;
-		actualValue = t.marshalValue(version, warnings, compatibilityMode);
+		actualValue = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		expectedValue = "tel:+1 555-555-1234";
 		assertEquals(expectedValue, actualValue);
@@ -100,7 +100,7 @@ public class TelephoneTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -168,19 +168,19 @@ public class TelephoneTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		t = new TelephoneType();
-		t.unmarshalValue(subTypes, "+1 555-555-1234.", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "+1 555-555-1234.", version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 
 		//3.0
 		version = VCardVersion.V3_0;
 		t = new TelephoneType();
-		t.unmarshalValue(subTypes, "+1 555-555-1234.", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "+1 555-555-1234.", version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 
 		//4.0
 		version = VCardVersion.V4_0;
 		t = new TelephoneType();
-		t.unmarshalValue(subTypes, "tel:+1 555-555-1234.", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "tel:+1 555-555-1234.", version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 
 		//xCard
@@ -190,7 +190,7 @@ public class TelephoneTypeTest {
 		xml += "<uri>tel:+1 555-555-1234.</uri>";
 		xml += "</tel>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 
 		version = VCardVersion.V4_0;
@@ -199,7 +199,7 @@ public class TelephoneTypeTest {
 		xml += "<text>+1 555-555-1234.</text>";
 		xml += "</tel>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 	}
 }

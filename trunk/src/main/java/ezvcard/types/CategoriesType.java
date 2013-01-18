@@ -176,7 +176,7 @@ public class CategoriesType extends TextListType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (!values.isEmpty()) {
 			for (String value : values) {
 				sb.append(VCardStringUtils.escape(value));
@@ -194,12 +194,12 @@ public class CategoriesType extends TextListType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (compatibilityMode == CompatibilityMode.KDE_ADDRESS_BOOK) {
 			//KDE escapes all the comma delimiters
 			value = VCardStringUtils.unescape(value);
 		}
-		super.doUnmarshalValue(value, version, warnings, compatibilityMode);
+		super.doUnmarshalText(value, version, warnings, compatibilityMode);
 	}
 
 	@Override

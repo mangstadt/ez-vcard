@@ -397,7 +397,7 @@ public class XCardDocument {
 		}
 
 		//marshal the value
-		type.marshalValue(typeElement, targetVersion, warningsBuf, compatibilityMode);
+		type.marshalXml(typeElement, targetVersion, warningsBuf, compatibilityMode);
 
 		return typeElement;
 	}

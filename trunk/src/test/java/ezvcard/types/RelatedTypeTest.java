@@ -65,7 +65,7 @@ public class RelatedTypeTest {
 		RelatedType t = new RelatedType();
 		t.addType(RelatedTypeParameter.SPOUSE);
 		t.setText("Edna Smith");
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals("Edna Smith", actual);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
@@ -75,7 +75,7 @@ public class RelatedTypeTest {
 		t = new RelatedType();
 		t.addType(RelatedTypeParameter.SPOUSE);
 		t.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 		assertEquals("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af", actual);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -97,7 +97,7 @@ public class RelatedTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//URI
@@ -109,7 +109,7 @@ public class RelatedTypeTest {
 		expectedDoc = XmlUtils.toDocument(expectedXml);
 		actualDoc = XmlUtils.toDocument("<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -123,7 +123,7 @@ public class RelatedTypeTest {
 		RelatedType t = new RelatedType();
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setType(RelatedTypeParameter.SPOUSE.getValue());
-		t.unmarshalValue(subTypes, "Edna Smith", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "Edna Smith", version, warnings, compatibilityMode);
 		assertEquals("Edna Smith", t.getText());
 		assertNull(t.getUri());
 		assertTrue(t.getTypes().contains(RelatedTypeParameter.SPOUSE));
@@ -133,7 +133,7 @@ public class RelatedTypeTest {
 		subTypes = new VCardSubTypes();
 		subTypes.setType(RelatedTypeParameter.SPOUSE.getValue());
 		subTypes.setValue(ValueParameter.URI);
-		t.unmarshalValue(subTypes, "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af", version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af", t.getUri());
 		assertTrue(t.getTypes().contains(RelatedTypeParameter.SPOUSE));
@@ -153,7 +153,7 @@ public class RelatedTypeTest {
 		xml += "<text>Edna Smith</text>";
 		xml += "</related>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Edna Smith", t.getText());
 		assertNull(t.getUri());
 		assertTrue(t.getTypes().contains(RelatedTypeParameter.SPOUSE));
@@ -166,7 +166,7 @@ public class RelatedTypeTest {
 		xml += "<uri>urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af</uri>";
 		xml += "</related>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af", t.getUri());
 		assertTrue(t.getTypes().contains(RelatedTypeParameter.SPOUSE));

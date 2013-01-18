@@ -55,7 +55,7 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
@@ -63,7 +63,7 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
@@ -71,7 +71,7 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		luckyNum = Integer.parseInt(value);
 		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
@@ -79,7 +79,7 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		NodeList nodeList = element.getElement().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
 		if (nodeList.getLength() > 0) {
 			Element num = (Element) nodeList.item(0);

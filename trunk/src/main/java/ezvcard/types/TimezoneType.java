@@ -324,7 +324,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && hourOffset != null && minuteOffset != null) {
 				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
@@ -339,7 +339,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		parseValue(value);
 		if (text != null) {
 			text = VCardStringUtils.unescape(text);
@@ -347,7 +347,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			parent.appendText(text);
 		} else if (hourOffset != null && minuteOffset != null) {
@@ -359,7 +359,7 @@ public class TimezoneType extends VCardType {
 	}
 
 	@Override
-	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.get("text", "uri", "utc-offset");
 		if (value != null) {
 			parseValue(value);
@@ -390,6 +390,6 @@ public class TimezoneType extends VCardType {
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String value = element.value();
-		doUnmarshalValue(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
+		doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
 	}
 }

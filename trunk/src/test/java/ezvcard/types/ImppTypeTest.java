@@ -177,7 +177,7 @@ public class ImppTypeTest {
 
 		t = new ImppType("aim:john.doe@aol.com");
 		expected = "aim:john.doe@aol.com";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 
@@ -198,7 +198,7 @@ public class ImppTypeTest {
 		expected = XmlUtils.toDocument(expectedXml);
 		actual = XmlUtils.toDocument("<impp xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
 
@@ -211,7 +211,7 @@ public class ImppTypeTest {
 		ImppType t;
 
 		t = new ImppType();
-		t.unmarshalValue(subTypes, "aim:john.doe@aol.com", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "aim:john.doe@aol.com", version, warnings, compatibilityMode);
 		assertEquals("aim:john.doe@aol.com", t.getUri().toString());
 	}
 
@@ -230,7 +230,7 @@ public class ImppTypeTest {
 		xml += "</impp>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new ImppType();
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("aim:john.doe@aol.com", t.getUri().toString());
 	}
 

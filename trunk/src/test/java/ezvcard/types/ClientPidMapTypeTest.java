@@ -57,7 +57,7 @@ public class ClientPidMapTypeTest {
 
 		ClientPidMapType t = new ClientPidMapType(1, "urn:uuid:1234");
 
-		String actual = t.marshalValue(version, warnings, compatibilityMode);
+		String actual = t.marshalText(version, warnings, compatibilityMode);
 		String expected = "1;urn:uuid:1234";
 		assertEquals(expected, actual);
 	}
@@ -79,7 +79,7 @@ public class ClientPidMapTypeTest {
 		Document actual = XmlUtils.toDocument("<clientpidmap xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actual);
 
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
 	}
@@ -94,7 +94,7 @@ public class ClientPidMapTypeTest {
 		String input = "1;urn:uuid:1234";
 
 		ClientPidMapType t = new ClientPidMapType();
-		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, input, version, warnings, compatibilityMode);
 
 		assertEquals(1, t.getPid().intValue());
 		assertEquals("urn:uuid:1234", t.getUri());
@@ -114,7 +114,7 @@ public class ClientPidMapTypeTest {
 		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
 
 		ClientPidMapType t = new ClientPidMapType();
-		t.unmarshalValue(subTypes, input, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
 		assertEquals(1, t.getPid().intValue());
 		assertEquals("urn:uuid:1234", t.getUri());

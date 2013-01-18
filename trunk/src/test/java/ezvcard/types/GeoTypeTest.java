@@ -64,7 +64,7 @@ public class GeoTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		expected = "-12.34;56.777778";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
 		assertEquals(expected, actual);
 		assertNull(subTypes.getValue());
@@ -72,7 +72,7 @@ public class GeoTypeTest {
 		//3.0
 		version = VCardVersion.V3_0;
 		expected = "-12.34;56.777778";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
 		assertEquals(expected, actual);
 		assertNull(subTypes.getValue());
@@ -80,7 +80,7 @@ public class GeoTypeTest {
 		//4.0
 		version = VCardVersion.V4_0;
 		expected = "geo:-12.34,56.777778";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, null);
 		assertEquals(expected, actual);
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -93,7 +93,7 @@ public class GeoTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<geo xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -108,21 +108,21 @@ public class GeoTypeTest {
 		//2.1
 		version = VCardVersion.V2_1;
 		t = new GeoType();
-		t.unmarshalValue(subTypes, "-12.34;56.7878", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "-12.34;56.7878", version, warnings, compatibilityMode);
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);
 
 		//3.0
 		version = VCardVersion.V3_0;
 		t = new GeoType();
-		t.unmarshalValue(subTypes, "-12.34;56.7878", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "-12.34;56.7878", version, warnings, compatibilityMode);
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);
 
 		//4.0
 		version = VCardVersion.V4_0;
 		t = new GeoType();
-		t.unmarshalValue(subTypes, "geo:-12.34,56.7878", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "geo:-12.34,56.7878", version, warnings, compatibilityMode);
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);
 
@@ -133,14 +133,14 @@ public class GeoTypeTest {
 		xml += "<uri>geo:-12.34,56.7878</uri>";
 		xml += "</geo>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);
 
 		//bad latitude
 		warnings.clear();
 		t = new GeoType();
-		t.unmarshalValue(subTypes, "12.34;not-a-number", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "12.34;not-a-number", version, warnings, compatibilityMode);
 		assertEquals(12.34, t.getLatitude(), 0.00001);
 		assertNull(t.getLongitude());
 		assertEquals(1, warnings.size());
@@ -148,7 +148,7 @@ public class GeoTypeTest {
 		//bad longitude
 		warnings.clear();
 		t = new GeoType();
-		t.unmarshalValue(subTypes, "not-a-number;12.34", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "not-a-number;12.34", version, warnings, compatibilityMode);
 		assertNull(t.getLatitude());
 		assertEquals(12.34, t.getLongitude(), 0.00001);
 		assertEquals(1, warnings.size());
@@ -156,7 +156,7 @@ public class GeoTypeTest {
 		//missing longitude
 		warnings.clear();
 		t = new GeoType();
-		t.unmarshalValue(subTypes, "12.34", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "12.34", version, warnings, compatibilityMode);
 		assertEquals(12.34, t.getLatitude(), 0.00001);
 		assertNull(t.getLongitude());
 		assertEquals(1, warnings.size());
@@ -165,7 +165,7 @@ public class GeoTypeTest {
 		warnings.clear();
 		t = new GeoType();
 		try {
-			t.unmarshalValue(subTypes, "not a;number", version, warnings, compatibilityMode);
+			t.unmarshalText(subTypes, "not a;number", version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown
@@ -175,7 +175,7 @@ public class GeoTypeTest {
 		warnings.clear();
 		t = new GeoType();
 		try {
-			t.unmarshalValue(subTypes, "123!! bad-value **&z", version, warnings, compatibilityMode);
+			t.unmarshalText(subTypes, "123!! bad-value **&z", version, warnings, compatibilityMode);
 			fail();
 		} catch (SkipMeException e) {
 			//should be thrown

@@ -329,7 +329,7 @@ public class VCardWriter implements Closeable {
 			String value = null;
 			VCard nested = null;
 			try {
-				value = type.marshalValue(targetVersion, warningsBuf, compatibilityMode);
+				value = type.marshalText(targetVersion, warningsBuf, compatibilityMode);
 			} catch (SkipMeException e) {
 				warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
 				continue;

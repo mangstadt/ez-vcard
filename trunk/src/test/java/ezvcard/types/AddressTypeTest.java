@@ -71,7 +71,7 @@ public class AddressTypeTest {
 		t.setPostalCode("12345");
 		t.setCountry("USA");
 		expected = "P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//some nulls
@@ -84,13 +84,13 @@ public class AddressTypeTest {
 		t.setPostalCode("12345");
 		t.setCountry(null);
 		expected = "P.O. Box 1234\\;;;;Austin;TX;12345;";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//all nulls
 		t = new AddressType();
 		expected = ";;;;;;";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 	}
 
@@ -127,7 +127,7 @@ public class AddressTypeTest {
 
 		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
 
@@ -151,7 +151,7 @@ public class AddressTypeTest {
 
 		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 
 		//all nulls
@@ -163,7 +163,7 @@ public class AddressTypeTest {
 
 		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		element = XmlUtils.getRootElement(actual);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
 
@@ -188,7 +188,7 @@ public class AddressTypeTest {
 		subTypes.put("TZ", "tz:America/New_York");
 
 		AddressType t = new AddressType();
-		t.unmarshalValue(subTypes, ";;;", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, ";;;", version, warnings, compatibilityMode);
 		assertEquals("America/New_York", t.getTimezone());
 	}
 
@@ -255,7 +255,7 @@ public class AddressTypeTest {
 
 		//all fields present
 		t = new AddressType();
-		t.unmarshalValue(subTypes, "P.O. Box 1234\\;;Apt 11;123 Main St;Austin;TX;12345;USA", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "P.O. Box 1234\\;;Apt 11;123 Main St;Austin;TX;12345;USA", version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234;", t.getPoBox());
 		assertEquals("Apt 11", t.getExtendedAddress());
 		assertEquals("123 Main St", t.getStreetAddress());
@@ -266,7 +266,7 @@ public class AddressTypeTest {
 
 		//some empty fields
 		t = new AddressType();
-		t.unmarshalValue(subTypes, "P.O. Box 1234\\;;;;Austin;TX;12345;USA", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "P.O. Box 1234\\;;;;Austin;TX;12345;USA", version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234;", t.getPoBox());
 		assertEquals(null, t.getExtendedAddress());
 		assertEquals(null, t.getStreetAddress());
@@ -277,7 +277,7 @@ public class AddressTypeTest {
 
 		//some fields missing at the end
 		t = new AddressType();
-		t.unmarshalValue(subTypes, "P.O. Box 1234\\;56;Apt 11;123 Main St;Austin;TX", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "P.O. Box 1234\\;56;Apt 11;123 Main St;Austin;TX", version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234;56", t.getPoBox());
 		assertEquals("Apt 11", t.getExtendedAddress());
 		assertEquals("123 Main St", t.getStreetAddress());
@@ -309,7 +309,7 @@ public class AddressTypeTest {
 		xml += "</adr>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new AddressType();
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234", t.getPoBox());
 		assertEquals("Apt 11", t.getExtendedAddress());
 		assertEquals("123 Main St", t.getStreetAddress());
@@ -328,7 +328,7 @@ public class AddressTypeTest {
 		xml += "</adr>";
 		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
 		t = new AddressType();
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234", t.getPoBox());
 		assertEquals(null, t.getExtendedAddress());
 		assertEquals(null, t.getStreetAddress());

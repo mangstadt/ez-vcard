@@ -73,13 +73,13 @@ public class TimestampTypeTest {
 		//version 2.1
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "19800605T131020Z";
-		String actual = t.marshalValue(version, warnings, compatibilityMode);
+		String actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//version 4.0
 		version = VCardVersion.V4_0;
 		expected = "19800605T131020Z";
-		actual = t.marshalValue(version, warnings, compatibilityMode);
+		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
 
 		//xCard
@@ -90,7 +90,7 @@ public class TimestampTypeTest {
 		Document expectedDoc = XmlUtils.toDocument(expectedXml);
 		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
 		Element element = XmlUtils.getRootElement(actualDoc);
-		t.marshalValue(element, version, warnings, compatibilityMode);
+		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
@@ -112,7 +112,7 @@ public class TimestampTypeTest {
 
 		VCardVersion version = VCardVersion.V2_1;
 		TimestampType t = new TimestampType("DATE");
-		t.unmarshalValue(subTypes, "19800605T081020-0500", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, "19800605T081020-0500", version, warnings, compatibilityMode);
 		assertEquals(expected, t.getTimestamp());
 
 		//xCard
@@ -122,7 +122,7 @@ public class TimestampTypeTest {
 		xml += "<timestamp>19800605T131020Z</timestamp>";
 		xml += "</date>";
 		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
-		t.unmarshalValue(subTypes, element, version, warnings, compatibilityMode);
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getTimestamp());
 	}
 
