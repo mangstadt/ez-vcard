@@ -1,6 +1,11 @@
 #summary Documents all the changes that were made to every version of the library
 #labels Featured
 
+= 0.7.1 =
+_Januaray 17, 2013_
+
+ * Fixed a critical error in the way an xCard is written.  If the vCard had a PRODID property and "XCardDocument" was configured to add a PRODID property, then it would not write the vCard.
+
 = 0.7.0 =
 _January 13, 2013_
 
