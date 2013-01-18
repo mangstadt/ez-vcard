@@ -287,7 +287,7 @@ public class XCardDocument {
 		for (VCardType type : vcard) {
 			if (addProdId && type instanceof ProdIdType) {
 				//do not add the PRODID in the vCard if "addProdId" is true
-				return;
+				continue;
 			}
 
 			//determine if this type is supported by the target version
