@@ -9,11 +9,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.jsoup.Jsoup;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import ezvcard.io.LuckyNumType;
+import ezvcard.io.XCardReader;
 import ezvcard.types.FormattedNameType;
 import ezvcard.util.VCardBuilder;
 import ezvcard.util.XCardBuilder;
@@ -52,6 +58,11 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  */
 public class EzvcardTest {
+	private final XPath xpath = XPathFactory.newInstance().newXPath();
+	{
+		xpath.setNamespaceContext(new XCardReader.XCardNamespaceContext("v"));
+	}
+
 	@Test
 	public void parse_first() throws Exception {
 		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
@@ -332,12 +343,42 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeXml_one() throws Exception {
+	public void writeXml_go() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+
+		String xml = Ezvcard.writeXml(vcard).go();
+		assertTrue(xml.contains("<fn><text>John Doe</text></fn>"));
+	}
+
+	@Test
+	public void writeXml_dom() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
 
-		String actual = Ezvcard.writeXml(vcard).go();
-		assertTrue(actual.contains("<fn><text>John Doe</text></fn>"));
+		Document actual = Ezvcard.writeXml(vcard).prodId(false).dom();
+
+		//@formatter:off
+		StringBuilder sb = new StringBuilder();
+		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
+			sb.append("<vcard>");
+				sb.append("<fn><text>John Doe</text></fn>");
+			sb.append("</vcard>");
+		sb.append("</vcards>");
+		Document expected = XmlUtils.toDocument(sb.toString());
+		//@formatter:on
+
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void writeXml_one() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+
+		Document dom = Ezvcard.writeXml(vcard).dom();
+		String actual = (String) xpath.evaluate("/v:vcards/v:vcard/v:fn/v:text", dom, XPathConstants.STRING);
+		assertEquals(vcard.getFormattedName().getValue(), actual);
 	}
 
 	@Test
@@ -371,9 +412,12 @@ public class EzvcardTest {
 		VCard vcard3 = new VCard();
 		vcard3.setFormattedName("Janet Doe");
 
-		String actual = Ezvcard.writeXml(vcard1, vcard2, vcard3).go();
+		Document dom = Ezvcard.writeXml(vcard1, vcard2, vcard3).dom();
+		NodeList nl = (NodeList) xpath.evaluate("/v:vcards/v:vcard/v:fn/v:text", dom, XPathConstants.NODESET);
 
-		assertTrue(actual.matches("(?s).*?<vcard>.*?<fn><text>John Doe</text></fn>.*?</vcard>.*?<vcard>.*?<fn><text>Jane Doe</text></fn>.*?</vcard>*?<vcard>.*?<fn><text>Janet Doe</text></fn>.*?</vcard>.*"));
+		assertEquals(vcard1.getFormattedName().getValue(), nl.item(0).getTextContent());
+		assertEquals(vcard2.getFormattedName().getValue(), nl.item(1).getTextContent());
+		assertEquals(vcard3.getFormattedName().getValue(), nl.item(2).getTextContent());
 	}
 
 	@Test
@@ -400,14 +444,17 @@ public class EzvcardTest {
 	public void writeXml_prodId() throws Exception {
 		VCard vcard = new VCard();
 
-		String actual = Ezvcard.writeXml(vcard).go();
-		assertTrue(actual.contains("<prodid>"));
+		Document dom = Ezvcard.writeXml(vcard).dom();
+		Double count = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", dom, XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(1), count);
 
-		actual = Ezvcard.writeXml(vcard).prodId(true).go();
-		assertTrue(actual.contains("<prodid>"));
+		dom = Ezvcard.writeXml(vcard).prodId(true).dom();
+		count = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", dom, XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(1), count);
 
-		actual = Ezvcard.writeXml(vcard).prodId(false).go();
-		assertFalse(actual.contains("<prodid>"));
+		dom = Ezvcard.writeXml(vcard).prodId(false).dom();
+		count = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", dom, XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(0), count);
 	}
 
 	@Test
@@ -418,26 +465,6 @@ public class EzvcardTest {
 		String actual = Ezvcard.writeXml(vcard).indent(2).go();
 		String newline = System.getProperty("line.separator");
 		assertTrue(actual.contains("    <fn>" + newline + "      <text>John Doe</text>" + newline + "    </fn>"));
-	}
-
-	@Test
-	public void writeXml_dom() throws Exception {
-		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
-
-		Document actual = Ezvcard.writeXml(vcard).prodId(false).dom();
-
-		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>John Doe</text></fn>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
-		Document expected = XmlUtils.toDocument(sb.toString());
-		//@formatter:on
-
-		assertXMLEqual(expected, actual);
 	}
 
 	@Test
