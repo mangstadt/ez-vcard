@@ -23,6 +23,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
+import ezvcard.util.XCardElement;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -98,12 +99,12 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<date-and-or-time>" + expected + "</date-and-or-time>";
-		expectedXml += "</date>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("date");
+		xe.append("date-and-or-time", expected);
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("date");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -153,8 +154,8 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("date");
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(expected));
 	}
@@ -199,12 +200,12 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<date-and-or-time>" + expected + "</date-and-or-time>";
-		expectedXml += "</date>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("date");
+		xe.append("date-and-or-time", expected);
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("date");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -249,12 +250,12 @@ public class DateOrTimeTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>Sometime around ;1980;</text>";
-		expectedXml += "</date>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("date");
+		xe.appendText("Sometime around ;1980;");
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("date");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -306,10 +307,9 @@ public class DateOrTimeTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		String inputXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		inputXml += "<date-and-or-time>1980-06-05</date-and-or-time>";
-		inputXml += "</date>";
-		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
+		XCardElement xe = new XCardElement("date");
+		xe.append("date-and-or-time", "1980-06-05");
+		Element input = xe.getElement();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals("1980-06-05", t.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
@@ -317,10 +317,9 @@ public class DateOrTimeTypeTest {
 
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		inputXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		inputXml += "<date-and-or-time>19800605</date-and-or-time>";
-		inputXml += "</date>";
-		input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
+		xe = new XCardElement("date");
+		xe.append("date-and-or-time", "19800605");
+		input = xe.getElement();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getDate());
 		assertNull(t.getReducedAccuracyDate());
@@ -363,10 +362,9 @@ public class DateOrTimeTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		String inputXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		inputXml += "<date-and-or-time>" + value + "</date-and-or-time>";
-		inputXml += "</date>";
-		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
+		XCardElement xe = new XCardElement("date");
+		xe.append("date-and-or-time", value);
+		Element input = xe.getElement();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals(expected, t.getReducedAccuracyDate());
@@ -410,10 +408,9 @@ public class DateOrTimeTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new DateOrTimeType("DATE");
-		String inputXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		inputXml += "<date-and-or-time>Some ;text;.</date-and-or-time>";
-		inputXml += "</date>";
-		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
+		XCardElement xe = new XCardElement("date");
+		xe.append("date-and-or-time", "Some ;text;.");
+		Element input = xe.getElement();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());

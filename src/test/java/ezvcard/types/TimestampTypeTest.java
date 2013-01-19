@@ -18,7 +18,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -84,12 +84,12 @@ public class TimestampTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<timestamp>19800605T131020Z</timestamp>";
-		expectedXml += "</date>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("date");
+		xe.appendTimestamp("19800605T131020Z");
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("date");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -118,10 +118,9 @@ public class TimestampTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new TimestampType("DATE");
-		String xml = "<date xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<timestamp>19800605T131020Z</timestamp>";
-		xml += "</date>";
-		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("date");
+		xe.appendTimestamp("19800605T131020Z");
+		Element element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getTimestamp());
 	}

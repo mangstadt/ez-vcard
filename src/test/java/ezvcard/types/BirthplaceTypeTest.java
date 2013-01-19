@@ -16,7 +16,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -85,24 +85,24 @@ public class BirthplaceTypeTest {
 		//text
 		BirthplaceType t = new BirthplaceType();
 		t.setText("Philadelphia, PA");
-		String expectedXml = "<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>Philadelphia, PA</text>";
-		expectedXml += "</birthplace>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("birthplace");
+		xe.appendText("Philadelphia, PA");
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("birthplace");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//URI
 		t = new BirthplaceType();
 		t.setUri("geo:39.970806,-75.174809");
-		expectedXml = "<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<uri>geo:39.970806,-75.174809</uri>";
-		expectedXml += "</birthplace>";
-		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("birthplace");
+		xe.appendUri("geo:39.970806,-75.174809");
+		expectedDoc = xe.getDocument();
+		xe = new XCardElement("birthplace");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -137,20 +137,18 @@ public class BirthplaceTypeTest {
 
 		//text
 		BirthplaceType t = new BirthplaceType();
-		String xml = "<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>Philadelphia, PA</text>";
-		xml += "</birthplace>";
-		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("birthplace");
+		xe.appendText("Philadelphia, PA");
+		Element element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Philadelphia, PA", t.getText());
 		assertNull(t.getUri());
 
 		//URI
 		t = new BirthplaceType();
-		xml = "<birthplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<uri>geo:39.970806,-75.174809</uri>";
-		xml += "</birthplace>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("birthplace");
+		xe.appendUri("geo:39.970806,-75.174809");
+		element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:39.970806,-75.174809", t.getUri());

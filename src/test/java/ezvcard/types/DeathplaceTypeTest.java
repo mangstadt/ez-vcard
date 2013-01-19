@@ -16,7 +16,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -85,24 +85,24 @@ public class DeathplaceTypeTest {
 		//text
 		DeathplaceType t = new DeathplaceType();
 		t.setText("Mount St. Helens");
-		String expectedXml = "<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>Mount St. Helens</text>";
-		expectedXml += "</deathplace>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("deathplace");
+		xe.appendText("Mount St. Helens");
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("deathplace");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//URI
 		t = new DeathplaceType();
 		t.setUri("geo:46.176502,-122.191658");
-		expectedXml = "<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<uri>geo:46.176502,-122.191658</uri>";
-		expectedXml += "</deathplace>";
-		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("deathplace");
+		xe.appendUri("geo:46.176502,-122.191658");
+		expectedDoc = xe.getDocument();
+		xe = new XCardElement("deathplace");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -137,20 +137,18 @@ public class DeathplaceTypeTest {
 
 		//text
 		DeathplaceType t = new DeathplaceType();
-		String xml = "<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>Mount St. Helens</text>";
-		xml += "</deathplace>";
-		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("deathplace");
+		xe.appendText("Mount St. Helens");
+		Element element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Mount St. Helens", t.getText());
 		assertNull(t.getUri());
 
 		//URI
 		t = new DeathplaceType();
-		xml = "<deathplace xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<uri>geo:46.176502,-122.191658</uri>";
-		xml += "</deathplace>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("deathplace");
+		xe.appendUri("geo:46.176502,-122.191658");
+		element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:46.176502,-122.191658", t.getUri());

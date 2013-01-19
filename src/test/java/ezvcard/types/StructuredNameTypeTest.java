@@ -15,7 +15,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -95,7 +95,6 @@ public class StructuredNameTypeTest {
 		StructuredNameType t;
 		Document expected, actual;
 		Element element;
-		String expectedXml;
 
 		t = new StructuredNameType();
 		t.setGiven("Jonathan");
@@ -105,18 +104,18 @@ public class StructuredNameTypeTest {
 		t.addPrefix("Mr.");
 		t.addSuffix("III");
 
-		expectedXml = "<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<surname>Doe</surname>";
-		expectedXml += "<given>Jonathan</given>";
-		expectedXml += "<additional>Joh;nny,</additional>";
-		expectedXml += "<additional>John</additional>";
-		expectedXml += "<prefix>Mr.</prefix>";
-		expectedXml += "<suffix>III</suffix>";
-		expectedXml += "</n>";
-		expected = XmlUtils.toDocument(expectedXml);
+		XCardElement xe = new XCardElement("n");
+		xe.append("surname", "Doe");
+		xe.append("given", "Jonathan");
+		xe.append("additional", "Joh;nny,");
+		xe.append("additional", "John");
+		xe.append("prefix", "Mr.");
+		xe.append("suffix", "III");
+		expected = xe.getDocument();
 
-		actual = XmlUtils.toDocument("<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actual);
+		xe = new XCardElement("n");
+		actual = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -129,16 +128,16 @@ public class StructuredNameTypeTest {
 		t.addAdditional("John");
 		t.addSuffix("III");
 
-		expectedXml = "<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<given>Jonathan</given>";
-		expectedXml += "<additional>Joh;nny,</additional>";
-		expectedXml += "<additional>John</additional>";
-		expectedXml += "<suffix>III</suffix>";
-		expectedXml += "</n>";
-		expected = XmlUtils.toDocument(expectedXml);
+		xe = new XCardElement("n");
+		xe.append("given", "Jonathan");
+		xe.append("additional", "Joh;nny,");
+		xe.append("additional", "John");
+		xe.append("suffix", "III");
+		expected = xe.getDocument();
 
-		actual = XmlUtils.toDocument("<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actual);
+		xe = new XCardElement("n");
+		actual = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -204,18 +203,16 @@ public class StructuredNameTypeTest {
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		StructuredNameType t;
-		String xml;
 		Element element;
 
-		xml = "<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<surname>Doe</surname>";
-		xml += "<given>Jonathan</given>";
-		xml += "<additional>Joh;nny,</additional>";
-		xml += "<additional>John</additional>";
-		xml += "<prefix>Mr.</prefix>";
-		xml += "<suffix>III</suffix>";
-		xml += "</n>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("n");
+		xe.append("surname", "Doe");
+		xe.append("given", "Jonathan");
+		xe.append("additional", "Joh;nny,");
+		xe.append("additional", "John");
+		xe.append("prefix", "Mr.");
+		xe.append("suffix", "III");
+		element = xe.getElement();
 		t = new StructuredNameType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Doe", t.getFamily());
@@ -229,13 +226,12 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getSuffixes().contains("III"));
 
 		//some empty values
-		xml = "<n xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<given>Jonathan</given>";
-		xml += "<additional>Joh;nny,</additional>";
-		xml += "<additional>John</additional>";
-		xml += "<suffix>III</suffix>";
-		xml += "</n>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("n");
+		xe.append("given", "Jonathan");
+		xe.append("additional", "Joh;nny,");
+		xe.append("additional", "John");
+		xe.append("suffix", "III");
+		element = xe.getElement();
 		t = new StructuredNameType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getFamily());

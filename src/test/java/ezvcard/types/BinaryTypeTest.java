@@ -20,7 +20,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -100,12 +100,12 @@ public class BinaryTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<uri>http://example.com/image.jpg</uri>";
-		expectedXml += "</name>";
-		Document expected = XmlUtils.toDocument(expectedXml);
-		Document actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actual);
+		XCardElement xe = new XCardElement("name");
+		xe.appendUri("http://example.com/image.jpg");
+		Document expected = xe.getDocument();
+		xe = new XCardElement("name");
+		Document actual = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
@@ -154,13 +154,13 @@ public class BinaryTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<uri>data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) + "</uri>";
-		expectedXml += "</name>";
-		Document expected = XmlUtils.toDocument(expectedXml);
+		XCardElement xe = new XCardElement("name");
+		xe.appendUri("data:image/jpeg;base64," + Base64.encodeBase64String(dummyData));
+		Document expected = xe.getDocument();
 
-		Document actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actual);
+		xe = new XCardElement("name");
+		Document actual = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -293,10 +293,9 @@ public class BinaryTypeTest {
 		subTypes = new VCardSubTypes();
 		subTypes.setMediaType("image/jpeg");
 
-		String xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<uri>http://example.com/image.jpg</uri>";
-		xml += "</name>";
-		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("name");
+		xe.appendUri("http://example.com/image.jpg");
+		Element element = xe.getElement();
 
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
@@ -309,10 +308,9 @@ public class BinaryTypeTest {
 		subTypes = new VCardSubTypes();
 		subTypes.setMediaType("image/jpeg");
 
-		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<uri>data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) + "</uri>";
-		xml += "</name>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("name");
+		xe.appendUri("data:image/jpeg;base64," + Base64.encodeBase64String(dummyData));
+		element = xe.getElement();
 
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getUrl());

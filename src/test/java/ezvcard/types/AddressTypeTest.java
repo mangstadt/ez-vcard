@@ -18,7 +18,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -102,7 +102,6 @@ public class AddressTypeTest {
 		AddressType t;
 		Document expected, actual;
 		Element element;
-		String expectedXml;
 
 		//all fields present
 		t = new AddressType();
@@ -114,19 +113,19 @@ public class AddressTypeTest {
 		t.setPostalCode("12345");
 		t.setCountry("USA");
 
-		expectedXml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<pobox>P.O. Box 1234</pobox>";
-		expectedXml += "<ext>Apt 11</ext>";
-		expectedXml += "<street>123 Main St</street>";
-		expectedXml += "<locality>Austin</locality>";
-		expectedXml += "<region>TX</region>";
-		expectedXml += "<code>12345</code>";
-		expectedXml += "<country>USA</country>";
-		expectedXml += "</adr>";
-		expected = XmlUtils.toDocument(expectedXml);
+		XCardElement xe = new XCardElement("adr");
+		xe.append("pobox", "P.O. Box 1234");
+		xe.append("ext", "Apt 11");
+		xe.append("street", "123 Main St");
+		xe.append("locality", "Austin");
+		xe.append("region", "TX");
+		xe.append("code", "12345");
+		xe.append("country", "USA");
+		expected = xe.getDocument();
 
-		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actual);
+		xe = new XCardElement("adr");
+		actual = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -141,28 +140,28 @@ public class AddressTypeTest {
 		t.setPostalCode("12345");
 		t.setCountry(null);
 
-		expectedXml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<pobox>P.O. Box 1234</pobox>";
-		expectedXml += "<locality>Austin</locality>";
-		expectedXml += "<region>TX</region>";
-		expectedXml += "<code>12345</code>";
-		expectedXml += "</adr>";
-		expected = XmlUtils.toDocument(expectedXml);
+		xe = new XCardElement("adr");
+		xe.append("pobox", "P.O. Box 1234");
+		xe.append("locality", "Austin");
+		xe.append("region", "TX");
+		xe.append("code", "12345");
+		expected = xe.getDocument();
 
-		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actual);
+		xe = new XCardElement("adr");
+		actual = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 
 		//all nulls
 		t = new AddressType();
 
-		expectedXml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "</adr>";
-		expected = XmlUtils.toDocument(expectedXml);
+		xe = new XCardElement("adr");
+		expected = xe.getDocument();
 
-		actual = XmlUtils.toDocument("<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actual);
+		xe = new XCardElement("adr");
+		actual = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
@@ -294,20 +293,18 @@ public class AddressTypeTest {
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 		AddressType t;
-		String xml;
 		Element element;
 
 		//all fields present
-		xml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<pobox>P.O. Box 1234</pobox>";
-		xml += "<ext>Apt 11</ext>";
-		xml += "<street>123 Main St</street>";
-		xml += "<locality>Austin</locality>";
-		xml += "<region>TX</region>";
-		xml += "<code>12345</code>";
-		xml += "<country>USA</country>";
-		xml += "</adr>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("adr");
+		xe.append("pobox", "P.O. Box 1234");
+		xe.append("ext", "Apt 11");
+		xe.append("street", "123 Main St");
+		xe.append("locality", "Austin");
+		xe.append("region", "TX");
+		xe.append("code", "12345");
+		xe.append("country", "USA");
+		element = xe.getElement();
 		t = new AddressType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234", t.getPoBox());
@@ -319,14 +316,13 @@ public class AddressTypeTest {
 		assertEquals("USA", t.getCountry());
 
 		//some missing fields
-		xml = "<adr xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<pobox>P.O. Box 1234</pobox>";
-		xml += "<locality>Austin</locality>";
-		xml += "<region>TX</region>";
-		xml += "<code>12345</code>";
-		xml += "<country>USA</country>";
-		xml += "</adr>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("adr");
+		xe.append("pobox", "P.O. Box 1234");
+		xe.append("locality", "Austin");
+		xe.append("region", "TX");
+		xe.append("code", "12345");
+		xe.append("country", "USA");
+		element = xe.getElement();
 		t = new AddressType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234", t.getPoBox());
