@@ -5,13 +5,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.KindType;
+import ezvcard.types.MemberType;
 import ezvcard.types.NoteType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
@@ -364,5 +369,45 @@ public class XCardDocumentTest {
 
 		//use "String.contains()" to ignore the XML declaration at the top
 		assertTrue("Expected:" + newline + expected + newline + newline + "Actual:" + newline + actual, actual.contains(expected));
+	}
+
+	@Test
+	public void kind_and_member_combination() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcard.addMember(new MemberType("http://uri.com"));
+
+		//correct KIND
+		{
+			vcard.setKind(KindType.group());
+
+			XCardDocument doc = new XCardDocument();
+			doc.addVCard(vcard);
+			String xml = doc.write();
+
+			List<String> warnings = doc.getWarnings();
+			assertTrue(warnings.isEmpty());
+
+			VCard parsedVCard = Ezvcard.parseXml(xml).first();
+			assertEquals("group", parsedVCard.getKind().getValue());
+			assertEquals(1, parsedVCard.getMembers().size());
+			assertEquals("http://uri.com", parsedVCard.getMembers().get(0).getUri());
+		}
+
+		//wrong KIND
+		{
+			vcard.setKind(KindType.individual());
+
+			XCardDocument doc = new XCardDocument();
+			doc.addVCard(vcard);
+			String xml = doc.write();
+
+			List<String> warnings = doc.getWarnings();
+			assertEquals(1, warnings.size());
+
+			VCard parsedVCard = Ezvcard.parseXml(xml).first();
+			assertEquals("individual", parsedVCard.getKind().getValue());
+			assertTrue(parsedVCard.getMembers().isEmpty());
+		}
 	}
 }

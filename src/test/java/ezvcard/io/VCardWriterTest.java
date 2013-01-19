@@ -5,16 +5,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import org.junit.Test;
 
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
+import ezvcard.types.MemberType;
 import ezvcard.types.NoteType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.StructuredNameType;
@@ -688,6 +692,46 @@ public class VCardWriterTest {
 			String expected = sb.toString();
 
 			assertEquals(actual, expected);
+		}
+	}
+
+	@Test
+	public void kind_and_member_combination() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcard.addMember(new MemberType("http://uri.com"));
+
+		//correct KIND
+		{
+			vcard.setKind(KindType.group());
+
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertTrue(warnings.isEmpty());
+
+			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
+			assertEquals("group", parsedVCard.getKind().getValue());
+			assertEquals(1, parsedVCard.getMembers().size());
+			assertEquals("http://uri.com", parsedVCard.getMembers().get(0).getUri());
+		}
+
+		//wrong KIND
+		{
+			vcard.setKind(KindType.individual());
+
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertEquals(1, warnings.size());
+
+			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
+			assertEquals("individual", parsedVCard.getKind().getValue());
+			assertTrue(parsedVCard.getMembers().isEmpty());
 		}
 	}
 }
