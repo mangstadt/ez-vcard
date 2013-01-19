@@ -83,6 +83,31 @@ public class XCardDocumentTest {
 		assertXMLEqual(expected, actual);
 	}
 
+	@Test
+	public void required_properties() throws Exception {
+		//without FN
+		{
+			VCard vcard = new VCard();
+			XCardDocument doc = new XCardDocument();
+			doc.addVCard(vcard);
+
+			List<String> warnings = doc.getWarnings();
+			assertEquals(1, warnings.size());
+		}
+
+		//with FN
+		{
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+
+			XCardDocument doc = new XCardDocument();
+			doc.addVCard(vcard);
+
+			List<String> warnings = doc.getWarnings();
+			assertTrue(warnings.isEmpty());
+		}
+	}
+
 	/**
 	 * Makes sure it can marshal parameters.
 	 */
