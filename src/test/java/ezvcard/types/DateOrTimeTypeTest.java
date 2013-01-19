@@ -101,10 +101,10 @@ public class DateOrTimeTypeTest {
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("date");
 		xe.append("date-and-or-time", expected);
-		Document expectedDoc = xe.getDocument();
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("date");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -155,7 +155,7 @@ public class DateOrTimeTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("date");
-		Element element = xe.getElement();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(expected));
 	}
@@ -202,10 +202,10 @@ public class DateOrTimeTypeTest {
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("date");
 		xe.append("date-and-or-time", expected);
-		Document expectedDoc = xe.getDocument();
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("date");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -251,11 +251,11 @@ public class DateOrTimeTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("date");
-		xe.appendText("Sometime around ;1980;");
-		Document expectedDoc = xe.getDocument();
+		xe.text("Sometime around ;1980;");
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("date");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -309,7 +309,7 @@ public class DateOrTimeTypeTest {
 		t = new DateOrTimeType("DATE");
 		XCardElement xe = new XCardElement("date");
 		xe.append("date-and-or-time", "1980-06-05");
-		Element input = xe.getElement();
+		Element input = xe.element();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals("1980-06-05", t.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
@@ -319,7 +319,7 @@ public class DateOrTimeTypeTest {
 		t = new DateOrTimeType("DATE");
 		xe = new XCardElement("date");
 		xe.append("date-and-or-time", "19800605");
-		input = xe.getElement();
+		input = xe.element();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getDate());
 		assertNull(t.getReducedAccuracyDate());
@@ -364,7 +364,7 @@ public class DateOrTimeTypeTest {
 		t = new DateOrTimeType("DATE");
 		XCardElement xe = new XCardElement("date");
 		xe.append("date-and-or-time", value);
-		Element input = xe.getElement();
+		Element input = xe.element();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertEquals(expected, t.getReducedAccuracyDate());
@@ -410,7 +410,7 @@ public class DateOrTimeTypeTest {
 		t = new DateOrTimeType("DATE");
 		XCardElement xe = new XCardElement("date");
 		xe.append("date-and-or-time", "Some ;text;.");
-		Element input = xe.getElement();
+		Element input = xe.element();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 		assertNull(t.getDate());
 		assertNull(t.getReducedAccuracyDate());

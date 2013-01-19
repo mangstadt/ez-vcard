@@ -98,14 +98,14 @@ public class TimestampType extends VCardType {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = writeValue();
-		parent.appendTimestamp(value);
+		parent.timestamp(value);
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.getTimestamp();
+		String value = element.timestamp();
 		if (value != null) {
-			doUnmarshalText(value, element.getVersion(), warnings, compatibilityMode);
+			doUnmarshalText(value, element.version(), warnings, compatibilityMode);
 		}
 	}
 

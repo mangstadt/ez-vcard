@@ -168,15 +168,15 @@ public class XmlType extends TextType {
 		}
 
 		//add XML element to marshalled document
-		Node imported = parent.getElement().getOwnerDocument().importNode(root, true);
-		parent.getElement().appendChild(imported);
+		Node imported = parent.element().getOwnerDocument().importNode(root, true);
+		parent.element().appendChild(imported);
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		try {
 			StringWriter writer = new StringWriter();
-			DOMSource source = new DOMSource(element.getElement());
+			DOMSource source = new DOMSource(element.element());
 			StreamResult result = new StreamResult(writer);
 			Transformer t = TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");

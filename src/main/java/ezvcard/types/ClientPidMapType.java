@@ -176,7 +176,7 @@ public class ClientPidMapType extends VCardType {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.appendUri(uri);
+			parent.uri(uri);
 		}
 		if (pid != null) {
 			parent.append("sourceid", pid.toString());
@@ -185,7 +185,7 @@ public class ClientPidMapType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		uri = element.getUri();
+		uri = element.uri();
 
 		String value = element.get("sourceid");
 		pid = (value != null) ? Integer.parseInt(value) : null;

@@ -85,11 +85,11 @@ public class TimestampTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("date");
-		xe.appendTimestamp("19800605T131020Z");
-		Document expectedDoc = xe.getDocument();
+		xe.timestamp("19800605T131020Z");
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("date");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -119,8 +119,8 @@ public class TimestampTypeTest {
 		version = VCardVersion.V4_0;
 		t = new TimestampType("DATE");
 		XCardElement xe = new XCardElement("date");
-		xe.appendTimestamp("19800605T131020Z");
-		Element element = xe.getElement();
+		xe.timestamp("19800605T131020Z");
+		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(expected, t.getTimestamp());
 	}

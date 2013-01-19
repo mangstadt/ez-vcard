@@ -76,12 +76,12 @@ public class TextTypeTest {
 		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 
 		XCardElement xe = new XCardElement("name");
-		xe.appendText("This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		expected = xe.getDocument();
+		xe.text("This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		expected = xe.document();
 
 		xe = new XCardElement("name");
-		actual = xe.getDocument();
-		element = xe.getElement();
+		actual = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -114,8 +114,8 @@ public class TextTypeTest {
 		Element element;
 
 		XCardElement xe = new XCardElement("name");
-		xe.appendText("This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		element = xe.getElement();
+		xe.text("This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		element = xe.element();
 		t = new TextType("NAME");
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";

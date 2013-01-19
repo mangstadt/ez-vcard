@@ -88,12 +88,12 @@ public class TextType extends VCardType {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.appendText(value);
+		parent.text(value);
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(element.getText());
+		setValue(element.text());
 	}
 
 	@Override

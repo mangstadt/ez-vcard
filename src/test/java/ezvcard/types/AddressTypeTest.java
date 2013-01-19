@@ -121,11 +121,11 @@ public class AddressTypeTest {
 		xe.append("region", "TX");
 		xe.append("code", "12345");
 		xe.append("country", "USA");
-		expected = xe.getDocument();
+		expected = xe.document();
 
 		xe = new XCardElement("adr");
-		actual = xe.getDocument();
-		element = xe.getElement();
+		actual = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -145,11 +145,11 @@ public class AddressTypeTest {
 		xe.append("locality", "Austin");
 		xe.append("region", "TX");
 		xe.append("code", "12345");
-		expected = xe.getDocument();
+		expected = xe.document();
 
 		xe = new XCardElement("adr");
-		actual = xe.getDocument();
-		element = xe.getElement();
+		actual = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 
@@ -157,11 +157,11 @@ public class AddressTypeTest {
 		t = new AddressType();
 
 		xe = new XCardElement("adr");
-		expected = xe.getDocument();
+		expected = xe.document();
 
 		xe = new XCardElement("adr");
-		actual = xe.getDocument();
-		element = xe.getElement();
+		actual = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
@@ -304,7 +304,7 @@ public class AddressTypeTest {
 		xe.append("region", "TX");
 		xe.append("code", "12345");
 		xe.append("country", "USA");
-		element = xe.getElement();
+		element = xe.element();
 		t = new AddressType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234", t.getPoBox());
@@ -322,7 +322,7 @@ public class AddressTypeTest {
 		xe.append("region", "TX");
 		xe.append("code", "12345");
 		xe.append("country", "USA");
-		element = xe.getElement();
+		element = xe.element();
 		t = new AddressType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("P.O. Box 1234", t.getPoBox());

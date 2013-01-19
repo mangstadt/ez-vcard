@@ -254,9 +254,9 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			parent.appendText(text);
+			parent.text(text);
 		} else {
-			VCardVersion version = parent.getVersion();
+			VCardVersion version = parent.version();
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
 				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");
 			}
@@ -266,11 +266,11 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.getUri();
+		String value = element.uri();
 		if (value != null) {
-			super.doUnmarshalText(value, element.getVersion(), warnings, compatibilityMode);
+			super.doUnmarshalText(value, element.version(), warnings, compatibilityMode);
 		} else {
-			value = element.getText();
+			value = element.text();
 			if (value != null) {
 				String mediaType = subTypes.getMediaType();
 				KeyTypeParameter contentType = (mediaType != null) ? buildMediaTypeObj(mediaType) : null;

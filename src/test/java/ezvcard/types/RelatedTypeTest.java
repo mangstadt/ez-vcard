@@ -92,11 +92,11 @@ public class RelatedTypeTest {
 		RelatedType t = new RelatedType();
 		t.setText("Edna Smith");
 		XCardElement xe = new XCardElement("related");
-		xe.appendText(t.getText());
-		Document expectedDoc = xe.getDocument();
+		xe.text(t.getText());
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("related");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -104,11 +104,11 @@ public class RelatedTypeTest {
 		t = new RelatedType();
 		t.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
 		xe = new XCardElement("related");
-		xe.appendUri(t.getUri());
-		expectedDoc = xe.getDocument();
+		xe.uri(t.getUri());
+		expectedDoc = xe.document();
 		xe = new XCardElement("related");
-		actualDoc = xe.getDocument();
-		element = xe.getElement();
+		actualDoc = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -150,8 +150,8 @@ public class RelatedTypeTest {
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setType(RelatedTypeParameter.SPOUSE.getValue());
 		XCardElement xe = new XCardElement("related");
-		xe.appendText("Edna Smith");
-		Element element = xe.getElement();
+		xe.text("Edna Smith");
+		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Edna Smith", t.getText());
 		assertNull(t.getUri());
@@ -162,8 +162,8 @@ public class RelatedTypeTest {
 		subTypes = new VCardSubTypes();
 		subTypes.setType(RelatedTypeParameter.SPOUSE.getValue());
 		xe = new XCardElement("related");
-		xe.appendUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
-		element = xe.getElement();
+		xe.uri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
+		element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af", t.getUri());

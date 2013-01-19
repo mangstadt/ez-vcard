@@ -52,8 +52,8 @@ public class XCardElementTest {
 	@Test
 	public void constructor_string() throws Exception {
 		XCardElement xcardElement = new XCardElement("prop");
-		Document document = xcardElement.getDocument();
-		Element element = xcardElement.getElement();
+		Document document = xcardElement.document();
+		Element element = xcardElement.element();
 
 		assertEquals(element, XmlUtils.getRootElement(document));
 		assertEquals("prop", element.getLocalName());
@@ -111,51 +111,51 @@ public class XCardElementTest {
 	}
 
 	@Test
-	public void getText() throws Exception {
+	public void text_get() throws Exception {
 		XCardElement xcardElement = build("<prop><text>t</text></prop>");
-		assertEquals("t", xcardElement.getText());
+		assertEquals("t", xcardElement.text());
 	}
 
 	@Test
-	public void getText_none() throws Exception {
+	public void text_get_none() throws Exception {
 		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.getText());
+		assertNull(xcardElement.text());
 	}
 
 	@Test
-	public void getUri() throws Exception {
+	public void uri_get() throws Exception {
 		XCardElement xcardElement = build("<prop><uri>u</uri></prop>");
-		assertEquals("u", xcardElement.getUri());
+		assertEquals("u", xcardElement.uri());
 	}
 
 	@Test
-	public void getUri_none() throws Exception {
+	public void uri_get_none() throws Exception {
 		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.getUri());
+		assertNull(xcardElement.uri());
 	}
 
 	@Test
-	public void getDateAndOrTime() throws Exception {
+	public void dateAndOrTime_get() throws Exception {
 		XCardElement xcardElement = build("<prop><date-and-or-time>d</date-and-or-time></prop>");
-		assertEquals("d", xcardElement.getDateAndOrTime());
+		assertEquals("d", xcardElement.dateAndOrTime());
 	}
 
 	@Test
-	public void getDateAndOrTime_none() throws Exception {
+	public void dateAndOrTime_get_none() throws Exception {
 		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.getDateAndOrTime());
+		assertNull(xcardElement.dateAndOrTime());
 	}
 
 	@Test
-	public void getTimestamp() throws Exception {
+	public void timestamp_get() throws Exception {
 		XCardElement xcardElement = build("<prop><timestamp>t</timestamp></prop>");
-		assertEquals("t", xcardElement.getTimestamp());
+		assertEquals("t", xcardElement.timestamp());
 	}
 
 	@Test
-	public void getTimestamp_none() throws Exception {
+	public void timestamp_get_none() throws Exception {
 		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.getTimestamp());
+		assertNull(xcardElement.timestamp());
 	}
 
 	@Test
@@ -166,7 +166,7 @@ public class XCardElementTest {
 		assertEquals(VCardVersion.V4_0.getXmlNamespace(), appendedElement.getNamespaceURI());
 		assertEquals("2", appendedElement.getTextContent());
 
-		Iterator<Element> it = XmlUtils.toElementList(xcardElement.getElement().getChildNodes()).iterator();
+		Iterator<Element> it = XmlUtils.toElementList(xcardElement.element().getChildNodes()).iterator();
 
 		Element element = it.next();
 		assertEquals("one", element.getLocalName());
@@ -202,47 +202,47 @@ public class XCardElementTest {
 
 		assertFalse(it.hasNext());
 
-		assertEquals(XmlUtils.toElementList(xcardElement.getElement().getChildNodes()), elements);
+		assertEquals(XmlUtils.toElementList(xcardElement.element().getChildNodes()), elements);
 	}
 
 	@Test
-	public void appendText() throws Exception {
+	public void text_add() throws Exception {
 		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.appendText("t");
+		Element element = xcardElement.text("t");
 		assertEquals("text", element.getLocalName());
 		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
 		assertEquals("t", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.getElement()), element);
+		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
 	}
 
 	@Test
-	public void appendUri() throws Exception {
+	public void uri_add() throws Exception {
 		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.appendUri("u");
+		Element element = xcardElement.uri("u");
 		assertEquals("uri", element.getLocalName());
 		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
 		assertEquals("u", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.getElement()), element);
+		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
 	}
 
 	@Test
-	public void appendDateAndOrTime() throws Exception {
+	public void dateAndOrTime_add() throws Exception {
 		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.appendDateAndOrTime("d");
+		Element element = xcardElement.dateAndOrTime("d");
 		assertEquals("date-and-or-time", element.getLocalName());
 		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
 		assertEquals("d", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.getElement()), element);
+		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
 	}
 
 	@Test
-	public void appendTimestamp() throws Exception {
+	public void timestamp_add() throws Exception {
 		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.appendTimestamp("t");
+		Element element = xcardElement.timestamp("t");
 		assertEquals("timestamp", element.getLocalName());
 		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
 		assertEquals("t", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.getElement()), element);
+		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
 	}
 
 	private XCardElement build(String innerXml) throws SAXException {

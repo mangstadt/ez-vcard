@@ -60,12 +60,12 @@ public class UriTypeTest {
 		t = new UriType("NAME", "http://www.example.com");
 
 		XCardElement xe = new XCardElement("name");
-		xe.appendUri("http://www.example.com");
-		expected = xe.getDocument();
+		xe.uri("http://www.example.com");
+		expected = xe.document();
 
 		xe = new XCardElement("name");
-		actual = xe.getDocument();
-		element = xe.getElement();
+		actual = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -82,8 +82,8 @@ public class UriTypeTest {
 		Element element;
 
 		XCardElement xe = new XCardElement("name");
-		xe.appendUri("http://www.example.com");
-		element = xe.getElement();
+		xe.uri("http://www.example.com");
+		element = xe.element();
 		t = new UriType("NAME");
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = "http://www.example.com";

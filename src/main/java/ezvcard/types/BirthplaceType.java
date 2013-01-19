@@ -203,9 +203,9 @@ public class BirthplaceType extends VCardType {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.appendUri(uri);
+			parent.uri(uri);
 		} else if (text != null) {
-			parent.appendText(text);
+			parent.text(text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -213,11 +213,11 @@ public class BirthplaceType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.getUri();
+		String value = element.uri();
 		if (value != null) {
 			setUri(value);
 		} else {
-			setText(element.getText());
+			setText(element.text());
 		}
 	}
 }

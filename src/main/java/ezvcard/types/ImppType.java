@@ -503,13 +503,13 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.appendUri(uri.toString());
+			parent.uri(uri.toString());
 		}
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.getUri();
+		String value = element.uri();
 		try {
 			setUri(value);
 		} catch (IllegalArgumentException e) {

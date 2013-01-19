@@ -101,11 +101,11 @@ public class BinaryTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
-		xe.appendUri("http://example.com/image.jpg");
-		Document expected = xe.getDocument();
+		xe.uri("http://example.com/image.jpg");
+		Document expected = xe.document();
 		xe = new XCardElement("name");
-		Document actual = xe.getDocument();
-		Element element = xe.getElement();
+		Document actual = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
@@ -155,12 +155,12 @@ public class BinaryTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
-		xe.appendUri("data:image/jpeg;base64," + Base64.encodeBase64String(dummyData));
-		Document expected = xe.getDocument();
+		xe.uri("data:image/jpeg;base64," + Base64.encodeBase64String(dummyData));
+		Document expected = xe.document();
 
 		xe = new XCardElement("name");
-		Document actual = xe.getDocument();
-		Element element = xe.getElement();
+		Document actual = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -294,8 +294,8 @@ public class BinaryTypeTest {
 		subTypes.setMediaType("image/jpeg");
 
 		XCardElement xe = new XCardElement("name");
-		xe.appendUri("http://example.com/image.jpg");
-		Element element = xe.getElement();
+		xe.uri("http://example.com/image.jpg");
+		Element element = xe.element();
 
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("http://example.com/image.jpg", t.getUrl());
@@ -309,8 +309,8 @@ public class BinaryTypeTest {
 		subTypes.setMediaType("image/jpeg");
 
 		xe = new XCardElement("name");
-		xe.appendUri("data:image/jpeg;base64," + Base64.encodeBase64String(dummyData));
-		element = xe.getElement();
+		xe.uri("data:image/jpeg;base64," + Base64.encodeBase64String(dummyData));
+		element = xe.element();
 
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getUrl());
