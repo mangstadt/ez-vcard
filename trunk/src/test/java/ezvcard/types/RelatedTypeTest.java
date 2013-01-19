@@ -18,7 +18,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.RelatedTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -91,24 +91,24 @@ public class RelatedTypeTest {
 		//text
 		RelatedType t = new RelatedType();
 		t.setText("Edna Smith");
-		String expectedXml = "<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>Edna Smith</text>";
-		expectedXml += "</related>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("related");
+		xe.appendText(t.getText());
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("related");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//URI
 		t = new RelatedType();
 		t.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
-		expectedXml = "<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<uri>urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af</uri>";
-		expectedXml += "</related>";
-		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("related");
+		xe.appendUri(t.getUri());
+		expectedDoc = xe.getDocument();
+		xe = new XCardElement("related");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -149,10 +149,9 @@ public class RelatedTypeTest {
 		RelatedType t = new RelatedType();
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setType(RelatedTypeParameter.SPOUSE.getValue());
-		String xml = "<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>Edna Smith</text>";
-		xml += "</related>";
-		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("related");
+		xe.appendText("Edna Smith");
+		Element element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Edna Smith", t.getText());
 		assertNull(t.getUri());
@@ -162,10 +161,9 @@ public class RelatedTypeTest {
 		t = new RelatedType();
 		subTypes = new VCardSubTypes();
 		subTypes.setType(RelatedTypeParameter.SPOUSE.getValue());
-		xml = "<related xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<uri>urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af</uri>";
-		xml += "</related>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("related");
+		xe.appendUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
+		element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af", t.getUri());

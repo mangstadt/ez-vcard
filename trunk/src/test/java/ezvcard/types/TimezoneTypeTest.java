@@ -19,7 +19,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -133,12 +133,12 @@ public class TimezoneTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<utc-offset>-05:30</utc-offset>";
-		expectedXml += "</tz>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("tz");
+		xe.append("utc-offset", "-05:30");
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("tz");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -171,12 +171,12 @@ public class TimezoneTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		expectedXml = "<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>America/New_York</text>";
-		expectedXml += "</tz>";
-		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("tz");
+		xe.appendText("America/New_York");
+		expectedDoc = xe.getDocument();
+		xe = new XCardElement("tz");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -209,12 +209,12 @@ public class TimezoneTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		expectedXml = "<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>America/New_York</text>";
-		expectedXml += "</tz>";
-		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("tz");
+		xe.appendText("America/New_York");
+		expectedDoc = xe.getDocument();
+		xe = new XCardElement("tz");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -250,8 +250,9 @@ public class TimezoneTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		actualDoc = XmlUtils.toDocument("<tz xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("tz");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		try {
 			t.marshalXml(element, version, warnings, compatibilityMode);
 			fail();

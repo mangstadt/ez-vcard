@@ -17,7 +17,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -97,12 +97,12 @@ public class KeyTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<key xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>abc123</text>";
-		expectedXml += "</key>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<key xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("key");
+		xe.appendText("abc123");
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("key");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -151,10 +151,9 @@ public class KeyTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new KeyType();
-		String xml = "<key xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>abc123</text>";
-		xml += "</key>";
-		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("key");
+		xe.appendText("abc123");
+		Element element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());

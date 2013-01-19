@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -103,14 +103,14 @@ public class TextListTypeTest {
 		t.addValue("Two");
 		t.removeValue("One and a half"); //test "removeValue"
 		t.addValue("Three");
-		String expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>One</text>";
-		expectedXml += "<text>Two</text>";
-		expectedXml += "<text>Three</text>";
-		expectedXml += "</name>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("name");
+		xe.appendText("One");
+		xe.appendText("Two");
+		xe.appendText("Three");
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("name");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -118,35 +118,35 @@ public class TextListTypeTest {
 		t = new TextListType("NAME", ',');
 		t.addValue("One");
 		t.addValue("Two");
-		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>One</text>";
-		expectedXml += "<text>Two</text>";
-		expectedXml += "</name>";
-		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("name");
+		xe.appendText("One");
+		xe.appendText("Two");
+		expectedDoc = xe.getDocument();
+		xe = new XCardElement("name");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//one item
 		t = new TextListType("NAME", ',');
 		t.addValue("One");
-		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>One</text>";
-		expectedXml += "</name>";
-		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("name");
+		xe.appendText("One");
+		expectedDoc = xe.getDocument();
+		xe = new XCardElement("name");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//zero items
 		t = new TextListType("NAME", ',');
-		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "</name>";
-		expectedDoc = XmlUtils.toDocument(expectedXml);
-		actualDoc = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actualDoc);
+		xe = new XCardElement("name");
+		expectedDoc = xe.getDocument();
+		xe = new XCardElement("name");
+		actualDoc = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -198,15 +198,13 @@ public class TextListTypeTest {
 		TextListType t;
 		List<String> expected, actual;
 		Element element;
-		String xml;
 
 		//three values
-		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>One</text>";
-		xml += "<text>Two</text>";
-		xml += "<text>Three</text>";
-		xml += "</name>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("name");
+		xe.appendText("One");
+		xe.appendText("Two");
+		xe.appendText("Three");
+		element = xe.getElement();
 		t = new TextListType("NAME", ',');
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two", "Three");
@@ -214,11 +212,10 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//two values
-		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>One</text>";
-		xml += "<text>Two</text>";
-		xml += "</name>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("name");
+		xe.appendText("One");
+		xe.appendText("Two");
+		element = xe.getElement();
 		t = new TextListType("NAME", ',');
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two");
@@ -226,10 +223,9 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//one value
-		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>One</text>";
-		xml += "</name>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("name");
+		xe.appendText("One");
+		element = xe.getElement();
 		t = new TextListType("NAME", ',');
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One");
@@ -237,9 +233,8 @@ public class TextListTypeTest {
 		assertEquals(expected, actual);
 
 		//zero values
-		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "</name>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("name");
+		element = xe.getElement();
 		t = new TextListType("NAME", ',');
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList();

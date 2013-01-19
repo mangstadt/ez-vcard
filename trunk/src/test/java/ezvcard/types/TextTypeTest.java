@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -72,17 +72,16 @@ public class TextTypeTest {
 		TextType t;
 		Document expected, actual;
 		Element element;
-		String expectedXml;
 
 		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 
-		expectedXml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<text>This is a test of the TextType.\nOne, two, three; and \\four\\.</text>";
-		expectedXml += "</name>";
-		expected = XmlUtils.toDocument(expectedXml);
+		XCardElement xe = new XCardElement("name");
+		xe.appendText("This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		expected = xe.getDocument();
 
-		actual = XmlUtils.toDocument("<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		element = XmlUtils.getRootElement(actual);
+		xe = new XCardElement("name");
+		actual = xe.getDocument();
+		element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -112,13 +111,11 @@ public class TextTypeTest {
 		VCardSubTypes subTypes = new VCardSubTypes();
 		TextType t;
 		String expected, actual;
-		String xml;
 		Element element;
 
-		xml = "<name xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>This is a test of the TextType.\nOne, two, three; and \\four\\.</text>";
-		xml += "</name>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("name");
+		xe.appendText("This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		element = xe.getElement();
 		t = new TextType("NAME");
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";

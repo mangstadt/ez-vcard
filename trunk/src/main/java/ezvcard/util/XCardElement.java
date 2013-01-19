@@ -5,6 +5,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCardVersion;
@@ -43,12 +48,35 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class XCardElement {
+	private final Document document;
 	private final Element element;
 	private List<Element> children;
 	private final VCardVersion version;
 	private final String namespace;
 
 	/**
+	 * Creates a new XML element under its own XML document.
+	 * @param propertyName the property name (e.g. "adr")
+	 */
+	public XCardElement(String propertyName) {
+		this(propertyName, VCardVersion.V4_0);
+	}
+
+	/**
+	 * Creates a new XML element under its own XML document.
+	 * @param propertyName the property name (e.g. "adr")
+	 * @param version the vCard version
+	 */
+	public XCardElement(String propertyName, VCardVersion version) {
+		this.version = version;
+		namespace = version.getXmlNamespace();
+		document = createDocument();
+		element = document.createElementNS(namespace, propertyName);
+		document.appendChild(element);
+	}
+
+	/**
+	 * Wraps an existing XML element.
 	 * @param element the XML element
 	 */
 	public XCardElement(Element element) {
@@ -56,10 +84,12 @@ public class XCardElement {
 	}
 
 	/**
+	 * Wraps an existing XML element.
 	 * @param element the XML element
 	 * @param version the vCard version
 	 */
 	public XCardElement(Element element, VCardVersion version) {
+		this.document = element.getOwnerDocument();
 		this.element = element;
 		this.version = version;
 		namespace = version.getXmlNamespace();
@@ -174,9 +204,14 @@ public class XCardElement {
 	 * @return the created element
 	 */
 	public Element append(String name, String value) {
-		Element child = element.getOwnerDocument().createElementNS(namespace, name);
+		Element child = document.createElementNS(namespace, name);
 		child.setTextContent(value);
 		element.appendChild(child);
+
+		if (children != null) {
+			children.add(child);
+		}
+
 		return child;
 	}
 
@@ -192,6 +227,14 @@ public class XCardElement {
 			elements.add(append(name, value));
 		}
 		return elements;
+	}
+
+	/**
+	 * Gets the owner document.
+	 * @return the owner document
+	 */
+	public Document getDocument() {
+		return document;
 	}
 
 	/**
@@ -219,5 +262,17 @@ public class XCardElement {
 			children = XmlUtils.toElementList(element.getChildNodes());
 		}
 		return children;
+	}
+
+	private static Document createDocument() {
+		DocumentBuilder db = null;
+		try {
+			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+			fact.setNamespaceAware(true);
+			db = fact.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			//no complex configurations
+		}
+		return db.newDocument();
 	}
 }

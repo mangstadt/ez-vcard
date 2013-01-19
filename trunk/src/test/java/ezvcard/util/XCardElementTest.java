@@ -50,6 +50,18 @@ import ezvcard.VCardVersion;
  */
 public class XCardElementTest {
 	@Test
+	public void constructor_string() throws Exception {
+		XCardElement xcardElement = new XCardElement("prop");
+		Document document = xcardElement.getDocument();
+		Element element = xcardElement.getElement();
+
+		assertEquals(element, XmlUtils.getRootElement(document));
+		assertEquals("prop", element.getLocalName());
+		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
+		assertEquals(0, element.getChildNodes().getLength());
+	}
+
+	@Test
 	public void get() throws Exception {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
 		assertEquals("2", xcardElement.get("two"));
@@ -240,12 +252,12 @@ public class XCardElementTest {
 	private XCardElement build(String innerXml, String prefix) throws SAXException {
 		//@formatter:off
 		String xml =
-		"<%svcards xmlns%s=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<%sroot xmlns%s=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
 			innerXml +
-		"</%svcards>";
+		"</%sroot>";
 		//@formatter:on
 		if (prefix == null) {
-			xml = String.format(xml, "", "", "");
+			xml = String.format(xml, "", "", "", "", "");
 		} else {
 			xml = String.format(xml, prefix + ":", ":" + prefix, prefix + ":");
 		}

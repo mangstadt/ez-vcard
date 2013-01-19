@@ -19,7 +19,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -94,12 +94,12 @@ public class TelephoneTypeTest {
 
 		//xCard
 		version = VCardVersion.V4_0;
-		String expectedXml = "<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<uri>tel:+1 555-555-1234</uri>";
-		expectedXml += "</tel>";
-		Document expectedDoc = XmlUtils.toDocument(expectedXml);
-		Document actualDoc = XmlUtils.toDocument("<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actualDoc);
+		XCardElement xe = new XCardElement("tel");
+		xe.appendUri("tel:+1 555-555-1234");
+		Document expectedDoc = xe.getDocument();
+		xe = new XCardElement("tel");
+		Document actualDoc = xe.getDocument();
+		Element element = xe.getElement();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -186,19 +186,17 @@ public class TelephoneTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		t = new TelephoneType();
-		String xml = "<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<uri>tel:+1 555-555-1234.</uri>";
-		xml += "</tel>";
-		Element element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		XCardElement xe = new XCardElement("tel");
+		xe.appendUri("tel:+1 555-555-1234.");
+		Element element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 
 		version = VCardVersion.V4_0;
 		t = new TelephoneType();
-		xml = "<tel xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		xml += "<text>+1 555-555-1234.</text>";
-		xml += "</tel>";
-		element = XmlUtils.getRootElement(XmlUtils.toDocument(xml));
+		xe = new XCardElement("tel");
+		xe.appendText("+1 555-555-1234.");
+		element = xe.getElement();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("+1 555-555-1234.", t.getValue());
 	}

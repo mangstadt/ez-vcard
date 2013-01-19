@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.XmlUtils;
+import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -70,14 +70,14 @@ public class ClientPidMapTypeTest {
 
 		ClientPidMapType t = new ClientPidMapType(1, "urn:uuid:1234");
 
-		String expectedXml = "<clientpidmap xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		expectedXml += "<sourceid>1</sourceid>";
-		expectedXml += "<uri>urn:uuid:1234</uri>";
-		expectedXml += "</clientpidmap>";
-		Document expected = XmlUtils.toDocument(expectedXml);
+		XCardElement xe = new XCardElement("clientpidmap");
+		xe.appendUri("urn:uuid:1234");
+		xe.append("sourceid", "1");
+		Document expected = xe.getDocument();
 
-		Document actual = XmlUtils.toDocument("<clientpidmap xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
-		Element element = XmlUtils.getRootElement(actual);
+		xe = new XCardElement("clientpidmap");
+		Document actual = xe.getDocument();
+		Element element = xe.getElement();
 
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
@@ -107,11 +107,10 @@ public class ClientPidMapTypeTest {
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		VCardSubTypes subTypes = new VCardSubTypes();
 
-		String inputXml = "<clientpidmap xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">";
-		inputXml += "<sourceid>1</sourceid>";
-		inputXml += "<uri>urn:uuid:1234</uri>";
-		inputXml += "</clientpidmap>";
-		Element input = XmlUtils.getRootElement(XmlUtils.toDocument(inputXml));
+		XCardElement xe = new XCardElement("clientpidmap");
+		xe.appendUri("urn:uuid:1234");
+		xe.append("sourceid", "1");
+		Element input = xe.getElement();
 
 		ClientPidMapType t = new ClientPidMapType();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
