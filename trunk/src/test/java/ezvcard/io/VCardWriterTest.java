@@ -585,6 +585,7 @@ public class VCardWriterTest {
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
+		assertEquals(3, vcw.getWarnings().size()); //each vCard is missing the N property, which is required for 2.1
 		String actual = sw.toString();
 
 		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
@@ -645,6 +646,7 @@ public class VCardWriterTest {
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
+		assertEquals(3, vcw.getWarnings().size()); //each vCard is missing the N property, which is required for 3.0
 		String actual = sw.toString();
 
 		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
