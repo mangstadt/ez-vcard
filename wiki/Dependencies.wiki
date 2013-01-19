@@ -13,10 +13,14 @@ Maven-enabled projects can exclude dependencies like so:
   <artifactId>ez-vcard</artifactId>
   <version>...</version>
   <exclusions>
-    <!-- hCard parsing not needed -->
+    <!-- hCard functionality not needed -->
     <exclusion>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
     </exclusion>
   </exclusions>
 </dependency>
