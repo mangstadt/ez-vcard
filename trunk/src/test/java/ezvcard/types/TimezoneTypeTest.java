@@ -135,10 +135,10 @@ public class TimezoneTypeTest {
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("tz");
 		xe.append("utc-offset", "-05:30");
-		Document expectedDoc = xe.getDocument();
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("tz");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -172,11 +172,11 @@ public class TimezoneTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		xe = new XCardElement("tz");
-		xe.appendText("America/New_York");
-		expectedDoc = xe.getDocument();
+		xe.text("America/New_York");
+		expectedDoc = xe.document();
 		xe = new XCardElement("tz");
-		actualDoc = xe.getDocument();
-		element = xe.getElement();
+		actualDoc = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -210,11 +210,11 @@ public class TimezoneTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		xe = new XCardElement("tz");
-		xe.appendText("America/New_York");
-		expectedDoc = xe.getDocument();
+		xe.text("America/New_York");
+		expectedDoc = xe.document();
 		xe = new XCardElement("tz");
-		actualDoc = xe.getDocument();
-		element = xe.getElement();
+		actualDoc = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -251,8 +251,8 @@ public class TimezoneTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		xe = new XCardElement("tz");
-		actualDoc = xe.getDocument();
-		element = xe.getElement();
+		actualDoc = xe.document();
+		element = xe.element();
 		try {
 			t.marshalXml(element, version, warnings, compatibilityMode);
 			fail();

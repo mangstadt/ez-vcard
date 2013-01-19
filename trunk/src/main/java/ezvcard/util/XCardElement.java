@@ -70,7 +70,7 @@ public class XCardElement {
 	public XCardElement(String propertyName, VCardVersion version) {
 		this.version = version;
 		namespace = version.getXmlNamespace();
-		document = createDocument();
+		document = newDocument();
 		element = document.createElementNS(namespace, propertyName);
 		document.appendChild(element);
 	}
@@ -99,7 +99,7 @@ public class XCardElement {
 	 * Gets the value of the first <code>&lt;text&gt;</code> child element.
 	 * @return the text value or null if not found
 	 */
-	public String getText() {
+	public String text() {
 		return get("text");
 	}
 
@@ -107,7 +107,7 @@ public class XCardElement {
 	 * Gets the value of the first <code>&lt;uri&gt;</code> child element.
 	 * @return the URI or null if not found
 	 */
-	public String getUri() {
+	public String uri() {
 		return get("uri");
 	}
 
@@ -116,7 +116,7 @@ public class XCardElement {
 	 * element.
 	 * @return the value or null if not found
 	 */
-	public String getDateAndOrTime() {
+	public String dateAndOrTime() {
 		return get("date-and-or-time");
 	}
 
@@ -124,7 +124,7 @@ public class XCardElement {
 	 * Gets the value of the first <code>&lt;timestamp&gt;</code> child element.
 	 * @return the timestamp or null if not found
 	 */
-	public String getTimestamp() {
+	public String timestamp() {
 		return get("timestamp");
 	}
 
@@ -135,7 +135,7 @@ public class XCardElement {
 	 */
 	public String get(String... names) {
 		List<String> localNamesList = Arrays.asList(names);
-		for (Element child : getChildren()) {
+		for (Element child : children()) {
 			if (localNamesList.contains(child.getLocalName()) && namespace.equals(child.getNamespaceURI())) {
 				return child.getTextContent();
 			}
@@ -150,7 +150,7 @@ public class XCardElement {
 	 */
 	public List<String> getAll(String localName) {
 		List<String> childrenText = new ArrayList<String>();
-		for (Element child : getChildren()) {
+		for (Element child : children()) {
 			if (localName.equals(child.getLocalName()) && namespace.equals(child.getNamespaceURI())) {
 				String text = child.getTextContent();
 				if (text.length() > 0) {
@@ -166,7 +166,7 @@ public class XCardElement {
 	 * @param text the text
 	 * @return the created element
 	 */
-	public Element appendText(String text) {
+	public Element text(String text) {
 		return append("text", text);
 	}
 
@@ -175,7 +175,7 @@ public class XCardElement {
 	 * @param uri the URI
 	 * @return the created element
 	 */
-	public Element appendUri(String uri) {
+	public Element uri(String uri) {
 		return append("uri", uri);
 	}
 
@@ -184,7 +184,7 @@ public class XCardElement {
 	 * @param dateAndOrTime the date/time
 	 * @return the created element
 	 */
-	public Element appendDateAndOrTime(String dateAndOrTime) {
+	public Element dateAndOrTime(String dateAndOrTime) {
 		return append("date-and-or-time", dateAndOrTime);
 	}
 
@@ -193,7 +193,7 @@ public class XCardElement {
 	 * @param timestamp the timestamp
 	 * @return the created element
 	 */
-	public Element appendTimestamp(String timestamp) {
+	public Element timestamp(String timestamp) {
 		return append("timestamp", timestamp);
 	}
 
@@ -233,7 +233,7 @@ public class XCardElement {
 	 * Gets the owner document.
 	 * @return the owner document
 	 */
-	public Document getDocument() {
+	public Document document() {
 		return document;
 	}
 
@@ -241,7 +241,7 @@ public class XCardElement {
 	 * Gets the wrapped XML element.
 	 * @return the wrapped XML element
 	 */
-	public Element getElement() {
+	public Element element() {
 		return element;
 	}
 
@@ -249,7 +249,7 @@ public class XCardElement {
 	 * Gets the vCard version.
 	 * @return the vCard version
 	 */
-	public VCardVersion getVersion() {
+	public VCardVersion version() {
 		return version;
 	}
 
@@ -257,14 +257,14 @@ public class XCardElement {
 	 * Gets the child elements of the XML element.
 	 * @return the child elements
 	 */
-	private List<Element> getChildren() {
+	private List<Element> children() {
 		if (children == null) {
 			children = XmlUtils.toElementList(element.getChildNodes());
 		}
 		return children;
 	}
 
-	private static Document createDocument() {
+	private static Document newDocument() {
 		DocumentBuilder db = null;
 		try {
 			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();

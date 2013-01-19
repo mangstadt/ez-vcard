@@ -161,7 +161,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * vCard
 	 */
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = marshalText(parent.getVersion(), warnings, compatibilityMode);
+		String value = marshalText(parent.version(), warnings, compatibilityMode);
 		parent.append("unknown", value);
 	}
 

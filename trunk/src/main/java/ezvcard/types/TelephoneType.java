@@ -241,8 +241,8 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = writeValue(parent.getVersion());
-		parent.appendUri(value);
+		String value = writeValue(parent.version());
+		parent.uri(value);
 	}
 
 	@Override

@@ -88,11 +88,11 @@ public class GeoTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("geo");
-		xe.appendUri("geo:-12.34,56.777778");
-		Document expectedDoc = xe.getDocument();
+		xe.uri("geo:-12.34,56.777778");
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("geo");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -130,8 +130,8 @@ public class GeoTypeTest {
 		version = VCardVersion.V4_0;
 		t = new GeoType();
 		XCardElement xe = new XCardElement("geo");
-		xe.appendUri("geo:-12.34,56.7878");
-		Element element = xe.getElement();
+		xe.uri("geo:-12.34,56.7878");
+		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals(-12.34, t.getLatitude(), 0.00001);
 		assertEquals(56.7878, t.getLongitude(), 0.00001);

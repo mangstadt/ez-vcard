@@ -104,13 +104,13 @@ public class TextListTypeTest {
 		t.removeValue("One and a half"); //test "removeValue"
 		t.addValue("Three");
 		XCardElement xe = new XCardElement("name");
-		xe.appendText("One");
-		xe.appendText("Two");
-		xe.appendText("Three");
-		Document expectedDoc = xe.getDocument();
+		xe.text("One");
+		xe.text("Two");
+		xe.text("Three");
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("name");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -119,12 +119,12 @@ public class TextListTypeTest {
 		t.addValue("One");
 		t.addValue("Two");
 		xe = new XCardElement("name");
-		xe.appendText("One");
-		xe.appendText("Two");
-		expectedDoc = xe.getDocument();
+		xe.text("One");
+		xe.text("Two");
+		expectedDoc = xe.document();
 		xe = new XCardElement("name");
-		actualDoc = xe.getDocument();
-		element = xe.getElement();
+		actualDoc = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -132,21 +132,21 @@ public class TextListTypeTest {
 		t = new TextListType("NAME", ',');
 		t.addValue("One");
 		xe = new XCardElement("name");
-		xe.appendText("One");
-		expectedDoc = xe.getDocument();
+		xe.text("One");
+		expectedDoc = xe.document();
 		xe = new XCardElement("name");
-		actualDoc = xe.getDocument();
-		element = xe.getElement();
+		actualDoc = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
 		//zero items
 		t = new TextListType("NAME", ',');
 		xe = new XCardElement("name");
-		expectedDoc = xe.getDocument();
+		expectedDoc = xe.document();
 		xe = new XCardElement("name");
-		actualDoc = xe.getDocument();
-		element = xe.getElement();
+		actualDoc = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -201,10 +201,10 @@ public class TextListTypeTest {
 
 		//three values
 		XCardElement xe = new XCardElement("name");
-		xe.appendText("One");
-		xe.appendText("Two");
-		xe.appendText("Three");
-		element = xe.getElement();
+		xe.text("One");
+		xe.text("Two");
+		xe.text("Three");
+		element = xe.element();
 		t = new TextListType("NAME", ',');
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two", "Three");
@@ -213,9 +213,9 @@ public class TextListTypeTest {
 
 		//two values
 		xe = new XCardElement("name");
-		xe.appendText("One");
-		xe.appendText("Two");
-		element = xe.getElement();
+		xe.text("One");
+		xe.text("Two");
+		element = xe.element();
 		t = new TextListType("NAME", ',');
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One", "Two");
@@ -224,8 +224,8 @@ public class TextListTypeTest {
 
 		//one value
 		xe = new XCardElement("name");
-		xe.appendText("One");
-		element = xe.getElement();
+		xe.text("One");
+		element = xe.element();
 		t = new TextListType("NAME", ',');
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList("One");
@@ -234,7 +234,7 @@ public class TextListTypeTest {
 
 		//zero values
 		xe = new XCardElement("name");
-		element = xe.getElement();
+		element = xe.element();
 		t = new TextListType("NAME", ',');
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		expected = Arrays.asList();

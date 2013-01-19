@@ -86,11 +86,11 @@ public class DeathplaceTypeTest {
 		DeathplaceType t = new DeathplaceType();
 		t.setText("Mount St. Helens");
 		XCardElement xe = new XCardElement("deathplace");
-		xe.appendText("Mount St. Helens");
-		Document expectedDoc = xe.getDocument();
+		xe.text("Mount St. Helens");
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("deathplace");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 
@@ -98,11 +98,11 @@ public class DeathplaceTypeTest {
 		t = new DeathplaceType();
 		t.setUri("geo:46.176502,-122.191658");
 		xe = new XCardElement("deathplace");
-		xe.appendUri("geo:46.176502,-122.191658");
-		expectedDoc = xe.getDocument();
+		xe.uri("geo:46.176502,-122.191658");
+		expectedDoc = xe.document();
 		xe = new XCardElement("deathplace");
-		actualDoc = xe.getDocument();
-		element = xe.getElement();
+		actualDoc = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -138,8 +138,8 @@ public class DeathplaceTypeTest {
 		//text
 		DeathplaceType t = new DeathplaceType();
 		XCardElement xe = new XCardElement("deathplace");
-		xe.appendText("Mount St. Helens");
-		Element element = xe.getElement();
+		xe.text("Mount St. Helens");
+		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Mount St. Helens", t.getText());
 		assertNull(t.getUri());
@@ -147,8 +147,8 @@ public class DeathplaceTypeTest {
 		//URI
 		t = new DeathplaceType();
 		xe = new XCardElement("deathplace");
-		xe.appendUri("geo:46.176502,-122.191658");
-		element = xe.getElement();
+		xe.uri("geo:46.176502,-122.191658");
+		element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals("geo:46.176502,-122.191658", t.getUri());

@@ -71,13 +71,13 @@ public class ClientPidMapTypeTest {
 		ClientPidMapType t = new ClientPidMapType(1, "urn:uuid:1234");
 
 		XCardElement xe = new XCardElement("clientpidmap");
-		xe.appendUri("urn:uuid:1234");
+		xe.uri("urn:uuid:1234");
 		xe.append("sourceid", "1");
-		Document expected = xe.getDocument();
+		Document expected = xe.document();
 
 		xe = new XCardElement("clientpidmap");
-		Document actual = xe.getDocument();
-		Element element = xe.getElement();
+		Document actual = xe.document();
+		Element element = xe.element();
 
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
@@ -108,9 +108,9 @@ public class ClientPidMapTypeTest {
 		VCardSubTypes subTypes = new VCardSubTypes();
 
 		XCardElement xe = new XCardElement("clientpidmap");
-		xe.appendUri("urn:uuid:1234");
+		xe.uri("urn:uuid:1234");
 		xe.append("sourceid", "1");
-		Element input = xe.getElement();
+		Element input = xe.element();
 
 		ClientPidMapType t = new ClientPidMapType();
 		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);

@@ -349,7 +349,7 @@ public class TimezoneType extends VCardType {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			parent.appendText(text);
+			parent.text(text);
 		} else if (hourOffset != null && minuteOffset != null) {
 			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
 			parent.append("utc-offset", offset);

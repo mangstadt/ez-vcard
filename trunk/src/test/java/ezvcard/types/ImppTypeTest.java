@@ -192,11 +192,11 @@ public class ImppTypeTest {
 
 		t = new ImppType("aim:john.doe@aol.com");
 		XCardElement xe = new XCardElement("impp");
-		xe.appendUri("aim:john.doe@aol.com");
-		expected = xe.getDocument();
+		xe.uri("aim:john.doe@aol.com");
+		expected = xe.document();
 		xe = new XCardElement("impp");
-		actual = xe.getDocument();
-		element = xe.getElement();
+		actual = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 	}
@@ -224,8 +224,8 @@ public class ImppTypeTest {
 		Element element;
 
 		XCardElement xe = new XCardElement("impp");
-		xe.appendUri("aim:john.doe@aol.com");
-		element = xe.getElement();
+		xe.uri("aim:john.doe@aol.com");
+		element = xe.element();
 		t = new ImppType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("aim:john.doe@aol.com", t.getUri().toString());

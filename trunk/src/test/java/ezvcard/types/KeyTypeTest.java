@@ -98,11 +98,11 @@ public class KeyTypeTest {
 		//xCard
 		version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("key");
-		xe.appendText("abc123");
-		Document expectedDoc = xe.getDocument();
+		xe.text("abc123");
+		Document expectedDoc = xe.document();
 		xe = new XCardElement("key");
-		Document actualDoc = xe.getDocument();
-		Element element = xe.getElement();
+		Document actualDoc = xe.document();
+		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
 	}
@@ -152,8 +152,8 @@ public class KeyTypeTest {
 		version = VCardVersion.V4_0;
 		t = new KeyType();
 		XCardElement xe = new XCardElement("key");
-		xe.appendText("abc123");
-		Element element = xe.getElement();
+		xe.text("abc123");
+		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("abc123", t.getText());
 		assertNull(t.getUrl());

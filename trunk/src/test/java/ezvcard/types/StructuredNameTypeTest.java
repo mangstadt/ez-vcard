@@ -111,11 +111,11 @@ public class StructuredNameTypeTest {
 		xe.append("additional", "John");
 		xe.append("prefix", "Mr.");
 		xe.append("suffix", "III");
-		expected = xe.getDocument();
+		expected = xe.document();
 
 		xe = new XCardElement("n");
-		actual = xe.getDocument();
-		element = xe.getElement();
+		actual = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -133,11 +133,11 @@ public class StructuredNameTypeTest {
 		xe.append("additional", "Joh;nny,");
 		xe.append("additional", "John");
 		xe.append("suffix", "III");
-		expected = xe.getDocument();
+		expected = xe.document();
 
 		xe = new XCardElement("n");
-		actual = xe.getDocument();
-		element = xe.getElement();
+		actual = xe.document();
+		element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
@@ -212,7 +212,7 @@ public class StructuredNameTypeTest {
 		xe.append("additional", "John");
 		xe.append("prefix", "Mr.");
 		xe.append("suffix", "III");
-		element = xe.getElement();
+		element = xe.element();
 		t = new StructuredNameType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertEquals("Doe", t.getFamily());
@@ -231,7 +231,7 @@ public class StructuredNameTypeTest {
 		xe.append("additional", "Joh;nny,");
 		xe.append("additional", "John");
 		xe.append("suffix", "III");
-		element = xe.getElement();
+		element = xe.element();
 		t = new StructuredNameType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 		assertNull(t.getFamily());

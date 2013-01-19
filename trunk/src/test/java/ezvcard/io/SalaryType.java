@@ -54,7 +54,7 @@ public class SalaryType extends VCardType {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.getElement().setTextContent(salary + "");
+		parent.element().setTextContent(salary + "");
 	}
 
 	@Override

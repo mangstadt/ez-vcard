@@ -329,15 +329,15 @@ public class GeoType extends VCardType {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
-		doMarshalText(sb, parent.getVersion(), warnings, compatibilityMode);
-		parent.appendUri(sb.toString());
+		doMarshalText(sb, parent.version(), warnings, compatibilityMode);
+		parent.uri(sb.toString());
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.getUri();
+		String value = element.uri();
 		if (value != null) {
-			doUnmarshalText(value, element.getVersion(), warnings, compatibilityMode);
+			doUnmarshalText(value, element.version(), warnings, compatibilityMode);
 		}
 	}
 

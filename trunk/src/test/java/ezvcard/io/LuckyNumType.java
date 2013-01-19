@@ -67,7 +67,7 @@ public class LuckyNumType extends VCardType {
 		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
-		parent.getElement().setTextContent(luckyNum + "");
+		parent.element().setTextContent(luckyNum + "");
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class LuckyNumType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		NodeList nodeList = element.getElement().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
+		NodeList nodeList = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
 		if (nodeList.getLength() > 0) {
 			Element num = (Element) nodeList.item(0);
 			luckyNum = Integer.parseInt(num.getTextContent());
