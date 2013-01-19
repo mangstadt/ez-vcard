@@ -1,6 +1,7 @@
 package ezvcard.parameters;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -74,12 +75,31 @@ public class VCardParameterTest {
 		assertTrue(params.isEmpty());
 	}
 
+	@Test
+	public void equals() {
+		ColorParameter param = new ColorParameter("green");
+		assertTrue(param.equals(ColorParameter.GREEN));
+	}
+
+	@Test
+	public void equals_same_values_different_class() {
+		assertFalse(ColorParameter.GREEN.equals(ColorParameter2.GREEN));
+	}
+
 	private static class ColorParameter extends VCardParameter {
 		public static final ColorParameter RED = new ColorParameter("red");
 		public static final ColorParameter GREEN = new ColorParameter("green");
 		public static final ColorParameter BLUE = new ColorParameter("blue");
 
 		public ColorParameter(String value) {
+			super("COLOR", value);
+		}
+	}
+
+	private static class ColorParameter2 extends VCardParameter {
+		public static final ColorParameter2 GREEN = new ColorParameter2("green");
+
+		public ColorParameter2(String value) {
 			super("COLOR", value);
 		}
 	}

@@ -1,10 +1,11 @@
 package ezvcard.parameters;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,37 +38,15 @@ import static org.junit.Assert.*;
  */
 public class TypeParameterTest {
 	@Test
-	public void findByTypeParam() {
-		NumberTypeParameter expected = NumberTypeParameter.second;
-		NumberTypeParameter actual = NumberTypeParameter.findByValue("two", NumberTypeParameter.class);
-		assertEquals(expected, actual);
-
-		actual = NumberTypeParameter.findByValue("five", NumberTypeParameter.class);
-		assertNull(actual);
+	public void name() {
+		assertEquals("TYPE", NumberTypeParameter.ONE.getName());
+		assertEquals("one", NumberTypeParameter.ONE.getValue());
 	}
 
-	@Test
-	public void equals() {
-		NumberTypeParameter two = new NumberTypeParameter("two");
-		assertTrue(two.equals(NumberTypeParameter.second));
-
-		assertFalse(NumberTypeParameter.first.equals(OtherTypeParameter.first));
-	}
-
-	public static class NumberTypeParameter extends TypeParameter {
-		public static final NumberTypeParameter first = new NumberTypeParameter("one");
-		public static final NumberTypeParameter second = new NumberTypeParameter("two");
-		public static final NumberTypeParameter third = new NumberTypeParameter("three");
+	private static class NumberTypeParameter extends TypeParameter {
+		public static final NumberTypeParameter ONE = new NumberTypeParameter("one");
 
 		public NumberTypeParameter(String value) {
-			super(value);
-		}
-	}
-
-	public static class OtherTypeParameter extends TypeParameter {
-		public static final OtherTypeParameter first = new OtherTypeParameter("one");
-
-		public OtherTypeParameter(String value) {
 			super(value);
 		}
 	}
