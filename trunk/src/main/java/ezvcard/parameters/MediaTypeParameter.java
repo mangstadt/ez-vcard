@@ -1,8 +1,5 @@
 package ezvcard.parameters;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -108,21 +105,9 @@ public class MediaTypeParameter extends TypeParameter {
 	 * @return the object or null if not found
 	 */
 	protected static <T extends MediaTypeParameter> T findByMediaType(String mediaType, Class<T> clazz) {
-		for (Field f : clazz.getFields()) {
-			int mods = f.getModifiers();
-			if (Modifier.isStatic(mods) && Modifier.isPublic(mods) && f.getDeclaringClass() == clazz) {
-				try {
-					Object obj = f.get(null);
-					if (obj != null) {
-						@SuppressWarnings("unchecked")
-						T param = (T) obj;
-						if (param.getMediaType().equalsIgnoreCase(mediaType)) {
-							return param;
-						}
-					}
-				} catch (Exception ex) {
-					//reflection error
-				}
+		for (T param : all(clazz)) {
+			if (param.getMediaType().equalsIgnoreCase(mediaType)) {
+				return param;
 			}
 		}
 		return null;
