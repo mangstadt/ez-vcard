@@ -2,6 +2,8 @@ package ezvcard.parameters;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -38,7 +40,7 @@ import java.lang.reflect.Modifier;
  */
 public class VCardParameter {
 	/**
-	 * The name (e.g. "TYPE")
+	 * The name (e.g. "TYPE").
 	 */
 	protected final String name;
 
@@ -113,23 +115,43 @@ public class VCardParameter {
 	 * @return the object or null if not found
 	 */
 	protected static <T extends VCardParameter> T findByValue(String typeValue, Class<T> clazz) {
-		for (Field f : clazz.getFields()) {
-			int mods = f.getModifiers();
-			if (Modifier.isStatic(mods) && Modifier.isPublic(mods) && f.getDeclaringClass() == clazz) {
+		for (T param : all(clazz)) {
+			if (param.getValue().equalsIgnoreCase(typeValue)) {
+				return param;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets all values that belong to a parameter class
+	 * @param <T>
+	 * @param clazz the parameter class
+	 * @return all of the parameter's values
+	 */
+	@SuppressWarnings("unchecked")
+	protected static <T extends VCardParameter> Set<T> all(Class<T> clazz) {
+		Set<T> params = new HashSet<T>();
+
+		for (Field field : clazz.getFields()) {
+			int modifiers = field.getModifiers();
+			//@formatter:off
+			if (Modifier.isStatic(modifiers) &&
+				Modifier.isPublic(modifiers) &&
+				field.getDeclaringClass() == clazz &&
+				field.getType() == clazz) {
+				//@formatter:on
 				try {
-					Object obj = f.get(null);
+					Object obj = field.get(null);
 					if (obj != null) {
-						@SuppressWarnings("unchecked")
-						T param = (T) obj;
-						if (param.getValue().equalsIgnoreCase(typeValue)) {
-							return param;
-						}
+						params.add((T) obj);
 					}
 				} catch (Exception ex) {
 					//reflection error
 				}
 			}
 		}
-		return null;
+
+		return params;
 	}
 }
