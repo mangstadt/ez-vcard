@@ -1,10 +1,14 @@
 package ezvcard.util;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -59,6 +63,22 @@ import org.xml.sax.SAXException;
  */
 public class XmlUtils {
 	/**
+	 * Creates a new XML document.
+	 * @return the XML document
+	 */
+	public static Document createDocument() {
+		try {
+			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+			fact.setNamespaceAware(true);
+			DocumentBuilder db = fact.newDocumentBuilder();
+			return db.newDocument();
+		} catch (ParserConfigurationException e) {
+			//no complex configurations
+		}
+		return null;
+	}
+
+	/**
 	 * Parses an XML string into a DOM.
 	 * @param xml the XML string
 	 * @return the parsed DOM
@@ -66,13 +86,7 @@ public class XmlUtils {
 	 */
 	public static Document toDocument(String xml) throws SAXException {
 		try {
-			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-			fact.setNamespaceAware(true);
-			DocumentBuilder db = fact.newDocumentBuilder();
-			InputSource source = new InputSource(new StringReader(xml));
-			return db.parse(source);
-		} catch (ParserConfigurationException e) {
-			//no complex configurations
+			return toDocument(new StringReader(xml));
 		} catch (IOException e) {
 			//reading from string
 		}
@@ -80,26 +94,87 @@ public class XmlUtils {
 	}
 
 	/**
-	 * Converts a DOM to a string.
-	 * @param document the DOM
+	 * Parses an XML document from a reader.
+	 * @param reader the reader
+	 * @return the parsed DOM
+	 * @throws SAXException if the XML is not valid
+	 * @throws IOException if there is a problem reading from the reader
+	 */
+	public static Document toDocument(Reader reader) throws SAXException, IOException {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+			dbf.setIgnoringComments(true);
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			return db.parse(new InputSource(reader));
+		} catch (ParserConfigurationException e) {
+			//never thrown because we're not doing anything fancy with the configuration
+		}
+		return null;
+	}
+
+	/**
+	 * Converts an XML node to a string.
+	 * @param node the XML node
 	 * @return the string
 	 */
-	public static String toString(Document document) {
+	public static String toString(Node node) {
+		return toString(node, new HashMap<String, String>());
+	}
+
+	/**
+	 * Converts an XML node to a string.
+	 * @param node the XML node
+	 * @param outputProperties the output properties
+	 * @return the string
+	 */
+	public static String toString(Node node, Map<String, String> outputProperties) {
 		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			DOMSource source = new DOMSource(document);
 			StringWriter writer = new StringWriter();
-			StreamResult result = new StreamResult(writer);
-			transformer.transform(source, result);
+			toWriter(node, writer, outputProperties);
 			return writer.toString();
-		} catch (TransformerConfigurationException e) {
-			//no complex configurations
-		} catch (TransformerFactoryConfigurationError e) {
-			//no complex configurations
 		} catch (TransformerException e) {
 			//writing to string
 		}
 		return null;
+	}
+
+	/**
+	 * Writes an XML node to a writer.
+	 * @param node the XML node
+	 * @param writer the writer
+	 * @throws TransformerException if there's a problem writing to the writer
+	 */
+	public static void toWriter(Node node, Writer writer) throws TransformerException {
+		toWriter(node, writer, new HashMap<String, String>());
+	}
+
+	/**
+	 * Writes an XML node to a writer.
+	 * @param node the XML node
+	 * @param writer the writer
+	 * @param outputProperties the output properties
+	 * @throws TransformerException if there's a problem writing to the writer
+	 */
+	public static void toWriter(Node node, Writer writer, Map<String, String> outputProperties) throws TransformerException {
+		try {
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			for (Map.Entry<String, String> property : outputProperties.entrySet()) {
+				try {
+					transformer.setOutputProperty(property.getKey(), property.getValue());
+				} catch (IllegalArgumentException e) {
+					//ignore invalid output properties
+				}
+			}
+
+			DOMSource source = new DOMSource(node);
+			StreamResult result = new StreamResult(writer);
+			transformer.transform(source, result);
+		} catch (TransformerConfigurationException e) {
+			//no complex configurations
+		} catch (TransformerFactoryConfigurationError e) {
+			//no complex configurations
+		}
 	}
 
 	/**

@@ -2,10 +2,15 @@ package ezvcard.util;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.transform.OutputKeys;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -57,6 +62,12 @@ public class XmlUtilsTest {
 	//@formatter:on
 
 	@Test
+	public void createDocument() throws Exception {
+		Document document = XmlUtils.createDocument();
+		assertNotNull(document);
+	}
+
+	@Test
 	public void toDocument() throws Exception {
 		Document document = XmlUtils.toDocument(xml);
 
@@ -89,6 +100,16 @@ public class XmlUtilsTest {
 	public void toString_() throws Exception {
 		Document expected = XmlUtils.toDocument(xml);
 		String string = XmlUtils.toString(expected);
+		Document actual = XmlUtils.toDocument(string);
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void toString_output_properties() throws Exception {
+		Document expected = XmlUtils.toDocument(xml);
+		Map<String, String> outputProperties = new HashMap<String, String>();
+		outputProperties.put(OutputKeys.STANDALONE, "no");
+		String string = XmlUtils.toString(expected, outputProperties);
 		Document actual = XmlUtils.toDocument(string);
 		assertXMLEqual(expected, actual);
 	}
