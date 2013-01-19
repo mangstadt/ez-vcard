@@ -1,10 +1,13 @@
 package ezvcard.parameters;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,34 +41,45 @@ import static org.junit.Assert.*;
 public class MediaTypeParameterTest {
 	@Test
 	public void findByMediaType() {
-		TextMediaType expected = TextMediaType.xml;
-		TextMediaType actual = TextMediaType.findByMediaType("TEXT/xml", TextMediaType.class);
-		assertEquals(expected, actual);
+		TextMediaType param = MediaTypeParameter.findByMediaType("text/xml", TextMediaType.class);
+		assertTrue(TextMediaType.XML == param);
+	}
 
-		actual = TextMediaType.findByMediaType("text/rtf", TextMediaType.class);
-		assertNull(actual);
+	@Test
+	public void findByMediaType_not_found() {
+		TextMediaType param = MediaTypeParameter.findByMediaType("text/rtf", TextMediaType.class);
+		assertNull(param);
+	}
+
+	@Test
+	public void findByMediaType_case_insensitive() {
+		TextMediaType param = MediaTypeParameter.findByMediaType("tExT/xml", TextMediaType.class);
+		assertTrue(TextMediaType.XML == param);
 	}
 
 	@Test
 	public void equals() {
 		TextMediaType html = new TextMediaType("html", "text/html", "html");
-		assertTrue(html.equals(TextMediaType.html));
-
-		assertFalse(TextMediaType.plain.equals(OtherTextMediaType.plain));
+		assertTrue(html.equals(TextMediaType.HTML));
 	}
 
-	public static class TextMediaType extends MediaTypeParameter {
-		public static final TextMediaType plain = new TextMediaType("plain", "text/plain", "txt");
-		public static final TextMediaType xml = new TextMediaType("xml", "text/xml", "xml");
-		public static final TextMediaType html = new TextMediaType("html", "text/html", "html");
+	@Test
+	public void equals_same_values_different_class() {
+		assertFalse(TextMediaType.PLAIN.equals(OtherTextMediaType.PLAIN));
+	}
+
+	private static class TextMediaType extends MediaTypeParameter {
+		public static final TextMediaType PLAIN = new TextMediaType("plain", "text/plain", "txt");
+		public static final TextMediaType XML = new TextMediaType("xml", "text/xml", "xml");
+		public static final TextMediaType HTML = new TextMediaType("html", "text/html", "html");
 
 		public TextMediaType(String value, String mediaType, String extension) {
 			super(value, mediaType, extension);
 		}
 	}
 
-	public static class OtherTextMediaType extends MediaTypeParameter {
-		public static final OtherTextMediaType plain = new OtherTextMediaType("plain", "text/plain", "txt");
+	private static class OtherTextMediaType extends MediaTypeParameter {
+		public static final OtherTextMediaType PLAIN = new OtherTextMediaType("plain", "text/plain", "txt");
 
 		public OtherTextMediaType(String value, String mediaType, String extension) {
 			super(value, mediaType, extension);
