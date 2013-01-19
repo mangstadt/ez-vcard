@@ -82,6 +82,129 @@ public class VCardWriterTest {
 	}
 
 	@Test
+	public void required_properties_21() throws Exception {
+		VCardVersion version = VCardVersion.V2_1;
+
+		//without N
+		{
+			VCard vcard = new VCard();
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, version);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertEquals(1, warnings.size());
+		}
+
+		//with N
+		{
+			VCard vcard = new VCard();
+			StructuredNameType n = new StructuredNameType();
+			n.setFamily("Joe");
+			n.setGiven("John");
+			vcard.setStructuredName(n);
+
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, version);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertTrue(warnings.isEmpty());
+		}
+	}
+
+	@Test
+	public void required_properties_30() throws Exception {
+		VCardVersion version = VCardVersion.V3_0;
+
+		//without N or FN
+		{
+			VCard vcard = new VCard();
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, version);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertEquals(2, warnings.size());
+		}
+
+		//with N
+		{
+			VCard vcard = new VCard();
+			StructuredNameType n = new StructuredNameType();
+			n.setFamily("Joe");
+			n.setGiven("John");
+			vcard.setStructuredName(n);
+
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, version);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertEquals(1, warnings.size());
+		}
+
+		//with FN
+		{
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, version);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertEquals(1, warnings.size());
+		}
+
+		//with both
+		{
+			VCard vcard = new VCard();
+			StructuredNameType n = new StructuredNameType();
+			n.setFamily("Joe");
+			n.setGiven("John");
+			vcard.setStructuredName(n);
+			vcard.setFormattedName("John Doe");
+
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, version);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertTrue(warnings.isEmpty());
+		}
+	}
+
+	@Test
+	public void required_properties_40() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+
+		//without FN
+		{
+			VCard vcard = new VCard();
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, version);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertEquals(1, warnings.size());
+		}
+
+		//with FN
+		{
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, version);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertTrue(warnings.isEmpty());
+		}
+	}
+
+	@Test
 	public void setAddProdId() throws Exception {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
