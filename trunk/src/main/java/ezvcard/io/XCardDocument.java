@@ -15,17 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,6 +29,7 @@ import ezvcard.types.ProdIdType;
 import ezvcard.types.VCardType;
 import ezvcard.util.IOUtils;
 import ezvcard.util.ListMultimap;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -103,15 +95,7 @@ public class XCardDocument {
 	private final Element root;
 
 	public XCardDocument() {
-		DocumentBuilder builder = null;
-		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware(true);
-			builder = factory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			//should never be thrown
-		}
-		document = builder.newDocument();
+		document = XmlUtils.createDocument();
 		root = createElement("vcards");
 		document.appendChild(root);
 	}
@@ -256,18 +240,12 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer, int indent) throws TransformerException {
-		Transformer t = TransformerFactory.newInstance().newTransformer();
-		Source source = new DOMSource(document);
-		Result result = new StreamResult(writer);
+		Map<String, String> properties = new HashMap<String, String>();
 		if (indent >= 0) {
-			t.setOutputProperty(OutputKeys.INDENT, "yes");
-			try {
-				t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", indent + "");
-			} catch (IllegalArgumentException e) {
-				//in-case this property is not supported on other systems
-			}
+			properties.put(OutputKeys.INDENT, "yes");
+			properties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");
 		}
-		t.transform(source, result);
+		XmlUtils.toWriter(document, writer, properties);
 	}
 
 	/**

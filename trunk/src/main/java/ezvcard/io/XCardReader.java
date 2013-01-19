@@ -17,9 +17,6 @@ import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -28,7 +25,6 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
@@ -141,16 +137,7 @@ public class XCardReader implements IParser {
 	}
 
 	private void init(Reader reader) throws SAXException, IOException {
-		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setNamespaceAware(true);
-			dbf.setIgnoringComments(true);
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document document = db.parse(new InputSource(reader));
-			init(document);
-		} catch (ParserConfigurationException e) {
-			//never thrown because we're not doing anything fancy with the configuration
-		}
+		init(XmlUtils.toDocument(reader));
 	}
 
 	private void init(Document document) {

@@ -5,10 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -70,7 +66,7 @@ public class XCardElement {
 	public XCardElement(String propertyName, VCardVersion version) {
 		this.version = version;
 		namespace = version.getXmlNamespace();
-		document = newDocument();
+		document = XmlUtils.createDocument();
 		element = document.createElementNS(namespace, propertyName);
 		document.appendChild(element);
 	}
@@ -262,17 +258,5 @@ public class XCardElement {
 			children = XmlUtils.toElementList(element.getChildNodes());
 		}
 		return children;
-	}
-
-	private static Document newDocument() {
-		DocumentBuilder db = null;
-		try {
-			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-			fact.setNamespaceAware(true);
-			db = fact.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			//no complex configurations
-		}
-		return db.newDocument();
 	}
 }
