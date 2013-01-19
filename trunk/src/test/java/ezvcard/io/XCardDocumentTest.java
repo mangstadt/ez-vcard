@@ -21,6 +21,8 @@ import ezvcard.types.MemberType;
 import ezvcard.types.NoteType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
+import ezvcard.types.VCardType;
+import ezvcard.util.XCardElement;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -466,6 +468,41 @@ public class XCardDocumentTest {
 			VCard parsedVCard = Ezvcard.parseXml(xml).first();
 			assertEquals("individual", parsedVCard.getKind().getValue());
 			assertTrue(parsedVCard.getMembers().isEmpty());
+		}
+	}
+
+	@Test
+	public void embedded_vcards_not_supported() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcard.addExtendedType(new EmbeddedType());
+
+		XCardDocument doc = new XCardDocument();
+		doc.addVCard(vcard);
+		assertEquals(1, doc.getWarnings().size());
+
+		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
+		assertTrue(parsedVCard.getExtendedTypes().isEmpty());
+	}
+
+	private static class EmbeddedType extends VCardType {
+		public EmbeddedType() {
+			super("EMBEDDED");
+		}
+
+		@Override
+		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//do nothing
+		}
+
+		@Override
+		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//do nothing
+		}
+
+		@Override
+		protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+			throw new EmbeddedVCardException(new VCard());
 		}
 	}
 }
