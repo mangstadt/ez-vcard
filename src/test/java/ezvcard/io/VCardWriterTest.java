@@ -2,6 +2,7 @@ package ezvcard.io;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
@@ -24,7 +25,7 @@ import ezvcard.types.ProdIdType;
 import ezvcard.types.StructuredNameType;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -79,6 +80,44 @@ public class VCardWriterTest {
 		String expected = sb.toString();
 
 		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void check_supported_versions() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		StructuredNameType n = new StructuredNameType();
+		n.setGiven("John");
+		n.setFamily("Doe");
+		vcard.setStructuredName(n);
+		vcard.setMailer("Thunderbird");
+
+		//all properties support the version
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertTrue(warnings.isEmpty());
+
+			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
+			assertEquals("Thunderbird", parsedVCard.getMailer().getValue());
+		}
+
+		//one property does not support the version
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
+			vcw.write(vcard);
+
+			List<String> warnings = vcw.getWarnings();
+			assertEquals(1, warnings.size());
+
+			//property not written to vCard
+			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
+			assertNull(parsedVCard.getMailer());
+		}
 	}
 
 	@Test
