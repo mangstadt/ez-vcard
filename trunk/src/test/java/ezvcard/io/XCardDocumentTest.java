@@ -3,6 +3,7 @@ package ezvcard.io;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import ezvcard.types.ProdIdType;
 import ezvcard.util.XmlUtils;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -81,6 +82,38 @@ public class XCardDocumentTest {
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void check_supported_versions() throws Exception {
+		//all properties support the version
+		{
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+
+			XCardDocument doc = new XCardDocument();
+			doc.addVCard(vcard);
+
+			List<String> warnings = doc.getWarnings();
+			assertTrue(warnings.isEmpty());
+		}
+
+		//one property does not support the version
+		{
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			vcard.setMailer("Thunderbird");
+
+			XCardDocument doc = new XCardDocument();
+			doc.addVCard(vcard);
+
+			List<String> warnings = doc.getWarnings();
+			assertEquals(1, warnings.size());
+
+			//property not written to vCard
+			VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
+			assertNull(parsedVCard.getMailer());
+		}
 	}
 
 	@Test
