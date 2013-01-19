@@ -2,11 +2,14 @@ package ezvcard.io;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -217,8 +220,18 @@ public class XCardDocumentTest {
 			sb.append("<vcard>");
 				sb.append("<fn><text>John Doe</text></fn>");
 				sb.append("<group name=\"group1\">");
-					sb.append("<photo><parameters><mediatype><text>image/jpeg</text></mediatype></parameters><uri>http://example.com/image.jpg</uri></photo>");
-					sb.append("<note><parameters><language><language-tag>en</language-tag></language></parameters><text>This is a\nnote.</text></note>");
+					sb.append("<photo>");
+						sb.append("<parameters>");
+							sb.append("<mediatype><text>image/jpeg</text></mediatype>");
+						sb.append("</parameters>");
+						sb.append("<uri>http://example.com/image.jpg</uri>");
+					sb.append("</photo>");
+					sb.append("<note>");
+						sb.append("<parameters>");
+							sb.append("<language><language-tag>en</language-tag></language>");
+						sb.append("</parameters>");
+						sb.append("<text>This is a\nnote.</text>");
+					sb.append("</note>");
 				sb.append("</group>");
 				sb.append("<group name=\"group2\">");
 					sb.append("<note><text>Bonjour.</text></note>");
@@ -273,22 +286,25 @@ public class XCardDocumentTest {
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
 
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		xpath.setNamespaceContext(new XCardReader.XCardNamespaceContext("v"));
+
 		XCardDocument xcm = new XCardDocument();
 		xcm.addVCard(vcard);
-		String xml = xcm.write();
-		assertTrue(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
+		Double actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(1), actual);
 
 		xcm = new XCardDocument();
 		xcm.setAddProdId(true);
 		xcm.addVCard(vcard);
-		xml = xcm.write();
-		assertTrue(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
+		actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(1), actual);
 
 		xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
-		xml = xcm.write();
-		assertFalse(xml.matches(".*?<prodid><text>.*?</text></prodid>.*"));
+		actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(0), actual);
 	}
 
 	@Test
@@ -301,17 +317,20 @@ public class XCardDocumentTest {
 		ProdIdType prodId = new ProdIdType("Acme Co.");
 		vcard.setProdId(prodId);
 
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		xpath.setNamespaceContext(new XCardReader.XCardNamespaceContext("v"));
+
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
-		String xml = xcm.write();
-		assertTrue(xml.matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
+		String actual = (String) xpath.evaluate("/v:vcards/v:vcard/v:prodid/v:text", xcm.getDocument(), XPathConstants.STRING);
+		assertEquals(prodId.getValue(), actual);
 
 		xcm = new XCardDocument();
 		xcm.setAddProdId(true);
 		xcm.addVCard(vcard);
-		xml = xcm.write();
-		assertFalse(xml.matches(".*?<prodid><text>Acme Co.</text></prodid>.*"));
+		actual = (String) xpath.evaluate("/v:vcards/v:vcard/v:prodid/v:text", xcm.getDocument(), XPathConstants.STRING);
+		assertEquals(new EzvcardProdIdType(VCardVersion.V4_0).getValue(), actual);
 	}
 
 	/**

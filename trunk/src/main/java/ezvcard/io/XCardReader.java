@@ -73,7 +73,7 @@ import ezvcard.util.XmlUtils;
  */
 public class XCardReader implements IParser {
 	private static final VCardVersion version = VCardVersion.V4_0;
-	private static final VCardNamespaceContext nsContext = new VCardNamespaceContext(version, "v");
+	public static final XCardNamespaceContext nsContext = new XCardNamespaceContext("v");
 
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
@@ -365,11 +365,18 @@ public class XCardReader implements IParser {
 		}
 	}
 
-	private static class VCardNamespaceContext implements NamespaceContext {
+	/**
+	 * Namespace context to use for xCard XPath expressions.
+	 * @see XPath#setNamespaceContext(NamespaceContext)
+	 */
+	public static class XCardNamespaceContext implements NamespaceContext {
 		private final String ns;
 		private final String prefix;
 
-		public VCardNamespaceContext(VCardVersion version, String prefix) {
+		/**
+		 * @param prefix the prefix to use
+		 */
+		public XCardNamespaceContext(String prefix) {
 			ns = version.getXmlNamespace();
 			this.prefix = prefix;
 		}
