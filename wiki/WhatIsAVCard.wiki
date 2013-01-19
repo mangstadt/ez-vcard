@@ -1,0 +1,69 @@
+#summary Describes what a vCard is
+#labels Featured
+
+A vCard is an *electronic business card*.  The vCard standard is a member of the "RFC" family of Internet technologies, alongside SMTP (email) and HTTP.  Most email clients and address book applications provide at least basic support for vCards.  This makes vCard an ideal choice for transferring contacts between applications or for sharing contacts with friends.
+
+vCards can store a wide variety of information about a person including, but not limited to:
+
+  * name
+  * email addresses
+  * phone numbers
+  * mailing addresses
+  * websites
+  * photos
+  * company logos
+  * an audio recording for the pronunciation of the person's name
+  * a URL for getting the most up-to-date version of the vCard
+
+vCards can also be used to represent entities other than individuals, such as groups and organizations.
+
+A vCard file is a plain text file that typically has the ".vcf" extension.  The text below is a simple example of a plain text vCard.  It holds the person's name (in both formatted and structured formats) as well as the person's email address.
+
+{{{
+BEGIN:VCARD
+VERSION:4.0
+N:Doe;John;;Mr;
+FN:Mr. John Doe
+EMAIL:jdoe@hotmail.com
+END:VCARD
+}}}
+
+vCards can also be encoded in XML using the "xCard" standard.  The XML document below represents the same vCard as the plain text one above:
+
+{{{
+<vcards xmlns="urn:ietf:params:xml:ns:vcard-4.0">
+  <vcard>
+    <n>
+      <surname>Doe</surname>
+      <given>John</given>
+      <prefix>Mr</prefix>
+    </n>
+    <fn>
+      <text>Mr. John Doe</text>
+    </fn>
+    <email>
+      <text>jdoe@hotmail.com</text>
+    </email>
+  </vcard>
+</vcards>
+}}}
+
+In addition, they can be embedded inside an HTML webpage using the "hCard" standard:
+
+{{{
+<html>
+  <head>
+    <link rel="profile" href="http://microformats.org/profile/hcard" />
+  </head>
+  <body>
+    <div class="vcard">
+      <h1 class="fn n">
+        <span class="prefix">Mr</span>. 
+        <span class="given-name">John</span> 
+        <span class="family-name">Doe</span>
+      </h1>
+      Email: <a class="email" href="mailto:jdoe@hotmail.com">jdoe@hotmail.com</a>
+    </div>
+  </body>
+</html>
+}}}
