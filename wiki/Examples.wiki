@@ -46,7 +46,7 @@ String html =
 "<html>" +
   "<head><link rel=\"profile\" href=\"http://microformats.org/profile/hcard\" /></head>" +
   "<body>" +
-    "<div class=\"vcard\">"
+    "<div class=\"vcard\">" +
       "<h1 class=\"fn\">Dr. Gregory House M.D.</h1>" +
       "<div class=\"n\">" +
         "<span class=\"prefix\">Dr</span> " + 
