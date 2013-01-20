@@ -1,4 +1,5 @@
 #summary Examples of how to use ez-vcard
+#labels Featured
 
 <wiki:toc max_depth="2"/>
 
