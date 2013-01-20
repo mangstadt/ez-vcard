@@ -1,0 +1,63 @@
+#summary Archive of all past news entries.
+
+*January 17, 2013*
+
+Released [http://code.google.com/p/ez-vcard/downloads/list Version 0.7.1] to fix a critical bug in how xCard are written.  See the [Changelog changelog] for details.
+
+*January 13, 2013*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.7.0] is the *Usability Update!*
+
+Many changes were made to the API to make it easier to use.  Notably, a *method chaining interface* was added for parsing and writing vCards (see code samples further down the page).  Convenience methods were also added to the `VCard` class and other classes to make it easier to work with the API.  There were some bug fixes also.
+
+See the [Changelog changelog] for a complete list of the changes in this version.
+
+*December 12, 2012*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.6.0] released.  The most notable addition in this version is support for the *[http://microformats.org/wiki/hcard hCard] microformat* (HTML-encoded vCards).
+
+See the [Changelog changelog] for a complete list of the changes.
+
+*November 8, 2012*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.5.0] released.  Notable changes include:
+
+  * Marshalling classes no longer throw a checked `VCardException`.
+  * The XML element name of extended types can now be specified.
+
+See the [Changelog changelog] for the other changes.
+
+*Oct 2 2012*
+
+ez-vcard has been released to *Maven Central*!!  Scroll down for dependency information.
+
+*Sept 24 2012*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.4.0] released.  Notably, added support for the following specifications:
+
+  * [http://tools.ietf.org/html/rfc6473 RFC 6473] (KIND:application)
+  * [http://tools.ietf.org/html/rfc6474 RFC 6474] (BIRTHPLACE, DEATHPLACE, DEATHDATE)
+  * [http://tools.ietf.org/html/rfc6715 RFC 6715] (Open Mobile Alliance Converged Address Book extensions)
+
+See the [Changelog changelog] for the rest of the changes.
+
+*Sept 8 2012*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.3.0] released.  Notable changes in this version include:
+
+ * Support for the *[http://tools.ietf.org/html/rfc6351 xCard]* standard (an XML representation for vCards).
+ * Removal of the "guava" and "commons-io" dependencies.  ez-vcard now only requires one dependency (commons-codec).
+
+See the [Changelog changelog] for the rest of the changes.
+
+*August 11 2012*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.2.0] released.  Notably, this version adds support for *vCard version 4.0*.  See the [Changelog changelog] for more details.
+
+*July 28 2012*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.1.1] released.  See the [Changelog changelog] for details.
+
+*July 23 2012*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.1] released.  It supports vCard versions 2.1 and 3.0.
