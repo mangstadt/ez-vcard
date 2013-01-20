@@ -34,7 +34,7 @@ import ezvcard.VCardException;
 
 /**
  * Thrown during the marshalling/unmarshalling of a type to signal to the
- * marshaller that the type's value is a nested (2.0 style) or embedded (3.0
+ * marshaller that the type's value is a nested (2.1 style) or embedded (3.0
  * style) vCard.
  * @author Michael Angstadt
  */
