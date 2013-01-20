@@ -1,5 +1,4 @@
 #summary Describes what a vCard is
-#labels Featured
 
 A vCard is an *electronic business card*.  The vCard standard is a member of the "RFC" family of Internet technologies, alongside SMTP (email) and HTTP.  Most email clients and address book applications provide at least basic support for vCards.  This makes vCard an ideal choice for transferring contacts between applications or for sharing contacts with friends.
 
