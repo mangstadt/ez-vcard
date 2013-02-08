@@ -77,13 +77,13 @@ public class XCardDocumentTest {
 		Document actual = xcm.getDocument();
 
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>John Doe</text></fn>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
-		Document expected = XmlUtils.toDocument(sb.toString());
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>John Doe</text></fn>" +
+			"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -166,20 +166,20 @@ public class XCardDocumentTest {
 		Document actual = xcm.getDocument();
 
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<note>");
-					sb.append("<parameters>");
-						sb.append("<language><language-tag>en</language-tag></language>");
-						sb.append("<pid><text>1.1</text><text>2.2</text></pid>");
-						sb.append("<x-custom><unknown>xxx</unknown></x-custom>");
-					sb.append("</parameters>");
-					sb.append("<text>This is a\nnote.</text>");
-				sb.append("</note>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
-		Document expected = XmlUtils.toDocument(sb.toString());
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<note>" +
+					"<parameters>" +
+						"<language><language-tag>en</language-tag></language>" +
+						"<pid><text>1.1</text><text>2.2</text></pid>" +
+						"<x-custom><unknown>xxx</unknown></x-custom>" +
+					"</parameters>" +
+					"<text>This is a\nnote.</text>" +
+				"</note>" +
+			"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -215,30 +215,30 @@ public class XCardDocumentTest {
 		Document actual = xcm.getDocument();
 
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>John Doe</text></fn>");
-				sb.append("<group name=\"group1\">");
-					sb.append("<photo>");
-						sb.append("<parameters>");
-							sb.append("<mediatype><text>image/jpeg</text></mediatype>");
-						sb.append("</parameters>");
-						sb.append("<uri>http://example.com/image.jpg</uri>");
-					sb.append("</photo>");
-					sb.append("<note>");
-						sb.append("<parameters>");
-							sb.append("<language><language-tag>en</language-tag></language>");
-						sb.append("</parameters>");
-						sb.append("<text>This is a\nnote.</text>");
-					sb.append("</note>");
-				sb.append("</group>");
-				sb.append("<group name=\"group2\">");
-					sb.append("<note><text>Bonjour.</text></note>");
-				sb.append("</group>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
-		Document expected = XmlUtils.toDocument(sb.toString());
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>John Doe</text></fn>" +
+				"<group name=\"group1\">" +
+					"<photo>" +
+						"<parameters>" +
+							"<mediatype><text>image/jpeg</text></mediatype>" +
+						"</parameters>" +
+						"<uri>http://example.com/image.jpg</uri>" +
+					"</photo>" +
+					"<note>" +
+						"<parameters>" +
+							"<language><language-tag>en</language-tag></language>" +
+						"</parameters>" +
+						"<text>This is a\nnote.</text>" +
+					"</note>" +
+				"</group>" +
+				"<group name=\"group2\">" +
+					"<note><text>Bonjour.</text></note>" +
+				"</group>" +
+			"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -265,16 +265,16 @@ public class XCardDocumentTest {
 		Document actual = xcm.getDocument();
 
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>John Doe</text></fn>");
-			sb.append("</vcard>");
-			sb.append("<vcard>");
-				sb.append("<note><text>Hello world!</text></note>");
-				sb.append("</vcard>");
-		sb.append("</vcards>");
-		Document expected = XmlUtils.toDocument(sb.toString());
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>John Doe</text></fn>" +
+			"</vcard>" +
+			"<vcard>" +
+				"<note><text>Hello world!</text></note>" +
+				"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -364,14 +364,14 @@ public class XCardDocumentTest {
 		Document actual = xcm.getDocument();
 
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>John Doe</text></fn>");
-				sb.append("<a:lucky-num>24</a:lucky-num>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
-		Document expected = XmlUtils.toDocument(sb.toString());
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">" +
+			"<vcard>" +
+				"<fn><text>John Doe</text></fn>" +
+				"<a:lucky-num>24</a:lucky-num>" +
+			"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -408,15 +408,15 @@ public class XCardDocumentTest {
 		Document actual = xcm.getDocument();
 
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<a:lucky-num xmlns:a=\"http://luckynum.com\">24</a:lucky-num>");
-				sb.append("<x-salary>1000000</x-salary>");
-				sb.append("<x-age><unknown>22</unknown></x-age>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
-		Document expected = XmlUtils.toDocument(sb.toString());
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<a:lucky-num xmlns:a=\"http://luckynum.com\">24</a:lucky-num>" +
+				"<x-salary>1000000</x-salary>" +
+				"<x-age><unknown>22</unknown></x-age>" +
+			"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
@@ -435,15 +435,14 @@ public class XCardDocumentTest {
 
 		//@formatter:off
 		String newline = System.getProperty("line.separator");
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">").append(newline);
-			sb.append("  <vcard>").append(newline);
-				sb.append("    <fn>").append(newline);
-					sb.append("      <text>John Doe</text>").append(newline);
-				sb.append("    </fn>").append(newline);
-			sb.append("  </vcard>").append(newline);
-		sb.append("</vcards>");
-		String expected = sb.toString();
+		String expected =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" + newline +
+		"  <vcard>" + newline +
+		"    <fn>" + newline +
+		"      <text>John Doe</text>" + newline +
+		"    </fn>" + newline +
+		"  </vcard>" + newline +
+		"</vcards>";
 		//@formatter:on
 
 		//use "String.contains()" to ignore the XML declaration at the top

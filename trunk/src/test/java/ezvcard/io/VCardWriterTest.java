@@ -72,12 +72,13 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		String actual = sw.toString();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:2.1\r\n");
-		sb.append("FN:John Doe\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(actual, expected);
 	}
@@ -373,14 +374,15 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		String actual = sw.toString();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:2.1\r\n");
-		sb.append("ADR;WORK:;;;;;;\r\n");
-		sb.append("ADR;DOM;WORK:;;;;;;\r\n");
-		sb.append("ADR;DOM;PARCEL;WORK:;;;;;;\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"ADR;WORK:;;;;;;\r\n" +
+		"ADR;DOM;WORK:;;;;;;\r\n" +
+		"ADR;DOM;PARCEL;WORK:;;;;;;\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(expected, actual);
 
@@ -391,14 +393,15 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		actual = sw.toString();
 
-		sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:3.0\r\n");
-		sb.append("ADR;TYPE=work:;;;;;;\r\n");
-		sb.append("ADR;TYPE=dom,work:;;;;;;\r\n");
-		sb.append("ADR;TYPE=dom,parcel,work:;;;;;;\r\n");
-		sb.append("END:VCARD\r\n");
-		expected = sb.toString();
+		//@formatter:off
+		expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"ADR;TYPE=work:;;;;;;\r\n" +
+		"ADR;TYPE=dom,work:;;;;;;\r\n" +
+		"ADR;TYPE=dom,parcel,work:;;;;;;\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(expected, actual);
 	}
@@ -438,14 +441,15 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		String actual = sw.toString();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:2.1\r\n");
-		sb.append("ADR;X-DOORMAN=true:;;;;;;\r\n");
-		sb.append("ADR;LANGUAGE=FR;LANGUAGE=es;X-DOORMAN=true:;;;;;;\r\n");
-		sb.append("ADR;LANGUAGE=FR;LANGUAGE=es;TEXT=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\";X-DOORMAN=true:;;;;;;\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"ADR;X-DOORMAN=true:;;;;;;\r\n" +
+		"ADR;LANGUAGE=FR;LANGUAGE=es;X-DOORMAN=true:;;;;;;\r\n" +
+		"ADR;LANGUAGE=FR;LANGUAGE=es;TEXT=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\";X-DOORMAN=true:;;;;;;\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(expected, actual);
 
@@ -456,14 +460,15 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		actual = sw.toString();
 
-		sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:3.0\r\n");
-		sb.append("ADR;X-DOORMAN=true:;;;;;;\r\n");
-		sb.append("ADR;LANGUAGE=FR,es;X-DOORMAN=true:;;;;;;\r\n");
-		sb.append("ADR;LANGUAGE=FR,es;TEXT=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\";X-DOORMAN=true:;;;;;;\r\n");
-		sb.append("END:VCARD\r\n");
-		expected = sb.toString();
+		//@formatter:off
+		expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"ADR;X-DOORMAN=true:;;;;;;\r\n" +
+		"ADR;LANGUAGE=FR,es;X-DOORMAN=true:;;;;;;\r\n" +
+		"ADR;LANGUAGE=FR,es;TEXT=\"123 \\\"Main\\\" St\\nAustin, ;TX; 12345\";X-DOORMAN=true:;;;;;;\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(expected, actual);
 	}
@@ -484,25 +489,26 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		String actual = sw.toString();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:2.1\r\n");
-		sb.append("NOTE:The vCard MIME Directory Profile also provide\r\n");
-		sb.append("  s support for representing other important infor\r\n");
-		sb.append("  mation about the person associated with the dire\r\n");
-		sb.append("  ctory entry. For instance\\, the date of birth of \r\n");
-		sb.append("  the person\\; an audio clip describing the pronun\r\n");
-		sb.append("  ciation of the name associated with the director\r\n");
-		sb.append("  y entry\\, or some other application of the digit\r\n");
-		sb.append("  al sound\\; longitude and latitude geo-positionin\r\n");
-		sb.append("  g information related to the person associated w\r\n");
-		sb.append("  ith the directory entry\\; date and time that the \r\n");
-		sb.append("  directory information was last updated\\; annotat\r\n");
-		sb.append("  ions often written on a business card\\; Uniform \r\n");
-		sb.append("  Resource Locators (URL) for a website\\; public k\r\n");
-		sb.append("  ey information.\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"NOTE:The vCard MIME Directory Profile also provide\r\n" +
+		"  s support for representing other important infor\r\n" +
+		"  mation about the person associated with the dire\r\n" +
+		"  ctory entry. For instance\\, the date of birth of \r\n" +
+		"  the person\\; an audio clip describing the pronun\r\n" +
+		"  ciation of the name associated with the director\r\n" +
+		"  y entry\\, or some other application of the digit\r\n" +
+		"  al sound\\; longitude and latitude geo-positionin\r\n" +
+		"  g information related to the person associated w\r\n" +
+		"  ith the directory entry\\; date and time that the \r\n" +
+		"  directory information was last updated\\; annotat\r\n" +
+		"  ions often written on a business card\\; Uniform \r\n" +
+		"  Resource Locators (URL) for a website\\; public k\r\n" +
+		"  ey information.\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(actual, expected);
 	}
@@ -522,12 +528,13 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		String actual = sw.toString();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD*");
-		sb.append("VERSION:2.1*");
-		sb.append("FN:John Doe*");
-		sb.append("END:VCARD*");
-		String expected = sb.toString();
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD*" +
+		"VERSION:2.1*" +
+		"FN:John Doe*" +
+		"END:VCARD*";
+		//@formatter:on
 
 		assertEquals(actual, expected);
 	}
@@ -548,12 +555,13 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		String actual = sw.toString();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:2.1\r\n");
-		sb.append("group1.FN:John Doe\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"group1.FN:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(actual, expected);
 	}
@@ -590,26 +598,25 @@ public class VCardWriterTest {
 
 		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:2.1\r\n");
-		sb.append("FN:Michael Angstadt\r\n");
-		sb.append("AGENT:\r\n"); //nested types should not have X-GENERATOR
-			sb.append("BEGIN:VCARD\r\n");
-			sb.append("VERSION:2.1\r\n");
-			sb.append("FN:Agent 007\r\n");
-			sb.append("AGENT:\r\n");
-				sb.append("BEGIN:VCARD\r\n");
-				sb.append("VERSION:2.1\r\n");
-				sb.append("FN:Agent 009\r\n");
-				sb.append("NOTE:Make sure that it ALSO properly folds THIS long line because it's part \r\n");
-				sb.append(" of an AGENT that's inside of an AGENT.\r\n");
-				sb.append("END:VCARD\r\n");
-			sb.append("NOTE:Make sure that it properly folds long lines which are part of a nested \r\n");
-			sb.append(" AGENT type in a version 2.1 vCard.\r\n");
-			sb.append("END:VCARD\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:Michael Angstadt\r\n" +
+		"AGENT:\r\n" + //nested types should not have X-GENERATOR
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"FN:Agent 007\r\n" +
+			"AGENT:\r\n" +
+				"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"FN:Agent 009\r\n" +
+				"NOTE:Make sure that it ALSO properly folds THIS long line because it's part \r\n" +
+				" of an AGENT that's inside of an AGENT.\r\n" +
+				"END:VCARD\r\n" +
+			"NOTE:Make sure that it properly folds long lines which are part of a nested \r\n" +
+			" AGENT type in a version 2.1 vCard.\r\n" +
+			"END:VCARD\r\n" +
+		"END:VCARD\r\n";
 		//@formatter:on
 
 		assertEquals(expected, actual);
@@ -651,24 +658,23 @@ public class VCardWriterTest {
 
 		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:3.0\r\n");
-		sb.append("FN:Michael Angstadt\r\n");
-		sb.append("AGENT:"); //nested types should not have X-GENERATOR
-			sb.append("BEGIN:VCARD\\n");
-			sb.append("VERSION:3.0\\n");
-			sb.append("FN:Agent 007\\n");
-			sb.append("AGENT:");
-				sb.append("BEGIN:VCARD\\\\n");
-				sb.append("VERSION:3.0\\\\n");
-				sb.append("FN:Agent 009\\\\n");
-				sb.append("NOTE\\\\\\;LANGUAGE=en:Good evening\\\\\\\\\\\\\\, 009.\\\\n");
-				sb.append("END:VCARD\\\\n\\n");
-			sb.append("NOTE\\;LANGUAGE=fr:Bonne soir�e\\\\\\, 007.\\n");
-			sb.append("END:VCARD\\n\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"FN:Michael Angstadt\r\n" +
+		"AGENT:" + //nested types should not have X-GENERATOR
+			"BEGIN:VCARD\\n" +
+			"VERSION:3.0\\n" +
+			"FN:Agent 007\\n" +
+			"AGENT:" +
+				"BEGIN:VCARD\\\\n" +
+				"VERSION:3.0\\\\n" +
+				"FN:Agent 009\\\\n" +
+				"NOTE\\\\\\;LANGUAGE=en:Good evening\\\\\\\\\\\\\\, 009.\\\\n" +
+				"END:VCARD\\\\n\\n" +
+			"NOTE\\;LANGUAGE=fr:Bonne soir�e\\\\\\, 007.\\n" +
+			"END:VCARD\\n\r\n" +
+		"END:VCARD\r\n";
 		//@formatter:on
 
 		assertEquals(expected, actual);
@@ -713,15 +719,16 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		String actual = sw.toString();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:3.0\r\n");
-		sb.append("ADR;TYPE=home:;;123 Main St.;Austin;TX;12345;\r\n");
-		sb.append("LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 12345\r\n");
-		sb.append("ADR;TYPE=work:;;222 Broadway;New York;NY;99999;\r\n");
-		sb.append("LABEL;TYPE=parcel:22 Spruce Ln.\\nChicago\\, IL 11111\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"ADR;TYPE=home:;;123 Main St.;Austin;TX;12345;\r\n" +
+		"LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 12345\r\n" +
+		"ADR;TYPE=work:;;222 Broadway;New York;NY;99999;\r\n" +
+		"LABEL;TYPE=parcel:22 Spruce Ln.\\nChicago\\, IL 11111\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(expected, actual);
 
@@ -733,13 +740,14 @@ public class VCardWriterTest {
 		vcw.write(vcard);
 		actual = sw.toString();
 
-		sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:4.0\r\n");
-		sb.append("ADR;LABEL=\"123 Main St.\\nAustin, TX 12345\";TYPE=home:;;123 Main St.;Austin;TX;12345;\r\n");
-		sb.append("ADR;TYPE=work:;;222 Broadway;New York;NY;99999;\r\n");
-		sb.append("END:VCARD\r\n");
-		expected = sb.toString();
+		//@formatter:off
+		expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"ADR;LABEL=\"123 Main St.\\nAustin, TX 12345\";TYPE=home:;;123 Main St.;Austin;TX;12345;\r\n" +
+		"ADR;TYPE=work:;;222 Broadway;New York;NY;99999;\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(expected, actual);
 	}
@@ -775,13 +783,14 @@ public class VCardWriterTest {
 
 		String actual = sw.toString();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN:VCARD\r\n");
-		sb.append("VERSION:2.1\r\n");
-		sb.append("N:;;;;\r\n");
-		sb.append("X-LUCKY-NUM:24\r\n");
-		sb.append("END:VCARD\r\n");
-		String expected = sb.toString();
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"N:;;;;\r\n" +
+		"X-LUCKY-NUM:24\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		assertEquals(actual, expected);
 	}
@@ -807,13 +816,14 @@ public class VCardWriterTest {
 
 			String actual = sw.toString();
 
-			StringBuilder sb = new StringBuilder();
-			sb.append("BEGIN:VCARD\r\n");
-			sb.append("VERSION:2.1\r\n");
-			sb.append("NOTE;ENCODING=quoted-printable:One=0D=0ATwo\r\n");
-			sb.append("NOTE:Three Four\r\n");
-			sb.append("END:VCARD\r\n");
-			String expected = sb.toString();
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"NOTE;ENCODING=quoted-printable:One=0D=0ATwo\r\n" +
+			"NOTE:Three Four\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
 
 			assertEquals(actual, expected);
 		}
@@ -827,13 +837,14 @@ public class VCardWriterTest {
 
 			String actual = sw.toString();
 
-			StringBuilder sb = new StringBuilder();
-			sb.append("BEGIN:VCARD\r\n");
-			sb.append("VERSION:3.0\r\n");
-			sb.append("NOTE:One\\nTwo\r\n");
-			sb.append("NOTE:Three Four\r\n");
-			sb.append("END:VCARD\r\n");
-			String expected = sb.toString();
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:3.0\r\n" +
+			"NOTE:One\\nTwo\r\n" +
+			"NOTE:Three Four\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
 
 			assertEquals(actual, expected);
 		}
@@ -847,13 +858,14 @@ public class VCardWriterTest {
 
 			String actual = sw.toString();
 
-			StringBuilder sb = new StringBuilder();
-			sb.append("BEGIN:VCARD\r\n");
-			sb.append("VERSION:4.0\r\n");
-			sb.append("NOTE:One\\nTwo\r\n");
-			sb.append("NOTE:Three Four\r\n");
-			sb.append("END:VCARD\r\n");
-			String expected = sb.toString();
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:4.0\r\n" +
+			"NOTE:One\\nTwo\r\n" +
+			"NOTE:Three Four\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
 
 			assertEquals(actual, expected);
 		}

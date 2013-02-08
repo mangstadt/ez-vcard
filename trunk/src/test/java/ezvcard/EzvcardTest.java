@@ -161,13 +161,16 @@ public class EzvcardTest {
 
 	@Test
 	public void parseHtml_first() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("<div class=\"vcard\">");
-		sb.append("<div class=\"fn\">John Doe</div>");
-		sb.append("</div>");
+		//@formatter:off
+		String html =
+		"<div class=\"vcard\">" +
+			"<div class=\"fn\">John Doe</div>" +
+		"</div>";
+		//@formatter:on
+
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		VCard vcard = Ezvcard.parseHtml(sb.toString()).warnings(warnings).first();
+		VCard vcard = Ezvcard.parseHtml(html).warnings(warnings).first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals(1, warnings.size());
@@ -175,18 +178,20 @@ public class EzvcardTest {
 
 	@Test
 	public void parseHtml_all() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("<html>");
-		sb.append("<div class=\"vcard\">");
-		sb.append("<div class=\"fn\">John Doe</div>");
-		sb.append("</div>");
-		sb.append("<div class=\"vcard\">");
-		sb.append("<div class=\"fn\">Jane Doe</div>");
-		sb.append("</div>");
-		sb.append("</html>");
+		//@formatter:off
+		String html =
+		"<html>" +
+			"<div class=\"vcard\">" +
+				"<div class=\"fn\">John Doe</div>" +
+			"</div>" +
+			"<div class=\"vcard\">" +
+				"<div class=\"fn\">Jane Doe</div>" +
+			"</div>" +
+		"</html>";
+		//@formatter:on
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
-		List<VCard> vcards = Ezvcard.parseHtml(sb.toString()).warnings(warnings).all();
+		List<VCard> vcards = Ezvcard.parseHtml(html).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
@@ -204,12 +209,14 @@ public class EzvcardTest {
 
 	@Test
 	public void parseHtml_register() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("<div class=\"vcard\">");
-		sb.append("<div class=\"x-lucky-num\">22</div>");
-		sb.append("</div>");
+		//@formatter:off
+		String html =
+		"<div class=\"vcard\">" +
+			"<div class=\"x-lucky-num\">22</div>" +
+		"</div>";
+		//@formatter:on
 
-		VCard vcard = Ezvcard.parseHtml(sb.toString()).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseHtml(html).register(LuckyNumType.class).first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getExtendedType(LuckyNumType.class);
 		assertEquals(1, ext.size());
@@ -218,11 +225,12 @@ public class EzvcardTest {
 
 	@Test
 	public void parseHtml_pageUrl() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("<div class=\"vcard\">");
-		sb.append("<a href=\"profile.html\" class=\"url fn\">John Doe</a>");
-		sb.append("</div>");
-		String html = sb.toString();
+		//@formatter:off
+		String html =
+		"<div class=\"vcard\">" +
+			"<a href=\"profile.html\" class=\"url fn\">John Doe</a>" +
+		"</div>";
+		//@formatter:on
 
 		//without
 		VCard vcard = Ezvcard.parseHtml(html).first();
@@ -359,13 +367,13 @@ public class EzvcardTest {
 		Document actual = Ezvcard.writeXml(vcard).prodId(false).dom();
 
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>John Doe</text></fn>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
-		Document expected = XmlUtils.toDocument(sb.toString());
+		String html =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>John Doe</text></fn>" +
+			"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(html);
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);

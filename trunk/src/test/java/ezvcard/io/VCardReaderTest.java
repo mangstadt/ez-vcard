@@ -93,14 +93,17 @@ public class VCardReaderTest {
 	 */
 	@Test
 	public void getSubTypes() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 2.1\r\n");
-		sb.append("NOTE;x-size=8: The note\r\n");
-		sb.append("ADR;HOME;WORK: ;;;;\r\n"); //nameless parameters
-		sb.append("LABEL;type=dOm;TyPE=parcel: \r\n"); //repeated parameter name
-		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(sb.toString());
+		//@formatter:off
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 2.1\r\n" +
+		"NOTE;x-size=8: The note\r\n" +
+		"ADR;HOME;WORK: ;;;;\r\n" + //nameless parameters
+		"LABEL;type=dOm;TyPE=parcel: \r\n" + //repeated parameter name
+		"END: VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
 
 		NoteType note = vcard.getNotes().get(0);
@@ -124,14 +127,17 @@ public class VCardReaderTest {
 	 */
 	@Test
 	public void decodeQuotedPrintable() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 2.1\r\n");
-		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:123 Main St.=0D=0A\r\n");
-		sb.append(" Austin, TX 91827=0D=0A\r\n");
-		sb.append(" USA\r\n");
-		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(sb.toString());
+		//@formatter:off
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 2.1\r\n" +
+		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:123 Main St.=0D=0A\r\n" +
+		" Austin, TX 91827=0D=0A\r\n" +
+		" USA\r\n" +
+		"END: VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
 
 		LabelType label = vcard.getOrphanedLabels().get(0);
@@ -144,20 +150,23 @@ public class VCardReaderTest {
 	 */
 	@Test
 	public void unfold() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 2.1\r\n");
-		sb.append("NOTE: The vCard MIME Directory Profile also provides support for represent\r\n");
-		sb.append(" ing other important information about the person associated with the dire\r\n");
-		sb.append(" ctory entry. For instance, the date of birth of the person\\; an audio clip \r\n");
-		sb.append(" describing the pronunciation of the name associated with the directory en\r\n");
-		sb.append(" try, or some other application of the digital sound\\; longitude and latitu\r\n");
-		sb.append(" de geo-positioning information related to the person associated with the \r\n");
-		sb.append(" directory entry\\; date and time that the directory information was last up\r\n");
-		sb.append(" dated\\; annotations often written on a business card\\; Uniform Resource Loc\r\n");
-		sb.append(" ators (URL) for a website\\; public key information.\r\n");
-		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(sb.toString());
+		//@formatter:off
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 2.1\r\n" +
+		"NOTE: The vCard MIME Directory Profile also provides support for represent\r\n" +
+		" ing other important information about the person associated with the dire\r\n" +
+		" ctory entry. For instance, the date of birth of the person\\; an audio clip \r\n" +
+		" describing the pronunciation of the name associated with the directory en\r\n" +
+		" try, or some other application of the digital sound\\; longitude and latitu\r\n" +
+		" de geo-positioning information related to the person associated with the \r\n" +
+		" directory entry\\; date and time that the directory information was last up\r\n" +
+		" dated\\; annotations often written on a business card\\; Uniform Resource Loc\r\n" +
+		" ators (URL) for a website\\; public key information.\r\n" +
+		"END: VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
 
 		String expected = "The vCard MIME Directory Profile also provides support for representing other important information about the person associated with the directory entry. For instance, the date of birth of the person; an audio clip describing the pronunciation of the name associated with the directory entry, or some other application of the digital sound; longitude and latitude geo-positioning information related to the person associated with the directory entry; date and time that the directory information was last updated; annotations often written on a business card; Uniform Resource Locators (URL) for a website; public key information.";
@@ -170,14 +179,17 @@ public class VCardReaderTest {
 	 */
 	@Test
 	public void readExtendedType() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 2.1\r\n");
-		sb.append("X-LUCKY-NUM: 24\r\n");
-		sb.append("X-GENDER: ma\\,le\r\n");
-		sb.append("X-LUCKY-NUM: 22\r\n");
-		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(sb.toString());
+		//@formatter:off
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 2.1\r\n" +
+		"X-LUCKY-NUM: 24\r\n" +
+		"X-GENDER: ma\\,le\r\n" +
+		"X-LUCKY-NUM: 22\r\n" +
+		"END: VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
 		reader.registerExtendedType(LuckyNumType.class);
 		VCard vcard = reader.readNext();
 
@@ -199,16 +211,19 @@ public class VCardReaderTest {
 	 */
 	@Test
 	public void readMultiple() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 2.1\r\n");
-		sb.append("FN: John Doe\r\n");
-		sb.append("END: VCARD\r\n");
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 3.0\r\n");
-		sb.append("FN: Jane Doe\r\n");
-		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(sb.toString());
+		//@formatter:off
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 2.1\r\n" +
+		"FN: John Doe\r\n" +
+		"END: VCARD\r\n" +
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 3.0\r\n" +
+		"FN: Jane Doe\r\n" +
+		"END: VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
 		VCard vcard;
 
 		vcard = reader.readNext();
@@ -228,24 +243,24 @@ public class VCardReaderTest {
 	@Test
 	public void nestedVCard() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 2.1\r\n");
-		sb.append("AGENT:\r\n");
-			sb.append("BEGIN: VCARD\r\n");
-			sb.append("VERSION: 2.1\r\n");
-			sb.append("FN: Agent 007\r\n");
-			sb.append("AGENT:\r\n");
-				sb.append("BEGIN: VCARD\r\n");
-				sb.append("VERSION: 2.1\r\n");
-				sb.append("FN: Agent 009\r\n");
-				sb.append("END: VCARD\r\n");
-			sb.append("END: VCARD\r\n");
-		sb.append("FN: John Doe\r\n");
-		sb.append("END: VCARD\r\n");
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 2.1\r\n" +
+		"AGENT:\r\n" +
+			"BEGIN: VCARD\r\n" +
+			"VERSION: 2.1\r\n" +
+			"FN: Agent 007\r\n" +
+			"AGENT:\r\n" +
+				"BEGIN: VCARD\r\n" +
+				"VERSION: 2.1\r\n" +
+				"FN: Agent 009\r\n" +
+				"END: VCARD\r\n" +
+			"END: VCARD\r\n" +
+		"FN: John Doe\r\n" +
+		"END: VCARD\r\n";
 		//@formatter:on
 
-		VCardReader reader = new VCardReader(sb.toString());
+		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
 
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -261,24 +276,24 @@ public class VCardReaderTest {
 	@Test
 	public void embeddedVCard() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 3.0\r\n");
-		sb.append("AGENT: ");
-			sb.append("BEGIN: VCARD\\n");
-			sb.append("VERSION: 3.0\\n");
-			sb.append("FN: Agent 007\\n");
-			sb.append("AGENT: ");
-				sb.append("BEGIN: VCARD\\\\n");
-				sb.append("VERSION: 3.0\\\\n");
-				sb.append("FN: Agent 009\\\\n");
-				sb.append("END: VCARD\\\\n");
-			sb.append("END: VCARD\r\n");
-		sb.append("FN: John Doe\r\n");
-		sb.append("END: VCARD\r\n");
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 3.0\r\n" +
+		"AGENT: " +
+			"BEGIN: VCARD\\n" +
+			"VERSION: 3.0\\n" +
+			"FN: Agent 007\\n" +
+			"AGENT: " +
+				"BEGIN: VCARD\\\\n" +
+				"VERSION: 3.0\\\\n" +
+				"FN: Agent 009\\\\n" +
+				"END: VCARD\\\\n" +
+			"END: VCARD\r\n" +
+		"FN: John Doe\r\n" +
+		"END: VCARD\r\n";
 		//@formatter:on
 
-		VCardReader reader = new VCardReader(sb.toString());
+		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
 
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -295,15 +310,18 @@ public class VCardReaderTest {
 	 */
 	@Test
 	public void readLabel() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 3.0\r\n");
-		sb.append("ADR;TYPE=home:;;123 Main St.;Austin;TX;91827;USA\r\n");
-		sb.append("LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 91827\\nUSA\r\n");
-		sb.append("ADR;TYPE=work,parcel:;;200 Broadway;New York;NY;12345;USA\r\n");
-		sb.append("LABEL;TYPE=work:200 Broadway\\nNew York\\, NY 12345\\nUSA\r\n");
-		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(sb.toString());
+		//@formatter:off
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 3.0\r\n" +
+		"ADR;TYPE=home:;;123 Main St.;Austin;TX;91827;USA\r\n" +
+		"LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 91827\\nUSA\r\n" +
+		"ADR;TYPE=work,parcel:;;200 Broadway;New York;NY;12345;USA\r\n" +
+		"LABEL;TYPE=work:200 Broadway\\nNew York\\, NY 12345\\nUSA\r\n" +
+		"END: VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
 
 		assertEquals(2, vcard.getAddresses().size());
@@ -333,13 +351,16 @@ public class VCardReaderTest {
 	 */
 	@Test
 	public void skipMeException() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("BEGIN: VCARD\r\n");
-		sb.append("VERSION: 3.0\r\n");
-		sb.append("X-LUCKY-NUM: 24\r\n");
-		sb.append("X-LUCKY-NUM: 13\r\n");
-		sb.append("END: VCARD\r\n");
-		VCardReader reader = new VCardReader(sb.toString());
+		//@formatter:off
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 3.0\r\n" +
+		"X-LUCKY-NUM: 24\r\n" +
+		"X-LUCKY-NUM: 13\r\n" +
+		"END: VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
 		reader.registerExtendedType(LuckyNumType.class);
 		VCard vcard = reader.readNext();
 

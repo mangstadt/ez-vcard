@@ -161,15 +161,15 @@ public class HCardElementTest {
 	@Test
 	public void firstValue() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<div class=\"n\">");
-			html.append("<div>");
-				html.append("<span class=\"family-name\"><b>Doe</b></span>");
-			html.append("</div>");
-		html.append("</div>");
+		String html =
+		"<div class=\"n\">" +
+			"<div>" +
+				"<span class=\"family-name\"><b>Doe</b></span>" +
+			"</div>" +
+		"</div>";
 		//@formatter:on
 
-		HCardElement element = build(html.toString());
+		HCardElement element = build(html);
 
 		assertEquals("Doe", element.firstValue("family-name"));
 		assertNull(element.firstValue("non-existant"));
@@ -178,18 +178,18 @@ public class HCardElementTest {
 	@Test
 	public void allValues() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<div class=\"n\">");
-			html.append("<div>");
-				html.append("<div>");
-					html.append("<span class=\"additional-name\">Smith</span>");
-				html.append("</div>");
-			html.append("</div>");
-			html.append("<span class=\"additional-name\">(<span class=\"value\">Barney</span>)</span>");
-		html.append("</div>");
+		String html =
+		"<div class=\"n\">" +
+			"<div>" +
+				"<div>" +
+					"<span class=\"additional-name\">Smith</span>" +
+				"</div>" +
+			"</div>" +
+			"<span class=\"additional-name\">(<span class=\"value\">Barney</span>)</span>" +
+		"</div>";
 		//@formatter:on
 
-		HCardElement element = build(html.toString());
+		HCardElement element = build(html);
 
 		assertEquals(Arrays.asList("Smith", "Barney"), element.allValues("additional-name"));
 		assertTrue(element.allValues("non-existant").isEmpty());
@@ -197,11 +197,9 @@ public class HCardElementTest {
 
 	@Test
 	public void types_none() {
-		StringBuilder html = new StringBuilder();
-		html.append("<div class=\"adr\">");
-		html.append("</div>");
+		String html = "<div class=\"adr\"></div>";
 
-		HCardElement element = build(html.toString());
+		HCardElement element = build(html);
 		List<String> actual = element.types();
 		assertTrue(actual.isEmpty());
 	}
@@ -209,44 +207,44 @@ public class HCardElementTest {
 	@Test
 	public void types_multiple() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<div class=\"adr\">");
-			html.append("<span class=\"type\">work</span>");
-			html.append("<span class=\"type\">pref</span>");
-		html.append("</div>");
+		String html =
+		"<div class=\"adr\">" +
+			"<span class=\"type\">work</span>" +
+			"<span class=\"type\">pref</span>" +
+		"</div>";
 		//@formatter:on
 
-		HCardElement element = build(html.toString());
+		HCardElement element = build(html);
 		assertEquals(Arrays.asList("work", "pref"), element.types());
 	}
 
 	@Test
 	public void types_convert_to_lower_case() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<div class=\"adr\">");
-			html.append("<span class=\"type\">wOrk</span>");
-			html.append("<span class=\"type\">prEf</span>");
-		html.append("</div>");
+		String html =
+		"<div class=\"adr\">" +
+			"<span class=\"type\">wOrk</span>" +
+			"<span class=\"type\">prEf</span>" +
+		"</div>";
 		//@formatter:on
 
-		HCardElement element = build(html.toString());
+		HCardElement element = build(html);
 		assertEquals(Arrays.asList("work", "pref"), element.types());
 	}
 
 	@Test
 	public void types_not_direct_descendant() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<div class=\"adr\">");
-			html.append("<span class=\"type\">work</span>");
-			html.append("<div>");
-				html.append("<span class=\"type\">pref</span>");
-			html.append("<div>");
-		html.append("</div>");
+		String html =
+		"<div class=\"adr\">" +
+			"<span class=\"type\">work</span>" +
+			"<div>" +
+				"<span class=\"type\">pref</span>" +
+			"<div>" +
+		"</div>";
 		//@formatter:on
 
-		HCardElement element = build(html.toString());
+		HCardElement element = build(html);
 		assertEquals(Arrays.asList("work", "pref"), element.types());
 	}
 

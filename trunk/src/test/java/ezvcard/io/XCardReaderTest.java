@@ -60,23 +60,23 @@ public class XCardReaderTest {
 	@Test
 	public void basic() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
-				sb.append("<n>");
-					sb.append("<surname>House</surname>");
-					sb.append("<given>Gregory</given>");
-					sb.append("<additional />");
-					sb.append("<prefix>Dr</prefix>");
-					sb.append("<prefix>Mr</prefix>");
-					sb.append("<suffix>MD</suffix>");
-				sb.append("</n>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+				"<n>" +
+					"<surname>House</surname>" +
+					"<given>Gregory</given>" +
+					"<additional />" +
+					"<prefix>Dr</prefix>" +
+					"<prefix>Mr</prefix>" +
+					"<suffix>MD</suffix>" +
+				"</n>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 		VCard vcard = xcr.readNext();
 
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -100,15 +100,15 @@ public class XCardReaderTest {
 	@Test
 	public void preserveWhitespace() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<note><text>  This \t  is \n   a   note </text></note>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<note><text>  This \t  is \n   a   note </text></note>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 
@@ -126,46 +126,46 @@ public class XCardReaderTest {
 	@Test
 	public void parameters() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
 				//zero params
-				sb.append("<note>");
-					sb.append("<text>Note 1</text>");
-				sb.append("</note>");
+				"<note>" +
+					"<text>Note 1</text>" +
+				"</note>" +
 				
 				//one param
-				sb.append("<note>");
-					sb.append("<parameters>");
-						sb.append("<altid><text>1</text></altid>");
-					sb.append("</parameters>");
-					sb.append("<text>Hello world!</text>");
-				sb.append("</note>");
+				"<note>" +
+					"<parameters>" +
+						"<altid><text>1</text></altid>" +
+					"</parameters>" +
+					"<text>Hello world!</text>" +
+				"</note>" +
 				
 				//two params
-				sb.append("<note>");
-					sb.append("<parameters>");
-						sb.append("<altid><text>1</text></altid>");
-						sb.append("<language><language-tag>fr</language-tag></language>");
-					sb.append("</parameters>");
-					sb.append("<text>Bonjour tout le monde!</text>");
-				sb.append("</note>");
+				"<note>" +
+					"<parameters>" +
+						"<altid><text>1</text></altid>" +
+						"<language><language-tag>fr</language-tag></language>" +
+					"</parameters>" +
+					"<text>Bonjour tout le monde!</text>" +
+				"</note>" +
 				
 				//a param with multiple values
-				sb.append("<tel>");
-					sb.append("<parameters>");
-						sb.append("<type>");
-							sb.append("<text>work</text>");
-							sb.append("<text>voice</text>");
-						sb.append("</type>");
-					sb.append("</parameters>");
-					sb.append("<uri>tel:+1-555-555-1234</uri>");
-				sb.append("</tel>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+				"<tel>" +
+					"<parameters>" +
+						"<type>" +
+							"<text>work</text>" +
+							"<text>voice</text>" +
+						"</type>" +
+					"</parameters>" +
+					"<uri>tel:+1-555-555-1234</uri>" +
+				"</tel>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 
@@ -207,19 +207,19 @@ public class XCardReaderTest {
 	@Test
 	public void group() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<group name=\"item1\">");
-					sb.append("<fn><text>John Doe</text></fn>");
-					sb.append("<note><text>Hello world!</text></note>");
-				sb.append("</group>");
-				sb.append("<note><text>A property without a group</text></note>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<group name=\"item1\">" +
+					"<fn><text>John Doe</text></fn>" +
+					"<note><text>Hello world!</text></note>" +
+				"</group>" +
+				"<note><text>A property without a group</text></note>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 
@@ -246,29 +246,29 @@ public class XCardReaderTest {
 	@Test
 	public void readNonStandardElements() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
 				//XmlType (non-standard type that does not start with "x-")
-				sb.append("<a href=\"http://www.website.com\">website</a>");
+				"<a href=\"http://www.website.com\">website</a>" +
 				
 				//LuckyNumType (with marshal methods and with QName)
-				sb.append("<a:lucky-num xmlns:a=\"http://luckynum.com\"><a:num>21</a:num></a:lucky-num>");
+				"<a:lucky-num xmlns:a=\"http://luckynum.com\"><a:num>21</a:num></a:lucky-num>" +
 				
 				//SalaryType (with marshal methods and without QName)
-				sb.append("<x-salary><integer>1000000</integer></x-salary>");
+				"<x-salary><integer>1000000</integer></x-salary>" +
 				
 				//AgeType (without marshal methods and without QName)
 				//should be unmarshalled as XmlType
-				sb.append("<x-age><integer>24</integer></x-age>");
+				"<x-age><integer>24</integer></x-age>" +
 				
 				//RawType (extended type that starts with "x-")
-				sb.append("<x-gender><text>m</text></x-gender>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+				"<x-gender><text>m</text></x-gender>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 		xcr.registerExtendedType(LuckyNumType.class);
 		xcr.registerExtendedType(SalaryType.class);
 		xcr.registerExtendedType(AgeType.class);
@@ -304,25 +304,25 @@ public class XCardReaderTest {
 	@Test
 	public void readMultipleVCards() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
-			sb.append("</vcard>");
-			sb.append("<vcard>");
-				sb.append("<n>");
-					sb.append("<surname>House</surname>");
-					sb.append("<given>Gregory</given>");
-					sb.append("<additional />");
-					sb.append("<prefix>Dr</prefix>");
-					sb.append("<prefix>Mr</prefix>");
-					sb.append("<suffix>MD</suffix>");
-				sb.append("</n>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+			"</vcard>" +
+			"<vcard>" +
+				"<n>" +
+					"<surname>House</surname>" +
+					"<given>Gregory</given>" +
+					"<additional />" +
+					"<prefix>Dr</prefix>" +
+					"<prefix>Mr</prefix>" +
+					"<suffix>MD</suffix>" +
+				"</n>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -352,28 +352,28 @@ public class XCardReaderTest {
 	public void namespace() throws Exception {
 		//no namespace
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards>");
-			sb.append("<vcard>");
-				sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+		String xml =
+		"<vcards>" +
+			"<vcard>" +
+				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 		assertNull(xcr.readNext());
 
 		//wrong namespace
 		//@formatter:off
-		sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"wrong\">");
-			sb.append("<vcard>");
-				sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+		xml =
+		"<vcards xmlns=\"wrong\">" +
+			"<vcard>" +
+				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		xcr = new XCardReader(sb.toString());
+		xcr = new XCardReader(xml);
 		assertNull(xcr.readNext());
 	}
 
@@ -385,16 +385,16 @@ public class XCardReaderTest {
 	@Test
 	public void skipMeException() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">");
-			sb.append("<vcard>");
-				sb.append("<a:lucky-num><a:num>24</a:num></a:lucky-num>");
-				sb.append("<a:lucky-num><a:num>13</a:num></a:lucky-num>");
-			sb.append("</vcard>");
-		sb.append("</vcards>");
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">" +
+			"<vcard>" +
+				"<a:lucky-num><a:num>24</a:num></a:lucky-num>" +
+				"<a:lucky-num><a:num>13</a:num></a:lucky-num>" +
+			"</vcard>" +
+		"</vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 		xcr.registerExtendedType(LuckyNumType.class);
 		VCard vcard = xcr.readNext();
 
@@ -410,25 +410,25 @@ public class XCardReaderTest {
 	@Test
 	public void notRoot() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<foo xmlns=\"http://foobar.com\">");
-			sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-				sb.append("<vcard>");
-					sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
-					sb.append("<n>");
-						sb.append("<surname>House</surname>");
-						sb.append("<given>Gregory</given>");
-						sb.append("<additional />");
-						sb.append("<prefix>Dr</prefix>");
-						sb.append("<prefix>Mr</prefix>");
-						sb.append("<suffix>MD</suffix>");
-					sb.append("</n>");
-				sb.append("</vcard>");
-			sb.append("</vcards>");
-		sb.append("</foo>");
+		String xml =
+		"<foo xmlns=\"http://foobar.com\">" +
+			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcard>" +
+					"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+					"<n>" +
+						"<surname>House</surname>" +
+						"<given>Gregory</given>" +
+						"<additional />" +
+						"<prefix>Dr</prefix>" +
+						"<prefix>Mr</prefix>" +
+						"<suffix>MD</suffix>" +
+					"</n>" +
+				"</vcard>" +
+			"</vcards>" +
+		"</foo>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 		VCard vcard = xcr.readNext();
 
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -449,23 +449,23 @@ public class XCardReaderTest {
 	@Test
 	public void with_namespace_prefix() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<v:vcards xmlns:v=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-			sb.append("<v:vcard>");
-				sb.append("<v:fn><v:text>Dr. Gregory House M.D.</v:text></v:fn>");
-				sb.append("<v:n>");
-					sb.append("<v:surname>House</v:surname>");
-					sb.append("<v:given>Gregory</v:given>");
-					sb.append("<v:additional />");
-					sb.append("<v:prefix>Dr</v:prefix>");
-					sb.append("<v:prefix>Mr</v:prefix>");
-					sb.append("<v:suffix>MD</v:suffix>");
-				sb.append("</v:n>");
-			sb.append("</v:vcard>");
-		sb.append("</v:vcards>");
+		String xml =
+		"<v:vcards xmlns:v=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<v:vcard>" +
+				"<v:fn><v:text>Dr. Gregory House M.D.</v:text></v:fn>" +
+				"<v:n>" +
+					"<v:surname>House</v:surname>" +
+					"<v:given>Gregory</v:given>" +
+					"<v:additional />" +
+					"<v:prefix>Dr</v:prefix>" +
+					"<v:prefix>Mr</v:prefix>" +
+					"<v:suffix>MD</v:suffix>" +
+				"</v:n>" +
+			"</v:vcard>" +
+		"</v:vcards>";
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 
 		VCard vcard = xcr.readNext();
 
@@ -487,40 +487,40 @@ public class XCardReaderTest {
 	@Test
 	public void not_in_same_vcards_element() throws Exception {
 		//@formatter:off
-		StringBuilder sb = new StringBuilder();
-		sb.append("<foo xmlns=\"http://foobar.com\">");
-			sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-				sb.append("<vcard>");
-					sb.append("<fn><text>Dr. Gregory House M.D.</text></fn>");
-					sb.append("<n>");
-						sb.append("<surname>House</surname>");
-						sb.append("<given>Gregory</given>");
-						sb.append("<additional />");
-						sb.append("<prefix>Dr</prefix>");
-						sb.append("<prefix>Mr</prefix>");
-						sb.append("<suffix>MD</suffix>");
-					sb.append("</n>");
-				sb.append("</vcard>");
-			sb.append("</vcards>");
-			sb.append("<bar>");
-				sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
-					sb.append("<vcard>");
-						sb.append("<fn><text>Dr. Lisa Cuddy M.D.</text></fn>");
-						sb.append("<n>");
-							sb.append("<surname>Cuddy</surname>");
-							sb.append("<given>Lisa</given>");
-							sb.append("<additional />");
-							sb.append("<prefix>Dr</prefix>");
-							sb.append("<prefix>Ms</prefix>");
-							sb.append("<suffix>MD</suffix>");
-						sb.append("</n>");
-					sb.append("</vcard>");
-				sb.append("</vcards>");
-			sb.append("</bar>");
-		sb.append("</foo>");
+		String xml =
+		"<foo xmlns=\"http://foobar.com\">" +
+			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcard>" +
+					"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+					"<n>" +
+						"<surname>House</surname>" +
+						"<given>Gregory</given>" +
+						"<additional />" +
+						"<prefix>Dr</prefix>" +
+						"<prefix>Mr</prefix>" +
+						"<suffix>MD</suffix>" +
+					"</n>" +
+				"</vcard>" +
+			"</vcards>" + 
+			"<bar>" +
+				"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+					"<vcard>" +
+						"<fn><text>Dr. Lisa Cuddy M.D.</text></fn>" +
+						"<n>" +
+							"<surname>Cuddy</surname>" +
+							"<given>Lisa</given>" +
+							"<additional />" +
+							"<prefix>Dr</prefix>" +
+							"<prefix>Ms</prefix>" +
+							"<suffix>MD</suffix>" +
+						"</n>" +
+					"</vcard>" +
+				"</vcards>" + 
+			"</bar>" +
+		"</foo>" ;
 		//@formatter:on
 
-		XCardReader xcr = new XCardReader(sb.toString());
+		XCardReader xcr = new XCardReader(xml);
 
 		{
 			VCard vcard = xcr.readNext();
