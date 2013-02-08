@@ -40,68 +40,70 @@ import org.junit.Test;
 public class FoldedLineReaderTest {
 	@Test
 	public void readLine() throws Exception {
-		StringBuilder sb = new StringBuilder();
+		//@formatter:off
+		String vcardStr =
 
 		//unfolded line
-		sb.append("FN: Michael Angstadt\n");
+		"FN: Michael Angstadt\n" +
 
 		//empty lines should be ignored
-		sb.append("\n");
+		"\n" +
 
 		//=========
 		//quoted-printable lines whose additional lines are not folded (Outlook craziness)
 
 		//one line
-		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5\n");
+		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5\n" +
 
 		//two lines
 		//(without "ENCODING" subtype name)
-		sb.append("LABEL;HOME;QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n");
-		sb.append("New York, New York  12345\n");
+		"LABEL;HOME;QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n" +
+		"New York, New York  12345\n" +
 
 		//two lines with an empty line at the end
-		sb.append("LABEL;HOME;QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n");
-		sb.append("New York, New York  12345=0D=0A=\n");
-		sb.append("\n");
+		"LABEL;HOME;QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n" +
+		"New York, New York  12345=0D=0A=\n" +
+		"\n" +
 
 		//two lines with an empty line in the middle
-		sb.append("LABEL;HOME;QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n");
-		sb.append("=\n");
-		sb.append("New York, New York  12345\n");
+		"LABEL;HOME;QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n" +
+		"=\n" +
+		"New York, New York  12345\n" +
 
 		//three lines
-		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n");
-		sb.append("New York, New York  12345=0D=0A=\n");
-		sb.append("USA\n");
+		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n" +
+		"New York, New York  12345=0D=0A=\n" +
+		"USA\n" +
 
 		//it should recognize when the string "QUOTED-PRINTABLE" is not to the left of the colon
-		sb.append("LABEL;HOME:Some text QUOTED-PRINTABLE more text=\n");
+		"LABEL;HOME:Some text QUOTED-PRINTABLE more text=\n" +
 
 		//four lines
-		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n");
-		sb.append("New York, New York  12345=0D=0A=\n");
-		sb.append("USA=0D=0A=\n");
-		sb.append("4th line\n");
+		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n" +
+		"New York, New York  12345=0D=0A=\n" +
+		"USA=0D=0A=\n" +
+		"4th line\n" +
 
 		//=========
 
 		//a quoted-printable line whose additional lines *are* folded where the lines end in "="
-		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n");
-		sb.append(" New York, New York  12345=0D=0A=\n");
-		sb.append(" USA\n");
+		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n" +
+		" New York, New York  12345=0D=0A=\n" +
+		" USA\n" +
 
 		//a quoted-printable line whose additional lines *are* folded, where the lines don't end in "="
-		sb.append("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A\n");
-		sb.append(" New York, New York  12345=0D=0A\n");
-		sb.append(" USA\n");
+		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A\n" +
+		" New York, New York  12345=0D=0A\n" +
+		" USA\n" +
 
 		//this line is folded
-		sb.append("NOTE:folded \n line\n");
+		"NOTE:folded \n line\n" +
 
 		//this line is folded with multiple whitespace characters
-		sb.append("NOTE:one \n two \n  three \n \t four");
+		"NOTE:one \n two \n  three \n \t four";
+		//@formatter:on
 
-		FoldedLineReader reader = new FoldedLineReader(sb.toString());
+		FoldedLineReader reader = new FoldedLineReader(vcardStr);
 		assertEquals("FN: Michael Angstadt", reader.readLine());
 		//assertEquals("", reader.readLine()); //empty lines should be ignored
 
