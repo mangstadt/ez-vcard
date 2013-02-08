@@ -93,26 +93,44 @@ public class FoldedLineReader extends BufferedReader {
 			return null;
 		}
 
-		//Outlook incorrectly folds lines that are QUOTED-PRINTABLE.
-		//It does not prepend each additional line with whitespace
-		//For example:
-		//
-		//NOTE;QUOTED-PRINTABLE: This is my=0D=0A=
-		//badly formatted=0D=0A=
-		//note
-		boolean outlookCraziness = false;
+		//@formatter:off
+		/*
+		 * Outlook incorrectly folds lines that are QUOTED-PRINTABLE. It puts a
+		 * "=" at the end of a line to signal that the line's newline characters
+		 * should be ignored and that the vCard parser should continue to read
+		 * the next line as if it were part of the current line. It does not
+		 * prepend each additional line with whitespace.
+		 * 
+		 * For example:
+		 * 
+		 * ------------
+		 * BEGIN:VCARD
+		 * NOTE;QUOTED-PRINTABLE: This is an=0D=0A=
+		 * annoyingly formatted=0D=0A=
+		 * note=
+		 * 
+		 * END:VCARD
+		 * ------------
+		 * 
+		 * In the example above, note how there is an empty line directly above
+		 * END. This is still part of the NOTE property value because the 3rd
+		 * line of NOTE ends with a "=".
+		 */
+		//@formatter:on
+
+		boolean foldedQuotedPrintableLine = false;
 		if (outlookQuirk.matcher(wholeLine).matches()) {
-			outlookCraziness = true;
+			foldedQuotedPrintableLine = true;
 			wholeLine = wholeLine.substring(0, wholeLine.length() - 1); //chop off the ending "="
 		}
 
 		//long lines are folded
 		StringBuilder wholeLineSb = new StringBuilder(wholeLine);
 		while (true) {
-			String line = readNonEmptyLine();
+			String line = foldedQuotedPrintableLine ? super.readLine() : readNonEmptyLine();
 			if (line == null) {
 				break;
-			} else if (outlookCraziness) {
+			} else if (foldedQuotedPrintableLine) {
 				line = VCardStringUtils.ltrim(line);
 
 				boolean endsInEquals = line.endsWith("=");
