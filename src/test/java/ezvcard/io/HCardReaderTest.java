@@ -59,11 +59,10 @@ public class HCardReaderTest {
 	@Test
 	public void html_without_vcard() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body></body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -73,12 +72,12 @@ public class HCardReaderTest {
 	@Test
 	public void empty_vcard() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\" />");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\" />" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -89,12 +88,12 @@ public class HCardReaderTest {
 	@Test
 	public void always_version_3() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\" />");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\" />" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -108,14 +107,14 @@ public class HCardReaderTest {
 	@Test
 	public void vcard_element_has_other_classes() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"foo bar vcard\">");
-					html.append("<span class=\"fn\">John Doe</span>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"foo bar vcard\">" +
+					"<span class=\"fn\">John Doe</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -128,14 +127,14 @@ public class HCardReaderTest {
 	@Test
 	public void case_insensitive_property_names() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<span class=\"fN\">John Doe</span>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"fN\">John Doe</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -148,14 +147,14 @@ public class HCardReaderTest {
 	@Test
 	public void single_tag_with_multiple_properties() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<a class=\"fn url\" href=\"http://johndoe.com\">John Doe</span>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<a class=\"fn url\" href=\"http://johndoe.com\">John Doe</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -170,24 +169,24 @@ public class HCardReaderTest {
 	@Test
 	public void property_tags_are_not_direct_children_of_root_tag() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<h1>Welcome to my webpage</h1>");
-					html.append("<table>");
-						html.append("<tr>");
-							html.append("<td>");
-								html.append("<a class=\"fn url\" href=\"http://johndoe.com\">John Doe</span>");
-							html.append("</td>");
-							html.append("<td>");
-								html.append("<span class=\"tel\">(555) 555-1234</span>");
-							html.append("</td>");
-						html.append("</tr>");
-					html.append("</table>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<h1>Welcome to my webpage</h1>" +
+					"<table>" +
+						"<tr>" +
+							"<td>" +
+								"<a class=\"fn url\" href=\"http://johndoe.com\">John Doe</span>" +
+							"</td>" +
+							"<td>" +
+								"<span class=\"tel\">(555) 555-1234</span>" +
+							"</td>" +
+						"</tr>" +
+					"</table>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -202,16 +201,16 @@ public class HCardReaderTest {
 	@Test
 	public void property_tags_within_other_property_tags() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<div class=\"n\">");
-						html.append("<span class=\"family-name org\">Smith</span>");
-					html.append("</div>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<div class=\"n\">" +
+						"<span class=\"family-name org\">Smith</span>" +
+					"</div>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -225,17 +224,17 @@ public class HCardReaderTest {
 	@Test
 	public void read_multiple() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<span class=\"fn\">John Doe</span>");
-				html.append("</div>");
-				html.append("<div class=\"vcard\">");
-					html.append("<span class=\"fn\">Jane Doe</span>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"fn\">John Doe</span>" +
+				"</div>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"fn\">Jane Doe</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -252,20 +251,20 @@ public class HCardReaderTest {
 	@Test
 	public void embedded_vcards() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<div class=\"fn\">John Doe</div>");
-					html.append("<div class=\"agent vcard\">");
-						html.append("<span class=\"fn\">Jane Doe</span>");
-						html.append("<div class=\"agent vcard\">");
-							html.append("<span class=\"fn\">Joseph Doe</span>");
-						html.append("</div>");
-					html.append("</div>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<div class=\"fn\">John Doe</div>" +
+					"<div class=\"agent vcard\">" +
+						"<span class=\"fn\">Jane Doe</span>" +
+						"<div class=\"agent vcard\">" +
+							"<span class=\"fn\">Joseph Doe</span>" +
+						"</div>" +
+					"</div>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -281,14 +280,14 @@ public class HCardReaderTest {
 	@Test
 	public void url_of_vcard_specified() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<a class=\"fn url\" href=\"index.html\">John Doe</span>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<a class=\"fn url\" href=\"index.html\">John Doe</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html");
@@ -304,14 +303,14 @@ public class HCardReaderTest {
 	@Test
 	public void convert_instant_messenging_urls_to_impp_types() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<a class=\"url\" href=\"aim:goim?screenname=ShoppingBuddy\">IM with the AIM ShoppingBuddy</a>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<a class=\"url\" href=\"aim:goim?screenname=ShoppingBuddy\">IM with the AIM ShoppingBuddy</a>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -334,14 +333,14 @@ public class HCardReaderTest {
 	@Test
 	public void convert_mailto_urls_to_email_types() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<a class=\"url\" href=\"mailto:jdoe@hotmail.com\">Email me</a>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<a class=\"url\" href=\"mailto:jdoe@hotmail.com\">Email me</a>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -364,14 +363,14 @@ public class HCardReaderTest {
 	@Test
 	public void convert_tel_urls_to_tel_types() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<a class=\"url\" href=\"tel:+15555551234\">Call me</a>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<a class=\"url\" href=\"tel:+15555551234\">Call me</a>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -394,14 +393,14 @@ public class HCardReaderTest {
 	@Test
 	public void mailto_url_with_email_and_url_class_names() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<a class=\"email url\" href=\"mailto:jdoe@hotmail.com\">Email me</a>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<a class=\"email url\" href=\"mailto:jdoe@hotmail.com\">Email me</a>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -432,14 +431,14 @@ public class HCardReaderTest {
 	@Test
 	public void tel_url_with_tel_and_url_class_names() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<a class=\"tel url\" href=\"tel:+15555551234\">Call me</a>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<a class=\"tel url\" href=\"tel:+15555551234\">Call me</a>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -470,20 +469,20 @@ public class HCardReaderTest {
 	@Test
 	public void assign_labels_to_addresses() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<div class=\"adr\">");
-						html.append("<span class=\"type\">Home</span>:<br>");
-						html.append("<span class=\"street-address\">123 Main St.</span><br>");
-						html.append("<span class=\"locality\">Austin</span>, <span class=\"region\">TX</span> <span class=\"postal-code\">12345</span>");
-					html.append("</div>");
-					html.append("<div class=\"label\"><abbr class=\"type\" title=\"home\"></abbr>123 Main St.\nAustin, TX 12345</div>");
-					html.append("<abbr class=\"label\" title=\"456 Wall St., New York, NY 67890\"><abbr class=\"type\" title=\"work\"></abbr></abbr>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<div class=\"adr\">" +
+						"<span class=\"type\">Home</span>:<br>" +
+						"<span class=\"street-address\">123 Main St.</span><br>" +
+						"<span class=\"locality\">Austin</span>, <span class=\"region\">TX</span> <span class=\"postal-code\">12345</span>" +
+					"</div>" +
+					"<div class=\"label\"><abbr class=\"type\" title=\"home\"></abbr>123 Main St.\nAustin, TX 12345</div>" +
+					"<abbr class=\"label\" title=\"456 Wall St., New York, NY 67890\"><abbr class=\"type\" title=\"work\"></abbr></abbr>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -522,19 +521,19 @@ public class HCardReaderTest {
 	@Test
 	public void anchor_in_url() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<span class=\"fn\">John Doe</span>");
-				html.append("</div>");
-				html.append("<div id=\"anchor\">");
-					html.append("<div class=\"vcard\">");
-						html.append("<span class=\"fn\">Jane Doe</span>");
-					html.append("</div>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"fn\">John Doe</span>" +
+				"</div>" +
+				"<div id=\"anchor\">" +
+					"<div class=\"vcard\">" +
+						"<span class=\"fn\">Jane Doe</span>" +
+					"</div>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html#anchor");
@@ -548,19 +547,19 @@ public class HCardReaderTest {
 	@Test
 	public void non_existant_anchor() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<span class=\"fn\">John Doe</span>");
-				html.append("</div>");
-				html.append("<div id=\"anchor\">");
-					html.append("<div class=\"vcard\">");
-						html.append("<span class=\"fn\">Jane Doe</span>");
-					html.append("</div>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"fn\">John Doe</span>" +
+				"</div>" +
+				"<div id=\"anchor\">" +
+					"<div class=\"vcard\">" +
+						"<span class=\"fn\">Jane Doe</span>" +
+					"</div>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html#non-existant");
@@ -577,17 +576,17 @@ public class HCardReaderTest {
 	@Test
 	public void add_all_nicknames_to_the_same_object() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<span class=\"fn\">John Doe</span>");
-					html.append("<span class=\"nickname\">Johnny</span>");
-					html.append("<span class=\"nickname\">Johnny 5</span>");
-					html.append("<span class=\"nickname\">Johnster</span>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"fn\">John Doe</span>" +
+					"<span class=\"nickname\">Johnny</span>" +
+					"<span class=\"nickname\">Johnny 5</span>" +
+					"<span class=\"nickname\">Johnster</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -603,17 +602,17 @@ public class HCardReaderTest {
 	@Test
 	public void add_all_categories_to_the_same_object() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<span class=\"fn\">John Doe</span>");
-					html.append("<span class=\"category\">programmer</span>");
-					html.append("<span class=\"category\">swimmer</span>");
-					html.append("<span class=\"category\" rel=\"singer\">I also sing</span>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"fn\">John Doe</span>" +
+					"<span class=\"category\">programmer</span>" +
+					"<span class=\"category\">swimmer</span>" +
+					"<span class=\"category\" rel=\"singer\">I also sing</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
@@ -629,31 +628,31 @@ public class HCardReaderTest {
 	@Test
 	public void complete_vcard() {
 		//@formatter:off
-		StringBuilder html = new StringBuilder();
-		html.append("<html>");
-			html.append("<body>");
-				html.append("<div class=\"vcard\">");
-					html.append("<a class=\"fn org url\" href=\"http://www.commerce.net/\">CommerceNet</a>");
-					html.append("<div class=\"adr\">");
-						html.append("<span class=\"type\">Work</span>:");
-						html.append("<div class=\"street-address\">169 University Avenue</div>");
-						html.append("<span class=\"locality\">Palo Alto</span>,  ");
-						html.append("<abbr class=\"region\" title=\"California\">CA</abbr>&nbsp;&nbsp;");
-						html.append("<span class=\"postal-code\">94301</span>");
-						html.append("<div class=\"country-name\">USA</div>");
-					html.append("</div>");
-					html.append("<div class=\"tel\">");
-						html.append("<span class=\"type\">Work</span> +1-650-289-4040");
-					html.append("</div>");
-					html.append("<div class=\"tel\">");
-						html.append("<span class=\"type\">Fax</span> +1-650-289-4041");
-					html.append("</div>");
-					html.append("<div>Email:");
-						html.append("<span class=\"email\">info@commerce.net</span>");
-					html.append("</div>");
-				html.append("</div>");
-			html.append("</body>");
-		html.append("</html>");
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<a class=\"fn org url\" href=\"http://www.commerce.net/\">CommerceNet</a>" +
+					"<div class=\"adr\">" +
+						"<span class=\"type\">Work</span>:" +
+						"<div class=\"street-address\">169 University Avenue</div>" +
+						"<span class=\"locality\">Palo Alto</span>,  " +
+						"<abbr class=\"region\" title=\"California\">CA</abbr>&nbsp;&nbsp;" +
+						"<span class=\"postal-code\">94301</span>" +
+						"<div class=\"country-name\">USA</div>" +
+					"</div>" +
+					"<div class=\"tel\">" +
+						"<span class=\"type\">Work</span> +1-650-289-4040" +
+					"</div>" +
+					"<div class=\"tel\">" +
+						"<span class=\"type\">Fax</span> +1-650-289-4041" +
+					"</div>" +
+					"<div>Email:" +
+						"<span class=\"email\">info@commerce.net</span>" +
+					"</div>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
