@@ -50,6 +50,7 @@ public class KindTypeTest {
 		assertFalse(kind.isOrg());
 		assertFalse(kind.isLocation());
 		assertFalse(kind.isApplication());
+		assertFalse(kind.isDevice());
 
 		kind = new KindType("group");
 		assertFalse(kind.isIndividual());
@@ -57,6 +58,7 @@ public class KindTypeTest {
 		assertFalse(kind.isOrg());
 		assertFalse(kind.isLocation());
 		assertFalse(kind.isApplication());
+		assertFalse(kind.isDevice());
 
 		kind = new KindType("org");
 		assertFalse(kind.isIndividual());
@@ -64,6 +66,7 @@ public class KindTypeTest {
 		assertTrue(kind.isOrg());
 		assertFalse(kind.isLocation());
 		assertFalse(kind.isApplication());
+		assertFalse(kind.isDevice());
 
 		kind = new KindType("location");
 		assertFalse(kind.isIndividual());
@@ -71,6 +74,7 @@ public class KindTypeTest {
 		assertFalse(kind.isOrg());
 		assertTrue(kind.isLocation());
 		assertFalse(kind.isApplication());
+		assertFalse(kind.isDevice());
 
 		kind = new KindType("application");
 		assertFalse(kind.isIndividual());
@@ -78,6 +82,15 @@ public class KindTypeTest {
 		assertFalse(kind.isOrg());
 		assertFalse(kind.isLocation());
 		assertTrue(kind.isApplication());
+		assertFalse(kind.isDevice());
+
+		kind = new KindType("device");
+		assertFalse(kind.isIndividual());
+		assertFalse(kind.isGroup());
+		assertFalse(kind.isOrg());
+		assertFalse(kind.isLocation());
+		assertFalse(kind.isApplication());
+		assertTrue(kind.isDevice());
 	}
 
 	/**
@@ -99,5 +112,8 @@ public class KindTypeTest {
 
 		kind = KindType.application();
 		assertEquals("application", kind.getValue());
+
+		kind = KindType.device();
+		assertEquals("device", kind.getValue());
 	}
 }

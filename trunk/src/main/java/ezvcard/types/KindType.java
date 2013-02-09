@@ -80,6 +80,7 @@ public class KindType extends TextType {
 	public static final String ORG = "org";
 	public static final String LOCATION = "location";
 	public static final String APPLICATION = "application";
+	public static final String DEVICE = "device";
 
 	public KindType() {
 		super(NAME);
@@ -136,6 +137,15 @@ public class KindType extends TextType {
 	}
 
 	/**
+	 * Determines if the value is set to "device".
+	 * @return true if the value is "device", false if not
+	 * @see <a href="http://tools.ietf.org/html/rfc6869">RFC 6869</a>
+	 */
+	public boolean isDevice() {
+		return DEVICE.equals(value);
+	}
+
+	/**
 	 * Creates a new KIND type whose value is set to "individual".
 	 * @return the new KIND type
 	 */
@@ -174,6 +184,15 @@ public class KindType extends TextType {
 	 */
 	public static KindType application() {
 		return new KindType(APPLICATION);
+	}
+
+	/**
+	 * Creates a new KIND type whose value is set to "device".
+	 * @return the new KIND type
+	 * @see <a href="http://tools.ietf.org/html/rfc6869">RFC 6869</a>
+	 */
+	public static KindType device() {
+		return new KindType(DEVICE);
 	}
 
 	@Override
