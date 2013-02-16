@@ -281,7 +281,7 @@ public class VCardWriter implements Closeable {
 	 * <p>
 	 * Gets whether the writer will use circumflex accent encoding for vCard 4.0
 	 * parameter values. This escaping mechanism allows for newlines and double
-	 * quotes to be included in property values.
+	 * quotes to be included in parameter values.
 	 * </p>
 	 * 
 	 * <table border="1">
@@ -330,7 +330,7 @@ public class VCardWriter implements Closeable {
 	 * <p>
 	 * Sets whether the writer will use circumflex accent encoding for vCard 4.0
 	 * parameter values. This escaping mechanism allows for newlines and double
-	 * quotes to be included in property values.
+	 * quotes to be included in parameter values.
 	 * </p>
 	 * 
 	 * <table border="1">
@@ -525,6 +525,7 @@ public class VCardWriter implements Closeable {
 			//write the Sub Types
 			for (String subTypeName : subTypes.getNames()) {
 				Set<String> subTypeValues = subTypes.get(subTypeName);
+				//TODO add a warning if the value was modified in any way, including removal of characters or replacing characters (like replacing dquote with squote)
 				if (!subTypeValues.isEmpty()) {
 					if (targetVersion == VCardVersion.V2_1) {
 						boolean typeSubType = TypeParameter.NAME.equalsIgnoreCase(subTypeName);

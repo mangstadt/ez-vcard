@@ -1143,7 +1143,7 @@ public class Ezvcard {
 		 * <p>
 		 * Sets whether to use circumflex accent encoding for vCard 4.0
 		 * parameter values. This escaping mechanism allows for newlines and
-		 * double quotes to be included in property values.
+		 * double quotes to be included in parameter values.
 		 * </p>
 		 * 
 		 * <table border="1">
@@ -1260,7 +1260,7 @@ public class Ezvcard {
 		 * <p>
 		 * Sets whether to use circumflex accent encoding for vCard 4.0
 		 * parameter values. This escaping mechanism allows for newlines and
-		 * double quotes to be included in property values.
+		 * double quotes to be included in parameter values.
 		 * </p>
 		 * 
 		 * <table border="1">
