@@ -351,6 +351,24 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void write_caretEncoding() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setVersion(VCardVersion.V4_0);
+		FormattedNameType fn = vcard.setFormattedName("test");
+		fn.getSubTypes().put("X-TEST", "George Herman \"Babe\" Ruth");
+
+		//default should be "false"
+		String actual = Ezvcard.write(vcard).go();
+		assertTrue(actual.contains("\r\nFN;X-TEST=George Herman 'Babe' Ruth:"));
+
+		actual = Ezvcard.write(vcard).caretEncoding(true).go();
+		assertTrue(actual.contains("\r\nFN;X-TEST=George Herman ^'Babe^' Ruth:"));
+
+		actual = Ezvcard.write(vcard).caretEncoding(false).go();
+		assertTrue(actual.contains("\r\nFN;X-TEST=George Herman 'Babe' Ruth:"));
+	}
+
+	@Test
 	public void writeXml_go() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
