@@ -10,8 +10,12 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.QuotedPrintableCodec;
@@ -64,10 +68,52 @@ import ezvcard.util.VCardStringUtils;
  * @author Michael Angstadt
  */
 public class VCardWriter implements Closeable {
+	private static final Pattern quoteMeRegex = Pattern.compile(".*?[,:;].*");
+	private static final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
+
+	/**
+	 * The characters that are not valid in parameter values and that should be
+	 * removed.
+	 */
+	private static final Map<VCardVersion, BitSet> invalidParamValueChars = new HashMap<VCardVersion, BitSet>();
+	static {
+		BitSet controlChars = new BitSet(128);
+		controlChars.set(0, 31);
+		controlChars.set(127);
+		controlChars.set('\t', false); //allow
+		controlChars.set('\n', false); //allow
+		controlChars.set('\r', false); //allow
+
+		//2.1
+		{
+			BitSet bitSet = new BitSet(128);
+			bitSet.or(controlChars);
+
+			bitSet.set(',');
+			bitSet.set('.');
+			bitSet.set(':');
+			bitSet.set('=');
+			bitSet.set('[');
+			bitSet.set(']');
+
+			invalidParamValueChars.put(VCardVersion.V2_1, bitSet);
+		}
+
+		//3.0, 4.0
+		{
+			BitSet bitSet = new BitSet(128);
+			bitSet.or(controlChars);
+
+			invalidParamValueChars.put(VCardVersion.V3_0, bitSet);
+			invalidParamValueChars.put(VCardVersion.V4_0, bitSet);
+		}
+	}
+
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private VCardVersion targetVersion = VCardVersion.V3_0;
 	private String newline;
 	private boolean addProdId = true;
+	private boolean caretEncodingEnabled = false;
 	private FoldingScheme foldingScheme;
 	private List<String> warnings = new ArrayList<String>();
 	private final Writer writer;
@@ -232,6 +278,104 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
+	 * <p>
+	 * Gets whether the writer will use circumflex accent encoding for vCard 4.0
+	 * parameter values. This escaping mechanism allows for newlines and double
+	 * quotes to be included in property values.
+	 * </p>
+	 * 
+	 * <table border="1">
+	 * <tr>
+	 * <th>Character</th>
+	 * <th>Replacement</th>
+	 * </tr>
+	 * <tr>
+	 * <td><code>"</code></td>
+	 * <td><code>^'</code></td>
+	 * </tr>
+	 * <tr>
+	 * <td><i>newline</i></td>
+	 * <td><code>^n</code></td>
+	 * </tr>
+	 * <tr>
+	 * <td><code>^</code></td>
+	 * <td><code>^^</code></td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * <p>
+	 * This setting is disabled by default and is only used with 4.0 vCards.
+	 * When writing a 4.0 vCard with this setting disabled, newlines will be
+	 * escaped as "\n", backslashes will be escaped as "\\", and double quotes
+	 * will be replaced with single quotes.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example:
+	 * </p>
+	 * 
+	 * <pre>
+	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
+	 *  sburgh, PA 15212":geo:40.446816,-80.00566
+	 * </pre>
+	 * 
+	 * @return true if circumflex accent encoding is enabled, false if not
+	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 */
+	public boolean isCaretEncodingEnabled() {
+		return caretEncodingEnabled;
+	}
+
+	/**
+	 * <p>
+	 * Sets whether the writer will use circumflex accent encoding for vCard 4.0
+	 * parameter values. This escaping mechanism allows for newlines and double
+	 * quotes to be included in property values.
+	 * </p>
+	 * 
+	 * <table border="1">
+	 * <tr>
+	 * <th>Character</th>
+	 * <th>Replacement</th>
+	 * </tr>
+	 * <tr>
+	 * <td><code>"</code></td>
+	 * <td><code>^'</code></td>
+	 * </tr>
+	 * <tr>
+	 * <td><i>newline</i></td>
+	 * <td><code>^n</code></td>
+	 * </tr>
+	 * <tr>
+	 * <td><code>^</code></td>
+	 * <td><code>^^</code></td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * <p>
+	 * This setting is disabled by default and is only used with 4.0 vCards.
+	 * When writing a 4.0 vCard with this setting disabled, newlines will be
+	 * escaped as "\n", backslashes will be escaped as "\\", and double quotes
+	 * will be replaced with single quotes.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example:
+	 * </p>
+	 * 
+	 * <pre>
+	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
+	 *  sburgh, PA 15212":geo:40.446816,-80.00566
+	 * </pre>
+	 * 
+	 * @param enable true to use circumflex accent encoding, false not to
+	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 */
+	public void setCaretEncodingEnabled(boolean enable) {
+		caretEncodingEnabled = enable;
+	}
+
+	/**
 	 * Gets the newline sequence that is used to separate lines.
 	 * @return the newline sequence
 	 */
@@ -383,51 +527,43 @@ public class VCardWriter implements Closeable {
 				Set<String> subTypeValues = subTypes.get(subTypeName);
 				if (!subTypeValues.isEmpty()) {
 					if (targetVersion == VCardVersion.V2_1) {
-						if (TypeParameter.NAME.equalsIgnoreCase(subTypeName)) {
-							//example: ADR;HOME;WORK:
-							for (String subTypeValue : subTypeValues) {
+						boolean typeSubType = TypeParameter.NAME.equalsIgnoreCase(subTypeName);
+						for (String subTypeValue : subTypeValues) {
+							subTypeValue = sanitizeV21ParamValue(subTypeValue, subTypeName, type.getTypeName());
+
+							if (typeSubType) {
+								//e.g. ADR;HOME;WORK:
 								sb.append(';').append(subTypeValue.toUpperCase());
-							}
-						} else {
-							//example: ADR;FOO=bar;FOO=car:
-							for (String subTypeValue : subTypeValues) {
-								sb.append(';').append(subTypeName).append('=');
-								if (subTypeValueNeedsEscaping(subTypeValue)) {
-									subTypeValue = escapeSubTypeValue(subTypeValue);
-									sb.append('"').append(subTypeValue).append('"');
-								} else {
-									sb.append(subTypeValue);
-								}
+							} else {
+								//e.g. ADR;FOO=bar;FOO=car:
+								sb.append(';').append(subTypeName).append('=').append(subTypeValue);
 							}
 						}
 					} else {
-						//example: ADR;TYPE=home,work:
-
-						//check all the values to see if any have special chars in them
-						boolean needsEscaping = false;
-						for (String subTypeValue : subTypeValues) {
-							if (subTypeValueNeedsEscaping(subTypeValue)) {
-								needsEscaping = true;
-								break;
-							}
-						}
+						//e.g. ADR;TYPE=home,work,"another,value":
 
 						sb.append(';').append(subTypeName).append('=');
+						for (String subTypeValue : subTypeValues) {
+							subTypeValue = removeInvalidParamValueChars(subTypeValue, subTypeName, type.getTypeName());
 
-						if (needsEscaping) {
-							sb.append('"');
-							for (String subTypeValue : subTypeValues) {
-								subTypeValue = escapeSubTypeValue(subTypeValue);
-								sb.append(subTypeValue).append(',');
+							if (targetVersion == VCardVersion.V4_0 && caretEncodingEnabled) {
+								subTypeValue = applyCaretEscaping(subTypeValue);
+							} else {
+								subTypeValue = applyBackslashEscaping(subTypeValue);
 							}
-							sb.deleteCharAt(sb.length() - 1); //chomp last comma
-							sb.append('"');
-						} else {
-							for (String subTypeValue : subTypeValues) {
-								sb.append(subTypeValue).append(',');
+
+							//surround with double quotes if contains special chars
+							if (quoteMeRegex.matcher(subTypeValue).matches()) {
+								sb.append('"');
+								sb.append(subTypeValue);
+								sb.append('"');
+							} else {
+								sb.append(subTypeValue);
 							}
-							sb.deleteCharAt(sb.length() - 1); //chomp last comma
+
+							sb.append(',');
 						}
+						sb.deleteCharAt(sb.length() - 1); //chomp last comma
 					}
 				}
 			}
@@ -479,6 +615,54 @@ public class VCardWriter implements Closeable {
 		}
 	}
 
+	private String sanitizeV21ParamValue(String value, String subTypeName, String typeName) {
+		//remove invalid characters
+		value = removeInvalidParamValueChars(value, subTypeName, typeName);
+
+		//replace newlines with spaces
+		value = newlineRegex.matcher(value).replaceAll(" ");
+
+		//escape semi-colons (see section 2)
+		value = value.replace("\\", "\\\\");
+		value = value.replace(";", "\\;");
+
+		return value;
+	}
+
+	private String removeInvalidParamValueChars(String value, String subTypeName, String typeName) {
+		BitSet invalidChars = invalidParamValueChars.get(targetVersion);
+		boolean invalidCharFound = false;
+		StringBuilder sb = new StringBuilder(value.length());
+		for (int i = 0; i < value.length(); i++) {
+			char ch = value.charAt(i);
+			if (invalidChars.get(ch)) {
+				invalidCharFound = true;
+			} else {
+				sb.append(ch);
+			}
+		}
+
+		if (invalidCharFound) {
+			warnings.add("Parameter \"" + subTypeName + "\" of property \"" + typeName + "\" contained one or more characters which are not allowed in vCard " + targetVersion.getVersion() + " parameter values.  These characters were removed.");
+		}
+
+		return sb.toString();
+	}
+
+	private String applyCaretEscaping(String value) {
+		value = value.replace("^", "^^");
+		value = newlineRegex.matcher(value).replaceAll("^n");
+		value = value.replace("\"", "^'");
+		return value;
+	}
+
+	private String applyBackslashEscaping(String value) {
+		value = value.replace("\\", "\\\\");
+		value = newlineRegex.matcher(value).replaceAll("\\\\\\n");
+		value = value.replace('"', '\''); //replace double quotes with single quotes
+		return value;
+	}
+
 	/**
 	 * Determines if a type supports the target version.
 	 * @param type the type
@@ -491,35 +675,6 @@ public class VCardWriter implements Closeable {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Determines if a sub type value needs to be escaped.
-	 * @param value the sub type value
-	 * @return true if it needs to be escaped, false if not
-	 */
-	private boolean subTypeValueNeedsEscaping(String value) {
-		String specialChars = "\",;:\\\n\r";
-		for (int i = 0; i < specialChars.length(); i++) {
-			char c = specialChars.charAt(i);
-			if (value.contains(c + "")) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Escapes a sub type value for safe inclusion in a vCard string.
-	 * @param value the sub type value
-	 * @return the safely escaped value. This method does NOT enclose the value
-	 * in double quotes
-	 */
-	private String escapeSubTypeValue(String value) {
-		value = value.replace("\\", "\\\\"); //escape backslashes
-		value = value.replace("\"", "\\\""); //escape double quotes
-		value = value.replaceAll("\\r\\n|\\r|\\n", "\\\\\\n"); //escape newlines
-		return value;
 	}
 
 	/**
