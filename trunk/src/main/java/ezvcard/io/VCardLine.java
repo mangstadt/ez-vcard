@@ -3,6 +3,9 @@ package ezvcard.io;
 import java.util.ArrayList;
 import java.util.List;
 
+import ezvcard.VCardVersion;
+import ezvcard.util.VCardStringUtils;
+
 /*
  Copyright (c) 2012, Michael Angstadt
  All rights reserved.
@@ -40,7 +43,7 @@ import java.util.List;
 public class VCardLine {
 	private String group;
 	private String typeName;
-	private List<String[]> subTypes = new ArrayList<String[]>();
+	private List<List<String>> subTypes = new ArrayList<List<String>>();
 	private String value;
 
 	private VCardLine() {
@@ -51,28 +54,55 @@ public class VCardLine {
 	 * Parses an unfolded vCard line. It just parses the components out, it
 	 * doesn't modify the components in any way.
 	 * @param line the unfolded line to parse
+	 * @param the version of the vCard that's being parsed
+	 * @param caretDecodingEnabled true to enable circumflex accent decoding in
+	 * 3.0 and 4.0 parameter values, false not to
 	 * @return the parsed components or null if the line is not a valid vCard
 	 * line
 	 */
-	public static VCardLine parse(String line) {
+	public static VCardLine parse(String line, VCardVersion version, boolean caretDecodingEnabled) {
 		VCardLine lineObj = new VCardLine();
 
-		boolean escaped = false; //is the next char escaped?
+		char escapeChar = 0; //is the next char escaped?
 		boolean inQuotes = false; //are we inside of double quotes?
 		StringBuilder buf = new StringBuilder();
-		String[] curSubType = new String[2];
+		List<String> curSubType = new ArrayList<String>();
+		curSubType.add(null);
 		for (int i = 0; i < line.length(); i++) {
 			char ch = line.charAt(i);
-			if (escaped) {
-				if (ch == 'n' || ch == 'N') {
-					//newlines appear as "\n" or "\N" (see RFC 2426 p.7)
-					buf.append(System.getProperty("line.separator"));
-				} else {
-					buf.append(ch);
+			if (escapeChar != 0) {
+				if (escapeChar == '\\') {
+					if (ch == '\\') {
+						buf.append(ch);
+					} else if (ch == 'n' || ch == 'N') {
+						//newlines appear as "\n" or "\N" (see RFC 2426 p.7)
+						buf.append(System.getProperty("line.separator"));
+					} else if (ch == '"' && version != VCardVersion.V2_1) {
+						//double quotes don't need to be escaped in 2.1 parameter values because they have no special meaning
+						buf.append(ch);
+					} else if (ch == ';' && version == VCardVersion.V2_1) {
+						//semi-colons can only be escaped in 2.1 parameter values (see section 2 of specs)
+						//if a 3.0/4.0 param value has semi-colons, the value should be surrounded in double quotes
+						buf.append(ch);
+					} else {
+						//treat the escape character as a normal character because it's not a valid escape sequence
+						buf.append(escapeChar).append(ch);
+					}
+				} else if (escapeChar == '^') {
+					if (ch == '^') {
+						buf.append(ch);
+					} else if (ch == 'n') {
+						buf.append(System.getProperty("line.separator"));
+					} else if (ch == '\'') {
+						buf.append('"');
+					} else {
+						//treat the escape character as a normal character because it's not a valid escape sequence
+						buf.append(escapeChar).append(ch);
+					}
 				}
-				escaped = false;
-			} else if (ch == '\\') {
-				escaped = true;
+				escapeChar = 0;
+			} else if (ch == '\\' || (ch == '^' && version != VCardVersion.V2_1 && caretDecodingEnabled)) {
+				escapeChar = ch;
 			} else if (ch == '.' && lineObj.group == null && lineObj.typeName == null) {
 				lineObj.group = buf.toString();
 				buf.setLength(0);
@@ -81,10 +111,17 @@ public class VCardLine {
 					lineObj.typeName = buf.toString();
 				} else {
 					//sub type value
-					curSubType[1] = buf.toString();
+					String subTypeValue = buf.toString();
+					if (version == VCardVersion.V2_1) {
+						//2.1 allows whitespace to surround the "=", so remove it
+						subTypeValue = VCardStringUtils.ltrim(subTypeValue);
+					}
+					curSubType.add(subTypeValue);
 
 					lineObj.subTypes.add(curSubType);
-					curSubType = new String[2];
+
+					curSubType = new ArrayList<String>();
+					curSubType.add(null);
 				}
 				buf.setLength(0);
 
@@ -96,11 +133,22 @@ public class VCardLine {
 					}
 					break;
 				}
-			} else if (ch == '=' && !inQuotes) {
-				//sub type name
-				curSubType[0] = buf.toString();
+			} else if (ch == ',' && !inQuotes && version != VCardVersion.V2_1) {
+				//multi-valued sub type
+				curSubType.add(buf.toString());
 				buf.setLength(0);
-			} else if (ch == '"') {
+			} else if (ch == '=' && curSubType.get(0) == null) {
+				//sub type name
+				String subTypeName = buf.toString();
+				if (version == VCardVersion.V2_1) {
+					//2.1 allows whitespace to surround the "=", so remove it
+					subTypeName = VCardStringUtils.rtrim(subTypeName);
+				}
+				curSubType.set(0, subTypeName);
+
+				buf.setLength(0);
+			} else if (ch == '"' && version != VCardVersion.V2_1) {
+				//2.1 doesn't use the quoting mechanism
 				inQuotes = !inQuotes;
 			} else {
 				buf.append(ch);
@@ -131,11 +179,13 @@ public class VCardLine {
 
 	/**
 	 * Gets the sub types.
-	 * @return the sub types. Index 0 is the name and index 1 is the value. If
-	 * the sub type is nameless, then index 0 will be null. Sub types can be
-	 * nameless in v2.1 (e.g. "ADR;WORK;DOM:")
+	 * @return the sub types. Index 0 of each list is the sub type name. The
+	 * rest of the list contains the sub type values (there will always be at
+	 * least one value and there may be more if the sub type is multi-valued).
+	 * If the sub type is nameless, then index 0 will be null (sub types can be
+	 * nameless in v2.1, e.g. "ADR;WORK;DOM:")
 	 */
-	public List<String[]> getSubTypes() {
+	public List<List<String>> getSubTypes() {
 		return subTypes;
 	}
 

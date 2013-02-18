@@ -112,6 +112,22 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void parse_caretDecoding() throws Exception {
+		VCardBuilder vb = new VCardBuilder(VCardVersion.V4_0);
+		vb.prop("FN").param("X-TEST", "George Herman ^'Babe^' Ruth").value("John Doe");
+
+		//defaults to true
+		VCard vcard = Ezvcard.parse(vb.toString()).first();
+		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+
+		vcard = Ezvcard.parse(vb.toString()).caretDecoding(true).first();
+		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+
+		vcard = Ezvcard.parse(vb.toString()).caretDecoding(false).first();
+		assertEquals("George Herman ^'Babe^' Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+	}
+
+	@Test
 	public void parseXml_first() throws Exception {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("fn", "<text>John Doe</text>");

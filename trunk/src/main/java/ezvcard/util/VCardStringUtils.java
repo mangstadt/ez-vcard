@@ -161,9 +161,22 @@ public class VCardStringUtils {
 	public static String ltrim(String string) {
 		int i;
 		for (i = 0; i < string.length() && Character.isWhitespace(string.charAt(i)); i++) {
-			;
+			//do nothing
 		}
 		return (i == string.length()) ? "" : string.substring(i);
+	}
+
+	/**
+	 * Trims the whitespace off the right side of a string.
+	 * @param string the string to trim
+	 * @return the trimmed string
+	 */
+	public static String rtrim(String string) {
+		int i;
+		for (i = string.length() - 1; i >= 0 && Character.isWhitespace(string.charAt(i)); i--) {
+			//do nothing
+		}
+		return (i == 0) ? "" : string.substring(0, i + 1);
 	}
 
 	private VCardStringUtils() {
