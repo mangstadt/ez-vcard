@@ -561,6 +561,7 @@ public class Ezvcard {
 	 */
 	public static class TextParserChain extends ParserChain {
 		private Reader reader;
+		private boolean caretDecoding = true;
 
 		private TextParserChain(Reader reader) {
 			this.reader = reader;
@@ -591,9 +592,24 @@ public class Ezvcard {
 			return this;
 		}
 
+		/**
+		 * Sets whether the reader will decode characters in parameter values
+		 * that use circumflex accent encoding (enabled by default).
+		 * 
+		 * @param enable true to use circumflex accent decoding, false not to
+		 * @see VCardReader#setCaretDecodingEnabled(boolean)
+		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+		 */
+		public TextParserChain caretDecoding(boolean enable) {
+			caretDecoding = enable;
+			return this;
+		}
+
 		@Override
 		IParser init() {
-			return new VCardReader(reader);
+			VCardReader vcardReader = new VCardReader(reader);
+			vcardReader.setCaretDecodingEnabled(caretDecoding);
+			return vcardReader;
 		}
 
 		@Override
@@ -622,6 +638,7 @@ public class Ezvcard {
 	 */
 	public static class TextStringParserChain extends ParserChain {
 		private String text;
+		private boolean caretDecoding = true;
 
 		private TextStringParserChain(String text) {
 			this.text = text;
@@ -652,9 +669,24 @@ public class Ezvcard {
 			return this;
 		}
 
+		/**
+		 * Sets whether the reader will decode characters in parameter values
+		 * that use circumflex accent encoding (enabled by default).
+		 * 
+		 * @param enable true to use circumflex accent decoding, false not to
+		 * @see VCardReader#setCaretDecodingEnabled(boolean)
+		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+		 */
+		public TextStringParserChain caretDecoding(boolean enable) {
+			caretDecoding = enable;
+			return this;
+		}
+
 		@Override
 		IParser init() {
-			return new VCardReader(text);
+			VCardReader vcardReader = new VCardReader(text);
+			vcardReader.setCaretDecodingEnabled(caretDecoding);
+			return vcardReader;
 		}
 
 		@Override

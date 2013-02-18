@@ -69,6 +69,7 @@ public class VCardReader implements Closeable, IParser {
 	private List<String> warnings = new ArrayList<String>();
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private FoldedLineReader reader;
+	private boolean caretDecodingEnabled = true;
 
 	/**
 	 * @param str the string to read the vCards from
@@ -106,6 +107,100 @@ public class VCardReader implements Closeable, IParser {
 	 */
 	private VCardReader(FoldedLineReader reader) {
 		this.reader = reader;
+	}
+
+	/**
+	 * <p>
+	 * Gets whether the reader will decode characters in parameter values that
+	 * use circumflex accent encoding. This escaping mechanism allows for
+	 * newlines and double quotes to be included in parameter values.
+	 * </p>
+	 * 
+	 * <table border="1">
+	 * <tr>
+	 * <th>Raw</th>
+	 * <th>Encoded</th>
+	 * </tr>
+	 * <tr>
+	 * <td><code>"</code></td>
+	 * <td><code>^'</code></td>
+	 * </tr>
+	 * <tr>
+	 * <td><i>newline</i></td>
+	 * <td><code>^n</code></td>
+	 * </tr>
+	 * <tr>
+	 * <td><code>^</code></td>
+	 * <td><code>^^</code></td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * <p>
+	 * This setting is enabled by default and is only used with 3.0 and 4.0
+	 * vCards.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example:
+	 * </p>
+	 * 
+	 * <pre>
+	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
+	 *  sburgh, PA 15212":geo:40.446816,-80.00566
+	 * </pre>
+	 * 
+	 * @return true if circumflex accent decoding is enabled, false if not
+	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 */
+	public boolean isCaretDecodingEnabled() {
+		return caretDecodingEnabled;
+	}
+
+	/**
+	 * <p>
+	 * Sets whether the reader will decode characters in parameter values that
+	 * use circumflex accent encoding. This escaping mechanism allows for
+	 * newlines and double quotes to be included in parameter values.
+	 * </p>
+	 * 
+	 * <table border="1">
+	 * <tr>
+	 * <th>Raw</th>
+	 * <th>Encoded</th>
+	 * </tr>
+	 * <tr>
+	 * <td><code>"</code></td>
+	 * <td><code>^'</code></td>
+	 * </tr>
+	 * <tr>
+	 * <td><i>newline</i></td>
+	 * <td><code>^n</code></td>
+	 * </tr>
+	 * <tr>
+	 * <td><code>^</code></td>
+	 * <td><code>^^</code></td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * <p>
+	 * This setting is enabled by default and is only used with 3.0 and 4.0
+	 * vCards.
+	 * </p>
+	 * 
+	 * <p>
+	 * Example:
+	 * </p>
+	 * 
+	 * <pre>
+	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
+	 *  sburgh, PA 15212":geo:40.446816,-80.00566
+	 * </pre>
+	 * 
+	 * @param enable true to use circumflex accent decoding, false not to
+	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 */
+	public void setCaretDecodingEnabled(boolean enable) {
+		caretDecodingEnabled = enable;
 	}
 
 	/**
@@ -158,7 +253,7 @@ public class VCardReader implements Closeable, IParser {
 
 		while (!endFound && (line = reader.readLine()) != null) {
 			//parse the components out of the line
-			VCardLine parsedLine = VCardLine.parse(line);
+			VCardLine parsedLine = VCardLine.parse(line, version, caretDecodingEnabled);
 			if (parsedLine == null) {
 				warnings.add("Skipping malformed vCard line: \"" + line + "\"");
 				continue;
@@ -166,12 +261,13 @@ public class VCardReader implements Closeable, IParser {
 
 			//build the sub types 
 			VCardSubTypes subTypes = new VCardSubTypes();
-			for (String[] subTypeStr : parsedLine.getSubTypes()) {
+			for (List<String> subType : parsedLine.getSubTypes()) {
 				//if the parameter is name-less, make a guess at what the name is
 				//v3.0 and v4.0 requires all sub types to have names, but v2.1 does not
-				String subTypeName = subTypeStr[0];
-				String subTypeValue = subTypeStr[1];
+				String subTypeName = subType.get(0);
+				List<String> subTypeValues = subType.subList(1, subType.size());
 				if (subTypeName == null) {
+					String subTypeValue = subTypeValues.get(0);
 					if (ValueParameter.valueOf(subTypeValue) != null) {
 						subTypeName = ValueParameter.NAME;
 					} else if (EncodingParameter.valueOf(subTypeValue) != null) {
@@ -184,11 +280,8 @@ public class VCardReader implements Closeable, IParser {
 					subTypes.put(subTypeName, subTypeValue);
 				} else {
 					subTypeName = subTypeName.toUpperCase();
-
-					//split the value up if it's a comma-delimited list (i.e. the "TYPE" sub type)
-					String commaSplit[] = VCardStringUtils.splitBy(subTypeValue, ',', true, true);
-					for (String s : commaSplit) {
-						subTypes.put(subTypeName, s);
+					for (String subTypeValue : subTypeValues) {
+						subTypes.put(subTypeName, subTypeValue);
 					}
 				}
 			}

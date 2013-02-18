@@ -84,6 +84,23 @@ public class VCardStringUtilsTest {
 		actual = VCardStringUtils.ltrim("\n \t One two three \t \n ");
 		expected = "One two three \t \n ";
 		assertEquals(actual, expected);
+
+		actual = VCardStringUtils.ltrim("\n \t \t \n ");
+		expected = "";
+		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void rtrim() {
+		String actual, expected;
+
+		actual = VCardStringUtils.rtrim("\n \t One two three \t \n ");
+		expected = "\n \t One two three";
+		assertEquals(actual, expected);
+
+		actual = VCardStringUtils.rtrim("\n \t \t \n ");
+		expected = "";
+		assertEquals(actual, expected);
 	}
 
 	@Test
