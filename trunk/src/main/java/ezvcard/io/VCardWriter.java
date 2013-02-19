@@ -525,12 +525,11 @@ public class VCardWriter implements Closeable {
 			//write the Sub Types
 			for (String subTypeName : subTypes.getNames()) {
 				Set<String> subTypeValues = subTypes.get(subTypeName);
-				//TODO add a warning if the value was modified in any way, including removal of characters or replacing characters (like replacing dquote with squote)
 				if (!subTypeValues.isEmpty()) {
 					if (targetVersion == VCardVersion.V2_1) {
 						boolean typeSubType = TypeParameter.NAME.equalsIgnoreCase(subTypeName);
 						for (String subTypeValue : subTypeValues) {
-							subTypeValue = sanitizeV21ParamValue(subTypeValue, subTypeName, type.getTypeName());
+							subTypeValue = sanitizeSubTypeValue(subTypeValue, subTypeName, type.getTypeName());
 
 							if (typeSubType) {
 								//e.g. ADR;HOME;WORK:
@@ -545,13 +544,7 @@ public class VCardWriter implements Closeable {
 
 						sb.append(';').append(subTypeName).append('=');
 						for (String subTypeValue : subTypeValues) {
-							subTypeValue = removeInvalidParamValueChars(subTypeValue, subTypeName, type.getTypeName());
-
-							if (targetVersion == VCardVersion.V4_0 && caretEncodingEnabled) {
-								subTypeValue = applyCaretEscaping(subTypeValue);
-							} else {
-								subTypeValue = applyBackslashEscaping(subTypeValue);
-							}
+							subTypeValue = sanitizeSubTypeValue(subTypeValue, subTypeName, type.getTypeName());
 
 							//surround with double quotes if contains special chars
 							if (quoteMeRegex.matcher(subTypeValue).matches()) {
@@ -616,59 +609,80 @@ public class VCardWriter implements Closeable {
 		}
 	}
 
-	private String sanitizeV21ParamValue(String value, String subTypeName, String typeName) {
-		//remove invalid characters
-		value = removeInvalidParamValueChars(value, subTypeName, typeName);
+	private String sanitizeSubTypeValue(String value, String subTypeName, String typeName) {
+		String modifiedValue = null;
+		boolean subTypeValueChanged = false;
 
-		//replace newlines with spaces
-		value = newlineRegex.matcher(value).replaceAll(" ");
+		switch (targetVersion) {
+		case V2_1:
+			//remove invalid characters
+			modifiedValue = removeInvalidSubTypeValueChars(value);
 
-		//escape semi-colons (see section 2)
-		value = value.replace("\\", "\\\\");
-		value = value.replace(";", "\\;");
+			//replace newlines with spaces
+			modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll(" ");
 
-		return value;
+			//check to see if value was changed
+			subTypeValueChanged = (value != modifiedValue);
+
+			//escape backslashes
+			modifiedValue = modifiedValue.replace("\\", "\\\\");
+
+			//escape semi-colons (see section 2)
+			modifiedValue = modifiedValue.replace(";", "\\;");
+
+			break;
+
+		case V3_0:
+		case V4_0:
+			//remove invalid characters
+			modifiedValue = removeInvalidSubTypeValueChars(value);
+
+			if (targetVersion == VCardVersion.V4_0 && caretEncodingEnabled) {
+				subTypeValueChanged = (modifiedValue != value);
+				modifiedValue = applyCaretEncoding(modifiedValue);
+			} else {
+				//replace double quotes with single quotes
+				modifiedValue = modifiedValue.replace('"', '\'');
+				subTypeValueChanged = (modifiedValue != value);
+
+				//escape backslashes
+				modifiedValue = modifiedValue.replace("\\", "\\\\");
+
+				//escape newlines
+				modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll("\\\\\\n");
+			}
+
+			break;
+		}
+
+		if (subTypeValueChanged) {
+			warnings.add("Parameter \"" + subTypeName + "\" of property \"" + typeName + "\" contained one or more characters which are not allowed in vCard " + targetVersion.getVersion() + " parameter values.  These characters were removed.");
+		}
+
+		return modifiedValue;
 	}
 
-	private String removeInvalidParamValueChars(String value, String subTypeName, String typeName) {
+	private String removeInvalidSubTypeValueChars(String value) {
 		BitSet invalidChars = invalidParamValueChars.get(targetVersion);
-		boolean invalidCharFound = false;
 		StringBuilder sb = new StringBuilder(value.length());
+
 		for (int i = 0; i < value.length(); i++) {
 			char ch = value.charAt(i);
-			if (invalidChars.get(ch)) {
-				invalidCharFound = true;
-			} else {
+			if (!invalidChars.get(ch)) {
 				sb.append(ch);
 			}
 		}
 
-		if (invalidCharFound) {
-			warnings.add("Parameter \"" + subTypeName + "\" of property \"" + typeName + "\" contained one or more characters which are not allowed in vCard " + targetVersion.getVersion() + " parameter values.  These characters were removed.");
-		}
-
-		return sb.toString();
+		return (sb.length() == value.length()) ? value : sb.toString();
 	}
 
-	private String applyCaretEscaping(String value) {
+	private String applyCaretEncoding(String value) {
 		value = value.replace("^", "^^");
 		value = newlineRegex.matcher(value).replaceAll("^n");
 		value = value.replace("\"", "^'");
 		return value;
 	}
 
-	private String applyBackslashEscaping(String value) {
-		value = value.replace("\\", "\\\\");
-		value = newlineRegex.matcher(value).replaceAll("\\\\\\n");
-		value = value.replace('"', '\''); //replace double quotes with single quotes
-		return value;
-	}
-
-	/**
-	 * Determines if a type supports the target version.
-	 * @param type the type
-	 * @return true if it supports the target version, false if not
-	 */
 	private boolean supportsTargetVersion(VCardType type) {
 		for (VCardVersion version : type.getSupportedVersions()) {
 			if (version == targetVersion) {
