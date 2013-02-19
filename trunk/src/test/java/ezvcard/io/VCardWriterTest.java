@@ -480,7 +480,7 @@ public class VCardWriterTest {
 		note.getSubTypes().put("X-TEST", "^…\\,;:=[]\"\t\n" + ((char) 28));
 		note.getSubTypes().put("X-TEST", "normal");
 
-		//2.1
+		//2.1 without caret escaping
 		{
 			VCardVersion version = VCardVersion.V2_1;
 			StringWriter sw = new StringWriter();
@@ -508,7 +508,36 @@ public class VCardWriterTest {
 			assertEquals(expected, actual);
 		}
 
-		//3.0
+		//2.1 with caret escaping (ignored)
+		{
+			VCardVersion version = VCardVersion.V2_1;
+			StringWriter sw = new StringWriter();
+			VCardWriter writer = new VCardWriter(sw, version);
+			writer.setCaretEncodingEnabled(true);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+
+			//should generate 1 warning for removal of invalid chars, plus the "no N property" warning
+			assertEquals(2, writer.getWarnings().size());
+
+			String actual = sw.toString();
+
+			//removes , : = [ ] FS
+			//replaces \ with \\
+			//replaces ; with \;
+			//replaces newline with space
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"NOTE;X-TEST=^…\\\\\\;\"\t ;X-TEST=normal:test\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(expected, actual);
+		}
+
+		//3.0 without caret escaping (same as 4.0)
 		{
 			VCardVersion version = VCardVersion.V3_0;
 			StringWriter sw = new StringWriter();
@@ -531,6 +560,36 @@ public class VCardWriterTest {
 			"BEGIN:VCARD\r\n" +
 			"VERSION:3.0\r\n" +
 			"NOTE;X-TEST=\"^…\\\\,;:=[]'\t\\n\",normal:test\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(expected, actual);
+		}
+
+		//3.0 with caret escaping (same as 4.0)
+		{
+			VCardVersion version = VCardVersion.V3_0;
+			StringWriter sw = new StringWriter();
+			VCardWriter writer = new VCardWriter(sw, version);
+			writer.setCaretEncodingEnabled(true);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+
+			//should generate 1 warning for removal of invalid chars, plus the "no N property" and "no FN property" warnings
+			assertEquals(3, writer.getWarnings().size());
+
+			String actual = sw.toString();
+
+			//removes FS
+			//replaces ^ with ^^
+			//replaces newline with ^n
+			//replaces " with ^'
+			//surrounds in double quotes, since it contains , ; or :
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:3.0\r\n" +
+			"NOTE;X-TEST=\"^^…\\,;:=[]^'\t^n\",normal:test\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 

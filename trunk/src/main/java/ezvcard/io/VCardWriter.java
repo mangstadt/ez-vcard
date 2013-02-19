@@ -279,9 +279,9 @@ public class VCardWriter implements Closeable {
 
 	/**
 	 * <p>
-	 * Gets whether the writer will use circumflex accent encoding for vCard 4.0
-	 * parameter values. This escaping mechanism allows for newlines and double
-	 * quotes to be included in parameter values.
+	 * Gets whether the writer will use circumflex accent encoding for vCard 3.0
+	 * and 4.0 parameter values. This escaping mechanism allows for newlines and
+	 * double quotes to be included in parameter values.
 	 * </p>
 	 * 
 	 * <table border="1">
@@ -304,8 +304,8 @@ public class VCardWriter implements Closeable {
 	 * </table>
 	 * 
 	 * <p>
-	 * This setting is disabled by default and is only used with 4.0 vCards.
-	 * When writing a 4.0 vCard with this setting disabled, newlines will be
+	 * This setting is disabled by default and is only used with 3.0 and 4.0
+	 * vCards. When writing a vCard with this setting disabled, newlines will be
 	 * escaped as "\n", backslashes will be escaped as "\\", and double quotes
 	 * will be replaced with single quotes.
 	 * </p>
@@ -328,9 +328,9 @@ public class VCardWriter implements Closeable {
 
 	/**
 	 * <p>
-	 * Sets whether the writer will use circumflex accent encoding for vCard 4.0
-	 * parameter values. This escaping mechanism allows for newlines and double
-	 * quotes to be included in parameter values.
+	 * Sets whether the writer will use circumflex accent encoding for vCard 3.0
+	 * and 4.0 parameter values. This escaping mechanism allows for newlines and
+	 * double quotes to be included in parameter values.
 	 * </p>
 	 * 
 	 * <table border="1">
@@ -353,8 +353,8 @@ public class VCardWriter implements Closeable {
 	 * </table>
 	 * 
 	 * <p>
-	 * This setting is disabled by default and is only used with 4.0 vCards.
-	 * When writing a 4.0 vCard with this setting disabled, newlines will be
+	 * This setting is disabled by default and is only used with 3.0 and 4.0
+	 * vCards. When writing a vCard with this setting disabled, newlines will be
 	 * escaped as "\n", backslashes will be escaped as "\\", and double quotes
 	 * will be replaced with single quotes.
 	 * </p>
@@ -637,7 +637,7 @@ public class VCardWriter implements Closeable {
 			//remove invalid characters
 			modifiedValue = removeInvalidSubTypeValueChars(value);
 
-			if (targetVersion == VCardVersion.V4_0 && caretEncodingEnabled) {
+			if (caretEncodingEnabled) {
 				subTypeValueChanged = (modifiedValue != value);
 				modifiedValue = applyCaretEncoding(modifiedValue);
 			} else {
