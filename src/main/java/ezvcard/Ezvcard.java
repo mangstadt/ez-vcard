@@ -1173,7 +1173,7 @@ public class Ezvcard {
 
 		/**
 		 * Sets whether the writer will use circumflex accent encoding for vCard
-		 * 4.0 parameter values (disabled by default).
+		 * 3.0 and 4.0 parameter values (disabled by default).
 		 * 
 		 * @param enable true to use circumflex accent encoding, false not to
 		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
@@ -1253,7 +1253,7 @@ public class Ezvcard {
 
 		/**
 		 * Sets whether the writer will use circumflex accent encoding for vCard
-		 * 4.0 parameter values (disabled by default).
+		 * 3.0 and 4.0 parameter values (disabled by default).
 		 * 
 		 * @param enable true to use circumflex accent encoding, false not to
 		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
