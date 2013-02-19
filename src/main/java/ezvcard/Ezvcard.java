@@ -1172,48 +1172,11 @@ public class Ezvcard {
 		}
 
 		/**
-		 * <p>
-		 * Sets whether to use circumflex accent encoding for vCard 4.0
-		 * parameter values. This escaping mechanism allows for newlines and
-		 * double quotes to be included in parameter values.
-		 * </p>
-		 * 
-		 * <table border="1">
-		 * <tr>
-		 * <th>Character</th>
-		 * <th>Replacement</th>
-		 * </tr>
-		 * <tr>
-		 * <td><code>"</code></td>
-		 * <td><code>^'</code></td>
-		 * </tr>
-		 * <tr>
-		 * <td><i>newline</i></td>
-		 * <td><code>^n</code></td>
-		 * </tr>
-		 * <tr>
-		 * <td><code>^</code></td>
-		 * <td><code>^^</code></td>
-		 * </tr>
-		 * </table>
-		 * 
-		 * <p>
-		 * This setting is disabled by default and is only used with 4.0 vCards.
-		 * When writing a 4.0 vCard with this setting disabled, newlines will be
-		 * escaped as "\n", backslashes will be escaped as "\\", and double
-		 * quotes will be replaced with single quotes.
-		 * </p>
-		 * 
-		 * <p>
-		 * Example:
-		 * </p>
-		 * 
-		 * <pre>
-		 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
-		 *  sburgh, PA 15212":geo:40.446816,-80.00566
-		 * </pre>
+		 * Sets whether the writer will use circumflex accent encoding for vCard
+		 * 4.0 parameter values (disabled by default).
 		 * 
 		 * @param enable true to use circumflex accent encoding, false not to
+		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
 		public TextWriterChainMulti caretEncoding(boolean enable) {
@@ -1289,48 +1252,11 @@ public class Ezvcard {
 		}
 
 		/**
-		 * <p>
-		 * Sets whether to use circumflex accent encoding for vCard 4.0
-		 * parameter values. This escaping mechanism allows for newlines and
-		 * double quotes to be included in parameter values.
-		 * </p>
-		 * 
-		 * <table border="1">
-		 * <tr>
-		 * <th>Character</th>
-		 * <th>Replacement</th>
-		 * </tr>
-		 * <tr>
-		 * <td><code>"</code></td>
-		 * <td><code>^'</code></td>
-		 * </tr>
-		 * <tr>
-		 * <td><i>newline</i></td>
-		 * <td><code>^n</code></td>
-		 * </tr>
-		 * <tr>
-		 * <td><code>^</code></td>
-		 * <td><code>^^</code></td>
-		 * </tr>
-		 * </table>
-		 * 
-		 * <p>
-		 * This setting is disabled by default and is only used with 4.0 vCards.
-		 * When writing a 4.0 vCard with this setting disabled, newlines will be
-		 * escaped as "\n", backslashes will be escaped as "\\", and double
-		 * quotes will be replaced with single quotes.
-		 * </p>
-		 * 
-		 * <p>
-		 * Example:
-		 * </p>
-		 * 
-		 * <pre>
-		 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
-		 *  sburgh, PA 15212":geo:40.446816,-80.00566
-		 * </pre>
+		 * Sets whether the writer will use circumflex accent encoding for vCard
+		 * 4.0 parameter values (disabled by default).
 		 * 
 		 * @param enable true to use circumflex accent encoding, false not to
+		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
 		public TextWriterChainSingle caretEncoding(boolean enable) {
