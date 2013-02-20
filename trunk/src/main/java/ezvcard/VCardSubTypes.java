@@ -490,33 +490,42 @@ public class VCardSubTypes {
 	}
 
 	/**
-	 * Gets the SORT-AS parameter value. This contains a string value which the
-	 * vCard should be sorted by. This is useful if the person's name starts
+	 * Gets the SORT-AS parameter value(s). This contains typically two string
+	 * values which the vCard should be sorted by (family and given names). This
+	 * is useful if the person's last name (defined in the N property) starts
 	 * with characters that should be ignored during sorting. It can be used
 	 * with the N and ORG types.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @return the value (e.g. "Armour,John" if the family name is "d'Armour"
-	 * and the given name is "John") or null if it doesn't exist
+	 * @return the name(s) (e.g. { "Aboville", "Christine" } if the family name
+	 * is "d'Aboville" and the given name is "Christine") or empty list of the
+	 * parameter doesn't exist
 	 */
-	public String getSortAs() {
-		return getFirst("SORT-AS");
+	public List<String> getSortAs() {
+		return get("SORT-AS");
 	}
 
 	/**
-	 * Sets the SORT-AS parameter value. This contains a string value which the
-	 * vCard should be sorted by. This is useful if the person's name starts
+	 * Sets the SORT-AS parameter value(s). This contains typically two string
+	 * values which the vCard should be sorted by (family and given names). This
+	 * is useful if the person's last name (defined in the N property) starts
 	 * with characters that should be ignored during sorting. It can be used
 	 * with the N and ORG types.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param sortAs the value (e.g. "Armour,John" if the family name is
-	 * "d'Armour" and the given name is "John") or null to remove
+	 * @param names the names in the order they should be sorted in (e.g. {
+	 * "Aboville", "Christine" } if the family name is "d'Aboville" and the given
+	 * name is "Christine") or null to remove
 	 */
-	public void setSortAs(String sortAs) {
-		replace("SORT-AS", sortAs);
+	public void setSortAs(String... names) {
+		removeAll("SORT-AS");
+		if (names != null) {
+			for (String s : names) {
+				put("SORT-AS", s);
+			}
+		}
 	}
 
 	/**

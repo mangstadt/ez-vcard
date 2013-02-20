@@ -269,7 +269,7 @@ public class HCardPageTest {
 			assertEquals(e.getAdditional(), a.getAdditional());
 			assertEquals(e.getPrefixes(), a.getPrefixes());
 			assertEquals(e.getSuffixes(), a.getSuffixes());
-			assertNull(a.getSortAs());
+			assertTrue(a.getSortAs().isEmpty());
 		}
 
 		assertEquals(expected.getTitles().size(), actual.getTitles().size());

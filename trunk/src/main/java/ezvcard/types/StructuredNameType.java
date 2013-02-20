@@ -164,27 +164,31 @@ public class StructuredNameType extends VCardType {
 	}
 
 	/**
-	 * Gets the string that determines how this name should be sorted.
+	 * Gets the string(s) that determine how this name should be sorted.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @return the sort string (e.g. "Doe,John") or null if not set
+	 * @return the name(s) (e.g. { "Aboville", "Christine" } if the family name
+	 * is "d'Aboville" and the given name is "Christine") or empty list of the
+	 * parameter doesn't exist
 	 * @see VCardSubTypes#getSortAs
 	 */
-	public String getSortAs() {
+	public List<String> getSortAs() {
 		return subTypes.getSortAs();
 	}
 
 	/**
-	 * Sets the string that determines how this name should be sorted.
+	 * Sets the string(s) that determine how this name should be sorted.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param sortAs the sort string (e.g. "Doe,John") or null to remove
+	 * @param names the names in the order they should be sorted in (e.g. {
+	 * "Aboville", "Christine" } if the family name is "d'Aboville" and the given
+	 * name is "Christine") or null to remove
 	 * @see VCardSubTypes#setSortAs
 	 */
-	public void setSortAs(String sortAs) {
-		subTypes.setSortAs(sortAs);
+	public void setSortAs(String... names) {
+		subTypes.setSortAs(names);
 	}
 
 	/**
