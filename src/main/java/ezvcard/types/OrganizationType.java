@@ -190,27 +190,28 @@ public class OrganizationType extends TextListType {
 	}
 
 	/**
-	 * Gets the string that determines how this org name should be sorted.
+	 * Gets the string(s) that determine how this org name should be sorted.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @return the sort string or null if not set
+	 * @return the name(s) or empty list of the parameter doesn't exist
 	 * @see VCardSubTypes#getSortAs
 	 */
-	public String getSortAs() {
+	public List<String> getSortAs() {
 		return subTypes.getSortAs();
 	}
 
 	/**
-	 * Sets the string that determines how this org name should be sorted.
+	 * Sets the string(s) that determine how this org name should be sorted.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param sortAs the sort string or null to remove
+	 * @param names the names in the order they should be sorted in or null to
+	 * remove
 	 * @see VCardSubTypes#setSortAs
 	 */
-	public void setSortAs(String sortAs) {
-		subTypes.setSortAs(sortAs);
+	public void setSortAs(String... names) {
+		subTypes.setSortAs(names);
 	}
 
 	@Override

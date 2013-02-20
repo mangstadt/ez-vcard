@@ -81,10 +81,22 @@
 	<div class="vcard">
 		<#if v.sortString?? && v.sortString.value??>
 			<#assign sortString=v.sortString.value>
-		<#elseif v.structuredName?? && v.structuredName.sortAs??>
-			<#assign sortString=v.structuredName.sortAs>
-		<#elseif v.organization?? && v.organization.sortAs??>
-			<#assign sortString=v.organization.sortAs>
+		<#elseif v.structuredName?? && v.structuredName.sortAs?has_content>
+			<#assign sortString="">
+			<#list v.structuredName.sortAs as name>
+				<#assign sortString = sortString + name>
+				<#if name_has_next>
+					<#assign sortString = sortString + ",">
+				</#if>
+			</#list>
+		<#elseif v.organization?? && v.organization.sortAs?has_content>
+			<#assign sortString="">
+			<#list v.organization.sortAs as name>
+				<#assign sortString = sortString + name>
+				<#if name_has_next>
+					<#assign sortString = sortString + ",">
+				</#if>
+			</#list>
 		</#if>
 		<#if sortString??>
 			<abbr class="sort-string" title="${sortString}"></abbr>
