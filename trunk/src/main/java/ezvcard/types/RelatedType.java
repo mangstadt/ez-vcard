@@ -1,7 +1,6 @@
 package ezvcard.types;
 
 import java.util.List;
-import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -151,7 +150,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
 	 */
-	public Set<Integer[]> getPids() {
+	public List<Integer[]> getPids() {
 		return subTypes.getPids();
 	}
 

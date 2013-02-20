@@ -1,6 +1,6 @@
 package ezvcard.types;
 
-import java.util.Set;
+import java.util.List;
 
 import ezvcard.VCardSubTypes;
 
@@ -114,7 +114,7 @@ public class RoleType extends TextType {
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
 	 */
-	public Set<Integer[]> getPids() {
+	public List<Integer[]> getPids() {
 		return subTypes.getPids();
 	}
 

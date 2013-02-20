@@ -2,14 +2,13 @@ package ezvcard;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Iterator;
 
 import org.junit.Test;
 
@@ -53,10 +52,7 @@ public class VCardSubTypesTest {
 		subTypes.put("NUMBERS", "2");
 		subTypes.put("NUMBERS", "3");
 
-		//"getFirst()" will return one of the values
-		//it's not sure which one because a Set is returned
-		List<String> expected = Arrays.asList("1", "2", "3");
-		assertTrue(expected.contains(subTypes.getFirst("NUMBERS")));
+		assertEquals("1", subTypes.getFirst("NUMBERS"));
 	}
 
 	@Test
@@ -68,12 +64,11 @@ public class VCardSubTypesTest {
 		subTypes.put("TEST2", "TwO");
 		subTypes.put("test3", "three");
 		subTypes.put("tESt3", "trois");
-		subTypes.put("tesT3", "three"); //value should not be added because it already exists
+		subTypes.put("tesT3", "three");
 
-		assertEquals("OnE", subTypes.getFirst("tESt1"));
-		assertEquals("TwO", subTypes.getFirst("test2"));
-		Set<String> s = new HashSet<String>(Arrays.asList("three", "trois"));
-		assertEquals(s, subTypes.get("TEST3"));
+		assertEquals(Arrays.asList("OnE"), subTypes.get("tESt1"));
+		assertEquals(Arrays.asList("TwO"), subTypes.get("test2"));
+		assertEquals(Arrays.asList("three", "trois", "three"), subTypes.get("TEST3"));
 	}
 
 	@Test
@@ -82,10 +77,9 @@ public class VCardSubTypesTest {
 		subTypes.put("NUMBERS", "1");
 		subTypes.put("NUMBERS", "2");
 		subTypes.put("NUMBERS", "3");
-		subTypes.remove("NUMBERS", "2");
+		subTypes.remove("nUMBERS", "2");
 
-		Set<String> expected = new HashSet<String>(Arrays.asList("1", "3"));
-		assertEquals(expected, subTypes.get("NUMBERS"));
+		assertEquals(Arrays.asList("1", "3"), subTypes.get("NUMBERS"));
 	}
 
 	@Test
@@ -165,35 +159,17 @@ public class VCardSubTypesTest {
 		subTypes.addPid(2, 1);
 
 		//make sure it builds the correct string values
-		{
-			Set<String> actual = subTypes.get("PID");
-			Set<String> expected = new HashSet<String>();
-			expected.add("1");
-			expected.add("2.1");
-			assertEquals(expected, actual);
-		}
+		assertEquals(Arrays.asList("1", "2.1"), subTypes.get("PID"));
 
 		//make sure it unmarshals the string values correctly
-		{
-			Set<Integer[]> actual = subTypes.getPids();
-			Set<Integer[]> expected = new HashSet<Integer[]>();
-			expected.add(new Integer[] { 1, null });
-			expected.add(new Integer[] { 2, 1 });
-
-			assertEquals(2, actual.size());
-			for (Integer[] pid : actual) {
-				boolean found = false;
-				for (Integer[] exPid : expected) {
-					if (Arrays.equals(exPid, pid)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					fail();
-				}
-			}
-		}
+		Iterator<Integer[]> it = subTypes.getPids().iterator();
+		Integer[] pid = it.next();
+		assertEquals(Integer.valueOf(1), pid[0]);
+		assertNull(pid[1]);
+		pid = it.next();
+		assertEquals(Integer.valueOf(2), pid[0]);
+		assertEquals(Integer.valueOf(1), pid[1]);
+		assertFalse(it.hasNext());
 	}
 
 	@Test

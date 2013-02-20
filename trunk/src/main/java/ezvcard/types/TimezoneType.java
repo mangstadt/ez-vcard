@@ -1,7 +1,6 @@
 package ezvcard.types;
 
 import java.util.List;
-import java.util.Set;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -237,7 +236,7 @@ public class TimezoneType extends VCardType {
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
 	 */
-	public Set<Integer[]> getPids() {
+	public List<Integer[]> getPids() {
 		return subTypes.getPids();
 	}
 
