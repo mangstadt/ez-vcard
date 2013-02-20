@@ -1,6 +1,8 @@
 package ezvcard;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import ezvcard.parameters.CalscaleParameter;
@@ -9,7 +11,7 @@ import ezvcard.parameters.LevelParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
-import ezvcard.util.TreeMultimap;
+import ezvcard.util.ListMultimap;
 
 /*
  Copyright (c) 2012, Michael Angstadt
@@ -45,10 +47,10 @@ import ezvcard.util.TreeMultimap;
  * @author Michael Angstadt
  */
 public class VCardSubTypes {
-	private final TreeMultimap<String, String> subTypes;
+	private final ListMultimap<String, String> subTypes;
 
 	public VCardSubTypes() {
-		subTypes = new TreeMultimap<String, String>();
+		subTypes = new ListMultimap<String, String>();
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class VCardSubTypes {
 	 * @param orig the object to copy
 	 */
 	public VCardSubTypes(VCardSubTypes orig) {
-		subTypes = new TreeMultimap<String, String>(orig.subTypes);
+		subTypes = new ListMultimap<String, String>(orig.subTypes);
 	}
 
 	/**
@@ -75,12 +77,12 @@ public class VCardSubTypes {
 	 * @param value the values to replace all existing values with
 	 * @return the values of the Sub Type that were replaced
 	 */
-	public Set<String> replace(String name, String value) {
-		Set<String> set = removeAll(name);
+	public List<String> replace(String name, String value) {
+		List<String> replaced = removeAll(name);
 		if (value != null) {
 			put(name, value);
 		}
-		return set;
+		return replaced;
 	}
 
 	/**
@@ -88,7 +90,7 @@ public class VCardSubTypes {
 	 * @param name the Sub Type name
 	 * @return the values of the Sub Type that were removed
 	 */
-	public Set<String> removeAll(String name) {
+	public List<String> removeAll(String name) {
 		return subTypes.remove(name.toUpperCase());
 	}
 
@@ -104,9 +106,9 @@ public class VCardSubTypes {
 	/**
 	 * Gets the values of a Sub Type
 	 * @param name the Sub Type name
-	 * @return the values or an empty set if the Sub Type doesn't exist
+	 * @return the values or an empty list if the Sub Type doesn't exist
 	 */
-	public Set<String> get(String name) {
+	public List<String> get(String name) {
 		return subTypes.get(name.toUpperCase());
 	}
 
@@ -116,8 +118,8 @@ public class VCardSubTypes {
 	 * @return the first value or null if the Sub Type doesn't exist
 	 */
 	public String getFirst(String name) {
-		Set<String> set = get(name);
-		return set.isEmpty() ? null : set.iterator().next();
+		List<String> list = get(name);
+		return list.isEmpty() ? null : list.get(0);
 	}
 
 	/**
@@ -133,7 +135,7 @@ public class VCardSubTypes {
 	 * Gets the object used to store the Sub Types.
 	 * @return the object used to store the Sub Types
 	 */
-	public TreeMultimap<String, String> getMultimap() {
+	public ListMultimap<String, String> getMultimap() {
 		return subTypes;
 	}
 
@@ -568,9 +570,9 @@ public class VCardSubTypes {
 	 * local ID and index 1 is the ID used to reference the CLIENTPIDMAP
 	 * property. Index 0 will never be null, but index 1 may be null.
 	 */
-	public Set<Integer[]> getPids() {
-		Set<String> values = get("PID");
-		Set<Integer[]> pids = new HashSet<Integer[]>();
+	public List<Integer[]> getPids() {
+		List<String> values = get("PID");
+		List<Integer[]> pids = new ArrayList<Integer[]>(values.size());
 		for (String value : values) {
 			try {
 				String split[] = value.split("\\.");

@@ -14,7 +14,6 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.EncoderException;
@@ -524,7 +523,7 @@ public class VCardWriter implements Closeable {
 
 			//write the Sub Types
 			for (String subTypeName : subTypes.getNames()) {
-				Set<String> subTypeValues = subTypes.get(subTypeName);
+				List<String> subTypeValues = subTypes.get(subTypeName);
 				if (!subTypeValues.isEmpty()) {
 					if (targetVersion == VCardVersion.V2_1) {
 						boolean typeSubType = TypeParameter.NAME.equalsIgnoreCase(subTypeName);

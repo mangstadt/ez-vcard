@@ -379,6 +379,10 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @param group the group or null to remove the type's group
 	 */
 	public void setGroup(String group) {
+		//TODO test for valid chars
+		//		if (group != null && !group.matches("(?i)[-a-z0-9]+")) {
+		//			throw new IllegalArgumentException("");
+		//		}
 		this.group = group;
 	}
 

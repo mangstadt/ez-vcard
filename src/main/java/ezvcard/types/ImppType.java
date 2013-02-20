@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -392,7 +391,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
 	 */
-	public Set<Integer[]> getPids() {
+	public List<Integer[]> getPids() {
 		return subTypes.getPids();
 	}
 

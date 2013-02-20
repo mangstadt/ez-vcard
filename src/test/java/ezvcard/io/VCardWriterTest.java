@@ -379,8 +379,8 @@ public class VCardWriterTest {
 		"BEGIN:VCARD\r\n" +
 		"VERSION:2.1\r\n" +
 		"ADR;WORK:;;;;;;\r\n" +
-		"ADR;DOM;WORK:;;;;;;\r\n" +
-		"ADR;DOM;PARCEL;WORK:;;;;;;\r\n" +
+		"ADR;WORK;DOM:;;;;;;\r\n" +
+		"ADR;WORK;DOM;PARCEL:;;;;;;\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -398,8 +398,8 @@ public class VCardWriterTest {
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +
 		"ADR;TYPE=work:;;;;;;\r\n" +
-		"ADR;TYPE=dom,work:;;;;;;\r\n" +
-		"ADR;TYPE=dom,parcel,work:;;;;;;\r\n" +
+		"ADR;TYPE=work,dom:;;;;;;\r\n" +
+		"ADR;TYPE=work,dom,parcel:;;;;;;\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -446,8 +446,8 @@ public class VCardWriterTest {
 		"BEGIN:VCARD\r\n" +
 		"VERSION:2.1\r\n" +
 		"ADR;X-DOORMAN=true:;;;;;;\r\n" +
-		"ADR;LANGUAGE=FR;LANGUAGE=es;X-DOORMAN=true:;;;;;;\r\n" +
-		"ADR;LANGUAGE=FR;LANGUAGE=es;TEXT=123 \"Main\" St Austin \\;TX\\; 12345;X-DOORMAN=true:;;;;;;\r\n" +
+		"ADR;X-DOORMAN=true;LANGUAGE=FR;LANGUAGE=es:;;;;;;\r\n" +
+		"ADR;X-DOORMAN=true;LANGUAGE=FR;LANGUAGE=es;TEXT=123 \"Main\" St Austin \\;TX\\; 12345:;;;;;;\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -465,8 +465,8 @@ public class VCardWriterTest {
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +
 		"ADR;X-DOORMAN=true:;;;;;;\r\n" +
-		"ADR;LANGUAGE=FR,es;X-DOORMAN=true:;;;;;;\r\n" +
-		"ADR;LANGUAGE=FR,es;TEXT=\"123 'Main' St\\nAustin, ;TX; 12345\";X-DOORMAN=true:;;;;;;\r\n" +
+		"ADR;X-DOORMAN=true;LANGUAGE=FR,es:;;;;;;\r\n" +
+		"ADR;X-DOORMAN=true;LANGUAGE=FR,es;TEXT=\"123 'Main' St\\nAustin, ;TX; 12345\":;;;;;;\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 

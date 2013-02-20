@@ -2,7 +2,7 @@ package ezvcard.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +40,7 @@ import java.util.Set;
  * A multimap that uses {@link List} objects to store its values.
  * 
  * <p>
- * The internal {@link Map} implementation is a {@link HashMap} that uses
+ * The internal {@link Map} implementation is a {@link LinkedHashMap} that uses
  * {@link ArrayList} for its values.
  * </p>
  * @author Michael Angstadt
@@ -48,7 +48,7 @@ import java.util.Set;
  * @param <V> the value
  */
 public class ListMultimap<K, V> {
-	private final Map<K, List<V>> map = new HashMap<K, List<V>>();
+	private final Map<K, List<V>> map = new LinkedHashMap<K, List<V>>();
 
 	public ListMultimap() {
 	}
@@ -123,8 +123,8 @@ public class ListMultimap<K, V> {
 	}
 
 	/**
-	 * Returns the number of key/value pairs.
-	 * @return the number of key/value pairs
+	 * Returns all the values.
+	 * @return all the values
 	 */
 	public Collection<V> values() {
 		Collection<V> list = new ArrayList<V>();
@@ -143,13 +143,13 @@ public class ListMultimap<K, V> {
 	}
 
 	/**
-	 * Returns the number of key/value pairs.
-	 * @return the number of key/value pairs
+	 * Returns the number of values in the map.
+	 * @return the number of values
 	 */
 	public int size() {
 		int size = 0;
-		for (Map.Entry<K, List<V>> entry : map.entrySet()) {
-			size += entry.getValue().size();
+		for (List<V> value : map.values()) {
+			size += value.size();
 		}
 		return size;
 	}

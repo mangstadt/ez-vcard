@@ -1,7 +1,6 @@
 package ezvcard.types;
 
 import java.util.List;
-import java.util.Set;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -74,7 +73,7 @@ public class CategoriesType extends TextListType {
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
 	 */
-	public Set<Integer[]> getPids() {
+	public List<Integer[]> getPids() {
 		return subTypes.getPids();
 	}
 
