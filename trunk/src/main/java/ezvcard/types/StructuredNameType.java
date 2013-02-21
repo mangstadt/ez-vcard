@@ -164,13 +164,17 @@ public class StructuredNameType extends VCardType {
 	}
 
 	/**
-	 * Gets the string(s) that determine how this name should be sorted.
+	 * Gets the string(s) that define how to sort the vCard.
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortStringType SORT-STRING}
+	 * property instead.
+	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @return the name(s) (e.g. { "Aboville", "Christine" } if the family name
-	 * is "d'Aboville" and the given name is "Christine") or empty list of the
-	 * parameter doesn't exist
+	 * @return the sort string(s) (e.g. ["Aboville", "Christine"] if the family
+	 * name is "d'Aboville" and the given name is "Christine") or empty list if
+	 * there are none
 	 * @see VCardSubTypes#getSortAs
 	 */
 	public List<String> getSortAs() {
@@ -178,17 +182,40 @@ public class StructuredNameType extends VCardType {
 	}
 
 	/**
-	 * Sets the string(s) that determine how this name should be sorted.
+	 * Sets the string that defines how to sort the vCard.
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortStringType SORT-STRING}
+	 * property instead.
+	 * </p>
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param names the names in the order they should be sorted in (e.g. {
-	 * "Aboville", "Christine" } if the family name is "d'Aboville" and the given
-	 * name is "Christine") or null to remove
-	 * @see VCardSubTypes#setSortAs
+	 * @param family the sorttable family name (e.g. "Adboville" if the family
+	 * name is "d'Aboville") or null to remove
 	 */
-	public void setSortAs(String... names) {
-		subTypes.setSortAs(names);
+	public void setSortAs(String family) {
+		if (family == null) {
+			subTypes.setSortAs();
+		} else {
+			subTypes.setSortAs(family);
+		}
+	}
+
+	/**
+	 * Sets the strings that define how to sort the vCard.
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortStringType SORT-STRING}
+	 * property instead.
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param family the sortable family name (e.g. "Adboville" if the family
+	 * name is "d'Aboville")
+	 * @param given the sortable given name
+	 */
+	public void setSortAs(String family, String given) {
+		subTypes.setSortAs(family, given);
 	}
 
 	/**

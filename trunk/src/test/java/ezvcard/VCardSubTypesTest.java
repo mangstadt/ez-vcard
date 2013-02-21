@@ -204,4 +204,36 @@ public class VCardSubTypesTest {
 		subTypes.setIndex(1);
 		assertEquals("1", subTypes.getFirst("INDEX"));
 	}
+
+	@Test
+	public void sortAs() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		assertTrue(subTypes.getSortAs().isEmpty());
+
+		subTypes = new VCardSubTypes();
+		subTypes.setSortAs("one", "two");
+		assertEquals(Arrays.asList("one", "two"), subTypes.getSortAs());
+		assertEquals(Arrays.asList("one", "two"), subTypes.get("SORT-AS"));
+
+		subTypes = new VCardSubTypes();
+		subTypes.put("SORT-AS", "one");
+		subTypes.put("SORT-AS", "two");
+		assertEquals(Arrays.asList("one", "two"), subTypes.getSortAs());
+
+		subTypes = new VCardSubTypes();
+
+		subTypes.setSortAs("one", "three");
+		assertEquals(Arrays.asList("one", "three"), subTypes.getSortAs());
+
+		subTypes.setSortAs();
+		assertTrue(subTypes.getSortAs().isEmpty());
+
+		subTypes.setSortAs("one", "two");
+		subTypes.setSortAs((String[]) null);
+		assertTrue(subTypes.getSortAs().isEmpty());
+
+		subTypes.setSortAs("one", "two");
+		subTypes.setSortAs((String) null);
+		assertEquals(Arrays.asList((String) null), subTypes.getSortAs());
+	}
 }
