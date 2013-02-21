@@ -54,7 +54,7 @@ public class VCardLine {
 	 * Parses an unfolded vCard line. It just parses the components out, it
 	 * doesn't modify the components in any way.
 	 * @param line the unfolded line to parse
-	 * @param the version of the vCard that's being parsed
+	 * @param version the version of the vCard that's being parsed
 	 * @param caretDecodingEnabled true to enable circumflex accent decoding in
 	 * 3.0 and 4.0 parameter values, false not to
 	 * @return the parsed components or null if the line is not a valid vCard
