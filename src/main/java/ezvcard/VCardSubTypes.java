@@ -507,23 +507,21 @@ public class VCardSubTypes {
 	}
 
 	/**
-	 * Sets the SORT-AS parameter value(s). This contains typically two string
-	 * values which the vCard should be sorted by (family and given names). This
-	 * is useful if the person's last name (defined in the N property) starts
-	 * with characters that should be ignored during sorting. It can be used
-	 * with the N and ORG types.
+	 * Sets the SORT-AS parameter value(s). This is useful with the N property
+	 * when the person's last name starts with characters that should be ignored
+	 * during sorting. It can be used with the N and ORG types.
 	 * <p>
 	 * vCard versions: 4.0
 	 * </p>
-	 * @param names the names in the order they should be sorted in (e.g. {
-	 * "Aboville", "Christine" } if the family name is "d'Aboville" and the given
-	 * name is "Christine") or null to remove
+	 * @param names the names in the order they should be sorted in (e.g.
+	 * ["Aboville", "Christine"] if the family name is "d'Aboville" and the
+	 * given name is "Christine") or empty parameter list to remove
 	 */
 	public void setSortAs(String... names) {
 		removeAll("SORT-AS");
-		if (names != null) {
-			for (String s : names) {
-				put("SORT-AS", s);
+		if (names != null && names.length > 0) {
+			for (String name : names) {
+				put("SORT-AS", name);
 			}
 		}
 	}
