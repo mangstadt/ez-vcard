@@ -413,25 +413,16 @@ public class VCardWriterTest {
 	public void subTypes() throws Exception {
 		VCard vcard = new VCard();
 
-		//one sub type
+		//single-valued subtype
 		AddressType adr = new AddressType();
 		adr.getSubTypes().put("X-DOORMAN", "true");
 		vcard.addAddress(adr);
 
-		//two types
+		//single- and multi-valued subtype
 		adr = new AddressType();
 		adr.getSubTypes().put("X-DOORMAN", "true");
 		adr.getSubTypes().put("LANGUAGE", "FR");
 		adr.getSubTypes().put("LANGUAGE", "es");
-		vcard.addAddress(adr);
-
-		//three types
-		//make sure it properly escapes sub type values that have special chars
-		adr = new AddressType();
-		adr.getSubTypes().put("X-DOORMAN", "true");
-		adr.getSubTypes().put("LANGUAGE", "FR");
-		adr.getSubTypes().put("LANGUAGE", "es");
-		adr.getSubTypes().put("TEXT", "123 \"Main\" St\r\nAustin, ;TX; 12345");
 		vcard.addAddress(adr);
 
 		//2.1
@@ -447,7 +438,6 @@ public class VCardWriterTest {
 		"VERSION:2.1\r\n" +
 		"ADR;X-DOORMAN=true:;;;;;;\r\n" +
 		"ADR;X-DOORMAN=true;LANGUAGE=FR;LANGUAGE=es:;;;;;;\r\n" +
-		"ADR;X-DOORMAN=true;LANGUAGE=FR;LANGUAGE=es;TEXT=123 \"Main\" St Austin \\;TX\\; 12345:;;;;;;\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -466,7 +456,24 @@ public class VCardWriterTest {
 		"VERSION:3.0\r\n" +
 		"ADR;X-DOORMAN=true:;;;;;;\r\n" +
 		"ADR;X-DOORMAN=true;LANGUAGE=FR,es:;;;;;;\r\n" +
-		"ADR;X-DOORMAN=true;LANGUAGE=FR,es;TEXT=\"123 'Main' St\\nAustin, ;TX; 12345\":;;;;;;\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		assertEquals(expected, actual);
+
+		//4.0
+		sw = new StringWriter();
+		vcw = new VCardWriter(sw, VCardVersion.V4_0, null, "\r\n");
+		vcw.setAddProdId(false);
+		vcw.write(vcard);
+		actual = sw.toString();
+
+		//@formatter:off
+		expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"ADR;X-DOORMAN=true:;;;;;;\r\n" +
+		"ADR;X-DOORMAN=true;LANGUAGE=FR,es:;;;;;;\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -537,7 +544,7 @@ public class VCardWriterTest {
 			assertEquals(expected, actual);
 		}
 
-		//3.0 without caret escaping (same as 4.0)
+		//3.0 without caret escaping
 		{
 			VCardVersion version = VCardVersion.V3_0;
 			StringWriter sw = new StringWriter();
@@ -552,14 +559,14 @@ public class VCardWriterTest {
 
 			//removes FS
 			//replaces \ with \\
-			//replaces newline with \n
+			//replaces newline with space
 			//replaces " with '
 			//surrounds in double quotes, since it contains , ; or :
 			//@formatter:off
 			String expected =
 			"BEGIN:VCARD\r\n" +
 			"VERSION:3.0\r\n" +
-			"NOTE;X-TEST=\"^…\\\\,;:=[]'\t\\n\",normal:test\r\n" +
+			"NOTE;X-TEST=\"^…\\\\,;:=[]'\t \",normal:test\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
@@ -596,7 +603,7 @@ public class VCardWriterTest {
 			assertEquals(expected, actual);
 		}
 
-		//4.0 without caret escaping (same as 3.0)
+		//4.0 without caret escaping
 		{
 			VCardVersion version = VCardVersion.V4_0;
 			StringWriter sw = new StringWriter();

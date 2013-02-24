@@ -648,7 +648,12 @@ public class VCardWriter implements Closeable {
 				modifiedValue = modifiedValue.replace("\\", "\\\\");
 
 				//escape newlines
-				modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll("\\\\\\n");
+				if (targetVersion == VCardVersion.V3_0) {
+					modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll(" ");
+				} else {
+					//for the "LABEL" parameter
+					modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll("\\\\\\n");
+				}
 			}
 
 			break;
