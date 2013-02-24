@@ -2,7 +2,13 @@
 
 *February 24, 2013*
 
-[http://code.google.com/p/ez-vcard/downloads/list Version 0.7.2] released.  This release includes bug fixes, support for circumflex accent encoding ([http://tools.ietf.org/html/rfc6868 RFC 6868]), and support for `KIND:device` ([http://tools.ietf.org/html/rfc6869 RFC 6869])  See the [Changelog changelog] for details.
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.7.2] released.  This release includes:
+
+ * Support for circumflex accent encoding ([http://tools.ietf.org/html/rfc6868 RFC 6868])
+ * Support for `KIND:device` ([http://tools.ietf.org/html/rfc6869 RFC 6869])
+ * Bug fixes
+
+See the [Changelog changelog] for details.
 
 *January 17, 2013*
 
