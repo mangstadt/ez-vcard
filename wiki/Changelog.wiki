@@ -20,7 +20,7 @@ _February 24, 2013_
   * Added the ability to parse multi-valued `TYPE` parameters that are enclosed entirely in double quotes (e.g. `ADR;TYPE="home,work"`).  This is done to account for an error in the 4.0 specs.
 
 = 0.7.1 =
-_Januaray 17, 2013_
+_January 17, 2013_
 
  * Fixed a critical error in the way an xCard is written.  If the vCard had a PRODID property and "XCardDocument" was configured to add a PRODID property, then it would not write the vCard.
 
