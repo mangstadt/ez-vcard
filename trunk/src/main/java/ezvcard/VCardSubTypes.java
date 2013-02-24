@@ -257,11 +257,7 @@ public class VCardSubTypes {
 	 * @return the values or empty set if not found
 	 */
 	public Set<String> getTypes() {
-		Set<String> types = new HashSet<String>();
-		for (String value : get(TypeParameter.NAME)) {
-			types.add(value);
-		}
-		return types;
+		return new HashSet<String>(get(TypeParameter.NAME));
 	}
 
 	/**
