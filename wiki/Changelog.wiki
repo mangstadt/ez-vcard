@@ -1,6 +1,24 @@
 #summary Documents all the changes that were made to every version of the library
 #labels Featured
 
+= 0.7.2 =
+_February 24, 2013_
+
+ * Renamed the marshal methods in the `VCardType` class to better reflect their format (e.g. renamed "unmarshalValue" to "unmarshalText").
+ * Fixed a bug in how "quoted-printable" property values are parsed: values that have empty lines at the end of them are now parsed correctly (see [https://groups.google.com/forum/?fromgroups=#!topic/ez-vcard-discuss/IZgLDVlofGE this discussion])
+ * Added `KIND:device` ([http://tools.ietf.org/html/rfc6869 RFC 6869]).
+ * Changed how the `SORT-AS` parameter works in the `OrganizationType` and `StructuredNameType` classes.
+ * Major fixes/additions to parameter values in plain-text vCards:
+  * Added support for circumflex accent encoding ([http://tools.ietf.org/html/rfc6868 RFC 6868]).
+  * Certain invalid characters are now removed completely from each parameter value on marshal.  A warning is logged if the parameter gets modified in any way.  These characters are:
+   * ASCII control characters
+   * The following characters in 2.1 vCards: `,` `.` `:` `=` `[` `]`
+  * Other invalid characters are now replaced with another character.  A warning is logged if the parameter gets modified in any way.  These characters are:
+   * Double quotes in 3.0/4.0 vCards are replaced with single quotes (before, they were escaped with backslashes, which is not part of the standard).
+   * Newlines in 2.1/3.0 vCards are replaced with spaces (before, they were escaped with backslashes, which is not part of the standard).  Newlines continue to be escaped with backslashes in 4.0 vCards in order to support the `LABEL` parameter.
+  * Fixed how double-quoted, multi-valued parameters in 3.0/4.0 are implemented.  For multi-valued parameters, double quotes were put around all the values instead of each individual value, which is incorrect according to the ABNF.
+  * Added the ability to parse multi-valued `TYPE` parameters that are enclosed entirely in double quotes (e.g. `ADR;TYPE="home,work"`).  This is done to account for an error in the 4.0 specs.
+
 = 0.7.1 =
 _Januaray 17, 2013_
 

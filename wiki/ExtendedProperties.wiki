@@ -91,7 +91,7 @@ public class FavColorsType extends VCardType {
 
   //writes the property value to a plain-text vCard
   @Override
-  protected void doMarshalValue(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+  protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
     if (!favColors.isEmpty()) {
       for (String color : sanitizeColors(compatibilityMode)) {
         value.append(VCardStringUtils.escape(color)).append(',');
@@ -102,7 +102,7 @@ public class FavColorsType extends VCardType {
 
   //parses the property's value from a plain-text vCard
   @Override
-  protected void doUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+  protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
     favColors.clear();
     String split[] = VCardStringUtils.splitBy(value, ',', true, true);
     favColors.addAll(Arrays.asList(split));
@@ -119,8 +119,8 @@ public class FavColorsType extends VCardType {
   
   //writes the property to an XML document
   @Override
-  protected void doMarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-    Element theElement = element.getElement();
+  protected void doMarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+    Element theElement = element.element();
     for (String color : sanitizeColors(compatibilityMode)) {
       Element colorElement = theElement.getOwnerDocument().createElementNS(qname.getNamespaceURI(), "color");
 	  colorElement.setTextContent(color);
@@ -130,9 +130,9 @@ public class FavColorsType extends VCardType {
   
   //parses the property from an XML document
   @Override
-  protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
+  protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
     favColors.clear();
-    NodeList nl = element.getElement().getElementsByTagNameNS(qname.getNamespaceURI(), "color");
+    NodeList nl = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "color");
     List<Element> colorElements = XmlUtils.toElementList(nl);
     for (Element colorElement : colorElements) {
       favColors.add(colorElement.getTextContent());
@@ -179,9 +179,9 @@ The `doMarshalSubTypes()` method allows the property's parameters (aka "sub type
 
 In the above example, the "LANGUAGE" parameter is removed if the version of the generated vCard is 2.1.
 
-===doMarshalValue(!StringBuilder value, ...)===
+===doMarshalText===
 
-The `doMarshalValue(StringBuilder value, ...)` method is used to write the property value to a plain-text vCard (the most common type of vCard).  This method is abstract and must be implemented.  The value is appended to the `StringBuilder` object that is passed into the method.
+The `doMarshalText` method is used to write the property value to a plain-text vCard (the most common type of vCard).  This method is abstract and must be implemented.  The value is appended to the `StringBuilder` object that is passed into the method.
 
 *Special characters:* It is recommended that all special vCard characters be backslash-escaped if they do not have special meanings within the property value.  These special characters are: comma (`,`), semicolon (`;`), and backslash (`\`).  This is done in order to be consistent with the rest of the vCard standard.  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/VCardStringUtils.html#escape(java.lang.String) VCardStringUtils.escape()] method can be used to do this.  Newline escaping and line folding do not need to be handled here (they are handled in the [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/VCardWriter.html VCardWriter] class).
 
@@ -195,11 +195,11 @@ The `doMarshalValue(StringBuilder value, ...)` method is used to write the prope
 
 `X-FAV-COLORS;LANGUAGE=en:red,green,azure`
 
-===doUnmarshalValue(String value, ...)===
+===doUnmarshalText===
 
-The `doUnmarshalValue(String value, ...)` method is used to read the property value from a plain-text vCard (the most common type of vCard).  This method is abstract and must be implemented.  In the case of our `X-FAV-COLORS` property, the value is split by comma and saved to a `List` object.  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/VCardStringUtils.html#splitBy(java.lang.String,%20char,%20boolean,%20boolean) VCardStringUtils.splitBy()] method can be used to split such sequences because it takes escaped characters into account.
+The `doUnmarshalText` method is used to read the property value from a plain-text vCard (the most common type of vCard).  This method is abstract and must be implemented.  In the case of our `X-FAV-COLORS` property, the value is split by comma and saved to a `List` object.  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/VCardStringUtils.html#splitBy(java.lang.String,%20char,%20boolean,%20boolean) VCardStringUtils.splitBy()] method can be used to split such sequences because it takes escaped characters into account.
 
-The property's parameters are parsed _before_ `doUnmarshalValue()` is called.  They can be accessed from the protected [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/VCardType.html#subTypes VCard.subTypes] field.
+The property's parameters are parsed _before_ `doUnmarshalText()` is called.  They can be accessed from the protected [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/VCardType.html#subTypes VCard.subTypes] field.
 
 *Version*: The [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCardVersion.html VCardVersion] object defines the version of the vCard that is being parsed.  If a 2.1 vCard is being parsed, then this MAY be null, as the 2.1 specification doesn't require the version number to be located at the top of the vCard file.
 
@@ -213,9 +213,9 @@ The property's parameters are parsed _before_ `doUnmarshalValue()` is called.  T
 
 The `getQName()` method is used for reading/writing xCards (XML-encoded vCards).  It defines the namespace and element name of the property's XML element.  If this method is not overridden, then the namespace will default to the xCard namespace and the element name will default to the property's type name, converted to lower-case.
 
-===doMarshalValue(XCardElement element, ...)===
+===doMarshalXml===
 
-The `doMarshalValue(XCardElement element, ...)` method is used to write the property to an XML document ("xCard").  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html XCardElement] object is the element which contains the vCard property.  It wraps a `org.w3c.dom.Element` object, adding xCard-specific functionality.  Since this is an extended property class, you will most likely want to work with the raw `org.w3c.dom.Element` object.  To retrieve this, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html#getElement() XCardElement.getElement()] method.
+The `doMarshalXml` method is used to write the property to an XML document ("xCard").  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html XCardElement] object is the element which contains the vCard property.  It wraps a `org.w3c.dom.Element` object, adding xCard-specific functionality.  Since this is an extended property class, you will most likely want to work with the raw `org.w3c.dom.Element` object.  To retrieve this, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html#element() XCardElement.element()] method.
 
 *Warnings:* Warning messages can be added to the `warnings` list if any non-critical problems occurred during the marshalling process.
 
@@ -238,11 +238,11 @@ The `doMarshalValue(XCardElement element, ...)` method is used to write the prop
 </fav-colors>
 }}}
 
-===doUnmarshalValue(XCardElement element, ...)===
+===doUnmarshalXml===
 
-The `doUnmarshalValue(XCardElement element, ...)` method is used to parse a property from an XML document ("xCard").  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html XCardElement] object is the element which contains the vCard property.  It wraps a `org.w3c.dom.Element` object, adding xCard-specific functionality.  Since this is an extended property class, you will most likely want to work with the raw element object.  To retrieve this, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html#getElement() XCardElement.getElement()] method.
+The `doUnmarshalXml` method is used to parse a property from an XML document ("xCard").  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html XCardElement] object is the element which contains the vCard property.  It wraps a `org.w3c.dom.Element` object, adding xCard-specific functionality.  Since this is an extended property class, you will most likely want to work with the raw element object.  To retrieve this, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html#element() XCardElement.element()] method.
 
-The property's parameters (aka "sub types") are parsed before `doUnmarshalValue()` is called.  They can be accessed from the protected [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/VCardType.html#subTypes VCardType.subTypes] field.  Also, note that the XML elements that the parameters are stored in are removed from the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html XCardElement] object before `doUnmarshalValue()` is called.
+The property's parameters (aka "sub types") are parsed before `doUnmarshalXml()` is called.  They can be accessed from the protected [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/VCardType.html#subTypes VCardType.subTypes] field.  Also, note that the XML elements that the parameters are stored in are removed from the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html XCardElement] object.
 
 *Warnings:* Warning messages can be added to the `warnings` list if any non-critical problems occurred during the unmarshalling process.
 
