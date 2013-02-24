@@ -504,7 +504,6 @@ public class Ezvcard {
 	}
 
 	static abstract class ParserChain<T, U extends IParser> {
-		T childThis;
 		final List<Class<? extends VCardType>> extendedTypes = new ArrayList<Class<? extends VCardType>>();
 		List<List<String>> warnings;
 
@@ -513,9 +512,10 @@ public class Ezvcard {
 		 * @param typeClass the extended type class
 		 * @return this
 		 */
+		@SuppressWarnings("unchecked")
 		public T register(Class<? extends VCardType> typeClass) {
 			extendedTypes.add(typeClass);
-			return childThis;
+			return (T) this;
 		}
 
 		/**
@@ -528,9 +528,10 @@ public class Ezvcard {
 		 * empty.
 		 * @return this
 		 */
+		@SuppressWarnings("unchecked")
 		public T warnings(List<List<String>> warnings) {
 			this.warnings = warnings;
-			return childThis;
+			return (T) this;
 		}
 
 		/**
@@ -597,9 +598,10 @@ public class Ezvcard {
 		 * @see VCardReader#setCaretDecodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
+		@SuppressWarnings("unchecked")
 		public T caretDecoding(boolean enable) {
 			caretDecoding = enable;
-			return childThis;
+			return (T) this;
 		}
 
 		@Override
@@ -637,7 +639,6 @@ public class Ezvcard {
 		private Reader reader;
 
 		private ParserChainTextReader(Reader reader) {
-			super.childThis = this;
 			this.reader = reader;
 		}
 
@@ -669,7 +670,6 @@ public class Ezvcard {
 		private String text;
 
 		private ParserChainTextString(String text) {
-			super.childThis = this;
 			this.text = text;
 		}
 
@@ -728,7 +728,6 @@ public class Ezvcard {
 		private Reader reader;
 
 		private ParserChainXmlReader(Reader reader) {
-			super.childThis = this;
 			this.reader = reader;
 		}
 
@@ -745,7 +744,6 @@ public class Ezvcard {
 		private String xml;
 
 		private ParserChainXmlString(String xml) {
-			super.childThis = this;
 			this.xml = xml;
 		}
 
@@ -782,7 +780,6 @@ public class Ezvcard {
 		private Document document;
 
 		private ParserChainXmlDom(Document document) {
-			super.childThis = this;
 			this.document = document;
 		}
 
@@ -829,9 +826,10 @@ public class Ezvcard {
 		 * @param pageUrl the webpage URL
 		 * @return this
 		 */
+		@SuppressWarnings("unchecked")
 		public T pageUrl(String pageUrl) {
 			this.pageUrl = pageUrl;
-			return childThis;
+			return (T) this;
 		}
 
 		@Override
@@ -863,7 +861,6 @@ public class Ezvcard {
 		private URL url;
 
 		private ParserChainHtmlReader(Reader reader) {
-			this.childThis = this;
 			this.reader = reader;
 		}
 
@@ -889,7 +886,6 @@ public class Ezvcard {
 		private String html;
 
 		private ParserChainHtmlString(String html) {
-			this.childThis = this;
 			this.html = html;
 		}
 
@@ -933,7 +929,6 @@ public class Ezvcard {
 	}
 
 	static abstract class WriterChainText<T> extends WriterChain {
-		T childThis;
 		VCardVersion version;
 		boolean prodId = true;
 		boolean caretEncoding = false;
@@ -957,9 +952,10 @@ public class Ezvcard {
 		 * @param version the version to marshal the vCards to
 		 * @return this
 		 */
+		@SuppressWarnings("unchecked")
 		public T version(VCardVersion version) {
 			this.version = version;
-			return childThis;
+			return (T) this;
 		}
 
 		/**
@@ -969,9 +965,10 @@ public class Ezvcard {
 		 * @param include true to add PRODID (default), false not to
 		 * @return this
 		 */
+		@SuppressWarnings("unchecked")
 		public T prodId(boolean include) {
 			this.prodId = include;
-			return childThis;
+			return (T) this;
 		}
 
 		/**
@@ -982,9 +979,10 @@ public class Ezvcard {
 		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
+		@SuppressWarnings("unchecked")
 		public T caretEncoding(boolean enable) {
 			this.caretEncoding = enable;
-			return childThis;
+			return (T) this;
 		}
 
 		/**
@@ -1059,7 +1057,6 @@ public class Ezvcard {
 
 		private WriterChainTextMulti(Collection<VCard> vcards) {
 			super(vcards);
-			super.childThis = this;
 		}
 
 		@Override
@@ -1110,7 +1107,6 @@ public class Ezvcard {
 
 		private WriterChainTextSingle(VCard vcard) {
 			super(Arrays.asList(vcard));
-			super.childThis = this;
 		}
 
 		@Override
@@ -1150,7 +1146,6 @@ public class Ezvcard {
 	}
 
 	static abstract class WriterChainXml<T> extends WriterChain {
-		T childThis;
 		boolean prodId = true;
 		int indent = -1;
 
@@ -1164,9 +1159,10 @@ public class Ezvcard {
 		 * @param include true to add PRODID (default), false not to
 		 * @return this
 		 */
+		@SuppressWarnings("unchecked")
 		public T prodId(boolean include) {
 			this.prodId = include;
-			return childThis;
+			return (T) this;
 		}
 
 		/**
@@ -1175,9 +1171,10 @@ public class Ezvcard {
 		 * @param indent the number of spaces in the indent string
 		 * @return this
 		 */
+		@SuppressWarnings("unchecked")
 		public T indent(int indent) {
 			this.indent = indent;
-			return childThis;
+			return (T) this;
 		}
 
 		/**
@@ -1263,7 +1260,6 @@ public class Ezvcard {
 
 		private WriterChainXmlMulti(Collection<VCard> vcards) {
 			super(vcards);
-			super.childThis = this;
 		}
 
 		@Override
@@ -1309,7 +1305,6 @@ public class Ezvcard {
 
 		private WriterChainXmlSingle(VCard vcard) {
 			super(Arrays.asList(vcard));
-			super.childThis = this;
 		}
 
 		@Override
