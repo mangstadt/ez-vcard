@@ -122,6 +122,47 @@ public class VCardReaderTest {
 		assertTrue(label.getTypes().contains(AddressTypeParameter.PARCEL));
 	}
 
+	@Test
+	public void type_parameter_enclosed_in_double_quotes() throws Exception {
+		//@formatter:off
+		String str =
+		"BEGIN: VCARD\r\n" +
+		"VERSION: 4.0\r\n" +
+		"ADR;TYPE=\"dom,home,work\": ;;;;\r\n" +
+		"ADR;TYPE=\"dom\",\"home\",\"work\": ;;;;\r\n" +
+		"ADR;TYPE=\"dom\",home,work: ;;;;\r\n" +
+		"ADR;TYPE=dom,home,work: ;;;;\r\n" +
+		"END: VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		VCard vcard = reader.readNext();
+
+		AddressType adr = vcard.getAddresses().get(0);
+		assertEquals(3, adr.getTypes().size());
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.DOM));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+
+		adr = vcard.getAddresses().get(1);
+		assertEquals(3, adr.getTypes().size());
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.DOM));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+
+		adr = vcard.getAddresses().get(2);
+		assertEquals(3, adr.getTypes().size());
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.DOM));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+
+		adr = vcard.getAddresses().get(3);
+		assertEquals(3, adr.getTypes().size());
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.DOM));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+	}
+
 	/**
 	 * All "quoted-printable" values should be decoded by the VCardReader.
 	 */

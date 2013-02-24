@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -280,6 +281,20 @@ public class VCardReader implements Closeable, IParser {
 					subTypes.put(subTypeName, subTypeValue);
 				} else {
 					subTypeName = subTypeName.toUpperCase();
+
+					//account for multi-valued TYPE parameters being enclosed entirely in double quotes
+					//e.g. ADR;TYPE="home,work"
+					if (subTypeName.equals(TypeParameter.NAME) && subTypeValues.size() == 1) {
+						//@formatter:off
+						/*
+						 * Many examples throughout the 4.0 specs show TYPE parameters being encoded in this way.
+						 * This conflicts with the ABNF and is noted in the errata.
+						 * Split the value by comma incase the vendor implemented it this way.
+						 */
+						//@formatter:on
+						subTypeValues = Arrays.asList(subTypeValues.get(0).split(","));
+					}
+
 					for (String subTypeValue : subTypeValues) {
 						subTypes.put(subTypeName, subTypeValue);
 					}
