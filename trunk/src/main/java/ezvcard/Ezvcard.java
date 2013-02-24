@@ -732,6 +732,16 @@ public class Ezvcard {
 		}
 
 		@Override
+		public ParserChainXmlReader register(Class<? extends VCardType> typeClass) {
+			return super.register(typeClass);
+		}
+
+		@Override
+		public ParserChainXmlReader warnings(List<List<String>> warnings) {
+			return super.warnings(warnings);
+		}
+
+		@Override
 		XCardReader init() throws IOException, SAXException {
 			return new XCardReader(reader);
 		}
@@ -745,6 +755,16 @@ public class Ezvcard {
 
 		private ParserChainXmlString(String xml) {
 			this.xml = xml;
+		}
+
+		@Override
+		public ParserChainXmlString register(Class<? extends VCardType> typeClass) {
+			return super.register(typeClass);
+		}
+
+		@Override
+		public ParserChainXmlString warnings(List<List<String>> warnings) {
+			return super.warnings(warnings);
 		}
 
 		@Override
@@ -781,6 +801,16 @@ public class Ezvcard {
 
 		private ParserChainXmlDom(Document document) {
 			this.document = document;
+		}
+
+		@Override
+		public ParserChainXmlDom register(Class<? extends VCardType> typeClass) {
+			return super.register(typeClass);
+		}
+
+		@Override
+		public ParserChainXmlDom warnings(List<List<String>> warnings) {
+			return super.warnings(warnings);
 		}
 
 		@Override
@@ -869,6 +899,16 @@ public class Ezvcard {
 		}
 
 		@Override
+		public ParserChainHtmlReader register(Class<? extends VCardType> typeClass) {
+			return super.register(typeClass);
+		}
+
+		@Override
+		public ParserChainHtmlReader warnings(List<List<String>> warnings) {
+			return super.warnings(warnings);
+		}
+
+		@Override
 		public ParserChainHtmlReader pageUrl(String pageUrl) {
 			return super.pageUrl(pageUrl);
 		}
@@ -892,6 +932,16 @@ public class Ezvcard {
 		@Override
 		HCardReader init() {
 			return new HCardReader(html, pageUrl);
+		}
+
+		@Override
+		public ParserChainHtmlString register(Class<? extends VCardType> typeClass) {
+			return super.register(typeClass);
+		}
+
+		@Override
+		public ParserChainHtmlString warnings(List<List<String>> warnings) {
+			return super.warnings(warnings);
 		}
 
 		@Override
