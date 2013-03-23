@@ -7,9 +7,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
+import java.text.NumberFormat;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Test;
 
 /*
@@ -45,6 +48,40 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class GeoUriTest {
+	private final Locale defaultLocale = Locale.getDefault();
+
+	@After
+	public void after() {
+		Locale.setDefault(defaultLocale);
+	}
+
+	@Test
+	public void buildNumberFormat() {
+		NumberFormat nf = GeoUri.buildNumberFormat(0);
+		assertEquals("12", nf.format(12.388));
+
+		nf = GeoUri.buildNumberFormat(-1);
+		assertEquals("12", nf.format(12.388));
+
+		nf = GeoUri.buildNumberFormat(1);
+		assertEquals("12.4", nf.format(12.388));
+
+		nf = GeoUri.buildNumberFormat(2);
+		assertEquals("12.39", nf.format(12.388));
+
+		nf = GeoUri.buildNumberFormat(3);
+		assertEquals("12.388", nf.format(12.388));
+	}
+
+	@Test
+	public void buildNumberFormat_other_locale() {
+		//Germany uses "," as the decimal separator, but "." should still be used in a geo URI
+		Locale.setDefault(Locale.GERMANY);
+
+		NumberFormat nf = GeoUri.buildNumberFormat(2);
+		assertEquals("-12.39", nf.format(-12.388));
+	}
+
 	@Test
 	public void parse_all() {
 		GeoUri uri = new GeoUri("geo:12.34,56.78,-21.43;crs=wgs84;u=12;param=value");
@@ -338,6 +375,20 @@ public class GeoUriTest {
 		assertEquals("geo:12.348889,45.671111", uri.toString());
 		assertEquals("geo:12.3489,45.6711", uri.toString(4));
 		assertEquals("geo:12,46", uri.toString(0));
+		assertEquals("geo:12,46", uri.toString(-1));
+	}
+
+	@Test
+	public void toString_other_locale() {
+		//Germany uses "," as the decimal separator, but "." should still be used in a geo URI
+		Locale.setDefault(Locale.GERMANY);
+
+		GeoUri uri = new GeoUri();
+		uri.setCoordA(12.34);
+		uri.setCoordB(45.67);
+		uri.setCoordC(-21.43);
+		uri.setUncertainty(12.0);
+		assertEquals("geo:12.34,45.67,-21.43;u=12", uri.toString());
 	}
 
 	@Test

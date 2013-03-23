@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import java.net.URI;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -372,7 +373,13 @@ public class GeoUri {
 		return sb.toString();
 	}
 
-	protected NumberFormat buildNumberFormat(int decimals) {
+	/**
+	 * Builds a number formatter object for displaying latitudes/longitudes as
+	 * strings.
+	 * @param decimals the number of decimals to display
+	 * @return the number formatter
+	 */
+	public static NumberFormat buildNumberFormat(int decimals) {
 		StringBuilder sb = new StringBuilder();
 		sb.append('0');
 		if (decimals > 0) {
@@ -381,7 +388,16 @@ public class GeoUri {
 				sb.append('#');
 			}
 		}
-		return new DecimalFormat(sb.toString());
+
+		DecimalFormat df = new DecimalFormat(sb.toString());
+
+		//decimal separator differs by locale (e.g. Germany uses ",")
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setMinusSign('-');
+		df.setDecimalFormatSymbols(symbols);
+
+		return df;
 	}
 
 	@Override
