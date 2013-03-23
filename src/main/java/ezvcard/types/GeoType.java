@@ -1,6 +1,5 @@
 package ezvcard.types;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -279,7 +278,7 @@ public class GeoType extends VCardType {
 		if (version == VCardVersion.V4_0) {
 			sb.append(uri.toString(6));
 		} else {
-			NumberFormat nf = new DecimalFormat("0.######");
+			NumberFormat nf = GeoUri.buildNumberFormat(6);
 			sb.append(nf.format(getLatitude()));
 			sb.append(';');
 			sb.append(nf.format(getLongitude()));
