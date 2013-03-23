@@ -329,6 +329,44 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
+	 * Unmarshals the type from a jCard (JSON).
+	 * @param subTypes the sub types that were parsed
+	 * @param dataType the data type of the property value (e.g. "text")
+	 * @param values the value(s) of the property
+	 * @param version the version of the jCard that is being read
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * unmarshalling process
+	 * @throws SkipMeException if this type should NOT be added to the
+	 * {@link VCard} object
+	 */
+	public final void unmarshalJson(VCardSubTypes subTypes, String dataType, List<List<String>> values, VCardVersion version, List<String> warnings) {
+		this.subTypes = subTypes;
+		doUnmarshalJson(dataType, values, version, warnings);
+	}
+
+	/**
+	 * Unmarshals the type from a jCard (JSON).
+	 * @param dataType the data type of the property value (e.g. "text")
+	 * @param values the value(s) of the property
+	 * @param version the version of the jCard that is being read
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * unmarshalling process
+	 * @throws SkipMeException if this type should NOT be added to the
+	 * {@link VCard} object
+	 */
+	protected void doUnmarshalJson(String dataType, List<List<String>> values, VCardVersion version, List<String> warnings) {
+		String value;
+		if (!values.isEmpty() && !values.get(0).isEmpty()) {
+			value = values.get(0).get(0);
+		} else {
+			value = "";
+		}
+		doUnmarshalText(value, version, warnings, CompatibilityMode.RFC);
+	}
+
+	/**
 	 * <p>
 	 * Gets the qualified name (XML namespace and local part) for marshalling
 	 * the type to an XML document (xCard).

@@ -1,6 +1,7 @@
 package ezvcard;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,6 +69,15 @@ public class VCardSubTypes {
 	 */
 	public void put(String name, String value) {
 		subTypes.put(name.toUpperCase(), value);
+	}
+
+	/**
+	 * Adds multiple values to a Sub Type.
+	 * @param name the Sub Type name
+	 * @param values the values to add
+	 */
+	public void putAll(String name, Collection<String> values) {
+		subTypes.putAll(name.toUpperCase(), values);
 	}
 
 	/**

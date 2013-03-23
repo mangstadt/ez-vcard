@@ -72,6 +72,15 @@ public class VCardSubTypesTest {
 	}
 
 	@Test
+	public void putAll() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.put("test3", "three");
+		subTypes.putAll("tESt3", Arrays.asList("trois", "three"));
+
+		assertEquals(Arrays.asList("three", "trois", "three"), subTypes.get("TEST3"));
+	}
+
+	@Test
 	public void remove() {
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.put("NUMBERS", "1");

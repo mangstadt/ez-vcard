@@ -57,6 +57,17 @@ public class ListMultimapTest {
 	}
 
 	@Test
+	public void putAll() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		map.putAll("one", Arrays.asList("111", "11"));
+		map.put("two", "2");
+
+		assertEquals(Arrays.asList("1", "111", "11"), map.get("one"));
+		assertEquals(Arrays.asList("2"), map.get("two"));
+	}
+
+	@Test
 	public void get() {
 		ListMultimap<String, String> map = new ListMultimap<String, String>();
 		map.put("one", "1");

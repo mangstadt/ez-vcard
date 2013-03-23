@@ -70,12 +70,18 @@ public class ListMultimap<K, V> {
 	 * @param value the value
 	 */
 	public void put(K key, V value) {
-		List<V> values = map.get(key);
-		if (values == null) {
-			values = new ArrayList<V>();
-			map.put(key, values);
-		}
+		List<V> values = get(key, true);
 		values.add(value);
+	}
+
+	/**
+	 * Adds a value to the multimap.
+	 * @param key the key
+	 * @param value the value
+	 */
+	public void putAll(K key, Collection<V> values) {
+		List<V> existingValues = get(key, true);
+		existingValues.addAll(values);
 	}
 
 	/**
@@ -84,9 +90,23 @@ public class ListMultimap<K, V> {
 	 * @return the list of values or empty list if the key doesn't exist
 	 */
 	public List<V> get(K key) {
+		return get(key, false);
+	}
+
+	/**
+	 * Gets the values associated with the key.
+	 * @param key the key
+	 * @param add true to add an empty element to the map if the key doesn't
+	 * exist, false not to
+	 * @return the list of values or empty list if the key doesn't exist
+	 */
+	private List<V> get(K key, boolean add) {
 		List<V> values = map.get(key);
 		if (values == null) {
 			values = new ArrayList<V>();
+			if (add) {
+				map.put(key, values);
+			}
 		}
 		return values;
 	}
