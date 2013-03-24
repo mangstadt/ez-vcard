@@ -3,7 +3,9 @@ package ezvcard;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.parameters.CalscaleParameter;
@@ -47,7 +49,7 @@ import ezvcard.util.ListMultimap;
  * Holds the parameters (aka "sub types") of a vCard Type.
  * @author Michael Angstadt
  */
-public class VCardSubTypes {
+public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> {
 	private final ListMultimap<String, String> subTypes;
 
 	public VCardSubTypes() {
@@ -753,5 +755,10 @@ public class VCardSubTypes {
 		}
 		String value = (index == null) ? null : index.toString();
 		replace("INDEX", value);
+	}
+
+	//@Override
+	public Iterator<Map.Entry<String, List<String>>> iterator() {
+		return subTypes.getMap().entrySet().iterator();
 	}
 }

@@ -13,6 +13,8 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
@@ -163,6 +165,35 @@ public abstract class VCardType implements Comparable<VCardType> {
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = marshalText(parent.version(), warnings, compatibilityMode);
 		parent.append("unknown", value);
+	}
+
+	/**
+	 * Marshals this type for inclusion in a jCard (JSON document).
+	 * @param version the version vCard that is being generated
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
+	 * @return the marshalled jCard value
+	 * @throws SkipMeException if this type should NOT be marshalled into the
+	 * vCard
+	 */
+	public final JCardValue marshalJson(VCardVersion version, List<String> warnings) {
+		return doMarshalJson(version, warnings);
+	}
+
+	/**
+	 * Marshals this type for inclusion in a jCard (JSON document).
+	 * @param version the version vCard that is being generated
+	 * @param warnings allows the programmer to alert the user to any
+	 * note-worthy (but non-critical) issues that occurred during the
+	 * marshalling process
+	 * @return the marshalled jCard value
+	 * @throws SkipMeException if this type should NOT be marshalled into the
+	 * vCard
+	 */
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		String valueStr = marshalText(version, warnings, CompatibilityMode.RFC);
+		return JCardValue.single(JCardDataType.TEXT, valueStr);
 	}
 
 	/**
