@@ -1,9 +1,9 @@
 #summary Documents the external dependencies ez-vcard depends on
 
-|| *Name* || *Group ID* || *Artifact ID* || *Required?* || *Description* ||
-|| [http://commons.apache.org/codec/ Apache Commons Codec] || commons-codec || commons-codec || yes || For base64 and quoted-printable encodings. ||
-|| [http://jsoup.org jsoup] || org.jsoup || jsoup || for hCard parsing || HTML-parsing library used for parsing hCards. ||
-|| [http://freemarker.org FreeMarker] || org.freemarker || freemarker || for hCard writing || Templating library used for creating HTML pages that contain hCards. ||
+|| *Name* || *Group ID* || *Artifact ID* || *Version* || *Required?* || *Description* ||
+|| [http://commons.apache.org/codec/ Apache Commons Codec] || commons-codec || commons-codec || 1.6 || yes || For base64 and quoted-printable encodings. ||
+|| [http://jsoup.org jsoup] || org.jsoup || jsoup || 1.7.1 || for hCard parsing || HTML-parsing library used for parsing hCards. ||
+|| [http://freemarker.org FreeMarker] || org.freemarker || freemarker || 2.3.19 || for hCard writing || Templating library used for creating HTML pages that contain hCards. ||
 
 Maven-enabled projects can exclude dependencies like so:
 
