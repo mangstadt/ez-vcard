@@ -1,5 +1,7 @@
 #summary Documents the external dependencies ez-vcard depends on
 
+Ez-vcard uses the following dependencies.  Some can be excluded, depending on the kind of vCard formats your application requires. 
+
 || *Name* || *Group ID* || *Artifact ID* || *Version* || *Required?* || *Description* ||
 || [http://commons.apache.org/codec/ Apache Commons Codec] || commons-codec || commons-codec || 1.6 || yes || For base64 and quoted-printable encodings. ||
 || [http://jsoup.org jsoup] || org.jsoup || jsoup || 1.7.1 || for hCard parsing || HTML-parsing library used for parsing hCards. ||
