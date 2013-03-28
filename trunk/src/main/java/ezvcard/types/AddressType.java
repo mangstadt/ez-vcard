@@ -12,7 +12,7 @@ import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -244,7 +244,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * @return the label or null if it doesn't have one
 	 */
 	public String getLabel() {
-		return subTypes.getFirst("LABEL");
+		return subTypes.first("LABEL");
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * exist
 	 */
 	public String getTimezone() {
-		String value = subTypes.getFirst("TZ");
+		String value = subTypes.first("TZ");
 		if (value.matches("(?i)tz:.*")) {
 			//remove the "tz:"
 			value = (value.length() > 3) ? value.substring(3) : "";

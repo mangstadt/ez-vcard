@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -45,6 +46,40 @@ import org.junit.Test;
  */
 public class ListMultimapTest {
 	@Test
+	public void first() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		map.put("one", "11");
+		map.put("one", "111");
+
+		assertEquals("1", map.first("one"));
+	}
+
+	@Test
+	public void get() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		map.put("two", "22");
+		map.put("two", "2");
+
+		assertEquals(Arrays.asList("1"), map.get("one"));
+		assertEquals(Arrays.asList("22", "2"), map.get("two"));
+		assertTrue(map.get("three").isEmpty());
+	}
+
+	@Test
+	public void containsKey() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		map.put("two", "22");
+		map.put("two", "2");
+
+		assertTrue(map.containsKey("one"));
+		assertTrue(map.containsKey("two"));
+		assertFalse(map.containsKey("three"));
+	}
+
+	@Test
 	public void put() {
 		ListMultimap<String, String> map = new ListMultimap<String, String>();
 		map.put("one", "1");
@@ -68,15 +103,23 @@ public class ListMultimapTest {
 	}
 
 	@Test
-	public void get() {
+	public void replace() {
 		ListMultimap<String, String> map = new ListMultimap<String, String>();
 		map.put("one", "1");
-		map.put("two", "22");
-		map.put("two", "2");
+		map.put("one", "111");
 
-		assertEquals(Arrays.asList("1"), map.get("one"));
-		assertEquals(Arrays.asList("22", "2"), map.get("two"));
-		assertTrue(map.get("three").isEmpty());
+		assertEquals(Arrays.asList("1", "111"), map.replace("one", "11"));
+		assertEquals(Arrays.asList("11"), map.get("one"));
+	}
+
+	@Test
+	public void replace_null_value() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		map.put("one", "111");
+
+		assertEquals(Arrays.asList("1", "111"), map.replace("one", null));
+		assertTrue(map.isEmpty());
 	}
 
 	@Test
@@ -86,12 +129,24 @@ public class ListMultimapTest {
 		map.put("two", "22");
 		map.put("two", "2");
 
-		assertEquals(Arrays.asList("1"), map.remove("one"));
-		assertTrue(map.remove("two", "22"));
+		assertFalse(map.remove("three", "3"));
 		assertFalse(map.remove("two", "222"));
+		assertTrue(map.remove("two", "2"));
+		assertEquals(Arrays.asList("22"), map.get("two"));
+		assertEquals(Arrays.asList("1"), map.get("one"));
+	}
 
-		assertTrue(map.get("one").isEmpty());
-		assertEquals(Arrays.asList("2"), map.get("two"));
+	@Test
+	public void removeAll() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		map.put("two", "22");
+		map.put("two", "2");
+
+		assertTrue(map.removeAll("three").isEmpty());
+		assertEquals(Arrays.asList("22", "2"), map.removeAll("two"));
+		assertTrue(map.get("two").isEmpty());
+		assertEquals(Arrays.asList("1"), map.get("one"));
 	}
 
 	@Test
@@ -135,7 +190,7 @@ public class ListMultimapTest {
 		assertTrue(map.isEmpty());
 		map.put("one", "1");
 		assertFalse(map.isEmpty());
-		map.remove("one");
+		map.removeAll("one");
 		assertTrue(map.isEmpty());
 	}
 
@@ -153,7 +208,7 @@ public class ListMultimapTest {
 
 		assertEquals(5, map.size());
 
-		map.remove("one");
+		map.removeAll("one");
 
 		assertEquals(2, map.size());
 	}
@@ -175,7 +230,7 @@ public class ListMultimapTest {
 
 		//make sure the objects aren't linked
 
-		original.remove("one");
+		original.removeAll("one");
 		assertEquals(Arrays.asList("1", "111", "11"), copy.get("one"));
 
 		original.put("four", "4");
@@ -184,7 +239,7 @@ public class ListMultimapTest {
 		original.put("two", "22");
 		assertEquals(Arrays.asList("2"), copy.get("two"));
 
-		copy.remove("two");
+		copy.removeAll("two");
 		assertEquals(Arrays.asList("2", "22"), original.get("two"));
 
 		copy.put("five", "5");
@@ -192,5 +247,36 @@ public class ListMultimapTest {
 
 		copy.put("three", "33");
 		assertEquals(Arrays.asList("3"), original.get("three"));
+	}
+
+	@Test
+	public void clear() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		assertEquals(1, map.size());
+		map.clear();
+		assertEquals(0, map.size());
+	}
+
+	@Test
+	public void sanitizeKey() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>() {
+			@Override
+			protected String sanitizeKey(String key) {
+				return key.toLowerCase();
+			}
+		};
+		map.put("one", "1");
+		map.put("One", "111");
+		map.putAll("oNe", Arrays.asList("1111"));
+
+		assertEquals("1", map.first("onE"));
+
+		List<String> expected = Arrays.asList("1", "111", "1111");
+		assertEquals(expected, map.get("ONe"));
+
+		assertTrue(map.remove("oNE", "1"));
+		assertEquals(Arrays.asList("111", "1111"), map.removeAll("OnE"));
+		assertTrue(map.isEmpty());
 	}
 }
