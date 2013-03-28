@@ -2,13 +2,14 @@ package ezvcard.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,20 +38,18 @@ import java.util.Set;
  */
 
 /**
- * A multimap that uses {@link List} objects to store its values.
- * 
- * <p>
- * The internal {@link Map} implementation is a {@link LinkedHashMap} that uses
+ * A multimap that uses {@link List} objects to store its values. The internal
+ * {@link Map} implementation is a {@link LinkedHashMap} that uses
  * {@link ArrayList} for its values.
- * </p>
  * @author Michael Angstadt
  * @param <K> the key
  * @param <V> the value
  */
-public class ListMultimap<K, V> {
+public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	private final Map<K, List<V>> map = new LinkedHashMap<K, List<V>>();
 
 	public ListMultimap() {
+		//empty
 	}
 
 	/**
@@ -58,7 +57,7 @@ public class ListMultimap<K, V> {
 	 * @param orig the multimap to copy from
 	 */
 	public ListMultimap(ListMultimap<K, V> orig) {
-		for (Map.Entry<K, List<V>> entry : orig.map.entrySet()) {
+		for (Map.Entry<K, List<V>> entry : orig) {
 			List<V> values = new ArrayList<V>(entry.getValue());
 			map.put(entry.getKey(), values);
 		}
@@ -67,7 +66,7 @@ public class ListMultimap<K, V> {
 	/**
 	 * Adds a value to the multimap.
 	 * @param key the key
-	 * @param value the value
+	 * @param value the value to add
 	 */
 	public void put(K key, V value) {
 		List<V> values = get(key, true);
@@ -75,9 +74,9 @@ public class ListMultimap<K, V> {
 	}
 
 	/**
-	 * Adds a value to the multimap.
+	 * Adds multiple values to the multimap.
 	 * @param key the key
-	 * @param value the value
+	 * @param values the values to add
 	 */
 	public void putAll(K key, Collection<V> values) {
 		List<V> existingValues = get(key, true);
@@ -101,6 +100,7 @@ public class ListMultimap<K, V> {
 	 * @return the list of values or empty list if the key doesn't exist
 	 */
 	private List<V> get(K key, boolean add) {
+		key = sanitizeKey(key);
 		List<V> values = map.get(key);
 		if (values == null) {
 			values = new ArrayList<V>();
@@ -112,12 +112,22 @@ public class ListMultimap<K, V> {
 	}
 
 	/**
-	 * Removes all the values associated with a key
-	 * @param key the key to remove
-	 * @return the removed values
+	 * Gets the first value that's associated with a key.
+	 * @param key the key
+	 * @return the first value or null if the key doesn't exist
 	 */
-	public List<V> remove(K key) {
-		return map.remove(key);
+	public V first(K key) {
+		List<V> values = get(key);
+		return (values == null || values.isEmpty()) ? null : values.get(0);
+	}
+
+	/**
+	 * Determines whether the given key exists.
+	 * @param key the key
+	 * @return true if the key exists, false if not
+	 */
+	public boolean containsKey(K key) {
+		return map.containsKey(key);
 	}
 
 	/**
@@ -127,11 +137,43 @@ public class ListMultimap<K, V> {
 	 * @return true if the multimap contained the value, false if not
 	 */
 	public boolean remove(K key, V value) {
-		List<V> values = map.get(key);
+		List<V> values = map.get(sanitizeKey(key));
 		if (values != null) {
 			return values.remove(value);
 		}
 		return false;
+	}
+
+	/**
+	 * Removes all the values associated with a key
+	 * @param key the key to remove
+	 * @return the removed values
+	 */
+	public List<V> removeAll(K key) {
+		List<V> removed = map.remove(sanitizeKey(key));
+		return (removed == null) ? new ArrayList<V>(0) : removed;
+	}
+
+	/**
+	 * Replaces all values with the given value.
+	 * @param key the key
+	 * @param value the value with which to replace all existing values (null
+	 * will remove all values)
+	 * @return the values that were replaced
+	 */
+	public List<V> replace(K key, V value) {
+		List<V> replaced = removeAll(key);
+		if (value != null) {
+			put(key, value);
+		}
+		return replaced;
+	}
+
+	/**
+	 * Clears all entries from the multimap.
+	 */
+	public void clear() {
+		map.clear();
 	}
 
 	/**
@@ -180,5 +222,20 @@ public class ListMultimap<K, V> {
 	 */
 	public Map<K, List<V>> getMap() {
 		return map;
+	}
+
+	/**
+	 * Modifies a given key before it is used to interact with the internal Map.
+	 * This method is meant to be overridden by child classes if necessary.
+	 * @param key the key
+	 * @return the modified key (by default, the key returned as-is)
+	 */
+	protected K sanitizeKey(K key) {
+		return key;
+	}
+
+	//@Override
+	public Iterator<Map.Entry<K, List<V>>> iterator() {
+		return map.entrySet().iterator();
 	}
 }

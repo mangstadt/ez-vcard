@@ -1,11 +1,8 @@
 package ezvcard;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import ezvcard.parameters.CalscaleParameter;
@@ -17,7 +14,7 @@ import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,11 +46,9 @@ import ezvcard.util.ListMultimap;
  * Holds the parameters (aka "sub types") of a vCard Type.
  * @author Michael Angstadt
  */
-public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> {
-	private final ListMultimap<String, String> subTypes;
-
+public class VCardSubTypes extends ListMultimap<String, String> {
 	public VCardSubTypes() {
-		subTypes = new ListMultimap<String, String>();
+		//empty
 	}
 
 	/**
@@ -61,94 +56,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @param orig the object to copy
 	 */
 	public VCardSubTypes(VCardSubTypes orig) {
-		subTypes = new ListMultimap<String, String>(orig.subTypes);
-	}
-
-	/**
-	 * Adds a value to a Sub Type.
-	 * @param name the Sub Type name
-	 * @param value the value to add
-	 */
-	public void put(String name, String value) {
-		subTypes.put(name.toUpperCase(), value);
-	}
-
-	/**
-	 * Adds multiple values to a Sub Type.
-	 * @param name the Sub Type name
-	 * @param values the values to add
-	 */
-	public void putAll(String name, Collection<String> values) {
-		subTypes.putAll(name.toUpperCase(), values);
-	}
-
-	/**
-	 * Adds a value to a Sub Type, replacing all existing values that the Sub
-	 * Type has.
-	 * @param name the Sub Type name
-	 * @param value the values to replace all existing values with
-	 * @return the values of the Sub Type that were replaced
-	 */
-	public List<String> replace(String name, String value) {
-		List<String> replaced = removeAll(name);
-		if (value != null) {
-			put(name, value);
-		}
-		return replaced;
-	}
-
-	/**
-	 * Removes a Sub Type.
-	 * @param name the Sub Type name
-	 * @return the values of the Sub Type that were removed
-	 */
-	public List<String> removeAll(String name) {
-		return subTypes.remove(name.toUpperCase());
-	}
-
-	/**
-	 * Removes a value from a Sub Type.
-	 * @param name the Sub Type name
-	 * @param value the value to remove
-	 */
-	public void remove(String name, String value) {
-		subTypes.remove(name.toUpperCase(), value);
-	}
-
-	/**
-	 * Gets the values of a Sub Type
-	 * @param name the Sub Type name
-	 * @return the values or an empty list if the Sub Type doesn't exist
-	 */
-	public List<String> get(String name) {
-		return subTypes.get(name.toUpperCase());
-	}
-
-	/**
-	 * Gets the first value of a Sub Type.
-	 * @param name the Sub Type name
-	 * @return the first value or null if the Sub Type doesn't exist
-	 */
-	public String getFirst(String name) {
-		List<String> list = get(name);
-		return list.isEmpty() ? null : list.get(0);
-	}
-
-	/**
-	 * Gets the names of all the Sub Types.
-	 * @return the names of all the Sub Types or an empty set if there are no
-	 * Sub Types
-	 */
-	public Set<String> getNames() {
-		return subTypes.keySet();
-	}
-
-	/**
-	 * Gets the object used to store the Sub Types.
-	 * @return the object used to store the Sub Types
-	 */
-	public ListMultimap<String, String> getMultimap() {
-		return subTypes;
+		super(orig);
 	}
 
 	/**
@@ -160,7 +68,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @return the encoding or null if not found
 	 */
 	public EncodingParameter getEncoding() {
-		String value = getFirst(EncodingParameter.NAME);
+		String value = first(EncodingParameter.NAME);
 		if (value == null) {
 			return null;
 		}
@@ -192,7 +100,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @return the value or null if not found
 	 */
 	public ValueParameter getValue() {
-		String value = getFirst(ValueParameter.NAME);
+		String value = first(ValueParameter.NAME);
 		if (value == null) {
 			return null;
 		}
@@ -223,7 +131,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @return the value or null if not found
 	 */
 	public String getCharset() {
-		return getFirst("CHARSET");
+		return first("CHARSET");
 	}
 
 	/**
@@ -246,7 +154,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
 	 */
 	public String getLanguage() {
-		return getFirst("LANGUAGE");
+		return first("LANGUAGE");
 	}
 
 	/**
@@ -347,7 +255,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * couldn't be parsed into a number
 	 */
 	public Integer getPref() {
-		String pref = getFirst("PREF");
+		String pref = first("PREF");
 		if (pref == null) {
 			return null;
 		}
@@ -424,7 +332,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @return the ALTID or null if it doesn't exist
 	 */
 	public String getAltId() {
-		return getFirst("ALTID");
+		return first("ALTID");
 	}
 
 	/**
@@ -469,7 +377,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * present or null if the parameter value was in an incorrect format
 	 */
 	public double[] getGeo() {
-		String value = getFirst("GEO");
+		String value = first("GEO");
 		if (value == null) {
 			return null;
 		}
@@ -543,7 +451,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @return the type of calendar or null if not found
 	 */
 	public CalscaleParameter getCalscale() {
-		String value = getFirst(CalscaleParameter.NAME);
+		String value = first(CalscaleParameter.NAME);
 		if (value == null) {
 			return null;
 		}
@@ -622,7 +530,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @param localId the local ID
 	 */
 	public void addPid(int localId) {
-		put("PID", Integer.toString(localId));
+		put("PID", localId + "");
 	}
 
 	/**
@@ -668,7 +576,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @return the media type (e.g. "image/jpeg") or null if it doesn't exist
 	 */
 	public String getMediaType() {
-		return getFirst("MEDIATYPE");
+		return first("MEDIATYPE");
 	}
 
 	/**
@@ -694,7 +602,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public String getLevel() {
-		return getFirst(LevelParameter.NAME);
+		return first(LevelParameter.NAME);
 	}
 
 	/**
@@ -724,7 +632,7 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public Integer getIndex() {
-		String index = getFirst("INDEX");
+		String index = first("INDEX");
 		if (index == null) {
 			return null;
 		}
@@ -757,8 +665,8 @@ public class VCardSubTypes implements Iterable<Map.Entry<String, List<String>>> 
 		replace("INDEX", value);
 	}
 
-	//@Override
-	public Iterator<Map.Entry<String, List<String>>> iterator() {
-		return subTypes.getMap().entrySet().iterator();
+	@Override
+	protected String sanitizeKey(String key) {
+		return key.toUpperCase();
 	}
 }
