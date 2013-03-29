@@ -1,0 +1,18 @@
+BEGIN:VCARD
+VERSION:3.0
+FN:Arnold Smith
+N:Smith;Arnold;;;
+EMAIL;TYPE=INTERNET:asmithk@gmail.com
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Chris Beatle
+N:Beatle;Chris;;;
+EMAIL;TYPE=INTERNET:chrisy55d@yahoo.com
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Doug White
+N:White;Doug;;;
+EMAIL;TYPE=INTERNET:dwhite@gmail.com
+END:VCARD
