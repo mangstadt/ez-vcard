@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 import ezvcard.VCard;
+import ezvcard.types.FormattedNameType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -100,6 +101,61 @@ public class JCardWriterTest {
 		    "[" +
 		      "[\"version\",{},\"text\",\"4.0\"]," +
 		      "[\"fn\",{},\"text\",\"John Doe\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void write_group() throws Exception {
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("Simon Perreault").setGroup("TheGroup");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"fn\",{\"group\":\"TheGroup\"},\"text\",\"Simon Perreault\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void write_parameters() throws Exception {
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		FormattedNameType fn = vcard.setFormattedName("Simon Perreault");
+		fn.getSubTypes().put("x-one", "1");
+		fn.getSubTypes().put("x-two", "2");
+		fn.getSubTypes().put("x-two", "22");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"fn\",{\"x-one\":\"1\",\"x-two\":[\"2\",\"22\"]},\"text\",\"Simon Perreault\"]" +
 		    "]" +
 		  "]" +
 		"]";
