@@ -54,7 +54,7 @@ import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
 
 /*
- Copyright (c) 2013, Michael Angstadt
+ Copyright (c) 2012, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -107,9 +107,9 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		NoteType note = vcard.getNotes().get(0);
-		assertEquals("8", note.getSubTypes().first("X-SIZE"));
-		assertEquals("8", note.getSubTypes().first("x-size"));
-		assertNull(note.getSubTypes().first("non-existant"));
+		assertEquals("8", note.getSubTypes().getFirst("X-SIZE"));
+		assertEquals("8", note.getSubTypes().getFirst("x-size"));
+		assertNull(note.getSubTypes().getFirst("non-existant"));
 
 		AddressType adr = vcard.getAddresses().get(0);
 		assertEquals(2, adr.getTypes().size());
@@ -426,7 +426,7 @@ public class VCardReaderTest {
 
 			UrlType t = it.next();
 			assertEquals("http://www.ibm.com", t.getValue());
-			assertEquals("0abc9b8d-0845-47d0-9a91-3db5bb74620d", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("0abc9b8d-0845-47d0-9a91-3db5bb74620d", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -440,7 +440,7 @@ public class VCardReaderTest {
 			Set<TelephoneTypeParameter> types = t.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
-			assertEquals("c2fa1caa-2926-4087-8971-609cfc7354ce", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("c2fa1caa-2926-4087-8971-609cfc7354ce", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 
 			t = it.next();
 			assertEquals("905-555-1234", t.getValue());
@@ -448,7 +448,7 @@ public class VCardReaderTest {
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
-			assertEquals("fbfb2722-4fd8-4dbf-9abd-eeb24072fd8e", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("fbfb2722-4fd8-4dbf-9abd-eeb24072fd8e", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -523,7 +523,7 @@ public class VCardReaderTest {
 			Set<EmailTypeParameter> types = t.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(new EmailTypeParameter("work"))); //non-standard type
-			assertEquals("83a75a5d-2777-45aa-bab5-76a4bd972490", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("83a75a5d-2777-45aa-bab5-76a4bd972490", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -590,7 +590,7 @@ public class VCardReaderTest {
 			assertEquals("X-AIM", t.getTypeName());
 			assertEquals("johnny5@aol.com", t.getValue());
 			assertEquals("HOME", t.getSubTypes().getType());
-			assertEquals("cb9e11fc-bb97-4222-9cd8-99820c1de454", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("cb9e11fc-bb97-4222-9cd8-99820c1de454", t.getSubTypes().getFirst("X-COUCHDB-UUID"));
 			assertFalse(it.hasNext());
 
 			it = vcard.getExtendedType("X-EVOLUTION-FILE-AS").iterator();

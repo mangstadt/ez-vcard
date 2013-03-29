@@ -22,7 +22,7 @@ import ezvcard.types.TelephoneType;
 import ezvcard.types.XmlType;
 
 /*
- Copyright (c) 2013, Michael Angstadt
+ Copyright (c) 2012, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -173,16 +173,16 @@ public class XCardReaderTest {
 
 		NoteType note = notesIt.next();
 		assertEquals("Note 1", note.getValue());
-		assertTrue(note.getSubTypes().isEmpty());
+		assertTrue(note.getSubTypes().getMultimap().isEmpty());
 
 		note = notesIt.next();
 		assertEquals("Hello world!", note.getValue());
-		assertEquals(1, note.getSubTypes().size());
+		assertEquals(1, note.getSubTypes().getMultimap().size());
 		assertEquals("1", note.getAltId());
 
 		note = notesIt.next();
 		assertEquals("Bonjour tout le monde!", note.getValue());
-		assertEquals(2, note.getSubTypes().size());
+		assertEquals(2, note.getSubTypes().getMultimap().size());
 		assertEquals("1", note.getAltId());
 		assertEquals("fr", note.getLanguage());
 
@@ -192,7 +192,7 @@ public class XCardReaderTest {
 
 		TelephoneType tel = telIt.next();
 		assertEquals("+1-555-555-1234", tel.getValue());
-		assertEquals(2, tel.getSubTypes().size());
+		assertEquals(2, tel.getSubTypes().getMultimap().size());
 		assertEquals(2, tel.getTypes().size());
 		assertTrue(tel.getTypes().contains(TelephoneTypeParameter.WORK));
 		assertTrue(tel.getTypes().contains(TelephoneTypeParameter.VOICE));
