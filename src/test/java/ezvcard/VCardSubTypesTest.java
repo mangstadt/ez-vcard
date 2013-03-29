@@ -13,7 +13,7 @@ import java.util.Iterator;
 import org.junit.Test;
 
 /*
- Copyright (c) 2013, Michael Angstadt
+ Copyright (c) 2012, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -46,12 +46,51 @@ import org.junit.Test;
  */
 public class VCardSubTypesTest {
 	@Test
-	public void case_insensitive() {
-		//tests to make sure sanitizeKey() is implemented correctly
-		//ListMultimapTest tests the rest of the get/put/remove methods
+	public void getFirst() {
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.put("NUMBERS", "1");
-		assertEquals("1", subTypes.first("numbers"));
+		subTypes.put("NUMBERS", "2");
+		subTypes.put("NUMBERS", "3");
+
+		assertEquals("1", subTypes.getFirst("NUMBERS"));
+	}
+
+	@Test
+	public void put() {
+		//names are case insensitive
+		//values should retain their case
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.put("test1", "OnE");
+		subTypes.put("TEST2", "TwO");
+		subTypes.put("test3", "three");
+		subTypes.put("tESt3", "trois");
+		subTypes.put("tesT3", "three");
+
+		assertEquals(Arrays.asList("OnE"), subTypes.get("tESt1"));
+		assertEquals(Arrays.asList("TwO"), subTypes.get("test2"));
+		assertEquals(Arrays.asList("three", "trois", "three"), subTypes.get("TEST3"));
+	}
+
+	@Test
+	public void remove() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.put("NUMBERS", "1");
+		subTypes.put("NUMBERS", "2");
+		subTypes.put("NUMBERS", "3");
+		subTypes.remove("nUMBERS", "2");
+
+		assertEquals(Arrays.asList("1", "3"), subTypes.get("NUMBERS"));
+	}
+
+	@Test
+	public void removeAll() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.put("NUMBERS", "1");
+		subTypes.put("NUMBERS", "2");
+		subTypes.put("NUMBERS", "3");
+		subTypes.removeAll("NuMBERs");
+
+		assertTrue(subTypes.get("NUMBERS").isEmpty());
 	}
 
 	@Test
@@ -84,7 +123,7 @@ public class VCardSubTypesTest {
 		}
 
 		subTypes.setPref(1);
-		assertEquals("1", subTypes.first("PREF"));
+		assertEquals("1", subTypes.getFirst("PREF"));
 	}
 
 	/**
@@ -98,7 +137,7 @@ public class VCardSubTypesTest {
 		//make sure it builds the correct text value
 		{
 			String expected = "geo:-10.988879,20.123441"; //it should round to 6 decimal places
-			String actual = subTypes.first("GEO");
+			String actual = subTypes.getFirst("GEO");
 			assertEquals(expected, actual);
 		}
 
@@ -163,7 +202,7 @@ public class VCardSubTypesTest {
 		}
 
 		subTypes.setIndex(1);
-		assertEquals("1", subTypes.first("INDEX"));
+		assertEquals("1", subTypes.getFirst("INDEX"));
 	}
 
 	@Test

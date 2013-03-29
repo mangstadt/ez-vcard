@@ -32,7 +32,7 @@ import ezvcard.util.ListMultimap;
 import ezvcard.util.XmlUtils;
 
 /*
- Copyright (c) 2013, Michael Angstadt
+ Copyright (c) 2012, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -356,12 +356,11 @@ public class XCardDocument {
 		//marshal the sub types
 		VCardSubTypes subTypes = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);
 		subTypes.setValue(null); //don't include the VALUE parameter (modification of the "VCardSubTypes" object is safe because it's a copy)
-		if (!subTypes.isEmpty()) {
+		if (!subTypes.getMultimap().isEmpty()) {
 			Element parametersElement = createElement("parameters");
-			for (Map.Entry<String, List<String>> param : subTypes) {
-				String paramName = param.getKey();
+			for (String paramName : subTypes.getNames()) {
 				Element parameterElement = createElement(paramName.toLowerCase());
-				for (String paramValue : param.getValue()) {
+				for (String paramValue : subTypes.get(paramName)) {
 					String valueElementName = parameterChildElementNames.get(paramName.toLowerCase());
 					if (valueElementName == null) {
 						valueElementName = "unknown";

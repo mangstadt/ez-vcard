@@ -21,7 +21,7 @@ import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2013, Michael Angstadt
+ Copyright (c) 2012, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -175,7 +175,7 @@ public class AddressTypeTest {
 		AddressType t = new AddressType();
 		t.setTimezone("America/New_York");
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals("tz:America/New_York", subTypes.first("TZ"));
+		assertEquals("tz:America/New_York", subTypes.getFirst("TZ"));
 	}
 
 	@Test

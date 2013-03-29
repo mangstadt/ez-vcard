@@ -13,8 +13,6 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
-import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
@@ -165,35 +163,6 @@ public abstract class VCardType implements Comparable<VCardType> {
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = marshalText(parent.version(), warnings, compatibilityMode);
 		parent.append("unknown", value);
-	}
-
-	/**
-	 * Marshals this type for inclusion in a jCard (JSON document).
-	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
-	 * @return the marshalled jCard value
-	 * @throws SkipMeException if this type should NOT be marshalled into the
-	 * vCard
-	 */
-	public final JCardValue marshalJson(VCardVersion version, List<String> warnings) {
-		return doMarshalJson(version, warnings);
-	}
-
-	/**
-	 * Marshals this type for inclusion in a jCard (JSON document).
-	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
-	 * @return the marshalled jCard value
-	 * @throws SkipMeException if this type should NOT be marshalled into the
-	 * vCard
-	 */
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		String valueStr = marshalText(version, warnings, CompatibilityMode.RFC);
-		return JCardValue.single(JCardDataType.TEXT, valueStr);
 	}
 
 	/**
@@ -357,44 +326,6 @@ public abstract class VCardType implements Comparable<VCardType> {
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String value = element.value();
 		doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
-	}
-
-	/**
-	 * Unmarshals the type from a jCard (JSON).
-	 * @param subTypes the sub types that were parsed
-	 * @param dataType the data type of the property value (e.g. "text")
-	 * @param values the value(s) of the property
-	 * @param version the version of the jCard that is being read
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * unmarshalling process
-	 * @throws SkipMeException if this type should NOT be added to the
-	 * {@link VCard} object
-	 */
-	public final void unmarshalJson(VCardSubTypes subTypes, String dataType, List<List<String>> values, VCardVersion version, List<String> warnings) {
-		this.subTypes = subTypes;
-		doUnmarshalJson(dataType, values, version, warnings);
-	}
-
-	/**
-	 * Unmarshals the type from a jCard (JSON).
-	 * @param dataType the data type of the property value (e.g. "text")
-	 * @param values the value(s) of the property
-	 * @param version the version of the jCard that is being read
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * unmarshalling process
-	 * @throws SkipMeException if this type should NOT be added to the
-	 * {@link VCard} object
-	 */
-	protected void doUnmarshalJson(String dataType, List<List<String>> values, VCardVersion version, List<String> warnings) {
-		String value;
-		if (!values.isEmpty() && !values.get(0).isEmpty()) {
-			value = values.get(0).get(0);
-		} else {
-			value = "";
-		}
-		doUnmarshalText(value, version, warnings, CompatibilityMode.RFC);
 	}
 
 	/**
