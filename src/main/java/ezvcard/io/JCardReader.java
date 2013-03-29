@@ -99,7 +99,6 @@ public class JCardReader implements IParser {
 	}
 
 	public VCard readNext() throws JsonParseException, IOException {
-		//TODO support groups
 		//TODO support structured and multi-valued properties
 		if (jp != null && jp.isClosed()) {
 			return null;
@@ -150,7 +149,8 @@ public class JCardReader implements IParser {
 			}
 			String propertyName = jp.getValueAsString().toLowerCase();
 
-			//get parameters
+			//get parameters and group
+			String group = null;
 			VCardSubTypes subTypes = new VCardSubTypes();
 			if (jp.nextToken() != JsonToken.START_OBJECT) {
 				throw new JCardParseException(JsonToken.START_OBJECT, jp.getCurrentToken());
@@ -167,7 +167,12 @@ public class JCardReader implements IParser {
 				} else {
 					parameterValues.add(jp.getValueAsString());
 				}
-				subTypes.putAll(parameterName, parameterValues);
+
+				if ("group".equalsIgnoreCase(parameterName)) {
+					group = parameterValues.get(0);
+				} else {
+					subTypes.putAll(parameterName, parameterValues);
+				}
 			}
 
 			//get data type
@@ -232,6 +237,7 @@ public class JCardReader implements IParser {
 			}
 
 			VCardType type = createTypeObject(propertyName);
+			type.setGroup(group);
 
 			//unmarshal the text string into the object
 			warningsBuf.clear();

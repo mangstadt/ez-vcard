@@ -293,4 +293,49 @@ public class JCardReaderTest {
 
 		assertNull(reader.readNext());
 	}
+
+	@Test
+	public void read_group() throws Exception {
+		//@formatter:off
+		String json =
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"tel\", {\"group\":\"TheGroup1\"}, \"uri\", \"tel:+1 555-555-1234\"]," +					//normal
+		      "[\"tel\", {\"Group\":\"TheGroup2\"}, \"uri\", \"tel:+1 555-555-1234\"]," +					//ignore case
+		      "[\"tel\", {\"group\":[\"TheGroup3\", \"TheGroup\"]}, \"uri\", \"tel:+1 555-555-5678\"]," +	//array
+		      "[\"tel\", {\"group\":null}, \"uri\", \"tel:+1 555-555-9012\"]" +								//null
+		    "]" +
+		  "]";
+		//@formatter:on
+
+		JCardReader reader = new JCardReader(json);
+
+		VCard vcard = reader.readNext();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+
+		{
+			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+
+			TelephoneType tel = it.next();
+			assertEquals("TheGroup1", tel.getGroup());
+			assertTrue(tel.getSubTypes().isEmpty());
+
+			tel = it.next();
+			assertEquals("TheGroup2", tel.getGroup());
+			assertTrue(tel.getSubTypes().isEmpty());
+
+			tel = it.next();
+			assertEquals("TheGroup3", tel.getGroup());
+			assertTrue(tel.getSubTypes().isEmpty());
+
+			tel = it.next();
+			assertNull(tel.getGroup());
+			assertTrue(tel.getSubTypes().isEmpty());
+
+			assertFalse(it.hasNext());
+		}
+
+		assertNull(reader.readNext());
+	}
 }
