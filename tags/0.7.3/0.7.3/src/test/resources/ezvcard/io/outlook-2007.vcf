@@ -1,0 +1,93 @@
+BEGIN:VCARD
+VERSION:2.1
+N;LANGUAGE=en-us:Angstadt;Michael;;Mr.;Jr.
+FN:Mr. Michael Angstadt Jr.
+NICKNAME:Mike
+ORG:TheCompany;TheDepartment
+TITLE:TheJobTitle
+NOTE;CHARSET=us-ascii;ENCODING=QUOTED-PRINTABLE:This is the NOTE field	=0D=0A=
+I assume it encodes this text inside a NOTE vCard type.=0D=0A=
+But I'm not sure because there's text formatting going on here.=0D=0A=
+It does not preserve the formatting
+TEL;WORK;VOICE:(111) 555-1111
+TEL;HOME;VOICE:(111) 555-2222
+TEL;CELL;VOICE:(111) 555-4444
+TEL;WORK;FAX:(111) 555-3333
+X-MS-TEL;VOICE;CALLBACK:(111) 555-4444
+ADR;WORK;PREF:;TheOffice;222 Broadway;New York;NY;99999;USA
+LABEL;WORK;PREF;ENCODING=QUOTED-PRINTABLE:222 Broadway=0D=0A=
+New York, NY 99999=0D=0A=
+USA
+X-MS-OL-DEFAULT-POSTAL-ADDRESS:2
+URL;HOME:http://mikeangstadt.name
+URL;WORK:http://mikeangstadt.name
+ROLE:TheProfession
+BDAY:19220310
+X-MS-ANNIVERSARY:20120801
+KEY;X509;ENCODING=BASE64:
+ MIIB/jCCAWugAwIBAgIQDdkWkvA2cqtGkw2P4zAoZDAJBgUrDgMCHQUAMBMxETAPBgNVBAMT
+ CG1hbmdzdGFkMCAXDTExMDYxNzIwMTgwM1oYDzIxMTEwNTI0MjAxODAzWjATMREwDwYDVQQD
+ EwhtYW5nc3RhZDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAmfYuhkT693IXf/iSESbw
+ 9cmeM3p2AWDC8oGDiCDtenNIGdITa8e/kwx9JIFl7a02cMbHtG6BmbGBINzzgepsY6lE+Pcx
+ ns4FVpgWr1hn3YVg2LKqgRkKLp+ddqL+LWCg3qvcQxnZJoooRLhpurr/T9TaE83nAr6aqoSt
+ jYh+KtECAwEAAaNZMFcwFQYDVR0lBA4wDAYKKwYBBAGCNwoDBDAzBgNVHREELDAqoCgGCisG
+ AQQBgjcUAgOgGgwYbWFuZ3N0YWRAcGVubm11dHVhbC5jb20AMAkGA1UdEwQCMAAwCQYFKw4D
+ Ah0FAAOBgQA9/txKYVIj6/UoDRYAp23NoRjaeZ0cTqcpKtxlUi8z7TtczAROgTr4Pi+VaKR0
+ Y+RzgVxPN8wvNoVogCWLTpVxhoe8R5geoS4L1w1O1HYwu2KlG57SOR4R/Lv5bgi6CNTlS1N4
+ zIDBOSyypTmzxC+JPmyn/8vZleIz8CYnwmfBEg==
+
+EMAIL;PREF;INTERNET:mike.angstadt@gmail.com
+X-MS-IMADDRESS:im@aim.com
+PHOTO;TYPE=JPEG;ENCODING=BASE64:
+ /9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQY
+ GBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYa
+ KCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAAR
+ CABWAEgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAA
+ AgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkK
+ FhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWG
+ h4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl
+ 5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREA
+ AgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYk
+ NOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOE
+ hYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk
+ 5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD6pooqlrOpQaTplxe3TBYolLH3PYUAQeIN
+ e0/QLM3Op3CxJztXqzH0Arx3xN8Zb5ndNEtBDHztlkj3tx04yB/OuM8Y6zqHiXU3ubhyImbC
+ J6JnGB6cE/lXJT2rbJHaZiioSrZPIBxk/oB7UhXOsvPir4ofJbU2jyeP3axgZHqM96NP+NXi
+ awZGmuIruI9FnjHzDnJyMfTr2rzq7WdI2wR5YVcg+5yBWTPIjxsI8K27lD0b5hhR/ntSBH1h
+ 4H+NWg6+Y7fUz/Zt43A8w/u3Ps3b8a9UVg6hlIKkZBHevzp80oeCyyLwc9f/ANXFfS37OnxF
+ lv2Hh3V53klC/wCjO5zjH8Oadyj6BooopiCvK/jXqjbbTTI2wp/eyDHX0r1SvAvHkp1/4hG0
+ hkGwN5e7HQL1xUydlcaTk7I4o2tzds0dnA0rnPygdeO3tk/yqC/8L6skC5s5zBgAsyc4A546
+ 5J56ete22NjDp9msVpGqKPTq3uT3qpqjMbYk4/GuZ130R2wwcerPm/Ura4RvKu0MaZ8xw4OC
+ ewAI5rmNSbICP8owWbjJyc8V7l4kMLRSJLGHX35ryDxHbRRXDeQDtLbwg7npjNXTrc+jM6+F
+ 9lqndHOM2X8lyBKn3HyMZ5PPrWr4Y1ObR9atL62ZlmgcMoHqOucVjSKZJJA7DzAeGHdj1/Kp
+ reTcVckZJ2tx39a2OdH6FeGdUTW9AsNSi4W5hWTHoSOlFcH+zrqDX3w3tY3JJtpGiGfTqP0N
+ FNEs9G1CcWthcTkgeXGzZPsK+TPtc+o+I7q7F41p5KtNNOoyRk19TeK4TP4a1OIAsWt3AAOM
+ 8V84/B23S+vNaaYCVflRtwzz1rGvOysdOGp80r9iz4E1u/vtbeFNTury0U4Pnw7cfjTfir4g
+ udPnj06znKTufvDtXfSWVrpQadUVMAscKB/KvINVjj17X5p5XyfM+U1yc2p6Sg+U4+aa/eDc
+ /iKLzmBIidTyPr0rLjW4uInjumBlzlHXoa9dvtGt722WN4oYpVTZkRDp6Vx17oUGlqQpJ54F
+ XGomZTotbnnEhJlZnG2VXKsvp9KjdWS6YEYV1zx6itTXjFb6tGUPMq4YD17Gqd0jEcFTIgDj
+ aMgV1xd1c82ceWVj6q/ZWvDN4T1G2OB5VwGA9mUf4UVl/spQSeTrNwM+QyxIAePm+Y9PoRRV
+ rYhnumvME0W/YjIED8fga+U/hh4nttA1W5jvTstbnqcdGHevrHVE36bdr6xMP0NfBmqyG3nO
+ 5mVzJtIC8nk1zYhNtHdg2knc+g/GPjLRYdInkWdLhimUVDkn8K8CsvEbnW1uLaGZWaUHyivB
+ Gaz55jLIBCHlRDmRxk7eOO3FZ812sLh4pBCeTgZLD0/kaxgu51ylbbY+lNUlgXT0nUAbkz9K
+ 8c8Ta8vny/NnbnAri7vxJqw06ANf3DIzHhnOMVm3FwTqPlyOxjde/XPvVQptasipWTVkSKzX
+ DXF1cN+9dsIPat6ztlXT4Ccl8nfk5OD0rmdPR5NqLkoGJGfSvafhR8M9V8YtDcTh7fRww3zN
+ xuA6hfU9q6I7nBVd0j3H9m3THsPh1HPIuDdzNKOP4R8o/lRXpmmWMGm6fb2Vmgjt4EEaKOwF
+ Fao5ywyhlKsMgjBFfFXxd8NT6J4vuYpo2gjkuDNGV6MpJIwfSvs37V+7d9nCvsrjfix4Mt/G
+ WhNHEY01G3+aGQ/+gn2NZ1YcyuuhvQqckrPZnx9pGt32kia4sJ1jEpCyBD1xkc5Hb15qjr2s
+ 3FyIZbqKAzOx5ZRxjqff/wCtVjxHot5pNpc6dcwNBNHk8qQTg8/596w9ahVoE2BR5JyyA56/
+ 5Nc0Y3Z6E5tIg1Zla4tosRgL8xUdvas2QA3UzZLbVwKluiGuY5UUsWHAHOK6Lw7oB8z7RfYA
+ J3bD3HvWq91HO/ekeofs8eAtK8RXWNajlaPy/ORAQNwVhwfY9/pX15bQRW0EcFvGkUMahVRB
+ gKB2FfNHwf1iDSPFtm07JFbSKYSTwFyOPwzivpW2ure6TfbTxTL6xuGH6VdF3RhiI2kiaiii
+ tjnKT27CZhuHkk7yO+aoi4Ky7VXJZWGWPeiikwMPxPp8F/Z2r3ltbyuj4yyA8Y6dK8q8WeBt
+ LmilNva28A9FX8aKK5anxHbQfuHkV/oiaddOgKlQeMCkB5CrwDRRSZrHc2LNWYRxocMxCgmu
+ 00nUbzQZ4nsbmRHgQkkH7x9xRRVUu5liHsjv9L+LksMSLq2niUjhpIG2k++Dx/Kiiit7s5Gj
+ /9k=
+
+X-MS-OL-DESIGN;CHARSET=utf-8:<card xmlns="http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards" ver="1.0" layout="left" bgcolor="ffffff"><img xmlns="" align="tleft" area="32" use="photo"/><fld xmlns="" prop="name" align="left" dir="ltr" style="b" color="000000" size="10"/><fld xmlns="" prop="org" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="title" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="dept" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="telwork" align="left" dir="ltr" color="000000" size="8"><label align="right" color="626262">Work</label></fld><fld xmlns="" prop="telcell" align="left" dir="ltr" color="000000" size="8"><label align="right" color="626262">Mobile</label></fld><fld xmlns="" prop="telhome" align="left" dir="ltr" color="000000" size="8"><label align="right" color="626262">Home</label></fld><fld xmlns="" prop="email" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="addrwork" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="webwork" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/></card>
+X-MS-MANAGER:TheManagerName
+X-MS-ASSISTANT:TheAssistantName
+X-MS-SPOUSE:TheSpouse
+FBURL:http://website.com/mycal
+REV:20120801T184631Z
+END:VCARD
