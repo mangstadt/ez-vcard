@@ -173,6 +173,11 @@ public class JCardWriter implements Closeable {
 			}
 			subTypes.removeAll(ValueParameter.NAME); //remove all VALUE parameters
 
+			//add the group as a parameter
+			if (type.getGroup() != null) {
+				subTypes.put("group", type.getGroup());
+			}
+
 			jg.writeStartArray(); //start property
 
 			//write property name
@@ -181,10 +186,9 @@ public class JCardWriter implements Closeable {
 			//write parameters
 			jg.writeStartObject();
 			for (Map.Entry<String, List<String>> entry : subTypes) {
-				String name = entry.getKey();
+				String name = entry.getKey().toLowerCase();
 				List<String> values = entry.getValue();
 				if (values.isEmpty()) {
-					//should never happen, but skip it just incase
 					continue;
 				}
 
