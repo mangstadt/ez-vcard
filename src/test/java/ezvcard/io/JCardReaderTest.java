@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.junit.Test;
@@ -13,6 +14,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.NoteType;
+import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
 
 /*
@@ -335,6 +337,54 @@ public class JCardReaderTest {
 
 			assertFalse(it.hasNext());
 		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void read_list_value() throws Exception {
+		//@formatter:off
+		String json =
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"categories\", {}, \"text\", \"swimmer\", \"biker\"]" +
+		    "]" +
+		  "]";
+		//@formatter:on
+
+		JCardReader reader = new JCardReader(json);
+
+		VCard vcard = reader.readNext();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(Arrays.asList("swimmer"), vcard.getCategories().getValues()); //TODO create JSON marshalling methods for CATEGORIES
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void read_structured_value() throws Exception {
+		//@formatter:off
+		String json =
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"n\", {}, \"text\", [\"Perreault\", \"Simon\", \"\", \"\", [\"ing. jr\", \"M.Sc.\"]]]" +
+		    "]" +
+		  "]";
+		//@formatter:on
+
+		JCardReader reader = new JCardReader(json);
+
+		VCard vcard = reader.readNext();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		StructuredNameType n = vcard.getStructuredName();
+		assertEquals("Perreault", n.getFamily());
+		//TODO create JSON marshalling methods for N
+		//		assertEquals("Simon", n.getFamily());
+		//		assertTrue(n.getPrefixes().isEmpty());
+		//		assertTrue(n.getSuffixes().isEmpty());
+		//		assertEquals(Arrays.asList("ing. jr", "M.Sc."), n.getAdditional());
 
 		assertNull(reader.readNext());
 	}

@@ -99,7 +99,6 @@ public class JCardReader implements IParser {
 	}
 
 	public VCard readNext() throws JsonParseException, IOException {
-		//TODO support structured and multi-valued properties
 		if (jp != null && jp.isClosed()) {
 			return null;
 		}
@@ -184,10 +183,16 @@ public class JCardReader implements IParser {
 
 			//get property value(s)
 			List<List<String>> propertyValues = new ArrayList<List<String>>();
-			while (jp.nextToken() != JsonToken.END_ARRAY) {
+			boolean structured = false;
+			if (jp.nextToken() == JsonToken.START_ARRAY) {
+				//structured property value (e.g. ["n", {}, "text", ["Doe", "John", "", "", ["Mr", "Dr"]]])
+				structured = true;
+				jp.nextToken();
+			}
+			while (jp.getCurrentToken() != JsonToken.END_ARRAY) {
 				List<String> curValue = new ArrayList<String>();
 				if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
-					//multi-valued component (e.g. ["n", {}, "text", "Doe", "John", "", "", ["Mr", "Dr"]])
+					//multi-valued component
 					while (jp.nextToken() != JsonToken.END_ARRAY) {
 						curValue.add(jp.getText());
 					}
@@ -195,6 +200,13 @@ public class JCardReader implements IParser {
 					curValue.add(jp.getValueAsString());
 				}
 				propertyValues.add(curValue);
+				jp.nextToken();
+			}
+			if (structured) {
+				//consume the extra END_ARRAY character from the structured value array
+				if (jp.nextToken() != JsonToken.END_ARRAY) {
+					throw new JCardParseException(JsonToken.END_ARRAY, jp.getCurrentToken());
+				}
 			}
 
 			//			//check to see if the given data type matches the JSON data type of the property value
