@@ -1,5 +1,11 @@
 #summary Archive of all past news entries.
 
+*March 29, 2013*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.7.3] released.  This release fixes an issue that prevented the `GEO` property from marshalling correctly under certain locales.
+
+See the [Changelog changelog] for details.
+
 *February 24, 2013*
 
 [http://code.google.com/p/ez-vcard/downloads/list Version 0.7.2] released.  This release includes:

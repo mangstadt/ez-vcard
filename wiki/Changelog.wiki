@@ -1,6 +1,11 @@
 #summary Documents all the changes that were made to every version of the library
 #labels Featured
 
+= 0.7.3 =
+_March 29, 2013_
+
+ * Fixed an issue that prevented the `GEO` property from marshalling correctly under certain locales (credit: Moritz Bechler).
+
 = 0.7.2 =
 _February 24, 2013_
 
