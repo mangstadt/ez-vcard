@@ -5,13 +5,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
 
 import ezvcard.VCard;
+import ezvcard.VCardVersion;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.VCardType;
+import ezvcard.util.JCardValue;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -201,5 +206,108 @@ public class JCardWriterTest {
 		assertEquals(1, writer.getWarnings().size()); //FN is required
 
 		writer.close();
+	}
+
+	@Test
+	public void write_null_value() throws Exception {
+		JCardValue value = JCardValue.text((String)null);
+		VCard vcard = new VCard();
+		vcard.addExtendedType(new TypeForTesting(value));
+
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"x-type\",{},\"text\",\"\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void write_no_value() throws Exception {
+		JCardValue value = JCardValue.text();
+		VCard vcard = new VCard();
+		vcard.addExtendedType(new TypeForTesting(value));
+
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"x-type\",{},\"text\",\"\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void write_empty_value() throws Exception {
+		JCardValue value = JCardValue.text();
+		value.addValues(new ArrayList<Object>(0));
+		VCard vcard = new VCard();
+		vcard.addExtendedType(new TypeForTesting(value));
+
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"x-type\",{},\"text\",\"\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	private static class TypeForTesting extends VCardType {
+		public JCardValue value;
+
+		public TypeForTesting(JCardValue value) {
+			super("X-TYPE");
+			this.value = value;
+		}
+
+		@Override
+		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+			return value;
+		}
 	}
 }
