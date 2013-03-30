@@ -211,31 +211,42 @@ public class JCardWriter implements Closeable {
 			if (value.isStructured()) {
 				jg.writeStartArray();
 			}
-			for (List<Object> theValue : value.getValues()) {
-				if (theValue.size() > 1) {
-					jg.writeStartArray();
-				}
-				for (Object v : theValue) {
-					if (v instanceof Byte) {
-						jg.writeNumber((Byte) v);
-					} else if (v instanceof Short) {
-						jg.writeNumber((Short) v);
-					} else if (v instanceof Integer) {
-						jg.writeNumber((Integer) v);
-					} else if (v instanceof Long) {
-						jg.writeNumber((Long) v);
-					} else if (v instanceof Float) {
-						jg.writeNumber((Float) v);
-					} else if (v instanceof Double) {
-						jg.writeNumber((Double) v);
-					} else if (v instanceof Boolean) {
-						jg.writeBoolean((Boolean) v);
-					} else {
-						jg.writeString(v.toString());
+			if (value.getValues().isEmpty()) {
+				jg.writeString("");
+			} else {
+				for (List<Object> theValue : value.getValues()) {
+					if (theValue.isEmpty()) {
+						jg.writeString("");
+						continue;
 					}
-				}
-				if (theValue.size() > 1) {
-					jg.writeEndArray();
+
+					if (theValue.size() > 1) {
+						jg.writeStartArray();
+					}
+					for (Object v : theValue) {
+						if (v == null) {
+							jg.writeString("");
+						} else if (v instanceof Byte) {
+							jg.writeNumber((Byte) v);
+						} else if (v instanceof Short) {
+							jg.writeNumber((Short) v);
+						} else if (v instanceof Integer) {
+							jg.writeNumber((Integer) v);
+						} else if (v instanceof Long) {
+							jg.writeNumber((Long) v);
+						} else if (v instanceof Float) {
+							jg.writeNumber((Float) v);
+						} else if (v instanceof Double) {
+							jg.writeNumber((Double) v);
+						} else if (v instanceof Boolean) {
+							jg.writeBoolean((Boolean) v);
+						} else {
+							jg.writeString(v.toString());
+						}
+					}
+					if (theValue.size() > 1) {
+						jg.writeEndArray();
+					}
 				}
 			}
 			if (value.isStructured()) {
