@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -18,6 +19,8 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
@@ -332,5 +335,134 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
 		assertEquals("USA", t.getCountry());
+	}
+
+	@Test
+	public void unmarshalJson_all_fields() {
+		JCardValue value = JCardValue.text();
+		value.addValues("P.O. Box 1234", "Apt 11", "123 Main St", "Austin", "TX", "12345", "USA");
+
+		AddressType adr = new AddressType();
+		adr.unmarshalJson(new VCardSubTypes(), value, VCardVersion.V4_0, new ArrayList<String>());
+
+		assertEquals("P.O. Box 1234", adr.getPoBox());
+		assertEquals("Apt 11", adr.getExtendedAddress());
+		assertEquals("123 Main St", adr.getStreetAddress());
+		assertEquals("Austin", adr.getLocality());
+		assertEquals("TX", adr.getRegion());
+		assertEquals("12345", adr.getPostalCode());
+		assertEquals("USA", adr.getCountry());
+	}
+
+	@Test
+	public void unmarshalJson_missing_fields() {
+		JCardValue value = JCardValue.text();
+		value.addValues("P.O. Box 1234", "", "123 Main St", "", "TX", "12345", "USA");
+
+		AddressType adr = new AddressType();
+		adr.unmarshalJson(new VCardSubTypes(), value, VCardVersion.V4_0, new ArrayList<String>());
+
+		assertEquals("P.O. Box 1234", adr.getPoBox());
+		assertEquals(null, adr.getExtendedAddress());
+		assertEquals("123 Main St", adr.getStreetAddress());
+		assertEquals(null, adr.getLocality());
+		assertEquals("TX", adr.getRegion());
+		assertEquals("12345", adr.getPostalCode());
+		assertEquals("USA", adr.getCountry());
+	}
+
+	@Test
+	public void unmarshalJson_missing_fields_at_the_end() {
+		JCardValue value = JCardValue.text();
+		value.addValues("P.O. Box 1234", "Apt 11", "123 Main St", "Austin", "TX");
+
+		AddressType adr = new AddressType();
+		adr.unmarshalJson(new VCardSubTypes(), value, VCardVersion.V4_0, new ArrayList<String>());
+
+		assertEquals("P.O. Box 1234", adr.getPoBox());
+		assertEquals("Apt 11", adr.getExtendedAddress());
+		assertEquals("123 Main St", adr.getStreetAddress());
+		assertEquals("Austin", adr.getLocality());
+		assertEquals("TX", adr.getRegion());
+		assertEquals(null, adr.getPostalCode());
+		assertEquals(null, adr.getCountry());
+	}
+
+	@Test
+	public void marshalJson_all_fields() {
+		//all fields present
+		AddressType adr = new AddressType();
+		adr.setPoBox("P.O. Box 1234");
+		adr.setExtendedAddress("Apt 11");
+		adr.setStreetAddress("123 Main St");
+		adr.setLocality("Austin");
+		adr.setRegion("TX");
+		adr.setPostalCode("12345");
+		adr.setCountry("USA");
+		JCardValue value = adr.marshalJson(VCardVersion.V4_0, new ArrayList<String>());
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertTrue(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expected = Arrays.asList(
+			Arrays.asList(new Object[]{ "P.O. Box 1234" }),
+			Arrays.asList(new Object[]{ "Apt 11" }),
+			Arrays.asList(new Object[]{ "123 Main St" }),
+			Arrays.asList(new Object[]{ "Austin" }),
+			Arrays.asList(new Object[]{ "TX" }),
+			Arrays.asList(new Object[]{ "12345" }),
+			Arrays.asList(new Object[]{ "USA" })
+		);
+		//@formatter:on
+		assertEquals(expected, value.getValues());
+	}
+
+	@Test
+	public void marshalJson_missing_fields() {
+		AddressType adr = new AddressType();
+		adr.setPoBox("P.O. Box 1234");
+		adr.setStreetAddress("123 Main St");
+		adr.setRegion("TX");
+		adr.setPostalCode("12345");
+		JCardValue value = adr.marshalJson(VCardVersion.V4_0, new ArrayList<String>());
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertTrue(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expected = Arrays.asList(
+			Arrays.asList(new Object[]{ "P.O. Box 1234" }),
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ "123 Main St" }),
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ "TX" }),
+			Arrays.asList(new Object[]{ "12345" }),
+			Arrays.asList(new Object[]{ null })
+		);
+		//@formatter:on
+		assertEquals(expected, value.getValues());
+	}
+
+	@Test
+	public void marshalJson_all_missing() {
+		AddressType adr = new AddressType();
+		JCardValue value = adr.marshalJson(VCardVersion.V4_0, new ArrayList<String>());
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertTrue(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expected = Arrays.asList(
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ null })
+		);
+		//@formatter:on
+		assertEquals(expected, value.getValues());
 	}
 }

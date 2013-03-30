@@ -8,6 +8,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -541,5 +542,39 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		for (String type : types) {
 			subTypes.addType(type);
 		}
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		JCardValue value = JCardValue.text(poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
+		value.setStructured(true);
+		return value;
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		int i = 0;
+		String str;
+
+		str = value.getFirstValueAsString(i++);
+		poBox = (str == null || str.length() == 0) ? null : str;
+
+		str = value.getFirstValueAsString(i++);
+		extendedAddress = (str == null || str.length() == 0) ? null : str;
+
+		str = value.getFirstValueAsString(i++);
+		streetAddress = (str == null || str.length() == 0) ? null : str;
+
+		str = value.getFirstValueAsString(i++);
+		locality = (str == null || str.length() == 0) ? null : str;
+
+		str = value.getFirstValueAsString(i++);
+		region = (str == null || str.length() == 0) ? null : str;
+
+		str = value.getFirstValueAsString(i++);
+		postalCode = (str == null || str.length() == 0) ? null : str;
+
+		str = value.getFirstValueAsString(i++);
+		country = (str == null || str.length() == 0) ? null : str;
 	}
 }

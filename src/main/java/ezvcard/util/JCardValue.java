@@ -44,31 +44,26 @@ public class JCardValue {
 
 	/**
 	 * Helper constructor for creating a "text" value.
+	 * @param values the text values
 	 */
-	public static JCardValue text() {
-		return text(null);
-	}
-
-	/**
-	 * Helper constructor for creating a "text" value.
-	 */
-	public static JCardValue text(String value) {
+	public static JCardValue text(String... values) {
 		JCardValue jcardValue = new JCardValue();
 		jcardValue.dataType = JCardDataType.TEXT;
-		if (value != null) {
-			jcardValue.addValues(value);
+		if (values.length > 0) {
+			jcardValue.addValues((Object[]) values);
 		}
 		return jcardValue;
 	}
 
 	/**
 	 * Helper constructor for creating a "uri" value.
+	 * @param uri the URI
 	 */
-	public static JCardValue uri(String value) {
+	public static JCardValue uri(String uri) {
 		JCardValue jcardValue = new JCardValue();
 		jcardValue.dataType = JCardDataType.URI;
-		if (value != null) {
-			jcardValue.addValues(value);
+		if (uri != null) {
+			jcardValue.addValues(uri);
 		}
 		return jcardValue;
 	}
@@ -106,7 +101,23 @@ public class JCardValue {
 	}
 
 	public Object getFirstValue() {
-		return (!values.isEmpty() && !values.get(0).isEmpty()) ? values.get(0).get(0) : null;
+		return getFirstValue(0);
+	}
+
+	public Object getFirstValue(int index) {
+		if (index >= values.size()) {
+			return null;
+		}
+		return values.get(index).get(0);
+	}
+
+	public String getFirstValueAsString() {
+		return getFirstValueAsString(0);
+	}
+
+	public String getFirstValueAsString(int index) {
+		Object value = getFirstValue(index);
+		return (value == null) ? null : value.toString();
 	}
 
 	/**
