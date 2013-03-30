@@ -9,8 +9,6 @@ import java.util.Collection;
 import org.junit.After;
 import org.junit.Test;
 
-import ezvcard.util.JCardDataType;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -52,18 +50,21 @@ public class JCardDataTypeTest {
 	@Test
 	public void find() {
 		JCardDataType found = JCardDataType.find("text");
-		assertEquals(JCardDataType.TEXT, found);
+		assertTrue(JCardDataType.TEXT == found);
+
+		assertNull(JCardDataType.find("fake"));
 	}
 
 	@Test
-	public void find_create() {
-		JCardDataType found = JCardDataType.find("fake");
-		assertEquals("fake", found.getName());
-	}
+	public void get() {
+		JCardDataType found = JCardDataType.get("text");
+		assertTrue(JCardDataType.TEXT == found);
 
-	@Test
-	public void find_not_found() {
-		assertNull(JCardDataType.find("fake", false));
+		JCardDataType fake1 = JCardDataType.get("fake");
+		assertEquals("fake", fake1.getName());
+
+		JCardDataType fake2 = JCardDataType.get("fake");
+		assertTrue(fake1 == fake2);
 	}
 
 	@Test
@@ -85,7 +86,7 @@ public class JCardDataTypeTest {
 
 	@Test
 	public void all_with_custom() {
-		JCardDataType fake = JCardDataType.find("fake");
+		JCardDataType fake = JCardDataType.get("fake");
 		Collection<JCardDataType> dataTypes = JCardDataType.all();
 		assertEquals(11, dataTypes.size());
 

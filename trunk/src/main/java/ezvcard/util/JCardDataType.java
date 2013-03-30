@@ -75,12 +75,21 @@ public class JCardDataType {
 	}
 
 	/**
+	 * Searches for a data type object by name.
+	 * @param name the data type (e.g. "text")
+	 * @return the data type object
+	 */
+	public static JCardDataType find(String name) {
+		return find(name, false);
+	}
+
+	/**
 	 * Searches for a data type object by name, and creates a new object if one
 	 * cannot be found.
 	 * @param name the data type (e.g. "text")
 	 * @return the data type object
 	 */
-	public static JCardDataType find(String name) {
+	public static JCardDataType get(String name) {
 		return find(name, true);
 	}
 
@@ -91,7 +100,7 @@ public class JCardDataType {
 	 * false to return null if an object cannot be found
 	 * @return the data type object
 	 */
-	public static JCardDataType find(String name, boolean create) {
+	private static JCardDataType find(String name, boolean create) {
 		SearchHandler find = new SearchHandler(name);
 		forEachDataType(find);
 
