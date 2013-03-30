@@ -26,6 +26,8 @@ import ezvcard.VCardVersion;
 import ezvcard.types.RawType;
 import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -174,32 +176,37 @@ public class JCardReader implements IParser {
 				}
 			}
 
+			JCardValue jcardValue = new JCardValue();
+
 			//get data type
-			String dataType;
 			if (jp.nextToken() != JsonToken.VALUE_STRING) {
 				throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
 			}
-			dataType = jp.getText();
+			jcardValue.setDataType(JCardDataType.get(jp.getText()));
 
 			//get property value(s)
-			List<List<String>> propertyValues = new ArrayList<List<String>>();
 			boolean structured = false;
 			if (jp.nextToken() == JsonToken.START_ARRAY) {
 				//structured property value (e.g. ["n", {}, "text", ["Doe", "John", "", "", ["Mr", "Dr"]]])
 				structured = true;
 				jp.nextToken();
 			}
+			jcardValue.setStructured(structured);
 			while (jp.getCurrentToken() != JsonToken.END_ARRAY) {
-				List<String> curValue = new ArrayList<String>();
+				List<Object> curValue = new ArrayList<Object>();
 				if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
 					//multi-valued component
 					while (jp.nextToken() != JsonToken.END_ARRAY) {
-						curValue.add(jp.getText());
+						curValue.add(parseValueElement());
 					}
 				} else {
-					curValue.add(jp.getValueAsString());
+					curValue.add(parseValueElement());
 				}
-				propertyValues.add(curValue);
+				if (curValue.isEmpty()) {
+					jcardValue.addValues("");
+				} else {
+					jcardValue.addValues(curValue);
+				}
 				jp.nextToken();
 			}
 			if (structured) {
@@ -209,26 +216,6 @@ public class JCardReader implements IParser {
 				}
 			}
 
-			//			//check to see if the given data type matches the JSON data type of the property value
-			//			switch (jp.nextToken()) {
-			//			case VALUE_FALSE:
-			//			case VALUE_TRUE:
-			//				if (!"boolean".equals(dataType)) {
-			//					warnings.add("");
-			//				}
-			//				break;
-			//			case VALUE_NUMBER_INT:
-			//				if (!"integer".equals(dataType)) {
-			//					warnings.add("");
-			//				}
-			//				break;
-			//			case VALUE_NUMBER_FLOAT:
-			//				if (!"float".equals(dataType)) {
-			//					warnings.add("");
-			//				}
-			//				break;
-			//			}
-
 			if (propertiesRead == 0 && !"version".equals(propertyName)) {
 				warnings.add("jCard does not start with the \"version\" property.  Version will be set to " + version);
 			}
@@ -236,13 +223,14 @@ public class JCardReader implements IParser {
 			propertiesRead++;
 
 			if ("version".equals(propertyName)) {
-				String firstValue = propertyValues.get(0).get(0);
+				Object firstValue = jcardValue.getFirstValue();
+				String firstValueStr = (firstValue == null) ? "" : firstValue.toString();
 				if (versionFound) {
-					warnings.add("Additional \"version\" property encountered: \"" + firstValue + "\".  It will be ignored.");
+					warnings.add("Additional \"version\" property encountered: \"" + firstValueStr + "\".  It will be ignored.");
 				} else {
 					versionFound = true;
-					if (!version.getVersion().equals(firstValue)) {
-						warnings.add("Invalid value of \"version\" property: " + firstValue);
+					if (!version.getVersion().equals(firstValueStr)) {
+						warnings.add("Invalid value of \"version\" property: " + firstValueStr);
 					}
 				}
 				continue;
@@ -254,7 +242,7 @@ public class JCardReader implements IParser {
 			//unmarshal the text string into the object
 			warningsBuf.clear();
 			try {
-				type.unmarshalJson(subTypes, dataType, propertyValues, version, warningsBuf);
+				type.unmarshalJson(subTypes, jcardValue, version, warningsBuf);
 				addToVCard(type, vcard);
 			} catch (SkipMeException e) {
 				warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
@@ -275,6 +263,23 @@ public class JCardReader implements IParser {
 		}
 
 		return vcard;
+	}
+
+	private Object parseValueElement() throws JsonParseException, IOException {
+		JsonToken curToken = jp.getCurrentToken();
+		if (curToken == JsonToken.VALUE_FALSE || curToken == JsonToken.VALUE_TRUE) {
+			return jp.getBooleanValue();
+		}
+		if (curToken == JsonToken.VALUE_NUMBER_FLOAT) {
+			return jp.getDoubleValue();
+		}
+		if (curToken == JsonToken.VALUE_NUMBER_INT) {
+			return jp.getLongValue();
+		}
+		if (curToken == JsonToken.VALUE_NULL) {
+			return "";
+		}
+		return jp.getText();
 	}
 
 	private void initStream() throws JsonParseException, IOException {

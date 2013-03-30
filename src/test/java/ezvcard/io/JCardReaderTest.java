@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -14,8 +15,10 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.NoteType;
-import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
+import ezvcard.types.VCardType;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -126,40 +129,6 @@ public class JCardReaderTest {
 
 		assertNull(reader.readNext());
 	}
-
-	//	@Test
-	//	public void data_type_does_not_match_JSON_data_type() throws Exception {
-//		//@formatter:off
-//		String json =
-//		  "[\"vcard\"," +
-//		    "[" +
-//		      "[\"version\", {}, \"text\", \"4.0\"]," +
-//		      "[\"fn\", {}, \"text\", \"Simon Perreault\"]," +
-//		      "[\"x-int-wrong\", {}, \"text\", 12]," +
-//		      "[\"x-int-correct\", {}, \"integer\", 12]," +
-//		      "[\"x-int-correct\", {}, \"integer\", \"12\"]," +
-//		      "[\"x-float-wrong\", {}, \"text\", 12.1]," +
-//		      "[\"x-float-correct\", {}, \"float\", 12.1]," +
-//		      "[\"x-float-correct\", {}, \"float\", \"12.1\"]," +
-//		      "[\"x-true-wrong\", {}, \"text\", true]," +
-//		      "[\"x-true-correct\", {}, \"boolean\", true]," +
-//		      "[\"x-true-correct\", {}, \"boolean\", \"true\"]," +
-//		      "[\"x-false-wrong\", {}, \"text\", false]," +
-//		      "[\"x-false-correct\", {}, \"boolean\", false]" +
-//		      "[\"x-false-correct\", {}, \"boolean\", \"false\"]" +
-//		    "]" +
-//		  "]";
-//		//@formatter:on
-	//
-	//		JCardReader reader = new JCardReader(json);
-	//
-	//		VCard vcard = reader.readNext();
-	//		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-	//		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
-	//		assertEquals(4, reader.getWarnings().size()); //warnings added
-	//
-	//		assertNull(reader.readNext());
-	//	}
 
 	@Test
 	public void no_version() throws Exception {
@@ -341,51 +310,128 @@ public class JCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
+	/**
+	 * Tests:
+	 * <ul>
+	 * <li>all JSON data types</li>
+	 * <li>null values</li>
+	 * <li>empty arrays</li>
+	 * <li>multi-valued components</li>
+	 * <li>structured/non-structured values</li>
+	 * </ul>
+	 * @throws Exception
+	 */
 	@Test
-	public void read_list_value() throws Exception {
+	public void read_property_value() throws Exception {
 		//@formatter:off
 		String json =
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"categories\", {}, \"text\", \"swimmer\", \"biker\"]" +
+		      "[\"x-type\", {}, \"text\", [ false, true, 1.1, 1, null, \"test\", [], [false, true, 1.1, 1, null, \"test\"] ] ]," +
+		      "[\"x-type\", {}, \"text\", false, true, 1.1, 1, null, \"test\", [] ]" +
 		    "]" +
 		  "]";
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
+		reader.registerExtendedType(TypeForTesting.class);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(Arrays.asList("swimmer"), vcard.getCategories().getValues()); //TODO create JSON marshalling methods for CATEGORIES
+		Iterator<TypeForTesting> it = vcard.getExtendedType(TypeForTesting.class).iterator();
+
+		{
+			JCardValue value = it.next().value;
+
+			assertTrue(value.isStructured());
+			assertEquals(JCardDataType.TEXT, value.getDataType());
+
+			//@formatter:off
+			@SuppressWarnings("unchecked")
+			List<List<Object>> expected = Arrays.asList(
+				Arrays.asList(new Object[]{ false }),
+				Arrays.asList(new Object[]{ true }),
+				Arrays.asList(new Object[]{ 1.1 }),
+				Arrays.asList(new Object[]{ 1L }),
+				Arrays.asList(new Object[]{ "" }),
+				Arrays.asList(new Object[]{ "test" }),
+				Arrays.asList(new Object[]{ "" }),
+				Arrays.asList(new Object[]{ false, true, 1.1, 1L, "", "test" })
+			);
+			//@formatter:on
+			assertEquals(expected, value.getValues());
+		}
+
+		{
+			JCardValue value = it.next().value;
+
+			assertFalse(value.isStructured());
+			assertEquals(JCardDataType.TEXT, value.getDataType());
+
+			//@formatter:off
+			@SuppressWarnings("unchecked")
+			List<List<Object>> expected = Arrays.asList(
+				Arrays.asList(new Object[]{ false }),
+				Arrays.asList(new Object[]{ true }),
+				Arrays.asList(new Object[]{ 1.1 }),
+				Arrays.asList(new Object[]{ 1L }),
+				Arrays.asList(new Object[]{ "" }),
+				Arrays.asList(new Object[]{ "test" }),
+				Arrays.asList(new Object[]{ "" })
+			);
+			//@formatter:on
+			assertEquals(expected, value.getValues());
+		}
+
+		assertFalse(it.hasNext());
 
 		assertNull(reader.readNext());
 	}
 
 	@Test
-	public void read_structured_value() throws Exception {
+	public void unknown_datatype() throws Exception {
 		//@formatter:off
 		String json =
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"n\", {}, \"text\", [\"Perreault\", \"Simon\", \"\", \"\", [\"ing. jr\", \"M.Sc.\"]]]" +
+		      "[\"x-type\", {}, \"name\", \"John Doe\"]" +
 		    "]" +
 		  "]";
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
+		reader.registerExtendedType(TypeForTesting.class);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		StructuredNameType n = vcard.getStructuredName();
-		assertEquals("Perreault", n.getFamily());
-		//TODO create JSON marshalling methods for N
-		//		assertEquals("Simon", n.getFamily());
-		//		assertTrue(n.getPrefixes().isEmpty());
-		//		assertTrue(n.getSuffixes().isEmpty());
-		//		assertEquals(Arrays.asList("ing. jr", "M.Sc."), n.getAdditional());
+		TypeForTesting type = vcard.getExtendedType(TypeForTesting.class).get(0);
+		JCardValue value = type.value;
+
+		assertTrue(value.getDataType() == JCardDataType.get("name"));
 
 		assertNull(reader.readNext());
+	}
+
+	private static class TypeForTesting extends VCardType {
+		public JCardValue value;
+
+		public TypeForTesting() {
+			super("X-TYPE");
+		}
+
+		@Override
+		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+			this.value = value;
+		}
 	}
 }

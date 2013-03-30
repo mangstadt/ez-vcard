@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -39,31 +38,39 @@ import java.util.List;
  * @author Michael Angstadt
  */
 public class JCardValue {
-	private JCardDataType dataType;
+	private JCardDataType dataType = JCardDataType.TEXT;
+	private boolean structured = false;
 	private final List<List<Object>> values = new ArrayList<List<Object>>();
-	private boolean structured;
 
-	private JCardValue(JCardDataType dataType, boolean structured) {
-		this.dataType = dataType;
-		this.structured = structured;
+	/**
+	 * Helper constructor for creating a "text" value.
+	 */
+	public static JCardValue text() {
+		return text(null);
 	}
 
-	public static JCardValue single(JCardDataType dataType, Object value) {
-		JCardValue v = new JCardValue(dataType, false);
-		v.setValue(value);
-		return v;
+	/**
+	 * Helper constructor for creating a "text" value.
+	 */
+	public static JCardValue text(String value) {
+		JCardValue jcardValue = new JCardValue();
+		jcardValue.dataType = JCardDataType.TEXT;
+		if (value != null) {
+			jcardValue.addValues(value);
+		}
+		return jcardValue;
 	}
 
-	public static JCardValue multi(JCardDataType dataType, List<Object> values) {
-		JCardValue v = new JCardValue(dataType, false);
-		v.addAllValues(values);
-		return v;
-	}
-
-	public static JCardValue structured(JCardDataType dataType, List<Object> values) {
-		JCardValue v = new JCardValue(dataType, true);
-		v.addAllValues(values);
-		return v;
+	/**
+	 * Helper constructor for creating a "uri" value.
+	 */
+	public static JCardValue uri(String value) {
+		JCardValue jcardValue = new JCardValue();
+		jcardValue.dataType = JCardDataType.URI;
+		if (value != null) {
+			jcardValue.addValues(value);
+		}
+		return jcardValue;
 	}
 
 	public JCardDataType getDataType() {
@@ -86,22 +93,35 @@ public class JCardValue {
 		return values;
 	}
 
-	public void setValue(Object value) {
-		values.clear();
-		addValue(value);
-	}
-
-	public void addValue(Object value) {
-		addArrayValue(Arrays.asList(value));
-	}
-
-	public void addAllValues(List<Object> values) {
-		for (Object value : values) {
-			addValue(value);
+	public List<List<String>> getValuesAsStrings() {
+		List<List<String>> valuesStr = new ArrayList<List<String>>(values.size());
+		for (List<Object> value : values) {
+			List<String> valueStr = new ArrayList<String>(value.size());
+			for (Object v : value) {
+				valueStr.add(v.toString());
+			}
+			valuesStr.add(valueStr);
 		}
+		return valuesStr;
 	}
 
-	public void addArrayValue(List<Object> values) {
-		this.values.add(values);
+	public Object getFirstValue() {
+		return (!values.isEmpty() && !values.get(0).isEmpty()) ? values.get(0).get(0) : null;
+	}
+
+	/**
+	 * Adds one or more values to the jCard value. {@link List} objects that are
+	 * passed into this method will be created as multi-valued components.
+	 * @param values the value(s) to add
+	 */
+	@SuppressWarnings("unchecked")
+	public void addValues(Object... values) {
+		for (Object value : values) {
+			if (value instanceof List) {
+				this.values.add((List<Object>) value);
+			} else {
+				this.values.add(Arrays.asList(value));
+			}
+		}
 	}
 }

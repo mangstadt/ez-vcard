@@ -13,12 +13,11 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -193,7 +192,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 */
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		String valueStr = marshalText(version, warnings, CompatibilityMode.RFC);
-		return JCardValue.single(JCardDataType.TEXT, valueStr);
+		return JCardValue.text(valueStr);
 	}
 
 	/**
@@ -362,8 +361,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	/**
 	 * Unmarshals the type from a jCard (JSON).
 	 * @param subTypes the sub types that were parsed
-	 * @param dataType the data type of the property value (e.g. "text")
-	 * @param values the value(s) of the property
+	 * @param value includes the data type and property value(s)
 	 * @param version the version of the jCard that is being read
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
@@ -371,15 +369,14 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
 	 */
-	public final void unmarshalJson(VCardSubTypes subTypes, String dataType, List<List<String>> values, VCardVersion version, List<String> warnings) {
+	public final void unmarshalJson(VCardSubTypes subTypes, JCardValue value, VCardVersion version, List<String> warnings) {
 		this.subTypes = subTypes;
-		doUnmarshalJson(dataType, values, version, warnings);
+		doUnmarshalJson(value, version, warnings);
 	}
 
 	/**
 	 * Unmarshals the type from a jCard (JSON).
-	 * @param dataType the data type of the property value (e.g. "text")
-	 * @param values the value(s) of the property
+	 * @param value includes the data type and property value(s)
 	 * @param version the version of the jCard that is being read
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
@@ -387,14 +384,10 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
 	 */
-	protected void doUnmarshalJson(String dataType, List<List<String>> values, VCardVersion version, List<String> warnings) {
-		String value;
-		if (!values.isEmpty() && !values.get(0).isEmpty()) {
-			value = values.get(0).get(0);
-		} else {
-			value = "";
-		}
-		doUnmarshalText(value, version, warnings, CompatibilityMode.RFC);
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		Object first = value.getFirstValue();
+		String valueStr = (first == null) ? "" : first.toString();
+		doUnmarshalText(valueStr, version, warnings, CompatibilityMode.RFC);
 	}
 
 	/**
