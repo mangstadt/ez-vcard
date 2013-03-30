@@ -3,9 +3,11 @@ package ezvcard.types;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
@@ -20,10 +22,12 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -108,6 +112,19 @@ public class BinaryTypeTest {
 		Element element = xe.element();
 		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
+
+		//jCard
+		JCardValue value = t.marshalJson(version, warnings);
+		assertEquals(JCardDataType.URI, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ "http://example.com/image.jpg" })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
 	}
 
 	@Test
@@ -164,6 +181,19 @@ public class BinaryTypeTest {
 		t.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
+
+		//jCard
+		JCardValue value = t.marshalJson(version, warnings);
+		assertEquals(JCardDataType.URI, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ "data:image/jpeg;base64," + Base64.encodeBase64String(dummyData) })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
 	}
 
 	/**
@@ -213,6 +243,8 @@ public class BinaryTypeTest {
 		assertEquals(param.getMediaType(), subTypes.getMediaType());
 
 		//xCard (N/A -- "<parameters>" element is added by the "XCardMarshaller" class)
+
+		//jCard (N/A -- parameters are added by "JCardWriter" class)
 	}
 
 	@Test
@@ -313,6 +345,32 @@ public class BinaryTypeTest {
 		element = xe.element();
 
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+		assertNull(t.getUrl());
+		assertArrayEquals(dummyData, t.getData());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
+
+		//jCard URL
+		version = VCardVersion.V4_0;
+		t = new BinaryTypeImpl();
+		subTypes = new VCardSubTypes();
+		subTypes.setMediaType("image/jpeg");
+
+		JCardValue value = JCardValue.uri("http://example.com/image.jpg");
+
+		t.unmarshalJson(subTypes, value, version, warnings);
+		assertEquals("http://example.com/image.jpg", t.getUrl());
+		assertNull(t.getData());
+		assertEquals(ImageTypeParameter.JPEG, t.getContentType());
+
+		//jCard data URI
+		version = VCardVersion.V4_0;
+		t = new BinaryTypeImpl();
+		subTypes = new VCardSubTypes();
+		subTypes.setMediaType("image/jpeg");
+
+		value = JCardValue.uri("data:image/jpeg;base64," + Base64.encodeBase64String(dummyData));
+
+		t.unmarshalJson(subTypes, value, version, warnings);
 		assertNull(t.getUrl());
 		assertArrayEquals(dummyData, t.getData());
 		assertEquals(ImageTypeParameter.JPEG, t.getContentType());

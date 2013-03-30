@@ -19,10 +19,11 @@ import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.IOUtils;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -337,12 +338,12 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 		if (url != null) {
 			sb.append(url);
 		} else if (data != null) {
-			String base64 = new String(Base64.encodeBase64(data));
 			if (version == VCardVersion.V4_0) {
 				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
 				DataUri uri = new DataUri(mediaType, data);
 				sb.append(uri.toString());
 			} else {
+				String base64 = new String(Base64.encodeBase64(data));
 				sb.append(base64);
 			}
 		} else {
@@ -447,6 +448,18 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 		if (error != null) {
 			throw new SkipMeException(error);
 		}
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		StringBuilder sb = new StringBuilder();
+		doMarshalText(sb, version, warnings, CompatibilityMode.RFC);
+		return JCardValue.uri(sb.toString());
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		doUnmarshalText(value.getFirstValueAsString(), version, warnings, CompatibilityMode.RFC);
 	}
 
 	/**
