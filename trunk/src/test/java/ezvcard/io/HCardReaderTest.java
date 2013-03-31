@@ -715,4 +715,10 @@ public class HCardReaderTest {
 
 		assertNull(reader.readNext());
 	}
+
+	@Test(expected = RuntimeException.class)
+	public void registerExtendedType_no_default_constructor() throws Exception {
+		HCardReader reader = new HCardReader("");
+		reader.registerExtendedType(BadType.class);
+	}
 }
