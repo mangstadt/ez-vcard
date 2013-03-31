@@ -298,6 +298,18 @@ public class XCardReaderTest {
 		assertNull(xcr.readNext());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void registerExtendedType_no_default_constructor() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardReader reader = new XCardReader(xml);
+		reader.registerExtendedType(BadType.class);
+	}
+
 	/**
 	 * Make sure it can handle multiple "&lt;vcard&gt;" elements.
 	 */

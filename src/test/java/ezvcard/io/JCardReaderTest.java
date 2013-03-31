@@ -412,6 +412,12 @@ public class JCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void registerExtendedType_no_default_constructor() throws Exception {
+		JCardReader reader = new JCardReader("");
+		reader.registerExtendedType(BadType.class);
+	}
+
 	private static class TypeForTesting extends VCardType {
 		public JCardValue value;
 

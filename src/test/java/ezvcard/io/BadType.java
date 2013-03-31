@@ -1,13 +1,12 @@
 package ezvcard.io;
 
-import java.io.IOException;
 import java.util.List;
 
-import ezvcard.VCard;
+import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,36 +35,21 @@ import ezvcard.types.VCardType;
  */
 
 /**
- * Common methods that all vCard reader classes must have.
+ * An extended type class that doesn't have a default constructor.
  * @author Michael Angstadt
  */
-public interface IParser {
-	/**
-	 * Registers an extended type class.
-	 * @param clazz the extended type class to register (MUST have a public,
-	 * no-arg constructor)
-	 * @throws RuntimeException if the class doesn't have a public, no-arg
-	 * constructor
-	 */
-	void registerExtendedType(Class<? extends VCardType> clazz);
+class BadType extends VCardType {
+	public BadType(String typeName) {
+		super(typeName);
+	}
 
-	/**
-	 * Removes an extended type class that was previously registered.
-	 * @param clazz the extended type class to remove
-	 */
-	void unregisterExtendedType(Class<? extends VCardType> clazz);
+	@Override
+	protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		//empty
+	}
 
-	/**
-	 * Gets the warnings from the last vCard that was unmarshalled. This list is
-	 * reset every time a new vCard is read.
-	 * @return the warnings or empty list if there were no warnings
-	 */
-	List<String> getWarnings();
-
-	/**
-	 * Reads the next vCard.
-	 * @return the next vCard or null if there are no more
-	 * @throws IOException if there's a problem reading from the stream
-	 */
-	VCard readNext() throws IOException;
+	@Override
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		//empty
+	}
 }

@@ -247,6 +247,12 @@ public class VCardReaderTest {
 		assertEquals("ma\\,le", genderTypes.get(0).getValue()); //raw type values are not unescaped
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void registerExtendedType_no_default_constructor() throws Exception {
+		VCardReader reader = new VCardReader("");
+		reader.registerExtendedType(BadType.class);
+	}
+
 	/**
 	 * Tests to make sure it can read multiple vCards from the same stream.
 	 */
