@@ -12,12 +12,14 @@ import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -318,5 +320,47 @@ public class DateOrTimeType extends VCardType {
 			value = element.value();
 		}
 		doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		if (text != null) {
+			return JCardValue.text(text);
+		} else {
+			if (date != null) {
+				return dateHasTime ? JCardValue.dateTime(date) : JCardValue.date(date);
+			} else if (reducedAccuracyDate != null) {
+				JCardValue value = dateHasTime ? JCardValue.dateTime() : JCardValue.date();
+				value.addValues(reducedAccuracyDate);
+				return value;
+			} else {
+				throw new SkipMeException("Property has no date, reduced accuracy date, or text value associated with it.");
+			}
+		}
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		String valueStr = value.getFirstValueAsString();
+		if (value.getDataType() == JCardDataType.TEXT) {
+			setText(valueStr);
+		} else {
+			if (valueStr.contains("-")) {
+				setReducedAccuracyDate(valueStr);
+			} else {
+				try {
+					boolean hasTime = valueStr.contains("T");
+					setDate(VCardDateFormatter.parse(valueStr), hasTime);
+				} catch (IllegalArgumentException e) {
+					//not all reduced accuracy dates have dashes (e.g. "2012")
+					if (valueStr.matches("\\d+")) {
+						setReducedAccuracyDate(valueStr);
+					} else {
+						warnings.add("Date string \"" + valueStr + "\" could not be parsed.  Assuming it's a text value.");
+						setText(valueStr);
+					}
+				}
+			}
+		}
 	}
 }

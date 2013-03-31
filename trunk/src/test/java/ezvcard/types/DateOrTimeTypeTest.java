@@ -2,11 +2,12 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -23,11 +24,13 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 import ezvcard.util.XmlUtils;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -59,406 +62,919 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  */
 public class DateOrTimeTypeTest {
-	@Test
-	public void marshalDate() throws Exception {
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCard vcard = new VCard();
+	final VCardSubTypes subTypes = new VCardSubTypes();
 
+	final Date date;
+	{
 		Calendar c = Calendar.getInstance();
 		c.clear();
 		c.set(Calendar.YEAR, 1980);
 		c.set(Calendar.MONTH, Calendar.JUNE);
 		c.set(Calendar.DAY_OF_MONTH, 5);
-		Date date = c.getTime();
-		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.setDate(date, false);
-
-		String expected = "19800605";
-
-		//v2.1
-		VCardVersion version = VCardVersion.V2_1;
-		String actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.DATE, subTypes.getValue());
-
-		//v3.0
-		version = VCardVersion.V3_0;
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.DATE, subTypes.getValue());
-
-		//v4.0
-		version = VCardVersion.V4_0;
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
-		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
-
-		//xCard
-		version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement("date");
-		xe.append("date-and-or-time", expected);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement("date");
-		Document actualDoc = xe.document();
-		Element element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
+		date = c.getTime();
 	}
+	final String dateStr = "19800605";
+	final String dateStrExtended = "1980-06-05";
 
-	@Test
-	public void marshalDateTime() throws Exception {
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-
+	final Date dateTime;
+	{
 		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
+		c.setTime(date);
 		c.set(Calendar.HOUR_OF_DAY, 13);
 		c.set(Calendar.MINUTE, 10);
 		c.set(Calendar.SECOND, 20);
+		dateTime = c.getTime();
+	}
+	final String dateTimeRegex = dateStr + "T131020[-\\+]\\d{4}"; //account for local machine's timezone
+	final String dateTimeExtendedRegex = dateStrExtended + "T13:10:20[-\\+]\\d{2}:\\d{2}";
 
-		Date date = c.getTime();
-		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.setDate(date, true);
+	final String reducedAccuracyDate = "--0605";
+	final String reducedAccuracyDateTime = "--0605T131020";
+	final String reducedAccuracyDateNoDashes = "1980";
 
-		//uses the local machine's timezone
-		String expected = "19800605T131020[-\\+]\\d{4}";
+	final String text = "Sometime in, ;1980;";
+	final String textEscaped = "Sometime in\\, \\;1980\\;";
 
-		//v2.1
-		VCardVersion version = VCardVersion.V2_1;
-		String actual = t.marshalText(version, warnings, compatibilityMode);
-		assertTrue(actual.matches(expected));
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
+	/////////////////////////////////////////////////////////////////////////////////////////
 
-		//v3.0
-		version = VCardVersion.V3_0;
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertTrue(actual.matches(expected));
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
-
-		//v4.0
-		version = VCardVersion.V4_0;
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertTrue(actual.matches(expected));
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
-		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
-
-		//xCard
-		version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement("date");
-		Element element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(expected));
+	final DateOrTimeTypeImpl dateType = new DateOrTimeTypeImpl();
+	{
+		dateType.setDate(date, false);
 	}
 
 	@Test
-	public void marshalReducedAccuracyDate() throws Exception {
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-
-		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.setReducedAccuracyDate("--0214");
-
-		String expected = "--0214";
-
-		//v2.1
+	public void marshalText_date_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		try {
-			t.marshalText(version, warnings, compatibilityMode);
-			fail();
-		} catch (SkipMeException e) {
-			//should be thrown
-			//reduced accuracy dates are not supported in 2.1
-		}
 
-		//v3.0
-		version = VCardVersion.V3_0;
-		try {
-			t.marshalText(version, warnings, compatibilityMode);
-			fail();
-		} catch (SkipMeException e) {
-			//should be thrown
-			//reduced accuracy dates are not supported in 3.0
-		}
+		String actual = dateType.marshalText(version, warnings, compatibilityMode);
+		assertEquals(dateStr, actual);
 
-		//v4.0
-		version = VCardVersion.V4_0;
-		String actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(actual, expected);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
-		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
-
-		//xCard
-		version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement("date");
-		xe.append("date-and-or-time", expected);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement("date");
-		Document actualDoc = xe.document();
-		Element element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
+		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE, subTypes.getValue());
 	}
 
 	@Test
-	public void marshalText() throws Exception {
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	public void marshalText_date_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
 
-		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.setText("Sometime around ;1980;");
+		String actual = dateType.marshalText(version, warnings, compatibilityMode);
+		assertEquals(dateStr, actual);
 
-		String expected = "Sometime around \\;1980\\;";
+		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE, subTypes.getValue());
+	}
 
-		//v2.1
+	@Test
+	public void marshalText_date_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		String actual = dateType.marshalText(version, warnings, compatibilityMode);
+		assertEquals(dateStr, actual);
+
+		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
+		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+	}
+
+	@Test
+	public void marshalXml_date() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime(dateStr);
+		Document expected = xe.document();
+		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		Document actual = xe.document();
+		dateType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void marshalJson_date() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = dateType.marshalJson(version, new ArrayList<String>());
+		assertEquals(JCardDataType.DATE, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ dateStrExtended })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	final DateOrTimeTypeImpl dateTimeType = new DateOrTimeTypeImpl();
+	{
+		dateTimeType.setDate(dateTime, true);
+	}
+
+	@Test
+	public void marshalText_datetime_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		try {
-			t.marshalText(version, warnings, compatibilityMode);
-			fail();
-		} catch (SkipMeException e) {
-			//should be thrown
-			//text values are not supported in 2.1
-		}
+		String actual = dateTimeType.marshalText(version, warnings, compatibilityMode);
+		assertTrue(actual.matches(dateTimeRegex));
 
-		//v3.0
-		version = VCardVersion.V3_0;
-		try {
-			t.marshalText(version, warnings, compatibilityMode);
-			fail();
-		} catch (SkipMeException e) {
-			//should be thrown
-			//text values are not supported in 3.0
-		}
+		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
+	}
 
-		//v4.0
-		version = VCardVersion.V4_0;
-		String actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(actual, expected);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+	@Test
+	public void marshalText_datetime_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		String actual = dateTimeType.marshalText(version, warnings, compatibilityMode);
+		assertTrue(actual.matches(dateTimeRegex));
+
+		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
+	}
+
+	@Test
+	public void marshalText_datetime_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = dateTimeType.marshalText(version, warnings, compatibilityMode);
+		assertTrue(actual.matches(dateTimeRegex));
+		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
+		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+	}
+
+	@Test
+	public void marshalXml_datetime() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		Element element = xe.element();
+		dateTimeType.marshalXml(element, version, warnings, compatibilityMode);
+		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(dateTimeRegex));
+	}
+
+	@Test
+	public void marshalJson_datetime() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = dateTimeType.marshalJson(version, new ArrayList<String>());
+		assertEquals(JCardDataType.DATE_TIME, value.getDataType());
+		assertFalse(value.isStructured());
+
+		assertEquals(1, value.getValues().size());
+		assertEquals(1, value.getValues().get(0).size());
+		assertTrue(value.getFirstValueAsString(), value.getFirstValueAsString().matches(dateTimeExtendedRegex));
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	final DateOrTimeTypeImpl reducedAccuracyDateType = new DateOrTimeTypeImpl();
+	{
+		reducedAccuracyDateType.setReducedAccuracyDate(reducedAccuracyDate);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_reducedAccuracy_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		reducedAccuracyDateType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_reducedAccuracy_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		reducedAccuracyDateType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void marshalText_reducedAccuracy_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = reducedAccuracyDateType.marshalText(version, warnings, compatibilityMode);
+		assertEquals(reducedAccuracyDate, actual);
+
+		VCardSubTypes subTypes = reducedAccuracyDateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
+		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+	}
+
+	@Test
+	public void marshalText_reducedAccuracy_without_dashes_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = reducedAccuracyDateType.marshalText(version, warnings, compatibilityMode);
+		assertEquals(reducedAccuracyDate, actual);
+
+		VCardSubTypes subTypes = reducedAccuracyDateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
+		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+	}
+
+	@Test
+	public void marshalXml_reducedAccuracy() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime(reducedAccuracyDate);
+		Document expected = xe.document();
+		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		Document actual = xe.document();
+		reducedAccuracyDateType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void marshalJson_reducedAccuracy() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = reducedAccuracyDateType.marshalJson(version, warnings);
+		assertEquals(JCardDataType.DATE, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ reducedAccuracyDate })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	final DateOrTimeTypeImpl reducedAccuracyDateTimeType = new DateOrTimeTypeImpl();
+	{
+		reducedAccuracyDateTimeType.setReducedAccuracyDate(reducedAccuracyDateTime);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_reducedAccuracyDateTime_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		reducedAccuracyDateTimeType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_reducedAccuracyDateTime_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		reducedAccuracyDateTimeType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void marshalText_reducedAccuracyDateTime_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = reducedAccuracyDateTimeType.marshalText(version, warnings, compatibilityMode);
+		assertEquals(reducedAccuracyDateTime, actual);
+
+		VCardSubTypes subTypes = reducedAccuracyDateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
+		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+	}
+
+	@Test
+	public void marshalXml_reducedAccuracyDateTime() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime(reducedAccuracyDateTime);
+		Document expected = xe.document();
+		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		Document actual = xe.document();
+		reducedAccuracyDateTimeType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void marshalJson_reducedAccuracyDateTime() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = reducedAccuracyDateTimeType.marshalJson(version, warnings);
+		assertEquals(JCardDataType.DATE_TIME, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ reducedAccuracyDateTime })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	final DateOrTimeTypeImpl textType = new DateOrTimeTypeImpl();
+	{
+		textType.setText(text);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_text_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		textType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_text_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		textType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void marshalText_text_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = textType.marshalText(version, warnings, compatibilityMode);
+		assertEquals(actual, textEscaped);
+
+		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 		assertNull(subTypes.getCalscale());
-
-		//xCard
-		version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement("date");
-		xe.text("Sometime around ;1980;");
-		Document expectedDoc = xe.document();
-		xe = new XCardElement("date");
-		Document actualDoc = xe.document();
-		Element element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
 	}
 
 	@Test
-	public void unmarshalDate() throws Exception {
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
+	public void marshalXml_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.text(text);
+		Document expected = xe.document();
+		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		Document actual = xe.document();
+		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		assertXMLEqual(expected, actual);
+	}
 
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		Date expected = c.getTime();
+	@Test
+	public void marshalJson_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = textType.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
 
-		//2.1
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ text })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	final DateOrTimeTypeImpl nothingType = new DateOrTimeTypeImpl();
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_nothing_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, "1980-06-05", version, warnings, compatibilityMode);
-		assertEquals(expected, t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertNull(t.getText());
-
-		//3.0
-		version = VCardVersion.V3_0;
-		t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, "1980-06-05", version, warnings, compatibilityMode);
-		assertEquals(expected, t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertNull(t.getText());
-
-		//4.0
-		version = VCardVersion.V4_0;
-		t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, "1980-06-05", version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertEquals("1980-06-05", t.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
-		assertNull(t.getText());
-
-		version = VCardVersion.V4_0;
-		t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, "19800605", version, warnings, compatibilityMode);
-		assertEquals(expected, t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertNull(t.getText());
-
-		//xCard
-		version = VCardVersion.V4_0;
-		t = new DateOrTimeType("DATE");
-		XCardElement xe = new XCardElement("date");
-		xe.append("date-and-or-time", "1980-06-05");
-		Element input = xe.element();
-		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertEquals("1980-06-05", t.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
-		assertNull(t.getText());
-
-		version = VCardVersion.V4_0;
-		t = new DateOrTimeType("DATE");
-		xe = new XCardElement("date");
-		xe.append("date-and-or-time", "19800605");
-		input = xe.element();
-		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
-		assertEquals(expected, t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertNull(t.getText());
+		nothingType.marshalText(version, warnings, compatibilityMode);
 	}
 
+	@Test(expected = SkipMeException.class)
+	public void marshalText_nothing_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		nothingType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_nothing_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		nothingType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalXml_nothing() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		nothingType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalJson_nothing() {
+		VCardVersion version = VCardVersion.V4_0;
+		nothingType.marshalJson(version, warnings);
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
 	@Test
-	public void unmarshalReducedAccuracyDate() throws Exception {
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-
-		String value = "--0201";
-		String expected = value;
-
-		//2.1
+	public void unmarshalText_date_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertNull(t.getText());
 
-		//3.0
-		version = VCardVersion.V3_0;
-		t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertNull(t.getText());
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, dateStrExtended, version, warnings, compatibilityMode);
 
-		//4.0
-		version = VCardVersion.V4_0;
-		t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertEquals(expected, t.getReducedAccuracyDate());
-		assertNull(t.getText());
-
-		//xCard
-		version = VCardVersion.V4_0;
-		t = new DateOrTimeType("DATE");
-		XCardElement xe = new XCardElement("date");
-		xe.append("date-and-or-time", value);
-		Element input = xe.element();
-		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertEquals(expected, t.getReducedAccuracyDate());
-		assertNull(t.getText());
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
 	}
 
 	@Test
-	public void unmarshalText() throws Exception {
+	public void unmarshalText_date_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, dateStrExtended, version, warnings, compatibilityMode);
+
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+	}
+
+	@Test
+	public void unmarshalText_date_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, dateStrExtended, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertEquals(dateStrExtended, type.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
+		assertNull(type.getText());
+	}
+
+	@Test
+	public void unmarshalText_date_invalid_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, "invalid", version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertEquals("invalid", type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_date() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime(dateStrExtended);
+		Element input = xe.element();
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertEquals(dateStrExtended, type.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
+		assertNull(type.getText());
+	}
+
+	@Test
+	public void unmarshalXml_date_invalid() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime("invalid");
+		Element input = xe.element();
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertEquals("invalid", type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_date() {
+		//TODO should jCard use the extended date format?  Using extended, is it possible to distinguish between a date and a reduced-accuracy date?
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.DATE);
+		value.addValues(dateStrExtended);
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(type.getDate());
+		assertEquals(dateStrExtended, type.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
+		assertNull(type.getText());
+	}
+
+	@Test
+	public void unmarshalJson_date_invalid() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.DATE);
+		value.addValues("invalid");
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertEquals("invalid", type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml_date_in_attribute() throws Exception {
+		List<String> warnings = new ArrayList<String>();
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"" + dateStrExtended + "\">June 5, 1980</time>");
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalHtml(element, warnings);
+
+		assertEquals(date, type.getDate());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml_date_in_text_content() throws Exception {
+		List<String> warnings = new ArrayList<String>();
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>" + dateStrExtended + "</time>");
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalHtml(element, warnings);
+
+		assertEquals(date, type.getDate());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml_date_invalid() throws Exception {
+		List<String> warnings = new ArrayList<String>();
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>June 5, 1980</time>");
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalHtml(element, warnings);
+
+		assertNull(type.getDate());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml_date_not_time_tag() throws Exception {
+		List<String> warnings = new ArrayList<String>();
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + dateStrExtended + "</div>");
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalHtml(element, warnings);
+
+		assertEquals(date, type.getDate());
+		assertEquals(0, warnings.size());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	@Test
+	public void unmarshalText_datetime_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, dateStr, version, warnings, compatibilityMode);
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+	}
+
+	@Test
+	public void unmarshalText_datetime_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, dateStr, version, warnings, compatibilityMode);
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+	}
+
+	@Test
+	public void unmarshalText_datetime_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, dateStr, version, warnings, compatibilityMode);
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+	}
+
+	@Test
+	public void unmarshalXml_datetime() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime(dateStr);
+		type.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+	}
+
+	@Test
+	public void unmarshalJson_datetime() {
+		//TODO should jCard use the extended date format?  Using extended, is it possible to distinguish between a date and a reduced-accuracy date?
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.DATE);
+		value.addValues(dateStr);
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalJson(subTypes, value, version, warnings);
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	@Test
+	public void unmarshalText_reducedAccuracyDate_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		List<String> warnings = new ArrayList<String>();
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_reducedAccuracyDate_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		List<String> warnings = new ArrayList<String>();
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_reducedAccuracyDate_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDate, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
+	public void unmarshalText_reducedAccuracyDate_without_dashes_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, reducedAccuracyDateNoDashes, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDateNoDashes, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
+	public void unmarshalXml_reducedAccuracyDate() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime(reducedAccuracyDate);
+		Element input = xe.element();
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDate, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
+	public void unmarshalXml_reducedAccuracyDate_without_dashes() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime(reducedAccuracyDateNoDashes);
+		Element input = xe.element();
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDateNoDashes, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
+	public void unmarshalJson_reducedAccuracyDate() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.DATE);
+		value.addValues(reducedAccuracyDate);
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDate, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
+	public void unmarshalJson_reducedAccuracyDate_without_dashes() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.DATE);
+		value.addValues(reducedAccuracyDateNoDashes);
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDateNoDashes, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	@Test
+	public void unmarshalText_reducedAccuracyDateTime_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		List<String> warnings = new ArrayList<String>();
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_reducedAccuracyDateTime_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		List<String> warnings = new ArrayList<String>();
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_reducedAccuracyDateTime_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDateTime, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
+	public void unmarshalXml_reducedAccuracyDateTime() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.dateAndOrTime(reducedAccuracyDateTime);
+		Element input = xe.element();
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDateTime, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
+	public void unmarshalJson_reducedAccuracyDateTime() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.DATE_TIME);
+		value.addValues(reducedAccuracyDateTime);
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(type.getDate());
+		assertEquals(reducedAccuracyDateTime, type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	@Test
+	public void unmarshalText_text_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		List<String> warnings = new ArrayList<String>();
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_text_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		List<String> warnings = new ArrayList<String>();
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertNull(type.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_text_4_0_with_value_parameter() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setValue(ValueParameter.TEXT);
 
-		String value = "Some \\;text\\;.";
-		String expected = "Some ;text;.";
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 
-		//2.1
-		VCardVersion version = VCardVersion.V2_1;
-		DateOrTimeType t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertNull(t.getText());
-
-		//3.0
-		version = VCardVersion.V3_0;
-		t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertNull(t.getText());
-
-		//4.0
-		version = VCardVersion.V4_0;
-		t = new DateOrTimeType("DATE");
-		t.unmarshalText(subTypes, value, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertEquals(expected, t.getText());
-
-		//xCard
-		version = VCardVersion.V4_0;
-		t = new DateOrTimeType("DATE");
-		XCardElement xe = new XCardElement("date");
-		xe.append("date-and-or-time", "Some ;text;.");
-		Element input = xe.element();
-		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
-		assertNull(t.getDate());
-		assertNull(t.getReducedAccuracyDate());
-		assertEquals(expected, t.getText());
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertEquals(text, type.getText());
+		assertTrue(warnings.isEmpty());
 	}
 
 	@Test
-	public void unmarshalHtml() throws Exception {
+	public void unmarshalText_text_4_0_without_value_parameter() {
+		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
 
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1970);
-		c.set(Calendar.MONTH, Calendar.MARCH);
-		c.set(Calendar.DAY_OF_MONTH, 10);
-		Date expected = c.getTime();
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 
-		//valid date string
-		{
-			warnings.clear();
-			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"1970-03-10\">March 10, 1970</time>");
-			DateOrTimeType t = new DateOrTimeType("DATE");
-			t.unmarshalHtml(element, warnings);
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertEquals(text, type.getText());
+		assertEquals(1, warnings.size());
+	}
 
-			assertEquals(expected, t.getDate());
-			assertEquals(0, warnings.size());
-		}
+	@Test
+	public void unmarshalXml_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
 
-		//date string in tag text
-		{
-			warnings.clear();
-			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>1970-03-10</time>");
-			DateOrTimeType t = new DateOrTimeType("DATE");
-			t.unmarshalHtml(element, warnings);
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.append("text", text);
+		Element input = xe.element();
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
-			assertEquals(expected, t.getDate());
-			assertEquals(0, warnings.size());
-		}
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertEquals(text, type.getText());
+		assertTrue(warnings.isEmpty());
+	}
 
-		//invalid date string
-		{
-			warnings.clear();
-			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>March 10, 1970</time>");
-			DateOrTimeType t = new DateOrTimeType("DATE");
-			t.unmarshalHtml(element, warnings);
+	@Test
+	public void unmarshalJson_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		List<String> warnings = new ArrayList<String>();
 
-			assertNull(t.getDate());
-			assertEquals(1, warnings.size());
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TEXT);
+		value.addValues(text);
+
+		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
+		type.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(type.getDate());
+		assertNull(type.getReducedAccuracyDate());
+		assertEquals(text, type.getText());
+		assertTrue(warnings.isEmpty());
+	}
+
+	private static class DateOrTimeTypeImpl extends DateOrTimeType {
+		public static final String NAME = "DATE";
+
+		public DateOrTimeTypeImpl() {
+			super(NAME);
 		}
 	}
 }
