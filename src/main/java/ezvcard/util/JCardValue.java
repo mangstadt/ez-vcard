@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -64,6 +65,32 @@ public class JCardValue {
 		jcardValue.dataType = JCardDataType.URI;
 		if (uri != null) {
 			jcardValue.addValues(uri);
+		}
+		return jcardValue;
+	}
+
+	public static JCardValue date() {
+		return date(null);
+	}
+
+	public static JCardValue date(Date date) {
+		JCardValue jcardValue = new JCardValue();
+		jcardValue.dataType = JCardDataType.DATE;
+		if (date != null) {
+			jcardValue.addValues(VCardDateFormatter.format(date, ISOFormat.DATE_EXTENDED));
+		}
+		return jcardValue;
+	}
+
+	public static JCardValue dateTime() {
+		return dateTime(null);
+	}
+
+	public static JCardValue dateTime(Date date) {
+		JCardValue jcardValue = new JCardValue();
+		jcardValue.dataType = JCardDataType.DATE_TIME;
+		if (date != null) {
+			jcardValue.addValues(VCardDateFormatter.format(date, ISOFormat.TIME_EXTENDED));
 		}
 		return jcardValue;
 	}
