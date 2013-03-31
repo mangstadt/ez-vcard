@@ -6,6 +6,7 @@ import java.util.UUID;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -189,5 +190,21 @@ public class ClientPidMapType extends VCardType {
 
 		String value = element.get("sourceid");
 		pid = (value != null) ? Integer.parseInt(value) : null;
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		return JCardValue.text(pid + "", uri);
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		int i = 0;
+
+		String str = value.getFirstValueAsString(i++);
+		pid = (str == null || str.length() == 0) ? null : Integer.parseInt(str);
+
+		str = value.getFirstValueAsString(i++);
+		uri = (str == null || str.length() == 0) ? null : str;
 	}
 }
