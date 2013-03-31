@@ -2,22 +2,25 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,74 +52,77 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class ClientPidMapTypeTest {
+	private final ClientPidMapType clientpidmap = new ClientPidMapType(1, "urn:uuid:1234");
+
 	@Test
-	public void marshal() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-
-		ClientPidMapType t = new ClientPidMapType(1, "urn:uuid:1234");
-
-		String actual = t.marshalText(version, warnings, compatibilityMode);
+	public void marshalText() {
+		String actual = clientpidmap.marshalText(VCardVersion.V4_0, new ArrayList<String>(), CompatibilityMode.RFC);
 		String expected = "1;urn:uuid:1234";
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void marshalXml() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-
-		ClientPidMapType t = new ClientPidMapType(1, "urn:uuid:1234");
-
+	public void marshalXml() {
 		XCardElement xe = new XCardElement("clientpidmap");
 		xe.uri("urn:uuid:1234");
 		xe.append("sourceid", "1");
 		Document expected = xe.document();
 
-		xe = new XCardElement("clientpidmap");
+		xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
 		Document actual = xe.document();
-		Element element = xe.element();
 
-		t.marshalXml(element, version, warnings, compatibilityMode);
+		clientpidmap.marshalXml(xe.element(), VCardVersion.V4_0, new ArrayList<String>(), CompatibilityMode.RFC);
 
 		assertXMLEqual(expected, actual);
 	}
 
 	@Test
-	public void unmarsal() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
+	public void marshalJson() {
+		JCardValue value = clientpidmap.marshalJson(VCardVersion.V4_0, new ArrayList<String>());
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
 
-		String input = "1;urn:uuid:1234";
-
-		ClientPidMapType t = new ClientPidMapType();
-		t.unmarshalText(subTypes, input, version, warnings, compatibilityMode);
-
-		assertEquals(1, t.getPid().intValue());
-		assertEquals("urn:uuid:1234", t.getUri());
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expected = Arrays.asList(
+			Arrays.asList(new Object[]{ "1" }),
+			Arrays.asList(new Object[]{ "urn:uuid:1234" })
+		);
+		//@formatter:on
+		assertEquals(expected, value.getValues());
 	}
 
 	@Test
-	public void unmarsalXml() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
+	public void unmarshalText() {
+		ClientPidMapType clientpidmap = new ClientPidMapType();
+		clientpidmap.unmarshalText(new VCardSubTypes(), "1;urn:uuid:1234", VCardVersion.V4_0, new ArrayList<String>(), CompatibilityMode.RFC);
 
-		XCardElement xe = new XCardElement("clientpidmap");
+		assertEquals(1, clientpidmap.getPid().intValue());
+		assertEquals("urn:uuid:1234", clientpidmap.getUri());
+	}
+
+	@Test
+	public void unmarshalXml() {
+		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
 		xe.uri("urn:uuid:1234");
 		xe.append("sourceid", "1");
-		Element input = xe.element();
 
-		ClientPidMapType t = new ClientPidMapType();
-		t.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
+		ClientPidMapType clientpidmap = new ClientPidMapType();
+		clientpidmap.unmarshalXml(new VCardSubTypes(), xe.element(), VCardVersion.V4_0, new ArrayList<String>(), CompatibilityMode.RFC);
 
-		assertEquals(1, t.getPid().intValue());
-		assertEquals("urn:uuid:1234", t.getUri());
+		assertEquals(1, clientpidmap.getPid().intValue());
+		assertEquals("urn:uuid:1234", clientpidmap.getUri());
+	}
+
+	@Test
+	public void unmarshalJson() {
+		JCardValue value = JCardValue.text("1", "urn:uuid:1234");
+
+		ClientPidMapType clientpidmap = new ClientPidMapType();
+		clientpidmap.unmarshalJson(new VCardSubTypes(), value, VCardVersion.V4_0, new ArrayList<String>());
+
+		assertEquals(1, clientpidmap.getPid().intValue());
+		assertEquals("urn:uuid:1234", clientpidmap.getUri());
 	}
 
 	@Test
