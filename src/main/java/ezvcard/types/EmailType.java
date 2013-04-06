@@ -10,6 +10,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -222,12 +223,12 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		sb.append(VCardStringUtils.escape(value));
+		sb.append(VCardStringUtils.escape(getValue()));
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		this.value = VCardStringUtils.unescape(value);
+		setValue(VCardStringUtils.unescape(value));
 	}
 
 	@Override
@@ -261,5 +262,15 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 			email = element.value();
 		}
 		setValue(email);
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		return JCardValue.text(getValue());
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		setValue(value.getFirstValueAsString());
 	}
 }
