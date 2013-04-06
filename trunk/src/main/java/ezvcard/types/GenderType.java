@@ -4,6 +4,7 @@ import java.util.List;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -252,5 +253,18 @@ public class GenderType extends VCardType {
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setGender(element.get("sex"));
 		setText(element.get("identity"));
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		JCardValue value = JCardValue.text(gender, text);
+		value.setStructured(true);
+		return value;
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		gender = value.getFirstValueAsString(0);
+		text = value.getFirstValueAsString(1);
 	}
 }
