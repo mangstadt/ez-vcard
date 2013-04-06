@@ -269,7 +269,7 @@ public class DateOrTimeType extends VCardType {
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.dateAndOrTime();
 		if (value != null) {
-			parseDate(value, VCardVersion.V4_0, warnings);
+			parseDate(value, element.version(), warnings);
 		} else {
 			setText(element.text());
 		}
