@@ -58,6 +58,13 @@ public class JCardValue {
 
 	/**
 	 * Helper constructor for creating a "uri" value.
+	 */
+	public static JCardValue uri() {
+		return uri(null);
+	}
+
+	/**
+	 * Helper constructor for creating a "uri" value.
 	 * @param uri the URI
 	 */
 	public static JCardValue uri(String uri) {
@@ -69,10 +76,17 @@ public class JCardValue {
 		return jcardValue;
 	}
 
+	/**
+	 * Helper constructor for creating a "date" value.
+	 */
 	public static JCardValue date() {
 		return date(null);
 	}
 
+	/**
+	 * Helper constructor for creating a "date" value.
+	 * @param date the date
+	 */
 	public static JCardValue date(Date date) {
 		JCardValue jcardValue = new JCardValue();
 		jcardValue.dataType = JCardDataType.DATE;
@@ -82,10 +96,17 @@ public class JCardValue {
 		return jcardValue;
 	}
 
+	/**
+	 * Helper constructor for creating a "datetime" value.
+	 */
 	public static JCardValue dateTime() {
 		return dateTime(null);
 	}
 
+	/**
+	 * Helper constructor for creating a "datetime" value.
+	 * @param date the date
+	 */
 	public static JCardValue dateTime(Date date) {
 		JCardValue jcardValue = new JCardValue();
 		jcardValue.dataType = JCardDataType.DATE_TIME;
@@ -95,26 +116,50 @@ public class JCardValue {
 		return jcardValue;
 	}
 
+	/**
+	 * Gets the jCard data type
+	 * @return the data type (e.g. "text")
+	 */
 	public JCardDataType getDataType() {
 		return dataType;
 	}
 
+	/**
+	 * Sets the jCard data type.
+	 * @param dataType the data type (e.g. "text")
+	 */
 	public void setDataType(JCardDataType dataType) {
 		this.dataType = dataType;
 	}
 
+	/**
+	 * Gets whether the value is a structured value.
+	 * @return true if it's structured, false if not
+	 */
 	public boolean isStructured() {
 		return structured;
 	}
 
+	/**
+	 * Sets whether the value is a structured value
+	 * @param structured true if it's structured, false if not
+	 */
 	public void setStructured(boolean structured) {
 		this.structured = structured;
 	}
 
+	/**
+	 * Gets all the values.
+	 * @return the values
+	 */
 	public List<List<Object>> getValues() {
 		return values;
 	}
 
+	/**
+	 * Gets all the values as strings.
+	 * @return the values as strings
+	 */
 	public List<List<String>> getValuesAsStrings() {
 		List<List<String>> valuesStr = new ArrayList<List<String>>(values.size());
 		for (List<Object> value : values) {
@@ -127,10 +172,19 @@ public class JCardValue {
 		return valuesStr;
 	}
 
+	/**
+	 * Gets the first value at the first index.
+	 * @return the value or null if there are no values
+	 */
 	public Object getFirstValue() {
 		return getFirstValue(0);
 	}
 
+	/**
+	 * Gets the first value at the given index.
+	 * @param index the index
+	 * @return the value or null if the specified index does not exist
+	 */
 	public Object getFirstValue(int index) {
 		if (index >= values.size()) {
 			return null;
@@ -138,10 +192,19 @@ public class JCardValue {
 		return values.get(index).get(0);
 	}
 
+	/**
+	 * Gets the first value at the first index as a string.
+	 * @return the value or null if there are no values
+	 */
 	public String getFirstValueAsString() {
 		return getFirstValueAsString(0);
 	}
 
+	/**
+	 * Gets the first value at the given index as a string.
+	 * @param index the index
+	 * @return the value or null if the specified index does not exist
+	 */
 	public String getFirstValueAsString(int index) {
 		Object value = getFirstValue(index);
 		return (value == null) ? null : value.toString();
@@ -149,7 +212,7 @@ public class JCardValue {
 
 	/**
 	 * Adds one or more values to the jCard value. {@link List} objects that are
-	 * passed into this method will be created as multi-valued components.
+	 * passed into this method will be treated as multi-valued components.
 	 * @param values the value(s) to add
 	 */
 	@SuppressWarnings("unchecked")
