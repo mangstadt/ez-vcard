@@ -11,10 +11,12 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardValue;
+import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -271,100 +273,107 @@ public class GeoType extends VCardType {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (getLatitude() == null || getLongitude() == null) {
-			throw new SkipMeException("Latitude and/or longitude is missing.");
-		}
-
-		if (version == VCardVersion.V4_0) {
-			sb.append(uri.toString(6));
-		} else {
-			NumberFormat nf = GeoUri.buildNumberFormat(6);
-			sb.append(nf.format(getLatitude()));
-			sb.append(';');
-			sb.append(nf.format(getLongitude()));
-		}
+		sb.append(write(version));
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		try {
-			//4.0 syntax: GEO;VALUE=uri:geo:12,23
-			uri = new GeoUri(value);
-		} catch (IllegalArgumentException e) {
-			//2.1/3.0 syntax: GEO:12;34
-			String split[] = value.split(";");
-			uri = new GeoUri();
-
-			try {
-				setLatitude(Double.valueOf(split[0]));
-			} catch (NumberFormatException e2) {
-				//do nothing (handled below)
-			}
-
-			boolean longMissing = false;
-			if (split.length > 1) {
-				try {
-					setLongitude(Double.valueOf(split[1]));
-				} catch (NumberFormatException e2) {
-					//do nothing (handled below)
-				}
-			} else {
-				longMissing = true;
-			}
-
-			if (getLatitude() == null && getLongitude() == null) {
-				throw new SkipMeException("Unparseable value: \"" + value + "\"");
-			} else if (longMissing) {
-				warnings.add("Longitude missing from " + NAME + " type value: \"" + value + "\"");
-			} else if (getLatitude() == null) {
-				warnings.add("Could not parse latitude from " + NAME + " type value: \"" + value + "\"");
-			} else if (getLongitude() == null) {
-				warnings.add("Could not parse longitude from " + NAME + " type value: \"" + value + "\"");
-			}
-		}
+		value = VCardStringUtils.unescape(value);
+		parse(value, version, warnings);
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		StringBuilder sb = new StringBuilder();
-		doMarshalText(sb, parent.version(), warnings, compatibilityMode);
-		parent.uri(sb.toString());
+		parent.uri(write(parent.version()));
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.uri();
 		if (value != null) {
-			doUnmarshalText(value, element.version(), warnings, compatibilityMode);
+			parse(value, element.version(), warnings);
+		} else {
+			throw new SkipMeException("No URI found.");
 		}
 	}
 
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
+		uri = new GeoUri();
+
 		String latitude = element.firstValue("latitude");
 		if (latitude == null) {
-			warnings.add("Latitude missing from " + NAME + " type.");
-		} else {
-			try {
-				setLatitude(Double.parseDouble(latitude));
-			} catch (NumberFormatException e) {
-				warnings.add("Could not parse latitude from " + NAME + " type.");
-			}
+			throw new SkipMeException("Latitude missing.");
+		}
+		try {
+			setLatitude(Double.parseDouble(latitude));
+		} catch (NumberFormatException e) {
+			throw new SkipMeException("Could not parse latitude: " + latitude);
 		}
 
 		String longitude = element.firstValue("longitude");
 		if (longitude == null) {
-			warnings.add("Longitude missing from " + NAME + " type.");
-		} else {
+			throw new SkipMeException("Longitude missing.");
+		}
+		try {
+			setLongitude(Double.parseDouble(longitude));
+		} catch (NumberFormatException e) {
+			throw new SkipMeException("Could not parse longitude: " + longitude);
+		}
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		return JCardValue.uri(write(version));
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		parse(value.getFirstValueAsString(), version, warnings);
+	}
+
+	private void parse(String value, VCardVersion version, List<String> warnings) {
+		if (version == VCardVersion.V4_0) {
 			try {
-				setLongitude(Double.parseDouble(longitude));
+				uri = new GeoUri(value);
+			} catch (IllegalArgumentException e) {
+				throw new SkipMeException("Invalid geo URI: " + value);
+			}
+		} else {
+			String split[] = value.split(";");
+
+			if (split.length != 2) {
+				throw new SkipMeException("Invalid value: " + value);
+			}
+
+			uri = new GeoUri();
+			String latitude = split[0];
+			String longitude = split[1];
+
+			try {
+				setLatitude(Double.valueOf(latitude));
 			} catch (NumberFormatException e) {
-				warnings.add("Could not parse longitude from " + NAME + " type.");
+				throw new SkipMeException("Could not parse latitude: " + latitude);
+			}
+
+			try {
+				setLongitude(Double.valueOf(longitude));
+			} catch (NumberFormatException e) {
+				throw new SkipMeException("Could not parse longtude: " + longitude);
 			}
 		}
+	}
 
-		if (getLatitude() == null && getLongitude() == null) {
-			throw new SkipMeException("Unparsable value.");
+	private String write(VCardVersion version) {
+		if (getLatitude() == null || getLongitude() == null) {
+			throw new SkipMeException("Latitude and/or longitude is missing.");
+		}
+
+		if (version == VCardVersion.V4_0) {
+			return uri.toString(6);
+		} else {
+			NumberFormat nf = GeoUri.buildNumberFormat(6);
+			return nf.format(getLatitude()) + ';' + nf.format(getLongitude());
 		}
 	}
 }
