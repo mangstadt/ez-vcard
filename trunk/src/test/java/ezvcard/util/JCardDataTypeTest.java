@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /*
@@ -42,6 +43,11 @@ import org.junit.Test;
  * @author Michael Angsadt
  */
 public class JCardDataTypeTest {
+	@BeforeClass
+	public static void beforeClass() {
+		JCardDataType.custom.clear();
+	}
+
 	@After
 	public void after() {
 		JCardDataType.custom.clear();
