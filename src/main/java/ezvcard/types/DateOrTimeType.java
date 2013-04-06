@@ -2,6 +2,7 @@ package ezvcard.types;
 
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -53,6 +54,7 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class DateOrTimeType extends VCardType {
+	static final Pattern reducedAccuracyRegex = Pattern.compile("([-\\d]+T[-+:\\dZ]+)|([-\\d]+)|(T[-+:\\dZ]+)");
 	private String text;
 	private Date date;
 	private String reducedAccuracyDate;
@@ -215,9 +217,9 @@ public class DateOrTimeType extends VCardType {
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
 			if (text != null) {
-				throw new SkipMeException("Text values are not allowed in vCard version " + version + ".");
+				throw new SkipMeException("Text values are not supported in vCard version " + version + ".");
 			} else if (reducedAccuracyDate != null) {
-				throw new SkipMeException("Reduced accuracy dates are not allowed in vCard version " + version + ".");
+				throw new SkipMeException("Reduced accuracy dates are not supported in vCard version " + version + ".");
 			} else if (date != null) {
 				ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
 				sb.append(VCardDateFormatter.format(date, format));
@@ -240,30 +242,11 @@ public class DateOrTimeType extends VCardType {
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (version == VCardVersion.V4_0) {
-			if (subTypes.getValue() == ValueParameter.TEXT) {
-				text = VCardStringUtils.unescape(value);
-			} else if (value.contains("-")) {
-				reducedAccuracyDate = value;
-			} else {
-				try {
-					date = VCardDateFormatter.parse(value);
-				} catch (IllegalArgumentException e) {
-					//not all reduced accuracy dates have dashes (e.g. "2012")
-					if (value.matches("\\d+")) {
-						reducedAccuracyDate = value;
-					} else {
-						warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");
-						text = VCardStringUtils.unescape(value);
-					}
-				}
-			}
+		value = VCardStringUtils.unescape(value);
+		if (version == VCardVersion.V4_0 && subTypes.getValue() == ValueParameter.TEXT) {
+			setText(value);
 		} else {
-			try {
-				date = VCardDateFormatter.parse(value);
-			} catch (IllegalArgumentException e) {
-				warnings.add("Date string \"" + value + "\" for type \"" + typeName + "\" could not be parsed.");
-			}
+			parseDate(value, version, warnings);
 		}
 	}
 
@@ -286,22 +269,7 @@ public class DateOrTimeType extends VCardType {
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.dateAndOrTime();
 		if (value != null) {
-			if (value.contains("-")) {
-				setReducedAccuracyDate(value);
-			} else {
-				try {
-					boolean hasTime = value.contains("T");
-					setDate(VCardDateFormatter.parse(value), hasTime);
-				} catch (IllegalArgumentException e) {
-					//not all reduced accuracy dates have dashes (e.g. "2012")
-					if (value.matches("\\d+")) {
-						setReducedAccuracyDate(value);
-					} else {
-						warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");
-						setText(value);
-					}
-				}
-			}
+			parseDate(value, VCardVersion.V4_0, warnings);
 		} else {
 			setText(element.text());
 		}
@@ -319,7 +287,7 @@ public class DateOrTimeType extends VCardType {
 		if (value == null) {
 			value = element.value();
 		}
-		doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
+		parseDate(value, VCardVersion.V3_0, warnings);
 	}
 
 	@Override
@@ -345,21 +313,24 @@ public class DateOrTimeType extends VCardType {
 		if (value.getDataType() == JCardDataType.TEXT) {
 			setText(valueStr);
 		} else {
-			if (valueStr.contains("-")) {
-				setReducedAccuracyDate(valueStr);
-			} else {
-				try {
-					boolean hasTime = valueStr.contains("T");
-					setDate(VCardDateFormatter.parse(valueStr), hasTime);
-				} catch (IllegalArgumentException e) {
-					//not all reduced accuracy dates have dashes (e.g. "2012")
-					if (valueStr.matches("\\d+")) {
-						setReducedAccuracyDate(valueStr);
-					} else {
-						warnings.add("Date string \"" + valueStr + "\" could not be parsed.  Assuming it's a text value.");
-						setText(valueStr);
-					}
+			parseDate(valueStr, version, warnings);
+		}
+	}
+
+	private void parseDate(String value, VCardVersion version, List<String> warnings) {
+		try {
+			boolean hasTime = value.contains("T");
+			setDate(VCardDateFormatter.parse(value), hasTime);
+		} catch (IllegalArgumentException e) {
+			if (version == VCardVersion.V4_0) {
+				if (reducedAccuracyRegex.matcher(value).matches()) {
+					setReducedAccuracyDate(value);
+				} else {
+					warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");
+					setText(value);
 				}
+			} else {
+				throw new SkipMeException("Date string \"" + value + "\" could not be parsed.");
 			}
 		}
 	}

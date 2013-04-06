@@ -478,8 +478,8 @@ public class DateOrTimeTypeTest {
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, dateStrExtended, version, warnings, compatibilityMode);
 
-		assertNull(type.getDate());
-		assertEquals(dateStrExtended, type.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
 	}
 
@@ -506,8 +506,8 @@ public class DateOrTimeTypeTest {
 		Element input = xe.element();
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
-		assertNull(type.getDate());
-		assertEquals(dateStrExtended, type.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
 	}
 
@@ -530,7 +530,6 @@ public class DateOrTimeTypeTest {
 
 	@Test
 	public void unmarshalJson_date() {
-		//TODO should jCard use the extended date format?  Using extended, is it possible to distinguish between a date and a reduced-accuracy date?
 		VCardVersion version = VCardVersion.V4_0;
 
 		JCardValue value = new JCardValue();
@@ -540,8 +539,8 @@ public class DateOrTimeTypeTest {
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 
-		assertNull(type.getDate());
-		assertEquals(dateStrExtended, type.getReducedAccuracyDate()); //it thinks it's reduced accuracy because it has dashes
+		assertEquals(date, type.getDate());
+		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
 	}
 
@@ -587,16 +586,13 @@ public class DateOrTimeTypeTest {
 		assertEquals(0, warnings.size());
 	}
 
-	@Test
+	@Test(expected = SkipMeException.class)
 	public void unmarshalHtml_date_invalid() throws Exception {
 		List<String> warnings = new ArrayList<String>();
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>June 5, 1980</time>");
 
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalHtml(element, warnings);
-
-		assertNull(type.getDate());
-		assertEquals(1, warnings.size());
 	}
 
 	@Test
@@ -661,7 +657,6 @@ public class DateOrTimeTypeTest {
 
 	@Test
 	public void unmarshalJson_datetime() {
-		//TODO should jCard use the extended date format?  Using extended, is it possible to distinguish between a date and a reduced-accuracy date?
 		VCardVersion version = VCardVersion.V4_0;
 
 		JCardValue value = new JCardValue();
@@ -677,30 +672,20 @@ public class DateOrTimeTypeTest {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	@Test
+	@Test(expected = SkipMeException.class)
 	public void unmarshalText_reducedAccuracyDate_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
-
-		assertNull(type.getDate());
-		assertNull(type.getReducedAccuracyDate());
-		assertNull(type.getText());
-		assertEquals(1, warnings.size());
 	}
 
-	@Test
+	@Test(expected = SkipMeException.class)
 	public void unmarshalText_reducedAccuracyDate_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
-
-		assertNull(type.getDate());
-		assertNull(type.getReducedAccuracyDate());
-		assertNull(type.getText());
-		assertEquals(1, warnings.size());
 	}
 
 	@Test
@@ -801,30 +786,20 @@ public class DateOrTimeTypeTest {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	@Test
+	@Test(expected = SkipMeException.class)
 	public void unmarshalText_reducedAccuracyDateTime_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
-
-		assertNull(type.getDate());
-		assertNull(type.getReducedAccuracyDate());
-		assertNull(type.getText());
-		assertEquals(1, warnings.size());
 	}
 
-	@Test
+	@Test(expected = SkipMeException.class)
 	public void unmarshalText_reducedAccuracyDateTime_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
-
-		assertNull(type.getDate());
-		assertNull(type.getReducedAccuracyDate());
-		assertNull(type.getText());
-		assertEquals(1, warnings.size());
 	}
 
 	@Test
@@ -877,32 +852,22 @@ public class DateOrTimeTypeTest {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	@Test
+	@Test(expected = SkipMeException.class)
 	public void unmarshalText_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
-
-		assertNull(type.getDate());
-		assertNull(type.getReducedAccuracyDate());
-		assertNull(type.getText());
-		assertEquals(1, warnings.size());
 	}
 
-	@Test
+	@Test(expected = SkipMeException.class)
 	public void unmarshalText_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
 
 		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
-
-		assertNull(type.getDate());
-		assertNull(type.getReducedAccuracyDate());
-		assertNull(type.getText());
-		assertEquals(1, warnings.size());
 	}
 
 	@Test
@@ -968,6 +933,36 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getReducedAccuracyDate());
 		assertEquals(text, type.getText());
 		assertTrue(warnings.isEmpty());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	@Test
+	public void reducedAccuracyRegex() {
+		//@formatter:off
+		Object table[][] = new Object[][]{
+			new Object[]{"--03-12", true},
+			new Object[]{"--03-12T10:20:30", true},
+			new Object[]{"--03-12T10:20:30Z", true},
+			new Object[]{"--03-12T10:20:30+05:00", true},
+			new Object[]{"T10:20:30", true},
+			new Object[]{"T10:20:30+05:00", true},
+			new Object[]{"--0312", true},
+			new Object[]{"--0312T102030", true},
+			new Object[]{"--0312T102030Z", true},
+			new Object[]{"--0312T102030+0500", true},
+			new Object[]{"T102030", true},
+			new Object[]{"T102030+0500", true},
+			new Object[]{"2013", true},
+			new Object[]{"text", false},
+		};
+		//@formatter:on
+
+		for (Object row[] : table) {
+			String text = (String) row[0];
+			Boolean result = (Boolean) row[1];
+			assertEquals("Regex test of \"" + text + "\" failed.", result, DateOrTimeType.reducedAccuracyRegex.matcher(text).matches());
+		}
 	}
 
 	private static class DateOrTimeTypeImpl extends DateOrTimeType {
