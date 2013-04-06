@@ -13,11 +13,12 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImppTypeParameter;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -484,36 +485,23 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			sb.append(VCardStringUtils.escape(uri.toString()));
-		}
+		sb.append(write());
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
-		try {
-			setUri(value);
-		} catch (IllegalArgumentException e) {
-			throw new SkipMeException("Cannot parse URI \"" + value + "\": " + e.getMessage());
-		}
+		parse(value);
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			parent.uri(uri.toString());
-		}
+		parent.uri(write());
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.uri();
-		try {
-			setUri(value);
-		} catch (IllegalArgumentException e) {
-			throw new SkipMeException("Cannot parse URI \"" + value + "\": " + e.getMessage());
-		}
+		parse(element.uri());
 	}
 
 	@Override
@@ -534,12 +522,40 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 		}
 	}
 
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		return JCardValue.uri(write());
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		parse(value.getFirstValueAsString());
+	}
+
+	private void parse(String value) {
+		if (value == null) {
+			throw new SkipMeException("No URI found.");
+		}
+		try {
+			setUri(value);
+		} catch (IllegalArgumentException e) {
+			throw new SkipMeException("Cannot parse URI \"" + value + "\": " + e.getMessage());
+		}
+	}
+
+	private String write() {
+		if (uri == null) {
+			throw new SkipMeException("No URI given.");
+		}
+		return uri.toString();
+	}
+
 	/**
 	 * Parses an IM URI from an HTML link.
 	 * @param linkUri the HTML link (e.g. "aim:goim?screenname=theuser")
 	 * @return the IM URI or null if not recognized
 	 */
-	protected static URI parseUriFromLink(String linkUri) {
+	static URI parseUriFromLink(String linkUri) {
 		for (ImHtmlLink imLink : htmlParseableProtocols) {
 			String handle = imLink.parseHandle(linkUri);
 			if (handle != null) {
@@ -578,7 +594,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> {
 	 * Helper class for parsing and building instant messenger links for
 	 * webpages.
 	 */
-	protected static class ImHtmlLink {
+	private static class ImHtmlLink {
 		private final Pattern linkRegex;
 		private final String protocol;
 		private final int handleGroup;
