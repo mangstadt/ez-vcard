@@ -6,11 +6,12 @@ import java.util.List;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -106,5 +107,20 @@ public class TextListType extends VCardType {
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		values.clear();
 		values.addAll(element.getAll("text"));
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		return JCardValue.text(values.toArray(new String[0]));
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		values.clear();
+		for (List<String> valueStr : value.getValuesAsStrings()) {
+			if (!valueStr.isEmpty()) {
+				values.add(valueStr.get(0));
+			}
+		}
 	}
 }

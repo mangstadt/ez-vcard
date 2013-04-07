@@ -2,22 +2,25 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,196 +52,308 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TextListTypeTest {
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCardSubTypes subTypes = new VCardSubTypes();
+	final TextListTypeImpl zeroItems = new TextListTypeImpl();
+	final TextListTypeImpl oneItem = new TextListTypeImpl();
+	{
+		oneItem.addValue("one");
+	}
+	final TextListTypeImpl multipleItems = new TextListTypeImpl();
+	{
+		multipleItems.addValue("one");
+		multipleItems.addValue("two");
+		multipleItems.addValue("three");
+	}
+	final TextListTypeImpl specialChars = new TextListTypeImpl();
+	{
+		specialChars.addValue("on,e");
+		specialChars.addValue("tw;o");
+		specialChars.addValue("three");
+	}
+	TextListTypeImpl testObj;
+
+	@Before
+	public void before() {
+		warnings.clear();
+		testObj = new TextListTypeImpl();
+	}
+
 	@Test
-	public void marshal() throws Exception {
+	public void marshalText_zero_items() {
 		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		TextListType t;
-		String expected, actual;
+		String expected = "";
+		String actual = zeroItems.marshalText(version, warnings, compatibilityMode);
 
-		//three items
-		t = new TextListType("NAME", ',');
-		t.addValue("One");
-		t.addValue("One and a half");
-		t.addValue("T,wo");
-		t.removeValue("One and a half"); //test "removeValue"
-		t.addValue("Thr;ee");
-		expected = "One,T\\,wo,Thr\\;ee";
-		actual = t.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
-
-		//two items
-		t = new TextListType("NAME", ',');
-		t.addValue("One");
-		t.addValue("Two");
-		expected = "One,Two";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-
-		//one item
-		t = new TextListType("NAME", ',');
-		t.addValue("One");
-		expected = "One";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-
-		//zero items
-		t = new TextListType("NAME", ',');
-		expected = "";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalXml() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-
-		//three items
-		TextListType t = new TextListType("NAME", ',');
-		t.addValue("One");
-		t.addValue("One and a half");
-		t.addValue("Two");
-		t.removeValue("One and a half"); //test "removeValue"
-		t.addValue("Three");
-		XCardElement xe = new XCardElement("name");
-		xe.text("One");
-		xe.text("Two");
-		xe.text("Three");
-		Document expectedDoc = xe.document();
-		xe = new XCardElement("name");
-		Document actualDoc = xe.document();
-		Element element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
-
-		//two items
-		t = new TextListType("NAME", ',');
-		t.addValue("One");
-		t.addValue("Two");
-		xe = new XCardElement("name");
-		xe.text("One");
-		xe.text("Two");
-		expectedDoc = xe.document();
-		xe = new XCardElement("name");
-		actualDoc = xe.document();
-		element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
-
-		//one item
-		t = new TextListType("NAME", ',');
-		t.addValue("One");
-		xe = new XCardElement("name");
-		xe.text("One");
-		expectedDoc = xe.document();
-		xe = new XCardElement("name");
-		actualDoc = xe.document();
-		element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
-
-		//zero items
-		t = new TextListType("NAME", ',');
-		xe = new XCardElement("name");
-		expectedDoc = xe.document();
-		xe = new XCardElement("name");
-		actualDoc = xe.document();
-		element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
-	}
-
-	@Test
-	public void unmarshal() throws Exception {
+	public void marshalText_one_item() {
 		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		TextListType t;
-		List<String> expected, actual;
+		String expected = "one";
+		String actual = oneItem.marshalText(version, warnings, compatibilityMode);
 
-		//three values
-		t = new TextListType("NAME", ',');
-		t.unmarshalText(subTypes, "One,T\\,wo,Thr\\;ee", version, warnings, compatibilityMode);
-		expected = Arrays.asList("One", "T,wo", "Thr;ee");
-		actual = t.getValues();
 		assertEquals(expected, actual);
-
-		//two values
-		t = new TextListType("NAME", ',');
-		t.unmarshalText(subTypes, "One,Two", version, warnings, compatibilityMode);
-		expected = Arrays.asList("One", "Two");
-		actual = t.getValues();
-		assertEquals(expected, actual);
-
-		//one value
-		t = new TextListType("NAME", ',');
-		t.unmarshalText(subTypes, "One", version, warnings, compatibilityMode);
-		expected = Arrays.asList("One");
-		actual = t.getValues();
-		assertEquals(expected, actual);
-
-		//zero values
-		t = new TextListType("NAME", ',');
-		t.unmarshalText(subTypes, "", version, warnings, compatibilityMode);
-		expected = Arrays.asList();
-		actual = t.getValues();
-		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshalXml() throws Exception {
+	public void marshalText_multiple_items() {
+		VCardVersion version = VCardVersion.V2_1;
+		String expected = "one,two,three";
+		String actual = multipleItems.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_escape_special_chars() {
+		VCardVersion version = VCardVersion.V2_1;
+		String expected = "on\\,e,tw\\;o,three";
+		String actual = specialChars.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_delimiter() {
+		VCardVersion version = VCardVersion.V2_1;
+		TextListType t = new TextListType("NAME", '*');
+		t.addValue("one");
+		t.addValue("two");
+		t.addValue("three");
+		String expected = "one*two*three";
+		String actual = t.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalXml_zero_items() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		TextListType t;
-		List<String> expected, actual;
-		Element element;
+		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		Document expected = xe.document();
+		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		Document actual = xe.document();
+		zeroItems.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
-		//three values
-		XCardElement xe = new XCardElement("name");
-		xe.text("One");
-		xe.text("Two");
-		xe.text("Three");
-		element = xe.element();
-		t = new TextListType("NAME", ',');
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		expected = Arrays.asList("One", "Two", "Three");
-		actual = t.getValues();
-		assertEquals(expected, actual);
+		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
+	}
 
-		//two values
-		xe = new XCardElement("name");
-		xe.text("One");
-		xe.text("Two");
-		element = xe.element();
-		t = new TextListType("NAME", ',');
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		expected = Arrays.asList("One", "Two");
-		actual = t.getValues();
-		assertEquals(expected, actual);
+	@Test
+	public void marshalXml_one_item() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		xe.text("one");
+		Document expected = xe.document();
+		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		Document actual = xe.document();
+		oneItem.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
-		//one value
-		xe = new XCardElement("name");
-		xe.text("One");
-		element = xe.element();
-		t = new TextListType("NAME", ',');
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		expected = Arrays.asList("One");
-		actual = t.getValues();
-		assertEquals(expected, actual);
+		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
+	}
 
-		//zero values
-		xe = new XCardElement("name");
-		element = xe.element();
-		t = new TextListType("NAME", ',');
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		expected = Arrays.asList();
-		actual = t.getValues();
-		assertEquals(expected, actual);
+	@Test
+	public void marshalXml_multiple_items() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		xe.text("one");
+		xe.text("two");
+		xe.text("three");
+		Document expected = xe.document();
+		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		Document actual = xe.document();
+		multipleItems.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_zero_items() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = zeroItems.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList();
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_one_item() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = oneItem.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{"one"})
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_multiple_items() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = multipleItems.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ "one" }),
+			Arrays.asList(new Object[]{ "two" }),
+			Arrays.asList(new Object[]{ "three" })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_zero_items() {
+		VCardVersion version = VCardVersion.V2_1;
+		testObj.unmarshalText(subTypes, "", version, warnings, compatibilityMode);
+
+		assertEquals(Arrays.asList(), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_one_item() {
+		VCardVersion version = VCardVersion.V2_1;
+		testObj.unmarshalText(subTypes, "one", version, warnings, compatibilityMode);
+
+		assertEquals(Arrays.asList("one"), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_multiple_items() {
+		VCardVersion version = VCardVersion.V2_1;
+		testObj.unmarshalText(subTypes, "one,two,three", version, warnings, compatibilityMode);
+
+		assertEquals(Arrays.asList("one", "two", "three"), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_unescape_special_chars() {
+		VCardVersion version = VCardVersion.V2_1;
+		testObj.unmarshalText(subTypes, "on\\,e,tw\\;o,three", version, warnings, compatibilityMode);
+
+		assertEquals(Arrays.asList("on,e", "tw;o", "three"), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_zero_values() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertEquals(Arrays.asList(), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_one_value() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		xe.text("one");
+		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertEquals(Arrays.asList("one"), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_multiple_values() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		xe.text("one");
+		xe.text("two");
+		xe.text("three");
+		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertEquals(Arrays.asList("one", "two", "three"), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_zero_items() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TEXT);
+
+		testObj.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(Arrays.asList(), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_one_item() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.addValues("one");
+		value.setDataType(JCardDataType.TEXT);
+
+		testObj.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(Arrays.asList("one"), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_multiple_items() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.addValues("one", "two", "three");
+		value.setDataType(JCardDataType.TEXT);
+
+		testObj.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(Arrays.asList("one", "two", "three"), testObj.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void removeValue() {
+		testObj.addValue("one");
+		testObj.addValue("two");
+		testObj.addValue("three");
+		testObj.removeValue("two");
+		testObj.removeValue("four");
+		assertEquals(Arrays.asList("one", "three"), testObj.getValues());
+	}
+
+	private class TextListTypeImpl extends TextListType {
+		public static final String NAME = "NAME";
+
+		public TextListTypeImpl() {
+			super(NAME, ',');
+		}
 	}
 }
