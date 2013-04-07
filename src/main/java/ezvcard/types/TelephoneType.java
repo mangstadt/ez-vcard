@@ -8,14 +8,16 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -68,6 +70,7 @@ import ezvcard.util.XCardElement;
  */
 public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypeParameter> {
 	public static final String NAME = "TEL";
+	private static final Pattern telUriRegex = Pattern.compile("^tel:(.*?)$", Pattern.CASE_INSENSITIVE);
 
 	private String value;
 
@@ -229,12 +232,15 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = writeValue(version);
-		sb.append(VCardStringUtils.escape(value));
+		if (version != VCardVersion.V4_0) {
+			value = VCardStringUtils.escape(value);
+		}
+		sb.append(value);
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value.trim());
+		value = VCardStringUtils.unescape(value);
 		parseValue(value);
 	}
 
@@ -247,9 +253,10 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.get("text", "uri");
-		if (value != null) {
-			parseValue(value);
+		if (value == null) {
+			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
+		parseValue(value);
 	}
 
 	@Override
@@ -262,8 +269,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		String tel = null;
 		String href = element.attr("href");
 		if (href.length() > 0) {
-			Pattern p = Pattern.compile("^tel:(.*?)$", Pattern.CASE_INSENSITIVE);
-			Matcher m = p.matcher(href);
+			Matcher m = telUriRegex.matcher(href);
 			if (m.find()) {
 				tel = m.group(1);
 			}
@@ -274,19 +280,26 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		setValue(tel);
 	}
 
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		String value = writeValue(version);
+		return JCardValue.uri(value);
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		parseValue(value.getFirstValueAsString());
+	}
+
 	private void parseValue(String value) {
-		if (value.matches("(?i)tel:.*")) {
-			//remove "tel:"
-			value = (value.length() > 4) ? value.substring(4) : "";
+		Matcher m = telUriRegex.matcher(value);
+		if (m.find()) {
+			value = m.group(1);
 		}
 		setValue(value);
 	}
 
 	private String writeValue(VCardVersion version) {
-		String value = this.value;
-		if (version == VCardVersion.V4_0) {
-			value = "tel:" + value;
-		}
-		return value;
+		return (version == VCardVersion.V4_0) ? "tel:" + value : value;
 	}
 }
