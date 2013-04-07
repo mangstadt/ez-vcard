@@ -1,7 +1,6 @@
 package ezvcard.io;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -369,111 +368,6 @@ public class JCardReader implements IParser {
 			}
 		} else {
 			vcard.addExtendedType(t);
-		}
-	}
-
-	//http://jackson.codehaus.org/
-	//http://www.ngdata.com/site/blog/63-ng.html
-	public static void main(String args[]) throws Exception {
-		JsonFactory factory = new JsonFactory();
-		//factory.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false); // all configuration before use
-		JsonParser jp = factory.createJsonParser(new FileInputStream("vcard.json"));
-
-		if (jp.nextToken() != JsonToken.START_ARRAY) {
-			//bad jCard
-			System.out.println(jp.getCurrentName());
-			return;
-		}
-
-		if (jp.nextTextValue().equals("vcardstream")) {
-			while (jp.nextToken() == JsonToken.START_ARRAY) {
-				if (!jp.nextTextValue().equals("vcard")) {
-					//bad jCard
-					System.out.println(jp.getCurrentName());
-					return;
-				}
-				readNextVCard(jp);
-			}
-		} else {
-			readNextVCard(jp);
-		}
-
-		//		
-		//		current = jp.nextToken();
-		//
-		//		while (jp.nextToken() != JsonToken.END_ARRAY) {
-		//			String fieldName = jp.getCurrentName();
-		//			// move from field name to field value
-		//			current = jp.nextToken();
-		//			if (fieldName.equals("records")) {
-		//				if (current == JsonToken.START_ARRAY) {
-		//					// For each of the records in the array
-		//					while (jp.nextToken() != JsonToken.END_ARRAY) {
-		//						// read the record into a tree model,
-		//						// this moves the parsing position to the end of it
-		//						JsonNode node = jp.readValueAsTree();
-		//						// And now we have random access to everything in the object
-		//						System.out.println("field1: " + node.get("field1").getValueAsText());
-		//						System.out.println("field2: " + node.get("field2").getValueAsText());
-		//					}
-		//				} else {
-		//					System.out.println("Error: records should be an array: skipping.");
-		//					jp.skipChildren();
-		//				}
-		//			} else {
-		//				System.out.println("Unprocessed property: " + fieldName);
-		//				jp.skipChildren();
-		//			}
-		//		}
-	}
-
-	private static void readNextVCard(JsonParser jp) throws JsonParseException, IOException {
-
-		if (jp.nextToken() != JsonToken.START_ARRAY) {
-			//bad jCard
-			System.out.println(jp.getCurrentName());
-			return;
-		}
-
-		while (jp.nextToken() != JsonToken.END_ARRAY) {
-			String propName = jp.nextTextValue();
-			System.out.println(propName);
-
-			//param object
-			if (jp.nextToken() != JsonToken.START_OBJECT) {
-				//bad jCard
-				System.out.println(jp.getCurrentName());
-				return;
-			}
-			while (jp.nextToken() != JsonToken.END_OBJECT) {
-				String paramName = jp.getText();
-				List<String> paramValues = new ArrayList<String>();
-				if (jp.nextToken() == JsonToken.START_ARRAY) {
-					//multi-valued parameter
-					while (jp.nextToken() != JsonToken.END_ARRAY) {
-						paramValues.add(jp.getText());
-					}
-				} else {
-					paramValues.add(jp.getValueAsString());
-				}
-				System.out.println("  " + paramName + " = " + paramValues);
-			}
-
-			String dataType = jp.nextTextValue();
-			jp.nextToken();
-			String value = jp.getValueAsString();
-			System.out.println("  " + dataType + ": " + value);
-			if (jp.nextToken() != JsonToken.END_ARRAY) {
-				//bad jCard
-				System.out.println(jp.getCurrentName());
-				return;
-			}
-		}
-
-		if (jp.nextToken() != JsonToken.END_ARRAY) {
-			//bad jCard
-			System.out.println(jp.getCurrentName());
-			return;
 		}
 	}
 
