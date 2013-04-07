@@ -6,19 +6,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
+import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.HtmlUtils;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -50,197 +55,426 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class StructuredNameTypeTest {
-	@Test
-	public void marshal() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		StructuredNameType t;
-		String expected, actual;
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCardSubTypes subTypes = new VCardSubTypes();
+	final VCard vcard = new VCard();
 
-		t = new StructuredNameType();
-		t.setGiven("Jonathan");
-		t.setFamily("Doe");
-		t.addAdditional("Joh;nny,");
-		t.addAdditional("John");
-		t.addPrefix("Mr.");
-		t.addSuffix("III");
-		expected = "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+	final StructuredNameType allValues = new StructuredNameType();
+	{
+		allValues.setGiven("Jonathan");
+		allValues.setFamily("Doe");
+		allValues.addAdditional("Joh;nny,");
+		allValues.addAdditional("John");
+		allValues.addPrefix("Mr.");
+		allValues.addSuffix("III");
+	}
 
-		//some empty values
-		t = new StructuredNameType();
-		t.setGiven("Jonathan");
-		t.setFamily(null);
-		t.addAdditional("Joh;nny,");
-		t.addAdditional("John");
-		t.addSuffix("III");
-		expected = ";Jonathan;Joh\\;nny\\,,John;;III";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+	final StructuredNameType emptyValues = new StructuredNameType();
+	{
+		emptyValues.setGiven("Jonathan");
+		emptyValues.setFamily(null);
+		emptyValues.addAdditional("Joh;nny,");
+		emptyValues.addAdditional("John");
+	}
 
-		//all empty values
-		t = new StructuredNameType();
-		expected = ";;;;";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+	final StructuredNameType allEmptyValues = new StructuredNameType();
+
+	@After
+	public void after() {
+		warnings.clear();
 	}
 
 	@Test
-	public void marshalXml() throws Exception {
+	public void marshalText() {
+		VCardVersion version = VCardVersion.V2_1;
+		String expected = "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III";
+		String actual = allValues.marshalText(version, warnings, compatibilityMode);
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_empty_values() throws Exception {
+		VCardVersion version = VCardVersion.V2_1;
+		String expected = ";Jonathan;Joh\\;nny\\,,John;;";
+		String actual = emptyValues.marshalText(version, warnings, compatibilityMode);
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_all_empty_values() throws Exception {
+		VCardVersion version = VCardVersion.V2_1;
+		String expected = ";;;;";
+		String actual = allEmptyValues.marshalText(version, warnings, compatibilityMode);
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		StructuredNameType t;
-		Document expected, actual;
-		Element element;
-
-		t = new StructuredNameType();
-		t.setGiven("Jonathan");
-		t.setFamily("Doe");
-		t.addAdditional("Joh;nny,");
-		t.addAdditional("John");
-		t.addPrefix("Mr.");
-		t.addSuffix("III");
-
-		XCardElement xe = new XCardElement("n");
+		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
 		xe.append("surname", "Doe");
 		xe.append("given", "Jonathan");
 		xe.append("additional", "Joh;nny,");
 		xe.append("additional", "John");
 		xe.append("prefix", "Mr.");
 		xe.append("suffix", "III");
-		expected = xe.document();
+		Document expected = xe.document();
 
-		xe = new XCardElement("n");
-		actual = xe.document();
-		element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
-
-		//some empty values
-		t = new StructuredNameType();
-		t.setGiven("Jonathan");
-		t.setFamily(null);
-		t.addAdditional("Joh;nny,");
-		t.addAdditional("John");
-		t.addSuffix("III");
-
-		xe = new XCardElement("n");
-		xe.append("given", "Jonathan");
-		xe.append("additional", "Joh;nny,");
-		xe.append("additional", "John");
-		xe.append("suffix", "III");
-		expected = xe.document();
-
-		xe = new XCardElement("n");
-		actual = xe.document();
-		element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
+		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
+		Document actual = xe.document();
+		allValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshal() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		StructuredNameType t;
+	public void marshalXml_empty_values() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
+		xe.append("given", "Jonathan");
+		xe.append("additional", "Joh;nny,");
+		xe.append("additional", "John");
+		Document expected = xe.document();
 
-		t = new StructuredNameType();
+		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
+		Document actual = xe.document();
+		emptyValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalXml_all_empty_values() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
+		Document expected = xe.document();
+
+		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
+		Document actual = xe.document();
+		allEmptyValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = allValues.marshalJson(version, new ArrayList<String>());
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertTrue(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ "Doe" }),
+			Arrays.asList(new Object[]{ "Jonathan" }),
+			Arrays.asList(new Object[]{ "Joh;nny,", "John" }),
+			Arrays.asList(new Object[]{ "Mr." }),
+			Arrays.asList(new Object[]{ "III" })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_empty_values() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = emptyValues.marshalJson(version, new ArrayList<String>());
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertTrue(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ "Jonathan" }),
+			Arrays.asList(new Object[]{ "Joh;nny,", "John" }),
+			Arrays.asList(new Object[]{ }),
+			Arrays.asList(new Object[]{ })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_all_empty_values() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = allEmptyValues.marshalJson(version, new ArrayList<String>());
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertTrue(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ null }),
+			Arrays.asList(new Object[]{ }),
+			Arrays.asList(new Object[]{ }),
+			Arrays.asList(new Object[]{ })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText() {
+		VCardVersion version = VCardVersion.V2_1;
+		StructuredNameType t = new StructuredNameType();
 		t.unmarshalText(subTypes, "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III", version, warnings, compatibilityMode);
+
 		assertEquals("Doe", t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
-		assertEquals(2, t.getAdditional().size());
-		assertTrue(t.getAdditional().contains("Joh;nny,"));
-		assertTrue(t.getAdditional().contains("John"));
-		assertEquals(1, t.getPrefixes().size());
-		assertTrue(t.getPrefixes().contains("Mr."));
-		assertEquals(1, t.getSuffixes().size());
-		assertTrue(t.getSuffixes().contains("III"));
+		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
+		assertEquals(Arrays.asList("Mr."), t.getPrefixes());
+		assertEquals(Arrays.asList("III"), t.getSuffixes());
+		assertEquals(0, warnings.size());
+	}
 
-		//some empty values
-		t = new StructuredNameType();
-		t.unmarshalText(subTypes, ";Jonathan;Joh\\;nny\\,,John;;III", version, warnings, compatibilityMode);
+	@Test
+	public void unmarshalText_empty_values() {
+		VCardVersion version = VCardVersion.V2_1;
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalText(subTypes, ";Jonathan;Joh\\;nny\\,,John;;", version, warnings, compatibilityMode);
+
 		assertNull(t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
-		assertEquals(2, t.getAdditional().size());
-		assertTrue(t.getAdditional().contains("Joh;nny,"));
-		assertTrue(t.getAdditional().contains("John"));
-		assertTrue(t.getPrefixes().isEmpty());
-		assertEquals(1, t.getSuffixes().size());
-		assertTrue(t.getSuffixes().contains("III"));
-
-		//values missing off the end
-		t = new StructuredNameType();
-		t.unmarshalText(subTypes, "Doe;Jonathan;Joh\\;nny\\,,John", version, warnings, compatibilityMode);
-		assertEquals("Doe", t.getFamily());
-		assertEquals("Jonathan", t.getGiven());
-		assertEquals(2, t.getAdditional().size());
-		assertTrue(t.getAdditional().contains("Joh;nny,"));
-		assertTrue(t.getAdditional().contains("John"));
+		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
+	}
 
-		//all empty values
-		t = new StructuredNameType();
+	@Test
+	public void unmarshalText_all_empty_values() {
+		VCardVersion version = VCardVersion.V2_1;
+		StructuredNameType t = new StructuredNameType();
 		t.unmarshalText(subTypes, ";;;;", version, warnings, compatibilityMode);
+
 		assertNull(t.getFamily());
 		assertNull(t.getGiven());
 		assertTrue(t.getAdditional().isEmpty());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshalXml() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		StructuredNameType t;
-		Element element;
+	public void unmarshalText_empty_string() {
+		VCardVersion version = VCardVersion.V2_1;
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalText(subTypes, "", version, warnings, compatibilityMode);
 
-		XCardElement xe = new XCardElement("n");
+		assertNull(t.getFamily());
+		assertNull(t.getGiven());
+		assertTrue(t.getAdditional().isEmpty());
+		assertTrue(t.getPrefixes().isEmpty());
+		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
 		xe.append("surname", "Doe");
 		xe.append("given", "Jonathan");
 		xe.append("additional", "Joh;nny,");
 		xe.append("additional", "John");
 		xe.append("prefix", "Mr.");
 		xe.append("suffix", "III");
-		element = xe.element();
-		t = new StructuredNameType();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
 		assertEquals("Doe", t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
-		assertEquals(2, t.getAdditional().size());
-		assertTrue(t.getAdditional().contains("Joh;nny,"));
-		assertTrue(t.getAdditional().contains("John"));
-		assertEquals(1, t.getPrefixes().size());
-		assertTrue(t.getPrefixes().contains("Mr."));
-		assertEquals(1, t.getSuffixes().size());
-		assertTrue(t.getSuffixes().contains("III"));
+		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
+		assertEquals(Arrays.asList("Mr."), t.getPrefixes());
+		assertEquals(Arrays.asList("III"), t.getSuffixes());
+		assertEquals(0, warnings.size());
+	}
 
-		//some empty values
-		xe = new XCardElement("n");
+	@Test
+	public void unmarshalXml_empty_values() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
 		xe.append("given", "Jonathan");
 		xe.append("additional", "Joh;nny,");
 		xe.append("additional", "John");
-		xe.append("suffix", "III");
-		element = xe.element();
-		t = new StructuredNameType();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
 		assertNull(t.getFamily());
 		assertEquals("Jonathan", t.getGiven());
-		assertEquals(2, t.getAdditional().size());
-		assertTrue(t.getAdditional().contains("Joh;nny,"));
-		assertTrue(t.getAdditional().contains("John"));
+		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertTrue(t.getPrefixes().isEmpty());
-		assertEquals(1, t.getSuffixes().size());
-		assertTrue(t.getSuffixes().contains("III"));
+		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_all_empty_values() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertNull(t.getFamily());
+		assertNull(t.getGiven());
+		assertTrue(t.getAdditional().isEmpty());
+		assertTrue(t.getPrefixes().isEmpty());
+		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml() throws Exception {
+		//@formatter:off
+		org.jsoup.nodes.Element element = HtmlUtils.toElement(
+		"<div>" +
+			"<span class=\"family-name\">Doe</span>" +
+			"<span class=\"given-name\">Jonathan</span>" +
+			"<span class=\"additional-name\">Joh;nny,</span>" +
+			"<span class=\"additional-name\">John</span>" +
+			"<span class=\"honorific-prefix\">Mr.</span>" +
+			"<span class=\"honorific-suffix\">III</span>" +
+		"</div>");
+		//@formatter:on
+
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalHtml(element, warnings);
+
+		assertEquals("Doe", t.getFamily());
+		assertEquals("Jonathan", t.getGiven());
+		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
+		assertEquals(Arrays.asList("Mr."), t.getPrefixes());
+		assertEquals(Arrays.asList("III"), t.getSuffixes());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml_empty_values() throws Exception {
+		//@formatter:off
+		org.jsoup.nodes.Element element = HtmlUtils.toElement(
+		"<div>" +
+			"<span class=\"given-name\">Jonathan</span>" +
+			"<span class=\"additional-name\">Joh;nny,</span>" +
+			"<span class=\"additional-name\">John</span>" +
+		"</div>");
+		//@formatter:on
+
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalHtml(element, warnings);
+
+		assertNull(t.getFamily());
+		assertEquals("Jonathan", t.getGiven());
+		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
+		assertTrue(t.getPrefixes().isEmpty());
+		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml_all_empty_values() throws Exception {
+		//@formatter:off
+		org.jsoup.nodes.Element element = HtmlUtils.toElement(
+		"<div>" +
+		"</div>");
+		//@formatter:on
+
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalHtml(element, warnings);
+
+		assertNull(t.getFamily());
+		assertNull(t.getGiven());
+		assertTrue(t.getAdditional().isEmpty());
+		assertTrue(t.getPrefixes().isEmpty());
+		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TEXT);
+		value.addValues("Doe", "Jonathan", Arrays.asList("Joh;nny,", "John"), "Mr.", "III");
+
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals("Doe", t.getFamily());
+		assertEquals("Jonathan", t.getGiven());
+		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
+		assertEquals(Arrays.asList("Mr."), t.getPrefixes());
+		assertEquals(Arrays.asList("III"), t.getSuffixes());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_empty_values() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TEXT);
+		value.addValues("", "Jonathan", Arrays.asList("Joh;nny,", "John"), "", "");
+
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(t.getFamily());
+		assertEquals("Jonathan", t.getGiven());
+		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
+		assertTrue(t.getPrefixes().isEmpty());
+		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_all_empty_values() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TEXT);
+		value.addValues("", "", "", "", "");
+
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(t.getFamily());
+		assertNull(t.getGiven());
+		assertTrue(t.getAdditional().isEmpty());
+		assertTrue(t.getPrefixes().isEmpty());
+		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_one_empty_string() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TEXT);
+		value.addValues("");
+
+		StructuredNameType t = new StructuredNameType();
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(t.getFamily());
+		assertNull(t.getGiven());
+		assertTrue(t.getAdditional().isEmpty());
+		assertTrue(t.getPrefixes().isEmpty());
+		assertTrue(t.getSuffixes().isEmpty());
+		assertEquals(0, warnings.size());
 	}
 }

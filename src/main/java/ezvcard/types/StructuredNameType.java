@@ -8,11 +8,12 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -328,7 +329,6 @@ public class StructuredNameType extends VCardType {
 		} else {
 			suffixes = new ArrayList<String>();
 		}
-		i++;
 	}
 
 	@Override
@@ -348,29 +348,76 @@ public class StructuredNameType extends VCardType {
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		family = element.get("surname");
 		given = element.get("given");
-
-		additional.clear();
-		additional.addAll(element.getAll("additional"));
-
-		prefixes.clear();
-		prefixes.addAll(element.getAll("prefix"));
-
-		suffixes.clear();
-		suffixes.addAll(element.getAll("suffix"));
+		additional = element.getAll("additional");
+		prefixes = element.getAll("prefix");
+		suffixes = element.getAll("suffix");
 	}
 
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		family = element.firstValue("family-name");
 		given = element.firstValue("given-name");
+		additional = element.allValues("additional-name");
+		prefixes = element.allValues("honorific-prefix");
+		suffixes = element.allValues("honorific-suffix");
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		JCardValue value = JCardValue.text();
+		value.addValues(family, given, additional, prefixes, suffixes);
+		value.setStructured(true);
+		return value;
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		int i = 0;
+		List<List<String>> values = value.getValuesAsStrings();
+
+		if (values.size() > i) {
+			String valueStr = values.get(i).get(0);
+			family = (valueStr.length() > 0) ? valueStr : null;
+		} else {
+			family = null;
+		}
+		i++;
+
+		if (values.size() > i) {
+			String valueStr = values.get(i).get(0);
+			given = (valueStr.length() > 0) ? valueStr : null;
+		} else {
+			given = null;
+		}
+		i++;
 
 		additional.clear();
-		additional.addAll(element.allValues("additional-name"));
+		if (values.size() > i) {
+			for (String valueStr : values.get(i)) {
+				if (valueStr.length() > 0) {
+					additional.add(valueStr);
+				}
+			}
+		}
+		i++;
 
 		prefixes.clear();
-		prefixes.addAll(element.allValues("honorific-prefix"));
+		if (values.size() > i) {
+			for (String valueStr : values.get(i)) {
+				if (valueStr.length() > 0) {
+					prefixes.add(valueStr);
+				}
+			}
+		}
+		i++;
 
 		suffixes.clear();
-		suffixes.addAll(element.allValues("honorific-suffix"));
+		if (values.size() > i) {
+			for (String valueStr : values.get(i)) {
+				if (valueStr.length() > 0) {
+					suffixes.add(valueStr);
+				}
+			}
+		}
 	}
 }
