@@ -2,21 +2,26 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.HtmlUtils;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -48,78 +53,112 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TextTypeTest {
-	private static final String newline = System.getProperty("line.separator");
+	final String newline = System.getProperty("line.separator");
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCardSubTypes subTypes = new VCardSubTypes();
+	final TextType textType = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 
-	@Test
-	public void marshal() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		TextType t;
-		String expected, actual;
-
-		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		expected = "This is a test of the TextType.\nOne\\, two\\, three\\; and \\\\four\\\\."; //newlines are escaped in the VCardWriter
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+	@Before
+	public void before() {
+		warnings.clear();
 	}
 
 	@Test
-	public void marshalXml() throws Exception {
+	public void marshalText() {
+		VCardVersion version = VCardVersion.V2_1;
+		String expected = "This is a test of the TextType.\nOne\\, two\\, three\\; and \\\\four\\\\."; //newlines are escaped in the VCardWriter
+		String actual = textType.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		TextType t;
-		Document expected, actual;
-		Element element;
-
-		t = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
-
-		XCardElement xe = new XCardElement("name");
+		XCardElement xe = new XCardElement(textType.getTypeName().toLowerCase());
 		xe.text("This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		expected = xe.document();
-
-		xe = new XCardElement("name");
-		actual = xe.document();
-		element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
+		Document expected = xe.document();
+		xe = new XCardElement(textType.getTypeName().toLowerCase());
+		Document actual = xe.document();
+		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshal() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		TextType t;
-		String expected, actual;
-
-		t = new TextType("NAME");
-		t.unmarshalText(subTypes, "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.", version, warnings, compatibilityMode);
-		expected = "This is a test of the TextType." + newline + "One, two, three; and \\four\\.";
-		actual = t.getValue();
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void unmarshalXml() throws Exception {
+	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		TextType t;
-		String expected, actual;
-		Element element;
+		JCardValue value = textType.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
 
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{"This is a test of the TextType.\nOne, two, three; and \\four\\."})
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText() {
+		VCardVersion version = VCardVersion.V2_1;
+		TextType t = new TextType("NAME");
+		t.unmarshalText(subTypes, "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.", version, warnings, compatibilityMode);
+		String expected = "This is a test of the TextType." + newline + "One, two, three; and \\four\\.";
+		String actual = t.getValue();
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml() {
+		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
 		xe.text("This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		element = xe.element();
-		t = new TextType("NAME");
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
-		actual = t.getValue();
+		TextType t = new TextType("NAME");
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+		String expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
+		String actual = t.getValue();
+
 		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml() throws Exception {
+		//@formatter:off
+		org.jsoup.nodes.Element element = HtmlUtils.toElement(
+		"<div>This is a test of the TextType.<br/>One, two, three; and \\four\\.</div>");
+		//@formatter:on
+
+		TextType t = new TextType("NAME");
+		t.unmarshalHtml(element, warnings);
+		String expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
+		String actual = t.getValue();
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.addValues("This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		value.setDataType(JCardDataType.TEXT);
+
+		TextType t = new TextType("NAME");
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals("This is a test of the TextType.\nOne, two, three; and \\four\\.", t.getValue());
+		assertEquals(0, warnings.size());
 	}
 }
