@@ -2,14 +2,17 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,11 +20,14 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -53,11 +59,15 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TimestampTypeTest {
-	@Test
-	public void marshal() throws Exception {
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final String newline = System.getProperty("line.separator");
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCardSubTypes subTypes = new VCardSubTypes();
 
+	final String basic = "19800605T131020Z";
+	final String extended = "1980-06-05T13:10:20Z";
+	final Date timestampDate;
+	{
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		c.clear();
 		c.set(Calendar.YEAR, 1980);
@@ -66,110 +76,199 @@ public class TimestampTypeTest {
 		c.set(Calendar.HOUR_OF_DAY, 13);
 		c.set(Calendar.MINUTE, 10);
 		c.set(Calendar.SECOND, 20);
-		Date date = c.getTime();
-		TimestampType t = new TimestampType("DATE");
-		t.setTimestamp(date);
+		timestampDate = c.getTime();
+	}
+	final TimestampType timestamp = new TimestampType("NAME", timestampDate);
+	final TimestampType noValue = new TimestampType("NAME");
 
-		//version 2.1
+	@Before
+	public void before() {
+		warnings.clear();
+	}
+
+	@Test
+	public void marshalText() {
 		VCardVersion version = VCardVersion.V2_1;
-		String expected = "19800605T131020Z";
-		String actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+		String actual = timestamp.marshalText(version, warnings, compatibilityMode);
 
-		//version 4.0
-		version = VCardVersion.V4_0;
-		expected = "19800605T131020Z";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+		assertEquals(basic, actual);
+		assertEquals(0, warnings.size());
+	}
 
-		//xCard
-		version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement("date");
-		xe.timestamp("19800605T131020Z");
+	@Test(expected = SkipMeException.class)
+	public void marshalText_no_value() {
+		VCardVersion version = VCardVersion.V2_1;
+		noValue.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void marshalXml() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(timestamp.getTypeName().toLowerCase());
+		xe.timestamp(basic);
 		Document expectedDoc = xe.document();
-		xe = new XCardElement("date");
+		xe = new XCardElement(timestamp.getTypeName().toLowerCase());
 		Document actualDoc = xe.document();
 		Element element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
+		timestamp.marshalXml(element, version, warnings, compatibilityMode);
+
 		assertXMLEqual(expectedDoc, actualDoc);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalXml_no_value() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(noValue.getTypeName().toLowerCase());
+		noValue.marshalXml(xe.element(), version, warnings, compatibilityMode);
 	}
 
 	@Test
-	public void unmarshalValue() throws Exception {
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
+	public void marshalJson() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = timestamp.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TIMESTAMP, value.getDataType());
+		assertFalse(value.isStructured());
 
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		c.set(Calendar.HOUR_OF_DAY, 13);
-		c.set(Calendar.MINUTE, 10);
-		c.set(Calendar.SECOND, 20);
-		Date expected = c.getTime();
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ extended })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
 
+	@Test(expected = SkipMeException.class)
+	public void marshalJson_no_value() {
+		VCardVersion version = VCardVersion.V4_0;
+		noValue.marshalJson(version, warnings);
+	}
+
+	@Test
+	public void unmarshalText_basic() {
 		VCardVersion version = VCardVersion.V2_1;
-		TimestampType t = new TimestampType("DATE");
-		t.unmarshalText(subTypes, "19800605T081020-0500", version, warnings, compatibilityMode);
-		assertEquals(expected, t.getTimestamp());
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalText(subTypes, basic, version, warnings, compatibilityMode);
 
-		//xCard
-		version = VCardVersion.V4_0;
-		t = new TimestampType("DATE");
-		XCardElement xe = new XCardElement("date");
-		xe.timestamp("19800605T131020Z");
-		Element element = xe.element();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		assertEquals(expected, t.getTimestamp());
+		assertEquals(timestampDate, t.getTimestamp());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshalHtml() throws Exception {
-		List<String> warnings = new ArrayList<String>();
+	public void unmarshalText_extended() {
+		VCardVersion version = VCardVersion.V2_1;
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalText(subTypes, extended, version, warnings, compatibilityMode);
 
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		c.clear();
-		c.set(Calendar.YEAR, 1970);
-		c.set(Calendar.MONTH, Calendar.MARCH);
-		c.set(Calendar.DAY_OF_MONTH, 10);
-		c.set(Calendar.HOUR_OF_DAY, 13);
-		c.set(Calendar.MINUTE, 21);
-		c.set(Calendar.SECOND, 3);
-		Date expected = c.getTime();
+		assertEquals(timestampDate, t.getTimestamp());
+		assertEquals(0, warnings.size());
+	}
 
-		//valid date string
-		{
-			warnings.clear();
-			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"1970-03-10T13:21:03Z\">March 10, 1970 at 1:21:03 PM</time>");
-			TimestampType t = new TimestampType("DATE");
-			t.unmarshalHtml(element, warnings);
+	@Test(expected = SkipMeException.class)
+	public void unmarshalText_bad_timestamp() {
+		VCardVersion version = VCardVersion.V2_1;
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalText(subTypes, "bad value", version, warnings, compatibilityMode);
+	}
 
-			assertEquals(expected, t.getTimestamp());
-			assertEquals(0, warnings.size());
-		}
+	@Test
+	public void unmarshalXml() {
+		VCardVersion version = VCardVersion.V4_0;
+		TimestampType t = new TimestampType("NAME");
+		XCardElement xe = new XCardElement("name");
+		xe.timestamp(basic);
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+		assertEquals(timestampDate, t.getTimestamp());
+	}
 
-		//date string in tag text
-		{
-			warnings.clear();
-			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>1970-03-10T13:21:03Z</time>");
-			TimestampType t = new TimestampType("DATE");
-			t.unmarshalHtml(element, warnings);
+	@Test(expected = SkipMeException.class)
+	public void unmarshalXml_no_timestamp_element() {
+		VCardVersion version = VCardVersion.V4_0;
+		TimestampType t = new TimestampType("NAME");
+		XCardElement xe = new XCardElement("name");
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+	}
 
-			assertEquals(expected, t.getTimestamp());
-			assertEquals(0, warnings.size());
-		}
+	@Test(expected = SkipMeException.class)
+	public void unmarshalXml_bad_timestamp() {
+		VCardVersion version = VCardVersion.V4_0;
+		TimestampType t = new TimestampType("NAME");
+		XCardElement xe = new XCardElement("name");
+		xe.timestamp("bad value");
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+	}
 
-		//invalid date string
-		{
-			warnings.clear();
-			org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>March 10, 1970 at 1:21:03 PM</time>");
-			TimestampType t = new TimestampType("DATE");
-			t.unmarshalHtml(element, warnings);
+	@Test
+	public void unmarshalHtml_datetime_attribute() {
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"" + extended + "\">June 5, 1980</time>");
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalHtml(element, warnings);
 
-			assertNull(t.getTimestamp());
-			assertEquals(1, warnings.size());
-		}
+		assertEquals(timestampDate, t.getTimestamp());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml_time_tag_text() {
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>" + extended + "</time>");
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalHtml(element, warnings);
+
+		assertEquals(timestampDate, t.getTimestamp());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalHtml_tag_text() {
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + extended + "</div>");
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalHtml(element, warnings);
+
+		assertEquals(timestampDate, t.getTimestamp());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void unmarshalHtml_bad_value() {
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>bad value</div>");
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalHtml(element, warnings);
+	}
+
+	@Test
+	public void unmarshalJson() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TIMESTAMP);
+		value.addValues(extended);
+
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(timestampDate, t.getTimestamp());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void unmarshalJson_bad_value() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TIMESTAMP);
+		value.addValues("bad value");
+
+		TimestampType t = new TimestampType("NAME");
+		t.unmarshalJson(subTypes, value, version, warnings);
+	}
+
+	@Test
+	public void setTimestamp() {
+		TimestampType t = new TimestampType("NAME");
+		assertNull(t.getTimestamp());
+		t.setTimestamp(timestampDate);
+		assertEquals(timestampDate, t.getTimestamp());
 	}
 }

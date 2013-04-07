@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.junit.Test;
 
@@ -146,6 +147,38 @@ public class JCardValueTest {
 	public void dateTime_empty() {
 		JCardValue value = JCardValue.dateTime();
 		assertEquals(JCardDataType.DATE_TIME, value.getDataType());
+		assertEquals(0, value.getValues().size());
+	}
+
+	@Test
+	public void timestamp() {
+		Date date;
+		{
+			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			c.clear();
+			c.set(Calendar.YEAR, 1980);
+			c.set(Calendar.MONTH, Calendar.JUNE);
+			c.set(Calendar.DAY_OF_MONTH, 5);
+			c.set(Calendar.HOUR_OF_DAY, 13);
+			c.set(Calendar.MINUTE, 10);
+			c.set(Calendar.SECOND, 20);
+			date = c.getTime();
+		}
+		JCardValue value = JCardValue.timestamp(date);
+		assertEquals(JCardDataType.TIMESTAMP, value.getDataType());
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expected = Arrays.asList(
+			Arrays.asList(new Object[]{ "1980-06-05T13:10:20Z" })
+		);
+		//@formatter:on
+		assertEquals(expected, value.getValues());
+	}
+
+	@Test
+	public void timestamp_empty() {
+		JCardValue value = JCardValue.timestamp();
+		assertEquals(JCardDataType.TIMESTAMP, value.getDataType());
 		assertEquals(0, value.getValues().size());
 	}
 

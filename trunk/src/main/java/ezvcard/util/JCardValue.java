@@ -117,6 +117,26 @@ public class JCardValue {
 	}
 
 	/**
+	 * Helper constructor for creating a "timestamp" value.
+	 */
+	public static JCardValue timestamp() {
+		return timestamp(null);
+	}
+
+	/**
+	 * Helper constructor for creating a "timestamp" value.
+	 * @param timestamp the timestamp
+	 */
+	public static JCardValue timestamp(Date timestamp) {
+		JCardValue jcardValue = new JCardValue();
+		jcardValue.dataType = JCardDataType.TIMESTAMP;
+		if (timestamp != null) {
+			jcardValue.addValues(VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_EXTENDED));
+		}
+		return jcardValue;
+	}
+
+	/**
 	 * Gets the jCard data type
 	 * @return the data type (e.g. "text")
 	 */
