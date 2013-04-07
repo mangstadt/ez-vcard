@@ -8,12 +8,13 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -82,38 +83,26 @@ public class TimestampType extends VCardType {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = writeValue();
-		sb.append(VCardStringUtils.escape(value));
+		sb.append(writeValue());
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		try {
-			timestamp = VCardDateFormatter.parse(value);
-		} catch (IllegalArgumentException e) {
-			warnings.add("Date string \"" + value + "\" for type \"" + typeName + "\" could not be parsed.");
-		}
+		parseValue(VCardStringUtils.unescape(value));
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = writeValue();
-		parent.timestamp(value);
+		parent.timestamp(writeValue());
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.timestamp();
-		if (value != null) {
-			doUnmarshalText(value, element.version(), warnings, compatibilityMode);
+		if (value == null) {
+			throw new SkipMeException("No timestamp value found.");
 		}
-	}
-
-	private String writeValue() {
-		if (timestamp == null) {
-			throw new SkipMeException("Property has no timestamp value associated with it.");
-		}
-		return VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_BASIC); //"UTC_TIME_BASIC" works with all vCard versions
+		parseValue(value);
 	}
 
 	@Override
@@ -128,6 +117,37 @@ public class TimestampType extends VCardType {
 		if (value == null) {
 			value = element.value();
 		}
-		doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
+		parseValue(value);
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		checkForValue();
+		return JCardValue.timestamp(timestamp);
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		String valueStr = value.getFirstValueAsString();
+		parseValue(valueStr);
+	}
+
+	private void checkForValue() {
+		if (timestamp == null) {
+			throw new SkipMeException("Property has no timestamp value associated with it.");
+		}
+	}
+
+	private String writeValue() {
+		checkForValue();
+		return VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_BASIC); //"UTC_TIME_BASIC" works with all vCard versions
+	}
+
+	private void parseValue(String value) {
+		try {
+			timestamp = VCardDateFormatter.parse(value);
+		} catch (IllegalArgumentException e) {
+			throw new SkipMeException("Could not parse timestamp: " + value);
+		}
 	}
 }
