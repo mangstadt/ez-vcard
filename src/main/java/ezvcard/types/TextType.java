@@ -5,11 +5,12 @@ import java.util.List;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -83,7 +84,7 @@ public class TextType extends VCardType {
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		this.value = VCardStringUtils.unescape(value);
+		setValue(VCardStringUtils.unescape(value));
 	}
 
 	@Override
@@ -99,5 +100,15 @@ public class TextType extends VCardType {
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		setValue(element.value());
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		return JCardValue.text(value);
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		setValue(value.getFirstValueAsString());
 	}
 }
