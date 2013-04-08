@@ -13,12 +13,14 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -64,8 +66,36 @@ import ezvcard.util.XCardElement;
  * 
  * @author Michael Angstadt
  */
+
+//@formatter:off
+/* 
+ * vCard 2.1, 3.0:
+ * Try to parse the beginning as UTC offset.
+ * - If valid, parse the rest as text.
+ * - If invalid, throw SkipMeException.
+ * 
+ * vCard 4.0, jCard:
+ * VALUE=text:			Try to parse as UTC offset.  If invalid, treat as text
+ * VALUE=utc-offset:	Try to parse as UTC offset.  If invalid, throw SkipMeException.
+ * VALUE=uri:			Not going to support this, as there is no description of what a timezone URI looks like
+ * No VALUE param:		Try to parse as UTC offset.  If invalid, treat as text
+ * 
+ * hCard:
+ * Same as vCard 3.0
+ * 
+ * xCard:
+ * text	| utc-offset	| result
+ * no	| no			| throw SkipMeException
+ * yes	| no			| OK
+ * no	| yes			| OK
+ * no	| invalid		| throw SkipMeException
+ * yes	| yes			| OK
+ * yes	| invalid		| add warning, ignore utc-offset
+ */
+//@formatter:on
 public class TimezoneType extends VCardType {
 	public static final String NAME = "TZ";
+	private static final Pattern utcOffsetRegex = Pattern.compile("^([-\\+]?\\d{1,2}(:?\\d{2})?)(.*)");
 
 	private Integer hourOffset;
 	private Integer minuteOffset;
@@ -339,10 +369,8 @@ public class TimezoneType extends VCardType {
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parseValue(value);
-		if (text != null) {
-			text = VCardStringUtils.unescape(text);
-		}
+		value = VCardStringUtils.unescape(value);
+		parse(value, subTypes.getValue() == ValueParameter.UTC_OFFSET, version);
 	}
 
 	@Override
@@ -359,36 +387,91 @@ public class TimezoneType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.get("text", "uri", "utc-offset");
-		if (value != null) {
-			parseValue(value);
+		String text = element.get("text");
+		String utcOffset = element.get("utc-offset");
+
+		if (text == null && utcOffset == null) {
+			throw new SkipMeException("No timezone data found.");
 		}
-	}
 
-	private void parseValue(String value) {
-		Pattern p = Pattern.compile("^([-\\+]?\\d{1,2}(:?\\d{2})?)(.*)");
-		Matcher m = p.matcher(value);
-		if (m.find()) {
-			//do some smart parsing--if the value starts with a timezone, then parse it
-			int offsets[] = VCardDateFormatter.parseTimeZone(m.group(1));
-			hourOffset = offsets[0];
-			minuteOffset = offsets[1];
+		if (text != null) {
+			setText(text);
+		}
 
-			String text = m.group(3);
-			if (text != null && text.length() == 0) {
-				text = null;
+		if (utcOffset != null) {
+			try {
+				int offsets[] = VCardDateFormatter.parseTimeZone(utcOffset);
+				setMinuteOffset(offsets[1]); //set this one first because it could throw an exception
+				setHourOffset(offsets[0]);
+			} catch (IllegalArgumentException e) {
+				if (text == null) {
+					throw new SkipMeException("Unable to parse UTC offset: " + utcOffset);
+				} else {
+					warnings.add("Ignoring invalid UTC offset: " + utcOffset);
+				}
 			}
-			this.text = text;
-		} else {
-			hourOffset = null;
-			minuteOffset = null;
-			text = value;
 		}
 	}
 
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String value = element.value();
-		doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);
+		parse(element.value(), false, VCardVersion.V3_0);
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		if (text != null) {
+			return JCardValue.text(text);
+		} else if (hourOffset != null && minuteOffset != null) {
+			return JCardValue.utcOffset(hourOffset, minuteOffset);
+		} else {
+			throw new SkipMeException("Property does not have text or a UTC offset associated with it.");
+		}
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		String valueStr = value.getFirstValueAsString();
+		parse(valueStr, value.getDataType() == JCardDataType.UTC_OFFSET, version);
+	}
+
+	private void parse(String value, boolean isUtcOffsetDataType, VCardVersion version) {
+		if (version == null || version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
+			//will always start with a UTC offset
+			//e.g. "-05:00;EDT;America/New_York"
+			//e.g. "-05:00"
+			Matcher m = utcOffsetRegex.matcher(value);
+			if (m.find()) {
+				try {
+					int offsets[] = VCardDateFormatter.parseTimeZone(m.group(1));
+					setMinuteOffset(offsets[1]); //set this one first because it could throw an exception
+					setHourOffset(offsets[0]);
+
+					String text = m.group(3);
+					if (text != null && text.length() == 0) {
+						text = null;
+					}
+					setText(text);
+				} catch (IllegalArgumentException e) {
+					throw new SkipMeException("Unable to parse UTC offset: " + m.group(1));
+				}
+			} else {
+				throw new SkipMeException("No UTC offset found: " + value);
+			}
+		} else {
+			//e.g. "-05:00"
+			//e.g. "America/New_York"
+			try {
+				int offsets[] = VCardDateFormatter.parseTimeZone(value);
+				setMinuteOffset(offsets[1]); //set this one first because it could throw an exception
+				setHourOffset(offsets[0]);
+			} catch (IllegalArgumentException e) {
+				if (isUtcOffsetDataType) {
+					throw new SkipMeException("Unable to parse UTC offset: " + value);
+				}
+				//e.g. "America/New_York"
+				setText(value);
+			}
+		}
 	}
 }
