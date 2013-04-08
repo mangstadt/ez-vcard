@@ -137,6 +137,28 @@ public class JCardValue {
 	}
 
 	/**
+	 * Helper constructor for creating a "utc-offset" value.
+	 */
+	public static JCardValue utcOffset() {
+		return utcOffset(null, null);
+	}
+
+	/**
+	 * Helper constructor for creating a "utf-offset" value.
+	 * @param hourOffset the hour offset (e.g. -5)
+	 * @param minuteOffset the minute offset (e.g. 0)
+	 */
+	public static JCardValue utcOffset(Integer hourOffset, Integer minuteOffset) {
+		JCardValue jcardValue = new JCardValue();
+		jcardValue.dataType = JCardDataType.UTC_OFFSET;
+		if (hourOffset != null) {
+			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
+			jcardValue.addValues(offset);
+		}
+		return jcardValue;
+	}
+
+	/**
 	 * Gets the jCard data type
 	 * @return the data type (e.g. "text")
 	 */

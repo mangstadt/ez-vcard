@@ -183,6 +183,27 @@ public class JCardValueTest {
 	}
 
 	@Test
+	public void utcOffset() {
+		JCardValue value = JCardValue.utcOffset(-5, 30);
+		assertEquals(JCardDataType.UTC_OFFSET, value.getDataType());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expected = Arrays.asList(
+			Arrays.asList(new Object[]{ "-05:30" })
+		);
+		//@formatter:on
+		assertEquals(expected, value.getValues());
+	}
+
+	@Test
+	public void utcOffset_empty() {
+		JCardValue value = JCardValue.utcOffset();
+		assertEquals(JCardDataType.UTC_OFFSET, value.getDataType());
+		assertEquals(0, value.getValues().size());
+	}
+
+	@Test
 	public void structured() {
 		JCardValue value = new JCardValue();
 		assertFalse(value.isStructured());
