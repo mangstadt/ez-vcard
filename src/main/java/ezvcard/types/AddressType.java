@@ -378,12 +378,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * exist
 	 */
 	public String getTimezone() {
-		String value = subTypes.first("TZ");
-		if (value.matches("(?i)tz:.*")) {
-			//remove the "tz:"
-			value = (value.length() > 3) ? value.substring(3) : "";
-		}
-		return value;
+		return subTypes.first("TZ");
 	}
 
 	/**
@@ -394,7 +389,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * @param timezone the timezone (e.g. "America/New_York") or null to remove
 	 */
 	public void setTimezone(String timezone) {
-		subTypes.replace("TZ", "tz:" + timezone);
+		subTypes.replace("TZ", timezone);
 	}
 
 	@Override
