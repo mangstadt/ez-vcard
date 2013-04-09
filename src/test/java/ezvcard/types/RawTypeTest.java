@@ -58,6 +58,7 @@ public class RawTypeTest {
 	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	final VCardSubTypes subTypes = new VCardSubTypes();
 	final String propertyValue = "value;value";
+	final String propertyValueEscaped = "value\\;value";
 	final RawTypeImpl type = new RawTypeImpl(propertyValue);
 
 	@After
@@ -165,7 +166,7 @@ public class RawTypeTest {
 		RawTypeImpl type = new RawTypeImpl();
 		type.unmarshalJson(subTypes, value, VCardVersion.V4_0, warnings);
 
-		assertEquals(propertyValue, type.getValue());
+		assertEquals(propertyValueEscaped, type.getValue());
 		assertEquals(0, warnings.size());
 	}
 
