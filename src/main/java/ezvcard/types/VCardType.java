@@ -14,6 +14,7 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
+import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
@@ -385,9 +386,31 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * {@link VCard} object
 	 */
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		Object first = value.getFirstValue();
-		String valueStr = (first == null) ? "" : first.toString();
-		doUnmarshalText(valueStr, version, warnings, CompatibilityMode.RFC);
+		StringBuilder sb = new StringBuilder();
+
+		char delimiter = value.isStructured() ? ';' : ',';
+		boolean firstOutter = true;
+		for (List<String> valueStrs : value.getValuesAsStrings()) {
+			if (!firstOutter) {
+				sb.append(delimiter);
+			}
+
+			boolean firstInner = true;
+			for (String valueStr : valueStrs) {
+				valueStr = VCardStringUtils.escape(valueStr);
+
+				if (!firstInner) {
+					sb.append(',');
+				}
+				sb.append(valueStr);
+
+				firstInner = false;
+			}
+
+			firstOutter = false;
+		}
+
+		doUnmarshalText(sb.toString(), version, warnings, CompatibilityMode.RFC);
 	}
 
 	/**
