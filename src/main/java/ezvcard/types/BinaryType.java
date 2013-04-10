@@ -20,6 +20,7 @@ import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.IOUtils;
 import ezvcard.util.JCardValue;
+import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
@@ -293,173 +294,106 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 		}
 
 		if (url != null) {
-			ValueParameter vp = null;
-			switch (version) {
-			case V2_1:
-				vp = ValueParameter.URL;
-				break;
-			case V3_0:
-			case V4_0:
-				vp = ValueParameter.URI;
-				break;
-			}
-			copy.setValue(vp);
-
 			copy.setEncoding(null);
 
-			if (version == VCardVersion.V4_0) {
-				//don't null out TYPE, it could be set to "home" or "work"
-				copy.setMediaType(contentType.getMediaType());
-			} else {
+			switch (version) {
+			case V2_1:
+				copy.setValue(ValueParameter.URL);
 				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
+				break;
+			case V3_0:
+				copy.setValue(ValueParameter.URI);
+				copy.setType(contentType.getValue());
+				copy.setMediaType(null);
+				break;
+			case V4_0:
+				copy.setMediaType(contentType.getMediaType());
+				break;
 			}
-		}
-		if (data != null) {
+		} else if (data != null) {
 			copy.setMediaType(null);
-			if (version == VCardVersion.V2_1) {
+
+			switch (version) {
+			case V2_1:
 				copy.setEncoding(EncodingParameter.BASE64);
 				copy.setValue(null);
 				copy.setType(contentType.getValue());
-			} else if (version == VCardVersion.V3_0) {
+				break;
+			case V3_0:
 				copy.setEncoding(EncodingParameter.B);
 				copy.setValue(null);
 				copy.setType(contentType.getValue());
-			} else {
+				break;
+			case V4_0:
 				copy.setEncoding(null);
 				copy.setValue(ValueParameter.URI);
-				//don't null out TYPE, it could be set to "home" or "work"
+				//don't null out TYPE, it could be set to "home", "work", etc
+				break;
 			}
 		}
 	}
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (url != null) {
-			sb.append(url);
-		} else if (data != null) {
-			if (version == VCardVersion.V4_0) {
-				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
-				DataUri uri = new DataUri(mediaType, data);
-				sb.append(uri.toString());
-			} else {
-				String base64 = new String(Base64.encodeBase64(data));
-				sb.append(base64);
-			}
-		} else {
-			throw new SkipMeException("Property has neither a URL nor binary data attached to it.");
-		}
+		sb.append(write(version));
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//check for a 4.0 data URI
-		try {
-			DataUri uri = new DataUri(value);
-			T contentType = buildMediaTypeObj(uri.getContentType());
-			setData(uri.getData(), contentType);
-			return;
-		} catch (IllegalArgumentException e) {
-			//not a data URI
-		}
-
-		//get content type from 4.0 MEDIATYPE parameter
-		T contentType = null;
-		String mediaType = subTypes.getMediaType();
-		if (mediaType != null) {
-			contentType = buildMediaTypeObj(mediaType);
-		} else {
-			//get content type from 2.1/3.0 TYPE parameter
-			String type = subTypes.getType();
-			if (type != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
-				contentType = buildTypeObj(getType());
-			}
-		}
-
-		//check for a URL
-		ValueParameter valueSubType = subTypes.getValue();
-		if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
-			setUrl(value, contentType);
-			return;
-		}
-
-		//check for 2.1/3.0 base64 data
-		EncodingParameter encodingSubType = subTypes.getEncoding();
-		if (encodingSubType != null) {
-			if (encodingSubType != EncodingParameter.B && encodingSubType != EncodingParameter.BASE64) {
-				warnings.add("Unrecognized " + EncodingParameter.NAME + " parameter value \"" + encodingSubType + "\" in " + getTypeName() + " property.  Attempting to decode as base64.");
-			}
-			setData(Base64.decodeBase64(value), contentType);
-			return;
-		}
-
-		//see if the value is a URL incase they didn't set the VALUE parameter
-		if (value.matches("(?i)http.*")) {
-			setUrl(value, contentType);
-			return;
-		}
-
-		cannotUnmarshalValue(value, version, warnings, compatibilityMode, contentType);
+		value = VCardStringUtils.unescape(value);
+		parse(value, version, warnings, compatibilityMode);
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		StringBuilder sb = new StringBuilder();
-		doMarshalText(sb, parent.version(), warnings, compatibilityMode);
-		parent.uri(sb.toString());
+		parent.uri(write(parent.version()));
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.uri();
-		if (value != null) {
-			doUnmarshalText(value, element.version(), warnings, compatibilityMode);
+		if (value == null) {
+			throw new SkipMeException("No value found.");
 		}
+		parse(value, element.version(), warnings, compatibilityMode);
 	}
 
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
-		String error = null;
 		if ("object".equals(elementName)) {
-			T mediaType = null;
-			String type = element.attr("type");
-			if (type.length() > 0) {
-				mediaType = buildMediaTypeObj(type);
-			}
-
 			String data = element.absUrl("data");
 			if (data.length() > 0) {
 				try {
 					DataUri uri = new DataUri(data);
-					mediaType = buildMediaTypeObj(uri.getContentType());
+					T mediaType = buildMediaTypeObj(uri.getContentType());
 					setData(uri.getData(), mediaType);
 				} catch (IllegalArgumentException e) {
-					//TODO create buildTypeObjFromExtension() method
-					setUrl(data, null);
+					T mediaType = null;
+					String type = element.attr("type");
+					if (type.length() > 0) {
+						mediaType = buildMediaTypeObj(type);
+					}
+					setUrl(data, mediaType);
 				}
 			} else {
-				error = "<object> tag does not have a \"data\" attribute.";
+				throw new SkipMeException("<object> tag does not have a \"data\" attribute.");
 			}
 		} else {
-			error = "Cannot parse HTML tag \"" + elementName + "\".";
-		}
-
-		if (error != null) {
-			throw new SkipMeException(error);
+			throw new SkipMeException("Cannot parse HTML tag \"" + elementName + "\".");
 		}
 	}
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		StringBuilder sb = new StringBuilder();
-		doMarshalText(sb, version, warnings, CompatibilityMode.RFC);
-		return JCardValue.uri(sb.toString());
+		return JCardValue.uri(write(version));
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		doUnmarshalText(value.getFirstValueAsString(), version, warnings, CompatibilityMode.RFC);
+		String valueStr = value.getFirstValueAsString();
+		parse(valueStr, version, warnings, CompatibilityMode.RFC);
 	}
 
 	/**
@@ -472,8 +406,19 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	 * @param contentType the content type of the resource of null if unknown
 	 */
 	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, T contentType) {
-		warnings.add("No " + ValueParameter.NAME + " or " + EncodingParameter.NAME + " parameter given.  Attempting to decode as base64.");
-		setData(Base64.decodeBase64(value), contentType);
+		switch (version) {
+		case V2_1:
+		case V3_0:
+			if (value.startsWith("http")) {
+				setUrl(value, contentType);
+			} else {
+				setData(Base64.decodeBase64(value), contentType);
+			}
+			break;
+		case V4_0:
+			setUrl(value, contentType);
+			break;
+		}
 	}
 
 	/**
@@ -491,4 +436,70 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	 * @return the parameter object
 	 */
 	protected abstract T buildTypeObj(String type);
+
+	private void parse(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		if (version == null) {
+			version = VCardVersion.V2_1;
+		}
+
+		T contentType = null;
+		switch (version) {
+		case V2_1:
+		case V3_0:
+			//get the TYPE parameter
+			String type = subTypes.getType();
+			if (type != null) {
+				contentType = buildTypeObj(type);
+			}
+
+			//parse as URL
+			ValueParameter valueSubType = subTypes.getValue();
+			if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
+				setUrl(value, contentType);
+				return;
+			}
+
+			//parse as binary
+			EncodingParameter encodingSubType = subTypes.getEncoding();
+			if (encodingSubType == EncodingParameter.BASE64 || encodingSubType == EncodingParameter.B) {
+				setData(Base64.decodeBase64(value), contentType);
+				return;
+			}
+
+			break;
+		case V4_0:
+			try {
+				//parse as data URI
+				DataUri uri = new DataUri(value);
+				contentType = buildMediaTypeObj(uri.getContentType());
+				setData(uri.getData(), contentType);
+				return;
+			} catch (IllegalArgumentException e) {
+				//not a data URI, get content type from MEDIATYPE parameter
+				String mediaType = subTypes.getMediaType();
+				if (mediaType != null) {
+					contentType = buildMediaTypeObj(mediaType);
+				}
+			}
+			break;
+		}
+
+		cannotUnmarshalValue(value, version, warnings, compatibilityMode, contentType);
+	}
+
+	private String write(VCardVersion version) {
+		if (url != null) {
+			return url;
+		} else if (data != null) {
+			if (version == VCardVersion.V4_0) {
+				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
+				DataUri uri = new DataUri(mediaType, data);
+				return uri.toString();
+			} else {
+				return new String(Base64.encodeBase64(data));
+			}
+		} else {
+			throw new SkipMeException("Property has neither a URL nor binary data attached to it.");
+		}
+	}
 }
