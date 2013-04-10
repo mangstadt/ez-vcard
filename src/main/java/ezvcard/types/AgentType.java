@@ -172,6 +172,8 @@ public class AgentType extends VCardType {
 		} else {
 			String href = element.absUrl("href");
 			if (href.length() > 0) {
+				setUrl(href);
+			} else {
 				setUrl(element.value());
 			}
 		}
