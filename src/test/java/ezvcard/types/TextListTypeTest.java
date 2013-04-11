@@ -3,6 +3,7 @@ package ezvcard.types;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,6 +66,12 @@ public class TextListTypeTest {
 		multipleItems.addValue("one");
 		multipleItems.addValue("two");
 		multipleItems.addValue("three");
+	}
+	final TextListTypeImpl multipleItemsStructured = new TextListTypeImpl(';');
+	{
+		multipleItemsStructured.addValue("one");
+		multipleItemsStructured.addValue("two");
+		multipleItemsStructured.addValue("three");
 	}
 	final TextListTypeImpl specialChars = new TextListTypeImpl();
 	{
@@ -229,6 +236,25 @@ public class TextListTypeTest {
 	}
 
 	@Test
+	public void marshalJson_structured() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = multipleItemsStructured.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertTrue(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ "one" }),
+			Arrays.asList(new Object[]{ "two" }),
+			Arrays.asList(new Object[]{ "three" })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
 	public void unmarshalText_zero_items() {
 		VCardVersion version = VCardVersion.V2_1;
 		testObj.unmarshalText(subTypes, "", version, warnings, compatibilityMode);
@@ -353,7 +379,11 @@ public class TextListTypeTest {
 		public static final String NAME = "NAME";
 
 		public TextListTypeImpl() {
-			super(NAME, ',');
+			this(',');
+		}
+
+		public TextListTypeImpl(char separator) {
+			super(NAME, separator);
 		}
 	}
 }
