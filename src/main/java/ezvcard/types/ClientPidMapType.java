@@ -6,12 +6,13 @@ import java.util.UUID;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -160,6 +161,7 @@ public class ClientPidMapType extends VCardType {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		checkForValue();
 		sb.append(pid + ";" + VCardStringUtils.escape(uri));
 	}
 
@@ -167,7 +169,7 @@ public class ClientPidMapType extends VCardType {
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String split[] = value.split(";", 2);
 		if (split.length < 2) {
-			warnings.add("Incorrect format of " + NAME + " type value: \"" + value + "\"");
+			throw new SkipMeException("Cannot parse.  Incorrect format of value: " + value);
 		} else {
 			pid = Integer.parseInt(split[0]);
 			uri = VCardStringUtils.unescape(split[1]);
@@ -176,6 +178,8 @@ public class ClientPidMapType extends VCardType {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+		checkForValue();
+
 		if (uri != null) {
 			parent.uri(uri);
 		}
@@ -194,7 +198,11 @@ public class ClientPidMapType extends VCardType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.text(pid + "", uri);
+		checkForValue();
+
+		JCardValue value = JCardValue.text(pid + "", uri);
+		value.setStructured(true);
+		return value;
 	}
 
 	@Override
@@ -206,5 +214,11 @@ public class ClientPidMapType extends VCardType {
 
 		str = value.getFirstValueAsString(i++);
 		uri = (str == null || str.length() == 0) ? null : str;
+	}
+
+	private void checkForValue() {
+		if (pid == null && uri == null) {
+			throw new SkipMeException("Property has no value associated with it.");
+		}
 	}
 }
