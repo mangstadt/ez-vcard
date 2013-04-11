@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,11 +39,8 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class KindTypeTest {
-	/**
-	 * Tests the "is*" methods.
-	 */
 	@Test
-	public void isMethods() {
+	public void isIndividual() {
 		KindType kind = new KindType("individual");
 		assertTrue(kind.isIndividual());
 		assertFalse(kind.isGroup());
@@ -51,40 +48,55 @@ public class KindTypeTest {
 		assertFalse(kind.isLocation());
 		assertFalse(kind.isApplication());
 		assertFalse(kind.isDevice());
+	}
 
-		kind = new KindType("group");
+	@Test
+	public void isGroup() {
+		KindType kind = new KindType("group");
 		assertFalse(kind.isIndividual());
 		assertTrue(kind.isGroup());
 		assertFalse(kind.isOrg());
 		assertFalse(kind.isLocation());
 		assertFalse(kind.isApplication());
 		assertFalse(kind.isDevice());
+	}
 
-		kind = new KindType("org");
+	@Test
+	public void isOrg() {
+		KindType kind = new KindType("org");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertTrue(kind.isOrg());
 		assertFalse(kind.isLocation());
 		assertFalse(kind.isApplication());
 		assertFalse(kind.isDevice());
+	}
 
-		kind = new KindType("location");
+	@Test
+	public void isLocation() {
+		KindType kind = new KindType("location");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
 		assertTrue(kind.isLocation());
 		assertFalse(kind.isApplication());
 		assertFalse(kind.isDevice());
+	}
 
-		kind = new KindType("application");
+	@Test
+	public void isApplication() {
+		KindType kind = new KindType("application");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
 		assertFalse(kind.isLocation());
 		assertTrue(kind.isApplication());
 		assertFalse(kind.isDevice());
+	}
 
-		kind = new KindType("device");
+	@Test
+	public void isDevice() {
+		KindType kind = new KindType("device");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -93,27 +105,39 @@ public class KindTypeTest {
 		assertTrue(kind.isDevice());
 	}
 
-	/**
-	 * Tests the static, factory methods.
-	 */
 	@Test
-	public void creationMethods() {
+	public void individual() {
 		KindType kind = KindType.individual();
 		assertEquals("individual", kind.getValue());
+	}
 
-		kind = KindType.group();
+	@Test
+	public void group() {
+		KindType kind = KindType.group();
 		assertEquals("group", kind.getValue());
+	}
 
-		kind = KindType.org();
+	@Test
+	public void org() {
+		KindType kind = KindType.org();
 		assertEquals("org", kind.getValue());
+	}
 
-		kind = KindType.location();
+	@Test
+	public void location() {
+		KindType kind = KindType.location();
 		assertEquals("location", kind.getValue());
+	}
 
-		kind = KindType.application();
+	@Test
+	public void application() {
+		KindType kind = KindType.application();
 		assertEquals("application", kind.getValue());
+	}
 
-		kind = KindType.device();
+	@Test
+	public void device() {
+		KindType kind = KindType.device();
 		assertEquals("device", kind.getValue());
 	}
 }

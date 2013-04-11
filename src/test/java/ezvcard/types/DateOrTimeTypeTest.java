@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -104,6 +105,14 @@ public class DateOrTimeTypeTest {
 	{
 		dateType.setDate(date, false);
 	}
+	DateOrTimeTypeImpl type;
+
+	@Before
+	public void before() {
+		type = new DateOrTimeTypeImpl();
+		warnings.clear();
+		subTypes.clear();
+	}
 
 	@Test
 	public void marshalText_date_2_1() {
@@ -114,6 +123,7 @@ public class DateOrTimeTypeTest {
 
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE, subTypes.getValue());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -125,6 +135,7 @@ public class DateOrTimeTypeTest {
 
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE, subTypes.getValue());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -137,6 +148,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -148,13 +160,15 @@ public class DateOrTimeTypeTest {
 		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
 		dateType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
 		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void marshalJson_date() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = dateType.marshalJson(version, new ArrayList<String>());
+		JCardValue value = dateType.marshalJson(version, warnings);
 		assertEquals(JCardDataType.DATE, value.getDataType());
 		assertFalse(value.isStructured());
 
@@ -165,6 +179,7 @@ public class DateOrTimeTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -182,6 +197,7 @@ public class DateOrTimeTypeTest {
 
 		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -192,6 +208,7 @@ public class DateOrTimeTypeTest {
 
 		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -200,8 +217,10 @@ public class DateOrTimeTypeTest {
 		String actual = dateTimeType.marshalText(version, warnings, compatibilityMode);
 		assertTrue(actual.matches(dateTimeRegex));
 		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -210,19 +229,22 @@ public class DateOrTimeTypeTest {
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Element element = xe.element();
 		dateTimeType.marshalXml(element, version, warnings, compatibilityMode);
+
 		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(dateTimeRegex));
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void marshalJson_datetime() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = dateTimeType.marshalJson(version, new ArrayList<String>());
+		JCardValue value = dateTimeType.marshalJson(version, warnings);
 		assertEquals(JCardDataType.DATE_TIME, value.getDataType());
 		assertFalse(value.isStructured());
 
 		assertEquals(1, value.getValues().size());
 		assertEquals(1, value.getValues().get(0).size());
 		assertTrue(value.getFirstValueAsString(), value.getFirstValueAsString().matches(dateTimeExtendedRegex));
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -253,6 +275,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = reducedAccuracyDateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -264,6 +287,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = reducedAccuracyDateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -275,7 +299,9 @@ public class DateOrTimeTypeTest {
 		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
 		reducedAccuracyDateType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
 		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -292,6 +318,7 @@ public class DateOrTimeTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -322,6 +349,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = reducedAccuracyDateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -333,7 +361,9 @@ public class DateOrTimeTypeTest {
 		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
 		reducedAccuracyDateTimeType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
 		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -350,6 +380,7 @@ public class DateOrTimeTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -380,6 +411,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 		assertNull(subTypes.getCalscale());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -391,7 +423,9 @@ public class DateOrTimeTypeTest {
 		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
 		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
 		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -408,6 +442,7 @@ public class DateOrTimeTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -451,43 +486,42 @@ public class DateOrTimeTypeTest {
 	public void unmarshalText_date_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, dateStrExtended, version, warnings, compatibilityMode);
 
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void unmarshalText_date_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, dateStrExtended, version, warnings, compatibilityMode);
 
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void unmarshalText_date_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, dateStrExtended, version, warnings, compatibilityMode);
 
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void unmarshalText_date_invalid_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, "invalid", version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
@@ -500,7 +534,6 @@ public class DateOrTimeTypeTest {
 	public void unmarshalXml_date() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime(dateStrExtended);
 		Element input = xe.element();
@@ -509,6 +542,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -516,7 +550,6 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime("invalid");
 		Element input = xe.element();
@@ -536,12 +569,12 @@ public class DateOrTimeTypeTest {
 		value.setDataType(JCardDataType.DATE);
 		value.addValues(dateStrExtended);
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -553,7 +586,6 @@ public class DateOrTimeTypeTest {
 		value.setDataType(JCardDataType.DATE);
 		value.addValues("invalid");
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(type.getDate());
@@ -567,10 +599,10 @@ public class DateOrTimeTypeTest {
 		List<String> warnings = new ArrayList<String>();
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"" + dateStrExtended + "\">June 5, 1980</time>");
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalHtml(element, warnings);
 
 		assertEquals(date, type.getDate());
+		assertEquals(0, warnings.size());
 		assertEquals(0, warnings.size());
 	}
 
@@ -579,10 +611,10 @@ public class DateOrTimeTypeTest {
 		List<String> warnings = new ArrayList<String>();
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>" + dateStrExtended + "</time>");
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalHtml(element, warnings);
 
 		assertEquals(date, type.getDate());
+		assertEquals(0, warnings.size());
 		assertEquals(0, warnings.size());
 	}
 
@@ -591,7 +623,6 @@ public class DateOrTimeTypeTest {
 		List<String> warnings = new ArrayList<String>();
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>June 5, 1980</time>");
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalHtml(element, warnings);
 	}
 
@@ -600,10 +631,10 @@ public class DateOrTimeTypeTest {
 		List<String> warnings = new ArrayList<String>();
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + dateStrExtended + "</div>");
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalHtml(element, warnings);
 
 		assertEquals(date, type.getDate());
+		assertEquals(0, warnings.size());
 		assertEquals(0, warnings.size());
 	}
 
@@ -613,46 +644,46 @@ public class DateOrTimeTypeTest {
 	public void unmarshalText_datetime_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, dateStr, version, warnings, compatibilityMode);
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void unmarshalText_datetime_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, dateStr, version, warnings, compatibilityMode);
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void unmarshalText_datetime_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, dateStr, version, warnings, compatibilityMode);
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void unmarshalXml_datetime() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime(dateStr);
 		type.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -663,11 +694,11 @@ public class DateOrTimeTypeTest {
 		value.setDataType(JCardDataType.DATE);
 		value.addValues(dateStr);
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 		assertEquals(date, type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertNull(type.getText());
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -676,7 +707,6 @@ public class DateOrTimeTypeTest {
 	public void unmarshalText_reducedAccuracyDate_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
 	}
 
@@ -684,7 +714,6 @@ public class DateOrTimeTypeTest {
 	public void unmarshalText_reducedAccuracyDate_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
 	}
 
@@ -692,26 +721,26 @@ public class DateOrTimeTypeTest {
 	public void unmarshalText_reducedAccuracyDate_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
 		assertEquals(reducedAccuracyDate, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void unmarshalText_reducedAccuracyDate_without_dashes_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDateNoDashes, version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
 		assertEquals(reducedAccuracyDateNoDashes, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -719,7 +748,6 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime(reducedAccuracyDate);
 		Element input = xe.element();
@@ -729,6 +757,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDate, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -736,7 +765,6 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime(reducedAccuracyDateNoDashes);
 		Element input = xe.element();
@@ -746,6 +774,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDateNoDashes, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -757,13 +786,13 @@ public class DateOrTimeTypeTest {
 		value.setDataType(JCardDataType.DATE);
 		value.addValues(reducedAccuracyDate);
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(type.getDate());
 		assertEquals(reducedAccuracyDate, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -775,13 +804,13 @@ public class DateOrTimeTypeTest {
 		value.setDataType(JCardDataType.DATE);
 		value.addValues(reducedAccuracyDateNoDashes);
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(type.getDate());
 		assertEquals(reducedAccuracyDateNoDashes, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -790,7 +819,6 @@ public class DateOrTimeTypeTest {
 	public void unmarshalText_reducedAccuracyDateTime_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
 	}
 
@@ -798,7 +826,6 @@ public class DateOrTimeTypeTest {
 	public void unmarshalText_reducedAccuracyDateTime_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
 	}
 
@@ -806,13 +833,13 @@ public class DateOrTimeTypeTest {
 	public void unmarshalText_reducedAccuracyDateTime_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
 		assertEquals(reducedAccuracyDateTime, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -820,7 +847,6 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime(reducedAccuracyDateTime);
 		Element input = xe.element();
@@ -830,6 +856,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDateTime, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -841,13 +868,13 @@ public class DateOrTimeTypeTest {
 		value.setDataType(JCardDataType.DATE_TIME);
 		value.addValues(reducedAccuracyDateTime);
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(type.getDate());
 		assertEquals(reducedAccuracyDateTime, type.getReducedAccuracyDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -857,7 +884,6 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V2_1;
 		List<String> warnings = new ArrayList<String>();
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 	}
 
@@ -866,7 +892,6 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V3_0;
 		List<String> warnings = new ArrayList<String>();
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 	}
 
@@ -877,13 +902,13 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setValue(ValueParameter.TEXT);
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertEquals(text, type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -891,7 +916,6 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
@@ -905,7 +929,6 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		List<String> warnings = new ArrayList<String>();
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.append("text", text);
 		Element input = xe.element();
@@ -915,6 +938,7 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getReducedAccuracyDate());
 		assertEquals(text, type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -926,13 +950,13 @@ public class DateOrTimeTypeTest {
 		value.setDataType(JCardDataType.TEXT);
 		value.addValues(text);
 
-		DateOrTimeTypeImpl type = new DateOrTimeTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(type.getDate());
 		assertNull(type.getReducedAccuracyDate());
 		assertEquals(text, type.getText());
 		assertTrue(warnings.isEmpty());
+		assertEquals(0, warnings.size());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////

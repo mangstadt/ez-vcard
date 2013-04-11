@@ -57,10 +57,14 @@ public class TextTypeTest {
 	final List<String> warnings = new ArrayList<String>();
 	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	final VCardSubTypes subTypes = new VCardSubTypes();
+
 	final TextType textType = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
+	TextType t;
 
 	@Before
 	public void before() {
+		t = new TextType("NAME");
+		subTypes.clear();
 		warnings.clear();
 	}
 
@@ -108,7 +112,6 @@ public class TextTypeTest {
 	@Test
 	public void unmarshalText() {
 		VCardVersion version = VCardVersion.V2_1;
-		TextType t = new TextType("NAME");
 		t.unmarshalText(subTypes, "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.", version, warnings, compatibilityMode);
 		String expected = "This is a test of the TextType." + newline + "One, two, three; and \\four\\.";
 		String actual = t.getValue();
@@ -122,7 +125,6 @@ public class TextTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
 		xe.text("This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		TextType t = new TextType("NAME");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		String expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
 		String actual = t.getValue();
@@ -138,7 +140,6 @@ public class TextTypeTest {
 		"<div>This is a test of the TextType.<br/>One, two, three; and \\four\\.</div>");
 		//@formatter:on
 
-		TextType t = new TextType("NAME");
 		t.unmarshalHtml(element, warnings);
 		String expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
 		String actual = t.getValue();
@@ -155,7 +156,6 @@ public class TextTypeTest {
 		value.addValues("This is a test of the TextType.\nOne, two, three; and \\four\\.");
 		value.setDataType(JCardDataType.TEXT);
 
-		TextType t = new TextType("NAME");
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("This is a test of the TextType.\nOne, two, three; and \\four\\.", t.getValue());

@@ -59,7 +59,6 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TimestampTypeTest {
-	final String newline = System.getProperty("line.separator");
 	final List<String> warnings = new ArrayList<String>();
 	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	final VCardSubTypes subTypes = new VCardSubTypes();
@@ -80,9 +79,12 @@ public class TimestampTypeTest {
 	}
 	final TimestampType timestamp = new TimestampType("NAME", timestampDate);
 	final TimestampType noValue = new TimestampType("NAME");
+	TimestampType t;
 
 	@Before
 	public void before() {
+		t = new TimestampType("NAME");
+		subTypes.clear();
 		warnings.clear();
 	}
 
@@ -149,7 +151,6 @@ public class TimestampTypeTest {
 	@Test
 	public void unmarshalText_basic() {
 		VCardVersion version = VCardVersion.V2_1;
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalText(subTypes, basic, version, warnings, compatibilityMode);
 
 		assertEquals(timestampDate, t.getTimestamp());
@@ -159,7 +160,6 @@ public class TimestampTypeTest {
 	@Test
 	public void unmarshalText_extended() {
 		VCardVersion version = VCardVersion.V2_1;
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalText(subTypes, extended, version, warnings, compatibilityMode);
 
 		assertEquals(timestampDate, t.getTimestamp());
@@ -169,14 +169,12 @@ public class TimestampTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_bad_timestamp() {
 		VCardVersion version = VCardVersion.V2_1;
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalText(subTypes, "bad value", version, warnings, compatibilityMode);
 	}
 
 	@Test
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
-		TimestampType t = new TimestampType("NAME");
 		XCardElement xe = new XCardElement("name");
 		xe.timestamp(basic);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
@@ -186,7 +184,6 @@ public class TimestampTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalXml_no_timestamp_element() {
 		VCardVersion version = VCardVersion.V4_0;
-		TimestampType t = new TimestampType("NAME");
 		XCardElement xe = new XCardElement("name");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
@@ -194,7 +191,6 @@ public class TimestampTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalXml_bad_timestamp() {
 		VCardVersion version = VCardVersion.V4_0;
-		TimestampType t = new TimestampType("NAME");
 		XCardElement xe = new XCardElement("name");
 		xe.timestamp("bad value");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
@@ -203,7 +199,6 @@ public class TimestampTypeTest {
 	@Test
 	public void unmarshalHtml_datetime_attribute() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"" + extended + "\">June 5, 1980</time>");
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals(timestampDate, t.getTimestamp());
@@ -213,7 +208,6 @@ public class TimestampTypeTest {
 	@Test
 	public void unmarshalHtml_time_tag_text() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>" + extended + "</time>");
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals(timestampDate, t.getTimestamp());
@@ -223,7 +217,6 @@ public class TimestampTypeTest {
 	@Test
 	public void unmarshalHtml_tag_text() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + extended + "</div>");
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals(timestampDate, t.getTimestamp());
@@ -233,7 +226,6 @@ public class TimestampTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalHtml_bad_value() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>bad value</div>");
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalHtml(element, warnings);
 	}
 
@@ -245,7 +237,6 @@ public class TimestampTypeTest {
 		value.setDataType(JCardDataType.TIMESTAMP);
 		value.addValues(extended);
 
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(timestampDate, t.getTimestamp());
@@ -260,7 +251,6 @@ public class TimestampTypeTest {
 		value.setDataType(JCardDataType.TIMESTAMP);
 		value.addValues("bad value");
 
-		TimestampType t = new TimestampType("NAME");
 		t.unmarshalJson(subTypes, value, version, warnings);
 	}
 

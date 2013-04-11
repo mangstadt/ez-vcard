@@ -166,7 +166,7 @@ public class StructuredNameTypeTest {
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = allValues.marshalJson(version, new ArrayList<String>());
+		JCardValue value = allValues.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
 		assertTrue(value.isStructured());
 
@@ -187,7 +187,7 @@ public class StructuredNameTypeTest {
 	@Test
 	public void marshalJson_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = emptyValues.marshalJson(version, new ArrayList<String>());
+		JCardValue value = emptyValues.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
 		assertTrue(value.isStructured());
 
@@ -208,7 +208,7 @@ public class StructuredNameTypeTest {
 	@Test
 	public void marshalJson_all_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = allEmptyValues.marshalJson(version, new ArrayList<String>());
+		JCardValue value = allEmptyValues.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
 		assertTrue(value.isStructured());
 
