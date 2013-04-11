@@ -8,11 +8,13 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -161,15 +163,13 @@ public class DeathplaceType extends VCardType {
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (uri != null) {
 			copy.setValue(ValueParameter.URI);
-		} else if (text != null) {
-			copy.setValue(ValueParameter.TEXT);
 		}
 	}
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			sb.append(VCardStringUtils.escape(uri));
+			sb.append(uri);
 		} else if (text != null) {
 			sb.append(VCardStringUtils.escape(text));
 		} else {
@@ -180,12 +180,10 @@ public class DeathplaceType extends VCardType {
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
-		if (subTypes.getValue() == ValueParameter.URI) {
+		ValueParameter valueParam = subTypes.getValue();
+		if (valueParam == ValueParameter.URI) {
 			setUri(value);
-		} else if (subTypes.getValue() == ValueParameter.TEXT) {
-			setText(value);
 		} else {
-			warnings.add("No valid VALUE parameter specified for " + NAME + " type.  Assuming it's text.");
 			setText(value);
 		}
 	}
@@ -203,11 +201,39 @@ public class DeathplaceType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.uri();
+		String value = element.text();
+		if (value != null) {
+			setText(value);
+			return;
+		}
+
+		value = element.uri();
 		if (value != null) {
 			setUri(value);
+			return;
+		}
+
+		throw new SkipMeException("No text or URI elements found.");
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		if (uri != null) {
+			return JCardValue.uri(uri);
+		} else if (text != null) {
+			return JCardValue.text(text);
 		} else {
-			setText(element.text());
+			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		}
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		String valueStr = value.getFirstValueAsString();
+		if (value.getDataType() == JCardDataType.URI) {
+			setUri(valueStr);
+		} else {
+			setText(valueStr);
 		}
 	}
 }

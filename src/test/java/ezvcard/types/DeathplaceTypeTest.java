@@ -2,11 +2,14 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,11 +18,14 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -51,106 +57,304 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class DeathplaceTypeTest {
-	@Test
-	public void marshal() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		String actual;
-		VCardSubTypes subTypes;
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCardSubTypes subTypes = new VCardSubTypes();
+	final VCard vcard = new VCard();
 
-		//text
-		DeathplaceType t = new DeathplaceType();
-		t.setText("Mount St. Helens");
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals("Mount St. Helens", actual);
-		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+	final String text = "Mount, St. Helens";
+	final String textEscaped = "Mount\\, St. Helens";
+	final String uri = "geo:46.176502,-122.191658";
+	final DeathplaceType textType = new DeathplaceType();
+	{
+		textType.setText(text);
+	}
 
-		//URI
+	final DeathplaceType uriType = new DeathplaceType();
+	{
+		uriType.setUri(uri);
+	}
+	final DeathplaceType emptyType = new DeathplaceType();
+	DeathplaceType t;
+
+	@Before
+	public void before() {
 		t = new DeathplaceType();
-		t.setUri("geo:46.176502,-122.191658");
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals("geo:46.176502\\,-122.191658", actual);
+		warnings.clear();
+		subTypes.clear();
+	}
+
+	@Test
+	public void marshalSubTypes_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+
+		assertEquals(0, subTypes.size());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalSubTypes_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		VCardSubTypes subTypes = uriType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+
+		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalXml() throws Exception {
+	public void marshalText_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		String actual = textType.marshalText(version, warnings, compatibilityMode);
 
-		//text
-		DeathplaceType t = new DeathplaceType();
-		t.setText("Mount St. Helens");
-		XCardElement xe = new XCardElement("deathplace");
-		xe.text("Mount St. Helens");
+		assertEquals(textEscaped, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = uriType.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(uri, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_empty() {
+		VCardVersion version = VCardVersion.V4_0;
+		emptyType.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void marshalXml_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
+		xe.text(text);
 		Document expectedDoc = xe.document();
-		xe = new XCardElement("deathplace");
+		xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		Element element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
+		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
-		//URI
-		t = new DeathplaceType();
-		t.setUri("geo:46.176502,-122.191658");
-		xe = new XCardElement("deathplace");
-		xe.uri("geo:46.176502,-122.191658");
-		expectedDoc = xe.document();
-		xe = new XCardElement("deathplace");
-		actualDoc = xe.document();
-		element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshal() throws Exception {
+	public void marshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
+		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
+		xe.uri(uri);
+		Document expectedDoc = xe.document();
+		xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
+		Document actualDoc = xe.document();
+		uriType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
-		//text
-		DeathplaceType t = new DeathplaceType();
-		t.unmarshalText(subTypes, "Mount St. Helens", version, warnings, compatibilityMode);
-		assertEquals("Mount St. Helens", t.getText());
+		assertXMLEqual(expectedDoc, actualDoc);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalXml_empty() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
+		emptyType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void marshalJson_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = textType.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ text })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = uriType.marshalJson(version, warnings);
+		assertEquals(JCardDataType.URI, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ uri })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalJson_empty() {
+		VCardVersion version = VCardVersion.V4_0;
+		emptyType.marshalJson(version, warnings);
+	}
+
+	@Test
+	public void unmarshalText_text_without_value_parameter() {
+		VCardVersion version = VCardVersion.V4_0;
+		t.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
+
+		assertEquals(text, t.getText());
 		assertNull(t.getUri());
+		assertEquals(0, warnings.size());
+	}
 
-		//URI
-		t = new DeathplaceType();
+	@Test
+	public void unmarshalText_text_with_value_parameter() {
+		VCardVersion version = VCardVersion.V4_0;
+		subTypes.setValue(ValueParameter.TEXT);
+		t.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
+
+		assertEquals(text, t.getText());
+		assertNull(t.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_uri_without_value_parameter() {
+		VCardVersion version = VCardVersion.V4_0;
+		t.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
+
+		//parses as text
+		assertEquals(uri, t.getText());
+		assertNull(t.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_uri_with_value_parameter() {
+		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setValue(ValueParameter.URI);
-		t.unmarshalText(subTypes, "geo:46.176502\\,-122.191658", version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
+
 		assertNull(t.getText());
-		assertEquals("geo:46.176502,-122.191658", t.getUri());
+		assertEquals(uri, t.getUri());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshalXml() throws Exception {
+	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-
-		//text
-		DeathplaceType t = new DeathplaceType();
-		XCardElement xe = new XCardElement("deathplace");
-		xe.text("Mount St. Helens");
+		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
+		xe.text(text);
 		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		assertEquals("Mount St. Helens", t.getText());
+
+		assertEquals(text, t.getText());
+		assertNull(t.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
+		xe.uri(uri);
+		Element element = xe.element();
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+
+		assertNull(t.getText());
+		assertEquals(uri, t.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_both() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
+		xe.text(text);
+		xe.uri(uri);
+		Element element = xe.element();
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+
+		assertEquals(text, t.getText()); //prefers the text
+		assertNull(t.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void unmarshalXml_empty() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
+		Element element = xe.element();
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void unmarshalJson_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TEXT);
+		value.addValues(text);
+
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(text, t.getText());
+		assertNull(t.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.URI);
+		value.addValues(uri);
+
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertNull(t.getText());
+		assertEquals(uri, t.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_unknown_datatype() {
+		//treats it as text
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.LANGUAGE_TAG);
+		value.addValues(uri);
+
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(uri, t.getText());
+		assertNull(t.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void setUri() {
 		assertNull(t.getUri());
 
-		//URI
-		t = new DeathplaceType();
-		xe = new XCardElement("deathplace");
-		xe.uri("geo:46.176502,-122.191658");
-		element = xe.element();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+		t.setText(text);
+		t.setUri(uri);
+
+		assertEquals(uri, t.getUri());
 		assertNull(t.getText());
-		assertEquals("geo:46.176502,-122.191658", t.getUri());
+	}
+
+	@Test
+	public void setText() {
+		assertNull(t.getText());
+
+		t.setUri(uri);
+		t.setText(text);
+
+		assertEquals(text, t.getText());
+		assertNull(t.getUri());
 	}
 }
