@@ -437,21 +437,37 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	 */
 	protected abstract T buildTypeObj(String type);
 
-	private void parse(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (version == null) {
-			version = VCardVersion.V2_1;
-		}
-
-		T contentType = null;
+	protected T parseContentType(VCardVersion version) {
 		switch (version) {
 		case V2_1:
 		case V3_0:
 			//get the TYPE parameter
 			String type = subTypes.getType();
 			if (type != null) {
-				contentType = buildTypeObj(type);
+				return buildTypeObj(type);
 			}
+			break;
+		case V4_0:
+			//get the MEDIATYPE parameter
+			String mediaType = subTypes.getMediaType();
+			if (mediaType != null) {
+				return buildMediaTypeObj(mediaType);
+			}
+			break;
+		}
+		return null;
+	}
 
+	private void parse(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		if (version == null) {
+			version = VCardVersion.V2_1;
+		}
+
+		T contentType = parseContentType(version);
+
+		switch (version) {
+		case V2_1:
+		case V3_0:
 			//parse as URL
 			ValueParameter valueSubType = subTypes.getValue();
 			if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
@@ -475,11 +491,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 				setData(uri.getData(), contentType);
 				return;
 			} catch (IllegalArgumentException e) {
-				//not a data URI, get content type from MEDIATYPE parameter
-				String mediaType = subTypes.getMediaType();
-				if (mediaType != null) {
-					contentType = buildMediaTypeObj(mediaType);
-				}
+				//not a data URI
 			}
 			break;
 		}

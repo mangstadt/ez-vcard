@@ -15,11 +15,13 @@ import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -230,7 +232,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			copy.setValue(ValueParameter.TEXT);
 			copy.setEncoding(null);
 			if (version == VCardVersion.V4_0) {
-				//don't null out TYPE, it could be set to "home" or "work"
+				//don't null out TYPE, it could be set to "home", "work", etc
 				copy.setMediaType(contentType.getMediaType());
 			} else {
 				copy.setType(contentType.getValue());
@@ -245,9 +247,18 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			sb.append(VCardStringUtils.escape(text));
 		} else {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
-				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");
+				warnings.add("vCard version " + version + " does not allow URLs to be used in the " + NAME + " type.");
 			}
 			super.doMarshalText(sb, version, warnings, compatibilityMode);
+		}
+	}
+
+	@Override
+	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		if (subTypes.getValue() == ValueParameter.TEXT) {
+			parseText(VCardStringUtils.unescape(value), version);
+		} else {
+			super.doUnmarshalText(value, version, warnings, compatibilityMode);
 		}
 	}
 
@@ -256,26 +267,17 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 		if (text != null) {
 			parent.text(text);
 		} else {
-			VCardVersion version = parent.version();
-			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
-				warnings.add("vCard version " + version + " specs do not allow URLs to be used in the " + NAME + " type.");
-			}
 			super.doMarshalXml(parent, warnings, compatibilityMode);
 		}
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.uri();
+		String value = element.text();
 		if (value != null) {
-			super.doUnmarshalText(value, element.version(), warnings, compatibilityMode);
+			parseText(value, element.version());
 		} else {
-			value = element.text();
-			if (value != null) {
-				String mediaType = subTypes.getMediaType();
-				KeyTypeParameter contentType = (mediaType != null) ? buildMediaTypeObj(mediaType) : null;
-				setText(value, contentType);
-			}
+			super.doUnmarshalXml(element, warnings, compatibilityMode);
 		}
 	}
 
@@ -302,8 +304,30 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		if (text != null) {
+			return JCardValue.text(text);
+		} else {
+			return super.doMarshalJson(version, warnings);
+		}
+	}
+
+	@Override
+	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		if (value.getDataType() == JCardDataType.TEXT) {
+			parseText(value.getFirstValueAsString(), version);
+		} else {
+			super.doUnmarshalJson(value, version, warnings);
+		}
+	}
+
+	@Override
 	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, KeyTypeParameter contentType) {
 		//unmarshal it as a plain text key
 		setText(value, contentType);
+	}
+
+	private void parseText(String value, VCardVersion version) {
+		setText(value, parseContentType(version));
 	}
 }
