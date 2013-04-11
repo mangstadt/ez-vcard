@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,7 +19,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
@@ -59,47 +58,26 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class GeoTypeTest {
-	List<String> warnings = new ArrayList<String>();
-	CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	VCard vcard = new VCard();
-	VCardSubTypes subTypes = new VCardSubTypes();
-	GeoType geo = new GeoType(-12.34, 56.7777777777777);
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCard vcard = new VCard();
+	final VCardSubTypes subTypes = new VCardSubTypes();
+	final GeoType withValue = new GeoType(-12.34, 56.7777777777777);
+	GeoType geo;
 
-	@After
-	public void after() {
+	@Before
+	public void before() {
 		warnings.clear();
-	}
-
-	@Test
-	public void marshalSubTypes_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = geo.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
-	}
-
-	@Test
-	public void marshalSubTypes_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = geo.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
-	}
-
-	@Test
-	public void marshalSubTypes_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = geo.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(1, subTypes.size());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		subTypes.clear();
+		geo = new GeoType();
 	}
 
 	@Test
 	public void marshalText_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "-12.34;56.777778";
-		String actual = geo.marshalText(version, warnings, compatibilityMode);
+		String actual = withValue.marshalText(version, warnings, compatibilityMode);
+
 		assertEquals(expected, actual);
 		assertEquals(0, warnings.size());
 	}
@@ -108,7 +86,8 @@ public class GeoTypeTest {
 	public void marshalText_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		String expected = "-12.34;56.777778";
-		String actual = geo.marshalText(version, warnings, compatibilityMode);
+		String actual = withValue.marshalText(version, warnings, compatibilityMode);
+
 		assertEquals(expected, actual);
 		assertEquals(0, warnings.size());
 	}
@@ -117,7 +96,8 @@ public class GeoTypeTest {
 	public void marshalText_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		String expected = "geo:-12.34,56.777778";
-		String actual = geo.marshalText(version, warnings, compatibilityMode);
+		String actual = withValue.marshalText(version, warnings, compatibilityMode);
+
 		assertEquals(expected, actual);
 		assertEquals(0, warnings.size());
 	}
@@ -154,7 +134,8 @@ public class GeoTypeTest {
 		xe = new XCardElement(GeoType.NAME);
 		Document actualDoc = xe.document();
 		Element element = xe.element();
-		geo.marshalXml(element, version, warnings, compatibilityMode);
+		withValue.marshalXml(element, version, warnings, compatibilityMode);
+
 		assertXMLEqual(expectedDoc, actualDoc);
 		assertEquals(0, warnings.size());
 	}
@@ -162,7 +143,7 @@ public class GeoTypeTest {
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = geo.marshalJson(version, new ArrayList<String>());
+		JCardValue value = withValue.marshalJson(version, warnings);
 		assertEquals(JCardDataType.URI, value.getDataType());
 		assertFalse(value.isStructured());
 
@@ -179,7 +160,6 @@ public class GeoTypeTest {
 	@Test
 	public void unmarshalText_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "-12.34;56.7878", version, warnings, compatibilityMode);
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
@@ -190,7 +170,6 @@ public class GeoTypeTest {
 	@Test
 	public void unmarshalText_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "-12.34;56.7878", version, warnings, compatibilityMode);
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
@@ -201,7 +180,6 @@ public class GeoTypeTest {
 	@Test
 	public void unmarshalText_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "geo:-12.34,56.7878", version, warnings, compatibilityMode);
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
@@ -212,53 +190,48 @@ public class GeoTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_bad_latitude() {
 		VCardVersion version = VCardVersion.V2_1;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "12.34;not-a-number", version, warnings, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_bad_longitude() {
 		VCardVersion version = VCardVersion.V2_1;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "not-a-number;12.34", version, warnings, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_missing_longitude() {
 		VCardVersion version = VCardVersion.V2_1;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "12.34", version, warnings, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_bad_latitude_and_longitude() {
 		VCardVersion version = VCardVersion.V2_1;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "not a;number", version, warnings, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_bad_value() {
 		VCardVersion version = VCardVersion.V2_1;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "random text", version, warnings, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		GeoType geo = new GeoType();
 		geo.unmarshalText(subTypes, "bad:uri", version, warnings, compatibilityMode);
 	}
 
 	@Test
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
-		GeoType geo = new GeoType();
-		XCardElement xe = new XCardElement("geo");
+
+		XCardElement xe = new XCardElement(GeoType.NAME.toLowerCase());
 		xe.uri("geo:-12.34,56.7878");
 		Element element = xe.element();
 		geo.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
 		assertEquals(56.7878, geo.getLongitude(), 0.00001);
 		assertEquals(0, warnings.size());
@@ -267,8 +240,7 @@ public class GeoTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalXml_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		GeoType geo = new GeoType();
-		XCardElement xe = new XCardElement("geo");
+		XCardElement xe = new XCardElement(GeoType.NAME.toLowerCase());
 		xe.uri("bad:uri");
 		Element element = xe.element();
 		geo.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
@@ -277,8 +249,7 @@ public class GeoTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalXml_no_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		GeoType geo = new GeoType();
-		XCardElement xe = new XCardElement("geo");
+		XCardElement xe = new XCardElement(GeoType.NAME.toLowerCase());
 		Element element = xe.element();
 		geo.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 	}
@@ -293,8 +264,8 @@ public class GeoTypeTest {
 		"</div>");
 		//@formatter:on
 
-		GeoType geo = new GeoType();
 		geo.unmarshalHtml(element, warnings);
+
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
 		assertEquals(56.7878, geo.getLongitude(), 0.00001);
 		assertEquals(0, warnings.size());
@@ -309,7 +280,6 @@ public class GeoTypeTest {
 		"</div>");
 		//@formatter:on
 
-		GeoType geo = new GeoType();
 		geo.unmarshalHtml(element, warnings);
 	}
 
@@ -322,7 +292,6 @@ public class GeoTypeTest {
 		"</div>");
 		//@formatter:on
 
-		GeoType geo = new GeoType();
 		geo.unmarshalHtml(element, warnings);
 	}
 
@@ -336,7 +305,6 @@ public class GeoTypeTest {
 		"</div>");
 		//@formatter:on
 
-		GeoType geo = new GeoType();
 		geo.unmarshalHtml(element, warnings);
 	}
 
@@ -350,7 +318,6 @@ public class GeoTypeTest {
 		"</div>");
 		//@formatter:on
 
-		GeoType geo = new GeoType();
 		geo.unmarshalHtml(element, warnings);
 	}
 
@@ -364,7 +331,6 @@ public class GeoTypeTest {
 		"</div>");
 		//@formatter:on
 
-		GeoType geo = new GeoType();
 		geo.unmarshalHtml(element, warnings);
 	}
 
@@ -376,7 +342,6 @@ public class GeoTypeTest {
 		"</div>");
 		//@formatter:on
 
-		GeoType geo = new GeoType();
 		geo.unmarshalHtml(element, warnings);
 	}
 
@@ -385,7 +350,6 @@ public class GeoTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = JCardValue.uri("geo:-12.34,56.7878");
 
-		GeoType geo = new GeoType();
 		geo.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
@@ -398,13 +362,11 @@ public class GeoTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = JCardValue.uri("bad:uri");
 
-		GeoType geo = new GeoType();
 		geo.unmarshalJson(subTypes, value, version, warnings);
 	}
 
 	@Test
 	public void latitude() {
-		GeoType geo = new GeoType();
 		assertNull(geo.getLatitude());
 		assertNull(geo.getGeoUri().getCoordA());
 
@@ -415,7 +377,6 @@ public class GeoTypeTest {
 
 	@Test
 	public void longitude() {
-		GeoType geo = new GeoType();
 		assertNull(geo.getLongitude());
 		assertNull(geo.getGeoUri().getCoordB());
 
@@ -426,7 +387,6 @@ public class GeoTypeTest {
 
 	@Test
 	public void getGeoUri() {
-		GeoType geo = new GeoType();
 		GeoUri uri = geo.getGeoUri();
 		assertNull(uri.getCoordA());
 		assertNull(uri.getCoordB());
