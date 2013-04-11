@@ -3,12 +3,10 @@ package ezvcard.types;
 import java.text.NumberFormat;
 import java.util.List;
 
-import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
@@ -262,13 +260,6 @@ public class GeoType extends VCardType {
 	 */
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		if (version == VCardVersion.V4_0) {
-			copy.setValue(ValueParameter.URI);
-		}
 	}
 
 	@Override
