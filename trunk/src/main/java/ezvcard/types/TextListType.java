@@ -111,7 +111,9 @@ public class TextListType extends VCardType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.text(values.toArray(new String[0]));
+		JCardValue value = JCardValue.text(values.toArray(new String[0]));
+		value.setStructured(separator == ';');
+		return value;
 	}
 
 	@Override
