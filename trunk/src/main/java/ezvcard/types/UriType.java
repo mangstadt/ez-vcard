@@ -2,8 +2,10 @@ package ezvcard.types;
 
 import java.util.List;
 
+import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
@@ -73,5 +75,10 @@ public class UriType extends TextType {
 		} else {
 			super.doUnmarshalHtml(element, warnings);
 		}
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		return JCardValue.uri(value);
 	}
 }

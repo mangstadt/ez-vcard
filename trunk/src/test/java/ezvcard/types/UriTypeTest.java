@@ -2,21 +2,26 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -48,46 +53,108 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class UriTypeTest {
-	@Test
-	public void marshalXml() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		UriType t;
-		Document expected, actual;
-		Element element;
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCardSubTypes subTypes = new VCardSubTypes();
 
-		t = new UriType("NAME", "http://www.example.com");
+	final String uri = "http://www.example.com";
+	final UriType withValue = new UriType("NAME", uri);
+	final UriType empty = new UriType("NAME");
+	UriType t;
 
-		XCardElement xe = new XCardElement("name");
-		xe.uri("http://www.example.com");
-		expected = xe.document();
-
-		xe = new XCardElement("name");
-		actual = xe.document();
-		element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+	@Before
+	public void before() {
+		t = new UriType("NAME");
+		subTypes.clear();
+		warnings.clear();
 	}
 
 	@Test
-	public void unmarshalXml() throws Exception {
+	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		UriType t;
-		String expected, actual;
-		Element element;
+		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
+		xe.uri(uri);
+		Document expected = xe.document();
 
-		XCardElement xe = new XCardElement("name");
-		xe.uri("http://www.example.com");
-		element = xe.element();
-		t = new UriType("NAME");
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		expected = "http://www.example.com";
-		actual = t.getValue();
-		assertEquals(expected, actual);
+		xe = new XCardElement(withValue.getTypeName().toLowerCase());
+		Document actual = xe.document();
+		withValue.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalXml_no_value() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(empty.getTypeName().toLowerCase());
+		xe.uri("");
+		Document expected = xe.document();
+
+		xe = new XCardElement(empty.getTypeName().toLowerCase());
+		Document actual = xe.document();
+		empty.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
+		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = withValue.marshalJson(version, warnings);
+		assertEquals(JCardDataType.URI, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ uri })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_no_value() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = empty.marshalJson(version, warnings);
+		assertEquals(JCardDataType.URI, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
+		xe.uri(uri);
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertEquals(uri, t.getValue());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_no_value() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertNull(t.getValue());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson() {
+		//same as TextType.unmarshalJson()
 	}
 }
