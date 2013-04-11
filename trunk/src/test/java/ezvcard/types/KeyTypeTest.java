@@ -2,11 +2,14 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,12 +18,15 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -52,112 +58,225 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class KeyTypeTest {
-	@Test
-	public void marshalTextValue() throws Exception {
-		VCardVersion version;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		KeyType t;
-		String expectedValue, actualValue;
-		VCardSubTypes subTypes;
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCard vcard = new VCard();
+	final VCardSubTypes subTypes = new VCardSubTypes();
 
-		t = new KeyType();
-		t.setText("abc123", KeyTypeParameter.PGP);
-		t.setType("work"); //4.0 TYPE parameter
+	final String text = "abc123";
+	final String url = "http://example.com";
+	final KeyType withText = new KeyType();
+	{
+		withText.setText(text, KeyTypeParameter.PGP);
+		withText.setType("work"); //4.0 TYPE parameter
+	}
+	final KeyType withUrl = new KeyType();
+	{
+		withUrl.setUrl(url, KeyTypeParameter.PGP);
+	}
+	KeyType key;
 
-		//2.1
-		version = VCardVersion.V2_1;
-		expectedValue = "abc123";
-		actualValue = t.marshalText(version, warnings, compatibilityMode);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(expectedValue, actualValue);
-		assertEquals(ValueParameter.TEXT, subTypes.getValue());
-		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
-		assertNull(subTypes.getMediaType());
-
-		//3.0
-		version = VCardVersion.V3_0;
-		expectedValue = "abc123";
-		actualValue = t.marshalText(version, warnings, compatibilityMode);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(expectedValue, actualValue);
-		assertEquals(ValueParameter.TEXT, subTypes.getValue());
-		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
-		assertNull(subTypes.getMediaType());
-
-		//4.0
-		version = VCardVersion.V4_0;
-		expectedValue = "abc123";
-		actualValue = t.marshalText(version, warnings, compatibilityMode);
-		subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
-		assertEquals(expectedValue, actualValue);
-		assertEquals(ValueParameter.TEXT, subTypes.getValue());
-		assertEquals("work", subTypes.getType());
-		assertEquals(KeyTypeParameter.PGP.getMediaType(), subTypes.getMediaType());
-
-		//xCard
-		version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement("key");
-		xe.text("abc123");
-		Document expectedDoc = xe.document();
-		xe = new XCardElement("key");
-		Document actualDoc = xe.document();
-		Element element = xe.element();
-		t.marshalXml(element, version, warnings, compatibilityMode);
-		assertXMLEqual(expectedDoc, actualDoc);
+	@Before
+	public void before() {
+		warnings.clear();
+		subTypes.clear();
+		key = new KeyType();
 	}
 
 	@Test
-	public void unmarshalText() throws Exception {
-		VCardVersion version;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes;
-		KeyType t;
+	public void marshalSubTypes_text_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		VCardSubTypes subTypes = withText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
-		//2.1
-		version = VCardVersion.V2_1;
-		t = new KeyType();
-		subTypes = new VCardSubTypes();
-		subTypes.setType(KeyTypeParameter.PGP.getValue());
-		t.unmarshalText(subTypes, "abc123", version, warnings, compatibilityMode);
-		assertEquals("abc123", t.getText());
-		assertNull(t.getUrl());
-		assertNull(t.getData());
-		assertEquals(KeyTypeParameter.PGP, t.getContentType());
+		assertEquals(2, subTypes.size());
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
+		assertNull(subTypes.getMediaType());
+		assertEquals(0, warnings.size());
+	}
 
-		//3.0
-		version = VCardVersion.V3_0;
-		t = new KeyType();
-		subTypes = new VCardSubTypes();
-		subTypes.setType(KeyTypeParameter.PGP.getValue());
-		t.unmarshalText(subTypes, "abc123", version, warnings, compatibilityMode);
-		assertEquals("abc123", t.getText());
-		assertNull(t.getUrl());
-		assertNull(t.getData());
-		assertEquals(KeyTypeParameter.PGP, t.getContentType());
+	@Test
+	public void marshalSubTypes_text_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		VCardSubTypes subTypes = withText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
-		//4.0
-		version = VCardVersion.V4_0;
-		t = new KeyType();
-		subTypes = new VCardSubTypes();
-		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
-		t.unmarshalText(subTypes, "abc123", version, warnings, compatibilityMode);
-		assertEquals("abc123", t.getText());
-		assertNull(t.getUrl());
-		assertNull(t.getData());
-		assertEquals(KeyTypeParameter.PGP, t.getContentType());
+		assertEquals(2, subTypes.size());
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
+		assertNull(subTypes.getMediaType());
+		assertEquals(0, warnings.size());
+	}
 
-		//xCard
-		version = VCardVersion.V4_0;
-		t = new KeyType();
-		XCardElement xe = new XCardElement("key");
-		xe.text("abc123");
+	@Test
+	public void marshalSubTypes_text_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		VCardSubTypes subTypes = withText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+
+		assertEquals(3, subTypes.size());
+		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+		assertEquals("work", subTypes.getType());
+		assertEquals(KeyTypeParameter.PGP.getMediaType(), subTypes.getMediaType());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_text_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		String actual = withText.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(text, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_text_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		String actual = withText.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(text, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_text_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = withText.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(text, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_url_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(url, actual);
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void marshalText_url_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(url, actual);
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void marshalText_url_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(url, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalXml_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(KeyType.NAME.toLowerCase());
+		xe.text(text);
+		Document expectedDoc = xe.document();
+		xe = new XCardElement(KeyType.NAME.toLowerCase());
+		Document actualDoc = xe.document();
 		Element element = xe.element();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-		assertEquals("abc123", t.getText());
-		assertNull(t.getUrl());
-		assertNull(t.getData());
-		assertEquals(KeyTypeParameter.PGP, t.getContentType());
+		withText.marshalXml(element, version, warnings, compatibilityMode);
+
+		assertXMLEqual(expectedDoc, actualDoc);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = withText.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ text })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_text_without_value_2_1() {
+		VCardVersion version = VCardVersion.V2_1;
+		subTypes.setType(KeyTypeParameter.PGP.getValue());
+		key.unmarshalText(subTypes, text, version, warnings, compatibilityMode);
+
+		assertEquals(text, key.getText());
+		assertNull(key.getUrl());
+		assertNull(key.getData());
+		assertEquals(KeyTypeParameter.PGP, key.getContentType());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_text_without_value_3_0() {
+		VCardVersion version = VCardVersion.V3_0;
+		subTypes.setType(KeyTypeParameter.PGP.getValue());
+		key.unmarshalText(subTypes, text, version, warnings, compatibilityMode);
+
+		assertEquals(text, key.getText());
+		assertNull(key.getUrl());
+		assertNull(key.getData());
+		assertEquals(KeyTypeParameter.PGP, key.getContentType());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_text_without_value_4_0() {
+		VCardVersion version = VCardVersion.V4_0;
+		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
+		key.unmarshalText(subTypes, text, version, warnings, compatibilityMode);
+
+		assertEquals(text, key.getText());
+		assertNull(key.getUrl());
+		assertNull(key.getData());
+		assertEquals(KeyTypeParameter.PGP, key.getContentType());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(KeyType.NAME.toLowerCase());
+		xe.text(text);
+		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
+		key.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertEquals(text, key.getText());
+		assertNull(key.getUrl());
+		assertNull(key.getData());
+		assertEquals(KeyTypeParameter.PGP, key.getContentType());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void unmarshalXml_no_value() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(KeyType.NAME.toLowerCase());
+		key.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void unmarshalJson() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = JCardValue.text(text);
+		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
+		key.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(text, key.getText());
+		assertNull(key.getUrl());
+		assertNull(key.getData());
+		assertEquals(KeyTypeParameter.PGP, key.getContentType());
+		assertEquals(0, warnings.size());
 	}
 }
