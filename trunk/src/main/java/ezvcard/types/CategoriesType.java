@@ -58,7 +58,7 @@ import ezvcard.util.VCardStringUtils;
  * </p>
  * @author Michael Angstadt
  */
-public class CategoriesType extends TextListType {
+public class CategoriesType extends TextListType implements HasAltId {
 	public static final String NAME = "CATEGORIES";
 
 	public CategoriesType() {
@@ -126,26 +126,12 @@ public class CategoriesType extends TextListType {
 		subTypes.setPref(pref);
 	}
 
-	/**
-	 * Gets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
-	 */
+	//@Override
 	public String getAltId() {
 		return subTypes.getAltId();
 	}
 
-	/**
-	 * Sets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
-	 */
+	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import ezvcard.VCardSubTypes;
@@ -13,7 +14,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -45,56 +46,70 @@ import ezvcard.io.CompatibilityMode;
  * @author Michael Angstadt
  */
 public class CategoriesTypeTest {
-	@Test
-	public void doMarshalValue() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode;
-		CategoriesType t;
-		String expected, actual;
+	final List<String> warnings = new ArrayList<String>();
+	final VCardSubTypes subTypes = new VCardSubTypes();
 
-		//comma delimiters are escaped for KDE
-		compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
-		t = new CategoriesType();
-		t.addValue("One");
-		t.addValue("T,wo");
-		t.addValue("Thr;ee");
-		expected = "One\\,T\\,wo\\,Thr\\;ee";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
-
-		compatibilityMode = CompatibilityMode.RFC;
-		t = new CategoriesType();
-		t.addValue("One");
-		t.addValue("T,wo");
-		t.addValue("Thr;ee");
-		expected = "One,T\\,wo,Thr\\;ee";
-		actual = t.marshalText(version, warnings, compatibilityMode);
-		assertEquals(expected, actual);
+	@Before
+	public void before() {
+		warnings.clear();
+		subTypes.clear();
 	}
 
 	@Test
-	public void doUnmarshalValue() throws Exception {
-		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode;
-		VCardSubTypes subTypes = new VCardSubTypes();
-		CategoriesType t;
-		List<String> expected, actual;
-
+	public void marshalText_kde() {
 		//comma delimiters are escaped for KDE
-		compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
-		t = new CategoriesType();
-		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
-		expected = Arrays.asList("One", "T", "wo", "Thr;ee");
-		actual = t.getValues();
-		assertEquals(expected, actual);
+		VCardVersion version = VCardVersion.V2_1;
+		CompatibilityMode compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
+		CategoriesType t = new CategoriesType();
+		t.addValue("One");
+		t.addValue("T,wo");
+		t.addValue("Thr;ee");
+		String expected = "One\\,T\\,wo\\,Thr\\;ee";
+		String actual = t.marshalText(version, warnings, compatibilityMode);
 
-		compatibilityMode = CompatibilityMode.RFC;
-		t = new CategoriesType();
-		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
-		expected = Arrays.asList("One,T,wo,Thr;ee");
-		actual = t.getValues();
 		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalText_rfc() {
+		VCardVersion version = VCardVersion.V2_1;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		CategoriesType t = new CategoriesType();
+		t.addValue("One");
+		t.addValue("T,wo");
+		t.addValue("Thr;ee");
+		String expected = "One,T\\,wo,Thr\\;ee";
+		String actual = t.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void doUnmarshalText_kde() {
+		//comma delimiters are escaped for KDE
+		VCardVersion version = VCardVersion.V2_1;
+		CompatibilityMode compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
+		CategoriesType t = new CategoriesType();
+		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
+		List<String> expected = Arrays.asList("One", "T", "wo", "Thr;ee");
+		List<String> actual = t.getValues();
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void doUnmarshalText_rfc() {
+		VCardVersion version = VCardVersion.V2_1;
+		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+		CategoriesType t = new CategoriesType();
+		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
+		List<String> expected = Arrays.asList("One,T,wo,Thr;ee");
+		List<String> actual = t.getValues();
+
+		assertEquals(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 }
