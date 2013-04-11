@@ -167,7 +167,7 @@ public class RelatedTypeTest {
 	@Test
 	public void marshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = textType.marshalJson(version, new ArrayList<String>());
+		JCardValue value = textType.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
 		assertFalse(value.isStructured());
 
@@ -184,7 +184,7 @@ public class RelatedTypeTest {
 	@Test
 	public void marshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = uriType.marshalJson(version, new ArrayList<String>());
+		JCardValue value = uriType.marshalJson(version, warnings);
 		assertEquals(JCardDataType.URI, value.getDataType());
 		assertFalse(value.isStructured());
 
@@ -202,7 +202,7 @@ public class RelatedTypeTest {
 	public void marshalJson_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
-		t.marshalJson(version, new ArrayList<String>());
+		t.marshalJson(version, warnings);
 	}
 
 	@Test

@@ -67,6 +67,7 @@ public class ImppTypeTest {
 	@After
 	public void after() {
 		warnings.clear();
+		subTypes.clear();
 	}
 
 	@Test
@@ -220,7 +221,7 @@ public class ImppTypeTest {
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = impp.marshalJson(version, new ArrayList<String>());
+		JCardValue value = impp.marshalJson(version, warnings);
 		assertEquals(JCardDataType.URI, value.getDataType());
 		assertFalse(value.isStructured());
 
@@ -238,7 +239,7 @@ public class ImppTypeTest {
 	public void marshalJson_no_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		ImppType impp = new ImppType();
-		impp.marshalJson(version, new ArrayList<String>());
+		impp.marshalJson(version, warnings);
 	}
 
 	@Test

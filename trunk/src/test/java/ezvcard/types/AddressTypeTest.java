@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -85,9 +85,11 @@ public class AddressTypeTest {
 		someFields.setCountry(null);
 	}
 	final AddressType noFields = new AddressType();
+	AddressType t;
 
-	@After
-	public void after() {
+	@Before
+	public void before() {
+		t = new AddressType();
 		warnings.clear();
 		subTypes.clear();
 	}
@@ -95,7 +97,6 @@ public class AddressTypeTest {
 	@Test
 	public void marshalSubTypes_label_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		AddressType t = new AddressType();
 		t.setLabel("label");
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
@@ -107,7 +108,6 @@ public class AddressTypeTest {
 	@Test
 	public void marshalSubTypes_label_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		AddressType t = new AddressType();
 		t.setLabel("label");
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
@@ -119,7 +119,6 @@ public class AddressTypeTest {
 	@Test
 	public void marshalSubTypes_label_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		AddressType t = new AddressType();
 		t.setLabel("label");
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
@@ -135,7 +134,6 @@ public class AddressTypeTest {
 	@Test
 	public void marshalSubTypes_type_pref_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		AddressType t = new AddressType();
 		t.addType(AddressTypeParameter.PREF);
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
@@ -152,7 +150,6 @@ public class AddressTypeTest {
 	@Test
 	public void marshalSubTypes_type_pref_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		AddressType t = new AddressType();
 		t.addType(AddressTypeParameter.PREF);
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
@@ -169,7 +166,6 @@ public class AddressTypeTest {
 	@Test
 	public void marshalSubTypes_type_pref_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		AddressType t = new AddressType();
 		t.addType(AddressTypeParameter.PREF);
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 
@@ -421,7 +417,6 @@ public class AddressTypeTest {
 
 	@Test
 	public void unmarshalText_all_fields() {
-		AddressType t = new AddressType();
 		t.unmarshalText(subTypes, "P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA", version, warnings, compatibilityMode);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -436,7 +431,6 @@ public class AddressTypeTest {
 
 	@Test
 	public void unmarshalText_some_fields() {
-		AddressType t = new AddressType();
 		t.unmarshalText(subTypes, "P.O. Box 1234\\;;;;Austin;TX;12345;", version, warnings, compatibilityMode);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -451,7 +445,6 @@ public class AddressTypeTest {
 
 	@Test
 	public void unmarshalText_missing_components() {
-		AddressType t = new AddressType();
 		t.unmarshalText(subTypes, "P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX", version, warnings, compatibilityMode);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -466,7 +459,6 @@ public class AddressTypeTest {
 
 	@Test
 	public void unmarshalText_no_fields() {
-		AddressType t = new AddressType();
 		t.unmarshalText(subTypes, ";;;;;;", version, warnings, compatibilityMode);
 
 		assertNull(t.getPoBox());
@@ -481,7 +473,6 @@ public class AddressTypeTest {
 
 	@Test
 	public void unmarshalText_empty_string() {
-		AddressType t = new AddressType();
 		t.unmarshalText(subTypes, "", version, warnings, compatibilityMode);
 
 		assertNull(t.getPoBox());
@@ -505,7 +496,6 @@ public class AddressTypeTest {
 		xe.append("region", "TX");
 		xe.append("code", "12345");
 		xe.append("country", "USA");
-		AddressType t = new AddressType();
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -526,7 +516,6 @@ public class AddressTypeTest {
 		xe.append("locality", "Austin");
 		xe.append("region", "TX");
 		xe.append("code", "12345");
-		AddressType t = new AddressType();
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -543,7 +532,6 @@ public class AddressTypeTest {
 	public void unmarshalXml_no_fields() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(AddressType.NAME.toLowerCase());
-		AddressType t = new AddressType();
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(t.getPoBox());
@@ -571,7 +559,6 @@ public class AddressTypeTest {
 		"</div>");
 		//@formatter:on
 
-		AddressType t = new AddressType();
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -597,7 +584,6 @@ public class AddressTypeTest {
 		"</div>");
 		//@formatter:on
 
-		AddressType t = new AddressType();
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -619,7 +605,6 @@ public class AddressTypeTest {
 		"</div>");
 		//@formatter:on
 
-		AddressType t = new AddressType();
 		t.unmarshalHtml(element, warnings);
 
 		assertNull(t.getPoBox());
@@ -651,7 +636,6 @@ public class AddressTypeTest {
 		"</div>");
 		//@formatter:on
 
-		AddressType t = new AddressType();
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -675,7 +659,6 @@ public class AddressTypeTest {
 		JCardValue value = JCardValue.text();
 		value.addValues("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA");
 
-		AddressType t = new AddressType();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -694,7 +677,6 @@ public class AddressTypeTest {
 		JCardValue value = JCardValue.text();
 		value.addValues("P.O. Box 1234;", "", "", "Austin", "TX", "12345", "");
 
-		AddressType t = new AddressType();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -713,7 +695,6 @@ public class AddressTypeTest {
 		JCardValue value = JCardValue.text();
 		value.addValues("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX");
 
-		AddressType t = new AddressType();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());
@@ -731,7 +712,6 @@ public class AddressTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = JCardValue.text();
 
-		AddressType t = new AddressType();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(t.getPoBox());
@@ -750,7 +730,6 @@ public class AddressTypeTest {
 		JCardValue value = JCardValue.text();
 		value.addValues("", "", "", "", "", "", "");
 
-		AddressType t = new AddressType();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(t.getPoBox());

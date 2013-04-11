@@ -49,8 +49,17 @@ public class CategoriesTypeTest {
 	final List<String> warnings = new ArrayList<String>();
 	final VCardSubTypes subTypes = new VCardSubTypes();
 
+	final CategoriesType withValues = new CategoriesType();
+	{
+		withValues.addValue("One");
+		withValues.addValue("T,wo");
+		withValues.addValue("Thr;ee");
+	}
+	CategoriesType t;
+
 	@Before
 	public void before() {
+		t = new CategoriesType();
 		warnings.clear();
 		subTypes.clear();
 	}
@@ -60,12 +69,8 @@ public class CategoriesTypeTest {
 		//comma delimiters are escaped for KDE
 		VCardVersion version = VCardVersion.V2_1;
 		CompatibilityMode compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
-		CategoriesType t = new CategoriesType();
-		t.addValue("One");
-		t.addValue("T,wo");
-		t.addValue("Thr;ee");
 		String expected = "One\\,T\\,wo\\,Thr\\;ee";
-		String actual = t.marshalText(version, warnings, compatibilityMode);
+		String actual = withValues.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
 		assertEquals(0, warnings.size());
@@ -75,12 +80,8 @@ public class CategoriesTypeTest {
 	public void marshalText_rfc() {
 		VCardVersion version = VCardVersion.V2_1;
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		CategoriesType t = new CategoriesType();
-		t.addValue("One");
-		t.addValue("T,wo");
-		t.addValue("Thr;ee");
 		String expected = "One,T\\,wo,Thr\\;ee";
-		String actual = t.marshalText(version, warnings, compatibilityMode);
+		String actual = withValues.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
 		assertEquals(0, warnings.size());
@@ -91,7 +92,6 @@ public class CategoriesTypeTest {
 		//comma delimiters are escaped for KDE
 		VCardVersion version = VCardVersion.V2_1;
 		CompatibilityMode compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
-		CategoriesType t = new CategoriesType();
 		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
 		List<String> expected = Arrays.asList("One", "T", "wo", "Thr;ee");
 		List<String> actual = t.getValues();
@@ -104,7 +104,6 @@ public class CategoriesTypeTest {
 	public void doUnmarshalText_rfc() {
 		VCardVersion version = VCardVersion.V2_1;
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		CategoriesType t = new CategoriesType();
 		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
 		List<String> expected = Arrays.asList("One,T,wo,Thr;ee");
 		List<String> actual = t.getValues();

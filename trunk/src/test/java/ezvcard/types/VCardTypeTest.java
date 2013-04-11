@@ -64,9 +64,11 @@ public class VCardTypeTest {
 	{
 		type.value = "value";
 	}
+	VCardTypeImpl t;
 
 	@Before
 	public void before() {
+		t = new VCardTypeImpl();
 		subTypes.clear();
 		warnings.clear();
 	}
@@ -106,7 +108,6 @@ public class VCardTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(VCardTypeImpl.NAME.toLowerCase());
-		VCardTypeImpl t = new VCardTypeImpl();
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
 
@@ -114,7 +115,6 @@ public class VCardTypeTest {
 	public void unmarshalHtml_text() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + type.value + "</div>");
 
-		VCardTypeImpl t = new VCardTypeImpl();
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals(type.value, t.value);
@@ -127,7 +127,6 @@ public class VCardTypeTest {
 
 		JCardValue value = JCardValue.text(type.value);
 
-		VCardTypeImpl t = new VCardTypeImpl();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(type.value, t.value);
@@ -140,7 +139,6 @@ public class VCardTypeTest {
 
 		JCardValue value = JCardValue.text("va,l;ue\\");
 
-		VCardTypeImpl t = new VCardTypeImpl();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("va\\,l\\;ue\\\\", t.value);
@@ -153,7 +151,6 @@ public class VCardTypeTest {
 
 		JCardValue value = JCardValue.text("one", "two", "three");
 
-		VCardTypeImpl t = new VCardTypeImpl();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("one,two,three", t.value);
@@ -168,7 +165,6 @@ public class VCardTypeTest {
 		value.setStructured(true);
 		value.addValues("one", Arrays.asList("two", "three"), "four");
 
-		VCardTypeImpl t = new VCardTypeImpl();
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("one;two,three;four", t.value);
@@ -177,19 +173,16 @@ public class VCardTypeTest {
 
 	@Test
 	public void getSupportedVersions() {
-		VCardTypeImpl t = new VCardTypeImpl();
 		assertArrayEquals(VCardVersion.values(), t.getSupportedVersions());
 	}
 
 	@Test
 	public void getTypeName() {
-		VCardTypeImpl t = new VCardTypeImpl();
 		assertEquals(VCardTypeImpl.NAME, t.getTypeName());
 	}
 
 	@Test
 	public void group() {
-		VCardTypeImpl t = new VCardTypeImpl();
 		assertNull(t.getGroup());
 
 		t.setGroup("group");
@@ -198,13 +191,11 @@ public class VCardTypeTest {
 
 	@Test
 	public void getQName() {
-		VCardTypeImpl t = new VCardTypeImpl();
 		assertNull(t.getQName());
 	}
 
 	@Test
 	public void marshalSubTypes() {
-		VCardTypeImpl t = new VCardTypeImpl();
 		assertFalse(t.getSubTypes() == t.marshalSubTypes(VCardVersion.V2_1, warnings, compatibilityMode, vcard)); //should create a copy
 	}
 

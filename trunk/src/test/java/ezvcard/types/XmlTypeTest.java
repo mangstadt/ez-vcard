@@ -2,11 +2,11 @@ package ezvcard.types;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,12 +50,19 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  */
 public class XmlTypeTest {
+	final List<String> warnings = new ArrayList<String>();
+	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	final VCardSubTypes subTypes = new VCardSubTypes();
+
+	@Before
+	public void before() {
+		subTypes.clear();
+		warnings.clear();
+	}
+
 	@Test
 	public void marshalXml() throws Exception {
 		VCardVersion version = VCardVersion.V4_0;
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		List<String> warnings = new ArrayList<String>();
-
 		Document actual = XmlUtils.toDocument("<root></root>");
 		Element root = XmlUtils.getRootElement(actual);
 		XmlType xml = new XmlType("<a href=\"http://www.example.com\">some html</a>");
@@ -64,28 +71,29 @@ public class XmlTypeTest {
 		Document expected = XmlUtils.toDocument("<root><a href=\"http://www.example.com\">some html</a></root>");
 
 		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
+	}
 
-		xml = new XmlType("not valid XML");
-		try {
-			xml.marshalXml(root, version, warnings, compatibilityMode);
-			fail();
-		} catch (SkipMeException e) {
-			//should be thrown
-		}
+	@Test(expected = SkipMeException.class)
+	public void marshalXml_invalid_xml() throws Exception {
+		VCardVersion version = VCardVersion.V4_0;
+		Document actual = XmlUtils.toDocument("<root></root>");
+		Element root = XmlUtils.getRootElement(actual);
+
+		XmlType xml = new XmlType("not valid XML");
+		xml.marshalXml(root, version, warnings, compatibilityMode);
 	}
 
 	@Test
 	public void unmarshalXml() throws Exception {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		VCardSubTypes subTypes = new VCardSubTypes();
-
 		String xml = "<a href=\"http://www.example.com\">some html</a>";
 		Document document = XmlUtils.toDocument(xml);
 		Element element = XmlUtils.getRootElement(document);
 		XmlType t = new XmlType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+
 		assertEquals("<a href=\"http://www.example.com\">some html</a>", t.getValue());
+		assertEquals(0, warnings.size());
 	}
 }

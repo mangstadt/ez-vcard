@@ -68,26 +68,29 @@ public class RawTypeTest {
 
 	@Test
 	public void marshalText() {
-		String actual = type.marshalText(VCardVersion.V2_1, warnings, compatibilityMode);
+		VCardVersion version = VCardVersion.V2_1;
+		String actual = type.marshalText(version, warnings, compatibilityMode);
 		assertEquals(propertyValue, actual);
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void marshalXml() {
+		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(RawTypeImpl.NAME.toLowerCase());
 		xe.append("unknown", propertyValue);
 		Document expected = xe.document();
 		xe = new XCardElement(RawTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
-		type.marshalXml(xe.element(), VCardVersion.V4_0, warnings, compatibilityMode);
+		type.marshalXml(xe.element(), version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
 	public void marshalJson() {
-		JCardValue value = type.marshalJson(VCardVersion.V4_0, new ArrayList<String>());
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = type.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
 		assertFalse(value.isStructured());
 
@@ -103,8 +106,9 @@ public class RawTypeTest {
 
 	@Test
 	public void unmarshalText() {
+		VCardVersion version = VCardVersion.V2_1;
 		RawTypeImpl type = new RawTypeImpl();
-		type.unmarshalText(subTypes, propertyValue, VCardVersion.V2_1, warnings, compatibilityMode);
+		type.unmarshalText(subTypes, propertyValue, version, warnings, compatibilityMode);
 
 		assertEquals(propertyValue, type.getValue());
 		assertEquals(0, warnings.size());
@@ -112,12 +116,13 @@ public class RawTypeTest {
 
 	@Test
 	public void unmarshalXml() {
+		VCardVersion version = VCardVersion.V4_0;
 		RawTypeImpl type = new RawTypeImpl();
 		XCardElement xe = new XCardElement(RawTypeImpl.NAME.toLowerCase());
 		xe.text(propertyValue);
 		xe.text("another value");
 		Element input = xe.element();
-		type.unmarshalXml(subTypes, input, VCardVersion.V4_0, warnings, compatibilityMode);
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
 		assertEquals(propertyValue, type.getValue());
 		assertEquals(0, warnings.size());
@@ -125,11 +130,12 @@ public class RawTypeTest {
 
 	@Test
 	public void unmarshalXml_no_child_elements() {
+		VCardVersion version = VCardVersion.V4_0;
 		RawTypeImpl type = new RawTypeImpl();
 		XCardElement xe = new XCardElement(RawTypeImpl.NAME.toLowerCase());
 		xe.element().setTextContent(propertyValue);
 		Element input = xe.element();
-		type.unmarshalXml(subTypes, input, VCardVersion.V4_0, warnings, compatibilityMode);
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
 		assertEquals(propertyValue, type.getValue());
 		assertEquals(0, warnings.size());
@@ -137,10 +143,11 @@ public class RawTypeTest {
 
 	@Test
 	public void unmarshalXml_no_text_content() {
+		VCardVersion version = VCardVersion.V4_0;
 		RawTypeImpl type = new RawTypeImpl();
 		XCardElement xe = new XCardElement(RawTypeImpl.NAME.toLowerCase());
 		Element input = xe.element();
-		type.unmarshalXml(subTypes, input, VCardVersion.V4_0, warnings, compatibilityMode);
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
 		assertEquals("", type.getValue());
 		assertEquals(0, warnings.size());
@@ -159,12 +166,13 @@ public class RawTypeTest {
 
 	@Test
 	public void unmarshalJson() {
+		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = new JCardValue();
 		value.setDataType(JCardDataType.TEXT);
 		value.addValues(propertyValue);
 
 		RawTypeImpl type = new RawTypeImpl();
-		type.unmarshalJson(subTypes, value, VCardVersion.V4_0, warnings);
+		type.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(propertyValueEscaped, type.getValue());
 		assertEquals(0, warnings.size());

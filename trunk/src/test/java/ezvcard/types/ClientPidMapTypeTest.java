@@ -102,6 +102,7 @@ public class ClientPidMapTypeTest {
 		withValue.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
+		assertEquals(0, warnings.size());
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -126,6 +127,7 @@ public class ClientPidMapTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -141,6 +143,23 @@ public class ClientPidMapTypeTest {
 
 		assertEquals(pid, clientPidMapType.getPid().intValue());
 		assertEquals(uri, clientPidMapType.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_uri_with_semicolon() {
+		VCardVersion version = VCardVersion.V4_0;
+		clientPidMapType.unmarshalText(subTypes, pid + ";" + uri + ";foo", version, warnings, compatibilityMode);
+
+		assertEquals(pid, clientPidMapType.getPid().intValue());
+		assertEquals(uri + ";foo", clientPidMapType.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void unmarshalText_bad_format() {
+		VCardVersion version = VCardVersion.V4_0;
+		clientPidMapType.unmarshalText(subTypes, "no semicolon", version, warnings, compatibilityMode);
 	}
 
 	@Test
@@ -154,6 +173,7 @@ public class ClientPidMapTypeTest {
 
 		assertEquals(pid, clientPidMapType.getPid().intValue());
 		assertEquals(uri, clientPidMapType.getUri());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
@@ -165,6 +185,7 @@ public class ClientPidMapTypeTest {
 
 		assertEquals(pid, clientPidMapType.getPid().intValue());
 		assertEquals(uri, clientPidMapType.getUri());
+		assertEquals(0, warnings.size());
 	}
 
 	@Test
