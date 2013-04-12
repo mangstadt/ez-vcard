@@ -2299,11 +2299,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addTimezoneAlt(Collection<TimezoneType> altRepresentations) {
-		String altId = generateAltId(timezones);
-		for (TimezoneType timezone : altRepresentations) {
-			timezone.setAltId(altId);
-			addTimezone(timezone);
-		}
+		addAlt(timezones, altRepresentations);
 	}
 
 	/**
