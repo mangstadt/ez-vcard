@@ -165,7 +165,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	 * </p>
 	 * @param calscale the type of calendar or null to remove
 	 */
-	public void setCalsclae(CalscaleParameter calscale) {
+	public void setCalscale(CalscaleParameter calscale) {
 		subTypes.setCalscale(calscale);
 	}
 
