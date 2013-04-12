@@ -225,10 +225,10 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	}
 
 	/**
-	 * Modifies a given key before it is used to interact with the internal Map.
+	 * Modifies a given key before it is used to interact with the internal map.
 	 * This method is meant to be overridden by child classes if necessary.
 	 * @param key the key
-	 * @return the modified key (by default, the key returned as-is)
+	 * @return the modified key (by default, the key is returned as-is)
 	 */
 	protected K sanitizeKey(K key) {
 		return key;
