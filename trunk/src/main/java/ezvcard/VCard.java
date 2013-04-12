@@ -530,6 +530,23 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * <p>
+	 * Adds a member property as a group of alternative representations (see:
+	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * </p>
+	 * <p>
+	 * vCard property name: MEMBER
+	 * </p>
+	 * <p>
+	 * vCard versions: 4.0
+	 * </p>
+	 * @param altRepresentations the alternative representations of the property
+	 */
+	public void addMemberAlt(Collection<MemberType> altRepresentations) {
+		addAlt(members, altRepresentations);
+	}
+
+	/**
 	 * Gets the PROFILE property.
 	 * <p>
 	 * vCard property name: PROFILE
