@@ -1606,15 +1606,8 @@ public class VCard implements Iterable<VCardType> {
 
 	/**
 	 * <p>
-	 * Sets the person's time of death.
-	 * </p>
-	 * <p>
-	 * This method allows the property to be defined as a group of alternative
-	 * representations (see {@link VCardSubTypes#getAltId} for more details).
-	 * </p>
-	 * <p>
-	 * This method automatically generates an appropriate ALTID value. Use
-	 * {@link #setDeathdate(Collection, String)} to supply your own ALTID.
+	 * Sets the deathdate property as a group of alternative representations
+	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
 	 * vCard property name: DEATHDATE
@@ -1623,8 +1616,6 @@ public class VCard implements Iterable<VCardType> {
 	 * vCard versions: 4.0
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
-	 * @param altId the unique identifier to use for this collection of
-	 * alternative representations (e.g. "1")
 	 */
 	public void setDeathdateAlt(Collection<DeathdateType> altRepresentations) {
 		deathdates.clear();

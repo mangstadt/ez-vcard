@@ -57,11 +57,13 @@ import ezvcard.util.JCardValue;
  either expressed or implied, of the FreeBSD Project.
  */
 
+//@formatter:off
 /**
  * Unmarshals JSON-encoded vCards into {@link VCard} objects.
  * @author Michael Angstadt
- * @see http://tools.ietf.org/html/draft-kewisch-vcard-in-json-01
+ * @see <a href="http://tools.ietf.org/html/draft-kewisch-vcard-in-json-01">jCard draft</a>
  */
+//@formatter:on
 public class JCardReader implements IParser {
 	private final Reader reader;
 	private final List<String> warnings = new ArrayList<String>();
@@ -74,7 +76,7 @@ public class JCardReader implements IParser {
 	private boolean versionFound;
 
 	/**
-	 * @param str the string to read the vCards from
+	 * @param json the JSON string
 	 */
 	public JCardReader(String json) {
 		this(new StringReader(json));
@@ -95,11 +97,15 @@ public class JCardReader implements IParser {
 		this(new FileReader(file));
 	}
 
+	/**
+	 * @param reader the reader to read the vCards from
+	 */
 	public JCardReader(Reader reader) {
 		this.reader = reader;
 	}
 
-	public VCard readNext() throws JsonParseException, IOException {
+	//@Override
+	public VCard readNext() throws IOException {
 		if (jp != null && jp.isClosed()) {
 			return null;
 		}
