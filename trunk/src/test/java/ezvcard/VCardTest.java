@@ -3,17 +3,21 @@ package ezvcard;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 
+import ezvcard.types.HasAltId;
 import ezvcard.types.NoteType;
 import ezvcard.types.RawType;
 import ezvcard.types.RevisionType;
 import ezvcard.types.VCardType;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -78,5 +82,107 @@ public class VCardTest {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1); //no type class is returned for VERSION
 		assertTrue(vcard.getAllTypes().isEmpty());
+	}
+
+	@Test
+	public void addAltId() {
+		HasAltIdImpl one1 = new HasAltIdImpl("1");
+		HasAltIdImpl null1 = new HasAltIdImpl(null);
+		Collection<HasAltIdImpl> existing = new ArrayList<HasAltIdImpl>();
+		existing.add(one1);
+		existing.add(null1);
+
+		HasAltIdImpl two1 = new HasAltIdImpl(null);
+		HasAltIdImpl two2 = new HasAltIdImpl(null);
+		Collection<HasAltIdImpl> altRepresentations = new ArrayList<HasAltIdImpl>();
+		altRepresentations.add(two1);
+		altRepresentations.add(two2);
+
+		VCard.addAlt(existing, altRepresentations);
+
+		Collection<HasAltIdImpl> expected = Arrays.asList(one1, null1, two1, two2);
+		assertEquals(expected, existing);
+		assertEquals("2", two1.altId);
+		assertEquals("2", two2.altId);
+	}
+
+	@Test
+	public void generateAltId() {
+		Collection<HasAltId> list = new ArrayList<HasAltId>();
+		list.add(new HasAltIdImpl("1"));
+		list.add(new HasAltIdImpl("1"));
+		list.add(new HasAltIdImpl("2"));
+		assertEquals("3", VCard.generateAltId(list));
+
+		list = new ArrayList<HasAltId>();
+		list.add(new HasAltIdImpl("1"));
+		list.add(new HasAltIdImpl("1"));
+		list.add(new HasAltIdImpl("3"));
+		assertEquals("2", VCard.generateAltId(list));
+
+		list = new ArrayList<HasAltId>();
+		list.add(new HasAltIdImpl("2"));
+		list.add(new HasAltIdImpl("2"));
+		list.add(new HasAltIdImpl("3"));
+		assertEquals("1", VCard.generateAltId(list));
+
+		list = new ArrayList<HasAltId>();
+		assertEquals("1", VCard.generateAltId(list));
+
+		list = new ArrayList<HasAltId>();
+		list.add(new HasAltIdImpl("one"));
+		list.add(new HasAltIdImpl("one"));
+		list.add(new HasAltIdImpl("three"));
+		assertEquals("1", VCard.generateAltId(list));
+	}
+
+	@Test
+	public void groupByAltId() {
+		HasAltIdImpl one1 = new HasAltIdImpl("1");
+		HasAltIdImpl null1 = new HasAltIdImpl(null);
+		HasAltIdImpl two1 = new HasAltIdImpl("2");
+		HasAltIdImpl one2 = new HasAltIdImpl("1");
+		HasAltIdImpl null2 = new HasAltIdImpl(null);
+		Collection<HasAltIdImpl> list = Arrays.asList(one1, null1, one2, two1, null2);
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<HasAltIdImpl>> expected = Arrays.asList(
+			Arrays.asList(one1, one2),
+			Arrays.asList(null1, null2),
+			Arrays.asList(two1)
+		);
+		//@formatter:on
+		assertEquals(expected, VCard.groupByAltId(list));
+	}
+
+	@Test
+	public void groupByAltId_empty() {
+		Collection<HasAltIdImpl> list = new ArrayList<HasAltIdImpl>();
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<HasAltIdImpl>> expected = Arrays.asList(
+		);
+		//@formatter:on
+		assertEquals(expected, VCard.groupByAltId(list));
+	}
+
+	private class HasAltIdImpl implements HasAltId {
+		private String altId;
+
+		public HasAltIdImpl(String altId) {
+			this.altId = altId;
+		}
+
+		//@Overrides
+		public String getAltId() {
+			return altId;
+		}
+
+		//@Overrides
+		public void setAltId(String altId) {
+			this.altId = altId;
+		}
 	}
 }
