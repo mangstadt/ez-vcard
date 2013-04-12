@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import ezvcard.io.CompatibilityMode;
 import ezvcard.types.HasAltId;
 import ezvcard.types.NoteType;
 import ezvcard.types.RawType;
@@ -82,6 +83,23 @@ public class VCardTest {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1); //no type class is returned for VERSION
 		assertTrue(vcard.getAllTypes().isEmpty());
+	}
+
+	@Test
+	public void addExtendedType_raw() {
+		VCard vcard = new VCard();
+		RawType type = vcard.addExtendedType("NAME", "value");
+		assertEquals("NAME", type.getTypeName());
+		assertEquals("value", type.getValue());
+		assertEquals(Arrays.asList(type), vcard.getExtendedType("NAME"));
+	}
+
+	@Test
+	public void addExtendedType_type_class() {
+		VCard vcard = new VCard();
+		VCardTypeImpl type = new VCardTypeImpl("NAME");
+		vcard.addExtendedType(type);
+		assertEquals(Arrays.asList(type), vcard.getExtendedType(type.getClass()));
 	}
 
 	@Test
@@ -183,6 +201,22 @@ public class VCardTest {
 		//@Overrides
 		public void setAltId(String altId) {
 			this.altId = altId;
+		}
+	}
+
+	private class VCardTypeImpl extends VCardType {
+		public VCardTypeImpl(String typeName) {
+			super(typeName);
+		}
+
+		@Override
+		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
 		}
 	}
 }
