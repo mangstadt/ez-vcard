@@ -3702,9 +3702,9 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	static <T extends HasAltId> void addAlt(Collection<T> existingProperties, Collection<T> altRepresentations) {
 		String altId = generateAltId(existingProperties);
-		for (T impp : altRepresentations) {
-			impp.setAltId(altId);
-			existingProperties.add(impp);
+		for (T property : altRepresentations) {
+			property.setAltId(altId);
+			existingProperties.add(property);
 		}
 	}
 
