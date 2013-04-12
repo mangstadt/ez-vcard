@@ -71,7 +71,7 @@ import ezvcard.util.XCardElement;
  * </p>
  * @author Michael Angstadt
  */
-public class StructuredNameType extends VCardType {
+public class StructuredNameType extends VCardType implements HasAltId {
 	public static final String NAME = "N";
 
 	private String family;
@@ -237,26 +237,12 @@ public class StructuredNameType extends VCardType {
 		subTypes.setLanguage(language);
 	}
 
-	/**
-	 * Gets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
-	 */
+	//@Override
 	public String getAltId() {
 		return subTypes.getAltId();
 	}
 
-	/**
-	 * Sets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
-	 */
+	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}

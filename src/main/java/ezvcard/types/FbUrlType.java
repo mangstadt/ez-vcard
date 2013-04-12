@@ -51,7 +51,7 @@ import ezvcard.VCardVersion;
  * </p>
  * @author Michael Angstadt
  */
-public class FbUrlType extends UriType {
+public class FbUrlType extends UriType implements HasAltId {
 	public static final String NAME = "FBURL";
 
 	public FbUrlType() {
@@ -148,26 +148,12 @@ public class FbUrlType extends UriType {
 		subTypes.setPref(pref);
 	}
 
-	/**
-	 * Gets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
-	 */
+	//@Override
 	public String getAltId() {
 		return subTypes.getAltId();
 	}
 
-	/**
-	 * Sets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
-	 */
+	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}

@@ -51,7 +51,7 @@ import ezvcard.VCardSubTypes;
  * 
  * @author Michael Angstadt
  */
-public class TitleType extends TextType {
+public class TitleType extends TextType implements HasAltId {
 	public static final String NAME = "TITLE";
 
 	public TitleType() {
@@ -168,26 +168,12 @@ public class TitleType extends TextType {
 		subTypes.setPref(pref);
 	}
 
-	/**
-	 * Gets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
-	 */
+	//@Override
 	public String getAltId() {
 		return subTypes.getAltId();
 	}
 
-	/**
-	 * Sets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
-	 */
+	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}

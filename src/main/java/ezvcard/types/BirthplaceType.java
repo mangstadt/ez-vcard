@@ -78,7 +78,7 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
  */
-public class BirthplaceType extends VCardType {
+public class BirthplaceType extends VCardType implements HasAltId {
 	public static final String NAME = "BIRTHPLACE";
 
 	private String uri;
@@ -122,26 +122,12 @@ public class BirthplaceType extends VCardType {
 		uri = null;
 	}
 
-	/**
-	 * Gets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
-	 */
+	//@Override
 	public String getAltId() {
 		return subTypes.getAltId();
 	}
 
-	/**
-	 * Sets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
-	 */
+	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}

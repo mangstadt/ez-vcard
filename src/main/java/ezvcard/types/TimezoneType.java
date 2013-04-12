@@ -115,7 +115,7 @@ import ezvcard.util.XCardElement;
  * yes	| yes			| Write text
  */
 //@formatter:on
-public class TimezoneType extends VCardType {
+public class TimezoneType extends VCardType implements HasAltId {
 	public static final String NAME = "TZ";
 
 	private Integer hourOffset;
@@ -348,26 +348,12 @@ public class TimezoneType extends VCardType {
 		subTypes.setPref(pref);
 	}
 
-	/**
-	 * Gets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
-	 */
+	//@Override
 	public String getAltId() {
 		return subTypes.getAltId();
 	}
 
-	/**
-	 * Sets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
-	 */
+	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}

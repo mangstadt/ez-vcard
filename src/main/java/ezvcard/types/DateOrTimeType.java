@@ -53,7 +53,7 @@ import ezvcard.util.XCardElement;
  * type).
  * @author Michael Angstadt
  */
-public class DateOrTimeType extends VCardType {
+public class DateOrTimeType extends VCardType implements HasAltId {
 	static final Pattern reducedAccuracyRegex = Pattern.compile("([-\\d]+T[-+:\\dZ]+)|([-\\d]+)|(T[-+:\\dZ]+)");
 	private String text;
 	private Date date;
@@ -169,26 +169,12 @@ public class DateOrTimeType extends VCardType {
 		subTypes.setCalscale(calscale);
 	}
 
-	/**
-	 * Gets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
-	 */
+	//@Override
 	public String getAltId() {
 		return subTypes.getAltId();
 	}
 
-	/**
-	 * Sets the ALTID.
-	 * <p>
-	 * vCard versions: 4.0
-	 * </p>
-	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
-	 */
+	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
 	}
