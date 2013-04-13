@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.util.HCardElement;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
