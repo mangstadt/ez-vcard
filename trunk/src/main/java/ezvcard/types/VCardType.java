@@ -202,11 +202,11 @@ public abstract class VCardType implements Comparable<VCardType> {
 		JCardDataType dataType;
 		ValueParameter valueParam = subTypes.getValue();
 		if (valueParam == null) {
-			dataType = JCardDataType.TEXT;
+			dataType = JCardDataType.UNKNOWN;
 		} else {
 			dataType = JCardDataType.find(valueParam.getValue());
 			if (dataType == null) {
-				dataType = JCardDataType.TEXT;
+				dataType = JCardDataType.UNKNOWN;
 			}
 		}
 		value.setDataType(dataType);

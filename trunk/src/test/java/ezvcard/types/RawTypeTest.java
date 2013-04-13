@@ -91,7 +91,7 @@ public class RawTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = type.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(JCardDataType.UNKNOWN, value.getDataType());
 		assertFalse(value.isStructured());
 
 		//@formatter:off
