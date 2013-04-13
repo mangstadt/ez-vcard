@@ -36,6 +36,10 @@ import ezvcard.VCardVersion;
  * Defines a URI representing the person's work place, which can be used to
  * lookup information on the person's co-workers.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * OrgDirectoryType orgDirectory = new OrgDirectoryType(&quot;http://www.company.com/staff&quot;);

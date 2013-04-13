@@ -36,6 +36,10 @@ import ezvcard.VCardSubTypes;
 /**
  * A URL pointing to the person's homepage or business website.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * UrlType url = new UrlType(&quot;http://www.company.com&quot;);

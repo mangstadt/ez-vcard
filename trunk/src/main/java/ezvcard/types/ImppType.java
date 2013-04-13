@@ -52,6 +52,10 @@ import ezvcard.util.XCardElement;
  * with a Yahoo! Messenger handle of "johndoe@yahoo.com" would have an IMPP
  * vCard property value of "ymsgr:johndoe@yahoo.com".
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * 

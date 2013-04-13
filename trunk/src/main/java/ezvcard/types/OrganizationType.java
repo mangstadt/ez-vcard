@@ -38,6 +38,10 @@ import ezvcard.util.HCardElement;
  * A list of organizations the person belongs to. The list is ordered. It starts
  * with the broadest organization and ends with the most specific.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * OrganizationType org = new OrganizationType();

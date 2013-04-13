@@ -42,15 +42,10 @@ import ezvcard.util.XCardElement;
  */
 
 /**
- * <p>
  * Contains the separated components of the person's name.
- * </p>
  * 
  * <p>
- * Multiple instances of this type can be added ONLY if each instance has an
- * ALTID parameter and the value of the ALTID parameter is the same across all
- * instances. However, this is a border-case; under most circumstances, you will
- * only need to add one instance.
+ * <b>Code sample</b>
  * </p>
  * 
  * <pre>

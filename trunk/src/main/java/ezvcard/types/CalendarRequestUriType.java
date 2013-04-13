@@ -6,7 +6,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,10 @@ import ezvcard.VCardVersion;
 
 /**
  * A URL to use for sending a scheduling request to the person's calendar.
+ * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
  * 
  * <pre>
  * VCard vcard = new VCard();

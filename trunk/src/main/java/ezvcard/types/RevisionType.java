@@ -34,6 +34,10 @@ import java.util.Date;
 /**
  * The date that the vCard was last modified by its owner.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * RevisionType rev = new RevisionType(new Date());

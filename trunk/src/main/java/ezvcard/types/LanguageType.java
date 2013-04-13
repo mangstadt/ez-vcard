@@ -39,6 +39,10 @@ import ezvcard.util.XCardElement;
 /**
  * A language that the person speaks.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * LanguageType lang = new LanguageType(&quot;en&quot;);

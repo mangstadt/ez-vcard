@@ -36,6 +36,10 @@ import ezvcard.VCardSubTypes;
 /**
  * The function that the person plays in his or her organization.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * RoleType role = new RoleType(&quot;Project Leader&quot;);

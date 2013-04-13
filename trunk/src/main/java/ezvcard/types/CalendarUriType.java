@@ -37,6 +37,10 @@ import ezvcard.VCardVersion;
 /**
  * A URL to the person's calendar.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * CalendarUriType caluri = new CalendarUriType(&quot;http://www.ibm.com/janedoe/calendar&quot;);

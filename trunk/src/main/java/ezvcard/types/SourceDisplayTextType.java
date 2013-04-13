@@ -34,6 +34,10 @@ import ezvcard.VCardVersion;
 /**
  * Provides a textual representation of {@link SourceType}.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * SourceDisplayTextType name = new SourceDisplayTextType(&quot;My vCard&quot;);

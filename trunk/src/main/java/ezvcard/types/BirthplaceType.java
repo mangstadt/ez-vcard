@@ -45,6 +45,10 @@ import ezvcard.util.XCardElement;
 /**
  * Defines the location of the person's birth.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * 

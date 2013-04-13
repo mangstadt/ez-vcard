@@ -37,6 +37,10 @@ import ezvcard.io.CompatibilityMode;
 /**
  * This just says that the vCard is a vCard, it's not really necessary.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * ProfileType profile = new ProfileType();
@@ -75,7 +79,7 @@ public class ProfileType extends TextType {
 		}
 		super.doUnmarshalText(value, version, warnings, compatibilityMode);
 	}
-	
+
 	@Override
 	public VCardVersion[] getSupportedVersions() {
 		return new VCardVersion[] { VCardVersion.V3_0 };

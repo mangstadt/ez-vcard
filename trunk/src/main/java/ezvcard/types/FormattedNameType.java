@@ -36,6 +36,10 @@ import ezvcard.VCardSubTypes;
 /**
  * Shows how the person's name should be displayed.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * FormattedNameType fn = new FormattedNameType(&quot;Dr. Gregory House M.D.&quot;);

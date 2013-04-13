@@ -14,7 +14,7 @@ import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -46,16 +46,24 @@ import ezvcard.util.VCardStringUtils;
  * An embedded vCard or URL containing the information of someone who represents
  * the person.
  * 
+ * <p>
+ * <b>URL</b>
+ * </p>
+ * 
  * <pre>
- * //URL
  * VCard vcard = new VCard();
  * AgentType agent = new AgentType(&quot;http://mi5.gov.uk/007&quot;);
  * vcard.setAgent(agent);
+ * </pre>
  * 
- * //vCard
+ * <p>
+ * <b>vCard</b>
+ * </p>
+ * 
+ * <pre>
  * VCard vcard = new VCard();
  * VCard agentVcard = new VCard();
- * agentVcard.setFormattedName(new FormattedNameType(&quot;Agent 007&quot;));
+ * agentVcard.setFormattedName(&quot;Agent 007&quot;);
  * AgentType agent = new AgentType(agentVcard);
  * vcard.setAgent(agent);
  * </pre>
