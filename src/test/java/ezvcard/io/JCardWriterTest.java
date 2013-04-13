@@ -51,6 +51,8 @@ import ezvcard.util.JCardValue;
  * @author Michael Angstadt
  */
 public class JCardWriterTest {
+	final String newline = System.getProperty("line.separator");
+
 	@Test
 	public void write_single_vcard() throws Exception {
 		StringWriter sw = new StringWriter();
@@ -188,6 +190,39 @@ public class JCardWriterTest {
 	}
 
 	@Test
+	public void setIndent() throws Exception {
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+		writer.setIndent(true);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("Simon Perreault");
+		writer.write(vcard);
+
+		vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\",[" + newline +
+		"  \"vcard\",[[" + newline +
+		"    \"version\",{},\"text\",\"4.0\"],[" + newline +
+		"    \"fn\",{},\"text\",\"Simon Perreault\"]" + newline +
+		"  ]],[" + newline +
+		"  \"vcard\",[[" + newline +
+		"    \"version\",{},\"text\",\"4.0\"],[" + newline +
+		"    \"fn\",{},\"text\",\"John Doe\"]" + newline +
+		"  ]]" + newline +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
 	public void write_no_vcards() throws Exception {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
@@ -210,7 +245,7 @@ public class JCardWriterTest {
 
 	@Test
 	public void write_null_value() throws Exception {
-		JCardValue value = JCardValue.text((String)null);
+		JCardValue value = JCardValue.text((String) null);
 		VCard vcard = new VCard();
 		vcard.addExtendedType(new TypeForTesting(value));
 

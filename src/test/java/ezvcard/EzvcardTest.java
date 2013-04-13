@@ -60,6 +60,8 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  */
 public class EzvcardTest {
+	final String newline = System.getProperty("line.separator");
+
 	private final XPath xpath = XPathFactory.newInstance().newXPath();
 	{
 		xpath.setNamespaceContext(new XCardReader.XCardNamespaceContext("v"));
@@ -728,6 +730,22 @@ public class EzvcardTest {
 
 		actual = Ezvcard.writeJson(vcard).prodId(false).go();
 		assertFalse(actual.contains("[\"prodid\","));
+	}
+
+	@Test
+	public void writeJson_indent() {
+		VCard vcard = new VCard();
+		vcard.setVersion(VCardVersion.V4_0);
+
+		//defaults to "false"
+		String actual = Ezvcard.writeJson(vcard).go();
+		assertTrue(actual.startsWith("[\"vcardstream\",[\"vcard\""));
+
+		actual = Ezvcard.writeJson(vcard).indent(true).go();
+		assertTrue(actual.startsWith("[\"vcardstream\",[" + newline + "  \"vcard\""));
+
+		actual = Ezvcard.writeJson(vcard).indent(false).go();
+		assertTrue(actual.startsWith("[\"vcardstream\",[\"vcard\""));
 	}
 
 	@Test

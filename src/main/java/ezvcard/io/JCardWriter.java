@@ -60,11 +60,13 @@ import ezvcard.util.JCardValue;
  * @author Michael Angstadt
  */
 public class JCardWriter implements Closeable {
+	private static final String newline = System.getProperty("line.separator");
 	private final Writer writer;
 	private JsonGenerator jg;
 	private VCardVersion targetVersion = VCardVersion.V4_0;
 	private final List<String> warnings = new ArrayList<String>();
 	private boolean addProdId = true;
+	private boolean indent = false;
 
 	/**
 	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
@@ -112,6 +114,7 @@ public class JCardWriter implements Closeable {
 		}
 
 		jg.writeStartArray();
+		indent(2);
 		jg.writeString("vcard");
 		jg.writeStartArray();
 
@@ -181,6 +184,7 @@ public class JCardWriter implements Closeable {
 			}
 
 			jg.writeStartArray(); //start property
+			indent(4);
 
 			//write property name
 			jg.writeString(type.getTypeName().toLowerCase());
@@ -258,6 +262,7 @@ public class JCardWriter implements Closeable {
 			jg.writeEndArray(); //end property
 		}
 
+		indent(2);
 		jg.writeEndArray();
 		jg.writeEndArray();
 	}
@@ -269,6 +274,15 @@ public class JCardWriter implements Closeable {
 			}
 		}
 		return false;
+	}
+
+	private void indent(int spaces) throws IOException {
+		if (indent) {
+			jg.writeRaw(newline);
+			for (int i = 0; i < spaces; i++) {
+				jg.writeRaw(' ');
+			}
+		}
 	}
 
 	/**
@@ -294,6 +308,23 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
+	 * Gets whether the JSON will be pretty-printed or not.
+	 * @return true if it will be pretty-printed, false if not (defaults to
+	 * false)
+	 */
+	public boolean isIndent() {
+		return indent;
+	}
+
+	/**
+	 * Sets whether to pretty-print the JSON or not.
+	 * @param indent true to pretty-print it, false not to (defaults to false)
+	 */
+	public void setIndent(boolean indent) {
+		this.indent = indent;
+	}
+
+	/**
 	 * Gets the warnings from the last vCard that was marshalled. This list is
 	 * reset every time a new vCard is written.
 	 * @return the warnings or empty list if there were no warnings
@@ -309,6 +340,7 @@ public class JCardWriter implements Closeable {
 	 */
 	public void endJsonStream() throws IOException {
 		if (jg != null) {
+			indent(0);
 			jg.writeEndArray();
 			jg.close();
 		}
