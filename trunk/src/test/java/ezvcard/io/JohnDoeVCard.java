@@ -24,6 +24,7 @@ import ezvcard.types.SoundType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.UidType;
+import freemarker.template.TemplateException;
 
 /**
  * Generates a sample vCard.
@@ -99,13 +100,24 @@ public class JohnDoeVCard {
 
 		vcard.setRevision(RevisionType.now());
 
+		//write vCard
 		file = new File("john-doe.vcf");
 		writeVCard(vcard, file, VCardVersion.V3_0);
-
 		System.out.println();
 
+		//write xCard
 		file = new File("john-doe.xml");
 		writeXCard(vcard, file);
+		System.out.println();
+
+		//write hCard
+		file = new File("john-doe.html");
+		writeHCard(vcard, file);
+		System.out.println();
+
+		//write jCard
+		file = new File("john-doe.json");
+		writeJCard(vcard, file);
 	}
 
 	private static void writeVCard(VCard vcard, File file, VCardVersion version) throws IOException {
@@ -125,6 +137,24 @@ public class JohnDoeVCard {
 
 		List<String> warnings = new ArrayList<String>();
 		Ezvcard.writeXml(vcard).indent(2).warnings(warnings).go(file);
+
+		System.out.println("Completed with " + warnings.size() + " warnings.");
+		for (String warning : warnings) {
+			System.out.println("* " + warning);
+		}
+	}
+
+	private static void writeHCard(VCard vcard, File file) throws IOException, TemplateException {
+		System.out.println("Writing " + file.getName() + "...");
+
+		Ezvcard.writeHtml(vcard).go(file);
+	}
+
+	private static void writeJCard(VCard vcard, File file) throws IOException {
+		System.out.println("Writing " + file.getName() + "...");
+
+		List<String> warnings = new ArrayList<String>();
+		Ezvcard.writeJson(vcard).indent(true).warnings(warnings).go(file);
 
 		System.out.println("Completed with " + warnings.size() + " warnings.");
 		for (String warning : warnings) {
