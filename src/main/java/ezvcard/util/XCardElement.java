@@ -125,6 +125,15 @@ public class XCardElement {
 	}
 
 	/**
+	 * Gets the value of the first <code>&lt;utc-offset&gt;</code> child
+	 * element.
+	 * @return the UTC offset or null if not found
+	 */
+	public String utcOffset() {
+		return get("utc-offset");
+	}
+
+	/**
 	 * Gets the value of the first child element with one of the given names.
 	 * @param names the possible names of the element
 	 * @return the element's text or null if not found
@@ -191,6 +200,15 @@ public class XCardElement {
 	 */
 	public Element timestamp(String timestamp) {
 		return append("timestamp", timestamp);
+	}
+
+	/**
+	 * Adds a <code>&lt;utc-offset&gt;</code> child element.
+	 * @param utcOffset the UTC offset
+	 * @return the created element
+	 */
+	public Element utcOffset(String utcOffset) {
+		return append("utc-offset", utcOffset);
 	}
 
 	/**

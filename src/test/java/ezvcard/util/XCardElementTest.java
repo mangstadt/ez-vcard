@@ -159,6 +159,18 @@ public class XCardElementTest {
 	}
 
 	@Test
+	public void utcOffset_get() throws Exception {
+		XCardElement xcardElement = build("<prop><utc-offset>-05:00</utc-offset></prop>");
+		assertEquals("-05:00", xcardElement.utcOffset());
+	}
+
+	@Test
+	public void utcOffset_get_none() throws Exception {
+		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
+		assertNull(xcardElement.utcOffset());
+	}
+
+	@Test
 	public void append() throws Exception {
 		XCardElement xcardElement = build("<prop><one>1</one></prop>");
 		Element appendedElement = xcardElement.append("two", "2");
@@ -242,6 +254,16 @@ public class XCardElementTest {
 		assertEquals("timestamp", element.getLocalName());
 		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
 		assertEquals("t", element.getTextContent());
+		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
+	}
+
+	@Test
+	public void utcOffset_add() throws Exception {
+		XCardElement xcardElement = build("<prop />");
+		Element element = xcardElement.utcOffset("-05:00");
+		assertEquals("utc-offset", element.getLocalName());
+		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
+		assertEquals("-05:00", element.getTextContent());
 		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
 	}
 
