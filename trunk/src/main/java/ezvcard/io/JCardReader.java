@@ -219,6 +219,9 @@ public class JCardReader implements IParser {
 				if (jp.nextToken() != JsonToken.END_ARRAY) {
 					throw new JCardParseException(JsonToken.END_ARRAY, jp.getCurrentToken());
 				}
+				if (jcardValue.getValues().isEmpty()) {
+					jcardValue.addValues("");
+				}
 			}
 
 			if (propertiesRead == 0 && !"version".equals(propertyName)) {

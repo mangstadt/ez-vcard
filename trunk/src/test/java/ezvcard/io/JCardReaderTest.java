@@ -318,6 +318,7 @@ public class JCardReaderTest {
 	 * <li>empty arrays</li>
 	 * <li>multi-valued components</li>
 	 * <li>structured/non-structured values</li>
+	 * <li>empty structured value</li>
 	 * </ul>
 	 * @throws Exception
 	 */
@@ -329,7 +330,8 @@ public class JCardReaderTest {
 		    "[" +
 		      "[\"version\", {}, \"text\", \"4.0\"]," +
 		      "[\"x-type\", {}, \"text\", [ false, true, 1.1, 1, null, \"test\", [], [false, true, 1.1, 1, null, \"test\"] ] ]," +
-		      "[\"x-type\", {}, \"text\", false, true, 1.1, 1, null, \"test\", [] ]" +
+		      "[\"x-type\", {}, \"text\", false, true, 1.1, 1, null, \"test\", [] ]," +
+		      "[\"x-type\", {}, \"text\", [] ]" +
 		    "]" +
 		  "]";
 		//@formatter:on
@@ -377,6 +379,21 @@ public class JCardReaderTest {
 				Arrays.asList(new Object[]{ 1L }),
 				Arrays.asList(new Object[]{ "" }),
 				Arrays.asList(new Object[]{ "test" }),
+				Arrays.asList(new Object[]{ "" })
+			);
+			//@formatter:on
+			assertEquals(expected, value.getValues());
+		}
+
+		{
+			JCardValue value = it.next().value;
+
+			assertTrue(value.isStructured());
+			assertEquals(JCardDataType.TEXT, value.getDataType());
+
+			//@formatter:off
+			@SuppressWarnings("unchecked")
+			List<List<Object>> expected = Arrays.asList(
 				Arrays.asList(new Object[]{ "" })
 			);
 			//@formatter:on
