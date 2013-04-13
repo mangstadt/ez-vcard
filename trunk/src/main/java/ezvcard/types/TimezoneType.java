@@ -432,14 +432,14 @@ public class TimezoneType extends VCardType implements HasAltId {
 			parent.text(text);
 		} else {
 			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
-			parent.append("utc-offset", offset);
+			parent.utcOffset(offset);
 		}
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String text = element.get("text");
-		String utcOffset = element.get("utc-offset");
+		String utcOffset = element.utcOffset();
 
 		if (text == null && utcOffset == null) {
 			throw new SkipMeException("No timezone data found.");
