@@ -18,6 +18,7 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
@@ -88,10 +89,31 @@ public class VCardTypeTest {
 	}
 
 	@Test
-	public void marshalJson_text() {
+	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = type.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ type.value })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_value_parameter() {
+		VCardVersion version = VCardVersion.V4_0;
+		VCardTypeImpl type = new VCardTypeImpl();
+		type.value = "value";
+		type.getSubTypes().setValue(ValueParameter.BOOLEAN);
+
+		JCardValue value = type.marshalJson(version, warnings);
+		assertEquals(JCardDataType.BOOLEAN, value.getDataType());
 		assertFalse(value.isStructured());
 
 		//@formatter:off
@@ -112,7 +134,7 @@ public class VCardTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml_text() {
+	public void unmarshalHtml() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + type.value + "</div>");
 
 		t.unmarshalHtml(element, warnings);

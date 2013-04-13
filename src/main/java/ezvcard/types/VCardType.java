@@ -12,7 +12,9 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -192,8 +194,24 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * vCard
 	 */
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		JCardValue value = new JCardValue();
 		String valueStr = marshalText(version, warnings, CompatibilityMode.RFC);
-		return JCardValue.text(valueStr);
+		value.addValues(valueStr);
+
+		//determine the data type based on the VALUE parameter
+		JCardDataType dataType;
+		ValueParameter valueParam = subTypes.getValue();
+		if (valueParam == null) {
+			dataType = JCardDataType.TEXT;
+		} else {
+			dataType = JCardDataType.find(valueParam.getValue());
+			if (dataType == null) {
+				dataType = JCardDataType.TEXT;
+			}
+		}
+		value.setDataType(dataType);
+
+		return value;
 	}
 
 	/**
