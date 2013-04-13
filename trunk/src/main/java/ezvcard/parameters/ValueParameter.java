@@ -37,77 +37,77 @@ public class ValueParameter extends VCardParameter {
 	public static final String NAME = "VALUE";
 
 	/**
-	 * vCard versions: 2.1 (p.18-9)
+	 * <b>Supported versions:</b> <code>2.1 (p.18-9)</code>
 	 */
 	public static final ValueParameter URL = new ValueParameter("url");
 
 	/**
-	 * vCard versions: 2.1 (p.8-9)
+	 * <b>Supported versions:</b> <code>2.1 (p.8-9)</code>
 	 */
 	public static final ValueParameter CONTENT_ID = new ValueParameter("content-id");
 
 	/**
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 */
 	public static final ValueParameter BINARY = new ValueParameter("binary");
 
 	/**
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
 	public static final ValueParameter URI = new ValueParameter("uri");
 
 	/**
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
 	public static final ValueParameter TEXT = new ValueParameter("text");
 
 	/**
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
 	public static final ValueParameter DATE = new ValueParameter("date");
 
 	/**
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
 	public static final ValueParameter TIME = new ValueParameter("time");
 
 	/**
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
 	public static final ValueParameter DATE_TIME = new ValueParameter("date-time");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final ValueParameter DATE_AND_OR_TIME = new ValueParameter("date-and-or-time");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final ValueParameter TIMESTAMP = new ValueParameter("timestamp");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final ValueParameter BOOLEAN = new ValueParameter("boolean");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final ValueParameter INTEGER = new ValueParameter("integer");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final ValueParameter FLOAT = new ValueParameter("float");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final ValueParameter UTC_OFFSET = new ValueParameter("utc-offset");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final ValueParameter LANGUAGE_TAG = new ValueParameter("language-tag");
 

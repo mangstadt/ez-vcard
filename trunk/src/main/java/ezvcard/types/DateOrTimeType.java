@@ -150,7 +150,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	/**
 	 * Gets the type of calendar this date uses.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the type of calendar or null if not set
 	 */
@@ -161,7 +161,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	/**
 	 * Sets the type of calendar this date uses.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param calscale the type of calendar or null to remove
 	 */

@@ -65,10 +65,10 @@ import ezvcard.VCardVersion;
  * </pre>
  * 
  * <p>
- * vCard property name: KIND
+ * <b>Property name:</b> <code>KIND</code>
  * </p>
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  */

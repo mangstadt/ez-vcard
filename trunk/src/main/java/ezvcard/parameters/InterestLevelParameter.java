@@ -33,7 +33,7 @@ package ezvcard.parameters;
  * Represents a LEVEL parameter for the INTEREST property.
  * 
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>

@@ -32,7 +32,7 @@ package ezvcard.parameters;
 /**
  * Represents the TYPE parameter of the IMPP type.
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  */

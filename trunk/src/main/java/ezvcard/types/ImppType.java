@@ -65,10 +65,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: IMPP
+ * <b>Property name:</b> <code>IMPP</code>
  * </p>
  * <p>
- * vCard versions: 3.0, 4.0
+ * <b>Supported versions:</b> <code>3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */
@@ -365,7 +365,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Gets the MEDIATYPE parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the media type or null if not set
 	 */
@@ -376,7 +376,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Sets the MEDIATYPE parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param mediaType the media type or null to remove
 	 */
@@ -387,7 +387,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Gets all PID parameter values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
@@ -399,7 +399,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Adds a PID value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param localId the local ID
 	 * @param clientPidMapRef the ID used to reference the property's globally
@@ -413,7 +413,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Removes all PID values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @see VCardSubTypes#removePids
 	 */
@@ -424,7 +424,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Gets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
 	 * @see VCardSubTypes#getPref
@@ -436,7 +436,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Sets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @see VCardSubTypes#setPref

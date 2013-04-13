@@ -44,10 +44,10 @@ import ezvcard.io.CompatibilityMode;
  * </pre>
  * 
  * <p>
- * vCard property name: PROFILE
+ * <b>Property name:</b> <code>PROFILE</code>
  * </p>
  * <p>
- * vCard versions: 3.0
+ * <b>Supported versions:</b> <code>3.0</code>
  * </p>
  * @author Michael Angstadt
  */

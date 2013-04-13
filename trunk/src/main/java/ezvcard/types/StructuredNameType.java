@@ -64,10 +64,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: N
+ * <b>Property name:</b> <code>N</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */
@@ -171,7 +171,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	 * property instead.
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the sort string(s) (e.g. ["Aboville", "Christine"] if the family
 	 * name is "d'Aboville" and the given name is "Christine") or empty list if
@@ -189,7 +189,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	 * property instead.
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param family the sorttable family name (e.g. "Adboville" if the family
 	 * name is "d'Aboville") or null to remove
@@ -209,7 +209,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	 * property instead.
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param family the sortable family name (e.g. "Adboville" if the family
 	 * name is "d'Aboville")

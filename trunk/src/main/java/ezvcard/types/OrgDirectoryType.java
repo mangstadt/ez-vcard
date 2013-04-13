@@ -43,10 +43,10 @@ import ezvcard.VCardVersion;
  * </pre>
  * 
  * <p>
- * vCard property name: ORG-DIRECTORY
+ * <b>Property name:</b> <code>ORG-DIRECTORY</code>
  * </p>
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -127,7 +127,7 @@ public class OrgDirectoryType extends UriType implements HasAltId {
 	/**
 	 * Gets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
 	 * @see VCardSubTypes#getPref
@@ -139,7 +139,7 @@ public class OrgDirectoryType extends UriType implements HasAltId {
 	/**
 	 * Sets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @see VCardSubTypes#setPref

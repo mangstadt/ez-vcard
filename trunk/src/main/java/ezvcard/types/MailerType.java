@@ -41,10 +41,10 @@ import ezvcard.VCardVersion;
  * </pre>
  * 
  * <p>
- * vCard property name: MAILER
+ * <b>Property name:</b> <code>MAILER</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0
+ * <b>Supported versions:</b> <code>2.1, 3.0</code>
  * </p>
  * @author Michael Angstadt
  */

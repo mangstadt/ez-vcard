@@ -92,10 +92,10 @@ import ezvcard.util.VCardStringUtils;
  * </pre>
  * 
  * <p>
- * vCard property name: LABEL
+ * <b>Property name:</b> <code>LABEL</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0
+ * <b>Supported versions:</b> <code>2.1, 3.0</code>
  * </p>
  * @author Michael Angstadt
  */

@@ -46,10 +46,10 @@ import java.util.UUID;
  * </pre>
  * 
  * <p>
- * vCard property name: UID
+ * <b>Property name:</b> <code>UID</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */

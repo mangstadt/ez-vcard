@@ -179,7 +179,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	 * Gets the vCard 4.0 TYPE parameter. This should NOT be used to get the
 	 * TYPE parameter for 2.1/3.0 vCards. Use {@link #getContentType} instead.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the TYPE value (typically, this will be either "work" or "home")
 	 * or null if it doesn't exist
@@ -192,7 +192,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	 * Sets the vCard 4.0 TYPE parameter. This should NOT be used to set the
 	 * TYPE parameter for 2.1/3.0 vCards. Use {@link #setContentType} instead.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param type the TYPE value (should be either "work" or "home") or null to
 	 * remove
@@ -204,7 +204,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	/**
 	 * Gets all PID parameter values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
@@ -216,7 +216,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	/**
 	 * Adds a PID value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param localId the local ID
 	 * @param clientPidMapRef the ID used to reference the property's globally
@@ -230,7 +230,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	/**
 	 * Removes all PID values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @see VCardSubTypes#removePids
 	 */
@@ -241,7 +241,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	/**
 	 * Gets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
 	 * @see VCardSubTypes#getPref
@@ -253,7 +253,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	/**
 	 * Sets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @see VCardSubTypes#setPref

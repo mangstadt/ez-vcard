@@ -39,7 +39,7 @@ public interface HasAltId {
 	/**
 	 * Gets the property's ALTID parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the ALTID or null if it doesn't exist
 	 * @see VCardSubTypes#getAltId
@@ -49,7 +49,7 @@ public interface HasAltId {
 	/**
 	 * Sets the property's ALTID parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altId the ALTID or null to remove
 	 * @see VCardSubTypes#setAltId

@@ -33,83 +33,83 @@ package ezvcard.parameters;
 /**
  * Represents the TYPE parameter of the EMAIL type.
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */
 public class EmailTypeParameter extends TypeParameter {
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final EmailTypeParameter INTERNET = new EmailTypeParameter("internet");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final EmailTypeParameter X400 = new EmailTypeParameter("x400");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final EmailTypeParameter PREF = new EmailTypeParameter("pref");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter AOL = new EmailTypeParameter("aol");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter APPLELINK = new EmailTypeParameter("applelink");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter ATTMAIL = new EmailTypeParameter("attmail");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter CIS = new EmailTypeParameter("cis");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter EWORLD = new EmailTypeParameter("eworld");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter IBMMAIL = new EmailTypeParameter("ibmmail");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter MCIMAIL = new EmailTypeParameter("mcimail");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter POWERSHARE = new EmailTypeParameter("powershare");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter PRODIGY = new EmailTypeParameter("prodigy");
 
 	/**
-	 * vCard versions: 2.1 (suggested)
+	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
 	public static final EmailTypeParameter TLX = new EmailTypeParameter("tlx");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final EmailTypeParameter HOME = new EmailTypeParameter("home");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final EmailTypeParameter WORK = new EmailTypeParameter("work");
 
