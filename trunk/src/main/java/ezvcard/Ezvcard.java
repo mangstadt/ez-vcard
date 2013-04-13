@@ -27,6 +27,8 @@ import org.xml.sax.SAXException;
 import ezvcard.io.HCardPage;
 import ezvcard.io.HCardReader;
 import ezvcard.io.IParser;
+import ezvcard.io.JCardReader;
+import ezvcard.io.JCardWriter;
 import ezvcard.io.VCardReader;
 import ezvcard.io.VCardWriter;
 import ezvcard.io.XCardDocument;
@@ -36,7 +38,7 @@ import ezvcard.util.IOUtils;
 import freemarker.template.TemplateException;
 
 /*
- Copyright (c) 2012, Michael Angstadt
+ Copyright (c) 2013, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -91,6 +93,11 @@ import freemarker.template.TemplateException;
  * <th>HTML</th>
  * <td>{@link HCardReader}</td>
  * <td>{@link HCardPage}</td>
+ * </tr>
+ * <tr>
+ * <th>JSON</th>
+ * <td>{@link JCardReader}</td>
+ * <td>{@link JCardWriter}</td>
  * </tr>
  * </table>
  * @author Michael Angstadt
@@ -361,6 +368,80 @@ public class Ezvcard {
 
 	/**
 	 * <p>
+	 * Parses JSON-encoded vCards (jCard).
+	 * </p>
+	 * <p>
+	 * Use {@link JCardReader} for more control over the parsing.
+	 * </p>
+	 * @param json the JSON string
+	 * @return chainer object for completing the parse operation
+	 * @see JCardReader
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public static ParserChainJsonString parseJson(String json) {
+		return new ParserChainJsonString(json);
+	}
+
+	/**
+	 * <p>
+	 * Parses JSON-encoded vCards (jCard).
+	 * </p>
+	 * <p>
+	 * Use {@link JCardReader} for more control over the parsing.
+	 * </p>
+	 * @param file the JSON file
+	 * @return chainer object for completing the parse operation
+	 * @throws FileNotFoundException if the file does not exist or cannot be
+	 * accessed
+	 * @see JCardReader
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public static ParserChainJsonReader parseJson(File file) throws FileNotFoundException {
+		return parseJson(new FileReader(file));
+	}
+
+	/**
+	 * <p>
+	 * Parses JSON-encoded vCards (jCard).
+	 * </p>
+	 * <p>
+	 * Use {@link JCardReader} for more control over the parsing.
+	 * </p>
+	 * @param in the input stream
+	 * @return chainer object for completing the parse operation
+	 * @see JCardReader
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public static ParserChainJsonReader parseJson(InputStream in) {
+		return parseJson(new InputStreamReader(in));
+	}
+
+	/**
+	 * <p>
+	 * Parses JSON-encoded vCards (jCard).
+	 * </p>
+	 * <p>
+	 * Use {@link JCardReader} for more control over the parsing.
+	 * </p>
+	 * @param reader the reader
+	 * @return chainer object for completing the parse operation
+	 * @see JCardReader
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public static ParserChainJsonReader parseJson(Reader reader) {
+		return new ParserChainJsonReader(reader);
+	}
+
+	/**
+	 * <p>
 	 * Marshals a vCard to its traditional, plain-text representation.
 	 * </p>
 	 * 
@@ -503,6 +584,63 @@ public class Ezvcard {
 		return new WriterChainHtml(vcards);
 	}
 
+	/**
+	 * <p>
+	 * Marshals a vCard to its JSON representation (jCard).
+	 * </p>
+	 * 
+	 * <p>
+	 * Use {@link JCardWriter} for more control over how the vCard is written.
+	 * </p>
+	 * @param vcard the vCard to marshal
+	 * @return chainer object for completing the write operation
+	 * @see JCardWriter
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public static WriterChainJsonSingle writeJson(VCard vcard) {
+		return new WriterChainJsonSingle(vcard);
+	}
+
+	/**
+	 * <p>
+	 * Marshals multiple vCards to their JSON representation (jCard).
+	 * </p>
+	 * 
+	 * <p>
+	 * Use {@link JCardWriter} for more control over how the vCards are written.
+	 * </p>
+	 * @param vcards the vCards to marshal
+	 * @return chainer object for completing the write operation
+	 * @see JCardWriter
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public static WriterChainJsonMulti writeJson(VCard... vcards) {
+		return writeJson(Arrays.asList(vcards));
+	}
+
+	/**
+	 * <p>
+	 * Marshals multiple vCards to their JSON representation (jCard).
+	 * </p>
+	 * 
+	 * <p>
+	 * Use {@link JCardWriter} for more control over how the vCards are written.
+	 * </p>
+	 * @param vcards the vCards to marshal
+	 * @return chainer object for completing the write operation
+	 * @see JCardWriter
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public static WriterChainJsonMulti writeJson(Collection<VCard> vcards) {
+		return new WriterChainJsonMulti(vcards);
+	}
+
 	static abstract class ParserChain<T, U extends IParser> {
 		final List<Class<? extends VCardType>> extendedTypes = new ArrayList<Class<? extends VCardType>>();
 		List<List<String>> warnings;
@@ -584,9 +722,6 @@ public class Ezvcard {
 
 	}
 
-	/**
-	 * Convenience chainer class for parsing plain text vCards.
-	 */
 	static abstract class ParserChainText<T> extends ParserChain<T, VCardReader> {
 		boolean caretDecoding = true;
 
@@ -714,9 +849,6 @@ public class Ezvcard {
 		}
 	}
 
-	/**
-	 * Convenience chainer class for parsing XML vCards.
-	 */
 	static abstract class ParserChainXml<T> extends ParserChain<T, XCardReader> {
 		//nothing
 	}
@@ -843,9 +975,6 @@ public class Ezvcard {
 		}
 	}
 
-	/**
-	 * Convenience chainer class for parsing HTML vCards.
-	 */
 	static abstract class ParserChainHtml<T> extends ParserChain<T, HCardReader> {
 		String pageUrl;
 
@@ -947,6 +1076,106 @@ public class Ezvcard {
 		@Override
 		public ParserChainHtmlString pageUrl(String pageUrl) {
 			return super.pageUrl(pageUrl);
+		}
+
+		@Override
+		public VCard first() {
+			try {
+				return super.first();
+			} catch (IOException e) {
+				//reading from string
+			}
+			return null;
+		}
+
+		@Override
+		public List<VCard> all() {
+			try {
+				return super.all();
+			} catch (IOException e) {
+				//reading from string
+			}
+			return null;
+		}
+	}
+
+	static abstract class ParserChainJson<T> extends ParserChain<T, JCardReader> {
+		@Override
+		JCardReader ready() throws IOException, SAXException {
+			JCardReader parser = super.ready();
+			return parser;
+		}
+
+		@Override
+		public VCard first() throws IOException {
+			try {
+				return super.first();
+			} catch (SAXException e) {
+				//not parsing XML
+			}
+			return null;
+		}
+
+		@Override
+		public List<VCard> all() throws IOException {
+			try {
+				return super.all();
+			} catch (SAXException e) {
+				//not parsing XML
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * Convenience chainer class for parsing JSON-encoded vCards (jCard).
+	 */
+	public static class ParserChainJsonReader extends ParserChainJson<ParserChainJsonReader> {
+		private Reader reader;
+
+		private ParserChainJsonReader(Reader reader) {
+			this.reader = reader;
+		}
+
+		@Override
+		public ParserChainJsonReader register(Class<? extends VCardType> typeClass) {
+			return super.register(typeClass);
+		}
+
+		@Override
+		public ParserChainJsonReader warnings(List<List<String>> warnings) {
+			return super.warnings(warnings);
+		}
+
+		@Override
+		JCardReader init() {
+			return new JCardReader(reader);
+		}
+	}
+
+	/**
+	 * Convenience chainer class for parsing JSON-encoded vCards (jCard).
+	 */
+	public static class ParserChainJsonString extends ParserChainJson<ParserChainJsonString> {
+		private String json;
+
+		private ParserChainJsonString(String json) {
+			this.json = json;
+		}
+
+		@Override
+		public ParserChainJsonString register(Class<? extends VCardType> typeClass) {
+			return super.register(typeClass);
+		}
+
+		@Override
+		public ParserChainJsonString warnings(List<List<String>> warnings) {
+			return super.warnings(warnings);
+		}
+
+		@Override
+		JCardReader init() {
+			return new JCardReader(json);
 		}
 
 		@Override
@@ -1453,6 +1682,160 @@ public class Ezvcard {
 				page.addVCard(vcard);
 			}
 			page.write(writer);
+		}
+	}
+
+	static abstract class WriterChainJson<T> extends WriterChain {
+		boolean prodId = true;
+
+		WriterChainJson(Collection<VCard> vcards) {
+			super(vcards);
+		}
+
+		/**
+		 * Sets whether or not to add a PRODID type to each vCard, saying that
+		 * the vCard was generated by this library.
+		 * @param include true to add PRODID (default), false not to
+		 * @return this
+		 */
+		@SuppressWarnings("unchecked")
+		public T prodId(boolean include) {
+			this.prodId = include;
+			return (T) this;
+		}
+
+		/**
+		 * Writes the jCards to a string.
+		 * @return the JSON string
+		 */
+		public String go() {
+			StringWriter sw = new StringWriter();
+			try {
+				go(sw);
+			} catch (IOException e) {
+				//writing to a string
+			}
+			return sw.toString();
+		}
+
+		/**
+		 * Writes the jCards to an output stream.
+		 * @param out the output stream to write to
+		 * @throws IOException if there's a problem writing to the output stream
+		 */
+		public void go(OutputStream out) throws IOException {
+			go(new OutputStreamWriter(out));
+		}
+
+		/**
+		 * Writes the jCards to a file.
+		 * @param file the file to write to
+		 * @throws IOException if there's a problem writing to the file
+		 */
+		public void go(File file) throws IOException {
+			FileWriter writer = null;
+			try {
+				writer = new FileWriter(file);
+				go(writer);
+			} finally {
+				IOUtils.closeQuietly(writer);
+			}
+		}
+
+		/**
+		 * Writes the jCards to a writer.
+		 * @param writer the writer to write to
+		 * @throws IOException if there's a problem writing to the writer
+		 */
+		public void go(Writer writer) throws IOException {
+			JCardWriter jcardWriter = new JCardWriter(writer);
+			jcardWriter.setAddProdId(prodId);
+			try {
+				for (VCard vcard : vcards) {
+					jcardWriter.write(vcard);
+					addWarnings(jcardWriter.getWarnings());
+				}
+			} finally {
+				jcardWriter.endJsonStream();
+			}
+		}
+
+		abstract void addWarnings(List<String> warnings);
+	}
+
+	/**
+	 * Convenience chainer class for writing JSON-encoded vCards (jCard).
+	 */
+	public static class WriterChainJsonMulti extends WriterChainJson<WriterChainJsonMulti> {
+		private List<List<String>> warnings;
+
+		private WriterChainJsonMulti(Collection<VCard> vcards) {
+			super(vcards);
+		}
+
+		@Override
+		public WriterChainJsonMulti prodId(boolean include) {
+			return super.prodId(include);
+		}
+
+		/**
+		 * Provides a list object that any marshal warnings will be put into.
+		 * Warnings usually occur when there is a property in the VCard that is
+		 * not supported by the version to which the vCard is being marshalled.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of each marshalled vCard. Each element of the list is the
+		 * list of warnings for one of the marshalled vCards. Therefore, the
+		 * size of this list will be equal to the number of parsed vCards. If a
+		 * vCard does not have any warnings, then its warning list will be
+		 * empty.
+		 * @return this
+		 */
+		public WriterChainJsonMulti warnings(List<List<String>> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		@Override
+		void addWarnings(List<String> warnings) {
+			if (this.warnings != null) {
+				this.warnings.add(warnings);
+			}
+		}
+	}
+
+	/**
+	 * Convenience chainer class for writing JSON-encoded vCards (jCard).
+	 */
+	public static class WriterChainJsonSingle extends WriterChainJson<WriterChainJsonSingle> {
+		private List<String> warnings;
+
+		private WriterChainJsonSingle(VCard vcard) {
+			super(Arrays.asList(vcard));
+		}
+
+		@Override
+		public WriterChainJsonSingle prodId(boolean include) {
+			return super.prodId(include);
+		}
+
+		/**
+		 * Provides a list object that any marshal warnings will be put into.
+		 * Warnings usually occur when there is a property in the VCard that is
+		 * not supported by the version to which the vCard is being marshalled.
+		 * @param warnings the list object that will be populated with the
+		 * warnings of the marshalled vCard.
+		 * @return this
+		 */
+		public WriterChainJsonSingle warnings(List<String> warnings) {
+			this.warnings = warnings;
+			return this;
+		}
+
+		@Override
+		void addWarnings(List<String> warnings) {
+			if (this.warnings != null) {
+				this.warnings.addAll(warnings);
+			}
 		}
 	}
 

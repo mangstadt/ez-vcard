@@ -14,6 +14,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -103,6 +104,7 @@ public class JCardWriter implements Closeable {
 
 		if (jg == null) {
 			JsonFactory factory = new JsonFactory();
+			factory.configure(Feature.AUTO_CLOSE_TARGET, false);
 			jg = factory.createJsonGenerator(writer);
 
 			jg.writeStartArray();
@@ -301,14 +303,23 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Ends the jCard data stream and closes the underlying writer.
+	 * Ends the jCard data stream, but does <b>not</b> close the underlying
+	 * writer.
 	 * @throws IOException if there's a problem closing the stream
 	 */
-	public void close() throws IOException {
+	public void endJsonStream() throws IOException {
 		if (jg != null) {
 			jg.writeEndArray();
 			jg.close();
 		}
+	}
+
+	/**
+	 * Ends the jCard data stream and closes the underlying writer.
+	 * @throws IOException if there's a problem closing the stream
+	 */
+	public void close() throws IOException {
+		endJsonStream();
 		writer.close();
 	}
 }

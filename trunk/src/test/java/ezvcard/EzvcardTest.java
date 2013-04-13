@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -261,6 +263,86 @@ public class EzvcardTest {
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals("http://www.example.com/index.html", vcard.getSources().get(0).getValue());
 		assertEquals("http://www.example.com/profile.html", vcard.getUrls().get(0).getValue());
+	}
+
+	@Test
+	public void parseJson_first() {
+		//@formatter:off
+		String json =
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
+		    "]" +
+		  "]";
+		//@formatter:on
+
+		List<List<String>> warnings = new ArrayList<List<String>>();
+
+		VCard vcard = Ezvcard.parseJson(json).warnings(warnings).first();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+		assertEquals(1, warnings.size());
+		assertEquals(0, warnings.get(0).size());
+	}
+
+	@Test
+	public void parseJson_all() {
+		//@formatter:off
+		String json =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
+		    "]" +
+		  "]," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"fn\", {}, \"text\", \"Jane Doe\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+
+		List<List<String>> warnings = new ArrayList<List<String>>();
+
+		List<VCard> vcards = Ezvcard.parseJson(json).warnings(warnings).all();
+		Iterator<VCard> it = vcards.iterator();
+
+		VCard vcard = it.next();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+
+		vcard = it.next();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
+
+		assertEquals(2, warnings.size());
+		assertEquals(0, warnings.get(0).size());
+		assertEquals(0, warnings.get(1).size());
+
+		assertFalse(it.hasNext());
+	}
+
+	@Test
+	public void parseJson_register() {
+		//@formatter:off
+		String json =
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"x-lucky-num\", {}, \"text\", \"22\"]" +
+		    "]" +
+		  "]";
+		//@formatter:on
+
+		VCard vcard = Ezvcard.parseJson(json).register(LuckyNumType.class).first();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		List<LuckyNumType> ext = vcard.getExtendedType(LuckyNumType.class);
+		assertEquals(1, ext.size());
+		assertEquals(22, ext.get(0).luckyNum);
 	}
 
 	@Test
@@ -533,5 +615,133 @@ public class EzvcardTest {
 		org.jsoup.nodes.Document document = Jsoup.parse(actual);
 		assertEquals(3, document.select(".vcard").size());
 		assertEquals(3, document.select(".vcard .fn").size());
+	}
+
+	@Test
+	public void writeJson_one() {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"fn\",{},\"text\",\"John Doe\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		String actual = Ezvcard.writeJson(vcard).prodId(false).go();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void writeJson_one_with_warnings() {
+		VCard vcard = new VCard();
+
+		List<String> warnings = new ArrayList<String>();
+		Ezvcard.writeJson(vcard).warnings(warnings).go();
+
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void writeJson_one_without_warnings() {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+
+		List<String> warnings = new ArrayList<String>();
+		Ezvcard.writeJson(vcard).warnings(warnings).go();
+
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void writeJson_multiple() {
+		VCard vcard1 = new VCard();
+		vcard1.setFormattedName(new FormattedNameType("John Doe"));
+		VCard vcard2 = new VCard();
+		vcard2.setFormattedName(new FormattedNameType("Jane Doe"));
+		VCard vcard3 = new VCard();
+		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"fn\",{},\"text\",\"John Doe\"]" +
+		    "]" +
+		  "]," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"fn\",{},\"text\",\"Jane Doe\"]" +
+		    "]" +
+		  "]," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"fn\",{},\"text\",\"Janet Doe\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		String actual = Ezvcard.writeJson(vcard1, vcard2, vcard3).prodId(false).go();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void writeJson_multiple_warnings() {
+		VCard vcard1 = new VCard();
+		//missing "FN" property will cause a warning
+
+		VCard vcard2 = new VCard();
+		//missing "FN" property will cause a warning
+
+		VCard vcard3 = new VCard();
+		vcard3.setFormattedName("John Doe");
+		//no warnings should be generated
+
+		List<List<String>> warnings = new ArrayList<List<String>>();
+		Ezvcard.writeJson(vcard1, vcard2, vcard3).warnings(warnings).go();
+
+		assertEquals(3, warnings.size());
+		assertEquals(1, warnings.get(0).size());
+		assertEquals(1, warnings.get(1).size());
+		assertEquals(0, warnings.get(2).size());
+	}
+
+	@Test
+	public void writeJson_prodId() {
+		VCard vcard = new VCard();
+		vcard.setVersion(VCardVersion.V4_0);
+
+		String actual = Ezvcard.writeJson(vcard).go();
+		assertTrue(actual.contains("[\"prodid\","));
+
+		actual = Ezvcard.writeJson(vcard).prodId(true).go();
+		assertTrue(actual.contains("[\"prodid\","));
+
+		actual = Ezvcard.writeJson(vcard).prodId(false).go();
+		assertFalse(actual.contains("[\"prodid\","));
+	}
+
+	@Test
+	public void writeJson_does_not_close_stream() throws Exception {
+		VCard vcard = new VCard();
+
+		File file = new File("target", "temp.json");
+		FileWriter writer = new FileWriter(file);
+		try {
+			Ezvcard.writeJson(vcard).go(writer);
+			writer.write("test"); //an exception will be thrown if the writer is closed
+		} finally {
+			writer.close();
+			file.delete();
+		}
 	}
 }
