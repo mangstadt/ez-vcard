@@ -1687,6 +1687,7 @@ public class Ezvcard {
 
 	static abstract class WriterChainJson<T> extends WriterChain {
 		boolean prodId = true;
+		boolean indent = false;
 
 		WriterChainJson(Collection<VCard> vcards) {
 			super(vcards);
@@ -1701,6 +1702,18 @@ public class Ezvcard {
 		@SuppressWarnings("unchecked")
 		public T prodId(boolean include) {
 			this.prodId = include;
+			return (T) this;
+		}
+
+		/**
+		 * Sets whether or not to pretty-print the JSON.
+		 * @param indent true to pretty-print it, false not to (defaults to
+		 * false)
+		 * @return this
+		 */
+		@SuppressWarnings("unchecked")
+		public T indent(boolean indent) {
+			this.indent = indent;
 			return (T) this;
 		}
 
@@ -1750,6 +1763,7 @@ public class Ezvcard {
 		public void go(Writer writer) throws IOException {
 			JCardWriter jcardWriter = new JCardWriter(writer);
 			jcardWriter.setAddProdId(prodId);
+			jcardWriter.setIndent(indent);
 			try {
 				for (VCard vcard : vcards) {
 					jcardWriter.write(vcard);
@@ -1776,6 +1790,11 @@ public class Ezvcard {
 		@Override
 		public WriterChainJsonMulti prodId(boolean include) {
 			return super.prodId(include);
+		}
+
+		@Override
+		public WriterChainJsonMulti indent(boolean indent) {
+			return super.indent(indent);
 		}
 
 		/**
@@ -1816,6 +1835,11 @@ public class Ezvcard {
 		@Override
 		public WriterChainJsonSingle prodId(boolean include) {
 			return super.prodId(include);
+		}
+
+		@Override
+		public WriterChainJsonSingle indent(boolean indent) {
+			return super.indent(indent);
 		}
 
 		/**
