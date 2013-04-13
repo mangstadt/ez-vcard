@@ -399,6 +399,81 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * <p>
+	 * Marshals this vCard to its JSON representation (jCard).
+	 * </p>
+	 * <p>
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
+	 * </p>
+	 * @return the JSON string
+	 * @see Ezvcard
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public String writeJson() {
+		return Ezvcard.writeJson(this).go();
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to its JSON representation (jCard).
+	 * </p>
+	 * <p>
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
+	 * </p>
+	 * @param file the file to write the vCard to
+	 * @throws IOException if there's a problem writing to the file
+	 * @see Ezvcard
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public void writeJson(File file) throws IOException {
+		Ezvcard.writeJson(this).go(file);
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to its JSON representation (jCard).
+	 * </p>
+	 * <p>
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
+	 * </p>
+	 * @param out the output stream to write the vCard to
+	 * @see Ezvcard
+	 * @throws IOException if there's a problem writing to the output stream
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public void writeJson(OutputStream out) throws IOException {
+		Ezvcard.writeJson(this).go(out);
+	}
+
+	/**
+	 * <p>
+	 * Marshals this vCard to its JSON representation (jCard).
+	 * </p>
+	 * <p>
+	 * Use the {@link Ezvcard} class to customize the marshalling process and to
+	 * write multiple vCards to the same stream.
+	 * </p>
+	 * @param writer the writer to write the vCard to
+	 * @throws IOException if there's a problem writing to the writer
+	 * @see Ezvcard
+	 * @see <a
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * draft specification</a>
+	 */
+	public void writeJson(Writer writer) throws IOException {
+		Ezvcard.writeJson(this).go(writer);
+	}
+
+	/**
 	 * Gets the version attached to this vCard.
 	 * @return the vCard version
 	 */
