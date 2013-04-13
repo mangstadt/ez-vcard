@@ -57,6 +57,10 @@ import ezvcard.util.XCardElement;
  * new vCard.
  * </p>
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * 

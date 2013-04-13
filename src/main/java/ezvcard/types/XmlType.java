@@ -50,6 +50,10 @@ import ezvcard.util.XmlUtils;
  * Any XML data attached to the vCard. This is used if the vCard was encoded in
  * XML (xCard standard) and it contained some non-standard elements.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * XmlType xml = new XmlType(&quot;&lt;b&gt;Some xml&lt;/b&gt;&quot;);

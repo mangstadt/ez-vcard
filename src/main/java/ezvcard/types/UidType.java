@@ -34,6 +34,10 @@ import java.util.UUID;
 /**
  * A globally unique identifier of the person.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * 

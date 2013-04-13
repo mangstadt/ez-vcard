@@ -47,6 +47,10 @@ import ezvcard.util.XCardElement;
  * Someone that the person is related to. It can contain either a URI or a plain
  * text value.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * 

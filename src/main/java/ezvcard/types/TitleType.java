@@ -36,6 +36,10 @@ import ezvcard.VCardSubTypes;
 /**
  * The person's position or job in his or her organization.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * TitleType title = new TitleType(&quot;Research Scientist&quot;);

@@ -54,6 +54,10 @@ import ezvcard.util.XCardElement;
  * <li>"location": the coordinates of the location itself.</li>
  * </ul>
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * GeoType geo = new GeoType(-123.456, 12.54);

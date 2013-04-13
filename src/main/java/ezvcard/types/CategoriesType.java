@@ -40,6 +40,10 @@ import ezvcard.util.VCardStringUtils;
 /**
  * A list of keywords (aka "tags") that can be used to describe the person.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * CategoriesType categories = new CategoriesType();

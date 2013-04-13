@@ -34,6 +34,10 @@ import ezvcard.VCardVersion;
 /**
  * Describes the sensitivity of the information in the vCard.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * //sample values: PUBLIC, PRIVATE, CONFIDENTIAL
@@ -63,7 +67,7 @@ public class ClassificationType extends TextType {
 	public ClassificationType(String classValue) {
 		super(NAME, classValue);
 	}
-	
+
 	@Override
 	public VCardVersion[] getSupportedVersions() {
 		return new VCardVersion[] { VCardVersion.V3_0 };

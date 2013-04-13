@@ -48,6 +48,10 @@ import ezvcard.util.XCardElement;
 /**
  * A telephone number.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * TelephoneType tel = new TelephoneType(&quot;+1 123-555-6789&quot;);

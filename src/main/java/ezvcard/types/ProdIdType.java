@@ -34,6 +34,10 @@ import ezvcard.VCardVersion;
 /**
  * Defines the product that created the vCard.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * ProdIdType prodid = new ProdIdType(&quot;ez-vcard 0.6.0&quot;);

@@ -34,6 +34,10 @@ import ezvcard.VCardVersion;
 /**
  * The email client that the person uses.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * MailerType mailer = new MailerType(&quot;Thunderbird&quot;);

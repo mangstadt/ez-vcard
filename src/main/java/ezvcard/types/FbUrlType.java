@@ -37,6 +37,10 @@ import ezvcard.VCardVersion;
 /**
  * A URL that shows when the person is free/busy on their calendar.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * FbUrlType fburl = new FbUrlType(&quot;http://www.example.com/freebusy/janedoe&quot;);

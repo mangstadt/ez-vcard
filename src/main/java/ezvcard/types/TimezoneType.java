@@ -49,6 +49,10 @@ import ezvcard.util.XCardElement;
 /**
  * Contains the timezone that the person lives/works in.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * TimezoneType tz = new TimezoneType(-5, 0, &quot;America/New_York&quot;);

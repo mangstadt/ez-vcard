@@ -38,6 +38,10 @@ import ezvcard.util.HCardElement;
 /**
  * A list of nicknames the person goes by.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * NicknameType nickname = new NicknameType();

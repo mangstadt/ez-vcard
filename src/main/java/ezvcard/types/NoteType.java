@@ -36,6 +36,10 @@ import ezvcard.VCardSubTypes;
 /**
  * A free-form text field that contains miscellaneous information.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * NoteType note = new NoteType(&quot;This is a\nmiscellaneous comment.&quot;); //can contain newlines

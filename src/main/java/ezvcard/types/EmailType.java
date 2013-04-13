@@ -46,6 +46,10 @@ import ezvcard.util.XCardElement;
 /**
  * An email address associated with a person.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * 

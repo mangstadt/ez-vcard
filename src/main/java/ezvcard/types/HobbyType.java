@@ -39,6 +39,10 @@ import ezvcard.parameters.HobbyLevelParameter;
  * play hockey. Someone who just likes to <i>watch</i> hockey would list
  * "hockey" as an INTEREST (see {@link InterestType}) instead.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * //someone who likes to wind surf during the summer, but rents a boat instead of owning one
  * VCard vcard = new VCard();

@@ -37,6 +37,10 @@ import ezvcard.VCardSubTypes;
  * A URL that can be used to retrieve the most up-to-date version of the
  * person's vCard.
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * SourceType source = new SourceType(&quot;http://www.company.com/employees/doe_john.vcf&quot;);

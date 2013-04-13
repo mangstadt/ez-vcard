@@ -43,8 +43,11 @@ import ezvcard.VCardVersion;
  * {@link OrganizationType#setSortAs} methods.
  * </p>
  * 
+ * <p>
+ * <b>Code sample (2.1, 3.0)</b>
+ * </p>
+ * 
  * <pre>
- * //2.1 and 3.0
  * VCard vcard = new VCard();
  * StructuredNameType n = new StructuredNameType();
  * n.setFamily(&quot;d'Armour&quot;);
@@ -52,8 +55,13 @@ import ezvcard.VCardVersion;
  * vcard.setStructuredName(n);
  * SortStringType sortString = new SortStringType(&quot;Armour&quot;);
  * vcard.setSortString(sortString);
+ * </pre>
  * 
- * //4.0
+ * <p>
+ * <b>Code sample (4.0)</b>
+ * </p>
+ * 
+ * <pre>
  * VCard vcard = new VCard();
  * StructuredNameType n = new StructuredNameType();
  * n.setFamily(&quot;d'Armour&quot;);
@@ -83,7 +91,7 @@ public class SortStringType extends TextType {
 	public SortStringType(String sortString) {
 		super(NAME, sortString);
 	}
-	
+
 	@Override
 	public VCardVersion[] getSupportedVersions() {
 		return new VCardVersion[] { VCardVersion.V2_1, VCardVersion.V3_0 };

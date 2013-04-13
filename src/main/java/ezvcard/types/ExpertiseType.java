@@ -38,6 +38,10 @@ import ezvcard.parameters.ExpertiseLevelParameter;
  * example, if the person is a Java software engineer, he or she might list
  * technologies such as "servlets", "SOAP", and "Spring".
  * 
+ * <p>
+ * <b>Code sample</b>
+ * </p>
+ * 
  * <pre>
  * VCard vcard = new VCard();
  * ExpertiseType expertise = new ExpertiseType(&quot;Java programming&quot;);
