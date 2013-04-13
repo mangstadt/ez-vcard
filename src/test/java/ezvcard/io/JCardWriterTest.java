@@ -270,6 +270,33 @@ public class JCardWriterTest {
 	}
 
 	@Test
+	public void write_null_structured_value() throws Exception {
+		JCardValue value = JCardValue.text((String) null);
+		value.setStructured(true);
+		VCard vcard = new VCard();
+		vcard.addExtendedType(new TypeForTesting(value));
+
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"x-type\",{},\"text\",[\"\"]]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
 	public void write_no_value() throws Exception {
 		JCardValue value = JCardValue.text();
 		VCard vcard = new VCard();
