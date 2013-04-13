@@ -41,10 +41,10 @@ import java.util.Date;
  * </pre>
  * 
  * <p>
- * vCard property name: REV
+ * <b>Property name:</b> <code>REV</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */

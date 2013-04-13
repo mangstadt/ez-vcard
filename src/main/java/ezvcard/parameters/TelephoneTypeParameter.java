@@ -32,88 +32,88 @@ package ezvcard.parameters;
 /**
  * Represents the TYPE parameter of the TEL type.
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */
 public class TelephoneTypeParameter extends TypeParameter {
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final TelephoneTypeParameter BBS = new TelephoneTypeParameter("bbs");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final TelephoneTypeParameter CAR = new TelephoneTypeParameter("car");
 
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final TelephoneTypeParameter CELL = new TelephoneTypeParameter("cell");
 
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final TelephoneTypeParameter FAX = new TelephoneTypeParameter("fax");
 
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final TelephoneTypeParameter HOME = new TelephoneTypeParameter("home");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final TelephoneTypeParameter ISDN = new TelephoneTypeParameter("isdn");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final TelephoneTypeParameter MODEM = new TelephoneTypeParameter("modem");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final TelephoneTypeParameter MSG = new TelephoneTypeParameter("msg");
 
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final TelephoneTypeParameter PAGER = new TelephoneTypeParameter("pager");
 
 	/**
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 */
 	public static final TelephoneTypeParameter PCS = new TelephoneTypeParameter("pcs");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final TelephoneTypeParameter PREF = new TelephoneTypeParameter("pref");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final TelephoneTypeParameter TEXT = new TelephoneTypeParameter("text");
 
 	/**
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
 	public static final TelephoneTypeParameter TEXTPHONE = new TelephoneTypeParameter("textphone");
 
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final TelephoneTypeParameter VIDEO = new TelephoneTypeParameter("video");
 
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final TelephoneTypeParameter VOICE = new TelephoneTypeParameter("voice");
 
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final TelephoneTypeParameter WORK = new TelephoneTypeParameter("work");
 

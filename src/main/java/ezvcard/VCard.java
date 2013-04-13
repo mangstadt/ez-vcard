@@ -496,10 +496,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the type of entity this vCard represents.
 	 * <p>
-	 * vCard property name: KIND
+	 * <b>Property name:</b> <code>KIND</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the kind
 	 */
@@ -510,10 +510,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets the type of entity this vCard represents.
 	 * <p>
-	 * vCard property name: KIND
+	 * <b>Property name:</b> <code>KIND</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param kind the kind
 	 */
@@ -524,10 +524,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the gender of the person.
 	 * <p>
-	 * vCard property name: GENDER
+	 * <b>Property name:</b> <code>GENDER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the gender
 	 */
@@ -538,10 +538,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets the gender of the person.
 	 * <p>
-	 * vCard property name: GENDER
+	 * <b>Property name:</b> <code>GENDER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param gender the gender
 	 */
@@ -568,10 +568,10 @@ public class VCard implements Iterable<VCardType> {
 	 * </p>
 	 * 
 	 * <p>
-	 * vCard property name: MEMBER
+	 * <b>Property name:</b> <code>MEMBER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the members
 	 */
@@ -594,10 +594,10 @@ public class VCard implements Iterable<VCardType> {
 	 * </p>
 	 * 
 	 * <p>
-	 * vCard property name: MEMBER
+	 * <b>Property name:</b> <code>MEMBER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param member the member to add
 	 */
@@ -611,10 +611,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: MEMBER
+	 * <b>Property name:</b> <code>MEMBER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -628,10 +628,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: MEMBER
+	 * <b>Property name:</b> <code>MEMBER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -642,10 +642,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the PROFILE property.
 	 * <p>
-	 * vCard property name: PROFILE
+	 * <b>Property name:</b> <code>PROFILE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 * </p>
 	 * @return the property
 	 */
@@ -656,10 +656,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets the PROFILE property.
 	 * <p>
-	 * vCard property name: PROFILE
+	 * <b>Property name:</b> <code>PROFILE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 * </p>
 	 * @param profile the property
 	 */
@@ -671,10 +671,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the classification of the vCard, which describes the sensitivity of
 	 * the information in the vCard.
 	 * <p>
-	 * vCard property name: CLASS
+	 * <b>Property name:</b> <code>CLASS</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 * </p>
 	 * @return the classification
 	 */
@@ -686,10 +686,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the classification of the vCard, which describes the sensitivity of
 	 * the information in the vCard.
 	 * <p>
-	 * vCard property name: CLASS
+	 * <b>Property name:</b> <code>CLASS</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 * </p>
 	 * @param classification the classification
 	 */
@@ -704,10 +704,10 @@ public class VCard implements Iterable<VCardType> {
 	 * <p>
 	 * </p>
 	 * <p>
-	 * vCard property name: CLASS
+	 * <b>Property name:</b> <code>CLASS</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 * </p>
 	 * @param classification the classification (e.g. "PUBLIC", "PRIVATE",
 	 * "CONFIDENTIAL") or null to remove
@@ -726,10 +726,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the URIs that can be used to retrieve the most up-to-date version of
 	 * the person's vCard.
 	 * <p>
-	 * vCard property name: SOURCE
+	 * <b>Property name:</b> <code>SOURCE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @return the sources
 	 */
@@ -741,10 +741,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a URI that can be used to retrieve the most up-to-date version of
 	 * the person's vCard.
 	 * <p>
-	 * vCard property name: SOURCE
+	 * <b>Property name:</b> <code>SOURCE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @param source the source
 	 */
@@ -757,10 +757,10 @@ public class VCard implements Iterable<VCardType> {
 	 * the person's vCard. This is a convenience method for
 	 * {@link #addSource(SourceType)} .
 	 * <p>
-	 * vCard property name: SOURCE
+	 * <b>Property name:</b> <code>SOURCE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @param source the source URI (e.g. "http://example.com/vcard.vcf")
 	 * @return the type object that was created
@@ -777,10 +777,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: SOURCE
+	 * <b>Property name:</b> <code>SOURCE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -795,10 +795,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: SOURCE
+	 * <b>Property name:</b> <code>SOURCE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -810,10 +810,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets a textual representation of the SOURCE property.
 	 * <p>
-	 * vCard property name: NAME
+	 * <b>Property name:</b> <code>NAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 * </p>
 	 * @return a textual representation of the vCard source
 	 */
@@ -824,10 +824,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets a textual representation of the SOURCE property.
 	 * <p>
-	 * vCard property name: NAME
+	 * <b>Property name:</b> <code>NAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 * </p>
 	 * @param sourceDisplayText a textual representation of the vCard source
 	 */
@@ -840,10 +840,10 @@ public class VCard implements Iterable<VCardType> {
 	 * convenience method for
 	 * {@link #setSourceDisplayText(SourceDisplayTextType)}.
 	 * <p>
-	 * vCard property name: NAME
+	 * <b>Property name:</b> <code>NAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 * </p>
 	 * @param sourceDisplayText a textual representation of the vCard source or
 	 * null to remove
@@ -866,10 +866,10 @@ public class VCard implements Iterable<VCardType> {
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the formatted name properties
@@ -883,10 +883,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the text value used for displaying the person's name.
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the formatted name property or null if one doesn't exist
 	 */
@@ -901,10 +901,10 @@ public class VCard implements Iterable<VCardType> {
 	 * ).
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -921,10 +921,10 @@ public class VCard implements Iterable<VCardType> {
 	 * ).
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -940,10 +940,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -958,10 +958,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -983,10 +983,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the text value used for displaying the person's name.
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param formattedName the formatted name property or null to remove
 	 */
@@ -1003,10 +1003,10 @@ public class VCard implements Iterable<VCardType> {
 	 * version 4.0 vCards support multiple instances of this property.
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param formattedName the formatted name property
@@ -1021,10 +1021,10 @@ public class VCard implements Iterable<VCardType> {
 	 * convenience method for {@link #setFormattedName(FormattedNameType)}.
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param formattedName the formatted name (e.g. "John Doe") or null to
 	 * remove
@@ -1046,10 +1046,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: N
+	 * <b>Property name:</b> <code>N</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*
+	 * <b>Supported versions:</b> <code>4.0*</code>
 	 * </p>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * @return the structured name property objects
@@ -1063,10 +1063,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the individual components of the person's name.
 	 * </p>
 	 * <p>
-	 * vCard property name: N
+	 * <b>Property name:</b> <code>N</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the components of the person's name
 	 */
@@ -1080,10 +1080,10 @@ public class VCard implements Iterable<VCardType> {
 	 * representations (see {@link VCardSubTypes#getAltId} for more details).
 	 * </p>
 	 * <p>
-	 * vCard property name: N
+	 * <b>Property name:</b> <code>N</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1099,10 +1099,10 @@ public class VCard implements Iterable<VCardType> {
 	 * representations (see {@link VCardSubTypes#getAltId} for more details).
 	 * </p>
 	 * <p>
-	 * vCard property name: N
+	 * <b>Property name:</b> <code>N</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1115,10 +1115,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets the individual components of the person's name.
 	 * <p>
-	 * vCard property name: N
+	 * <b>Property name:</b> <code>N</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param structuredName the components of the person's name or null to
 	 * remove
@@ -1138,10 +1138,10 @@ public class VCard implements Iterable<VCardType> {
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @return the nickname properties
 	 */
@@ -1154,10 +1154,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the person's nicknames.
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @return the person's nicknames
 	 */
@@ -1171,10 +1171,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1190,10 +1190,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1209,10 +1209,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1227,10 +1227,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1244,10 +1244,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the person's nickname(s).
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @param nickname the nickname property or null to remove (note that
 	 * multiple nicknames may be added this object)
@@ -1265,10 +1265,10 @@ public class VCard implements Iterable<VCardType> {
 	 * multiple instances of this property.
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param nickname the nickname property (note that multiple nicknames may
@@ -1284,10 +1284,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link #setNickname(NicknameType)}.
 	 * </p>
 	 * <p>
-	 * vCard property name: NICKNAME
+	 * <b>Property name:</b> <code>NICKNAME</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @param nicknames the nickname(s) (e.g. "Jonny") or null to remove
 	 * @return the type object that was created
@@ -1313,10 +1313,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link OrganizationType#getSortAs} methods.
 	 * </p>
 	 * <p>
-	 * vCard property name: SORT-STRING
+	 * <b>Property name:</b> <code>SORT-STRING</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @return the sort string
 	 */
@@ -1333,10 +1333,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link OrganizationType#setSortAs} methods.
 	 * </p>
 	 * <p>
-	 * vCard property name: SORT-STRING
+	 * <b>Property name:</b> <code>SORT-STRING</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @param sortString the sort string
 	 */
@@ -1354,10 +1354,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link OrganizationType#setSortAs} methods.
 	 * </p>
 	 * <p>
-	 * vCard property name: SORT-STRING
+	 * <b>Property name:</b> <code>SORT-STRING</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @param sortString the sort string (e.g. "Armour" if the person's last
 	 * name is "d'Armour") or null to remove
@@ -1375,10 +1375,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the titles associated with the person.
 	 * <p>
-	 * vCard property name: TITLE
+	 * <b>Property name:</b> <code>TITLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the titles
 	 */
@@ -1389,10 +1389,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a title associated with the person.
 	 * <p>
-	 * vCard property name: TITLE
+	 * <b>Property name:</b> <code>TITLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param title the title
 	 */
@@ -1404,10 +1404,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a title associated with the person. This is a convenience method for
 	 * {@link #addTitle(TitleType)}.
 	 * <p>
-	 * vCard property name: TITLE
+	 * <b>Property name:</b> <code>TITLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param title the title (e.g. "V.P. Research and Development")
 	 * @return the type object that was created
@@ -1424,10 +1424,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: TITLE
+	 * <b>Property name:</b> <code>TITLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1442,10 +1442,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: TITLE
+	 * <b>Property name:</b> <code>TITLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1457,10 +1457,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the roles associated with the person.
 	 * <p>
-	 * vCard property name: ROLE
+	 * <b>Property name:</b> <code>ROLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the roles
 	 */
@@ -1471,10 +1471,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a role associated with the person.
 	 * <p>
-	 * vCard property name: ROLE
+	 * <b>Property name:</b> <code>ROLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param role the role
 	 */
@@ -1486,10 +1486,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a role associated with the person. This is a convenience method for
 	 * {@link #addRole(RoleType)}.
 	 * <p>
-	 * vCard property name: ROLE
+	 * <b>Property name:</b> <code>ROLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param role the role (e.g. "Executive")
 	 * @return the type object that was created
@@ -1506,10 +1506,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: ROLE
+	 * <b>Property name:</b> <code>ROLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1524,10 +1524,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: ROLE
+	 * <b>Property name:</b> <code>ROLE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1540,10 +1540,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the photos attached to the vCard, such as a picture of the person's
 	 * face.
 	 * <p>
-	 * vCard property name: PHOTO
+	 * <b>Property name:</b> <code>PHOTO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the photos
 	 */
@@ -1554,10 +1554,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a photo to the vCard, such as a picture of the person's face.
 	 * <p>
-	 * vCard property name: PHOTO
+	 * <b>Property name:</b> <code>PHOTO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param photo the photo to add
 	 */
@@ -1571,10 +1571,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1589,10 +1589,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1604,10 +1604,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the logos attached to the vCard, such a company logo.
 	 * <p>
-	 * vCard property name: LOGO
+	 * <b>Property name:</b> <code>LOGO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the logos
 	 */
@@ -1618,10 +1618,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a logo to the vCard, such as a company logo.
 	 * <p>
-	 * vCard property name: LOGO
+	 * <b>Property name:</b> <code>LOGO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param logo the logo to add
 	 */
@@ -1635,10 +1635,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: LOGO
+	 * <b>Property name:</b> <code>LOGO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1653,10 +1653,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: LOGO
+	 * <b>Property name:</b> <code>LOGO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1669,10 +1669,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the sounds attached to the vCard, such as a pronunciation of the
 	 * person's name.
 	 * <p>
-	 * vCard property name: SOUND
+	 * <b>Property name:</b> <code>SOUND</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the sounds
 	 */
@@ -1683,10 +1683,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a sound to the vCard, such as a pronunciation of the person's name.
 	 * <p>
-	 * vCard property name: SOUND
+	 * <b>Property name:</b> <code>SOUND</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param sound the sound to add
 	 */
@@ -1700,10 +1700,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1718,10 +1718,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: FN
+	 * <b>Property name:</b> <code>FN</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -1737,10 +1737,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: BIRTHPLACE
+	 * <b>Property name:</b> <code>BIRTHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the birthplace properties
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1754,10 +1754,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * vCard property name: BIRTHPLACE
+	 * <b>Property name:</b> <code>BIRTHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the birthplace or null if one doesn't exist
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1772,10 +1772,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}.
 	 * </p>
 	 * <p>
-	 * vCard property name: BIRTHPLACE
+	 * <b>Property name:</b> <code>BIRTHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1791,10 +1791,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}.
 	 * </p>
 	 * <p>
-	 * vCard property name: BIRTHPLACE
+	 * <b>Property name:</b> <code>BIRTHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1809,10 +1809,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * vCard property name: BIRTHPLACE
+	 * <b>Property name:</b> <code>BIRTHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param birthplace the birthplace or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1831,10 +1831,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHPLACE
+	 * <b>Property name:</b> <code>DEATHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the deathplace properties
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1848,10 +1848,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the person's deathplace.
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHPLACE
+	 * <b>Property name:</b> <code>DEATHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the deathplace or null if one doesn't exist
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1866,10 +1866,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see {@link VCardSubTypes#getAltId} for more details).
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHPLACE
+	 * <b>Property name:</b> <code>DEATHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1885,10 +1885,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see {@link VCardSubTypes#getAltId} for more details).
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHPLACE
+	 * <b>Property name:</b> <code>DEATHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1903,10 +1903,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the person's deathplace.
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHPLACE
+	 * <b>Property name:</b> <code>DEATHPLACE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param deathplace the deathplace or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1925,10 +1925,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHDATE
+	 * <b>Property name:</b> <code>DEATHDATE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the death date properties
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1942,10 +1942,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the person's time of death.
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHDATE
+	 * <b>Property name:</b> <code>DEATHDATE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the time of death or null if one doesn't exist
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -1960,10 +1960,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHDATE
+	 * <b>Property name:</b> <code>DEATHDATE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -1978,10 +1978,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHDATE
+	 * <b>Property name:</b> <code>DEATHDATE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -1995,10 +1995,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the person's time of death.
 	 * </p>
 	 * <p>
-	 * vCard property name: DEATHDATE
+	 * <b>Property name:</b> <code>DEATHDATE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param deathdate the time of death or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
@@ -2017,10 +2017,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: BDAY
+	 * <b>Property name:</b> <code>BDAY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @return the birthday properties
@@ -2034,10 +2034,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the person's birthday.
 	 * </p>
 	 * <p>
-	 * vCard property name: BDAY
+	 * <b>Property name:</b> <code>BDAY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the birthday
 	 */
@@ -2051,10 +2051,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: BDAY
+	 * <b>Property name:</b> <code>BDAY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2070,10 +2070,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: BDAY
+	 * <b>Property name:</b> <code>BDAY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2088,10 +2088,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the person's birthday.
 	 * </p>
 	 * <p>
-	 * vCard property name: BDAY
+	 * <b>Property name:</b> <code>BDAY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param birthday the birthday or null to remove
 	 */
@@ -2109,10 +2109,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: ANNIVERSARY
+	 * <b>Property name:</b> <code>ANNIVERSARY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the anniversary properties
 	 */
@@ -2125,10 +2125,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the person's anniversary.
 	 * </p>
 	 * <p>
-	 * vCard property name: ANNIVERSARY
+	 * <b>Property name:</b> <code>ANNIVERSARY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the anniversary
 	 */
@@ -2142,10 +2142,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see {@link VCardSubTypes#getAltId} for more details).
 	 * </p>
 	 * <p>
-	 * vCard property name: ANNIVERSARY
+	 * <b>Property name:</b> <code>ANNIVERSARY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -2160,10 +2160,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see {@link VCardSubTypes#getAltId} for more details).
 	 * </p>
 	 * <p>
-	 * vCard property name: ANNIVERSARY
+	 * <b>Property name:</b> <code>ANNIVERSARY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -2177,10 +2177,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the person's anniversary.
 	 * </p>
 	 * <p>
-	 * vCard property name: ANNIVERSARY
+	 * <b>Property name:</b> <code>ANNIVERSARY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param anniversary the anniversary or null to remove
 	 */
@@ -2194,10 +2194,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the time that the vCard was last modified.
 	 * <p>
-	 * vCard property name: REV
+	 * <b>Property name:</b> <code>REV</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the last modified time
 	 */
@@ -2208,10 +2208,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets the time that the vCard was last modified.
 	 * <p>
-	 * vCard property name: REV
+	 * <b>Property name:</b> <code>REV</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param rev the last modified time
 	 */
@@ -2223,10 +2223,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the time that the vCard was last modified. This is a convenience
 	 * method for {@link #setRevision(RevisionType)}.
 	 * <p>
-	 * vCard property name: REV
+	 * <b>Property name:</b> <code>REV</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param rev the last modified time or null to remove
 	 * @return the type object that was created
@@ -2244,10 +2244,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the product ID, which identifies the software that created the
 	 * vCard.
 	 * <p>
-	 * vCard property name: PRODID
+	 * <b>Property name:</b> <code>PRODID</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @return the product ID
 	 */
@@ -2259,10 +2259,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the product ID, which identifies the software that created the
 	 * vCard.
 	 * <p>
-	 * vCard property name: PRODID
+	 * <b>Property name:</b> <code>PRODID</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @param prodId the product ID
 	 */
@@ -2274,10 +2274,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the product ID, which identifies the software that created the
 	 * vCard. This is a convenience method for {@link #setProdId(ProdIdType)}.
 	 * <p>
-	 * vCard property name: PRODID
+	 * <b>Property name:</b> <code>PRODID</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @param prodId the product ID (e.g. "ez-vcard 1.0") or null to remove
 	 * @return the type object that was created
@@ -2294,10 +2294,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the mailing addresses.
 	 * <p>
-	 * vCard property name: ADR
+	 * <b>Property name:</b> <code>ADR</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the mailing addresses
 	 */
@@ -2308,10 +2308,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a mailing address.
 	 * <p>
-	 * vCard property name: ADR
+	 * <b>Property name:</b> <code>ADR</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param address the mailing address to add
 	 */
@@ -2325,10 +2325,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: ADR
+	 * <b>Property name:</b> <code>ADR</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2343,10 +2343,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: ADR
+	 * <b>Property name:</b> <code>ADR</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2360,10 +2360,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link AddressType#getLabel} to get a label that has been assigned to an
 	 * address.
 	 * <p>
-	 * vCard property name: LABEL
+	 * <b>Property name:</b> <code>LABEL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @return the orphaned labels
 	 */
@@ -2376,10 +2376,10 @@ public class VCard implements Iterable<VCardType> {
 	 * this method is discouraged. To add a mailing label to an address, use the
 	 * {@link AddressType#setLabel} method.
 	 * <p>
-	 * vCard property name: LABEL
+	 * <b>Property name:</b> <code>LABEL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @param label the orphaned label to add
 	 */
@@ -2390,10 +2390,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the email addresses.
 	 * <p>
-	 * vCard property name: EMAIL
+	 * <b>Property name:</b> <code>EMAIL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the email addresses
 	 */
@@ -2404,10 +2404,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds an email address.
 	 * <p>
-	 * vCard property name: EMAIL
+	 * <b>Property name:</b> <code>EMAIL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param email the email address to add
 	 */
@@ -2419,10 +2419,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds an email address. This is a convenience method for
 	 * {@link #addEmail(EmailType)}.
 	 * <p>
-	 * vCard property name: EMAIL
+	 * <b>Property name:</b> <code>EMAIL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param email the email address to add (e.g. "johndoe@aol.com")
 	 * @param types the type(s) to assign to the email
@@ -2443,10 +2443,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: EMAIL
+	 * <b>Property name:</b> <code>EMAIL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2461,10 +2461,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: EMAIL
+	 * <b>Property name:</b> <code>EMAIL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2476,10 +2476,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the telephone numbers.
 	 * <p>
-	 * vCard property name: TEL
+	 * <b>Property name:</b> <code>TEL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the telephone numbers
 	 */
@@ -2490,10 +2490,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a telephone number.
 	 * <p>
-	 * vCard property name: TEL
+	 * <b>Property name:</b> <code>TEL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param telephoneNumber the telephone number to add
 	 */
@@ -2505,10 +2505,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a telephone number. This is a convenience method for
 	 * {@link #addTelephoneNumber(TelephoneType)}.
 	 * <p>
-	 * vCard property name: TEL
+	 * <b>Property name:</b> <code>TEL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param telephoneNumber the telephone number to add (e.g.
 	 * "+1 555-555-5555")
@@ -2531,10 +2531,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: TEL
+	 * <b>Property name:</b> <code>TEL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2549,10 +2549,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: TEL
+	 * <b>Property name:</b> <code>TEL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2564,10 +2564,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the email client that the person uses.
 	 * <p>
-	 * vCard property name: MAILER
+	 * <b>Property name:</b> <code>MAILER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @return the email client
 	 */
@@ -2578,10 +2578,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets the email client that the person uses.
 	 * <p>
-	 * vCard property name: MAILER
+	 * <b>Property name:</b> <code>MAILER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @param mailer the email client
 	 */
@@ -2593,10 +2593,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the email client that the person uses. This is a convenience method
 	 * for {@link #setMailer(MailerType)}.
 	 * <p>
-	 * vCard property name: MAILER
+	 * <b>Property name:</b> <code>MAILER</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @param mailer the email client (e.g. "Thunderbird") or null to remove
 	 * @return the type object that was created
@@ -2614,10 +2614,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the URLs. URLs can point to websites such as a personal homepage or
 	 * business website.
 	 * <p>
-	 * vCard property name: URL
+	 * <b>Property name:</b> <code>URL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the URLs
 	 */
@@ -2629,10 +2629,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a URL. URLs can point to websites such as a personal homepage or
 	 * business website.
 	 * <p>
-	 * vCard property name: URL
+	 * <b>Property name:</b> <code>URL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param url the URL to add
 	 */
@@ -2645,10 +2645,10 @@ public class VCard implements Iterable<VCardType> {
 	 * business website. This is a convenience method for
 	 * {@link #addUrl(UrlType)}.
 	 * <p>
-	 * vCard property name: URL
+	 * <b>Property name:</b> <code>URL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param url the URL to add (e.g. "http://example.com")
 	 * @return the type object that was created
@@ -2665,10 +2665,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: URL
+	 * <b>Property name:</b> <code>URL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2683,10 +2683,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: URL
+	 * <b>Property name:</b> <code>URL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2703,10 +2703,10 @@ public class VCard implements Iterable<VCardType> {
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
-	 * vCard property name: TZ
+	 * <b>Property name:</b> <code>TZ</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the timezones
@@ -2720,10 +2720,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the timezone the person lives/works in.
 	 * </p>
 	 * <p>
-	 * vCard property name: TZ
+	 * <b>Property name:</b> <code>TZ</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the timezone
 	 */
@@ -2738,10 +2738,10 @@ public class VCard implements Iterable<VCardType> {
 	 * ).
 	 * </p>
 	 * <p>
-	 * vCard property name: TZ
+	 * <b>Property name:</b> <code>TZ</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2758,10 +2758,10 @@ public class VCard implements Iterable<VCardType> {
 	 * ).
 	 * </p>
 	 * <p>
-	 * vCard property name: TZ
+	 * <b>Property name:</b> <code>TZ</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2778,10 +2778,10 @@ public class VCard implements Iterable<VCardType> {
 	 * ).
 	 * </p>
 	 * <p>
-	 * vCard property name: TZ
+	 * <b>Property name:</b> <code>TZ</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2797,10 +2797,10 @@ public class VCard implements Iterable<VCardType> {
 	 * ).
 	 * </p>
 	 * <p>
-	 * vCard property name: TZ
+	 * <b>Property name:</b> <code>TZ</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2814,10 +2814,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the timezone the person lives/works in.
 	 * </p>
 	 * <p>
-	 * vCard property name: TZ
+	 * <b>Property name:</b> <code>TZ</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param timezone the timezone or null to remove
 	 */
@@ -2833,10 +2833,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a timezone the person lives/works in.
 	 * </p>
 	 * <p>
-	 * vCard property name: TZ
+	 * <b>Property name:</b> <code>TZ</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param timezone the timezone or null to remove
@@ -2853,10 +2853,10 @@ public class VCard implements Iterable<VCardType> {
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
-	 * vCard property name: GEO
+	 * <b>Property name:</b> <code>GEO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the geo properties
@@ -2870,10 +2870,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the geographical position of where the person lives/works.
 	 * </p>
 	 * <p>
-	 * vCard property name: GEO
+	 * <b>Property name:</b> <code>GEO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the geographical position or null if one doesn't exist
 	 */
@@ -2888,10 +2888,10 @@ public class VCard implements Iterable<VCardType> {
 	 * description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: GEO
+	 * <b>Property name:</b> <code>GEO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2908,10 +2908,10 @@ public class VCard implements Iterable<VCardType> {
 	 * description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: GEO
+	 * <b>Property name:</b> <code>GEO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2927,10 +2927,10 @@ public class VCard implements Iterable<VCardType> {
 	 * description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: GEO
+	 * <b>Property name:</b> <code>GEO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -2944,10 +2944,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the geographical position of where the person lives/works.
 	 * </p>
 	 * <p>
-	 * vCard property name: GEO
+	 * <b>Property name:</b> <code>GEO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param geo the geographical position or null to remove
 	 */
@@ -2964,10 +2964,10 @@ public class VCard implements Iterable<VCardType> {
 	 * only version 4.0 vCards support multiple instances of this property.
 	 * </p>
 	 * <p>
-	 * vCard property name: GEO
+	 * <b>Property name:</b> <code>GEO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param geo the geographical position
@@ -2982,10 +2982,10 @@ public class VCard implements Iterable<VCardType> {
 	 * convenience method for {@link #setGeo(GeoType)}.
 	 * </p>
 	 * <p>
-	 * vCard property name: GEO
+	 * <b>Property name:</b> <code>GEO</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param latitude the latitude
 	 * @param longitude the longitude
@@ -3005,10 +3005,10 @@ public class VCard implements Iterable<VCardType> {
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the organization properties
@@ -3022,10 +3022,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the hierarchy of department(s) to which the person belongs.
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the department(s)
 	 */
@@ -3039,10 +3039,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3058,10 +3058,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3077,10 +3077,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3095,10 +3095,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3112,10 +3112,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Sets the hierarchy of departments to which the person belongs.
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param organization the organization property or null to remove
 	 */
@@ -3132,10 +3132,10 @@ public class VCard implements Iterable<VCardType> {
 	 * only version 4.0 vCards support multiple instances of this property.
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param organization the organization property
@@ -3150,10 +3150,10 @@ public class VCard implements Iterable<VCardType> {
 	 * convenience method for {@link #setOrganization(OrganizationType)}.
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG
+	 * <b>Property name:</b> <code>ORG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param departments the ordered list of department(s), starting with the
 	 * broadest and ending with the most specific (e.g. "Google", "GMail Team",
@@ -3180,10 +3180,10 @@ public class VCard implements Iterable<VCardType> {
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the categories properties
@@ -3198,10 +3198,10 @@ public class VCard implements Iterable<VCardType> {
 	 * person.
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the categories
 	 */
@@ -3215,10 +3215,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3234,10 +3234,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3253,10 +3253,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3271,10 +3271,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3289,10 +3289,10 @@ public class VCard implements Iterable<VCardType> {
 	 * person.
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param categories the categories or null to remove (note: multiple
 	 * categories may be added to this object)
@@ -3311,10 +3311,10 @@ public class VCard implements Iterable<VCardType> {
 	 * this property.
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param categories the categories (note: multiple categories may be added
@@ -3331,10 +3331,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link #setCategories(CategoriesType)}.
 	 * </p>
 	 * <p>
-	 * vCard property name: CATEGORIES
+	 * <b>Property name:</b> <code>CATEGORIES</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param categories the category or categories (e.g. "swimmer", "biker",
 	 * "knitter")
@@ -3355,10 +3355,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets information about the person's agent.
 	 * <p>
-	 * vCard property name: AGENT
+	 * <b>Property name:</b> <code>AGENT</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @return the agent information
 	 */
@@ -3369,10 +3369,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets information about the person's agent.
 	 * <p>
-	 * vCard property name: AGENT
+	 * <b>Property name:</b> <code>AGENT</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @param agent the agent information
 	 */
@@ -3383,10 +3383,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the notes. Notes contain free-form, miscellaneous text.
 	 * <p>
-	 * vCard property name: NOTE
+	 * <b>Property name:</b> <code>NOTE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the notes
 	 */
@@ -3397,10 +3397,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a note. Notes contain free-form, miscellaneous text.
 	 * <p>
-	 * vCard property name: NOTE
+	 * <b>Property name:</b> <code>NOTE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param note the note to add
 	 */
@@ -3412,10 +3412,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a note. Notes contain free-form, miscellaneous text. This is a
 	 * convenience method for {@link #addNote(NoteType)}.
 	 * <p>
-	 * vCard property name: NOTE
+	 * <b>Property name:</b> <code>NOTE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param note the note to add
 	 * @return the type object that was created
@@ -3432,10 +3432,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: NOTE
+	 * <b>Property name:</b> <code>NOTE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3450,10 +3450,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: NOTE
+	 * <b>Property name:</b> <code>NOTE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3465,10 +3465,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the unique identifier of the vCard.
 	 * <p>
-	 * vCard property name: UID
+	 * <b>Property name:</b> <code>UID</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the unique identifier
 	 */
@@ -3479,10 +3479,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Sets the unique identifier of the vCard.
 	 * <p>
-	 * vCard property name: UID
+	 * <b>Property name:</b> <code>UID</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param uid the unique identifier
 	 */
@@ -3493,10 +3493,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the public encryption keys.
 	 * <p>
-	 * vCard property name: KEY
+	 * <b>Property name:</b> <code>KEY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the keys
 	 */
@@ -3507,10 +3507,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a public encryption key.
 	 * <p>
-	 * vCard property name: KEY
+	 * <b>Property name:</b> <code>KEY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param key the key to add
 	 */
@@ -3524,10 +3524,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: KEY
+	 * <b>Property name:</b> <code>KEY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3542,10 +3542,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: KEY
+	 * <b>Property name:</b> <code>KEY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3557,10 +3557,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the instant messaging handles.
 	 * <p>
-	 * vCard property name: IMPP
+	 * <b>Property name:</b> <code>IMPP</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @return the instant messaging handles
 	 */
@@ -3571,10 +3571,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds an instant messaging handle.
 	 * <p>
-	 * vCard property name: IMPP
+	 * <b>Property name:</b> <code>IMPP</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 3.0, 4.0
+	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 * </p>
 	 * @param impp the instant messaging handle to add
 	 */
@@ -3588,10 +3588,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: IMPP
+	 * <b>Property name:</b> <code>IMPP</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3606,10 +3606,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: IMPP
+	 * <b>Property name:</b> <code>IMPP</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0*<br>
+	 * <b>Supported versions:</b> <code>4.0*</code><br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
@@ -3621,10 +3621,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets a list of people that the person is related to.
 	 * <p>
-	 * vCard property name: RELATED
+	 * <b>Property name:</b> <code>RELATED</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the person's relations
 	 */
@@ -3635,10 +3635,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds someone that the person is related to.
 	 * <p>
-	 * vCard property name: RELATED
+	 * <b>Property name:</b> <code>RELATED</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param related the relation to add
 	 */
@@ -3652,10 +3652,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: RELATED
+	 * <b>Property name:</b> <code>RELATED</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -3669,10 +3669,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: RELATED
+	 * <b>Property name:</b> <code>RELATED</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -3683,10 +3683,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the languages that the person speaks.
 	 * <p>
-	 * vCard property name: LANG
+	 * <b>Property name:</b> <code>LANG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the languages
 	 */
@@ -3697,10 +3697,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a language that the person speaks.
 	 * <p>
-	 * vCard property name: LANG
+	 * <b>Property name:</b> <code>LANG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param language the language to add
 	 */
@@ -3712,10 +3712,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a language that the person speaks. This is a convenience method for
 	 * {@link #addLanguage(LanguageType)}.
 	 * <p>
-	 * vCard property name: LANG
+	 * <b>Property name:</b> <code>LANG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param language the language to add (e.g. "en-us")
 	 * @return the type object that was created
@@ -3732,10 +3732,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: LANG
+	 * <b>Property name:</b> <code>LANG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addLanguageAlt(Collection<LanguageType> altRepresentations) {
@@ -3748,10 +3748,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: LANG
+	 * <b>Property name:</b> <code>LANG</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addLanguageAlt(LanguageType... altRepresentations) {
@@ -3762,10 +3762,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the URIs that can be used to schedule a meeting with the person on
 	 * his or her calendar.
 	 * <p>
-	 * vCard property name: CALADRURI
+	 * <b>Property name:</b> <code>CALADRURI</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the calendar request URIs
 	 */
@@ -3777,10 +3777,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a URI that can be used to schedule a meeting with the person on his
 	 * or her calendar.
 	 * <p>
-	 * vCard property name: CALADRURI
+	 * <b>Property name:</b> <code>CALADRURI</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param calendarRequestUri the calendar request URI to add
 	 */
@@ -3795,10 +3795,10 @@ public class VCard implements Iterable<VCardType> {
 	 * ).
 	 * </p>
 	 * <p>
-	 * vCard property name: CALADRURI
+	 * <b>Property name:</b> <code>CALADRURI</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -3813,10 +3813,10 @@ public class VCard implements Iterable<VCardType> {
 	 * ).
 	 * </p>
 	 * <p>
-	 * vCard property name: CALADRURI
+	 * <b>Property name:</b> <code>CALADRURI</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -3827,10 +3827,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the URIs that point to the person's calendar.
 	 * <p>
-	 * vCard property name: CALURI
+	 * <b>Property name:</b> <code>CALURI</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the calendar URIs
 	 */
@@ -3841,10 +3841,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a URI that points to the person's calendar.
 	 * <p>
-	 * vCard property name: CALURI
+	 * <b>Property name:</b> <code>CALURI</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param calendarUri the calendar URI to add
 	 */
@@ -3858,10 +3858,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: CALURI
+	 * <b>Property name:</b> <code>CALURI</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -3875,10 +3875,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: CALURI
+	 * <b>Property name:</b> <code>CALURI</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -3890,10 +3890,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the URLs that can be used to determine when the person is free
 	 * and/or busy.
 	 * <p>
-	 * vCard property name: FBURL
+	 * <b>Property name:</b> <code>FBURL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the free-busy URLs
 	 */
@@ -3905,10 +3905,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a URL that can be used to determine when the person is free and/or
 	 * busy.
 	 * <p>
-	 * vCard property name: FBURL
+	 * <b>Property name:</b> <code>FBURL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param fbUrl the free-busy URL to add
 	 */
@@ -3922,10 +3922,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: FBURL
+	 * <b>Property name:</b> <code>FBURL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addFbUrlAlt(Collection<FbUrlType> altRepresentations) {
@@ -3938,10 +3938,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: FBURL
+	 * <b>Property name:</b> <code>FBURL</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addFbUrlAlt(FbUrlType... altRepresentations) {
@@ -3953,10 +3953,10 @@ public class VCard implements Iterable<VCardType> {
 	 * to individual property instances. CLIENTPIDMAPs are used for merging
 	 * together different versions of the same vCard.
 	 * <p>
-	 * vCard property name: CLIENTPIDMAP
+	 * <b>Property name:</b> <code>CLIENTPIDMAP</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the client PID maps
 	 */
@@ -3969,10 +3969,10 @@ public class VCard implements Iterable<VCardType> {
 	 * individual property instance. CLIENTPIDMAPs are used for merging together
 	 * different versions of the same vCard.
 	 * <p>
-	 * vCard property name: CLIENTPIDMAP
+	 * <b>Property name:</b> <code>CLIENTPIDMAP</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param clientPidMap the client PID map to add
 	 */
@@ -3986,10 +3986,10 @@ public class VCard implements Iterable<VCardType> {
 	 * non-standard elements. The XML vCard properties in this case would
 	 * contain all of the non-standard XML elements.
 	 * <p>
-	 * vCard property name: XML
+	 * <b>Property name:</b> <code>XML</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the XML data
 	 */
@@ -4003,10 +4003,10 @@ public class VCard implements Iterable<VCardType> {
 	 * The XML vCard properties in this case would contain all of the
 	 * non-standard XML elements.
 	 * <p>
-	 * vCard property name: XML
+	 * <b>Property name:</b> <code>XML</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param xml the XML data to add
 	 */
@@ -4020,10 +4020,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: XML
+	 * <b>Property name:</b> <code>XML</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -4037,10 +4037,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: XML
+	 * <b>Property name:</b> <code>XML</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -4052,10 +4052,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets the professional subject areas of which the the person is
 	 * knowledgeable.
 	 * <p>
-	 * vCard property name: EXPERTISE
+	 * <b>Property name:</b> <code>EXPERTISE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the professional skills
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4068,10 +4068,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a professional subject area of which the the person is
 	 * knowledgeable.
 	 * <p>
-	 * vCard property name: EXPERTISE
+	 * <b>Property name:</b> <code>EXPERTISE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param expertise the professional skill to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4085,10 +4085,10 @@ public class VCard implements Iterable<VCardType> {
 	 * knowledgeable. This is a convenience method for
 	 * {@link #addExpertise(ExpertiseType)}.
 	 * <p>
-	 * vCard property name: EXPERTISE
+	 * <b>Property name:</b> <code>EXPERTISE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param expertise the professional skill to add (e.g. "programming")
 	 * @return the type object that was created
@@ -4106,10 +4106,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: EXPERTISE
+	 * <b>Property name:</b> <code>EXPERTISE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4124,10 +4124,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: EXPERTISE
+	 * <b>Property name:</b> <code>EXPERTISE</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4139,10 +4139,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the hobbies that the person actively engages in.
 	 * <p>
-	 * vCard property name: HOBBY
+	 * <b>Property name:</b> <code>HOBBY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the hobbies
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4154,10 +4154,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds a hobby that the person actively engages in.
 	 * <p>
-	 * vCard property name: HOBBY
+	 * <b>Property name:</b> <code>HOBBY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param hobby the hobby to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4170,10 +4170,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds a hobby that the person actively engages in. This is a convenience
 	 * method for {@link #addHobby(HobbyType)}.
 	 * <p>
-	 * vCard property name: HOBBY
+	 * <b>Property name:</b> <code>HOBBY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param hobby the hobby to add (e.g. "photography")
 	 * @return the type objec that was created
@@ -4191,10 +4191,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: HOBBY
+	 * <b>Property name:</b> <code>HOBBY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
@@ -4208,10 +4208,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: HOBBY
+	 * <b>Property name:</b> <code>HOBBY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
@@ -4222,10 +4222,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the person's interests.
 	 * <p>
-	 * vCard property name: INTEREST
+	 * <b>Property name:</b> <code>INTEREST</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the interests
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4237,10 +4237,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds an interest.
 	 * <p>
-	 * vCard property name: INTEREST
+	 * <b>Property name:</b> <code>INTEREST</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param interest the interest to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4253,10 +4253,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds an interest. This is a convenience method for
 	 * {@link #addInterest(InterestType)}.
 	 * <p>
-	 * vCard property name: INTEREST
+	 * <b>Property name:</b> <code>INTEREST</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param interest the interest to add (e.g. "football")
 	 * @return the type object that was created
@@ -4274,10 +4274,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: INTEREST
+	 * <b>Property name:</b> <code>INTEREST</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
@@ -4291,10 +4291,10 @@ public class VCard implements Iterable<VCardType> {
 	 * {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: INTEREST
+	 * <b>Property name:</b> <code>INTEREST</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * @param altRepresentations the alternative representations of the property
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
@@ -4305,10 +4305,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Gets the organization directories.
 	 * <p>
-	 * vCard property name: ORG-DIRECTORY
+	 * <b>Property name:</b> <code>ORG-DIRECTORY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the organization directories
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4320,10 +4320,10 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Adds an organization directory.
 	 * <p>
-	 * vCard property name: ORG-DIRECTORY
+	 * <b>Property name:</b> <code>ORG-DIRECTORY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param orgDirectory the organization directory to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -4336,10 +4336,10 @@ public class VCard implements Iterable<VCardType> {
 	 * Adds an organization directory. This is a convenience method for
 	 * {@link #addOrgDirectory(OrgDirectoryType)}.
 	 * <p>
-	 * vCard property name: ORG-DIRECTORY
+	 * <b>Property name:</b> <code>ORG-DIRECTORY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param orgDirectory the organization directory to add (e.g.
 	 * "http://company.com/staff")
@@ -4358,10 +4358,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG-DIRECTORY
+	 * <b>Property name:</b> <code>ORG-DIRECTORY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */
@@ -4375,10 +4375,10 @@ public class VCard implements Iterable<VCardType> {
 	 * (see: {@link VCardSubTypes#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
-	 * vCard property name: ORG-DIRECTORY
+	 * <b>Property name:</b> <code>ORG-DIRECTORY</code>
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altRepresentations the alternative representations of the property
 	 */

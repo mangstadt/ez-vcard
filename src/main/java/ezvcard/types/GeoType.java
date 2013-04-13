@@ -61,10 +61,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: GEO
+ * <b>Property name:</b> <code>GEO</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */
@@ -134,7 +134,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Gets the TYPE parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the TYPE value (typically, this will be either "work" or "home")
 	 * or null if it doesn't exist
@@ -146,7 +146,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Sets the TYPE parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param type the TYPE value (this should be either "work" or "home") or
 	 * null to remove
@@ -158,7 +158,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Gets the MEDIATYPE parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the media type or null if not set
 	 */
@@ -169,7 +169,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Sets the MEDIATYPE parameter.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param mediaType the media type or null to remove
 	 */
@@ -180,7 +180,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Gets all PID parameter values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
@@ -192,7 +192,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Adds a PID value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param localId the local ID
 	 * @param clientPidMapRef the ID used to reference the property's globally
@@ -206,7 +206,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Removes all PID values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @see VCardSubTypes#removePids
 	 */
@@ -217,7 +217,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Gets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
 	 * @see VCardSubTypes#getPref
@@ -229,7 +229,7 @@ public class GeoType extends VCardType implements HasAltId {
 	/**
 	 * Sets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @see VCardSubTypes#setPref

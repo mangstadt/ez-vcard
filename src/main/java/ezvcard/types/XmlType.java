@@ -57,10 +57,10 @@ import ezvcard.util.XmlUtils;
  * </pre>
  * 
  * <p>
- * vCard property name: XML
+ * <b>Property name:</b> <code>XML</code>
  * </p>
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  */

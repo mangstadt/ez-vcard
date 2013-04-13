@@ -63,7 +63,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Gets the ENCODING sub type. This is used when the type value is encoded
 	 * in a form other than plain text.
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @return the encoding or null if not found
 	 */
@@ -83,7 +83,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Sets the ENCODING sub type. This is used when the type value is encoded
 	 * in a form other than plain text.
 	 * <p>
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
 	 * @param encoding the encoding or null to remove
 	 */
@@ -95,7 +95,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Gets the VALUE sub type. This defines what kind of value the type has,
 	 * such as "text" or "URI".
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the value or null if not found
 	 */
@@ -115,7 +115,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Sets the VALUE sub type. This defines what kind of value the type has,
 	 * such as "text" or "URI".
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param value the value or null to remove
 	 */
@@ -126,7 +126,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Gets the CHARSET sub type.
 	 * <p>
-	 * vCard versions: 2.1
+	 * <b>Supported versions:</b> <code>2.1</code>
 	 * </p>
 	 * @return the value or null if not found
 	 */
@@ -137,7 +137,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Sets the CHARSET sub type
 	 * <p>
-	 * vCard versions: 2.1
+	 * <b>Supported versions:</b> <code>2.1</code>
 	 * </p>
 	 * @param charset the value or null to remove
 	 */
@@ -148,7 +148,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Gets the LANGUAGE sub type.
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the language (e.g. "en-US") or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
@@ -160,7 +160,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Sets the LANGUAGE sub type.
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param language the language (e.g "en-US") or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
@@ -172,7 +172,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Gets all TYPE sub types.
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the values or empty set if not found
 	 */
@@ -183,7 +183,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Adds a TYPE sub type
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param type the value
 	 */
@@ -194,7 +194,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Gets the first TYPE sub type.
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @return the value or null if not found.
 	 */
@@ -206,7 +206,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Sets the TYPE sub type.
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param type the value or null to remove
 	 */
@@ -217,7 +217,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Removes a TYPE sub type.
 	 * <p>
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
 	 * @param type the value to remove
 	 */
@@ -249,7 +249,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 * 
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the preference value or null if it doesn't exist or null if it
 	 * couldn't be parsed into a number
@@ -291,7 +291,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 * 
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @throws IllegalArgumentException if the value is not between 1 and 100
@@ -327,7 +327,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </pre>
 	 * 
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the ALTID or null if it doesn't exist
 	 */
@@ -358,7 +358,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </pre>
 	 * 
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param altId the ALTID or null to remove
 	 */
@@ -371,7 +371,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * positioning information with a vCard type. It can be used with the ADR
 	 * type.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the latitude (index 0) and longitude (index 1) or null if not
 	 * present or null if the parameter value was in an incorrect format
@@ -395,7 +395,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * positioning information with a vCard type. It can be used with the ADR
 	 * type.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param latitude the latitude
 	 * @param longitude the longitude
@@ -412,7 +412,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * with characters that should be ignored during sorting. It can be used
 	 * with the N and ORG types.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the name(s) (e.g. { "Aboville", "Christine" } if the family name
 	 * is "d'Aboville" and the given name is "Christine") or empty list of the
@@ -427,7 +427,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * when the person's last name starts with characters that should be ignored
 	 * during sorting. It can be used with the N and ORG types.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param names the names in the order they should be sorted in (e.g.
 	 * ["Aboville", "Christine"] if the family name is "d'Aboville" and the
@@ -446,7 +446,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Gets the CALSCALE parameter value. This defines the type of calendar that
 	 * is used.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the type of calendar or null if not found
 	 */
@@ -466,7 +466,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Gets the CALSCALE parameter value. This is used with date/time types and
 	 * defines the type of calendar that is used.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param value the type of calendar or null to remove
 	 */
@@ -487,7 +487,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * merged together (called "synchronizing").
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the PID values or empty set if there are none. Index 0 is the
 	 * local ID and index 1 is the ID used to reference the CLIENTPIDMAP
@@ -525,7 +525,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * merged together (called "synchronizing").
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param localId the local ID
 	 */
@@ -546,7 +546,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * merged together (called "synchronizing").
 	 * </p>
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param localId the local ID
 	 * @param clientPidMapRef the ID used to reference the property's globally
@@ -559,7 +559,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Removes all PID values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 */
 	public void removePids() {
@@ -571,7 +571,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * as a value, such as PHOTO and SOUND. It defines the content type of the
 	 * referenced resource.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the media type (e.g. "image/jpeg") or null if it doesn't exist
 	 */
@@ -584,7 +584,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * as a value, such as PHOTO and SOUND. It defines the content type of the
 	 * referenced resource.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param mediaType the media type (e.g. "image/jpeg") or null to remove
 	 */
@@ -596,7 +596,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Gets the LEVEL parameter. This is used to define the level of skill or
 	 * level of interest the person has towards something.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the level (e.g. "beginner") or null if not found
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -609,7 +609,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Sets the LEVEL parameter. This is used to define the level of skill or
 	 * level of interest the person has towards something.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param level the level (e.g. "beginner") or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -625,7 +625,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * list.
 	 * 
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the INDEX value or null if it doesn't exist or null if it
 	 * couldn't be parsed into a number
@@ -651,7 +651,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * list.
 	 * 
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param index the INDEX value (must be greater than 0) or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>

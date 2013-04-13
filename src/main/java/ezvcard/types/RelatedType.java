@@ -68,10 +68,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: RELATED
+ * <b>Property name:</b> <code>RELATED</code>
  * </p>
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  */
@@ -147,7 +147,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	/**
 	 * Gets all PID parameter values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
@@ -159,7 +159,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	/**
 	 * Adds a PID value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param localId the local ID
 	 * @param clientPidMapRef the ID used to reference the property's globally
@@ -173,7 +173,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	/**
 	 * Removes all PID values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @see VCardSubTypes#removePids
 	 */
@@ -184,7 +184,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	/**
 	 * Gets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
 	 * @see VCardSubTypes#getPref
@@ -196,7 +196,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	/**
 	 * Sets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @see VCardSubTypes#setPref

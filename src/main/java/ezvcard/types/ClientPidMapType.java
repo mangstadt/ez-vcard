@@ -81,10 +81,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: CLIENTPIDMAP
+ * <b>Property name:</b> <code>CLIENTPIDMAP</code>
  * </p>
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  */

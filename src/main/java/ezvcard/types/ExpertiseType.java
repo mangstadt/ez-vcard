@@ -46,10 +46,10 @@ import ezvcard.parameters.ExpertiseLevelParameter;
  * </pre>
  * 
  * <p>
- * vCard property name: EXPERTISE
+ * <b>Property name:</b> <code>EXPERTISE</code>
  * </p>
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -156,7 +156,7 @@ public class ExpertiseType extends TextType implements HasAltId {
 	/**
 	 * Gets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
 	 * @see VCardSubTypes#getPref
@@ -168,7 +168,7 @@ public class ExpertiseType extends TextType implements HasAltId {
 	/**
 	 * Sets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @see VCardSubTypes#setPref

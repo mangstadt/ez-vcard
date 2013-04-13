@@ -32,43 +32,43 @@ package ezvcard.parameters;
 /**
  * Represents the TYPE parameter of the ADR and LABEL types.
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */
 public class AddressTypeParameter extends TypeParameter {
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final AddressTypeParameter HOME = new AddressTypeParameter("home");
 
 	/**
-	 * vCard versions: 2.1, 3.0, 4.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final AddressTypeParameter WORK = new AddressTypeParameter("work");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final AddressTypeParameter DOM = new AddressTypeParameter("dom");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final AddressTypeParameter INTL = new AddressTypeParameter("intl");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final AddressTypeParameter POSTAL = new AddressTypeParameter("postal");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final AddressTypeParameter PARCEL = new AddressTypeParameter("parcel");
 
 	/**
-	 * vCard versions: 2.1, 3.0
+	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
 	public static final AddressTypeParameter PREF = new AddressTypeParameter("pref");
 

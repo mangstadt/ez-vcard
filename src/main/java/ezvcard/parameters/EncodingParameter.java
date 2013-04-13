@@ -60,7 +60,7 @@ package ezvcard.parameters;
 /**
  * Represents the "ENCODING" sub type.
  * <p>
- * vCard versions: 2.1, 3.0
+ * <b>Supported versions:</b> <code>2.1, 3.0</code>
  * </p>
  * @author George El-Haddad Mar 10, 2010
  * @author Michael Angstadt
@@ -69,27 +69,27 @@ public class EncodingParameter extends VCardParameter {
 	public static final String NAME = "ENCODING";
 
 	/**
-	 * vCard versions: 2.1
+	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
 	public static final EncodingParameter QUOTED_PRINTABLE = new EncodingParameter("quoted-printable");
 
 	/**
-	 * vCard versions: 2.1
+	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
 	public static final EncodingParameter BASE64 = new EncodingParameter("base64");
 
 	/**
-	 * vCard versions: 2.1
+	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
 	public static final EncodingParameter _8BIT = new EncodingParameter("8bit");
 
 	/**
-	 * vCard versions: 2.1
+	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
 	public static final EncodingParameter _7BIT = new EncodingParameter("7bit");
 
 	/**
-	 * vCard versions: 3.0
+	 * <b>Supported versions:</b> <code>3.0</code>
 	 */
 	public static final EncodingParameter B = new EncodingParameter("b");
 

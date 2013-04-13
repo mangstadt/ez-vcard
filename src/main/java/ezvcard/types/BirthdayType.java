@@ -80,10 +80,10 @@ import java.util.Date;
  * </pre>
  * 
  * <p>
- * vCard property name: BDAY
+ * <b>Property name:</b> <code>BDAY</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */

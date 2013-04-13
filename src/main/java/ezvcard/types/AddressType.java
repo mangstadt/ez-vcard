@@ -77,10 +77,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: ADR
+ * <b>Property name:</b> <code>ADR</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */
@@ -260,7 +260,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * Gets the global positioning coordinates that are associated with this
 	 * address.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the latitude (index 0) and longitude (index 1) or null if not set
 	 * or null if the parameter value was in an incorrect format
@@ -274,7 +274,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * Sets the global positioning coordinates that are associated with this
 	 * address.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param latitude the latitude
 	 * @param longitude the longitude
@@ -287,7 +287,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Gets all PID parameter values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
@@ -299,7 +299,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Adds a PID value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param localId the local ID
 	 * @param clientPidMapRef the ID used to reference the property's globally
@@ -313,7 +313,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Removes all PID values.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @see VCardSubTypes#removePids
 	 */
@@ -324,7 +324,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Gets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
 	 * @see VCardSubTypes#getPref
@@ -336,7 +336,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Sets the preference value.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @see VCardSubTypes#setPref
@@ -358,7 +358,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Gets the timezone that's associated with this address.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @return the timezone (e.g. "America/New_York") or null if it doesn't
 	 * exist
@@ -370,7 +370,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Sets the timezone that's associated with this address.
 	 * <p>
-	 * vCard versions: 4.0
+	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param timezone the timezone (e.g. "America/New_York") or null to remove
 	 */

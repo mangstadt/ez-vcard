@@ -126,10 +126,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: KEY
+ * <b>Property name:</b> <code>KEY</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */

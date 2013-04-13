@@ -111,10 +111,10 @@ import ezvcard.util.HCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: SOUND
+ * <b>Property name:</b> <code>SOUND</code>
  * </p>
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */

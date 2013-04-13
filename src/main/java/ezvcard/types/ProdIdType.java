@@ -41,10 +41,10 @@ import ezvcard.VCardVersion;
  * </pre>
  * 
  * <p>
- * vCard property name: PRODID
+ * <b>Property name:</b> <code>PRODID</code>
  * </p>
  * <p>
- * vCard versions: 3.0, 4.0
+ * <b>Supported versions:</b> <code>3.0, 4.0</code>
  * </p>
  * @author Michael Angstadt
  */

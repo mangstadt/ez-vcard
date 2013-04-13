@@ -60,7 +60,7 @@ package ezvcard.parameters;
 /**
  * Represents the TYPE parameter of the PHOTO and LOGO types.
  * <p>
- * vCard versions: 2.1, 3.0, 4.0
+ * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
  * @author George El-Haddadt Mar 10, 2010
  * @author Michael Angstadt

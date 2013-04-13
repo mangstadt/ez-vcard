@@ -70,10 +70,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * vCard property name: BIRTHPLACE
+ * <b>Property name:</b> <code>BIRTHPLACE</code>
  * </p>
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>

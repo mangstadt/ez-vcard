@@ -33,7 +33,7 @@ package ezvcard.parameters;
 /**
  * Represents a CALSCALE parameter.
  * <p>
- * vCard versions: 4.0
+ * <b>Supported versions:</b> <code>4.0</code>
  * </p>
  * @author Michael Angstadt
  */
