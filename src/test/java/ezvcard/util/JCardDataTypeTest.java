@@ -76,7 +76,7 @@ public class JCardDataTypeTest {
 	@Test
 	public void all() {
 		Collection<JCardDataType> dataTypes = JCardDataType.all();
-		assertEquals(12, dataTypes.size());
+		assertEquals(13, dataTypes.size());
 
 		assertTrue(dataTypes.contains(JCardDataType.TEXT));
 		assertTrue(dataTypes.contains(JCardDataType.INTEGER));
@@ -90,13 +90,14 @@ public class JCardDataTypeTest {
 		assertTrue(dataTypes.contains(JCardDataType.UTC_OFFSET));
 		assertTrue(dataTypes.contains(JCardDataType.LANGUAGE_TAG));
 		assertTrue(dataTypes.contains(JCardDataType.URI));
+		assertTrue(dataTypes.contains(JCardDataType.UNKNOWN));
 	}
 
 	@Test
 	public void all_with_custom() {
 		JCardDataType fake = JCardDataType.get("fake");
 		Collection<JCardDataType> dataTypes = JCardDataType.all();
-		assertEquals(13, dataTypes.size());
+		assertEquals(14, dataTypes.size());
 
 		assertTrue(dataTypes.contains(fake));
 		assertTrue(dataTypes.contains(JCardDataType.TEXT));
@@ -111,5 +112,6 @@ public class JCardDataTypeTest {
 		assertTrue(dataTypes.contains(JCardDataType.UTC_OFFSET));
 		assertTrue(dataTypes.contains(JCardDataType.LANGUAGE_TAG));
 		assertTrue(dataTypes.contains(JCardDataType.URI));
+		assertTrue(dataTypes.contains(JCardDataType.UNKNOWN));
 	}
 }
