@@ -167,8 +167,9 @@ public class VCardTest {
 		@SuppressWarnings("unchecked")
 		List<List<HasAltIdImpl>> expected = Arrays.asList(
 			Arrays.asList(one1, one2),
-			Arrays.asList(null1, null2),
-			Arrays.asList(two1)
+			Arrays.asList(two1),
+			Arrays.asList(null1),
+			Arrays.asList(null2)
 		);
 		//@formatter:on
 		assertEquals(expected, VCard.groupByAltId(list));

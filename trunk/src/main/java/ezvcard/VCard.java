@@ -4484,18 +4484,33 @@ public class VCard implements Iterable<VCardType> {
 	/**
 	 * Groups a collection of properties by their ALTID.
 	 * @param properties the properties
-	 * @return the grouped properties
+	 * @return the grouped properties (properties without ALTIDs will be stored
+	 * in their own, individual lists and will be put at the end of the list)
 	 */
 	public static <T extends HasAltId> List<List<T>> groupByAltId(Collection<T> properties) {
+		List<T> nullAltId = new ArrayList<T>();
 		ListMultimap<String, T> map = new ListMultimap<String, T>();
 		for (T property : properties) {
-			map.put(property.getAltId(), property);
+			String altId = property.getAltId();
+			if (altId == null) {
+				nullAltId.add(property);
+			} else {
+				map.put(altId, property);
+			}
 		}
 
 		List<List<T>> list = new ArrayList<List<T>>();
 		for (Map.Entry<String, List<T>> entry : map) {
 			list.add(entry.getValue());
 		}
+
+		//put properties without ALTIDs at the end
+		for (T property : nullAltId) {
+			List<T> l = new ArrayList<T>(1);
+			l.add(property);
+			list.add(l);
+		}
+
 		return list;
 	}
 }
