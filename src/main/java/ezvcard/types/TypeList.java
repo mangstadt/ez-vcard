@@ -43,14 +43,14 @@ import ezvcard.VCard;
 public class TypeList {
 	/**
 	 * Maps each type name to its corresponding type class. For example, "NOTE"
-	 * is mapped to "NoteType".
+	 * is mapped to {@link NoteType}".
 	 */
 	private final static Map<String, Class<? extends VCardType>> nameToTypeClass;
 
 	/**
-	 * Maps each type class to the "VCard" class method that is used to add an
-	 * instance of the type class to a "VCard" object. For example the
-	 * "NoteType" class is mapped to the "VCard.addNote" method.
+	 * Maps each type class to the method that is used to add an instance of the
+	 * type class to a {@link VCard} object. For example the {@link NoteType}
+	 * class is mapped to the {@link VCard#addNote(NoteType)} method.
 	 */
 	private final static Map<Class<? extends VCardType>, Method> typeClassToAddMethod;
 
@@ -126,8 +126,8 @@ public class TypeList {
 		typeClasses.put(UrlType.class, null);
 		typeClasses.put(XmlType.class, null);
 
-		Map<String, Class<? extends VCardType>> _nameToType = new HashMap<String, Class<? extends VCardType>>();
-		Map<Class<? extends VCardType>, Method> _typeToMethod = new HashMap<Class<? extends VCardType>, Method>();
+		Map<String, Class<? extends VCardType>> _nameToTypeClass = new HashMap<String, Class<? extends VCardType>>();
+		Map<Class<? extends VCardType>, Method> _typeClassToAddMethod = new HashMap<Class<? extends VCardType>, Method>();
 		for (Map.Entry<Class<? extends VCardType>, String> entry : typeClasses.entrySet()) {
 			Class<? extends VCardType> clazz = entry.getKey();
 			String methodName = entry.getValue();
@@ -156,8 +156,8 @@ public class TypeList {
 					method = VCard.class.getMethod(methodName, clazz);
 				}
 
-				_nameToType.put(typeName, clazz);
-				_typeToMethod.put(clazz, method);
+				_nameToTypeClass.put(typeName, clazz);
+				_typeClassToAddMethod.put(clazz, method);
 			} catch (Exception e) {
 				//a reflection problem occurred
 				//this exception should NEVER be thrown if the above rules are followed
@@ -165,8 +165,8 @@ public class TypeList {
 			}
 		}
 
-		nameToTypeClass = Collections.unmodifiableMap(_nameToType);
-		typeClassToAddMethod = Collections.unmodifiableMap(_typeToMethod);
+		nameToTypeClass = Collections.unmodifiableMap(_nameToTypeClass);
+		typeClassToAddMethod = Collections.unmodifiableMap(_typeClassToAddMethod);
 	}
 
 	/**
@@ -185,7 +185,6 @@ public class TypeList {
 	 * @return the type class or null if not found
 	 */
 	public static Class<? extends VCardType> getTypeClassByHCardTypeName(String typeName) {
-		//TODO refactor
 		if ("category".equalsIgnoreCase(typeName)) {
 			return CategoriesType.class;
 		}
