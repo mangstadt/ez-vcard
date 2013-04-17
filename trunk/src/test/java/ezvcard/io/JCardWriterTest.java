@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -325,7 +325,7 @@ public class JCardWriterTest {
 	@Test
 	public void write_empty_value() throws Exception {
 		JCardValue value = JCardValue.text();
-		value.addValues(new ArrayList<Object>(0));
+		value.addValues(Collections.emptyList());
 		VCard vcard = new VCard();
 		vcard.addExtendedType(new TypeForTesting(value));
 
