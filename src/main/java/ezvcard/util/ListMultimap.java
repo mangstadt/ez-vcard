@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -147,11 +148,11 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	/**
 	 * Removes all the values associated with a key
 	 * @param key the key to remove
-	 * @return the removed values
+	 * @return the removed values or empty list if the key doesn't exist
 	 */
 	public List<V> removeAll(K key) {
 		List<V> removed = map.remove(sanitizeKey(key));
-		return (removed == null) ? new ArrayList<V>(0) : removed;
+		return (removed == null) ? Collections.<V> emptyList() : removed;
 	}
 
 	/**
