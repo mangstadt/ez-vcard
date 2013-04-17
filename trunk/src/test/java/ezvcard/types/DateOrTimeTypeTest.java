@@ -521,7 +521,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalText_date_invalid_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 		type.unmarshalText(subTypes, "invalid", version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
@@ -548,7 +547,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalXml_date_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime("invalid");
@@ -580,7 +578,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalJson_date_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		JCardValue value = new JCardValue();
 		value.setDataType(JCardDataType.DATE);
@@ -595,8 +592,7 @@ public class DateOrTimeTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml_date_in_attribute() throws Exception {
-		List<String> warnings = new ArrayList<String>();
+	public void unmarshalHtml_date_in_attribute() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time datetime=\"" + dateStrExtended + "\">June 5, 1980</time>");
 
 		type.unmarshalHtml(element, warnings);
@@ -607,8 +603,7 @@ public class DateOrTimeTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml_date_in_text_content() throws Exception {
-		List<String> warnings = new ArrayList<String>();
+	public void unmarshalHtml_date_in_text_content() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>" + dateStrExtended + "</time>");
 
 		type.unmarshalHtml(element, warnings);
@@ -619,16 +614,14 @@ public class DateOrTimeTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalHtml_date_invalid() throws Exception {
-		List<String> warnings = new ArrayList<String>();
+	public void unmarshalHtml_date_invalid() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>June 5, 1980</time>");
 
 		type.unmarshalHtml(element, warnings);
 	}
 
 	@Test
-	public void unmarshalHtml_date_not_time_tag() throws Exception {
-		List<String> warnings = new ArrayList<String>();
+	public void unmarshalHtml_date_not_time_tag() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + dateStrExtended + "</div>");
 
 		type.unmarshalHtml(element, warnings);
@@ -706,21 +699,18 @@ public class DateOrTimeTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_reducedAccuracyDate_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
 		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_reducedAccuracyDate_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		List<String> warnings = new ArrayList<String>();
 		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
 	}
 
 	@Test
 	public void unmarshalText_reducedAccuracyDate_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 		type.unmarshalText(subTypes, reducedAccuracyDate, version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
@@ -733,7 +723,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalText_reducedAccuracyDate_without_dashes_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 		type.unmarshalText(subTypes, reducedAccuracyDateNoDashes, version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
@@ -746,7 +735,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalXml_reducedAccuracyDate() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime(reducedAccuracyDate);
@@ -763,7 +751,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalXml_reducedAccuracyDate_without_dashes() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime(reducedAccuracyDateNoDashes);
@@ -780,7 +767,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalJson_reducedAccuracyDate() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		JCardValue value = new JCardValue();
 		value.setDataType(JCardDataType.DATE);
@@ -798,7 +784,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalJson_reducedAccuracyDate_without_dashes() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		JCardValue value = new JCardValue();
 		value.setDataType(JCardDataType.DATE);
@@ -818,21 +803,18 @@ public class DateOrTimeTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_reducedAccuracyDateTime_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
 		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_reducedAccuracyDateTime_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		List<String> warnings = new ArrayList<String>();
 		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
 	}
 
 	@Test
 	public void unmarshalText_reducedAccuracyDateTime_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 		type.unmarshalText(subTypes, reducedAccuracyDateTime, version, warnings, compatibilityMode);
 
 		assertNull(type.getDate());
@@ -845,7 +827,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalXml_reducedAccuracyDateTime() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.dateAndOrTime(reducedAccuracyDateTime);
@@ -862,7 +843,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalJson_reducedAccuracyDateTime() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		JCardValue value = new JCardValue();
 		value.setDataType(JCardDataType.DATE_TIME);
@@ -882,7 +862,6 @@ public class DateOrTimeTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		List<String> warnings = new ArrayList<String>();
 
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 	}
@@ -890,7 +869,6 @@ public class DateOrTimeTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalText_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		List<String> warnings = new ArrayList<String>();
 
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 	}
@@ -898,8 +876,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalText_text_4_0_with_value_parameter() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
-		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setValue(ValueParameter.TEXT);
 
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
@@ -914,7 +890,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalText_text_4_0_without_value_parameter() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 
@@ -927,7 +902,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		xe.append("text", text);
@@ -944,7 +918,6 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		List<String> warnings = new ArrayList<String>();
 
 		JCardValue value = new JCardValue();
 		value.setDataType(JCardDataType.TEXT);
