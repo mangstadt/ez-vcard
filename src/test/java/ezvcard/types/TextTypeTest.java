@@ -134,7 +134,7 @@ public class TextTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml() throws Exception {
+	public void unmarshalHtml() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>This is a test of the TextType.<br/>One, two, three; and \\four\\.</div>");

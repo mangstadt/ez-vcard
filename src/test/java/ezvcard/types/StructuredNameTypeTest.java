@@ -95,7 +95,7 @@ public class StructuredNameTypeTest {
 	}
 
 	@Test
-	public void marshalText_empty_values() throws Exception {
+	public void marshalText_empty_values() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = ";Jonathan;Joh\\;nny\\,,John;;";
 		String actual = emptyValues.marshalText(version, warnings, compatibilityMode);
@@ -104,7 +104,7 @@ public class StructuredNameTypeTest {
 	}
 
 	@Test
-	public void marshalText_all_empty_values() throws Exception {
+	public void marshalText_all_empty_values() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = ";;;;";
 		String actual = allEmptyValues.marshalText(version, warnings, compatibilityMode);
@@ -133,7 +133,7 @@ public class StructuredNameTypeTest {
 	}
 
 	@Test
-	public void marshalXml_empty_values() throws Exception {
+	public void marshalXml_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
 		xe.append("given", "Jonathan");
@@ -150,7 +150,7 @@ public class StructuredNameTypeTest {
 	}
 
 	@Test
-	public void marshalXml_all_empty_values() throws Exception {
+	public void marshalXml_all_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
 		Document expected = xe.document();
@@ -337,7 +337,7 @@ public class StructuredNameTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml() throws Exception {
+	public void unmarshalHtml() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -362,7 +362,7 @@ public class StructuredNameTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml_empty_values() throws Exception {
+	public void unmarshalHtml_empty_values() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -384,7 +384,7 @@ public class StructuredNameTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml_all_empty_values() throws Exception {
+	public void unmarshalHtml_all_empty_values() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +

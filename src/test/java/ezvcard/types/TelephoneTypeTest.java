@@ -355,7 +355,7 @@ public class TelephoneTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml() throws Exception {
+	public void unmarshalHtml() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -381,7 +381,7 @@ public class TelephoneTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml_href() throws Exception {
+	public void unmarshalHtml_href() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<a href=\"" + uri + "\">Call me</a>");
 
 		unmarshalObj.unmarshalHtml(element, warnings);
@@ -392,7 +392,7 @@ public class TelephoneTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml_invalid_href_value() throws Exception {
+	public void unmarshalHtml_invalid_href_value() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<a href=\"foo\">" + number + "</a>");
 
 		unmarshalObj.unmarshalHtml(element, warnings);
