@@ -79,7 +79,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void marshalSubTypes_text() throws Exception {
+	public void marshalSubTypes_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
@@ -88,7 +88,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void marshalSubTypes_uri() throws Exception {
+	public void marshalSubTypes_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		VCardSubTypes subTypes = uriType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
@@ -97,7 +97,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void marshalSubTypes_no_value() throws Exception {
+	public void marshalSubTypes_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
@@ -106,7 +106,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void marshalText_text() throws Exception {
+	public void marshalText_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		String actual = textType.marshalText(version, warnings, compatibilityMode);
 		assertEquals(text, actual);
@@ -114,7 +114,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void marshalText_uri() throws Exception {
+	public void marshalText_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		String actual = uriType.marshalText(version, warnings, compatibilityMode);
 		assertEquals(uri, actual);
@@ -122,14 +122,14 @@ public class RelatedTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void marshalText_no_value() throws Exception {
+	public void marshalText_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
 		t.marshalText(version, warnings, compatibilityMode);
 	}
 
 	@Test
-	public void marshalXml_text() throws Exception {
+	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		xe.text(text);
@@ -142,7 +142,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void marshalXml_uri() throws Exception {
+	public void marshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		xe.uri(uri);
@@ -155,7 +155,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void marshalXml_no_value() throws Exception {
+	public void marshalXml_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		xe.uri(uri);
@@ -206,7 +206,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void unmarshalText_text() throws Exception {
+	public void unmarshalText_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
 		VCardSubTypes subTypes = new VCardSubTypes();
@@ -218,7 +218,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void unmarshalText_uri() throws Exception {
+	public void unmarshalText_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
 		VCardSubTypes subTypes = new VCardSubTypes();
@@ -230,7 +230,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void unmarshalText_no_value_parameter() throws Exception {
+	public void unmarshalText_no_value_parameter() {
 		//treats it as a URI
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
@@ -241,7 +241,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void unmarshalXml_text() throws Exception {
+	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
 		RelatedType t = new RelatedType();
@@ -254,7 +254,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test
-	public void unmarshalXml_uri() throws Exception {
+	public void unmarshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 
 		RelatedType t = new RelatedType();
@@ -267,7 +267,7 @@ public class RelatedTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalXml_unknown_tag() throws Exception {
+	public void unmarshalXml_unknown_tag() {
 		//throws exception
 		VCardVersion version = VCardVersion.V4_0;
 

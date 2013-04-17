@@ -154,7 +154,7 @@ public class RawTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml() throws Exception {
+	public void unmarshalHtml() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + propertyValue + "</div>");
 
 		RawTypeImpl type = new RawTypeImpl();

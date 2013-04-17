@@ -255,7 +255,7 @@ public class GeoTypeTest {
 	}
 
 	@Test
-	public void unmarshalHtml() throws Exception {
+	public void unmarshalHtml() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -272,7 +272,7 @@ public class GeoTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalHtml_missing_latitude() throws Exception {
+	public void unmarshalHtml_missing_latitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -284,7 +284,7 @@ public class GeoTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalHtml_missing_longitude() throws Exception {
+	public void unmarshalHtml_missing_longitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -296,7 +296,7 @@ public class GeoTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalHtml_bad_latitude() throws Exception {
+	public void unmarshalHtml_bad_latitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -309,7 +309,7 @@ public class GeoTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalHtml_bad_longitude() throws Exception {
+	public void unmarshalHtml_bad_longitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -322,7 +322,7 @@ public class GeoTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalHtml_bad_latitude_and_longitude() throws Exception {
+	public void unmarshalHtml_bad_latitude_and_longitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
@@ -335,7 +335,7 @@ public class GeoTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalHtml_missing_latitude_and_longitude() throws Exception {
+	public void unmarshalHtml_missing_latitude_and_longitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
 		"<div>" +
