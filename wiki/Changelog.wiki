@@ -1,6 +1,16 @@
 #summary Documents all the changes that were made to every version of the library
 #labels Featured
 
+= 0.8.0 =
+_April 17, 2013_
+
+ * Added support for *jCard* (JSON-encoded vCards, see: [http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01 jCard draft specification]).
+ * Added methods to the `VCard` class for adding groups of alternative representations.  These methods will automatically generate an appropriate `ALTID` parameter value.
+ * Fixed a typo in the name of the `DateOrTimeType.setCalscale()` method.
+ * Fixed an issue with hCards where `AGENT` URLs were not being parsed correctly.
+ * `TZ` parameters in the `ADR` property are no longer parsed as URIs.
+ * Improved overall unit test coverage.
+
 = 0.7.3 =
 _March 29, 2013_
 

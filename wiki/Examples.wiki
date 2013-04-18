@@ -61,21 +61,36 @@ String html =
 VCard vcard = Ezvcard.parsHtml(html).first();
 }}}
 
-==Example 1.4: Reading from a file==
+==Example 1.4: Reading from a JSON string (jCard)==
+
+{{{
+String json =
+[\"vcard\"," +
+  "[" +
+    "[\"version\", {}, \"text\", \"4.0\"]," +
+	"[\"n\", {}, \"text\", [\"House\", \"Gregory\", \"\", \"Dr\", \"MD\"]]," +
+	"[\"fn\", {}, \"text\", \"Dr. Gregory House M.D.\"]" +
+  "]" +
+"]";
+
+VCard vcard = Ezvcard.parseJson(json).first();
+}}}
+
+==Example 1.5: Reading from a file==
 
 {{{
 File file = new File("vcard.vcf");
 VCard vcard = Ezvcard.parse(file).first();
 }}}
 
-==Example 1.5: Reading from a `Reader`==
+==Example 1.6: Reading from a `Reader`==
 
 {{{
 Reader reader = ...
 VCard vcard = Ezvcard.parse(reader).first();
 }}}
 
-==Example 1.6: Reading multiple vCards from the same stream==
+==Example 1.7: Reading multiple vCards from the same stream==
 
 {{{
 Reader reader = ...
@@ -117,7 +132,14 @@ VCard vcard = ...
 String html = Ezvcard.writeHtml(vcard).go();
 }}}
 
-==Example 2.4: Writing to a file==
+==Example 2.4: Writing to a JSON string (jCard)==
+
+{{{
+VCard vcard = ...
+String json = Ezvcard.writeJson(vcard).go();
+}}}
+
+==Example 2.5: Writing to a file==
 
 {{{
 VCard vcard = ...
@@ -125,7 +147,7 @@ File file = new File("vcard.vcf");
 Ezvcard.write(vcard).go(file);
 }}}
 
-==Example 2.5: Writing to a `Writer`==
+==Example 2.6: Writing to a `Writer`==
 
 {{{
 VCard vcard = ...
@@ -134,7 +156,7 @@ Ezvcard.write(vcard).go(writer);
 writer.close();
 }}}
 
-==Example 2.6: Writing multiple vCards to the same stream==
+==Example 2.7: Writing multiple vCards to the same stream==
 
 {{{
 Collection<VCard> vcards = ...
@@ -170,7 +192,7 @@ vcard.addExtendedType("X-MS-MANAGER", "Michael Scott");
 {{{
 VCard vcard = ...
 GeoType geo = vcard.getGeo();
-Set<String> vacation = geo.getSubTypes().get("X-VACATION");
+List<String> vacation = geo.getSubTypes().get("X-VACATION");
 }}}
 
 ==Example 4.2: Setting an extended parameter==
@@ -190,7 +212,26 @@ VCard vcard = Ezvcard.parse(fromFile).first();
 Ezvcard.write(vcard).version(VCardVersion.V4_0).go(toFile);
 }}}
 
-==Exmaple 5.2: Creating a vCard==
+==Example 5.2: Creating alternative representations (ALTID parameter)==
+
+Properties that support alternative representations have special methods in the `VCard` class that allow you to add groups of alternative representation property instances.  These methods end in "Alt" and accept a collection of property objects.  An appropriate `ALTID` parameter value is automatically generated and assigned to the properties.
+
+{{{
+VCard vcard = new VCard();
+
+NoteType note1 = new NoteType("Hello world!");
+note1.setLanguage("en");
+
+NoteType note2 = new NoteType("Bonjour tout le monde!");
+note2.setLanguage("fr");
+
+NoteType note3 = new NoteType("Hallo Welt!");
+note3.setLanguage("de");
+
+vcard.addNoteAlt(note1, note2, note3);
+}}}
+
+==Example 5.3: Creating a vCard==
 
 The code below generates a complete vCard, encoding it in plain text and XML formats.
 
@@ -274,13 +315,24 @@ public class JohnDoeVCard {
 
     vcard.setRevision(RevisionType.now());
 
+	//write vCard
     file = new File("john-doe.vcf");
     writeVCard(vcard, file, VCardVersion.V3_0);
-
     System.out.println();
 
+	//write xCard
     file = new File("john-doe.xml");
     writeXCard(vcard, file);
+	System.out.println();
+	
+	//write hCard
+    file = new File("john-doe.html");
+    writeHCard(vcard, file);
+	System.out.println();
+
+	//write jCard
+    file = new File("john-doe.json");
+    writeJCard(vcard, file);
   }
 
   private static void writeVCard(VCard vcard, File file, VCardVersion version) throws IOException {
@@ -300,6 +352,24 @@ public class JohnDoeVCard {
 
     List<String> warnings = new ArrayList<String>();
     Ezvcard.writeXml(vcard).indent(2).warnings(warnings).go(file);
+
+    System.out.println("Completed with " + warnings.size() + " warnings.");
+    for (String warning : warnings) {
+      System.out.println("* " + warning);
+    }
+  }
+  
+  private static void writeHCard(VCard vcard, File file) throws IOException, TemplateException {
+    System.out.println("Writing " + file.getName() + "...");
+
+    Ezvcard.writeHtml(vcard).go(file);
+  }
+  
+  private static void writeJCard(VCard vcard, File file) throws IOException {
+    System.out.println("Writing " + file.getName() + "...");
+
+    List<String> warnings = new ArrayList<String>();
+    Ezvcard.writeJson(vcard).warnings(warnings).go(file);
 
     System.out.println("Completed with " + warnings.size() + " warnings.");
     for (String warning : warnings) {

@@ -1,5 +1,11 @@
 #summary Archive of all past news entries.
 
+*April 17, 2013*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.8.0] released.  This release adds *support for jCard* (JSON-encoded vCards).
+
+See the [Changelog changelog] for a complete list of changes.
+
 *March 29, 2013*
 
 [http://code.google.com/p/ez-vcard/downloads/list Version 0.7.3] released.  This release fixes an issue that prevented the `GEO` property from marshalling correctly under certain locales.

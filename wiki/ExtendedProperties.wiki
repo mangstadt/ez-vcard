@@ -1,10 +1,12 @@
 #summary Describes how to work with extended properties
 
+<wiki:toc max_depth="3"/>
+
 The vCard standard allows for "extended" properties to exist in a vCard.  An extended property is a custom property whose name starts with "X-" and is not part of the vCard specification.  Many email clients make use of extended properties to store additional data.
 
 || *Note:*<br><br>The terms "type" and "property" are equivalent and are used interchangeably throughout the documentation and API.  Both terms refer to a<br> vCard data entry, such as an email address or phone number. The 3.0 specs use the term "type", while the 2.1 and 4.0 specs use the term<br> "property".<br><br>Similarly, the terms "sub type" (from the 3.0 specs) and "parameter" (from the 2.1/4.0 specs) are equivalent.  They both refer to the<br> additional attributes that are attached to a type/property.||
 
-=Basic Usage=
+=1 Basic Usage=
 
 To retrieve extended properties from a [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html VCard] object, use the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getExtendedType(java.lang.String) getExtendedType(String)] method.  This will return a list of [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/RawType.html RawType] objects.  Use the [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/RawType.html#getValue() RawType.getValue()] method to retrieve the value of the extended property.
 
@@ -39,13 +41,15 @@ RawType type = vcard.addExtendedType("X-SPOUSE", "Jane Doe");
 type.getSubTypes().put("X-GENDER", "female");
 }}}
 
-=Creating an extended type class=
+=2 Creating an extended type class=
 
 In addition to using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/RawType.html RawType] class to get/set the value of an extended property, you can also can create an implementation of the [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/VCardType.html VCardType] class.  This is useful if the property value is in a format that requires some sort of special parsing.
 
-==Example==
+==2.1 Example==
 
 The `FavColorsType` class below demonstrates how to create such a class.
+
+Do not be alarmed as the size of the class.  Most methods do not require an implementation if you are only interested in a particular vCard format.  Methods that are required are labeled as "required" in the comments of the code sample below.
 
 {{{
 import ezvcard.*;
@@ -60,7 +64,7 @@ public class FavColorsType extends VCardType {
   private static final QName qname = new QName("http://fav-colors.net", "fav-colors");
   private List<String> favColors = new ArrayList<String>();
 
-  //default constructor required
+  //required: default constructor is required
   public FavColorsType(){
     super("X-FAV-COLORS");
   }
@@ -81,7 +85,7 @@ public class FavColorsType extends VCardType {
     subTypes.setLanguage(language);
   }
   
-  //modifies the property's parameters before the property is written
+  //required: modifies the property's parameters before the property is written
   @Override
   protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
     if (version == VCardVersion.V2_1){
@@ -89,7 +93,7 @@ public class FavColorsType extends VCardType {
     }
   }
 
-  //writes the property value to a plain-text vCard
+  //required: writes the property value to a plain-text vCard
   @Override
   protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
     if (!favColors.isEmpty()) {
@@ -152,6 +156,28 @@ public class FavColorsType extends VCardType {
     favColors.addAll(element.allValues("color")); //gets the hCard values of all descendant elements that have a CSS class named "color"
   }
   
+  //writes the property to a JSON stream
+  @Override
+  protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+    JCardValue value = new JCardValue();
+    value.setDataType(JCardDataType.TEXT);
+    for (String color : sanitizeColors(CompatibilityMode.RFC)){
+      value.addValues(color);
+    }
+    return value;
+  }
+
+  //parses the property value from a JSON stream
+  @Override
+  protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+    favColors.clear();
+    for (List<String> valueList : value.getValuesAsStrings()) {
+      if (!valueList.isEmpty()) {
+        favColors.add(valueList.get(0));
+      }
+    }
+  }
+  
   private List<String> sanitizeColors(CompatibilityMode compatibilityMode){
     List<String> colors = new ArrayList<String>(favColors.size());
     for (String color : favColors) {
@@ -169,17 +195,17 @@ public class FavColorsType extends VCardType {
 }
 }}}
 
-===Constructor===
+===2.1.1 Constructor===
 
 The constructor calls the parent class constructor, passing in the name of the property.  Extended property names MUST begin with "X-".  The extended property class *MUST define a public, no-arg constructor*.
 
-===doMarshalSubTypes===
+===2.1.2 doMarshalSubTypes===
 
-The `doMarshalSubTypes()` method allows the property's parameters (aka "sub types") to be tweaked before the property is marshalled.  Modifications can safely be made to the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCardSubTypes.html VCardSubTypes] object that is passed into the method because it is a _copy_ of the property's parameters.
+The `doMarshalSubTypes` method allows the property's parameters (aka "sub types") to be tweaked before the property is marshalled.  Modifications can safely be made to the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCardSubTypes.html VCardSubTypes] object that is passed into the method because it is a _copy_ of the property's parameters.
 
 In the above example, the "LANGUAGE" parameter is removed if the version of the generated vCard is 2.1.
 
-===doMarshalText===
+===2.1.3 doMarshalText===
 
 The `doMarshalText` method is used to write the property value to a plain-text vCard (the most common type of vCard).  This method is abstract and must be implemented.  The value is appended to the `StringBuilder` object that is passed into the method.
 
@@ -195,7 +221,7 @@ The `doMarshalText` method is used to write the property value to a plain-text v
 
 `X-FAV-COLORS;LANGUAGE=en:red,green,azure`
 
-===doUnmarshalText===
+===2.1.4 doUnmarshalText===
 
 The `doUnmarshalText` method is used to read the property value from a plain-text vCard (the most common type of vCard).  This method is abstract and must be implemented.  In the case of our `X-FAV-COLORS` property, the value is split by comma and saved to a `List` object.  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/VCardStringUtils.html#splitBy(java.lang.String,%20char,%20boolean,%20boolean) VCardStringUtils.splitBy()] method can be used to split such sequences because it takes escaped characters into account.
 
@@ -209,11 +235,11 @@ The property's parameters are parsed _before_ `doUnmarshalText()` is called.  Th
 
 *Compatibility modes:* The [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/CompatibilityMode.html CompatibilityMode] object defines what application generated the vCard and can be used to customize the unmarshalling of the property value.  It is set with the [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/VCardReader.html#getCompatibilityMode() VCardReader.setCompatibilityMode()] method.  Its default value is `CompatibilityMode.RFC`.  This functionality is deprecated and may be removed in the future.
 
-===getQName()===
+===2.1.5 getQName===
 
-The `getQName()` method is used for reading/writing xCards (XML-encoded vCards).  It defines the namespace and element name of the property's XML element.  If this method is not overridden, then the namespace will default to the xCard namespace and the element name will default to the property's type name, converted to lower-case.
+The `getQName` method is used for reading/writing xCards (XML-encoded vCards).  It defines the namespace and element name of the property's XML element.  If this method is not overridden, then the namespace will default to the xCard namespace and the element name will default to the property's type name, converted to lower-case.
 
-===doMarshalXml===
+===2.1.6 doMarshalXml===
 
 The `doMarshalXml` method is used to write the property to an XML document ("xCard").  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html XCardElement] object is the element which contains the vCard property.  It wraps a `org.w3c.dom.Element` object, adding xCard-specific functionality.  Since this is an extended property class, you will most likely want to work with the raw `org.w3c.dom.Element` object.  To retrieve this, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html#element() XCardElement.element()] method.
 
@@ -238,7 +264,7 @@ The `doMarshalXml` method is used to write the property to an XML document ("xCa
 </fav-colors>
 }}}
 
-===doUnmarshalXml===
+===2.1.7 doUnmarshalXml===
 
 The `doUnmarshalXml` method is used to parse a property from an XML document ("xCard").  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html XCardElement] object is the element which contains the vCard property.  It wraps a `org.w3c.dom.Element` object, adding xCard-specific functionality.  Since this is an extended property class, you will most likely want to work with the raw element object.  To retrieve this, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/XCardElement.html#element() XCardElement.element()] method.
 
@@ -250,9 +276,9 @@ The property's parameters (aka "sub types") are parsed before `doUnmarshalXml()`
 
 *Compatibility modes:* The [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/CompatibilityMode.html CompatibilityMode] object defines the application that generated the vCard and can be used to customize the parsing of the property value.  It is set with the [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/XCardReader.html#getCompatibilityMode() XCardReader.setCompatibilityMode()] method.  Its default value is `CompatibilityMode.RFC`.  This functionality is deprecated and may be removed in the future.
 
-===doUnmarshalHtml(HCardElement element, ...)===
+===2.1.8 doUnmarshalHtml===
 
-The `doUnmarshalHtml(HCardElement element, ...)` method is used to parse a property from an HTML document ("hCard").  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/HCardElement.html HCardElement] object is the HTML element that contains the vCard property.
+The `doUnmarshalHtml` method is used to parse a property from an HTML document ("hCard").  The [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/HCardElement.html HCardElement] object is the HTML element that contains the vCard property.
 
 Unlike plain-text and XML vCards, the vCard parameters of HTML-encoded properties cannot be parsed automatically.  They must be parsed from inside of this method.
 
@@ -260,9 +286,54 @@ Unlike plain-text and XML vCards, the vCard parameters of HTML-encoded propertie
 
 *!SkipMeException:* If it is determined that the property should NOT be unmarshalled into the resultant [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html VCard] object, a [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/SkipMeException.html SkipMeException] can be thrown.  This will prevent the reader from adding the property to the unmarshalled [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html VCard] object.  The exception message will be logged as a warning.  Warnings can be retrieved using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/HCardReader.html#getWarnings() HCardReader.getWarnings()] method.
 
-==Usage of extended type classes==
+===2.1.9 doMarshalJson===
 
-===Reading===
+The `doMarshalJson` method is used to write the property value to a JSON stream ("jCard").  The method returns a [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardValue.html JCardValue] object, which represents the property's value and data type in JSON form.
+
+The property's value is represented as a "list of lists".  This is necessary in order to support properties with structured values that have multi-valued components (such as `N` and `ADR`).  The list is made up of `Object` instances.  Primitive wrapper objects, such as `Integer` and `Boolean`, will be converted to their appropriate JSON data type.  All other objects will be passed into the JSON stream as strings (their `toString()` method will be invoked).  Null values will be converted to empty strings.
+
+Each jCard property also must have a data type.  The data type is represented by the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardDataType.html JCardDataType] class and can be set by calling [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardValue.html#setDataType(ezvcard.util.JCardDataType) JCardValue.setDataType()].
+
+*Examples:*
+
+{{{
+JCardValue value = new JCardValue();
+value.setDataType(JCardDataType.TEXT);
+value.addValues("one", 2, true);
+
+//yields: ["propName", {}, "text", "one", 2, true]
+}}}
+
+{{{
+JCardValue value = new JCardValue();
+value.setDataType(JCardDataType.INTEGER);
+value.setStructured(true);
+value.addValues(1, Arrays.asList(2, 3), 4);
+
+//yields: ["propName", {}, "integer", [1, [2, 3], 4]]
+}}}
+
+*Warnings:* Warning messages can be added to the `warnings` list if any non-critical problems occurred during the marshalling process.
+
+*!SkipMeException:* If it is determined that the property should NOT be included in the vCard, a [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/SkipMeException.html SkipMeException] can be thrown.  This exception will prevent the marshaller from adding the property to the final vCard string.  The exception message will be logged as a warning.  Warnings can be retrieved using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/JCardWriter.html#getWarnings() JCardWriter.getWarnings()] method.
+
+===2.1.10 doUnmarshalJson===
+
+The `doUnmarshalJson` method is used to read the property value from a JSON stream ("jCard").  The property value and data type are stored in the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardValue.html JCardValue] object.
+
+The property's value is represented as a "list of lists".  This is necessary in order to support properties with structured values that have multi-valued components (such as `N` and `ADR`).  The list is made up of `Object` instances.  JSON integers will be converted to `Long` objects, floating points to `Double`, booleans to `Boolean`, and strings to `String`.  Null values are converted to empty strings.
+
+The property's parameters are parsed _before_ `doUnmarshalJson()` is called.  They can be accessed from the protected [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/VCardType.html#subTypes VCard.subTypes] field.
+
+*Version*: The [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCardVersion.html VCardVersion] object defines the version of the vCard that is being parsed.  This will always be 4.0, as this is the only version supported by jCard currently.
+
+*Warnings:* Warning messages can be added to the `warnings` list if any non-critical problems occurred during the unmarshalling process.
+
+*!SkipMeException:* If it is determined that the property should NOT be unmarshalled into the `VCard` object, a [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/SkipMeException.html SkipMeException] can be thrown.  This will prevent the reader from adding the property to the unmarshalled [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html VCard] object.  The exception message will be logged as a warning.  Warnings can be retrieved using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/JCardReader.html#getWarnings() JCardReader.getWarnings()] method.
+
+==2.2 Usage of extended type classes==
+
+===2.2.1 Reading===
 
 Before a vCard is parsed, the extended property class must be registered with the reader object.  Then, once a vCard has been read, the instances of the extended property can be retrieved using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getExtendedType(java.lang.Class) VCard.getExtendedType(Class)] method.
 
@@ -286,7 +357,7 @@ reader.close();
 List<FavColorsType> favColorsTypes = vcard.getExtendedType(FavColorsType.class);
 }}}
 
-===Writing===
+===2.2.2 Writing===
 
 To add an instance of an extended property class to a vCard, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#addExtendedType(ezvcard.types.VCardType) VCard.addExtendedType(VCardType)] method.  No registration of the extended property class is required for writing.
 
