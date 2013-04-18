@@ -400,7 +400,7 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Writes a vCard
+	 * Writes a vCard to the stream.
 	 * @param vcard the vCard to write
 	 * @throws IOException if there's a problem writing to the output stream
 	 */

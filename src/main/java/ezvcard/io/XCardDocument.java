@@ -249,7 +249,7 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Adds a vCard to the XML document
+	 * Adds a vCard to the XML document.
 	 * @param vcard the vCard to add
 	 */
 	public void addVCard(VCard vcard) {
