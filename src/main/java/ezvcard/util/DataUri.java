@@ -45,9 +45,9 @@ import org.apache.commons.codec.binary.Base64;
  * @author Michael Angstadt
  */
 public class DataUri {
-	protected static final Pattern regex = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
-	protected byte[] data;
-	protected String contentType;
+	private static final Pattern regex = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
+	private byte[] data;
+	private String contentType;
 
 	/**
 	 * @param data the binary data

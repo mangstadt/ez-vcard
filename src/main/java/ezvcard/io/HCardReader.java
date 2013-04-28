@@ -71,17 +71,17 @@ import ezvcard.util.HtmlUtils;
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
 public class HCardReader implements IParser {
-	protected String pageUrl;
-	protected List<String> warnings = new ArrayList<String>();
-	protected Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
-	protected Elements vcardElements;
-	protected Iterator<Element> it;
-	protected List<LabelType> labels = new ArrayList<LabelType>();
-	protected List<String> warningsBuffer = new ArrayList<String>();
-	protected VCard curVCard;
-	protected Elements embeddedVCards = new Elements();
-	protected NicknameType nickname;
-	protected CategoriesType categories;
+	private String pageUrl;
+	private List<String> warnings = new ArrayList<String>();
+	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
+	private Elements vcardElements;
+	private Iterator<Element> it;
+	private List<LabelType> labels = new ArrayList<LabelType>();
+	private List<String> warningsBuffer = new ArrayList<String>();
+	private VCard curVCard;
+	private Elements embeddedVCards = new Elements();
+	private NicknameType nickname;
+	private CategoriesType categories;
 
 	/**
 	 * @param url the URL of the webpage
