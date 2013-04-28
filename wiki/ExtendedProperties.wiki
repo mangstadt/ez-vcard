@@ -85,7 +85,7 @@ public class FavColorsType extends VCardType {
     subTypes.setLanguage(language);
   }
   
-  //required: modifies the property's parameters before the property is written
+  //modifies the property's parameters before the property is written
   @Override
   protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
     if (version == VCardVersion.V2_1){
@@ -104,7 +104,7 @@ public class FavColorsType extends VCardType {
     }
   }
 
-  //parses the property's value from a plain-text vCard
+  //required: parses the property's value from a plain-text vCard
   @Override
   protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
     favColors.clear();
