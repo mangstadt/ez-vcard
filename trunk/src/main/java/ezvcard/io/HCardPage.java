@@ -59,7 +59,7 @@ import freemarker.template.TemplateException;
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
 public class HCardPage {
-	protected static final Template template;
+	private static final Template template;
 	static {
 		Configuration cfg = new Configuration();
 		cfg.setClassForTemplateLoading(HCardPage.class, "");
@@ -73,7 +73,7 @@ public class HCardPage {
 		}
 	}
 
-	protected final List<VCard> vcards = new ArrayList<VCard>();
+	private final List<VCard> vcards = new ArrayList<VCard>();
 
 	/**
 	 * Adds a vCard to the HTML page.
@@ -153,7 +153,7 @@ public class HCardPage {
 	 * @return the image
 	 * @throws IOException
 	 */
-	protected PhotoType readImage(String name, ImageTypeParameter mediaType) throws IOException {
+	private PhotoType readImage(String name, ImageTypeParameter mediaType) throws IOException {
 		return new PhotoType(getClass().getResourceAsStream(name), mediaType);
 	}
 

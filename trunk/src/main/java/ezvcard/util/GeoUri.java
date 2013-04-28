@@ -59,7 +59,7 @@ public class GeoUri {
 	 * The non-alphanumeric characters which are allowed to exist inside of a
 	 * parameter value.
 	 */
-	protected static final char validParamValueChars[] = "!$&'()*+-.:[]_~".toCharArray();
+	private static final char validParamValueChars[] = "!$&'()*+-.:[]_~".toCharArray();
 	static {
 		//make sure the array is sorted for binary search
 		Arrays.sort(validParamValueChars);
@@ -68,17 +68,17 @@ public class GeoUri {
 	/**
 	 * Finds hex values in a parameter value.
 	 */
-	protected static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
+	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
 
-	protected static final String PARAM_CRS = "crs";
-	protected static final String PARAM_UNCERTAINTY = "u";
+	private static final String PARAM_CRS = "crs";
+	private static final String PARAM_UNCERTAINTY = "u";
 
-	protected Double coordA;
-	protected Double coordB;
-	protected Double coordC;
-	protected String crs;
-	protected Double uncertainty;
-	protected Map<String, String> parameters = new LinkedHashMap<String, String>();
+	private Double coordA;
+	private Double coordB;
+	private Double coordC;
+	private String crs;
+	private Double uncertainty;
+	private Map<String, String> parameters = new LinkedHashMap<String, String>();
 
 	public GeoUri() {
 		//do nothing
@@ -344,11 +344,11 @@ public class GeoUri {
 		return sb.toString();
 	}
 
-	protected boolean isLabelText(String text) {
+	private boolean isLabelText(String text) {
 		return text.matches("(?i)[-a-z0-9]+");
 	}
 
-	protected String encodeParamValue(String value) {
+	private String encodeParamValue(String value) {
 		StringBuilder sb = new StringBuilder(value.length());
 		for (char c : value.toCharArray()) {
 			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || Arrays.binarySearch(validParamValueChars, c) >= 0) {
@@ -362,7 +362,7 @@ public class GeoUri {
 		return sb.toString();
 	}
 
-	protected String decodeParamValue(String value) {
+	private String decodeParamValue(String value) {
 		Matcher m = hexPattern.matcher(value);
 		StringBuffer sb = new StringBuffer();
 		while (m.find()) {
