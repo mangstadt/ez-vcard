@@ -2,7 +2,6 @@ package ezvcard.types;
 
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -15,6 +14,7 @@ import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
+import ezvcard.util.PartialDate;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -54,10 +54,9 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class DateOrTimeType extends VCardType implements HasAltId {
-	static final Pattern reducedAccuracyRegex = Pattern.compile("([-\\d]+T[-+:\\dZ]+)|([-\\d]+)|(T[-+:\\dZ]+)");
 	private String text;
 	private Date date;
-	private String reducedAccuracyDate;
+	private PartialDate partialDate;
 
 	/**
 	 * True if the "date" or "reduceAccuracyDate" fields have a time component,
@@ -82,6 +81,15 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	/**
+	 * @param typeName the name of the type (e.g. "BDAY")
+	 * @param partialDate the date value
+	 */
+	public DateOrTimeType(String typeName, PartialDate partialDate) {
+		super(typeName);
+		setPartialDate(partialDate);
+	}
+
+	/**
 	 * Gets the date value.
 	 * @return the date value or null if not set
 	 */
@@ -99,31 +107,37 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		this.date = date;
 		this.dateHasTime = dateHasTime;
 		text = null;
-		reducedAccuracyDate = null;
+		partialDate = null;
 	}
 
 	/**
-	 * Gets the reduced accuracy date string. This is only supported by vCard
-	 * 4.0.
-	 * @return the reduced accuracy date string or null if not set
+	 * Gets the reduced accuracy or truncated date. This is only supported by
+	 * vCard 4.0.
+	 * @return the reduced accuracy or truncated date or null if not set
 	 * @see "<a href="
 	 * http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.12-14 for examples"
 	 */
-	public String getReducedAccuracyDate() {
-		return reducedAccuracyDate;
+	public PartialDate getPartialDate() {
+		return partialDate;
 	}
 
 	/**
-	 * Sets the value of this type to a "reduced accuracy" date. This is only
-	 * supported by vCard 4.0.
-	 * @param reducedAccuracyDate the reduced accuracy date (e.g "--0210" for
-	 * "February 10")
+	 * <p>
+	 * Sets the value of this type to a reduced accuracy or truncated date. This
+	 * is only supported by vCard 4.0.
+	 * </p>
+	 * 
+	 * <pre>
+	 * BirthdayType bday = new BirthdayType();
+	 * bday.setPartialDate(PartialDate.date(null, 4, 20)); //April 20
+	 * </pre>
+	 * @param partialDate the reduced accuracy or truncated date
 	 * @see "<a href="
 	 * http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.12-14 for examples"
 	 */
-	public void setReducedAccuracyDate(String reducedAccuracyDate) {
-		this.reducedAccuracyDate = reducedAccuracyDate;
-		dateHasTime = reducedAccuracyDate.contains("T");
+	public void setPartialDate(PartialDate partialDate) {
+		this.partialDate = partialDate;
+		dateHasTime = partialDate.hasTimeComponent();
 		text = null;
 		date = null;
 	}
@@ -144,7 +158,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	public void setText(String text) {
 		this.text = text;
 		date = null;
-		reducedAccuracyDate = null;
+		partialDate = null;
 	}
 
 	/**
@@ -182,7 +196,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (version == VCardVersion.V4_0) {
-			if (date != null || reducedAccuracyDate != null) {
+			if (date != null || partialDate != null) {
 				copy.setValue(ValueParameter.DATE_AND_OR_TIME);
 				if (getCalscale() == null) {
 					copy.setCalscale(CalscaleParameter.GREGORIAN);
@@ -204,8 +218,8 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
 			if (text != null) {
 				throw new SkipMeException("Text values are not supported in vCard version " + version + ".");
-			} else if (reducedAccuracyDate != null) {
-				throw new SkipMeException("Reduced accuracy dates are not supported in vCard version " + version + ".");
+			} else if (partialDate != null) {
+				throw new SkipMeException("Reduced accuracy or truncated dates are not supported in vCard version " + version + ".");
 			} else if (date != null) {
 				ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
 				sb.append(VCardDateFormatter.format(date, format));
@@ -215,8 +229,8 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		} else {
 			if (text != null) {
 				sb.append(VCardStringUtils.escape(text));
-			} else if (reducedAccuracyDate != null) {
-				sb.append(reducedAccuracyDate);
+			} else if (partialDate != null) {
+				sb.append(partialDate.toDateAndOrTime(false));
 			} else if (date != null) {
 				ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
 				sb.append(VCardDateFormatter.format(date, format));
@@ -240,8 +254,8 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			parent.text(text);
-		} else if (reducedAccuracyDate != null) {
-			parent.dateAndOrTime(reducedAccuracyDate);
+		} else if (partialDate != null) {
+			parent.dateAndOrTime(partialDate.toDateAndOrTime(false));
 		} else if (date != null) {
 			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
 			String value = VCardDateFormatter.format(date, format);
@@ -283,9 +297,9 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		} else {
 			if (date != null) {
 				return dateHasTime ? JCardValue.dateTime(date) : JCardValue.date(date);
-			} else if (reducedAccuracyDate != null) {
+			} else if (partialDate != null) {
 				JCardValue value = dateHasTime ? JCardValue.dateTime() : JCardValue.date();
-				value.addValues(reducedAccuracyDate);
+				value.addValues(partialDate.toDateAndOrTime(true));
 				return value;
 			} else {
 				throw new SkipMeException("Property has no date, reduced accuracy date, or text value associated with it.");
@@ -309,9 +323,9 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 			setDate(VCardDateFormatter.parse(value), hasTime);
 		} catch (IllegalArgumentException e) {
 			if (version == VCardVersion.V4_0) {
-				if (reducedAccuracyRegex.matcher(value).matches()) {
-					setReducedAccuracyDate(value);
-				} else {
+				try {
+					setPartialDate(new PartialDate(value));
+				} catch (IllegalArgumentException e2) {
 					warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");
 					setText(value);
 				}
