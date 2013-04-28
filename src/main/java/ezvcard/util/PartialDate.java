@@ -568,6 +568,9 @@ public class PartialDate {
 					int group = i + 1;
 					String groupStr = m.group(group);
 					if (groupStr != null) {
+						if (groupStr.startsWith("+")) {
+							groupStr = groupStr.substring(1);
+						}
 						partialDate.components[index] = Integer.valueOf(groupStr);
 					}
 				}
