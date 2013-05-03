@@ -257,8 +257,11 @@ public class GenderType extends VCardType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		JCardValue value = JCardValue.text(gender, text);
-		value.setStructured(true);
+		JCardValue value = JCardValue.text(gender);
+		if (text != null) {
+			value.addValues(text);
+			value.setStructured(true);
+		}
 		return value;
 	}
 
