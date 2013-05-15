@@ -238,14 +238,14 @@ public class JCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType tel = it.next();
-			assertEquals("+1 555-555-1234", tel.getValue());
+			assertEquals("+1 555-555-1234", tel.getUri().getNumber());
 			assertEquals(2, tel.getTypes().size());
 			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.WORK));
 			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.VOICE));
 			assertEquals("foo", tel.getSubTypes().first("x-foo"));
 
 			tel = it.next();
-			assertEquals("+1 555-555-5678", tel.getValue());
+			assertEquals("+1 555-555-5678", tel.getUri().getNumber());
 			assertEquals(2, tel.getTypes().size());
 			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.HOME));
 			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.VOICE));

@@ -264,7 +264,13 @@
 											</#list>
 										</i>: 
 									</#if>
-									<span class="value">${tel.value}</span>
+									<span class="value">
+										<#if tel.uri??>
+											${tel.uri.number}<#if tel.uri.extension??> x${tel.uri.extension}</#if>
+										<#elseif tel.text??>
+											${tel.text}
+										</#if>
+									</span>
 								</div>
 							</#list>
 						</div>

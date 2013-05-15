@@ -25,6 +25,7 @@ import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
+import ezvcard.util.TelUri;
 import ezvcard.util.XCardElement;
 
 /*
@@ -64,9 +65,15 @@ public class TelephoneTypeTest {
 	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	final VCardSubTypes subTypes = new VCardSubTypes();
 	final VCard vcard = new VCard();
-	final String number = "+1 555-555-1234";
+	final String number = "+1-555-555-1234";
+	final String numberWithExt = "+1-555-555-1234 x101";
 	final String uri = "tel:" + number;
-	final TelephoneType marshalObj = new TelephoneType(number);
+	final String uriWithExt = uri + ";ext=101";
+	final TelephoneType marshalObjText = new TelephoneType(number);
+	final TelephoneType marshalObjUri = new TelephoneType(TelUri.global(number));
+	{
+		marshalObjUri.getUri().setExtension("101");
+	}
 	TelephoneType unmarshalObj;
 
 	@Before
@@ -76,27 +83,54 @@ public class TelephoneTypeTest {
 	}
 
 	@Test
-	public void marshalSubTypes_2_1() {
+	public void marshalSubTypes_2_1_text() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = marshalObj.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = marshalObjText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalSubTypes_3_0() {
+	public void marshalSubTypes_2_1_uri() {
+		VCardVersion version = VCardVersion.V2_1;
+		VCardSubTypes subTypes = marshalObjUri.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+
+		assertEquals(0, subTypes.size());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalSubTypes_3_0_text() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = marshalObj.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = marshalObjText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalSubTypes_4_0() {
+	public void marshalSubTypes_3_0_uri() {
+		VCardVersion version = VCardVersion.V3_0;
+		VCardSubTypes subTypes = marshalObjUri.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+
+		assertEquals(0, subTypes.size());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalSubTypes_4_0_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = marshalObj.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = marshalObjText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+
+		assertEquals(0, subTypes.size());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalSubTypes_4_0_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		VCardSubTypes subTypes = marshalObjUri.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
@@ -148,8 +182,7 @@ public class TelephoneTypeTest {
 		tel.addType(TelephoneTypeParameter.PREF);
 		VCardSubTypes subTypes = tel.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 
-		assertEquals(2, subTypes.size());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(1, subTypes.size());
 		assertEquals(Integer.valueOf(1), subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
 		assertEquals(0, warnings.size());
@@ -235,8 +268,7 @@ public class TelephoneTypeTest {
 
 		version = VCardVersion.V4_0;
 		VCardSubTypes subTypes = tel1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(2, subTypes.size());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(1, subTypes.size());
 		assertEquals(Integer.valueOf(1), subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
 		assertEquals(0, warnings.size());
@@ -244,65 +276,105 @@ public class TelephoneTypeTest {
 		warnings.clear();
 
 		subTypes = tel2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(2, subTypes.size());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(1, subTypes.size());
 		assertEquals(Integer.valueOf(2), subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalText_2_1() {
+	public void marshalText_2_1_text() {
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = marshalObj.marshalText(version, warnings, compatibilityMode);
+		String actual = marshalObjText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(number, actual);
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalText_3_0() {
+	public void marshalText_2_1_uri() {
+		VCardVersion version = VCardVersion.V2_1;
+		String actual = marshalObjUri.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(numberWithExt, actual);
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void marshalText_3_0_text() {
 		VCardVersion version = VCardVersion.V3_0;
-		String actual = marshalObj.marshalText(version, warnings, compatibilityMode);
+		String actual = marshalObjText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(number, actual);
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalText_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		String actual = marshalObj.marshalText(version, warnings, compatibilityMode);
+	public void marshalText_3_0_uri() {
+		VCardVersion version = VCardVersion.V3_0;
+		String actual = marshalObjUri.marshalText(version, warnings, compatibilityMode);
 
-		assertEquals(uri, actual);
+		assertEquals(numberWithExt, actual);
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void marshalText_4_0_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = marshalObjText.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(number, actual);
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalXml() {
+	public void marshalText_4_0_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		String actual = marshalObjUri.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(uriWithExt, actual);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.text(number);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TelephoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		marshalObj.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		marshalObjText.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void marshalJson() {
+	public void marshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = marshalObj.marshalJson(version, warnings);
-		assertEquals(JCardDataType.URI, value.getDataType());
+		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
+		xe.uri(uriWithExt);
+		Document expectedDoc = xe.document();
+		xe = new XCardElement(TelephoneType.NAME.toLowerCase());
+		Document actualDoc = xe.document();
+		marshalObjUri.marshalXml(xe.element(), version, warnings, compatibilityMode);
+
+		assertXMLEqual(expectedDoc, actualDoc);
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void marshalJson_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = marshalObjText.marshalJson(version, warnings);
+		assertEquals(JCardDataType.TEXT, value.getDataType());
 		assertFalse(value.isStructured());
 
 		//@formatter:off
 		@SuppressWarnings("unchecked")
 		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ uri })
+			Arrays.asList(new Object[]{ number })
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
@@ -310,41 +382,128 @@ public class TelephoneTypeTest {
 	}
 
 	@Test
-	public void unmarshalText_2_1() {
+	public void marshalJson_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = marshalObjUri.marshalJson(version, warnings);
+		assertEquals(JCardDataType.URI, value.getDataType());
+		assertFalse(value.isStructured());
+
+		//@formatter:off
+		@SuppressWarnings("unchecked")
+		List<List<Object>> expectedValues = Arrays.asList(
+			Arrays.asList(new Object[]{ uriWithExt })
+		);
+		//@formatter:on
+		assertEquals(expectedValues, value.getValues());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_2_1_text() {
 		VCardVersion version = VCardVersion.V2_1;
 		unmarshalObj.unmarshalText(subTypes, number, version, warnings, compatibilityMode);
 
-		assertEquals(number, unmarshalObj.getValue());
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshalText_3_0() {
+	public void unmarshalText_2_1_uri() {
+		VCardVersion version = VCardVersion.V2_1;
+		unmarshalObj.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
+
+		assertEquals(uri, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_3_0_text() {
 		VCardVersion version = VCardVersion.V3_0;
 		unmarshalObj.unmarshalText(subTypes, number, version, warnings, compatibilityMode);
 
-		assertEquals(number, unmarshalObj.getValue());
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshalText_4_0() {
+	public void unmarshalText_3_0_uri() {
+		VCardVersion version = VCardVersion.V3_0;
+		unmarshalObj.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
+
+		assertEquals(uri, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_4_0_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		unmarshalObj.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
 
-		assertEquals(number, unmarshalObj.getValue());
+		assertEquals(uri, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshalXml() {
+	public void unmarshalText_4_0_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		subTypes.setValue(ValueParameter.URI);
+		unmarshalObj.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
+
+		assertNull(unmarshalObj.getText());
+		assertEquals(number, unmarshalObj.getUri().getNumber());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalText_4_0_uri_invalid() {
+		VCardVersion version = VCardVersion.V4_0;
+		subTypes.setValue(ValueParameter.URI);
+		unmarshalObj.unmarshalText(subTypes, number, version, warnings, compatibilityMode);
+
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_text() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
+		xe.text(number);
+		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
 		xe.uri(uri);
 		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
-		assertEquals(number, unmarshalObj.getValue());
+		assertNull(unmarshalObj.getText());
+		assertEquals(number, unmarshalObj.getUri().getNumber());
 		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalXml_uri_invalid() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
+		xe.uri(number);
+		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
+		assertEquals(1, warnings.size());
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -368,7 +527,8 @@ public class TelephoneTypeTest {
 
 		unmarshalObj.unmarshalHtml(element, warnings);
 
-		assertEquals(number, unmarshalObj.getValue());
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
 
 		assertEquals(3, unmarshalObj.getSubTypes().size());
 		Set<TelephoneTypeParameter> types = unmarshalObj.getTypes();
@@ -387,7 +547,8 @@ public class TelephoneTypeTest {
 		unmarshalObj.unmarshalHtml(element, warnings);
 
 		assertEquals(0, unmarshalObj.getSubTypes().size());
-		assertEquals(number, unmarshalObj.getValue());
+		assertEquals(number, unmarshalObj.getUri().getNumber());
+		assertNull(unmarshalObj.getText());
 		assertEquals(0, warnings.size());
 	}
 
@@ -397,12 +558,29 @@ public class TelephoneTypeTest {
 
 		unmarshalObj.unmarshalHtml(element, warnings);
 
-		assertEquals(number, unmarshalObj.getValue());
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
 		assertEquals(0, warnings.size());
 	}
 
 	@Test
-	public void unmarshalJson() {
+	public void unmarshalJson_text() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.TEXT);
+		value.addValues(number);
+
+		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(0, unmarshalObj.getSubTypes().size());
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
+		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 
 		JCardValue value = new JCardValue();
@@ -412,7 +590,24 @@ public class TelephoneTypeTest {
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(0, unmarshalObj.getSubTypes().size());
-		assertEquals(number, unmarshalObj.getValue());
+		assertNull(unmarshalObj.getText());
+		assertEquals(number, unmarshalObj.getUri().getNumber());
 		assertEquals(0, warnings.size());
+	}
+
+	@Test
+	public void unmarshalJson_uri_invalid() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		JCardValue value = new JCardValue();
+		value.setDataType(JCardDataType.URI);
+		value.addValues(number);
+
+		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(0, unmarshalObj.getSubTypes().size());
+		assertEquals(number, unmarshalObj.getText());
+		assertNull(unmarshalObj.getUri());
+		assertEquals(1, warnings.size());
 	}
 }

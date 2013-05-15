@@ -191,7 +191,7 @@ public class XCardReaderTest {
 		Iterator<TelephoneType> telIt = vcard.getTelephoneNumbers().iterator();
 
 		TelephoneType tel = telIt.next();
-		assertEquals("+1-555-555-1234", tel.getValue());
+		assertEquals("+1-555-555-1234", tel.getUri().getNumber());
 		assertEquals(2, tel.getSubTypes().size());
 		assertEquals(2, tel.getTypes().size());
 		assertTrue(tel.getTypes().contains(TelephoneTypeParameter.WORK));
