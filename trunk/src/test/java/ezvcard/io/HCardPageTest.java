@@ -46,6 +46,7 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
+import ezvcard.util.TelUri;
 import freemarker.template.TemplateException;
 
 /*
@@ -319,7 +320,16 @@ public class HCardPageTest {
 		for (int i = 0; i < expected.getTelephoneNumbers().size(); i++) {
 			TelephoneType e = expected.getTelephoneNumbers().get(i);
 			TelephoneType a = actual.getTelephoneNumbers().get(i);
-			assertEquals(e.getValue(), a.getValue());
+			if (e.getText() != null) {
+				assertEquals(e.getText(), a.getText());
+			} else {
+				TelUri uri = e.getUri();
+				if (uri.getExtension() == null) {
+					assertEquals(e.getUri().getNumber(), a.getText());
+				} else {
+					assertEquals(e.getUri().getNumber() + " x" + uri.getExtension(), a.getText());
+				}
+			}
 			assertEquals(e.getTypes(), a.getTypes());
 		}
 
@@ -397,10 +407,11 @@ public class HCardPageTest {
 		email.addType(EmailTypeParameter.WORK);
 		vcard.addEmail(email);
 
-		TelephoneType tel = new TelephoneType("(555) 222-3333");
+		TelephoneType tel = new TelephoneType(TelUri.global("+1-555-222-3333"));
+		tel.getUri().setExtension("101");
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType("(555) 333-4444");
+		tel = new TelephoneType(TelUri.global("+1-555-333-4444"));
 		tel.addType(TelephoneTypeParameter.WORK);
 		vcard.addTelephoneNumber(tel);
 

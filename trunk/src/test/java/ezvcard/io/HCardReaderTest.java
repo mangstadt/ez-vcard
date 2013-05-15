@@ -193,7 +193,7 @@ public class HCardReaderTest {
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals("http://johndoe.com", vcard.getUrls().get(0).getValue());
-		assertEquals("(555) 555-1234", vcard.getTelephoneNumbers().get(0).getValue());
+		assertEquals("(555) 555-1234", vcard.getTelephoneNumbers().get(0).getText());
 
 		assertNull(reader.readNext());
 	}
@@ -382,7 +382,7 @@ public class HCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType tel = it.next();
-			assertEquals("+15555551234", tel.getValue());
+			assertEquals("+15555551234", tel.getUri().getNumber());
 
 			assertFalse(it.hasNext());
 		}
@@ -458,7 +458,7 @@ public class HCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType tel = it.next();
-			assertEquals("+15555551234", tel.getValue());
+			assertEquals("+15555551234", tel.getUri().getNumber());
 
 			assertFalse(it.hasNext());
 		}
@@ -693,12 +693,12 @@ public class HCardReaderTest {
 			TelephoneType tel = it.next();
 			assertEquals(1, tel.getTypes().size());
 			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.WORK));
-			assertEquals("+1-650-289-4040", tel.getValue());
+			assertEquals("+1-650-289-4040", tel.getText());
 
 			tel = it.next();
 			assertEquals(1, tel.getTypes().size());
 			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.FAX));
-			assertEquals("+1-650-289-4041", tel.getValue());
+			assertEquals("+1-650-289-4041", tel.getText());
 
 			assertFalse(it.hasNext());
 		}

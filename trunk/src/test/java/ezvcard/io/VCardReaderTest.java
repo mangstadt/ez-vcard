@@ -442,14 +442,14 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType t = it.next();
-			assertEquals("905-666-1234", t.getValue());
+			assertEquals("905-666-1234", t.getText());
 			Set<TelephoneTypeParameter> types = t.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
 			assertEquals("c2fa1caa-2926-4087-8971-609cfc7354ce", t.getSubTypes().first("X-COUCHDB-UUID"));
 
 			t = it.next();
-			assertEquals("905-555-1234", t.getValue());
+			assertEquals("905-555-1234", t.getText());
 			types = t.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
@@ -674,13 +674,13 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType f = it.next();
-			assertEquals("905-555-1234", f.getValue());
+			assertEquals("905-555-1234", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
 
 			f = it.next();
-			assertEquals("905-666-1234", f.getValue());
+			assertEquals("905-666-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
@@ -945,14 +945,14 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType f = it.next();
-			assertEquals("555 555 1111", f.getValue());
+			assertEquals("555 555 1111", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
 
 			f = it.next();
 			assertEquals("item1", f.getGroup());
-			assertEquals("555 555 2222", f.getValue());
+			assertEquals("555 555 2222", f.getText());
 			types = f.getTypes();
 			assertTrue(types.isEmpty());
 
@@ -1173,7 +1173,7 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType f = it.next();
-			assertEquals("905-555-1234", f.getValue());
+			assertEquals("905-555-1234", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(3, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
@@ -1181,41 +1181,41 @@ public class VCardReaderTest {
 			assertTrue(types.contains(TelephoneTypeParameter.PREF));
 
 			f = it.next();
-			assertEquals("905-666-1234", f.getValue());
+			assertEquals("905-666-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("905-777-1234", f.getValue());
+			assertEquals("905-777-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("905-888-1234", f.getValue());
+			assertEquals("905-888-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
 			assertTrue(types.contains(TelephoneTypeParameter.FAX));
 
 			f = it.next();
-			assertEquals("905-999-1234", f.getValue());
+			assertEquals("905-999-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.FAX));
 
 			f = it.next();
-			assertEquals("905-111-1234", f.getValue());
+			assertEquals("905-111-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.PAGER));
 
 			f = it.next();
-			assertEquals("905-222-1234", f.getValue());
+			assertEquals("905-222-1234", f.getText());
 			assertEquals("item2", f.getGroup());
 			types = f.getTypes();
 			assertEquals(0, types.size());
@@ -1396,7 +1396,7 @@ public class VCardReaderTest {
 		{
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 			TelephoneType f = it.next();
-			assertEquals("+1 (212) 204-34456", f.getValue());
+			assertEquals("+1 (212) 204-34456", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(3, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
@@ -1404,7 +1404,7 @@ public class VCardReaderTest {
 			assertTrue(types.contains(TelephoneTypeParameter.PREF));
 
 			f = it.next();
-			assertEquals("00-1-212-555-7777", f.getValue());
+			assertEquals("00-1-212-555-7777", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
@@ -1652,14 +1652,14 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 			TelephoneType f = it.next();
 
-			assertEquals("(905) 555-1234", f.getValue());
+			assertEquals("(905) 555-1234", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("(905) 666-1234", f.getValue());
+			assertEquals("(905) 666-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
@@ -1874,28 +1874,28 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 			TelephoneType f = it.next();
 
-			assertEquals("(111) 555-1111", f.getValue());
+			assertEquals("(111) 555-1111", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("(111) 555-2222", f.getValue());
+			assertEquals("(111) 555-2222", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("(111) 555-4444", f.getValue());
+			assertEquals("(111) 555-4444", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("(111) 555-3333", f.getValue());
+			assertEquals("(111) 555-3333", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.FAX));
@@ -2140,46 +2140,46 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType f = it.next();
-			assertEquals("905-777-1234", f.getValue());
+			assertEquals("905-777-1234", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.PREF));
 
 			f = it.next();
-			assertEquals("905-666-1234", f.getValue());
+			assertEquals("905-666-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
 
 			f = it.next();
-			assertEquals("905-555-1234", f.getValue());
+			assertEquals("905-555-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
 
 			f = it.next();
-			assertEquals("905-888-1234", f.getValue());
+			assertEquals("905-888-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
 			assertTrue(types.contains(TelephoneTypeParameter.FAX));
 
 			f = it.next();
-			assertEquals("905-999-1234", f.getValue());
+			assertEquals("905-999-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.FAX));
 
 			f = it.next();
-			assertEquals("905-111-1234", f.getValue());
+			assertEquals("905-111-1234", f.getText());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.PAGER));
 
 			f = it.next();
-			assertEquals("905-222-1234", f.getValue());
+			assertEquals("905-222-1234", f.getText());
 			assertEquals("item1", f.getGroup());
 			types = f.getTypes();
 			assertEquals(0, types.size());
@@ -2381,28 +2381,28 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 			TelephoneType f = it.next();
 
-			assertEquals("BusinessPhone", f.getValue());
+			assertEquals("BusinessPhone", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("HomePhone", f.getValue());
+			assertEquals("HomePhone", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("MobilePhone", f.getValue());
+			assertEquals("MobilePhone", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("BusinessFaxPhone", f.getValue());
+			assertEquals("BusinessFaxPhone", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.FAX));
@@ -2597,34 +2597,34 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType f = it.next();
-			assertEquals("555-555-1111", f.getValue());
+			assertEquals("555-555-1111", f.getText());
 			Set<TelephoneTypeParameter> types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.WORK));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("555-555-2222", f.getValue());
+			assertEquals("555-555-2222", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.HOME));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("555-555-5555", f.getValue());
+			assertEquals("555-555-5555", f.getText());
 			types = f.getTypes();
 			assertEquals(2, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.CELL));
 			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
 
 			f = it.next();
-			assertEquals("555-555-3333", f.getValue());
+			assertEquals("555-555-3333", f.getText());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.FAX));
 
 			f = it.next();
-			assertEquals("555-555-4444", f.getValue());
+			assertEquals("555-555-4444", f.getText());
 			types = f.getTypes();
 			assertEquals(1, types.size());
 			assertTrue(types.contains(TelephoneTypeParameter.PAGER));
