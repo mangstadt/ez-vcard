@@ -7,6 +7,9 @@
 	<name>ez-vcard</name>
 	<url>http://code.google.com/p/ez-vcard</url>
 	<inceptionYear>2012</inceptionYear>
+	<organization>
+		<name>Michael Angstadt</name>
+	</organization>
 	<description>A vCard library that reads and writes vCards, supporting all versions of the vCard standard (2.1, 3.0, and 4.0) as well as the xCard standard (an XML representation for vCards).</description>
 
 	<parent>
