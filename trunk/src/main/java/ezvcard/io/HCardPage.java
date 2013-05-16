@@ -86,10 +86,8 @@ public class HCardPage {
 	/**
 	 * Writes the HTML document to a string.
 	 * @return the HTML document
-	 * @throws TemplateException if there's a problem with the freemarker
-	 * template
 	 */
-	public String write() throws TemplateException {
+	public String write() {
 		StringWriter sw = new StringWriter();
 		try {
 			write(sw);
@@ -103,10 +101,8 @@ public class HCardPage {
 	 * Writes the HTML document to an output stream.
 	 * @param out the output stream
 	 * @throws IOException if there's a problem writing to the output stream
-	 * @throws TemplateException if there's a problem with the freemarker
-	 * template
 	 */
-	public void write(OutputStream out) throws IOException, TemplateException {
+	public void write(OutputStream out) throws IOException {
 		write(new OutputStreamWriter(out));
 	}
 
@@ -114,10 +110,8 @@ public class HCardPage {
 	 * Writes the HTML document to a file.
 	 * @param file the file
 	 * @throws IOException if there's a problem writing to the file
-	 * @throws TemplateException if there's a problem with the freemarker
-	 * template
 	 */
-	public void write(File file) throws IOException, TemplateException {
+	public void write(File file) throws IOException {
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(file);
@@ -131,10 +125,8 @@ public class HCardPage {
 	 * Writes the HTML document to a writer.
 	 * @param writer the writer
 	 * @throws IOException if there's a problem writing to the writer
-	 * @throws TemplateException if there's a problem with the freemarker
-	 * template
 	 */
-	public void write(Writer writer) throws IOException, TemplateException {
+	public void write(Writer writer) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("vcards", vcards);
 		map.put("dataUri", new DataUriGenerator());
@@ -142,7 +134,12 @@ public class HCardPage {
 		map.put("noProfile", readImage("no-profile.png", ImageTypeParameter.PNG));
 		map.put("ezVCardVersion", Ezvcard.VERSION);
 		map.put("ezVCardUrl", Ezvcard.URL);
-		template.process(map, writer);
+		try {
+			template.process(map, writer);
+		} catch (TemplateException e) {
+			//this should never be thrown because we're always using the same template (it is hard-coded and cannot be changed by the user)
+			throw new RuntimeException(e);
+		}
 		writer.flush();
 	}
 

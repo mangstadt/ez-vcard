@@ -35,7 +35,6 @@ import ezvcard.io.XCardDocument;
 import ezvcard.io.XCardReader;
 import ezvcard.types.VCardType;
 import ezvcard.util.IOUtils;
-import freemarker.template.TemplateException;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -1628,10 +1627,8 @@ public class Ezvcard {
 		/**
 		 * Writes the hCards to a string.
 		 * @return the HTML page
-		 * @throws TemplateException if there's a problem with the freemarker
-		 * template
 		 */
-		public String go() throws TemplateException {
+		public String go() {
 			StringWriter sw = new StringWriter();
 			try {
 				go(sw);
@@ -1645,10 +1642,8 @@ public class Ezvcard {
 		 * Writes the hCards to an output stream.
 		 * @param out the output stream to write to
 		 * @throws IOException if there's a problem writing to the output stream
-		 * @throws TemplateException if there's a problem with the freemarker
-		 * template
 		 */
-		public void go(OutputStream out) throws IOException, TemplateException {
+		public void go(OutputStream out) throws IOException {
 			go(new OutputStreamWriter(out));
 		}
 
@@ -1656,10 +1651,8 @@ public class Ezvcard {
 		 * Writes the hCards to a file.
 		 * @param file the file to write to
 		 * @throws IOException if there's a problem writing to the file
-		 * @throws TemplateException if there's a problem with the freemarker
-		 * template
 		 */
-		public void go(File file) throws IOException, TemplateException {
+		public void go(File file) throws IOException {
 			FileWriter writer = null;
 			try {
 				writer = new FileWriter(file);
@@ -1673,10 +1666,8 @@ public class Ezvcard {
 		 * Writes the hCards to a writer.
 		 * @param writer the writer to write to
 		 * @throws IOException if there's a problem writing to the writer
-		 * @throws TemplateException if there's a problem with the freemarker
-		 * template
 		 */
-		public void go(Writer writer) throws IOException, TemplateException {
+		public void go(Writer writer) throws IOException {
 			HCardPage page = new HCardPage();
 			for (VCard vcard : vcards) {
 				page.addVCard(vcard);
