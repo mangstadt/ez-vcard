@@ -267,6 +267,7 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
+		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
 	}
 
 	@Test
@@ -294,6 +295,7 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
+		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
 	}
 
 	@Test
@@ -320,6 +322,7 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
+		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
 	}
 
 	@Test
@@ -347,6 +350,66 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
+		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
+	}
+
+	@Test
+	public void write_no_data_type() throws Exception {
+		JCardValue value = new JCardValue();
+		value.addValues("test");
+		VCard vcard = new VCard();
+		vcard.addExtendedType(new TypeForTesting(value));
+
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+
+		//should default to "text"
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"x-type\",{},\"text\",\"test\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
+	}
+
+	//should default to "text"
+	@Test
+	public void write_null_data_type() throws Exception {
+		JCardValue value = new JCardValue();
+		value.addValues("test");
+		value.setDataType(null);
+		VCard vcard = new VCard();
+		vcard.addExtendedType(new TypeForTesting(value));
+
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcardstream\"," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"x-type\",{},\"text\",\"test\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+		assertEquals(2, writer.getWarnings().size()); //missing "FN" property, "null" data type
 	}
 
 	private static class TypeForTesting extends VCardType {
