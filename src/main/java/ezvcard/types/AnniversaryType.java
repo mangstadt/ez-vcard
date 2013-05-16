@@ -54,7 +54,7 @@ import ezvcard.VCardVersion;
  * 
  * //reduced accuracy date (see RFC 6350 p.12-14 for examples)
  * anniversary = new AnniversaryType();
- * anniversary.setReducedAccuracyDate(&quot;--0321&quot;); //March 21
+ * anniversary.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
  * vcard.setAnniversary(anniversary);
  * 
  * //plain text value
@@ -73,8 +73,10 @@ import ezvcard.VCardVersion;
  * if (anniversary != null){
  *   if (anniversary.getDate() != null){
  *     System.out.println(anniversary.getDate());
- *   } else if (anniversary.getReducedAccuracyDate() != null){
- *     System.out.println(anniversary.getReducedAccuracyDate());
+ *   } else if (anniversary.getPartialDate() != null){
+ *     System.out.println("Year: " + anniversary.getPartialDate().getYear());
+ *     System.out.println("Month: " + anniversary.getPartialDate().getMonth());
+ *     //...
  *   } else if (anniversary.getText() != null){
  *     System.out.println(anniversary.getText());
  *   }
