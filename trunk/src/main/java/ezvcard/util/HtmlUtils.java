@@ -74,4 +74,8 @@ public class HtmlUtils {
 		Document d = (baseUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, baseUrl);
 		return d.getElementsByTag("body").first().children().first();
 	}
+
+	private HtmlUtils() {
+		//hide
+	}
 }
