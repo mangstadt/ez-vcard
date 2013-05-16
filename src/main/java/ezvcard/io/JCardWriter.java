@@ -214,7 +214,7 @@ public class JCardWriter implements Closeable {
 				warnings.add(type.getTypeName() + " property does not have a jCard data type associated with it.  Defaulting to \"text\".");
 				dataType = JCardDataType.TEXT;
 			}
-			jg.writeString(value.getDataType().toString());
+			jg.writeString(dataType.toString());
 
 			//write value
 			if (value.isStructured()) {
