@@ -305,8 +305,8 @@ public class XCardReader implements IParser {
 			try {
 				return clazz.newInstance();
 			} catch (Exception e) {
-				//it is the responsibility of the EZ-vCard developer to ensure that this exception is never thrown
-				//all type classes defined in the EZ-vCard library MUST have public, no-arg constructors
+				//it is the responsibility of the ez-vcard developer to ensure that this exception is never thrown
+				//all type classes defined in the ez-vcard library MUST have public, no-arg constructors
 				throw new RuntimeException(e);
 			}
 		} else {
