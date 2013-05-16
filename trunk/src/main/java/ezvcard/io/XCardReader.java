@@ -383,7 +383,7 @@ public class XCardReader implements IParser {
 
 		//@Override
 		public String getNamespaceURI(String prefix) {
-			if (prefix.equals(prefix)) {
+			if (prefix != null && prefix.equals(this.prefix)) {
 				return ns;
 			}
 			return null;
@@ -391,7 +391,7 @@ public class XCardReader implements IParser {
 
 		//@Override
 		public String getPrefix(String ns) {
-			if (ns.equals(this.ns)) {
+			if (ns != null && ns.equals(this.ns)) {
 				return prefix;
 			}
 			return null;
