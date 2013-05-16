@@ -3,13 +3,9 @@ package ezvcard.types;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import ezvcard.VCardSubTypes;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.util.DataUri;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -118,7 +114,7 @@ import ezvcard.util.HCardElement;
  * </p>
  * @author Michael Angstadt
  */
-public class LogoType extends BinaryType<ImageTypeParameter> {
+public class LogoType extends ImageType {
 	public static final String NAME = "LOGO";
 
 	public LogoType() {
@@ -175,52 +171,5 @@ public class LogoType extends BinaryType<ImageTypeParameter> {
 	 */
 	public void setLanguage(String language) {
 		subTypes.setLanguage(language);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String elementName = element.tagName();
-		if ("img".equals(elementName)) {
-			String src = element.absUrl("src");
-			if (src.length() > 0) {
-				try {
-					DataUri uri = new DataUri(src);
-					ImageTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
-					setData(uri.getData(), mediaType);
-				} catch (IllegalArgumentException e) {
-					//TODO create buildTypeObjFromExtension() method
-					setUrl(src, null);
-				}
-			} else {
-				throw new SkipMeException("<img> tag does not have a \"src\" attribute.");
-			}
-		} else {
-			super.doUnmarshalHtml(element, warnings);
-		}
-	}
-
-	@Override
-	protected ImageTypeParameter buildTypeObj(String type) {
-		ImageTypeParameter param = ImageTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new ImageTypeParameter(type, "image/" + type, null);
-		}
-		return param;
-	}
-
-	@Override
-	protected ImageTypeParameter buildMediaTypeObj(String mediaType) {
-		ImageTypeParameter p = ImageTypeParameter.findByMediaType(mediaType);
-		if (p == null) {
-			int slashPos = mediaType.indexOf('/');
-			String type;
-			if (slashPos == -1 || slashPos < mediaType.length() - 1) {
-				type = "";
-			} else {
-				type = mediaType.substring(slashPos + 1);
-			}
-			p = new ImageTypeParameter(type, mediaType, null);
-		}
-		return p;
 	}
 }
