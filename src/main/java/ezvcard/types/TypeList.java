@@ -200,4 +200,8 @@ public class TypeList {
 	public static Method getAddMethod(Class<? extends VCardType> typeClass) {
 		return typeClassToAddMethod.get(typeClass);
 	}
+
+	private TypeList() {
+		//hide
+	}
 }

@@ -98,4 +98,8 @@ public class IOUtils {
 			//ignore
 		}
 	}
+
+	private IOUtils() {
+		//hide
+	}
 }
