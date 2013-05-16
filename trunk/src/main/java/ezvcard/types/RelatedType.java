@@ -67,7 +67,7 @@ import ezvcard.util.XCardElement;
  * 
  * related = new RelatedType();
  * related.addType(RelatedTypeParameter.SPOUSE);
- * related.setText(&quot;My wife's name is Edna Smith&quot;);
+ * related.setText(&quot;Edna Smith&quot;);
  * vcard.addRelated(related);
  * </pre>
  * 
