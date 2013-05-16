@@ -137,7 +137,7 @@ public class HCardElement {
 	}
 
 	/**
-	 * Gets all type values (e.g. "home" and "cell" for the "tel" type).
+	 * Gets all type values (for example, "home" and "cell" for the "tel" type).
 	 * @return the type values (in lower-case)
 	 */
 	public List<String> types() {

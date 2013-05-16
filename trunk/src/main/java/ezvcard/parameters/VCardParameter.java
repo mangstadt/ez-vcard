@@ -40,12 +40,12 @@ import java.util.Set;
  */
 public class VCardParameter {
 	/**
-	 * The name (e.g. "TYPE").
+	 * The name (for example, "TYPE").
 	 */
 	protected final String name;
 
 	/**
-	 * The value (e.g. "home").
+	 * The value (for example, "home").
 	 */
 	protected final String value;
 
