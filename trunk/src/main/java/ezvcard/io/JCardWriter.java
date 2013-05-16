@@ -24,6 +24,7 @@ import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 
 /*
@@ -208,6 +209,11 @@ public class JCardWriter implements Closeable {
 			jg.writeEndObject();
 
 			//write data type
+			JCardDataType dataType = value.getDataType();
+			if (dataType == null) {
+				warnings.add(type.getTypeName() + " property does not have a jCard data type associated with it.  Defaulting to \"text\".");
+				dataType = JCardDataType.TEXT;
+			}
 			jg.writeString(value.getDataType().toString());
 
 			//write value
