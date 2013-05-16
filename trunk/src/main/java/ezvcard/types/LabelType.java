@@ -47,7 +47,7 @@ import ezvcard.util.VCardStringUtils;
  * 
  * <p>
  * The LABEL type is not supported in 4.0. Instead, labels are included as a
- * parameter to their corresponding ADR. When marshalling a vCard, EZ-vCard will
+ * parameter to their corresponding ADR. When marshalling a vCard, ez-vcard will
  * use either the LABEL type or the LABEL parameter, depending on the requested
  * vCard version.
  * </p>
