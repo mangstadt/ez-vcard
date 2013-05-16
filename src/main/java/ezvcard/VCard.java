@@ -73,7 +73,6 @@ import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
 import ezvcard.util.ListMultimap;
-import freemarker.template.TemplateException;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -337,7 +336,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see Ezvcard
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public String writeHtml() throws TemplateException {
+	public String writeHtml() {
 		return Ezvcard.writeHtml(this).go();
 	}
 
@@ -351,12 +350,10 @@ public class VCard implements Iterable<VCardType> {
 	 * </p>
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
-	 * @throws TemplateException if there's a problem with the freemarker
-	 * template
 	 * @see Ezvcard
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public void writeHtml(File file) throws IOException, TemplateException {
+	public void writeHtml(File file) throws IOException {
 		Ezvcard.writeHtml(this).go(file);
 	}
 
@@ -370,12 +367,10 @@ public class VCard implements Iterable<VCardType> {
 	 * </p>
 	 * @param out the output stream to write to
 	 * @throws IOException if there's a problem writing to the output stream
-	 * @throws TemplateException if there's a problem with the freemarker
-	 * template
 	 * @see Ezvcard
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public void writeHtml(OutputStream out) throws IOException, TemplateException {
+	public void writeHtml(OutputStream out) throws IOException {
 		Ezvcard.writeHtml(this).go(out);
 	}
 
@@ -389,12 +384,10 @@ public class VCard implements Iterable<VCardType> {
 	 * </p>
 	 * @param writer the writer to write to
 	 * @throws IOException if there's a problem writing to the writer
-	 * @throws TemplateException if there's a problem with the freemarker
-	 * template
 	 * @see Ezvcard
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public void writeHtml(Writer writer) throws IOException, TemplateException {
+	public void writeHtml(Writer writer) throws IOException {
 		Ezvcard.writeHtml(this).go(writer);
 	}
 
