@@ -76,6 +76,7 @@ public class JCardReader implements IParser {
 	private boolean versionFound;
 
 	/**
+	 * Creates a jCard reader.
 	 * @param json the JSON string
 	 */
 	public JCardReader(String json) {
@@ -83,6 +84,7 @@ public class JCardReader implements IParser {
 	}
 
 	/**
+	 * Creates a jCard reader.
 	 * @param in the input stream to read the vCards from
 	 */
 	public JCardReader(InputStream in) {
@@ -90,6 +92,7 @@ public class JCardReader implements IParser {
 	}
 
 	/**
+	 * Creates a jCard reader.
 	 * @param file the file to read the vCards from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
@@ -98,6 +101,7 @@ public class JCardReader implements IParser {
 	}
 
 	/**
+	 * Creates a jCard reader.
 	 * @param reader the reader to read the vCards from
 	 */
 	public JCardReader(Reader reader) {
