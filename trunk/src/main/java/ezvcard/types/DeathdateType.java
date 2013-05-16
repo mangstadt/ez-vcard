@@ -55,7 +55,7 @@ import ezvcard.VCardVersion;
  * 
  * //reduced accuracy date
  * deathdate = new DeathdateType();
- * deathdate.setReducedAccuracyDate(&quot;--0607&quot;); //June 7
+ * deathdate.setPartalDate(PartialDate.date(null, 6, 7)); //June 7
  * vcard.setDeathdate(deathdate);
  * 
  * //plain text value
@@ -74,8 +74,10 @@ import ezvcard.VCardVersion;
  * if (deathdate != null){
  *   if (deathdate.getDate() != null){
  *     System.out.println(deathdate.getDate());
- *   } else if (deathdate.getReducedAccuracyDate() != null){
- *     System.out.println(deathdate.getReducedAccuracyDate());
+ *   } else if (deathdate.getPartalDate() != null){
+ *     System.out.println("Year: " + deathdate.getPartialDate().getYear());
+ *     System.out.println("Month: " + deathdate.getPartialDate().getMonth());
+ *     //...
  *   } else if (deathdate.getText() != null){
  *     System.out.println(deathdate.getText());
  *   }

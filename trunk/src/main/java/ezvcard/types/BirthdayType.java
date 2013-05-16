@@ -52,7 +52,7 @@ import java.util.Date;
  * 
  * //reduced accuracy date (vCard 4.0 only, see RFC 6350 p.12-14 for examples)
  * bday = new BirthdayType();
- * bday.setReducedAccuracyDate(&quot;--0321&quot;); //March 21
+ * bday.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
  * vcard.setBirthday(bday);
  * 
  * //plain text value (vCard 4.0 only)
@@ -71,8 +71,10 @@ import java.util.Date;
  * if (bday != null){
  *   if (bday.getDate() != null){
  *     System.out.println(bday.getDate());
- *   } else if (bday.getReducedAccuracyDate() != null){
- *     System.out.println(bday.getReducedAccuracyDate());
+ *   } else if (bday.getPartialDate() != null){
+ *     System.out.println("Year: " + bday.getPartialDate().getYear());
+ *     System.out.println("Month: " + bday.getPartialDate().getMonth());
+ *     //...
  *   } else if (bday.getText() != null){
  *     System.out.println(bday.getText());
  *   }
