@@ -150,6 +150,7 @@
 					<links>
 						<link>http://freemarker.sourceforge.net/docs/api/</link>
 						<link>http://jsoup.org/apidocs/</link>
+						<link>http://fasterxml.github.io/jackson-core/javadoc/2.1.0/</link>
 					</links>
 				</configuration>
 				<executions>
