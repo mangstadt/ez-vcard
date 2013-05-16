@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -68,23 +67,20 @@ public class VCardSubTypesTest {
 	@Test
 	public void setPref() {
 		VCardSubTypes subTypes = new VCardSubTypes();
-
-		try {
-			subTypes.setPref(-1);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
-
-		try {
-			subTypes.setPref(101);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
-
 		subTypes.setPref(1);
 		assertEquals("1", subTypes.first("PREF"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void setPref_too_low() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.setPref(-1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void setPref_too_high() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.setPref(101);
 	}
 
 	/**
@@ -147,23 +143,20 @@ public class VCardSubTypesTest {
 	@Test
 	public void setIndex() {
 		VCardSubTypes subTypes = new VCardSubTypes();
-
-		try {
-			subTypes.setIndex(-1);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
-
-		try {
-			subTypes.setIndex(0);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
-
 		subTypes.setIndex(1);
 		assertEquals("1", subTypes.first("INDEX"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void setIndex_negative() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.setIndex(-1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void setIndex_zero() {
+		VCardSubTypes subTypes = new VCardSubTypes();
+		subTypes.setIndex(0);
 	}
 
 	@Test

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.text.NumberFormat;
@@ -161,34 +160,19 @@ public class GeoUriTest {
 		assertEquals(params, uri.getParameters());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void parse_no_params_or_u_or_crs_or_coordsC_or_coordB() {
-		try {
-			new GeoUri("geo:12.34");
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
+		new GeoUri("geo:12.34");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void parse_no_params_or_u_or_crs_or_coordsC_or_coordB_or_coordA() {
-		try {
-			new GeoUri("geo:");
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
+		new GeoUri("geo:");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void parse_not_geo_uri() {
-		try {
-			new GeoUri("http://www.ietf.org");
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
+		new GeoUri("http://www.ietf.org");
 	}
 
 	@Test
@@ -206,15 +190,10 @@ public class GeoUriTest {
 		assertEquals("123-valid", uri.getCrs());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void setCrs_validate_chars() {
 		GeoUri uri = new GeoUri();
-		try {
-			uri.setCrs("!not-valid!");
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
+		uri.setCrs("!not-valid!");
 	}
 
 	@Test
@@ -242,18 +221,10 @@ public class GeoUriTest {
 		getParameter();
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void addParameter_validate_param_name_chars() {
 		GeoUri uri = new GeoUri();
-
-		uri.addParameter("123-valid", "the value");
-
-		try {
-			uri.addParameter("!not-valid!", "the value");
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
+		uri.addParameter("!not-valid!", "the value");
 	}
 
 	@Test
