@@ -147,7 +147,7 @@ public class ClientPidMapTypeTest {
 	}
 
 	@Test
-	public void unmarshalText_uri_with_semicolon() {
+	public void unmarshalText_semicolon_in_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		clientPidMapType.unmarshalText(subTypes, pid + ";" + uri + ";foo", version, warnings, compatibilityMode);
 
@@ -157,9 +157,15 @@ public class ClientPidMapTypeTest {
 	}
 
 	@Test(expected = SkipMeException.class)
-	public void unmarshalText_bad_format() {
+	public void unmarshalText_no_semicolon() {
 		VCardVersion version = VCardVersion.V4_0;
 		clientPidMapType.unmarshalText(subTypes, "no semicolon", version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void unmarshalText_bad_pid() {
+		VCardVersion version = VCardVersion.V4_0;
+		clientPidMapType.unmarshalText(subTypes, "foo;bar", version, warnings, compatibilityMode);
 	}
 
 	@Test
@@ -176,6 +182,16 @@ public class ClientPidMapTypeTest {
 		assertEquals(0, warnings.size());
 	}
 
+	@Test(expected = SkipMeException.class)
+	public void unmarshalXml_bad_pid() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
+		xe.uri(uri);
+		xe.append("sourceid", "foo");
+
+		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+	}
+
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
@@ -186,6 +202,14 @@ public class ClientPidMapTypeTest {
 		assertEquals(pid, clientPidMapType.getPid().intValue());
 		assertEquals(uri, clientPidMapType.getUri());
 		assertEquals(0, warnings.size());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void unmarshalJson_bad_pid() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = JCardValue.text("foo", uri);
+
+		clientPidMapType.unmarshalJson(subTypes, value, version, warnings);
 	}
 
 	@Test

@@ -166,16 +166,16 @@ public class ClientPidMapType extends VCardType {
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		checkForValue();
-		sb.append(pid + ";" + VCardStringUtils.escape(uri));
+		sb.append(pid).append(';').append(VCardStringUtils.escape(uri));
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String split[] = value.split(";", 2);
 		if (split.length < 2) {
-			throw new SkipMeException("Cannot parse.  Incorrect format of value: " + value);
+			throw new SkipMeException("Unable to parse.  Value must contain a PID and a URI, separated by a semi-colon.");
 		} else {
-			pid = Integer.parseInt(split[0]);
+			pid = parsePid(split[0]);
 			uri = VCardStringUtils.unescape(split[1]);
 		}
 	}
@@ -197,7 +197,7 @@ public class ClientPidMapType extends VCardType {
 		uri = element.uri();
 
 		String value = element.get("sourceid");
-		pid = (value != null) ? Integer.parseInt(value) : null;
+		pid = (value == null) ? null : parsePid(value);
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class ClientPidMapType extends VCardType {
 		int i = 0;
 
 		String str = value.getFirstValueAsString(i++);
-		pid = (str == null || str.length() == 0) ? null : Integer.parseInt(str);
+		pid = (str == null || str.length() == 0) ? null : parsePid(str);
 
 		str = value.getFirstValueAsString(i++);
 		uri = (str == null || str.length() == 0) ? null : str;
@@ -223,6 +223,14 @@ public class ClientPidMapType extends VCardType {
 	private void checkForValue() {
 		if (pid == null && uri == null) {
 			throw new SkipMeException("Property has no value associated with it.");
+		}
+	}
+
+	private Integer parsePid(String value) {
+		try {
+			return Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			throw new SkipMeException("Unable to parse PID component: " + e.getMessage());
 		}
 	}
 }
