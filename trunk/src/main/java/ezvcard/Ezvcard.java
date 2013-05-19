@@ -376,7 +376,7 @@ public class Ezvcard {
 	 * @return chainer object for completing the parse operation
 	 * @see JCardReader
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
 	public static ParserChainJsonString parseJson(String json) {
@@ -396,7 +396,7 @@ public class Ezvcard {
 	 * accessed
 	 * @see JCardReader
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
 	public static ParserChainJsonReader parseJson(File file) throws FileNotFoundException {
@@ -414,7 +414,7 @@ public class Ezvcard {
 	 * @return chainer object for completing the parse operation
 	 * @see JCardReader
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
 	public static ParserChainJsonReader parseJson(InputStream in) {
@@ -432,7 +432,7 @@ public class Ezvcard {
 	 * @return chainer object for completing the parse operation
 	 * @see JCardReader
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
 	public static ParserChainJsonReader parseJson(Reader reader) {
@@ -595,7 +595,7 @@ public class Ezvcard {
 	 * @return chainer object for completing the write operation
 	 * @see JCardWriter
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
 	public static WriterChainJsonSingle writeJson(VCard vcard) {
@@ -614,7 +614,7 @@ public class Ezvcard {
 	 * @return chainer object for completing the write operation
 	 * @see JCardWriter
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
 	public static WriterChainJsonMulti writeJson(VCard... vcards) {
@@ -633,7 +633,7 @@ public class Ezvcard {
 	 * @return chainer object for completing the write operation
 	 * @see JCardWriter
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-01">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
 	public static WriterChainJsonMulti writeJson(Collection<VCard> vcards) {
