@@ -78,7 +78,7 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a hCard writer.
+	 * Creates a jCard writer.
 	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem opening the file
 	 */
