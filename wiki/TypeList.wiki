@@ -76,7 +76,7 @@ vcard.setAnniversary(anniversary);
 
 //reduced accuracy date (see RFC 6350 p.12-14 for examples)
 anniversary = new AnniversaryType();
-anniversary.setReducedAccuracyDate("--0321"); //March 21
+anniversary.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
 vcard.setAnniversary(anniversary);
 
 //plain text value
@@ -91,8 +91,10 @@ AnniversaryType anniversary = vcard.getAnniversary();
 if (anniversary != null){
   if (anniversary.getDate() != null){
     System.out.println(anniversary.getDate());
-  } else if (anniversary.getReducedAccuracyDate() != null){
-    System.out.println(anniversary.getReducedAccuracyDate());
+  } else if (anniversary.getPartialDate() != null){
+    System.out.println("Year: " + anniversary.getPartialDate().getYear());
+    System.out.println("Month: " + anniversary.getPartialDate().getMonth());
+    //...
   } else if (anniversary.getText() != null){
     System.out.println(anniversary.getText());
   }
@@ -120,7 +122,7 @@ vcard.setBirthday(bday);
 
 //reduced accuracy date (vCard 4.0 only, see RFC 6350 p.12-14 for examples)
 bday = new BirthdayType();
-bday.setReducedAccuracyDate("--0321"); //March 21
+bday.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
 vcard.setBirthday(bday);
 
 //plain text value (vCard 4.0 only)
@@ -135,8 +137,10 @@ BirthdayType bday = vcard.getBirthday();
 if (bday != null){
   if (bday.getDate() != null){
     System.out.println(bday.getDate());
-  } else if (bday.getReducedAccuracyDate() != null){
-    System.out.println(bday.getReducedAccuracyDate());
+  } else if (bday.getPartialDate() != null){
+    System.out.println("Year: " + bday.getPartialDate().getYear());
+    System.out.println("Month: " + bday.getPartialDate().getMonth());
+    //...
   } else if (bday.getText() != null){
     System.out.println(bday.getText());
   }
@@ -288,7 +292,7 @@ vcard.setDeathdate(deathdate);
 
 //reduced accuracy date
 deathdate = new DeathdateType();
-deathdate.setReducedAccuracyDate("--0607"); //June 7
+deathdate.setPartialDate(PartialDate.date(nuull, 6, 7)); //June 7
 vcard.setDeathdate(deathdate);
 
 //plain text value
@@ -303,8 +307,10 @@ DeathdateType deathdate = vcard.getDeathdate();
 if (deathdate != null){
   if (deathdate.getDate() != null){
     System.out.println(deathdate.getDate());
-  } else if (deathdate.getReducedAccuracyDate() != null){
-    System.out.println(deathdate.getReducedAccuracyDate());
+  } else if (deathdate.getPartialDate() != null){
+    System.out.println("Year: " + deathdate.getPartialDate().getYear());
+    System.out.println("Month: " + deathdate.getPartialDate().getMonth());
+    //...
   } else if (deathdate.getText() != null){
     System.out.println(deathdate.getText());
   }
@@ -1106,11 +1112,14 @@ A telephone number that the person can be reached at.
 
 {{{
 VCard vcard = new VCard();
-TelephoneType tel = new TelephoneType("+1 123-555-6789");
+TelephoneType tel = new TelephoneType("(123) 555-6789");
 tel.addType(TelephoneTypeParameter.HOME);
 tel.setPref(2); //the second-most preferred
 vcard.addTelephoneNumber(tel);
-tel = new TelephoneType("+1 800-555-9876;ext=111");
+
+TelUri uri = TelUri.global("+1-800-555-9876");
+uri.setExtension("111");
+tel = new TelephoneType(uri);
 tel.addType(TelephoneTypeParameter.WORK);
 tel.setPref(1); //the most preferred
 vcard.addTelephoneNumber(tel);

@@ -1,6 +1,15 @@
 #summary Documents all the changes that were made to every version of the library
 #labels Featured
 
+= 0.8.1 =
+_May 21, 2013_
+
+ * Added a new `PartialDate` class for representing truncated and reduced accuracy dates.
+ * The `TelephoneType` class (TEL property) now distinguishes between text and URI values.  A URI value is represented with the new `TelUri` class.
+ * A `TemplateException` exception is no longer thrown when writing a vCard to an HTML page (see Issue 7, credit: dnault).
+ * GENDER is no longer marshalled as a structured jCard property if it does not contain the optional text component.
+ * Fixed a bug dealing with the way in which XML namespaces are handled in xCards.
+
 = 0.8.0 =
 _April 17, 2013_
 
