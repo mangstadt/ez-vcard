@@ -1359,7 +1359,7 @@ public class Ezvcard {
 		 * @param warnings the list object that will be populated with the
 		 * warnings of each marshalled vCard. Each element of the list is the
 		 * list of warnings for one of the marshalled vCards. Therefore, the
-		 * size of this list will be equal to the number of parsed vCards. If a
+		 * size of this list will be equal to the number of written vCards. If a
 		 * vCard does not have any warnings, then its warning list will be
 		 * empty.
 		 * @return this
@@ -1557,7 +1557,7 @@ public class Ezvcard {
 		 * @param warnings the list object that will be populated with the
 		 * warnings of each marshalled vCard. Each element of the list is the
 		 * list of warnings for one of the marshalled vCards. Therefore, the
-		 * size of this list will be equal to the number of parsed vCards. If a
+		 * size of this list will be equal to the number of written vCards. If a
 		 * vCard does not have any warnings, then its warning list will be
 		 * empty.
 		 * @return this
@@ -1795,7 +1795,7 @@ public class Ezvcard {
 		 * @param warnings the list object that will be populated with the
 		 * warnings of each marshalled vCard. Each element of the list is the
 		 * list of warnings for one of the marshalled vCards. Therefore, the
-		 * size of this list will be equal to the number of parsed vCards. If a
+		 * size of this list will be equal to the number of written vCards. If a
 		 * vCard does not have any warnings, then its warning list will be
 		 * empty.
 		 * @return this
