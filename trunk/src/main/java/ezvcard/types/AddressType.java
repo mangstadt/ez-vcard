@@ -95,6 +95,9 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	private String postalCode;
 	private String country;
 
+	/**
+	 * Creates an address property.
+	 */
 	public AddressType() {
 		super(NAME);
 	}

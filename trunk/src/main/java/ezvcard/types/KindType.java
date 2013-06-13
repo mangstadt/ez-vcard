@@ -82,13 +82,17 @@ public class KindType extends TextType {
 	public static final String APPLICATION = "application";
 	public static final String DEVICE = "device";
 
+	/**
+	 * Creates an empty kind property. Use of this constructor is discouraged.
+	 * Please use one of the static factory methods to create a new KIND type.
+	 */
 	public KindType() {
 		super(NAME);
 	}
 
 	/**
-	 * Use of this constructor is discouraged. Please use one of the static
-	 * methods to create a new KIND type.
+	 * Creates a kind property. Use of this constructor is discouraged. Please
+	 * use one of the static factory methods to create a new KIND type.
 	 * @param kind the kind value (e.g. "group")
 	 */
 	public KindType(String kind) {

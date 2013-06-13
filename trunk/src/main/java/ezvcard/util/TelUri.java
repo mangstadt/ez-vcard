@@ -37,7 +37,8 @@ import java.util.regex.Pattern;
 
 /**
  * <p>
- * Represents a "tel" URI.
+ * Represents a URI for encoding telephone numbers. Use one of the static
+ * factory methods to create a new instance.
  * </p>
  * <p>
  * Example: <code>tel:+1-212-555-0101</code>

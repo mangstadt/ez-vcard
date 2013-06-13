@@ -62,6 +62,9 @@ import ezvcard.util.HCardElement;
 public class NicknameType extends TextListType implements HasAltId {
 	public static final String NAME = "NICKNAME";
 
+	/**
+	 * Creates a nickname property.
+	 */
 	public NicknameType() {
 		super(NAME, ',');
 	}

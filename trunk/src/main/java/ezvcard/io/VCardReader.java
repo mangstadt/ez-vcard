@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -62,7 +61,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  */
 
 /**
- * Unmarshals vCards into {@link VCard} objects.
+ * Parses {@link VCard} objects from a plain-text vCard data stream.
  * @author Michael Angstadt
  */
 public class VCardReader implements Closeable, IParser {
@@ -73,6 +72,7 @@ public class VCardReader implements Closeable, IParser {
 	private boolean caretDecodingEnabled = true;
 
 	/**
+	 * Creates a vCard reader.
 	 * @param str the string to read the vCards from
 	 */
 	public VCardReader(String str) {
@@ -80,6 +80,7 @@ public class VCardReader implements Closeable, IParser {
 	}
 
 	/**
+	 * Creates a vCard reader.
 	 * @param in the input stream to read the vCards from
 	 */
 	public VCardReader(InputStream in) {
@@ -87,6 +88,7 @@ public class VCardReader implements Closeable, IParser {
 	}
 
 	/**
+	 * Creates a vCard reader.
 	 * @param file the file to read the vCards from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
@@ -95,6 +97,7 @@ public class VCardReader implements Closeable, IParser {
 	}
 
 	/**
+	 * Creates a vCard reader.
 	 * @param reader the reader to read the vCards from
 	 */
 	public VCardReader(Reader reader) {

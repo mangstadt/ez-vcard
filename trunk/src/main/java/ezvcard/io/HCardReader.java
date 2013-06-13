@@ -65,7 +65,7 @@ import ezvcard.util.HtmlUtils;
  */
 
 /**
- * Reads vCards encoded in HTML (hCard format).
+ * Parses {@link VCard} objects from an HTML page (hCard format).
  * @author Michael Angstadt
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
@@ -84,6 +84,7 @@ public class HCardReader implements IParser {
 	private CategoriesType categories;
 
 	/**
+	 * Creates an hCard reader.
 	 * @param url the URL of the webpage
 	 * @throws IOException if there's a problem loading the webpage
 	 */
@@ -94,6 +95,7 @@ public class HCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an hCard reader.
 	 * @param in the input stream to the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
@@ -102,6 +104,7 @@ public class HCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an hCard reader.
 	 * @param in the input stream to the HTML page
 	 * @param pageUrl the original URL of the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
@@ -114,6 +117,7 @@ public class HCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an hCard reader.
 	 * @param file the HTML file
 	 * @throws IOException if there's a problem reading the HTML file
 	 */
@@ -122,6 +126,7 @@ public class HCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an hCard reader.
 	 * @param file the HTML file
 	 * @param pageUrl the original URL of the HTML page
 	 * @throws IOException if there's a problem reading the HTML file
@@ -134,6 +139,7 @@ public class HCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an hCard reader.
 	 * @param reader the input stream to the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
@@ -142,6 +148,7 @@ public class HCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an hCard reader.
 	 * @param reader the input stream to the HTML page
 	 * @param pageUrl the original URL of the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
@@ -163,6 +170,7 @@ public class HCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an hCard reader.
 	 * @param html the HTML page
 	 */
 	public HCardReader(String html) {
@@ -170,6 +178,7 @@ public class HCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an hCard reader.
 	 * @param html the HTML page
 	 * @param pageUrl the original URL of the HTML page
 	 */

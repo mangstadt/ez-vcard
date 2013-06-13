@@ -37,7 +37,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /**
  * <p>
- * Represents a data URI.
+ * Represents a URI for encoding binary data.
  * </p>
  * <p>
  * Example: <code>data:image/jpeg;base64,&lt;base64-encoded text&gt;</code>
@@ -50,6 +50,7 @@ public class DataUri {
 	private String contentType;
 
 	/**
+	 * Creates a data URI.
 	 * @param data the binary data
 	 * @param contentType the content type (e.g. "image/jpeg")
 	 */
@@ -59,6 +60,7 @@ public class DataUri {
 	}
 
 	/**
+	 * Parses a data URI string.
 	 * @param uri the data URI to parse
 	 * @throws IllegalArgumentException if the given URI is not a valid data URI
 	 */

@@ -83,11 +83,15 @@ public class AgentType extends VCardType {
 	private String url;
 	private VCard vcard;
 
+	/**
+	 * Creates an empty agent property.
+	 */
 	public AgentType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates an agent property.
 	 * @param url a URL pointing to the agent's information
 	 */
 	public AgentType(String url) {
@@ -96,6 +100,7 @@ public class AgentType extends VCardType {
 	}
 
 	/**
+	 * Creates an agent property.
 	 * @param vcard a vCard containing the agent's information
 	 */
 	public AgentType(VCard vcard) {

@@ -40,7 +40,7 @@ import ezvcard.util.XCardElement;
  */
 
 /**
- * Represents a type whose value is a list of values.
+ * Represents a type whose value is a list of textual values.
  * @author Michael Angstadt
  */
 public class TextListType extends VCardType {
@@ -48,6 +48,7 @@ public class TextListType extends VCardType {
 	private final char separator;
 
 	/**
+	 * Creates a property that contains a list of textual values.
 	 * @param name the type name (e.g. "NICKNAME")
 	 * @param separator the delimiter to use (e.g. ",")
 	 */

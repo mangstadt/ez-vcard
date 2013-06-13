@@ -78,6 +78,9 @@ public class DeathplaceType extends VCardType implements HasAltId {
 	private String uri;
 	private String text;
 
+	/**
+	 * Creates a deathplace property.
+	 */
 	public DeathplaceType() {
 		super(NAME);
 	}

@@ -58,6 +58,9 @@ import ezvcard.VCardVersion;
 public class OrgDirectoryType extends UriType implements HasAltId {
 	public static final String NAME = "ORG-DIRECTORY";
 
+	/**
+	 * Creates an empty organization directory property.
+	 */
 	public OrgDirectoryType() {
 		this(null);
 	}

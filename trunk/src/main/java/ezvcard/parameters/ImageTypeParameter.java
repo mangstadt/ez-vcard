@@ -1,5 +1,8 @@
 package ezvcard.parameters;
 
+import ezvcard.types.LogoType;
+import ezvcard.types.PhotoType;
+
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
  * 
@@ -58,7 +61,8 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents the TYPE parameter of the PHOTO and LOGO types.
+ * Represents the TYPE parameter of the {@link PhotoType} and {@link LogoType}
+ * types.
  * <p>
  * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>

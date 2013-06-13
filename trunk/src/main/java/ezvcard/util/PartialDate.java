@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  * to represent reduced accuracy and truncated dates, as defined in ISO8601.
  * </p>
  * <p>
- * A <b>truncated date<b> is a date where the "lesser" components are missing.
+ * A <b>truncated date</b> is a date where the "lesser" components are missing.
  * For example, "12:30" is truncated because the "seconds" component is missing.
  * 
  * <pre>
@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
  * 
  * </p>
  * <p>
- * A <b>reduced accuracy date<b> is a date where the "greater" components are
+ * A <b>reduced accuracy date</b> is a date where the "greater" components are
  * missing. For example, "April 20" is reduced accuracy because the "year"
  * component is missing.
  * 
@@ -100,15 +100,14 @@ public class PartialDate {
 
 	/**
 	 * <p>
-	 * Helper constructor for creating a partial date containing only date
-	 * components.
+	 * Creates a partial date containing only date components.
 	 * </p>
 	 * <p>
 	 * The following combinations are not allowed and will result in an
 	 * {@link IllegalArgumentException} being thrown:
 	 * </p>
 	 * <ul>
-	 * <li>year, date (without month)</li>
+	 * <li>year, date (month missing)</li>
 	 * </ul>
 	 * @param year the year or null to exclude
 	 * @param month the month or null to exclude
@@ -123,15 +122,14 @@ public class PartialDate {
 
 	/**
 	 * <p>
-	 * Helper constructor for creating a partial date containing only time
-	 * components.
+	 * Creates a partial date containing only time components.
 	 * </p>
 	 * <p>
 	 * The following combinations are not allowed and will result in an
 	 * {@link IllegalArgumentException} being thrown:
 	 * </p>
 	 * <ul>
-	 * <li>hour, second (without minute)</li>
+	 * <li>hour, second (minute missing)</li>
 	 * </ul>
 	 * @param hour the hour or null to exclude
 	 * @param minute the minute or null to exclude
@@ -146,16 +144,15 @@ public class PartialDate {
 
 	/**
 	 * <p>
-	 * Helper constructor for creating a partial date containing only time
-	 * components.
+	 * Creates a partial date containing only time components.
 	 * </p>
 	 * <p>
 	 * The following combinations are not allowed and will result in an
 	 * {@link IllegalArgumentException} being thrown:
 	 * </p>
 	 * <ul>
-	 * <li>hour, second (without minute)</li>
-	 * <li>timezoneMinute (without timezoneHour)</li>
+	 * <li>hour, second (minute missing)</li>
+	 * <li>timezoneMinute (timezoneHour missing)</li>
 	 * </ul>
 	 * @param hour the hour or null to exclude
 	 * @param minute the minute or null to exclude
@@ -172,16 +169,16 @@ public class PartialDate {
 
 	/**
 	 * <p>
-	 * Helper constructor for creating a partial date containing date and time
-	 * components, without a timezone.
+	 * Creates a partial date containing date and time components, without a
+	 * timezone.
 	 * </p>
 	 * <p>
 	 * The following combinations are not allowed and will result in an
 	 * {@link IllegalArgumentException} being thrown:
 	 * </p>
 	 * <ul>
-	 * <li>year, date (without month)</li>
-	 * <li>hour, second (without minute)</li>
+	 * <li>year, date (month missing)</li>
+	 * <li>hour, second (minute missing)</li>
 	 * </ul>
 	 * @param year the year or null to exclude
 	 * @param month the month or null to exclude
@@ -199,17 +196,16 @@ public class PartialDate {
 
 	/**
 	 * <p>
-	 * Helper constructor for creating a partial date containing date and time
-	 * components.
+	 * Creates a partial date containing date and time components.
 	 * </p>
 	 * <p>
 	 * The following combinations are not allowed and will result in an
 	 * {@link IllegalArgumentException} being thrown:
 	 * </p>
 	 * <ul>
-	 * <li>year, date (without month)</li>
-	 * <li>hour, second (without minute)</li>
-	 * <li>timezoneMinute (without timezoneHour)</li>
+	 * <li>year, date (month missing)</li>
+	 * <li>hour, second (minute missing)</li>
+	 * <li>timezoneMinute (timezoneHour missing)</li>
 	 * </ul>
 	 * @param year the year or null to exclude
 	 * @param month the month or null to exclude
@@ -236,9 +232,9 @@ public class PartialDate {
 	 * {@link IllegalArgumentException} being thrown:
 	 * </p>
 	 * <ul>
-	 * <li>year, date (without month)</li>
-	 * <li>hour, second (without minute)</li>
-	 * <li>timezoneMinute (without timezoneHour)</li>
+	 * <li>year, date (month missing)</li>
+	 * <li>hour, second (minute missing)</li>
+	 * <li>timezoneMinute (timezoneHour missing)</li>
 	 * </ul>
 	 * @param year the year or null to exclude
 	 * @param month the month or null to exclude

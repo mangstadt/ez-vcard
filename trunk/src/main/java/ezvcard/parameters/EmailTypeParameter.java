@@ -1,5 +1,6 @@
 package ezvcard.parameters;
 
+import ezvcard.types.EmailType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -31,7 +32,7 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents the TYPE parameter of the EMAIL type.
+ * Represents the TYPE parameter of the {@link EmailType} type.
  * <p>
  * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>

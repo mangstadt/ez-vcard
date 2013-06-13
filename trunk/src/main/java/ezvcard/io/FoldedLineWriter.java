@@ -44,6 +44,7 @@ public class FoldedLineWriter extends Writer {
 	private final Writer writer;
 
 	/**
+	 * Creates a folded line writer.
 	 * @param writer the writer object to wrap
 	 * @param lineLength the maximum length a line can be before it is folded
 	 * (excluding the newline)
@@ -128,11 +129,17 @@ public class FoldedLineWriter extends Writer {
 		writer.write(buf, start, end - start);
 	}
 
+	/**
+	 * Closes the writer.
+	 */
 	@Override
 	public void close() throws IOException {
 		writer.close();
 	}
 
+	/**
+	 * Flushes the writer.
+	 */
 	@Override
 	public void flush() throws IOException {
 		writer.flush();

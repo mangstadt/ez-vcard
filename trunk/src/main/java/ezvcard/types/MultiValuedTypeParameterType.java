@@ -36,13 +36,14 @@ import ezvcard.parameters.TypeParameter;
 
 /**
  * Represents a vCard Type that has a TYPE parameter that can have multiple
- * values. For example, the ADR type. This class contrasts with the
- * {@link SingleValuedTypeParameterType} class.
+ * values (for example, {@link AddressType}).
  * @author Michael Angstadt
+ * @see SingleValuedTypeParameterType
  */
 public abstract class MultiValuedTypeParameterType<T extends TypeParameter> extends TypeParameterType<T> {
 	/**
-	 * @param typeName the type name  (e.g. "ADR")
+	 * Creates a multi-valued type parameter property.
+	 * @param typeName the type name (e.g. "ADR")
 	 */
 	public MultiValuedTypeParameterType(String typeName) {
 		super(typeName);

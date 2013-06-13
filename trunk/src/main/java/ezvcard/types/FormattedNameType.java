@@ -57,12 +57,16 @@ import ezvcard.VCardSubTypes;
 public class FormattedNameType extends TextType implements HasAltId {
 	public static final String NAME = "FN";
 
+	/**
+	 * Creates an empty formatted name property.
+	 */
 	public FormattedNameType() {
 		this(null);
 	}
 
 	/**
-	 * @param name the person's name
+	 * Creates a formatted name property.
+	 * @param name the person's name (e.g. "John Doe")
 	 */
 	public FormattedNameType(String name) {
 		super(NAME, name);

@@ -47,6 +47,7 @@ public class RawType extends VCardType {
 	private String value;
 
 	/**
+	 * Creates a raw property.
 	 * @param name the type name (e.g. "NOTE")
 	 */
 	public RawType(String name) {
@@ -54,6 +55,7 @@ public class RawType extends VCardType {
 	}
 
 	/**
+	 * Creates a raw property.
 	 * @param name the type name (e.g. "NOTE")
 	 * @param value the type value
 	 */

@@ -40,12 +40,13 @@ import ezvcard.util.HCardElement;
  */
 
 /**
- * Represents a vCard type that stores image data (for example, the PHOTO and
- * LOGO types).
+ * Represents a vCard type that stores image data (for example,
+ * {@link PhotoType}).
  * @author Michael Angstadt
  */
 public class ImageType extends BinaryType<ImageTypeParameter> {
 	/**
+	 * Creates an image property.
 	 * @param typeName the type name (e.g. "PHOTO")
 	 */
 	public ImageType(String typeName) {
@@ -53,6 +54,7 @@ public class ImageType extends BinaryType<ImageTypeParameter> {
 	}
 
 	/**
+	 * Creates an image property.
 	 * @param typeName the type name (e.g. "PHOTO")
 	 * @param url the URL to the image
 	 * @param type the content type (e.g. JPEG)
@@ -62,6 +64,7 @@ public class ImageType extends BinaryType<ImageTypeParameter> {
 	}
 
 	/**
+	 * Creates an image property.
 	 * @param typeName the type name (e.g. "PHOTO")
 	 * @param data the binary data of the image
 	 * @param type the content type (e.g. JPEG)
@@ -71,6 +74,7 @@ public class ImageType extends BinaryType<ImageTypeParameter> {
 	}
 
 	/**
+	 * Creates an image property.
 	 * @param typeName the type name (e.g. "PHOTO")
 	 * @param in an input stream to the binary data (will be closed)
 	 * @param type the content type (e.g. JPEG)
@@ -81,6 +85,7 @@ public class ImageType extends BinaryType<ImageTypeParameter> {
 	}
 
 	/**
+	 * Creates an image property.
 	 * @param typeName the type name (e.g. "PHOTO")
 	 * @param file the image file
 	 * @param type the content type (e.g. JPEG)

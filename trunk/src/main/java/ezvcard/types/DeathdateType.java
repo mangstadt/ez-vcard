@@ -96,11 +96,15 @@ import ezvcard.VCardVersion;
 public class DeathdateType extends DateOrTimeType {
 	public static final String NAME = "DEATHDATE";
 
+	/**
+	 * Creates an empty deathdate property.
+	 */
 	public DeathdateType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a deathdate property.
 	 * @param date the time of death
 	 */
 	public DeathdateType(Date date) {

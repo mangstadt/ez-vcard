@@ -71,11 +71,15 @@ import ezvcard.util.XmlUtils;
 public class XmlType extends TextType implements HasAltId {
 	public static final String NAME = "XML";
 
+	/**
+	 * Creates an empty XML property.
+	 */
 	public XmlType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates an XML property.
 	 * @param xml the XML element
 	 */
 	public XmlType(String xml) {

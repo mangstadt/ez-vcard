@@ -67,8 +67,8 @@ import ezvcard.util.IOUtils;
 
 /**
  * <p>
- * Contains helper methods for parsing/writing vCards. The methods wrap the
- * following classes:
+ * Contains chaining factory methods for parsing/writing vCards. They are
+ * convenience methods that make use of the following classes:
  * </p>
  * 
  * 

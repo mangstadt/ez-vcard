@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import ezvcard.types.TelephoneType;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -30,7 +32,7 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents the TYPE parameter of the TEL type.
+ * Represents the TYPE parameter of the {@link TelephoneType} type.
  * <p>
  * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>

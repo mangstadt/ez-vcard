@@ -76,12 +76,16 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	private String value;
 
+	/**
+	 * Creates an empty email property.
+	 */
 	public EmailType() {
 		this(null);
 	}
 
 	/**
-	 * @param email the email
+	 * Creates an email property.
+	 * @param email the email (e.g. "johndoe@example.com")
 	 */
 	public EmailType(String email) {
 		super(NAME);
@@ -99,7 +103,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	/**
 	 * Gets the email address.
-	 * @return the email address
+	 * @return the email address (e.g. "johndoe@example.com")
 	 */
 	public String getValue() {
 		return value;
@@ -107,7 +111,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	/**
 	 * Sets the email address
-	 * @param email the email address
+	 * @param email the email address (e.g. "johndoe@example.com")
 	 */
 	public void setValue(String email) {
 		this.value = email;

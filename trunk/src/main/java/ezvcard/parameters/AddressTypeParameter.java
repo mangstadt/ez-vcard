@@ -1,5 +1,8 @@
 package ezvcard.parameters;
 
+import ezvcard.types.AddressType;
+import ezvcard.types.LabelType;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -30,7 +33,8 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents the TYPE parameter of the ADR and LABEL types.
+ * Represents the TYPE parameter of the {@link AddressType} and
+ * {@link LabelType} types.
  * <p>
  * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>

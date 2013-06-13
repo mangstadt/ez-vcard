@@ -43,16 +43,34 @@ import ezvcard.util.XCardElement;
  */
 
 /**
+ * <p>
  * A set of latitude/longitude coordinates. There is no rule for what these
  * coordinates must represent, but the meaning could vary depending on the value
- * of the vCard KIND type.
+ * of {@link KindType}:
+ * </p>
  * 
- * <ul>
- * <li>"individual": the location of the person's home or workplace.</li>
- * <li>"group": the location of the group's meeting place.</li>
- * <li>"org": the coordinates of the organization's headquarters.</li>
- * <li>"location": the coordinates of the location itself.</li>
- * </ul>
+ * <table border="1">
+ * <tr>
+ * <th>KIND value</th>
+ * <th>GEO meaning</th>
+ * </tr>
+ * <tr>
+ * <td>"individual"</td>
+ * <td>the location of the person's home or workplace.</td>
+ * </tr>
+ * <tr>
+ * <td>"group"</td>
+ * <td>the location of the group's meeting place.</td>
+ * </tr>
+ * <tr>
+ * <td>"org"</td>
+ * <td>the coordinates of the organization's headquarters.</td>
+ * </tr>
+ * <tr>
+ * <td>"location"</td>
+ * <td>the coordinates of the location itself.</td>
+ * </tr>
+ * </table>
  * 
  * <p>
  * <b>Code sample</b>
@@ -76,11 +94,15 @@ public class GeoType extends VCardType implements HasAltId {
 	public static final String NAME = "GEO";
 	private GeoUri uri = new GeoUri();
 
+	/**
+	 * Creates an empty geo property.
+	 */
 	public GeoType() {
 		this(null, null);
 	}
 
 	/**
+	 * Creates a geo property.
 	 * @param latitude the latitude
 	 * @param longitude the longitude
 	 */

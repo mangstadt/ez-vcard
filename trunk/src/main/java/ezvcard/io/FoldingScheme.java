@@ -86,6 +86,7 @@ public class FoldingScheme {
 	private final String indent;
 
 	/**
+	 * Creates a folding scheme.
 	 * @param lineLength the maximum number of characters that can exist on a
 	 * line before needing to be folded (not including the newline)
 	 * @param indent the string to use for indentation

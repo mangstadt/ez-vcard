@@ -43,9 +43,10 @@ import ezvcard.util.XCardElement;
 /**
  * <p>
  * Maps a globally-unique URI to a PID parameter value. The PID parameter can be
- * set on any type where multiple instances are allowed (such as EMAIL or ADR,
- * but not N because only 1 instance of N is allowed). It allows an individual
- * type instance to be uniquely identifiable.
+ * set on any type where multiple instances are allowed (such as
+ * {@link EmailType} or {@link AddressType}, but not {@link StructuredNameType}
+ * because only 1 instance of it is allowed). It allows an individual type
+ * instance to be uniquely identifiable.
  * </p>
  * 
  * <p>
@@ -98,11 +99,15 @@ public class ClientPidMapType extends VCardType {
 	private Integer pid;
 	private String uri;
 
+	/**
+	 * Creates an empty client PID map property.
+	 */
 	public ClientPidMapType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a client PID map property.
 	 * @param pid the PID
 	 * @param uri the globally unique URI
 	 */

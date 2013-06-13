@@ -58,11 +58,15 @@ import ezvcard.VCardSubTypes;
 public class SourceType extends UriType implements HasAltId {
 	public static final String NAME = "SOURCE";
 
+	/**
+	 * Creates an empty source property.
+	 */
 	public SourceType() {
 		this(null);
 	}
 
 	/**
+	 * Creates a source property.
 	 * @param url the URL
 	 */
 	public SourceType(String url) {

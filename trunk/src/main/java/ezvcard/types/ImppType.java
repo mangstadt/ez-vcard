@@ -63,7 +63,7 @@ import ezvcard.util.XCardElement;
  * ImppType impp = new ImppType(&quot;aim:johndoe@aol.com&quot;);
  * vcard.addImpp(impp);
  * 
- * //static helper constructors
+ * //static factory methods
  * impp = ImppType.msn(&quot;janedoe@msn.com&quot;);
  * vcard.addImpp(impp);
  * </pre>
@@ -123,13 +123,16 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	private URI uri;
 
+	/**
+	 * Creates an empty IMPP property.
+	 */
 	public ImppType() {
 		super(NAME);
 	}
 
 	/**
-	 * Constructs a new IMPP type. Note that this class has static convenience
-	 * methods for creating IMPP types of common IM protocols.
+	 * Creates an IMPP property. Note that this class has static factory methods
+	 * for creating IMPP types of common IM protocols.
 	 * @param uri the IM URI (e.g. "aim:johndoe@aol.com")
 	 * @throws IllegalArgumentException if the URI is not a valid URI
 	 */
@@ -139,7 +142,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	}
 
 	/**
-	 * Constructs a new IMPP type. Note that this class has static convenience
+	 * Constructs a new IMPP type. Note that this class has static factory
 	 * methods for creating IMPP types of common IM protocols.
 	 * @param uri the IM URI (e.g. "aim:johndoe@aol.com")
 	 */
@@ -149,7 +152,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	}
 
 	/**
-	 * Constructs a new IMPP type. Note that this class has static convenience
+	 * Constructs a new IMPP type. Note that this class has static factory
 	 * methods for creating IMPP types of common IM protocols.
 	 * @param protocol the IM protocol (e.g. "aim")
 	 * @param handle the IM handle (e.g. "johndoe@aol.com")
@@ -580,10 +583,6 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 		return uri.toString();
 	}
 
-	/**
-	 * Helper class for parsing and building instant messenger links for
-	 * webpages.
-	 */
 	private static class ImHtmlLink {
 		private final Pattern linkRegex;
 		private final String protocol;

@@ -59,7 +59,7 @@ import ezvcard.util.JCardValue;
 
 //@formatter:off
 /**
- * Unmarshals JSON-encoded vCards into {@link VCard} objects.
+ * Parses {@link VCard} objects from a JSON data stream (jCard format).
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/draft-kewisch-vcard-in-json-01">jCard draft</a>
  */

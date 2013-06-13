@@ -35,14 +35,26 @@ package ezvcard;
  */
 @SuppressWarnings("serial")
 public class VCardException extends RuntimeException {
-	public VCardException(String msg, Throwable t) {
-		super(msg, t);
+	/**
+	 * Creates a vCard exception.
+	 * @param msg the exception message
+	 * @param cause the cause exception
+	 */
+	public VCardException(String msg, Throwable cause) {
+		super(msg, cause);
 	}
 
+	/**
+	 * Creates a vCard exception.
+	 * @param msg the exception message
+	 */
 	public VCardException(String msg) {
 		super(msg);
 	}
 
+	/**
+	 * Creates a vCard exception.
+	 */
 	public VCardException() {
 		super();
 	}

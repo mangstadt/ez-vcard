@@ -117,11 +117,15 @@ import ezvcard.parameters.ImageTypeParameter;
 public class LogoType extends ImageType {
 	public static final String NAME = "LOGO";
 
+	/**
+	 * Creates an empty logo property.
+	 */
 	public LogoType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a logo property.
 	 * @param url the URL to the logo
 	 * @param type the content type (e.g. PNG)
 	 */
@@ -130,6 +134,7 @@ public class LogoType extends ImageType {
 	}
 
 	/**
+	 * Creates a logo property.
 	 * @param data the binary data of the logo
 	 * @param type the content type (e.g. PNG)
 	 */
@@ -138,6 +143,7 @@ public class LogoType extends ImageType {
 	}
 
 	/**
+	 * Creates a logo property.
 	 * @param in an input stream to the binary data (will be closed)
 	 * @param type the content type (e.g. PNG)
 	 * @throws IOException if there's a problem reading from the input stream
@@ -147,6 +153,7 @@ public class LogoType extends ImageType {
 	}
 
 	/**
+	 * Creates a logo property.
 	 * @param file the image file
 	 * @param type the content type (e.g. PNG)
 	 * @throws IOException if there's a problem reading from the file

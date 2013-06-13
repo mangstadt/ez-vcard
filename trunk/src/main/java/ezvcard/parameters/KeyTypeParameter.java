@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import ezvcard.types.KeyType;
+
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
  * 
@@ -58,7 +60,7 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents the TYPE parameter of the KEY type.
+ * Represents the TYPE parameter of the {@link KeyType} type.
  * <p>
  * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
@@ -95,7 +97,8 @@ public class KeyTypeParameter extends MediaTypeParameter {
 	/**
 	 * Searches the static objects in this class for one that has a certain
 	 * media type.
-	 * @param mediaType the media type to search for (e.g. "application/pgp-keys")
+	 * @param mediaType the media type to search for (e.g.
+	 * "application/pgp-keys")
 	 * @return the object or null if not found
 	 */
 	public static KeyTypeParameter findByMediaType(String mediaType) {

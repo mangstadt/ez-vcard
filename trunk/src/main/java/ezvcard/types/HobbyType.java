@@ -37,7 +37,7 @@ import ezvcard.parameters.HobbyLevelParameter;
  * Defines a recreational activity that the person actively engages in. For
  * example, if a person has a HOBBY of "hockey", it would mean that he likes to
  * play hockey. Someone who just likes to <i>watch</i> hockey would list
- * "hockey" as an INTEREST (see {@link InterestType}) instead.
+ * "hockey" as an {@link InterestType} instead.
  * 
  * <p>
  * <b>Code sample</b>
@@ -63,11 +63,15 @@ import ezvcard.parameters.HobbyLevelParameter;
 public class HobbyType extends TextType implements HasAltId {
 	public static final String NAME = "HOBBY";
 
+	/**
+	 * Creates an empty hobby property.
+	 */
 	public HobbyType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a hobby property.
 	 * @param hobby the hobby (e.g. "wind surfing")
 	 */
 	public HobbyType(String hobby) {

@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import ezvcard.types.RelatedType;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -30,7 +32,7 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents the TYPE parameter of the RELATED type.
+ * Represents the TYPE parameter of the {@link RelatedType} type.
  * <p>
  * <b>Supported versions:</b> <code>4.0</code>
  * </p>

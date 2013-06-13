@@ -126,12 +126,16 @@ public class TimezoneType extends VCardType implements HasAltId {
 	private Integer minuteOffset;
 	private String text;
 
+	/**
+	 * Creates an empty timezone property.
+	 */
 	public TimezoneType() {
 		super(NAME);
 	}
 
 	/**
-	 * This is the recommended constructor for version 4.0 vCards.
+	 * Creates a timezone property (this is the recommended constructor for
+	 * version 4.0 vCards).
 	 * @param text string representing the timezone from the <a
 	 * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Olson
 	 * Database</a> (e.g. "America/New_York")
@@ -141,7 +145,8 @@ public class TimezoneType extends VCardType implements HasAltId {
 	}
 
 	/**
-	 * This is the recommended constructor for version 2.1 and 3.0 vCards.
+	 * Creates a timezone property (this is the recommended constructor for
+	 * version 2.1 and 3.0 vCards).
 	 * @param hourOffset the hour offset
 	 * @param minuteOffset the minute offset
 	 */

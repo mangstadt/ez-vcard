@@ -58,6 +58,7 @@ public class JCardDataType {
 	private final String name;
 
 	/**
+	 * Creates a hCard data type.
 	 * @param name the data type name (e.g. "text")
 	 */
 	private JCardDataType(String name) {

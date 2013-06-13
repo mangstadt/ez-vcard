@@ -75,6 +75,9 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	private List<String> prefixes = new ArrayList<String>();
 	private List<String> suffixes = new ArrayList<String>();
 
+	/**
+	 * Creates a structured name property.
+	 */
 	public StructuredNameType() {
 		super(NAME);
 	}
