@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
+
+import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
  Copyright (c) 2013, Michael Angstadt

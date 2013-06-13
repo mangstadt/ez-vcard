@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -28,6 +27,7 @@ import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
+import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
  Copyright (c) 2013, Michael Angstadt

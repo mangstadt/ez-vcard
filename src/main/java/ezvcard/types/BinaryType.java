@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -22,6 +21,7 @@ import ezvcard.util.IOUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
+import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
  Copyright (c) 2013, Michael Angstadt

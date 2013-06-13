@@ -10,7 +10,7 @@
 	<organization>
 		<name>Michael Angstadt</name>
 	</organization>
-	<description>A library that reads and writes vCards, supporting all versions of the vCard standard (2.1, 3.0, and 4.0) as well as the xCard (XML-encoded vCards), hCard (HTML-encoded vCards), and jCard (JSON-encoded vCards) standards.</description>
+	<description>A library that reads and writes vCards, supporting all versions of the vCard standard (2.1, 3.0, and 4.0) as well as xCard (XML-encoded vCards), hCard (HTML-encoded vCards), and jCard (JSON-encoded vCards).</description>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -51,11 +51,15 @@
 	</properties>
 
 	<dependencies>
+		<!--
+		Source code of commons-codec has been included in the project to improve Android compatibility.
+		See: https://groups.google.com/forum/?fromgroups=#!topic/ez-vcard-discuss/w2TK7yetwr8
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.6</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
@@ -155,6 +159,9 @@
 						<link>http://jsoup.org/apidocs/</link>
 						<link>http://fasterxml.github.io/jackson-core/javadoc/2.1.0/</link>
 					</links>
+
+					<!-- exclude commons-codec source -->
+					<excludePackageNames>ezvcard.util.org.*</excludePackageNames>
 				</configuration>
 				<executions>
 					<execution>
