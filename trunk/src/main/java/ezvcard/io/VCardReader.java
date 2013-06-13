@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.net.QuotedPrintableCodec;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -31,6 +29,8 @@ import ezvcard.types.RawType;
 import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.org.apache.commons.codec.DecoderException;
+import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
  Copyright (c) 2013, Michael Angstadt
