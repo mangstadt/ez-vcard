@@ -44,7 +44,7 @@ public class JCardValue {
 	private final List<List<Object>> values = new ArrayList<List<Object>>();
 
 	/**
-	 * Helper constructor for creating a "text" value.
+	 * Creates a "text" value.
 	 * @param values the text values
 	 */
 	public static JCardValue text(String... values) {
@@ -57,14 +57,14 @@ public class JCardValue {
 	}
 
 	/**
-	 * Helper constructor for creating a "uri" value.
+	 * Creates an empty "uri" value.
 	 */
 	public static JCardValue uri() {
 		return uri(null);
 	}
 
 	/**
-	 * Helper constructor for creating a "uri" value.
+	 * Creates a "uri" value.
 	 * @param uri the URI
 	 */
 	public static JCardValue uri(String uri) {
@@ -77,14 +77,14 @@ public class JCardValue {
 	}
 
 	/**
-	 * Helper constructor for creating a "date" value.
+	 * Creates an empty "date" value.
 	 */
 	public static JCardValue date() {
 		return date(null);
 	}
 
 	/**
-	 * Helper constructor for creating a "date" value.
+	 * Creates a "date" value.
 	 * @param date the date
 	 */
 	public static JCardValue date(Date date) {
@@ -97,14 +97,14 @@ public class JCardValue {
 	}
 
 	/**
-	 * Helper constructor for creating a "datetime" value.
+	 * Creates an empty "datetime" value.
 	 */
 	public static JCardValue dateTime() {
 		return dateTime(null);
 	}
 
 	/**
-	 * Helper constructor for creating a "datetime" value.
+	 * Creates a "datetime" value.
 	 * @param date the date
 	 */
 	public static JCardValue dateTime(Date date) {
@@ -117,14 +117,14 @@ public class JCardValue {
 	}
 
 	/**
-	 * Helper constructor for creating a "timestamp" value.
+	 * Creates an empty "timestamp" value.
 	 */
 	public static JCardValue timestamp() {
 		return timestamp(null);
 	}
 
 	/**
-	 * Helper constructor for creating a "timestamp" value.
+	 * Creates a a "timestamp" value.
 	 * @param timestamp the timestamp
 	 */
 	public static JCardValue timestamp(Date timestamp) {
@@ -137,14 +137,14 @@ public class JCardValue {
 	}
 
 	/**
-	 * Helper constructor for creating a "utc-offset" value.
+	 * Creates an empty "utc-offset" value.
 	 */
 	public static JCardValue utcOffset() {
 		return utcOffset(null, null);
 	}
 
 	/**
-	 * Helper constructor for creating a "utf-offset" value.
+	 * Creates a "utc-offset" value.
 	 * @param hourOffset the hour offset (e.g. -5)
 	 * @param minuteOffset the minute offset (e.g. 0)
 	 */

@@ -38,11 +38,12 @@ import ezvcard.util.XCardElement;
  */
 
 /**
- * Represents a type whose value is a URI.
+ * Represents a type whose value is a URI (for example, {@link UrlType}).
  * @author Michael Angstadt
  */
 public class UriType extends TextType {
 	/**
+	 * Creates a property whose value is a URI.
 	 * @param name the type name (e.g. "URL")
 	 */
 	public UriType(String name) {
@@ -50,6 +51,7 @@ public class UriType extends TextType {
 	}
 
 	/**
+	 * Creates a property whose value is a URI.
 	 * @param name the type name (e.g. "URL")
 	 * @param uri the type value
 	 */

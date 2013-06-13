@@ -87,13 +87,17 @@ public class GenderType extends VCardType {
 	private String gender;
 	private String text;
 
+	/**
+	 * Creates an empty gender property. Use of this constructor is discouraged.
+	 * Please use one of the static factory methods to create a new GENDER type.
+	 */
 	public GenderType() {
 		super(NAME);
 	}
 
 	/**
-	 * Use of this constructor is discouraged. Please use one of the static
-	 * methods to create a new GENDER type.
+	 * Creates a gender property. Use of this constructor is discouraged. Please
+	 * use one of the static factory methods to create a new GENDER type.
 	 * @param gender the gender value (e.g. "F")
 	 */
 	public GenderType(String gender) {

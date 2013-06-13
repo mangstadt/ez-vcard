@@ -43,13 +43,15 @@ import ezvcard.util.XCardElement;
  */
 
 /**
- * Represents a type whose value is timestamp (i.e. a date, time, and timezone)
+ * Represents a type whose value is timestamp (in other words, a date, time, and
+ * timezone)
  * @author Michael Angstadt
  */
 public class TimestampType extends VCardType {
 	protected Date timestamp;
 
 	/**
+	 * Creates a timestamp property.
 	 * @param typeName the name of the type
 	 */
 	public TimestampType(String typeName) {
@@ -57,6 +59,7 @@ public class TimestampType extends VCardType {
 	}
 
 	/**
+	 * Creates a timestamp property.
 	 * @param typeName the name of the type
 	 * @param timestamp the timestamp
 	 */

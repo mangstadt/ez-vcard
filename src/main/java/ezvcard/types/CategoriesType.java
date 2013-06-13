@@ -65,6 +65,9 @@ import ezvcard.util.VCardStringUtils;
 public class CategoriesType extends TextListType implements HasAltId {
 	public static final String NAME = "CATEGORIES";
 
+	/**
+	 * Creates a categories property.
+	 */
 	public CategoriesType() {
 		super(NAME, ',');
 	}

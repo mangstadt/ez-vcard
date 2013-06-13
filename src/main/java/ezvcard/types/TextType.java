@@ -46,6 +46,7 @@ public class TextType extends VCardType {
 	protected String value;
 
 	/**
+	 * Creates a property that contains text.
 	 * @param name the type name (e.g. "NOTE")
 	 */
 	public TextType(String name) {
@@ -53,6 +54,7 @@ public class TextType extends VCardType {
 	}
 
 	/**
+	 * Creates a property that contains text.
 	 * @param name the type name (e.g. "NOTE")
 	 * @param value the type value
 	 */

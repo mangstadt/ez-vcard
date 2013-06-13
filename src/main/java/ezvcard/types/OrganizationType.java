@@ -62,6 +62,9 @@ import ezvcard.util.HCardElement;
 public class OrganizationType extends TextListType implements HasAltId {
 	public static final String NAME = "ORG";
 
+	/**
+	 * Creates an organization property.
+	 */
 	public OrganizationType() {
 		super(NAME, ';');
 	}

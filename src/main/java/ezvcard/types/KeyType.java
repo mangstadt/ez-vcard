@@ -138,11 +138,15 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	private String text;
 
+	/**
+	 * Creates an empty key property.
+	 */
 	public KeyType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a key property.
 	 * @param data the binary data
 	 * @param type the type of key (e.g. PGP)
 	 */
@@ -151,6 +155,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	/**
+	 * Creates a key property.
 	 * @param url the URL to the key (vCard 4.0 only)
 	 * @param type the type of key (e.g. PGP)
 	 */
@@ -159,6 +164,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	/**
+	 * Creates a key property.
 	 * @param in an input stream to the binary data (will be closed)
 	 * @param type the content type (e.g. PGP)
 	 * @throws IOException if there's a problem reading from the input stream
@@ -168,6 +174,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	/**
+	 * Creates a key property.
 	 * @param file the key file
 	 * @param type the content type (e.g. PGP)
 	 * @throws IOException if there's a problem reading from the file

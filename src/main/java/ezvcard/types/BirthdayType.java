@@ -92,11 +92,15 @@ import java.util.Date;
 public class BirthdayType extends DateOrTimeType {
 	public static final String NAME = "BDAY";
 
+	/**
+	 * Creates an empty birthday property.
+	 */
 	public BirthdayType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a birthday property.
 	 * @param date the birthday
 	 */
 	public BirthdayType(Date date) {

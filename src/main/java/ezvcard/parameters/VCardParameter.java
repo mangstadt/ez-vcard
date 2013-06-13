@@ -50,6 +50,7 @@ public class VCardParameter {
 	protected final String value;
 
 	/**
+	 * Creates a new parameter.
 	 * @param name the name (e.g. "TYPE")
 	 * @param value the value (e.g. "home")
 	 */

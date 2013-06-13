@@ -35,8 +35,8 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * The members that make up the group. This type can only be used if the KIND
- * type is set to "group".
+ * The members that make up the group. This type can only be used if
+ * {@link KindType} is set to "group".
  * 
  * <p>
  * <b>Adding members</b>
@@ -90,11 +90,15 @@ import ezvcard.VCardVersion;
 public class MemberType extends UriType implements HasAltId {
 	public static final String NAME = "MEMBER";
 
+	/**
+	 * Creates an empty member property.
+	 */
 	public MemberType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a member property.
 	 * @param uri the URI representing the member
 	 */
 	public MemberType(String uri) {

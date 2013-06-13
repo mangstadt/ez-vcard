@@ -40,11 +40,15 @@ import ezvcard.VCardException;
  */
 @SuppressWarnings("serial")
 public class SkipMeException extends VCardException {
+	/**
+	 * Creates a skip-me exception.
+	 */
 	public SkipMeException() {
 		super();
 	}
 
 	/**
+	 * Creates a skip-me exception.
 	 * @param msg the reason why this property cannot be marshalled/unmarshalled
 	 */
 	public SkipMeException(String msg) {

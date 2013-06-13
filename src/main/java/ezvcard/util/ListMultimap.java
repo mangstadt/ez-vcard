@@ -49,12 +49,15 @@ import java.util.Set;
 public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	private final Map<K, List<V>> map = new LinkedHashMap<K, List<V>>();
 
+	/**
+	 * Creates an empty multimap.
+	 */
 	public ListMultimap() {
 		//empty
 	}
 
 	/**
-	 * Copy constructor.
+	 * Creates a copy of an existing multimap.
 	 * @param orig the multimap to copy from
 	 */
 	public ListMultimap(ListMultimap<K, V> orig) {

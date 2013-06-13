@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -63,7 +62,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  */
 
 /**
- * Converts vCards to string representations.
+ * Writes {@link VCard} objects to a plain-text vCard data stream.
  * @author Michael Angstadt
  */
 public class VCardWriter implements Closeable {

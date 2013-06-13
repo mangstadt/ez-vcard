@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import ezvcard.types.SoundType;
+
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
  * 
@@ -58,7 +60,7 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents the TYPE parameter of the SOUND type.
+ * Represents the TYPE parameter of the {@link SoundType} type.
  * <p>
  * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>

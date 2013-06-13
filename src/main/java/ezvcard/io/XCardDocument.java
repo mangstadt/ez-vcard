@@ -61,7 +61,7 @@ import ezvcard.util.XmlUtils;
  */
 
 /**
- * Converts vCards to their XML representation.
+ * Converts {@link VCard} objects to their XML representation (xCard format).
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
@@ -94,6 +94,9 @@ public class XCardDocument {
 	private final Document document;
 	private final Element root;
 
+	/**
+	 * Creates an xCard document.
+	 */
 	public XCardDocument() {
 		document = XmlUtils.createDocument();
 		root = createElement("vcards");

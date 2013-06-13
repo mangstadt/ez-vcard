@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import ezvcard.types.ExpertiseType;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -30,7 +32,7 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents a LEVEL parameter for the EXPERTISE property.
+ * Represents a LEVEL parameter for the {@link ExpertiseType} property.
  * 
  * <p>
  * <b>Supported versions:</b> <code>4.0</code>

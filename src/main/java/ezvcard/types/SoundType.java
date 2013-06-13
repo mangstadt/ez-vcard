@@ -121,11 +121,15 @@ import ezvcard.util.HCardElement;
 public class SoundType extends BinaryType<SoundTypeParameter> {
 	public static final String NAME = "SOUND";
 
+	/**
+	 * Creates an empty sound property.
+	 */
 	public SoundType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a sound property.
 	 * @param url the URL to the sound file
 	 * @param type the content type (e.g. OGG)
 	 */
@@ -134,6 +138,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	}
 
 	/**
+	 * Creates a sound property.
 	 * @param data the binary data of the sound file
 	 * @param type the content type (e.g. OGG)
 	 */
@@ -142,6 +147,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	}
 
 	/**
+	 * Creates a sound property.
 	 * @param in an input stream to the binary data (will be closed)
 	 * @param type the content type (e.g. OGG)
 	 * @throws IOException if there's a problem reading from the input stream
@@ -151,6 +157,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	}
 
 	/**
+	 * Creates a sound property.
 	 * @param file the sound file
 	 * @param type the content type (e.g. OGG)
 	 * @throws IOException if there's a problem reading from the file

@@ -65,11 +65,15 @@ import ezvcard.util.XCardElement;
 public class LanguageType extends TextType implements HasAltId {
 	public static final String NAME = "LANG";
 
+	/**
+	 * Creates an empty language property.
+	 */
 	public LanguageType() {
 		super(NAME);
 	}
 
 	/**
+	 * Creates a language property.
 	 * @param language the language (e.g. "en-ca")
 	 */
 	public LanguageType(String language) {

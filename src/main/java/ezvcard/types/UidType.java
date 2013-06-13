@@ -60,11 +60,15 @@ import java.util.UUID;
 public class UidType extends UriType {
 	public static final String NAME = "UID";
 
+	/**
+	 * Creates an empty UID property.
+	 */
 	public UidType() {
 		this(null);
 	}
 
 	/**
+	 * Creates a UID property.
 	 * @param uid the UID
 	 */
 	public UidType(String uid) {

@@ -88,6 +88,9 @@ public class BirthplaceType extends VCardType implements HasAltId {
 	private String uri;
 	private String text;
 
+	/**
+	 * Creates a birthplace property.
+	 */
 	public BirthplaceType() {
 		super(NAME);
 	}

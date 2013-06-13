@@ -85,6 +85,9 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	private String uri;
 	private String text;
 
+	/**
+	 * Creates a related property.
+	 */
 	public RelatedType() {
 		super(NAME);
 	}

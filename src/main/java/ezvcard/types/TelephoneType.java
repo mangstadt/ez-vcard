@@ -81,12 +81,16 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	private String text;
 	private TelUri uri;
 
+	/**
+	 * Creates an empty telephone property.
+	 */
 	public TelephoneType() {
 		super(NAME);
 	}
 
 	/**
-	 * @param text the telephone number
+	 * Creates a telephone property.
+	 * @param text the telephone number (e.g. "(123) 555-6789")
 	 */
 	public TelephoneType(String text) {
 		this();
@@ -94,6 +98,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	/**
+	 * Creates a telephone property.
 	 * @param uri a "tel" URI representing the telephone number (vCard 4.0 only)
 	 */
 	public TelephoneType(TelUri uri) {

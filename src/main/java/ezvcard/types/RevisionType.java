@@ -55,12 +55,16 @@ import java.util.Date;
 public class RevisionType extends TimestampType {
 	public static final String NAME = "REV";
 
+	/**
+	 * Creates an empty revision property.
+	 */
 	public RevisionType() {
 		super(NAME);
 	}
 
 	/**
-	 * @param date the date
+	 * Creates a revision property.
+	 * @param date the last-modified date
 	 */
 	public RevisionType(Date date) {
 		super(NAME, date);

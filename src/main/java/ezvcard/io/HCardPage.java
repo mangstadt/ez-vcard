@@ -53,7 +53,7 @@ import freemarker.template.TemplateException;
  */
 
 /**
- * Writes vCards to an HTML page (hCard format).
+ * Writes {@link VCard} objects to a templated HTML page (hCard format).
  * @author Michael Angstadt
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>

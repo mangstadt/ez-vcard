@@ -67,7 +67,7 @@ import ezvcard.util.XmlUtils;
  */
 
 /**
- * Unmarshals XML-encoded vCards into {@link VCard} objects.
+ * Parses {@link VCard} objects from an XML document (xCard format).
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
@@ -85,6 +85,7 @@ public class XCardReader implements IParser {
 	private Iterator<Element> vcardElements;
 
 	/**
+	 * Creates an xCard reader.
 	 * @param xml the XML string to read the vCards from
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
@@ -97,6 +98,7 @@ public class XCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an xCard reader.
 	 * @param in the input stream to read the vCards from
 	 * @throws IOException if there's a problem reading from the input stream
 	 * @throws SAXException if there's a problem parsing the XML
@@ -106,6 +108,7 @@ public class XCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an xCard reader.
 	 * @param file the file to read the vCards from
 	 * @throws IOException if there's a problem reading from the file
 	 * @throws SAXException if there's a problem parsing the XML
@@ -121,6 +124,7 @@ public class XCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an xCard reader.
 	 * @param reader the reader to read the vCards from
 	 * @throws IOException if there's a problem reading from the reader
 	 * @throws SAXException if there's a problem parsing the XML
@@ -130,6 +134,7 @@ public class XCardReader implements IParser {
 	}
 
 	/**
+	 * Creates an xCard reader.
 	 * @param document the XML document to read the vCards from
 	 */
 	public XCardReader(Document document) {

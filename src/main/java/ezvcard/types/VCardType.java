@@ -71,6 +71,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	protected VCardSubTypes subTypes = new VCardSubTypes();
 
 	/**
+	 * Creates a vCard property.
 	 * @param typeName the type name (e.g. "ADR")
 	 */
 	public VCardType(String typeName) {

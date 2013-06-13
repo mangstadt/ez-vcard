@@ -35,7 +35,7 @@ import ezvcard.io.CompatibilityMode;
  */
 
 /**
- * This just says that the vCard is a vCard, it's not really necessary.
+ * Marks the vCard as being an vCard.
  * 
  * <p>
  * <b>Code sample</b>
@@ -58,6 +58,9 @@ import ezvcard.io.CompatibilityMode;
 public class ProfileType extends TextType {
 	public static final String NAME = "PROFILE";
 
+	/**
+	 * Creates a profile property.
+	 */
 	public ProfileType() {
 		super(NAME, "VCARD");
 	}

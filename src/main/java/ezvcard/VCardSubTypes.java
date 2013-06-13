@@ -47,12 +47,15 @@ import ezvcard.util.ListMultimap;
  * @author Michael Angstadt
  */
 public class VCardSubTypes extends ListMultimap<String, String> {
+	/**
+	 * Creates a list of parameters.
+	 */
 	public VCardSubTypes() {
 		//empty
 	}
 
 	/**
-	 * Copy constructor.
+	 * Creates a copy of an existing parameter list.
 	 * @param orig the object to copy
 	 */
 	public VCardSubTypes(VCardSubTypes orig) {

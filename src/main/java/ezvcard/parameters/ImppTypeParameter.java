@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import ezvcard.types.ImppType;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -30,7 +32,7 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents the TYPE parameter of the IMPP type.
+ * Represents the TYPE parameter of the {@link ImppType} type.
  * <p>
  * <b>Supported versions:</b> <code>4.0</code>
  * </p>

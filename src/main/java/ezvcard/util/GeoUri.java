@@ -41,10 +41,10 @@ import java.util.regex.Pattern;
 
 /**
  * <p>
- * Represents a "geo" URI.
+ * Represents a URI for encoding a geographical position.
  * </p>
  * <p>
- * Example geo URI: <code>geo:12.341,56.784</code>
+ * Example: <code>geo:12.341,56.784</code>
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc5870">RFC 5870</a>
@@ -80,11 +80,15 @@ public class GeoUri {
 	private Double uncertainty;
 	private Map<String, String> parameters = new LinkedHashMap<String, String>();
 
+	/**
+	 * Creates an empty geo URI.
+	 */
 	public GeoUri() {
 		//do nothing
 	}
 
 	/**
+	 * Creates a geo URI.
 	 * @param coordA the first coordinate (latitude, required)
 	 * @param coordB the second coordinate (longitude, required)
 	 * @param coordC the third coordinate (altitude, optional)
@@ -280,8 +284,8 @@ public class GeoUri {
 	}
 
 	/**
-	 * Determines if the geo URI is valid or not (i.e. if both an A and B
-	 * coordinate is present).
+	 * Determines if the geo URI is valid or not (in other words, if both the A
+	 * and B coordinates are present).
 	 * @return true if it is valid, false if not
 	 */
 	public boolean isValid() {

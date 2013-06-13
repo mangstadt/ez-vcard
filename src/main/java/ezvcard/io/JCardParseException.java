@@ -34,12 +34,18 @@ import ezvcard.VCardException;
  */
 
 /**
- * Thrown when a jCard is not formatted in the correct way (the JSON syntax is
- * valid, but it's not in the correct format).
+ * Thrown during the parsing of a jCard, when a jCard is not formatted in the
+ * correct way (the JSON syntax is valid, but it's not in the correct jCard
+ * format).
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
 public class JCardParseException extends VCardException {
+	/**
+	 * Creates a jCard parse exception.
+	 * @param expected the JSON token that the parser was expecting
+	 * @param actual the actual JSON token
+	 */
 	public JCardParseException(JsonToken expected, JsonToken actual) {
 		super("Expected " + expected + " but was " + actual + ".");
 	}

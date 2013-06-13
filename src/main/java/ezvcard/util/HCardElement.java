@@ -46,6 +46,7 @@ public class HCardElement {
 	private final Element element;
 
 	/**
+	 * Creates an hCard element.
 	 * @param element the HTML element to wrap
 	 */
 	public HCardElement(Element element) {

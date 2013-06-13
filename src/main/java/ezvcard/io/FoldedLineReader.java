@@ -51,6 +51,7 @@ public class FoldedLineReader extends BufferedReader {
 	private String lastLine;
 
 	/**
+	 * Creates a folded line reader.
 	 * @param reader the reader object to wrap
 	 */
 	public FoldedLineReader(Reader reader) {
@@ -58,6 +59,7 @@ public class FoldedLineReader extends BufferedReader {
 	}
 
 	/**
+	 * Creates a folded line reader.
 	 * @param text the text to read
 	 */
 	public FoldedLineReader(String text) {

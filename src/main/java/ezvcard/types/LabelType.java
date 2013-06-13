@@ -47,9 +47,9 @@ import ezvcard.util.VCardStringUtils;
  * 
  * <p>
  * The LABEL type is not supported in 4.0. Instead, labels are included as a
- * parameter to their corresponding ADR. When marshalling a vCard, ez-vcard will
- * use either the LABEL type or the LABEL parameter, depending on the requested
- * vCard version.
+ * parameter to their corresponding {@link AddressType}. When marshalling a
+ * vCard, ez-vcard will use either the LABEL type or the LABEL parameter,
+ * depending on the requested vCard version.
  * </p>
  * 
  * <p>
@@ -71,16 +71,16 @@ import ezvcard.util.VCardStringUtils;
  * <p>
  * The {@link VCard#addOrphanedLabel} method adds a LABEL type to the vCard.
  * However, use of this method is discouraged because it creates a LABEL type
- * that's not associated with an address. Also, orphaned LABELs are ignored when
- * creating version 4.0 vCards because the LABEL type is not supported by vCard
- * 4.0.
+ * that's not associated with an address. Also, orphaned LABEL types are ignored
+ * when creating version 4.0 vCards because the LABEL type is not supported by
+ * vCard 4.0.
  * </p>
  * 
  * <p>
  * The {@link VCard#getOrphanedLabels} method can be used after parsing a
  * version 2.1 or 3.0 vCard to retrieve any LABEL types which the parser could
- * not assign to an address (ADR type). A LABEL is assigned to an ADR if the
- * LABEL's list of TYPE parameters is identical to the ADR's list of TYPE
+ * not assign to an address. A LABEL is assigned to an address if the LABEL's
+ * list of TYPE parameters is identical to the address's list of TYPE
  * parameters.
  * </p>
  * 
@@ -104,11 +104,15 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 
 	private String value;
 
+	/**
+	 * Creates an empty label property.
+	 */
 	public LabelType() {
 		this(null);
 	}
 
 	/**
+	 * Creates a label property.
 	 * @param label the label value
 	 */
 	public LabelType(String label) {

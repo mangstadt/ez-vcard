@@ -49,8 +49,8 @@ import ezvcard.util.XCardElement;
  */
 
 /**
- * Represents a type that contains a date and/or time (for example, the BDAY
- * type).
+ * Represents a property whose value contains a date and/or a time (for example,
+ * {@link BirthdayType}).
  * @author Michael Angstadt
  */
 public class DateOrTimeType extends VCardType implements HasAltId {
@@ -65,6 +65,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	private boolean dateHasTime;
 
 	/**
+	 * Creates a date-and-or-time property.
 	 * @param typeName the name of the type (e.g. "BDAY")
 	 */
 	public DateOrTimeType(String typeName) {
@@ -72,6 +73,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	/**
+	 * Creates a date-and-or-time property.
 	 * @param typeName the name of the type (e.g. "BDAY")
 	 * @param date the date value
 	 */
@@ -81,6 +83,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	/**
+	 * Creates a date-and-or-time property.
 	 * @param typeName the name of the type (e.g. "BDAY")
 	 * @param partialDate the date value
 	 */

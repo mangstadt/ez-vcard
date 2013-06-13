@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -53,7 +52,8 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  */
 
 /**
- * Represents a Type that contains binary data (for example, the "PHOTO" type).
+ * Represents a property whose value contains binary data (for example,
+ * {@link PhotoType}).
  * @author Michael Angstadt
  * 
  * @param <T> the class used for representing the content type of the resource
@@ -75,6 +75,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	protected T contentType;
 
 	/**
+	 * Creates a binary property.
 	 * @param name the type name (for example, "PHOTO")
 	 */
 	public BinaryType(String name) {
@@ -82,6 +83,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	/**
+	 * Creates a binary property.
 	 * @param name the type name (e.g. "PHOTO")
 	 * @param url the URL to the resource
 	 * @param type the content type
@@ -92,6 +94,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	/**
+	 * Creates a binary property.
 	 * @param name the type name (e.g. "PHOTO")
 	 * @param data the binary data
 	 * @param type the content type
@@ -102,6 +105,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	/**
+	 * Creates a binary property.
 	 * @param name the type name (e.g. "PHOTO")
 	 * @param in an input stream to the binary data (will be closed)
 	 * @param type the content type
@@ -112,6 +116,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	/**
+	 * Creates a binary property.
 	 * @param name the type name (e.g. "PHOTO")
 	 * @param file the file containing the binary data
 	 * @param type the content type

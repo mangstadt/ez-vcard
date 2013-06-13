@@ -57,7 +57,7 @@ import ezvcard.util.JCardValue;
  */
 
 /**
- * Converts vCards to their JSON representations.
+ * Writes {@link VCard} objects to a JSON data stream (jCard format).
  * @author Michael Angstadt
  */
 public class JCardWriter implements Closeable {
