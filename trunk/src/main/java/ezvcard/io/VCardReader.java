@@ -259,7 +259,7 @@ public class VCardReader implements Closeable, IParser {
 			//parse the components out of the line
 			VCardLine parsedLine = VCardLine.parse(line, version, caretDecodingEnabled);
 			if (parsedLine == null) {
-				warnings.add("Skipping malformed vCard line: \"" + line + "\"");
+				warnings.add("Line " + reader.getLineNum() + ": Skipping malformed vCard line: \"" + line + "\"");
 				continue;
 			}
 
@@ -316,7 +316,7 @@ public class VCardReader implements Closeable, IParser {
 				try {
 					value = (charset == null) ? codec.decode(value) : codec.decode(value, charset);
 				} catch (DecoderException e) {
-					warnings.add("The value of the " + typeName + " type was marked as \"quoted-printable\", but it could not be decoded.  Assuming that the value is plain text.");
+					warnings.add("Line " + reader.getLineNum() + ": The value of the " + typeName + " type was marked as \"quoted-printable\", but it could not be decoded.  Assuming that the value is plain text.");
 				}
 				subTypes.setEncoding(null); //remove encoding sub type
 			}
@@ -330,21 +330,21 @@ public class VCardReader implements Closeable, IParser {
 
 			if ("BEGIN".equals(typeName)) {
 				if (!"vcard".equalsIgnoreCase(value)) {
-					warnings.add("The value of the BEGIN property should be \"vcard\", but it is \"" + value + "\".");
+					warnings.add("Line " + reader.getLineNum() + ": The value of the BEGIN property should be \"vcard\", but it is \"" + value + "\".");
 				}
 			} else if ("END".equals(typeName)) {
 				endFound = true;
 				if (!"vcard".equalsIgnoreCase(value)) {
-					warnings.add("The value of the END property should be \"vcard\", but it is \"" + value + "\".");
+					warnings.add("Line " + reader.getLineNum() + ": The value of the END property should be \"vcard\", but it is \"" + value + "\".");
 				}
 			} else if ("VERSION".equals(typeName)) {
 				if (version == null) {
 					version = VCardVersion.valueOfByStr(value);
 					if (version == null) {
-						warnings.add("Invalid value of VERSION property: " + value);
+						warnings.add("Line " + reader.getLineNum() + ": Invalid value of VERSION property: " + value);
 					}
 				} else {
-					warnings.add("Additional VERSION property encountered: \"" + value + "\".  It will be ignored.");
+					warnings.add("Line " + reader.getLineNum() + ": Additional VERSION property encountered: \"" + value + "\".  It will be ignored.");
 				}
 				vcard.setVersion(version);
 			} else {
@@ -365,9 +365,11 @@ public class VCardReader implements Closeable, IParser {
 						addToVCard(type, vcard);
 					}
 				} catch (SkipMeException e) {
-					warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+					warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 				} catch (EmbeddedVCardException e) {
 					//parse an embedded vCard (i.e. the AGENT type)
+
+					int embeddedLineNum = reader.getLineNum();
 
 					VCardReader agentReader;
 					if (value.length() == 0 || version == null || version == VCardVersion.V2_1) {
@@ -385,13 +387,15 @@ public class VCardReader implements Closeable, IParser {
 						e.injectVCard(agentVcard);
 					} finally {
 						for (String w : agentReader.getWarnings()) {
-							warnings.add("Problem unmarshalling nested vCard value from " + type.getTypeName() + ": " + w);
+							warnings.add("Line " + embeddedLineNum + ": Problem unmarshalling nested vCard value from " + type.getTypeName() + ": " + w);
 						}
 					}
 
 					addToVCard(type, vcard);
 				} finally {
-					warnings.addAll(warningsBuf);
+					for (String warning : warningsBuf) {
+						warnings.add("Line " + reader.getLineNum() + " (" + typeName + " property): " + warning);
+					}
 				}
 			}
 		}
@@ -453,7 +457,7 @@ public class VCardReader implements Closeable, IParser {
 			} else {
 				t = new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
 				if (!name.startsWith("X-")) {
-					warnings.add("Non-standard type \"" + name + "\" found.  Treating it as an extended type.");
+					warnings.add("Line " + reader.getLineNum() + ": Non-standard type \"" + name + "\" found.  Treating it as an extended type.");
 				}
 			}
 		}

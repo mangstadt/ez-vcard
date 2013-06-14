@@ -122,4 +122,28 @@ public class FoldedLineReaderTest {
 		assertEquals("NOTE:one two three four", reader.readLine());
 		assertNull(reader.readLine());
 	}
+
+	@Test
+	public void getLineNum() throws Exception {
+		//@formatter:off
+		String vcardStr =
+		"NOTE:one\n" +
+		" two\n" +
+		"\n" +
+		"NOTE:three\n" +
+		" four\n";
+		//@formatter:on
+
+		FoldedLineReader reader = new FoldedLineReader(vcardStr);
+
+		assertEquals(0, reader.getLineNum());
+
+		reader.readLine();
+		assertEquals(1, reader.getLineNum());
+
+		reader.readLine();
+		assertEquals(4, reader.getLineNum());
+
+		assertNull(reader.readLine());
+	}
 }
