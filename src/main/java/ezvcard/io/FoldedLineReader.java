@@ -49,6 +49,7 @@ public class FoldedLineReader extends BufferedReader {
 	private static final Pattern outlookQuirk = Pattern.compile("[^:]*?QUOTED-PRINTABLE.*?:.*?=", Pattern.CASE_INSENSITIVE);
 
 	private String lastLine;
+	private int lastLineNum = 0, lineCount = 0;
 
 	/**
 	 * Creates a folded line reader.
@@ -67,6 +68,14 @@ public class FoldedLineReader extends BufferedReader {
 	}
 
 	/**
+	 * Gets the starting line number of the last unfolded line that was read.
+	 * @return the line number
+	 */
+	public int getLineNum() {
+		return lastLineNum;
+	}
+
+	/**
 	 * Reads the next non-empty line. Empty lines must be ignored because some
 	 * vCards (i.e. iPhone) contain empty lines. These empty lines appear in
 	 * between folded lines, which, if not ignored, will cause the parser to
@@ -78,6 +87,9 @@ public class FoldedLineReader extends BufferedReader {
 		String line;
 		do {
 			line = super.readLine();
+			if (line != null) {
+				lineCount++;
+			}
 		} while (line != null && line.length() == 0);
 		return line;
 	}
@@ -127,6 +139,7 @@ public class FoldedLineReader extends BufferedReader {
 		}
 
 		//long lines are folded
+		lastLineNum = lineCount;
 		StringBuilder wholeLineSb = new StringBuilder(wholeLine);
 		while (true) {
 			String line = foldedQuotedPrintableLine ? super.readLine() : readNonEmptyLine();
