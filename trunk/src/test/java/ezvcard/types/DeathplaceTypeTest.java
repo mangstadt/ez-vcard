@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -90,7 +91,7 @@ public class DeathplaceTypeTest {
 		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -100,7 +101,7 @@ public class DeathplaceTypeTest {
 
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -109,7 +110,7 @@ public class DeathplaceTypeTest {
 		String actual = textType.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(textEscaped, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -118,7 +119,7 @@ public class DeathplaceTypeTest {
 		String actual = uriType.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(uri, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -138,7 +139,7 @@ public class DeathplaceTypeTest {
 		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -152,7 +153,7 @@ public class DeathplaceTypeTest {
 		uriType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -176,7 +177,7 @@ public class DeathplaceTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -193,7 +194,7 @@ public class DeathplaceTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -209,7 +210,7 @@ public class DeathplaceTypeTest {
 
 		assertEquals(text, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -220,7 +221,7 @@ public class DeathplaceTypeTest {
 
 		assertEquals(text, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -231,7 +232,7 @@ public class DeathplaceTypeTest {
 		//parses as text
 		assertEquals(uri, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -242,7 +243,7 @@ public class DeathplaceTypeTest {
 
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -255,7 +256,7 @@ public class DeathplaceTypeTest {
 
 		assertEquals(text, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -268,7 +269,7 @@ public class DeathplaceTypeTest {
 
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -282,7 +283,7 @@ public class DeathplaceTypeTest {
 
 		assertEquals(text, t.getText()); //prefers the text
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -304,7 +305,7 @@ public class DeathplaceTypeTest {
 
 		assertEquals(text, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -318,7 +319,7 @@ public class DeathplaceTypeTest {
 
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -333,7 +334,7 @@ public class DeathplaceTypeTest {
 
 		assertEquals(uri, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test

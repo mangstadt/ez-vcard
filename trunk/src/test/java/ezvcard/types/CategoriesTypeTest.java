@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class CategoriesTypeTest {
 		String actual = withValues.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -84,7 +85,7 @@ public class CategoriesTypeTest {
 		String actual = withValues.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -97,7 +98,7 @@ public class CategoriesTypeTest {
 		List<String> actual = t.getValues();
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -109,6 +110,6 @@ public class CategoriesTypeTest {
 		List<String> actual = t.getValues();
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

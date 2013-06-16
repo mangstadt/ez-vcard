@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -92,7 +93,7 @@ public class KeyTypeTest {
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -104,7 +105,7 @@ public class KeyTypeTest {
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -116,7 +117,7 @@ public class KeyTypeTest {
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 		assertEquals("work", subTypes.getType());
 		assertEquals(KeyTypeParameter.PGP.getMediaType(), subTypes.getMediaType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -125,7 +126,7 @@ public class KeyTypeTest {
 		String actual = withText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(text, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -134,7 +135,7 @@ public class KeyTypeTest {
 		String actual = withText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(text, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -143,7 +144,7 @@ public class KeyTypeTest {
 		String actual = withText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(text, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -152,7 +153,7 @@ public class KeyTypeTest {
 		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -161,7 +162,7 @@ public class KeyTypeTest {
 		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -170,7 +171,7 @@ public class KeyTypeTest {
 		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -185,7 +186,7 @@ public class KeyTypeTest {
 		withText.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -202,7 +203,7 @@ public class KeyTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -215,7 +216,7 @@ public class KeyTypeTest {
 		assertNull(key.getUrl());
 		assertNull(key.getData());
 		assertEquals(KeyTypeParameter.PGP, key.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -228,7 +229,7 @@ public class KeyTypeTest {
 		assertNull(key.getUrl());
 		assertNull(key.getData());
 		assertEquals(KeyTypeParameter.PGP, key.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -241,7 +242,7 @@ public class KeyTypeTest {
 		assertNull(key.getUrl());
 		assertNull(key.getData());
 		assertEquals(KeyTypeParameter.PGP, key.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -256,7 +257,7 @@ public class KeyTypeTest {
 		assertNull(key.getUrl());
 		assertNull(key.getData());
 		assertEquals(KeyTypeParameter.PGP, key.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -277,6 +278,6 @@ public class KeyTypeTest {
 		assertNull(key.getUrl());
 		assertNull(key.getData());
 		assertEquals(KeyTypeParameter.PGP, key.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

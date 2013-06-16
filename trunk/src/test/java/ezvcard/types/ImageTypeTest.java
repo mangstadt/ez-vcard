@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -109,6 +110,6 @@ public class ImageTypeTest {
 		image.unmarshalHtml(element, warnings);
 
 		assertEquals("image.jpg", image.getUrl());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

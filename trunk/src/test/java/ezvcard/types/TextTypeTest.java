@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -75,7 +76,7 @@ public class TextTypeTest {
 		String actual = textType.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class TextTypeTest {
 		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -106,7 +107,7 @@ public class TextTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -117,7 +118,7 @@ public class TextTypeTest {
 		String actual = t.getValue();
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -130,7 +131,7 @@ public class TextTypeTest {
 		String actual = t.getValue();
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -145,7 +146,7 @@ public class TextTypeTest {
 		String actual = t.getValue();
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -159,6 +160,6 @@ public class TextTypeTest {
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("This is a test of the TextType.\nOne, two, three; and \\four\\.", t.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

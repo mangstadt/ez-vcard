@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -85,7 +86,7 @@ public class VCardTypeTest {
 		type.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -102,7 +103,7 @@ public class VCardTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -123,7 +124,7 @@ public class VCardTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -140,7 +141,7 @@ public class VCardTypeTest {
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals(type.value, t.value);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -152,7 +153,7 @@ public class VCardTypeTest {
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(type.value, t.value);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -164,7 +165,7 @@ public class VCardTypeTest {
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("va\\,l\\;ue\\\\", t.value);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -176,7 +177,7 @@ public class VCardTypeTest {
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("one,two,three", t.value);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -190,7 +191,7 @@ public class VCardTypeTest {
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals("one;two,three;four", t.value);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test

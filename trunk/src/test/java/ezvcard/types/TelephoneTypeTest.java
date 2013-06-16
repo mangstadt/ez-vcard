@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -88,7 +90,7 @@ public class TelephoneTypeTest {
 		VCardSubTypes subTypes = marshalObjText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -97,7 +99,7 @@ public class TelephoneTypeTest {
 		VCardSubTypes subTypes = marshalObjUri.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -106,7 +108,7 @@ public class TelephoneTypeTest {
 		VCardSubTypes subTypes = marshalObjText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -115,7 +117,7 @@ public class TelephoneTypeTest {
 		VCardSubTypes subTypes = marshalObjUri.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -124,7 +126,7 @@ public class TelephoneTypeTest {
 		VCardSubTypes subTypes = marshalObjText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -134,7 +136,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -151,7 +153,7 @@ public class TelephoneTypeTest {
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertTrue(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -168,7 +170,7 @@ public class TelephoneTypeTest {
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertTrue(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -183,9 +185,9 @@ public class TelephoneTypeTest {
 		VCardSubTypes subTypes = tel.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 
 		assertEquals(1, subTypes.size());
-		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertIntEquals(1, subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -214,7 +216,7 @@ public class TelephoneTypeTest {
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -238,7 +240,7 @@ public class TelephoneTypeTest {
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertTrue(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 
 		warnings.clear();
 
@@ -246,7 +248,7 @@ public class TelephoneTypeTest {
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -269,17 +271,17 @@ public class TelephoneTypeTest {
 		version = VCardVersion.V4_0;
 		VCardSubTypes subTypes = tel1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
-		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertIntEquals(1, subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 
 		warnings.clear();
 
 		subTypes = tel2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
-		assertEquals(Integer.valueOf(2), subTypes.getPref());
+		assertIntEquals(2, subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(TelephoneTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -288,7 +290,7 @@ public class TelephoneTypeTest {
 		String actual = marshalObjText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(number, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -297,7 +299,7 @@ public class TelephoneTypeTest {
 		String actual = marshalObjUri.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(numberWithExt, actual);
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -306,7 +308,7 @@ public class TelephoneTypeTest {
 		String actual = marshalObjText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(number, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -315,7 +317,7 @@ public class TelephoneTypeTest {
 		String actual = marshalObjUri.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(numberWithExt, actual);
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -324,7 +326,7 @@ public class TelephoneTypeTest {
 		String actual = marshalObjText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(number, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -333,7 +335,7 @@ public class TelephoneTypeTest {
 		String actual = marshalObjUri.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(uriWithExt, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -347,7 +349,7 @@ public class TelephoneTypeTest {
 		marshalObjText.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -361,7 +363,7 @@ public class TelephoneTypeTest {
 		marshalObjUri.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -378,7 +380,7 @@ public class TelephoneTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -395,7 +397,7 @@ public class TelephoneTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -405,7 +407,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(number, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -415,7 +417,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(uri, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -425,7 +427,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(number, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -435,7 +437,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(uri, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -445,7 +447,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(uri, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -456,7 +458,7 @@ public class TelephoneTypeTest {
 
 		assertNull(unmarshalObj.getText());
 		assertEquals(number, unmarshalObj.getUri().getNumber());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -467,7 +469,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(number, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -479,7 +481,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(number, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -491,7 +493,7 @@ public class TelephoneTypeTest {
 
 		assertNull(unmarshalObj.getText());
 		assertEquals(number, unmarshalObj.getUri().getNumber());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -503,7 +505,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(number, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -537,7 +539,7 @@ public class TelephoneTypeTest {
 		assertTrue(types.contains(TelephoneTypeParameter.CELL));
 		assertTrue(types.contains(new TelephoneTypeParameter("foo")));
 
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -549,7 +551,7 @@ public class TelephoneTypeTest {
 		assertEquals(0, unmarshalObj.getSubTypes().size());
 		assertEquals(number, unmarshalObj.getUri().getNumber());
 		assertNull(unmarshalObj.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -560,7 +562,7 @@ public class TelephoneTypeTest {
 
 		assertEquals(number, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -576,7 +578,7 @@ public class TelephoneTypeTest {
 		assertEquals(0, unmarshalObj.getSubTypes().size());
 		assertEquals(number, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -592,7 +594,7 @@ public class TelephoneTypeTest {
 		assertEquals(0, unmarshalObj.getSubTypes().size());
 		assertNull(unmarshalObj.getText());
 		assertEquals(number, unmarshalObj.getUri().getNumber());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -608,6 +610,6 @@ public class TelephoneTypeTest {
 		assertEquals(0, unmarshalObj.getSubTypes().size());
 		assertEquals(number, unmarshalObj.getText());
 		assertNull(unmarshalObj.getUri());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 }

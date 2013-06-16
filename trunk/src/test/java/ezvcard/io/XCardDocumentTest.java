@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -113,7 +114,7 @@ public class XCardDocumentTest {
 			doc.addVCard(vcard);
 
 			List<String> warnings = doc.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 
 			//property not written to vCard
 			VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
@@ -130,7 +131,7 @@ public class XCardDocumentTest {
 			doc.addVCard(vcard);
 
 			List<String> warnings = doc.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 		}
 
 		//with FN
@@ -481,7 +482,7 @@ public class XCardDocumentTest {
 			String xml = doc.write();
 
 			List<String> warnings = doc.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 
 			VCard parsedVCard = Ezvcard.parseXml(xml).first();
 			assertEquals("individual", parsedVCard.getKind().getValue());

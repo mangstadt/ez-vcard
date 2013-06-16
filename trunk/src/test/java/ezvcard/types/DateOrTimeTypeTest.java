@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -123,7 +124,7 @@ public class DateOrTimeTypeTest {
 
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -135,7 +136,7 @@ public class DateOrTimeTypeTest {
 
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -148,7 +149,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -162,7 +163,7 @@ public class DateOrTimeTypeTest {
 		dateType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -179,7 +180,7 @@ public class DateOrTimeTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -197,7 +198,7 @@ public class DateOrTimeTypeTest {
 
 		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -208,7 +209,7 @@ public class DateOrTimeTypeTest {
 
 		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -220,7 +221,7 @@ public class DateOrTimeTypeTest {
 
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -231,7 +232,7 @@ public class DateOrTimeTypeTest {
 		dateTimeType.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertTrue(XmlUtils.getFirstChildElement(element).getTextContent().matches(dateTimeRegex));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -244,7 +245,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(1, value.getValues().size());
 		assertEquals(1, value.getValues().get(0).size());
 		assertTrue(value.getFirstValueAsString(), value.getFirstValueAsString().matches(dateTimeExtendedRegex));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -275,7 +276,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = reducedAccuracyDateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -289,7 +290,7 @@ public class DateOrTimeTypeTest {
 		reducedAccuracyDateType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -306,7 +307,7 @@ public class DateOrTimeTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -337,7 +338,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = reducedAccuracyDateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
 		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -351,7 +352,7 @@ public class DateOrTimeTypeTest {
 		reducedAccuracyDateTimeType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -368,7 +369,7 @@ public class DateOrTimeTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -399,7 +400,7 @@ public class DateOrTimeTypeTest {
 		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
 		assertNull(subTypes.getCalscale());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -413,7 +414,7 @@ public class DateOrTimeTypeTest {
 		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -430,7 +431,7 @@ public class DateOrTimeTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -479,7 +480,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -491,7 +492,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -503,7 +504,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -514,7 +515,7 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getDate());
 		assertNull(type.getPartialDate());
 		assertEquals("invalid", type.getText());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -529,7 +530,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -544,7 +545,7 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getDate());
 		assertNull(type.getPartialDate());
 		assertEquals("invalid", type.getText());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -560,7 +561,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -576,7 +577,7 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getDate());
 		assertNull(type.getPartialDate());
 		assertEquals("invalid", type.getText());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -586,8 +587,8 @@ public class DateOrTimeTypeTest {
 		type.unmarshalHtml(element, warnings);
 
 		assertEquals(date, type.getDate());
-		assertEquals(0, warnings.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -597,8 +598,8 @@ public class DateOrTimeTypeTest {
 		type.unmarshalHtml(element, warnings);
 
 		assertEquals(date, type.getDate());
-		assertEquals(0, warnings.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -615,8 +616,8 @@ public class DateOrTimeTypeTest {
 		type.unmarshalHtml(element, warnings);
 
 		assertEquals(date, type.getDate());
-		assertEquals(0, warnings.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -629,7 +630,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -640,7 +641,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -651,7 +652,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -664,7 +665,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -679,7 +680,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
 		assertNull(type.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -705,7 +706,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDate, type.getPartialDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -721,7 +722,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDate, type.getPartialDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -738,7 +739,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDate, type.getPartialDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -764,7 +765,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDateTime, type.getPartialDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -780,7 +781,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDateTime, type.getPartialDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -797,7 +798,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDateTime, type.getPartialDate());
 		assertNull(type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -827,7 +828,7 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getPartialDate());
 		assertEquals(text, type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -839,7 +840,7 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getDate());
 		assertNull(type.getPartialDate());
 		assertEquals(text, type.getText());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -855,7 +856,7 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getPartialDate());
 		assertEquals(text, type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -872,7 +873,7 @@ public class DateOrTimeTypeTest {
 		assertNull(type.getPartialDate());
 		assertEquals(text, type.getText());
 		assertTrue(warnings.isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////

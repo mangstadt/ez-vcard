@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -94,7 +95,7 @@ public class TimestampTypeTest {
 		String actual = timestamp.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(basic, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -115,7 +116,7 @@ public class TimestampTypeTest {
 		timestamp.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -139,7 +140,7 @@ public class TimestampTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -154,7 +155,7 @@ public class TimestampTypeTest {
 		t.unmarshalText(subTypes, basic, version, warnings, compatibilityMode);
 
 		assertEquals(timestampDate, t.getTimestamp());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -163,7 +164,7 @@ public class TimestampTypeTest {
 		t.unmarshalText(subTypes, extended, version, warnings, compatibilityMode);
 
 		assertEquals(timestampDate, t.getTimestamp());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -202,7 +203,7 @@ public class TimestampTypeTest {
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals(timestampDate, t.getTimestamp());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -211,7 +212,7 @@ public class TimestampTypeTest {
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals(timestampDate, t.getTimestamp());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -220,7 +221,7 @@ public class TimestampTypeTest {
 		t.unmarshalHtml(element, warnings);
 
 		assertEquals(timestampDate, t.getTimestamp());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -240,7 +241,7 @@ public class TimestampTypeTest {
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(timestampDate, t.getTimestamp());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
