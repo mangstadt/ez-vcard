@@ -315,7 +315,9 @@ public class HCardReader implements IParser {
 						try {
 							impp.unmarshalHtml(element, warningsBuffer);
 							addToVCard(impp, curVCard);
-							warnings.addAll(warningsBuffer);
+							for (String warning : warningsBuffer) {
+								addWarning(warning, impp.getTypeName());
+							}
 							continue;
 						} catch (SkipMeException e) {
 							//URL is not an instant messenger URL
@@ -360,7 +362,7 @@ public class HCardReader implements IParser {
 					addToVCard(type, curVCard);
 				}
 			} catch (SkipMeException e) {
-				warningsBuffer.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+				warningsBuffer.add("Property has requested that it be skipped: " + e.getMessage());
 			} catch (EmbeddedVCardException e) {
 				if (HtmlUtils.isChildOf(element, embeddedVCards)) {
 					//prevents multiple-nested embedded elements from overwriting each other
@@ -374,15 +376,17 @@ public class HCardReader implements IParser {
 					e.injectVCard(embeddedVCard);
 				} finally {
 					for (String w : embeddedReader.getWarnings()) {
-						warnings.add("Problem unmarshalling nested vCard value from " + type.getTypeName() + ": " + w);
+						warningsBuffer.add("Problem unmarshalling nested vCard value: " + w);
 					}
 				}
 				addToVCard(type, curVCard);
 			} catch (UnsupportedOperationException e) {
 				//type class does not support hCard
-				warningsBuffer.add("Type class \"" + type.getClass().getName() + "\" does not support hCard unmarshalling.");
+				warningsBuffer.add("Property class \"" + type.getClass().getName() + "\" does not support hCard unmarshalling.");
 			} finally {
-				warnings.addAll(warningsBuffer);
+				for (String warning : warningsBuffer) {
+					addWarning(warning, type.getTypeName());
+				}
 			}
 		}
 
@@ -458,5 +462,9 @@ public class HCardReader implements IParser {
 			//there is no public, no-arg constructor
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void addWarning(String message, String propertyName) {
+		warnings.add(propertyName + " property: " + message);
 	}
 }

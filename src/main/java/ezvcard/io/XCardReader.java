@@ -248,18 +248,20 @@ public class XCardReader implements IParser {
 				type.unmarshalXml(subTypes, element, version, warningsBuf, compatibilityMode);
 			} catch (UnsupportedOperationException e) {
 				//type class does not support xCard
-				warningsBuf.add("Type class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property.");
+				warningsBuf.add("Property class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property instead.");
 				type = new XmlType();
 				type.setGroup(group);
 				type.unmarshalXml(subTypes, element, version, warningsBuf, compatibilityMode);
 			}
 			addToVCard(type, vcard);
 		} catch (SkipMeException e) {
-			warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+			warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 		} catch (EmbeddedVCardException e) {
-			warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: xCard does not supported embedded vCards.");
+			warningsBuf.add("Property will not be unmarshalled because xCard does not supported embedded vCards.");
 		} finally {
-			warnings.addAll(warningsBuf);
+			for (String warning : warningsBuf) {
+				addWarning(warning, type.getTypeName());
+			}
 		}
 	}
 
@@ -409,5 +411,9 @@ public class XCardReader implements IParser {
 			}
 			return null;
 		}
+	}
+
+	private void addWarning(String message, String propertyName) {
+		warnings.add(propertyName + " property: " + message);
 	}
 }

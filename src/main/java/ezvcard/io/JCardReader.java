@@ -139,7 +139,7 @@ public class JCardReader implements IParser {
 			}
 			String value = jp.getValueAsString();
 			if (!"vcard".equals(value)) {
-				warnings.add("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
+				addWarning("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
 			}
 		}
 
@@ -229,7 +229,7 @@ public class JCardReader implements IParser {
 			}
 
 			if (propertiesRead == 0 && !"version".equals(propertyName)) {
-				warnings.add("jCard does not start with the \"version\" property.  Version will be set to " + version);
+				addWarning("jCard does not start with the \"version\" property.  Version will be set to " + version);
 			}
 
 			propertiesRead++;
@@ -238,11 +238,11 @@ public class JCardReader implements IParser {
 				Object firstValue = jcardValue.getFirstValue();
 				String firstValueStr = (firstValue == null) ? "" : firstValue.toString();
 				if (versionFound) {
-					warnings.add("Additional \"version\" property encountered: \"" + firstValueStr + "\".  It will be ignored.");
+					addWarning("Additional \"version\" property encountered.  It will be ignored.");
 				} else {
 					versionFound = true;
 					if (!version.getVersion().equals(firstValueStr)) {
-						warnings.add("Invalid value of \"version\" property: " + firstValueStr);
+						addWarning("Invalid value of \"version\" property: " + firstValueStr);
 					}
 				}
 				continue;
@@ -257,16 +257,18 @@ public class JCardReader implements IParser {
 				type.unmarshalJson(subTypes, jcardValue, version, warningsBuf);
 				addToVCard(type, vcard);
 			} catch (SkipMeException e) {
-				warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: " + e.getMessage());
+				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 			} catch (EmbeddedVCardException e) {
-				warningsBuf.add(type.getTypeName() + " property will not be unmarshalled: jCard does not supported embedded vCards.");
+				warningsBuf.add("Property will not be unmarshalled because jCard does not supported embedded vCards.");
 			} finally {
-				warnings.addAll(warningsBuf);
+				for (String warning : warningsBuf) {
+					addWarning(warning, type.getTypeName());
+				}
 			}
 		}
 
 		if (!versionFound) {
-			warnings.add("\"version\" property was missing from the jCard.  Used version " + version.getVersion() + ".");
+			addWarning("\"version\" property was missing from the jCard.  The jCard was parsed as version " + version.getVersion() + ".");
 		}
 
 		//consume ending of properties array
@@ -318,13 +320,13 @@ public class JCardReader implements IParser {
 
 			value = jp.getValueAsString();
 			if (!"vcard".equals(value)) {
-				warnings.add("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
+				addWarning("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
 			}
 		} else if ("vcard".equals(value)) {
 			vcardstream = false;
 		} else {
 			vcardstream = false;
-			warnings.add("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
+			addWarning("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
 		}
 	}
 
@@ -353,12 +355,12 @@ public class JCardReader implements IParser {
 					t = extendedTypeClass.newInstance();
 				} catch (Exception e) {
 					//this should never happen because the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
+					throw new RuntimeException("Extended property class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
 				}
 			} else {
 				t = new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
 				if (!name.startsWith("X-")) {
-					warnings.add("Non-standard type \"" + name + "\" found.  Treating it as an extended type.");
+					addWarning("Non-standard property \"" + name + "\" found.  Treating it as an extended property.");
 				}
 			}
 		}
@@ -412,5 +414,20 @@ public class JCardReader implements IParser {
 	//@Override
 	public List<String> getWarnings() {
 		return new ArrayList<String>(warnings);
+	}
+
+	private void addWarning(String message) {
+		addWarning(message, null);
+	}
+
+	private void addWarning(String message, String propertyName) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Line ").append(jp.getTokenLocation().getLineNr());
+		if (propertyName != null) {
+			sb.append(" (").append(propertyName).append(" property)");
+		}
+		sb.append(": ").append(message);
+
+		warnings.add(sb.toString());
 	}
 }

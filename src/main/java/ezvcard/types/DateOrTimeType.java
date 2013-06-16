@@ -329,11 +329,11 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 				try {
 					setPartialDate(new PartialDate(value));
 				} catch (IllegalArgumentException e2) {
-					warnings.add("Date string \"" + value + "\" could not be parsed.  Assuming it's a text value.");
+					warnings.add("Date string could not be parsed.  Assuming it's a text value: " + value);
 					setText(value);
 				}
 			} else {
-				throw new SkipMeException("Date string \"" + value + "\" could not be parsed.");
+				throw new SkipMeException("Date string could not be parsed: " + value);
 			}
 		}
 	}

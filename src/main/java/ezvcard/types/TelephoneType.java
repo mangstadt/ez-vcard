@@ -292,7 +292,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			try {
 				setUri(TelUri.parse(value));
 			} catch (IllegalArgumentException e) {
-				warnings.add("Could not parse " + NAME + " property value as a URI.  Assuming it's text.");
+				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
 				setText(value);
 			}
 		} else {
@@ -318,7 +318,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			try {
 				setUri(TelUri.parse(value));
 			} catch (IllegalArgumentException e) {
-				warnings.add("Could not parse " + NAME + " property value as a URI.  Assuming it's text.");
+				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
 				setText(value);
 			}
 			return;
@@ -370,7 +370,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			try {
 				setUri(TelUri.parse(valueStr));
 			} catch (IllegalArgumentException e) {
-				warnings.add("Could not parse " + NAME + " property value as a URI.  Assuming it's text.");
+				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
 				setText(valueStr);
 			}
 		} else {
