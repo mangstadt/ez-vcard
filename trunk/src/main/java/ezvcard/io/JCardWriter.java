@@ -20,6 +20,7 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.ValueParameter;
+import ezvcard.types.KindType;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.TextType;
@@ -117,7 +118,7 @@ public class JCardWriter implements Closeable {
 		jg.writeStartArray();
 
 		if (vcard.getFormattedName() == null) {
-			warnings.add("vCard version " + targetVersion + " requires that a formatted name be defined.");
+			warnings.add("vCard version " + targetVersion + " requires that a formatted name property be defined.");
 		}
 
 		List<VCardType> typesToAdd = new ArrayList<VCardType>();
@@ -131,13 +132,13 @@ public class JCardWriter implements Closeable {
 
 			//determine if this type is supported by the target version
 			if (!supportsTargetVersion(type)) {
-				warnings.add(type.getTypeName() + " is not supported by vCard version " + targetVersion + " and will not be added to the vCard.  Supported versions are: " + Arrays.toString(type.getSupportedVersions()));
+				addWarning("This property is not supported by vCard version " + targetVersion + " and will not be added to the vCard.  Supported versions are: " + Arrays.toString(type.getSupportedVersions()), type.getTypeName());
 				continue;
 			}
 
 			//check for correct KIND value if there are MEMBER types
 			if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
-				warnings.add("KIND must be set to \"group\" in order to add MEMBER properties to the vCard.");
+				addWarning("Value must be set to \"group\" if the vCard contains " + MemberType.NAME + " properties.", KindType.NAME);
 				continue;
 			}
 
@@ -158,12 +159,14 @@ public class JCardWriter implements Closeable {
 			try {
 				value = type.marshalJson(targetVersion, warningsBuf);
 			} catch (SkipMeException e) {
-				warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 				continue;
 			} catch (EmbeddedVCardException e) {
-				warningsBuf.add(type.getTypeName() + " property will not be marshalled: jCard does not supported embedded vCards.");
+				warningsBuf.add("Property will not be marshalled because jCard does not supported embedded vCards.");
 			} finally {
-				warnings.addAll(warningsBuf);
+				for (String warning : warningsBuf) {
+					addWarning(warning, type.getTypeName());
+				}
 			}
 
 			//marshal the sub types
@@ -172,7 +175,9 @@ public class JCardWriter implements Closeable {
 			try {
 				subTypes = type.marshalSubTypes(targetVersion, warningsBuf, CompatibilityMode.RFC, vcard);
 			} finally {
-				warnings.addAll(warningsBuf);
+				for (String warning : warningsBuf) {
+					addWarning(warning, type.getTypeName());
+				}
 			}
 			subTypes.removeAll(ValueParameter.NAME); //remove all VALUE parameters
 
@@ -211,7 +216,7 @@ public class JCardWriter implements Closeable {
 			//write data type
 			JCardDataType dataType = value.getDataType();
 			if (dataType == null) {
-				warnings.add(type.getTypeName() + " property does not have a jCard data type associated with it.  Defaulting to \"text\".");
+				addWarning("Property does not have a jCard data type associated with it.  Defaulting to \"text\".", type.getTypeName());
 				dataType = JCardDataType.TEXT;
 			}
 			jg.writeString(dataType.toString());
@@ -363,5 +368,9 @@ public class JCardWriter implements Closeable {
 	public void close() throws IOException {
 		endJsonStream();
 		writer.close();
+	}
+
+	private void addWarning(String message, String propertyName) {
+		warnings.add(propertyName + " property: " + message);
 	}
 }

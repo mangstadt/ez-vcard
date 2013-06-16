@@ -23,6 +23,7 @@ import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.TypeParameter;
 import ezvcard.types.AddressType;
+import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
@@ -408,13 +409,13 @@ public class VCardWriter implements Closeable {
 
 		if (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0) {
 			if (vcard.getStructuredName() == null) {
-				warnings.add("vCard version " + targetVersion + " requires that a structured name be defined.");
+				warnings.add("vCard version " + targetVersion + " requires that a structured name property be defined.");
 			}
 		}
 
 		if (targetVersion == VCardVersion.V3_0 || targetVersion == VCardVersion.V4_0) {
 			if (vcard.getFormattedName() == null) {
-				warnings.add("vCard version " + targetVersion + " requires that a formatted name be defined.");
+				warnings.add("vCard version " + targetVersion + " requires that a formatted name property be defined.");
 			}
 		}
 
@@ -430,13 +431,13 @@ public class VCardWriter implements Closeable {
 
 			//determine if this type is supported by the target version
 			if (!supportsTargetVersion(type)) {
-				warnings.add(type.getTypeName() + " is not supported by vCard version " + targetVersion + " and will not be added to the vCard.  Supported versions are: " + Arrays.toString(type.getSupportedVersions()));
+				addWarning("This property is not supported by vCard version " + targetVersion + " and will not be added to the vCard.  Supported versions are: " + Arrays.toString(type.getSupportedVersions()), type.getTypeName());
 				continue;
 			}
 
 			//check for correct KIND value if there are MEMBER types
 			if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
-				warnings.add("KIND must be set to \"group\" in order to add MEMBER properties to the vCard.");
+				addWarning("Value must be set to \"group\" if the vCard contains " + MemberType.NAME + " properties.", KindType.NAME);
 				continue;
 			}
 
@@ -473,12 +474,14 @@ public class VCardWriter implements Closeable {
 			try {
 				value = type.marshalText(targetVersion, warningsBuf, compatibilityMode);
 			} catch (SkipMeException e) {
-				warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 				continue;
 			} catch (EmbeddedVCardException e) {
 				nested = e.getVCard();
 			} finally {
-				warnings.addAll(warningsBuf);
+				for (String warning : warningsBuf) {
+					addWarning(warning, type.getTypeName());
+				}
 			}
 
 			//marshal the sub types
@@ -487,7 +490,9 @@ public class VCardWriter implements Closeable {
 			try {
 				subTypes = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);
 			} finally {
-				warnings.addAll(warningsBuf);
+				for (String warning : warningsBuf) {
+					addWarning(warning, type.getTypeName());
+				}
 			}
 
 			//sanitize value for safe inclusion in the vCard
@@ -500,7 +505,7 @@ public class VCardWriter implements Closeable {
 							value = codec.encode(value);
 							subTypes.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
 						} catch (EncoderException e) {
-							warnings.add("A unexpected error occurred while encoding the value of the " + type.getTypeName() + " property in \"quoted-printable\" encoding.  Value will not be encoded.\n" + e.getMessage());
+							addWarning("A unexpected error occurred while encoding the property's value into \"quoted-printable\" encoding.  Value will not be encoded: " + e.getMessage(), type.getTypeName());
 							value = VCardStringUtils.escapeNewlines(value);
 						}
 					}
@@ -581,7 +586,7 @@ public class VCardWriter implements Closeable {
 						agentWriter.write(nested);
 					} finally {
 						for (String w : agentWriter.getWarnings()) {
-							warnings.add(type.getTypeName() + " marshal warning: " + w);
+							addWarning("Problem marshalling nested vCard value: " + w, type.getTypeName());
 						}
 					}
 				} else {
@@ -594,7 +599,7 @@ public class VCardWriter implements Closeable {
 						agentWriter.write(nested);
 					} finally {
 						for (String w : agentWriter.getWarnings()) {
-							warnings.add("Problem marshalling nested vCard for " + type.getTypeName() + ": " + w);
+							addWarning("Problem marshalling embedded vCard value: " + w, type.getTypeName());
 						}
 					}
 
@@ -660,7 +665,7 @@ public class VCardWriter implements Closeable {
 		}
 
 		if (subTypeValueChanged) {
-			warnings.add("Parameter \"" + subTypeName + "\" of property \"" + typeName + "\" contained one or more characters which are not allowed in vCard " + targetVersion.getVersion() + " parameter values.  These characters were removed.");
+			addWarning("\"" + subTypeName + "\" parameter contained one or more characters which are not allowed in vCard " + targetVersion.getVersion() + " parameter values.  These characters were removed.", typeName);
 		}
 
 		return modifiedValue;
@@ -701,5 +706,9 @@ public class VCardWriter implements Closeable {
 	 */
 	public void close() throws IOException {
 		writer.close();
+	}
+
+	private void addWarning(String message, String propertyName) {
+		warnings.add(propertyName + " property: " + message);
 	}
 }

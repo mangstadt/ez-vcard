@@ -254,7 +254,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			sb.append(VCardStringUtils.escape(text));
 		} else {
 			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
-				warnings.add("vCard version " + version + " does not allow URLs to be used in the " + NAME + " type.");
+				warnings.add("vCard version " + version + " does not allow URLs to be used.");
 			}
 			super.doMarshalText(sb, version, warnings, compatibilityMode);
 		}

@@ -24,6 +24,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.types.KindType;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.VCardType;
@@ -259,7 +260,7 @@ public class XCardDocument {
 		warnings.clear();
 
 		if (vcard.getFormattedName() == null) {
-			warnings.add("vCard version " + targetVersion + " requires that a formatted name be defined.");
+			warnings.add("vCard version " + targetVersion + " requires that a formatted name property be defined.");
 		}
 
 		ListMultimap<String, VCardType> typesToAdd = new ListMultimap<String, VCardType>(); //group the types by group name (null = no group name)
@@ -272,13 +273,13 @@ public class XCardDocument {
 
 			//determine if this type is supported by the target version
 			if (!supportsTargetVersion(type)) {
-				warnings.add("The " + type.getTypeName() + " type is not supported by xCard (vCard version " + targetVersion + ") and will not be added to the xCard.  Supported versions are " + Arrays.toString(type.getSupportedVersions()));
+				addWarning("This property is not supported by xCard (vCard version " + targetVersion + ") and will not be added to the xCard.  Supported versions are " + Arrays.toString(type.getSupportedVersions()), type.getTypeName());
 				continue;
 			}
 
 			//check for correct KIND value if there are MEMBER types
 			if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
-				warnings.add("The value of KIND must be set to \"group\" in order to add MEMBERs to the vCard.");
+				addWarning("Value must be set to \"group\" if the vCard contains " + MemberType.NAME + " properties.", KindType.NAME);
 				continue;
 			}
 
@@ -311,11 +312,13 @@ public class XCardDocument {
 					Element typeElement = marshalType(type, vcard, warningsBuf);
 					parent.appendChild(typeElement);
 				} catch (SkipMeException e) {
-					warningsBuf.add(type.getTypeName() + " property will not be marshalled: " + e.getMessage());
+					warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 				} catch (EmbeddedVCardException e) {
-					warningsBuf.add(type.getTypeName() + " property will not be marshalled: xCard does not supported embedded vCards.");
+					warningsBuf.add("Property will not be marshalled because xCard does not supported embedded vCards.");
 				} finally {
-					warnings.addAll(warningsBuf);
+					for (String warning : warningsBuf) {
+						addWarning(warning, type.getTypeName());
+					}
 				}
 			}
 		}
@@ -401,5 +404,9 @@ public class XCardDocument {
 	 */
 	private Element createElement(String name, String ns) {
 		return document.createElementNS(ns, name);
+	}
+
+	private void addWarning(String message, String propertyName) {
+		warnings.add(propertyName + " property: " + message);
 	}
 }

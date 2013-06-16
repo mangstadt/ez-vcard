@@ -259,7 +259,7 @@ public class VCardReader implements Closeable, IParser {
 			//parse the components out of the line
 			VCardLine parsedLine = VCardLine.parse(line, version, caretDecodingEnabled);
 			if (parsedLine == null) {
-				warnings.add("Line " + reader.getLineNum() + ": Skipping malformed vCard line: \"" + line + "\"");
+				addWarning("Skipping malformed vCard line: \"" + line + "\"");
 				continue;
 			}
 
@@ -316,35 +316,35 @@ public class VCardReader implements Closeable, IParser {
 				try {
 					value = (charset == null) ? codec.decode(value) : codec.decode(value, charset);
 				} catch (DecoderException e) {
-					warnings.add("Line " + reader.getLineNum() + ": The value of the " + typeName + " type was marked as \"quoted-printable\", but it could not be decoded.  Assuming that the value is plain text.");
+					addWarning("Property value was marked as \"quoted-printable\", but it could not be decoded.  Assuming that the value is plain text.", typeName);
 				}
 				subTypes.setEncoding(null); //remove encoding sub type
 			}
 
 			//vCard should start with "BEGIN"
 			if (typesRead == 0 && !"BEGIN".equals(typeName)) {
-				warnings.add("vCard does not start with \"BEGIN\".");
+				warnings.add("vCard does not start with a \"BEGIN\" property.");
 			}
 
 			typesRead++;
 
 			if ("BEGIN".equals(typeName)) {
 				if (!"vcard".equalsIgnoreCase(value)) {
-					warnings.add("Line " + reader.getLineNum() + ": The value of the BEGIN property should be \"vcard\", but it is \"" + value + "\".");
+					addWarning("Value should be \"vcard\", but it is \"" + value + "\".", "BEGIN");
 				}
 			} else if ("END".equals(typeName)) {
 				endFound = true;
 				if (!"vcard".equalsIgnoreCase(value)) {
-					warnings.add("Line " + reader.getLineNum() + ": The value of the END property should be \"vcard\", but it is \"" + value + "\".");
+					addWarning("Value should be \"vcard\", but it is \"" + value + "\".", "END");
 				}
 			} else if ("VERSION".equals(typeName)) {
 				if (version == null) {
 					version = VCardVersion.valueOfByStr(value);
 					if (version == null) {
-						warnings.add("Line " + reader.getLineNum() + ": Invalid value of VERSION property: " + value);
+						addWarning("Invalid value: " + value, "VERSION");
 					}
 				} else {
-					warnings.add("Line " + reader.getLineNum() + ": Additional VERSION property encountered: \"" + value + "\".  It will be ignored.");
+					addWarning("Additional VERSION property encountered.  It will be ignored.", "VERSION");
 				}
 				vcard.setVersion(version);
 			} else {
@@ -387,14 +387,14 @@ public class VCardReader implements Closeable, IParser {
 						e.injectVCard(agentVcard);
 					} finally {
 						for (String w : agentReader.getWarnings()) {
-							warnings.add("Line " + embeddedLineNum + ": Problem unmarshalling nested vCard value from " + type.getTypeName() + ": " + w);
+							addWarning("Problem unmarshalling nested vCard value: " + w, type.getTypeName(), embeddedLineNum);
 						}
 					}
 
 					addToVCard(type, vcard);
 				} finally {
 					for (String warning : warningsBuf) {
-						warnings.add("Line " + reader.getLineNum() + " (" + typeName + " property): " + warning);
+						addWarning(warning, typeName);
 					}
 				}
 			}
@@ -421,7 +421,7 @@ public class VCardReader implements Closeable, IParser {
 		}
 
 		if (!endFound) {
-			warnings.add("vCard does not terminate with the END property.");
+			addWarning("vCard does not terminate with an \"END:vcard\" property.");
 		}
 
 		return vcard;
@@ -457,7 +457,7 @@ public class VCardReader implements Closeable, IParser {
 			} else {
 				t = new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
 				if (!name.startsWith("X-")) {
-					warnings.add("Line " + reader.getLineNum() + ": Non-standard type \"" + name + "\" found.  Treating it as an extended type.");
+					addWarning("Non-standard property found.  Treating it as an extended property.", name);
 				}
 			}
 		}
@@ -503,5 +503,24 @@ public class VCardReader implements Closeable, IParser {
 	 */
 	public void close() throws IOException {
 		reader.close();
+	}
+
+	private void addWarning(String message) {
+		addWarning(message, null);
+	}
+
+	private void addWarning(String message, String propertyName) {
+		addWarning(message, propertyName, reader.getLineNum());
+	}
+
+	private void addWarning(String message, String propertyName, int lineNum) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Line ").append(lineNum);
+		if (propertyName != null) {
+			sb.append(" (").append(propertyName).append(" property)");
+		}
+		sb.append(": ").append(message);
+
+		warnings.add(sb.toString());
 	}
 }
