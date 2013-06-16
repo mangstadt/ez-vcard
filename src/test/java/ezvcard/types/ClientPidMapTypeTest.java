@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -79,7 +81,7 @@ public class ClientPidMapTypeTest {
 		String actual = withValue.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(pid + ";" + uri, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -102,7 +104,7 @@ public class ClientPidMapTypeTest {
 		withValue.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -127,7 +129,7 @@ public class ClientPidMapTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -143,7 +145,7 @@ public class ClientPidMapTypeTest {
 
 		assertEquals(pid, clientPidMapType.getPid().intValue());
 		assertEquals(uri, clientPidMapType.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -153,7 +155,7 @@ public class ClientPidMapTypeTest {
 
 		assertEquals(pid, clientPidMapType.getPid().intValue());
 		assertEquals(uri + ";foo", clientPidMapType.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -179,7 +181,7 @@ public class ClientPidMapTypeTest {
 
 		assertEquals(pid, clientPidMapType.getPid().intValue());
 		assertEquals(uri, clientPidMapType.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -201,7 +203,7 @@ public class ClientPidMapTypeTest {
 
 		assertEquals(pid, clientPidMapType.getPid().intValue());
 		assertEquals(uri, clientPidMapType.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -215,7 +217,7 @@ public class ClientPidMapTypeTest {
 	@Test
 	public void random() {
 		ClientPidMapType clientpidmap = ClientPidMapType.random(2);
-		assertEquals(Integer.valueOf(2), clientpidmap.getPid());
+		assertIntEquals(2, clientpidmap.getPid());
 		assertTrue(clientpidmap.getUri().matches("urn:uuid:[-\\da-f]+"));
 	}
 }

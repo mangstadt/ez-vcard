@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -79,7 +80,7 @@ public class GeoTypeTest {
 		String actual = withValue.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class GeoTypeTest {
 		String actual = withValue.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -99,7 +100,7 @@ public class GeoTypeTest {
 		String actual = withValue.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -137,7 +138,7 @@ public class GeoTypeTest {
 		withValue.marshalXml(element, version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -154,7 +155,7 @@ public class GeoTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -164,7 +165,7 @@ public class GeoTypeTest {
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
 		assertEquals(56.7878, geo.getLongitude(), 0.00001);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -174,7 +175,7 @@ public class GeoTypeTest {
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
 		assertEquals(56.7878, geo.getLongitude(), 0.00001);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -184,7 +185,7 @@ public class GeoTypeTest {
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
 		assertEquals(56.7878, geo.getLongitude(), 0.00001);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -234,7 +235,7 @@ public class GeoTypeTest {
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
 		assertEquals(56.7878, geo.getLongitude(), 0.00001);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -268,7 +269,7 @@ public class GeoTypeTest {
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
 		assertEquals(56.7878, geo.getLongitude(), 0.00001);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -354,7 +355,7 @@ public class GeoTypeTest {
 
 		assertEquals(-12.34, geo.getLatitude(), 0.00001);
 		assertEquals(56.7878, geo.getLongitude(), 0.00001);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)

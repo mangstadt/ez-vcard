@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -113,7 +114,7 @@ public class VCardWriterTest {
 			vcw.write(vcard);
 
 			List<String> warnings = vcw.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 
 			//property not written to vCard
 			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
@@ -133,7 +134,7 @@ public class VCardWriterTest {
 			vcw.write(vcard);
 
 			List<String> warnings = vcw.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 		}
 
 		//with N
@@ -165,7 +166,7 @@ public class VCardWriterTest {
 			vcw.write(vcard);
 
 			List<String> warnings = vcw.getWarnings();
-			assertEquals(2, warnings.size());
+			assertWarnings(2, warnings);
 		}
 
 		//with N
@@ -181,7 +182,7 @@ public class VCardWriterTest {
 			vcw.write(vcard);
 
 			List<String> warnings = vcw.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 		}
 
 		//with FN
@@ -194,7 +195,7 @@ public class VCardWriterTest {
 			vcw.write(vcard);
 
 			List<String> warnings = vcw.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 		}
 
 		//with both
@@ -227,7 +228,7 @@ public class VCardWriterTest {
 			vcw.write(vcard);
 
 			List<String> warnings = vcw.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 		}
 
 		//with FN
@@ -1093,7 +1094,7 @@ public class VCardWriterTest {
 			vcw.write(vcard);
 
 			List<String> warnings = vcw.getWarnings();
-			assertEquals(1, warnings.size());
+			assertWarnings(1, warnings);
 
 			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
 			assertEquals("individual", parsedVCard.getKind().getValue());

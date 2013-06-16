@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -94,7 +95,7 @@ public class TextListTypeTest {
 		String actual = zeroItems.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -104,7 +105,7 @@ public class TextListTypeTest {
 		String actual = oneItem.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -114,7 +115,7 @@ public class TextListTypeTest {
 		String actual = multipleItems.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -124,7 +125,7 @@ public class TextListTypeTest {
 		String actual = specialChars.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -138,7 +139,7 @@ public class TextListTypeTest {
 		String actual = t.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -151,7 +152,7 @@ public class TextListTypeTest {
 		zeroItems.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -165,7 +166,7 @@ public class TextListTypeTest {
 		oneItem.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -181,7 +182,7 @@ public class TextListTypeTest {
 		multipleItems.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -196,7 +197,7 @@ public class TextListTypeTest {
 		List<List<Object>> expectedValues = Arrays.asList();
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -213,7 +214,7 @@ public class TextListTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -232,7 +233,7 @@ public class TextListTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -251,7 +252,7 @@ public class TextListTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -260,7 +261,7 @@ public class TextListTypeTest {
 		testObj.unmarshalText(subTypes, "", version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList(), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -269,7 +270,7 @@ public class TextListTypeTest {
 		testObj.unmarshalText(subTypes, "one", version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("one"), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -278,7 +279,7 @@ public class TextListTypeTest {
 		testObj.unmarshalText(subTypes, "one,two,three", version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("one", "two", "three"), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -287,7 +288,7 @@ public class TextListTypeTest {
 		testObj.unmarshalText(subTypes, "on\\,e,tw\\;o,three", version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("on,e", "tw;o", "three"), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -297,7 +298,7 @@ public class TextListTypeTest {
 		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList(), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -308,7 +309,7 @@ public class TextListTypeTest {
 		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("one"), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -321,7 +322,7 @@ public class TextListTypeTest {
 		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("one", "two", "three"), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -334,7 +335,7 @@ public class TextListTypeTest {
 		testObj.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(Arrays.asList(), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -348,7 +349,7 @@ public class TextListTypeTest {
 		testObj.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(Arrays.asList("one"), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -362,7 +363,7 @@ public class TextListTypeTest {
 		testObj.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(Arrays.asList("one", "two", "three"), testObj.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test

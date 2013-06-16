@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -163,7 +164,7 @@ public class GenderTypeTest {
 		String actual = genderType.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(gender, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -172,7 +173,7 @@ public class GenderTypeTest {
 		String actual = genderTypeWithText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(gender + ";" + escapedText, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -186,7 +187,7 @@ public class GenderTypeTest {
 		genderType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -201,7 +202,7 @@ public class GenderTypeTest {
 		genderTypeWithText.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -218,7 +219,7 @@ public class GenderTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -236,7 +237,7 @@ public class GenderTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -247,7 +248,7 @@ public class GenderTypeTest {
 		assertEquals(gender, t.getGender());
 		assertTrue(t.isMale());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -258,7 +259,7 @@ public class GenderTypeTest {
 		assertEquals(gender, t.getGender());
 		assertTrue(t.isMale());
 		assertEquals(text, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -273,7 +274,7 @@ public class GenderTypeTest {
 		assertEquals(gender, t.getGender());
 		assertTrue(t.isMale());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -289,7 +290,7 @@ public class GenderTypeTest {
 		assertEquals(gender, t.getGender());
 		assertTrue(t.isMale());
 		assertEquals(text, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -304,7 +305,7 @@ public class GenderTypeTest {
 		assertEquals(gender, t.getGender());
 		assertTrue(t.isMale());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -319,6 +320,6 @@ public class GenderTypeTest {
 		assertEquals(gender, t.getGender());
 		assertTrue(t.isMale());
 		assertEquals(text, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

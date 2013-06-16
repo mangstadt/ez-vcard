@@ -1,5 +1,6 @@
 package ezvcard;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -58,7 +59,7 @@ public class VCardSubTypesTest {
 		VCardSubTypes subTypes = new VCardSubTypes();
 
 		subTypes.replace("PREF", "1");
-		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertIntEquals(1, subTypes.getPref());
 
 		subTypes.replace("PREF", "invalid");
 		assertNull(subTypes.getPref());
@@ -121,11 +122,11 @@ public class VCardSubTypesTest {
 		//make sure it unmarshals the string values correctly
 		Iterator<Integer[]> it = subTypes.getPids().iterator();
 		Integer[] pid = it.next();
-		assertEquals(Integer.valueOf(1), pid[0]);
+		assertIntEquals(1, pid[0]);
 		assertNull(pid[1]);
 		pid = it.next();
-		assertEquals(Integer.valueOf(2), pid[0]);
-		assertEquals(Integer.valueOf(1), pid[1]);
+		assertIntEquals(2, pid[0]);
+		assertIntEquals(1, pid[1]);
 		assertFalse(it.hasNext());
 	}
 
@@ -134,7 +135,7 @@ public class VCardSubTypesTest {
 		VCardSubTypes subTypes = new VCardSubTypes();
 
 		subTypes.replace("INDEX", "1");
-		assertEquals(Integer.valueOf(1), subTypes.getIndex());
+		assertIntEquals(1, subTypes.getIndex());
 
 		subTypes.replace("INDEX", "invalid");
 		assertNull(subTypes.getIndex());

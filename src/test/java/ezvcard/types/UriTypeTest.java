@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -81,7 +82,7 @@ public class UriTypeTest {
 		withValue.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -96,7 +97,7 @@ public class UriTypeTest {
 		empty.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -113,7 +114,7 @@ public class UriTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -129,7 +130,7 @@ public class UriTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -140,7 +141,7 @@ public class UriTypeTest {
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(uri, t.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -150,7 +151,7 @@ public class UriTypeTest {
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(t.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test

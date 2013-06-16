@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -84,7 +85,7 @@ public class RelatedTypeTest {
 		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -93,7 +94,7 @@ public class RelatedTypeTest {
 		VCardSubTypes subTypes = uriType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -102,7 +103,7 @@ public class RelatedTypeTest {
 		RelatedType t = new RelatedType();
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -110,7 +111,7 @@ public class RelatedTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		String actual = textType.marshalText(version, warnings, compatibilityMode);
 		assertEquals(text, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -118,7 +119,7 @@ public class RelatedTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		String actual = uriType.marshalText(version, warnings, compatibilityMode);
 		assertEquals(uri, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -138,7 +139,7 @@ public class RelatedTypeTest {
 		Document actualDoc = xe.document();
 		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -151,7 +152,7 @@ public class RelatedTypeTest {
 		Document actualDoc = xe.document();
 		uriType.marshalXml(xe.element(), version, warnings, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -178,7 +179,7 @@ public class RelatedTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -195,7 +196,7 @@ public class RelatedTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -214,7 +215,7 @@ public class RelatedTypeTest {
 		t.unmarshalText(subTypes, text, version, warnings, compatibilityMode);
 		assertEquals(text, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -226,7 +227,7 @@ public class RelatedTypeTest {
 		t.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -237,7 +238,7 @@ public class RelatedTypeTest {
 		t.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -250,7 +251,7 @@ public class RelatedTypeTest {
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(text, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -263,7 +264,7 @@ public class RelatedTypeTest {
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -290,7 +291,7 @@ public class RelatedTypeTest {
 
 		assertEquals(text, t.getText());
 		assertNull(t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -306,7 +307,7 @@ public class RelatedTypeTest {
 
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -323,7 +324,7 @@ public class RelatedTypeTest {
 
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test

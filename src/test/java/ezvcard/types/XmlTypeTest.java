@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 
@@ -71,7 +72,7 @@ public class XmlTypeTest {
 		Document expected = XmlUtils.toDocument("<root><a href=\"http://www.example.com\">some html</a></root>");
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -94,6 +95,6 @@ public class XmlTypeTest {
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 
 		assertEquals("<a href=\"http://www.example.com\">some html</a>", t.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

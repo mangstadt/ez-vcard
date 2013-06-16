@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -104,7 +105,7 @@ public class BinaryTypeTest {
 		assertEquals(ValueParameter.URL, subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -116,7 +117,7 @@ public class BinaryTypeTest {
 		assertEquals(ValueParameter.URI, subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -128,7 +129,7 @@ public class BinaryTypeTest {
 		assertNull(subTypes.getValue());
 		assertNull(subTypes.getType());
 		assertEquals(ImageTypeParameter.JPEG.getMediaType(), subTypes.getMediaType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -139,7 +140,7 @@ public class BinaryTypeTest {
 		assertEquals(1, subTypes.size());
 		assertEquals(EncodingParameter.BASE64, subTypes.getEncoding());
 		assertNull(subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -150,7 +151,7 @@ public class BinaryTypeTest {
 		assertEquals(1, subTypes.size());
 		assertEquals(EncodingParameter.B, subTypes.getEncoding());
 		assertNull(subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -161,7 +162,7 @@ public class BinaryTypeTest {
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getEncoding());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -173,7 +174,7 @@ public class BinaryTypeTest {
 		assertEquals(EncodingParameter.BASE64, subTypes.getEncoding());
 		assertNull(subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -185,7 +186,7 @@ public class BinaryTypeTest {
 		assertEquals(EncodingParameter.B, subTypes.getEncoding());
 		assertNull(subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -197,7 +198,7 @@ public class BinaryTypeTest {
 		assertNull(subTypes.getEncoding());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
 		assertEquals("work", subTypes.getType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -206,7 +207,7 @@ public class BinaryTypeTest {
 		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -215,7 +216,7 @@ public class BinaryTypeTest {
 		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -224,7 +225,7 @@ public class BinaryTypeTest {
 		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -233,7 +234,7 @@ public class BinaryTypeTest {
 		String actual = withData.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(base64Data, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -242,7 +243,7 @@ public class BinaryTypeTest {
 		String actual = withData.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(base64Data, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -251,7 +252,7 @@ public class BinaryTypeTest {
 		String actual = withData.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(dataUri, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -260,7 +261,7 @@ public class BinaryTypeTest {
 		String actual = withDataNoContentType.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(new DataUri("application/octet-stream", data).toString(), actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -294,7 +295,7 @@ public class BinaryTypeTest {
 		withUrl.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -310,7 +311,7 @@ public class BinaryTypeTest {
 		withData.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -336,7 +337,7 @@ public class BinaryTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -354,7 +355,7 @@ public class BinaryTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -372,7 +373,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertNull(binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -384,7 +385,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertNull(binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -395,7 +396,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertNull(binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -406,7 +407,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertNull(binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -419,7 +420,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -432,7 +433,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -444,7 +445,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertNull(binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -456,7 +457,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertNull(binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -468,7 +469,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -479,7 +480,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertNull(binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -491,7 +492,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -502,7 +503,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -518,7 +519,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -534,7 +535,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -553,7 +554,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertEquals(ImageTypeParameter.GIF, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -565,7 +566,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertNull(binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -577,7 +578,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -589,7 +590,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -618,7 +619,7 @@ public class BinaryTypeTest {
 		assertEquals(url, binaryType.getUrl());
 		assertNull(binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -633,7 +634,7 @@ public class BinaryTypeTest {
 		assertNull(binaryType.getUrl());
 		assertArrayEquals(data, binaryType.getData());
 		assertEquals(ImageTypeParameter.JPEG, binaryType.getContentType());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	private class BinaryTypeImpl extends BinaryType<ImageTypeParameter> {

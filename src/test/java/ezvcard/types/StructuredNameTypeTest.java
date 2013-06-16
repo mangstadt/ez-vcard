@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -91,7 +92,7 @@ public class StructuredNameTypeTest {
 		String expected = "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III";
 		String actual = allValues.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -100,7 +101,7 @@ public class StructuredNameTypeTest {
 		String expected = ";Jonathan;Joh\\;nny\\,,John;;";
 		String actual = emptyValues.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -109,7 +110,7 @@ public class StructuredNameTypeTest {
 		String expected = ";;;;";
 		String actual = allEmptyValues.marshalText(version, warnings, compatibilityMode);
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -129,7 +130,7 @@ public class StructuredNameTypeTest {
 		allValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -146,7 +147,7 @@ public class StructuredNameTypeTest {
 		emptyValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -160,7 +161,7 @@ public class StructuredNameTypeTest {
 		allEmptyValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -181,7 +182,7 @@ public class StructuredNameTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -202,7 +203,7 @@ public class StructuredNameTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -223,7 +224,7 @@ public class StructuredNameTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -237,7 +238,7 @@ public class StructuredNameTypeTest {
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertEquals(Arrays.asList("Mr."), t.getPrefixes());
 		assertEquals(Arrays.asList("III"), t.getSuffixes());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -251,7 +252,7 @@ public class StructuredNameTypeTest {
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -265,7 +266,7 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getAdditional().isEmpty());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -279,7 +280,7 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getAdditional().isEmpty());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -300,7 +301,7 @@ public class StructuredNameTypeTest {
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertEquals(Arrays.asList("Mr."), t.getPrefixes());
 		assertEquals(Arrays.asList("III"), t.getSuffixes());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -318,7 +319,7 @@ public class StructuredNameTypeTest {
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -333,7 +334,7 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getAdditional().isEmpty());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -358,7 +359,7 @@ public class StructuredNameTypeTest {
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertEquals(Arrays.asList("Mr."), t.getPrefixes());
 		assertEquals(Arrays.asList("III"), t.getSuffixes());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -380,7 +381,7 @@ public class StructuredNameTypeTest {
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -399,7 +400,7 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getAdditional().isEmpty());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -418,7 +419,7 @@ public class StructuredNameTypeTest {
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertEquals(Arrays.asList("Mr."), t.getPrefixes());
 		assertEquals(Arrays.asList("III"), t.getSuffixes());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -437,7 +438,7 @@ public class StructuredNameTypeTest {
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -456,7 +457,7 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getAdditional().isEmpty());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -475,6 +476,6 @@ public class StructuredNameTypeTest {
 		assertTrue(t.getAdditional().isEmpty());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

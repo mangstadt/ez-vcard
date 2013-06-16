@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -78,7 +79,7 @@ public class AgentTypeTest {
 
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.URL, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -88,7 +89,7 @@ public class AgentTypeTest {
 
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.URI, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -97,7 +98,7 @@ public class AgentTypeTest {
 		VCardSubTypes subTypes = vcardType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -106,7 +107,7 @@ public class AgentTypeTest {
 		VCardSubTypes subTypes = vcardType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -115,7 +116,7 @@ public class AgentTypeTest {
 		String actual = urlType.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -124,7 +125,7 @@ public class AgentTypeTest {
 		String actual = urlType.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -136,7 +137,7 @@ public class AgentTypeTest {
 		} catch (EmbeddedVCardException e) {
 			assertEquals(vcard, e.getVCard());
 		}
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -148,7 +149,7 @@ public class AgentTypeTest {
 		} catch (EmbeddedVCardException e) {
 			assertEquals(vcard, e.getVCard());
 		}
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -171,7 +172,7 @@ public class AgentTypeTest {
 
 		assertEquals(url, agentType.getUrl());
 		assertNull(agentType.getVCard());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -182,7 +183,7 @@ public class AgentTypeTest {
 
 		assertEquals(url, agentType.getUrl());
 		assertNull(agentType.getVCard());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -196,7 +197,7 @@ public class AgentTypeTest {
 		}
 		assertNull(agentType.getUrl());
 		assertEquals(vcard, agentType.getVCard());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -210,7 +211,7 @@ public class AgentTypeTest {
 		}
 		assertNull(agentType.getUrl());
 		assertEquals(vcard, agentType.getVCard());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -220,7 +221,7 @@ public class AgentTypeTest {
 
 		assertEquals(url, agentType.getUrl());
 		assertNull(agentType.getVCard());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -230,7 +231,7 @@ public class AgentTypeTest {
 
 		assertEquals(url, agentType.getUrl());
 		assertNull(agentType.getVCard());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -255,6 +256,6 @@ public class AgentTypeTest {
 
 		assertNull(agentType.getUrl());
 		assertEquals(vcard, agentType.getVCard());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

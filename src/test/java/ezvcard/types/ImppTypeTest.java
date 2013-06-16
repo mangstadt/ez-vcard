@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -187,7 +188,7 @@ public class ImppTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		String actual = impp.marshalText(version, warnings, compatibilityMode);
 		assertEquals(uri, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -207,7 +208,7 @@ public class ImppTypeTest {
 		Document actual = xe.document();
 		impp.marshalXml(xe.element(), version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -232,7 +233,7 @@ public class ImppTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -248,7 +249,7 @@ public class ImppTypeTest {
 		ImppType impp = new ImppType();
 		impp.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
 		assertEquals(uri, impp.getUri().toString());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -266,7 +267,7 @@ public class ImppTypeTest {
 		ImppType impp = new ImppType();
 		impp.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(uri, impp.getUri().toString());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -292,7 +293,7 @@ public class ImppTypeTest {
 		ImppType impp = new ImppType();
 		impp.unmarshalHtml(element, warnings);
 		assertEquals("aim:theuser", impp.getUri().toString());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -301,7 +302,7 @@ public class ImppTypeTest {
 		ImppType impp = new ImppType();
 		impp.unmarshalHtml(element, warnings);
 		assertEquals("aim:theuser", impp.getUri().toString());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -320,7 +321,7 @@ public class ImppTypeTest {
 		impp.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(uri, impp.getUri().toString());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)

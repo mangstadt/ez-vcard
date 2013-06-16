@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -94,15 +96,15 @@ public class TimezoneTypeTest {
 	@Test
 	public void setOffset_null_hour() {
 		t.setOffset(null, 30);
-		assertEquals(Integer.valueOf(0), t.getHourOffset());
-		assertEquals(Integer.valueOf(30), t.getMinuteOffset());
+		assertIntEquals(0, t.getHourOffset());
+		assertIntEquals(30, t.getMinuteOffset());
 	}
 
 	@Test
 	public void setOffset_null_minute() {
 		t.setOffset(-5, null);
 		assertEquals(Integer.valueOf(-5), t.getHourOffset());
-		assertEquals(Integer.valueOf(0), t.getMinuteOffset());
+		assertIntEquals(0, t.getMinuteOffset());
 	}
 
 	@Test
@@ -142,7 +144,7 @@ public class TimezoneTypeTest {
 
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -152,7 +154,7 @@ public class TimezoneTypeTest {
 
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -162,7 +164,7 @@ public class TimezoneTypeTest {
 
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.UTC_OFFSET, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -171,7 +173,7 @@ public class TimezoneTypeTest {
 		VCardSubTypes subTypes = text.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -181,7 +183,7 @@ public class TimezoneTypeTest {
 
 		assertEquals(1, subTypes.size());
 		assertEquals(ValueParameter.TEXT, subTypes.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -190,7 +192,7 @@ public class TimezoneTypeTest {
 		VCardSubTypes subTypes = text.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -199,7 +201,7 @@ public class TimezoneTypeTest {
 		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -208,7 +210,7 @@ public class TimezoneTypeTest {
 		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -217,7 +219,7 @@ public class TimezoneTypeTest {
 		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -226,7 +228,7 @@ public class TimezoneTypeTest {
 		String actual = offset.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(offsetStr, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -235,7 +237,7 @@ public class TimezoneTypeTest {
 		String actual = offset.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(offsetStr, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -244,7 +246,7 @@ public class TimezoneTypeTest {
 		String actual = offset.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(offsetStr, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -259,7 +261,7 @@ public class TimezoneTypeTest {
 		String actual = text.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(textStr, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -268,7 +270,7 @@ public class TimezoneTypeTest {
 		String actual = text.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(textStr, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -277,7 +279,7 @@ public class TimezoneTypeTest {
 		String actual = offsetAndText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(offsetStr, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -286,7 +288,7 @@ public class TimezoneTypeTest {
 		String actual = offsetAndText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(offsetStr, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -295,7 +297,7 @@ public class TimezoneTypeTest {
 		String actual = offsetAndText.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(textStr, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -329,7 +331,7 @@ public class TimezoneTypeTest {
 		offset.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -343,7 +345,7 @@ public class TimezoneTypeTest {
 		text.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -357,7 +359,7 @@ public class TimezoneTypeTest {
 		offsetAndText.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -383,7 +385,7 @@ public class TimezoneTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -400,7 +402,7 @@ public class TimezoneTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -417,7 +419,7 @@ public class TimezoneTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -436,7 +438,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -460,7 +462,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -471,7 +473,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals("invalid", t.getText());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -483,7 +485,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(offsetWithText, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -494,7 +496,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -505,7 +507,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals("invalid", t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -517,7 +519,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -536,7 +538,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(offsetStr, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -548,7 +550,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals("invalid", t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -559,7 +561,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -578,7 +580,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////
@@ -600,7 +602,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -613,7 +615,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -635,7 +637,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -649,7 +651,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	/////////////////////////////////////////////////
@@ -663,7 +665,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -675,7 +677,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals("invalid", t.getText());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	@Test
@@ -687,7 +689,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(offsetStr + ";EDT;" + textStr, t.getText());
-		assertEquals(1, warnings.size());
+		assertWarnings(1, warnings);
 	}
 
 	/////////////////////////////////////////////////
@@ -703,7 +705,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -719,7 +721,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -733,7 +735,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -759,7 +761,7 @@ public class TimezoneTypeTest {
 		assertEquals(hourOffset, t.getHourOffset());
 		assertEquals(minuteOffset, t.getMinuteOffset());
 		assertNull(t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -775,6 +777,6 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals("invalid", t.getText());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

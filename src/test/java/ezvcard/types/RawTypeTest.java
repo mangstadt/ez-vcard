@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -71,7 +72,7 @@ public class RawTypeTest {
 		VCardVersion version = VCardVersion.V2_1;
 		String actual = type.marshalText(version, warnings, compatibilityMode);
 		assertEquals(propertyValue, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -84,7 +85,7 @@ public class RawTypeTest {
 		Document actual = xe.document();
 		type.marshalXml(xe.element(), version, warnings, compatibilityMode);
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -101,7 +102,7 @@ public class RawTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expectedValues, value.getValues());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -111,7 +112,7 @@ public class RawTypeTest {
 		type.unmarshalText(subTypes, propertyValue, version, warnings, compatibilityMode);
 
 		assertEquals(propertyValue, type.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -125,7 +126,7 @@ public class RawTypeTest {
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
 		assertEquals(propertyValue, type.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -138,7 +139,7 @@ public class RawTypeTest {
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
 		assertEquals(propertyValue, type.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -150,7 +151,7 @@ public class RawTypeTest {
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
 		assertEquals("", type.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -161,7 +162,7 @@ public class RawTypeTest {
 		type.unmarshalHtml(element, warnings);
 
 		assertEquals(propertyValue, type.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -175,7 +176,7 @@ public class RawTypeTest {
 		type.unmarshalJson(subTypes, value, version, warnings);
 
 		assertEquals(propertyValueEscaped, type.getValue());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	private class RawTypeImpl extends RawType {

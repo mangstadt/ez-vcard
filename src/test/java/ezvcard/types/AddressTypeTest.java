@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -102,7 +104,7 @@ public class AddressTypeTest {
 
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.first("LABEL"));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -113,7 +115,7 @@ public class AddressTypeTest {
 
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.first("LABEL"));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -124,7 +126,7 @@ public class AddressTypeTest {
 
 		assertEquals(1, subTypes.size());
 		assertEquals("label", subTypes.first("LABEL"));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -140,7 +142,7 @@ public class AddressTypeTest {
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertTrue(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -156,7 +158,7 @@ public class AddressTypeTest {
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertTrue(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -170,9 +172,9 @@ public class AddressTypeTest {
 		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
 
 		assertEquals(1, subTypes.size());
-		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertIntEquals(1, subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -201,7 +203,7 @@ public class AddressTypeTest {
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -225,7 +227,7 @@ public class AddressTypeTest {
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertTrue(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 
 		warnings.clear();
 
@@ -233,7 +235,7 @@ public class AddressTypeTest {
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -256,17 +258,17 @@ public class AddressTypeTest {
 		version = VCardVersion.V4_0;
 		VCardSubTypes subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
-		assertEquals(Integer.valueOf(1), subTypes.getPref());
+		assertIntEquals(1, subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 
 		warnings.clear();
 
 		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
-		assertEquals(Integer.valueOf(2), subTypes.getPref());
+		assertIntEquals(2, subTypes.getPref());
 		assertFalse(subTypes.getTypes().contains(AddressTypeParameter.PREF.getValue()));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -275,7 +277,7 @@ public class AddressTypeTest {
 		String actual = allFields.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -284,7 +286,7 @@ public class AddressTypeTest {
 		String actual = someFields.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -293,7 +295,7 @@ public class AddressTypeTest {
 		String actual = noFields.marshalText(version, warnings, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -314,7 +316,7 @@ public class AddressTypeTest {
 		allFields.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -332,7 +334,7 @@ public class AddressTypeTest {
 		someFields.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -346,7 +348,7 @@ public class AddressTypeTest {
 		noFields.marshalXml(xe.element(), version, warnings, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -426,7 +428,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
 		assertEquals("USA", t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -440,7 +442,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -454,7 +456,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertNull(t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -468,7 +470,7 @@ public class AddressTypeTest {
 		assertNull(t.getRegion());
 		assertNull(t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -482,7 +484,7 @@ public class AddressTypeTest {
 		assertNull(t.getRegion());
 		assertNull(t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -505,7 +507,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
 		assertEquals("USA", t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -525,7 +527,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -541,7 +543,7 @@ public class AddressTypeTest {
 		assertNull(t.getRegion());
 		assertNull(t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -569,7 +571,7 @@ public class AddressTypeTest {
 		assertEquals("12345", t.getPostalCode());
 		assertEquals("USA", t.getCountry());
 		assertEquals(0, t.getTypes().size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -594,7 +596,7 @@ public class AddressTypeTest {
 		assertEquals("12345", t.getPostalCode());
 		assertNull(t.getCountry());
 		assertEquals(0, t.getTypes().size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -615,7 +617,7 @@ public class AddressTypeTest {
 		assertNull(t.getPostalCode());
 		assertNull(t.getCountry());
 		assertEquals(0, t.getTypes().size());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -650,7 +652,7 @@ public class AddressTypeTest {
 		assertTrue(types.contains(AddressTypeParameter.HOME));
 		assertTrue(types.contains(AddressTypeParameter.POSTAL));
 		assertTrue(types.contains(new AddressTypeParameter("other")));
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -668,7 +670,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
 		assertEquals("USA", t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -686,7 +688,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -704,7 +706,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertNull(t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -721,7 +723,7 @@ public class AddressTypeTest {
 		assertNull(t.getRegion());
 		assertNull(t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -739,6 +741,6 @@ public class AddressTypeTest {
 		assertNull(t.getRegion());
 		assertNull(t.getPostalCode());
 		assertNull(t.getCountry());
-		assertEquals(0, warnings.size());
+		assertWarnings(0, warnings);
 	}
 }

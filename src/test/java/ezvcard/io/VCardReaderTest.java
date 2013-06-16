@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -1510,8 +1511,8 @@ public class VCardReaderTest {
 		//TZ
 		{
 			TimezoneType f = vcard.getTimezone();
-			assertEquals(Integer.valueOf(1), f.getHourOffset());
-			assertEquals(Integer.valueOf(0), f.getMinuteOffset());
+			assertIntEquals(1, f.getHourOffset());
+			assertIntEquals(0, f.getMinuteOffset());
 		}
 
 		//LABEL
