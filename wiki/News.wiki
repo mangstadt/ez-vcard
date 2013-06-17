@@ -1,5 +1,11 @@
 #summary Archive of all past news entries.
 
+*June 17, 2013*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.8.2] released.  This release fixes an issue with Android systems where an older version of "commons-codec" would be used instead of the version that ez-vcard requires.
+
+See the [Changelog changelog] for a complete list of changes.
+
 *May 21, 2013*
 
 [http://code.google.com/p/ez-vcard/downloads/list Version 0.8.1] released.  This release includes a number of miscellaneous improvements and bug fixes.

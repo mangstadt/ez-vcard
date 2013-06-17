@@ -1,6 +1,14 @@
 #summary Documents all the changes that were made to every version of the library
 #labels Featured
 
+= 0.8.2 =
+_June 17, 2013_
+
+ * Fixed an Android compatibility issue: Android's version of commons-codec (1.2) was overriding the version that ez-vcard uses (1.6) (see [https://groups.google.com/forum/?fromgroups=#!topic/ez-vcard-discuss/w2TK7yetwr8 this discussion]).  Selection portions of the commons-codec 1.6 source code have been added to the ez-vcard code base.  Their package names were changed in order to eliminate the conflict.
+ * vCard (plain-text) and jCard (JSON) readers now include line numbers in their warnings (for example: "Line 10 (TEL property): Could not parse property value as a URI.  Assuming it's text.")
+ * Each warning message is now prefixed with the name of the property that the warning belongs to (see example in previous bullet point).
+ * Minor text changes to some of the warning messages.
+
 = 0.8.1 =
 _May 21, 2013_
 
