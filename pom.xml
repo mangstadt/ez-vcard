@@ -3,7 +3,7 @@
 	<groupId>com.googlecode.ez-vcard</groupId>
 	<artifactId>ez-vcard</artifactId>
 	<packaging>jar</packaging>
-	<version>0.8.2</version>
+	<version>0.8.3-SNAPSHOT</version>
 	<name>ez-vcard</name>
 	<url>http://code.google.com/p/ez-vcard</url>
 	<inceptionYear>2012</inceptionYear>
@@ -41,9 +41,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://ez-vcard.googlecode.com/svn/tags/0.8.2</connection>
-		<developerConnection>scm:svn:https://ez-vcard.googlecode.com/svn/tags/0.8.2</developerConnection>
-		<url>http://code.google.com/p/ez-vcard/source/browse/tags/0.8.2</url>
+		<connection>scm:svn:http://ez-vcard.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://ez-vcard.googlecode.com/svn/trunk</developerConnection>
+		<url>http://code.google.com/p/ez-vcard/source/browse/</url>
 	</scm>
 	
 	<properties>
