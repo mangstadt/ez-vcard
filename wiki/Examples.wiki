@@ -233,9 +233,9 @@ vcard.addNoteAlt(note1, note2, note3);
 
 ==Example 5.3: Creating a vCard==
 
-The code below generates a complete vCard, encoding it in plain text and XML formats.
+The code below generates a complete vCard, encoding it in plain text, XML, HTML, and JSON formats.
 
-The program prints out any version compatibility warnings it encounters during the marshalling process.  In this case, 3 warnings will be returned when marshalling to plain text.  These warnings point out that the KIND, GENDER, and LANG properties are not supported by vCard version 3.0, which is the version that the plain text vCard is being marshalled to.  The XML marshalling code does not specify a version because XML-encoded vCards only support one version (4.0).
+The program also prints out any version compatibility warnings it encounters during the marshalling process.  In this case, three warnings will be returned when marshalling to plain text.  These warnings point out that the KIND, GENDER, and LANG properties are not supported by vCard version 3.0, which is the version that the plain text vCard is marshalled to.  The XML and JSON marshallers do not specify a version because they only support version 4.0.  HTML-encoded vCards are marshalled under version 3.0 and do not generate warnings, since they are generated using a templated HTML page.
 
 {{{
 import java.io.*;
