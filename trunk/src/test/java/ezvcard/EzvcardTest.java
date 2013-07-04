@@ -626,12 +626,10 @@ public class EzvcardTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"fn\",{},\"text\",\"John Doe\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"fn\",{},\"text\",\"John Doe\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -671,7 +669,7 @@ public class EzvcardTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
+		"[" +
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\",{},\"text\",\"4.0\"]," +
@@ -739,13 +737,13 @@ public class EzvcardTest {
 
 		//defaults to "false"
 		String actual = Ezvcard.writeJson(vcard).go();
-		assertTrue(actual.startsWith("[\"vcardstream\",[\"vcard\""));
+		assertTrue(actual.startsWith("[\"vcard\",[[\""));
 
 		actual = Ezvcard.writeJson(vcard).indent(true).go();
-		assertTrue(actual.startsWith("[\"vcardstream\",[" + newline + "  \"vcard\""));
+		assertTrue(actual.startsWith("[\"vcard\",[[" + newline));
 
 		actual = Ezvcard.writeJson(vcard).indent(false).go();
-		assertTrue(actual.startsWith("[\"vcardstream\",[\"vcard\""));
+		assertTrue(actual.startsWith("[\"vcard\",[[\""));
 	}
 
 	@Test

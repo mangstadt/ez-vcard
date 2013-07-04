@@ -60,19 +60,17 @@ public class JCardWriterTest {
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
-		vcard.setFormattedName("Simon Perreault");
+		vcard.setFormattedName("John Doe");
 		writer.write(vcard);
 
 		writer.close();
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"fn\",{},\"text\",\"Simon Perreault\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"fn\",{},\"text\",\"John Doe\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -86,28 +84,62 @@ public class JCardWriterTest {
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
-		vcard.setFormattedName("Simon Perreault");
+		vcard.setFormattedName("John Doe");
 		writer.write(vcard);
 
 		vcard = new VCard();
-		vcard.setFormattedName("John Doe");
+		vcard.setFormattedName("Jane Doe");
 		writer.write(vcard);
 
 		writer.close();
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"fn\",{},\"text\",\"Simon Perreault\"]" +
-		    "]" +
-		  "]," +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"fn\",{},\"text\",\"John Doe\"]" +
+		  "]" +
+		"] " +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"fn\",{},\"text\",\"Jane Doe\"]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void write_multiple_vcards_wrap_in_array() throws Exception {
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw, true);
+		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		vcard = new VCard();
+		vcard.setFormattedName("Jane Doe");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[" +
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\",{},\"text\",\"4.0\"]," +
 		      "[\"fn\",{},\"text\",\"John Doe\"]" +
+		    "]" +
+		  "]," +
+	  	  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"fn\",{},\"text\",\"Jane Doe\"]" +
 		    "]" +
 		  "]" +
 		"]";
@@ -122,19 +154,17 @@ public class JCardWriterTest {
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
-		vcard.setFormattedName("Simon Perreault").setGroup("TheGroup");
+		vcard.setFormattedName("John Doe").setGroup("TheGroup");
 		writer.write(vcard);
 
 		writer.close();
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"fn\",{\"group\":\"TheGroup\"},\"text\",\"Simon Perreault\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"fn\",{\"group\":\"TheGroup\"},\"text\",\"John Doe\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -148,7 +178,7 @@ public class JCardWriterTest {
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
-		FormattedNameType fn = vcard.setFormattedName("Simon Perreault");
+		FormattedNameType fn = vcard.setFormattedName("John Doe");
 		fn.getSubTypes().put("x-one", "1");
 		fn.getSubTypes().put("x-two", "2");
 		fn.getSubTypes().put("x-two", "22");
@@ -158,12 +188,10 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"fn\",{\"x-one\":\"1\",\"x-two\":[\"2\",\"22\"]},\"text\",\"Simon Perreault\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"fn\",{\"x-one\":\"1\",\"x-two\":[\"2\",\"22\"]},\"text\",\"John Doe\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -177,7 +205,7 @@ public class JCardWriterTest {
 		writer.setAddProdId(true);
 
 		VCard vcard = new VCard();
-		vcard.setFormattedName("Simon Perreault");
+		vcard.setFormattedName("John Doe");
 		writer.write(vcard);
 
 		writer.close();
@@ -197,7 +225,7 @@ public class JCardWriterTest {
 		writer.setIndent(true);
 
 		VCard vcard = new VCard();
-		vcard.setFormattedName("Simon Perreault");
+		vcard.setFormattedName("John Doe");
 		writer.write(vcard);
 
 		vcard = new VCard();
@@ -208,15 +236,44 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\",[" + newline +
-		"  \"vcard\",[[" + newline +
-		"    \"version\",{},\"text\",\"4.0\"],[" + newline +
-		"    \"fn\",{},\"text\",\"Simon Perreault\"]" + newline +
-		"  ]],[" + newline +
-		"  \"vcard\",[[" + newline +
-		"    \"version\",{},\"text\",\"4.0\"],[" + newline +
-		"    \"fn\",{},\"text\",\"John Doe\"]" + newline +
-		"  ]]" + newline +
+		"[\"vcard\",[[" + newline +
+		"  \"version\",{},\"text\",\"4.0\"],[" + newline +
+		"  \"fn\",{},\"text\",\"John Doe\"]" + newline +
+		"]]" + newline + " [\"vcard\",[[" + newline +
+		"  \"version\",{},\"text\",\"4.0\"],[" + newline +
+		"  \"fn\",{},\"text\",\"John Doe\"]" + newline +
+		"]]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void setIndent_wrap_in_array() throws Exception {
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw, true);
+		writer.setAddProdId(false);
+		writer.setIndent(true);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[" + newline +
+		"[\"vcard\",[[" + newline +
+		"  \"version\",{},\"text\",\"4.0\"],[" + newline +
+		"  \"fn\",{},\"text\",\"John Doe\"]" + newline +
+		"]]" + newline + ",[\"vcard\",[[" + newline +
+		"  \"version\",{},\"text\",\"4.0\"],[" + newline +
+		"  \"fn\",{},\"text\",\"John Doe\"]" + newline +
+		"]]" + newline +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
@@ -257,12 +314,10 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"x-type\",{},\"text\",\"\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"x-type\",{},\"text\",\"\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -285,12 +340,10 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"x-type\",{},\"text\",[\"\"]]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"x-type\",{},\"text\",[\"\"]]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -312,12 +365,10 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"x-type\",{},\"text\",\"\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"x-type\",{},\"text\",\"\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -340,12 +391,10 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"x-type\",{},\"text\",\"\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"x-type\",{},\"text\",\"\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -369,12 +418,10 @@ public class JCardWriterTest {
 		//should default to "text"
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"x-type\",{},\"text\",\"test\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"x-type\",{},\"text\",\"test\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
@@ -399,12 +446,10 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcardstream\"," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"x-type\",{},\"text\",\"test\"]" +
-		    "]" +
+		"[\"vcard\"," +
+		  "[" +
+		    "[\"version\",{},\"text\",\"4.0\"]," +
+		    "[\"x-type\",{},\"text\",\"test\"]" +
 		  "]" +
 		"]";
 		//@formatter:on

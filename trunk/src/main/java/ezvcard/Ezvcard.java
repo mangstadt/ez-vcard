@@ -1777,7 +1777,7 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the writer
 		 */
 		public void go(Writer writer) throws IOException {
-			JCardWriter jcardWriter = new JCardWriter(writer);
+			JCardWriter jcardWriter = new JCardWriter(writer, vcards.size() > 1);
 			jcardWriter.setAddProdId(prodId);
 			jcardWriter.setIndent(indent);
 			try {
@@ -1786,7 +1786,7 @@ public class Ezvcard {
 					addWarnings(jcardWriter.getWarnings());
 				}
 			} finally {
-				jcardWriter.endJsonStream();
+				jcardWriter.closeJsonStream();
 			}
 		}
 

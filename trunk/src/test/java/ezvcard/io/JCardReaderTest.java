@@ -54,36 +54,13 @@ import ezvcard.util.JCardValue;
  */
 public class JCardReaderTest {
 	@Test
-	public void read_single_with_vcardstream() throws Exception {
-		//@formatter:off
-		String json =
-		"[\"vcardstream\",\n" +
-		  "[\"vcard\",\n" +
-		    "[\n" +
-		      "[\"version\", {}, \"text\", \"4.0\"],\n" +
-		      "[\"fn\", {}, \"text\", \"Simon Perreault\"]\n" +
-		    "]\n" +
-		  "]\n" +
-		"]";
-		//@formatter:on
-
-		JCardReader reader = new JCardReader(json);
-
-		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
-
-		assertNull(reader.readNext());
-	}
-
-	@Test
-	public void read_single_without_vcardstream() throws Exception {
+	public void read_single() throws Exception {
 		//@formatter:off
 		String json =
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"fn\", {}, \"text\", \"Simon Perreault\"]" +
+		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
 		    "]" +
 		  "]";
 		//@formatter:on
@@ -92,7 +69,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 		assertNull(reader.readNext());
 	}
@@ -101,17 +78,17 @@ public class JCardReaderTest {
 	public void read_multiple() throws Exception {
 		//@formatter:off
 		String json =
-		"[\"vcardstream\"," +
+		"[" +
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"fn\", {}, \"text\", \"Simon Perreault\"]" +
+		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
 		    "]" +
 		  "]," +
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
+		      "[\"fn\", {}, \"text\", \"Jane Doe\"]" +
 		    "]" +
 		  "]" +
 		"]";
@@ -121,9 +98,35 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 		vcard = reader.readNext();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void ignore_other_json() throws Exception {
+		//@formatter:off
+		String json =
+		"{" +
+		  "\"website\": \"example.com\"," +
+		  "\"vcard\": " +
+		    "[\"vcard\"," +
+		      "[" +
+		        "[\"version\", {}, \"text\", \"4.0\"]," +
+		        "[\"fn\", {}, \"text\", \"John Doe\"]" +
+		      "]" +
+		    "]," +
+		  "\"date\": \"2013-07-04\"" +
+		"}";
+		//@formatter:on
+
+		JCardReader reader = new JCardReader(json);
+
+		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
@@ -136,7 +139,7 @@ public class JCardReaderTest {
 		String json =
 		  "[\"vcard\"," +
 		    "[" +
-		      "[\"fn\", {}, \"text\", \"Simon Perreault\"]" +
+		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
 		    "]" +
 		  "]";
 		//@formatter:on
@@ -145,7 +148,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals(2, reader.getWarnings().size()); //no VERSION property
 
 		assertNull(reader.readNext());
@@ -158,7 +161,7 @@ public class JCardReaderTest {
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\", {}, \"text\", \"3.0\"]," +
-		      "[\"fn\", {}, \"text\", \"Simon Perreault\"]" +
+		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
 		    "]" +
 		  "]";
 		//@formatter:on
@@ -167,7 +170,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //should still set the version to 4.0
-		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals(1, reader.getWarnings().size()); //warning added
 
 		assertNull(reader.readNext());
@@ -179,7 +182,7 @@ public class JCardReaderTest {
 		String json =
 		  "[\"vcard\"," +
 		    "[" +
-		      "[\"fn\", {}, \"text\", \"Simon Perreault\"]," +
+		      "[\"fn\", {}, \"text\", \"John Doe\"]," +
 		      "[\"version\", {}, \"text\", \"4.0\"]" +
 		    "]" +
 		  "]";
@@ -189,7 +192,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals(1, reader.getWarnings().size()); //warning added
 
 		assertNull(reader.readNext());
