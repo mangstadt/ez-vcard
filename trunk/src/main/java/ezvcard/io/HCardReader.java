@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -314,7 +313,7 @@ public class HCardReader implements IParser {
 						ImppType impp = new ImppType();
 						try {
 							impp.unmarshalHtml(element, warningsBuffer);
-							addToVCard(impp, curVCard);
+							curVCard.addProperty(impp);
 							for (String warning : warningsBuffer) {
 								addWarning(warning, impp.getTypeName());
 							}
@@ -345,7 +344,7 @@ public class HCardReader implements IParser {
 					NicknameType nn = (NicknameType) type;
 					if (nickname == null) {
 						nickname = nn;
-						addToVCard(nickname, curVCard);
+						curVCard.addProperty(nickname);
 					} else {
 						nickname.getValues().addAll(nn.getValues());
 					}
@@ -354,12 +353,12 @@ public class HCardReader implements IParser {
 					CategoriesType c = (CategoriesType) type;
 					if (categories == null) {
 						categories = c;
-						addToVCard(categories, curVCard);
+						curVCard.addProperty(categories);
 					} else {
 						categories.getValues().addAll(c.getValues());
 					}
 				} else {
-					addToVCard(type, curVCard);
+					curVCard.addProperty(type);
 				}
 			} catch (SkipMeException e) {
 				warningsBuffer.add("Property has requested that it be skipped: " + e.getMessage());
@@ -379,7 +378,7 @@ public class HCardReader implements IParser {
 						warningsBuffer.add("Problem unmarshalling nested vCard value: " + w);
 					}
 				}
-				addToVCard(type, curVCard);
+				curVCard.addProperty(type);
 			} catch (UnsupportedOperationException e) {
 				//type class does not support hCard
 				warningsBuffer.add("Property class \"" + type.getClass().getName() + "\" does not support hCard unmarshalling.");
@@ -428,25 +427,6 @@ public class HCardReader implements IParser {
 			}
 		}
 		return t;
-	}
-
-	/**
-	 * Adds a type object to the vCard.
-	 * @param t the type object
-	 * @param vcard the vCard
-	 */
-	private void addToVCard(VCardType t, VCard vcard) {
-		Method method = TypeList.getAddMethod(t.getClass());
-		if (method != null) {
-			try {
-				method.invoke(vcard, t);
-			} catch (Exception e) {
-				//this should NEVER be thrown because the method MUST be public
-				throw new RuntimeException(e);
-			}
-		} else {
-			vcard.addExtendedType(t);
-		}
 	}
 
 	/**

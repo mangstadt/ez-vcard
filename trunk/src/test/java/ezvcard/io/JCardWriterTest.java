@@ -304,7 +304,7 @@ public class JCardWriterTest {
 	public void write_null_value() throws Exception {
 		JCardValue value = JCardValue.text((String) null);
 		VCard vcard = new VCard();
-		vcard.addExtendedType(new TypeForTesting(value));
+		vcard.addProperty(new TypeForTesting(value));
 
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
@@ -330,7 +330,7 @@ public class JCardWriterTest {
 		JCardValue value = JCardValue.text((String) null);
 		value.setStructured(true);
 		VCard vcard = new VCard();
-		vcard.addExtendedType(new TypeForTesting(value));
+		vcard.addProperty(new TypeForTesting(value));
 
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
@@ -355,7 +355,7 @@ public class JCardWriterTest {
 	public void write_no_value() throws Exception {
 		JCardValue value = JCardValue.text();
 		VCard vcard = new VCard();
-		vcard.addExtendedType(new TypeForTesting(value));
+		vcard.addProperty(new TypeForTesting(value));
 
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
@@ -381,7 +381,7 @@ public class JCardWriterTest {
 		JCardValue value = JCardValue.text();
 		value.addValues(Collections.emptyList());
 		VCard vcard = new VCard();
-		vcard.addExtendedType(new TypeForTesting(value));
+		vcard.addProperty(new TypeForTesting(value));
 
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
@@ -407,7 +407,7 @@ public class JCardWriterTest {
 		JCardValue value = new JCardValue();
 		value.addValues("test");
 		VCard vcard = new VCard();
-		vcard.addExtendedType(new TypeForTesting(value));
+		vcard.addProperty(new TypeForTesting(value));
 
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
@@ -436,7 +436,7 @@ public class JCardWriterTest {
 		value.addValues("test");
 		value.setDataType(null);
 		VCard vcard = new VCard();
-		vcard.addExtendedType(new TypeForTesting(value));
+		vcard.addProperty(new TypeForTesting(value));
 
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);

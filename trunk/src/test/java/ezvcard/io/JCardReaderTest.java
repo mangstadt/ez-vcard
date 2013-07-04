@@ -343,7 +343,7 @@ public class JCardReaderTest {
 		reader.registerExtendedType(TypeForTesting.class);
 
 		VCard vcard = reader.readNext();
-		Iterator<TypeForTesting> it = vcard.getExtendedType(TypeForTesting.class).iterator();
+		Iterator<TypeForTesting> it = vcard.getProperties(TypeForTesting.class).iterator();
 
 		{
 			JCardValue value = it.next().value;
@@ -424,7 +424,7 @@ public class JCardReaderTest {
 		reader.registerExtendedType(TypeForTesting.class);
 
 		VCard vcard = reader.readNext();
-		TypeForTesting type = vcard.getExtendedType(TypeForTesting.class).get(0);
+		TypeForTesting type = vcard.getProperty(TypeForTesting.class);
 		JCardValue value = type.value;
 
 		assertTrue(value.getDataType() == JCardDataType.get("name"));
