@@ -767,7 +767,10 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing plain text vCards.
+	 * Chainer class for parsing plain text vCards.
+	 * @see Ezvcard#parse(InputStream)
+	 * @see Ezvcard#parse(File)
+	 * @see Ezvcard#parse(Reader)
 	 */
 	public static class ParserChainTextReader extends ParserChainText<ParserChainTextReader> {
 		private Reader reader;
@@ -798,7 +801,8 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing plain text vCards.
+	 * Chainer class for parsing plain text vCards.
+	 * @see Ezvcard#parse(String)
 	 */
 	public static class ParserChainTextString extends ParserChainText<ParserChainTextString> {
 		private String text;
@@ -853,7 +857,10 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing XML vCards.
+	 * Chainer class for parsing XML vCards.
+	 * @see Ezvcard#parseXml(InputStream)
+	 * @see Ezvcard#parseXml(File)
+	 * @see Ezvcard#parseXml(Reader)
 	 */
 	public static class ParserChainXmlReader extends ParserChainXml<ParserChainXmlReader> {
 		private Reader reader;
@@ -879,7 +886,8 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing XML vCards.
+	 * Chainer class for parsing XML vCards.
+	 * @see Ezvcard#parseXml(String)
 	 */
 	public static class ParserChainXmlString extends ParserChainXml<ParserChainXmlString> {
 		private String xml;
@@ -925,7 +933,8 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing XML vCards.
+	 * Chainer class for parsing XML vCards.
+	 * @see Ezvcard#parseXml(Document)
 	 */
 	public static class ParserChainXmlDom extends ParserChainXml<ParserChainXmlDom> {
 		private Document document;
@@ -1012,7 +1021,10 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing HTML vCards.
+	 * Chainer class for parsing HTML vCards.
+	 * @see Ezvcard#parseHtml(InputStream)
+	 * @see Ezvcard#parseHtml(File)
+	 * @see Ezvcard#parseHtml(Reader)
 	 */
 	public static class ParserChainHtmlReader extends ParserChainHtml<ParserChainHtmlReader> {
 		private Reader reader;
@@ -1048,7 +1060,8 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing HTML vCards.
+	 * Chainer class for parsing HTML vCards.
+	 * @see Ezvcard#parseHtml(String)
 	 */
 	public static class ParserChainHtmlString extends ParserChainHtml<ParserChainHtmlString> {
 		private String html;
@@ -1127,7 +1140,10 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing JSON-encoded vCards (jCard).
+	 * Chainer class for parsing JSON-encoded vCards (jCard).
+	 * @see Ezvcard#parseJson(InputStream)
+	 * @see Ezvcard#parseJson(File)
+	 * @see Ezvcard#parseJson(Reader)
 	 */
 	public static class ParserChainJsonReader extends ParserChainJson<ParserChainJsonReader> {
 		private Reader reader;
@@ -1153,7 +1169,8 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for parsing JSON-encoded vCards (jCard).
+	 * Chainer class for parsing JSON-encoded vCards (jCard).
+	 * @see Ezvcard#parseJson(String)
 	 */
 	public static class ParserChainJsonString extends ParserChainJson<ParserChainJsonString> {
 		private String json;
@@ -1328,7 +1345,9 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for writing plain text vCards
+	 * Chainer class for writing plain text vCards
+	 * @see Ezvcard#write(Collection)
+	 * @see Ezvcard#write(VCard...)
 	 */
 	public static class WriterChainTextMulti extends WriterChainText<WriterChainTextMulti> {
 		private List<List<String>> warnings;
@@ -1378,7 +1397,8 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for writing plain text vCards
+	 * Chainer class for writing plain text vCards
+	 * @see Ezvcard#write(VCard)
 	 */
 	public static class WriterChainTextSingle extends WriterChainText<WriterChainTextSingle> {
 		private List<String> warnings;
@@ -1531,7 +1551,9 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for writing XML vCards (xCard).
+	 * Chainer class for writing XML vCards (xCard).
+	 * @see Ezvcard#writeXml(Collection)
+	 * @see Ezvcard#writeXml(VCard...)
 	 */
 	public static class WriterChainXmlMulti extends WriterChainXml<WriterChainXmlMulti> {
 		private List<List<String>> warnings;
@@ -1576,7 +1598,8 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for writing XML vCards (xCard).
+	 * Chainer class for writing XML vCards (xCard).
+	 * @see Ezvcard#writeXml(VCard)
 	 */
 	public static class WriterChainXmlSingle extends WriterChainXml<WriterChainXmlSingle> {
 		private List<String> warnings;
@@ -1617,7 +1640,9 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for writing HTML vCards (hCard).
+	 * Chainer class for writing HTML vCards (hCard).
+	 * @see Ezvcard#writeHtml(Collection)
+	 * @see Ezvcard#writeHtml(VCard...)
 	 */
 	public static class WriterChainHtml extends WriterChain {
 		private WriterChainHtml(Collection<VCard> vcards) {
@@ -1769,7 +1794,9 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for writing JSON-encoded vCards (jCard).
+	 * Chainer class for writing JSON-encoded vCards (jCard).
+	 * @see Ezvcard#writeJson(Collection)
+	 * @see Ezvcard#writeJson(VCard...)
 	 */
 	public static class WriterChainJsonMulti extends WriterChainJson<WriterChainJsonMulti> {
 		private List<List<String>> warnings;
@@ -1814,7 +1841,8 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Convenience chainer class for writing JSON-encoded vCards (jCard).
+	 * Chainer class for writing JSON-encoded vCards (jCard).
+	 * @see Ezvcard#writeJson(VCard)
 	 */
 	public static class WriterChainJsonSingle extends WriterChainJson<WriterChainJsonSingle> {
 		private List<String> warnings;
