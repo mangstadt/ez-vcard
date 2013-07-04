@@ -349,12 +349,12 @@ public class XCardDocumentTest {
 
 		LuckyNumType num = new LuckyNumType();
 		num.luckyNum = 24;
-		vcard.addExtendedType(num);
+		vcard.addProperty(num);
 
 		//should be skipped
 		num = new LuckyNumType();
 		num.luckyNum = 13;
-		vcard.addExtendedType(num);
+		vcard.addProperty(num);
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
@@ -388,17 +388,17 @@ public class XCardDocumentTest {
 		//contains marshal methods and QName
 		LuckyNumType num = new LuckyNumType();
 		num.luckyNum = 24;
-		vcard.addExtendedType(num);
+		vcard.addProperty(num);
 
 		//contains marshal methods, but does not have a QName
 		SalaryType salary = new SalaryType();
 		salary.salary = 1000000;
-		vcard.addExtendedType(salary);
+		vcard.addProperty(salary);
 
 		//does not contain marshal methods nor QName
 		AgeType age = new AgeType();
 		age.age = 22;
-		vcard.addExtendedType(age);
+		vcard.addProperty(age);
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
@@ -494,14 +494,14 @@ public class XCardDocumentTest {
 	public void embedded_vcards_not_supported() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		vcard.addExtendedType(new EmbeddedType());
+		vcard.addProperty(new EmbeddedType());
 
 		XCardDocument doc = new XCardDocument();
 		doc.addVCard(vcard);
 		assertEquals(1, doc.getWarnings().size());
 
 		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
-		assertTrue(parsedVCard.getExtendedTypes().isEmpty());
+		assertTrue(parsedVCard.getExtendedProperties().isEmpty());
 	}
 
 	private static class EmbeddedType extends VCardType {

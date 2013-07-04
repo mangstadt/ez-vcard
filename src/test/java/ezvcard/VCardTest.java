@@ -51,7 +51,7 @@ import ezvcard.types.VCardType;
  */
 public class VCardTest {
 	@Test
-	public void getAllTypes() {
+	public void getProperties() {
 		VCard vcard = new VCard();
 
 		//type stored in VCardType variable
@@ -63,13 +63,13 @@ public class VCardTest {
 		vcard.addNote(note);
 
 		//extended type with unique name
-		RawType xGender = vcard.addExtendedType("X-GENDER", "male");
+		RawType xGender = vcard.addExtendedProperty("X-GENDER", "male");
 
 		//extended types with same name
-		RawType xManager1 = vcard.addExtendedType("X-MANAGER", "Michael Scott");
-		RawType xManager2 = vcard.addExtendedType("X-MANAGER", "Pointy Haired Boss");
+		RawType xManager1 = vcard.addExtendedProperty("X-MANAGER", "Michael Scott");
+		RawType xManager2 = vcard.addExtendedProperty("X-MANAGER", "Pointy Haired Boss");
 
-		Collection<VCardType> types = vcard.getAllTypes();
+		Collection<VCardType> types = vcard.getProperties().values();
 		assertEquals(5, types.size());
 		assertTrue(types.contains(rev));
 		assertTrue(types.contains(note));
@@ -79,47 +79,50 @@ public class VCardTest {
 	}
 
 	@Test
-	public void getAllTypes_none() {
+	public void getProperties_none() {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1); //no type class is returned for VERSION
-		assertTrue(vcard.getAllTypes().isEmpty());
+		assertTrue(vcard.getProperties().isEmpty());
 	}
 
 	@Test
-	public void addExtendedType_raw() {
+	public void addExtendedProperty() {
 		VCard vcard = new VCard();
-		RawType type = vcard.addExtendedType("NAME", "value");
+		RawType type = vcard.addExtendedProperty("NAME", "value");
 		assertEquals("NAME", type.getTypeName());
 		assertEquals("value", type.getValue());
-		assertEquals(Arrays.asList(type), vcard.getExtendedType("NAME"));
+		assertEquals(Arrays.asList(type), vcard.getExtendedProperties("NAME"));
 	}
 
 	@Test
-	public void addExtendedType_type_class() {
+	public void addProperty() {
 		VCard vcard = new VCard();
 		VCardTypeImpl type = new VCardTypeImpl("NAME");
-		vcard.addExtendedType(type);
-		assertEquals(Arrays.asList(type), vcard.getExtendedType(type.getClass()));
+		vcard.addProperty(type);
+		assertEquals(Arrays.asList(type), vcard.getProperties(type.getClass()));
 	}
 
 	@Test
-	public void addAltId() {
+	public void addPropertyAlt() {
+		VCard vcard = new VCard();
+
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
+		vcard.addProperty(one1);
 		HasAltIdImpl null1 = new HasAltIdImpl(null);
-		Collection<HasAltIdImpl> existing = new ArrayList<HasAltIdImpl>();
-		existing.add(one1);
-		existing.add(null1);
+		vcard.addProperty(null1);
 
-		HasAltIdImpl two1 = new HasAltIdImpl(null);
+		HasAltIdImpl two1 = new HasAltIdImpl("3");
 		HasAltIdImpl two2 = new HasAltIdImpl(null);
-		Collection<HasAltIdImpl> altRepresentations = new ArrayList<HasAltIdImpl>();
-		altRepresentations.add(two1);
-		altRepresentations.add(two2);
 
-		VCard.addAlt(existing, altRepresentations);
+		vcard.addPropertyAlt(HasAltIdImpl.class, two1, two2);
+
+		List<HasAltIdImpl> props = vcard.getProperties(HasAltIdImpl.class);
 
 		Collection<HasAltIdImpl> expected = Arrays.asList(one1, null1, two1, two2);
-		assertEquals(expected, existing);
+		assertEquals(expected, props);
+
+		assertEquals("1", one1.altId);
+		assertEquals(null, null1.altId);
 		assertEquals("2", two1.altId);
 		assertEquals("2", two2.altId);
 	}
@@ -155,13 +158,19 @@ public class VCardTest {
 	}
 
 	@Test
-	public void groupByAltId() {
+	public void getPropertiesAlt() {
+		VCard vcard = new VCard();
+
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
+		vcard.addProperty(one1);
 		HasAltIdImpl null1 = new HasAltIdImpl(null);
+		vcard.addProperty(null1);
 		HasAltIdImpl two1 = new HasAltIdImpl("2");
+		vcard.addProperty(two1);
 		HasAltIdImpl one2 = new HasAltIdImpl("1");
+		vcard.addProperty(one2);
 		HasAltIdImpl null2 = new HasAltIdImpl(null);
-		Collection<HasAltIdImpl> list = Arrays.asList(one1, null1, one2, two1, null2);
+		vcard.addProperty(null2);
 
 		//@formatter:off
 		@SuppressWarnings("unchecked")
@@ -172,25 +181,26 @@ public class VCardTest {
 			Arrays.asList(null2)
 		);
 		//@formatter:on
-		assertEquals(expected, VCard.groupByAltId(list));
+		assertEquals(expected, vcard.getPropertiesAlt(HasAltIdImpl.class));
 	}
 
 	@Test
-	public void groupByAltId_empty() {
-		Collection<HasAltIdImpl> list = new ArrayList<HasAltIdImpl>();
+	public void getPropertiesAlt_empty() {
+		VCard vcard = new VCard();
 
 		//@formatter:off
 		@SuppressWarnings("unchecked")
 		List<List<HasAltIdImpl>> expected = Arrays.asList(
 		);
 		//@formatter:on
-		assertEquals(expected, VCard.groupByAltId(list));
+		assertEquals(expected, vcard.getPropertiesAlt(HasAltIdImpl.class));
 	}
 
-	private class HasAltIdImpl implements HasAltId {
+	private class HasAltIdImpl extends VCardType implements HasAltId {
 		private String altId;
 
 		public HasAltIdImpl(String altId) {
+			super("NAME");
 			this.altId = altId;
 		}
 
@@ -202,6 +212,16 @@ public class VCardTest {
 		//@Overrides
 		public void setAltId(String altId) {
 			this.altId = altId;
+		}
+
+		@Override
+		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
 		}
 	}
 

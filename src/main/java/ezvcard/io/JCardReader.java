@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -249,7 +248,7 @@ public class JCardReader implements IParser, Closeable {
 			warningsBuf.clear();
 			try {
 				type.unmarshalJson(subTypes, jcardValue, version, warningsBuf);
-				addToVCard(type, vcard);
+				vcard.addProperty(type);
 			} catch (SkipMeException e) {
 				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 			} catch (EmbeddedVCardException e) {
@@ -325,25 +324,6 @@ public class JCardReader implements IParser, Closeable {
 			}
 		}
 		return t;
-	}
-
-	/**
-	 * Adds a type object to the vCard.
-	 * @param t the type object
-	 * @param vcard the vCard
-	 */
-	private void addToVCard(VCardType t, VCard vcard) {
-		Method method = TypeList.getAddMethod(t.getClass());
-		if (method != null) {
-			try {
-				method.invoke(vcard, t);
-			} catch (Exception e) {
-				//this should NEVER be thrown because the method MUST be public
-				throw new RuntimeException(e);
-			}
-		} else {
-			vcard.addExtendedType(t);
-		}
 	}
 
 	/**

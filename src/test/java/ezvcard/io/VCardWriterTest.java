@@ -769,14 +769,14 @@ public class VCardWriterTest {
 
 		VCard agentVcard = new VCard();
 		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
-		agentVcard.getNotes().add(new NoteType("Make sure that it properly folds long lines which are part of a nested AGENT type in a version 2.1 vCard."));
+		agentVcard.addNote(new NoteType("Make sure that it properly folds long lines which are part of a nested AGENT type in a version 2.1 vCard."));
 		AgentType agent = new AgentType(agentVcard);
 		vcard.setAgent(agent);
 
 		//i herd u liek AGENTs...
 		VCard secondAgentVCard = new VCard();
 		secondAgentVCard.setFormattedName(new FormattedNameType("Agent 009"));
-		secondAgentVCard.getNotes().add(new NoteType("Make sure that it ALSO properly folds THIS long line because it's part of an AGENT that's inside of an AGENT."));
+		secondAgentVCard.addNote(new NoteType("Make sure that it ALSO properly folds THIS long line because it's part of an AGENT that's inside of an AGENT."));
 		AgentType secondAgent = new AgentType(secondAgentVCard);
 		agentVcard.setAgent(secondAgent);
 
@@ -787,25 +787,24 @@ public class VCardWriterTest {
 		assertEquals(3, vcw.getWarnings().size()); //each vCard is missing the N property, which is required for 2.1
 		String actual = sw.toString();
 
-		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"FN:Michael Angstadt\r\n" +
-		"AGENT:\r\n" + //nested types should not have X-GENERATOR
-			"BEGIN:VCARD\r\n" +
 			"VERSION:2.1\r\n" +
-			"FN:Agent 007\r\n" +
-			"AGENT:\r\n" +
-				"BEGIN:VCARD\r\n" +
+			"FN:Michael Angstadt\r\n" +
+			"AGENT:\r\n" + //nested types should not have X-GENERATOR
+			"BEGIN:VCARD\r\n" +
 				"VERSION:2.1\r\n" +
-				"FN:Agent 009\r\n" +
-				"NOTE:Make sure that it ALSO properly folds THIS long line because it's part \r\n" +
-				" of an AGENT that's inside of an AGENT.\r\n" +
+				"FN:Agent 007\r\n" +
+				"NOTE:Make sure that it properly folds long lines which are part of a nested \r\n" +
+				" AGENT type in a version 2.1 vCard.\r\n" +
+				"AGENT:\r\n" +
+				"BEGIN:VCARD\r\n" +
+					"VERSION:2.1\r\n" +
+					"FN:Agent 009\r\n" +
+					"NOTE:Make sure that it ALSO properly folds THIS long line because it's part \r\n" +
+					" of an AGENT that's inside of an AGENT.\r\n" +
 				"END:VCARD\r\n" +
-			"NOTE:Make sure that it properly folds long lines which are part of a nested \r\n" +
-			" AGENT type in a version 2.1 vCard.\r\n" +
 			"END:VCARD\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
@@ -827,7 +826,7 @@ public class VCardWriterTest {
 		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
 		NoteType note = new NoteType("Bonne soir�e, 007.");
 		note.setLanguage("fr");
-		agentVcard.getNotes().add(note);
+		agentVcard.addNote(note);
 		AgentType agent = new AgentType(agentVcard);
 		vcard.setAgent(agent);
 
@@ -836,7 +835,7 @@ public class VCardWriterTest {
 		secondAgentVCard.setFormattedName(new FormattedNameType("Agent 009"));
 		note = new NoteType("Good evening, 009.");
 		note.setLanguage("en");
-		secondAgentVCard.getNotes().add(note);
+		secondAgentVCard.addNote(note);
 		AgentType secondAgent = new AgentType(secondAgentVCard);
 		agentVcard.setAgent(secondAgent);
 
@@ -847,23 +846,22 @@ public class VCardWriterTest {
 		assertEquals(3, vcw.getWarnings().size()); //each vCard is missing the N property, which is required for 3.0
 		String actual = sw.toString();
 
-		//FIXME this test may fail on other machines because Class.getDeclaredFields() returns the fields in no particular order
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"FN:Michael Angstadt\r\n" +
-		"AGENT:" + //nested types should not have X-GENERATOR
+			"VERSION:3.0\r\n" +
+			"FN:Michael Angstadt\r\n" +
+			"AGENT:" + //nested types should not have PRODID
 			"BEGIN:VCARD\\n" +
-			"VERSION:3.0\\n" +
-			"FN:Agent 007\\n" +
-			"AGENT:" +
+				"VERSION:3.0\\n" +
+				"FN:Agent 007\\n" +
+				"NOTE\\;LANGUAGE=fr:Bonne soir�e\\\\\\, 007.\\n" +
+				"AGENT:" +
 				"BEGIN:VCARD\\\\n" +
-				"VERSION:3.0\\\\n" +
-				"FN:Agent 009\\\\n" +
-				"NOTE\\\\\\;LANGUAGE=en:Good evening\\\\\\\\\\\\\\, 009.\\\\n" +
+					"VERSION:3.0\\\\n" +
+					"FN:Agent 009\\\\n" +
+					"NOTE\\\\\\;LANGUAGE=en:Good evening\\\\\\\\\\\\\\, 009.\\\\n" +
 				"END:VCARD\\\\n\\n" +
-			"NOTE\\;LANGUAGE=fr:Bonne soir�e\\\\\\, 007.\\n" +
 			"END:VCARD\\n\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
@@ -958,12 +956,12 @@ public class VCardWriterTest {
 
 		LuckyNumType num = new LuckyNumType();
 		num.luckyNum = 24;
-		vcard.addExtendedType(num);
+		vcard.addProperty(num);
 
 		//should be skipped
 		num = new LuckyNumType();
 		num.luckyNum = 13;
-		vcard.addExtendedType(num);
+		vcard.addProperty(num);
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);

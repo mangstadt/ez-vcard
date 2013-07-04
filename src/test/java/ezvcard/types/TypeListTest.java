@@ -5,8 +5,6 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -77,12 +75,5 @@ public class TypeListTest {
 	public void getTypeClassByHCardTypeName_categories() {
 		assertEquals(CategoriesType.class, TypeList.getTypeClassByHCardTypeName("categories"));
 		assertEquals(CategoriesType.class, TypeList.getTypeClassByHCardTypeName("category"));
-	}
-
-	@Test
-	public void getAddMethod() throws Exception {
-		assertEquals(VCard.class.getMethod("addAddress", AddressType.class), TypeList.getAddMethod(AddressType.class));
-		assertEquals(VCard.class.getMethod("addOrphanedLabel", LabelType.class), TypeList.getAddMethod(LabelType.class));
-		assertEquals(VCard.class.getMethod("addTelephoneNumber", TelephoneType.class), TypeList.getAddMethod(TelephoneType.class));
 	}
 }
