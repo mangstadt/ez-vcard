@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -57,20 +58,19 @@ import ezvcard.util.JCardValue;
  either expressed or implied, of the FreeBSD Project.
  */
 
-//@formatter:off
 /**
  * Parses {@link VCard} objects from a JSON data stream (jCard format).
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/draft-kewisch-vcard-in-json-01">jCard draft</a>
+ * @see <a
+ * href="http://tools.ietf.org/html/draft-kewisch-vcard-in-json-04">jCard
+ * draft</a>
  */
-//@formatter:on
-public class JCardReader implements IParser {
+public class JCardReader implements IParser, Closeable {
 	private final Reader reader;
 	private final List<String> warnings = new ArrayList<String>();
 	private JsonParser jp;
-	private boolean vcardstream;
-	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
-	private VCardVersion version = VCardVersion.V4_0;
+	private final Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
+	private final VCardVersion version = VCardVersion.V4_0;
 
 	private int propertiesRead;
 	private boolean versionFound;
@@ -119,28 +119,22 @@ public class JCardReader implements IParser {
 		propertiesRead = 0;
 
 		if (jp == null) {
-			//consume: ["vcardstream", ["vcard",
-			//or
-			//consume: ["vcard",
-			initStream();
-		} else {
-			//consume: ["vcard",
-			if (jp.nextToken() != JsonToken.START_ARRAY) {
-				if (jp.getCurrentToken() == null || (vcardstream && jp.getCurrentToken() == JsonToken.END_ARRAY)) {
-					//it's the end of the JSON data
-					return null;
-				} else {
-					throw new JCardParseException(JsonToken.START_ARRAY, jp.getCurrentToken());
-				}
-			}
+			JsonFactory factory = new JsonFactory();
+			jp = factory.createJsonParser(reader);
+		}
 
-			if (jp.nextToken() != JsonToken.VALUE_STRING) {
-				throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
+		//find the next vCard
+		JsonToken prev = null;
+		JsonToken cur;
+		while ((cur = jp.nextToken()) != null) {
+			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING && "vcard".equals(jp.getValueAsString())) {
+				break;
 			}
-			String value = jp.getValueAsString();
-			if (!"vcard".equals(value)) {
-				addWarning("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
-			}
+			prev = cur;
+		}
+		if (cur == null) {
+			//EOF
+			return null;
 		}
 
 		//start properties array
@@ -296,40 +290,6 @@ public class JCardReader implements IParser {
 		return jp.getText();
 	}
 
-	private void initStream() throws JsonParseException, IOException {
-		JsonFactory factory = new JsonFactory();
-		jp = factory.createJsonParser(reader);
-
-		if (jp.nextToken() != JsonToken.START_ARRAY) {
-			throw new JCardParseException(JsonToken.START_ARRAY, jp.getCurrentToken());
-		}
-
-		if (jp.nextToken() != JsonToken.VALUE_STRING) {
-			throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
-		}
-		String value = jp.getValueAsString();
-
-		if ("vcardstream".equals(value)) {
-			vcardstream = true;
-			if (jp.nextToken() != JsonToken.START_ARRAY) {
-				throw new JCardParseException(JsonToken.START_ARRAY, jp.getCurrentToken());
-			}
-			if (jp.nextToken() != JsonToken.VALUE_STRING) {
-				throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
-			}
-
-			value = jp.getValueAsString();
-			if (!"vcard".equals(value)) {
-				addWarning("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
-			}
-		} else if ("vcard".equals(value)) {
-			vcardstream = false;
-		} else {
-			vcardstream = false;
-			addWarning("The jCard array must begin with \"vcard\", but it begins with \"" + value + "\".  Ignoring.");
-		}
-	}
-
 	/**
 	 * Creates the appropriate {@link VCardType} instance, given the type name.
 	 * This method does not unmarshal the type, it just creates the type object.
@@ -429,5 +389,11 @@ public class JCardReader implements IParser {
 		sb.append(": ").append(message);
 
 		warnings.add(sb.toString());
+	}
+
+	public void close() throws IOException {
+		if (jp != null) {
+			jp.close();
+		}
 	}
 }

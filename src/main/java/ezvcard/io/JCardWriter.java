@@ -69,6 +69,8 @@ public class JCardWriter implements Closeable {
 	private final List<String> warnings = new ArrayList<String>();
 	private boolean addProdId = true;
 	private boolean indent = false;
+	private final boolean wrapInArray;
+	private int writtenCount = 0;
 
 	/**
 	 * Creates a jCard writer.
@@ -76,6 +78,16 @@ public class JCardWriter implements Closeable {
 	 */
 	public JCardWriter(OutputStream out) {
 		this(new OutputStreamWriter(out));
+	}
+
+	/**
+	 * Creates a jCard writer.
+	 * @param out the output stream to write the vCard to
+	 * @param wrapInArray true to enclose all written vCards in a JSON array,
+	 * false not to
+	 */
+	public JCardWriter(OutputStream out, boolean wrapInArray) {
+		this(new OutputStreamWriter(out), wrapInArray);
 	}
 
 	/**
@@ -89,10 +101,32 @@ public class JCardWriter implements Closeable {
 
 	/**
 	 * Creates a jCard writer.
+	 * @param file the file to write the vCard to
+	 * @param wrapInArray true to enclose all written vCards in a JSON array,
+	 * false not to
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public JCardWriter(File file, boolean wrapInArray) throws IOException {
+		this(new FileWriter(file), wrapInArray);
+	}
+
+	/**
+	 * Creates a jCard writer.
 	 * @param writer the writer to write the vCard to
 	 */
 	public JCardWriter(Writer writer) {
+		this(writer, false);
+	}
+
+	/**
+	 * Creates a jCard writer.
+	 * @param writer the writer to write the vCard to
+	 * @param wrapInArray true to enclose all written vCards in a JSON array,
+	 * false not to
+	 */
+	public JCardWriter(Writer writer, boolean wrapInArray) {
 		this.writer = writer;
+		this.wrapInArray = wrapInArray;
 	}
 
 	/**
@@ -108,12 +142,16 @@ public class JCardWriter implements Closeable {
 			factory.configure(Feature.AUTO_CLOSE_TARGET, false);
 			jg = factory.createJsonGenerator(writer);
 
-			jg.writeStartArray();
-			jg.writeString("vcardstream");
+			if (wrapInArray) {
+				jg.writeStartArray();
+				indent(0);
+			}
 		}
 
+		if (writtenCount > 0) {
+			indent(0);
+		}
 		jg.writeStartArray();
-		indent(2);
 		jg.writeString("vcard");
 		jg.writeStartArray();
 
@@ -187,7 +225,7 @@ public class JCardWriter implements Closeable {
 			}
 
 			jg.writeStartArray(); //start property
-			indent(4);
+			indent(2);
 
 			//write property name
 			jg.writeString(type.getTypeName().toLowerCase());
@@ -270,9 +308,11 @@ public class JCardWriter implements Closeable {
 			jg.writeEndArray(); //end property
 		}
 
-		indent(2);
+		indent(0);
 		jg.writeEndArray();
 		jg.writeEndArray();
+
+		writtenCount++;
 	}
 
 	/**
@@ -349,16 +389,20 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Ends the jCard data stream, but does <b>not</b> close the underlying
-	 * writer.
+	 * Ends the jCard data stream, but does not close the underlying writer.
 	 * @throws IOException if there's a problem closing the stream
 	 */
-	public void endJsonStream() throws IOException {
-		if (jg != null) {
+	public void closeJsonStream() throws IOException {
+		if (jg == null) {
+			return;
+		}
+
+		if (wrapInArray) {
 			indent(0);
 			jg.writeEndArray();
-			jg.close();
 		}
+
+		jg.close();
 	}
 
 	/**
@@ -366,7 +410,7 @@ public class JCardWriter implements Closeable {
 	 * @throws IOException if there's a problem closing the stream
 	 */
 	public void close() throws IOException {
-		endJsonStream();
+		closeJsonStream();
 		writer.close();
 	}
 
