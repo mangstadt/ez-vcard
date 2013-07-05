@@ -670,6 +670,6 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 
 	@Override
 	protected String sanitizeKey(String key) {
-		return key.toUpperCase();
+		return (key == null) ? null : key.toUpperCase();
 	}
 }

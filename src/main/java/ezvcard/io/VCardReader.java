@@ -9,9 +9,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,8 +68,7 @@ public class VCardReader implements Closeable, IParser {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
-	private FoldedLineReader reader;
-	private boolean caretDecodingEnabled = true;
+	private VCardRawReader reader;
 
 	/**
 	 * Creates a vCard reader.
@@ -100,110 +100,29 @@ public class VCardReader implements Closeable, IParser {
 	 * @param reader the reader to read the vCards from
 	 */
 	public VCardReader(Reader reader) {
-		this.reader = new FoldedLineReader(reader);
+		this.reader = new VCardRawReader(reader);
 	}
 
 	/**
-	 * This constructor is used for reading embedded 2.1 vCards (see 2.1 docs,
-	 * p.19)
-	 * @param reader the reader to read the vCards from
-	 */
-	private VCardReader(FoldedLineReader reader) {
-		this.reader = reader;
-	}
-
-	/**
-	 * <p>
-	 * Gets whether the reader will decode characters in parameter values that
-	 * use circumflex accent encoding. This escaping mechanism allows for
+	 * Gets whether the reader will decode parameter values that use circumflex
+	 * accent encoding (enabled by default). This escaping mechanism allows
 	 * newlines and double quotes to be included in parameter values.
-	 * </p>
-	 * 
-	 * <table border="1">
-	 * <tr>
-	 * <th>Raw</th>
-	 * <th>Encoded</th>
-	 * </tr>
-	 * <tr>
-	 * <td><code>"</code></td>
-	 * <td><code>^'</code></td>
-	 * </tr>
-	 * <tr>
-	 * <td><i>newline</i></td>
-	 * <td><code>^n</code></td>
-	 * </tr>
-	 * <tr>
-	 * <td><code>^</code></td>
-	 * <td><code>^^</code></td>
-	 * </tr>
-	 * </table>
-	 * 
-	 * <p>
-	 * This setting is enabled by default and is only used with 3.0 and 4.0
-	 * vCards.
-	 * </p>
-	 * 
-	 * <p>
-	 * Example:
-	 * </p>
-	 * 
-	 * <pre>
-	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
-	 *  sburgh, PA 15212":geo:40.446816,-80.00566
-	 * </pre>
-	 * 
 	 * @return true if circumflex accent decoding is enabled, false if not
-	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 * @see VCardRawReader#isCaretDecodingEnabled()
 	 */
 	public boolean isCaretDecodingEnabled() {
-		return caretDecodingEnabled;
+		return reader.isCaretDecodingEnabled();
 	}
 
 	/**
-	 * <p>
-	 * Sets whether the reader will decode characters in parameter values that
-	 * use circumflex accent encoding. This escaping mechanism allows for
+	 * Sets whether the reader will decode parameter values that use circumflex
+	 * accent encoding (enabled by default). This escaping mechanism allows
 	 * newlines and double quotes to be included in parameter values.
-	 * </p>
-	 * 
-	 * <table border="1">
-	 * <tr>
-	 * <th>Raw</th>
-	 * <th>Encoded</th>
-	 * </tr>
-	 * <tr>
-	 * <td><code>"</code></td>
-	 * <td><code>^'</code></td>
-	 * </tr>
-	 * <tr>
-	 * <td><i>newline</i></td>
-	 * <td><code>^n</code></td>
-	 * </tr>
-	 * <tr>
-	 * <td><code>^</code></td>
-	 * <td><code>^^</code></td>
-	 * </tr>
-	 * </table>
-	 * 
-	 * <p>
-	 * This setting is enabled by default and is only used with 3.0 and 4.0
-	 * vCards.
-	 * </p>
-	 * 
-	 * <p>
-	 * Example:
-	 * </p>
-	 * 
-	 * <pre>
-	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
-	 *  sburgh, PA 15212":geo:40.446816,-80.00566
-	 * </pre>
-	 * 
 	 * @param enable true to use circumflex accent decoding, false not to
-	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 * @see VCardRawReader#setCaretDecodingEnabled(boolean)
 	 */
 	public void setCaretDecodingEnabled(boolean enable) {
-		caretDecodingEnabled = enable;
+		reader.setCaretDecodingEnabled(enable);
 	}
 
 	/**
@@ -243,187 +162,16 @@ public class VCardReader implements Closeable, IParser {
 
 	//@Override
 	public VCard readNext() throws IOException {
-		warnings.clear();
-
-		VCard vcard = new VCard();
-
-		List<LabelType> labels = new ArrayList<LabelType>();
-		VCardVersion version = null;
-		boolean endFound = false;
-		int typesRead = 0;
-		String line;
-		List<String> warningsBuf = new ArrayList<String>();
-
-		while (!endFound && (line = reader.readLine()) != null) {
-			//parse the components out of the line
-			VCardLine parsedLine = VCardLine.parse(line, version, caretDecodingEnabled);
-			if (parsedLine == null) {
-				addWarning("Skipping malformed vCard line: \"" + line + "\"");
-				continue;
-			}
-
-			//build the sub types 
-			VCardSubTypes subTypes = new VCardSubTypes();
-			for (List<String> subType : parsedLine.getSubTypes()) {
-				//if the parameter is name-less, make a guess at what the name is
-				//v3.0 and v4.0 requires all sub types to have names, but v2.1 does not
-				String subTypeName = subType.get(0);
-				List<String> subTypeValues = subType.subList(1, subType.size());
-				if (subTypeName == null) {
-					String subTypeValue = subTypeValues.get(0);
-					if (ValueParameter.valueOf(subTypeValue) != null) {
-						subTypeName = ValueParameter.NAME;
-					} else if (EncodingParameter.valueOf(subTypeValue) != null) {
-						subTypeName = EncodingParameter.NAME;
-					} else {
-						//otherwise, assume it's a TYPE
-						subTypeName = TypeParameter.NAME;
-					}
-
-					subTypes.put(subTypeName, subTypeValue);
-				} else {
-					subTypeName = subTypeName.toUpperCase();
-
-					//account for multi-valued TYPE parameters being enclosed entirely in double quotes
-					//e.g. ADR;TYPE="home,work"
-					if (subTypeName.equals(TypeParameter.NAME) && subTypeValues.size() == 1) {
-						//@formatter:off
-						/*
-						 * Many examples throughout the 4.0 specs show TYPE parameters being encoded in this way.
-						 * This conflicts with the ABNF and is noted in the errata.
-						 * Split the value by comma incase the vendor implemented it this way.
-						 */
-						//@formatter:on
-						subTypeValues = Arrays.asList(subTypeValues.get(0).split(","));
-					}
-
-					for (String subTypeValue : subTypeValues) {
-						subTypes.put(subTypeName, subTypeValue);
-					}
-				}
-			}
-
-			String typeName = parsedLine.getTypeName().toUpperCase();
-			String value = VCardStringUtils.ltrim(parsedLine.getValue());
-			String groupName = parsedLine.getGroup();
-
-			//if the value is encoded in "quoted-printable", decode it
-			//"quoted-printable" encoding is only supported in v2.1
-			if (subTypes.getEncoding() == EncodingParameter.QUOTED_PRINTABLE) {
-				QuotedPrintableCodec codec = new QuotedPrintableCodec();
-				String charset = subTypes.getCharset();
-				try {
-					value = (charset == null) ? codec.decode(value) : codec.decode(value, charset);
-				} catch (DecoderException e) {
-					addWarning("Property value was marked as \"quoted-printable\", but it could not be decoded.  Assuming that the value is plain text.", typeName);
-				}
-				subTypes.setEncoding(null); //remove encoding sub type
-			}
-
-			//vCard should start with "BEGIN"
-			if (typesRead == 0 && !"BEGIN".equals(typeName)) {
-				warnings.add("vCard does not start with a \"BEGIN\" property.");
-			}
-
-			typesRead++;
-
-			if ("BEGIN".equals(typeName)) {
-				if (!"vcard".equalsIgnoreCase(value)) {
-					addWarning("Value should be \"vcard\", but it is \"" + value + "\".", "BEGIN");
-				}
-			} else if ("END".equals(typeName)) {
-				endFound = true;
-				if (!"vcard".equalsIgnoreCase(value)) {
-					addWarning("Value should be \"vcard\", but it is \"" + value + "\".", "END");
-				}
-			} else if ("VERSION".equals(typeName)) {
-				if (version == null) {
-					version = VCardVersion.valueOfByStr(value);
-					if (version == null) {
-						addWarning("Invalid value: " + value, "VERSION");
-					}
-				} else {
-					addWarning("Additional VERSION property encountered.  It will be ignored.", "VERSION");
-				}
-				vcard.setVersion(version);
-			} else {
-				//create the type object
-				VCardType type = createTypeObject(typeName);
-				type.setGroup(groupName);
-
-				//unmarshal the text string into the object
-				warningsBuf.clear();
-				try {
-					type.unmarshalText(subTypes, value, version, warningsBuf, compatibilityMode);
-
-					//add to vcard
-					if (type instanceof LabelType) {
-						//LABELs must be treated specially so they can be matched up with their ADRs
-						labels.add((LabelType) type);
-					} else {
-						vcard.addProperty(type);
-					}
-				} catch (SkipMeException e) {
-					warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
-				} catch (EmbeddedVCardException e) {
-					//parse an embedded vCard (i.e. the AGENT type)
-
-					int embeddedLineNum = reader.getLineNum();
-
-					VCardReader agentReader;
-					if (value.length() == 0 || version == null || version == VCardVersion.V2_1) {
-						//vCard will be added as a nested vCard (2.1 style)
-						agentReader = new VCardReader(reader);
-					} else {
-						//vCard will be contained within the type value (3.0 style)
-						value = VCardStringUtils.unescape(value);
-						agentReader = new VCardReader(new StringReader(value));
-					}
-
-					agentReader.setCompatibilityMode(compatibilityMode);
-					try {
-						VCard agentVcard = agentReader.readNext();
-						e.injectVCard(agentVcard);
-					} finally {
-						for (String w : agentReader.getWarnings()) {
-							addWarning("Problem unmarshalling nested vCard value: " + w, type.getTypeName(), embeddedLineNum);
-						}
-					}
-
-					vcard.addProperty(type);
-				} finally {
-					for (String warning : warningsBuf) {
-						addWarning(warning, typeName);
-					}
-				}
-			}
-		}
-
-		if (typesRead == 0) {
-			//end of stream reached
+		if (reader.eof()) {
 			return null;
 		}
 
-		//assign labels to their addresses
-		for (LabelType label : labels) {
-			boolean orphaned = true;
-			for (AddressType adr : vcard.getAddresses()) {
-				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
-					adr.setLabel(label.getValue());
-					orphaned = false;
-					break;
-				}
-			}
-			if (orphaned) {
-				vcard.addOrphanedLabel(label);
-			}
-		}
+		warnings.clear();
 
-		if (!endFound) {
-			addWarning("vCard does not terminate with an \"END:vcard\" property.");
-		}
+		VCardDataStreamListenerImpl listener = new VCardDataStreamListenerImpl();
+		reader.start(listener);
 
-		return vcard;
+		return listener.root;
 	}
 
 	/**
@@ -479,6 +227,92 @@ public class VCardReader implements Closeable, IParser {
 	}
 
 	/**
+	 * Assigns names to all nameless parameters. v3.0 and v4.0 requires all
+	 * parameters to have names, but v2.1 does not.
+	 * @param parameters the parameters
+	 */
+	private void handleNamelessParameters(VCardSubTypes parameters) {
+		List<String> namelessParamValues = parameters.get(null);
+		for (String paramValue : namelessParamValues) {
+			String paramName;
+			if (ValueParameter.valueOf(paramValue) != null) {
+				paramName = ValueParameter.NAME;
+			} else if (EncodingParameter.valueOf(paramValue) != null) {
+				paramName = EncodingParameter.NAME;
+			} else {
+				//otherwise, assume it's a TYPE
+				paramName = TypeParameter.NAME;
+			}
+			parameters.put(paramName, paramValue);
+		}
+		parameters.removeAll(null);
+	}
+
+	/**
+	 * <p>
+	 * Accounts for multi-valued TYPE parameters being enclosed entirely in
+	 * double quotes (for example: ADR;TYPE="home,work").
+	 * </p>
+	 * <p>
+	 * Many examples throughout the 4.0 specs show TYPE parameters being encoded
+	 * in this way. This conflicts with the ABNF and is noted in the errata.
+	 * This method will split the value by comma incase the vendor implemented
+	 * it this way.
+	 * </p>
+	 * @param parameters the parameters
+	 */
+	private void handleQuotedMultivaluedTypeParams(VCardSubTypes parameters) {
+		//account for multi-valued TYPE parameters being enclosed entirely in double quotes
+		//e.g. ADR;TYPE="home,work"
+		List<String> typeParams = new ArrayList<String>(parameters.get(TypeParameter.NAME));
+		for (String typeParam : typeParams) {
+			if (!typeParam.contains(",")) {
+				continue;
+			}
+
+			parameters.remove(TypeParameter.NAME, typeParam);
+			for (String splitValue : typeParam.split(",")) {
+				parameters.put(TypeParameter.NAME, splitValue);
+			}
+		}
+	}
+
+	/**
+	 * Decodes the property value if it's encoded in quoted-printable encoding.
+	 * Quoted-printable encoding is only supported in v2.1.
+	 * @param name the property name
+	 * @param parameters the parameters
+	 * @param value the property value
+	 * @return the decoded property value
+	 */
+	private String decodeQuotedPrintable(String name, VCardSubTypes parameters, String value) {
+		if (parameters.getEncoding() != EncodingParameter.QUOTED_PRINTABLE) {
+			return value;
+		}
+
+		parameters.setEncoding(null); //remove encoding sub type
+
+		QuotedPrintableCodec codec = new QuotedPrintableCodec();
+		String charset = parameters.getCharset();
+		try {
+			if (charset == null) {
+				return codec.decode(value);
+			} else {
+				try {
+					return codec.decode(value, charset);
+				} catch (UnsupportedEncodingException e) {
+					addWarning("The specified charset is not supported.  Using default charset instead: " + charset, name);
+					return codec.decode(value);
+				}
+			}
+		} catch (DecoderException e) {
+			addWarning("Property value was marked as \"quoted-printable\", but it could not be decoded.  Treating the value as plain text.", name);
+		}
+
+		return value;
+	}
+
+	/**
 	 * Closes the underlying {@link Reader} object.
 	 */
 	public void close() throws IOException {
@@ -490,17 +324,175 @@ public class VCardReader implements Closeable, IParser {
 	}
 
 	private void addWarning(String message, String propertyName) {
-		addWarning(message, propertyName, reader.getLineNum());
-	}
-
-	private void addWarning(String message, String propertyName, int lineNum) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Line ").append(lineNum);
+		sb.append("Line ").append(reader.getLineNum());
 		if (propertyName != null) {
 			sb.append(" (").append(propertyName).append(" property)");
 		}
 		sb.append(": ").append(message);
 
 		warnings.add(sb.toString());
+	}
+
+	private class VCardDataStreamListenerImpl implements VCardRawReader.VCardDataStreamListener {
+		private VCard root;
+		private final List<LabelType> labels = new ArrayList<LabelType>();
+		private final List<String> warningsBuf = new ArrayList<String>();
+		private final LinkedList<VCard> vcardStack = new LinkedList<VCard>();
+		private EmbeddedVCardException embeddedVCardException;
+
+		public void beginComponent(String name) {
+			if (!"VCARD".equalsIgnoreCase(name)) {
+				return;
+			}
+
+			VCard vcard = new VCard();
+
+			//initialize version to 2.1, since the VERSION property can exist anywhere in a 2.1 vCard
+			vcard.setVersion(VCardVersion.V2_1);
+
+			vcardStack.add(vcard);
+
+			if (root == null) {
+				root = vcard;
+			}
+
+			if (embeddedVCardException != null) {
+				embeddedVCardException.injectVCard(vcard);
+				embeddedVCardException = null;
+			}
+		}
+
+		public void readVersion(VCardVersion version) {
+			if (vcardStack.isEmpty()) {
+				//not in a "VCARD" component
+				return;
+			}
+
+			vcardStack.getLast().setVersion(version);
+		}
+
+		public void readProperty(String group, String name, VCardSubTypes parameters, String value) {
+			if (vcardStack.isEmpty()) {
+				//not in a "VCARD" component
+				return;
+			}
+
+			if (embeddedVCardException != null) {
+				//the next property was supposed to be the start of a nested vCard, but it wasn't
+				embeddedVCardException.injectVCard(null);
+				embeddedVCardException = null;
+			}
+
+			handleNamelessParameters(parameters);
+
+			handleQuotedMultivaluedTypeParams(parameters);
+
+			value = decodeQuotedPrintable(name, parameters, value);
+
+			//create the type object
+			VCardType type = createTypeObject(name);
+			type.setGroup(group);
+
+			//unmarshal the text string into the object
+			VCard curVCard = vcardStack.getLast();
+			VCardVersion version = curVCard.getVersion();
+			warningsBuf.clear();
+			try {
+				type.unmarshalText(parameters, value, version, warningsBuf, compatibilityMode);
+
+				//add to vcard
+				if (type instanceof LabelType) {
+					//LABELs must be treated specially so they can be matched up with their ADRs
+					labels.add((LabelType) type);
+				} else {
+					curVCard.addProperty(type);
+				}
+			} catch (SkipMeException e) {
+				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
+			} catch (EmbeddedVCardException e) {
+				//parse an embedded vCard (i.e. the AGENT type)
+
+				if (value.length() == 0 || version == VCardVersion.V2_1) {
+					//a nested vCard is expected to be next (2.1 style)
+					embeddedVCardException = e;
+				} else {
+					//the property value should be an embedded vCard (3.0 style)
+					value = VCardStringUtils.unescape(value);
+					VCardReader agentReader = new VCardReader(value);
+
+					agentReader.setCompatibilityMode(compatibilityMode);
+					try {
+						VCard nestedVCard = agentReader.readNext();
+						if (nestedVCard != null) {
+							e.injectVCard(nestedVCard);
+						}
+					} catch (IOException e2) {
+						//reading from a string
+					} finally {
+						for (String w : agentReader.getWarnings()) {
+							addWarning("Problem unmarshalling nested vCard value: " + w, type.getTypeName());
+						}
+					}
+				}
+
+				curVCard.addProperty(type);
+			} finally {
+				for (String warning : warningsBuf) {
+					addWarning(warning, name);
+				}
+			}
+		}
+
+		public void endComponent(String name) {
+			if (vcardStack.isEmpty()) {
+				//not in a "VCARD" component
+				return;
+			}
+
+			if (!"VCARD".equalsIgnoreCase(name)) {
+				//not a "VCARD" component
+				return;
+			}
+
+			VCard curVCard = vcardStack.removeLast();
+
+			//assign labels to their addresses
+			for (LabelType label : labels) {
+				boolean orphaned = true;
+				for (AddressType adr : curVCard.getAddresses()) {
+					if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
+						adr.setLabel(label.getValue());
+						orphaned = false;
+						break;
+					}
+				}
+				if (orphaned) {
+					curVCard.addOrphanedLabel(label);
+				}
+			}
+
+			if (vcardStack.isEmpty()) {
+				throw new VCardRawReader.StopReadingException();
+			}
+		}
+
+		public void invalidLine(String line) {
+			if (vcardStack.isEmpty()) {
+				//not in a "VCARD" component
+				return;
+			}
+
+			addWarning("Skipping malformed line: \"" + line + "\"");
+		}
+
+		public void invalidVersion(String version) {
+			if (vcardStack.isEmpty()) {
+				//not in a "VCARD" component
+				return;
+			}
+
+			addWarning("Ignoring invalid version value: " + version, "VERSION");
+		}
 	}
 }
