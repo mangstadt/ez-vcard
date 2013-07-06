@@ -10,28 +10,21 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.VCardRawWriter.ProblemsListener;
 import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.parameters.EncodingParameter;
-import ezvcard.parameters.TypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
-import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.org.apache.commons.codec.EncoderException;
-import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -67,55 +60,10 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * @author Michael Angstadt
  */
 public class VCardWriter implements Closeable {
-	private static final Pattern quoteMeRegex = Pattern.compile(".*?[,:;].*");
-	private static final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
-
-	/**
-	 * The characters that are not valid in parameter values and that should be
-	 * removed.
-	 */
-	private static final Map<VCardVersion, BitSet> invalidParamValueChars = new HashMap<VCardVersion, BitSet>();
-	static {
-		BitSet controlChars = new BitSet(128);
-		controlChars.set(0, 31);
-		controlChars.set(127);
-		controlChars.set('\t', false); //allow
-		controlChars.set('\n', false); //allow
-		controlChars.set('\r', false); //allow
-
-		//2.1
-		{
-			BitSet bitSet = new BitSet(128);
-			bitSet.or(controlChars);
-
-			bitSet.set(',');
-			bitSet.set('.');
-			bitSet.set(':');
-			bitSet.set('=');
-			bitSet.set('[');
-			bitSet.set(']');
-
-			invalidParamValueChars.put(VCardVersion.V2_1, bitSet);
-		}
-
-		//3.0, 4.0
-		{
-			BitSet bitSet = new BitSet(128);
-			bitSet.or(controlChars);
-
-			invalidParamValueChars.put(VCardVersion.V3_0, bitSet);
-			invalidParamValueChars.put(VCardVersion.V4_0, bitSet);
-		}
-	}
-
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	private VCardVersion targetVersion = VCardVersion.V3_0;
-	private String newline;
 	private boolean addProdId = true;
-	private boolean caretEncodingEnabled = false;
-	private FoldingScheme foldingScheme;
 	private List<String> warnings = new ArrayList<String>();
-	private final Writer writer;
+	private final VCardRawWriter writer;
 
 	/**
 	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
@@ -207,15 +155,16 @@ public class VCardWriter implements Closeable {
 	 * @param newline the newline sequence to use
 	 */
 	public VCardWriter(Writer writer, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) {
-		if (writer instanceof FoldedLineWriter || foldingScheme == null) {
-			//the check for FoldedLineWriter is for writing nested 2.1 vCards (i.e. the AGENT type)
-			this.writer = writer;
-		} else {
-			this.writer = new FoldedLineWriter(writer, foldingScheme.getLineLength(), foldingScheme.getIndent(), newline);
-		}
-		this.targetVersion = targetVersion;
-		this.foldingScheme = foldingScheme;
-		this.newline = newline;
+		this.writer = new VCardRawWriter(writer, targetVersion, foldingScheme, newline);
+		this.writer.setProblemsListener(new ProblemsListener() {
+			public void onParameterValueChanged(String propertyName, String parameterName, String originalValue, String modifiedValue) {
+				addWarning("\"" + parameterName + "\" parameter contained one or more characters which are not allowed in vCard " + VCardWriter.this.writer.getVersion() + " parameter values.  These characters were removed.", propertyName);
+			}
+
+			public void onQuotedPrintableEncodingFailed(String propertyName, String propertyValue, EncoderException thrown) {
+				addWarning("A unexpected error occurred while encoding the property's value into \"quoted-printable\" encoding.  Value will not be encoded: " + thrown.getMessage(), propertyName);
+			}
+		});
 	}
 
 	/**
@@ -243,7 +192,7 @@ public class VCardWriter implements Closeable {
 	 * @return the vCard version
 	 */
 	public VCardVersion getTargetVersion() {
-		return targetVersion;
+		return writer.getVersion();
 	}
 
 	/**
@@ -251,7 +200,7 @@ public class VCardWriter implements Closeable {
 	 * @param targetVersion the vCard version
 	 */
 	public void setTargetVersion(VCardVersion targetVersion) {
-		this.targetVersion = targetVersion;
+		writer.setVersion(targetVersion);
 	}
 
 	/**
@@ -278,100 +227,40 @@ public class VCardWriter implements Closeable {
 
 	/**
 	 * <p>
-	 * Gets whether the writer will use circumflex accent encoding for vCard 3.0
-	 * and 4.0 parameter values. This escaping mechanism allows for newlines and
-	 * double quotes to be included in parameter values.
-	 * </p>
-	 * 
-	 * <table border="1">
-	 * <tr>
-	 * <th>Character</th>
-	 * <th>Replacement</th>
-	 * </tr>
-	 * <tr>
-	 * <td><code>"</code></td>
-	 * <td><code>^'</code></td>
-	 * </tr>
-	 * <tr>
-	 * <td><i>newline</i></td>
-	 * <td><code>^n</code></td>
-	 * </tr>
-	 * <tr>
-	 * <td><code>^</code></td>
-	 * <td><code>^^</code></td>
-	 * </tr>
-	 * </table>
-	 * 
-	 * <p>
-	 * This setting is disabled by default and is only used with 3.0 and 4.0
-	 * vCards. When writing a vCard with this setting disabled, newlines will be
-	 * escaped as "\n", backslashes will be escaped as "\\", and double quotes
-	 * will be replaced with single quotes.
+	 * Gets whether the writer will apply circumflex accent encoding on
+	 * parameter values (disabled by default, only applies to 3.0 and 4.0
+	 * vCards). This escaping mechanism allows for newlines and double quotes to
+	 * be included in parameter values.
 	 * </p>
 	 * 
 	 * <p>
-	 * Example:
+	 * When disabled, the writer will replace newlines with spaces and double
+	 * quotes with single quotes.
 	 * </p>
-	 * 
-	 * <pre>
-	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
-	 *  sburgh, PA 15212":geo:40.446816,-80.00566
-	 * </pre>
-	 * 
 	 * @return true if circumflex accent encoding is enabled, false if not
-	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 * @see VCardRawWriter#isCaretEncodingEnabled()
 	 */
 	public boolean isCaretEncodingEnabled() {
-		return caretEncodingEnabled;
+		return writer.isCaretEncodingEnabled();
 	}
 
 	/**
 	 * <p>
-	 * Sets whether the writer will use circumflex accent encoding for vCard 3.0
-	 * and 4.0 parameter values. This escaping mechanism allows for newlines and
-	 * double quotes to be included in parameter values.
-	 * </p>
-	 * 
-	 * <table border="1">
-	 * <tr>
-	 * <th>Character</th>
-	 * <th>Replacement</th>
-	 * </tr>
-	 * <tr>
-	 * <td><code>"</code></td>
-	 * <td><code>^'</code></td>
-	 * </tr>
-	 * <tr>
-	 * <td><i>newline</i></td>
-	 * <td><code>^n</code></td>
-	 * </tr>
-	 * <tr>
-	 * <td><code>^</code></td>
-	 * <td><code>^^</code></td>
-	 * </tr>
-	 * </table>
-	 * 
-	 * <p>
-	 * This setting is disabled by default and is only used with 3.0 and 4.0
-	 * vCards. When writing a vCard with this setting disabled, newlines will be
-	 * escaped as "\n", backslashes will be escaped as "\\", and double quotes
-	 * will be replaced with single quotes.
+	 * Sets whether the writer will apply circumflex accent encoding on
+	 * parameter values (disabled by default, only applies to 3.0 and 4.0
+	 * vCards). This escaping mechanism allows for newlines and double quotes to
+	 * be included in parameter values.
 	 * </p>
 	 * 
 	 * <p>
-	 * Example:
+	 * When disabled, the writer will replace newlines with spaces and double
+	 * quotes with single quotes.
 	 * </p>
-	 * 
-	 * <pre>
-	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
-	 *  sburgh, PA 15212":geo:40.446816,-80.00566
-	 * </pre>
-	 * 
 	 * @param enable true to use circumflex accent encoding, false not to
-	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 * @see VCardRawWriter#setCaretEncodingEnabled(boolean)
 	 */
 	public void setCaretEncodingEnabled(boolean enable) {
-		caretEncodingEnabled = enable;
+		writer.setCaretEncodingEnabled(enable);
 	}
 
 	/**
@@ -379,7 +268,7 @@ public class VCardWriter implements Closeable {
 	 * @return the newline sequence
 	 */
 	public String getNewline() {
-		return newline;
+		return writer.getNewline();
 	}
 
 	/**
@@ -387,7 +276,7 @@ public class VCardWriter implements Closeable {
 	 * @return the folding scheme or null if the lines are not folded
 	 */
 	public FoldingScheme getFoldingScheme() {
-		return foldingScheme;
+		return writer.getFoldingScheme();
 	}
 
 	/**
@@ -404,8 +293,13 @@ public class VCardWriter implements Closeable {
 	 * @param vcard the vCard to write
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
-	public void write(final VCard vcard) throws IOException {
+	public void write(VCard vcard) throws IOException {
 		warnings.clear();
+		write(vcard, addProdId);
+	}
+
+	private void write(VCard vcard, boolean addProdId) throws IOException {
+		VCardVersion targetVersion = writer.getVersion();
 
 		if (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0) {
 			if (vcard.getStructuredName() == null) {
@@ -420,9 +314,6 @@ public class VCardWriter implements Closeable {
 		}
 
 		List<VCardType> typesToAdd = new ArrayList<VCardType>();
-		typesToAdd.add(new TextType("BEGIN", "VCARD"));
-		typesToAdd.add(new TextType("VERSION", targetVersion.getVersion()));
-
 		for (VCardType type : vcard) {
 			if (addProdId && type instanceof ProdIdType) {
 				//do not add the PRODID in the vCard if "addProdId" is true
@@ -463,21 +354,22 @@ public class VCardWriter implements Closeable {
 			typesToAdd.add(prodId);
 		}
 
-		typesToAdd.add(new TextType("END", "VCARD"));
+		writer.writeBeginComponent("VCARD");
+		writer.writeVersion();
 
 		List<String> warningsBuf = new ArrayList<String>();
 		for (VCardType type : typesToAdd) {
 			//marshal the value
 			warningsBuf.clear();
 			String value = null;
-			VCard nested = null;
+			VCard nestedVCard = null;
 			try {
 				value = type.marshalText(targetVersion, warningsBuf, compatibilityMode);
 			} catch (SkipMeException e) {
 				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 				continue;
 			} catch (EmbeddedVCardException e) {
-				nested = e.getVCard();
+				nestedVCard = e.getVCard();
 			} finally {
 				for (String warning : warningsBuf) {
 					addWarning(warning, type.getTypeName());
@@ -486,109 +378,22 @@ public class VCardWriter implements Closeable {
 
 			//marshal the sub types
 			warningsBuf.clear();
-			VCardSubTypes subTypes;
+			VCardSubTypes parameters;
 			try {
-				subTypes = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);
+				parameters = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);
 			} finally {
 				for (String warning : warningsBuf) {
 					addWarning(warning, type.getTypeName());
 				}
 			}
 
-			//sanitize value for safe inclusion in the vCard
-			if (value != null) {
-				if (targetVersion == VCardVersion.V2_1) {
-					if (VCardStringUtils.containsNewlines(value)) {
-						//2.1 does not support the "\n" escape sequence (see "Delimiters" sub-section in section 2 of the specs)
-						QuotedPrintableCodec codec = new QuotedPrintableCodec();
-						try {
-							value = codec.encode(value);
-							subTypes.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
-						} catch (EncoderException e) {
-							addWarning("A unexpected error occurred while encoding the property's value into \"quoted-printable\" encoding.  Value will not be encoded: " + e.getMessage(), type.getTypeName());
-							value = VCardStringUtils.escapeNewlines(value);
-						}
-					}
-				} else {
-					value = VCardStringUtils.escapeNewlines(value);
-				}
-			}
-
-			StringBuilder sb = new StringBuilder();
-
-			//write the group
-			if (type.getGroup() != null) {
-				sb.append(type.getGroup());
-				sb.append('.');
-			}
-
-			//write the type name
-			sb.append(type.getTypeName());
-
-			//write the Sub Types
-			for (Map.Entry<String, List<String>> subType : subTypes) {
-				String subTypeName = subType.getKey();
-				List<String> subTypeValues = subType.getValue();
-				if (!subTypeValues.isEmpty()) {
-					if (targetVersion == VCardVersion.V2_1) {
-						boolean typeSubType = TypeParameter.NAME.equalsIgnoreCase(subTypeName);
-						for (String subTypeValue : subTypeValues) {
-							subTypeValue = sanitizeSubTypeValue(subTypeValue, subTypeName, type.getTypeName());
-
-							if (typeSubType) {
-								//e.g. ADR;HOME;WORK:
-								sb.append(';').append(subTypeValue.toUpperCase());
-							} else {
-								//e.g. ADR;FOO=bar;FOO=car:
-								sb.append(';').append(subTypeName).append('=').append(subTypeValue);
-							}
-						}
-					} else {
-						//e.g. ADR;TYPE=home,work,"another,value":
-
-						sb.append(';').append(subTypeName).append('=');
-						for (String subTypeValue : subTypeValues) {
-							subTypeValue = sanitizeSubTypeValue(subTypeValue, subTypeName, type.getTypeName());
-
-							//surround with double quotes if contains special chars
-							if (quoteMeRegex.matcher(subTypeValue).matches()) {
-								sb.append('"');
-								sb.append(subTypeValue);
-								sb.append('"');
-							} else {
-								sb.append(subTypeValue);
-							}
-
-							sb.append(',');
-						}
-						sb.deleteCharAt(sb.length() - 1); //chomp last comma
-					}
-				}
-			}
-
-			sb.append(':');
-
-			writer.write(sb.toString());
-
-			//write the value
-			if (nested == null) {
-				writer.write(value);
-				writer.write(newline);
+			if (nestedVCard == null) {
+				writer.writeProperty(type.getGroup(), type.getTypeName(), parameters, value);
 			} else {
 				if (targetVersion == VCardVersion.V2_1) {
-					writer.write(newline);
-
 					//write a nested vCard (2.1 style)
-					VCardWriter agentWriter = new VCardWriter(writer, targetVersion);
-					agentWriter.setAddProdId(false);
-					agentWriter.setCompatibilityMode(compatibilityMode);
-					try {
-						agentWriter.write(nested);
-					} finally {
-						for (String w : agentWriter.getWarnings()) {
-							addWarning("Problem marshalling nested vCard value: " + w, type.getTypeName());
-						}
-					}
+					writer.writeProperty(type.getGroup(), type.getTypeName(), parameters, value);
+					write(nestedVCard, false);
 				} else {
 					//write an embedded vCard (3.0 style)
 					StringWriter sw = new StringWriter();
@@ -596,7 +401,9 @@ public class VCardWriter implements Closeable {
 					agentWriter.setAddProdId(false);
 					agentWriter.setCompatibilityMode(compatibilityMode);
 					try {
-						agentWriter.write(nested);
+						agentWriter.write(nestedVCard);
+					} catch (IOException e) {
+						//writing to a string
 					} finally {
 						for (String w : agentWriter.getWarnings()) {
 							addWarning("Problem marshalling embedded vCard value: " + w, type.getTypeName());
@@ -605,96 +412,17 @@ public class VCardWriter implements Closeable {
 
 					String vCardStr = sw.toString();
 					vCardStr = VCardStringUtils.escape(vCardStr);
-					vCardStr = VCardStringUtils.escapeNewlines(vCardStr);
-					writer.write(vCardStr);
-					writer.write(newline);
+					writer.writeProperty(type.getGroup(), type.getTypeName(), parameters, vCardStr);
 				}
 			}
 		}
-	}
 
-	private String sanitizeSubTypeValue(String value, String subTypeName, String typeName) {
-		String modifiedValue = null;
-		boolean subTypeValueChanged = false;
-
-		switch (targetVersion) {
-		case V2_1:
-			//remove invalid characters
-			modifiedValue = removeInvalidSubTypeValueChars(value);
-
-			//replace newlines with spaces
-			modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll(" ");
-
-			//check to see if value was changed
-			subTypeValueChanged = (value != modifiedValue);
-
-			//escape backslashes
-			modifiedValue = modifiedValue.replace("\\", "\\\\");
-
-			//escape semi-colons (see section 2)
-			modifiedValue = modifiedValue.replace(";", "\\;");
-
-			break;
-
-		case V3_0:
-		case V4_0:
-			//remove invalid characters
-			modifiedValue = removeInvalidSubTypeValueChars(value);
-
-			if (caretEncodingEnabled) {
-				subTypeValueChanged = (modifiedValue != value);
-				modifiedValue = applyCaretEncoding(modifiedValue);
-			} else {
-				//replace double quotes with single quotes
-				modifiedValue = modifiedValue.replace('"', '\'');
-				subTypeValueChanged = (modifiedValue != value);
-
-				//escape backslashes
-				modifiedValue = modifiedValue.replace("\\", "\\\\");
-
-				//escape newlines
-				if (targetVersion == VCardVersion.V3_0) {
-					modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll(" ");
-				} else {
-					//for the "LABEL" parameter
-					modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll("\\\\\\n");
-				}
-			}
-
-			break;
-		}
-
-		if (subTypeValueChanged) {
-			addWarning("\"" + subTypeName + "\" parameter contained one or more characters which are not allowed in vCard " + targetVersion.getVersion() + " parameter values.  These characters were removed.", typeName);
-		}
-
-		return modifiedValue;
-	}
-
-	private String removeInvalidSubTypeValueChars(String value) {
-		BitSet invalidChars = invalidParamValueChars.get(targetVersion);
-		StringBuilder sb = new StringBuilder(value.length());
-
-		for (int i = 0; i < value.length(); i++) {
-			char ch = value.charAt(i);
-			if (!invalidChars.get(ch)) {
-				sb.append(ch);
-			}
-		}
-
-		return (sb.length() == value.length()) ? value : sb.toString();
-	}
-
-	private String applyCaretEncoding(String value) {
-		value = value.replace("^", "^^");
-		value = newlineRegex.matcher(value).replaceAll("^n");
-		value = value.replace("\"", "^'");
-		return value;
+		writer.writeEndComponent("VCARD");
 	}
 
 	private boolean supportsTargetVersion(VCardType type) {
 		for (VCardVersion version : type.getSupportedVersions()) {
-			if (version == targetVersion) {
+			if (version == writer.getVersion()) {
 				return true;
 			}
 		}
