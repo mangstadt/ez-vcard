@@ -219,6 +219,37 @@ public class JCardReaderTest {
 	}
 
 	@Test
+	public void no_properties_multiple() throws Exception {
+		//@formatter:off
+		String json =
+		  "[" +
+		    "[\"vcard\"," +
+		      "[" +
+		      "]" +
+		    "]," +
+		    "[\"vcard\"," +
+		      "[" +
+		      "]" +
+		    "]" +
+		  "]";
+		//@formatter:on
+
+		JCardReader reader = new JCardReader(json);
+
+		VCard vcard = reader.readNext();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
+		assertNull(vcard.getFormattedName());
+		assertEquals(1, reader.getWarnings().size()); //missing VERSION property
+
+		vcard = reader.readNext();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
+		assertNull(vcard.getFormattedName());
+		assertEquals(1, reader.getWarnings().size()); //missing VERSION property
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
 	public void read_sub_types() throws Exception {
 		//@formatter:off
 		String json =
