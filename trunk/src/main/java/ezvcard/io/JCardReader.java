@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
@@ -272,21 +271,20 @@ public class JCardReader implements IParser, Closeable {
 		return vcard;
 	}
 
-	private Object parseValueElement() throws JsonParseException, IOException {
-		JsonToken curToken = jp.getCurrentToken();
-		if (curToken == JsonToken.VALUE_FALSE || curToken == JsonToken.VALUE_TRUE) {
+	private Object parseValueElement() throws IOException {
+		switch (jp.getCurrentToken()) {
+		case VALUE_FALSE:
+		case VALUE_TRUE:
 			return jp.getBooleanValue();
-		}
-		if (curToken == JsonToken.VALUE_NUMBER_FLOAT) {
+		case VALUE_NUMBER_FLOAT:
 			return jp.getDoubleValue();
-		}
-		if (curToken == JsonToken.VALUE_NUMBER_INT) {
+		case VALUE_NUMBER_INT:
 			return jp.getLongValue();
-		}
-		if (curToken == JsonToken.VALUE_NULL) {
+		case VALUE_NULL:
 			return "";
+		default:
+			return jp.getText();
 		}
-		return jp.getText();
 	}
 
 	/**
