@@ -10,6 +10,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.VCardStringUtils.JoinCallback;
 import ezvcard.util.XCardElement;
 
 /*
@@ -256,29 +257,23 @@ public class StructuredNameType extends VCardType implements HasAltId {
 			value.append(VCardStringUtils.escape(given));
 		}
 
-		value.append(';');
-		if (!additional.isEmpty()) {
-			for (String s : additional) {
-				value.append(VCardStringUtils.escape(s)).append(',');
+		value.append(';').append(VCardStringUtils.join(additional, ",", new JoinCallback<String>() {
+			public void handle(StringBuilder sb, String value) {
+				sb.append(VCardStringUtils.escape(value));
 			}
-			value.deleteCharAt(value.length() - 1);
-		}
+		}));
 
-		value.append(';');
-		if (!prefixes.isEmpty()) {
-			for (String s : prefixes) {
-				value.append(VCardStringUtils.escape(s)).append(',');
+		value.append(';').append(VCardStringUtils.join(prefixes, ",", new JoinCallback<String>() {
+			public void handle(StringBuilder sb, String value) {
+				sb.append(VCardStringUtils.escape(value));
 			}
-			value.deleteCharAt(value.length() - 1);
-		}
+		}));
 
-		value.append(';');
-		if (!suffixes.isEmpty()) {
-			for (String s : suffixes) {
-				value.append(VCardStringUtils.escape(s)).append(',');
+		value.append(';').append(VCardStringUtils.join(suffixes, ",", new JoinCallback<String>() {
+			public void handle(StringBuilder sb, String value) {
+				sb.append(VCardStringUtils.escape(value));
 			}
-			value.deleteCharAt(value.length() - 1);
-		}
+		}));
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.VCardStringUtils.JoinCallback;
 import ezvcard.util.XCardElement;
 
 /*
@@ -83,14 +84,11 @@ public class TextListType extends VCardType {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (!values.isEmpty()) {
-			for (String value : values) {
-				value = VCardStringUtils.escape(value);
-				sb.append(value);
-				sb.append(separator);
+		sb.append(VCardStringUtils.join(values, separator + "", new JoinCallback<String>() {
+			public void handle(StringBuilder sb, String value) {
+				sb.append(VCardStringUtils.escape(value));
 			}
-			sb.deleteCharAt(sb.length() - 1);
-		}
+		}));
 	}
 
 	@Override
