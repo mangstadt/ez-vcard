@@ -1,6 +1,20 @@
 #summary Documents all the changes that were made to every version of the library
 #labels Featured
 
+= 0.8.3 =
+_--in development--_
+
+ * Updated jCard functionality to adhere to the most recent draft specification.
+      * Removed the "vcardstream" array.
+      * jCards can optionally be wrapped in a JSON array (useful when writing multiple jCards).
+ * Refactored the way in which the `VCard` class stores its properties.  This has a number of consequences:
+      * When parsing, _all_ property instances are now added to the `VCard` object.  Previously, for properties with a cardinality of zero or one, the only instance that was retrievable was the one that was parsed last.
+      * Property order is more predictable during marshalling.  Properties are essentially written in the order that they were added to the `VCard` object.
+ * Refactored the parsing code of plain-text vCards.  Parsing is slightly more strict: `BEGIN:VCARD` and `END:VCARD` properties are now *required*, or else the vCard will not be parsed.
+ * Renamed `VCard.getAllTypes()` to `VCard.getProperties()`.
+ * Renamed `VCard.getExtendedType()` to `VCard.getExtendedProperty()`.
+ * Renamed `VCard.getExtendedTypes()` to `VCard.getExtendedProperties()`.
+
 = 0.8.2 =
 _June 17, 2013_
 
