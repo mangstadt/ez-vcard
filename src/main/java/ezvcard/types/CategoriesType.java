@@ -7,6 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.VCardStringUtils.JoinCallback;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -169,19 +170,15 @@ public class CategoriesType extends TextListType implements HasAltId {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (!values.isEmpty()) {
-			for (String value : values) {
-				sb.append(VCardStringUtils.escape(value));
-				if (compatibilityMode == CompatibilityMode.KDE_ADDRESS_BOOK) {
-					//KDE escapes all the comma delimiters
-					sb.append('\\');
+		if (compatibilityMode == CompatibilityMode.KDE_ADDRESS_BOOK) {
+			//KDE escapes all the comma delimiters
+			sb.append(VCardStringUtils.join(values, "\\,", new JoinCallback<String>() {
+				public void handle(StringBuilder sb, String value) {
+					sb.append(VCardStringUtils.escape(value));
 				}
-				sb.append(',');
-			}
-			if (compatibilityMode == CompatibilityMode.KDE_ADDRESS_BOOK) {
-				sb.deleteCharAt(sb.length() - 1);
-			}
-			sb.deleteCharAt(sb.length() - 1);
+			}));
+		} else {
+			super.doMarshalText(sb, version, warnings, compatibilityMode);
 		}
 	}
 
