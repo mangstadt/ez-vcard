@@ -47,13 +47,21 @@ import java.util.Set;
  * @param <V> the value
  */
 public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
-	private final Map<K, List<V>> map = new LinkedHashMap<K, List<V>>();
+	private final Map<K, List<V>> map;
 
 	/**
 	 * Creates an empty multimap.
 	 */
 	public ListMultimap() {
-		//empty
+		map = new LinkedHashMap<K, List<V>>();
+	}
+
+	/**
+	 * Creates an empty multimap.
+	 * @param initialCapacity the initial capacity of the underlying map.
+	 */
+	public ListMultimap(int initialCapacity) {
+		map = new LinkedHashMap<K, List<V>>(initialCapacity);
 	}
 
 	/**
@@ -61,6 +69,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @param orig the multimap to copy from
 	 */
 	public ListMultimap(ListMultimap<K, V> orig) {
+		this();
 		for (Map.Entry<K, List<V>> entry : orig) {
 			List<V> values = new ArrayList<V>(entry.getValue());
 			map.put(entry.getKey(), values);
@@ -161,14 +170,28 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	/**
 	 * Replaces all values with the given value.
 	 * @param key the key
-	 * @param value the value with which to replace all existing values (null
-	 * will remove all values)
+	 * @param value the value with which to replace all existing values, or null
+	 * to remove all values
 	 * @return the values that were replaced
 	 */
 	public List<V> replace(K key, V value) {
 		List<V> replaced = removeAll(key);
 		if (value != null) {
 			put(key, value);
+		}
+		return replaced;
+	}
+
+	/**
+	 * Replaces all values with the given values.
+	 * @param key the key
+	 * @param values the values with which to replace all existing values
+	 * @return the values that were replaced
+	 */
+	public List<V> replace(K key, Collection<V> values) {
+		List<V> replaced = removeAll(key);
+		if (values != null && !values.isEmpty()) {
+			putAll(key, values);
 		}
 		return replaced;
 	}
@@ -192,8 +215,8 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * Returns all the values.
 	 * @return all the values
 	 */
-	public Collection<V> values() {
-		Collection<V> list = new ArrayList<V>();
+	public List<V> values() {
+		List<V> list = new ArrayList<V>();
 		for (List<V> value : map.values()) {
 			list.addAll(value);
 		}
@@ -241,5 +264,28 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	//@Override
 	public Iterator<Map.Entry<K, List<V>>> iterator() {
 		return map.entrySet().iterator();
+	}
+
+	@Override
+	public String toString() {
+		return map.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return map.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+
+		ListMultimap<?, ?> other = (ListMultimap<?, ?>) obj;
+		return map.equals(other.map);
 	}
 }
