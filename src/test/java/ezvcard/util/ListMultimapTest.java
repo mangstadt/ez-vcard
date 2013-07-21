@@ -103,7 +103,7 @@ public class ListMultimapTest {
 	}
 
 	@Test
-	public void replace() {
+	public void replace_string() {
 		ListMultimap<String, String> map = new ListMultimap<String, String>();
 		map.put("one", "1");
 		map.put("one", "111");
@@ -113,12 +113,32 @@ public class ListMultimapTest {
 	}
 
 	@Test
-	public void replace_null_value() {
+	public void replace_collection() {
 		ListMultimap<String, String> map = new ListMultimap<String, String>();
 		map.put("one", "1");
 		map.put("one", "111");
 
-		assertEquals(Arrays.asList("1", "111"), map.replace("one", null));
+		assertEquals(Arrays.asList("1", "111"), map.replace("one", Arrays.asList("11", "1111")));
+		assertEquals(Arrays.asList("11", "1111"), map.get("one"));
+	}
+
+	@Test
+	public void replace_null_value_string() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		map.put("one", "111");
+
+		assertEquals(Arrays.asList("1", "111"), map.replace("one", (String) null));
+		assertTrue(map.isEmpty());
+	}
+
+	@Test
+	public void replace_null_value_collection() {
+		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		map.put("one", "1");
+		map.put("one", "111");
+
+		assertEquals(Arrays.asList("1", "111"), map.replace("one", (Collection<String>) null));
 		assertTrue(map.isEmpty());
 	}
 
