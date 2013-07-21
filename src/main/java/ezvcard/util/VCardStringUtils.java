@@ -1,7 +1,9 @@
 package ezvcard.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /*
@@ -177,6 +179,79 @@ public class VCardStringUtils {
 			//do nothing
 		}
 		return (i == 0) ? "" : string.substring(0, i + 1);
+	}
+
+	/**
+	 * Joins a collection of values into a delimited list.
+	 * @param collection the collection of values
+	 * @param delimiter the delimiter (e.g. ",")
+	 * @return the final string
+	 */
+	public static <T> String join(Collection<T> collection, String delimiter) {
+		return join(collection, delimiter, new JoinCallback<T>() {
+			public void handle(StringBuilder sb, T value) {
+				sb.append(value);
+			}
+		});
+	}
+
+	/**
+	 * Joins a collection of values into a delimited list.
+	 * @param collection the collection of values
+	 * @param delimiter the delimiter (e.g. ",")
+	 * @param join callback function to call on every element in the collection
+	 * @return the final string
+	 */
+	public static <T> String join(Collection<T> collection, String delimiter, JoinCallback<T> join) {
+		StringBuilder sb = new StringBuilder();
+
+		boolean first = true;
+		for (T element : collection) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append(delimiter);
+			}
+			join.handle(sb, element);
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * Joins a map into a delimited list.
+	 * @param map the map
+	 * @param delimiter the delimiter (e.g. ",")
+	 * @param join callback function to call on every element in the collection
+	 * @return the final string
+	 */
+	public static <K, V> String join(Map<K, V> map, String delimiter, final JoinMapCallback<K, V> join) {
+		return join(map.entrySet(), delimiter, new JoinCallback<Map.Entry<K, V>>() {
+			public void handle(StringBuilder sb, Map.Entry<K, V> entry) {
+				join.handle(sb, entry.getKey(), entry.getValue());
+			}
+		});
+	}
+
+	/**
+	 * Callback interface used with the
+	 * {@link StringUtils#join(Collection, String, JoinCallback)} method.
+	 * @author Michael Angstadt
+	 * @param <T> the value type
+	 */
+	public static interface JoinCallback<T> {
+		void handle(StringBuilder sb, T value);
+	}
+
+	/**
+	 * Callback interface used with the
+	 * {@link StringUtils#join(Map, String, JoinMapCallback)} method.
+	 * @author Michael Angstadt
+	 * @param <K> the key class
+	 * @param <V> the value class
+	 */
+	public static interface JoinMapCallback<K, V> {
+		void handle(StringBuilder sb, K key, V value);
 	}
 
 	private VCardStringUtils() {
