@@ -17,6 +17,7 @@ import ezvcard.util.HCardElement;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.VCardStringUtils.JoinCallback;
 import ezvcard.util.XCardElement;
 
 /*
@@ -405,31 +406,18 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * {@link VCard} object
 	 */
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		StringBuilder sb = new StringBuilder();
-
-		char delimiter = value.isStructured() ? ';' : ',';
-		boolean firstOutter = true;
-		for (List<String> valueStrs : value.getValuesAsStrings()) {
-			if (!firstOutter) {
-				sb.append(delimiter);
+		String delimiter = value.isStructured() ? ";" : ",";
+		String str = VCardStringUtils.join(value.getValuesAsStrings(), delimiter, new JoinCallback<List<String>>() {
+			public void handle(StringBuilder sb, List<String> value) {
+				sb.append(VCardStringUtils.join(value, ",", new JoinCallback<String>() {
+					public void handle(StringBuilder sb, String value) {
+						sb.append(VCardStringUtils.escape(value));
+					}
+				}));
 			}
+		});
 
-			boolean firstInner = true;
-			for (String valueStr : valueStrs) {
-				valueStr = VCardStringUtils.escape(valueStr);
-
-				if (!firstInner) {
-					sb.append(',');
-				}
-				sb.append(valueStr);
-
-				firstInner = false;
-			}
-
-			firstOutter = false;
-		}
-
-		doUnmarshalText(sb.toString(), version, warnings, CompatibilityMode.RFC);
+		doUnmarshalText(str, version, warnings, CompatibilityMode.RFC);
 	}
 
 	/**

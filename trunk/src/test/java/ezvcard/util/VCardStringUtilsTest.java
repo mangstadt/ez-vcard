@@ -5,7 +5,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.junit.Test;
+
+import ezvcard.util.VCardStringUtils.JoinCallback;
+import ezvcard.util.VCardStringUtils.JoinMapCallback;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -122,5 +131,58 @@ public class VCardStringUtilsTest {
 		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', true, true);
 		expected = new String[] { "Doe", "John", "Joh,;nny", "Sr.,III" };
 		assertArrayEquals(expected, actual);
+	}
+
+	@Test
+	public void join_multiple() {
+		Collection<String> values = Arrays.asList("one", "two", "three");
+		assertEquals("ONE,TWO,THREE", VCardStringUtils.join(values, ",", new JoinCallback<String>() {
+			public void handle(StringBuilder sb, String str) {
+				sb.append(str.toUpperCase());
+			}
+		}));
+	}
+
+	@Test
+	public void join_single() {
+		Collection<String> values = Arrays.asList("one");
+		assertEquals("ONE", VCardStringUtils.join(values, ",", new JoinCallback<String>() {
+			public void handle(StringBuilder sb, String str) {
+				sb.append(str.toUpperCase());
+			}
+		}));
+	}
+
+	@Test
+	public void join_empty() {
+		Collection<String> values = Arrays.asList();
+		assertEquals("", VCardStringUtils.join(values, ",", new JoinCallback<String>() {
+			public void handle(StringBuilder sb, String str) {
+				sb.append(str.toUpperCase());
+			}
+		}));
+	}
+
+	@Test
+	public void join_objects() {
+		Collection<Object> values = new ArrayList<Object>();
+		values.add(false);
+		values.add(1);
+		values.add("two");
+		values.add(null);
+		assertEquals("false,1,two,null", VCardStringUtils.join(values, ","));
+	}
+
+	@Test
+	public void join_map() {
+		Map<Integer, String> map = new LinkedHashMap<Integer, String>();
+		map.put(1, "one");
+		map.put(2, "two");
+		map.put(3, "three");
+		assertEquals("1 - one,2 - two,3 - three", VCardStringUtils.join(map, ",", new JoinMapCallback<Integer, String>() {
+			public void handle(StringBuilder sb, Integer key, String value) {
+				sb.append(key).append(" - ").append(value);
+			}
+		}));
 	}
 }
