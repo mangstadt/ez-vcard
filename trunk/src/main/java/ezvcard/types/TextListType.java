@@ -84,11 +84,11 @@ public class TextListType extends VCardType {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		sb.append(VCardStringUtils.join(values, separator + "", new JoinCallback<String>() {
+		VCardStringUtils.join(values, separator + "", sb, new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String value) {
 				sb.append(VCardStringUtils.escape(value));
 			}
-		}));
+		});
 	}
 
 	@Override
