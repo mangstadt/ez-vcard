@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -54,13 +55,12 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TextTypeTest {
-	final String newline = System.getProperty("line.separator");
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
 
-	final TextType textType = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
-	TextType t;
+	private final TextType textType = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
+	private TextType t;
 
 	@Before
 	public void before() {
@@ -114,7 +114,7 @@ public class TextTypeTest {
 	public void unmarshalText() {
 		VCardVersion version = VCardVersion.V2_1;
 		t.unmarshalText(subTypes, "This is a test of the TextType.\\nOne\\, two\\, three\\; and \\\\four\\\\.", version, warnings, compatibilityMode);
-		String expected = "This is a test of the TextType." + newline + "One, two, three; and \\four\\.";
+		String expected = "This is a test of the TextType." + NEWLINE + "One, two, three; and \\four\\.";
 		String actual = t.getValue();
 
 		assertEquals(expected, actual);

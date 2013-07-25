@@ -1,5 +1,7 @@
 package ezvcard.util;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -221,7 +223,7 @@ public class HCardElement {
 				if (!e.classNames().contains("type")) { //ignore "type" elements
 					if ("br".equals(e.tagName())) {
 						//convert "<br>" to a newline
-						value.append(System.getProperty("line.separator"));
+						value.append(NEWLINE);
 					} else if ("del".equals(e.tagName())) {
 						//skip "<del>" tags
 					} else {

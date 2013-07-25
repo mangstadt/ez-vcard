@@ -1,5 +1,6 @@
 package ezvcard.util;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -47,8 +48,6 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class HCardElementTest {
-	private final String newline = System.getProperty("line.separator");
-
 	@Test
 	public void value_text_content() {
 		HCardElement element = build("<div>The text</div>");
@@ -58,15 +57,15 @@ public class HCardElementTest {
 	@Test
 	public void value_line_breaks() {
 		HCardElement element = build("<div>The<br>text</div>");
-		assertEquals("The" + newline + "text", element.value());
+		assertEquals("The" + NEWLINE + "text", element.value());
 
 		//"value" element
 		element = build("<div>The <span class=\"value\">real<br>text</span></div>");
-		assertEquals("real" + newline + "text", element.value());
+		assertEquals("real" + NEWLINE + "text", element.value());
 
 		//nested "value" element
 		element = build("<div>The <span class=\"value\">real<br>text <span class=\"value\">goes<br>here</span></span></div>");
-		assertEquals("real" + newline + "text goes" + newline + "here", element.value());
+		assertEquals("real" + NEWLINE + "text goes" + NEWLINE + "here", element.value());
 	}
 
 	@Test

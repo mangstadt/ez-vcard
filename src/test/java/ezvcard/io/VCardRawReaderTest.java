@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -49,8 +50,6 @@ import ezvcard.io.VCardRawReader.VCardDataStreamListener;
  * @author Michael Angstadt
  */
 public class VCardRawReaderTest {
-	private final String newline = System.getProperty("line.separator");
-
 	@Test
 	public void basic() throws Exception {
 		//@formatter:off
@@ -515,7 +514,7 @@ public class VCardRawReaderTest {
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
 					assertEquals(1, parameters.size());
-					assertEquals(Arrays.asList("1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + newline + "Apt 10" + newline + "^'Austin^', \"TX\" 123^45"), parameters.get("LABEL"));
+					assertEquals(Arrays.asList("1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" 123^45"), parameters.get("LABEL"));
 				}
 
 				@Override
@@ -562,7 +561,7 @@ public class VCardRawReaderTest {
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
 					assertEquals(1, parameters.size());
-					assertEquals(Arrays.asList("1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + newline + "Apt 10" + newline + "^'Austin^', \"TX\" 123^45"), parameters.get("LABEL"));
+					assertEquals(Arrays.asList("1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" 123^45"), parameters.get("LABEL"));
 				}
 
 				@Override
@@ -609,7 +608,7 @@ public class VCardRawReaderTest {
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
 					assertEquals(1, parameters.size());
-					assertEquals(Arrays.asList("1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + newline + "Apt 10" + newline + "^'Austin^', \"TX\" 123^45"), parameters.get("LABEL"));
+					assertEquals(Arrays.asList("1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" 123^45"), parameters.get("LABEL"));
 				}
 
 				@Override
@@ -656,7 +655,7 @@ public class VCardRawReaderTest {
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
 					assertEquals(1, parameters.size());
-					assertEquals(Arrays.asList("1\\23 ^Main^ St." + newline + "Section; 12^NBuilding 20" + newline + "Apt 10" + newline + "\"Austin\", \"TX\" 123^45"), parameters.get("LABEL"));
+					assertEquals(Arrays.asList("1\\23 ^Main^ St." + NEWLINE + "Section; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "\"Austin\", \"TX\" 123^45"), parameters.get("LABEL"));
 				}
 
 				@Override
@@ -703,7 +702,7 @@ public class VCardRawReaderTest {
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
 					assertEquals(1, parameters.size());
-					assertEquals(Arrays.asList("1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + newline + "Apt 10" + newline + "^'Austin^', \"TX\" 123^45"), parameters.get("LABEL"));
+					assertEquals(Arrays.asList("1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" 123^45"), parameters.get("LABEL"));
 				}
 
 				@Override
@@ -750,7 +749,7 @@ public class VCardRawReaderTest {
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
 					assertEquals(1, parameters.size());
-					assertEquals(Arrays.asList("1\\23 ^Main^ St." + newline + "Section; 12^NBuilding 20" + newline + "Apt 10" + newline + "\"Austin\", \"TX\" 123^45"), parameters.get("LABEL"));
+					assertEquals(Arrays.asList("1\\23 ^Main^ St." + NEWLINE + "Section; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "\"Austin\", \"TX\" 123^45"), parameters.get("LABEL"));
 				}
 
 				@Override

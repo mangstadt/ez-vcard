@@ -1,6 +1,7 @@
 package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -86,8 +87,6 @@ import ezvcard.types.UrlType;
  * @author Michael Angstadt
  */
 public class VCardReaderTest {
-	private static final String newline = System.getProperty("line.separator");
-
 	/**
 	 * Tests to make sure it can read sub types properly
 	 */
@@ -427,7 +426,7 @@ public class VCardReaderTest {
 		AddressType adr = vcard.getAddresses().get(0);
 		assertEquals(1, adr.getTypes().size());
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
-		assertEquals("123 Main St." + newline + "Austin, TX 91827" + newline + "USA", adr.getLabel());
+		assertEquals("123 Main St." + NEWLINE + "Austin, TX 91827" + NEWLINE + "USA", adr.getLabel());
 
 		adr = vcard.getAddresses().get(1);
 		assertEquals(2, adr.getTypes().size());
@@ -437,7 +436,7 @@ public class VCardReaderTest {
 
 		assertEquals(1, vcard.getOrphanedLabels().size());
 		LabelType label = vcard.getOrphanedLabels().get(0);
-		assertEquals("200 Broadway" + newline + "New York, NY 12345" + newline + "USA", label.getValue());
+		assertEquals("200 Broadway" + NEWLINE + "New York, NY 12345" + NEWLINE + "USA", label.getValue());
 		assertEquals(1, label.getTypes().size());
 		assertTrue(label.getTypes().contains(AddressTypeParameter.WORK));
 
@@ -808,7 +807,7 @@ public class VCardReaderTest {
 
 			AddressType f = it.next();
 			assertEquals(null, f.getPoBox());
-			assertEquals("Crescent moon drive" + newline + "555-asd" + newline + "Nice Area, Albaney, New York12345" + newline + "United States of America", f.getExtendedAddress());
+			assertEquals("Crescent moon drive" + NEWLINE + "555-asd" + NEWLINE + "Nice Area, Albaney, New York12345" + NEWLINE + "United States of America", f.getExtendedAddress());
 			assertEquals(null, f.getStreetAddress());
 			assertEquals(null, f.getLocality());
 			assertEquals(null, f.getRegion());
@@ -866,7 +865,7 @@ public class VCardReaderTest {
 			Iterator<NoteType> it = vcard.getNotes().iterator();
 
 			NoteType f = it.next();
-			assertEquals("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE." + newline + "Favotire Color: Blue", f.getValue());
+			assertEquals("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE." + NEWLINE + "Favotire Color: Blue", f.getValue());
 
 			assertFalse(it.hasNext());
 		}
@@ -1080,7 +1079,7 @@ public class VCardReaderTest {
 			AddressType f = it.next();
 			assertEquals(null, f.getPoBox());
 			assertEquals(null, f.getExtendedAddress());
-			assertEquals("123 Home St" + newline + "Home City, HM 12345", f.getStreetAddress());
+			assertEquals("123 Home St" + NEWLINE + "Home City, HM 12345", f.getStreetAddress());
 			assertEquals(null, f.getLocality());
 			assertEquals(null, f.getRegion());
 			assertEquals(null, f.getPostalCode());
@@ -1148,7 +1147,7 @@ public class VCardReaderTest {
 			Iterator<NoteType> it = vcard.getNotes().iterator();
 
 			NoteType f = it.next();
-			assertEquals("This is GMail's note field." + newline + "It should be added as a NOTE type." + newline + "ACustomField: CustomField", f.getValue());
+			assertEquals("This is GMail's note field." + NEWLINE + "It should be added as a NOTE type." + NEWLINE + "ACustomField: CustomField", f.getValue());
 
 			assertFalse(it.hasNext());
 		}
@@ -1359,7 +1358,7 @@ public class VCardReaderTest {
 			assertEquals("item4", f.getGroup());
 			assertEquals(null, f.getPoBox());
 			assertEquals(null, f.getExtendedAddress());
-			assertEquals("Street4" + newline + "Building 6" + newline + "Floor 8", f.getStreetAddress());
+			assertEquals("Street4" + NEWLINE + "Building 6" + NEWLINE + "Floor 8", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals(null, f.getRegion());
 			assertEquals("12345", f.getPostalCode());
@@ -1535,7 +1534,7 @@ public class VCardReaderTest {
 			assertEquals("item1", f.getGroup());
 			assertEquals(null, f.getPoBox());
 			assertEquals(null, f.getExtendedAddress());
-			assertEquals("25334" + newline + "South cresent drive, Building 5, 3rd floo r", f.getStreetAddress());
+			assertEquals("25334" + NEWLINE + "South cresent drive, Building 5, 3rd floo r", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals("New York", f.getRegion());
 			assertEquals("NYC887", f.getPostalCode());
@@ -1555,7 +1554,7 @@ public class VCardReaderTest {
 			Iterator<NoteType> it = vcard.getNotes().iterator();
 
 			NoteType f = it.next();
-			assertEquals("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"" + newline + "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO , THE" + newline + "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR P URPOSE" + newline + "ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTOR S BE" + newline + "LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR" + newline + "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF" + newline + " SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS " + newline + "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN" + newline + " CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)" + newline + "A RISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE" + newline + " POSSIBILITY OF SUCH DAMAGE.", f.getValue());
+			assertEquals("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"" + NEWLINE + "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO , THE" + NEWLINE + "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR P URPOSE" + NEWLINE + "ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTOR S BE" + NEWLINE + "LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR" + NEWLINE + "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF" + NEWLINE + " SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS " + NEWLINE + "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN" + NEWLINE + " CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)" + NEWLINE + "A RISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE" + NEWLINE + " POSSIBILITY OF SUCH DAMAGE.", f.getValue());
 
 			assertFalse(it.hasNext());
 		}
@@ -1633,7 +1632,7 @@ public class VCardReaderTest {
 			Iterator<LabelType> it = vcard.getOrphanedLabels().iterator();
 
 			LabelType f = it.next();
-			assertEquals("John Doe" + newline + "New York, NewYork," + newline + "South Crecent Drive," + newline + "Building 5, floor 3," + newline + "USA", f.getValue());
+			assertEquals("John Doe" + NEWLINE + "New York, NewYork," + NEWLINE + "South Crecent Drive," + NEWLINE + "Building 5, floor 3," + NEWLINE + "USA", f.getValue());
 			Set<AddressTypeParameter> types = f.getTypes();
 			assertEquals(3, types.size());
 			assertTrue(types.contains(AddressTypeParameter.HOME));
@@ -2324,7 +2323,7 @@ public class VCardReaderTest {
 			assertEquals("item3", f.getGroup());
 			assertEquals(null, f.getPoBox());
 			assertEquals(null, f.getExtendedAddress());
-			assertEquals("Street4" + newline + "Building 6" + newline + "Floor 8", f.getStreetAddress());
+			assertEquals("Street4" + NEWLINE + "Building 6" + NEWLINE + "Floor 8", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals(null, f.getRegion());
 			assertEquals("12345", f.getPostalCode());
@@ -2342,7 +2341,7 @@ public class VCardReaderTest {
 			Iterator<NoteType> it = vcard.getNotes().iterator();
 
 			NoteType f = it.next();
-			assertEquals("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE." + newline + "Favotire Color: Blue", f.getValue());
+			assertEquals("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE." + NEWLINE + "Favotire Color: Blue", f.getValue());
 
 			assertFalse(it.hasNext());
 		}
@@ -2832,7 +2831,7 @@ public class VCardReaderTest {
 			Iterator<NoteType> it = vcard.getNotes().iterator();
 
 			NoteType f = it.next();
-			assertEquals("This is the notes field." + newline + "Second Line" + newline + newline + "Fourth Line" + newline + "You can put anything in the \"note\" field; even curse words.", f.getValue());
+			assertEquals("This is the notes field." + NEWLINE + "Second Line" + NEWLINE + NEWLINE + "Fourth Line" + NEWLINE + "You can put anything in the \"note\" field; even curse words.", f.getValue());
 
 			assertFalse(it.hasNext());
 		}

@@ -1,6 +1,7 @@
 package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -435,19 +436,18 @@ public class XCardDocumentTest {
 		String actual = xcm.write(2);
 
 		//@formatter:off
-		String newline = System.getProperty("line.separator");
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" + newline +
-		"  <vcard>" + newline +
-		"    <fn>" + newline +
-		"      <text>John Doe</text>" + newline +
-		"    </fn>" + newline +
-		"  </vcard>" + newline +
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" + NEWLINE +
+		"  <vcard>" + NEWLINE +
+		"    <fn>" + NEWLINE +
+		"      <text>John Doe</text>" + NEWLINE +
+		"    </fn>" + NEWLINE +
+		"  </vcard>" + NEWLINE +
 		"</vcards>";
 		//@formatter:on
 
 		//use "String.contains()" to ignore the XML declaration at the top
-		assertTrue("Expected:" + newline + expected + newline + newline + "Actual:" + newline + actual, actual.contains(expected));
+		assertTrue("Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual, actual.contains(expected));
 	}
 
 	@Test
