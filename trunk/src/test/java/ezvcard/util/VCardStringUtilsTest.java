@@ -49,14 +49,12 @@ import ezvcard.util.VCardStringUtils.JoinMapCallback;
  * @author Michael Angstadt
  */
 public class VCardStringUtilsTest {
-	private static final String newline = System.getProperty("line.separator");
-
 	@Test
 	public void unescape() {
 		String expected, actual;
 
 		actual = VCardStringUtils.unescape("\\\\ \\, \\; \\n \\\\\\,");
-		expected = "\\ , ; " + newline + " \\,";
+		expected = "\\ , ; " + VCardStringUtils.NEWLINE + " \\,";
 		assertEquals(expected, actual);
 	}
 

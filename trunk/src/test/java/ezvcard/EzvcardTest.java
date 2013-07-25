@@ -1,5 +1,6 @@
 package ezvcard;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -60,8 +61,6 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  */
 public class EzvcardTest {
-	final String newline = System.getProperty("line.separator");
-
 	private final XPath xpath = XPathFactory.newInstance().newXPath();
 	{
 		xpath.setNamespaceContext(new XCardReader.XCardNamespaceContext("v"));
@@ -589,8 +588,7 @@ public class EzvcardTest {
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
 
 		String actual = Ezvcard.writeXml(vcard).indent(2).go();
-		String newline = System.getProperty("line.separator");
-		assertTrue(actual.contains("    <fn>" + newline + "      <text>John Doe</text>" + newline + "    </fn>"));
+		assertTrue(actual.contains("    <fn>" + NEWLINE + "      <text>John Doe</text>" + NEWLINE + "    </fn>"));
 	}
 
 	@Test
@@ -740,7 +738,7 @@ public class EzvcardTest {
 		assertTrue(actual.startsWith("[\"vcard\",[[\""));
 
 		actual = Ezvcard.writeJson(vcard).indent(true).go();
-		assertTrue(actual.startsWith("[\"vcard\",[[" + newline));
+		assertTrue(actual.startsWith("[\"vcard\",[[" + NEWLINE));
 
 		actual = Ezvcard.writeJson(vcard).indent(false).go();
 		assertTrue(actual.startsWith("[\"vcard\",[[\""));

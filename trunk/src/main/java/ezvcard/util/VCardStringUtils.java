@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import ezvcard.util.org.apache.commons.codec.binary.StringUtils;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -41,6 +43,11 @@ import java.util.regex.Pattern;
  */
 public class VCardStringUtils {
 	/**
+	 * The local computer's newline character sequence.
+	 */
+	public static final String NEWLINE = System.getProperty("line.separator");
+
+	/**
 	 * Unescapes all special characters that are escaped with a backslash, as
 	 * well as escaped newlines.
 	 * @param text the text
@@ -54,7 +61,7 @@ public class VCardStringUtils {
 			if (escaped) {
 				if (ch == 'n' || ch == 'N') {
 					//newlines appear as "\n" or "\N" (see RFC 2426 p.7)
-					sb.append(System.getProperty("line.separator"));
+					sb.append(NEWLINE);
 				} else {
 					sb.append(ch);
 				}

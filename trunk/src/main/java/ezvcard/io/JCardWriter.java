@@ -1,5 +1,7 @@
 package ezvcard.io;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
@@ -62,7 +64,6 @@ import ezvcard.util.JCardValue;
  * @author Michael Angstadt
  */
 public class JCardWriter implements Closeable {
-	private static final String newline = System.getProperty("line.separator");
 	private final Writer writer;
 	private JsonGenerator jg;
 	private VCardVersion targetVersion = VCardVersion.V4_0;
@@ -337,7 +338,7 @@ public class JCardWriter implements Closeable {
 	 */
 	private void indent(int spaces) throws IOException {
 		if (indent) {
-			jg.writeRaw(newline);
+			jg.writeRaw(NEWLINE);
 			for (int i = 0; i < spaces; i++) {
 				jg.writeRaw(' ');
 			}

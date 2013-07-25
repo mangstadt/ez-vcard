@@ -1,5 +1,7 @@
 package ezvcard.io;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -43,7 +45,6 @@ import ezvcard.util.VCardStringUtils;
  * @author Michael Angstadt
  */
 public class VCardRawReader implements Closeable {
-	private static final String NEWLINE = System.getProperty("line.separator");
 	private final FoldedLineReader reader;
 	private boolean caretDecodingEnabled = true;
 	private boolean eof = false;

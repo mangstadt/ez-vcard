@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -51,8 +52,6 @@ import ezvcard.util.JCardValue;
  * @author Michael Angstadt
  */
 public class JCardWriterTest {
-	final String newline = System.getProperty("line.separator");
-
 	@Test
 	public void write_single_vcard() throws Exception {
 		StringWriter sw = new StringWriter();
@@ -236,12 +235,12 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[\"vcard\",[[" + newline +
-		"  \"version\",{},\"text\",\"4.0\"],[" + newline +
-		"  \"fn\",{},\"text\",\"John Doe\"]" + newline +
-		"]]" + newline + " [\"vcard\",[[" + newline +
-		"  \"version\",{},\"text\",\"4.0\"],[" + newline +
-		"  \"fn\",{},\"text\",\"John Doe\"]" + newline +
+		"[\"vcard\",[[" + NEWLINE +
+		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
+		"  \"fn\",{},\"text\",\"John Doe\"]" + NEWLINE +
+		"]]" + NEWLINE + " [\"vcard\",[[" + NEWLINE +
+		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
+		"  \"fn\",{},\"text\",\"John Doe\"]" + NEWLINE +
 		"]]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
@@ -266,14 +265,14 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[" + newline +
-		"[\"vcard\",[[" + newline +
-		"  \"version\",{},\"text\",\"4.0\"],[" + newline +
-		"  \"fn\",{},\"text\",\"John Doe\"]" + newline +
-		"]]" + newline + ",[\"vcard\",[[" + newline +
-		"  \"version\",{},\"text\",\"4.0\"],[" + newline +
-		"  \"fn\",{},\"text\",\"John Doe\"]" + newline +
-		"]]" + newline +
+		"[" + NEWLINE +
+		"[\"vcard\",[[" + NEWLINE +
+		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
+		"  \"fn\",{},\"text\",\"John Doe\"]" + NEWLINE +
+		"]]" + NEWLINE + ",[\"vcard\",[[" + NEWLINE +
+		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
+		"  \"fn\",{},\"text\",\"John Doe\"]" + NEWLINE +
+		"]]" + NEWLINE +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
