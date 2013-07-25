@@ -409,11 +409,11 @@ public abstract class VCardType implements Comparable<VCardType> {
 		String delimiter = value.isStructured() ? ";" : ",";
 		String str = VCardStringUtils.join(value.getValuesAsStrings(), delimiter, new JoinCallback<List<String>>() {
 			public void handle(StringBuilder sb, List<String> value) {
-				sb.append(VCardStringUtils.join(value, ",", new JoinCallback<String>() {
+				VCardStringUtils.join(value, ",", sb, new JoinCallback<String>() {
 					public void handle(StringBuilder sb, String value) {
 						sb.append(VCardStringUtils.escape(value));
 					}
-				}));
+				});
 			}
 		});
 

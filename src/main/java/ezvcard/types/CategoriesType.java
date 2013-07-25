@@ -172,11 +172,11 @@ public class CategoriesType extends TextListType implements HasAltId {
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (compatibilityMode == CompatibilityMode.KDE_ADDRESS_BOOK) {
 			//KDE escapes all the comma delimiters
-			sb.append(VCardStringUtils.join(values, "\\,", new JoinCallback<String>() {
+			VCardStringUtils.join(values, "\\,", sb, new JoinCallback<String>() {
 				public void handle(StringBuilder sb, String value) {
 					sb.append(VCardStringUtils.escape(value));
 				}
-			}));
+			});
 		} else {
 			super.doMarshalText(sb, version, warnings, compatibilityMode);
 		}

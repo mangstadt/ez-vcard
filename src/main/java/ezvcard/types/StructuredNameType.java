@@ -257,23 +257,26 @@ public class StructuredNameType extends VCardType implements HasAltId {
 			value.append(VCardStringUtils.escape(given));
 		}
 
-		value.append(';').append(VCardStringUtils.join(additional, ",", new JoinCallback<String>() {
+		value.append(';');
+		VCardStringUtils.join(additional, ",", value, new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String value) {
 				sb.append(VCardStringUtils.escape(value));
 			}
-		}));
+		});
 
-		value.append(';').append(VCardStringUtils.join(prefixes, ",", new JoinCallback<String>() {
+		value.append(';');
+		VCardStringUtils.join(prefixes, ",", value, new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String value) {
 				sb.append(VCardStringUtils.escape(value));
 			}
-		}));
+		});
 
-		value.append(';').append(VCardStringUtils.join(suffixes, ",", new JoinCallback<String>() {
+		value.append(';');
+		VCardStringUtils.join(suffixes, ",", value, new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String value) {
 				sb.append(VCardStringUtils.escape(value));
 			}
-		}));
+		});
 	}
 
 	@Override
