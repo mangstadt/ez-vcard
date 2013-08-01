@@ -15,6 +15,7 @@ Maven-enabled projects can exclude dependencies like so:
   <artifactId>ez-vcard</artifactId>
   <version>...</version>
   <exclusions>
+
     <!-- hCard functionality not needed -->
     <exclusion>
       <groupId>org.jsoup</groupId>
@@ -24,6 +25,13 @@ Maven-enabled projects can exclude dependencies like so:
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
     </exclusion>
+
+    <!-- jCard functionality not needed -->
+    <exclusion>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </exclusion>
+
   </exclusions>
 </dependency>
 }}}
