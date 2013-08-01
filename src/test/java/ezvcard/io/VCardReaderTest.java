@@ -14,7 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
 
 import org.junit.Test;
@@ -118,14 +117,11 @@ public class VCardReaderTest {
 
 		AddressType adr = vcard.getAddresses().get(0);
 		assertEquals(2, adr.getSubTypes().size());
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.WORK);
 
 		LabelType label = vcard.getOrphanedLabels().get(0);
 		assertEquals(2, label.getSubTypes().size());
-		assertEquals(2, label.getTypes().size());
-		assertTrue(label.getTypes().contains(AddressTypeParameter.DOM));
-		assertTrue(label.getTypes().contains(AddressTypeParameter.PARCEL));
+		assertSetEquals(label.getTypes(), AddressTypeParameter.DOM, AddressTypeParameter.PARCEL);
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
@@ -149,31 +145,19 @@ public class VCardReaderTest {
 
 		AddressType adr = vcard.getAddresses().get(0);
 		assertEquals(3, adr.getSubTypes().size());
-		assertEquals(3, adr.getTypes().size());
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.DOM));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.DOM, AddressTypeParameter.HOME, AddressTypeParameter.WORK);
 
 		adr = vcard.getAddresses().get(1);
 		assertEquals(3, adr.getSubTypes().size());
-		assertEquals(3, adr.getTypes().size());
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.DOM));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.DOM, AddressTypeParameter.HOME, AddressTypeParameter.WORK);
 
 		adr = vcard.getAddresses().get(2);
 		assertEquals(3, adr.getSubTypes().size());
-		assertEquals(3, adr.getTypes().size());
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.DOM));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.DOM, AddressTypeParameter.HOME, AddressTypeParameter.WORK);
 
 		adr = vcard.getAddresses().get(3);
 		assertEquals(3, adr.getSubTypes().size());
-		assertEquals(3, adr.getTypes().size());
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.DOM));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.DOM, AddressTypeParameter.HOME, AddressTypeParameter.WORK);
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
@@ -428,21 +412,17 @@ public class VCardReaderTest {
 		assertEquals(2, vcard.getAddresses().size());
 
 		AddressType adr = vcard.getAddresses().get(0);
-		assertEquals(1, adr.getTypes().size());
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.HOME);
 		assertEquals("123 Main St." + NEWLINE + "Austin, TX 91827" + NEWLINE + "USA", adr.getLabel());
 
 		adr = vcard.getAddresses().get(1);
-		assertEquals(2, adr.getTypes().size());
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
-		assertTrue(adr.getTypes().contains(AddressTypeParameter.PARCEL));
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK, AddressTypeParameter.PARCEL);
 		assertNull(adr.getLabel());
 
 		assertEquals(1, vcard.getOrphanedLabels().size());
 		LabelType label = vcard.getOrphanedLabels().get(0);
 		assertEquals("200 Broadway" + NEWLINE + "New York, NY 12345" + NEWLINE + "USA", label.getValue());
-		assertEquals(1, label.getTypes().size());
-		assertTrue(label.getTypes().contains(AddressTypeParameter.WORK));
+		assertSetEquals(label.getTypes(), AddressTypeParameter.WORK);
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
@@ -560,17 +540,12 @@ public class VCardReaderTest {
 
 			TelephoneType t = it.next();
 			assertEquals("905-666-1234", t.getText());
-			Set<TelephoneTypeParameter> types = t.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
+			assertSetEquals(t.getTypes(), TelephoneTypeParameter.CELL);
 			assertEquals("c2fa1caa-2926-4087-8971-609cfc7354ce", t.getSubTypes().first("X-COUCHDB-UUID"));
 
 			t = it.next();
 			assertEquals("905-555-1234", t.getText());
-			types = t.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(t.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 			assertEquals("fbfb2722-4fd8-4dbf-9abd-eeb24072fd8e", t.getSubTypes().first("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
@@ -643,9 +618,7 @@ public class VCardReaderTest {
 
 			EmailType t = it.next();
 			assertEquals("john.doe@ibm.com", t.getValue());
-			Set<EmailTypeParameter> types = t.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(new EmailTypeParameter("work"))); //non-standard type
+			assertSetEquals(t.getTypes(), EmailTypeParameter.WORK);
 			assertEquals("83a75a5d-2777-45aa-bab5-76a4bd972490", t.getSubTypes().first("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
@@ -664,10 +637,7 @@ public class VCardReaderTest {
 			assertEquals("12345", t.getPostalCode());
 			//the space between "United" and "States" is lost because it was included with the folding character and ignored (see .vcf file)
 			assertEquals("UnitedStates of America", t.getCountry());
-
-			Set<AddressTypeParameter> types = t.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
+			assertSetEquals(t.getTypes(), AddressTypeParameter.HOME);
 
 			assertFalse(it.hasNext());
 		}
@@ -781,10 +751,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("john.doe@ibm.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
-			assertTrue(types.contains(new EmailTypeParameter("home")));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET, EmailTypeParameter.HOME);
 
 			assertFalse(it.hasNext());
 		}
@@ -795,15 +762,11 @@ public class VCardReaderTest {
 
 			TelephoneType f = it.next();
 			assertEquals("905-555-1234", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.CELL);
 
 			f = it.next();
 			assertEquals("905-666-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME);
 
 			assertFalse(it.hasNext());
 		}
@@ -820,9 +783,7 @@ public class VCardReaderTest {
 			assertEquals(null, f.getRegion());
 			assertEquals(null, f.getPostalCode());
 			assertEquals(null, f.getCountry());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.HOME);
 
 			assertFalse(it.hasNext());
 		}
@@ -860,9 +821,7 @@ public class VCardReaderTest {
 
 			UrlType f = it.next();
 			assertEquals("http://www.ibm.com", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("WORK"));
+			assertEquals("WORK", f.getType());
 
 			assertFalse(it.hasNext());
 		}
@@ -948,9 +907,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("asmithk@gmail.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET);
 
 			assertFalse(it.hasNext());
 		}
@@ -982,9 +939,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("chrisy55d@yahoo.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET);
 
 			assertFalse(it.hasNext());
 		}
@@ -1016,9 +971,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("dwhite@gmail.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET);
 
 			assertFalse(it.hasNext());
 		}
@@ -1057,9 +1010,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("gdartmouth@hotmail.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET);
 
 			assertFalse(it.hasNext());
 		}
@@ -1070,15 +1021,12 @@ public class VCardReaderTest {
 
 			TelephoneType f = it.next();
 			assertEquals("555 555 1111", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.CELL);
 
 			f = it.next();
 			assertEquals("item1", f.getGroup());
 			assertEquals("555 555 2222", f.getText());
-			types = f.getTypes();
-			assertTrue(types.isEmpty());
+			assertSetEquals(f.getTypes());
 
 			assertFalse(it.hasNext());
 		}
@@ -1095,9 +1043,7 @@ public class VCardReaderTest {
 			assertEquals(null, f.getRegion());
 			assertEquals(null, f.getPostalCode());
 			assertEquals(null, f.getCountry());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.HOME);
 
 			f = it.next();
 			assertEquals("item2", f.getGroup());
@@ -1108,8 +1054,7 @@ public class VCardReaderTest {
 			assertEquals("TX", f.getRegion());
 			assertEquals("98765", f.getPostalCode());
 			assertEquals("USA", f.getCountry());
-			types = f.getTypes();
-			assertTrue(types.isEmpty());
+			assertSetEquals(f.getTypes());
 
 			assertFalse(it.hasNext());
 		}
@@ -1147,8 +1092,7 @@ public class VCardReaderTest {
 
 			UrlType f = it.next();
 			assertEquals("http://TheProfile.com", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertTrue(types.isEmpty());
+			assertNull(f.getType());
 
 			assertFalse(it.hasNext());
 		}
@@ -1287,10 +1231,7 @@ public class VCardReaderTest {
 			EmailType f = it.next();
 			assertEquals("item1", f.getGroup());
 			assertEquals("john.doe@ibm.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
-			assertTrue(types.contains(EmailTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET, EmailTypeParameter.PREF);
 
 			assertFalse(it.hasNext());
 		}
@@ -1301,51 +1242,32 @@ public class VCardReaderTest {
 
 			TelephoneType f = it.next();
 			assertEquals("905-555-1234", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(3, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
-			assertTrue(types.contains(TelephoneTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.CELL, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.PREF);
 
 			f = it.next();
 			assertEquals("905-666-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("905-777-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("905-888-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
-			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.FAX);
 
 			f = it.next();
 			assertEquals("905-999-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.FAX);
 
 			f = it.next();
 			assertEquals("905-111-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.PAGER));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.PAGER);
 
 			f = it.next();
 			assertEquals("905-222-1234", f.getText());
 			assertEquals("item2", f.getGroup());
-			types = f.getTypes();
-			assertEquals(0, types.size());
+			assertSetEquals(f.getTypes());
 
 			assertFalse(it.hasNext());
 		}
@@ -1363,10 +1285,7 @@ public class VCardReaderTest {
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
-			assertTrue(types.contains(AddressTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.PREF);
 
 			f = it.next();
 			assertEquals("item4", f.getGroup());
@@ -1378,9 +1297,7 @@ public class VCardReaderTest {
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("USA", f.getCountry());
 
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.WORK));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.WORK);
 
 			assertFalse(it.hasNext());
 		}
@@ -1392,9 +1309,7 @@ public class VCardReaderTest {
 			UrlType f = it.next();
 			assertEquals("item5", f.getGroup());
 			assertEquals("http://www.ibm.com", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("pref"));
+			assertEquals("pref", f.getType());
 
 			assertFalse(it.hasNext());
 		}
@@ -1506,18 +1421,11 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("john.doe@ibm.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(3, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
-			assertTrue(types.contains(new EmailTypeParameter("WORK")));
-			assertTrue(types.contains(EmailTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET, EmailTypeParameter.WORK, EmailTypeParameter.PREF);
 
 			f = it.next();
 			assertEquals("billy_bob@gmail.com", f.getValue());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
-			assertTrue(types.contains(new EmailTypeParameter("WORK")));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET, EmailTypeParameter.WORK);
 
 			assertFalse(it.hasNext());
 		}
@@ -1527,18 +1435,11 @@ public class VCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 			TelephoneType f = it.next();
 			assertEquals("+1 (212) 204-34456", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(3, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
-			assertTrue(types.contains(TelephoneTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.CELL, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.PREF);
 
 			f = it.next();
 			assertEquals("00-1-212-555-7777", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.FAX);
 
 			assertFalse(it.hasNext());
 		}
@@ -1557,11 +1458,7 @@ public class VCardReaderTest {
 			assertEquals("NYC887", f.getPostalCode());
 			assertEquals("U.S.A.", f.getCountry());
 			assertNull(f.getLabel());
-
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
-			assertTrue(types.contains(AddressTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.PREF);
 
 			assertFalse(it.hasNext());
 		}
@@ -1583,9 +1480,7 @@ public class VCardReaderTest {
 			UrlType f = it.next();
 			assertEquals("item2", f.getGroup());
 			assertEquals("http://www.sun.com", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("pref"));
+			assertEquals("pref", f.getType());
 
 			assertFalse(it.hasNext());
 		}
@@ -1650,11 +1545,7 @@ public class VCardReaderTest {
 
 			LabelType f = it.next();
 			assertEquals("John Doe" + NEWLINE + "New York, NewYork," + NEWLINE + "South Crecent Drive," + NEWLINE + "Building 5, floor 3," + NEWLINE + "USA", f.getValue());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(3, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
-			assertTrue(types.contains(AddressTypeParameter.PARCEL));
-			assertTrue(types.contains(AddressTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.PARCEL, AddressTypeParameter.PREF);
 
 			assertFalse(it.hasNext());
 		}
@@ -1786,17 +1677,11 @@ public class VCardReaderTest {
 			TelephoneType f = it.next();
 
 			assertEquals("(905) 555-1234", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("(905) 666-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.VOICE);
 
 			assertFalse(it.hasNext());
 		}
@@ -1814,10 +1699,7 @@ public class VCardReaderTest {
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
 			assertEquals("Cresent moon drive\r\nAlbaney, New York  12345", f.getLabel());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.WORK));
-			assertTrue(types.contains(AddressTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.WORK, AddressTypeParameter.PREF);
 
 			f = it.next();
 			assertEquals(null, f.getPoBox());
@@ -1828,9 +1710,7 @@ public class VCardReaderTest {
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
 			assertEquals("Silicon Alley 5,\r\nNew York, New York  12345", f.getLabel());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.HOME);
 
 			assertFalse(it.hasNext());
 		}
@@ -1846,9 +1726,7 @@ public class VCardReaderTest {
 
 			UrlType f = it.next();
 			assertEquals("http://www.ibm.com", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("WORK"));
+			assertEquals("WORK", f.getType());
 
 			assertFalse(it.hasNext());
 		}
@@ -1880,10 +1758,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("john.doe@ibm.cm", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(EmailTypeParameter.PREF));
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.PREF, EmailTypeParameter.INTERNET);
 
 			assertFalse(it.hasNext());
 		}
@@ -2011,31 +1886,19 @@ public class VCardReaderTest {
 			TelephoneType f = it.next();
 
 			assertEquals("(111) 555-1111", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("(111) 555-2222", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("(111) 555-4444", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.CELL, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("(111) 555-3333", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.FAX));
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.FAX, TelephoneTypeParameter.WORK);
 
 			assertFalse(it.hasNext());
 		}
@@ -2053,10 +1916,7 @@ public class VCardReaderTest {
 			assertEquals("99999", f.getPostalCode());
 			assertEquals("USA", f.getCountry());
 			assertEquals("222 Broadway\r\nNew York, NY 99999\r\nUSA", f.getLabel());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.WORK));
-			assertTrue(types.contains(AddressTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.WORK, AddressTypeParameter.PREF);
 
 			assertFalse(it.hasNext());
 		}
@@ -2072,15 +1932,11 @@ public class VCardReaderTest {
 
 			UrlType f = it.next();
 			assertEquals("http://mikeangstadt.name", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("HOME"));
+			assertEquals("HOME", f.getType());
 
 			f = it.next();
 			assertEquals("http://mikeangstadt.name", f.getValue());
-			types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("WORK"));
+			assertEquals("WORK", f.getType());
 
 			assertFalse(it.hasNext());
 		}
@@ -2123,10 +1979,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("mike.angstadt@gmail.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(EmailTypeParameter.PREF));
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.PREF, EmailTypeParameter.INTERNET);
 
 			assertFalse(it.hasNext());
 		}
@@ -2174,10 +2027,7 @@ public class VCardReaderTest {
 			RawType f = vcard.getExtendedProperties("X-MS-TEL").get(0);
 			assertEquals("X-MS-TEL", f.getTypeName());
 			assertEquals("(111) 555-4444", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains("VOICE"));
-			assertTrue(types.contains("CALLBACK"));
+			assertSetEquals(f.getSubTypes().getTypes(), "VOICE", "CALLBACK");
 
 			f = vcard.getExtendedProperties("X-MS-OL-DEFAULT-POSTAL-ADDRESS").get(0);
 			assertEquals("X-MS-OL-DEFAULT-POSTAL-ADDRESS", f.getTypeName());
@@ -2265,11 +2115,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("john.doe@ibm.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(3, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
-			assertTrue(types.contains(new EmailTypeParameter("work")));
-			assertTrue(types.contains(EmailTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET, EmailTypeParameter.WORK, EmailTypeParameter.PREF);
 
 			assertFalse(it.hasNext());
 		}
@@ -2280,48 +2126,32 @@ public class VCardReaderTest {
 
 			TelephoneType f = it.next();
 			assertEquals("905-777-1234", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.PREF);
 
 			f = it.next();
 			assertEquals("905-666-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME);
 
 			f = it.next();
 			assertEquals("905-555-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.CELL);
 
 			f = it.next();
 			assertEquals("905-888-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
-			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.FAX);
 
 			f = it.next();
 			assertEquals("905-999-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.FAX);
 
 			f = it.next();
 			assertEquals("905-111-1234", f.getText());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.PAGER));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.PAGER);
 
 			f = it.next();
 			assertEquals("905-222-1234", f.getText());
 			assertEquals("item1", f.getGroup());
-			types = f.getTypes();
-			assertEquals(0, types.size());
+			assertSetEquals(f.getTypes());
 
 			assertFalse(it.hasNext());
 		}
@@ -2339,11 +2169,7 @@ public class VCardReaderTest {
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
-
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
-			assertTrue(types.contains(AddressTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.PREF);
 
 			f = it.next();
 			assertEquals("item3", f.getGroup());
@@ -2354,10 +2180,7 @@ public class VCardReaderTest {
 			assertEquals(null, f.getRegion());
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("USA", f.getCountry());
-
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.WORK));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.WORK);
 
 			assertFalse(it.hasNext());
 		}
@@ -2379,9 +2202,7 @@ public class VCardReaderTest {
 			UrlType f = it.next();
 			assertEquals("item4", f.getGroup());
 			assertEquals("http://www.ibm.com", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("pref"));
+			assertEquals("pref", f.getType());
 
 			assertFalse(it.hasNext());
 		}
@@ -2444,9 +2265,7 @@ public class VCardReaderTest {
 			assertEquals("X-ABRELATEDNAMES", f.getTypeName());
 			assertEquals("Jenny", f.getValue());
 			assertEquals("item5", f.getGroup());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("pref"));
+			assertSetEquals(f.getSubTypes().getTypes(), "pref");
 
 			f = vcard.getExtendedProperties("X-ABLABEL").get(2);
 			assertEquals("X-ABLabel", f.getTypeName());
@@ -2524,31 +2343,19 @@ public class VCardReaderTest {
 			TelephoneType f = it.next();
 
 			assertEquals("BusinessPhone", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("HomePhone", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("MobilePhone", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.CELL, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("BusinessFaxPhone", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.FAX));
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.FAX, TelephoneTypeParameter.WORK);
 
 			assertFalse(it.hasNext());
 		}
@@ -2566,9 +2373,7 @@ public class VCardReaderTest {
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("United States of America", f.getCountry());
 			assertEquals("TheOffice\r\n123 Main St\r\nAustin, TX 12345\r\nUnited States of America", f.getLabel());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(AddressTypeParameter.WORK));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.WORK);
 
 			assertFalse(it.hasNext());
 		}
@@ -2584,9 +2389,7 @@ public class VCardReaderTest {
 
 			UrlType f = it.next();
 			assertEquals("http://web-page-address.com", f.getValue());
-			Set<String> types = f.getSubTypes().getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains("WORK"));
+			assertEquals("WORK", f.getType());
 
 			assertFalse(it.hasNext());
 		}
@@ -2629,10 +2432,7 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("jdoe@hotmail.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(EmailTypeParameter.PREF));
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.PREF, EmailTypeParameter.INTERNET);
 
 			assertFalse(it.hasNext());
 		}
@@ -2715,10 +2515,7 @@ public class VCardReaderTest {
 			assertEquals("NY", f.getRegion());
 			assertEquals("98765", f.getPostalCode());
 			assertEquals("USA", f.getCountry());
-			Set<AddressTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.WORK));
-			assertTrue(types.contains(AddressTypeParameter.POSTAL));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.WORK, AddressTypeParameter.POSTAL);
 
 			f = it.next();
 			assertEquals(null, f.getPoBox());
@@ -2728,11 +2525,7 @@ public class VCardReaderTest {
 			assertEquals("TX", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
 			assertEquals("USA", f.getCountry());
-
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(AddressTypeParameter.HOME));
-			assertTrue(types.contains(AddressTypeParameter.POSTAL));
+			assertSetEquals(f.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.POSTAL);
 
 			assertFalse(it.hasNext());
 		}
@@ -2743,36 +2536,23 @@ public class VCardReaderTest {
 
 			TelephoneType f = it.next();
 			assertEquals("555-555-1111", f.getText());
-			Set<TelephoneTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.WORK));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("555-555-2222", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.HOME));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("555-555-5555", f.getText());
-			types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.CELL));
-			assertTrue(types.contains(TelephoneTypeParameter.VOICE));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.CELL, TelephoneTypeParameter.VOICE);
 
 			f = it.next();
 			assertEquals("555-555-3333", f.getText());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.FAX));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.FAX);
 
 			f = it.next();
 			assertEquals("555-555-4444", f.getText());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(TelephoneTypeParameter.PAGER));
+			assertSetEquals(f.getTypes(), TelephoneTypeParameter.PAGER);
 
 			assertFalse(it.hasNext());
 		}
@@ -2783,34 +2563,23 @@ public class VCardReaderTest {
 
 			EmailType f = it.next();
 			assertEquals("doe.john@hotmail.com", f.getValue());
-			Set<EmailTypeParameter> types = f.getTypes();
-			assertEquals(2, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
-			assertTrue(types.contains(EmailTypeParameter.PREF));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET, EmailTypeParameter.PREF);
 
 			f = it.next();
 			assertEquals("additional-email@company.com", f.getValue());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET);
 
 			f = it.next();
 			assertEquals("additional-email1@company.com", f.getValue());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET);
 
 			f = it.next();
 			assertEquals("additional-email2@company.com", f.getValue());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET);
 
 			f = it.next();
 			assertEquals("additional-email3@company.com", f.getValue());
-			types = f.getTypes();
-			assertEquals(1, types.size());
-			assertTrue(types.contains(EmailTypeParameter.INTERNET));
+			assertSetEquals(f.getTypes(), EmailTypeParameter.INTERNET);
 
 			assertFalse(it.hasNext());
 		}

@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -498,8 +499,7 @@ public class HCardReaderTest {
 			assertEquals("TX", adr.getRegion());
 			assertEquals("12345", adr.getPostalCode());
 			assertEquals("123 Main St. Austin, TX 12345", adr.getLabel());
-			assertEquals(1, adr.getTypes().size());
-			assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
+			assertSetEquals(adr.getTypes(), AddressTypeParameter.HOME);
 
 			assertFalse(it.hasNext());
 		}
@@ -509,8 +509,7 @@ public class HCardReaderTest {
 
 			LabelType label = it.next();
 			assertEquals("456 Wall St., New York, NY 67890", label.getValue());
-			assertEquals(1, label.getTypes().size());
-			assertTrue(label.getTypes().contains(AddressTypeParameter.WORK));
+			assertSetEquals(label.getTypes(), AddressTypeParameter.WORK);
 
 			assertFalse(it.hasNext());
 		}
@@ -673,8 +672,7 @@ public class HCardReaderTest {
 			Iterator<AddressType> it = vcard.getAddresses().iterator();
 
 			AddressType adr = it.next();
-			assertEquals(1, adr.getTypes().size());
-			assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
+			assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
 			assertNull(adr.getPoBox());
 			assertNull(adr.getExtendedAddress());
 			assertEquals("169 University Avenue", adr.getStreetAddress());
@@ -691,13 +689,11 @@ public class HCardReaderTest {
 			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
 
 			TelephoneType tel = it.next();
-			assertEquals(1, tel.getTypes().size());
-			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.WORK));
+			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK);
 			assertEquals("+1-650-289-4040", tel.getText());
 
 			tel = it.next();
-			assertEquals(1, tel.getTypes().size());
-			assertTrue(tel.getTypes().contains(TelephoneTypeParameter.FAX));
+			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.FAX);
 			assertEquals("+1-650-289-4041", tel.getText());
 
 			assertFalse(it.hasNext());

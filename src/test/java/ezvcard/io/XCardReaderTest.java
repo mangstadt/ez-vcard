@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -196,9 +197,7 @@ public class XCardReaderTest {
 		TelephoneType tel = telIt.next();
 		assertEquals("+1-555-555-1234", tel.getUri().getNumber());
 		assertEquals(2, tel.getSubTypes().size());
-		assertEquals(2, tel.getTypes().size());
-		assertTrue(tel.getTypes().contains(TelephoneTypeParameter.WORK));
-		assertTrue(tel.getTypes().contains(TelephoneTypeParameter.VOICE));
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 
 		assertFalse(telIt.hasNext());
 
