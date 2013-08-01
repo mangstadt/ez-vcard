@@ -433,8 +433,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String split[] = VCardStringUtils.splitBy(value, ';', false, true);
-		Iterator<String> it = Arrays.asList(split).iterator();
+		Iterator<String> it = VCardStringUtils.splitBy(value, ';', false, true).iterator();
 
 		poBox = nextTextComponent(it);
 		extendedAddress = nextTextComponent(it);

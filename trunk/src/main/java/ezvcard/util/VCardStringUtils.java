@@ -142,7 +142,7 @@ public class VCardStringUtils {
 	 * @see <a
 	 * href="http://stackoverflow.com/q/820172">http://stackoverflow.com/q/820172</a>
 	 */
-	public static String[] splitBy(String str, char ch, boolean removeEmpties, boolean unescape) {
+	public static List<String> splitBy(String str, char ch, boolean removeEmpties, boolean unescape) {
 		str = str.trim();
 		String split[] = str.split("\\s*(?<!\\\\)" + Pattern.quote(ch + "") + "\\s*", -1);
 
@@ -158,8 +158,7 @@ public class VCardStringUtils {
 
 			list.add(s);
 		}
-
-		return list.toArray(new String[0]);
+		return list;
 	}
 
 	/**
