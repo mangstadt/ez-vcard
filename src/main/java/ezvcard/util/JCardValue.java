@@ -2,8 +2,12 @@ package ezvcard.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
+
+import ezvcard.types.CategoriesType;
+import ezvcard.types.NoteType;
+import ezvcard.types.StructuredNameType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,236 +39,250 @@ import java.util.List;
  */
 
 /**
- * Represents the value of a jCard property.
+ * Holds the data type and value of a jCal property.
  * @author Michael Angstadt
  */
 public class JCardValue {
-	private JCardDataType dataType = JCardDataType.TEXT;
-	private boolean structured = false;
-	private final List<List<Object>> values = new ArrayList<List<Object>>();
+	private final JCardDataType dataType;
+	private final List<JsonValue> values;
 
 	/**
-	 * Creates a "text" value.
-	 * @param values the text values
+	 * Creates a new jCal value.
+	 * @param dataType the data type or null for "unknown"
+	 * @param values the values
 	 */
-	public static JCardValue text(String... values) {
-		JCardValue jcardValue = new JCardValue();
-		jcardValue.dataType = JCardDataType.TEXT;
-		if (values.length > 0) {
-			jcardValue.addValues((Object[]) values);
+	public JCardValue(JCardDataType dataType, List<JsonValue> values) {
+		this.dataType = dataType;
+		this.values = Collections.unmodifiableList(values);
+	}
+
+	/**
+	 * Creates a new jCal value.
+	 * @param dataType the data type or null for "unknown"
+	 * @param values the values
+	 */
+	public JCardValue(JCardDataType dataType, JsonValue... values) {
+		this.dataType = dataType;
+		this.values = Arrays.asList(values); //unmodifiable
+	}
+
+	/**
+	 * Creates a single-valued value.
+	 * @param dataType the data type or null for "unknown"
+	 * @param value the value
+	 * @return the jCal value
+	 */
+	public static JCardValue single(JCardDataType dataType, Object value) {
+		return new JCardValue(dataType, new JsonValue(value));
+	}
+
+	/**
+	 * Creates a multi-valued value.
+	 * @param dataType the data type or null for "unknown"
+	 * @param values the values
+	 * @return the jCal value
+	 */
+	public static JCardValue multi(JCardDataType dataType, Object... values) {
+		return multi(dataType, Arrays.asList(values));
+	}
+
+	/**
+	 * Creates a multi-valued value.
+	 * @param dataType the data type or null for "unknown"
+	 * @param values the values
+	 * @return the jCal value
+	 */
+	public static JCardValue multi(JCardDataType dataType, List<?> values) {
+		List<JsonValue> multiValues = new ArrayList<JsonValue>(values.size());
+		for (Object value : values) {
+			multiValues.add(new JsonValue(value));
 		}
-		return jcardValue;
+		return new JCardValue(dataType, multiValues);
 	}
 
 	/**
-	 * Creates an empty "uri" value.
+	 * Creates a structured value.
+	 * @param dataType the data type or null for "unknown"
+	 * @param values the values
+	 * @return the jCal value
 	 */
-	public static JCardValue uri() {
-		return uri(null);
-	}
-
-	/**
-	 * Creates a "uri" value.
-	 * @param uri the URI
-	 */
-	public static JCardValue uri(String uri) {
-		JCardValue jcardValue = new JCardValue();
-		jcardValue.dataType = JCardDataType.URI;
-		if (uri != null) {
-			jcardValue.addValues(uri);
+	public static JCardValue structured(JCardDataType dataType, Object... values) {
+		List<List<?>> valuesList = new ArrayList<List<?>>(values.length);
+		for (Object value : values) {
+			valuesList.add(Arrays.asList(value));
 		}
-		return jcardValue;
+		return structured(dataType, valuesList);
 	}
 
 	/**
-	 * Creates an empty "date" value.
+	 * Creates a structured value.
+	 * @param dataType the data type or null for "unknown"
+	 * @param values the values
+	 * @return the jCal value
 	 */
-	public static JCardValue date() {
-		return date(null);
-	}
-
-	/**
-	 * Creates a "date" value.
-	 * @param date the date
-	 */
-	public static JCardValue date(Date date) {
-		JCardValue jcardValue = new JCardValue();
-		jcardValue.dataType = JCardDataType.DATE;
-		if (date != null) {
-			jcardValue.addValues(VCardDateFormatter.format(date, ISOFormat.DATE_EXTENDED));
+	public static JCardValue structured(JCardDataType dataType, List<List<?>> values) {
+		List<JsonValue> array = new ArrayList<JsonValue>(values.size());
+		for (List<?> list : values) {
+			if (list.isEmpty()) {
+				array.add(new JsonValue(""));
+			} else if (list.size() == 1) {
+				Object value = list.get(0);
+				if (value == null) {
+					value = "";
+				}
+				array.add(new JsonValue(value));
+			} else {
+				List<JsonValue> subArray = new ArrayList<JsonValue>(list.size());
+				for (Object value : list) {
+					if (value == null) {
+						value = "";
+					}
+					subArray.add(new JsonValue(value));
+				}
+				array.add(new JsonValue(subArray));
+			}
 		}
-		return jcardValue;
-	}
-
-	/**
-	 * Creates an empty "datetime" value.
-	 */
-	public static JCardValue dateTime() {
-		return dateTime(null);
-	}
-
-	/**
-	 * Creates a "datetime" value.
-	 * @param date the date
-	 */
-	public static JCardValue dateTime(Date date) {
-		JCardValue jcardValue = new JCardValue();
-		jcardValue.dataType = JCardDataType.DATE_TIME;
-		if (date != null) {
-			jcardValue.addValues(VCardDateFormatter.format(date, ISOFormat.TIME_EXTENDED));
-		}
-		return jcardValue;
-	}
-
-	/**
-	 * Creates an empty "timestamp" value.
-	 */
-	public static JCardValue timestamp() {
-		return timestamp(null);
-	}
-
-	/**
-	 * Creates a a "timestamp" value.
-	 * @param timestamp the timestamp
-	 */
-	public static JCardValue timestamp(Date timestamp) {
-		JCardValue jcardValue = new JCardValue();
-		jcardValue.dataType = JCardDataType.TIMESTAMP;
-		if (timestamp != null) {
-			jcardValue.addValues(VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_EXTENDED));
-		}
-		return jcardValue;
-	}
-
-	/**
-	 * Creates an empty "utc-offset" value.
-	 */
-	public static JCardValue utcOffset() {
-		return utcOffset(null, null);
-	}
-
-	/**
-	 * Creates a "utc-offset" value.
-	 * @param hourOffset the hour offset (e.g. -5)
-	 * @param minuteOffset the minute offset (e.g. 0)
-	 */
-	public static JCardValue utcOffset(Integer hourOffset, Integer minuteOffset) {
-		JCardValue jcardValue = new JCardValue();
-		jcardValue.dataType = JCardDataType.UTC_OFFSET;
-		if (hourOffset != null) {
-			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
-			jcardValue.addValues(offset);
-		}
-		return jcardValue;
+		return new JCardValue(dataType, new JsonValue(array));
 	}
 
 	/**
 	 * Gets the jCard data type
-	 * @return the data type (e.g. "text")
+	 * @return the data type or null for "unknown"
 	 */
 	public JCardDataType getDataType() {
 		return dataType;
 	}
 
 	/**
-	 * Sets the jCard data type.
-	 * @param dataType the data type (e.g. "text")
+	 * Gets all the JSON values.
+	 * @return the JSON values
 	 */
-	public void setDataType(JCardDataType dataType) {
-		this.dataType = dataType;
-	}
-
-	/**
-	 * Gets whether the value is a structured value.
-	 * @return true if it's structured, false if not
-	 */
-	public boolean isStructured() {
-		return structured;
-	}
-
-	/**
-	 * Sets whether the value is a structured value
-	 * @param structured true if it's structured, false if not
-	 */
-	public void setStructured(boolean structured) {
-		this.structured = structured;
-	}
-
-	/**
-	 * Gets all the values.
-	 * @return the values
-	 */
-	public List<List<Object>> getValues() {
+	public List<JsonValue> getValues() {
 		return values;
 	}
 
 	/**
-	 * Gets all the values as strings.
-	 * @return the values as strings
+	 * Gets the value of a single-valued property (such as {@link NoteType}).
+	 * @return the value or null if not found
 	 */
-	public List<List<String>> getValuesAsStrings() {
-		List<List<String>> valuesStr = new ArrayList<List<String>>(values.size());
-		for (List<Object> value : values) {
-			List<String> valueStr = new ArrayList<String>(value.size());
-			for (Object v : value) {
-				valueStr.add(v.toString());
-			}
-			valuesStr.add(valueStr);
-		}
-		return valuesStr;
-	}
-
-	/**
-	 * Gets the first value at the first index.
-	 * @return the value or null if there are no values
-	 */
-	public Object getFirstValue() {
-		return getFirstValue(0);
-	}
-
-	/**
-	 * Gets the first value at the given index.
-	 * @param index the index
-	 * @return the value or null if the specified index does not exist
-	 */
-	public Object getFirstValue(int index) {
-		if (index >= values.size()) {
+	public String getSingleValued() {
+		if (values.isEmpty()) {
 			return null;
 		}
-		return values.get(index).get(0);
-	}
 
-	/**
-	 * Gets the first value at the first index as a string.
-	 * @return the value or null if there are no values
-	 */
-	public String getFirstValueAsString() {
-		return getFirstValueAsString(0);
-	}
+		JsonValue first = values.get(0);
 
-	/**
-	 * Gets the first value at the given index as a string.
-	 * @param index the index
-	 * @return the value or null if the specified index does not exist
-	 */
-	public String getFirstValueAsString(int index) {
-		Object value = getFirstValue(index);
-		return (value == null) ? null : value.toString();
-	}
+		if (first.isNull()) {
+			return null;
+		}
 
-	/**
-	 * Adds one or more values to the jCard value. {@link List} objects that are
-	 * passed into this method will be treated as multi-valued components.
-	 * @param values the value(s) to add
-	 */
-	@SuppressWarnings("unchecked")
-	public void addValues(Object... values) {
-		for (Object value : values) {
-			if (value instanceof List) {
-				this.values.add((List<Object>) value);
-			} else {
-				this.values.add(Arrays.asList(value));
+		Object obj = first.getValue();
+		if (obj != null) {
+			return obj.toString();
+		}
+
+		//get the first element of the array
+		List<JsonValue> array = first.getArray();
+		if (array != null && !array.isEmpty()) {
+			obj = array.get(0).getValue();
+			if (obj != null) {
+				return obj.toString();
 			}
 		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the value of a structured property (such as
+	 * {@link StructuredNameType}).
+	 * @return the values or empty list if not found
+	 */
+	public List<List<String>> getStructured() {
+		if (values.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		JsonValue first = values.get(0);
+
+		//["gender", {}, "text", ["M", "text"] ]
+		List<JsonValue> array = first.getArray();
+		if (array != null) {
+			List<List<String>> valuesStr = new ArrayList<List<String>>(array.size());
+			for (JsonValue value : array) {
+				if (value.isNull()) {
+					valuesStr.add(Arrays.asList((String) null));
+					continue;
+				}
+
+				Object obj = value.getValue();
+				if (obj != null) {
+					valuesStr.add(Arrays.asList(obj.toString()));
+					continue;
+				}
+
+				List<JsonValue> subArray = value.getArray();
+				if (subArray != null) {
+					List<String> subValuesStr = new ArrayList<String>(subArray.size());
+					for (JsonValue subArrayValue : subArray) {
+						if (subArrayValue.isNull()) {
+							subValuesStr.add(null);
+							continue;
+						}
+
+						obj = subArrayValue.getValue();
+						if (obj != null) {
+							subValuesStr.add(obj.toString());
+							continue;
+						}
+					}
+					valuesStr.add(subValuesStr);
+				}
+			}
+			return valuesStr;
+		}
+
+		//get the first value if it's not enclosed in an array
+		//["gender", {}, "text", "M"]
+		Object obj = first.getValue();
+		if (obj != null) {
+			List<List<String>> values = new ArrayList<List<String>>(1);
+			values.add(Arrays.asList(obj.toString()));
+			return values;
+		}
+
+		//["gender", {}, "text", null]
+		if (first.isNull()) {
+			List<List<String>> values = new ArrayList<List<String>>(1);
+			values.add(Arrays.asList((String) null));
+			return values;
+		}
+
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Gets the value of a multi-valued property (such as {@link CategoriesType}
+	 * ).
+	 * @return the values or empty list if not found
+	 */
+	public List<String> getMultivalued() {
+		if (values.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<String> multi = new ArrayList<String>(values.size());
+		for (JsonValue value : values) {
+			if (value.isNull()) {
+				multi.add(null);
+				continue;
+			}
+
+			Object obj = value.getValue();
+			if (obj != null) {
+				multi.add(obj.toString());
+			}
+		}
+		return multi;
 	}
 }

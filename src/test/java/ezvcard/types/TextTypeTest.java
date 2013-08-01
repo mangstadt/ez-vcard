@@ -1,13 +1,12 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -97,16 +96,8 @@ public class TextTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = textType.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{"This is a test of the TextType.\nOne, two, three; and \\four\\."})
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.", value);
 		assertWarnings(0, warnings);
 	}
 
@@ -153,9 +144,7 @@ public class TextTypeTest {
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.addValues("This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		value.setDataType(JCardDataType.TEXT);
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

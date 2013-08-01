@@ -1,6 +1,10 @@
 package ezvcard.types;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -8,8 +12,10 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
+import ezvcard.util.VCardStringUtils.JoinCallback;
 import ezvcard.util.XCardElement;
 
 /*
@@ -415,90 +421,56 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (poBox != null) {
-			sb.append(VCardStringUtils.escape(poBox));
-		}
-		sb.append(';');
-
-		if (extendedAddress != null) {
-			sb.append(VCardStringUtils.escape(extendedAddress));
-		}
-		sb.append(';');
-
-		if (streetAddress != null) {
-			sb.append(VCardStringUtils.escape(streetAddress));
-		}
-		sb.append(';');
-
-		if (locality != null) {
-			sb.append(VCardStringUtils.escape(locality));
-		}
-		sb.append(';');
-
-		if (region != null) {
-			sb.append(VCardStringUtils.escape(region));
-		}
-		sb.append(';');
-
-		if (postalCode != null) {
-			sb.append(VCardStringUtils.escape(postalCode));
-		}
-		sb.append(';');
-
-		if (country != null) {
-			sb.append(VCardStringUtils.escape(country));
-		}
+		List<String> values = Arrays.asList(poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
+		VCardStringUtils.join(values, ";", sb, new JoinCallback<String>() {
+			public void handle(StringBuilder sb, String value) {
+				if (value != null) {
+					sb.append(VCardStringUtils.escape(value));
+				}
+			}
+		});
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String split[] = VCardStringUtils.splitBy(value, ';', false, true);
+		Iterator<String> it = Arrays.asList(split).iterator();
 
-		int i = 0;
+		poBox = nextTextComponent(it);
+		extendedAddress = nextTextComponent(it);
+		streetAddress = nextTextComponent(it);
+		locality = nextTextComponent(it);
+		region = nextTextComponent(it);
+		postalCode = nextTextComponent(it);
+		country = nextTextComponent(it);
+	}
 
-		poBox = (split.length > i && split[i].length() > 0) ? split[i] : null;
-		i++;
+	private String nextTextComponent(Iterator<String> it) {
+		if (!it.hasNext()) {
+			return null;
+		}
 
-		extendedAddress = (split.length > i && split[i].length() > 0) ? split[i] : null;
-		i++;
-
-		streetAddress = (split.length > i && split[i].length() > 0) ? split[i] : null;
-		i++;
-
-		locality = (split.length > i && split[i].length() > 0) ? split[i] : null;
-		i++;
-
-		region = (split.length > i && split[i].length() > 0) ? split[i] : null;
-		i++;
-
-		postalCode = (split.length > i && split[i].length() > 0) ? split[i] : null;
-		i++;
-
-		country = (split.length > i && split[i].length() > 0) ? split[i] : null;
+		String value = it.next();
+		return (value.length() == 0) ? null : value;
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (poBox != null) {
-			parent.append("pobox", poBox);
-		}
-		if (extendedAddress != null) {
-			parent.append("ext", extendedAddress);
-		}
-		if (streetAddress != null) {
-			parent.append("street", streetAddress);
-		}
-		if (locality != null) {
-			parent.append("locality", locality);
-		}
-		if (region != null) {
-			parent.append("region", region);
-		}
-		if (postalCode != null) {
-			parent.append("code", postalCode);
-		}
-		if (country != null) {
-			parent.append("country", country);
+		Map<String, String> values = new LinkedHashMap<String, String>();
+		values.put("pobox", poBox);
+		values.put("ext", extendedAddress);
+		values.put("street", streetAddress);
+		values.put("locality", locality);
+		values.put("region", region);
+		values.put("code", postalCode);
+		values.put("country", country);
+
+		for (Map.Entry<String, String> entry : values.entrySet()) {
+			String value = entry.getValue();
+			if (value != null) {
+				String name = entry.getKey();
+				parent.append(name, value);
+			}
 		}
 	}
 
@@ -530,35 +502,33 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		JCardValue value = JCardValue.text(poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
-		value.setStructured(true);
-		return value;
+		return JCardValue.structured(JCardDataType.TEXT, poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		int i = 0;
-		String str;
+		Iterator<List<String>> it = value.getStructured().iterator();
 
-		str = value.getFirstValueAsString(i++);
-		poBox = (str == null || str.length() == 0) ? null : str;
+		poBox = nextJsonComponent(it);
+		extendedAddress = nextJsonComponent(it);
+		streetAddress = nextJsonComponent(it);
+		locality = nextJsonComponent(it);
+		region = nextJsonComponent(it);
+		postalCode = nextJsonComponent(it);
+		country = nextJsonComponent(it);
+	}
 
-		str = value.getFirstValueAsString(i++);
-		extendedAddress = (str == null || str.length() == 0) ? null : str;
+	private String nextJsonComponent(Iterator<List<String>> it) {
+		if (!it.hasNext()) {
+			return null;
+		}
 
-		str = value.getFirstValueAsString(i++);
-		streetAddress = (str == null || str.length() == 0) ? null : str;
+		List<String> values = it.next();
+		if (values.isEmpty()) {
+			return null;
+		}
 
-		str = value.getFirstValueAsString(i++);
-		locality = (str == null || str.length() == 0) ? null : str;
-
-		str = value.getFirstValueAsString(i++);
-		region = (str == null || str.length() == 0) ? null : str;
-
-		str = value.getFirstValueAsString(i++);
-		postalCode = (str == null || str.length() == 0) ? null : str;
-
-		str = value.getFirstValueAsString(i++);
-		country = (str == null || str.length() == 0) ? null : str;
+		String value = values.get(0);
+		return (value == null || value.length() == 0) ? null : value;
 	}
 }

@@ -196,24 +196,18 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * vCard
 	 */
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		JCardValue value = new JCardValue();
 		String valueStr = marshalText(version, warnings, CompatibilityMode.RFC);
-		value.addValues(valueStr);
 
 		//determine the data type based on the VALUE parameter
 		JCardDataType dataType;
 		ValueParameter valueParam = subTypes.getValue();
 		if (valueParam == null) {
-			dataType = JCardDataType.UNKNOWN;
+			dataType = JCardDataType.UNKNOWN; //TODO null should == unknown
 		} else {
-			dataType = JCardDataType.find(valueParam.getValue());
-			if (dataType == null) {
-				dataType = JCardDataType.UNKNOWN;
-			}
+			dataType = JCardDataType.get(valueParam.getValue());
 		}
-		value.setDataType(dataType);
 
-		return value;
+		return JCardValue.single(dataType, valueStr);
 	}
 
 	/**
@@ -406,18 +400,37 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * {@link VCard} object
 	 */
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String delimiter = value.isStructured() ? ";" : ",";
-		String str = VCardStringUtils.join(value.getValuesAsStrings(), delimiter, new JoinCallback<List<String>>() {
-			public void handle(StringBuilder sb, List<String> value) {
-				VCardStringUtils.join(value, ",", sb, new JoinCallback<String>() {
+		doUnmarshalText(jcardValueToString(value), version, warnings, CompatibilityMode.RFC);
+	}
+
+	private String jcardValueToString(JCardValue value) {
+		if (value.getValues().size() > 1) {
+			List<String> multi = value.getMultivalued();
+			if (multi != null) {
+				return VCardStringUtils.join(multi, ",", new JoinCallback<String>() {
 					public void handle(StringBuilder sb, String value) {
 						sb.append(VCardStringUtils.escape(value));
 					}
 				});
 			}
-		});
+		}
 
-		doUnmarshalText(str, version, warnings, CompatibilityMode.RFC);
+		if (!value.getValues().isEmpty() && value.getValues().get(0).getArray() != null) {
+			List<List<String>> structured = value.getStructured();
+			if (structured != null) {
+				return VCardStringUtils.join(structured, ";", new JoinCallback<List<String>>() {
+					public void handle(StringBuilder sb, List<String> value) {
+						VCardStringUtils.join(value, ",", sb, new JoinCallback<String>() {
+							public void handle(StringBuilder sb, String value) {
+								sb.append(VCardStringUtils.escape(value));
+							}
+						});
+					}
+				});
+			}
+		}
+
+		return value.getSingleValued();
 	}
 
 	/**

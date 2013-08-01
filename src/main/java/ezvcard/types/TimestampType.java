@@ -8,6 +8,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
@@ -86,7 +87,7 @@ public class TimestampType extends VCardType {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		sb.append(writeValue());
+		sb.append(writeValue(false));
 	}
 
 	@Override
@@ -96,7 +97,7 @@ public class TimestampType extends VCardType {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.timestamp(writeValue());
+		parent.timestamp(writeValue(false));
 	}
 
 	@Override
@@ -126,12 +127,12 @@ public class TimestampType extends VCardType {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		checkForValue();
-		return JCardValue.timestamp(timestamp);
+		return JCardValue.single(JCardDataType.TIMESTAMP, writeValue(true));
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getFirstValueAsString();
+		String valueStr = value.getSingleValued();
 		parseValue(valueStr);
 	}
 
@@ -141,9 +142,10 @@ public class TimestampType extends VCardType {
 		}
 	}
 
-	private String writeValue() {
+	private String writeValue(boolean extended) {
 		checkForValue();
-		return VCardDateFormatter.format(timestamp, ISOFormat.UTC_TIME_BASIC); //"UTC_TIME_BASIC" works with all vCard versions
+		ISOFormat format = extended ? ISOFormat.UTC_TIME_EXTENDED : ISOFormat.UTC_TIME_BASIC;
+		return VCardDateFormatter.format(timestamp, format);
 	}
 
 	private void parseValue(String value) {

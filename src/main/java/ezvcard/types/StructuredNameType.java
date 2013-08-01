@@ -2,12 +2,14 @@ package ezvcard.types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.VCardStringUtils.JoinCallback;
@@ -247,70 +249,55 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (family != null) {
-			value.append(VCardStringUtils.escape(family));
-		}
+	protected void doMarshalText(final StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		List<List<String>> values = new ArrayList<List<String>>();
+		values.add(Arrays.asList(family));
+		values.add(Arrays.asList(given));
+		values.add(additional);
+		values.add(prefixes);
+		values.add(suffixes);
 
-		value.append(';');
-		if (given != null) {
-			value.append(VCardStringUtils.escape(given));
-		}
-
-		value.append(';');
-		VCardStringUtils.join(additional, ",", value, new JoinCallback<String>() {
-			public void handle(StringBuilder sb, String value) {
-				sb.append(VCardStringUtils.escape(value));
-			}
-		});
-
-		value.append(';');
-		VCardStringUtils.join(prefixes, ",", value, new JoinCallback<String>() {
-			public void handle(StringBuilder sb, String value) {
-				sb.append(VCardStringUtils.escape(value));
-			}
-		});
-
-		value.append(';');
-		VCardStringUtils.join(suffixes, ",", value, new JoinCallback<String>() {
-			public void handle(StringBuilder sb, String value) {
-				sb.append(VCardStringUtils.escape(value));
+		VCardStringUtils.join(values, ";", value, new JoinCallback<List<String>>() {
+			public void handle(StringBuilder sb, List<String> v) {
+				VCardStringUtils.join(v, ",", value, new JoinCallback<String>() {
+					public void handle(StringBuilder sb, String v) {
+						if (v != null) {
+							sb.append(VCardStringUtils.escape(v));
+						}
+					}
+				});
 			}
 		});
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//preserve empty items and don't unescape escaped characters(e.g. "additional" might have escaped commas)
-		String split[] = VCardStringUtils.splitBy(value, ';', false, false);
+		//preserve empty items and don't unescape escaped characters (e.g. "additional" might have escaped commas)
+		Iterator<String> it = Arrays.asList(VCardStringUtils.splitBy(value, ';', false, false)).iterator();
 
-		int i = 0;
+		family = nextTextComponent(it);
+		given = nextTextComponent(it);
+		additional = nextTextListComponent(it);
+		prefixes = nextTextListComponent(it);
+		suffixes = nextTextListComponent(it);
+	}
 
-		family = (split.length > i && split[i].length() > 0) ? VCardStringUtils.unescape(split[i]) : null;
-		i++;
-
-		given = (split.length > i && split[i].length() > 0) ? VCardStringUtils.unescape(split[i]) : null;
-		i++;
-
-		if (split.length > i && split[i].length() > 0) {
-			additional = new ArrayList<String>(Arrays.asList(VCardStringUtils.splitBy(split[i], ',', true, true)));
-		} else {
-			additional = new ArrayList<String>();
+	private String nextTextComponent(Iterator<String> it) {
+		if (!it.hasNext()) {
+			return null;
 		}
-		i++;
 
-		if (split.length > i && split[i].length() > 0) {
-			prefixes = new ArrayList<String>(Arrays.asList(VCardStringUtils.splitBy(split[i], ',', true, true)));
-		} else {
-			prefixes = new ArrayList<String>();
-		}
-		i++;
+		String value = it.next();
+		return (value.length() == 0) ? null : VCardStringUtils.unescape(value);
+	}
 
-		if (split.length > i && split[i].length() > 0) {
-			suffixes = new ArrayList<String>(Arrays.asList(VCardStringUtils.splitBy(split[i], ',', true, true)));
-		} else {
-			suffixes = new ArrayList<String>();
+	private List<String> nextTextListComponent(Iterator<String> it) {
+		if (!it.hasNext()) {
+			return new ArrayList<String>(0);
 		}
+
+		String value = it.next();
+		return new ArrayList<String>(Arrays.asList(VCardStringUtils.splitBy(value, ',', true, true)));
 	}
 
 	@Override
@@ -346,60 +333,43 @@ public class StructuredNameType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		JCardValue value = JCardValue.text();
-		value.addValues(family, given, additional, prefixes, suffixes);
-		value.setStructured(true);
-		return value;
+		List<List<?>> values = new ArrayList<List<?>>();
+		values.add(Arrays.asList(family));
+		values.add(Arrays.asList(given));
+		values.add(additional);
+		values.add(prefixes);
+		values.add(suffixes);
+		return JCardValue.structured(JCardDataType.TEXT, values);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		int i = 0;
-		List<List<String>> values = value.getValuesAsStrings();
+		Iterator<List<String>> it = value.getStructured().iterator();
 
-		if (values.size() > i) {
-			String valueStr = values.get(i).get(0);
-			family = (valueStr.length() > 0) ? valueStr : null;
-		} else {
-			family = null;
+		family = nextJsonComponent(it);
+		given = nextJsonComponent(it);
+		additional = nextJsonListComponent(it);
+		prefixes = nextJsonListComponent(it);
+		suffixes = nextJsonListComponent(it);
+	}
+
+	private String nextJsonComponent(Iterator<List<String>> it) {
+		List<String> values = nextJsonListComponent(it);
+		return values.isEmpty() ? null : values.get(0);
+	}
+
+	private List<String> nextJsonListComponent(Iterator<List<String>> it) {
+		if (!it.hasNext()) {
+			return new ArrayList<String>(0);
 		}
-		i++;
 
-		if (values.size() > i) {
-			String valueStr = values.get(i).get(0);
-			given = (valueStr.length() > 0) ? valueStr : null;
-		} else {
-			given = null;
-		}
-		i++;
-
-		additional.clear();
-		if (values.size() > i) {
-			for (String valueStr : values.get(i)) {
-				if (valueStr.length() > 0) {
-					additional.add(valueStr);
-				}
+		List<String> values = it.next();
+		List<String> nonEmpty = new ArrayList<String>(values.size());
+		for (String valueStr : values) {
+			if (valueStr.length() > 0) {
+				nonEmpty.add(valueStr);
 			}
 		}
-		i++;
-
-		prefixes.clear();
-		if (values.size() > i) {
-			for (String valueStr : values.get(i)) {
-				if (valueStr.length() > 0) {
-					prefixes.add(valueStr);
-				}
-			}
-		}
-		i++;
-
-		suffixes.clear();
-		if (values.size() > i) {
-			for (String valueStr : values.get(i)) {
-				if (valueStr.length() > 0) {
-					suffixes.add(valueStr);
-				}
-			}
-		}
+		return nonEmpty;
 	}
 }

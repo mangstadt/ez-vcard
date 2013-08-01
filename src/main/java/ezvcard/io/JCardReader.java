@@ -14,17 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.JCardRawReader.JCardDataStreamListener;
 import ezvcard.types.RawType;
 import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 
 /*
@@ -64,14 +60,9 @@ import ezvcard.util.JCardValue;
  * draft</a>
  */
 public class JCardReader implements IParser, Closeable {
-	private final Reader reader;
 	private final List<String> warnings = new ArrayList<String>();
-	private JsonParser jp;
+	private final JCardRawReader reader;
 	private final Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
-	private final VCardVersion version = VCardVersion.V4_0;
-
-	private int propertiesRead;
-	private boolean versionFound;
 
 	/**
 	 * Creates a jCard reader.
@@ -103,188 +94,24 @@ public class JCardReader implements IParser, Closeable {
 	 * @param reader the reader to read the vCards from
 	 */
 	public JCardReader(Reader reader) {
-		this.reader = reader;
+		this.reader = new JCardRawReader(reader);
 	}
 
 	//@Override
 	public VCard readNext() throws IOException {
-		if (jp != null && jp.isClosed()) {
+		if (reader.eof()) {
 			return null;
 		}
 
 		warnings.clear();
-		versionFound = false;
-		propertiesRead = 0;
 
-		if (jp == null) {
-			JsonFactory factory = new JsonFactory();
-			jp = factory.createJsonParser(reader);
+		JCardDataStreamListenerImpl listener = new JCardDataStreamListenerImpl();
+		reader.readNext(listener);
+		VCard vcard = listener.vcard;
+		if (vcard != null && !listener.versionFound) {
+			addWarning("No \"version\" property found.");
 		}
-
-		//find the next vCard
-		JsonToken prev = null;
-		JsonToken cur;
-		while ((cur = jp.nextToken()) != null) {
-			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING && "vcard".equals(jp.getValueAsString())) {
-				break;
-			}
-			prev = cur;
-		}
-		if (cur == null) {
-			//EOF
-			return null;
-		}
-
-		//start properties array
-		if (jp.nextToken() != JsonToken.START_ARRAY) {
-			throw new JCardParseException(JsonToken.START_ARRAY, jp.getCurrentToken());
-		}
-
-		VCard vcard = new VCard();
-		vcard.setVersion(VCardVersion.V4_0);
-
-		List<String> warningsBuf = new ArrayList<String>();
-		while (jp.nextToken() != JsonToken.END_ARRAY) {
-			//get property name
-			if (jp.nextToken() != JsonToken.VALUE_STRING) {
-				throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
-			}
-			String propertyName = jp.getValueAsString().toLowerCase();
-
-			//get parameters and group
-			String group = null;
-			VCardSubTypes subTypes = new VCardSubTypes();
-			if (jp.nextToken() != JsonToken.START_OBJECT) {
-				throw new JCardParseException(JsonToken.START_OBJECT, jp.getCurrentToken());
-			}
-			while (jp.nextToken() != JsonToken.END_OBJECT) {
-				String parameterName = jp.getText();
-
-				List<String> parameterValues = new ArrayList<String>();
-				if (jp.nextToken() == JsonToken.START_ARRAY) {
-					//multi-valued parameter
-					while (jp.nextToken() != JsonToken.END_ARRAY) {
-						parameterValues.add(jp.getText());
-					}
-				} else {
-					parameterValues.add(jp.getValueAsString());
-				}
-
-				if ("group".equalsIgnoreCase(parameterName)) {
-					group = parameterValues.get(0);
-				} else {
-					subTypes.putAll(parameterName, parameterValues);
-				}
-			}
-
-			JCardValue jcardValue = new JCardValue();
-
-			//get data type
-			if (jp.nextToken() != JsonToken.VALUE_STRING) {
-				throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
-			}
-			jcardValue.setDataType(JCardDataType.get(jp.getText()));
-
-			//get property value(s)
-			boolean structured = false;
-			if (jp.nextToken() == JsonToken.START_ARRAY) {
-				//structured property value (e.g. ["n", {}, "text", ["Doe", "John", "", "", ["Mr", "Dr"]]])
-				structured = true;
-				jp.nextToken();
-			}
-			jcardValue.setStructured(structured);
-			while (jp.getCurrentToken() != JsonToken.END_ARRAY) {
-				List<Object> curValue = new ArrayList<Object>();
-				if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
-					//multi-valued component
-					while (jp.nextToken() != JsonToken.END_ARRAY) {
-						curValue.add(parseValueElement());
-					}
-				} else {
-					curValue.add(parseValueElement());
-				}
-				if (curValue.isEmpty()) {
-					jcardValue.addValues("");
-				} else {
-					jcardValue.addValues(curValue);
-				}
-				jp.nextToken();
-			}
-			if (structured) {
-				//consume the extra END_ARRAY character from the structured value array
-				if (jp.nextToken() != JsonToken.END_ARRAY) {
-					throw new JCardParseException(JsonToken.END_ARRAY, jp.getCurrentToken());
-				}
-				if (jcardValue.getValues().isEmpty()) {
-					jcardValue.addValues("");
-				}
-			}
-
-			if (propertiesRead == 0 && !"version".equals(propertyName)) {
-				addWarning("jCard does not start with the \"version\" property.  Version will be set to " + version);
-			}
-
-			propertiesRead++;
-
-			if ("version".equals(propertyName)) {
-				Object firstValue = jcardValue.getFirstValue();
-				String firstValueStr = (firstValue == null) ? "" : firstValue.toString();
-				if (versionFound) {
-					addWarning("Additional \"version\" property encountered.  It will be ignored.");
-				} else {
-					versionFound = true;
-					if (!version.getVersion().equals(firstValueStr)) {
-						addWarning("Invalid value of \"version\" property: " + firstValueStr);
-					}
-				}
-				continue;
-			}
-
-			VCardType type = createTypeObject(propertyName);
-			type.setGroup(group);
-
-			//unmarshal the text string into the object
-			warningsBuf.clear();
-			try {
-				type.unmarshalJson(subTypes, jcardValue, version, warningsBuf);
-				vcard.addProperty(type);
-			} catch (SkipMeException e) {
-				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
-			} catch (EmbeddedVCardException e) {
-				warningsBuf.add("Property will not be unmarshalled because jCard does not supported embedded vCards.");
-			} finally {
-				for (String warning : warningsBuf) {
-					addWarning(warning, type.getTypeName());
-				}
-			}
-		}
-
-		if (!versionFound) {
-			addWarning("\"version\" property was missing from the jCard.  The jCard was parsed as version " + version.getVersion() + ".");
-		}
-
-		//consume ending of properties array
-		if (jp.nextToken() != JsonToken.END_ARRAY) {
-			throw new JCardParseException(JsonToken.END_ARRAY, jp.getCurrentToken());
-		}
-
 		return vcard;
-	}
-
-	private Object parseValueElement() throws IOException {
-		switch (jp.getCurrentToken()) {
-		case VALUE_FALSE:
-		case VALUE_TRUE:
-			return jp.getBooleanValue();
-		case VALUE_NUMBER_FLOAT:
-			return jp.getDoubleValue();
-		case VALUE_NUMBER_INT:
-			return jp.getLongValue();
-		case VALUE_NULL:
-			return "";
-		default:
-			return jp.getText();
-		}
 	}
 
 	/**
@@ -316,7 +143,7 @@ public class JCardReader implements IParser, Closeable {
 				}
 			} else {
 				t = new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
-				if (!name.startsWith("X-")) {
+				if (!name.startsWith("X-") && !name.startsWith("x-")) {
 					addWarning("Non-standard property \"" + name + "\" found.  Treating it as an extended property.");
 				}
 			}
@@ -360,7 +187,7 @@ public class JCardReader implements IParser, Closeable {
 
 	private void addWarning(String message, String propertyName) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Line ").append(jp.getTokenLocation().getLineNr());
+		sb.append("Line ").append(reader.getLineNum());
 		if (propertyName != null) {
 			sb.append(" (").append(propertyName).append(" property)");
 		}
@@ -370,8 +197,49 @@ public class JCardReader implements IParser, Closeable {
 	}
 
 	public void close() throws IOException {
-		if (jp != null) {
-			jp.close();
+		reader.close();
+	}
+
+	private class JCardDataStreamListenerImpl implements JCardDataStreamListener {
+		private final List<String> warningsBuf = new ArrayList<String>();
+		private VCard vcard = null;
+		private boolean versionFound = false;
+
+		public void beginVCard() {
+			vcard = new VCard();
+			vcard.setVersion(VCardVersion.V4_0);
 		}
+
+		public void readProperty(String group, String propertyName, VCardSubTypes parameters, JCardValue value) {
+			if ("version".equalsIgnoreCase(propertyName)) {
+				//don't unmarshal "version" because we don't treat it as a property
+				versionFound = true;
+
+				VCardVersion version = VCardVersion.valueOfByStr(value.getSingleValued());
+				if (version != VCardVersion.V4_0) {
+					addWarning("Version must be \"" + VCardVersion.V4_0.getVersion() + "\"", "version");
+				}
+				return;
+			}
+
+			VCardType type = createTypeObject(propertyName);
+			type.setGroup(group);
+
+			//unmarshal the text string into the object
+			warningsBuf.clear();
+			try {
+				type.unmarshalJson(parameters, value, VCardVersion.V4_0, warningsBuf);
+				vcard.addProperty(type);
+			} catch (SkipMeException e) {
+				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
+			} catch (EmbeddedVCardException e) {
+				warningsBuf.add("Property will not be unmarshalled because jCard does not supported embedded vCards.");
+			} finally {
+				for (String warning : warningsBuf) {
+					addWarning(warning, type.getTypeName());
+				}
+			}
+		}
+
 	}
 }

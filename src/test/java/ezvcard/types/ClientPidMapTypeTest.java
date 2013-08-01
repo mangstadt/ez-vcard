@@ -21,6 +21,7 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
+import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
 
 /*
@@ -119,13 +120,13 @@ public class ClientPidMapTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withValue.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertTrue(value.isStructured());
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ "1" }),
-			Arrays.asList(new Object[]{ "urn:uuid:1234" })
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue(Arrays.asList(
+				new JsonValue("1"),
+				new JsonValue("urn:uuid:1234")
+			))
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
@@ -197,7 +198,7 @@ public class ClientPidMapTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.text(pid + "", uri);
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, pid + "", uri);
 
 		clientPidMapType.unmarshalJson(subTypes, value, version, warnings);
 
@@ -209,7 +210,7 @@ public class ClientPidMapTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_pid() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.text("foo", uri);
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, "foo", uri);
 
 		clientPidMapType.unmarshalJson(subTypes, value, version, warnings);
 	}

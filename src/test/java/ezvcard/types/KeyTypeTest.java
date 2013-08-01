@@ -1,13 +1,12 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -193,16 +192,8 @@ public class KeyTypeTest {
 	public void marshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withText.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ text })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.TEXT, text, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -270,7 +261,7 @@ public class KeyTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.text(text);
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, text);
 		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
 		key.unmarshalJson(subTypes, value, version, warnings);
 

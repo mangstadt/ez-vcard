@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
@@ -9,7 +10,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -370,16 +370,8 @@ public class TelephoneTypeTest {
 	public void marshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = marshalObjText.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ number })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.TEXT, number, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -387,16 +379,8 @@ public class TelephoneTypeTest {
 	public void marshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = marshalObjUri.marshalJson(version, warnings);
-		assertEquals(JCardDataType.URI, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ uriWithExt })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.URI, uriWithExt, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -569,9 +553,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.TEXT);
-		value.addValues(number);
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, number);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 
@@ -585,9 +567,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.URI);
-		value.addValues(uri);
+		JCardValue value = JCardValue.single(JCardDataType.URI, uri);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 
@@ -601,9 +581,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_uri_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.URI);
-		value.addValues(number);
+		JCardValue value = JCardValue.single(JCardDataType.URI, number);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 

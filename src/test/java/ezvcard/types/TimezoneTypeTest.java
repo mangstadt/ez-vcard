@@ -1,14 +1,13 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -375,16 +374,8 @@ public class TimezoneTypeTest {
 	public void marshalJson_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = offset.marshalJson(version, warnings);
-		assertEquals(JCardDataType.UTC_OFFSET, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ offsetStr })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.UTC_OFFSET, offsetStr, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -392,16 +383,8 @@ public class TimezoneTypeTest {
 	public void marshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = text.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ textStr })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.TEXT, textStr, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -409,16 +392,8 @@ public class TimezoneTypeTest {
 	public void marshalJson_offset_and_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = offsetAndText.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ textStr })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.TEXT, textStr, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -698,7 +673,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.text(textStr);
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, textStr);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -712,9 +687,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_text_other_data_type() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.BOOLEAN);
-		value.addValues(textStr);
+		JCardValue value = JCardValue.single(JCardDataType.BOOLEAN, textStr);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -728,7 +701,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.utcOffset(hourOffset, minuteOffset);
+		JCardValue value = JCardValue.single(JCardDataType.UTC_OFFSET, offsetStr);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -742,8 +715,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_invalid_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.utcOffset();
-		value.addValues("invalid");
+		JCardValue value = JCardValue.single(JCardDataType.UTC_OFFSET, "invalid");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 	}
@@ -752,9 +724,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_offset_other_data_type() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.BOOLEAN);
-		value.addValues(offsetStr);
+		JCardValue value = JCardValue.single(JCardDataType.BOOLEAN, offsetStr);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -768,9 +738,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_invalid_offset_other_data_type() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.BOOLEAN);
-		value.addValues("invalid");
+		JCardValue value = JCardValue.single(JCardDataType.BOOLEAN, "invalid");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

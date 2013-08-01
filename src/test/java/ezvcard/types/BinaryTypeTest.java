@@ -1,14 +1,13 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -327,16 +326,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withUrl.marshalJson(version, warnings);
 
-		assertEquals(JCardDataType.URI, value.getDataType());
-		assertFalse(value.isStructured());
-
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ url })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.URI, url, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -345,16 +335,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withData.marshalJson(version, warnings);
 
-		assertEquals(JCardDataType.URI, value.getDataType());
-		assertFalse(value.isStructured());
-
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ dataUri })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.URI, dataUri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -612,7 +593,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
-		JCardValue value = JCardValue.uri(url);
+		JCardValue value = JCardValue.single(JCardDataType.URI, url);
 
 		binaryType.unmarshalJson(subTypes, value, version, warnings);
 
@@ -627,7 +608,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
-		JCardValue value = JCardValue.uri(dataUri);
+		JCardValue value = JCardValue.single(JCardDataType.URI, dataUri);
 
 		binaryType.unmarshalJson(subTypes, value, version, warnings);
 

@@ -313,7 +313,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (text != null) {
-			return JCardValue.text(text);
+			return JCardValue.single(JCardDataType.TEXT, text);
 		} else {
 			return super.doMarshalJson(version, warnings);
 		}
@@ -322,7 +322,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		if (value.getDataType() == JCardDataType.TEXT) {
-			parseText(value.getFirstValueAsString(), version);
+			parseText(value.getSingleValued(), version);
 		} else {
 			super.doUnmarshalJson(value, version, warnings);
 		}

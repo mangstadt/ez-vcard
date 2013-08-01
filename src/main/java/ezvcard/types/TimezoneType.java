@@ -477,12 +477,22 @@ public class TimezoneType extends VCardType implements HasAltId {
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		checkForValue();
 
-		return hasText() ? JCardValue.text(text) : JCardValue.utcOffset(hourOffset, minuteOffset);
+		JCardDataType dataType;
+		String value;
+		if (hasText()) {
+			dataType = JCardDataType.TEXT;
+			value = text;
+		} else {
+			dataType = JCardDataType.UTC_OFFSET;
+			value = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
+		}
+
+		return JCardValue.single(dataType, value);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getFirstValueAsString();
+		String valueStr = value.getSingleValued();
 		JCardDataType dataType = value.getDataType();
 		parse(valueStr, dataType == JCardDataType.TEXT, dataType == JCardDataType.UTC_OFFSET, version, warnings);
 	}
