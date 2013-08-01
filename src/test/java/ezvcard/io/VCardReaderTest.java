@@ -1,6 +1,7 @@
 package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
@@ -35,6 +36,7 @@ import ezvcard.types.FormattedNameType;
 import ezvcard.types.GeoType;
 import ezvcard.types.KeyType;
 import ezvcard.types.LabelType;
+import ezvcard.types.LanguageType;
 import ezvcard.types.MailerType;
 import ezvcard.types.NicknameType;
 import ezvcard.types.NoteType;
@@ -54,6 +56,8 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
+import ezvcard.util.PartialDate;
+import ezvcard.util.TelUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -92,7 +96,7 @@ public class VCardReaderTest {
 	 * Tests to make sure it can read sub types properly
 	 */
 	@Test
-	public void getSubTypes() throws Exception {
+	public void getSubTypes() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -114,7 +118,6 @@ public class VCardReaderTest {
 
 		AddressType adr = vcard.getAddresses().get(0);
 		assertEquals(2, adr.getSubTypes().size());
-		assertEquals(2, adr.getTypes().size());
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
 
@@ -129,7 +132,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void type_parameter_enclosed_in_double_quotes() throws Exception {
+	public void type_parameter_enclosed_in_double_quotes() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -180,7 +183,7 @@ public class VCardReaderTest {
 	 * All "quoted-printable" values should be decoded by the VCardReader.
 	 */
 	@Test
-	public void decodeQuotedPrintable() throws Exception {
+	public void decodeQuotedPrintable() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -206,7 +209,7 @@ public class VCardReaderTest {
 	 * Tests to make sure it can unfold folded lines.
 	 */
 	@Test
-	public void unfold() throws Exception {
+	public void unfold() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -238,7 +241,7 @@ public class VCardReaderTest {
 	 * Tests to make sure it can read extended types.
 	 */
 	@Test
-	public void readExtendedType() throws Exception {
+	public void readExtendedType() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -270,7 +273,7 @@ public class VCardReaderTest {
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void registerExtendedType_no_default_constructor() throws Exception {
+	public void registerExtendedType_no_default_constructor() throws Throwable {
 		VCardReader reader = new VCardReader("");
 		reader.registerExtendedType(BadType.class);
 	}
@@ -279,7 +282,7 @@ public class VCardReaderTest {
 	 * Tests to make sure it can read multiple vCards from the same stream.
 	 */
 	@Test
-	public void readMultiple() throws Exception {
+	public void readMultiple() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -312,7 +315,7 @@ public class VCardReaderTest {
 	 * Tests types with nested vCards (i.e AGENT type) in version 2.1.
 	 */
 	@Test
-	public void nestedVCard() throws Exception {
+	public void nestedVCard() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -345,7 +348,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void nestedVCard_missing_vcard() throws Exception {
+	public void nestedVCard_missing_vcard() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -369,7 +372,7 @@ public class VCardReaderTest {
 	 * Tests types with embedded vCards (i.e. AGENT type) in version 3.0.
 	 */
 	@Test
-	public void embeddedVCard() throws Exception {
+	public void embeddedVCard() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -407,7 +410,7 @@ public class VCardReaderTest {
 	 * ADR should go in "VCard.getOrphanedLabels()".
 	 */
 	@Test
-	public void readLabel() throws Exception {
+	public void readLabel() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -451,7 +454,7 @@ public class VCardReaderTest {
 	 * NOT be added to the {@link VCard} object.
 	 */
 	@Test
-	public void skipMeException() throws Exception {
+	public void skipMeException() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -474,7 +477,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void invalid_line() throws Exception {
+	public void invalid_line() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -491,7 +494,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void invalid_version() throws Exception {
+	public void invalid_version() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -508,7 +511,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void skip_non_vcard_components() throws Exception {
+	public void skip_non_vcard_components() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCALENDAR\r\n" +
@@ -533,7 +536,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void evolutionVCard() throws Exception {
+	public void evolutionVCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_EVOLUTION.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -749,7 +752,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void gmailVCard() throws Exception {
+	public void gmailVCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_GMAIL.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -916,7 +919,7 @@ public class VCardReaderTest {
 	 * them as a vCard.
 	 */
 	@Test
-	public void gmailList() throws Exception {
+	public void gmailList() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("gmail-list.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -1025,7 +1028,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void gmailSingle() throws Exception {
+	public void gmailSingle() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("gmail-single.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -1226,7 +1229,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void iPhoneVCard() throws Exception {
+	public void iPhoneVCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_IPHONE.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -1446,7 +1449,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void lotusNotesVCard() throws Exception {
+	public void lotusNotesVCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_LOTUS_NOTES.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -1721,7 +1724,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void msOutlookVCard() throws Exception {
+	public void msOutlookVCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_MS_OUTLOOK.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -1945,7 +1948,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void outlook2007VCard() throws Exception {
+	public void outlook2007VCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("outlook-2007.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -2211,7 +2214,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void macAddressBookVCard() throws Exception {
+	public void macAddressBookVCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_MAC_ADDRESS_BOOK.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -2460,7 +2463,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void outlook2003VCard() throws Exception {
+	public void outlook2003VCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("outlook-2003.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -2665,7 +2668,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void thunderbird() throws Exception {
+	public void thunderbird() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("thunderbird-MoreFunctionsForAddressBook-extension.vcf"));
 		VCard vcard = reader.readNext();
 
@@ -2890,6 +2893,175 @@ public class VCardReaderTest {
 		}
 
 		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void rfc6350_example() throws Throwable {
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("rfc6350-example.vcf"));
+		VCard vcard = reader.readNext();
+
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(16, vcard.getProperties().size());
+
+		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+
+		StructuredNameType n = vcard.getStructuredName();
+		assertEquals("Perreault", n.getFamily());
+		assertEquals("Simon", n.getGiven());
+		assertEquals(Arrays.asList(), n.getAdditional());
+		assertEquals(Arrays.asList(), n.getPrefixes());
+		assertEquals(Arrays.asList("ing. jr", "M.Sc."), n.getSuffixes());
+
+		PartialDate expectedBday = PartialDate.date(null, 2, 3);
+		PartialDate actualBday = vcard.getBirthday().getPartialDate();
+		assertEquals(expectedBday, actualBday);
+
+		PartialDate expectedAnniversary = PartialDate.dateTime(2009, 8, 8, 14, 30, null, -5, 0);
+		PartialDate actualAnniversary = vcard.getAnniversary().getPartialDate();
+		assertEquals(expectedAnniversary, actualAnniversary);
+
+		assertTrue(vcard.getGender().isMale());
+
+		LanguageType lang = vcard.getLanguages().get(0);
+		assertEquals("fr", lang.getValue());
+		assertIntEquals(1, lang.getPref());
+
+		lang = vcard.getLanguages().get(1);
+		assertEquals("en", lang.getValue());
+		assertIntEquals(2, lang.getPref());
+
+		OrganizationType org = vcard.getOrganization();
+		assertEquals(Arrays.asList("Viagenie"), org.getValues());
+		assertEquals("work", org.getType());
+
+		AddressType adr = vcard.getAddresses().get(0);
+		assertNull(adr.getPoBox());
+		assertEquals("Suite D2-630", adr.getExtendedAddress());
+		assertEquals("2875 Laurier", adr.getStreetAddress());
+		assertEquals("Quebec", adr.getLocality());
+		assertEquals("QC", adr.getRegion());
+		assertEquals("G1V 2M2", adr.getPostalCode());
+		assertEquals("Canada", adr.getCountry());
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
+
+		TelephoneType tel = vcard.getTelephoneNumbers().get(0);
+		TelUri expectedUri = TelUri.global("+1-418-656-9254");
+		expectedUri.setExtension("102");
+		assertEquals(expectedUri, tel.getUri());
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
+		assertIntEquals(1, tel.getPref());
+
+		tel = vcard.getTelephoneNumbers().get(1);
+		expectedUri = TelUri.global("+1-418-262-6501");
+		assertEquals(expectedUri, tel.getUri());
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
+
+		EmailType email = vcard.getEmails().get(0);
+		assertEquals("simon.perreault@viagenie.ca", email.getValue());
+		assertSetEquals(email.getTypes(), EmailTypeParameter.WORK);
+
+		GeoType geo = vcard.getGeo();
+		assertEquals(Double.valueOf(46.772673), geo.getLatitude());
+		assertEquals(Double.valueOf(-71.282945), geo.getLongitude());
+		assertEquals("work", geo.getType());
+
+		KeyType key = vcard.getKeys().get(0);
+		assertEquals("http://www.viagenie.ca/simon.perreault/simon.asc", key.getUrl());
+		assertEquals("work", key.getType());
+
+		TimezoneType tz = vcard.getTimezone();
+		assertIntEquals(-5, tz.getHourOffset());
+		assertIntEquals(0, tz.getMinuteOffset());
+
+		UrlType url = vcard.getUrls().get(0);
+		assertEquals("http://nomis80.org", url.getValue());
+		assertEquals("home", url.getType());
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void rfc2426_example() throws Throwable {
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("rfc2426-example.vcf"));
+
+		{
+			VCard vcard = reader.readNext();
+
+			assertEquals(VCardVersion.V3_0, vcard.getVersion());
+			assertEquals(8, vcard.getProperties().size());
+
+			assertEquals("Frank Dawson", vcard.getFormattedName().getValue());
+
+			assertEquals(Arrays.asList("Lotus Development Corporation"), vcard.getOrganization().getValues());
+
+			AddressType adr = vcard.getAddresses().get(0);
+			assertNull(adr.getPoBox());
+			assertNull(adr.getExtendedAddress());
+			assertEquals("6544 Battleford Drive", adr.getStreetAddress());
+			assertEquals("Raleigh", adr.getLocality());
+			assertEquals("NC", adr.getRegion());
+			assertEquals("27613-3502", adr.getPostalCode());
+			assertEquals("U.S.A.", adr.getCountry());
+			assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK, AddressTypeParameter.POSTAL, AddressTypeParameter.PARCEL);
+
+			TelephoneType tel = vcard.getTelephoneNumbers().get(0);
+			assertEquals("+1-919-676-9515", tel.getText());
+			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.MSG);
+
+			tel = vcard.getTelephoneNumbers().get(1);
+			assertEquals("+1-919-676-9564", tel.getText());
+			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.FAX);
+
+			EmailType email = vcard.getEmails().get(0);
+			assertEquals("Frank_Dawson@Lotus.com", email.getValue());
+			assertSetEquals(email.getTypes(), EmailTypeParameter.INTERNET, EmailTypeParameter.PREF);
+
+			email = vcard.getEmails().get(1);
+			assertEquals("fdawson@earthlink.net", email.getValue());
+			assertSetEquals(email.getTypes(), EmailTypeParameter.INTERNET);
+
+			assertEquals("http://home.earthlink.net/÷fdawson", vcard.getUrls().get(0).getValue());
+
+			assertWarnings(0, reader.getWarnings());
+		}
+
+		{
+			VCard vcard = reader.readNext();
+
+			assertEquals(VCardVersion.V3_0, vcard.getVersion());
+			assertEquals(6, vcard.getProperties().size());
+
+			assertEquals("Tim Howes", vcard.getFormattedName().getValue());
+
+			assertEquals(Arrays.asList("Netscape Communications Corp."), vcard.getOrganization().getValues());
+
+			AddressType adr = vcard.getAddresses().get(0);
+			assertNull(adr.getPoBox());
+			assertNull(adr.getExtendedAddress());
+			assertEquals("501 E. Middlefield Rd.", adr.getStreetAddress());
+			assertEquals("Mountain View", adr.getLocality());
+			assertEquals("CA", adr.getRegion());
+			assertEquals("94043", adr.getPostalCode());
+			assertEquals("U.S.A.", adr.getCountry());
+			assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
+
+			TelephoneType tel = vcard.getTelephoneNumbers().get(0);
+			assertEquals("+1-415-937-3419", tel.getText());
+			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.MSG);
+
+			tel = vcard.getTelephoneNumbers().get(1);
+			assertEquals("+1-415-528-4164", tel.getText());
+			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.FAX);
+
+			EmailType email = vcard.getEmails().get(0);
+			assertEquals("howes@netscape.com", email.getValue());
+			assertSetEquals(email.getTypes(), EmailTypeParameter.INTERNET);
+
+			assertWarnings(0, reader.getWarnings());
+		}
+
 		assertNull(reader.readNext());
 	}
 

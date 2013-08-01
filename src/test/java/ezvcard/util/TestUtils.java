@@ -3,7 +3,9 @@ package ezvcard.util;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -68,5 +70,18 @@ public class TestUtils {
 
 		List<JsonValue> expected = Arrays.asList(new JsonValue(expectedValue));
 		assertEquals(expected, actualValue.getValues());
+	}
+
+	/**
+	 * Asserts the value of a set.
+	 * @param actualSet the actual set
+	 * @param expectedElements the elements that are expected to be in the set
+	 */
+	public static <T> void assertSetEquals(Set<T> actualSet, T... expectedElements) {
+		Set<T> expectedSet = new HashSet<T>(expectedElements.length);
+		for (T expectedElement : expectedElements) {
+			expectedSet.add(expectedElement);
+		}
+		assertEquals(expectedSet, actualSet);
 	}
 }
