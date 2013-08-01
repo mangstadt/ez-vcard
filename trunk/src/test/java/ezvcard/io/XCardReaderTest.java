@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -91,6 +92,7 @@ public class XCardReaderTest {
 		assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
 		assertEquals(Arrays.asList("MD"), n.getSuffixes());
 
+		assertWarnings(0, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -117,6 +119,7 @@ public class XCardReaderTest {
 		NoteType note = vcard.getNotes().get(0);
 		assertEquals("  This \t  is \n   a   note ", note.getValue());
 
+		assertWarnings(0, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -199,6 +202,8 @@ public class XCardReaderTest {
 
 		assertFalse(telIt.hasNext());
 
+		assertWarnings(0, xcr.getWarnings());
+		assertNull(xcr.readNext());
 	}
 
 	/**
@@ -237,6 +242,7 @@ public class XCardReaderTest {
 		assertEquals("A property without a group", note.getValue());
 		assertNull(note.getGroup());
 
+		assertWarnings(0, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -293,8 +299,7 @@ public class XCardReaderTest {
 		assertEquals("m", gender.get(0).getValue());
 
 		//warning for AgeType not supporting xCard
-		assertEquals(1, xcr.getWarnings().size());
-
+		assertWarnings(1, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -354,6 +359,7 @@ public class XCardReaderTest {
 		assertEquals(Arrays.asList("MD"), n.getSuffixes());
 		assertNull(vcard.getFormattedName());
 
+		assertWarnings(0, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -386,6 +392,7 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		xcr = new XCardReader(xml);
+		assertWarnings(0, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -410,12 +417,11 @@ public class XCardReaderTest {
 		xcr.registerExtendedType(LuckyNumType.class);
 		VCard vcard = xcr.readNext();
 
-		assertEquals(1, xcr.getWarnings().size());
-
 		List<LuckyNumType> luckyNum = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, luckyNum.size());
 		assertEquals(24, luckyNum.get(0).luckyNum);
 
+		assertWarnings(1, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -455,6 +461,7 @@ public class XCardReaderTest {
 		assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
 		assertEquals(Arrays.asList("MD"), n.getSuffixes());
 
+		assertWarnings(0, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -493,6 +500,7 @@ public class XCardReaderTest {
 		assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
 		assertEquals(Arrays.asList("MD"), n.getSuffixes());
 
+		assertWarnings(0, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 
@@ -548,6 +556,7 @@ public class XCardReaderTest {
 			assertTrue(n.getAdditional().isEmpty());
 			assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
 			assertEquals(Arrays.asList("MD"), n.getSuffixes());
+			assertWarnings(0, xcr.getWarnings());
 		}
 
 		{
@@ -564,6 +573,7 @@ public class XCardReaderTest {
 			assertTrue(n.getAdditional().isEmpty());
 			assertEquals(Arrays.asList("Dr", "Ms"), n.getPrefixes());
 			assertEquals(Arrays.asList("MD"), n.getSuffixes());
+			assertWarnings(0, xcr.getWarnings());
 		}
 
 		assertNull(xcr.readNext());

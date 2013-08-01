@@ -1,6 +1,7 @@
 package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -123,7 +124,7 @@ public class VCardReaderTest {
 		assertTrue(label.getTypes().contains(AddressTypeParameter.DOM));
 		assertTrue(label.getTypes().contains(AddressTypeParameter.PARCEL));
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -171,7 +172,7 @@ public class VCardReaderTest {
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.HOME));
 		assertTrue(adr.getTypes().contains(AddressTypeParameter.WORK));
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -197,7 +198,7 @@ public class VCardReaderTest {
 		assertEquals("123 Main St.\r\nAustin, TX 91827\r\nUSA", label.getValue());
 		assertNull(label.getSubTypes().getEncoding()); //ENCODING sub type should be removed
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -229,7 +230,7 @@ public class VCardReaderTest {
 		String actual = vcard.getNotes().get(0).getValue();
 		assertEquals(expected, actual);
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -264,7 +265,7 @@ public class VCardReaderTest {
 		assertEquals(1, genderTypes.size());
 		assertEquals("ma\\,le", genderTypes.get(0).getValue()); //raw type values are not unescaped
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -297,12 +298,12 @@ public class VCardReaderTest {
 		vcard = reader.readNext();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 
 		vcard = reader.readNext();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 
 		assertNull(reader.readNext());
 	}
@@ -339,7 +340,7 @@ public class VCardReaderTest {
 		VCard agent2 = agent1.getAgent().getVCard();
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -360,7 +361,7 @@ public class VCardReaderTest {
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertNull(vcard.getAgent().getVCard());
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -396,7 +397,7 @@ public class VCardReaderTest {
 		VCard agent2 = agent1.getAgent().getVCard();
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -440,7 +441,7 @@ public class VCardReaderTest {
 		assertEquals(1, label.getTypes().size());
 		assertTrue(label.getTypes().contains(AddressTypeParameter.WORK));
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -468,7 +469,7 @@ public class VCardReaderTest {
 		assertEquals(1, luckyNumTypes.size());
 		assertEquals(24, luckyNumTypes.get(0).luckyNum);
 
-		assertEquals(1, reader.getWarnings().size());
+		assertWarnings(1, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -485,7 +486,7 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(str);
 		reader.readNext();
 
-		assertEquals(1, reader.getWarnings().size());
+		assertWarnings(1, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -502,7 +503,7 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion()); //default to 2.1
 
-		assertEquals(1, reader.getWarnings().size());
+		assertWarnings(1, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -527,7 +528,7 @@ public class VCardReaderTest {
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertNull(vcard.getProdId());
 
-		assertEquals(0, reader.getWarnings().size());
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -742,6 +743,9 @@ public class VCardReaderTest {
 			assertEquals("1980-03-22", t.getValue());
 			assertFalse(it.hasNext());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -902,6 +906,9 @@ public class VCardReaderTest {
 			assertEquals("Jenny", f.getValue());
 			assertEquals("item2", f.getGroup());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	/**
@@ -1013,6 +1020,7 @@ public class VCardReaderTest {
 			assertFalse(it.hasNext());
 		}
 
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
@@ -1212,6 +1220,9 @@ public class VCardReaderTest {
 			assertEquals("X-ABRELATEDNAMES", f.getTypeName());
 			assertEquals("MyCustom", f.getValue());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -1429,6 +1440,9 @@ public class VCardReaderTest {
 			assertEquals("X-ABLabel", f.getTypeName());
 			assertEquals("_$!<HomePage>!$_", f.getValue());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -1701,6 +1715,9 @@ public class VCardReaderTest {
 			assertEquals("X-LONG-STRING", f.getTypeName());
 			assertEquals("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", f.getValue());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -1922,6 +1939,9 @@ public class VCardReaderTest {
 			assertEquals("X-MS-ASSISTANT", f.getTypeName());
 			assertEquals("Jenny", f.getValue());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -2185,6 +2205,9 @@ public class VCardReaderTest {
 			assertEquals("X-MS-SPOUSE", f.getTypeName());
 			assertEquals("TheSpouse", f.getValue());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -2431,6 +2454,9 @@ public class VCardReaderTest {
 			assertEquals("X-ABUID", f.getTypeName());
 			assertEquals("6B29A774-D124-4822-B8D0-2780EC117F60\\:ABPerson", f.getValue());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -2633,6 +2659,9 @@ public class VCardReaderTest {
 			c.set(Calendar.SECOND, 25);
 			assertEquals(c.getTime(), f.getTimestamp());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -2859,6 +2888,9 @@ public class VCardReaderTest {
 			assertEquals("X-ANNIVERSARY", f.getTypeName());
 			assertEquals("1990-04-30", f.getValue());
 		}
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	/**
