@@ -1,9 +1,11 @@
 package ezvcard.types;
 
+import java.util.Iterator;
 import java.util.List;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -261,17 +263,30 @@ public class GenderType extends VCardType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		JCardValue value = JCardValue.text(gender);
-		if (text != null) {
-			value.addValues(text);
-			value.setStructured(true);
+		if (text == null) {
+			return JCardValue.single(JCardDataType.TEXT, gender);
 		}
-		return value;
+		return JCardValue.structured(JCardDataType.TEXT, gender, text);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		gender = value.getFirstValueAsString(0);
-		text = value.getFirstValueAsString(1);
+		Iterator<List<String>> it = value.getStructured().iterator();
+		gender = nextJsonComponent(it);
+		text = nextJsonComponent(it);
+	}
+
+	private String nextJsonComponent(Iterator<List<String>> it) {
+		if (!it.hasNext()) {
+			return null;
+		}
+
+		List<String> values = it.next();
+		if (values.isEmpty()) {
+			return null;
+		}
+
+		String value = values.get(0);
+		return (value == null || value.length() == 0) ? null : value;
 	}
 }

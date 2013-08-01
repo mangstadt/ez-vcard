@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
@@ -22,6 +23,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
+import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
 
 /*
@@ -209,16 +211,8 @@ public class GenderTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = genderType.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ gender })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.TEXT, gender, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -226,17 +220,18 @@ public class GenderTypeTest {
 	public void marshalJson_with_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = genderTypeWithText.marshalJson(version, warnings);
+
 		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertTrue(value.isStructured());
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ gender }),
-			Arrays.asList(new Object[]{ text })
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue(Arrays.asList(
+				new JsonValue(gender),
+				new JsonValue(text)
+			))
 		);
 		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertEquals(expected, value.getValues());
 		assertWarnings(0, warnings);
 	}
 
@@ -296,9 +291,20 @@ public class GenderTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.TEXT);
-		value.addValues(gender);
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, gender);
+
+		t.unmarshalJson(subTypes, value, version, warnings);
+
+		assertEquals(gender, t.getGender());
+		assertTrue(t.isMale());
+		assertNull(t.getText());
+		assertWarnings(0, warnings);
+	}
+
+	@Test
+	public void unmarshalJson_gender_in_array() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, gender);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -311,9 +317,7 @@ public class GenderTypeTest {
 	@Test
 	public void unmarshalJson_with_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.TEXT);
-		value.addValues(gender, text);
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, gender, text);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

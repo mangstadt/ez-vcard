@@ -5,6 +5,7 @@ import java.util.List;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -81,6 +82,6 @@ public class UriType extends TextType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.uri(value);
+		return JCardValue.single(JCardDataType.URI, value);
 	}
 }

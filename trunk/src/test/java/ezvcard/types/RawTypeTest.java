@@ -1,12 +1,11 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -92,16 +91,8 @@ public class RawTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = type.marshalJson(version, warnings);
-		assertEquals(JCardDataType.UNKNOWN, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ propertyValue })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.UNKNOWN, propertyValue, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -168,14 +159,12 @@ public class RawTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.TEXT);
-		value.addValues(propertyValue);
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, propertyValue);
 
 		RawTypeImpl type = new RawTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);
 
-		assertEquals(propertyValueEscaped, type.getValue());
+		assertEquals(propertyValue, type.getValue());
 		assertWarnings(0, warnings);
 	}
 

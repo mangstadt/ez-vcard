@@ -295,24 +295,30 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		JCardDataType dataType;
+		String value;
+
 		if (text != null) {
-			return JCardValue.text(text);
+			dataType = JCardDataType.TEXT;
+			value = text;
 		} else {
+			dataType = dateHasTime ? JCardDataType.DATE_TIME : JCardDataType.DATE;
 			if (date != null) {
-				return dateHasTime ? JCardValue.dateTime(date) : JCardValue.date(date);
+				ISOFormat format = dateHasTime ? ISOFormat.TIME_EXTENDED : ISOFormat.DATE_EXTENDED;
+				value = VCardDateFormatter.format(date, format);
 			} else if (partialDate != null) {
-				JCardValue value = dateHasTime ? JCardValue.dateTime() : JCardValue.date();
-				value.addValues(partialDate.toDateAndOrTime(true));
-				return value;
+				value = partialDate.toDateAndOrTime(true);
 			} else {
 				throw new SkipMeException("Property has no date, reduced accuracy date, or text value associated with it.");
 			}
 		}
+
+		return JCardValue.single(dataType, value);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getFirstValueAsString();
+		String valueStr = value.getSingleValued();
 		if (value.getDataType() == JCardDataType.TEXT) {
 			setText(valueStr);
 		} else {

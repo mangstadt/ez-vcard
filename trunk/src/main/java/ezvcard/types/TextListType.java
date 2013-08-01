@@ -6,6 +6,7 @@ import java.util.List;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.VCardStringUtils.JoinCallback;
@@ -110,17 +111,25 @@ public class TextListType extends VCardType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		JCardValue value = JCardValue.text(values.toArray(new String[0]));
-		value.setStructured(separator == ';');
-		return value;
+		Object[] values = this.values.toArray(new Object[0]);
+		if (separator == ';') {
+			return JCardValue.structured(JCardDataType.TEXT, values);
+		}
+		return JCardValue.multi(JCardDataType.TEXT, values);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		values.clear();
-		for (List<String> valueStr : value.getValuesAsStrings()) {
-			if (!valueStr.isEmpty()) {
-				values.add(valueStr.get(0));
+		if (separator == ';') {
+			for (List<String> valueStr : value.getStructured()) {
+				if (!valueStr.isEmpty()) {
+					values.add(valueStr.get(0));
+				}
+			}
+		} else {
+			for (String valueStr : value.getMultivalued()) {
+				values.add(valueStr);
 			}
 		}
 	}

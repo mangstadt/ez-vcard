@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertArrayEquals;
@@ -93,16 +94,8 @@ public class VCardTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = type.marshalJson(version, warnings);
-		assertEquals(JCardDataType.UNKNOWN, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ type.value })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.UNKNOWN, type.value, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -114,16 +107,8 @@ public class VCardTypeTest {
 		type.getSubTypes().setValue(ValueParameter.BOOLEAN);
 
 		JCardValue value = type.marshalJson(version, warnings);
-		assertEquals(JCardDataType.BOOLEAN, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ type.value })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.BOOLEAN, type.value, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -148,7 +133,7 @@ public class VCardTypeTest {
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.text(type.value);
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, type.value);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -160,11 +145,11 @@ public class VCardTypeTest {
 	public void unmarshalJson_special_chars() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.text("va,l;ue\\");
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, "va,l;ue\\");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
-		assertEquals("va\\,l\\;ue\\\\", t.value);
+		assertEquals("va,l;ue\\", t.value);
 		assertWarnings(0, warnings);
 	}
 
@@ -172,7 +157,7 @@ public class VCardTypeTest {
 	public void unmarshalJson_list() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.text("one", "two", "three");
+		JCardValue value = JCardValue.multi(null, "one", "two", "three");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -184,9 +169,11 @@ public class VCardTypeTest {
 	public void unmarshalJson_structured() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.text();
-		value.setStructured(true);
-		value.addValues("one", Arrays.asList("two", "three"), "four");
+		List<List<?>> values = new ArrayList<List<?>>();
+		values.add(Arrays.asList("one"));
+		values.add(Arrays.asList("two", "three"));
+		values.add(Arrays.asList("four"));
+		JCardValue value = JCardValue.structured(null, values);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

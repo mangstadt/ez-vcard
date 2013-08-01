@@ -1,15 +1,11 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -36,10 +32,6 @@ import org.junit.Test;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
- The views and conclusions contained in the software and documentation are those
- of the authors and should not be interpreted as representing official policies, 
- either expressed or implied, of the FreeBSD Project.
  */
 
 /**
@@ -47,229 +39,152 @@ import org.junit.Test;
  */
 public class JCardValueTest {
 	@Test
-	public void text() {
-		JCardValue value = JCardValue.text("one", "two");
+	public void single() {
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, "value");
+
 		assertEquals(JCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ "one" }),
-			Arrays.asList(new Object[]{ "two" })
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue("value")
 		);
 		//@formatter:on
-		assertEquals(expected, value.getValues());
+		List<JsonValue> actual = value.getValues();
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void text_empty() {
-		JCardValue value = JCardValue.text();
+	public void single_null() {
+		JCardValue value = JCardValue.single(JCardDataType.TEXT, null);
+
 		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertEquals(0, value.getValues().size());
-	}
-
-	@Test
-	public void uri() {
-		JCardValue value = JCardValue.uri("http://json.org");
-		assertEquals(JCardDataType.URI, value.getDataType());
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ "http://json.org" })
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue((Object)null)
 		);
 		//@formatter:on
-		assertEquals(expected, value.getValues());
+		List<JsonValue> actual = value.getValues();
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void uri_empty() {
-		JCardValue value = JCardValue.uri();
-		assertEquals(JCardDataType.URI, value.getDataType());
-		assertEquals(0, value.getValues().size());
+	public void getSingleValued() {
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue("value1"), new JsonValue("value2"));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals("value1", value.getSingleValued());
 	}
 
 	@Test
-	public void date() {
-		Date date;
-		{
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1980);
-			c.set(Calendar.MONTH, Calendar.JUNE);
-			c.set(Calendar.DAY_OF_MONTH, 5);
-			c.set(Calendar.HOUR_OF_DAY, 13);
-			c.set(Calendar.MINUTE, 10);
-			c.set(Calendar.SECOND, 20);
-			date = c.getTime();
-		}
-		JCardValue value = JCardValue.date(date);
-		assertEquals(JCardDataType.DATE, value.getDataType());
+	public void getSingleValued_non_string() {
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue(false));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals("false", value.getSingleValued());
+	}
+
+	@Test
+	public void getSingleValued_null() {
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue((Object) null));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(null, value.getSingleValued());
+	}
+
+	@Test
+	public void getSingleValued_array() {
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue("value1"))));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals("value1", value.getSingleValued());
+	}
+
+	@Test
+	public void getSingleValued_object() {
+		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
+		object.put("a", new JsonValue("one"));
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue(object));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(null, value.getSingleValued());
+	}
+
+	@Test
+	public void multi() {
+		JCardValue value = JCardValue.multi(JCardDataType.TEXT, "value", 42, false, null);
+
+		assertEquals(JCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ "1980-06-05" })
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue("value"),
+			new JsonValue(42),
+			new JsonValue(false),
+			new JsonValue((Object)null)
 		);
 		//@formatter:on
-		assertEquals(expected, value.getValues());
+		List<JsonValue> actual = value.getValues();
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void date_empty() {
-		JCardValue value = JCardValue.date();
-		assertEquals(JCardDataType.DATE, value.getDataType());
-		assertEquals(0, value.getValues().size());
+	public void getMultivalued() {
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(Arrays.asList("value1", "false", null), value.getMultivalued());
 	}
 
 	@Test
-	public void dateTime() {
-		Date date;
-		{
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1980);
-			c.set(Calendar.MONTH, Calendar.JUNE);
-			c.set(Calendar.DAY_OF_MONTH, 5);
-			c.set(Calendar.HOUR_OF_DAY, 13);
-			c.set(Calendar.MINUTE, 10);
-			c.set(Calendar.SECOND, 20);
-			date = c.getTime();
-		}
-		JCardValue value = JCardValue.dateTime(date);
-		assertEquals(JCardDataType.DATE_TIME, value.getDataType());
-		assertEquals(1, value.getValues().size());
-		assertEquals(1, value.getValues().get(0).size());
-		assertTrue(((String) value.getValues().get(0).get(0)).matches("1980-06-05T13:10:20[-+]\\d+:\\d+"));
+	public void getMultivalued_array() {
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false))));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(Arrays.asList(), value.getMultivalued());
 	}
 
 	@Test
-	public void dateTime_empty() {
-		JCardValue value = JCardValue.dateTime();
-		assertEquals(JCardDataType.DATE_TIME, value.getDataType());
-		assertEquals(0, value.getValues().size());
-	}
-
-	@Test
-	public void timestamp() {
-		Date date;
-		{
-			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			c.clear();
-			c.set(Calendar.YEAR, 1980);
-			c.set(Calendar.MONTH, Calendar.JUNE);
-			c.set(Calendar.DAY_OF_MONTH, 5);
-			c.set(Calendar.HOUR_OF_DAY, 13);
-			c.set(Calendar.MINUTE, 10);
-			c.set(Calendar.SECOND, 20);
-			date = c.getTime();
-		}
-		JCardValue value = JCardValue.timestamp(date);
-		assertEquals(JCardDataType.TIMESTAMP, value.getDataType());
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ "1980-06-05T13:10:20Z" })
-		);
-		//@formatter:on
-		assertEquals(expected, value.getValues());
-	}
-
-	@Test
-	public void timestamp_empty() {
-		JCardValue value = JCardValue.timestamp();
-		assertEquals(JCardDataType.TIMESTAMP, value.getDataType());
-		assertEquals(0, value.getValues().size());
-	}
-
-	@Test
-	public void utcOffset() {
-		JCardValue value = JCardValue.utcOffset(-5, 30);
-		assertEquals(JCardDataType.UTC_OFFSET, value.getDataType());
-
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ "-05:30" })
-		);
-		//@formatter:on
-		assertEquals(expected, value.getValues());
-	}
-
-	@Test
-	public void utcOffset_empty() {
-		JCardValue value = JCardValue.utcOffset();
-		assertEquals(JCardDataType.UTC_OFFSET, value.getDataType());
-		assertEquals(0, value.getValues().size());
+	public void getMultivalued_object() {
+		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
+		object.put("a", new JsonValue("one"));
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue(object));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(Arrays.asList(), value.getMultivalued());
 	}
 
 	@Test
 	public void structured() {
-		JCardValue value = new JCardValue();
-		assertFalse(value.isStructured());
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, "value", 42, false, null);
 
-		value.setStructured(true);
-		assertTrue(value.isStructured());
-	}
-
-	@Test
-	public void dataType() {
-		JCardValue value = new JCardValue();
 		assertEquals(JCardDataType.TEXT, value.getDataType());
 
-		value.setDataType(JCardDataType.URI);
-		assertEquals(JCardDataType.URI, value.getDataType());
-	}
-
-	@Test
-	public void getFirstValue() {
-		JCardValue value = new JCardValue();
-		value.addValues(1, 2, Arrays.asList(3, 4));
-		assertEquals(1, value.getFirstValue());
-		assertEquals(1, value.getFirstValue(0));
-		assertEquals(2, value.getFirstValue(1));
-		assertEquals(3, value.getFirstValue(2));
-		assertNull(value.getFirstValue(3));
-	}
-
-	@Test
-	public void getFirstValueAsString() {
-		JCardValue value = new JCardValue();
-		value.addValues(1, 2, Arrays.asList(3, 4));
-		assertEquals("1", value.getFirstValueAsString());
-		assertEquals("1", value.getFirstValueAsString(0));
-		assertEquals("2", value.getFirstValueAsString(1));
-		assertEquals("3", value.getFirstValueAsString(2));
-		assertNull(value.getFirstValueAsString(3));
-	}
-
-	@Test
-	public void getValuesAsStrings() {
-		JCardValue value = new JCardValue();
-		value.addValues(1, 2, Arrays.asList(3, 4));
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<String>> expected = Arrays.asList(
-			Arrays.asList("1"),
-			Arrays.asList("2"),
-			Arrays.asList("3", "4")
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue(Arrays.asList(
+				new JsonValue("value"), new JsonValue(42), new JsonValue(false), new JsonValue("")
+			))
 		);
 		//@formatter:on
-		assertEquals(expected, value.getValuesAsStrings());
+		List<JsonValue> actual = value.getValues();
+		assertEquals(expected, actual);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getStructured() {
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null))));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(Arrays.asList(Arrays.asList("value1"), Arrays.asList("false"), Arrays.asList((String) null)), value.getStructured());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getStructured_single_value() {
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue("value1"));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(Arrays.asList(Arrays.asList("value1")), value.getStructured());
 	}
 
 	@Test
-	public void addValues() {
-		JCardValue value = new JCardValue();
-		value.addValues(1, 2, Arrays.asList(3, 4));
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ 1 }),
-			Arrays.asList(new Object[]{ 2 }),
-			Arrays.asList(new Object[]{ 3, 4 })
-		);
-		//@formatter:on
-		assertEquals(expected, value.getValues());
+	public void getStructured_object() {
+		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
+		object.put("a", new JsonValue("one"));
+		JCardValue value = new JCardValue(JCardDataType.TEXT, new JsonValue(object));
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(Arrays.asList(), value.getStructured());
 	}
 }

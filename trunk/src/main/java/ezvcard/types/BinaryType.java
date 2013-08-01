@@ -17,6 +17,7 @@ import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.IOUtils;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -378,12 +379,12 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.uri(write(version));
+		return JCardValue.single(JCardDataType.URI, write(version));
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getFirstValueAsString();
+		String valueStr = value.getSingleValued();
 		parse(valueStr, version, warnings, CompatibilityMode.RFC);
 	}
 

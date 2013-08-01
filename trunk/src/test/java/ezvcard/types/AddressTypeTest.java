@@ -25,6 +25,7 @@ import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
+import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
 
 /*
@@ -356,21 +357,22 @@ public class AddressTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = allFields.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertTrue(value.isStructured());
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ "P.O. Box 1234;" }),
-			Arrays.asList(new Object[]{ "Apt, 11" }),
-			Arrays.asList(new Object[]{ "123 Main St" }),
-			Arrays.asList(new Object[]{ "Austin" }),
-			Arrays.asList(new Object[]{ "TX" }),
-			Arrays.asList(new Object[]{ "12345" }),
-			Arrays.asList(new Object[]{ "USA" })
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue(Arrays.asList(
+				new JsonValue("P.O. Box 1234;"),
+				new JsonValue("Apt, 11"),
+				new JsonValue("123 Main St"),
+				new JsonValue("Austin"),
+				new JsonValue("TX"),
+				new JsonValue("12345"),
+				new JsonValue("USA")
+			))
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -378,21 +380,22 @@ public class AddressTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = someFields.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertTrue(value.isStructured());
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ "P.O. Box 1234;" }),
-			Arrays.asList(new Object[]{ null }),
-			Arrays.asList(new Object[]{ null }),
-			Arrays.asList(new Object[]{ "Austin" }),
-			Arrays.asList(new Object[]{ "TX" }),
-			Arrays.asList(new Object[]{ "12345" }),
-			Arrays.asList(new Object[]{ null })
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue(Arrays.asList(
+				new JsonValue("P.O. Box 1234;"),
+				new JsonValue(""),
+				new JsonValue(""),
+				new JsonValue("Austin"),
+				new JsonValue("TX"),
+				new JsonValue("12345"),
+				new JsonValue("")
+			))
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -400,21 +403,22 @@ public class AddressTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = noFields.marshalJson(version, warnings);
 		assertEquals(JCardDataType.TEXT, value.getDataType());
-		assertTrue(value.isStructured());
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expected = Arrays.asList(
-			Arrays.asList(new Object[]{ null }),
-			Arrays.asList(new Object[]{ null }),
-			Arrays.asList(new Object[]{ null }),
-			Arrays.asList(new Object[]{ null }),
-			Arrays.asList(new Object[]{ null }),
-			Arrays.asList(new Object[]{ null }),
-			Arrays.asList(new Object[]{ null })
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue(Arrays.asList(
+				new JsonValue(""),
+				new JsonValue(""),
+				new JsonValue(""),
+				new JsonValue(""),
+				new JsonValue(""),
+				new JsonValue(""),
+				new JsonValue("")
+			))
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
+		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -658,8 +662,7 @@ public class AddressTypeTest {
 	@Test
 	public void unmarshalJson_all_fields() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.text();
-		value.addValues("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA");
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, "P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -676,8 +679,7 @@ public class AddressTypeTest {
 	@Test
 	public void unmarshalJson_some_fields() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.text();
-		value.addValues("P.O. Box 1234;", "", "", "Austin", "TX", "12345", "");
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, "P.O. Box 1234;", "", "", "Austin", "TX", "12345", "");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -694,8 +696,7 @@ public class AddressTypeTest {
 	@Test
 	public void unmarshalJson_missing_components() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.text();
-		value.addValues("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX");
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, "P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -712,7 +713,7 @@ public class AddressTypeTest {
 	@Test
 	public void unmarshalJson_no_components() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.text();
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -729,8 +730,7 @@ public class AddressTypeTest {
 	@Test
 	public void unmarshalJson_no_fields() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.text();
-		value.addValues("", "", "", "", "", "", "");
+		JCardValue value = JCardValue.structured(JCardDataType.TEXT, "", null, "", "", "", "", "");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

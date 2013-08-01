@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,6 +8,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -209,20 +211,17 @@ public class ClientPidMapType extends VCardType {
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		checkForValue();
 
-		JCardValue value = JCardValue.text(pid + "", uri);
-		value.setStructured(true);
-		return value;
+		return JCardValue.structured(JCardDataType.TEXT, pid + "", uri);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		int i = 0;
+		Iterator<List<String>> it = value.getStructured().iterator();
 
-		String str = value.getFirstValueAsString(i++);
-		pid = (str == null || str.length() == 0) ? null : parsePid(str);
+		String str = nextJsonComponent(it);
+		pid = (str == null) ? null : parsePid(str);
 
-		str = value.getFirstValueAsString(i++);
-		uri = (str == null || str.length() == 0) ? null : str;
+		uri = nextJsonComponent(it);
 	}
 
 	private void checkForValue() {
@@ -237,5 +236,19 @@ public class ClientPidMapType extends VCardType {
 		} catch (NumberFormatException e) {
 			throw new SkipMeException("Unable to parse PID component: " + e.getMessage());
 		}
+	}
+
+	private String nextJsonComponent(Iterator<List<String>> it) {
+		if (!it.hasNext()) {
+			return null;
+		}
+
+		List<String> values = it.next();
+		if (values.isEmpty()) {
+			return null;
+		}
+
+		String value = values.get(0);
+		return (value == null || value.length() == 0) ? null : value;
 	}
 }

@@ -1,7 +1,5 @@
 package ezvcard.io;
 
-import static ezvcard.util.VCardStringUtils.NEWLINE;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
@@ -12,11 +10,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -27,7 +20,6 @@ import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 
 /*
@@ -64,14 +56,10 @@ import ezvcard.util.JCardValue;
  * @author Michael Angstadt
  */
 public class JCardWriter implements Closeable {
-	private final Writer writer;
-	private JsonGenerator jg;
-	private VCardVersion targetVersion = VCardVersion.V4_0;
+	private final JCardRawWriter writer;
 	private final List<String> warnings = new ArrayList<String>();
+	private final VCardVersion targetVersion = VCardVersion.V4_0;
 	private boolean addProdId = true;
-	private boolean indent = false;
-	private final boolean wrapInArray;
-	private int writtenCount = 0;
 
 	/**
 	 * Creates a jCard writer.
@@ -126,8 +114,7 @@ public class JCardWriter implements Closeable {
 	 * false not to
 	 */
 	public JCardWriter(Writer writer, boolean wrapInArray) {
-		this.writer = writer;
-		this.wrapInArray = wrapInArray;
+		this.writer = new JCardRawWriter(writer, wrapInArray);
 	}
 
 	/**
@@ -137,24 +124,6 @@ public class JCardWriter implements Closeable {
 	 */
 	public void write(final VCard vcard) throws IOException {
 		warnings.clear();
-
-		if (jg == null) {
-			JsonFactory factory = new JsonFactory();
-			factory.configure(Feature.AUTO_CLOSE_TARGET, false);
-			jg = factory.createJsonGenerator(writer);
-
-			if (wrapInArray) {
-				jg.writeStartArray();
-				indent(0);
-			}
-		}
-
-		if (writtenCount > 0) {
-			indent(0);
-		}
-		jg.writeStartArray();
-		jg.writeString("vcard");
-		jg.writeStartArray();
 
 		if (vcard.getFormattedName() == null) {
 			warnings.add("vCard version " + targetVersion + " requires that a formatted name property be defined.");
@@ -190,6 +159,8 @@ public class JCardWriter implements Closeable {
 			typesToAdd.add(prodId);
 		}
 
+		writer.writeStartVCard();
+
 		List<String> warningsBuf = new ArrayList<String>();
 		for (VCardType type : typesToAdd) {
 			//marshal the value
@@ -220,100 +191,10 @@ public class JCardWriter implements Closeable {
 			}
 			subTypes.removeAll(ValueParameter.NAME); //remove all VALUE parameters
 
-			//add the group as a parameter
-			if (type.getGroup() != null) {
-				subTypes.put("group", type.getGroup());
-			}
-
-			jg.writeStartArray(); //start property
-			indent(2);
-
-			//write property name
-			jg.writeString(type.getTypeName().toLowerCase());
-
-			//write parameters
-			jg.writeStartObject();
-			for (Map.Entry<String, List<String>> entry : subTypes) {
-				String name = entry.getKey().toLowerCase();
-				List<String> values = entry.getValue();
-				if (values.isEmpty()) {
-					continue;
-				}
-
-				if (values.size() == 1) {
-					jg.writeStringField(name, values.get(0));
-				} else {
-					jg.writeArrayFieldStart(name);
-					for (String paramValue : values) {
-						jg.writeString(paramValue);
-					}
-					jg.writeEndArray();
-				}
-			}
-			jg.writeEndObject();
-
-			//write data type
-			JCardDataType dataType = value.getDataType();
-			if (dataType == null) {
-				addWarning("Property does not have a jCard data type associated with it.  Defaulting to \"text\".", type.getTypeName());
-				dataType = JCardDataType.TEXT;
-			}
-			jg.writeString(dataType.toString());
-
-			//write value
-			if (value.isStructured()) {
-				jg.writeStartArray();
-			}
-			if (value.getValues().isEmpty()) {
-				jg.writeString("");
-			} else {
-				for (List<Object> theValue : value.getValues()) {
-					if (theValue.isEmpty()) {
-						jg.writeString("");
-						continue;
-					}
-
-					if (theValue.size() > 1) {
-						jg.writeStartArray();
-					}
-					for (Object v : theValue) {
-						if (v == null) {
-							jg.writeString("");
-						} else if (v instanceof Byte) {
-							jg.writeNumber((Byte) v);
-						} else if (v instanceof Short) {
-							jg.writeNumber((Short) v);
-						} else if (v instanceof Integer) {
-							jg.writeNumber((Integer) v);
-						} else if (v instanceof Long) {
-							jg.writeNumber((Long) v);
-						} else if (v instanceof Float) {
-							jg.writeNumber((Float) v);
-						} else if (v instanceof Double) {
-							jg.writeNumber((Double) v);
-						} else if (v instanceof Boolean) {
-							jg.writeBoolean((Boolean) v);
-						} else {
-							jg.writeString(v.toString());
-						}
-					}
-					if (theValue.size() > 1) {
-						jg.writeEndArray();
-					}
-				}
-			}
-			if (value.isStructured()) {
-				jg.writeEndArray();
-			}
-
-			jg.writeEndArray(); //end property
+			writer.writeProperty(type.getGroup(), type.getTypeName().toLowerCase(), subTypes, value);
 		}
 
-		indent(0);
-		jg.writeEndArray();
-		jg.writeEndArray();
-
-		writtenCount++;
+		writer.writeEndVCard();
 	}
 
 	/**
@@ -328,21 +209,6 @@ public class JCardWriter implements Closeable {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Checks to see if pretty-printing is enabled, and adds indentation
-	 * whitespace if it is.
-	 * @param spaces the number of spaces to indent with
-	 * @throws IOException
-	 */
-	private void indent(int spaces) throws IOException {
-		if (indent) {
-			jg.writeRaw(NEWLINE);
-			for (int i = 0; i < spaces; i++) {
-				jg.writeRaw(' ');
-			}
-		}
 	}
 
 	/**
@@ -369,7 +235,7 @@ public class JCardWriter implements Closeable {
 	 * false)
 	 */
 	public boolean isIndent() {
-		return indent;
+		return writer.isIndent();
 	}
 
 	/**
@@ -377,7 +243,7 @@ public class JCardWriter implements Closeable {
 	 * @param indent true to pretty-print it, false not to (defaults to false)
 	 */
 	public void setIndent(boolean indent) {
-		this.indent = indent;
+		writer.setIndent(indent);
 	}
 
 	/**
@@ -394,16 +260,7 @@ public class JCardWriter implements Closeable {
 	 * @throws IOException if there's a problem closing the stream
 	 */
 	public void closeJsonStream() throws IOException {
-		if (jg == null) {
-			return;
-		}
-
-		if (wrapInArray) {
-			indent(0);
-			jg.writeEndArray();
-		}
-
-		jg.close();
+		writer.closeJsonStream();
 	}
 
 	/**
@@ -411,7 +268,6 @@ public class JCardWriter implements Closeable {
 	 * @throws IOException if there's a problem closing the stream
 	 */
 	public void close() throws IOException {
-		closeJsonStream();
 		writer.close();
 	}
 

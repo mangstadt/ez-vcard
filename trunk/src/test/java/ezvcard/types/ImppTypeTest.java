@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
@@ -9,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -223,16 +223,8 @@ public class ImppTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = impp.marshalJson(version, warnings);
-		assertEquals(JCardDataType.URI, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ uri })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.URI, uri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -315,7 +307,7 @@ public class ImppTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.uri(uri);
+		JCardValue value = JCardValue.single(JCardDataType.URI, uri);
 
 		ImppType impp = new ImppType();
 		impp.unmarshalJson(subTypes, value, version, warnings);
@@ -327,7 +319,7 @@ public class ImppTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.uri(badUri);
+		JCardValue value = JCardValue.single(JCardDataType.URI, badUri);
 
 		ImppType impp = new ImppType();
 		impp.unmarshalJson(subTypes, value, version, warnings);

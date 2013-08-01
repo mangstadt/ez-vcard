@@ -41,6 +41,8 @@ import ezvcard.VCardException;
  */
 @SuppressWarnings("serial")
 public class JCardParseException extends VCardException {
+	private final JsonToken expected, actual;
+
 	/**
 	 * Creates a jCard parse exception.
 	 * @param expected the JSON token that the parser was expecting
@@ -48,5 +50,23 @@ public class JCardParseException extends VCardException {
 	 */
 	public JCardParseException(JsonToken expected, JsonToken actual) {
 		super("Expected " + expected + " but was " + actual + ".");
+		this.expected = expected;
+		this.actual = actual;
+	}
+
+	/**
+	 * Gets the JSON token that the parser was expected.
+	 * @return the expected token
+	 */
+	public JsonToken getExpectedToken() {
+		return expected;
+	}
+
+	/**
+	 * Gets the JSON token that was read.
+	 * @return the actual token
+	 */
+	public JsonToken getActualToken() {
+		return actual;
 	}
 }

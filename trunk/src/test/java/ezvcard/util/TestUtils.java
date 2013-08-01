@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -54,5 +55,18 @@ public class TestUtils {
 	 */
 	public static void assertIntEquals(int expected, Integer actual) {
 		assertEquals(Integer.valueOf(expected), actual);
+	}
+
+	/**
+	 * Asserts the value of a single-valued jCard value.
+	 * @param expectedDataType the expected data type
+	 * @param expectedValue the expected value
+	 * @param actualValue the actual jCard value
+	 */
+	public static void assertJCardValue(JCardDataType expectedDataType, String expectedValue, JCardValue actualValue) {
+		assertEquals(expectedDataType, actualValue.getDataType());
+
+		List<JsonValue> expected = Arrays.asList(new JsonValue(expectedValue));
+		assertEquals(expected, actualValue.getValues());
 	}
 }

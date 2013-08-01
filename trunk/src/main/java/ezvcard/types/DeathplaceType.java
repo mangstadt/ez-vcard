@@ -212,9 +212,9 @@ public class DeathplaceType extends VCardType implements HasAltId {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (uri != null) {
-			return JCardValue.uri(uri);
+			return JCardValue.single(JCardDataType.URI, uri);
 		} else if (text != null) {
-			return JCardValue.text(text);
+			return JCardValue.single(JCardDataType.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -222,7 +222,7 @@ public class DeathplaceType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getFirstValueAsString();
+		String valueStr = value.getSingleValued();
 		if (value.getDataType() == JCardDataType.URI) {
 			setUri(valueStr);
 		} else {

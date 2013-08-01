@@ -5,6 +5,7 @@ import java.util.List;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -106,11 +107,11 @@ public class TextType extends VCardType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.text(value);
+		return JCardValue.single(JCardDataType.TEXT, value);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		setValue(value.getFirstValueAsString());
+		setValue(value.getSingleValued());
 	}
 }

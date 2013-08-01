@@ -1,13 +1,12 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -130,16 +129,8 @@ public class TimestampTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = timestamp.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TIMESTAMP, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ extended })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.TIMESTAMP, extended, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -234,9 +225,7 @@ public class TimestampTypeTest {
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.TIMESTAMP);
-		value.addValues(extended);
+		JCardValue value = JCardValue.single(JCardDataType.TIMESTAMP, extended);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -248,9 +237,7 @@ public class TimestampTypeTest {
 	public void unmarshalJson_bad_value() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue();
-		value.setDataType(JCardDataType.TIMESTAMP);
-		value.addValues("bad value");
+		JCardValue value = JCardValue.single(JCardDataType.TIMESTAMP, "bad value");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 	}

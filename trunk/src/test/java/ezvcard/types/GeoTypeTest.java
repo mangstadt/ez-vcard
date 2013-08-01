@@ -1,13 +1,12 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -145,16 +144,8 @@ public class GeoTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withValue.marshalJson(version, warnings);
-		assertEquals(JCardDataType.URI, value.getDataType());
-		assertFalse(value.isStructured());
 
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<Object>> expectedValues = Arrays.asList(
-			Arrays.asList(new Object[]{ "geo:-12.34,56.777778" })
-		);
-		//@formatter:on
-		assertEquals(expectedValues, value.getValues());
+		assertJCardValue(JCardDataType.URI, "geo:-12.34,56.777778", value);
 		assertWarnings(0, warnings);
 	}
 
@@ -349,7 +340,7 @@ public class GeoTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.uri("geo:-12.34,56.7878");
+		JCardValue value = JCardValue.single(JCardDataType.URI, "geo:-12.34,56.7878");
 
 		geo.unmarshalJson(subTypes, value, version, warnings);
 
@@ -361,7 +352,7 @@ public class GeoTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.uri("bad:uri");
+		JCardValue value = JCardValue.single(JCardDataType.URI, "bad:uri");
 
 		geo.unmarshalJson(subTypes, value, version, warnings);
 	}

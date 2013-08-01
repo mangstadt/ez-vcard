@@ -1,12 +1,12 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,8 +15,10 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.types.FormattedNameType;
+import ezvcard.types.KindType;
+import ezvcard.types.MemberType;
 import ezvcard.types.VCardType;
+import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 
 /*
@@ -53,7 +55,7 @@ import ezvcard.util.JCardValue;
  */
 public class JCardWriterTest {
 	@Test
-	public void write_single_vcard() throws Exception {
+	public void write_single_vcard() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
 		writer.setAddProdId(false);
@@ -74,44 +76,11 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
+		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
-	public void write_multiple_vcards() throws Exception {
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
-
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
-
-		vcard = new VCard();
-		vcard.setFormattedName("Jane Doe");
-		writer.write(vcard);
-
-		writer.close();
-
-		//@formatter:off
-		String expected =
-		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{},\"text\",\"John Doe\"]" +
-		  "]" +
-		"] " +
-		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{},\"text\",\"Jane Doe\"]" +
-		  "]" +
-		"]";
-		//@formatter:on
-		assertEquals(expected, sw.toString());
-	}
-
-	@Test
-	public void write_multiple_vcards_wrap_in_array() throws Exception {
+	public void write_multiple_vcards() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw, true);
 		writer.setAddProdId(false);
@@ -144,61 +113,11 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
+		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
-	public void write_group() throws Exception {
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
-
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe").setGroup("TheGroup");
-		writer.write(vcard);
-
-		writer.close();
-
-		//@formatter:off
-		String expected =
-		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{\"group\":\"TheGroup\"},\"text\",\"John Doe\"]" +
-		  "]" +
-		"]";
-		//@formatter:on
-		assertEquals(expected, sw.toString());
-	}
-
-	@Test
-	public void write_parameters() throws Exception {
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
-
-		VCard vcard = new VCard();
-		FormattedNameType fn = vcard.setFormattedName("John Doe");
-		fn.getSubTypes().put("x-one", "1");
-		fn.getSubTypes().put("x-two", "2");
-		fn.getSubTypes().put("x-two", "22");
-		writer.write(vcard);
-
-		writer.close();
-
-		//@formatter:off
-		String expected =
-		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{\"x-one\":\"1\",\"x-two\":[\"2\",\"22\"]},\"text\",\"John Doe\"]" +
-		  "]" +
-		"]";
-		//@formatter:on
-		assertEquals(expected, sw.toString());
-	}
-
-	@Test
-	public void setAddProdid() throws Exception {
+	public void setAddProdid() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
 		writer.setAddProdId(true);
@@ -214,40 +133,11 @@ public class JCardWriterTest {
 		Matcher m = p.matcher(sw.toString());
 		assertTrue(m.find());
 		assertFalse(m.find());
+		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
-	public void setIndent() throws Exception {
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
-		writer.setIndent(true);
-
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
-
-		vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
-
-		writer.close();
-
-		//@formatter:off
-		String expected =
-		"[\"vcard\",[[" + NEWLINE +
-		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
-		"  \"fn\",{},\"text\",\"John Doe\"]" + NEWLINE +
-		"]]" + NEWLINE + " [\"vcard\",[[" + NEWLINE +
-		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
-		"  \"fn\",{},\"text\",\"John Doe\"]" + NEWLINE +
-		"]]";
-		//@formatter:on
-		assertEquals(expected, sw.toString());
-	}
-
-	@Test
-	public void setIndent_wrap_in_array() throws Exception {
+	public void setIndent() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw, true);
 		writer.setAddProdId(false);
@@ -266,75 +156,53 @@ public class JCardWriterTest {
 		//@formatter:off
 		String expected =
 		"[" + NEWLINE +
-		"[\"vcard\",[[" + NEWLINE +
+		"[" + NEWLINE +
+		"\"vcard\",[[" + NEWLINE +
 		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
-		"  \"fn\",{},\"text\",\"John Doe\"]" + NEWLINE +
-		"]]" + NEWLINE + ",[\"vcard\",[[" + NEWLINE +
+		"  \"fn\",{},\"text\",\"John Doe\"]]],[" + NEWLINE +
+		"\"vcard\",[[" + NEWLINE +
 		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
-		"  \"fn\",{},\"text\",\"John Doe\"]" + NEWLINE +
-		"]]" + NEWLINE +
+		"  \"fn\",{},\"text\",\"John Doe\"]]]" + NEWLINE +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
+		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
-	public void write_no_vcards() throws Exception {
+	public void write_no_vcards() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
 		writer.close();
 		assertEquals("", sw.toString());
+		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
-	public void check_required_properties() throws Exception {
+	public void check_required_properties() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
 		writer.write(vcard);
-		assertEquals(1, writer.getWarnings().size()); //FN is required
+		assertWarnings(1, writer.getWarnings()); //FN is required
 
 		writer.close();
 	}
 
 	@Test
-	public void write_null_value() throws Exception {
-		JCardValue value = JCardValue.text((String) null);
-		VCard vcard = new VCard();
-		vcard.addProperty(new TypeForTesting(value));
-
+	public void write_raw_property() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
 		writer.setAddProdId(false);
-		writer.write(vcard);
-		writer.close();
 
-		//@formatter:off
-		String expected =
-		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"x-type\",{},\"text\",\"\"]" +
-		  "]" +
-		"]";
-		//@formatter:on
-		assertEquals(expected, sw.toString());
-		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
-	}
-
-	@Test
-	public void write_null_structured_value() throws Exception {
-		JCardValue value = JCardValue.text((String) null);
-		value.setStructured(true);
 		VCard vcard = new VCard();
-		vcard.addProperty(new TypeForTesting(value));
-
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
+		vcard.setFormattedName("John Doe");
+		vcard.addExtendedProperty("x-type", "value");
 		writer.write(vcard);
+		assertWarnings(0, writer.getWarnings());
+
 		writer.close();
 
 		//@formatter:off
@@ -342,24 +210,26 @@ public class JCardWriterTest {
 		"[\"vcard\"," +
 		  "[" +
 		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"x-type\",{},\"text\",[\"\"]]" +
+		    "[\"fn\",{},\"text\",\"John Doe\"]," +
+		    "[\"x-type\",{},\"unknown\",\"value\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
-		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
 	}
 
 	@Test
-	public void write_no_value() throws Exception {
-		JCardValue value = JCardValue.text();
-		VCard vcard = new VCard();
-		vcard.addProperty(new TypeForTesting(value));
-
+	public void write_extended_property() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
 		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcard.addProperty(new TypeForTesting(JCardValue.single(JCardDataType.TEXT, "value")));
 		writer.write(vcard);
+		assertWarnings(0, writer.getWarnings());
+
 		writer.close();
 
 		//@formatter:off
@@ -367,25 +237,28 @@ public class JCardWriterTest {
 		"[\"vcard\"," +
 		  "[" +
 		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"x-type\",{},\"text\",\"\"]" +
+		    "[\"fn\",{},\"text\",\"John Doe\"]," +
+		    "[\"x-type\",{},\"text\",\"value\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
-		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
 	}
 
 	@Test
-	public void write_empty_value() throws Exception {
-		JCardValue value = JCardValue.text();
-		value.addValues(Collections.emptyList());
-		VCard vcard = new VCard();
-		vcard.addProperty(new TypeForTesting(value));
-
+	public void skipMeException() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
 		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		LuckyNumType prop = new LuckyNumType();
+		prop.luckyNum = 13;
+		vcard.addProperty(prop);
 		writer.write(vcard);
+		assertWarnings(1, writer.getWarnings());
+
 		writer.close();
 
 		//@formatter:off
@@ -393,54 +266,25 @@ public class JCardWriterTest {
 		"[\"vcard\"," +
 		  "[" +
 		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"x-type\",{},\"text\",\"\"]" +
+		    "[\"fn\",{},\"text\",\"John Doe\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
-		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
 	}
 
 	@Test
-	public void write_no_data_type() throws Exception {
-		JCardValue value = new JCardValue();
-		value.addValues("test");
-		VCard vcard = new VCard();
-		vcard.addProperty(new TypeForTesting(value));
-
+	public void unsupported_version() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
 		writer.setAddProdId(false);
-		writer.write(vcard);
-		writer.close();
 
-		//should default to "text"
-		//@formatter:off
-		String expected =
-		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"x-type\",{},\"text\",\"test\"]" +
-		  "]" +
-		"]";
-		//@formatter:on
-		assertEquals(expected, sw.toString());
-		assertEquals(1, writer.getWarnings().size()); //missing "FN" property
-	}
-
-	//should default to "text"
-	@Test
-	public void write_null_data_type() throws Exception {
-		JCardValue value = new JCardValue();
-		value.addValues("test");
-		value.setDataType(null);
 		VCard vcard = new VCard();
-		vcard.addProperty(new TypeForTesting(value));
-
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
+		vcard.setFormattedName("John Doe");
+		vcard.setMailer("mailer");
 		writer.write(vcard);
+		assertWarnings(1, writer.getWarnings());
+
 		writer.close();
 
 		//@formatter:off
@@ -448,12 +292,67 @@ public class JCardWriterTest {
 		"[\"vcard\"," +
 		  "[" +
 		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"x-type\",{},\"text\",\"test\"]" +
+		    "[\"fn\",{},\"text\",\"John Doe\"]" +
 		  "]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
-		assertEquals(2, writer.getWarnings().size()); //missing "FN" property, "null" data type
+	}
+
+	@Test
+	public void kind_and_member_combination() throws Throwable {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcard.addMember(new MemberType("http://uri.com"));
+
+		//correct KIND
+		{
+			vcard.setKind(KindType.group());
+
+			StringWriter sw = new StringWriter();
+			JCardWriter writer = new JCardWriter(sw);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+			writer.close();
+
+			//@formatter:off
+			String expected =
+			"[\"vcard\"," +
+			  "[" +
+			    "[\"version\",{},\"text\",\"4.0\"]," +
+			    "[\"fn\",{},\"text\",\"John Doe\"]," +
+			    "[\"member\",{},\"uri\",\"http://uri.com\"]," +
+			    "[\"kind\",{},\"text\",\"group\"]" +
+			  "]" +
+			"]";
+			//@formatter:on
+			assertEquals(expected, sw.toString());
+			assertWarnings(0, writer.getWarnings());
+		}
+
+		//wrong KIND
+		{
+			vcard.setKind(KindType.individual());
+
+			StringWriter sw = new StringWriter();
+			JCardWriter writer = new JCardWriter(sw);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+			writer.close();
+
+			//@formatter:off
+			String expected =
+			"[\"vcard\"," +
+			  "[" +
+			    "[\"version\",{},\"text\",\"4.0\"]," +
+			    "[\"fn\",{},\"text\",\"John Doe\"]," +
+			    "[\"kind\",{},\"text\",\"individual\"]" +
+			  "]" +
+			"]";
+			//@formatter:on
+			assertEquals(expected, sw.toString());
+			assertWarnings(1, writer.getWarnings());
+		}
 	}
 
 	private static class TypeForTesting extends VCardType {

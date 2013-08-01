@@ -355,17 +355,17 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (uri != null) {
-			return JCardValue.uri(uri.toString());
+			return JCardValue.single(JCardDataType.URI, uri.toString());
 		}
 		if (text != null) {
-			return JCardValue.text(text);
+			return JCardValue.single(JCardDataType.TEXT, text);
 		}
 		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getFirstValueAsString();
+		String valueStr = value.getSingleValued();
 		if (value.getDataType() == JCardDataType.URI) {
 			try {
 				setUri(TelUri.parse(valueStr));
