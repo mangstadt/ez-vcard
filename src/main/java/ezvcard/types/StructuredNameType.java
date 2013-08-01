@@ -273,7 +273,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		//preserve empty items and don't unescape escaped characters (e.g. "additional" might have escaped commas)
-		Iterator<String> it = Arrays.asList(VCardStringUtils.splitBy(value, ';', false, false)).iterator();
+		Iterator<String> it = VCardStringUtils.splitBy(value, ';', false, false).iterator();
 
 		family = nextTextComponent(it);
 		given = nextTextComponent(it);
@@ -297,7 +297,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 		}
 
 		String value = it.next();
-		return new ArrayList<String>(Arrays.asList(VCardStringUtils.splitBy(value, ',', true, true)));
+		return VCardStringUtils.splitBy(value, ',', true, true);
 	}
 
 	@Override

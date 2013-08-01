@@ -1,7 +1,6 @@
 package ezvcard.types;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ezvcard.VCardVersion;
@@ -94,8 +93,7 @@ public class TextListType extends VCardType {
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String split[] = VCardStringUtils.splitBy(value, separator, true, true);
-		values = new ArrayList<String>(Arrays.asList(split));
+		values = VCardStringUtils.splitBy(value, separator, true, true);
 	}
 
 	@Override

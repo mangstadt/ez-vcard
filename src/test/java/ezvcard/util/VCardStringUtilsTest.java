@@ -1,6 +1,5 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -112,23 +112,23 @@ public class VCardStringUtilsTest {
 
 	@Test
 	public void splitBy() {
-		String[] actual, expected;
+		List<String> actual, expected;
 
 		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', false, false);
-		expected = new String[] { "Doe", "John", "Joh\\,\\;nny", "", "Sr.,III" };
-		assertArrayEquals(expected, actual);
+		expected = Arrays.asList("Doe", "John", "Joh\\,\\;nny", "", "Sr.,III");
+		assertEquals(expected, actual);
 
 		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', true, false);
-		expected = new String[] { "Doe", "John", "Joh\\,\\;nny", "Sr.,III" };
-		assertArrayEquals(expected, actual);
+		expected = Arrays.asList("Doe", "John", "Joh\\,\\;nny", "Sr.,III");
+		assertEquals(expected, actual);
 
 		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', false, true);
-		expected = new String[] { "Doe", "John", "Joh,;nny", "", "Sr.,III" };
-		assertArrayEquals(expected, actual);
+		expected = Arrays.asList("Doe", "John", "Joh,;nny", "", "Sr.,III");
+		assertEquals(expected, actual);
 
 		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', true, true);
-		expected = new String[] { "Doe", "John", "Joh,;nny", "Sr.,III" };
-		assertArrayEquals(expected, actual);
+		expected = Arrays.asList("Doe", "John", "Joh,;nny", "Sr.,III");
+		assertEquals(expected, actual);
 	}
 
 	@Test
