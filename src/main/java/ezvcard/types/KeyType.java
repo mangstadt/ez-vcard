@@ -328,6 +328,27 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 		}
 	}
 
+	@Override
+	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, KeyTypeParameter contentType) {
+		switch (version) {
+		case V2_1:
+		case V3_0:
+			if (value.startsWith("http")) {
+				setUrl(value, contentType);
+			} else {
+				setText(value, contentType);
+			}
+			break;
+		case V4_0:
+			if (subTypes.getValue() == ValueParameter.URI) {
+				setUrl(value, contentType);
+			} else {
+				setText(value, contentType);
+			}
+			break;
+		}
+	}
+
 	private void parseText(String value, VCardVersion version) {
 		setText(value, parseContentType(version));
 	}
