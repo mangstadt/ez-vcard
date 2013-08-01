@@ -361,7 +361,7 @@ public class XCardDocumentTest {
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
-		assertEquals(xcm.getWarnings().toString(), 1, xcm.getWarnings().size());
+		assertWarnings(1, xcm.getWarnings());
 
 		Document actual = xcm.getDocument();
 
@@ -405,7 +405,7 @@ public class XCardDocumentTest {
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
-		assertEquals(xcm.getWarnings().toString(), 1, xcm.getWarnings().size());
+		assertWarnings(1, xcm.getWarnings());
 
 		Document actual = xcm.getDocument();
 
@@ -498,7 +498,7 @@ public class XCardDocumentTest {
 
 		XCardDocument doc = new XCardDocument();
 		doc.addVCard(vcard);
-		assertEquals(1, doc.getWarnings().size());
+		assertWarnings(1, doc.getWarnings());
 
 		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
 		assertTrue(parsedVCard.getExtendedProperties().isEmpty());

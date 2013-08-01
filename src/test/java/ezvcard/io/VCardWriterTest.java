@@ -362,7 +362,7 @@ public class VCardWriterTest {
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
-		assertEquals(3, vcw.getWarnings().size()); //each vCard is missing the N property, which is required for 2.1
+		assertWarnings(3, vcw.getWarnings()); //each vCard is missing the N property, which is required for 2.1
 		String actual = sw.toString();
 
 		//@formatter:off
@@ -421,7 +421,7 @@ public class VCardWriterTest {
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
-		assertEquals(3, vcw.getWarnings().size()); //each vCard is missing the N property, which is required for 3.0
+		assertWarnings(3, vcw.getWarnings()); //each vCard is missing the N property, which is required for 3.0
 		String actual = sw.toString();
 
 		//@formatter:off
@@ -546,7 +546,7 @@ public class VCardWriterTest {
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 
-		assertEquals(vcw.getWarnings().toString(), 1, vcw.getWarnings().size());
+		assertWarnings(1, vcw.getWarnings());
 
 		String actual = sw.toString();
 
@@ -623,6 +623,6 @@ public class VCardWriterTest {
 		//@formatter:on
 
 		assertEquals(actual, expected);
-		assertEquals(1, vcw.getWarnings().size());
+		assertWarnings(1, vcw.getWarnings());
 	}
 }
