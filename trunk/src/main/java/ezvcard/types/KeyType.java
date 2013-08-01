@@ -328,12 +328,6 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 		}
 	}
 
-	@Override
-	protected void cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, KeyTypeParameter contentType) {
-		//unmarshal it as a plain text key
-		setText(value, contentType);
-	}
-
 	private void parseText(String value, VCardVersion version) {
 		setText(value, parseContentType(version));
 	}
