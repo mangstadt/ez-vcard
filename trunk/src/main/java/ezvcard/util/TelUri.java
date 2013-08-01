@@ -340,6 +340,55 @@ public class TelUri {
 		sb.append(';').append(name).append('=').append(encodeParamValue(value));
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((extension == null) ? 0 : extension.hashCode());
+		result = prime * result + ((isdnSubaddress == null) ? 0 : isdnSubaddress.hashCode());
+		result = prime * result + ((number == null) ? 0 : number.hashCode());
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + ((phoneContext == null) ? 0 : phoneContext.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TelUri other = (TelUri) obj;
+		if (extension == null) {
+			if (other.extension != null)
+				return false;
+		} else if (!extension.equals(other.extension))
+			return false;
+		if (isdnSubaddress == null) {
+			if (other.isdnSubaddress != null)
+				return false;
+		} else if (!isdnSubaddress.equals(other.isdnSubaddress))
+			return false;
+		if (number == null) {
+			if (other.number != null)
+				return false;
+		} else if (!number.equals(other.number))
+			return false;
+		if (parameters == null) {
+			if (other.parameters != null)
+				return false;
+		} else if (!parameters.equals(other.parameters))
+			return false;
+		if (phoneContext == null) {
+			if (other.phoneContext != null)
+				return false;
+		} else if (!phoneContext.equals(other.phoneContext))
+			return false;
+		return true;
+	}
+
 	/**
 	 * Determines if a given string can be used as a parameter name.
 	 * @param text the parameter name
