@@ -73,7 +73,7 @@ public class TestUtils {
 	}
 
 	/**
-	 * Asserts the value of a set.
+	 * Asserts the contents of a set.
 	 * @param actualSet the actual set
 	 * @param expectedElements the elements that are expected to be in the set
 	 */

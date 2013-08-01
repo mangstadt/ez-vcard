@@ -1,14 +1,13 @@
 package ezvcard.util;
 
+import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
 
@@ -178,11 +177,7 @@ public class ListMultimapTest {
 		map.put("two", "2");
 		map.put("three", "3");
 
-		Set<String> expected = new HashSet<String>();
-		expected.add("one");
-		expected.add("two");
-		expected.add("three");
-		assertEquals(expected, map.keySet());
+		assertSetEquals(map.keySet(), "one", "two", "three");
 	}
 
 	@Test
