@@ -312,14 +312,14 @@ public class StructuredNameTypeTest {
 	public void unmarshalXml_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
-		xe.append("given", "Jonathan");
+		xe.append("given", ""); //should convert empty strings to null
 		xe.append("additional", "Joh;nny,");
 		xe.append("additional", "John");
 		StructuredNameType t = new StructuredNameType();
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(t.getFamily());
-		assertEquals("Jonathan", t.getGiven());
+		assertNull(t.getGiven());
 		assertEquals(Arrays.asList("Joh;nny,", "John"), t.getAdditional());
 		assertTrue(t.getPrefixes().isEmpty());
 		assertTrue(t.getSuffixes().isEmpty());

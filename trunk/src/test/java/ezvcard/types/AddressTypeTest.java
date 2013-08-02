@@ -520,6 +520,7 @@ public class AddressTypeTest {
 		xe.append("locality", "Austin");
 		xe.append("region", "TX");
 		xe.append("code", "12345");
+		xe.append("country", ""); //should convert empty strings to null
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals("P.O. Box 1234;", t.getPoBox());

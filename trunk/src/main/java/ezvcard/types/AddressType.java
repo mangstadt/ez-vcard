@@ -475,13 +475,18 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		poBox = element.get("pobox");
-		extendedAddress = element.get("ext");
-		streetAddress = element.get("street");
-		locality = element.get("locality");
-		region = element.get("region");
-		postalCode = element.get("code");
-		country = element.get("country");
+		poBox = getXmlField(element, "pobox");
+		extendedAddress = getXmlField(element, "ext");
+		streetAddress = getXmlField(element, "street");
+		locality = getXmlField(element, "locality");
+		region = getXmlField(element, "region");
+		postalCode = getXmlField(element, "code");
+		country = getXmlField(element, "country");
+	}
+
+	private String getXmlField(XCardElement element, String name) {
+		String value = element.get(name);
+		return (value != null && value.length() == 0) ? null : value;
 	}
 
 	@Override
