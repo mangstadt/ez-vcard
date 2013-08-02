@@ -199,14 +199,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 		String valueStr = marshalText(version, warnings, CompatibilityMode.RFC);
 
 		//determine the data type based on the VALUE parameter
-		JCardDataType dataType;
 		ValueParameter valueParam = subTypes.getValue();
-		if (valueParam == null) {
-			dataType = JCardDataType.UNKNOWN; //TODO null should == unknown
-		} else {
-			dataType = JCardDataType.get(valueParam.getValue());
-		}
-
+		JCardDataType dataType = (valueParam == null) ? null : JCardDataType.get(valueParam.getValue());
 		return JCardValue.single(dataType, valueStr);
 	}
 

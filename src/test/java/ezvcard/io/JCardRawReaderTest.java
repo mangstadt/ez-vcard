@@ -499,7 +499,7 @@ public class JCardRawReaderTest {
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(JCardDataType.UNKNOWN, value.getDataType()); //TODO change so null == unknown
+					assertNull(value.getDataType());
 					assertEquals("value", value.getSingleValued());
 					break;
 				}
