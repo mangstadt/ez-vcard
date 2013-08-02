@@ -165,22 +165,30 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	/**
-	 * Gets the type of calendar this date uses.
+	 * <p>
+	 * Gets the type of calendar that is used for a date or date-time property
+	 * value.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
-	 * @return the type of calendar or null if not set
+	 * @return the type of calendar or null if not found
+	 * @see VCardSubTypes#getCalscale
 	 */
 	public CalscaleParameter getCalscale() {
 		return subTypes.getCalscale();
 	}
 
 	/**
-	 * Sets the type of calendar this date uses.
+	 * <p>
+	 * Sets the type of calendar that is used for a date or date-time property
+	 * value.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
 	 * @param calscale the type of calendar or null to remove
+	 * @see VCardSubTypes#setCalscale
 	 */
 	public void setCalscale(CalscaleParameter calscale) {
 		subTypes.setCalscale(calscale);

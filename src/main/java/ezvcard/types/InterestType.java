@@ -109,22 +109,14 @@ public class InterestType extends TextType implements HasAltId {
 		subTypes.setLevel(level.getValue());
 	}
 
-	/**
-	 * Gets the INDEX parameter.
-	 * @return the INDEX or null if not set
-	 * @see VCardSubTypes#getIndex
-	 */
+	@Override
 	public Integer getIndex() {
-		return subTypes.getIndex();
+		return super.getIndex();
 	}
 
-	/**
-	 * Sets the INDEX parameter.
-	 * @param index the INDEX or null to remove
-	 * @see VCardSubTypes#setIndex
-	 */
+	@Override
 	public void setIndex(Integer index) {
-		subTypes.setIndex(index);
+		super.setIndex(index);
 	}
 
 	/**
@@ -145,46 +137,24 @@ public class InterestType extends TextType implements HasAltId {
 		subTypes.setType(type);
 	}
 
-	/**
-	 * Gets the language that the skill description is written in.
-	 * @return the language or null if not set
-	 * @see VCardSubTypes#getLanguage
-	 */
+	@Override
 	public String getLanguage() {
-		return subTypes.getLanguage();
+		return super.getLanguage();
 	}
 
-	/**
-	 * Sets the language that the skill description is written in.
-	 * @param language the language or null to remove
-	 * @see VCardSubTypes#setLanguage
-	 */
+	@Override
 	public void setLanguage(String language) {
-		subTypes.setLanguage(language);
+		super.setLanguage(language);
 	}
 
-	/**
-	 * Gets the preference value.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @return the preference value or null if it doesn't exist
-	 * @see VCardSubTypes#getPref
-	 */
+	@Override
 	public Integer getPref() {
-		return subTypes.getPref();
+		return super.getPref();
 	}
 
-	/**
-	 * Sets the preference value.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @param pref the preference value or null to remove
-	 * @see VCardSubTypes#setPref
-	 */
+	@Override
 	public void setPref(Integer pref) {
-		subTypes.setPref(pref);
+		super.setPref(pref);
 	}
 
 	//@Override

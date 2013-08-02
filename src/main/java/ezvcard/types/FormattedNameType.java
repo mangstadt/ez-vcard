@@ -2,8 +2,6 @@ package ezvcard.types;
 
 import java.util.List;
 
-import ezvcard.VCardSubTypes;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -96,83 +94,39 @@ public class FormattedNameType extends TextType implements HasAltId {
 		subTypes.setType(type);
 	}
 
-	/**
-	 * Gets the language the name is written in.
-	 * @return the language or null if not set
-	 * @see VCardSubTypes#getLanguage
-	 */
+	@Override
 	public String getLanguage() {
-		return subTypes.getLanguage();
+		return super.getLanguage();
 	}
 
-	/**
-	 * Sets the language the name is written in.
-	 * @param language the language or null to remove
-	 * @see VCardSubTypes#setLanguage
-	 */
+	@Override
 	public void setLanguage(String language) {
-		subTypes.setLanguage(language);
+		super.setLanguage(language);
 	}
 
-	/**
-	 * Gets all PID parameter values.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @return the PID values or empty set if there are none
-	 * @see VCardSubTypes#getPids
-	 */
+	@Override
 	public List<Integer[]> getPids() {
-		return subTypes.getPids();
+		return super.getPids();
 	}
 
-	/**
-	 * Adds a PID value.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @param localId the local ID
-	 * @param clientPidMapRef the ID used to reference the property's globally
-	 * unique identifier in the CLIENTPIDMAP property.
-	 * @see VCardSubTypes#addPid(int, int)
-	 */
+	@Override
 	public void addPid(int localId, int clientPidMapRef) {
-		subTypes.addPid(localId, clientPidMapRef);
+		super.addPid(localId, clientPidMapRef);
 	}
 
-	/**
-	 * Removes all PID values.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @see VCardSubTypes#removePids
-	 */
+	@Override
 	public void removePids() {
-		subTypes.removePids();
+		super.removePids();
 	}
 
-	/**
-	 * Gets the preference value.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @return the preference value or null if it doesn't exist
-	 * @see VCardSubTypes#getPref
-	 */
+	@Override
 	public Integer getPref() {
-		return subTypes.getPref();
+		return super.getPref();
 	}
 
-	/**
-	 * Sets the preference value.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @param pref the preference value or null to remove
-	 * @see VCardSubTypes#setPref
-	 */
+	@Override
 	public void setPref(Integer pref) {
-		subTypes.setPref(pref);
+		super.setPref(pref);
 	}
 
 	//@Override
