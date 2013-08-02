@@ -5,6 +5,8 @@ import java.util.List;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.util.JCardDataType;
+import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
 /*
@@ -188,5 +190,10 @@ public class LanguageType extends TextType implements HasAltId {
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		setValue(element.get("language-tag"));
+	}
+
+	@Override
+	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		return JCardValue.single(JCardDataType.LANGUAGE_TAG, value);
 	}
 }
