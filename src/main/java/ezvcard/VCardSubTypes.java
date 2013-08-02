@@ -63,8 +63,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the ENCODING sub type. This is used when the type value is encoded
 	 * in a form other than plain text.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
@@ -83,8 +85,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the ENCODING sub type. This is used when the type value is encoded
 	 * in a form other than plain text.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 * </p>
@@ -95,8 +99,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the VALUE sub type. This defines what kind of value the type has,
 	 * such as "text" or "URI".
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -115,8 +121,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the VALUE sub type. This defines what kind of value the type has,
 	 * such as "text" or "URI".
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -127,7 +135,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the CHARSET sub type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1</code>
 	 * </p>
@@ -138,7 +148,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
-	 * Sets the CHARSET sub type
+	 * <p>
+	 * Sets the CHARSET sub type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1</code>
 	 * </p>
@@ -149,7 +161,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the LANGUAGE sub type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -161,7 +175,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the LANGUAGE sub type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -173,7 +189,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets all TYPE sub types.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -184,7 +202,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
-	 * Adds a TYPE sub type
+	 * <p>
+	 * Adds a TYPE sub type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -195,7 +215,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the first TYPE sub type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -207,7 +229,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the TYPE sub type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -218,7 +242,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Removes a TYPE sub type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 * </p>
@@ -231,9 +257,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * <p>
 	 * Gets the preference value. The lower the number, the more preferred this
-	 * type is compared to other types in the vCard with the same name. If a
-	 * type doesn't have a preference value, then it is considered the
-	 * <b>least</b> preferred.
+	 * property instance is compared with other properties in the same vCard of
+	 * the same type. If a property doesn't have a preference value, then it is
+	 * considered the least preferred.
 	 * </p>
 	 * 
 	 * <p>
@@ -273,9 +299,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * <p>
 	 * Sets the preference value. The lower the number, the more preferred this
-	 * type is compared to other types in the vCard with the same name. If a
-	 * type doesn't have a preference value, then it is considered the
-	 * <b>least</b> preferred.
+	 * property instance is compared with other properties in the same vCard of
+	 * the same type. If a property doesn't have a preference value, then it is
+	 * considered the least preferred.
 	 * </p>
 	 * 
 	 * <p>
@@ -308,8 +334,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the ALTID parameter value. This is used to specify alternative
 	 * representations of the same type.
+	 * </p>
 	 * 
 	 * <p>
 	 * For example, a vCard may contain multiple NOTE types that each have the
@@ -339,8 +367,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the ALTID parameter value. This is used to specify alternative
 	 * representations of the same type.
+	 * </p>
 	 * 
 	 * <p>
 	 * For example, a vCard may contain multiple NOTE types that each have the
@@ -370,9 +400,11 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the GEO parameter value. This is used to associate global
 	 * positioning information with a vCard type. It can be used with the ADR
 	 * type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -394,9 +426,11 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the GEO parameter value. This is used to associate global
 	 * positioning information with a vCard type. It can be used with the ADR
 	 * type.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -409,11 +443,13 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the SORT-AS parameter value(s). This contains typically two string
 	 * values which the vCard should be sorted by (family and given names). This
 	 * is useful if the person's last name (defined in the N property) starts
 	 * with characters that should be ignored during sorting. It can be used
 	 * with the N and ORG types.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -426,9 +462,11 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the SORT-AS parameter value(s). This is useful with the N property
 	 * when the person's last name starts with characters that should be ignored
 	 * during sorting. It can be used with the N and ORG types.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -446,8 +484,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
-	 * Gets the CALSCALE parameter value. This defines the type of calendar that
-	 * is used.
+	 * <p>
+	 * Gets the type of calendar that is used for a date or date-time property
+	 * value.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -466,8 +506,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
-	 * Gets the CALSCALE parameter value. This is used with date/time types and
-	 * defines the type of calendar that is used.
+	 * <p>
+	 * Sets the type of calendar that is used for a date or date-time property
+	 * value.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -560,7 +602,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Removes all PID values.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -570,9 +614,11 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the MEDIATYPE parameter. This is used in properties that have a URL
 	 * as a value, such as PHOTO and SOUND. It defines the content type of the
 	 * referenced resource.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -583,9 +629,11 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the MEDIATYPE parameter. This is used in properties that have a URL
 	 * as a value, such as PHOTO and SOUND. It defines the content type of the
 	 * referenced resource.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -596,8 +644,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the LEVEL parameter. This is used to define the level of skill or
 	 * level of interest the person has towards something.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -609,8 +659,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
+	 * <p>
 	 * Sets the LEVEL parameter. This is used to define the level of skill or
 	 * level of interest the person has towards something.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
@@ -622,10 +674,12 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
-	 * Gets the INDEX parameter. When present, it specifies the order in which a
-	 * collection of multi-valued property instances should be sorted.
-	 * Properties with low INDEX values are put at the beginning of the sorted
-	 * list.
+	 * <p>
+	 * Gets the sorted position of this property when it is grouped together
+	 * with other properties of the same type. Properties with low index values
+	 * are put at the beginning of the sorted list and properties with high
+	 * index values are put at the end of the list.
+	 * </p>
 	 * 
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
@@ -648,10 +702,12 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	}
 
 	/**
-	 * Sets the INDEX parameter. When present, it specifies the order in which a
-	 * collection of multi-valued property instances should be sorted.
-	 * Properties with low INDEX values are put at the beginning of the sorted
-	 * list.
+	 * <p>
+	 * Sets the sorted position of this property when it is grouped together
+	 * with other properties of the same type. Properties with low index values
+	 * are put at the beginning of the sorted list and properties with high
+	 * index values are put at the end of the list.
+	 * </p>
 	 * 
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
