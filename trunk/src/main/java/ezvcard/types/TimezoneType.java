@@ -418,7 +418,11 @@ public class TimezoneType extends VCardType implements HasAltId {
 		if (writeText) {
 			sb.append(VCardStringUtils.escape(text));
 		} else {
-			sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));
+			//2.1 - either extended or basic
+			//3.0 - extended
+			//4.0 - basic
+			boolean extended = (version == VCardVersion.V3_0);
+			sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, extended));
 		}
 	}
 
@@ -436,7 +440,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 		if (hasText()) {
 			parent.text(text);
 		} else {
-			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
+			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, false);
 			parent.utcOffset(offset);
 		}
 	}
@@ -534,7 +538,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 			}
 			break;
 		case V4_0:
-			//e.g. "-05:00"
+			//e.g. "-0500"
 			//e.g. "America/New_York"
 			if (isTextDataType) {
 				setText(value);
