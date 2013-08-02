@@ -7,26 +7,45 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.ImageTypeParameter;
+import ezvcard.parameters.TelephoneTypeParameter;
+import ezvcard.types.AddressType;
+import ezvcard.types.AnniversaryType;
+import ezvcard.types.BirthdayType;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.GenderType;
+import ezvcard.types.GeoType;
+import ezvcard.types.KeyType;
 import ezvcard.types.KindType;
 import ezvcard.types.MemberType;
 import ezvcard.types.NoteType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
+import ezvcard.types.StructuredNameType;
+import ezvcard.types.TelephoneType;
+import ezvcard.types.TimezoneType;
 import ezvcard.types.VCardType;
+import ezvcard.util.PartialDate;
+import ezvcard.util.TelUri;
 import ezvcard.util.XCardElement;
 import ezvcard.util.XmlUtils;
 
@@ -63,6 +82,11 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  */
 public class XCardDocumentTest {
+	@BeforeClass
+	public static void beforeClass() {
+		XMLUnit.setIgnoreWhitespace(true);
+	}
+
 	/**
 	 * A basic test with one type.
 	 */
@@ -502,6 +526,87 @@ public class XCardDocumentTest {
 
 		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
 		assertTrue(parsedVCard.getExtendedProperties().isEmpty());
+	}
+
+	@Test
+	public void rfc6351_example() throws Throwable {
+		VCard vcard = new VCard();
+
+		vcard.setFormattedName("Simon Perreault");
+
+		StructuredNameType n = new StructuredNameType();
+		n.setFamily("Perreault");
+		n.setGiven("Simon");
+		n.addSuffix("ing. jr");
+		n.addSuffix("M.Sc.");
+		vcard.setStructuredName(n);
+
+		BirthdayType bday = new BirthdayType();
+		bday.setPartialDate(PartialDate.date(null, 2, 3));
+		vcard.setBirthday(bday);
+
+		AnniversaryType anniversary = new AnniversaryType();
+		anniversary.setPartialDate(PartialDate.dateTime(2009, 8, 8, 14, 30, null, -5, 0));
+		vcard.setAnniversary(anniversary);
+
+		vcard.setGender(GenderType.male());
+
+		vcard.addLanguage("fr").setPref(1);
+		vcard.addLanguage("en").setPref(2);
+
+		vcard.setOrganization("Viagenie").setType("work");
+
+		AddressType adr = new AddressType();
+		adr.setStreetAddress("2875 boul. Laurier, suite D2-630");
+		adr.setLocality("Quebec");
+		adr.setRegion("QC");
+		adr.setPostalCode("G1V 2M2");
+		adr.setCountry("Canada");
+		adr.addType(AddressTypeParameter.WORK);
+		adr.setLabel("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2");
+		vcard.addAddress(adr);
+
+		TelUri telUri = TelUri.global("+1-418-656-9254");
+		telUri.setExtension("102");
+		TelephoneType tel = new TelephoneType(telUri);
+		tel.addType(TelephoneTypeParameter.WORK);
+		tel.addType(TelephoneTypeParameter.VOICE);
+		vcard.addTelephoneNumber(tel);
+
+		tel = new TelephoneType(TelUri.global("+1-418-262-6501"));
+		tel.addType(TelephoneTypeParameter.WORK);
+		tel.addType(TelephoneTypeParameter.TEXT);
+		tel.addType(TelephoneTypeParameter.VOICE);
+		tel.addType(TelephoneTypeParameter.CELL);
+		tel.addType(TelephoneTypeParameter.VIDEO);
+		vcard.addTelephoneNumber(tel);
+
+		vcard.addEmail("simon.perreault@viagenie.ca", EmailTypeParameter.WORK);
+
+		GeoType geo = new GeoType(46.766336, -71.28955);
+		geo.setType("work");
+		vcard.setGeo(geo);
+
+		KeyType key = new KeyType("http://www.viagenie.ca/simon.perreault/simon.asc", null);
+		key.setType("work");
+		vcard.addKey(key);
+
+		vcard.setTimezone(new TimezoneType("America/Montreal"));
+
+		vcard.addUrl("http://nomis80.org").setType("home");
+
+		assertExample(vcard, "rfc6351-example.xml");
+	}
+
+	private void assertExample(VCard ical, String exampleFileName) throws IOException, SAXException {
+		XCardDocument xcal = new XCardDocument();
+		xcal.setAddProdId(false);
+		xcal.addVCard(ical);
+
+		Document expected = XmlUtils.toDocument(new InputStreamReader(getClass().getResourceAsStream(exampleFileName)));
+		Document actual = xcal.getDocument();
+
+		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
 	}
 
 	private static class EmbeddedType extends VCardType {
