@@ -270,7 +270,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.dateAndOrTime();
+		String value = element.get("date", "date-time", "date-and-or-time");
 		if (value != null) {
 			parseDate(value, element.version(), warnings);
 		} else {
