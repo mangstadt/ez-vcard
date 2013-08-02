@@ -138,9 +138,12 @@ public class StructuredNameTypeTest {
 	public void marshalXml_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
+		xe.append("surname", (String) null);
 		xe.append("given", "Jonathan");
 		xe.append("additional", "Joh;nny,");
 		xe.append("additional", "John");
+		xe.append("prefix", (String) null);
+		xe.append("suffix", (String) null);
 		Document expected = xe.document();
 
 		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
@@ -155,6 +158,11 @@ public class StructuredNameTypeTest {
 	public void marshalXml_all_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
+		xe.append("surname", (String) null);
+		xe.append("given", (String) null);
+		xe.append("additional", (String) null);
+		xe.append("prefix", (String) null);
+		xe.append("suffix", (String) null);
 		Document expected = xe.document();
 
 		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());

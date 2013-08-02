@@ -302,12 +302,8 @@ public class StructuredNameType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (family != null) {
-			parent.append("surname", family);
-		}
-		if (given != null) {
-			parent.append("given", given);
-		}
+		parent.append("surname", family); //the XML element still needs to be printed if value == null
+		parent.append("given", given);
 		parent.append("additional", additional);
 		parent.append("prefix", prefixes);
 		parent.append("suffix", suffixes);
@@ -315,14 +311,14 @@ public class StructuredNameType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		family = getXmlField(element, "surname");
-		given = getXmlField(element, "given");
+		family = sanitizeXml(element, "surname");
+		given = sanitizeXml(element, "given");
 		additional = element.getAll("additional");
 		prefixes = element.getAll("prefix");
 		suffixes = element.getAll("suffix");
 	}
 
-	private String getXmlField(XCardElement element, String name) {
+	private String sanitizeXml(XCardElement element, String name) {
 		String value = element.get(name);
 		return (value != null && value.length() == 0) ? null : value;
 	}

@@ -236,6 +236,11 @@ public class XCardElement {
 	 * @return the created elements
 	 */
 	public List<Element> append(String name, Collection<String> values) {
+		if (values.isEmpty()) {
+			Element element = append(name, (String) null);
+			return Arrays.asList(element);
+		}
+
 		List<Element> elements = new ArrayList<Element>(values.size());
 		for (String value : values) {
 			elements.add(append(name, value));
