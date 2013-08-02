@@ -15,15 +15,26 @@ import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.parameters.EmailTypeParameter;
+import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AgentType;
+import ezvcard.types.AnniversaryType;
+import ezvcard.types.BirthdayType;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.GenderType;
+import ezvcard.types.GeoType;
+import ezvcard.types.KeyType;
 import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
 import ezvcard.types.MemberType;
 import ezvcard.types.NoteType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.StructuredNameType;
+import ezvcard.types.TelephoneType;
+import ezvcard.types.TimezoneType;
+import ezvcard.util.PartialDate;
+import ezvcard.util.TelUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -62,7 +73,7 @@ public class VCardWriterTest {
 	 * Tests to make sure it contains the BEGIN, VERSION, and END types.
 	 */
 	@Test
-	public void generalStructure() throws Exception {
+	public void generalStructure() throws Throwable {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
@@ -85,7 +96,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void check_supported_versions() throws Exception {
+	public void check_supported_versions() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		StructuredNameType n = new StructuredNameType();
@@ -123,7 +134,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void required_properties_21() throws Exception {
+	public void required_properties_21() throws Throwable {
 		VCardVersion version = VCardVersion.V2_1;
 
 		//without N
@@ -155,7 +166,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void required_properties_30() throws Exception {
+	public void required_properties_30() throws Throwable {
 		VCardVersion version = VCardVersion.V3_0;
 
 		//without N or FN
@@ -217,7 +228,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void required_properties_40() throws Exception {
+	public void required_properties_40() throws Throwable {
 		VCardVersion version = VCardVersion.V4_0;
 
 		//without FN
@@ -246,7 +257,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void setAddProdId() throws Exception {
+	public void setAddProdId() throws Throwable {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
@@ -313,7 +324,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void setAddProdId_overwrites_existing_prodId() throws Exception {
+	public void setAddProdId_overwrites_existing_prodId() throws Throwable {
 		VCard vcard = new VCard();
 
 		FormattedNameType fn = new FormattedNameType("John Doe");
@@ -339,7 +350,7 @@ public class VCardWriterTest {
 	 * Tests types with nested vCards (i.e AGENT type) in version 2.1.
 	 */
 	@Test
-	public void nestedVCard() throws Exception {
+	public void nestedVCard() throws Throwable {
 		VCard vcard = new VCard();
 
 		FormattedNameType fn = new FormattedNameType("Michael Angstadt");
@@ -394,7 +405,7 @@ public class VCardWriterTest {
 	 * Tests types with embedded vCards (i.e AGENT type) in version 3.0.
 	 */
 	@Test
-	public void embeddedVCard() throws Exception {
+	public void embeddedVCard() throws Throwable {
 		VCard vcard = new VCard();
 
 		FormattedNameType fn = new FormattedNameType("Michael Angstadt");
@@ -451,7 +462,7 @@ public class VCardWriterTest {
 	 * Test to make sure it marshals LABELs correctly.
 	 */
 	@Test
-	public void labels() throws Exception {
+	public void labels() throws Throwable {
 		VCard vcard = new VCard();
 
 		//address with label
@@ -525,7 +536,7 @@ public class VCardWriterTest {
 	 * NOT be marshalled.
 	 */
 	@Test
-	public void skipMeException() throws Exception {
+	public void skipMeException() throws Throwable {
 		VCard vcard = new VCard();
 
 		//add N property so a warning isn't generated (2.1 requires N to be present)
@@ -563,7 +574,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void kind_and_member_combination() throws Exception {
+	public void kind_and_member_combination() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.addMember(new MemberType("http://uri.com"));
@@ -603,7 +614,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void invalid_parameter_chars() throws Exception {
+	public void invalid_parameter_chars() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe").getSubTypes().put("X-TEST", "one" + ((char) 28) + "two");
 
@@ -624,5 +635,197 @@ public class VCardWriterTest {
 
 		assertEquals(actual, expected);
 		assertWarnings(1, vcw.getWarnings());
+	}
+
+	@Test
+	public void rfc6350_example() throws Throwable {
+		VCard vcard = new VCard();
+
+		vcard.setFormattedName("Simon Perreault");
+
+		StructuredNameType n = new StructuredNameType();
+		n.setFamily("Perreault");
+		n.setGiven("Simon");
+		n.addSuffix("ing. jr");
+		n.addSuffix("M.Sc.");
+		vcard.setStructuredName(n);
+
+		BirthdayType bday = new BirthdayType();
+		bday.setPartialDate(PartialDate.date(null, 2, 3));
+		vcard.setBirthday(bday);
+
+		AnniversaryType anniversary = new AnniversaryType();
+		anniversary.setPartialDate(PartialDate.dateTime(2009, 8, 8, 14, 30, null, -5, 0));
+		vcard.setAnniversary(anniversary);
+
+		vcard.setGender(GenderType.male());
+
+		vcard.addLanguage("fr").setPref(1);
+		vcard.addLanguage("en").setPref(2);
+
+		vcard.setOrganization("Viagenie").setType("work");
+
+		AddressType adr = new AddressType();
+		adr.setExtendedAddress("Suite D2-630");
+		adr.setStreetAddress("2875 Laurier");
+		adr.setLocality("Quebec");
+		adr.setRegion("QC");
+		adr.setPostalCode("G1V 2M2");
+		adr.setCountry("Canada");
+		adr.addType(AddressTypeParameter.WORK);
+		vcard.addAddress(adr);
+
+		TelUri telUri = TelUri.global("+1-418-656-9254");
+		telUri.setExtension("102");
+		TelephoneType tel = new TelephoneType(telUri);
+		tel.setPref(1);
+		tel.addType(TelephoneTypeParameter.WORK);
+		tel.addType(TelephoneTypeParameter.VOICE);
+		vcard.addTelephoneNumber(tel);
+
+		tel = new TelephoneType(TelUri.global("+1-418-262-6501"));
+		tel.addType(TelephoneTypeParameter.WORK);
+		tel.addType(TelephoneTypeParameter.VOICE);
+		tel.addType(TelephoneTypeParameter.CELL);
+		tel.addType(TelephoneTypeParameter.VIDEO);
+		tel.addType(TelephoneTypeParameter.TEXT);
+		vcard.addTelephoneNumber(tel);
+
+		vcard.addEmail("simon.perreault@viagenie.ca", EmailTypeParameter.WORK);
+
+		GeoType geo = new GeoType(46.772673, -71.282945);
+		geo.setType("work");
+		vcard.setGeo(geo);
+
+		KeyType key = new KeyType("http://www.viagenie.ca/simon.perreault/simon.asc", null);
+		key.setType("work");
+		vcard.addKey(key);
+
+		vcard.setTimezone(new TimezoneType(-5, 0));
+
+		vcard.addUrl("http://nomis80.org").setType("home");
+
+		StringWriter sw = new StringWriter();
+		VCardWriter writer = new VCardWriter(sw, VCardVersion.V4_0);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+
+		//@formatter:off
+		String expected = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"FN:Simon Perreault\r\n" +
+		"N:Perreault;Simon;;;ing. jr,M.Sc.\r\n" +
+		"BDAY:--0203\r\n" +
+		"ANNIVERSARY:20090808T1430-0500\r\n" +
+		"GENDER:M\r\n" +
+		"LANG;PREF=1:fr\r\n" +
+		"LANG;PREF=2:en\r\n" +
+		"ORG;TYPE=work:Viagenie\r\n" +
+		"ADR;TYPE=work:;Suite D2-630;2875 Laurier;Quebec;QC;G1V 2M2;Canada\r\n" +
+		"TEL;PREF=1;TYPE=work,voice;VALUE=uri:tel:+1-418-656-9254;ext=102\r\n" +
+		"TEL;TYPE=work,voice,cell,video,text;VALUE=uri:tel:+1-418-262-6501\r\n" +
+		"EMAIL;TYPE=work:simon.perreault@viagenie.ca\r\n" +
+		"GEO;TYPE=work:geo:46.772673,-71.282945\r\n" +
+		"KEY;TYPE=work:http://www.viagenie.ca/simon.perreault/simon.asc\r\n" +
+		"TZ;VALUE=utc-offset:-0500\r\n" +
+		"URL;TYPE=home:http://nomis80.org\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		String actual = sw.toString();
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void rfc2426_example() throws Throwable {
+		StringWriter sw = new StringWriter();
+		VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
+		writer.setAddProdId(false);
+
+		{
+			VCard vcard = new VCard();
+
+			vcard.setFormattedName("Frank Dawson");
+
+			vcard.setOrganization("Lotus Development Corporation");
+
+			AddressType adr = new AddressType();
+			adr.setStreetAddress("6544 Battleford Drive");
+			adr.setLocality("Raleigh");
+			adr.setRegion("NC");
+			adr.setPostalCode("27613-3502");
+			adr.setCountry("U.S.A.");
+			adr.addType(AddressTypeParameter.WORK);
+			adr.addType(AddressTypeParameter.POSTAL);
+			adr.addType(AddressTypeParameter.PARCEL);
+			vcard.addAddress(adr);
+
+			vcard.addTelephoneNumber("+1-919-676-9515", TelephoneTypeParameter.VOICE, TelephoneTypeParameter.MSG, TelephoneTypeParameter.WORK);
+			vcard.addTelephoneNumber("+1-919-676-9564", TelephoneTypeParameter.FAX, TelephoneTypeParameter.WORK);
+
+			vcard.addEmail("Frank_Dawson@Lotus.com", EmailTypeParameter.INTERNET, EmailTypeParameter.PREF);
+			vcard.addEmail("fdawson@earthlink.net", EmailTypeParameter.INTERNET);
+
+			vcard.addUrl("http://home.earthlink.net/÷fdawson");
+
+			writer.write(vcard);
+		}
+
+		{
+			VCard vcard = new VCard();
+
+			vcard.setFormattedName("Tim Howes");
+
+			vcard.setOrganization("Netscape Communications Corp.");
+
+			AddressType adr = new AddressType();
+			adr.setStreetAddress("501 E. Middlefield Rd.");
+			adr.setLocality("Mountain View");
+			adr.setRegion("CA");
+			adr.setPostalCode("94043");
+			adr.setCountry("U.S.A.");
+			adr.addType(AddressTypeParameter.WORK);
+			vcard.addAddress(adr);
+
+			vcard.addTelephoneNumber("+1-415-937-3419", TelephoneTypeParameter.VOICE, TelephoneTypeParameter.MSG, TelephoneTypeParameter.WORK);
+			vcard.addTelephoneNumber("+1-415-528-4164", TelephoneTypeParameter.FAX, TelephoneTypeParameter.WORK);
+
+			vcard.addEmail("howes@netscape.com", EmailTypeParameter.INTERNET);
+
+			writer.write(vcard);
+		}
+
+		writer.close();
+
+		//@formatter:off
+		String expected = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"FN:Frank Dawson\r\n" +
+		"ORG:Lotus Development Corporation\r\n" +
+		"ADR;TYPE=work,postal,parcel:;;6544 Battleford Drive;Raleigh;NC;27613-3502;U.S.A.\r\n" +
+		"TEL;TYPE=voice,msg,work:+1-919-676-9515\r\n" +
+		"TEL;TYPE=fax,work:+1-919-676-9564\r\n" +
+		"EMAIL;TYPE=internet,pref:Frank_Dawson@Lotus.com\r\n" +
+		"EMAIL;TYPE=internet:fdawson@earthlink.net\r\n" +
+		"URL:http://home.earthlink.net/÷fdawson\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"FN:Tim Howes\r\n" +
+		"ORG:Netscape Communications Corp.\r\n" +
+		"ADR;TYPE=work:;;501 E. Middlefield Rd.;Mountain View;CA;94043;U.S.A.\r\n" +
+		"TEL;TYPE=voice,msg,work:+1-415-937-3419\r\n" +
+		"TEL;TYPE=fax,work:+1-415-528-4164\r\n" +
+		"EMAIL;TYPE=internet:howes@netscape.com\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		String actual = sw.toString();
+
+		assertEquals(expected, actual);
 	}
 }
