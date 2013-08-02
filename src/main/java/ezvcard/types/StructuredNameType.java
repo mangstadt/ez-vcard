@@ -315,11 +315,16 @@ public class StructuredNameType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		family = element.get("surname");
-		given = element.get("given");
+		family = getXmlField(element, "surname");
+		given = getXmlField(element, "given");
 		additional = element.getAll("additional");
 		prefixes = element.getAll("prefix");
 		suffixes = element.getAll("suffix");
+	}
+
+	private String getXmlField(XCardElement element, String name) {
+		String value = element.get(name);
+		return (value != null && value.length() == 0) ? null : value;
 	}
 
 	@Override
