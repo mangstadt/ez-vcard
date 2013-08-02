@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
@@ -15,13 +16,24 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
+import ezvcard.types.AddressType;
+import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
+import ezvcard.types.GeoType;
+import ezvcard.types.KeyType;
+import ezvcard.types.LanguageType;
 import ezvcard.types.NoteType;
+import ezvcard.types.OrganizationType;
 import ezvcard.types.RawType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
+import ezvcard.types.UrlType;
 import ezvcard.types.XmlType;
+import ezvcard.util.PartialDate;
+import ezvcard.util.TelUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -60,7 +72,7 @@ public class XCardReaderTest {
 	 * Tests a basic xCard example
 	 */
 	@Test
-	public void basic() throws Exception {
+	public void basic() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -101,7 +113,7 @@ public class XCardReaderTest {
 	 * The parser should preserve whitespace and newlines in the element text.
 	 */
 	@Test
-	public void preserveWhitespace() throws Exception {
+	public void preserveWhitespace() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -128,7 +140,7 @@ public class XCardReaderTest {
 	 * Tests to make sure parameters are parsed correctly.
 	 */
 	@Test
-	public void parameters() throws Exception {
+	public void parameters() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -209,7 +221,7 @@ public class XCardReaderTest {
 	 * Tests to make sure it reads groups correctly.
 	 */
 	@Test
-	public void group() throws Exception {
+	public void group() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -249,7 +261,7 @@ public class XCardReaderTest {
 	 * Tests to make sure it parses custom type classes, RawTypes, and XmlTypes
 	 */
 	@Test
-	public void readNonStandardElements() throws Exception {
+	public void readNonStandardElements() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -303,7 +315,7 @@ public class XCardReaderTest {
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void registerExtendedType_no_default_constructor() throws Exception {
+	public void registerExtendedType_no_default_constructor() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -318,7 +330,7 @@ public class XCardReaderTest {
 	 * Make sure it can handle multiple "&lt;vcard&gt;" elements.
 	 */
 	@Test
-	public void readMultipleVCards() throws Exception {
+	public void readMultipleVCards() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -366,7 +378,7 @@ public class XCardReaderTest {
 	 * xCards without the proper namespace will not be parsed.
 	 */
 	@Test
-	public void namespace() throws Exception {
+	public void namespace() throws Throwable {
 		//no namespace
 		//@formatter:off
 		String xml =
@@ -401,7 +413,7 @@ public class XCardReaderTest {
 	 * NOT be added to the {@link VCard} object.
 	 */
 	@Test
-	public void skipMeException() throws Exception {
+	public void skipMeException() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">" +
@@ -425,7 +437,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void notRoot() throws Exception {
+	public void notRoot() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<foo xmlns=\"http://foobar.com\">" +
@@ -465,7 +477,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void with_namespace_prefix() throws Exception {
+	public void with_namespace_prefix() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<v:vcards xmlns:v=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -504,7 +516,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void not_in_same_vcards_element() throws Exception {
+	public void not_in_same_vcards_element() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<foo xmlns=\"http://foobar.com\">" +
@@ -575,6 +587,90 @@ public class XCardReaderTest {
 			assertWarnings(0, xcr.getWarnings());
 		}
 
+		assertNull(xcr.readNext());
+	}
+
+	@Test
+	public void rfc6351_example() throws Throwable {
+		XCardReader xcr = new XCardReader(getClass().getResourceAsStream("rfc6351-example.xml"));
+
+		VCard vcard = xcr.readNext();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(16, vcard.getProperties().size());
+
+		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+
+		StructuredNameType n = vcard.getStructuredName();
+		assertEquals("Perreault", n.getFamily());
+		assertEquals("Simon", n.getGiven());
+		assertEquals(Arrays.asList(), n.getAdditional());
+		assertEquals(Arrays.asList(), n.getPrefixes());
+		assertEquals(Arrays.asList("ing. jr", "M.Sc."), n.getSuffixes());
+
+		PartialDate expectedBday = PartialDate.date(null, 2, 3);
+		PartialDate actualBday = vcard.getBirthday().getPartialDate();
+		assertEquals(expectedBday, actualBday);
+
+		PartialDate expectedAnniversary = PartialDate.dateTime(2009, 8, 8, 14, 30, null, -5, 0);
+		PartialDate actualAnniversary = vcard.getAnniversary().getPartialDate();
+		assertEquals(expectedAnniversary, actualAnniversary);
+
+		assertTrue(vcard.getGender().isMale());
+
+		LanguageType lang = vcard.getLanguages().get(0);
+		assertEquals("fr", lang.getValue());
+		assertIntEquals(1, lang.getPref());
+
+		lang = vcard.getLanguages().get(1);
+		assertEquals("en", lang.getValue());
+		assertIntEquals(2, lang.getPref());
+
+		OrganizationType org = vcard.getOrganization();
+		assertEquals(Arrays.asList("Viagenie"), org.getValues());
+		assertEquals("work", org.getType());
+
+		AddressType adr = vcard.getAddresses().get(0);
+		assertNull(adr.getPoBox());
+		assertNull(adr.getExtendedAddress());
+		assertEquals("2875 boul. Laurier, suite D2-630", adr.getStreetAddress());
+		assertEquals("Quebec", adr.getLocality());
+		assertEquals("QC", adr.getRegion());
+		assertEquals("G1V 2M2", adr.getPostalCode());
+		assertEquals("Canada", adr.getCountry());
+		assertEquals("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2", adr.getLabel());
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
+
+		TelephoneType tel = vcard.getTelephoneNumbers().get(0);
+		TelUri expectedUri = TelUri.global("+1-418-656-9254");
+		expectedUri.setExtension("102");
+		assertEquals(expectedUri, tel.getUri());
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
+
+		tel = vcard.getTelephoneNumbers().get(1);
+		expectedUri = TelUri.global("+1-418-262-6501");
+		assertEquals(expectedUri, tel.getUri());
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
+
+		EmailType email = vcard.getEmails().get(0);
+		assertEquals("simon.perreault@viagenie.ca", email.getValue());
+		assertSetEquals(email.getTypes(), EmailTypeParameter.WORK);
+
+		GeoType geo = vcard.getGeo();
+		assertEquals(Double.valueOf(46.766336), geo.getLatitude());
+		assertEquals(Double.valueOf(-71.28955), geo.getLongitude());
+		assertEquals("work", geo.getType());
+
+		KeyType key = vcard.getKeys().get(0);
+		assertEquals("http://www.viagenie.ca/simon.perreault/simon.asc", key.getUrl());
+		assertEquals("work", key.getType());
+
+		assertEquals("America/Montreal", vcard.getTimezone().getText());
+
+		UrlType url = vcard.getUrls().get(0);
+		assertEquals("http://nomis80.org", url.getValue());
+		assertEquals("home", url.getType());
+
+		assertWarnings(0, xcr.getWarnings());
 		assertNull(xcr.readNext());
 	}
 }
