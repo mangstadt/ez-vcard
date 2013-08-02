@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import ezvcard.util.org.apache.commons.codec.binary.StringUtils;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -261,8 +259,8 @@ public class VCardStringUtils {
 	}
 
 	/**
-	 * Callback interface used with the
-	 * {@link StringUtils#join(Collection, String, JoinCallback)} method.
+	 * Callback interface used with various <code>VCardStringUtils.join()</code>
+	 * methods.
 	 * @author Michael Angstadt
 	 * @param <T> the value type
 	 */
@@ -272,7 +270,7 @@ public class VCardStringUtils {
 
 	/**
 	 * Callback interface used with the
-	 * {@link StringUtils#join(Map, String, JoinMapCallback)} method.
+	 * {@link #join(Map, String, JoinMapCallback)} method.
 	 * @author Michael Angstadt
 	 * @param <K> the key class
 	 * @param <V> the value class

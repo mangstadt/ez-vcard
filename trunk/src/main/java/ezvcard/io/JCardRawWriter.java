@@ -108,7 +108,7 @@ public class JCardRawWriter implements Closeable {
 	/**
 	 * Closes the "vcard" component array.
 	 * @throws IllegalStateException if the component was never opened (
-	 * {@link #writeStartVCard()} must be called first)
+	 * {@link #writeStartVCard} must be called first)
 	 * @throws IOException if there's an I/O problem
 	 */
 	public void writeEndVCard() throws IOException {
@@ -127,8 +127,7 @@ public class JCardRawWriter implements Closeable {
 	 * @param propertyName the property name (e.g. "version")
 	 * @param value the property value
 	 * @throws IllegalStateException if the "vcard" component was never opened
-	 * or was just closed ({@link #writeStartComponent(String)} must be called
-	 * first)
+	 * or was just closed ({@link #writeStartVCard} must be called first)
 	 * @throws IOException if there's an I/O problem
 	 */
 	public void writeProperty(String propertyName, JCardValue value) throws IOException {
@@ -142,8 +141,7 @@ public class JCardRawWriter implements Closeable {
 	 * @param parameters the parameters
 	 * @param value the property value
 	 * @throws IllegalStateException if the "vcard" component was never opened
-	 * or was just closed ({@link #writeStartComponent(String)} must be called
-	 * first)
+	 * or was just closed ({@link #writeStartVCard} must be called first)
 	 * @throws IOException if there's an I/O problem
 	 */
 	public void writeProperty(String group, String propertyName, VCardSubTypes parameters, JCardValue value) throws IOException {
