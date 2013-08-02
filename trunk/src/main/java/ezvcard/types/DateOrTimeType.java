@@ -198,22 +198,11 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		if (version == VCardVersion.V4_0) {
-			if (date != null || partialDate != null) {
-				copy.setValue(ValueParameter.DATE_AND_OR_TIME);
-				if (getCalscale() == null) {
-					copy.setCalscale(CalscaleParameter.GREGORIAN);
-				}
-			} else if (text != null) {
-				copy.setValue(ValueParameter.TEXT);
-			}
-		} else {
-			if (dateHasTime) {
-				copy.setValue(ValueParameter.DATE_TIME);
-			} else {
-				copy.setValue(ValueParameter.DATE);
-			}
+		ValueParameter value = null;
+		if (text != null && version == VCardVersion.V4_0) {
+			value = ValueParameter.TEXT;
 		}
+		copy.setValue(value);
 	}
 
 	@Override

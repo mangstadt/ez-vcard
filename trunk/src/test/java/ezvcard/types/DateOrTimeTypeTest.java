@@ -22,7 +22,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
@@ -122,7 +121,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(dateStr, actual);
 
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(ValueParameter.DATE, subTypes.getValue());
+		assertNull(subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -134,7 +133,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(dateStr, actual);
 
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(ValueParameter.DATE, subTypes.getValue());
+		assertNull(subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -146,8 +145,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(dateStr, actual);
 
 		VCardSubTypes subTypes = dateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
-		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertNull(subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -188,7 +186,7 @@ public class DateOrTimeTypeTest {
 		assertTrue(actual.matches(dateTimeRegex));
 
 		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
+		assertNull(subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -199,7 +197,7 @@ public class DateOrTimeTypeTest {
 		assertTrue(actual.matches(dateTimeRegex));
 
 		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(ValueParameter.DATE_TIME, subTypes.getValue());
+		assertNull(subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -210,8 +208,7 @@ public class DateOrTimeTypeTest {
 		assertTrue(actual.matches(dateTimeRegex));
 		VCardSubTypes subTypes = dateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
-		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
-		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertNull(subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -264,8 +261,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDate.toDateAndOrTime(false), actual);
 
 		VCardSubTypes subTypes = reducedAccuracyDateType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
-		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertNull(subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -318,8 +314,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(reducedAccuracyDateTime.toDateAndOrTime(false), actual);
 
 		VCardSubTypes subTypes = reducedAccuracyDateTimeType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(ValueParameter.DATE_AND_OR_TIME, subTypes.getValue());
-		assertEquals(CalscaleParameter.GREGORIAN, subTypes.getCalscale());
+		assertNull(subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
