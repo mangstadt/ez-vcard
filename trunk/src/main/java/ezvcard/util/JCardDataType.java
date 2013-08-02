@@ -52,7 +52,6 @@ public class JCardDataType {
 	public static final JCardDataType TIMESTAMP = new JCardDataType("timestamp");
 	public static final JCardDataType UTC_OFFSET = new JCardDataType("utc-offset");
 	public static final JCardDataType LANGUAGE_TAG = new JCardDataType("language-tag");
-	public static final JCardDataType UNKNOWN = new JCardDataType("unknown");
 	static final Collection<JCardDataType> custom = Collections.synchronizedList(new ArrayList<JCardDataType>());
 
 	private final String name;

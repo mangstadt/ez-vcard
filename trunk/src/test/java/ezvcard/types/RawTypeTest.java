@@ -92,7 +92,7 @@ public class RawTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = type.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.UNKNOWN, propertyValue, value);
+		assertJCardValue(null, propertyValue, value);
 		assertWarnings(0, warnings);
 	}
 

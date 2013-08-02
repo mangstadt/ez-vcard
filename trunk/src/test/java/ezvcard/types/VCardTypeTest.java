@@ -95,7 +95,7 @@ public class VCardTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = type.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.UNKNOWN, type.value, value);
+		assertJCardValue(null, type.value, value);
 		assertWarnings(0, warnings);
 	}
 

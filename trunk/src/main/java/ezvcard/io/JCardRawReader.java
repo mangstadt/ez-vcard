@@ -143,9 +143,8 @@ public class JCardRawReader implements Closeable {
 		if (jp.nextToken() != JsonToken.VALUE_STRING) {
 			throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
 		}
-		String dataTypeStr = jp.getText();
-		//JCardDataType dataType = "unknown".equals(dataTypeStr) ? null : JCardDataType.get(dataTypeStr); //TODO implement
-		JCardDataType dataType = JCardDataType.get(dataTypeStr);
+		String dataTypeStr = jp.getText().toLowerCase();
+		JCardDataType dataType = "unknown".equals(dataTypeStr) ? null : JCardDataType.get(dataTypeStr);
 
 		//get property value(s)
 		List<JsonValue> values = parseValues();
