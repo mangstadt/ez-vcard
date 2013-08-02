@@ -55,33 +55,37 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TextListTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final TextListTypeImpl zeroItems = new TextListTypeImpl();
-	final TextListTypeImpl oneItem = new TextListTypeImpl();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final TextListTypeImpl zeroItems = new TextListTypeImpl();
+	private final TextListTypeImpl oneItem = new TextListTypeImpl();
 	{
 		oneItem.addValue("one");
 	}
-	final TextListTypeImpl multipleItems = new TextListTypeImpl();
+	private final TextListTypeImpl multipleItems = new TextListTypeImpl();
 	{
 		multipleItems.addValue("one");
 		multipleItems.addValue("two");
 		multipleItems.addValue("three");
 	}
-	final TextListTypeImpl multipleItemsStructured = new TextListTypeImpl(';');
+	private final TextListTypeImpl multipleItemsStructured = new TextListTypeImpl(';');
 	{
 		multipleItemsStructured.addValue("one");
 		multipleItemsStructured.addValue("two");
 		multipleItemsStructured.addValue("three");
 	}
-	final TextListTypeImpl specialChars = new TextListTypeImpl();
+	private final TextListTypeImpl oneItemStructured = new TextListTypeImpl(';');
+	{
+		oneItemStructured.addValue("one");
+	}
+	private final TextListTypeImpl specialChars = new TextListTypeImpl();
 	{
 		specialChars.addValue("on,e");
 		specialChars.addValue("tw;o");
 		specialChars.addValue("three");
 	}
-	TextListTypeImpl testObj;
+	private TextListTypeImpl testObj;
 
 	@Before
 	public void before() {
@@ -238,6 +242,22 @@ public class TextListTypeTest {
 				new JsonValue("two"),
 				new JsonValue("three")
 			))
+		);
+		//@formatter:on
+		assertEquals(expected, value.getValues());
+		assertWarnings(0, warnings);
+	}
+
+	@Test
+	public void marshalJson_structured_one_item() {
+		VCardVersion version = VCardVersion.V4_0;
+		JCardValue value = oneItemStructured.marshalJson(version, warnings);
+
+		assertEquals(JCardDataType.TEXT, value.getDataType());
+
+		//@formatter:off
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue("one")
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());

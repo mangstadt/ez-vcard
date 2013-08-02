@@ -110,7 +110,7 @@ public class TextListType extends VCardType {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		Object[] values = this.values.toArray(new Object[0]);
-		if (separator == ';') {
+		if (separator == ';' && values.length > 1) {
 			return JCardValue.structured(JCardDataType.TEXT, values);
 		}
 		return JCardValue.multi(JCardDataType.TEXT, values);
