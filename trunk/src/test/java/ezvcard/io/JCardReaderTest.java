@@ -1,18 +1,39 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.parameters.EmailTypeParameter;
+import ezvcard.parameters.TelephoneTypeParameter;
+import ezvcard.types.AddressType;
+import ezvcard.types.EmailType;
+import ezvcard.types.GeoType;
+import ezvcard.types.KeyType;
+import ezvcard.types.LanguageType;
+import ezvcard.types.OrganizationType;
 import ezvcard.types.RawType;
+import ezvcard.types.StructuredNameType;
+import ezvcard.types.TelephoneType;
+import ezvcard.types.TimezoneType;
+import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
 import ezvcard.util.JCardValue;
+import ezvcard.util.PartialDate;
+import ezvcard.util.TelUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -295,5 +316,91 @@ public class JCardReaderTest {
 		protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 			this.value = value;
 		}
+	}
+
+	@Test
+	public void jcard_example() throws Throwable {
+		JCardReader reader = new JCardReader(getClass().getResourceAsStream("jcard-example.json"));
+
+		VCard vcard = reader.readNext();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(16, vcard.getProperties().size());
+
+		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+
+		StructuredNameType n = vcard.getStructuredName();
+		assertEquals("Perreault", n.getFamily());
+		assertEquals("Simon", n.getGiven());
+		assertEquals(Arrays.asList(), n.getAdditional());
+		assertEquals(Arrays.asList(), n.getPrefixes());
+		assertEquals(Arrays.asList("ing. jr", "M.Sc."), n.getSuffixes());
+
+		PartialDate expectedBday = PartialDate.date(null, 2, 3);
+		PartialDate actualBday = vcard.getBirthday().getPartialDate();
+		assertEquals(expectedBday, actualBday);
+
+		Date expectedAnniversary = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").parse("2009-08-08 14:30:00-0500");
+		Date actualAnniversary = vcard.getAnniversary().getDate();
+		assertEquals(expectedAnniversary, actualAnniversary);
+
+		assertTrue(vcard.getGender().isMale());
+
+		LanguageType lang = vcard.getLanguages().get(0);
+		assertEquals("fr", lang.getValue());
+		assertIntEquals(1, lang.getPref());
+
+		lang = vcard.getLanguages().get(1);
+		assertEquals("en", lang.getValue());
+		assertIntEquals(2, lang.getPref());
+
+		OrganizationType org = vcard.getOrganization();
+		assertEquals(Arrays.asList("Viagenie"), org.getValues());
+		assertEquals("work", org.getType());
+
+		AddressType adr = vcard.getAddresses().get(0);
+		assertNull(adr.getPoBox());
+		assertEquals("Suite D2-630", adr.getExtendedAddress());
+		assertEquals("2875 Laurier", adr.getStreetAddress());
+		assertEquals("Quebec", adr.getLocality());
+		assertEquals("QC", adr.getRegion());
+		assertEquals("G1V 2M2", adr.getPostalCode());
+		assertEquals("Canada", adr.getCountry());
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
+
+		TelephoneType tel = vcard.getTelephoneNumbers().get(0);
+		TelUri expectedUri = TelUri.global("+1-418-656-9254");
+		expectedUri.setExtension("102");
+		assertEquals(expectedUri, tel.getUri());
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
+		assertIntEquals(1, tel.getPref());
+
+		tel = vcard.getTelephoneNumbers().get(1);
+		expectedUri = TelUri.global("+1-418-262-6501");
+		assertEquals(expectedUri, tel.getUri());
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
+
+		EmailType email = vcard.getEmails().get(0);
+		assertEquals("simon.perreault@viagenie.ca", email.getValue());
+		assertSetEquals(email.getTypes(), EmailTypeParameter.WORK);
+
+		GeoType geo = vcard.getGeo();
+		assertEquals(Double.valueOf(46.772673), geo.getLatitude());
+		assertEquals(Double.valueOf(-71.282945), geo.getLongitude());
+		assertEquals("work", geo.getType());
+
+		KeyType key = vcard.getKeys().get(0);
+		assertEquals("http://www.viagenie.ca/simon.perreault/simon.asc", key.getUrl());
+		assertEquals("work", key.getType());
+
+		TimezoneType tz = vcard.getTimezone();
+		assertIntEquals(-5, tz.getHourOffset());
+		assertIntEquals(0, tz.getMinuteOffset());
+
+		UrlType url = vcard.getUrls().get(0);
+		assertEquals("http://nomis80.org", url.getValue());
+		assertEquals("home", url.getType());
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 }
