@@ -15,9 +15,13 @@ _--in development--_
       * Removed the `JCardDataType.UNKNOWN` enum.  A "null" value is now used to represent the "unknown" data type.
       * Pretty printing has been tweaked slightly.
  * Refactored the parsing code of plain-text vCards.  Parsing is slightly more strict: `BEGIN:VCARD` and `END:VCARD` properties are now *required*, or else the vCard will not be parsed.
- * Renamed `VCard.getAllTypes()` to `VCard.getProperties()`.
- * Renamed `VCard.getExtendedType()` to `VCard.getExtendedProperty()`.
- * Renamed `VCard.getExtendedTypes()` to `VCard.getExtendedProperties()`.
+ * Tweaked some of the methods in the `VCard` class, including:
+     * Removed `addExtendedType(VCardType)`.  Use `addProperty(VCardType)` to add extended type class instances.
+     * Removed `getExtendedType(VCardType)`.  Use `getProperty(VCardType)` to get extended type class instances.
+     * Renamed `addExtendedType()` to `addExtendedProperty()`.
+     * Replaced `getAllTypes()` with `getProperties()`.
+     * Renamed `getExtendedType(String, String)` to `getExtendedProperty(String, String)`.
+     * Renamed `getExtendedTypes()` to `getExtendedProperties()`.
 
 = 0.8.2 =
 _June 17, 2013_
