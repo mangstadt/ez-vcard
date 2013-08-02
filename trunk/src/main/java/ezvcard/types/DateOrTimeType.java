@@ -247,11 +247,13 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		if (text != null) {
 			parent.text(text);
 		} else if (partialDate != null) {
-			parent.dateAndOrTime(partialDate.toDateAndOrTime(false));
+			String name = partialDate.hasTimeComponent() ? "date-time" : "date";
+			parent.append(name, partialDate.toDateAndOrTime(false));
 		} else if (date != null) {
 			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
+			String name = dateHasTime ? "date-time" : "date";
 			String value = VCardDateFormatter.format(date, format);
-			parent.dateAndOrTime(value);
+			parent.append(name, value);
 		} else {
 			throw new SkipMeException("Property has no date, reduced accuracy date, or text value associated with it.");
 		}

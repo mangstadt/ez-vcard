@@ -153,7 +153,7 @@ public class DateOrTimeTypeTest {
 	public void marshalXml_date() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.dateAndOrTime(dateStr);
+		xe.append("date", dateStr);
 		Document expected = xe.document();
 		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -269,7 +269,7 @@ public class DateOrTimeTypeTest {
 	public void marshalXml_reducedAccuracy() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.dateAndOrTime(reducedAccuracyDate.toDateAndOrTime(false));
+		xe.append("date", reducedAccuracyDate.toDateAndOrTime(false));
 		Document expected = xe.document();
 		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -322,7 +322,7 @@ public class DateOrTimeTypeTest {
 	public void marshalXml_reducedAccuracyDateTime() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.dateAndOrTime(reducedAccuracyDateTime.toDateAndOrTime(false));
+		xe.append("date-time", reducedAccuracyDateTime.toDateAndOrTime(false));
 		Document expected = xe.document();
 		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
