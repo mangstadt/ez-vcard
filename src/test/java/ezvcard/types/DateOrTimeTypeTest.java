@@ -489,7 +489,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.dateAndOrTime(dateStrExtended);
+		xe.append("date", dateStrExtended);
 		Element input = xe.element();
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
@@ -504,7 +504,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.dateAndOrTime("invalid");
+		xe.append("date", "invalid");
 		Element input = xe.element();
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
@@ -619,6 +619,19 @@ public class DateOrTimeTypeTest {
 
 	@Test
 	public void unmarshalXml_datetime() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		xe.append("date-time", dateStr);
+		type.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+		assertEquals(date, type.getDate());
+		assertNull(type.getPartialDate());
+		assertNull(type.getText());
+		assertWarnings(0, warnings);
+	}
+
+	@Test
+	public void unmarshalXml_date_and_or_time() {
 		VCardVersion version = VCardVersion.V4_0;
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
