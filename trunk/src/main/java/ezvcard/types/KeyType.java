@@ -245,68 +245,88 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
 			}
+			return;
 		}
+		super.doMarshalSubTypes(copy, version, warnings, compatibilityMode, vcard);
 	}
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			sb.append(VCardStringUtils.escape(text));
-		} else {
-			if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) && getUrl() != null) {
-				warnings.add("vCard version " + version + " does not allow URLs to be used.");
-			}
-			super.doMarshalText(sb, version, warnings, compatibilityMode);
+			return;
 		}
+
+		if (getUrl() != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
+			warnings.add("vCard version " + version + " does not allow URLs to be used.");
+		}
+		super.doMarshalText(sb, version, warnings, compatibilityMode);
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (subTypes.getValue() == ValueParameter.TEXT) {
 			parseText(VCardStringUtils.unescape(value), version);
-		} else {
-			super.doUnmarshalText(value, version, warnings, compatibilityMode);
+			return;
 		}
+		super.doUnmarshalText(value, version, warnings, compatibilityMode);
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			parent.text(text);
-		} else {
-			super.doMarshalXml(parent, warnings, compatibilityMode);
+			return;
 		}
+		super.doMarshalXml(parent, warnings, compatibilityMode);
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.text();
-		if (value != null) {
-			parseText(value, element.version());
-		} else {
-			super.doUnmarshalXml(element, warnings, compatibilityMode);
+		String text = element.text();
+		if (text != null) {
+			parseText(text, element.version());
+			return;
 		}
+
+		String uri = element.uri();
+		if (uri != null) {
+			try {
+				//parse as data URI
+				DataUri dataUri = new DataUri(uri);
+				KeyTypeParameter contentType = buildMediaTypeObj(dataUri.getContentType());
+				setData(dataUri.getData(), contentType);
+			} catch (IllegalArgumentException e) {
+				//parse as URL
+				KeyTypeParameter contentType = parseContentType(element.version());
+				setUrl(uri, contentType);
+			}
+			return;
+		}
+
+		throw new SkipMeException("No value found.");
 	}
 
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
-		if ("a".equals(elementName)) {
-			String href = element.absUrl("href");
-			if (href.length() > 0) {
-				try {
-					DataUri uri = new DataUri(href);
-					KeyTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
-					setData(uri.getData(), mediaType);
-				} catch (IllegalArgumentException e) {
-					//TODO create buildTypeObjFromExtension() method
-					setUrl(href, null);
-				}
-			} else {
-				throw new SkipMeException("<a> tag does not have a \"href\" attribute.");
-			}
-		} else {
+		if (!"a".equals(elementName)) {
 			super.doUnmarshalHtml(element, warnings);
+			return;
+		}
+
+		String href = element.absUrl("href");
+		if (href.length() == 0) {
+			throw new SkipMeException("<a> tag does not have a \"href\" attribute.");
+		}
+
+		try {
+			DataUri uri = new DataUri(href);
+			KeyTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
+			setData(uri.getData(), mediaType);
+		} catch (IllegalArgumentException e) {
+			//TODO create buildTypeObjFromExtension() method
+			setUrl(href, null);
 		}
 	}
 
@@ -314,18 +334,29 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (text != null) {
 			return JCardValue.single(JCardDataType.TEXT, text);
-		} else {
-			return super.doMarshalJson(version, warnings);
 		}
+		return super.doMarshalJson(version, warnings);
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
+		String valueStr = value.getSingleValued();
 		if (value.getDataType() == JCardDataType.TEXT) {
-			parseText(value.getSingleValued(), version);
-		} else {
-			super.doUnmarshalJson(value, version, warnings);
+			parseText(valueStr, version);
+			return;
 		}
+
+		try {
+			//parse as data URI
+			DataUri dataUri = new DataUri(valueStr);
+			KeyTypeParameter contentType = buildMediaTypeObj(dataUri.getContentType());
+			setData(dataUri.getData(), contentType);
+		} catch (IllegalArgumentException e) {
+			//parse as URL
+			KeyTypeParameter contentType = parseContentType(version);
+			setUrl(valueStr, contentType);
+		}
+		return;
 	}
 
 	@Override
