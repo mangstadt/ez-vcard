@@ -9,6 +9,8 @@ _--in development--_
       * jCards can optionally be wrapped in a JSON array (useful when writing multiple jCards).
  * Fixed a bug that prevented `KEY` URLs from being parsed correctly.
  * Fixed the XML marshalling of N and ADR properties so that XML elements for every value component is included, even if the component is null or empty.
+ * Fixed a bug that gave `LANG` properties the wrong data type in jCards.
+ * `ORG` property values are no longer surrounded by brackets in jCard if the property only has one value.
  * Date-related property values are now written to "date" or "date-time" XML elements, instead of "date-and-or-time" elements.
  * Date-related properties with date, date-time, or partial-date values (such as `BDAY`) no longer include `VALUE` or `CALSCALE` parameters when written, except when the value is text (in which case a `VALUE=text` parameter is added).
  * Fixed the marshalling of UTC offset values for the `TZ` property for 4.0 vCards and xCards ("basic" format should be used, not "extended").
