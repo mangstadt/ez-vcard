@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ezvcard.VCardSubTypes;
 import ezvcard.parameters.ImageTypeParameter;
 
 /*
@@ -162,21 +161,13 @@ public class LogoType extends ImageType {
 		super(NAME, file, type);
 	}
 
-	/**
-	 * Gets the language that the address is written in.
-	 * @return the language or null if not set
-	 * @see VCardSubTypes#getLanguage
-	 */
+	@Override
 	public String getLanguage() {
-		return subTypes.getLanguage();
+		return super.getLanguage();
 	}
 
-	/**
-	 * Sets the language that the address is written in.
-	 * @param language the language or null to remove
-	 * @see VCardSubTypes#setLanguage
-	 */
+	@Override
 	public void setLanguage(String language) {
-		subTypes.setLanguage(language);
+		super.setLanguage(language);
 	}
 }

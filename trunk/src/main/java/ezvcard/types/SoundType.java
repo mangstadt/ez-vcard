@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import ezvcard.VCardSubTypes;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.SoundTypeParameter;
 import ezvcard.util.DataUri;
@@ -166,22 +165,14 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 		super(NAME, file, type);
 	}
 
-	/**
-	 * Gets the language.
-	 * @return the language or null if not set
-	 * @see VCardSubTypes#getLanguage
-	 */
+	@Override
 	public String getLanguage() {
-		return subTypes.getLanguage();
+		return super.getLanguage();
 	}
 
-	/**
-	 * Sets the language.
-	 * @param language the language or null to remove
-	 * @see VCardSubTypes#setLanguage
-	 */
+	@Override
 	public void setLanguage(String language) {
-		subTypes.setLanguage(language);
+		super.setLanguage(language);
 	}
 
 	@Override

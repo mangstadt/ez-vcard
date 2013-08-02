@@ -3,7 +3,6 @@ package ezvcard.types;
 import java.util.List;
 
 import ezvcard.VCard;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
@@ -145,22 +144,14 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 		this.value = value;
 	}
 
-	/**
-	 * Gets the language the note is written in.
-	 * @return the language or null if not set
-	 * @see VCardSubTypes#getLanguage
-	 */
+	@Override
 	public String getLanguage() {
-		return subTypes.getLanguage();
+		return super.getLanguage();
 	}
 
-	/**
-	 * Sets the language that the note is written in.
-	 * @param language the language or null to remove
-	 * @see VCardSubTypes#setLanguage
-	 */
+	@Override
 	public void setLanguage(String language) {
-		subTypes.setLanguage(language);
+		super.setLanguage(language);
 	}
 
 	@Override

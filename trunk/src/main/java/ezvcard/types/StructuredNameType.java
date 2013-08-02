@@ -220,22 +220,14 @@ public class StructuredNameType extends VCardType implements HasAltId {
 		subTypes.setSortAs(family, given);
 	}
 
-	/**
-	 * Gets the language the name is written in.
-	 * @return the language or null if not set
-	 * @see VCardSubTypes#getLanguage
-	 */
+	@Override
 	public String getLanguage() {
-		return subTypes.getLanguage();
+		return super.getLanguage();
 	}
 
-	/**
-	 * Sets the language the name is written in.
-	 * @param language the language or null to remove
-	 * @see VCardSubTypes#setLanguage
-	 */
+	@Override
 	public void setLanguage(String language) {
-		subTypes.setLanguage(language);
+		super.setLanguage(language);
 	}
 
 	//@Override

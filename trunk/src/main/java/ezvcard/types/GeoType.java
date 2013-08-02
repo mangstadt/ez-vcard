@@ -3,7 +3,6 @@ package ezvcard.types;
 import java.text.NumberFormat;
 import java.util.List;
 
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
@@ -204,65 +203,29 @@ public class GeoType extends VCardType implements HasAltId {
 		subTypes.setMediaType(mediaType);
 	}
 
-	/**
-	 * Gets all PID parameter values.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @return the PID values or empty set if there are none
-	 * @see VCardSubTypes#getPids
-	 */
+	@Override
 	public List<Integer[]> getPids() {
-		return subTypes.getPids();
+		return super.getPids();
 	}
 
-	/**
-	 * Adds a PID value.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @param localId the local ID
-	 * @param clientPidMapRef the ID used to reference the property's globally
-	 * unique identifier in the CLIENTPIDMAP property.
-	 * @see VCardSubTypes#addPid(int, int)
-	 */
+	@Override
 	public void addPid(int localId, int clientPidMapRef) {
-		subTypes.addPid(localId, clientPidMapRef);
+		super.addPid(localId, clientPidMapRef);
 	}
 
-	/**
-	 * Removes all PID values.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @see VCardSubTypes#removePids
-	 */
+	@Override
 	public void removePids() {
-		subTypes.removePids();
+		super.removePids();
 	}
 
-	/**
-	 * Gets the preference value.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @return the preference value or null if it doesn't exist
-	 * @see VCardSubTypes#getPref
-	 */
+	@Override
 	public Integer getPref() {
-		return subTypes.getPref();
+		return super.getPref();
 	}
 
-	/**
-	 * Sets the preference value.
-	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
-	 * </p>
-	 * @param pref the preference value or null to remove
-	 * @see VCardSubTypes#setPref
-	 */
+	@Override
 	public void setPref(Integer pref) {
-		subTypes.setPref(pref);
+		super.setPref(pref);
 	}
 
 	//@Override
