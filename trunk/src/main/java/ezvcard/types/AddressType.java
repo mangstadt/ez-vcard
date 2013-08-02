@@ -2,9 +2,7 @@ package ezvcard.types;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -455,36 +453,27 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		Map<String, String> values = new LinkedHashMap<String, String>();
-		values.put("pobox", poBox);
-		values.put("ext", extendedAddress);
-		values.put("street", streetAddress);
-		values.put("locality", locality);
-		values.put("region", region);
-		values.put("code", postalCode);
-		values.put("country", country);
-
-		for (Map.Entry<String, String> entry : values.entrySet()) {
-			String value = entry.getValue();
-			if (value != null) {
-				String name = entry.getKey();
-				parent.append(name, value);
-			}
-		}
+		parent.append("pobox", poBox); //the XML element still needs to be printed if value == null
+		parent.append("ext", extendedAddress);
+		parent.append("street", streetAddress);
+		parent.append("locality", locality);
+		parent.append("region", region);
+		parent.append("code", postalCode);
+		parent.append("country", country);
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		poBox = getXmlField(element, "pobox");
-		extendedAddress = getXmlField(element, "ext");
-		streetAddress = getXmlField(element, "street");
-		locality = getXmlField(element, "locality");
-		region = getXmlField(element, "region");
-		postalCode = getXmlField(element, "code");
-		country = getXmlField(element, "country");
+		poBox = sanitizeXml(element, "pobox");
+		extendedAddress = sanitizeXml(element, "ext");
+		streetAddress = sanitizeXml(element, "street");
+		locality = sanitizeXml(element, "locality");
+		region = sanitizeXml(element, "region");
+		postalCode = sanitizeXml(element, "code");
+		country = sanitizeXml(element, "country");
 	}
 
-	private String getXmlField(XCardElement element, String name) {
+	private String sanitizeXml(XCardElement element, String name) {
 		String value = element.get(name);
 		return (value != null && value.length() == 0) ? null : value;
 	}

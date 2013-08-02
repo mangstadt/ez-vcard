@@ -323,9 +323,12 @@ public class AddressTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(AddressType.NAME.toLowerCase());
 		xe.append("pobox", "P.O. Box 1234;");
+		xe.append("ext", (String) null);
+		xe.append("street", (String) null);
 		xe.append("locality", "Austin");
 		xe.append("region", "TX");
 		xe.append("code", "12345");
+		xe.append("country", (String) null);
 		Document expected = xe.document();
 
 		xe = new XCardElement(AddressType.NAME.toLowerCase());
@@ -340,6 +343,13 @@ public class AddressTypeTest {
 	public void marshalXml_no_fields() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(AddressType.NAME.toLowerCase());
+		xe.append("pobox", (String) null);
+		xe.append("ext", (String) null);
+		xe.append("street", (String) null);
+		xe.append("locality", (String) null);
+		xe.append("region", (String) null);
+		xe.append("code", (String) null);
+		xe.append("country", (String) null);
 		Document expected = xe.document();
 
 		xe = new XCardElement(AddressType.NAME.toLowerCase());

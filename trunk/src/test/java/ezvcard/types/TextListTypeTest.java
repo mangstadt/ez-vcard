@@ -147,6 +147,7 @@ public class TextListTypeTest {
 	public void marshalXml_zero_items() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
+		xe.text(null);
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
