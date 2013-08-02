@@ -12,6 +12,7 @@ _--in development--_
       * Property order is more predictable during marshalling.  Properties are essentially written in the order that they were added to the `VCard` object.
  * Refactored the jCard reading/writing code:
       * The `JCardValue` class now holds the raw JSON data in the form of `JsonValue` objects.  This adds greater flexibility for reading/writing wonky property values.
+      * Removed the `JCardDataType.UNKNOWN` enum.  A "null" value is now used to represent the "unknown" data type.
       * Pretty printing has been tweaked slightly.
  * Refactored the parsing code of plain-text vCards.  Parsing is slightly more strict: `BEGIN:VCARD` and `END:VCARD` properties are now *required*, or else the vCard will not be parsed.
  * Renamed `VCard.getAllTypes()` to `VCard.getProperties()`.
