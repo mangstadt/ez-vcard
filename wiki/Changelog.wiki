@@ -7,7 +7,9 @@ _--in development--_
  * Updated jCard functionality to adhere to the most recent draft specification.
       * Removed the "vcardstream" array.
       * jCards can optionally be wrapped in a JSON array (useful when writing multiple jCards).
- * Fixed a bug that prevented KEY URLs from being parsed correctly.
+ * Fixed a bug that prevented `KEY` URLs from being parsed correctly.
+ * Date-related properties with date, date-time, or partial-date values (such as `BDAY`) no longer include `VALUE` or `CALSCALE` parameters when written, except when the value is text (in which case a `VALUE=text` parameter is added).
+ * Fixed the marshalling of UTC offset values for the `TZ` property for 4.0 vCards and xCards ("basic" format should be used, not "extended").
  * Refactored the way in which the `VCard` class stores its properties:
       * When parsing, _all_ property instances are now added to the `VCard` object.  Previously, for properties with a cardinality of zero or one, the only instance that was retrievable was the one that was parsed last.
       * Property order is more predictable during marshalling.  Properties are essentially written in the order that they were added to the `VCard` object.
