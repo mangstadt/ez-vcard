@@ -247,7 +247,17 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		if (text != null) {
 			parent.text(text);
 		} else if (partialDate != null) {
-			String name = partialDate.hasTimeComponent() ? "date-time" : "date";
+			String name;
+			if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
+				name = "date-time";
+			} else if (partialDate.hasTimeComponent()) {
+				name = "time";
+			} else if (partialDate.hasDateComponent()) {
+				name = "date";
+			} else {
+				name = "date-and-or-time";
+			}
+
 			parent.append(name, partialDate.toDateAndOrTime(false));
 		} else if (date != null) {
 			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
@@ -293,11 +303,21 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 			dataType = JCardDataType.TEXT;
 			value = text;
 		} else {
-			dataType = dateHasTime ? JCardDataType.DATE_TIME : JCardDataType.DATE;
 			if (date != null) {
+				dataType = dateHasTime ? JCardDataType.DATE_TIME : JCardDataType.DATE;
 				ISOFormat format = dateHasTime ? ISOFormat.TIME_EXTENDED : ISOFormat.DATE_EXTENDED;
 				value = VCardDateFormatter.format(date, format);
 			} else if (partialDate != null) {
+				if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
+					dataType = JCardDataType.DATE_TIME;
+				} else if (partialDate.hasTimeComponent()) {
+					dataType = JCardDataType.TIME;
+				} else if (partialDate.hasDateComponent()) {
+					dataType = JCardDataType.DATE;
+				} else {
+					dataType = JCardDataType.DATE_AND_OR_TIME;
+				}
+
 				value = partialDate.toDateAndOrTime(true);
 			} else {
 				throw new SkipMeException("Property has no date, reduced accuracy date, or text value associated with it.");
