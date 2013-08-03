@@ -24,10 +24,10 @@ _--in development--_
  * Refactored the parsing code of plain-text vCards.  Parsing is slightly more strict: `BEGIN:VCARD` and `END:VCARD` properties are now *required*, or else the vCard will not be parsed.
  * Tweaked some of the methods in the `VCard` class, including:
      * Removed `addExtendedType(VCardType)`.  Use `addProperty(VCardType)` to add extended type class instances.
-     * Removed `getExtendedType(VCardType)`.  Use `getProperty(VCardType)` to get extended type class instances.
-     * Renamed `addExtendedType()` to `addExtendedProperty()`.
+     * Removed `getExtendedType(Class)`.  Use `getProperty(Class)` to get extended type class instances.
+     * Renamed `addExtendedType(String, String)` to `addExtendedProperty(String, String)`.
      * Replaced `getAllTypes()` with `getProperties()`.
-     * Renamed `getExtendedType(String, String)` to `getExtendedProperty(String, String)`.
+     * Renamed `getExtendedType(String)` to `getExtendedProperty(String)`.
      * Renamed `getExtendedTypes()` to `getExtendedProperties()`.
 
 = 0.8.2 =
