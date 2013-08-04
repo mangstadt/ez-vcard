@@ -406,7 +406,7 @@ public class VCardReader implements Closeable, IParser {
 					//LABELs must be treated specially so they can be matched up with their ADRs
 					labels.add((LabelType) type);
 				} else {
-					curVCard.addProperty(type);
+					curVCard.addType(type);
 				}
 			} catch (SkipMeException e) {
 				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
@@ -436,7 +436,7 @@ public class VCardReader implements Closeable, IParser {
 					}
 				}
 
-				curVCard.addProperty(type);
+				curVCard.addType(type);
 			} finally {
 				for (String warning : warningsBuf) {
 					addWarning(warning, name);

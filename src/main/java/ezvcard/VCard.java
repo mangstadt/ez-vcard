@@ -448,7 +448,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the kind
 	 */
 	public KindType getKind() {
-		return getProperty(KindType.class);
+		return getType(KindType.class);
 	}
 
 	/**
@@ -462,7 +462,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param kind the kind
 	 */
 	public void setKind(KindType kind) {
-		setProperty(KindType.class, kind);
+		setType(KindType.class, kind);
 	}
 
 	/**
@@ -476,7 +476,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the gender
 	 */
 	public GenderType getGender() {
-		return getProperty(GenderType.class);
+		return getType(GenderType.class);
 	}
 
 	/**
@@ -490,7 +490,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param gender the gender
 	 */
 	public void setGender(GenderType gender) {
-		setProperty(GenderType.class, gender);
+		setType(GenderType.class, gender);
 	}
 
 	/**
@@ -520,7 +520,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the members
 	 */
 	public List<MemberType> getMembers() {
-		return getProperties(MemberType.class);
+		return getTypes(MemberType.class);
 	}
 
 	/**
@@ -546,7 +546,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param member the member to add
 	 */
 	public void addMember(MemberType member) {
-		addProperty(member);
+		addType(member);
 	}
 
 	/**
@@ -565,7 +565,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addMemberAlt(Collection<MemberType> altRepresentations) {
-		addPropertyAlt(MemberType.class, altRepresentations);
+		addTypeAlt(MemberType.class, altRepresentations);
 	}
 
 	/**
@@ -584,7 +584,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addMemberAlt(MemberType... altRepresentations) {
-		addPropertyAlt(MemberType.class, altRepresentations);
+		addTypeAlt(MemberType.class, altRepresentations);
 	}
 
 	/**
@@ -598,7 +598,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the property
 	 */
 	public ProfileType getProfile() {
-		return getProperty(ProfileType.class);
+		return getType(ProfileType.class);
 	}
 
 	/**
@@ -612,7 +612,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param profile the property
 	 */
 	public void setProfile(ProfileType profile) {
-		setProperty(ProfileType.class, profile);
+		setType(ProfileType.class, profile);
 	}
 
 	/**
@@ -627,7 +627,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the classification
 	 */
 	public ClassificationType getClassification() {
-		return getProperty(ClassificationType.class);
+		return getType(ClassificationType.class);
 	}
 
 	/**
@@ -642,7 +642,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param classification the classification
 	 */
 	public void setClassification(ClassificationType classification) {
-		setProperty(ClassificationType.class, classification);
+		setType(ClassificationType.class, classification);
 	}
 
 	/**
@@ -682,7 +682,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the sources
 	 */
 	public List<SourceType> getSources() {
-		return getProperties(SourceType.class);
+		return getTypes(SourceType.class);
 	}
 
 	/**
@@ -697,7 +697,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param source the source
 	 */
 	public void addSource(SourceType source) {
-		addProperty(source);
+		addType(source);
 	}
 
 	/**
@@ -736,7 +736,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addSourceAlt(Collection<SourceType> altRepresentations) {
-		addPropertyAlt(SourceType.class, altRepresentations);
+		addTypeAlt(SourceType.class, altRepresentations);
 	}
 
 	/**
@@ -756,7 +756,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addSourceAlt(SourceType... altRepresentations) {
-		addPropertyAlt(SourceType.class, altRepresentations);
+		addTypeAlt(SourceType.class, altRepresentations);
 	}
 
 	/**
@@ -770,7 +770,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return a textual representation of the vCard source
 	 */
 	public SourceDisplayTextType getSourceDisplayText() {
-		return getProperty(SourceDisplayTextType.class);
+		return getType(SourceDisplayTextType.class);
 	}
 
 	/**
@@ -784,7 +784,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param sourceDisplayText a textual representation of the vCard source
 	 */
 	public void setSourceDisplayText(SourceDisplayTextType sourceDisplayText) {
-		setProperty(SourceDisplayTextType.class, sourceDisplayText);
+		setType(SourceDisplayTextType.class, sourceDisplayText);
 	}
 
 	/**
@@ -827,7 +827,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the formatted name properties
 	 */
 	public List<FormattedNameType> getFormattedNames() {
-		return getProperties(FormattedNameType.class);
+		return getTypes(FormattedNameType.class);
 	}
 
 	/**
@@ -843,7 +843,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the formatted name property or null if one doesn't exist
 	 */
 	public FormattedNameType getFormattedName() {
-		return getProperty(FormattedNameType.class);
+		return getType(FormattedNameType.class);
 	}
 
 	/**
@@ -863,7 +863,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setFormattedNameAlt(Collection<FormattedNameType> altRepresentations) {
-		setPropertyAlt(FormattedNameType.class, altRepresentations);
+		setTypeAlt(FormattedNameType.class, altRepresentations);
 	}
 
 	/**
@@ -883,7 +883,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setFormattedNameAlt(FormattedNameType... altRepresentations) {
-		setPropertyAlt(FormattedNameType.class, altRepresentations);
+		setTypeAlt(FormattedNameType.class, altRepresentations);
 	}
 
 	/**
@@ -903,7 +903,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addFormattedNameAlt(Collection<FormattedNameType> altRepresentations) {
-		addPropertyAlt(FormattedNameType.class, altRepresentations);
+		addTypeAlt(FormattedNameType.class, altRepresentations);
 	}
 
 	/**
@@ -923,7 +923,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addFormattedNameAlt(FormattedNameType... altRepresentations) {
-		addPropertyAlt(FormattedNameType.class, altRepresentations);
+		addTypeAlt(FormattedNameType.class, altRepresentations);
 	}
 
 	/*
@@ -947,7 +947,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param formattedName the formatted name property or null to remove
 	 */
 	public void setFormattedName(FormattedNameType formattedName) {
-		setProperty(FormattedNameType.class, formattedName);
+		setType(FormattedNameType.class, formattedName);
 	}
 
 	/**
@@ -965,7 +965,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param formattedName the formatted name property
 	 */
 	public void addFormattedName(FormattedNameType formattedName) {
-		addProperty(formattedName);
+		addType(formattedName);
 	}
 
 	/**
@@ -1008,7 +1008,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the structured name property objects
 	 */
 	public List<StructuredNameType> getStructuredNames() {
-		return getProperties(StructuredNameType.class);
+		return getTypes(StructuredNameType.class);
 	}
 
 	/**
@@ -1024,7 +1024,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the components of the person's name
 	 */
 	public StructuredNameType getStructuredName() {
-		return getProperty(StructuredNameType.class);
+		return getType(StructuredNameType.class);
 	}
 
 	/**
@@ -1044,7 +1044,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setStructuredNameAlt(Collection<StructuredNameType> altRepresentations) {
-		setPropertyAlt(StructuredNameType.class, altRepresentations);
+		setTypeAlt(StructuredNameType.class, altRepresentations);
 	}
 
 	/**
@@ -1064,7 +1064,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setStructuredNameAlt(StructuredNameType... altRepresentations) {
-		setPropertyAlt(StructuredNameType.class, altRepresentations);
+		setTypeAlt(StructuredNameType.class, altRepresentations);
 	}
 
 	/**
@@ -1079,7 +1079,7 @@ public class VCard implements Iterable<VCardType> {
 	 * remove
 	 */
 	public void setStructuredName(StructuredNameType structuredName) {
-		setProperty(StructuredNameType.class, structuredName);
+		setType(StructuredNameType.class, structuredName);
 	}
 
 	/**
@@ -1098,7 +1098,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the nickname properties
 	 */
 	public List<NicknameType> getNicknames() {
-		return getProperties(NicknameType.class);
+		return getTypes(NicknameType.class);
 	}
 
 	/**
@@ -1114,7 +1114,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the person's nicknames
 	 */
 	public NicknameType getNickname() {
-		return getProperty(NicknameType.class);
+		return getType(NicknameType.class);
 	}
 
 	/**
@@ -1134,7 +1134,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setNicknameAlt(Collection<NicknameType> altRepresentations) {
-		setPropertyAlt(NicknameType.class, altRepresentations);
+		setTypeAlt(NicknameType.class, altRepresentations);
 	}
 
 	/**
@@ -1154,7 +1154,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setNicknameAlt(NicknameType... altRepresentations) {
-		setPropertyAlt(NicknameType.class, altRepresentations);
+		setTypeAlt(NicknameType.class, altRepresentations);
 	}
 
 	/**
@@ -1174,7 +1174,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addNicknameAlt(Collection<NicknameType> altRepresentations) {
-		addPropertyAlt(NicknameType.class, altRepresentations);
+		addTypeAlt(NicknameType.class, altRepresentations);
 	}
 
 	/**
@@ -1194,7 +1194,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addNicknameAlt(NicknameType... altRepresentations) {
-		addPropertyAlt(NicknameType.class, altRepresentations);
+		addTypeAlt(NicknameType.class, altRepresentations);
 	}
 
 	/**
@@ -1211,7 +1211,7 @@ public class VCard implements Iterable<VCardType> {
 	 * multiple nicknames may be added this object)
 	 */
 	public void setNickname(NicknameType nickname) {
-		setProperty(NicknameType.class, nickname);
+		setType(NicknameType.class, nickname);
 	}
 
 	/**
@@ -1230,7 +1230,7 @@ public class VCard implements Iterable<VCardType> {
 	 * be added this object)
 	 */
 	public void addNickname(NicknameType nickname) {
-		addProperty(nickname);
+		addType(nickname);
 	}
 
 	/**
@@ -1276,7 +1276,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the sort string
 	 */
 	public SortStringType getSortString() {
-		return getProperty(SortStringType.class);
+		return getType(SortStringType.class);
 	}
 
 	/**
@@ -1296,7 +1296,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param sortString the sort string
 	 */
 	public void setSortString(SortStringType sortString) {
-		setProperty(SortStringType.class, sortString);
+		setType(SortStringType.class, sortString);
 	}
 
 	/**
@@ -1338,7 +1338,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the titles
 	 */
 	public List<TitleType> getTitles() {
-		return getProperties(TitleType.class);
+		return getTypes(TitleType.class);
 	}
 
 	/**
@@ -1352,7 +1352,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param title the title
 	 */
 	public void addTitle(TitleType title) {
-		addProperty(title);
+		addType(title);
 	}
 
 	/**
@@ -1390,7 +1390,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addTitleAlt(Collection<TitleType> altRepresentations) {
-		addPropertyAlt(TitleType.class, altRepresentations);
+		addTypeAlt(TitleType.class, altRepresentations);
 	}
 
 	/**
@@ -1410,7 +1410,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addTitleAlt(TitleType... altRepresentations) {
-		addPropertyAlt(TitleType.class, altRepresentations);
+		addTypeAlt(TitleType.class, altRepresentations);
 	}
 
 	/**
@@ -1424,7 +1424,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the roles
 	 */
 	public List<RoleType> getRoles() {
-		return getProperties(RoleType.class);
+		return getTypes(RoleType.class);
 	}
 
 	/**
@@ -1438,7 +1438,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param role the role
 	 */
 	public void addRole(RoleType role) {
-		addProperty(role);
+		addType(role);
 	}
 
 	/**
@@ -1476,7 +1476,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addRoleAlt(Collection<RoleType> altRepresentations) {
-		addPropertyAlt(RoleType.class, altRepresentations);
+		addTypeAlt(RoleType.class, altRepresentations);
 	}
 
 	/**
@@ -1496,7 +1496,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addRoleAlt(RoleType... altRepresentations) {
-		addPropertyAlt(RoleType.class, altRepresentations);
+		addTypeAlt(RoleType.class, altRepresentations);
 	}
 
 	/**
@@ -1511,7 +1511,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the photos
 	 */
 	public List<PhotoType> getPhotos() {
-		return getProperties(PhotoType.class);
+		return getTypes(PhotoType.class);
 	}
 
 	/**
@@ -1525,7 +1525,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param photo the photo to add
 	 */
 	public void addPhoto(PhotoType photo) {
-		addProperty(photo);
+		addType(photo);
 	}
 
 	/**
@@ -1545,7 +1545,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addPhotoAlt(Collection<PhotoType> altRepresentations) {
-		addPropertyAlt(PhotoType.class, altRepresentations);
+		addTypeAlt(PhotoType.class, altRepresentations);
 	}
 
 	/**
@@ -1565,7 +1565,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addPhotoAlt(PhotoType... altRepresentations) {
-		addPropertyAlt(PhotoType.class, altRepresentations);
+		addTypeAlt(PhotoType.class, altRepresentations);
 	}
 
 	/**
@@ -1579,7 +1579,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the logos
 	 */
 	public List<LogoType> getLogos() {
-		return getProperties(LogoType.class);
+		return getTypes(LogoType.class);
 	}
 
 	/**
@@ -1593,7 +1593,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param logo the logo to add
 	 */
 	public void addLogo(LogoType logo) {
-		addProperty(logo);
+		addType(logo);
 	}
 
 	/**
@@ -1613,7 +1613,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addLogoAlt(Collection<LogoType> altRepresentations) {
-		addPropertyAlt(LogoType.class, altRepresentations);
+		addTypeAlt(LogoType.class, altRepresentations);
 	}
 
 	/**
@@ -1633,7 +1633,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addLogoAlt(LogoType... altRepresentations) {
-		addPropertyAlt(LogoType.class, altRepresentations);
+		addTypeAlt(LogoType.class, altRepresentations);
 	}
 
 	/**
@@ -1648,7 +1648,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the sounds
 	 */
 	public List<SoundType> getSounds() {
-		return getProperties(SoundType.class);
+		return getTypes(SoundType.class);
 	}
 
 	/**
@@ -1662,7 +1662,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param sound the sound to add
 	 */
 	public void addSound(SoundType sound) {
-		addProperty(sound);
+		addType(sound);
 	}
 
 	/**
@@ -1682,7 +1682,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addSoundAlt(Collection<SoundType> altRepresentations) {
-		addPropertyAlt(SoundType.class, altRepresentations);
+		addTypeAlt(SoundType.class, altRepresentations);
 	}
 
 	/**
@@ -1702,7 +1702,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addSoundAlt(SoundType... altRepresentations) {
-		addPropertyAlt(SoundType.class, altRepresentations);
+		addTypeAlt(SoundType.class, altRepresentations);
 	}
 
 	/**
@@ -1721,7 +1721,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public List<BirthplaceType> getBirthplaces() {
-		return getProperties(BirthplaceType.class);
+		return getTypes(BirthplaceType.class);
 	}
 
 	/**
@@ -1738,7 +1738,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public BirthplaceType getBirthplace() {
-		return getProperty(BirthplaceType.class);
+		return getType(BirthplaceType.class);
 	}
 
 	/**
@@ -1758,7 +1758,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public void setBirthplaceAlt(Collection<BirthplaceType> altRepresentations) {
-		setPropertyAlt(BirthplaceType.class, altRepresentations);
+		setTypeAlt(BirthplaceType.class, altRepresentations);
 	}
 
 	/**
@@ -1778,7 +1778,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public void setBirthplaceAlt(BirthplaceType... altRepresentations) {
-		setPropertyAlt(BirthplaceType.class, altRepresentations);
+		setTypeAlt(BirthplaceType.class, altRepresentations);
 	}
 
 	/**
@@ -1795,7 +1795,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public void setBirthplace(BirthplaceType birthplace) {
-		setProperty(BirthplaceType.class, birthplace);
+		setType(BirthplaceType.class, birthplace);
 	}
 
 	/**
@@ -1814,7 +1814,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public List<DeathplaceType> getDeathplaces() {
-		return getProperties(DeathplaceType.class);
+		return getTypes(DeathplaceType.class);
 	}
 
 	/**
@@ -1831,7 +1831,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public DeathplaceType getDeathplace() {
-		return getProperty(DeathplaceType.class);
+		return getType(DeathplaceType.class);
 	}
 
 	/**
@@ -1851,7 +1851,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public void setDeathplaceAlt(Collection<DeathplaceType> altRepresentations) {
-		setPropertyAlt(DeathplaceType.class, altRepresentations);
+		setTypeAlt(DeathplaceType.class, altRepresentations);
 	}
 
 	/**
@@ -1871,7 +1871,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public void setDeathplaceAlt(DeathplaceType... altRepresentations) {
-		setPropertyAlt(DeathplaceType.class, altRepresentations);
+		setTypeAlt(DeathplaceType.class, altRepresentations);
 	}
 
 	/**
@@ -1888,7 +1888,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public void setDeathplace(DeathplaceType deathplace) {
-		setProperty(DeathplaceType.class, deathplace);
+		setType(DeathplaceType.class, deathplace);
 	}
 
 	/**
@@ -1907,7 +1907,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public List<DeathdateType> getDeathdates() {
-		return getProperties(DeathdateType.class);
+		return getTypes(DeathdateType.class);
 	}
 
 	/**
@@ -1924,7 +1924,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public DeathdateType getDeathdate() {
-		return getProperty(DeathdateType.class);
+		return getType(DeathdateType.class);
 	}
 
 	/**
@@ -1943,7 +1943,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setDeathdateAlt(Collection<DeathdateType> altRepresentations) {
-		setPropertyAlt(DeathdateType.class, altRepresentations);
+		setTypeAlt(DeathdateType.class, altRepresentations);
 	}
 
 	/**
@@ -1962,7 +1962,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setDeathdateAlt(DeathdateType... altRepresentations) {
-		setPropertyAlt(DeathdateType.class, altRepresentations);
+		setTypeAlt(DeathdateType.class, altRepresentations);
 	}
 
 	/**
@@ -1979,7 +1979,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 */
 	public void setDeathdate(DeathdateType deathdate) {
-		setProperty(DeathdateType.class, deathdate);
+		setType(DeathdateType.class, deathdate);
 	}
 
 	/**
@@ -1998,7 +1998,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the birthday properties
 	 */
 	public List<BirthdayType> getBirthdays() {
-		return getProperties(BirthdayType.class);
+		return getTypes(BirthdayType.class);
 	}
 
 	/**
@@ -2014,7 +2014,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the birthday
 	 */
 	public BirthdayType getBirthday() {
-		return getProperty(BirthdayType.class);
+		return getType(BirthdayType.class);
 	}
 
 	/**
@@ -2034,7 +2034,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setBirthdayAlt(Collection<BirthdayType> altRepresentations) {
-		setPropertyAlt(BirthdayType.class, altRepresentations);
+		setTypeAlt(BirthdayType.class, altRepresentations);
 	}
 
 	/**
@@ -2054,7 +2054,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setBirthdayAlt(BirthdayType... altRepresentations) {
-		setPropertyAlt(BirthdayType.class, altRepresentations);
+		setTypeAlt(BirthdayType.class, altRepresentations);
 	}
 
 	/**
@@ -2070,7 +2070,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param birthday the birthday or null to remove
 	 */
 	public void setBirthday(BirthdayType birthday) {
-		setProperty(BirthdayType.class, birthday);
+		setType(BirthdayType.class, birthday);
 	}
 
 	/**
@@ -2088,7 +2088,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the anniversary properties
 	 */
 	public List<AnniversaryType> getAnniversaries() {
-		return getProperties(AnniversaryType.class);
+		return getTypes(AnniversaryType.class);
 	}
 
 	/**
@@ -2104,7 +2104,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the anniversary
 	 */
 	public AnniversaryType getAnniversary() {
-		return getProperty(AnniversaryType.class);
+		return getType(AnniversaryType.class);
 	}
 
 	/**
@@ -2123,7 +2123,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setAnniversaryAlt(Collection<AnniversaryType> altRepresentations) {
-		setPropertyAlt(AnniversaryType.class, altRepresentations);
+		setTypeAlt(AnniversaryType.class, altRepresentations);
 	}
 
 	/**
@@ -2142,7 +2142,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setAnniversaryAlt(AnniversaryType... altRepresentations) {
-		setPropertyAlt(AnniversaryType.class, altRepresentations);
+		setTypeAlt(AnniversaryType.class, altRepresentations);
 	}
 
 	/**
@@ -2158,7 +2158,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param anniversary the anniversary or null to remove
 	 */
 	public void setAnniversary(AnniversaryType anniversary) {
-		setProperty(AnniversaryType.class, anniversary);
+		setType(AnniversaryType.class, anniversary);
 	}
 
 	/**
@@ -2172,7 +2172,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the last modified time
 	 */
 	public RevisionType getRevision() {
-		return getProperty(RevisionType.class);
+		return getType(RevisionType.class);
 	}
 
 	/**
@@ -2186,7 +2186,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param rev the last modified time
 	 */
 	public void setRevision(RevisionType rev) {
-		setProperty(RevisionType.class, rev);
+		setType(RevisionType.class, rev);
 	}
 
 	/**
@@ -2222,7 +2222,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the product ID
 	 */
 	public ProdIdType getProdId() {
-		return getProperty(ProdIdType.class);
+		return getType(ProdIdType.class);
 	}
 
 	/**
@@ -2237,7 +2237,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param prodId the product ID
 	 */
 	public void setProdId(ProdIdType prodId) {
-		setProperty(ProdIdType.class, prodId);
+		setType(ProdIdType.class, prodId);
 	}
 
 	/**
@@ -2272,7 +2272,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the mailing addresses
 	 */
 	public List<AddressType> getAddresses() {
-		return getProperties(AddressType.class);
+		return getTypes(AddressType.class);
 	}
 
 	/**
@@ -2286,7 +2286,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param address the mailing address to add
 	 */
 	public void addAddress(AddressType address) {
-		addProperty(address);
+		addType(address);
 	}
 
 	/**
@@ -2306,7 +2306,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addAddressAlt(Collection<AddressType> altRepresentations) {
-		addPropertyAlt(AddressType.class, altRepresentations);
+		addTypeAlt(AddressType.class, altRepresentations);
 	}
 
 	/**
@@ -2326,7 +2326,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addAddressAlt(AddressType... altRepresentations) {
-		addPropertyAlt(AddressType.class, altRepresentations);
+		addTypeAlt(AddressType.class, altRepresentations);
 	}
 
 	/**
@@ -2342,7 +2342,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the orphaned labels
 	 */
 	public List<LabelType> getOrphanedLabels() {
-		return getProperties(LabelType.class);
+		return getTypes(LabelType.class);
 	}
 
 	/**
@@ -2358,7 +2358,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param label the orphaned label to add
 	 */
 	public void addOrphanedLabel(LabelType label) {
-		addProperty(label);
+		addType(label);
 	}
 
 	/**
@@ -2372,7 +2372,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the email addresses
 	 */
 	public List<EmailType> getEmails() {
-		return getProperties(EmailType.class);
+		return getTypes(EmailType.class);
 	}
 
 	/**
@@ -2386,7 +2386,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param email the email address to add
 	 */
 	public void addEmail(EmailType email) {
-		addProperty(email);
+		addType(email);
 	}
 
 	/**
@@ -2428,7 +2428,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addEmailAlt(Collection<EmailType> altRepresentations) {
-		addPropertyAlt(EmailType.class, altRepresentations);
+		addTypeAlt(EmailType.class, altRepresentations);
 	}
 
 	/**
@@ -2448,7 +2448,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addEmailAlt(EmailType... altRepresentations) {
-		addPropertyAlt(EmailType.class, altRepresentations);
+		addTypeAlt(EmailType.class, altRepresentations);
 	}
 
 	/**
@@ -2462,7 +2462,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the telephone numbers
 	 */
 	public List<TelephoneType> getTelephoneNumbers() {
-		return getProperties(TelephoneType.class);
+		return getTypes(TelephoneType.class);
 	}
 
 	/**
@@ -2476,7 +2476,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param telephoneNumber the telephone number to add
 	 */
 	public void addTelephoneNumber(TelephoneType telephoneNumber) {
-		addProperty(telephoneNumber);
+		addType(telephoneNumber);
 	}
 
 	/**
@@ -2520,7 +2520,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addTelephoneNumberAlt(Collection<TelephoneType> altRepresentations) {
-		addPropertyAlt(TelephoneType.class, altRepresentations);
+		addTypeAlt(TelephoneType.class, altRepresentations);
 	}
 
 	/**
@@ -2540,7 +2540,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addTelephoneNumberAlt(TelephoneType... altRepresentations) {
-		addPropertyAlt(TelephoneType.class, altRepresentations);
+		addTypeAlt(TelephoneType.class, altRepresentations);
 	}
 
 	/**
@@ -2554,7 +2554,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the email client
 	 */
 	public MailerType getMailer() {
-		return getProperty(MailerType.class);
+		return getType(MailerType.class);
 	}
 
 	/**
@@ -2568,7 +2568,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param mailer the email client
 	 */
 	public void setMailer(MailerType mailer) {
-		setProperty(MailerType.class, mailer);
+		setType(MailerType.class, mailer);
 	}
 
 	/**
@@ -2604,7 +2604,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the URLs
 	 */
 	public List<UrlType> getUrls() {
-		return getProperties(UrlType.class);
+		return getTypes(UrlType.class);
 	}
 
 	/**
@@ -2619,7 +2619,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param url the URL to add
 	 */
 	public void addUrl(UrlType url) {
-		addProperty(url);
+		addType(url);
 	}
 
 	/**
@@ -2658,7 +2658,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addUrlAlt(Collection<UrlType> altRepresentations) {
-		addPropertyAlt(UrlType.class, altRepresentations);
+		addTypeAlt(UrlType.class, altRepresentations);
 	}
 
 	/**
@@ -2678,7 +2678,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addUrlAlt(UrlType... altRepresentations) {
-		addPropertyAlt(UrlType.class, altRepresentations);
+		addTypeAlt(UrlType.class, altRepresentations);
 	}
 
 	/**
@@ -2698,7 +2698,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the timezones
 	 */
 	public List<TimezoneType> getTimezones() {
-		return getProperties(TimezoneType.class);
+		return getTypes(TimezoneType.class);
 	}
 
 	/**
@@ -2714,7 +2714,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the timezone
 	 */
 	public TimezoneType getTimezone() {
-		return getProperty(TimezoneType.class);
+		return getType(TimezoneType.class);
 	}
 
 	/**
@@ -2734,7 +2734,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setTimezoneAlt(Collection<TimezoneType> altRepresentations) {
-		setPropertyAlt(TimezoneType.class, altRepresentations);
+		setTypeAlt(TimezoneType.class, altRepresentations);
 	}
 
 	/**
@@ -2754,7 +2754,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setTimezoneAlt(TimezoneType... altRepresentations) {
-		setPropertyAlt(TimezoneType.class, altRepresentations);
+		setTypeAlt(TimezoneType.class, altRepresentations);
 	}
 
 	/**
@@ -2774,7 +2774,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addTimezoneAlt(Collection<TimezoneType> altRepresentations) {
-		addPropertyAlt(TimezoneType.class, altRepresentations);
+		addTypeAlt(TimezoneType.class, altRepresentations);
 	}
 
 	/**
@@ -2794,7 +2794,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addTimezoneAlt(TimezoneType... altRepresentations) {
-		addPropertyAlt(TimezoneType.class, altRepresentations);
+		addTypeAlt(TimezoneType.class, altRepresentations);
 	}
 
 	/**
@@ -2810,7 +2810,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param timezone the timezone or null to remove
 	 */
 	public void setTimezone(TimezoneType timezone) {
-		setProperty(TimezoneType.class, timezone);
+		setType(TimezoneType.class, timezone);
 	}
 
 	/**
@@ -2827,7 +2827,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param timezone the timezone or null to remove
 	 */
 	public void addTimezone(TimezoneType timezone) {
-		addProperty(timezone);
+		addType(timezone);
 	}
 
 	/**
@@ -2847,7 +2847,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the geo properties
 	 */
 	public List<GeoType> getGeos() {
-		return getProperties(GeoType.class);
+		return getTypes(GeoType.class);
 	}
 
 	/**
@@ -2863,7 +2863,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the geographical position or null if one doesn't exist
 	 */
 	public GeoType getGeo() {
-		return getProperty(GeoType.class);
+		return getType(GeoType.class);
 	}
 
 	/**
@@ -2883,7 +2883,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setGeoAlt(Collection<GeoType> altRepresentations) {
-		setPropertyAlt(GeoType.class, altRepresentations);
+		setTypeAlt(GeoType.class, altRepresentations);
 	}
 
 	/**
@@ -2903,7 +2903,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addGeoAlt(Collection<GeoType> altRepresentations) {
-		addPropertyAlt(GeoType.class, altRepresentations);
+		addTypeAlt(GeoType.class, altRepresentations);
 	}
 
 	/**
@@ -2923,7 +2923,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addGeoAlt(GeoType... altRepresentations) {
-		addPropertyAlt(GeoType.class, altRepresentations);
+		addTypeAlt(GeoType.class, altRepresentations);
 	}
 
 	/**
@@ -2939,7 +2939,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param geo the geographical position or null to remove
 	 */
 	public void setGeo(GeoType geo) {
-		setProperty(GeoType.class, geo);
+		setType(GeoType.class, geo);
 	}
 
 	/**
@@ -2957,7 +2957,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param geo the geographical position
 	 */
 	public void addGeo(GeoType geo) {
-		addProperty(geo);
+		addType(geo);
 	}
 
 	/**
@@ -2998,7 +2998,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the organization properties
 	 */
 	public List<OrganizationType> getOrganizations() {
-		return getProperties(OrganizationType.class);
+		return getTypes(OrganizationType.class);
 	}
 
 	/**
@@ -3014,7 +3014,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the department(s)
 	 */
 	public OrganizationType getOrganization() {
-		return getProperty(OrganizationType.class);
+		return getType(OrganizationType.class);
 	}
 
 	/**
@@ -3034,7 +3034,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setOrganizationAlt(Collection<OrganizationType> altRepresentations) {
-		setPropertyAlt(OrganizationType.class, altRepresentations);
+		setTypeAlt(OrganizationType.class, altRepresentations);
 	}
 
 	/**
@@ -3054,7 +3054,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setOrganizationAlt(OrganizationType... altRepresentations) {
-		setPropertyAlt(OrganizationType.class, altRepresentations);
+		setTypeAlt(OrganizationType.class, altRepresentations);
 	}
 
 	/**
@@ -3074,7 +3074,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addOrganizationAlt(Collection<OrganizationType> altRepresentations) {
-		addPropertyAlt(OrganizationType.class, altRepresentations);
+		addTypeAlt(OrganizationType.class, altRepresentations);
 	}
 
 	/**
@@ -3094,7 +3094,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addOrganizationAlt(OrganizationType... altRepresentations) {
-		addPropertyAlt(OrganizationType.class, altRepresentations);
+		addTypeAlt(OrganizationType.class, altRepresentations);
 	}
 
 	/**
@@ -3110,7 +3110,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param organization the organization property or null to remove
 	 */
 	public void setOrganization(OrganizationType organization) {
-		setProperty(OrganizationType.class, organization);
+		setType(OrganizationType.class, organization);
 	}
 
 	/**
@@ -3128,7 +3128,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param organization the organization property
 	 */
 	public void addOrganization(OrganizationType organization) {
-		addProperty(organization);
+		addType(organization);
 	}
 
 	/**
@@ -3176,7 +3176,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the categories properties
 	 */
 	public List<CategoriesType> getCategoriesList() {
-		return getProperties(CategoriesType.class);
+		return getTypes(CategoriesType.class);
 	}
 
 	/**
@@ -3193,7 +3193,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the categories
 	 */
 	public CategoriesType getCategories() {
-		return getProperty(CategoriesType.class);
+		return getType(CategoriesType.class);
 	}
 
 	/**
@@ -3213,7 +3213,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setCategoriesAlt(Collection<CategoriesType> altRepresentations) {
-		setPropertyAlt(CategoriesType.class, altRepresentations);
+		setTypeAlt(CategoriesType.class, altRepresentations);
 	}
 
 	/**
@@ -3233,7 +3233,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void setCategoriesAlt(CategoriesType... altRepresentations) {
-		setPropertyAlt(CategoriesType.class, altRepresentations);
+		setTypeAlt(CategoriesType.class, altRepresentations);
 	}
 
 	/**
@@ -3253,7 +3253,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addCategoriesAlt(Collection<CategoriesType> altRepresentations) {
-		addPropertyAlt(CategoriesType.class, altRepresentations);
+		addTypeAlt(CategoriesType.class, altRepresentations);
 	}
 
 	/**
@@ -3273,7 +3273,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addCategoriesAlt(CategoriesType... altRepresentations) {
-		addPropertyAlt(CategoriesType.class, altRepresentations);
+		addTypeAlt(CategoriesType.class, altRepresentations);
 	}
 
 	/**
@@ -3291,7 +3291,7 @@ public class VCard implements Iterable<VCardType> {
 	 * categories may be added to this object)
 	 */
 	public void setCategories(CategoriesType categories) {
-		setProperty(CategoriesType.class, categories);
+		setType(CategoriesType.class, categories);
 	}
 
 	/**
@@ -3311,7 +3311,7 @@ public class VCard implements Iterable<VCardType> {
 	 * to this object)
 	 */
 	public void addCategories(CategoriesType categories) {
-		addProperty(categories);
+		addType(categories);
 	}
 
 	/**
@@ -3353,7 +3353,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the agent information
 	 */
 	public AgentType getAgent() {
-		return getProperty(AgentType.class);
+		return getType(AgentType.class);
 	}
 
 	/**
@@ -3367,7 +3367,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param agent the agent information
 	 */
 	public void setAgent(AgentType agent) {
-		setProperty(AgentType.class, agent);
+		setType(AgentType.class, agent);
 	}
 
 	/**
@@ -3381,7 +3381,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the notes
 	 */
 	public List<NoteType> getNotes() {
-		return getProperties(NoteType.class);
+		return getTypes(NoteType.class);
 	}
 
 	/**
@@ -3395,7 +3395,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param note the note to add
 	 */
 	public void addNote(NoteType note) {
-		addProperty(note);
+		addType(note);
 	}
 
 	/**
@@ -3433,7 +3433,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addNoteAlt(Collection<NoteType> altRepresentations) {
-		addPropertyAlt(NoteType.class, altRepresentations);
+		addTypeAlt(NoteType.class, altRepresentations);
 	}
 
 	/**
@@ -3453,7 +3453,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addNoteAlt(NoteType... altRepresentations) {
-		addPropertyAlt(NoteType.class, altRepresentations);
+		addTypeAlt(NoteType.class, altRepresentations);
 	}
 
 	/**
@@ -3467,7 +3467,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the unique identifier
 	 */
 	public UidType getUid() {
-		return getProperty(UidType.class);
+		return getType(UidType.class);
 	}
 
 	/**
@@ -3481,7 +3481,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param uid the unique identifier
 	 */
 	public void setUid(UidType uid) {
-		setProperty(UidType.class, uid);
+		setType(UidType.class, uid);
 	}
 
 	/**
@@ -3495,7 +3495,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the keys
 	 */
 	public List<KeyType> getKeys() {
-		return getProperties(KeyType.class);
+		return getTypes(KeyType.class);
 	}
 
 	/**
@@ -3509,7 +3509,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param key the key to add
 	 */
 	public void addKey(KeyType key) {
-		addProperty(key);
+		addType(key);
 	}
 
 	/**
@@ -3529,7 +3529,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addKeyAlt(Collection<KeyType> altRepresentations) {
-		addPropertyAlt(KeyType.class, altRepresentations);
+		addTypeAlt(KeyType.class, altRepresentations);
 	}
 
 	/**
@@ -3549,7 +3549,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addKeyAlt(KeyType... altRepresentations) {
-		addPropertyAlt(KeyType.class, altRepresentations);
+		addTypeAlt(KeyType.class, altRepresentations);
 	}
 
 	/**
@@ -3563,7 +3563,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the instant messaging handles
 	 */
 	public List<ImppType> getImpps() {
-		return getProperties(ImppType.class);
+		return getTypes(ImppType.class);
 	}
 
 	/**
@@ -3577,7 +3577,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param impp the instant messaging handle to add
 	 */
 	public void addImpp(ImppType impp) {
-		addProperty(impp);
+		addType(impp);
 	}
 
 	/**
@@ -3597,7 +3597,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addImppAlt(Collection<ImppType> altRepresentations) {
-		addPropertyAlt(ImppType.class, altRepresentations);
+		addTypeAlt(ImppType.class, altRepresentations);
 	}
 
 	/**
@@ -3617,7 +3617,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addImppAlt(ImppType... altRepresentations) {
-		addPropertyAlt(ImppType.class, altRepresentations);
+		addTypeAlt(ImppType.class, altRepresentations);
 	}
 
 	/**
@@ -3631,7 +3631,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the person's relations
 	 */
 	public List<RelatedType> getRelations() {
-		return getProperties(RelatedType.class);
+		return getTypes(RelatedType.class);
 	}
 
 	/**
@@ -3645,7 +3645,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param related the relation to add
 	 */
 	public void addRelated(RelatedType related) {
-		addProperty(related);
+		addType(related);
 	}
 
 	/**
@@ -3664,7 +3664,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addRelatedAlt(Collection<RelatedType> altRepresentations) {
-		addPropertyAlt(RelatedType.class, altRepresentations);
+		addTypeAlt(RelatedType.class, altRepresentations);
 	}
 
 	/**
@@ -3683,7 +3683,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addRelatedAlt(RelatedType... altRepresentations) {
-		addPropertyAlt(RelatedType.class, altRepresentations);
+		addTypeAlt(RelatedType.class, altRepresentations);
 	}
 
 	/**
@@ -3697,7 +3697,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the languages
 	 */
 	public List<LanguageType> getLanguages() {
-		return getProperties(LanguageType.class);
+		return getTypes(LanguageType.class);
 	}
 
 	/**
@@ -3711,7 +3711,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param language the language to add
 	 */
 	public void addLanguage(LanguageType language) {
-		addProperty(language);
+		addType(language);
 	}
 
 	/**
@@ -3747,7 +3747,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addLanguageAlt(Collection<LanguageType> altRepresentations) {
-		addPropertyAlt(LanguageType.class, altRepresentations);
+		addTypeAlt(LanguageType.class, altRepresentations);
 	}
 
 	/**
@@ -3765,7 +3765,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addLanguageAlt(LanguageType... altRepresentations) {
-		addPropertyAlt(LanguageType.class, altRepresentations);
+		addTypeAlt(LanguageType.class, altRepresentations);
 	}
 
 	/**
@@ -3780,7 +3780,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the calendar request URIs
 	 */
 	public List<CalendarRequestUriType> getCalendarRequestUris() {
-		return getProperties(CalendarRequestUriType.class);
+		return getTypes(CalendarRequestUriType.class);
 	}
 
 	/**
@@ -3795,7 +3795,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param calendarRequestUri the calendar request URI to add
 	 */
 	public void addCalendarRequestUri(CalendarRequestUriType calendarRequestUri) {
-		addProperty(calendarRequestUri);
+		addType(calendarRequestUri);
 	}
 
 	/**
@@ -3814,7 +3814,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addCalendarRequestUriAlt(Collection<CalendarRequestUriType> altRepresentations) {
-		addPropertyAlt(CalendarRequestUriType.class, altRepresentations);
+		addTypeAlt(CalendarRequestUriType.class, altRepresentations);
 	}
 
 	/**
@@ -3833,7 +3833,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addCalendarRequestUriAlt(CalendarRequestUriType... altRepresentations) {
-		addPropertyAlt(CalendarRequestUriType.class, altRepresentations);
+		addTypeAlt(CalendarRequestUriType.class, altRepresentations);
 	}
 
 	/**
@@ -3847,7 +3847,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the calendar URIs
 	 */
 	public List<CalendarUriType> getCalendarUris() {
-		return getProperties(CalendarUriType.class);
+		return getTypes(CalendarUriType.class);
 	}
 
 	/**
@@ -3861,7 +3861,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param calendarUri the calendar URI to add
 	 */
 	public void addCalendarUri(CalendarUriType calendarUri) {
-		addProperty(calendarUri);
+		addType(calendarUri);
 	}
 
 	/**
@@ -3880,7 +3880,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addCalendarUriAlt(Collection<CalendarUriType> altRepresentations) {
-		addPropertyAlt(CalendarUriType.class, altRepresentations);
+		addTypeAlt(CalendarUriType.class, altRepresentations);
 	}
 
 	/**
@@ -3899,7 +3899,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addCalendarUriAlt(CalendarUriType... altRepresentations) {
-		addPropertyAlt(CalendarUriType.class, altRepresentations);
+		addTypeAlt(CalendarUriType.class, altRepresentations);
 	}
 
 	/**
@@ -3914,7 +3914,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the free-busy URLs
 	 */
 	public List<FbUrlType> getFbUrls() {
-		return getProperties(FbUrlType.class);
+		return getTypes(FbUrlType.class);
 	}
 
 	/**
@@ -3929,7 +3929,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param fbUrl the free-busy URL to add
 	 */
 	public void addFbUrl(FbUrlType fbUrl) {
-		addProperty(fbUrl);
+		addType(fbUrl);
 	}
 
 	/**
@@ -3947,7 +3947,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addFbUrlAlt(Collection<FbUrlType> altRepresentations) {
-		addPropertyAlt(FbUrlType.class, altRepresentations);
+		addTypeAlt(FbUrlType.class, altRepresentations);
 	}
 
 	/**
@@ -3965,7 +3965,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addFbUrlAlt(FbUrlType... altRepresentations) {
-		addPropertyAlt(FbUrlType.class, altRepresentations);
+		addTypeAlt(FbUrlType.class, altRepresentations);
 	}
 
 	/**
@@ -3981,7 +3981,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the client PID maps
 	 */
 	public List<ClientPidMapType> getClientPidMaps() {
-		return getProperties(ClientPidMapType.class);
+		return getTypes(ClientPidMapType.class);
 	}
 
 	/**
@@ -3997,7 +3997,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param clientPidMap the client PID map to add
 	 */
 	public void addClientPidMap(ClientPidMapType clientPidMap) {
-		addProperty(clientPidMap);
+		addType(clientPidMap);
 	}
 
 	/**
@@ -4014,7 +4014,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the XML data
 	 */
 	public List<XmlType> getXmls() {
-		return getProperties(XmlType.class);
+		return getTypes(XmlType.class);
 	}
 
 	/**
@@ -4031,7 +4031,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param xml the XML data to add
 	 */
 	public void addXml(XmlType xml) {
-		addProperty(xml);
+		addType(xml);
 	}
 
 	/**
@@ -4050,7 +4050,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addXmlAlt(Collection<XmlType> altRepresentations) {
-		addPropertyAlt(XmlType.class, altRepresentations);
+		addTypeAlt(XmlType.class, altRepresentations);
 	}
 
 	/**
@@ -4069,7 +4069,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addXmlAlt(XmlType... altRepresentations) {
-		addPropertyAlt(XmlType.class, altRepresentations);
+		addTypeAlt(XmlType.class, altRepresentations);
 	}
 
 	/**
@@ -4085,7 +4085,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public List<ExpertiseType> getExpertise() {
-		return getProperties(ExpertiseType.class);
+		return getTypes(ExpertiseType.class);
 	}
 
 	/**
@@ -4101,7 +4101,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addExpertise(ExpertiseType expertise) {
-		addProperty(expertise);
+		addType(expertise);
 	}
 
 	/**
@@ -4141,7 +4141,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addExpertiseAlt(Collection<ExpertiseType> altRepresentations) {
-		addPropertyAlt(ExpertiseType.class, altRepresentations);
+		addTypeAlt(ExpertiseType.class, altRepresentations);
 	}
 
 	/**
@@ -4161,7 +4161,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addExpertiseAlt(ExpertiseType... altRepresentations) {
-		addPropertyAlt(ExpertiseType.class, altRepresentations);
+		addTypeAlt(ExpertiseType.class, altRepresentations);
 	}
 
 	/**
@@ -4176,7 +4176,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public List<HobbyType> getHobbies() {
-		return getProperties(HobbyType.class);
+		return getTypes(HobbyType.class);
 	}
 
 	/**
@@ -4191,7 +4191,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addHobby(HobbyType hobby) {
-		addProperty(hobby);
+		addType(hobby);
 	}
 
 	/**
@@ -4229,7 +4229,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addHobbyAlt(Collection<HobbyType> altRepresentations) {
-		addPropertyAlt(HobbyType.class, altRepresentations);
+		addTypeAlt(HobbyType.class, altRepresentations);
 	}
 
 	/**
@@ -4248,7 +4248,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addHobbyAlt(HobbyType... altRepresentations) {
-		addPropertyAlt(HobbyType.class, altRepresentations);
+		addTypeAlt(HobbyType.class, altRepresentations);
 	}
 
 	/**
@@ -4263,7 +4263,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public List<InterestType> getInterests() {
-		return getProperties(InterestType.class);
+		return getTypes(InterestType.class);
 	}
 
 	/**
@@ -4278,7 +4278,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addInterest(InterestType interest) {
-		addProperty(interest);
+		addType(interest);
 	}
 
 	/**
@@ -4316,7 +4316,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addInterestAlt(Collection<InterestType> altRepresentations) {
-		addPropertyAlt(InterestType.class, altRepresentations);
+		addTypeAlt(InterestType.class, altRepresentations);
 	}
 
 	/**
@@ -4335,7 +4335,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addInterestAlt(InterestType... altRepresentations) {
-		addPropertyAlt(InterestType.class, altRepresentations);
+		addTypeAlt(InterestType.class, altRepresentations);
 	}
 
 	/**
@@ -4350,7 +4350,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public List<OrgDirectoryType> getOrgDirectories() {
-		return getProperties(OrgDirectoryType.class);
+		return getTypes(OrgDirectoryType.class);
 	}
 
 	/**
@@ -4365,7 +4365,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void addOrgDirectory(OrgDirectoryType orgDirectory) {
-		addProperty(orgDirectory);
+		addType(orgDirectory);
 	}
 
 	/**
@@ -4404,7 +4404,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addOrgDirectoryAlt(Collection<OrgDirectoryType> altRepresentations) {
-		addPropertyAlt(OrgDirectoryType.class, altRepresentations);
+		addTypeAlt(OrgDirectoryType.class, altRepresentations);
 	}
 
 	/**
@@ -4423,7 +4423,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 */
 	public void addOrgDirectoryAlt(OrgDirectoryType... altRepresentations) {
-		addPropertyAlt(OrgDirectoryType.class, altRepresentations);
+		addTypeAlt(OrgDirectoryType.class, altRepresentations);
 	}
 
 	/**
@@ -4441,7 +4441,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the property or null if not found
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends VCardType> T getProperty(Class<T> clazz) {
+	public <T extends VCardType> T getType(Class<T> clazz) {
 		return (T) properties.first(clazz);
 	}
 
@@ -4451,7 +4451,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @return the properties
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends VCardType> List<T> getProperties(Class<T> clazz) {
+	public <T extends VCardType> List<T> getTypes(Class<T> clazz) {
 		List<VCardType> props = properties.get(clazz);
 
 		//cast to the requested class
@@ -4469,10 +4469,10 @@ public class VCard implements Iterable<VCardType> {
 	 * @param clazz the property class
 	 * @return the properties
 	 */
-	public <T extends VCardType & HasAltId> List<List<T>> getPropertiesAlt(Class<T> clazz) {
+	public <T extends VCardType & HasAltId> List<List<T>> getTypesAlt(Class<T> clazz) {
 		List<T> nullAltId = new ArrayList<T>();
 		ListMultimap<String, T> map = new ListMultimap<String, T>();
-		for (T property : getProperties(clazz)) {
+		for (T property : getTypes(clazz)) {
 			String altId = property.getAltId();
 			if (altId == null) {
 				nullAltId.add(property);
@@ -4500,15 +4500,15 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets all the properties.
 	 * @return the properties
 	 */
-	public ListMultimap<Class<? extends VCardType>, VCardType> getProperties() {
-		return properties;
+	public Collection<VCardType> getAllTypes() {
+		return properties.values();
 	}
 
 	/**
 	 * Adds a property.
 	 * @param property the property to add
 	 */
-	public void addProperty(VCardType property) {
+	public void addType(VCardType property) {
 		properties.put(property.getClass(), property);
 	}
 
@@ -4519,7 +4519,7 @@ public class VCard implements Iterable<VCardType> {
 	 * @param clazz the property class (e.g. "Note.class")
 	 * @param property the property or null to remove
 	 */
-	public <T extends VCardType> void setProperty(Class<T> clazz, T property) {
+	public <T extends VCardType> void setType(Class<T> clazz, T property) {
 		properties.replace(clazz, property);
 	}
 
@@ -4527,7 +4527,7 @@ public class VCard implements Iterable<VCardType> {
 	 * Removes all properties of a given class.
 	 * @param clazz the class of the properties to remove (e.g. "Note.class")
 	 */
-	public void removeProperties(Class<? extends VCardType> clazz) {
+	public void removeTypes(Class<? extends VCardType> clazz) {
 		properties.removeAll(clazz);
 	}
 
@@ -4536,8 +4536,8 @@ public class VCard implements Iterable<VCardType> {
 	 * @param name the property name (e.g. "X-ALT-DESC")
 	 * @return the property or null if none were found
 	 */
-	public RawType getExtendedProperty(String name) {
-		for (RawType raw : getProperties(RawType.class)) {
+	public RawType getExtendedType(String name) {
+		for (RawType raw : getTypes(RawType.class)) {
 			if (raw.getTypeName().equalsIgnoreCase(name)) {
 				return raw;
 			}
@@ -4550,10 +4550,10 @@ public class VCard implements Iterable<VCardType> {
 	 * @param name the property name (e.g. "X-ALT-DESC")
 	 * @return the properties
 	 */
-	public List<RawType> getExtendedProperties(String name) {
+	public List<RawType> getExtendedTypes(String name) {
 		List<RawType> props = new ArrayList<RawType>();
 
-		for (RawType raw : getProperties(RawType.class)) {
+		for (RawType raw : getTypes(RawType.class)) {
 			if (raw.getTypeName().equalsIgnoreCase(name)) {
 				props.add(raw);
 			}
@@ -4566,8 +4566,8 @@ public class VCard implements Iterable<VCardType> {
 	 * Gets all extended properties.
 	 * @return the properties
 	 */
-	public List<RawType> getExtendedProperties() {
-		return getProperties(RawType.class);
+	public List<RawType> getExtendedTypes() {
+		return getTypes(RawType.class);
 	}
 
 	/**
@@ -4576,9 +4576,9 @@ public class VCard implements Iterable<VCardType> {
 	 * @param value the property value
 	 * @return the property object that was created
 	 */
-	public RawType addExtendedProperty(String name, String value) {
+	public RawType addExtendedType(String name, String value) {
 		RawType raw = new RawType(name, value);
-		addProperty(raw);
+		addType(raw);
 		return raw;
 	}
 
@@ -4589,10 +4589,10 @@ public class VCard implements Iterable<VCardType> {
 	 * @param value the property value
 	 * @return the property object that was created
 	 */
-	public RawType setExtendedProperty(String name, String value) {
-		removeExtendedProperty(name);
+	public RawType setExtendedType(String name, String value) {
+		removeExtendedType(name);
 		RawType raw = new RawType(name, value);
-		addProperty(raw);
+		addType(raw);
 		return raw;
 	}
 
@@ -4600,8 +4600,8 @@ public class VCard implements Iterable<VCardType> {
 	 * Removes all extended properties that have the given name.
 	 * @param name the component name (e.g. "X-ALT-DESC")
 	 */
-	public void removeExtendedProperty(String name) {
-		List<RawType> xproperties = getExtendedProperties(name);
+	public void removeExtendedType(String name) {
+		List<RawType> xproperties = getExtendedTypes(name);
 		for (RawType xproperty : xproperties) {
 			properties.remove(xproperty.getClass(), xproperty);
 		}
@@ -4616,8 +4616,8 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
 	 */
-	public <T extends VCardType & HasAltId> void addPropertyAlt(Class<T> propertyClass, T... altRepresentations) {
-		addPropertyAlt(propertyClass, Arrays.asList(altRepresentations));
+	public <T extends VCardType & HasAltId> void addTypeAlt(Class<T> propertyClass, T... altRepresentations) {
+		addTypeAlt(propertyClass, Arrays.asList(altRepresentations));
 	}
 
 	/**
@@ -4629,11 +4629,11 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
 	 */
-	public <T extends VCardType & HasAltId> void addPropertyAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
-		String altId = generateAltId(getProperties(propertyClass));
+	public <T extends VCardType & HasAltId> void addTypeAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
+		String altId = generateAltId(getTypes(propertyClass));
 		for (T property : altRepresentations) {
 			property.setAltId(altId);
-			addProperty(property);
+			addType(property);
 		}
 	}
 
@@ -4646,9 +4646,9 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
 	 */
-	public <T extends VCardType & HasAltId> void setPropertyAlt(Class<T> propertyClass, T... altRepresentations) {
-		removeProperties(propertyClass);
-		addPropertyAlt(propertyClass, altRepresentations);
+	public <T extends VCardType & HasAltId> void setTypeAlt(Class<T> propertyClass, T... altRepresentations) {
+		removeTypes(propertyClass);
+		addTypeAlt(propertyClass, altRepresentations);
 	}
 
 	/**
@@ -4660,9 +4660,9 @@ public class VCard implements Iterable<VCardType> {
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
 	 */
-	public <T extends VCardType & HasAltId> void setPropertyAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
-		removeProperties(propertyClass);
-		addPropertyAlt(propertyClass, altRepresentations);
+	public <T extends VCardType & HasAltId> void setTypeAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
+		removeTypes(propertyClass);
+		addTypeAlt(propertyClass, altRepresentations);
 	}
 
 	/**
