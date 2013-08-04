@@ -403,10 +403,4 @@ public class GeoUri {
 
 		return df;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		//TODO implement
-		return super.equals(obj);
-	}
 }

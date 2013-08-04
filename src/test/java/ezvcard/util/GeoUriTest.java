@@ -361,9 +361,4 @@ public class GeoUriTest {
 		uri.setUncertainty(12.0);
 		assertEquals("geo:12.34,45.67,-21.43;u=12", uri.toString());
 	}
-
-	@Test
-	public void equals() {
-		//TODO implement
-	}
 }
