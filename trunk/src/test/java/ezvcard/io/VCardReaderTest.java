@@ -2791,7 +2791,7 @@ public class VCardReaderTest {
 			assertEquals("fdawson@earthlink.net", email.getValue());
 			assertSetEquals(email.getTypes(), EmailTypeParameter.INTERNET);
 
-			assertEquals("http://home.earthlink.net/÷fdawson", vcard.getUrls().get(0).getValue());
+			assertEquals("http://home.earthlink.net/~fdawson", vcard.getUrls().get(0).getValue());
 
 			assertWarnings(0, reader.getWarnings());
 		}
