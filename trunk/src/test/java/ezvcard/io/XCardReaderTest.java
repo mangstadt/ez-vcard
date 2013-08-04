@@ -297,15 +297,15 @@ public class XCardReaderTest {
 		//X-AGE was not unmarshalled because its type class does not support xCard;
 		assertEquals("<x-age xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><integer>24</integer></x-age>", xmlTypes.get(1).getValue());
 
-		List<LuckyNumType> luckyNum = vcard.getProperties(LuckyNumType.class);
+		List<LuckyNumType> luckyNum = vcard.getTypes(LuckyNumType.class);
 		assertEquals(1, luckyNum.size());
 		assertEquals(21, luckyNum.get(0).luckyNum);
 
-		List<SalaryType> salary = vcard.getProperties(SalaryType.class);
+		List<SalaryType> salary = vcard.getTypes(SalaryType.class);
 		assertEquals(1, salary.size());
 		assertEquals(1000000, salary.get(0).salary);
 
-		List<RawType> gender = vcard.getExtendedProperties("X-GENDER");
+		List<RawType> gender = vcard.getExtendedTypes("X-GENDER");
 		assertEquals(1, gender.size());
 		assertEquals("m", gender.get(0).getValue());
 
@@ -428,7 +428,7 @@ public class XCardReaderTest {
 		xcr.registerExtendedType(LuckyNumType.class);
 		VCard vcard = xcr.readNext();
 
-		List<LuckyNumType> luckyNum = vcard.getProperties(LuckyNumType.class);
+		List<LuckyNumType> luckyNum = vcard.getTypes(LuckyNumType.class);
 		assertEquals(1, luckyNum.size());
 		assertEquals(24, luckyNum.get(0).luckyNum);
 
@@ -596,7 +596,7 @@ public class XCardReaderTest {
 
 		VCard vcard = xcr.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(16, vcard.getProperties().size());
+		assertEquals(16, vcard.getAllTypes().size());
 
 		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
 

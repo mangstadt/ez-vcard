@@ -229,7 +229,7 @@ public class JCardReader implements IParser, Closeable {
 			warningsBuf.clear();
 			try {
 				type.unmarshalJson(parameters, value, VCardVersion.V4_0, warningsBuf);
-				vcard.addProperty(type);
+				vcard.addType(type);
 			} catch (SkipMeException e) {
 				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 			} catch (EmbeddedVCardException e) {

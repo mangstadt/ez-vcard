@@ -313,7 +313,7 @@ public class HCardReader implements IParser {
 						ImppType impp = new ImppType();
 						try {
 							impp.unmarshalHtml(element, warningsBuffer);
-							curVCard.addProperty(impp);
+							curVCard.addType(impp);
 							for (String warning : warningsBuffer) {
 								addWarning(warning, impp.getTypeName());
 							}
@@ -344,7 +344,7 @@ public class HCardReader implements IParser {
 					NicknameType nn = (NicknameType) type;
 					if (nickname == null) {
 						nickname = nn;
-						curVCard.addProperty(nickname);
+						curVCard.addType(nickname);
 					} else {
 						nickname.getValues().addAll(nn.getValues());
 					}
@@ -353,12 +353,12 @@ public class HCardReader implements IParser {
 					CategoriesType c = (CategoriesType) type;
 					if (categories == null) {
 						categories = c;
-						curVCard.addProperty(categories);
+						curVCard.addType(categories);
 					} else {
 						categories.getValues().addAll(c.getValues());
 					}
 				} else {
-					curVCard.addProperty(type);
+					curVCard.addType(type);
 				}
 			} catch (SkipMeException e) {
 				warningsBuffer.add("Property has requested that it be skipped: " + e.getMessage());
@@ -378,7 +378,7 @@ public class HCardReader implements IParser {
 						warningsBuffer.add("Problem unmarshalling nested vCard value: " + w);
 					}
 				}
-				curVCard.addProperty(type);
+				curVCard.addType(type);
 			} catch (UnsupportedOperationException e) {
 				//type class does not support hCard
 				warningsBuffer.add("Property class \"" + type.getClass().getName() + "\" does not support hCard unmarshalling.");

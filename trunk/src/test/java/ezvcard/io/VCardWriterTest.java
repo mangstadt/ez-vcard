@@ -545,12 +545,12 @@ public class VCardWriterTest {
 
 		LuckyNumType num = new LuckyNumType();
 		num.luckyNum = 24;
-		vcard.addProperty(num);
+		vcard.addType(num);
 
 		//should be skipped
 		num = new LuckyNumType();
 		num.luckyNum = 13;
-		vcard.addProperty(num);
+		vcard.addType(num);
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);

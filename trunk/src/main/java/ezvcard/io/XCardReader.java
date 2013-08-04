@@ -252,7 +252,7 @@ public class XCardReader implements IParser {
 				type.setGroup(group);
 				type.unmarshalXml(subTypes, element, version, warningsBuf, compatibilityMode);
 			}
-			vcard.addProperty(type);
+			vcard.addType(type);
 		} catch (SkipMeException e) {
 			warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 		} catch (EmbeddedVCardException e) {

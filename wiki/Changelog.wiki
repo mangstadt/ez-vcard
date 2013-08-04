@@ -1,5 +1,4 @@
 #summary Documents all the changes that were made to every version of the library
-#labels Featured
 
 = 0.8.3 =
 _--in development--_
@@ -17,18 +16,13 @@ _--in development--_
  * Refactored the way in which the `VCard` class stores its properties:
       * When parsing, _all_ property instances are now added to the `VCard` object.  Previously, for properties with a cardinality of zero or one, the only instance that was retrievable was the one that was parsed last.
       * Property order is more predictable during marshalling.  Properties are essentially written in the order that they were added to the `VCard` object.
+     * Removed the `addExtendedType(VCardType)` method.  To add an extended type class instance, use `addType(VCardType)` instead.
+     * Removed the `getExtendedType(Class)` method.  To get an extended type class instance, use `getType(Class)` instead.
  * Refactored the jCard reading/writing code:
       * The `JCardValue` class now holds the raw JSON data in the form of `JsonValue` objects.  This adds greater flexibility for reading/writing wonky property values.
       * Removed the `JCardDataType.UNKNOWN` enum.  A "null" value is now used to represent the "unknown" data type.
       * Pretty printing has been tweaked slightly.
  * Refactored the parsing code of plain-text vCards.  Parsing is slightly more strict: `BEGIN:VCARD` and `END:VCARD` properties are now *required*, or else the vCard will not be parsed.
- * Tweaked some of the methods in the `VCard` class, including:
-     * Removed `addExtendedType(VCardType)`.  Use `addProperty(VCardType)` to add extended type class instances.
-     * Removed `getExtendedType(Class)`.  Use `getProperty(Class)` to get extended type class instances.
-     * Renamed `addExtendedType(String, String)` to `addExtendedProperty(String, String)`.
-     * Replaced `getAllTypes()` with `getProperties()`.
-     * Renamed `getExtendedType(String)` to `getExtendedProperty(String)`.
-     * Renamed `getExtendedTypes()` to `getExtendedProperties()`.
 
 = 0.8.2 =
 _June 17, 2013_
