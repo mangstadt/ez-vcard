@@ -148,7 +148,7 @@ The example below writes a list of vCards to a file.
 {{{
 List<VCard> vcards = ...
 File file = new File("vcards.json");
-JCardWriter jcw = new JCardWriter(file, version);
+JCardWriter jcw = new JCardWriter(file, true); //"true" wraps the jCards in a JSON array
 for (VCard vcard : vcards){
   jcw.write(vcard);
 }
@@ -158,7 +158,7 @@ jcw.close();
 It's important to remember to *close the [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/JCardWriter.html JCardWriter]* when the write operation is complete.  This is required in order for the JSON stream to be properly terminated.  There are two ways to close it.
 
  # [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/JCardWriter.html#close() JCardWriter.close()] - Terminates the JSON stream *and* the output stream.
- # [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/JCardWriter.html#endJsonStream() JCardWriter.endJsonStream()] - Terminates the JSON stream, but keeps the output stream open.
+ # [http://mikeangstadt.name/ezvcard/latest/ezvcard/io/JCardWriter.html#closeJsonStream() JCardWriter.closeJsonStream()] - Terminates the JSON stream, but keeps the output stream open.
  
 If your application does not require jCard writing functionality, you can exclude the "jackson-core" dependency from your build.
 

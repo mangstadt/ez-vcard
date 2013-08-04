@@ -1,7 +1,7 @@
 #summary Documents all the changes that were made to every version of the library
 
 = 0.8.3 =
-_--in development--_
+_August 4, 2013_
 
  * Updated jCard functionality to adhere to the most recent draft specification.
       * Removed the "vcardstream" array.

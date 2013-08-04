@@ -359,7 +359,7 @@ public class JohnDoeVCard {
     }
   }
   
-  private static void writeHCard(VCard vcard, File file) throws IOException, TemplateException {
+  private static void writeHCard(VCard vcard, File file) throws IOException {
     System.out.println("Writing " + file.getName() + "...");
 
     Ezvcard.writeHtml(vcard).go(file);

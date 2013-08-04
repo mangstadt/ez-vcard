@@ -8,28 +8,23 @@ The vCard standard allows for "extended" properties to exist in a vCard.  An ext
 
 =1 Basic Usage=
 
-To retrieve extended properties from a [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html VCard] object, use the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getExtendedType(java.lang.String) getExtendedType(String)] method.  This will return a list of [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/RawType.html RawType] objects.  Use the [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/RawType.html#getValue() RawType.getValue()] method to retrieve the value of the extended property.
+To retrieve extended properties from a [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html VCard] object, use the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getExtendedTypes(java.lang.String) getExtendedTypes(String)] method.  This will return a list of [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/RawType.html RawType] objects.  Use the [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/RawType.html#getValue() RawType.getValue()] method to retrieve the value of the extended property.
 
 {{{
 VCard vcard = ...
-List<RawType> managers = vcard.getExtendedType("X-MS-MANAGER");
+List<RawType> managers = vcard.getExtendedTypes("X-MS-MANAGER");
 for (RawType manager : managers){
   System.out.println("Manager: " + manager.getValue());
 }
 }}}
 
-A complete list of all the vCard's extended properties, indexed by name, can be retrieved using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getExtendedTypes() getExtendedTypes()] method.
+A complete list of all the vCard's extended properties can be retrieved using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getExtendedTypes() getExtendedTypes()] method.
 
 {{{
 VCard vcard = ...
-Map<String, List<VCardType>> extendedTypes = vcard.getExtendedTypes();
-for (List<VCardType> types : extendedTypes.values()){
-  for (VCardType type : types){
-    if (type instanceof RawType){
-      RawType raw = (RawType)type;
-      System.out.println(raw.getValue());
-    }
-  }
+List<RawType> extendedTypes = vcard.getExtendedTypes();
+for (RawType extendedType : extendedTypes){
+  System.out.println(extendedType.getValue());
 }
 }}}
 
@@ -335,7 +330,7 @@ The property's parameters are parsed _before_ `doUnmarshalJson()` is called.  Th
 
 ===2.2.1 Reading===
 
-Before a vCard is parsed, the extended property class must be registered with the reader object.  Then, once a vCard has been read, the instances of the extended property can be retrieved using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getExtendedType(java.lang.Class) VCard.getExtendedType(Class)] method.
+Before a vCard is parsed, the extended property class must be registered with the reader object.  Then, once a vCard has been read, the instances of the extended property can be retrieved using the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getType(java.lang.Class) VCard.getType(Class)] or [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#getTypes(java.lang.Class) VCard.getTypes(Class)] methods.
 
 {{{
 //using "Ezvcard" class
@@ -343,7 +338,8 @@ Reader reader = ...
 VCard vcard = Ezvcard.parse(reader).register(FavColorsType.class).first();
 reader.close();
 
-List<FavColorsType> favColorsTypes = vcard.getExtendedType(FavColorsType.class);
+FavColorsType first = vcard.getType(FavColorsType.class);
+List<FavColorsType> all = vcard.getTypes(FavColorsType.class);
 }}}
 
 {{{
@@ -354,12 +350,13 @@ vcr.registerExtendedType(FavColorsType.class);
 VCard vcard = vcr.readNext();
 reader.close();
 
-List<FavColorsType> favColorsTypes = vcard.getExtendedType(FavColorsType.class);
+FavColorsType first = vcard.getType(FavColorsType.class);
+List<FavColorsType> all = vcard.getTypes(FavColorsType.class);
 }}}
 
 ===2.2.2 Writing===
 
-To add an instance of an extended property class to a vCard, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#addExtendedType(ezvcard.types.VCardType) VCard.addExtendedType(VCardType)] method.  No registration of the extended property class is required for writing.
+To add an instance of an extended property class to a vCard, call the [http://mikeangstadt.name/ezvcard/latest/ezvcard/VCard.html#addType(ezvcard.types.VCardType) VCard.addType(VCardType)] method.  No registration of the extended property class is required for writing.
 
 {{{
 VCard vcard = new VCard();
@@ -367,7 +364,7 @@ VCard vcard = new VCard();
 FavColorsType favColors = new FavColorsType();
 favColors.addFavColor("green");
 favColors.addFavColor("yellow");
-vcard.addExtendedType(favColors);
+vcard.addType(favColors);
 
 Writer writer = ...
 Ezvcard.write(vcard).go(writer);
