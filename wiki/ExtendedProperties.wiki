@@ -154,23 +154,13 @@ public class FavColorsType extends VCardType {
   //writes the property to a JSON stream
   @Override
   protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-    JCardValue value = new JCardValue();
-    value.setDataType(JCardDataType.TEXT);
-    for (String color : sanitizeColors(CompatibilityMode.RFC)){
-      value.addValues(color);
-    }
-    return value;
+    return JCardValue.multi(JCardDataType.TEXT, sanitizeColors(favColors));
   }
 
   //parses the property value from a JSON stream
   @Override
   protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-    favColors.clear();
-    for (List<String> valueList : value.getValuesAsStrings()) {
-      if (!valueList.isEmpty()) {
-        favColors.add(valueList.get(0));
-      }
-    }
+    favColors = value.getMultivalued();
   }
   
   private List<String> sanitizeColors(CompatibilityMode compatibilityMode){
@@ -285,26 +275,35 @@ Unlike plain-text and XML vCards, the vCard parameters of HTML-encoded propertie
 
 The `doMarshalJson` method is used to write the property value to a JSON stream ("jCard").  The method returns a [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardValue.html JCardValue] object, which represents the property's value and data type in JSON form.
 
-The property's value is represented as a "list of lists".  This is necessary in order to support properties with structured values that have multi-valued components (such as `N` and `ADR`).  The list is made up of `Object` instances.  Primitive wrapper objects, such as `Integer` and `Boolean`, will be converted to their appropriate JSON data type.  All other objects will be passed into the JSON stream as strings (their `toString()` method will be invoked).  Null values will be converted to empty strings.
+The class has factory methods to aid in the construction the three most typical types of jCard values.
 
-Each jCard property also must have a data type.  The data type is represented by the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardDataType.html JCardDataType] class and can be set by calling [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardValue.html#setDataType(ezvcard.util.JCardDataType) JCardValue.setDataType()].
+ * *single* - Defines the value as a single value, such as a single string.  Most properties are single valued.
+ * *multi* - Defines the value as a list of values (such as the CATEGORIES property).
+ * *structured* - Defines the value as a structured value (i.e. a " list of lists", such as the ADR property).
+
+Objects may be passed into these methods.  Primitive wrapper objects, such as `Integer` and `Boolean`, will be converted to their appropriate JSON data type.  All other objects will be passed into the JSON stream as strings (their `toString()` method will be invoked).  Null values will be converted to empty strings.
+
+Each jCard property also must have a data type.  The data type is represented by the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardDataType.html JCardDataType] class and is passed into the first argument of the factory method.
 
 *Examples:*
 
 {{{
-JCardValue value = new JCardValue();
-value.setDataType(JCardDataType.TEXT);
-value.addValues("one", 2, true);
+JCardValue value = JCardValue.single(JCardDataType.TEXT, "one");
+//yields: ["propName", {}, "text", "one"]
+}}}
 
+{{{
+JCardValue value = JCardValue.multi(JCardDataType.TEXT, "one", 2, true);
 //yields: ["propName", {}, "text", "one", 2, true]
 }}}
 
 {{{
-JCardValue value = new JCardValue();
-value.setDataType(JCardDataType.INTEGER);
-value.setStructured(true);
-value.addValues(1, Arrays.asList(2, 3), 4);
-
+List<List<?>> values = Arrays.asList(
+  Arrays.asList(1),
+  Arrays.asList(2, 3),
+  Arrays.asList(4)
+);
+JCardValue value = JCardValue.structured(JCardDataType.INTEGER, values);
 //yields: ["propName", {}, "integer", [1, [2, 3], 4]]
 }}}
 
@@ -316,7 +315,11 @@ value.addValues(1, Arrays.asList(2, 3), 4);
 
 The `doUnmarshalJson` method is used to read the property value from a JSON stream ("jCard").  The property value and data type are stored in the [http://mikeangstadt.name/ezvcard/latest/ezvcard/util/JCardValue.html JCardValue] object.
 
-The property's value is represented as a "list of lists".  This is necessary in order to support properties with structured values that have multi-valued components (such as `N` and `ADR`).  The list is made up of `Object` instances.  JSON integers will be converted to `Long` objects, floating points to `Double`, booleans to `Boolean`, and strings to `String`.  Null values are converted to empty strings.
+The class has helper methods to aid in the retrieval the three most typical types of jCard values.
+
+ * *getSingleValued*- Gets the value of a property that contains a single value.  Most properties are single valued.
+ * *getMultivalued* - Gets the value of a property that contains multiple values (such as the CATEGORIES property).
+ * *structured* - Gets the value of a property that contains a structured value (i.e. a " list of lists", such as the ADR property).
 
 The property's parameters are parsed _before_ `doUnmarshalJson()` is called.  They can be accessed from the protected [http://mikeangstadt.name/ezvcard/latest/ezvcard/types/VCardType.html#subTypes VCard.subTypes] field.
 
@@ -370,4 +373,3 @@ Writer writer = ...
 Ezvcard.write(vcard).go(writer);
 writer.close();
 }}}
-
