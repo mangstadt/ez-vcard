@@ -65,11 +65,11 @@ VCard vcard = Ezvcard.parsHtml(html).first();
 
 {{{
 String json =
-[\"vcard\"," +
+"[\"vcard\"," +
   "[" +
     "[\"version\", {}, \"text\", \"4.0\"]," +
-	"[\"n\", {}, \"text\", [\"House\", \"Gregory\", \"\", \"Dr\", \"MD\"]]," +
-	"[\"fn\", {}, \"text\", \"Dr. Gregory House M.D.\"]" +
+    "[\"n\", {}, \"text\", [\"House\", \"Gregory\", \"\", \"Dr\", \"MD\"]]," +
+    "[\"fn\", {}, \"text\", \"Dr. Gregory House M.D.\"]" +
   "]" +
 "]";
 
@@ -315,22 +315,22 @@ public class JohnDoeVCard {
 
     vcard.setRevision(RevisionType.now());
 
-	//write vCard
+    //write vCard
     file = new File("john-doe.vcf");
     writeVCard(vcard, file, VCardVersion.V3_0);
     System.out.println();
 
-	//write xCard
+    //write xCard
     file = new File("john-doe.xml");
     writeXCard(vcard, file);
-	System.out.println();
+    System.out.println();
 	
-	//write hCard
+    //write hCard
     file = new File("john-doe.html");
     writeHCard(vcard, file);
-	System.out.println();
+    System.out.println();
 
-	//write jCard
+    //write jCard
     file = new File("john-doe.json");
     writeJCard(vcard, file);
   }
