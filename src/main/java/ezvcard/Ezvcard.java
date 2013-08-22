@@ -1304,14 +1304,26 @@ public class Ezvcard {
 		}
 
 		/**
-		 * Writes the vCards to a file.
+		 * Writes the vCards to a file. If the file exists, it will be
+		 * overwritten.
 		 * @param file the file to write to
 		 * @throws IOException if there's a problem writing to the file
 		 */
 		public void go(File file) throws IOException {
+			go(file, false);
+		}
+
+		/**
+		 * Writes the vCards to a file.
+		 * @param file the file to write to
+		 * @param append true to append onto the end of the file, false to
+		 * overwrite it
+		 * @throws IOException if there's a problem writing to the file
+		 */
+		public void go(File file, boolean append) throws IOException {
 			FileWriter writer = null;
 			try {
-				writer = new FileWriter(file);
+				writer = new FileWriter(file, append);
 				go(writer);
 			} finally {
 				IOUtils.closeQuietly(writer);
