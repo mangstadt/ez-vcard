@@ -1,10 +1,6 @@
 package ezvcard.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -40,6 +36,8 @@ import java.util.Collections;
  * @author Michael Angstadt
  */
 public class JCardDataType {
+	private static final CaseClassesImpl enums = new CaseClassesImpl();
+
 	public static final JCardDataType TEXT = new JCardDataType("text");
 	public static final JCardDataType URI = new JCardDataType("uri");
 	public static final JCardDataType INTEGER = new JCardDataType("integer");
@@ -52,7 +50,6 @@ public class JCardDataType {
 	public static final JCardDataType TIMESTAMP = new JCardDataType("timestamp");
 	public static final JCardDataType UTC_OFFSET = new JCardDataType("utc-offset");
 	public static final JCardDataType LANGUAGE_TAG = new JCardDataType("language-tag");
-	static final Collection<JCardDataType> custom = Collections.synchronizedList(new ArrayList<JCardDataType>());
 
 	private final String name;
 
@@ -82,106 +79,42 @@ public class JCardDataType {
 	 * @param name the data type (e.g. "text")
 	 * @return the data type object
 	 */
-	public static JCardDataType find(String name) {
-		return find(name, false);
+	public static JCardDataType find(String value) {
+		return enums.find(value);
 	}
 
 	/**
 	 * Searches for a data type object by name, and creates a new object if one
-	 * cannot be found.
+	 * cannot be found. All objects are guaranteed to be unique, so they can be
+	 * compared with
 	 * @param name the data type (e.g. "text")
 	 * @return the data type object
 	 */
-	public static JCardDataType get(String name) {
-		return find(name, true);
+	public static JCardDataType get(String value) {
+		return enums.get(value);
 	}
 
 	/**
-	 * Searches for a data type object by name.
-	 * @param name the data type (e.g. "text")
-	 * @param create true to create a new object if one cannot be found, or
-	 * false to return null if an object cannot be found
-	 * @return the data type object
-	 */
-	private static JCardDataType find(String name, boolean create) {
-		SearchHandler find = new SearchHandler(name);
-		forEachDataType(find);
-
-		JCardDataType match = find.match;
-		if (create && match == null) {
-			match = new JCardDataType(name);
-			custom.add(match);
-		}
-		return match;
-	}
-
-	/**
-	 * Gets all available data types.
-	 * @return all available data types
+	 * Gets all of the standard data types.
+	 * @return all standard data types
 	 */
 	public static Collection<JCardDataType> all() {
-		final Collection<JCardDataType> all = new ArrayList<JCardDataType>();
-
-		forEachDataType(new Handler() {
-			public boolean handle(JCardDataType dataType) {
-				all.add(dataType);
-				return true;
-			}
-		});
-
-		return all;
+		return enums.all();
 	}
 
-	private static void forEachDataType(Handler handler) {
-		Class<JCardDataType> clazz = JCardDataType.class;
-		for (Field field : clazz.getFields()) {
-			int modifiers = field.getModifiers();
-			//@formatter:off
-			if (Modifier.isStatic(modifiers) &&
-				Modifier.isPublic(modifiers) &&
-				field.getDeclaringClass() == clazz &&
-				field.getType() == clazz) {
-				//@formatter:on
-				try {
-					Object obj = field.get(null);
-					if (obj != null && !handler.handle((JCardDataType) obj)) {
-						return;
-					}
-				} catch (Exception ex) {
-					//reflection error
-				}
-			}
+	private static class CaseClassesImpl extends CaseClasses<JCardDataType, String> {
+		public CaseClassesImpl() {
+			super(JCardDataType.class);
 		}
 
-		for (JCardDataType dataType : custom) {
-			if (!handler.handle(dataType)) {
-				return;
-			}
-		}
-	}
-
-	private static interface Handler {
-		/**
-		 * @param dataType
-		 * @return true to continue, false to break out of the loop
-		 */
-		boolean handle(JCardDataType dataType);
-	}
-
-	private static class SearchHandler implements Handler {
-		public JCardDataType match = null;
-		private final String name;
-
-		public SearchHandler(String name) {
-			this.name = name;
+		@Override
+		protected JCardDataType create(String value) {
+			return new JCardDataType(value);
 		}
 
-		public boolean handle(JCardDataType dataType) {
-			if (name.equalsIgnoreCase(dataType.name)) {
-				match = dataType;
-				return false;
-			}
-			return true;
+		@Override
+		protected boolean matches(JCardDataType object, String value) {
+			return object.getName().equalsIgnoreCase(value);
 		}
 	}
 }
