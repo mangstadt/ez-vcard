@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.EmailType;
 
 /*
@@ -39,6 +41,8 @@ import ezvcard.types.EmailType;
  * @author Michael Angstadt
  */
 public class EmailTypeParameter extends TypeParameter {
+	private static final SingleValuedCaseClasses<EmailTypeParameter> enums = new SingleValuedCaseClasses<EmailTypeParameter>(EmailTypeParameter.class);
+
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
@@ -114,23 +118,37 @@ public class EmailTypeParameter extends TypeParameter {
 	 */
 	public static final EmailTypeParameter WORK = new EmailTypeParameter("work");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "internet")
-	 */
-	public EmailTypeParameter(String value) {
+	private EmailTypeParameter(String value) {
 		super(value);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "internet")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static EmailTypeParameter valueOf(String value) {
-		return findByValue(value, EmailTypeParameter.class);
+	public static EmailTypeParameter find(String value) {
+		return enums.find(value);
+	}
+
+	/**
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param value the parameter value
+	 * @return the object
+	 */
+	public static EmailTypeParameter get(String value) {
+		return enums.get(value);
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<EmailTypeParameter> all() {
+		return enums.all();
 	}
 }

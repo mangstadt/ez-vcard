@@ -515,7 +515,7 @@ public class TelephoneTypeTest {
 		assertNull(unmarshalObj.getUri());
 
 		assertEquals(3, unmarshalObj.getSubTypes().size());
-		assertSetEquals(unmarshalObj.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.CELL, new TelephoneTypeParameter("foo"));
+		assertSetEquals(unmarshalObj.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.CELL, TelephoneTypeParameter.get("foo"));
 
 		assertWarnings(0, warnings);
 	}

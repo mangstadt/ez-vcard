@@ -660,7 +660,7 @@ public class AddressTypeTest {
 		assertEquals("TX", t.getRegion());
 		assertEquals("12345", t.getPostalCode());
 		assertEquals("USA", t.getCountry());
-		assertSetEquals(t.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.POSTAL, new AddressTypeParameter("other"));
+		assertSetEquals(t.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.POSTAL, AddressTypeParameter.get("other"));
 		assertWarnings(0, warnings);
 	}
 

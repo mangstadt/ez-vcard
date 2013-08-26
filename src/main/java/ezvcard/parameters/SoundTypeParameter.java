@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.SoundType;
 
 /**
@@ -68,6 +70,8 @@ import ezvcard.types.SoundType;
  * @author Michael Angstadt
  */
 public class SoundTypeParameter extends MediaTypeParameter {
+	private static final MediaTypeCaseClasses<SoundTypeParameter> enums = new MediaTypeCaseClasses<SoundTypeParameter>(SoundTypeParameter.class);
+
 	public static final SoundTypeParameter AAC = new SoundTypeParameter("AAC", "audio/aac", "aac");
 	public static final SoundTypeParameter MIDI = new SoundTypeParameter("MIDI", "audio/midi", "mid");
 	public static final SoundTypeParameter MP3 = new SoundTypeParameter("MP3", "audio/mp3", "mp3");
@@ -75,35 +79,47 @@ public class SoundTypeParameter extends MediaTypeParameter {
 	public static final SoundTypeParameter OGG = new SoundTypeParameter("OGG", "audio/ogg", "ogg");
 	public static final SoundTypeParameter WAV = new SoundTypeParameter("WAV", "audio/wav", "wav");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "ogg")
-	 * @param mediaType the media type (e.g. "audio/ogg")
-	 * @param extension the file extension used for this type (e.g. "ogg")
-	 */
-	public SoundTypeParameter(String value, String mediaType, String extension) {
+	private SoundTypeParameter(String value, String mediaType, String extension) {
 		super(value, mediaType, extension);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "ogg")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
+	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null
+	 * to not search by this value
+	 * @param extension the file extension to search for (excluding the ".",
+	 * e.g. "mp3") or null to not search by this value
 	 * @return the object or null if not found
 	 */
-	public static SoundTypeParameter valueOf(String value) {
-		return findByValue(value, SoundTypeParameter.class);
+	public static SoundTypeParameter find(String type, String mediaType, String extension) {
+		return enums.find(new String[] { type, mediaType, extension });
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain
-	 * media type.
-	 * @param mediaType the media type to search for (e.g. "audio/ogg")
-	 * @return the object or null if not found
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
+	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null
+	 * to not search by this value
+	 * @param extension the file extension to search for (excluding the ".",
+	 * e.g. "mp3") or null to not search by this value
+	 * @return the object
 	 */
-	public static SoundTypeParameter findByMediaType(String mediaType) {
-		return findByMediaType(mediaType, SoundTypeParameter.class);
+	public static SoundTypeParameter get(String type, String mediaType, String extension) {
+		return enums.get(new String[] { type, mediaType, extension });
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<SoundTypeParameter> all() {
+		return enums.all();
 	}
 }

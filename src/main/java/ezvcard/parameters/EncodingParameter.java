@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
  * 
@@ -66,6 +68,8 @@ package ezvcard.parameters;
  * @author Michael Angstadt
  */
 public class EncodingParameter extends VCardParameter {
+	private static final SingleValuedCaseClasses<EncodingParameter> enums = new SingleValuedCaseClasses<EncodingParameter>(EncodingParameter.class);
+
 	public static final String NAME = "ENCODING";
 
 	/**
@@ -93,23 +97,37 @@ public class EncodingParameter extends VCardParameter {
 	 */
 	public static final EncodingParameter B = new EncodingParameter("b");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard ENCODINGs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "b")
-	 */
-	public EncodingParameter(String value) {
+	private EncodingParameter(String value) {
 		super(NAME, value);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "b")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static EncodingParameter valueOf(String value) {
-		return findByValue(value, EncodingParameter.class);
+	public static EncodingParameter find(String value) {
+		return enums.find(value);
+	}
+
+	/**
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param value the parameter value
+	 * @return the object
+	 */
+	public static EncodingParameter get(String value) {
+		return enums.get(value);
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<EncodingParameter> all() {
+		return enums.all();
 	}
 }

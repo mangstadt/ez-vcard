@@ -121,11 +121,7 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 
 	@Override
 	protected AddressTypeParameter buildTypeObj(String type) {
-		AddressTypeParameter param = AddressTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new AddressTypeParameter(type);
-		}
-		return param;
+		return AddressTypeParameter.get(type);
 	}
 
 	/**

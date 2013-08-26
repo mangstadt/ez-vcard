@@ -183,11 +183,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected TelephoneTypeParameter buildTypeObj(String type) {
-		TelephoneTypeParameter param = TelephoneTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new TelephoneTypeParameter(type);
-		}
-		return param;
+		return TelephoneTypeParameter.get(type);
 	}
 
 	@Override

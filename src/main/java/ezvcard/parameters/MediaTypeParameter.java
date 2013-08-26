@@ -96,20 +96,4 @@ public class MediaTypeParameter extends TypeParameter {
 			return false;
 		return true;
 	}
-
-	/**
-	 * Searches the static objects of a child class for one that has a certain
-	 * media type value.
-	 * @param mediaType the media type value to look for
-	 * @param clazz the child class
-	 * @return the object or null if not found
-	 */
-	protected static <T extends MediaTypeParameter> T findByMediaType(String mediaType, Class<T> clazz) {
-		for (T param : all(clazz)) {
-			if (param.getMediaType().equalsIgnoreCase(mediaType)) {
-				return param;
-			}
-		}
-		return null;
-	}
 }

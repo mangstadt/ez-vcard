@@ -627,12 +627,12 @@ public class BinaryTypeTest {
 
 		@Override
 		protected ImageTypeParameter buildTypeObj(String type) {
-			return ImageTypeParameter.valueOf(type);
+			return ImageTypeParameter.get(type, null, null);
 		}
 
 		@Override
 		protected ImageTypeParameter buildMediaTypeObj(String mediaType) {
-			return ImageTypeParameter.findByMediaType(mediaType);
+			return ImageTypeParameter.get(null, mediaType, null);
 		}
 	}
 }

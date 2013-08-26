@@ -428,11 +428,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected ImppTypeParameter buildTypeObj(String type) {
-		ImppTypeParameter param = ImppTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new ImppTypeParameter(type);
-		}
-		return param;
+		return ImppTypeParameter.get(type);
 	}
 
 	@Override

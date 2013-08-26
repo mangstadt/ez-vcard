@@ -97,27 +97,12 @@ public class ImageType extends BinaryType<ImageTypeParameter> {
 
 	@Override
 	protected ImageTypeParameter buildTypeObj(String type) {
-		ImageTypeParameter param = ImageTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new ImageTypeParameter(type, "image/" + type, null);
-		}
-		return param;
+		return ImageTypeParameter.get(type, null, null);
 	}
 
 	@Override
 	protected ImageTypeParameter buildMediaTypeObj(String mediaType) {
-		ImageTypeParameter p = ImageTypeParameter.findByMediaType(mediaType);
-		if (p == null) {
-			int slashPos = mediaType.indexOf('/');
-			String type;
-			if (slashPos == -1 || slashPos == mediaType.length() - 1) {
-				type = "";
-			} else {
-				type = mediaType.substring(slashPos + 1);
-			}
-			p = new ImageTypeParameter(type, mediaType, null);
-		}
-		return p;
+		return ImageTypeParameter.get(null, mediaType, null);
 	}
 
 	@Override

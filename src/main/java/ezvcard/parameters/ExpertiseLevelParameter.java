@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.ExpertiseType;
 
 /*
@@ -41,27 +43,43 @@ import ezvcard.types.ExpertiseType;
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
 public class ExpertiseLevelParameter extends LevelParameter {
+	private static final SingleValuedCaseClasses<ExpertiseLevelParameter> enums = new SingleValuedCaseClasses<ExpertiseLevelParameter>(ExpertiseLevelParameter.class);
+
 	public static final ExpertiseLevelParameter BEGINNER = new ExpertiseLevelParameter("beginner");
 	public static final ExpertiseLevelParameter AVERAGE = new ExpertiseLevelParameter("average");
 	public static final ExpertiseLevelParameter EXPERT = new ExpertiseLevelParameter("expert");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard LEVELs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "expert")
-	 */
-	public ExpertiseLevelParameter(String value) {
+	private ExpertiseLevelParameter(String value) {
 		super(value);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "expert")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static ExpertiseLevelParameter valueOf(String value) {
-		return findByValue(value, ExpertiseLevelParameter.class);
+	public static ExpertiseLevelParameter find(String value) {
+		return enums.find(value);
+	}
+
+	/**
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param value the parameter value
+	 * @return the object
+	 */
+	public static ExpertiseLevelParameter get(String value) {
+		return enums.get(value);
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<ExpertiseLevelParameter> all() {
+		return enums.all();
 	}
 }

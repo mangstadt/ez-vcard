@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.AddressType;
 import ezvcard.types.LabelType;
 
@@ -41,6 +43,8 @@ import ezvcard.types.LabelType;
  * @author Michael Angstadt
  */
 public class AddressTypeParameter extends TypeParameter {
+	private static final SingleValuedCaseClasses<AddressTypeParameter> enums = new SingleValuedCaseClasses<AddressTypeParameter>(AddressTypeParameter.class);
+
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
@@ -76,23 +80,37 @@ public class AddressTypeParameter extends TypeParameter {
 	 */
 	public static final AddressTypeParameter PREF = new AddressTypeParameter("pref");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "home")
-	 */
-	public AddressTypeParameter(String value) {
+	private AddressTypeParameter(String value) {
 		super(value);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "home")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static AddressTypeParameter valueOf(String value) {
-		return findByValue(value, AddressTypeParameter.class);
+	public static AddressTypeParameter find(String value) {
+		return enums.find(value);
+	}
+
+	/**
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param value the parameter value
+	 * @return the object
+	 */
+	public static AddressTypeParameter get(String value) {
+		return enums.get(value);
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<AddressTypeParameter> all() {
+		return enums.all();
 	}
 }

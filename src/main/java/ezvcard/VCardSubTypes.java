@@ -74,14 +74,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 */
 	public EncodingParameter getEncoding() {
 		String value = first(EncodingParameter.NAME);
-		if (value == null) {
-			return null;
-		}
-		EncodingParameter encoding = EncodingParameter.valueOf(value);
-		if (encoding == null) {
-			encoding = new EncodingParameter(value);
-		}
-		return encoding;
+		return (value == null) ? null : EncodingParameter.get(value);
 	}
 
 	/**
@@ -110,14 +103,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 */
 	public ValueParameter getValue() {
 		String value = first(ValueParameter.NAME);
-		if (value == null) {
-			return null;
-		}
-		ValueParameter p = ValueParameter.valueOf(value);
-		if (p == null) {
-			p = new ValueParameter(value);
-		}
-		return p;
+		return (value == null) ? null : ValueParameter.get(value);
 	}
 
 	/**
@@ -495,14 +481,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 */
 	public CalscaleParameter getCalscale() {
 		String value = first(CalscaleParameter.NAME);
-		if (value == null) {
-			return null;
-		}
-		CalscaleParameter p = CalscaleParameter.valueOf(value);
-		if (p == null) {
-			p = new CalscaleParameter(value);
-		}
-		return p;
+		return (value == null) ? null : CalscaleParameter.get(value);
 	}
 
 	/**

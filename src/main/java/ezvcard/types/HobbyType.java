@@ -90,14 +90,7 @@ public class HobbyType extends TextType implements HasAltId {
 	 */
 	public HobbyLevelParameter getLevel() {
 		String value = subTypes.getLevel();
-		if (value == null) {
-			return null;
-		}
-		HobbyLevelParameter p = HobbyLevelParameter.valueOf(value);
-		if (p == null) {
-			p = new HobbyLevelParameter(value);
-		}
-		return p;
+		return (value == null) ? null : HobbyLevelParameter.get(value);
 	}
 
 	/**
