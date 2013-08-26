@@ -447,22 +447,55 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Gets all sub types (a.k.a "parameters") associated with this type. This
-	 * method can be used to retrieve any extended, standard, or non-standard
-	 * sub type.
-	 * 
-	 * <p>
-	 * Ideally, this method should NOT be used to retrieve the values of
-	 * standard sub types because the type class should contain getter/setter
-	 * methods for each standard sub type. For example, instead of calling
-	 * <code>NoteType.getSubTypes().getLanguage()</code> to retrieve the
-	 * "LANGUAGE" sub type of a NOTE, the {@link NoteType#getLanguage()} method
-	 * should be called instead.
-	 * </p>
-	 * @return the type's sub types
+	 * Gets all parameters associated with this type.
+	 * @return the type's parameters
 	 */
 	public VCardSubTypes getSubTypes() {
 		return subTypes;
+	}
+
+	/**
+	 * Gets the first value of a parameter.
+	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
+	 * @return the parameter value or null if not found
+	 */
+	public String getSubType(String name) {
+		return subTypes.first(name);
+	}
+
+	/**
+	 * Gets all values of a parameter.
+	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
+	 * @return the parameter values
+	 */
+	public List<String> getSubTypes(String name) {
+		return subTypes.get(name);
+	}
+
+	/**
+	 * Replaces all existing values of a parameter with the given value.
+	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
+	 * @param values the parameter value
+	 */
+	public void setSubType(String name, String value) {
+		subTypes.replace(name, value);
+	}
+
+	/**
+	 * Adds a value to a parameter.
+	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
+	 * @param value the parameter value
+	 */
+	public void addSubType(String name, String value) {
+		subTypes.put(name, value);
+	}
+
+	/**
+	 * Removes a parameter from the property.
+	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
+	 */
+	public void removeSubType(String name) {
+		subTypes.removeAll(name);
 	}
 
 	/**
@@ -478,10 +511,6 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @param group the group or null to remove the type's group
 	 */
 	public void setGroup(String group) {
-		//TODO test for valid chars
-		//		if (group != null && !group.matches("(?i)[-a-z0-9]+")) {
-		//			throw new IllegalArgumentException("");
-		//		}
 		this.group = group;
 	}
 
