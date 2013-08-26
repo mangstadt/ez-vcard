@@ -24,7 +24,6 @@ import ezvcard.types.SoundType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.UidType;
-import freemarker.template.TemplateException;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -173,7 +172,7 @@ public class JohnDoeVCard {
 		}
 	}
 
-	private static void writeHCard(VCard vcard, File file) throws IOException, TemplateException {
+	private static void writeHCard(VCard vcard, File file) throws IOException {
 		System.out.println("Writing " + file.getName() + "...");
 
 		Ezvcard.writeHtml(vcard).go(file);
@@ -183,7 +182,7 @@ public class JohnDoeVCard {
 		System.out.println("Writing " + file.getName() + "...");
 
 		List<String> warnings = new ArrayList<String>();
-		Ezvcard.writeJson(vcard).indent(true).warnings(warnings).go(file);
+		Ezvcard.writeJson(vcard).warnings(warnings).go(file);
 
 		System.out.println("Completed with " + warnings.size() + " warnings.");
 		for (String warning : warnings) {
