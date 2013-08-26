@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.TelephoneType;
 
 /*
@@ -39,6 +41,8 @@ import ezvcard.types.TelephoneType;
  * @author Michael Angstadt
  */
 public class TelephoneTypeParameter extends TypeParameter {
+	private static final SingleValuedCaseClasses<TelephoneTypeParameter> enums = new SingleValuedCaseClasses<TelephoneTypeParameter>(TelephoneTypeParameter.class);
+
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
@@ -119,23 +123,37 @@ public class TelephoneTypeParameter extends TypeParameter {
 	 */
 	public static final TelephoneTypeParameter WORK = new TelephoneTypeParameter("work");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "home")
-	 */
-	public TelephoneTypeParameter(String value) {
+	private TelephoneTypeParameter(String value) {
 		super(value);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "work")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static TelephoneTypeParameter valueOf(String value) {
-		return findByValue(value, TelephoneTypeParameter.class);
+	public static TelephoneTypeParameter find(String value) {
+		return enums.find(value);
+	}
+
+	/**
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param value the parameter value
+	 * @return the object
+	 */
+	public static TelephoneTypeParameter get(String value) {
+		return enums.get(value);
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<TelephoneTypeParameter> all() {
+		return enums.all();
 	}
 }

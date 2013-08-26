@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.ImppType;
 
 /*
@@ -39,6 +41,8 @@ import ezvcard.types.ImppType;
  * @author Michael Angstadt
  */
 public class ImppTypeParameter extends TypeParameter {
+	private static final SingleValuedCaseClasses<ImppTypeParameter> enums = new SingleValuedCaseClasses<ImppTypeParameter>(ImppTypeParameter.class);
+
 	public static final ImppTypeParameter PERSONAL = new ImppTypeParameter("personal");
 	public static final ImppTypeParameter BUSINESS = new ImppTypeParameter("business");
 	public static final ImppTypeParameter HOME = new ImppTypeParameter("home");
@@ -46,23 +50,37 @@ public class ImppTypeParameter extends TypeParameter {
 	public static final ImppTypeParameter MOBILE = new ImppTypeParameter("mobile");
 	public static final ImppTypeParameter PREF = new ImppTypeParameter("pref");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "home")
-	 */
-	public ImppTypeParameter(String value) {
+	private ImppTypeParameter(String value) {
 		super(value);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "work")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static ImppTypeParameter valueOf(String value) {
-		return findByValue(value, ImppTypeParameter.class);
+	public static ImppTypeParameter find(String value) {
+		return enums.find(value);
+	}
+
+	/**
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param value the parameter value
+	 * @return the object
+	 */
+	public static ImppTypeParameter get(String value) {
+		return enums.get(value);
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<ImppTypeParameter> all() {
+		return enums.all();
 	}
 }

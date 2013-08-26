@@ -193,11 +193,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 
 	@Override
 	protected RelatedTypeParameter buildTypeObj(String type) {
-		RelatedTypeParameter param = RelatedTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new RelatedTypeParameter(type);
-		}
-		return param;
+		return RelatedTypeParameter.get(type);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -34,6 +36,8 @@ package ezvcard.parameters;
  * @author Michael Angstadt
  */
 public class ValueParameter extends VCardParameter {
+	private static final SingleValuedCaseClasses<ValueParameter> enums = new SingleValuedCaseClasses<ValueParameter>(ValueParameter.class);
+
 	public static final String NAME = "VALUE";
 
 	/**
@@ -111,23 +115,37 @@ public class ValueParameter extends VCardParameter {
 	 */
 	public static final ValueParameter LANGUAGE_TAG = new ValueParameter("language-tag");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard VALUEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "uri")
-	 */
-	public ValueParameter(String value) {
+	private ValueParameter(String value) {
 		super(NAME, value);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "text")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static ValueParameter valueOf(String value) {
-		return findByValue(value, ValueParameter.class);
+	public static ValueParameter find(String value) {
+		return enums.find(value);
+	}
+
+	/**
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param value the parameter value
+	 * @return the object
+	 */
+	public static ValueParameter get(String value) {
+		return enums.get(value);
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<ValueParameter> all() {
+		return enums.all();
 	}
 }

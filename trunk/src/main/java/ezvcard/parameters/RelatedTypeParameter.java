@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.RelatedType;
 
 /*
@@ -39,6 +41,8 @@ import ezvcard.types.RelatedType;
  * @author Michael Angstadt
  */
 public class RelatedTypeParameter extends TypeParameter {
+	private static final SingleValuedCaseClasses<RelatedTypeParameter> enums = new SingleValuedCaseClasses<RelatedTypeParameter>(RelatedTypeParameter.class);
+
 	public static final RelatedTypeParameter ACQUAINTANCE = new RelatedTypeParameter("acquaintance");
 	public static final RelatedTypeParameter AGENT = new RelatedTypeParameter("agent");
 	public static final RelatedTypeParameter CHILD = new RelatedTypeParameter("child");
@@ -60,23 +64,37 @@ public class RelatedTypeParameter extends TypeParameter {
 	public static final RelatedTypeParameter SPOUSE = new RelatedTypeParameter("spouse");
 	public static final RelatedTypeParameter SWEETHEART = new RelatedTypeParameter("sweetheart");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "spouse")
-	 */
-	public RelatedTypeParameter(String value) {
+	private RelatedTypeParameter(String value) {
 		super(value);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "spouse")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static RelatedTypeParameter valueOf(String value) {
-		return findByValue(value, RelatedTypeParameter.class);
+	public static RelatedTypeParameter find(String value) {
+		return enums.find(value);
+	}
+
+	/**
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param value the parameter value
+	 * @return the object
+	 */
+	public static RelatedTypeParameter get(String value) {
+		return enums.get(value);
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<RelatedTypeParameter> all() {
+		return enums.all();
 	}
 }

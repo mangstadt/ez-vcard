@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.LogoType;
 import ezvcard.types.PhotoType;
 
@@ -61,8 +63,9 @@ import ezvcard.types.PhotoType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link PhotoType} and {@link LogoType}
- * types.
+ * Represents an image media type used in the TYPE parameter, MEDIATYPE
+ * parameter, and data URIs of the {@link PhotoType} and {@link LogoType}
+ * properties.
  * <p>
  * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
  * </p>
@@ -70,39 +73,53 @@ import ezvcard.types.PhotoType;
  * @author Michael Angstadt
  */
 public class ImageTypeParameter extends MediaTypeParameter {
+	private static final MediaTypeCaseClasses<ImageTypeParameter> enums = new MediaTypeCaseClasses<ImageTypeParameter>(ImageTypeParameter.class);
+
 	public static final ImageTypeParameter GIF = new ImageTypeParameter("GIF", "image/gif", "gif");
 	public static final ImageTypeParameter JPEG = new ImageTypeParameter("JPEG", "image/jpeg", "jpg");
 	public static final ImageTypeParameter PNG = new ImageTypeParameter("PNG", "image/png", "png");
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "JPEG")
-	 * @param mediaType the media type (e.g. "image/jpeg")
-	 * @param extension the file extension used for this type (e.g. "jpg")
-	 */
-	public ImageTypeParameter(String value, String mediaType, String extension) {
+	private ImageTypeParameter(String value, String mediaType, String extension) {
 		super(value, mediaType, extension);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "jpeg")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
+	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g. "image/png") or null
+	 * to not search by this value
+	 * @param extension the file extension to search for (excluding the ".",
+	 * e.g. "jpg") or null to not search by this value
 	 * @return the object or null if not found
 	 */
-	public static ImageTypeParameter valueOf(String value) {
-		return findByValue(value, ImageTypeParameter.class);
+	public static ImageTypeParameter find(String type, String mediaType, String extension) {
+		return enums.find(new String[] { type, mediaType, extension });
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain
-	 * media type.
-	 * @param mediaType the media type to search for (e.g. "image/jpeg")
-	 * @return the object or null if not found
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
+	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g. "image/png") or null
+	 * to not search by this value
+	 * @param extension the file extension to search for (excluding the ".",
+	 * e.g. "jpg") or null to not search by this value
+	 * @return the object
 	 */
-	public static ImageTypeParameter findByMediaType(String mediaType) {
-		return findByMediaType(mediaType, ImageTypeParameter.class);
+	public static ImageTypeParameter get(String type, String mediaType, String extension) {
+		return enums.get(new String[] { type, mediaType, extension });
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<ImageTypeParameter> all() {
+		return enums.all();
 	}
 }

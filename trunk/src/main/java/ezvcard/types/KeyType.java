@@ -205,27 +205,12 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected KeyTypeParameter buildTypeObj(String type) {
-		KeyTypeParameter param = KeyTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new KeyTypeParameter(type, "application/" + type, null);
-		}
-		return param;
+		return KeyTypeParameter.get(type, null, null);
 	}
 
 	@Override
 	protected KeyTypeParameter buildMediaTypeObj(String mediaType) {
-		KeyTypeParameter p = KeyTypeParameter.findByMediaType(mediaType);
-		if (p == null) {
-			int slashPos = mediaType.indexOf('/');
-			String type;
-			if (slashPos == -1 || slashPos < mediaType.length() - 1) {
-				type = "";
-			} else {
-				type = mediaType.substring(slashPos + 1);
-			}
-			p = new KeyTypeParameter(type, mediaType, null);
-		}
-		return p;
+		return KeyTypeParameter.get(null, mediaType, null);
 	}
 
 	@Override

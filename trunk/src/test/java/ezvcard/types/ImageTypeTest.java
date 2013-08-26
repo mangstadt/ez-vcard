@@ -62,7 +62,6 @@ public class ImageTypeTest {
 		ImageType image = new ImageType("IMAGE");
 		ImageTypeParameter foo = image.buildTypeObj("foo");
 		assertEquals("foo", foo.getValue());
-		assertEquals("image/foo", foo.getMediaType());
 	}
 
 	@Test
@@ -81,24 +80,7 @@ public class ImageTypeTest {
 	public void buildMediaTypeObject_unknown_type() {
 		ImageType image = new ImageType("IMAGE");
 		ImageTypeParameter foo = image.buildMediaTypeObj("image/foo");
-		assertEquals("foo", foo.getValue());
 		assertEquals("image/foo", foo.getMediaType());
-	}
-
-	@Test
-	public void buildMediaTypeObject_unknown_type_nothing_after_slash() {
-		ImageType image = new ImageType("IMAGE");
-		ImageTypeParameter foo = image.buildMediaTypeObj("image/");
-		assertEquals("", foo.getValue());
-		assertEquals("image/", foo.getMediaType());
-	}
-
-	@Test
-	public void buildMediaTypeObject_unknown_type_no_slash() {
-		ImageType image = new ImageType("IMAGE");
-		ImageTypeParameter foo = image.buildMediaTypeObj("image");
-		assertEquals("", foo.getValue());
-		assertEquals("image", foo.getMediaType());
 	}
 
 	@Test

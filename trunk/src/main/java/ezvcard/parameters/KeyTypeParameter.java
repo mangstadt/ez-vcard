@@ -1,5 +1,7 @@
 package ezvcard.parameters;
 
+import java.util.Collection;
+
 import ezvcard.types.KeyType;
 
 /**
@@ -68,40 +70,53 @@ import ezvcard.types.KeyType;
  * @author Michael Angstadt Jul 06, 2012
  */
 public class KeyTypeParameter extends MediaTypeParameter {
+	private static final MediaTypeCaseClasses<KeyTypeParameter> enums = new MediaTypeCaseClasses<KeyTypeParameter>(KeyTypeParameter.class);
+
 	public static final KeyTypeParameter PGP = new KeyTypeParameter("PGP", "application/pgp-keys", "pgp");
 	public static final KeyTypeParameter GPG = new KeyTypeParameter("GPG", "application/gpg", "gpg");
 	public static final KeyTypeParameter X509 = new KeyTypeParameter("X509", "application/x509", null);
 
-	/**
-	 * Use of this constructor is discouraged and should only be used for
-	 * defining non-standard TYPEs. Please use one of the predefined static
-	 * objects.
-	 * @param value the type value (e.g. "pgp")
-	 * @param mediaType the media type (e.g. "application/pgp-keys")
-	 * @param extension the file extension used for this type (e.g. "pgp")
-	 */
-	public KeyTypeParameter(String value, String mediaType, String extension) {
+	private KeyTypeParameter(String value, String mediaType, String extension) {
 		super(value, mediaType, extension);
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain type
-	 * value.
-	 * @param value the type value to search for (e.g. "pgp")
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param type the TYPE parameter value to search for (e.g. "PGP") or null
+	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g.
+	 * "application/pgp-keys") or null to not search by this value
+	 * @param extension the file extension to search for (excluding the ".",
+	 * e.g. "pgp") or null to not search by this value
 	 * @return the object or null if not found
 	 */
-	public static KeyTypeParameter valueOf(String value) {
-		return findByValue(value, KeyTypeParameter.class);
+	public static KeyTypeParameter find(String type, String mediaType, String extension) {
+		return enums.find(new String[] { type, mediaType, extension });
 	}
 
 	/**
-	 * Searches the static objects in this class for one that has a certain
-	 * media type.
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * <code>==</code> equality.
+	 * @param type the TYPE parameter value to search for (e.g. "PGP") or null
+	 * to not search by this value
 	 * @param mediaType the media type to search for (e.g.
-	 * "application/pgp-keys")
-	 * @return the object or null if not found
+	 * "application/pgp-keys") or null to not search by this value
+	 * @param extension the file extension to search for (excluding the ".",
+	 * e.g. "pgp") or null to not search by this value
+	 * @return the object
 	 */
-	public static KeyTypeParameter findByMediaType(String mediaType) {
-		return findByMediaType(mediaType, KeyTypeParameter.class);
+	public static KeyTypeParameter get(String type, String mediaType, String extension) {
+		return enums.get(new String[] { type, mediaType, extension });
+	}
+
+	/**
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
+	 */
+	public static Collection<KeyTypeParameter> all() {
+		return enums.all();
 	}
 }

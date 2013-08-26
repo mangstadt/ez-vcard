@@ -88,14 +88,7 @@ public class ExpertiseType extends TextType implements HasAltId {
 	 */
 	public ExpertiseLevelParameter getLevel() {
 		String value = subTypes.getLevel();
-		if (value == null) {
-			return null;
-		}
-		ExpertiseLevelParameter p = ExpertiseLevelParameter.valueOf(value);
-		if (p == null) {
-			p = new ExpertiseLevelParameter(value);
-		}
-		return p;
+		return (value == null) ? null : ExpertiseLevelParameter.get(value);
 	}
 
 	/**

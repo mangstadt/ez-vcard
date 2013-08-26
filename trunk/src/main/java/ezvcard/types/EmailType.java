@@ -95,11 +95,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected EmailTypeParameter buildTypeObj(String type) {
-		EmailTypeParameter param = EmailTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new EmailTypeParameter(type);
-		}
-		return param;
+		return EmailTypeParameter.get(type);
 	}
 
 	/**

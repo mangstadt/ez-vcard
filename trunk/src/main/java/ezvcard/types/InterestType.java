@@ -90,14 +90,7 @@ public class InterestType extends TextType implements HasAltId {
 	 */
 	public InterestLevelParameter getLevel() {
 		String value = subTypes.getLevel();
-		if (value == null) {
-			return null;
-		}
-		InterestLevelParameter p = InterestLevelParameter.valueOf(value);
-		if (p == null) {
-			p = new InterestLevelParameter(value);
-		}
-		return p;
+		return (value == null) ? null : InterestLevelParameter.get(value);
 	}
 
 	/**

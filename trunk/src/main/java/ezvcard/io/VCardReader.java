@@ -235,9 +235,9 @@ public class VCardReader implements Closeable, IParser {
 		List<String> namelessParamValues = parameters.get(null);
 		for (String paramValue : namelessParamValues) {
 			String paramName;
-			if (ValueParameter.valueOf(paramValue) != null) {
+			if (ValueParameter.find(paramValue) != null) {
 				paramName = ValueParameter.NAME;
-			} else if (EncodingParameter.valueOf(paramValue) != null) {
+			} else if (EncodingParameter.find(paramValue) != null) {
 				paramName = EncodingParameter.NAME;
 			} else {
 				//otherwise, assume it's a TYPE

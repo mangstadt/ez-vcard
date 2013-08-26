@@ -177,27 +177,12 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 
 	@Override
 	protected SoundTypeParameter buildTypeObj(String type) {
-		SoundTypeParameter param = SoundTypeParameter.valueOf(type);
-		if (param == null) {
-			param = new SoundTypeParameter(type, "audio/" + type, null);
-		}
-		return param;
+		return SoundTypeParameter.get(type, null, null);
 	}
 
 	@Override
 	protected SoundTypeParameter buildMediaTypeObj(String mediaType) {
-		SoundTypeParameter p = SoundTypeParameter.findByMediaType(mediaType);
-		if (p == null) {
-			int slashPos = mediaType.indexOf('/');
-			String type;
-			if (slashPos == -1 || slashPos < mediaType.length() - 1) {
-				type = "";
-			} else {
-				type = mediaType.substring(slashPos + 1);
-			}
-			p = new SoundTypeParameter(type, mediaType, null);
-		}
-		return p;
+		return SoundTypeParameter.get(null, mediaType, null);
 	}
 
 	@Override

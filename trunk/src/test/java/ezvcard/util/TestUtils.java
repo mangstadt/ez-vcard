@@ -2,8 +2,10 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -83,5 +85,30 @@ public class TestUtils {
 			expectedSet.add(expectedElement);
 		}
 		assertEquals(expectedSet, actualSet);
+	}
+
+	/**
+	 * Holds a list of test runs for a unit test.
+	 */
+	public static class Tests implements Iterable<Object[]> {
+		private List<Object[]> tests = new ArrayList<Object[]>();
+
+		/**
+		 * Adds a test run.
+		 * @param test the test data
+		 * @return this
+		 */
+		public Tests add(Object... test) {
+			tests.add(test);
+			return this;
+		}
+
+		public Iterator<Object[]> iterator() {
+			return tests.iterator();
+		}
+	}
+
+	private TestUtils() {
+		//hide
 	}
 }
