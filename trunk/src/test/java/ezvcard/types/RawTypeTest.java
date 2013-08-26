@@ -16,6 +16,7 @@ import org.w3c.dom.Element;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
@@ -111,8 +112,8 @@ public class RawTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		RawTypeImpl type = new RawTypeImpl();
 		XCardElement xe = new XCardElement(RawTypeImpl.NAME.toLowerCase());
-		xe.text(propertyValue);
-		xe.text("another value");
+		xe.append(ValueParameter.TEXT, propertyValue);
+		xe.append(ValueParameter.TEXT, "another value");
 		Element input = xe.element();
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 

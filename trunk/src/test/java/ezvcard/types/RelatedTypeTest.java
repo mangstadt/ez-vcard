@@ -132,7 +132,7 @@ public class RelatedTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(RelatedType.NAME.toLowerCase());
-		xe.text(text);
+		xe.append(ValueParameter.TEXT, text);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -145,7 +145,7 @@ public class RelatedTypeTest {
 	public void marshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(RelatedType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -158,7 +158,7 @@ public class RelatedTypeTest {
 	public void marshalXml_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(RelatedType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		RelatedType t = new RelatedType();
 		t.marshalXml(xe.element(), version, warnings, compatibilityMode);
@@ -230,7 +230,7 @@ public class RelatedTypeTest {
 
 		RelatedType t = new RelatedType();
 		XCardElement xe = new XCardElement(RelatedType.NAME.toLowerCase());
-		xe.text(text);
+		xe.append(ValueParameter.TEXT, text);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(text, t.getText());
 		assertNull(t.getUri());
@@ -243,7 +243,7 @@ public class RelatedTypeTest {
 
 		RelatedType t = new RelatedType();
 		XCardElement xe = new XCardElement(RelatedType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertNull(t.getText());
 		assertEquals(uri, t.getUri());

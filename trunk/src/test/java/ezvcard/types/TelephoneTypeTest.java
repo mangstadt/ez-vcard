@@ -340,7 +340,7 @@ public class TelephoneTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.text(number);
+		xe.append(ValueParameter.TEXT, number);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TelephoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -354,7 +354,7 @@ public class TelephoneTypeTest {
 	public void marshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.uri(uriWithExt);
+		xe.append(ValueParameter.URI, uriWithExt);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TelephoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -458,7 +458,7 @@ public class TelephoneTypeTest {
 	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.text(number);
+		xe.append(ValueParameter.TEXT, number);
 		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(number, unmarshalObj.getText());
@@ -470,7 +470,7 @@ public class TelephoneTypeTest {
 	public void unmarshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(unmarshalObj.getText());
@@ -482,7 +482,7 @@ public class TelephoneTypeTest {
 	public void unmarshalXml_uri_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.uri(number);
+		xe.append(ValueParameter.URI, number);
 		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(number, unmarshalObj.getText());

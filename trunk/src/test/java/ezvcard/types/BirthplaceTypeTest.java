@@ -131,7 +131,7 @@ public class BirthplaceTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.text(text);
+		xe.append(ValueParameter.TEXT, text);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -145,7 +145,7 @@ public class BirthplaceTypeTest {
 	public void marshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -233,7 +233,7 @@ public class BirthplaceTypeTest {
 	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.text(text);
+		xe.append(ValueParameter.TEXT, text);
 		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 
@@ -246,7 +246,7 @@ public class BirthplaceTypeTest {
 	public void unmarshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 
@@ -259,8 +259,8 @@ public class BirthplaceTypeTest {
 	public void unmarshalXml_both() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.text(text);
-		xe.uri(uri);
+		xe.append(ValueParameter.TEXT, text);
+		xe.append(ValueParameter.URI, uri);
 		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 

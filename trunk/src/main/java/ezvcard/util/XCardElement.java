@@ -9,6 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCardVersion;
+import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -46,7 +47,6 @@ import ezvcard.VCardVersion;
 public class XCardElement {
 	private final Document document;
 	private final Element element;
-	private List<Element> children;
 	private final VCardVersion version;
 	private final String namespace;
 
@@ -92,45 +92,18 @@ public class XCardElement {
 	}
 
 	/**
-	 * Gets the value of the first <code>&lt;text&gt;</code> child element.
-	 * @return the text value or null if not found
-	 */
-	public String text() {
-		return get("text");
-	}
-
-	/**
-	 * Gets the value of the first <code>&lt;uri&gt;</code> child element.
-	 * @return the URI or null if not found
-	 */
-	public String uri() {
-		return get("uri");
-	}
-
-	/**
-	 * Gets the value of the first <code>&lt;date-and-or-time&gt;</code> child
-	 * element.
+	 * Gets the first value with one of the given data types.
+	 * @param dataType the data type(s) to look for (null signifies the
+	 * "unknown" data type)
 	 * @return the value or null if not found
 	 */
-	public String dateAndOrTime() {
-		return get("date-and-or-time");
-	}
-
-	/**
-	 * Gets the value of the first <code>&lt;timestamp&gt;</code> child element.
-	 * @return the timestamp or null if not found
-	 */
-	public String timestamp() {
-		return get("timestamp");
-	}
-
-	/**
-	 * Gets the value of the first <code>&lt;utc-offset&gt;</code> child
-	 * element.
-	 * @return the UTC offset or null if not found
-	 */
-	public String utcOffset() {
-		return get("utc-offset");
+	public String first(ValueParameter... dataTypes) {
+		String names[] = new String[dataTypes.length];
+		for (int i = 0; i < dataTypes.length; i++) {
+			ValueParameter dataType = dataTypes[i];
+			names[i] = toLocalName(dataType);
+		}
+		return first(names);
 	}
 
 	/**
@@ -138,7 +111,7 @@ public class XCardElement {
 	 * @param names the possible names of the element
 	 * @return the element's text or null if not found
 	 */
-	public String get(String... names) {
+	public String first(String... names) {
 		List<String> localNamesList = Arrays.asList(names);
 		for (Element child : children()) {
 			if (localNamesList.contains(child.getLocalName()) && namespace.equals(child.getNamespaceURI())) {
@@ -149,11 +122,21 @@ public class XCardElement {
 	}
 
 	/**
+	 * Gets all the values of a given data type.
+	 * @param dataType the data type to look for
+	 * @return the values
+	 */
+	public List<String> all(ValueParameter dataType) {
+		String dataTypeStr = toLocalName(dataType);
+		return all(dataTypeStr);
+	}
+
+	/**
 	 * Gets the value of all non-empty child elements that have the given name.
 	 * @param localName the element name
 	 * @return the values of the child elements
 	 */
-	public List<String> getAll(String localName) {
+	public List<String> all(String localName) {
 		List<String> childrenText = new ArrayList<String>();
 		for (Element child : children()) {
 			if (localName.equals(child.getLocalName()) && namespace.equals(child.getNamespaceURI())) {
@@ -167,48 +150,14 @@ public class XCardElement {
 	}
 
 	/**
-	 * Adds a <code>&lt;text&gt;</code> child element.
-	 * @param text the text
+	 * Adds a value.
+	 * @param dataType the data type or null for the "unknown" data type
+	 * @param value the value
 	 * @return the created element
 	 */
-	public Element text(String text) {
-		return append("text", text);
-	}
-
-	/**
-	 * Adds a <code>&lt;uri&gt;</code> child element.
-	 * @param uri the URI
-	 * @return the created element
-	 */
-	public Element uri(String uri) {
-		return append("uri", uri);
-	}
-
-	/**
-	 * Adds a <code>&lt;date-and-or-time&gt;</code> child element.
-	 * @param dateAndOrTime the date/time
-	 * @return the created element
-	 */
-	public Element dateAndOrTime(String dateAndOrTime) {
-		return append("date-and-or-time", dateAndOrTime);
-	}
-
-	/**
-	 * Adds a <code>&lt;timestamp&gt;</code> child element.
-	 * @param timestamp the timestamp
-	 * @return the created element
-	 */
-	public Element timestamp(String timestamp) {
-		return append("timestamp", timestamp);
-	}
-
-	/**
-	 * Adds a <code>&lt;utc-offset&gt;</code> child element.
-	 * @param utcOffset the UTC offset
-	 * @return the created element
-	 */
-	public Element utcOffset(String utcOffset) {
-		return append("utc-offset", utcOffset);
+	public Element append(ValueParameter dataType, String value) {
+		String dataTypeStr = toLocalName(dataType);
+		return append(dataTypeStr, value);
 	}
 
 	/**
@@ -221,11 +170,6 @@ public class XCardElement {
 		Element child = document.createElementNS(namespace, name);
 		child.setTextContent(value);
 		element.appendChild(child);
-
-		if (children != null) {
-			children.add(child);
-		}
-
 		return child;
 	}
 
@@ -277,9 +221,10 @@ public class XCardElement {
 	 * @return the child elements
 	 */
 	private List<Element> children() {
-		if (children == null) {
-			children = XmlUtils.toElementList(element.getChildNodes());
-		}
-		return children;
+		return XmlUtils.toElementList(element.getChildNodes());
+	}
+
+	private String toLocalName(ValueParameter dataType) {
+		return (dataType == null) ? "unknown" : dataType.getValue().toLowerCase();
 	}
 }

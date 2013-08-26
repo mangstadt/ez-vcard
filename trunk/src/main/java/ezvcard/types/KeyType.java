@@ -260,7 +260,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			parent.text(text);
+			parent.append(ValueParameter.TEXT, text);
 			return;
 		}
 		super.doMarshalXml(parent, warnings, compatibilityMode);
@@ -268,13 +268,13 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String text = element.text();
+		String text = element.first(ValueParameter.TEXT);
 		if (text != null) {
 			parseText(text, element.version());
 			return;
 		}
 
-		String uri = element.uri();
+		String uri = element.first(ValueParameter.URI);
 		if (uri != null) {
 			try {
 				//parse as data URI

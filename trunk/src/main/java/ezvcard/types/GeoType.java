@@ -6,6 +6,7 @@ import java.util.List;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardDataType;
@@ -251,12 +252,12 @@ public class GeoType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.uri(write(parent.version()));
+		parent.append(ValueParameter.URI, write(parent.version()));
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.uri();
+		String value = element.first(ValueParameter.URI);
 		if (value != null) {
 			parse(value, element.version(), warnings);
 		} else {

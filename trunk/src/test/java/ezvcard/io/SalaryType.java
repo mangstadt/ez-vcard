@@ -3,6 +3,7 @@ package ezvcard.io;
 import java.util.List;
 
 import ezvcard.VCardVersion;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.types.VCardType;
 import ezvcard.util.XCardElement;
 
@@ -64,7 +65,7 @@ public class SalaryType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		salary = Integer.parseInt(element.get("integer"));
+		salary = Integer.parseInt(element.first(ValueParameter.INTEGER));
 	}
 
 	//	public QName getQName();

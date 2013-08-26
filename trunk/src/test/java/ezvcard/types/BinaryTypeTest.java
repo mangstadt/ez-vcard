@@ -285,7 +285,7 @@ public class BinaryTypeTest {
 	public void marshalXml_url() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.uri(url);
+		xe.append(ValueParameter.URI, url);
 		Document expected = xe.document();
 
 		xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
@@ -301,7 +301,7 @@ public class BinaryTypeTest {
 	public void marshalXml_binary() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.uri(dataUri);
+		xe.append(ValueParameter.URI, dataUri);
 		Document expected = xe.document();
 
 		xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
@@ -493,7 +493,7 @@ public class BinaryTypeTest {
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.uri(url);
+		xe.append(ValueParameter.URI, url);
 
 		binaryType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
@@ -509,7 +509,7 @@ public class BinaryTypeTest {
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.uri(dataUri);
+		xe.append(ValueParameter.URI, dataUri);
 
 		binaryType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 

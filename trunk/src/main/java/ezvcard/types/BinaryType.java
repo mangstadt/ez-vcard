@@ -303,12 +303,12 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.uri(write(parent.version()));
+		parent.append(ValueParameter.URI, write(parent.version()));
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.uri();
+		String value = element.first(ValueParameter.URI);
 		if (value == null) {
 			throw new SkipMeException("No value found.");
 		}

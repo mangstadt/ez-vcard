@@ -253,20 +253,20 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			parent.text(text);
+			parent.append(ValueParameter.TEXT, text);
 		} else if (partialDate != null) {
-			String name;
+			ValueParameter dataType;
 			if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
-				name = "date-time";
+				dataType = ValueParameter.DATE_TIME;
 			} else if (partialDate.hasTimeComponent()) {
-				name = "time";
+				dataType = ValueParameter.TIME;
 			} else if (partialDate.hasDateComponent()) {
-				name = "date";
+				dataType = ValueParameter.DATE;
 			} else {
-				name = "date-and-or-time";
+				dataType = ValueParameter.DATE_AND_OR_TIME;
 			}
 
-			parent.append(name, partialDate.toDateAndOrTime(false));
+			parent.append(dataType, partialDate.toDateAndOrTime(false));
 		} else if (date != null) {
 			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
 			String name = dateHasTime ? "date-time" : "date";
@@ -279,11 +279,11 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.get("date", "date-time", "date-and-or-time");
+		String value = element.first(ValueParameter.DATE, ValueParameter.DATE_TIME, ValueParameter.DATE_AND_OR_TIME);
 		if (value != null) {
 			parseDate(value, element.version(), warnings);
 		} else {
-			setText(element.text());
+			setText(element.first(ValueParameter.TEXT));
 		}
 	}
 

@@ -324,7 +324,7 @@ public class TimezoneTypeTest {
 	public void marshalXml_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.utcOffset(offsetStrBasic);
+		xe.append(ValueParameter.UTC_OFFSET, offsetStrBasic);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -338,7 +338,7 @@ public class TimezoneTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.text(textStr);
+		xe.append(ValueParameter.TEXT, textStr);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -352,7 +352,7 @@ public class TimezoneTypeTest {
 	public void marshalXml_offset_and_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.text(textStr);
+		xe.append(ValueParameter.TEXT, textStr);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -572,7 +572,7 @@ public class TimezoneTypeTest {
 	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.text(textStr);
+		xe.append(ValueParameter.TEXT, textStr);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(t.getHourOffset());
@@ -585,7 +585,7 @@ public class TimezoneTypeTest {
 	public void unmarshalXml_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.utcOffset(offsetStrExtended);
+		xe.append(ValueParameter.UTC_OFFSET, offsetStrExtended);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(hourOffset, t.getHourOffset());
@@ -598,7 +598,7 @@ public class TimezoneTypeTest {
 	public void unmarshalXml_invalid_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.utcOffset("invalid");
+		xe.append(ValueParameter.UTC_OFFSET, "invalid");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
 
@@ -606,8 +606,8 @@ public class TimezoneTypeTest {
 	public void unmarshalXml_offset_and_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.text(textStr);
-		xe.utcOffset(offsetStrExtended);
+		xe.append(ValueParameter.TEXT, textStr);
+		xe.append(ValueParameter.UTC_OFFSET, offsetStrExtended);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(hourOffset, t.getHourOffset());
@@ -620,8 +620,8 @@ public class TimezoneTypeTest {
 	public void unmarshalXml_invalid_offset_and_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.text(textStr);
-		xe.utcOffset("invalid");
+		xe.append(ValueParameter.TEXT, textStr);
+		xe.append(ValueParameter.UTC_OFFSET, "invalid");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(t.getHourOffset());

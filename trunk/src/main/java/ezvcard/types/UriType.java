@@ -4,6 +4,7 @@ import java.util.List;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
@@ -62,12 +63,12 @@ public class UriType extends TextType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(element.uri());
+		setValue(element.first(ValueParameter.URI));
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.uri(getValue());
+		parent.append(ValueParameter.URI, getValue());
 	}
 
 	@Override
