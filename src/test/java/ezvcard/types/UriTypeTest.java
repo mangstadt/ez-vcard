@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -73,7 +74,7 @@ public class UriTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		Document expected = xe.document();
 
 		xe = new XCardElement(withValue.getTypeName().toLowerCase());
@@ -88,7 +89,7 @@ public class UriTypeTest {
 	public void marshalXml_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(empty.getTypeName().toLowerCase());
-		xe.uri("");
+		xe.append(ValueParameter.URI, "");
 		Document expected = xe.document();
 
 		xe = new XCardElement(empty.getTypeName().toLowerCase());
@@ -121,7 +122,7 @@ public class UriTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(uri, t.getValue());

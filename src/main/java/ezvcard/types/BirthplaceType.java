@@ -186,9 +186,9 @@ public class BirthplaceType extends VCardType implements HasAltId {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.uri(uri);
+			parent.append(ValueParameter.URI, uri);
 		} else if (text != null) {
-			parent.text(text);
+			parent.append(ValueParameter.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -196,13 +196,13 @@ public class BirthplaceType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.text();
+		String value = element.first(ValueParameter.TEXT);
 		if (value != null) {
 			setText(value);
 			return;
 		}
 
-		value = element.uri();
+		value = element.first(ValueParameter.URI);
 		if (value != null) {
 			setUri(value);
 			return;

@@ -177,7 +177,7 @@ public class KeyTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(KeyType.NAME.toLowerCase());
-		xe.text(text);
+		xe.append(ValueParameter.TEXT, text);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(KeyType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -240,7 +240,7 @@ public class KeyTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(KeyType.NAME.toLowerCase());
-		xe.text(text);
+		xe.append(ValueParameter.TEXT, text);
 		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
 		key.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 

@@ -305,13 +305,13 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		family = sanitizeXml(element, "surname");
 		given = sanitizeXml(element, "given");
-		additional = element.getAll("additional");
-		prefixes = element.getAll("prefix");
-		suffixes = element.getAll("suffix");
+		additional = element.all("additional");
+		prefixes = element.all("prefix");
+		suffixes = element.all("suffix");
 	}
 
 	private String sanitizeXml(XCardElement element, String name) {
-		String value = element.get(name);
+		String value = element.first(name);
 		return (value != null && value.length() == 0) ? null : value;
 	}
 

@@ -20,6 +20,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
@@ -202,7 +203,7 @@ public class ImppTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ImppType.NAME);
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		Document expected = xe.document();
 		xe = new XCardElement(ImppType.NAME);
 		Document actual = xe.document();
@@ -255,7 +256,7 @@ public class ImppTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ImppType.NAME);
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		ImppType impp = new ImppType();
 		impp.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(uri, impp.getUri().toString());
@@ -266,7 +267,7 @@ public class ImppTypeTest {
 	public void unmarshalXml_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ImppType.NAME);
-		xe.uri(badUri);
+		xe.append(ValueParameter.URI, badUri);
 		ImppType impp = new ImppType();
 		impp.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}

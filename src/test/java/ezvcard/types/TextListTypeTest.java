@@ -17,6 +17,7 @@ import org.w3c.dom.Document;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
@@ -151,7 +152,7 @@ public class TextListTypeTest {
 	public void marshalXml_zero_items() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.text(null);
+		xe.append(ValueParameter.TEXT, null);
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -165,7 +166,7 @@ public class TextListTypeTest {
 	public void marshalXml_one_item() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.text("one");
+		xe.append(ValueParameter.TEXT, "one");
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -179,9 +180,9 @@ public class TextListTypeTest {
 	public void marshalXml_multiple_items() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.text("one");
-		xe.text("two");
-		xe.text("three");
+		xe.append(ValueParameter.TEXT, "one");
+		xe.append(ValueParameter.TEXT, "two");
+		xe.append(ValueParameter.TEXT, "three");
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -314,7 +315,7 @@ public class TextListTypeTest {
 	public void unmarshalXml_one_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.text("one");
+		xe.append(ValueParameter.TEXT, "one");
 		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("one"), testObj.getValues());
@@ -325,9 +326,9 @@ public class TextListTypeTest {
 	public void unmarshalXml_multiple_values() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.text("one");
-		xe.text("two");
-		xe.text("three");
+		xe.append(ValueParameter.TEXT, "one");
+		xe.append(ValueParameter.TEXT, "two");
+		xe.append(ValueParameter.TEXT, "three");
 		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("one", "two", "three"), testObj.getValues());

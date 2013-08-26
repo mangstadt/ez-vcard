@@ -15,6 +15,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCardVersion;
+import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -50,7 +51,7 @@ import ezvcard.VCardVersion;
  */
 public class XCardElementTest {
 	@Test
-	public void constructor_string() throws Exception {
+	public void constructor_string() {
 		XCardElement xcardElement = new XCardElement("prop");
 		Document document = xcardElement.document();
 		Element element = xcardElement.element();
@@ -62,116 +63,80 @@ public class XCardElementTest {
 	}
 
 	@Test
-	public void get() throws Exception {
+	public void first() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
-		assertEquals("2", xcardElement.get("two"));
+		assertEquals("2", xcardElement.first("two"));
 	}
 
 	@Test
-	public void get_xcard_namespace_with_prefix() throws Exception {
+	public void first_data_type() {
+		XCardElement xcardElement = build("<prop><one>1</one><text>2</text></prop>");
+		assertEquals("2", xcardElement.first(ValueParameter.TEXT));
+	}
+
+	@Test
+	public void first_unknown() {
+		XCardElement xcardElement = build("<prop><one>1</one><unknown>2</unknown></prop>");
+		assertEquals("2", xcardElement.first((ValueParameter) null));
+	}
+
+	@Test
+	public void first_xcard_namespace_with_prefix() {
 		XCardElement xcardElement = build("<v:prop><v:one>1</v:one><v:two>2</v:two></v:prop>", "v");
-		assertEquals("2", xcardElement.get("two"));
+		assertEquals("2", xcardElement.first("two"));
 	}
 
 	@Test
-	public void get_empty() throws Exception {
+	public void first_empty() {
 		XCardElement xcardElement = build("<prop><one>1</one><two></two></prop>");
-		assertEquals("", xcardElement.get("two"));
+		assertEquals("", xcardElement.first("two"));
 	}
 
 	@Test
-	public void get_none() throws Exception {
+	public void first_none() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
-		assertNull(xcardElement.get("three"));
+		assertNull(xcardElement.first("three"));
 	}
 
 	@Test
-	public void get_multiple_names() throws Exception {
+	public void first_multiple_names() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two><three>3</three></prop>");
-		assertEquals("2", xcardElement.get("two", "three"));
-		assertEquals("2", xcardElement.get("three", "two"));
+		assertEquals("2", xcardElement.first("two", "three"));
+		assertEquals("2", xcardElement.first("three", "two"));
 	}
 
 	@Test
-	public void get_only_xcard_namespace() throws Exception {
+	public void first_only_xcard_namespace() {
 		XCardElement xcardElement = build("<prop><n:four xmlns:n=\"http://example.com\"></n:four></prop>");
-		assertNull(xcardElement.get("four"));
+		assertNull(xcardElement.first("four"));
 	}
 
 	@Test
-	public void getAll() throws Exception {
+	public void all() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two><two /><three>3</three><two>2-2</two></prop>");
-		assertEquals(Arrays.asList("2", "2-2"), xcardElement.getAll("two"));
+		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all("two"));
 	}
 
 	@Test
-	public void getAll_none() throws Exception {
+	public void all_data_type() {
+		XCardElement xcardElement = build("<prop><one>1</one><text>2</text><two /><three>3</three><text>2-2</text></prop>");
+		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all(ValueParameter.TEXT));
+	}
+
+	@Test
+	public void all_unknown() {
+		XCardElement xcardElement = build("<prop><one>1</one><unknown>2</unknown><two /><three>3</three><unknown>2-2</unknown></prop>");
+		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all((ValueParameter) null));
+	}
+
+	@Test
+	public void all_none() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
-		assertTrue(xcardElement.getAll("three").isEmpty());
+		assertTrue(xcardElement.all("three").isEmpty());
 	}
 
 	@Test
-	public void text_get() throws Exception {
-		XCardElement xcardElement = build("<prop><text>t</text></prop>");
-		assertEquals("t", xcardElement.text());
-	}
-
-	@Test
-	public void text_get_none() throws Exception {
-		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.text());
-	}
-
-	@Test
-	public void uri_get() throws Exception {
-		XCardElement xcardElement = build("<prop><uri>u</uri></prop>");
-		assertEquals("u", xcardElement.uri());
-	}
-
-	@Test
-	public void uri_get_none() throws Exception {
-		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.uri());
-	}
-
-	@Test
-	public void dateAndOrTime_get() throws Exception {
-		XCardElement xcardElement = build("<prop><date-and-or-time>d</date-and-or-time></prop>");
-		assertEquals("d", xcardElement.dateAndOrTime());
-	}
-
-	@Test
-	public void dateAndOrTime_get_none() throws Exception {
-		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.dateAndOrTime());
-	}
-
-	@Test
-	public void timestamp_get() throws Exception {
-		XCardElement xcardElement = build("<prop><timestamp>t</timestamp></prop>");
-		assertEquals("t", xcardElement.timestamp());
-	}
-
-	@Test
-	public void timestamp_get_none() throws Exception {
-		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.timestamp());
-	}
-
-	@Test
-	public void utcOffset_get() throws Exception {
-		XCardElement xcardElement = build("<prop><utc-offset>-05:00</utc-offset></prop>");
-		assertEquals("-05:00", xcardElement.utcOffset());
-	}
-
-	@Test
-	public void utcOffset_get_none() throws Exception {
-		XCardElement xcardElement = build("<prop><unknown>?</unknown></prop>");
-		assertNull(xcardElement.utcOffset());
-	}
-
-	@Test
-	public void append() throws Exception {
+	public void append() {
 		XCardElement xcardElement = build("<prop><one>1</one></prop>");
 		Element appendedElement = xcardElement.append("two", "2");
 		assertEquals("two", appendedElement.getLocalName());
@@ -192,7 +157,7 @@ public class XCardElementTest {
 	}
 
 	@Test
-	public void append_multiple() throws Exception {
+	public void append_multiple() {
 		XCardElement xcardElement = build("<prop />");
 		List<Element> elements = xcardElement.append("number", Arrays.asList("1", "2", "3"));
 		Iterator<Element> it = elements.iterator();
@@ -217,61 +182,11 @@ public class XCardElementTest {
 		assertEquals(XmlUtils.toElementList(xcardElement.element().getChildNodes()), elements);
 	}
 
-	@Test
-	public void text_add() throws Exception {
-		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.text("t");
-		assertEquals("text", element.getLocalName());
-		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
-		assertEquals("t", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
-	}
-
-	@Test
-	public void uri_add() throws Exception {
-		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.uri("u");
-		assertEquals("uri", element.getLocalName());
-		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
-		assertEquals("u", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
-	}
-
-	@Test
-	public void dateAndOrTime_add() throws Exception {
-		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.dateAndOrTime("d");
-		assertEquals("date-and-or-time", element.getLocalName());
-		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
-		assertEquals("d", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
-	}
-
-	@Test
-	public void timestamp_add() throws Exception {
-		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.timestamp("t");
-		assertEquals("timestamp", element.getLocalName());
-		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
-		assertEquals("t", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
-	}
-
-	@Test
-	public void utcOffset_add() throws Exception {
-		XCardElement xcardElement = build("<prop />");
-		Element element = xcardElement.utcOffset("-05:00");
-		assertEquals("utc-offset", element.getLocalName());
-		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
-		assertEquals("-05:00", element.getTextContent());
-		assertEquals(XmlUtils.getFirstChildElement(xcardElement.element()), element);
-	}
-
-	private XCardElement build(String innerXml) throws SAXException {
+	private XCardElement build(String innerXml) {
 		return build(innerXml, null);
 	}
 
-	private XCardElement build(String innerXml, String prefix) throws SAXException {
+	private XCardElement build(String innerXml, String prefix) {
 		//@formatter:off
 		String xml =
 		"<%sroot xmlns%s=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -284,7 +199,12 @@ public class XCardElementTest {
 			xml = String.format(xml, prefix + ":", ":" + prefix, prefix + ":");
 		}
 
-		Document document = XmlUtils.toDocument(xml);
+		Document document;
+		try {
+			document = XmlUtils.toDocument(xml);
+		} catch (SAXException e) {
+			throw new RuntimeException(e);
+		}
 		Element element = XmlUtils.getFirstChildElement(XmlUtils.getRootElement(document));
 		return new XCardElement(element);
 	}

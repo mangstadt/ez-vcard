@@ -6,6 +6,7 @@ import java.util.List;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.JCardDataType;
@@ -97,12 +98,12 @@ public class TimestampType extends VCardType {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.timestamp(writeValue(false));
+		parent.append(ValueParameter.TIMESTAMP, writeValue(false));
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.timestamp();
+		String value = element.first(ValueParameter.TIMESTAMP);
 		if (value == null) {
 			throw new SkipMeException("No timestamp value found.");
 		}

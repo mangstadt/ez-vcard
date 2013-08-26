@@ -8,6 +8,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -192,7 +193,7 @@ public class ClientPidMapType extends VCardType {
 		checkForValue();
 
 		if (uri != null) {
-			parent.uri(uri);
+			parent.append(ValueParameter.URI, uri);
 		}
 		if (pid != null) {
 			parent.append("sourceid", pid.toString());
@@ -201,9 +202,9 @@ public class ClientPidMapType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		uri = element.uri();
+		uri = element.first(ValueParameter.URI);
 
-		String value = element.get("sourceid");
+		String value = element.first("sourceid");
 		pid = (value == null) ? null : parsePid(value);
 	}
 

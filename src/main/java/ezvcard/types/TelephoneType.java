@@ -263,9 +263,9 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.uri(uri.toString());
+			parent.append(ValueParameter.URI, uri.toString());
 		} else if (text != null) {
-			parent.text(text);
+			parent.append(ValueParameter.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -273,7 +273,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.uri();
+		String value = element.first(ValueParameter.URI);
 		if (value != null) {
 			try {
 				setUri(TelUri.parse(value));
@@ -284,7 +284,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			return;
 		}
 
-		value = element.text();
+		value = element.first(ValueParameter.TEXT);
 		if (value != null) {
 			setText(value);
 			return;

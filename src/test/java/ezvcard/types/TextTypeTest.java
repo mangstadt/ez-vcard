@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
@@ -82,7 +83,7 @@ public class TextTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(textType.getTypeName().toLowerCase());
-		xe.text("This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		xe.append(ValueParameter.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 		Document expected = xe.document();
 		xe = new XCardElement(textType.getTypeName().toLowerCase());
 		Document actual = xe.document();
@@ -116,7 +117,7 @@ public class TextTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
-		xe.text("This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		xe.append(ValueParameter.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		String expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
 		String actual = t.getValue();

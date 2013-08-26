@@ -19,6 +19,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
@@ -95,7 +96,7 @@ public class ClientPidMapTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		xe.append("sourceid", pid + "");
 		Document expected = xe.document();
 
@@ -175,7 +176,7 @@ public class ClientPidMapTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		xe.append("sourceid", pid + "");
 
 		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
@@ -189,7 +190,7 @@ public class ClientPidMapTypeTest {
 	public void unmarshalXml_bad_pid() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		xe.uri(uri);
+		xe.append(ValueParameter.URI, uri);
 		xe.append("sourceid", "foo");
 
 		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);

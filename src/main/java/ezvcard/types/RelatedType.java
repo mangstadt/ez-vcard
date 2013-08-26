@@ -229,9 +229,9 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.uri(uri);
+			parent.append(ValueParameter.URI, uri);
 		} else if (text != null) {
-			parent.text(text);
+			parent.append(ValueParameter.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -239,11 +239,11 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.uri();
+		String value = element.first(ValueParameter.URI);
 		if (value != null) {
 			setUri(value);
 		} else {
-			value = element.text();
+			value = element.first(ValueParameter.TEXT);
 			if (value != null) {
 				setText(value);
 			} else {

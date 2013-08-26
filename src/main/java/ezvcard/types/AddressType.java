@@ -426,7 +426,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	private String sanitizeXml(XCardElement element, String name) {
-		String value = element.get(name);
+		String value = element.first(name);
 		return (value != null && value.length() == 0) ? null : value;
 	}
 

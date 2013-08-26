@@ -402,17 +402,17 @@ public class TimezoneType extends VCardType implements HasAltId {
 		checkForValue();
 
 		if (hasText()) {
-			parent.text(text);
+			parent.append(ValueParameter.TEXT, text);
 		} else {
 			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, false);
-			parent.utcOffset(offset);
+			parent.append(ValueParameter.UTC_OFFSET, offset);
 		}
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String text = element.get("text");
-		String utcOffset = element.utcOffset();
+		String text = element.first(ValueParameter.TEXT);
+		String utcOffset = element.first(ValueParameter.UTC_OFFSET);
 
 		if (text == null && utcOffset == null) {
 			throw new SkipMeException("No timezone data found.");

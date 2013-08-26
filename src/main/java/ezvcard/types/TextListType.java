@@ -5,6 +5,7 @@ import java.util.List;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -104,7 +105,7 @@ public class TextListType extends VCardType {
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		values.clear();
-		values.addAll(element.getAll("text"));
+		values.addAll(element.all(ValueParameter.TEXT));
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
@@ -107,7 +108,7 @@ public class TimestampTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(timestamp.getTypeName().toLowerCase());
-		xe.timestamp(basic);
+		xe.append(ValueParameter.TIMESTAMP, basic);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(timestamp.getTypeName().toLowerCase());
 		Document actualDoc = xe.document();
@@ -168,7 +169,7 @@ public class TimestampTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
-		xe.timestamp(basic);
+		xe.append(ValueParameter.TIMESTAMP, basic);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(timestampDate, t.getTimestamp());
 	}
@@ -184,7 +185,7 @@ public class TimestampTypeTest {
 	public void unmarshalXml_bad_timestamp() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
-		xe.timestamp("bad value");
+		xe.append(ValueParameter.TIMESTAMP, "bad value");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
 
