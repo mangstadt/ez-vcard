@@ -9,7 +9,6 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -292,7 +291,7 @@ public class GeoType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.single(JCardDataType.URI, write(version));
+		return JCardValue.single(ValueParameter.URI, write(version));
 	}
 
 	@Override

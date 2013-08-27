@@ -22,7 +22,6 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -225,7 +224,7 @@ public class ImppTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = impp.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, uri, value);
+		assertJCardValue(ValueParameter.URI, uri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -308,7 +307,7 @@ public class ImppTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.URI, uri);
+		JCardValue value = JCardValue.single(ValueParameter.URI, uri);
 
 		ImppType impp = new ImppType();
 		impp.unmarshalJson(subTypes, value, version, warnings);
@@ -320,7 +319,7 @@ public class ImppTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.URI, badUri);
+		JCardValue value = JCardValue.single(ValueParameter.URI, badUri);
 
 		ImppType impp = new ImppType();
 		impp.unmarshalJson(subTypes, value, version, warnings);

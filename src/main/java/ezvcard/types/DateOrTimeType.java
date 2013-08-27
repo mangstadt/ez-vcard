@@ -12,7 +12,6 @@ import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
 import ezvcard.util.VCardDateFormatter;
@@ -304,26 +303,26 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		JCardDataType dataType;
+		ValueParameter dataType;
 		String value;
 
 		if (text != null) {
-			dataType = JCardDataType.TEXT;
+			dataType = ValueParameter.TEXT;
 			value = text;
 		} else {
 			if (date != null) {
-				dataType = dateHasTime ? JCardDataType.DATE_TIME : JCardDataType.DATE;
+				dataType = dateHasTime ? ValueParameter.DATE_TIME : ValueParameter.DATE;
 				ISOFormat format = dateHasTime ? ISOFormat.TIME_EXTENDED : ISOFormat.DATE_EXTENDED;
 				value = VCardDateFormatter.format(date, format);
 			} else if (partialDate != null) {
 				if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
-					dataType = JCardDataType.DATE_TIME;
+					dataType = ValueParameter.DATE_TIME;
 				} else if (partialDate.hasTimeComponent()) {
-					dataType = JCardDataType.TIME;
+					dataType = ValueParameter.TIME;
 				} else if (partialDate.hasDateComponent()) {
-					dataType = JCardDataType.DATE;
+					dataType = ValueParameter.DATE;
 				} else {
-					dataType = JCardDataType.DATE_AND_OR_TIME;
+					dataType = ValueParameter.DATE_AND_OR_TIME;
 				}
 
 				value = partialDate.toDateAndOrTime(true);
@@ -338,7 +337,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == JCardDataType.TEXT) {
+		if (value.getDataType() == ValueParameter.TEXT) {
 			setText(valueStr);
 		} else {
 			parseDate(valueStr, version, warnings);

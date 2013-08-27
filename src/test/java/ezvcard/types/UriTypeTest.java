@@ -17,7 +17,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -105,7 +104,7 @@ public class UriTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withValue.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, uri, value);
+		assertJCardValue(ValueParameter.URI, uri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -114,7 +113,7 @@ public class UriTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = empty.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, null, value);
+		assertJCardValue(ValueParameter.URI, null, value);
 		assertWarnings(0, warnings);
 	}
 

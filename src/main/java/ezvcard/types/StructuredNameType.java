@@ -8,8 +8,8 @@ import java.util.List;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.VCardStringUtils.JoinCallback;
@@ -332,7 +332,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 		values.add(additional);
 		values.add(prefixes);
 		values.add(suffixes);
-		return JCardValue.structured(JCardDataType.TEXT, values);
+		return JCardValue.structured(ValueParameter.TEXT, values);
 	}
 
 	@Override

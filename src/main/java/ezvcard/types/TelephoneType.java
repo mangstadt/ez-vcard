@@ -10,7 +10,6 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.TelUri;
 import ezvcard.util.VCardStringUtils;
@@ -315,10 +314,10 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (uri != null) {
-			return JCardValue.single(JCardDataType.URI, uri.toString());
+			return JCardValue.single(ValueParameter.URI, uri.toString());
 		}
 		if (text != null) {
-			return JCardValue.single(JCardDataType.TEXT, text);
+			return JCardValue.single(ValueParameter.TEXT, text);
 		}
 		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
@@ -326,7 +325,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == JCardDataType.URI) {
+		if (value.getDataType() == ValueParameter.URI) {
 			try {
 				setUri(TelUri.parse(valueStr));
 			} catch (IllegalArgumentException e) {

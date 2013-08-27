@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import ezvcard.parameters.ValueParameter;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -83,7 +85,7 @@ public class TestUtils {
 	 * @param expectedValue the expected value
 	 * @param actualValue the actual jCard value
 	 */
-	public static void assertJCardValue(JCardDataType expectedDataType, String expectedValue, JCardValue actualValue) {
+	public static void assertJCardValue(ValueParameter expectedDataType, String expectedValue, JCardValue actualValue) {
 		assertEquals(expectedDataType, actualValue.getDataType());
 
 		List<JsonValue> expected = Arrays.asList(new JsonValue(expectedValue));

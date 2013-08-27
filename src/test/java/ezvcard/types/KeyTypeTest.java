@@ -21,7 +21,6 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -193,7 +192,7 @@ public class KeyTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withText.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.TEXT, text, value);
+		assertJCardValue(ValueParameter.TEXT, text, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -261,7 +260,7 @@ public class KeyTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, text);
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, text);
 		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
 		key.unmarshalJson(subTypes, value, version, warnings);
 

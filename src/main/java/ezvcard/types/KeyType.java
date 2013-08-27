@@ -15,7 +15,6 @@ import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -318,7 +317,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (text != null) {
-			return JCardValue.single(JCardDataType.TEXT, text);
+			return JCardValue.single(ValueParameter.TEXT, text);
 		}
 		return super.doMarshalJson(version, warnings);
 	}
@@ -326,7 +325,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == JCardDataType.TEXT) {
+		if (value.getDataType() == ValueParameter.TEXT) {
 			parseText(valueStr, version);
 			return;
 		}

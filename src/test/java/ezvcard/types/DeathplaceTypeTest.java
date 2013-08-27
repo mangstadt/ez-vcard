@@ -20,7 +20,6 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -167,7 +166,7 @@ public class DeathplaceTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = textType.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.TEXT, text, value);
+		assertJCardValue(ValueParameter.TEXT, text, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -176,7 +175,7 @@ public class DeathplaceTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = uriType.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, uri, value);
+		assertJCardValue(ValueParameter.URI, uri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -280,7 +279,7 @@ public class DeathplaceTypeTest {
 	@Test
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, text);
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, text);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -292,7 +291,7 @@ public class DeathplaceTypeTest {
 	@Test
 	public void unmarshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.URI, uri);
+		JCardValue value = JCardValue.single(ValueParameter.URI, uri);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -305,7 +304,7 @@ public class DeathplaceTypeTest {
 	public void unmarshalJson_unknown_datatype() {
 		//treats it as text
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.LANGUAGE_TAG, uri);
+		JCardValue value = JCardValue.single(ValueParameter.LANGUAGE_TAG, uri);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

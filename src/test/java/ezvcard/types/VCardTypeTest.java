@@ -22,7 +22,6 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -108,7 +107,7 @@ public class VCardTypeTest {
 
 		JCardValue value = type.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.BOOLEAN, type.value, value);
+		assertJCardValue(ValueParameter.BOOLEAN, type.value, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -133,7 +132,7 @@ public class VCardTypeTest {
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, type.value);
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, type.value);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -145,7 +144,7 @@ public class VCardTypeTest {
 	public void unmarshalJson_special_chars() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, "va,l;ue\\");
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, "va,l;ue\\");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

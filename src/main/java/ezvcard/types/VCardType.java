@@ -14,7 +14,6 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.VCardStringUtils.JoinCallback;
@@ -200,7 +199,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 
 		//determine the data type based on the VALUE parameter
 		ValueParameter valueParam = subTypes.getValue();
-		JCardDataType dataType = (valueParam == null) ? null : JCardDataType.get(valueParam.getValue());
+		ValueParameter dataType = (valueParam == null) ? null : ValueParameter.get(valueParam.getValue());
 		return JCardValue.single(dataType, valueStr);
 	}
 

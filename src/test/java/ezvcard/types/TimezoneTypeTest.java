@@ -22,7 +22,6 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -376,7 +375,7 @@ public class TimezoneTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = offset.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.UTC_OFFSET, offsetStrExtended, value);
+		assertJCardValue(ValueParameter.UTC_OFFSET, offsetStrExtended, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -385,7 +384,7 @@ public class TimezoneTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = text.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.TEXT, textStr, value);
+		assertJCardValue(ValueParameter.TEXT, textStr, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -394,7 +393,7 @@ public class TimezoneTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = offsetAndText.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.TEXT, textStr, value);
+		assertJCardValue(ValueParameter.TEXT, textStr, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -674,7 +673,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, textStr);
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, textStr);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -688,7 +687,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_text_other_data_type() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.BOOLEAN, textStr);
+		JCardValue value = JCardValue.single(ValueParameter.BOOLEAN, textStr);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -702,7 +701,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.UTC_OFFSET, offsetStrExtended);
+		JCardValue value = JCardValue.single(ValueParameter.UTC_OFFSET, offsetStrExtended);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -716,7 +715,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_invalid_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.UTC_OFFSET, "invalid");
+		JCardValue value = JCardValue.single(ValueParameter.UTC_OFFSET, "invalid");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 	}
@@ -725,7 +724,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_offset_other_data_type() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.BOOLEAN, offsetStrExtended);
+		JCardValue value = JCardValue.single(ValueParameter.BOOLEAN, offsetStrExtended);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -739,7 +738,7 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_invalid_offset_other_data_type() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.BOOLEAN, "invalid");
+		JCardValue value = JCardValue.single(ValueParameter.BOOLEAN, "invalid");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

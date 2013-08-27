@@ -19,6 +19,7 @@ import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AnniversaryType;
 import ezvcard.types.BirthdayType;
@@ -32,7 +33,6 @@ import ezvcard.types.TelephoneType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.VCardType;
 import ezvcard.util.IOUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -242,7 +242,7 @@ public class JCardWriterTest {
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		vcard.addType(new TypeForTesting(JCardValue.single(JCardDataType.TEXT, "value")));
+		vcard.addType(new TypeForTesting(JCardValue.single(ValueParameter.TEXT, "value")));
 		writer.write(vcard);
 		assertWarnings(0, writer.getWarnings());
 

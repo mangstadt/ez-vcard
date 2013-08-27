@@ -11,7 +11,6 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -222,7 +221,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.single(JCardDataType.TEXT, getValue());
+		return JCardValue.single(ValueParameter.TEXT, getValue());
 	}
 
 	@Override

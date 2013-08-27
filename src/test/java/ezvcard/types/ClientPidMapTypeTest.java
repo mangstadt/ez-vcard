@@ -20,7 +20,6 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
@@ -120,7 +119,7 @@ public class ClientPidMapTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withValue.marshalJson(version, warnings);
-		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(ValueParameter.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -199,7 +198,7 @@ public class ClientPidMapTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(JCardDataType.TEXT, pid + "", uri);
+		JCardValue value = JCardValue.structured(ValueParameter.TEXT, pid + "", uri);
 
 		clientPidMapType.unmarshalJson(subTypes, value, version, warnings);
 
@@ -211,7 +210,7 @@ public class ClientPidMapTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_pid() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(JCardDataType.TEXT, "foo", uri);
+		JCardValue value = JCardValue.structured(ValueParameter.TEXT, "foo", uri);
 
 		clientPidMapType.unmarshalJson(subTypes, value, version, warnings);
 	}

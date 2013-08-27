@@ -11,7 +11,6 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
@@ -445,13 +444,13 @@ public class TimezoneType extends VCardType implements HasAltId {
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		checkForValue();
 
-		JCardDataType dataType;
+		ValueParameter dataType;
 		String value;
 		if (hasText()) {
-			dataType = JCardDataType.TEXT;
+			dataType = ValueParameter.TEXT;
 			value = text;
 		} else {
-			dataType = JCardDataType.UTC_OFFSET;
+			dataType = ValueParameter.UTC_OFFSET;
 			value = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
 		}
 
@@ -461,8 +460,8 @@ public class TimezoneType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		JCardDataType dataType = value.getDataType();
-		parse(valueStr, dataType == JCardDataType.TEXT, dataType == JCardDataType.UTC_OFFSET, version, warnings);
+		ValueParameter dataType = value.getDataType();
+		parse(valueStr, dataType == ValueParameter.TEXT, dataType == ValueParameter.UTC_OFFSET, version, warnings);
 	}
 
 	private void checkForValue() {

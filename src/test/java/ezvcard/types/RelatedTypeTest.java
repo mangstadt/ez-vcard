@@ -19,7 +19,6 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -169,7 +168,7 @@ public class RelatedTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = textType.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.TEXT, text, value);
+		assertJCardValue(ValueParameter.TEXT, text, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -178,7 +177,7 @@ public class RelatedTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = uriType.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, uri, value);
+		assertJCardValue(ValueParameter.URI, uri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -265,7 +264,7 @@ public class RelatedTypeTest {
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, text);
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, text);
 
 		RelatedType t = new RelatedType();
 		t.unmarshalJson(subTypes, value, version, warnings);
@@ -279,7 +278,7 @@ public class RelatedTypeTest {
 	public void unmarshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.URI, uri);
+		JCardValue value = JCardValue.single(ValueParameter.URI, uri);
 
 		RelatedType t = new RelatedType();
 		t.unmarshalJson(subTypes, value, version, warnings);
@@ -294,7 +293,7 @@ public class RelatedTypeTest {
 		//treats it as a URI
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.LANGUAGE_TAG, uri);
+		JCardValue value = JCardValue.single(ValueParameter.LANGUAGE_TAG, uri);
 
 		RelatedType t = new RelatedType();
 		t.unmarshalJson(subTypes, value, version, warnings);

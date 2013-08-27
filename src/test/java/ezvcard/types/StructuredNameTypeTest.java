@@ -18,8 +18,8 @@ import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
@@ -178,7 +178,7 @@ public class StructuredNameTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = allValues.marshalJson(version, warnings);
 
-		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(ValueParameter.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -200,7 +200,7 @@ public class StructuredNameTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = emptyValues.marshalJson(version, warnings);
 
-		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(ValueParameter.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -222,7 +222,7 @@ public class StructuredNameTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = allEmptyValues.marshalJson(version, warnings);
 
-		assertEquals(JCardDataType.TEXT, value.getDataType());
+		assertEquals(ValueParameter.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -425,7 +425,7 @@ public class StructuredNameTypeTest {
 		values.add(Arrays.asList("Joh;nny,", "John"));
 		values.add(Arrays.asList("Mr."));
 		values.add(Arrays.asList("III"));
-		JCardValue value = JCardValue.structured(JCardDataType.TEXT, values);
+		JCardValue value = JCardValue.structured(ValueParameter.TEXT, values);
 
 		StructuredNameType t = new StructuredNameType();
 		t.unmarshalJson(subTypes, value, version, warnings);
@@ -448,7 +448,7 @@ public class StructuredNameTypeTest {
 		values.add(Arrays.asList("Joh;nny,", "John"));
 		values.add(Arrays.asList(""));
 		values.add(Arrays.asList(""));
-		JCardValue value = JCardValue.structured(JCardDataType.TEXT, values);
+		JCardValue value = JCardValue.structured(ValueParameter.TEXT, values);
 
 		StructuredNameType t = new StructuredNameType();
 		t.unmarshalJson(subTypes, value, version, warnings);
@@ -471,7 +471,7 @@ public class StructuredNameTypeTest {
 		values.add(Arrays.asList(""));
 		values.add(Arrays.asList(""));
 		values.add(Arrays.asList(""));
-		JCardValue value = JCardValue.structured(JCardDataType.TEXT, values);
+		JCardValue value = JCardValue.structured(ValueParameter.TEXT, values);
 
 		StructuredNameType t = new StructuredNameType();
 		t.unmarshalJson(subTypes, value, version, warnings);
@@ -488,7 +488,7 @@ public class StructuredNameTypeTest {
 	public void unmarshalJson_one_empty_string() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, "");
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, "");
 
 		StructuredNameType t = new StructuredNameType();
 		t.unmarshalJson(subTypes, value, version, warnings);

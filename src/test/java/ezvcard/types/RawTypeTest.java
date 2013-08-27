@@ -18,7 +18,6 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -160,7 +159,7 @@ public class RawTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, propertyValue);
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, propertyValue);
 
 		RawTypeImpl type = new RawTypeImpl();
 		type.unmarshalJson(subTypes, value, version, warnings);

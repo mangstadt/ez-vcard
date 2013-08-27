@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
 import ezvcard.VCardSubTypes;
-import ezvcard.util.JCardDataType;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 
@@ -144,7 +144,7 @@ public class JCardRawReader implements Closeable {
 			throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
 		}
 		String dataTypeStr = jp.getText().toLowerCase();
-		JCardDataType dataType = "unknown".equals(dataTypeStr) ? null : JCardDataType.get(dataTypeStr);
+		ValueParameter dataType = "unknown".equals(dataTypeStr) ? null : ValueParameter.get(dataTypeStr);
 
 		//get property value(s)
 		List<JsonValue> values = parseValues();

@@ -9,7 +9,6 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -212,7 +211,7 @@ public class ClientPidMapType extends VCardType {
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		checkForValue();
 
-		return JCardValue.structured(JCardDataType.TEXT, pid + "", uri);
+		return JCardValue.structured(ValueParameter.TEXT, pid + "", uri);
 	}
 
 	@Override

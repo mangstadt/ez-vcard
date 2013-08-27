@@ -9,7 +9,6 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
@@ -128,7 +127,7 @@ public class TimestampType extends VCardType {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		checkForValue();
-		return JCardValue.single(JCardDataType.TIMESTAMP, writeValue(true));
+		return JCardValue.single(ValueParameter.TIMESTAMP, writeValue(true));
 	}
 
 	@Override
