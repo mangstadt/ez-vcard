@@ -65,7 +65,7 @@ public class VCardParameterCaseClassesTest {
 		public static final Pet FISH = new Pet("fish");
 
 		private Pet(String value) {
-			super("PET", value);
+			super(value);
 		}
 	}
 }

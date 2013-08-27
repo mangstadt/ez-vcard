@@ -41,12 +41,10 @@ import java.util.Collection;
 public class CalscaleParameter extends VCardParameter {
 	private static final VCardParameterCaseClasses<CalscaleParameter> enums = new VCardParameterCaseClasses<CalscaleParameter>(CalscaleParameter.class);
 
-	public static final String NAME = "CALSCALE";
-
 	public static final CalscaleParameter GREGORIAN = new CalscaleParameter("gregorian");
 
 	private CalscaleParameter(String value) {
-		super(NAME, value);
+		super(value);
 	}
 
 	/**

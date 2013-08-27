@@ -3,7 +3,7 @@ package ezvcard.types;
 import java.util.HashSet;
 import java.util.Set;
 
-import ezvcard.parameters.TypeParameter;
+import ezvcard.parameters.VCardParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -40,7 +40,7 @@ import ezvcard.parameters.TypeParameter;
  * @author Michael Angstadt
  * @see SingleValuedTypeParameterType
  */
-public abstract class MultiValuedTypeParameterType<T extends TypeParameter> extends TypeParameterType<T> {
+public abstract class MultiValuedTypeParameterType<T extends VCardParameter> extends TypeParameterType<T> {
 	/**
 	 * Creates a multi-valued type parameter property.
 	 * @param typeName the type name (e.g. "ADR")

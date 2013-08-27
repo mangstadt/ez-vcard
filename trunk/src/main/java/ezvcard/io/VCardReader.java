@@ -21,7 +21,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.EncodingParameter;
-import ezvcard.parameters.TypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.LabelType;
 import ezvcard.types.RawType;
@@ -255,10 +254,10 @@ public class VCardReader implements Closeable {
 			if (VCardDataType.find(paramValue) != null) {
 				paramName = VCardSubTypes.VALUE;
 			} else if (EncodingParameter.find(paramValue) != null) {
-				paramName = EncodingParameter.NAME;
+				paramName = VCardSubTypes.ENCODING;
 			} else {
 				//otherwise, assume it's a TYPE
-				paramName = TypeParameter.NAME;
+				paramName = VCardSubTypes.TYPE;
 			}
 			parameters.put(paramName, paramValue);
 		}
@@ -281,15 +280,14 @@ public class VCardReader implements Closeable {
 	private void handleQuotedMultivaluedTypeParams(VCardSubTypes parameters) {
 		//account for multi-valued TYPE parameters being enclosed entirely in double quotes
 		//e.g. ADR;TYPE="home,work"
-		List<String> typeParams = new ArrayList<String>(parameters.get(TypeParameter.NAME));
-		for (String typeParam : typeParams) {
+		for (String typeParam : parameters.getTypes()) {
 			if (!typeParam.contains(",")) {
 				continue;
 			}
 
-			parameters.remove(TypeParameter.NAME, typeParam);
+			parameters.removeTypes();
 			for (String splitValue : typeParam.split(",")) {
-				parameters.put(TypeParameter.NAME, splitValue);
+				parameters.addType(splitValue);
 			}
 		}
 	}

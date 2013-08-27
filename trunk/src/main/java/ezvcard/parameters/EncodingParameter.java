@@ -70,8 +70,6 @@ import java.util.Collection;
 public class EncodingParameter extends VCardParameter {
 	private static final VCardParameterCaseClasses<EncodingParameter> enums = new VCardParameterCaseClasses<EncodingParameter>(EncodingParameter.class);
 
-	public static final String NAME = "ENCODING";
-
 	/**
 	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
@@ -98,7 +96,7 @@ public class EncodingParameter extends VCardParameter {
 	public static final EncodingParameter B = new EncodingParameter("b");
 
 	private EncodingParameter(String value) {
-		super(NAME, value);
+		super(value);
 	}
 
 	/**

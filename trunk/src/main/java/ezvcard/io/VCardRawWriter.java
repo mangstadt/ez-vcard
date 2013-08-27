@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.EncodingParameter;
-import ezvcard.parameters.TypeParameter;
 import ezvcard.util.org.apache.commons.codec.EncoderException;
 import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
@@ -388,7 +387,7 @@ public class VCardRawWriter implements Closeable {
 			}
 
 			if (version == VCardVersion.V2_1) {
-				boolean isTypeParameter = TypeParameter.NAME.equalsIgnoreCase(parameterName);
+				boolean isTypeParameter = VCardSubTypes.TYPE.equalsIgnoreCase(parameterName);
 				for (String parameterValue : parameterValues) {
 					parameterValue = sanitizeParameterValue(parameterValue, parameterName, propertyName);
 
@@ -478,7 +477,7 @@ public class VCardRawWriter implements Closeable {
 	private String sanitizeParameterValue(String parameterValue, String parameterName, String propertyName) {
 		String modifiedValue = null;
 		boolean valueChanged = false;
-		
+
 		//Note: String reference comparisons ("==") are used because the Pattern class returns the same instance if the String wasn't changed
 
 		switch (version) {

@@ -1,6 +1,6 @@
 package ezvcard.types;
 
-import ezvcard.parameters.TypeParameter;
+import ezvcard.parameters.VCardParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,7 +35,7 @@ import ezvcard.parameters.TypeParameter;
  * Represents a type that has a TYPE parameter (for example, {@link PhotoType}).
  * @author Michael Angstadt
  */
-public abstract class TypeParameterType<T extends TypeParameter> extends VCardType {
+public abstract class TypeParameterType<T extends VCardParameter> extends VCardType {
 	/**
 	 * Creates a property that has a TYPE parameter.
 	 * @param name the type name (e.g. "PHOTO").

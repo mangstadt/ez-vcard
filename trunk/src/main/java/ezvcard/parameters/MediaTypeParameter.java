@@ -35,7 +35,7 @@ package ezvcard.parameters;
  * value is used in 4.0 vCards.
  * @author Michael Angstadt
  */
-public class MediaTypeParameter extends TypeParameter {
+public class MediaTypeParameter extends VCardParameter {
 	protected final String mediaType;
 	protected final String extension;
 

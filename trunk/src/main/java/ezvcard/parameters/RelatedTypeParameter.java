@@ -40,7 +40,7 @@ import ezvcard.types.RelatedType;
  * </p>
  * @author Michael Angstadt
  */
-public class RelatedTypeParameter extends TypeParameter {
+public class RelatedTypeParameter extends VCardParameter {
 	private static final VCardParameterCaseClasses<RelatedTypeParameter> enums = new VCardParameterCaseClasses<RelatedTypeParameter>(RelatedTypeParameter.class);
 
 	public static final RelatedTypeParameter ACQUAINTANCE = new RelatedTypeParameter("acquaintance");
