@@ -34,7 +34,7 @@ import ezvcard.util.CaseClasses;
  */
 
 /**
- * Represents a VALUE parameter.
+ * Defines the data type of a property's value.
  * @author Michael Angstadt
  */
 public class VCardDataType {
