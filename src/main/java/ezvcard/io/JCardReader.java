@@ -59,7 +59,7 @@ import ezvcard.util.JCardValue;
  * href="http://tools.ietf.org/html/draft-kewisch-vcard-in-json-04">jCard
  * draft</a>
  */
-public class JCardReader implements IParser, Closeable {
+public class JCardReader implements Closeable {
 	private final List<String> warnings = new ArrayList<String>();
 	private final JCardRawReader reader;
 	private final Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
@@ -97,7 +97,11 @@ public class JCardReader implements IParser, Closeable {
 		this.reader = new JCardRawReader(reader);
 	}
 
-	//@Override
+	/**
+	 * Reads the next vCard from the data stream.
+	 * @return the next vCard or null if there are no more
+	 * @throws IOException if there's a problem reading from the stream
+	 */
 	public VCard readNext() throws IOException {
 		if (reader.eof()) {
 			return null;
@@ -166,17 +170,30 @@ public class JCardReader implements IParser, Closeable {
 		}
 	}
 
-	//@Override
+	/**
+	 * Registers an extended type class.
+	 * @param clazz the extended type class to register (MUST have a public,
+	 * no-arg constructor)
+	 * @throws RuntimeException if the class doesn't have a public, no-arg
+	 * constructor
+	 */
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.put(getTypeNameFromTypeClass(clazz), clazz);
 	}
 
-	//@Override
+	/**
+	 * Removes an extended type class that was previously registered.
+	 * @param clazz the extended type class to remove
+	 */
 	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.remove(getTypeNameFromTypeClass(clazz));
 	}
 
-	//@Override
+	/**
+	 * Gets the warnings from the last vCard that was unmarshalled. This list is
+	 * reset every time a new vCard is read.
+	 * @return the warnings or empty list if there were no warnings
+	 */
 	public List<String> getWarnings() {
 		return new ArrayList<String>(warnings);
 	}

@@ -64,7 +64,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * Parses {@link VCard} objects from a plain-text vCard data stream.
  * @author Michael Angstadt
  */
-public class VCardReader implements Closeable, IParser {
+public class VCardReader implements Closeable {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private List<String> warnings = new ArrayList<String>();
 	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
@@ -145,22 +145,39 @@ public class VCardReader implements Closeable, IParser {
 		this.compatibilityMode = compatibilityMode;
 	}
 
-	//@Override
+	/**
+	 * Registers an extended type class.
+	 * @param clazz the extended type class to register (MUST have a public,
+	 * no-arg constructor)
+	 * @throws RuntimeException if the class doesn't have a public, no-arg
+	 * constructor
+	 */
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.put(getTypeNameFromTypeClass(clazz), clazz);
 	}
 
-	//@Override
+	/**
+	 * Removes an extended type class that was previously registered.
+	 * @param clazz the extended type class to remove
+	 */
 	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.remove(getTypeNameFromTypeClass(clazz));
 	}
 
-	//@Override
+	/**
+	 * Gets the warnings from the last vCard that was unmarshalled. This list is
+	 * reset every time a new vCard is read.
+	 * @return the warnings or empty list if there were no warnings
+	 */
 	public List<String> getWarnings() {
 		return new ArrayList<String>(warnings);
 	}
 
-	//@Override
+	/**
+	 * Reads the next vCard from the data stream.
+	 * @return the next vCard or null if there are no more
+	 * @throws IOException if there's a problem reading from the stream
+	 */
 	public VCard readNext() throws IOException {
 		if (reader.eof()) {
 			return null;
