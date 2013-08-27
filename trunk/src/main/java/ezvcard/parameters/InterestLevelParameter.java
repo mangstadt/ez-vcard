@@ -43,7 +43,7 @@ import ezvcard.types.InterestType;
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
 public class InterestLevelParameter extends LevelParameter {
-	private static final SingleValuedCaseClasses<InterestLevelParameter> enums = new SingleValuedCaseClasses<InterestLevelParameter>(InterestLevelParameter.class);
+	private static final VCardParameterCaseClasses<InterestLevelParameter> enums = new VCardParameterCaseClasses<InterestLevelParameter>(InterestLevelParameter.class);
 
 	public static final InterestLevelParameter LOW = new InterestLevelParameter("low");
 	public static final InterestLevelParameter MEDIUM = new InterestLevelParameter("medium");

@@ -41,7 +41,7 @@ import ezvcard.types.TelephoneType;
  * @author Michael Angstadt
  */
 public class TelephoneTypeParameter extends TypeParameter {
-	private static final SingleValuedCaseClasses<TelephoneTypeParameter> enums = new SingleValuedCaseClasses<TelephoneTypeParameter>(TelephoneTypeParameter.class);
+	private static final VCardParameterCaseClasses<TelephoneTypeParameter> enums = new VCardParameterCaseClasses<TelephoneTypeParameter>(TelephoneTypeParameter.class);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
