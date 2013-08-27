@@ -2,9 +2,9 @@ package ezvcard.types;
 
 import java.util.List;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -62,12 +62,12 @@ public class UriType extends TextType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(element.first(ValueParameter.URI));
+		setValue(element.first(VCardDataType.URI));
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.append(ValueParameter.URI, getValue());
+		parent.append(VCardDataType.URI, getValue());
 	}
 
 	@Override
@@ -82,6 +82,6 @@ public class UriType extends TextType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.single(ValueParameter.URI, value);
+		return JCardValue.single(VCardDataType.URI, value);
 	}
 }

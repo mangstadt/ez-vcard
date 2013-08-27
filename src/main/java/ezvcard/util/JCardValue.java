@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import ezvcard.parameters.ValueParameter;
+import ezvcard.VCardDataType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.NoteType;
 import ezvcard.types.StructuredNameType;
@@ -44,7 +44,7 @@ import ezvcard.types.StructuredNameType;
  * @author Michael Angstadt
  */
 public class JCardValue {
-	private final ValueParameter dataType;
+	private final VCardDataType dataType;
 	private final List<JsonValue> values;
 
 	/**
@@ -52,7 +52,7 @@ public class JCardValue {
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 */
-	public JCardValue(ValueParameter dataType, List<JsonValue> values) {
+	public JCardValue(VCardDataType dataType, List<JsonValue> values) {
 		this.dataType = dataType;
 		this.values = Collections.unmodifiableList(values);
 	}
@@ -62,7 +62,7 @@ public class JCardValue {
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 */
-	public JCardValue(ValueParameter dataType, JsonValue... values) {
+	public JCardValue(VCardDataType dataType, JsonValue... values) {
 		this.dataType = dataType;
 		this.values = Arrays.asList(values); //unmodifiable
 	}
@@ -73,7 +73,7 @@ public class JCardValue {
 	 * @param value the value
 	 * @return the jCal value
 	 */
-	public static JCardValue single(ValueParameter dataType, Object value) {
+	public static JCardValue single(VCardDataType dataType, Object value) {
 		return new JCardValue(dataType, new JsonValue(value));
 	}
 
@@ -83,7 +83,7 @@ public class JCardValue {
 	 * @param values the values
 	 * @return the jCal value
 	 */
-	public static JCardValue multi(ValueParameter dataType, Object... values) {
+	public static JCardValue multi(VCardDataType dataType, Object... values) {
 		return multi(dataType, Arrays.asList(values));
 	}
 
@@ -93,7 +93,7 @@ public class JCardValue {
 	 * @param values the values
 	 * @return the jCal value
 	 */
-	public static JCardValue multi(ValueParameter dataType, List<?> values) {
+	public static JCardValue multi(VCardDataType dataType, List<?> values) {
 		List<JsonValue> multiValues = new ArrayList<JsonValue>(values.size());
 		for (Object value : values) {
 			multiValues.add(new JsonValue(value));
@@ -107,7 +107,7 @@ public class JCardValue {
 	 * @param values the values
 	 * @return the jCal value
 	 */
-	public static JCardValue structured(ValueParameter dataType, Object... values) {
+	public static JCardValue structured(VCardDataType dataType, Object... values) {
 		List<List<?>> valuesList = new ArrayList<List<?>>(values.length);
 		for (Object value : values) {
 			valuesList.add(Arrays.asList(value));
@@ -121,7 +121,7 @@ public class JCardValue {
 	 * @param values the values
 	 * @return the jCal value
 	 */
-	public static JCardValue structured(ValueParameter dataType, List<List<?>> values) {
+	public static JCardValue structured(VCardDataType dataType, List<List<?>> values) {
 		List<JsonValue> array = new ArrayList<JsonValue>(values.size());
 		for (List<?> list : values) {
 			if (list.isEmpty()) {
@@ -150,7 +150,7 @@ public class JCardValue {
 	 * Gets the jCard data type
 	 * @return the data type or null for "unknown"
 	 */
-	public ValueParameter getDataType() {
+	public VCardDataType getDataType() {
 		return dataType;
 	}
 

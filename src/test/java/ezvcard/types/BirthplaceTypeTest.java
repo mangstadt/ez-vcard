@@ -15,11 +15,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -98,7 +98,7 @@ public class BirthplaceTypeTest {
 		VCardSubTypes subTypes = uriType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(VCardDataType.URI, subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -130,7 +130,7 @@ public class BirthplaceTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, text);
+		xe.append(VCardDataType.TEXT, text);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -144,7 +144,7 @@ public class BirthplaceTypeTest {
 	public void marshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -166,7 +166,7 @@ public class BirthplaceTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = textType.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.TEXT, text, value);
+		assertJCardValue(VCardDataType.TEXT, text, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -175,7 +175,7 @@ public class BirthplaceTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = uriType.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.URI, uri, value);
+		assertJCardValue(VCardDataType.URI, uri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -198,7 +198,7 @@ public class BirthplaceTypeTest {
 	@Test
 	public void unmarshalText_text_with_value_parameter() {
 		VCardVersion version = VCardVersion.V4_0;
-		subTypes.setValue(ValueParameter.TEXT);
+		subTypes.setValue(VCardDataType.TEXT);
 		t.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 
 		assertEquals(text, t.getText());
@@ -220,7 +220,7 @@ public class BirthplaceTypeTest {
 	@Test
 	public void unmarshalText_uri_with_value_parameter() {
 		VCardVersion version = VCardVersion.V4_0;
-		subTypes.setValue(ValueParameter.URI);
+		subTypes.setValue(VCardDataType.URI);
 		t.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
 
 		assertNull(t.getText());
@@ -232,7 +232,7 @@ public class BirthplaceTypeTest {
 	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, text);
+		xe.append(VCardDataType.TEXT, text);
 		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 
@@ -245,7 +245,7 @@ public class BirthplaceTypeTest {
 	public void unmarshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 
@@ -258,8 +258,8 @@ public class BirthplaceTypeTest {
 	public void unmarshalXml_both() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, text);
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.TEXT, text);
+		xe.append(VCardDataType.URI, uri);
 		Element element = xe.element();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 
@@ -279,7 +279,7 @@ public class BirthplaceTypeTest {
 	@Test
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.TEXT, text);
+		JCardValue value = JCardValue.single(VCardDataType.TEXT, text);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -291,7 +291,7 @@ public class BirthplaceTypeTest {
 	@Test
 	public void unmarshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.URI, uri);
+		JCardValue value = JCardValue.single(VCardDataType.URI, uri);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -304,7 +304,7 @@ public class BirthplaceTypeTest {
 	public void unmarshalJson_unknown_datatype() {
 		//treats it as text
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.LANGUAGE_TAG, uri);
+		JCardValue value = JCardValue.single(VCardDataType.LANGUAGE_TAG, uri);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

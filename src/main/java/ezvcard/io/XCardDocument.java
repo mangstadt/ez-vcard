@@ -32,11 +32,11 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.TypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.types.KindType;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
@@ -136,19 +136,19 @@ public class XCardDocument {
 	 * Defines the names of the XML elements that are used to hold each
 	 * parameter's value.
 	 */
-	private final Map<String, ValueParameter> parameterDataTypes = new HashMap<String, ValueParameter>();
+	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>();
 	{
-		registerParameterDataType(VCardSubTypes.ALTID, ValueParameter.TEXT);
-		registerParameterDataType(CalscaleParameter.NAME, ValueParameter.TEXT);
-		registerParameterDataType(VCardSubTypes.GEO, ValueParameter.URI);
-		registerParameterDataType(VCardSubTypes.LABEL, ValueParameter.TEXT);
-		registerParameterDataType(VCardSubTypes.LANGUAGE, ValueParameter.LANGUAGE_TAG);
-		registerParameterDataType(VCardSubTypes.MEDIATYPE, ValueParameter.TEXT);
-		registerParameterDataType(VCardSubTypes.PID, ValueParameter.TEXT);
-		registerParameterDataType(VCardSubTypes.PREF, ValueParameter.INTEGER);
-		registerParameterDataType(VCardSubTypes.SORT_AS, ValueParameter.TEXT);
-		registerParameterDataType(TypeParameter.NAME, ValueParameter.TEXT);
-		registerParameterDataType(VCardSubTypes.TZ, ValueParameter.URI);
+		registerParameterDataType(VCardSubTypes.ALTID, VCardDataType.TEXT);
+		registerParameterDataType(CalscaleParameter.NAME, VCardDataType.TEXT);
+		registerParameterDataType(VCardSubTypes.GEO, VCardDataType.URI);
+		registerParameterDataType(VCardSubTypes.LABEL, VCardDataType.TEXT);
+		registerParameterDataType(VCardSubTypes.LANGUAGE, VCardDataType.LANGUAGE_TAG);
+		registerParameterDataType(VCardSubTypes.MEDIATYPE, VCardDataType.TEXT);
+		registerParameterDataType(VCardSubTypes.PID, VCardDataType.TEXT);
+		registerParameterDataType(VCardSubTypes.PREF, VCardDataType.INTEGER);
+		registerParameterDataType(VCardSubTypes.SORT_AS, VCardDataType.TEXT);
+		registerParameterDataType(TypeParameter.NAME, VCardDataType.TEXT);
+		registerParameterDataType(VCardSubTypes.TZ, VCardDataType.URI);
 	}
 
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
@@ -307,7 +307,7 @@ public class XCardDocument {
 	 * @param parameterName the parameter name (e.g. "x-foo")
 	 * @param dataType the data type or null to remove
 	 */
-	public void registerParameterDataType(String parameterName, ValueParameter dataType) {
+	public void registerParameterDataType(String parameterName, VCardDataType dataType) {
 		parameterName = parameterName.toLowerCase();
 		if (dataType == null) {
 			parameterDataTypes.remove(parameterName);
@@ -744,8 +744,8 @@ public class XCardDocument {
 				String paramName = param.getKey();
 				Element parameterElement = createElement(paramName.toLowerCase());
 				for (String paramValue : param.getValue()) {
-					ValueParameter dataType = parameterDataTypes.get(paramName.toLowerCase());
-					String valueElementName = (dataType == null) ? "unknown" : dataType.getValue().toLowerCase();
+					VCardDataType dataType = parameterDataTypes.get(paramName.toLowerCase());
+					String valueElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
 					Element parameterValueElement = createElement(valueElementName);
 					parameterValueElement.setTextContent(paramValue);
 					parameterElement.appendChild(parameterValueElement);

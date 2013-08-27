@@ -16,11 +16,11 @@ import org.junit.After;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -202,7 +202,7 @@ public class ImppTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ImppType.NAME);
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		Document expected = xe.document();
 		xe = new XCardElement(ImppType.NAME);
 		Document actual = xe.document();
@@ -224,7 +224,7 @@ public class ImppTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = impp.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.URI, uri, value);
+		assertJCardValue(VCardDataType.URI, uri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -255,7 +255,7 @@ public class ImppTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ImppType.NAME);
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		ImppType impp = new ImppType();
 		impp.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(uri, impp.getUri().toString());
@@ -266,7 +266,7 @@ public class ImppTypeTest {
 	public void unmarshalXml_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ImppType.NAME);
-		xe.append(ValueParameter.URI, badUri);
+		xe.append(VCardDataType.URI, badUri);
 		ImppType impp = new ImppType();
 		impp.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
@@ -307,7 +307,7 @@ public class ImppTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.URI, uri);
+		JCardValue value = JCardValue.single(VCardDataType.URI, uri);
 
 		ImppType impp = new ImppType();
 		impp.unmarshalJson(subTypes, value, version, warnings);
@@ -319,7 +319,7 @@ public class ImppTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.URI, badUri);
+		JCardValue value = JCardValue.single(VCardDataType.URI, badUri);
 
 		ImppType impp = new ImppType();
 		impp.unmarshalJson(subTypes, value, version, warnings);

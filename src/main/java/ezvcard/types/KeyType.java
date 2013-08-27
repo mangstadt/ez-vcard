@@ -6,13 +6,13 @@ import java.io.InputStream;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.parameters.MediaTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
@@ -220,7 +220,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 				contentType = new MediaTypeParameter(null, null, null);
 			}
 
-			copy.setValue(ValueParameter.TEXT);
+			copy.setValue(VCardDataType.TEXT);
 			copy.setEncoding(null);
 			if (version == VCardVersion.V4_0) {
 				//don't null out TYPE, it could be set to "home", "work", etc
@@ -249,7 +249,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (subTypes.getValue() == ValueParameter.TEXT) {
+		if (subTypes.getValue() == VCardDataType.TEXT) {
 			parseText(VCardStringUtils.unescape(value), version);
 			return;
 		}
@@ -259,7 +259,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			parent.append(ValueParameter.TEXT, text);
+			parent.append(VCardDataType.TEXT, text);
 			return;
 		}
 		super.doMarshalXml(parent, warnings, compatibilityMode);
@@ -267,13 +267,13 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String text = element.first(ValueParameter.TEXT);
+		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
 			parseText(text, element.version());
 			return;
 		}
 
-		String uri = element.first(ValueParameter.URI);
+		String uri = element.first(VCardDataType.URI);
 		if (uri != null) {
 			try {
 				//parse as data URI
@@ -317,7 +317,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (text != null) {
-			return JCardValue.single(ValueParameter.TEXT, text);
+			return JCardValue.single(VCardDataType.TEXT, text);
 		}
 		return super.doMarshalJson(version, warnings);
 	}
@@ -325,7 +325,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == ValueParameter.TEXT) {
+		if (value.getDataType() == VCardDataType.TEXT) {
 			parseText(valueStr, version);
 			return;
 		}
@@ -355,7 +355,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			}
 			break;
 		case V4_0:
-			if (subTypes.getValue() == ValueParameter.URI) {
+			if (subTypes.getValue() == VCardDataType.URI) {
 				setUrl(value, contentType);
 			} else {
 				setText(value, contentType);

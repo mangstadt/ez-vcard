@@ -7,12 +7,12 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -198,8 +198,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 		String valueStr = marshalText(version, warnings, CompatibilityMode.RFC);
 
 		//determine the data type based on the VALUE parameter
-		ValueParameter valueParam = subTypes.getValue();
-		ValueParameter dataType = (valueParam == null) ? null : ValueParameter.get(valueParam.getValue());
+		VCardDataType dataType = subTypes.getValue();
 		return JCardValue.single(dataType, valueStr);
 	}
 

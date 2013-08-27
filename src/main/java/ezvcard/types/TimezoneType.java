@@ -5,11 +5,11 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardDateFormatter;
@@ -335,12 +335,12 @@ public class TimezoneType extends VCardType implements HasAltId {
 		switch (version) {
 		case V3_0:
 			if (!hasOffset() && hasText()) {
-				copy.setValue(ValueParameter.TEXT);
+				copy.setValue(VCardDataType.TEXT);
 			}
 			break;
 		case V4_0:
 			if (hasOffset() && !hasText()) {
-				copy.setValue(ValueParameter.UTC_OFFSET);
+				copy.setValue(VCardDataType.UTC_OFFSET);
 			}
 			break;
 		}
@@ -392,8 +392,8 @@ public class TimezoneType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
-		ValueParameter valueParam = subTypes.getValue();
-		parse(value, valueParam == ValueParameter.TEXT, valueParam == ValueParameter.UTC_OFFSET, version, warnings);
+		VCardDataType valueParam = subTypes.getValue();
+		parse(value, valueParam == VCardDataType.TEXT, valueParam == VCardDataType.UTC_OFFSET, version, warnings);
 	}
 
 	@Override
@@ -401,17 +401,17 @@ public class TimezoneType extends VCardType implements HasAltId {
 		checkForValue();
 
 		if (hasText()) {
-			parent.append(ValueParameter.TEXT, text);
+			parent.append(VCardDataType.TEXT, text);
 		} else {
 			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, false);
-			parent.append(ValueParameter.UTC_OFFSET, offset);
+			parent.append(VCardDataType.UTC_OFFSET, offset);
 		}
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String text = element.first(ValueParameter.TEXT);
-		String utcOffset = element.first(ValueParameter.UTC_OFFSET);
+		String text = element.first(VCardDataType.TEXT);
+		String utcOffset = element.first(VCardDataType.UTC_OFFSET);
 
 		if (text == null && utcOffset == null) {
 			throw new SkipMeException("No timezone data found.");
@@ -444,13 +444,13 @@ public class TimezoneType extends VCardType implements HasAltId {
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		checkForValue();
 
-		ValueParameter dataType;
+		VCardDataType dataType;
 		String value;
 		if (hasText()) {
-			dataType = ValueParameter.TEXT;
+			dataType = VCardDataType.TEXT;
 			value = text;
 		} else {
-			dataType = ValueParameter.UTC_OFFSET;
+			dataType = VCardDataType.UTC_OFFSET;
 			value = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
 		}
 
@@ -460,8 +460,8 @@ public class TimezoneType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		ValueParameter dataType = value.getDataType();
-		parse(valueStr, dataType == ValueParameter.TEXT, dataType == ValueParameter.UTC_OFFSET, version, warnings);
+		VCardDataType dataType = value.getDataType();
+		parse(valueStr, dataType == VCardDataType.TEXT, dataType == VCardDataType.UTC_OFFSET, version, warnings);
 	}
 
 	private void checkForValue() {

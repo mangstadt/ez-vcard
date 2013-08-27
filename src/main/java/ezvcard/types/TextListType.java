@@ -3,9 +3,9 @@ package ezvcard.types;
 import java.util.ArrayList;
 import java.util.List;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.VCardStringUtils.JoinCallback;
@@ -104,16 +104,16 @@ public class TextListType extends VCardType {
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		values.clear();
-		values.addAll(element.all(ValueParameter.TEXT));
+		values.addAll(element.all(VCardDataType.TEXT));
 	}
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		Object[] values = this.values.toArray(new Object[0]);
 		if (separator == ';' && values.length > 1) {
-			return JCardValue.structured(ValueParameter.TEXT, values);
+			return JCardValue.structured(VCardDataType.TEXT, values);
 		}
-		return JCardValue.multi(ValueParameter.TEXT, values);
+		return JCardValue.multi(VCardDataType.TEXT, values);
 	}
 
 	@Override

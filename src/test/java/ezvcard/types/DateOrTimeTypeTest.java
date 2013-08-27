@@ -18,11 +18,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
@@ -167,7 +167,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = dateType.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.DATE, dateStrExtended, value);
+		assertJCardValue(VCardDataType.DATE, dateStrExtended, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -227,7 +227,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = dateTimeType.marshalJson(version, warnings);
 
-		assertEquals(ValueParameter.DATE_TIME, value.getDataType());
+		assertEquals(VCardDataType.DATE_TIME, value.getDataType());
 		assertEquals(1, value.getValues().size());
 		String valueStr = (String) value.getValues().get(0).getValue();
 		assertTrue(valueStr, valueStr.matches(dateTimeExtendedRegex));
@@ -283,7 +283,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = reducedAccuracyDateType.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.DATE, reducedAccuracyDate.toDateAndOrTime(true), value);
+		assertJCardValue(VCardDataType.DATE, reducedAccuracyDate.toDateAndOrTime(true), value);
 		assertWarnings(0, warnings);
 	}
 
@@ -336,7 +336,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = reducedAccuracyDateTimeType.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.DATE_TIME, reducedAccuracyDateTime.toDateAndOrTime(true), value);
+		assertJCardValue(VCardDataType.DATE_TIME, reducedAccuracyDateTime.toDateAndOrTime(true), value);
 		assertWarnings(0, warnings);
 	}
 
@@ -366,7 +366,7 @@ public class DateOrTimeTypeTest {
 		assertEquals(actual, textEscaped);
 
 		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
-		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+		assertEquals(VCardDataType.TEXT, subTypes.getValue());
 		assertNull(subTypes.getCalscale());
 		assertWarnings(0, warnings);
 	}
@@ -375,7 +375,7 @@ public class DateOrTimeTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, text);
+		xe.append(VCardDataType.TEXT, text);
 		Document expected = xe.document();
 		xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -390,7 +390,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = textType.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.TEXT, text, value);
+		assertJCardValue(VCardDataType.TEXT, text, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -512,7 +512,7 @@ public class DateOrTimeTypeTest {
 	public void unmarshalJson_date() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.DATE, dateStrExtended);
+		JCardValue value = JCardValue.single(VCardDataType.DATE, dateStrExtended);
 
 		type.unmarshalJson(subTypes, value, version, warnings);
 
@@ -526,7 +526,7 @@ public class DateOrTimeTypeTest {
 	public void unmarshalJson_date_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.DATE, "invalid");
+		JCardValue value = JCardValue.single(VCardDataType.DATE, "invalid");
 
 		type.unmarshalJson(subTypes, value, version, warnings);
 
@@ -629,7 +629,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.DATE_AND_OR_TIME, dateStr);
+		xe.append(VCardDataType.DATE_AND_OR_TIME, dateStr);
 		type.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(date, type.getDate());
 		assertNull(type.getPartialDate());
@@ -641,7 +641,7 @@ public class DateOrTimeTypeTest {
 	public void unmarshalJson_datetime() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.DATE, dateStr);
+		JCardValue value = JCardValue.single(VCardDataType.DATE, dateStr);
 
 		type.unmarshalJson(subTypes, value, version, warnings);
 		assertEquals(date, type.getDate());
@@ -681,7 +681,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.DATE_AND_OR_TIME, reducedAccuracyDate.toDateAndOrTime(false));
+		xe.append(VCardDataType.DATE_AND_OR_TIME, reducedAccuracyDate.toDateAndOrTime(false));
 		Element input = xe.element();
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
@@ -696,7 +696,7 @@ public class DateOrTimeTypeTest {
 	public void unmarshalJson_reducedAccuracyDate() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.DATE, reducedAccuracyDate.toDateAndOrTime(true));
+		JCardValue value = JCardValue.single(VCardDataType.DATE, reducedAccuracyDate.toDateAndOrTime(true));
 
 		type.unmarshalJson(subTypes, value, version, warnings);
 
@@ -738,7 +738,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.DATE_AND_OR_TIME, reducedAccuracyDateTime.toDateAndOrTime(false));
+		xe.append(VCardDataType.DATE_AND_OR_TIME, reducedAccuracyDateTime.toDateAndOrTime(false));
 		Element input = xe.element();
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
@@ -753,7 +753,7 @@ public class DateOrTimeTypeTest {
 	public void unmarshalJson_reducedAccuracyDateTime() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.DATE_TIME, reducedAccuracyDateTime.toDateAndOrTime(true));
+		JCardValue value = JCardValue.single(VCardDataType.DATE_TIME, reducedAccuracyDateTime.toDateAndOrTime(true));
 
 		type.unmarshalJson(subTypes, value, version, warnings);
 
@@ -783,7 +783,7 @@ public class DateOrTimeTypeTest {
 	@Test
 	public void unmarshalText_text_4_0_with_value_parameter() {
 		VCardVersion version = VCardVersion.V4_0;
-		subTypes.setValue(ValueParameter.TEXT);
+		subTypes.setValue(VCardDataType.TEXT);
 
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 
@@ -826,7 +826,7 @@ public class DateOrTimeTypeTest {
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.TEXT, text);
+		JCardValue value = JCardValue.single(VCardDataType.TEXT, text);
 
 		type.unmarshalJson(subTypes, value, version, warnings);
 

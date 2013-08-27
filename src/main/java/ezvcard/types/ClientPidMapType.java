@@ -4,11 +4,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -192,7 +192,7 @@ public class ClientPidMapType extends VCardType {
 		checkForValue();
 
 		if (uri != null) {
-			parent.append(ValueParameter.URI, uri);
+			parent.append(VCardDataType.URI, uri);
 		}
 		if (pid != null) {
 			parent.append("sourceid", pid.toString());
@@ -201,7 +201,7 @@ public class ClientPidMapType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		uri = element.first(ValueParameter.URI);
+		uri = element.first(VCardDataType.URI);
 
 		String value = element.first("sourceid");
 		pid = (value == null) ? null : parsePid(value);
@@ -211,7 +211,7 @@ public class ClientPidMapType extends VCardType {
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		checkForValue();
 
-		return JCardValue.structured(ValueParameter.TEXT, pid + "", uri);
+		return JCardValue.structured(VCardDataType.TEXT, pid + "", uri);
 	}
 
 	@Override

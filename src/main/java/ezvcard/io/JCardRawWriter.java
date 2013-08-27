@@ -12,8 +12,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 
@@ -183,8 +183,8 @@ public class JCardRawWriter implements Closeable {
 		jg.writeEndObject(); //end parameters object
 
 		//write data type
-		ValueParameter dataType = value.getDataType();
-		jg.writeString((dataType == null) ? "unknown" : dataType.getValue().toLowerCase());
+		VCardDataType dataType = value.getDataType();
+		jg.writeString((dataType == null) ? "unknown" : dataType.getName().toLowerCase());
 
 		//write value
 		if (value.getValues().isEmpty()) {

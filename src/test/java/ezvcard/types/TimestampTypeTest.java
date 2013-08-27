@@ -17,11 +17,11 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -107,7 +107,7 @@ public class TimestampTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(timestamp.getTypeName().toLowerCase());
-		xe.append(ValueParameter.TIMESTAMP, basic);
+		xe.append(VCardDataType.TIMESTAMP, basic);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(timestamp.getTypeName().toLowerCase());
 		Document actualDoc = xe.document();
@@ -130,7 +130,7 @@ public class TimestampTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = timestamp.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.TIMESTAMP, extended, value);
+		assertJCardValue(VCardDataType.TIMESTAMP, extended, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -168,7 +168,7 @@ public class TimestampTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
-		xe.append(ValueParameter.TIMESTAMP, basic);
+		xe.append(VCardDataType.TIMESTAMP, basic);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		assertEquals(timestampDate, t.getTimestamp());
 	}
@@ -184,7 +184,7 @@ public class TimestampTypeTest {
 	public void unmarshalXml_bad_timestamp() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
-		xe.append(ValueParameter.TIMESTAMP, "bad value");
+		xe.append(VCardDataType.TIMESTAMP, "bad value");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
 
@@ -225,7 +225,7 @@ public class TimestampTypeTest {
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.TIMESTAMP, extended);
+		JCardValue value = JCardValue.single(VCardDataType.TIMESTAMP, extended);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -237,7 +237,7 @@ public class TimestampTypeTest {
 	public void unmarshalJson_bad_value() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.TIMESTAMP, "bad value");
+		JCardValue value = JCardValue.single(VCardDataType.TIMESTAMP, "bad value");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 	}

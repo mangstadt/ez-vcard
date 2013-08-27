@@ -1,6 +1,8 @@
-package ezvcard.parameters;
+package ezvcard;
 
 import java.util.Collection;
+
+import ezvcard.util.CaseClasses;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,88 +37,111 @@ import java.util.Collection;
  * Represents a VALUE parameter.
  * @author Michael Angstadt
  */
-public class ValueParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<ValueParameter> enums = new VCardParameterCaseClasses<ValueParameter>(ValueParameter.class);
+public class VCardDataType {
+	private static final CaseClasses<VCardDataType, String> enums = new CaseClasses<VCardDataType, String>(VCardDataType.class) {
+		@Override
+		protected VCardDataType create(String value) {
+			return new VCardDataType(value);
+		}
 
-	public static final String NAME = "VALUE";
+		@Override
+		protected boolean matches(VCardDataType object, String value) {
+			return object.name.equalsIgnoreCase(value);
+		}
+	};
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (p.18-9)</code>
 	 */
-	public static final ValueParameter URL = new ValueParameter("url");
+	public static final VCardDataType URL = new VCardDataType("url");
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (p.8-9)</code>
 	 */
-	public static final ValueParameter CONTENT_ID = new ValueParameter("content-id");
+	public static final VCardDataType CONTENT_ID = new VCardDataType("content-id");
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0</code>
 	 */
-	public static final ValueParameter BINARY = new ValueParameter("binary");
+	public static final VCardDataType BINARY = new VCardDataType("binary");
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final ValueParameter URI = new ValueParameter("uri");
+	public static final VCardDataType URI = new VCardDataType("uri");
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final ValueParameter TEXT = new ValueParameter("text");
+	public static final VCardDataType TEXT = new VCardDataType("text");
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final ValueParameter DATE = new ValueParameter("date");
+	public static final VCardDataType DATE = new VCardDataType("date");
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final ValueParameter TIME = new ValueParameter("time");
+	public static final VCardDataType TIME = new VCardDataType("time");
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final ValueParameter DATE_TIME = new ValueParameter("date-time");
+	public static final VCardDataType DATE_TIME = new VCardDataType("date-time");
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final ValueParameter DATE_AND_OR_TIME = new ValueParameter("date-and-or-time");
+	public static final VCardDataType DATE_AND_OR_TIME = new VCardDataType("date-and-or-time");
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final ValueParameter TIMESTAMP = new ValueParameter("timestamp");
+	public static final VCardDataType TIMESTAMP = new VCardDataType("timestamp");
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final ValueParameter BOOLEAN = new ValueParameter("boolean");
+	public static final VCardDataType BOOLEAN = new VCardDataType("boolean");
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final ValueParameter INTEGER = new ValueParameter("integer");
+	public static final VCardDataType INTEGER = new VCardDataType("integer");
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final ValueParameter FLOAT = new ValueParameter("float");
+	public static final VCardDataType FLOAT = new VCardDataType("float");
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final ValueParameter UTC_OFFSET = new ValueParameter("utc-offset");
+	public static final VCardDataType UTC_OFFSET = new VCardDataType("utc-offset");
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final ValueParameter LANGUAGE_TAG = new ValueParameter("language-tag");
+	public static final VCardDataType LANGUAGE_TAG = new VCardDataType("language-tag");
 
-	private ValueParameter(String value) {
-		super(NAME, value);
+	private final String name;
+
+	private VCardDataType(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Gets the name of the data type.
+	 * @return the name of the data type (e.g. "uri")
+	 */
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 
 	/**
@@ -125,7 +150,7 @@ public class ValueParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static ValueParameter find(String value) {
+	public static VCardDataType find(String value) {
 		return enums.find(value);
 	}
 
@@ -136,7 +161,7 @@ public class ValueParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static ValueParameter get(String value) {
+	public static VCardDataType get(String value) {
 		return enums.get(value);
 	}
 
@@ -145,7 +170,7 @@ public class ValueParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<ValueParameter> all() {
+	public static Collection<VCardDataType> all() {
 		return enums.all();
 	}
 }

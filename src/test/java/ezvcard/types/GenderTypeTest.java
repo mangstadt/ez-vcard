@@ -18,10 +18,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
@@ -212,7 +212,7 @@ public class GenderTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = genderType.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.TEXT, gender, value);
+		assertJCardValue(VCardDataType.TEXT, gender, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -221,7 +221,7 @@ public class GenderTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = genderTypeWithText.marshalJson(version, warnings);
 
-		assertEquals(ValueParameter.TEXT, value.getDataType());
+		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -291,7 +291,7 @@ public class GenderTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.TEXT, gender);
+		JCardValue value = JCardValue.single(VCardDataType.TEXT, gender);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -304,7 +304,7 @@ public class GenderTypeTest {
 	@Test
 	public void unmarshalJson_gender_in_array() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(ValueParameter.TEXT, gender);
+		JCardValue value = JCardValue.structured(VCardDataType.TEXT, gender);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -317,7 +317,7 @@ public class GenderTypeTest {
 	@Test
 	public void unmarshalJson_with_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(ValueParameter.TEXT, gender, text);
+		JCardValue value = JCardValue.structured(VCardDataType.TEXT, gender, text);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

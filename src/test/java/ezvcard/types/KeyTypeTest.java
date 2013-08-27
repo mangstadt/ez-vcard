@@ -15,12 +15,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -88,7 +88,7 @@ public class KeyTypeTest {
 		VCardSubTypes subTypes = withText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
-		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+		assertEquals(VCardDataType.TEXT, subTypes.getValue());
 		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
 		assertWarnings(0, warnings);
@@ -100,7 +100,7 @@ public class KeyTypeTest {
 		VCardSubTypes subTypes = withText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
-		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+		assertEquals(VCardDataType.TEXT, subTypes.getValue());
 		assertEquals(KeyTypeParameter.PGP.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
 		assertWarnings(0, warnings);
@@ -112,7 +112,7 @@ public class KeyTypeTest {
 		VCardSubTypes subTypes = withText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(3, subTypes.size());
-		assertEquals(ValueParameter.TEXT, subTypes.getValue());
+		assertEquals(VCardDataType.TEXT, subTypes.getValue());
 		assertEquals("work", subTypes.getType());
 		assertEquals(KeyTypeParameter.PGP.getMediaType(), subTypes.getMediaType());
 		assertWarnings(0, warnings);
@@ -176,7 +176,7 @@ public class KeyTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(KeyType.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, text);
+		xe.append(VCardDataType.TEXT, text);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(KeyType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -192,7 +192,7 @@ public class KeyTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withText.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.TEXT, text, value);
+		assertJCardValue(VCardDataType.TEXT, text, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -239,7 +239,7 @@ public class KeyTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(KeyType.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, text);
+		xe.append(VCardDataType.TEXT, text);
 		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
 		key.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
@@ -260,7 +260,7 @@ public class KeyTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.TEXT, text);
+		JCardValue value = JCardValue.single(VCardDataType.TEXT, text);
 		subTypes.setMediaType(KeyTypeParameter.PGP.getMediaType());
 		key.unmarshalJson(subTypes, value, version, warnings);
 

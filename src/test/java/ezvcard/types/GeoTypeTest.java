@@ -15,11 +15,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
@@ -129,7 +129,7 @@ public class GeoTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(GeoType.NAME);
-		xe.append(ValueParameter.URI, "geo:-12.34,56.777778");
+		xe.append(VCardDataType.URI, "geo:-12.34,56.777778");
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(GeoType.NAME);
 		Document actualDoc = xe.document();
@@ -145,7 +145,7 @@ public class GeoTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withValue.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.URI, "geo:-12.34,56.777778", value);
+		assertJCardValue(VCardDataType.URI, "geo:-12.34,56.777778", value);
 		assertWarnings(0, warnings);
 	}
 
@@ -220,7 +220,7 @@ public class GeoTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 
 		XCardElement xe = new XCardElement(GeoType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, "geo:-12.34,56.7878");
+		xe.append(VCardDataType.URI, "geo:-12.34,56.7878");
 		Element element = xe.element();
 		geo.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 
@@ -233,7 +233,7 @@ public class GeoTypeTest {
 	public void unmarshalXml_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(GeoType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, "bad:uri");
+		xe.append(VCardDataType.URI, "bad:uri");
 		Element element = xe.element();
 		geo.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 	}
@@ -340,7 +340,7 @@ public class GeoTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.URI, "geo:-12.34,56.7878");
+		JCardValue value = JCardValue.single(VCardDataType.URI, "geo:-12.34,56.7878");
 
 		geo.unmarshalJson(subTypes, value, version, warnings);
 
@@ -352,7 +352,7 @@ public class GeoTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(ValueParameter.URI, "bad:uri");
+		JCardValue value = JCardValue.single(VCardDataType.URI, "bad:uri");
 
 		geo.unmarshalJson(subTypes, value, version, warnings);
 	}

@@ -3,12 +3,12 @@ package ezvcard.types;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.RelatedTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -198,9 +198,9 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (uri != null) {
-			copy.setValue(ValueParameter.URI);
+			copy.setValue(VCardDataType.URI);
 		} else if (text != null) {
-			copy.setValue(ValueParameter.TEXT);
+			copy.setValue(VCardDataType.TEXT);
 		}
 	}
 
@@ -218,7 +218,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
-		if (subTypes.getValue() == ValueParameter.TEXT) {
+		if (subTypes.getValue() == VCardDataType.TEXT) {
 			setText(value);
 		} else {
 			setUri(value);
@@ -228,9 +228,9 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.append(ValueParameter.URI, uri);
+			parent.append(VCardDataType.URI, uri);
 		} else if (text != null) {
-			parent.append(ValueParameter.TEXT, text);
+			parent.append(VCardDataType.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -238,11 +238,11 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(ValueParameter.URI);
+		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			setUri(value);
 		} else {
-			value = element.first(ValueParameter.TEXT);
+			value = element.first(VCardDataType.TEXT);
 			if (value != null) {
 				setText(value);
 			} else {
@@ -254,9 +254,9 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (uri != null) {
-			return JCardValue.single(ValueParameter.URI, uri);
+			return JCardValue.single(VCardDataType.URI, uri);
 		} else if (text != null) {
-			return JCardValue.single(ValueParameter.TEXT, text);
+			return JCardValue.single(VCardDataType.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -265,7 +265,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == ValueParameter.TEXT) {
+		if (value.getDataType() == VCardDataType.TEXT) {
 			setText(valueStr);
 		} else {
 			setUri(valueStr);

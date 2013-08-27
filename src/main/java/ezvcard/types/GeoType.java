@@ -3,10 +3,10 @@ package ezvcard.types;
 import java.text.NumberFormat;
 import java.util.List;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
@@ -251,12 +251,12 @@ public class GeoType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.append(ValueParameter.URI, write(parent.version()));
+		parent.append(VCardDataType.URI, write(parent.version()));
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(ValueParameter.URI);
+		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			parse(value, element.version(), warnings);
 		} else {
@@ -291,7 +291,7 @@ public class GeoType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.single(ValueParameter.URI, write(version));
+		return JCardValue.single(VCardDataType.URI, write(version));
 	}
 
 	@Override

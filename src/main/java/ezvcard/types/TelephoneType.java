@@ -3,12 +3,12 @@ package ezvcard.types;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.TelephoneTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.TelUri;
@@ -188,7 +188,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (version == VCardVersion.V4_0 && uri != null) {
-			copy.setValue(ValueParameter.URI);
+			copy.setValue(VCardDataType.URI);
 		} else {
 			copy.setValue(null);
 		}
@@ -247,7 +247,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
-		if (subTypes.getValue() == ValueParameter.URI) {
+		if (subTypes.getValue() == VCardDataType.URI) {
 			try {
 				setUri(TelUri.parse(value));
 			} catch (IllegalArgumentException e) {
@@ -262,9 +262,9 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.append(ValueParameter.URI, uri.toString());
+			parent.append(VCardDataType.URI, uri.toString());
 		} else if (text != null) {
-			parent.append(ValueParameter.TEXT, text);
+			parent.append(VCardDataType.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -272,7 +272,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(ValueParameter.URI);
+		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			try {
 				setUri(TelUri.parse(value));
@@ -283,7 +283,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			return;
 		}
 
-		value = element.first(ValueParameter.TEXT);
+		value = element.first(VCardDataType.TEXT);
 		if (value != null) {
 			setText(value);
 			return;
@@ -314,10 +314,10 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (uri != null) {
-			return JCardValue.single(ValueParameter.URI, uri.toString());
+			return JCardValue.single(VCardDataType.URI, uri.toString());
 		}
 		if (text != null) {
-			return JCardValue.single(ValueParameter.TEXT, text);
+			return JCardValue.single(VCardDataType.TEXT, text);
 		}
 		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
@@ -325,7 +325,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == ValueParameter.URI) {
+		if (value.getDataType() == VCardDataType.URI) {
 			try {
 				setUri(TelUri.parse(valueStr));
 			} catch (IllegalArgumentException e) {

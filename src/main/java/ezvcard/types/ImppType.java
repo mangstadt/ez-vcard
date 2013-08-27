@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImppTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -449,12 +449,12 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.append(ValueParameter.URI, write());
+		parent.append(VCardDataType.URI, write());
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parse(element.first(ValueParameter.URI));
+		parse(element.first(VCardDataType.URI));
 	}
 
 	@Override
@@ -477,7 +477,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.single(ValueParameter.URI, write());
+		return JCardValue.single(VCardDataType.URI, write());
 	}
 
 	@Override
