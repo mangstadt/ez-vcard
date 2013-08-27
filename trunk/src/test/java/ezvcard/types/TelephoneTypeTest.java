@@ -23,7 +23,6 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.TelUri;
 import ezvcard.util.XCardElement;
@@ -369,7 +368,7 @@ public class TelephoneTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = marshalObjText.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.TEXT, number, value);
+		assertJCardValue(ValueParameter.TEXT, number, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -378,7 +377,7 @@ public class TelephoneTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = marshalObjUri.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, uriWithExt, value);
+		assertJCardValue(ValueParameter.URI, uriWithExt, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -547,7 +546,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, number);
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, number);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 
@@ -561,7 +560,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.URI, uri);
+		JCardValue value = JCardValue.single(ValueParameter.URI, uri);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 
@@ -575,7 +574,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_uri_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.URI, number);
+		JCardValue value = JCardValue.single(ValueParameter.URI, number);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 

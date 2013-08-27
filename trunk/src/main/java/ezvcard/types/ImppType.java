@@ -13,7 +13,6 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImppTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -478,7 +477,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.single(JCardDataType.URI, write());
+		return JCardValue.single(ValueParameter.URI, write());
 	}
 
 	@Override

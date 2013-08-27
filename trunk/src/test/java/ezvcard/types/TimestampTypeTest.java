@@ -23,7 +23,6 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -131,7 +130,7 @@ public class TimestampTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = timestamp.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.TIMESTAMP, extended, value);
+		assertJCardValue(ValueParameter.TIMESTAMP, extended, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -226,7 +225,7 @@ public class TimestampTypeTest {
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TIMESTAMP, extended);
+		JCardValue value = JCardValue.single(ValueParameter.TIMESTAMP, extended);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
@@ -238,7 +237,7 @@ public class TimestampTypeTest {
 	public void unmarshalJson_bad_value() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TIMESTAMP, "bad value");
+		JCardValue value = JCardValue.single(ValueParameter.TIMESTAMP, "bad value");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 	}

@@ -22,7 +22,6 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -146,7 +145,7 @@ public class GeoTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withValue.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, "geo:-12.34,56.777778", value);
+		assertJCardValue(ValueParameter.URI, "geo:-12.34,56.777778", value);
 		assertWarnings(0, warnings);
 	}
 
@@ -341,7 +340,7 @@ public class GeoTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.URI, "geo:-12.34,56.7878");
+		JCardValue value = JCardValue.single(ValueParameter.URI, "geo:-12.34,56.7878");
 
 		geo.unmarshalJson(subTypes, value, version, warnings);
 
@@ -353,7 +352,7 @@ public class GeoTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(JCardDataType.URI, "bad:uri");
+		JCardValue value = JCardValue.single(ValueParameter.URI, "bad:uri");
 
 		geo.unmarshalJson(subTypes, value, version, warnings);
 	}

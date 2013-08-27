@@ -5,7 +5,7 @@ import java.util.List;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.util.JCardDataType;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -264,9 +264,9 @@ public class GenderType extends VCardType {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (text == null) {
-			return JCardValue.single(JCardDataType.TEXT, gender);
+			return JCardValue.single(ValueParameter.TEXT, gender);
 		}
-		return JCardValue.structured(JCardDataType.TEXT, gender, text);
+		return JCardValue.structured(ValueParameter.TEXT, gender, text);
 	}
 
 	@Override

@@ -18,7 +18,6 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -98,7 +97,7 @@ public class TextTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = textType.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.", value);
+		assertJCardValue(ValueParameter.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.", value);
 		assertWarnings(0, warnings);
 	}
 
@@ -145,7 +144,7 @@ public class TextTypeTest {
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(JCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		JCardValue value = JCardValue.single(ValueParameter.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

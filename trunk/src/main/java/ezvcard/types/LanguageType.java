@@ -5,7 +5,6 @@ import java.util.List;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -158,6 +157,6 @@ public class LanguageType extends TextType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.single(JCardDataType.LANGUAGE_TAG, value);
+		return JCardValue.single(ValueParameter.LANGUAGE_TAG, value);
 	}
 }

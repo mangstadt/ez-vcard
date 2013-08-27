@@ -24,7 +24,6 @@ import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
@@ -326,7 +325,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withUrl.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, url, value);
+		assertJCardValue(ValueParameter.URI, url, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -335,7 +334,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withData.marshalJson(version, warnings);
 
-		assertJCardValue(JCardDataType.URI, dataUri, value);
+		assertJCardValue(ValueParameter.URI, dataUri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -593,7 +592,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
-		JCardValue value = JCardValue.single(JCardDataType.URI, url);
+		JCardValue value = JCardValue.single(ValueParameter.URI, url);
 
 		binaryType.unmarshalJson(subTypes, value, version, warnings);
 
@@ -608,7 +607,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
-		JCardValue value = JCardValue.single(JCardDataType.URI, dataUri);
+		JCardValue value = JCardValue.single(ValueParameter.URI, dataUri);
 
 		binaryType.unmarshalJson(subTypes, value, version, warnings);
 

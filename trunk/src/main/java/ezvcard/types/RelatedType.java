@@ -9,7 +9,6 @@ import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.RelatedTypeParameter;
 import ezvcard.parameters.ValueParameter;
-import ezvcard.util.JCardDataType;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -255,9 +254,9 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (uri != null) {
-			return JCardValue.single(JCardDataType.URI, uri);
+			return JCardValue.single(ValueParameter.URI, uri);
 		} else if (text != null) {
-			return JCardValue.single(JCardDataType.TEXT, text);
+			return JCardValue.single(ValueParameter.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -266,7 +265,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == JCardDataType.TEXT) {
+		if (value.getDataType() == ValueParameter.TEXT) {
 			setText(valueStr);
 		} else {
 			setUri(valueStr);
