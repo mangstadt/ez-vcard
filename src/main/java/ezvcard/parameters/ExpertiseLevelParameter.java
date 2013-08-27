@@ -43,7 +43,7 @@ import ezvcard.types.ExpertiseType;
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
 public class ExpertiseLevelParameter extends LevelParameter {
-	private static final SingleValuedCaseClasses<ExpertiseLevelParameter> enums = new SingleValuedCaseClasses<ExpertiseLevelParameter>(ExpertiseLevelParameter.class);
+	private static final VCardParameterCaseClasses<ExpertiseLevelParameter> enums = new VCardParameterCaseClasses<ExpertiseLevelParameter>(ExpertiseLevelParameter.class);
 
 	public static final ExpertiseLevelParameter BEGINNER = new ExpertiseLevelParameter("beginner");
 	public static final ExpertiseLevelParameter AVERAGE = new ExpertiseLevelParameter("average");

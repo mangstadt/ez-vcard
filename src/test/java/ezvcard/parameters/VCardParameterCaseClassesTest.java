@@ -35,12 +35,12 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class SingleValuedCaseClassesTest {
-	private SingleValuedCaseClasses<Pet> caseClasses;
+public class VCardParameterCaseClassesTest {
+	private VCardParameterCaseClasses<Pet> caseClasses;
 
 	@Before
 	public void before() {
-		caseClasses = new SingleValuedCaseClasses<Pet>(Pet.class);
+		caseClasses = new VCardParameterCaseClasses<Pet>(Pet.class);
 	}
 
 	@Test

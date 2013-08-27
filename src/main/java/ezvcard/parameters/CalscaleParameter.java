@@ -39,7 +39,7 @@ import java.util.Collection;
  * @author Michael Angstadt
  */
 public class CalscaleParameter extends VCardParameter {
-	private static final SingleValuedCaseClasses<CalscaleParameter> enums = new SingleValuedCaseClasses<CalscaleParameter>(CalscaleParameter.class);
+	private static final VCardParameterCaseClasses<CalscaleParameter> enums = new VCardParameterCaseClasses<CalscaleParameter>(CalscaleParameter.class);
 
 	public static final String NAME = "CALSCALE";
 

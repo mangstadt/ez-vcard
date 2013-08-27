@@ -41,7 +41,7 @@ import ezvcard.types.ImppType;
  * @author Michael Angstadt
  */
 public class ImppTypeParameter extends TypeParameter {
-	private static final SingleValuedCaseClasses<ImppTypeParameter> enums = new SingleValuedCaseClasses<ImppTypeParameter>(ImppTypeParameter.class);
+	private static final VCardParameterCaseClasses<ImppTypeParameter> enums = new VCardParameterCaseClasses<ImppTypeParameter>(ImppTypeParameter.class);
 
 	public static final ImppTypeParameter PERSONAL = new ImppTypeParameter("personal");
 	public static final ImppTypeParameter BUSINESS = new ImppTypeParameter("business");

@@ -36,7 +36,7 @@ import java.util.Collection;
  * @author Michael Angstadt
  */
 public class ValueParameter extends VCardParameter {
-	private static final SingleValuedCaseClasses<ValueParameter> enums = new SingleValuedCaseClasses<ValueParameter>(ValueParameter.class);
+	private static final VCardParameterCaseClasses<ValueParameter> enums = new VCardParameterCaseClasses<ValueParameter>(ValueParameter.class);
 
 	public static final String NAME = "VALUE";
 

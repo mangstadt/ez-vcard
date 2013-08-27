@@ -43,7 +43,7 @@ import ezvcard.types.LabelType;
  * @author Michael Angstadt
  */
 public class AddressTypeParameter extends TypeParameter {
-	private static final SingleValuedCaseClasses<AddressTypeParameter> enums = new SingleValuedCaseClasses<AddressTypeParameter>(AddressTypeParameter.class);
+	private static final VCardParameterCaseClasses<AddressTypeParameter> enums = new VCardParameterCaseClasses<AddressTypeParameter>(AddressTypeParameter.class);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>

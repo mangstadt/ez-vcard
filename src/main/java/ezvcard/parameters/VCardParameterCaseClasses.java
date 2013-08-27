@@ -35,8 +35,8 @@ import ezvcard.util.CaseClasses;
  * @author Michael Angstadt
  * @param <T> the parameter class
  */
-public class SingleValuedCaseClasses<T extends VCardParameter> extends CaseClasses<T, String> {
-	public SingleValuedCaseClasses(Class<T> clazz) {
+public class VCardParameterCaseClasses<T extends VCardParameter> extends CaseClasses<T, String> {
+	public VCardParameterCaseClasses(Class<T> clazz) {
 		super(clazz);
 	}
 
