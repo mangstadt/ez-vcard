@@ -890,12 +890,12 @@ public class Ezvcard {
 		private final Reader reader;
 		private final File file;
 
-		public ParserChainXmlReader(Reader reader) {
+		private ParserChainXmlReader(Reader reader) {
 			this.reader = reader;
 			this.file = null;
 		}
 
-		public ParserChainXmlReader(File file) {
+		private ParserChainXmlReader(File file) {
 			this.reader = null;
 			this.file = file;
 		}
