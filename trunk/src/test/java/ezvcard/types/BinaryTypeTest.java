@@ -15,13 +15,13 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
@@ -100,7 +100,7 @@ public class BinaryTypeTest {
 		VCardSubTypes subTypes = withUrl.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
-		assertEquals(ValueParameter.URL, subTypes.getValue());
+		assertEquals(VCardDataType.URL, subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
 		assertWarnings(0, warnings);
@@ -112,7 +112,7 @@ public class BinaryTypeTest {
 		VCardSubTypes subTypes = withUrl.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(VCardDataType.URI, subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
 		assertWarnings(0, warnings);
@@ -159,7 +159,7 @@ public class BinaryTypeTest {
 
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getEncoding());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(VCardDataType.URI, subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -194,7 +194,7 @@ public class BinaryTypeTest {
 
 		assertEquals(2, subTypes.size());
 		assertNull(subTypes.getEncoding());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(VCardDataType.URI, subTypes.getValue());
 		assertEquals("work", subTypes.getType());
 		assertWarnings(0, warnings);
 	}
@@ -284,7 +284,7 @@ public class BinaryTypeTest {
 	public void marshalXml_url() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, url);
+		xe.append(VCardDataType.URI, url);
 		Document expected = xe.document();
 
 		xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
@@ -300,7 +300,7 @@ public class BinaryTypeTest {
 	public void marshalXml_binary() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, dataUri);
+		xe.append(VCardDataType.URI, dataUri);
 		Document expected = xe.document();
 
 		xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
@@ -325,7 +325,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withUrl.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.URI, url, value);
+		assertJCardValue(VCardDataType.URI, url, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -334,7 +334,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withData.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.URI, dataUri, value);
+		assertJCardValue(VCardDataType.URI, dataUri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -347,7 +347,7 @@ public class BinaryTypeTest {
 	@Test
 	public void unmarshalText_url_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		subTypes.setValue(ValueParameter.URL);
+		subTypes.setValue(VCardDataType.URL);
 		binaryType.unmarshalText(subTypes, url, version, warnings, compatibilityMode);
 
 		assertEquals(url, binaryType.getUrl());
@@ -359,7 +359,7 @@ public class BinaryTypeTest {
 	@Test
 	public void unmarshalText_url_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		subTypes.setValue(ValueParameter.URI);
+		subTypes.setValue(VCardDataType.URI);
 		binaryType.unmarshalText(subTypes, url, version, warnings, compatibilityMode);
 
 		assertEquals(url, binaryType.getUrl());
@@ -492,7 +492,7 @@ public class BinaryTypeTest {
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, url);
+		xe.append(VCardDataType.URI, url);
 
 		binaryType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
@@ -508,7 +508,7 @@ public class BinaryTypeTest {
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, dataUri);
+		xe.append(VCardDataType.URI, dataUri);
 
 		binaryType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
@@ -592,7 +592,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
-		JCardValue value = JCardValue.single(ValueParameter.URI, url);
+		JCardValue value = JCardValue.single(VCardDataType.URI, url);
 
 		binaryType.unmarshalJson(subTypes, value, version, warnings);
 
@@ -607,7 +607,7 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setMediaType(ImageTypeParameter.JPEG.getMediaType());
 
-		JCardValue value = JCardValue.single(ValueParameter.URI, dataUri);
+		JCardValue value = JCardValue.single(VCardDataType.URI, dataUri);
 
 		binaryType.unmarshalJson(subTypes, value, version, warnings);
 

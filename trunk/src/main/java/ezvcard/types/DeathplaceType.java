@@ -3,11 +3,11 @@ package ezvcard.types;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -146,7 +146,7 @@ public class DeathplaceType extends VCardType implements HasAltId {
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (uri != null) {
-			copy.setValue(ValueParameter.URI);
+			copy.setValue(VCardDataType.URI);
 		}
 	}
 
@@ -164,8 +164,8 @@ public class DeathplaceType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
-		ValueParameter valueParam = subTypes.getValue();
-		if (valueParam == ValueParameter.URI) {
+		VCardDataType valueParam = subTypes.getValue();
+		if (valueParam == VCardDataType.URI) {
 			setUri(value);
 		} else {
 			setText(value);
@@ -175,9 +175,9 @@ public class DeathplaceType extends VCardType implements HasAltId {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
-			parent.append(ValueParameter.URI, uri);
+			parent.append(VCardDataType.URI, uri);
 		} else if (text != null) {
-			parent.append(ValueParameter.TEXT, text);
+			parent.append(VCardDataType.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -185,13 +185,13 @@ public class DeathplaceType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(ValueParameter.TEXT);
+		String value = element.first(VCardDataType.TEXT);
 		if (value != null) {
 			setText(value);
 			return;
 		}
 
-		value = element.first(ValueParameter.URI);
+		value = element.first(VCardDataType.URI);
 		if (value != null) {
 			setUri(value);
 			return;
@@ -203,9 +203,9 @@ public class DeathplaceType extends VCardType implements HasAltId {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		if (uri != null) {
-			return JCardValue.single(ValueParameter.URI, uri);
+			return JCardValue.single(VCardDataType.URI, uri);
 		} else if (text != null) {
-			return JCardValue.single(ValueParameter.TEXT, text);
+			return JCardValue.single(VCardDataType.TEXT, text);
 		} else {
 			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
@@ -214,7 +214,7 @@ public class DeathplaceType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == ValueParameter.URI) {
+		if (value.getDataType() == VCardDataType.URI) {
 			setUri(valueStr);
 		} else {
 			setText(valueStr);

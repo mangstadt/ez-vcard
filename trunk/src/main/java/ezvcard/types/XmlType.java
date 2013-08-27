@@ -11,10 +11,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -179,7 +179,7 @@ public class XmlType extends VCardType implements HasAltId {
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
 		String value = write();
-		return JCardValue.single(ValueParameter.TEXT, value);
+		return JCardValue.single(VCardDataType.TEXT, value);
 	}
 
 	@Override

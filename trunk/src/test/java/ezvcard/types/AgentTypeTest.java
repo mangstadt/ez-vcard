@@ -12,12 +12,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 
 /*
@@ -78,7 +78,7 @@ public class AgentTypeTest {
 		VCardSubTypes subTypes = urlType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
-		assertEquals(ValueParameter.URL, subTypes.getValue());
+		assertEquals(VCardDataType.URL, subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -88,7 +88,7 @@ public class AgentTypeTest {
 		VCardSubTypes subTypes = urlType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(VCardDataType.URI, subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -167,7 +167,7 @@ public class AgentTypeTest {
 	@Test
 	public void unmarshalText_url_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		subTypes.setValue(ValueParameter.URL);
+		subTypes.setValue(VCardDataType.URL);
 		agentType.unmarshalText(subTypes, url, version, warnings, compatibilityMode);
 
 		assertEquals(url, agentType.getUrl());
@@ -178,7 +178,7 @@ public class AgentTypeTest {
 	@Test
 	public void unmarshalText_url_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		subTypes.setValue(ValueParameter.URI);
+		subTypes.setValue(VCardDataType.URI);
 		agentType.unmarshalText(subTypes, url, version, warnings, compatibilityMode);
 
 		assertEquals(url, agentType.getUrl());

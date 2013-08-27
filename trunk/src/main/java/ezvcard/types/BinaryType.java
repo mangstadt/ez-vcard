@@ -7,13 +7,13 @@ import java.io.InputStream;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.IOUtils;
@@ -253,12 +253,12 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 
 			switch (version) {
 			case V2_1:
-				copy.setValue(ValueParameter.URL);
+				copy.setValue(VCardDataType.URL);
 				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
 				break;
 			case V3_0:
-				copy.setValue(ValueParameter.URI);
+				copy.setValue(VCardDataType.URI);
 				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
 				break;
@@ -282,7 +282,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 				break;
 			case V4_0:
 				copy.setEncoding(null);
-				copy.setValue(ValueParameter.URI);
+				copy.setValue(VCardDataType.URI);
 				//don't null out TYPE, it could be set to "home", "work", etc
 				break;
 			}
@@ -302,12 +302,12 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parent.append(ValueParameter.URI, write(parent.version()));
+		parent.append(VCardDataType.URI, write(parent.version()));
 	}
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(ValueParameter.URI);
+		String value = element.first(VCardDataType.URI);
 		if (value == null) {
 			throw new SkipMeException("No value found.");
 		}
@@ -342,7 +342,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.single(ValueParameter.URI, write(version));
+		return JCardValue.single(VCardDataType.URI, write(version));
 	}
 
 	@Override
@@ -424,8 +424,8 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 		case V2_1:
 		case V3_0:
 			//parse as URL
-			ValueParameter valueSubType = subTypes.getValue();
-			if (valueSubType == ValueParameter.URL || valueSubType == ValueParameter.URI) {
+			VCardDataType valueSubType = subTypes.getValue();
+			if (valueSubType == VCardDataType.URL || valueSubType == VCardDataType.URI) {
 				setUrl(value, contentType);
 				return;
 			}

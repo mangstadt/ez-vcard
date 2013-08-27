@@ -13,10 +13,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -82,7 +82,7 @@ public class TextTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(textType.getTypeName().toLowerCase());
-		xe.append(ValueParameter.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		xe.append(VCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 		Document expected = xe.document();
 		xe = new XCardElement(textType.getTypeName().toLowerCase());
 		Document actual = xe.document();
@@ -97,7 +97,7 @@ public class TextTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = textType.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.", value);
+		assertJCardValue(VCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.", value);
 		assertWarnings(0, warnings);
 	}
 
@@ -116,7 +116,7 @@ public class TextTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
-		xe.append(ValueParameter.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		xe.append(VCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 		String expected = "This is a test of the TextType.\nOne, two, three; and \\four\\.";
 		String actual = t.getValue();
@@ -144,7 +144,7 @@ public class TextTypeTest {
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
+		JCardValue value = JCardValue.single(VCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

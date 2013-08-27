@@ -15,11 +15,11 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
@@ -95,7 +95,7 @@ public class ClientPidMapTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		xe.append("sourceid", pid + "");
 		Document expected = xe.document();
 
@@ -119,7 +119,7 @@ public class ClientPidMapTypeTest {
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withValue.marshalJson(version, warnings);
-		assertEquals(ValueParameter.TEXT, value.getDataType());
+		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -175,7 +175,7 @@ public class ClientPidMapTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		xe.append("sourceid", pid + "");
 
 		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
@@ -189,7 +189,7 @@ public class ClientPidMapTypeTest {
 	public void unmarshalXml_bad_pid() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		xe.append("sourceid", "foo");
 
 		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
@@ -198,7 +198,7 @@ public class ClientPidMapTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(ValueParameter.TEXT, pid + "", uri);
+		JCardValue value = JCardValue.structured(VCardDataType.TEXT, pid + "", uri);
 
 		clientPidMapType.unmarshalJson(subTypes, value, version, warnings);
 
@@ -210,7 +210,7 @@ public class ClientPidMapTypeTest {
 	@Test(expected = SkipMeException.class)
 	public void unmarshalJson_bad_pid() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(ValueParameter.TEXT, "foo", uri);
+		JCardValue value = JCardValue.structured(VCardDataType.TEXT, "foo", uri);
 
 		clientPidMapType.unmarshalJson(subTypes, value, version, warnings);
 	}

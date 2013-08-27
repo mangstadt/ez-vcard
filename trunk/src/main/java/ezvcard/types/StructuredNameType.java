@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -332,7 +332,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 		values.add(additional);
 		values.add(prefixes);
 		values.add(suffixes);
-		return JCardValue.structured(ValueParameter.TEXT, values);
+		return JCardValue.structured(VCardDataType.TEXT, values);
 	}
 
 	@Override

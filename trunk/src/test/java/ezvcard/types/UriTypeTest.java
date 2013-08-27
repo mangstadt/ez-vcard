@@ -13,10 +13,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -73,7 +73,7 @@ public class UriTypeTest {
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		Document expected = xe.document();
 
 		xe = new XCardElement(withValue.getTypeName().toLowerCase());
@@ -88,7 +88,7 @@ public class UriTypeTest {
 	public void marshalXml_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(empty.getTypeName().toLowerCase());
-		xe.append(ValueParameter.URI, "");
+		xe.append(VCardDataType.URI, "");
 		Document expected = xe.document();
 
 		xe = new XCardElement(empty.getTypeName().toLowerCase());
@@ -104,7 +104,7 @@ public class UriTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = withValue.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.URI, uri, value);
+		assertJCardValue(VCardDataType.URI, uri, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -113,7 +113,7 @@ public class UriTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = empty.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.URI, null, value);
+		assertJCardValue(VCardDataType.URI, null, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -121,7 +121,7 @@ public class UriTypeTest {
 	public void unmarshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(uri, t.getValue());

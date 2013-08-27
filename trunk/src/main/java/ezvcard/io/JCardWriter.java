@@ -14,7 +14,6 @@ import java.util.List;
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.types.KindType;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
@@ -189,7 +188,7 @@ public class JCardWriter implements Closeable {
 					addWarning(warning, type.getTypeName());
 				}
 			}
-			subTypes.removeAll(ValueParameter.NAME); //remove all VALUE parameters
+			subTypes.removeValue(); //remove all VALUE parameters
 
 			writer.writeProperty(type.getGroup(), type.getTypeName().toLowerCase(), subTypes, value);
 		}

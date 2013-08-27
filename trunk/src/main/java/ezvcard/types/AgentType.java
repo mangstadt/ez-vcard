@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.VCardStringUtils;
 
@@ -150,7 +150,7 @@ public class AgentType extends VCardType {
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (url != null) {
-			ValueParameter vp = (version == VCardVersion.V2_1) ? ValueParameter.URL : ValueParameter.URI;
+			VCardDataType vp = (version == VCardVersion.V2_1) ? VCardDataType.URL : VCardDataType.URI;
 			copy.setValue(vp);
 		} else {
 			copy.setValue(null);

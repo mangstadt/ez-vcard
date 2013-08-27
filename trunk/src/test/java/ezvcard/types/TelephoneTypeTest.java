@@ -16,12 +16,12 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.TelephoneTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.TelUri;
@@ -132,7 +132,7 @@ public class TelephoneTypeTest {
 		VCardSubTypes subTypes = marshalObjUri.marshalSubTypes(version, warnings, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
-		assertEquals(ValueParameter.URI, subTypes.getValue());
+		assertEquals(VCardDataType.URI, subTypes.getValue());
 		assertWarnings(0, warnings);
 	}
 
@@ -339,7 +339,7 @@ public class TelephoneTypeTest {
 	public void marshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, number);
+		xe.append(VCardDataType.TEXT, number);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TelephoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -353,7 +353,7 @@ public class TelephoneTypeTest {
 	public void marshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, uriWithExt);
+		xe.append(VCardDataType.URI, uriWithExt);
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TelephoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
@@ -368,7 +368,7 @@ public class TelephoneTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = marshalObjText.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.TEXT, number, value);
+		assertJCardValue(VCardDataType.TEXT, number, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -377,7 +377,7 @@ public class TelephoneTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = marshalObjUri.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.URI, uriWithExt, value);
+		assertJCardValue(VCardDataType.URI, uriWithExt, value);
 		assertWarnings(0, warnings);
 	}
 
@@ -434,7 +434,7 @@ public class TelephoneTypeTest {
 	@Test
 	public void unmarshalText_4_0_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		subTypes.setValue(ValueParameter.URI);
+		subTypes.setValue(VCardDataType.URI);
 		unmarshalObj.unmarshalText(subTypes, uri, version, warnings, compatibilityMode);
 
 		assertNull(unmarshalObj.getText());
@@ -445,7 +445,7 @@ public class TelephoneTypeTest {
 	@Test
 	public void unmarshalText_4_0_uri_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
-		subTypes.setValue(ValueParameter.URI);
+		subTypes.setValue(VCardDataType.URI);
 		unmarshalObj.unmarshalText(subTypes, number, version, warnings, compatibilityMode);
 
 		assertEquals(number, unmarshalObj.getText());
@@ -457,7 +457,7 @@ public class TelephoneTypeTest {
 	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, number);
+		xe.append(VCardDataType.TEXT, number);
 		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(number, unmarshalObj.getText());
@@ -469,7 +469,7 @@ public class TelephoneTypeTest {
 	public void unmarshalXml_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, uri);
+		xe.append(VCardDataType.URI, uri);
 		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(unmarshalObj.getText());
@@ -481,7 +481,7 @@ public class TelephoneTypeTest {
 	public void unmarshalXml_uri_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.append(ValueParameter.URI, number);
+		xe.append(VCardDataType.URI, number);
 		unmarshalObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(number, unmarshalObj.getText());
@@ -546,7 +546,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.TEXT, number);
+		JCardValue value = JCardValue.single(VCardDataType.TEXT, number);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 
@@ -560,7 +560,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.URI, uri);
+		JCardValue value = JCardValue.single(VCardDataType.URI, uri);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 
@@ -574,7 +574,7 @@ public class TelephoneTypeTest {
 	public void unmarshalJson_uri_invalid() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.URI, number);
+		JCardValue value = JCardValue.single(VCardDataType.URI, number);
 
 		unmarshalObj.unmarshalJson(subTypes, value, version, warnings);
 

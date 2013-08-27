@@ -15,11 +15,11 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AnniversaryType;
 import ezvcard.types.BirthdayType;
@@ -242,7 +242,7 @@ public class JCardWriterTest {
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		vcard.addType(new TypeForTesting(JCardValue.single(ValueParameter.TEXT, "value")));
+		vcard.addType(new TypeForTesting(JCardValue.single(VCardDataType.TEXT, "value")));
 		writer.write(vcard);
 		assertWarnings(0, writer.getWarnings());
 

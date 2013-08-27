@@ -8,8 +8,8 @@ import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -97,10 +97,10 @@ public class XCardElement {
 	 * "unknown" data type)
 	 * @return the value or null if not found
 	 */
-	public String first(ValueParameter... dataTypes) {
+	public String first(VCardDataType... dataTypes) {
 		String names[] = new String[dataTypes.length];
 		for (int i = 0; i < dataTypes.length; i++) {
-			ValueParameter dataType = dataTypes[i];
+			VCardDataType dataType = dataTypes[i];
 			names[i] = toLocalName(dataType);
 		}
 		return first(names);
@@ -126,7 +126,7 @@ public class XCardElement {
 	 * @param dataType the data type to look for
 	 * @return the values
 	 */
-	public List<String> all(ValueParameter dataType) {
+	public List<String> all(VCardDataType dataType) {
 		String dataTypeStr = toLocalName(dataType);
 		return all(dataTypeStr);
 	}
@@ -155,7 +155,7 @@ public class XCardElement {
 	 * @param value the value
 	 * @return the created element
 	 */
-	public Element append(ValueParameter dataType, String value) {
+	public Element append(VCardDataType dataType, String value) {
 		String dataTypeStr = toLocalName(dataType);
 		return append(dataTypeStr, value);
 	}
@@ -224,7 +224,7 @@ public class XCardElement {
 		return XmlUtils.toElementList(element.getChildNodes());
 	}
 
-	private String toLocalName(ValueParameter dataType) {
-		return (dataType == null) ? "unknown" : dataType.getValue().toLowerCase();
+	private String toLocalName(VCardDataType dataType) {
+		return (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
 	}
 }

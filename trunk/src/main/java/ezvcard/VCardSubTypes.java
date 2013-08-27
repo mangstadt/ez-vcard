@@ -9,7 +9,6 @@ import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.LevelParameter;
 import ezvcard.parameters.TypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
 
@@ -58,6 +57,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	public static final String PREF = "PREF";
 	public static final String SORT_AS = "SORT-AS";
 	public static final String TZ = "TZ";
+	public static final String VALUE = "VALUE";
 
 	/**
 	 * Creates a list of parameters.
@@ -113,9 +113,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 * @return the value or null if not found
 	 */
-	public ValueParameter getValue() {
-		String value = first(ValueParameter.NAME);
-		return (value == null) ? null : ValueParameter.get(value);
+	public VCardDataType getValue() {
+		String value = first(VALUE);
+		return (value == null) ? null : VCardDataType.get(value);
 	}
 
 	/**
@@ -128,8 +128,21 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 * @param value the value or null to remove
 	 */
-	public void setValue(ValueParameter value) {
-		replace(ValueParameter.NAME, (value == null) ? null : value.getValue());
+	public void setValue(VCardDataType value) {
+		replace(VALUE, (value == null) ? null : value.getName());
+	}
+
+	/**
+	 * <p>
+	 * Removes the VALUE sub type. This defines what kind of value the type has,
+	 * such as "text" or "URI".
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+	 * </p>
+	 */
+	public void removeValue() {
+		removeAll(VALUE);
 	}
 
 	/**

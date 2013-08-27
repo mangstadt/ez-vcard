@@ -12,8 +12,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 
@@ -52,10 +52,10 @@ public class JCardRawWriterTest {
 		JCardRawWriter writer = new JCardRawWriter(sw, true);
 
 		writer.writeStartVCard();
-		writer.writeProperty("prop", JCardValue.single(ValueParameter.TEXT, "value"));
+		writer.writeProperty("prop", JCardValue.single(VCardDataType.TEXT, "value"));
 		writer.writeEndVCard();
 		writer.writeStartVCard();
-		writer.writeProperty("prop", JCardValue.single(ValueParameter.TEXT, "value"));
+		writer.writeProperty("prop", JCardValue.single(VCardDataType.TEXT, "value"));
 		writer.writeEndVCard();
 		writer.close();
 
@@ -84,7 +84,7 @@ public class JCardRawWriterTest {
 		JCardRawWriter writer = new JCardRawWriter(sw, false);
 
 		writer.writeStartVCard();
-		writer.writeProperty("prop", JCardValue.single(ValueParameter.TEXT, "value\nvalue"));
+		writer.writeProperty("prop", JCardValue.single(VCardDataType.TEXT, "value\nvalue"));
 		writer.close();
 
 		String actual = sw.toString();
@@ -105,7 +105,7 @@ public class JCardRawWriterTest {
 		JCardRawWriter writer = new JCardRawWriter(sw, false);
 
 		writer.writeStartVCard();
-		writer.writeProperty("prop", JCardValue.single(ValueParameter.TEXT, null));
+		writer.writeProperty("prop", JCardValue.single(VCardDataType.TEXT, null));
 		writer.close();
 
 		String actual = sw.toString();
@@ -130,7 +130,7 @@ public class JCardRawWriterTest {
 		parameters.put("a", "value1");
 		parameters.put("b", "value2");
 		parameters.put("b", "value3");
-		writer.writeProperty(null, "prop", parameters, JCardValue.single(ValueParameter.TEXT, "value"));
+		writer.writeProperty(null, "prop", parameters, JCardValue.single(VCardDataType.TEXT, "value"));
 		writer.close();
 
 		String actual = sw.toString();
@@ -151,7 +151,7 @@ public class JCardRawWriterTest {
 		JCardRawWriter writer = new JCardRawWriter(sw, false);
 
 		writer.writeStartVCard();
-		writer.writeProperty("one", "prop", new VCardSubTypes(), JCardValue.single(ValueParameter.TEXT, "value"));
+		writer.writeProperty("one", "prop", new VCardSubTypes(), JCardValue.single(VCardDataType.TEXT, "value"));
 		writer.close();
 
 		String actual = sw.toString();
@@ -181,7 +181,7 @@ public class JCardRawWriterTest {
 		m.put("b", new JsonValue(m2));
 		jsonValues.add(new JsonValue(m));
 		jsonValues.add(new JsonValue("four"));
-		writer.writeProperty("prop", new JCardValue(ValueParameter.TEXT, jsonValues));
+		writer.writeProperty("prop", new JCardValue(VCardDataType.TEXT, jsonValues));
 		writer.close();
 
 		String actual = sw.toString();
@@ -229,7 +229,7 @@ public class JCardRawWriterTest {
 		JCardRawWriter writer = new JCardRawWriter(sw, false);
 
 		writer.writeStartVCard();
-		writer.writeProperty("prop", JCardValue.multi(ValueParameter.TEXT, false, true, 1.1, 1, null, "text"));
+		writer.writeProperty("prop", JCardValue.multi(VCardDataType.TEXT, false, true, 1.1, 1, null, "text"));
 		writer.close();
 
 		String actual = sw.toString();
@@ -264,7 +264,7 @@ public class JCardRawWriterTest {
 		StringWriter sw = new StringWriter();
 		JCardRawWriter writer = new JCardRawWriter(sw, false);
 
-		writer.writeProperty("prop", JCardValue.single(ValueParameter.TEXT, "value"));
+		writer.writeProperty("prop", JCardValue.single(VCardDataType.TEXT, "value"));
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -282,7 +282,7 @@ public class JCardRawWriterTest {
 
 		writer.writeStartVCard();
 		writer.writeEndVCard();
-		writer.writeProperty("prop", JCardValue.single(ValueParameter.TEXT, "value"));
+		writer.writeProperty("prop", JCardValue.single(VCardDataType.TEXT, "value"));
 	}
 
 	@Test
@@ -338,11 +338,11 @@ public class JCardRawWriterTest {
 
 		//@formatter:off
 		writer.writeStartVCard();
-			writer.writeProperty("prop1", JCardValue.single(ValueParameter.TEXT, "value1"));
-			writer.writeProperty("prop2", JCardValue.single(ValueParameter.TEXT, "value2"));
+			writer.writeProperty("prop1", JCardValue.single(VCardDataType.TEXT, "value1"));
+			writer.writeProperty("prop2", JCardValue.single(VCardDataType.TEXT, "value2"));
 		writer.writeEndVCard();
 		writer.writeStartVCard();
-			writer.writeProperty("prop3", JCardValue.single(ValueParameter.TEXT, "value3"));
+			writer.writeProperty("prop3", JCardValue.single(VCardDataType.TEXT, "value3"));
 		writer.writeEndVCard();
 		//@formatter:on
 		writer.close();

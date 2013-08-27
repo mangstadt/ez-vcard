@@ -14,8 +14,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.ValueParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -71,13 +71,13 @@ public class XCardElementTest {
 	@Test
 	public void first_data_type() {
 		XCardElement xcardElement = build("<prop><one>1</one><text>2</text></prop>");
-		assertEquals("2", xcardElement.first(ValueParameter.TEXT));
+		assertEquals("2", xcardElement.first(VCardDataType.TEXT));
 	}
 
 	@Test
 	public void first_unknown() {
 		XCardElement xcardElement = build("<prop><one>1</one><unknown>2</unknown></prop>");
-		assertEquals("2", xcardElement.first((ValueParameter) null));
+		assertEquals("2", xcardElement.first((VCardDataType) null));
 	}
 
 	@Test
@@ -120,13 +120,13 @@ public class XCardElementTest {
 	@Test
 	public void all_data_type() {
 		XCardElement xcardElement = build("<prop><one>1</one><text>2</text><two /><three>3</three><text>2-2</text></prop>");
-		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all(ValueParameter.TEXT));
+		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all(VCardDataType.TEXT));
 	}
 
 	@Test
 	public void all_unknown() {
 		XCardElement xcardElement = build("<prop><one>1</one><unknown>2</unknown><two /><three>3</three><unknown>2-2</unknown></prop>");
-		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all((ValueParameter) null));
+		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all((VCardDataType) null));
 	}
 
 	@Test

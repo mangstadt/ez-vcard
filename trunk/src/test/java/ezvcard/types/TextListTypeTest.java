@@ -14,10 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
@@ -151,7 +151,7 @@ public class TextListTypeTest {
 	public void marshalXml_zero_items() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, null);
+		xe.append(VCardDataType.TEXT, null);
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -165,7 +165,7 @@ public class TextListTypeTest {
 	public void marshalXml_one_item() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, "one");
+		xe.append(VCardDataType.TEXT, "one");
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -179,9 +179,9 @@ public class TextListTypeTest {
 	public void marshalXml_multiple_items() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, "one");
-		xe.append(ValueParameter.TEXT, "two");
-		xe.append(ValueParameter.TEXT, "three");
+		xe.append(VCardDataType.TEXT, "one");
+		xe.append(VCardDataType.TEXT, "two");
+		xe.append(VCardDataType.TEXT, "three");
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
@@ -196,7 +196,7 @@ public class TextListTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = zeroItems.marshalJson(version, warnings);
 
-		assertEquals(ValueParameter.TEXT, value.getDataType());
+		assertEquals(VCardDataType.TEXT, value.getDataType());
 		assertTrue(value.getValues().isEmpty());
 		assertWarnings(0, warnings);
 	}
@@ -206,7 +206,7 @@ public class TextListTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = oneItem.marshalJson(version, warnings);
 
-		assertJCardValue(ValueParameter.TEXT, "one", value);
+		assertJCardValue(VCardDataType.TEXT, "one", value);
 		assertWarnings(0, warnings);
 	}
 
@@ -215,7 +215,7 @@ public class TextListTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = multipleItems.marshalJson(version, warnings);
 
-		assertEquals(ValueParameter.TEXT, value.getDataType());
+		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -233,7 +233,7 @@ public class TextListTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = multipleItemsStructured.marshalJson(version, warnings);
 
-		assertEquals(ValueParameter.TEXT, value.getDataType());
+		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -253,7 +253,7 @@ public class TextListTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = oneItemStructured.marshalJson(version, warnings);
 
-		assertEquals(ValueParameter.TEXT, value.getDataType());
+		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -314,7 +314,7 @@ public class TextListTypeTest {
 	public void unmarshalXml_one_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, "one");
+		xe.append(VCardDataType.TEXT, "one");
 		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("one"), testObj.getValues());
@@ -325,9 +325,9 @@ public class TextListTypeTest {
 	public void unmarshalXml_multiple_values() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.append(ValueParameter.TEXT, "one");
-		xe.append(ValueParameter.TEXT, "two");
-		xe.append(ValueParameter.TEXT, "three");
+		xe.append(VCardDataType.TEXT, "one");
+		xe.append(VCardDataType.TEXT, "two");
+		xe.append(VCardDataType.TEXT, "three");
 		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertEquals(Arrays.asList("one", "two", "three"), testObj.getValues());
@@ -338,7 +338,7 @@ public class TextListTypeTest {
 	public void unmarshalJson_zero_items() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = new JCardValue(ValueParameter.TEXT, Arrays.<JsonValue> asList());
+		JCardValue value = new JCardValue(VCardDataType.TEXT, Arrays.<JsonValue> asList());
 
 		testObj.unmarshalJson(subTypes, value, version, warnings);
 
@@ -350,7 +350,7 @@ public class TextListTypeTest {
 	public void unmarshalJson_one_item() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(ValueParameter.TEXT, "one");
+		JCardValue value = JCardValue.single(VCardDataType.TEXT, "one");
 
 		testObj.unmarshalJson(subTypes, value, version, warnings);
 
@@ -362,7 +362,7 @@ public class TextListTypeTest {
 	public void unmarshalJson_multiple_items() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.multi(ValueParameter.TEXT, "one", "two", "three");
+		JCardValue value = JCardValue.multi(VCardDataType.TEXT, "one", "two", "three");
 
 		testObj.unmarshalJson(subTypes, value, version, warnings);
 

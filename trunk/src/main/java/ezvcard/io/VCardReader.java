@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.TypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.LabelType;
 import ezvcard.types.RawType;
@@ -252,8 +252,8 @@ public class VCardReader implements Closeable {
 		List<String> namelessParamValues = parameters.get(null);
 		for (String paramValue : namelessParamValues) {
 			String paramName;
-			if (ValueParameter.find(paramValue) != null) {
-				paramName = ValueParameter.NAME;
+			if (VCardDataType.find(paramValue) != null) {
+				paramName = VCardSubTypes.VALUE;
 			} else if (EncodingParameter.find(paramValue) != null) {
 				paramName = EncodingParameter.NAME;
 			} else {

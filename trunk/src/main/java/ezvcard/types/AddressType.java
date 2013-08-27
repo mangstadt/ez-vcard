@@ -5,11 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -447,7 +447,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		return JCardValue.structured(ValueParameter.TEXT, poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
+		return JCardValue.structured(VCardDataType.TEXT, poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
 	}
 
 	@Override

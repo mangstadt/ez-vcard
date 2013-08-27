@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
-import ezvcard.parameters.ValueParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.JCardValue;
@@ -205,9 +205,9 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
-		ValueParameter value = null;
+		VCardDataType value = null;
 		if (text != null && version == VCardVersion.V4_0) {
-			value = ValueParameter.TEXT;
+			value = VCardDataType.TEXT;
 		}
 		copy.setValue(value);
 	}
@@ -242,7 +242,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
-		if (version == VCardVersion.V4_0 && subTypes.getValue() == ValueParameter.TEXT) {
+		if (version == VCardVersion.V4_0 && subTypes.getValue() == VCardDataType.TEXT) {
 			setText(value);
 		} else {
 			parseDate(value, version, warnings);
@@ -252,17 +252,17 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	@Override
 	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
 		if (text != null) {
-			parent.append(ValueParameter.TEXT, text);
+			parent.append(VCardDataType.TEXT, text);
 		} else if (partialDate != null) {
-			ValueParameter dataType;
+			VCardDataType dataType;
 			if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
-				dataType = ValueParameter.DATE_TIME;
+				dataType = VCardDataType.DATE_TIME;
 			} else if (partialDate.hasTimeComponent()) {
-				dataType = ValueParameter.TIME;
+				dataType = VCardDataType.TIME;
 			} else if (partialDate.hasDateComponent()) {
-				dataType = ValueParameter.DATE;
+				dataType = VCardDataType.DATE;
 			} else {
-				dataType = ValueParameter.DATE_AND_OR_TIME;
+				dataType = VCardDataType.DATE_AND_OR_TIME;
 			}
 
 			parent.append(dataType, partialDate.toDateAndOrTime(false));
@@ -278,11 +278,11 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(ValueParameter.DATE, ValueParameter.DATE_TIME, ValueParameter.DATE_AND_OR_TIME);
+		String value = element.first(VCardDataType.DATE, VCardDataType.DATE_TIME, VCardDataType.DATE_AND_OR_TIME);
 		if (value != null) {
 			parseDate(value, element.version(), warnings);
 		} else {
-			setText(element.first(ValueParameter.TEXT));
+			setText(element.first(VCardDataType.TEXT));
 		}
 	}
 
@@ -303,26 +303,26 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		ValueParameter dataType;
+		VCardDataType dataType;
 		String value;
 
 		if (text != null) {
-			dataType = ValueParameter.TEXT;
+			dataType = VCardDataType.TEXT;
 			value = text;
 		} else {
 			if (date != null) {
-				dataType = dateHasTime ? ValueParameter.DATE_TIME : ValueParameter.DATE;
+				dataType = dateHasTime ? VCardDataType.DATE_TIME : VCardDataType.DATE;
 				ISOFormat format = dateHasTime ? ISOFormat.TIME_EXTENDED : ISOFormat.DATE_EXTENDED;
 				value = VCardDateFormatter.format(date, format);
 			} else if (partialDate != null) {
 				if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
-					dataType = ValueParameter.DATE_TIME;
+					dataType = VCardDataType.DATE_TIME;
 				} else if (partialDate.hasTimeComponent()) {
-					dataType = ValueParameter.TIME;
+					dataType = VCardDataType.TIME;
 				} else if (partialDate.hasDateComponent()) {
-					dataType = ValueParameter.DATE;
+					dataType = VCardDataType.DATE;
 				} else {
-					dataType = ValueParameter.DATE_AND_OR_TIME;
+					dataType = VCardDataType.DATE_AND_OR_TIME;
 				}
 
 				value = partialDate.toDateAndOrTime(true);
@@ -337,7 +337,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == ValueParameter.TEXT) {
+		if (value.getDataType() == VCardDataType.TEXT) {
 			setText(valueStr);
 		} else {
 			parseDate(valueStr, version, warnings);
