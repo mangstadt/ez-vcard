@@ -386,11 +386,11 @@ public class XCardDocumentTest {
 			Iterator<XmlType> it = vcard.getXmls().iterator();
 
 			XmlType xmlType = it.next();
-			assertEquals("<a href=\"http://www.website.com\" xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">website</a>", xmlType.getValue());
+			assertXMLEqual(XmlUtils.toDocument("<a href=\"http://www.website.com\" xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">website</a>"), xmlType.getDocument());
 
 			xmlType = it.next();
 			//X-AGE was not unmarshalled because its type class does not support xCard;
-			assertEquals("<x-age xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><integer>24</integer></x-age>", xmlType.getValue());
+			assertXMLEqual(XmlUtils.toDocument("<x-age xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><integer>24</integer></x-age>"), xmlType.getDocument());
 
 			assertFalse(it.hasNext());
 		}
