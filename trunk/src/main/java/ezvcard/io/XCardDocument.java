@@ -316,12 +316,21 @@ public class XCardDocument {
 		}
 	}
 
-	//@Override
+	/**
+	 * Registers an extended type class.
+	 * @param clazz the extended type class to register (MUST have a public,
+	 * no-arg constructor)
+	 * @throws RuntimeException if the class doesn't have a public, no-arg
+	 * constructor
+	 */
 	public void registerExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.put(getQNameFromTypeClass(clazz), clazz);
 	}
 
-	//@Override
+	/**
+	 * Removes an extended type class that was previously registered.
+	 * @param clazz the extended type class to remove
+	 */
 	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
 		extendedTypeClasses.remove(getQNameFromTypeClass(clazz));
 	}
