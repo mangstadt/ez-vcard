@@ -100,9 +100,7 @@ public abstract class CaseClasses<T, V> {
 	 * @return the object
 	 */
 	protected T find(V value, boolean createIfNotFound, boolean searchRuntimeDefined) {
-		if (preDefined == null) {
-			init();
-		}
+		checkInit();
 
 		for (T obj : preDefined) {
 			if (matches(obj, value)) {
@@ -111,15 +109,17 @@ public abstract class CaseClasses<T, V> {
 		}
 
 		if (searchRuntimeDefined) {
-			for (T obj : runtimeDefined) {
-				if (matches(obj, value)) {
-					return obj;
+			synchronized (this) {
+				for (T obj : runtimeDefined) {
+					if (matches(obj, value)) {
+						return obj;
+					}
 				}
-			}
-			if (createIfNotFound) {
-				T created = create(value);
-				runtimeDefined.add(created);
-				return created;
+				if (createIfNotFound) {
+					T created = create(value);
+					runtimeDefined.add(created);
+					return created;
+				}
 			}
 		}
 		return null;
@@ -130,17 +130,23 @@ public abstract class CaseClasses<T, V> {
 	 * @return all static constants
 	 */
 	public Collection<T> all() {
-		if (preDefined == null) {
-			init();
-		}
+		checkInit();
 		return preDefined;
+	}
+
+	private void checkInit() {
+		if (preDefined == null) {
+			synchronized (this) {
+				if (preDefined == null) { //duplicate if condition needed for concurrency purposes
+					init();
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private void init() {
-		preDefined = new ArrayList<T>();
-		runtimeDefined = new ArrayList<T>(0);
-
+		Collection<T> preDefined = new ArrayList<T>();
 		for (Field field : clazz.getFields()) {
 			int modifiers = field.getModifiers();
 			//@formatter:off
@@ -163,6 +169,7 @@ public abstract class CaseClasses<T, V> {
 			}
 		}
 
-		preDefined = Collections.unmodifiableCollection(preDefined);
+		runtimeDefined = new ArrayList<T>(0);
+		this.preDefined = Collections.unmodifiableCollection(preDefined);
 	}
 }
