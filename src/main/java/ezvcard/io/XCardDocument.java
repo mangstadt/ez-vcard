@@ -35,8 +35,6 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.CalscaleParameter;
-import ezvcard.parameters.TypeParameter;
 import ezvcard.types.KindType;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
@@ -139,7 +137,7 @@ public class XCardDocument {
 	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>();
 	{
 		registerParameterDataType(VCardSubTypes.ALTID, VCardDataType.TEXT);
-		registerParameterDataType(CalscaleParameter.NAME, VCardDataType.TEXT);
+		registerParameterDataType(VCardSubTypes.CALSCALE, VCardDataType.TEXT);
 		registerParameterDataType(VCardSubTypes.GEO, VCardDataType.URI);
 		registerParameterDataType(VCardSubTypes.LABEL, VCardDataType.TEXT);
 		registerParameterDataType(VCardSubTypes.LANGUAGE, VCardDataType.LANGUAGE_TAG);
@@ -147,7 +145,7 @@ public class XCardDocument {
 		registerParameterDataType(VCardSubTypes.PID, VCardDataType.TEXT);
 		registerParameterDataType(VCardSubTypes.PREF, VCardDataType.INTEGER);
 		registerParameterDataType(VCardSubTypes.SORT_AS, VCardDataType.TEXT);
-		registerParameterDataType(TypeParameter.NAME, VCardDataType.TEXT);
+		registerParameterDataType(VCardSubTypes.TYPE, VCardDataType.TEXT);
 		registerParameterDataType(VCardSubTypes.TZ, VCardDataType.URI);
 	}
 

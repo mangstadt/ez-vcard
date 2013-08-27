@@ -40,7 +40,7 @@ import ezvcard.types.EmailType;
  * </p>
  * @author Michael Angstadt
  */
-public class EmailTypeParameter extends TypeParameter {
+public class EmailTypeParameter extends VCardParameter {
 	private static final VCardParameterCaseClasses<EmailTypeParameter> enums = new VCardParameterCaseClasses<EmailTypeParameter>(EmailTypeParameter.class);
 
 	/**

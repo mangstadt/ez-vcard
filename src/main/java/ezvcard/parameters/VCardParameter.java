@@ -1,6 +1,5 @@
 package ezvcard.parameters;
 
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -36,31 +35,16 @@ package ezvcard.parameters;
  */
 public class VCardParameter {
 	/**
-	 * The name (for example, "TYPE").
-	 */
-	protected final String name;
-
-	/**
 	 * The value (for example, "home").
 	 */
 	protected final String value;
 
 	/**
 	 * Creates a new parameter.
-	 * @param name the name (e.g. "TYPE")
-	 * @param value the value (e.g. "home")
+	 * @param value the value
 	 */
-	public VCardParameter(String name, String value) {
-		this.name = name.toUpperCase();
+	public VCardParameter(String value) {
 		this.value = (value == null) ? null : value.toLowerCase();
-	}
-
-	/**
-	 * Gets the parameter name.
-	 * @return the parameter name
-	 */
-	public String getName() {
-		return name;
 	}
 
 	/**
@@ -73,14 +57,13 @@ public class VCardParameter {
 
 	@Override
 	public String toString() {
-		return name + "=" + value;
+		return getClass().getSimpleName() + " = " + value;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + name.hashCode();
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
@@ -94,8 +77,6 @@ public class VCardParameter {
 		if (getClass() != obj.getClass())
 			return false;
 		VCardParameter other = (VCardParameter) obj;
-		if (!name.equals(other.name))
-			return false;
 		if (value == null) {
 			if (other.value != null)
 				return false;

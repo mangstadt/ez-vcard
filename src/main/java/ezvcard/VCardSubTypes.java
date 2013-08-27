@@ -7,8 +7,6 @@ import java.util.Set;
 
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.parameters.EncodingParameter;
-import ezvcard.parameters.LevelParameter;
-import ezvcard.parameters.TypeParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
 
@@ -47,15 +45,19 @@ import ezvcard.util.ListMultimap;
  */
 public class VCardSubTypes extends ListMultimap<String, String> {
 	public static final String ALTID = "ALTID";
+	public static final String CALSCALE = "CALSCALE";
 	public static final String CHARSET = "CHARSET";
+	public static final String ENCODING = "ENCODING";
 	public static final String GEO = "GEO";
 	public static final String INDEX = "INDEX";
 	public static final String LABEL = "LABEL";
 	public static final String LANGUAGE = "LANGUAGE";
+	public static final String LEVEL = "LEVEL";
 	public static final String MEDIATYPE = "MEDIATYPE";
 	public static final String PID = "PID";
 	public static final String PREF = "PREF";
 	public static final String SORT_AS = "SORT-AS";
+	public static final String TYPE = "TYPE";
 	public static final String TZ = "TZ";
 	public static final String VALUE = "VALUE";
 
@@ -85,7 +87,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @return the encoding or null if not found
 	 */
 	public EncodingParameter getEncoding() {
-		String value = first(EncodingParameter.NAME);
+		String value = first(ENCODING);
 		return (value == null) ? null : EncodingParameter.get(value);
 	}
 
@@ -100,7 +102,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param encoding the encoding or null to remove
 	 */
 	public void setEncoding(EncodingParameter encoding) {
-		replace(EncodingParameter.NAME, (encoding == null) ? null : encoding.getValue());
+		replace(ENCODING, (encoding == null) ? null : encoding.getValue());
 	}
 
 	/**
@@ -261,7 +263,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @return the values or empty set if not found
 	 */
 	public Set<String> getTypes() {
-		return new HashSet<String>(get(TypeParameter.NAME));
+		return new HashSet<String>(get(TYPE));
 	}
 
 	/**
@@ -274,7 +276,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param type the value
 	 */
 	public void addType(String type) {
-		put(TypeParameter.NAME, type);
+		put(TYPE, type);
 	}
 
 	/**
@@ -301,7 +303,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param type the value or null to remove
 	 */
 	public void setType(String type) {
-		replace(TypeParameter.NAME, type);
+		replace(TYPE, type);
 	}
 
 	/**
@@ -314,7 +316,19 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param type the value to remove
 	 */
 	public void removeType(String type) {
-		remove(TypeParameter.NAME, type);
+		remove(TYPE, type);
+	}
+
+	/**
+	 * <p>
+	 * Removes all TYPE sub types.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+	 * </p>
+	 */
+	public void removeTypes() {
+		removeAll(TYPE);
 	}
 
 	/**
@@ -557,7 +571,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @return the type of calendar or null if not found
 	 */
 	public CalscaleParameter getCalscale() {
-		String value = first(CalscaleParameter.NAME);
+		String value = first(CALSCALE);
 		return (value == null) ? null : CalscaleParameter.get(value);
 	}
 
@@ -572,7 +586,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param value the type of calendar or null to remove
 	 */
 	public void setCalscale(CalscaleParameter value) {
-		replace(CalscaleParameter.NAME, (value == null) ? null : value.getValue());
+		replace(CALSCALE, (value == null) ? null : value.getValue());
 	}
 
 	/**
@@ -711,7 +725,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public String getLevel() {
-		return first(LevelParameter.NAME);
+		return first(LEVEL);
 	}
 
 	/**
@@ -726,7 +740,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public void setLevel(String level) {
-		replace(LevelParameter.NAME, level);
+		replace(LEVEL, level);
 	}
 
 	/**

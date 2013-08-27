@@ -1,6 +1,6 @@
 package ezvcard.types;
 
-import ezvcard.parameters.TypeParameter;
+import ezvcard.parameters.VCardParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -37,7 +37,7 @@ import ezvcard.parameters.TypeParameter;
  * @author Michael Angstadt
  * @see MultiValuedTypeParameterType
  */
-public abstract class SingleValuedTypeParameterType<T extends TypeParameter> extends TypeParameterType<T> {
+public abstract class SingleValuedTypeParameterType<T extends VCardParameter> extends TypeParameterType<T> {
 	/**
 	 * Creates a single-valued type parameter property.
 	 * @param name the type name (e.g. "PHOTO")

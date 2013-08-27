@@ -42,7 +42,7 @@ import ezvcard.types.HobbyType;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class HobbyLevelParameter extends LevelParameter {
+public class HobbyLevelParameter extends VCardParameter {
 	private static final VCardParameterCaseClasses<HobbyLevelParameter> enums = new VCardParameterCaseClasses<HobbyLevelParameter>(HobbyLevelParameter.class);
 
 	public static final HobbyLevelParameter LOW = new HobbyLevelParameter("low");
