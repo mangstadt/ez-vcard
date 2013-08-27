@@ -1,8 +1,6 @@
 package ezvcard;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,15 +22,16 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.core.JsonParseException;
+
 import ezvcard.io.HCardPage;
 import ezvcard.io.HCardReader;
-import ezvcard.io.IParser;
+import ezvcard.io.JCardParseException;
 import ezvcard.io.JCardReader;
 import ezvcard.io.JCardWriter;
 import ezvcard.io.VCardReader;
 import ezvcard.io.VCardWriter;
 import ezvcard.io.XCardDocument;
-import ezvcard.io.XCardReader;
 import ezvcard.types.VCardType;
 import ezvcard.util.IOUtils;
 
@@ -85,7 +84,7 @@ import ezvcard.util.IOUtils;
  * </tr>
  * <tr>
  * <th>XML</th>
- * <td>{@link XCardReader}</td>
+ * <td>{@link XCardDocument}</td>
  * <td>{@link XCardDocument}</td>
  * </tr>
  * <tr>
@@ -118,6 +117,7 @@ public class Ezvcard {
 			in = Ezvcard.class.getResourceAsStream("/ez-vcard.properties");
 			Properties props = new Properties();
 			props.load(in);
+
 			VERSION = props.getProperty("version");
 			URL = props.getProperty("url");
 		} catch (IOException e) {
@@ -154,15 +154,13 @@ public class Ezvcard {
 	 * </p>
 	 * @param file the vCard file
 	 * @return chainer object for completing the parse operation
-	 * @throws FileNotFoundException if the file does not exist or cannot be
-	 * accessed
 	 * @see VCardReader
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static ParserChainTextReader parse(File file) throws FileNotFoundException {
-		return parse(new FileReader(file));
+	public static ParserChainTextReader parse(File file) {
+		return new ParserChainTextReader(file);
 	}
 
 	/**
@@ -226,13 +224,11 @@ public class Ezvcard {
 	 * </p>
 	 * @param file the XML file
 	 * @return chainer object for completing the parse operation
-	 * @throws FileNotFoundException if the file does not exist or cannot be
-	 * accessed
 	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static ParserChainXmlReader parseXml(File file) throws FileNotFoundException {
-		return parseXml(new FileReader(file));
+	public static ParserChainXmlReader parseXml(File file) {
+		return new ParserChainXmlReader(file);
 	}
 
 	/**
@@ -308,13 +304,11 @@ public class Ezvcard {
 	 * </p>
 	 * @param file the HTML file
 	 * @return chainer object for completing the parse operation
-	 * @throws FileNotFoundException if the file does not exist or cannot be
-	 * accessed
 	 * @see HCardReader
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public static ParserChainHtmlReader parseHtml(File file) throws FileNotFoundException {
-		return parseHtml(new FileReader(file));
+	public static ParserChainHtmlReader parseHtml(File file) {
+		return new ParserChainHtmlReader(file);
 	}
 
 	/**
@@ -392,15 +386,13 @@ public class Ezvcard {
 	 * </p>
 	 * @param file the JSON file
 	 * @return chainer object for completing the parse operation
-	 * @throws FileNotFoundException if the file does not exist or cannot be
-	 * accessed
 	 * @see JCardReader
 	 * @see <a
 	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
-	public static ParserChainJsonReader parseJson(File file) throws FileNotFoundException {
-		return parseJson(new FileReader(file));
+	public static ParserChainJsonReader parseJson(File file) {
+		return new ParserChainJsonReader(file);
 	}
 
 	/**
@@ -640,19 +632,21 @@ public class Ezvcard {
 		return new WriterChainJsonMulti(vcards);
 	}
 
-	static abstract class ParserChain<T, U extends IParser> {
+	static abstract class ParserChain<T> {
 		final List<Class<? extends VCardType>> extendedTypes = new ArrayList<Class<? extends VCardType>>();
 		List<List<String>> warnings;
+
+		@SuppressWarnings("unchecked")
+		final T this_ = (T) this;
 
 		/**
 		 * Registers an extended type class.
 		 * @param typeClass the extended type class
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T register(Class<? extends VCardType> typeClass) {
 			extendedTypes.add(typeClass);
-			return (T) this;
+			return this_;
 		}
 
 		/**
@@ -665,24 +659,9 @@ public class Ezvcard {
 		 * empty.
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T warnings(List<List<String>> warnings) {
 			this.warnings = warnings;
-			return (T) this;
-		}
-
-		/**
-		 * Creates the parser.
-		 * @return the parser object
-		 */
-		abstract U init() throws IOException, SAXException;
-
-		U ready() throws IOException, SAXException {
-			U parser = init();
-			for (Class<? extends VCardType> extendedType : extendedTypes) {
-				parser.registerExtendedType(extendedType);
-			}
-			return parser;
+			return this_;
 		}
 
 		/**
@@ -691,14 +670,7 @@ public class Ezvcard {
 		 * @throws IOException if there's an I/O problem
 		 * @throws SAXException if there's a problem parsing the XML
 		 */
-		public VCard first() throws IOException, SAXException {
-			IParser parser = ready();
-			VCard vcard = parser.readNext();
-			if (warnings != null) {
-				warnings.add(parser.getWarnings());
-			}
-			return vcard;
-		}
+		public abstract VCard first() throws IOException, SAXException;
 
 		/**
 		 * Reads all vCards from the stream.
@@ -706,23 +678,16 @@ public class Ezvcard {
 		 * @throws IOException if there's an I/O problem
 		 * @throws SAXException if there's a problem parsing the XML
 		 */
-		public List<VCard> all() throws IOException, SAXException {
-			IParser parser = ready();
-			List<VCard> vcards = new ArrayList<VCard>();
-			VCard vcard;
-			while ((vcard = parser.readNext()) != null) {
-				if (warnings != null) {
-					warnings.add(parser.getWarnings());
-				}
-				vcards.add(vcard);
-			}
-			return vcards;
-		}
-
+		public abstract List<VCard> all() throws IOException, SAXException;
 	}
 
-	static abstract class ParserChainText<T> extends ParserChain<T, VCardReader> {
+	static abstract class ParserChainText<T> extends ParserChain<T> {
 		boolean caretDecoding = true;
+		final boolean closeWhenDone;
+
+		private ParserChainText(boolean closeWhenDone) {
+			this.closeWhenDone = closeWhenDone;
+		}
 
 		/**
 		 * Sets whether the reader will decode characters in parameter values
@@ -732,38 +697,59 @@ public class Ezvcard {
 		 * @see VCardReader#setCaretDecodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
-		@SuppressWarnings("unchecked")
 		public T caretDecoding(boolean enable) {
 			caretDecoding = enable;
-			return (T) this;
-		}
-
-		@Override
-		VCardReader ready() throws IOException, SAXException {
-			VCardReader parser = super.ready();
-			parser.setCaretDecodingEnabled(caretDecoding);
-			return parser;
+			return this_;
 		}
 
 		@Override
 		public VCard first() throws IOException {
+			VCardReader parser = constructReader();
+
 			try {
-				return super.first();
-			} catch (SAXException e) {
-				//not parsing XML
+				VCard ical = parser.readNext();
+				if (warnings != null) {
+					warnings.add(parser.getWarnings());
+				}
+				return ical;
+			} finally {
+				if (closeWhenDone) {
+					IOUtils.closeQuietly(parser);
+				}
 			}
-			return null;
 		}
 
 		@Override
 		public List<VCard> all() throws IOException {
+			VCardReader parser = constructReader();
+
 			try {
-				return super.all();
-			} catch (SAXException e) {
-				//not parsing XML
+				List<VCard> vcards = new ArrayList<VCard>();
+				VCard vcard;
+				while ((vcard = parser.readNext()) != null) {
+					if (warnings != null) {
+						warnings.add(parser.getWarnings());
+					}
+					vcards.add(vcard);
+				}
+				return vcards;
+			} finally {
+				if (closeWhenDone) {
+					IOUtils.closeQuietly(parser);
+				}
 			}
-			return null;
 		}
+
+		private VCardReader constructReader() throws IOException {
+			VCardReader parser = _constructReader();
+			for (Class<? extends VCardType> extendedType : extendedTypes) {
+				parser.registerExtendedType(extendedType);
+			}
+			parser.setCaretDecodingEnabled(caretDecoding);
+			return parser;
+		}
+
+		abstract VCardReader _constructReader() throws IOException;
 	}
 
 	/**
@@ -773,10 +759,19 @@ public class Ezvcard {
 	 * @see Ezvcard#parse(Reader)
 	 */
 	public static class ParserChainTextReader extends ParserChainText<ParserChainTextReader> {
-		private Reader reader;
+		private final Reader reader;
+		private final File file;
 
 		private ParserChainTextReader(Reader reader) {
+			super(false);
 			this.reader = reader;
+			this.file = null;
+		}
+
+		private ParserChainTextReader(File file) {
+			super(true);
+			this.reader = null;
+			this.file = file;
 		}
 
 		@Override
@@ -795,8 +790,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		VCardReader init() {
-			return new VCardReader(reader);
+		VCardReader _constructReader() throws IOException {
+			return (reader != null) ? new VCardReader(reader) : new VCardReader(file);
 		}
 	}
 
@@ -805,9 +800,10 @@ public class Ezvcard {
 	 * @see Ezvcard#parse(String)
 	 */
 	public static class ParserChainTextString extends ParserChainText<ParserChainTextString> {
-		private String text;
+		private final String text;
 
 		private ParserChainTextString(String text) {
+			super(false);
 			this.text = text;
 		}
 
@@ -827,7 +823,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		VCardReader init() {
+		VCardReader _constructReader() {
 			return new VCardReader(text);
 		}
 
@@ -852,8 +848,36 @@ public class Ezvcard {
 		}
 	}
 
-	static abstract class ParserChainXml<T> extends ParserChain<T, XCardReader> {
-		//nothing
+	static abstract class ParserChainXml<T> extends ParserChain<T> {
+		@Override
+		public VCard first() throws IOException, SAXException {
+			XCardDocument document = constructDocument();
+			VCard ical = document.parseFirst();
+			if (warnings != null) {
+				warnings.addAll(document.getParseWarnings());
+			}
+			return ical;
+		}
+
+		@Override
+		public List<VCard> all() throws IOException, SAXException {
+			XCardDocument document = constructDocument();
+			List<VCard> icals = document.parseAll();
+			if (warnings != null) {
+				warnings.addAll(document.getParseWarnings());
+			}
+			return icals;
+		}
+
+		private XCardDocument constructDocument() throws SAXException, IOException {
+			XCardDocument parser = _constructDocument();
+			for (Class<? extends VCardType> extendedType : extendedTypes) {
+				parser.registerExtendedType(extendedType);
+			}
+			return parser;
+		}
+
+		abstract XCardDocument _constructDocument() throws IOException, SAXException;
 	}
 
 	/**
@@ -863,10 +887,17 @@ public class Ezvcard {
 	 * @see Ezvcard#parseXml(Reader)
 	 */
 	public static class ParserChainXmlReader extends ParserChainXml<ParserChainXmlReader> {
-		private Reader reader;
+		private final Reader reader;
+		private final File file;
 
-		private ParserChainXmlReader(Reader reader) {
+		public ParserChainXmlReader(Reader reader) {
 			this.reader = reader;
+			this.file = null;
+		}
+
+		public ParserChainXmlReader(File file) {
+			this.reader = null;
+			this.file = file;
 		}
 
 		@Override
@@ -880,8 +911,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		XCardReader init() throws IOException, SAXException {
-			return new XCardReader(reader);
+		XCardDocument _constructDocument() throws IOException, SAXException {
+			return (reader != null) ? new XCardDocument(reader) : new XCardDocument(file);
 		}
 	}
 
@@ -890,7 +921,7 @@ public class Ezvcard {
 	 * @see Ezvcard#parseXml(String)
 	 */
 	public static class ParserChainXmlString extends ParserChainXml<ParserChainXmlString> {
-		private String xml;
+		private final String xml;
 
 		private ParserChainXmlString(String xml) {
 			this.xml = xml;
@@ -907,8 +938,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		XCardReader init() throws SAXException {
-			return new XCardReader(xml);
+		XCardDocument _constructDocument() throws SAXException {
+			return new XCardDocument(xml);
 		}
 
 		@Override
@@ -937,7 +968,7 @@ public class Ezvcard {
 	 * @see Ezvcard#parseXml(Document)
 	 */
 	public static class ParserChainXmlDom extends ParserChainXml<ParserChainXmlDom> {
-		private Document document;
+		private final Document document;
 
 		private ParserChainXmlDom(Document document) {
 			this.document = document;
@@ -954,8 +985,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		XCardReader init() {
-			return new XCardReader(document);
+		XCardDocument _constructDocument() {
+			return new XCardDocument(document);
 		}
 
 		@Override
@@ -983,7 +1014,7 @@ public class Ezvcard {
 		}
 	}
 
-	static abstract class ParserChainHtml<T> extends ParserChain<T, HCardReader> {
+	static abstract class ParserChainHtml<T> extends ParserChain<T> {
 		String pageUrl;
 
 		/**
@@ -993,31 +1024,46 @@ public class Ezvcard {
 		 * @param pageUrl the webpage URL
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T pageUrl(String pageUrl) {
 			this.pageUrl = pageUrl;
-			return (T) this;
+			return this_;
 		}
 
 		@Override
 		public VCard first() throws IOException {
-			try {
-				return super.first();
-			} catch (SAXException e) {
-				//not parsing XML
+			HCardReader parser = constructReader();
+
+			VCard vcard = parser.readNext();
+			if (warnings != null) {
+				warnings.add(parser.getWarnings());
 			}
-			return null;
+			return vcard;
 		}
 
 		@Override
 		public List<VCard> all() throws IOException {
-			try {
-				return super.all();
-			} catch (SAXException e) {
-				//not parsing XML
+			HCardReader parser = constructReader();
+
+			List<VCard> vcards = new ArrayList<VCard>();
+			VCard vcard;
+			while ((vcard = parser.readNext()) != null) {
+				if (warnings != null) {
+					warnings.add(parser.getWarnings());
+				}
+				vcards.add(vcard);
 			}
-			return null;
+			return vcards;
 		}
+
+		private HCardReader constructReader() throws IOException {
+			HCardReader parser = _constructReader();
+			for (Class<? extends VCardType> extendedType : extendedTypes) {
+				parser.registerExtendedType(extendedType);
+			}
+			return parser;
+		}
+
+		abstract HCardReader _constructReader() throws IOException;
 	}
 
 	/**
@@ -1027,14 +1073,25 @@ public class Ezvcard {
 	 * @see Ezvcard#parseHtml(Reader)
 	 */
 	public static class ParserChainHtmlReader extends ParserChainHtml<ParserChainHtmlReader> {
-		private Reader reader;
-		private URL url;
+		private final Reader reader;
+		private final File file;
+		private final URL url;
 
 		private ParserChainHtmlReader(Reader reader) {
 			this.reader = reader;
+			this.file = null;
+			this.url = null;
+		}
+
+		private ParserChainHtmlReader(File file) {
+			this.reader = null;
+			this.file = file;
+			this.url = null;
 		}
 
 		private ParserChainHtmlReader(URL url) {
+			this.reader = null;
+			this.file = null;
 			this.url = url;
 		}
 
@@ -1054,8 +1111,17 @@ public class Ezvcard {
 		}
 
 		@Override
-		HCardReader init() throws IOException {
-			return (url == null) ? new HCardReader(reader, pageUrl) : new HCardReader(url);
+		HCardReader _constructReader() throws IOException {
+			if (reader != null) {
+				return new HCardReader(reader, pageUrl);
+			}
+
+			if (file != null) {
+				//Jsoup (presumably) closes the FileReader it creates
+				return new HCardReader(file, pageUrl);
+			}
+
+			return new HCardReader(url);
 		}
 	}
 
@@ -1064,15 +1130,10 @@ public class Ezvcard {
 	 * @see Ezvcard#parseHtml(String)
 	 */
 	public static class ParserChainHtmlString extends ParserChainHtml<ParserChainHtmlString> {
-		private String html;
+		private final String html;
 
 		private ParserChainHtmlString(String html) {
 			this.html = html;
-		}
-
-		@Override
-		HCardReader init() {
-			return new HCardReader(html, pageUrl);
 		}
 
 		@Override
@@ -1088,6 +1149,11 @@ public class Ezvcard {
 		@Override
 		public ParserChainHtmlString pageUrl(String pageUrl) {
 			return super.pageUrl(pageUrl);
+		}
+
+		@Override
+		HCardReader _constructReader() {
+			return new HCardReader(html, pageUrl);
 		}
 
 		@Override
@@ -1111,32 +1177,70 @@ public class Ezvcard {
 		}
 	}
 
-	static abstract class ParserChainJson<T> extends ParserChain<T, JCardReader> {
+	static abstract class ParserChainJson<T> extends ParserChain<T> {
+		final boolean closeWhenDone;
+
+		private ParserChainJson(boolean closeWhenDone) {
+			this.closeWhenDone = closeWhenDone;
+		}
+
+		/**
+		 * @throws JCardParseException if the jCard syntax is incorrect (the
+		 * JSON syntax may be valid, but it is not in the correct jCard format).
+		 * @throws JsonParseException if the JSON syntax is incorrect
+		 */
 		@Override
-		JCardReader ready() throws IOException, SAXException {
-			JCardReader parser = super.ready();
+		public VCard first() throws IOException {
+			JCardReader parser = constructReader();
+
+			try {
+				VCard vcard = parser.readNext();
+				if (warnings != null) {
+					warnings.add(parser.getWarnings());
+				}
+				return vcard;
+			} finally {
+				if (closeWhenDone) {
+					IOUtils.closeQuietly(parser);
+				}
+			}
+		}
+
+		/**
+		 * @throws JCardParseException if the jCard syntax is incorrect (the
+		 * JSON syntax may be valid, but it is not in the correct jCard format).
+		 * @throws JsonParseException if the JSON syntax is incorrect
+		 */
+		@Override
+		public List<VCard> all() throws IOException {
+			JCardReader parser = constructReader();
+
+			try {
+				List<VCard> vcards = new ArrayList<VCard>();
+				VCard vcard;
+				while ((vcard = parser.readNext()) != null) {
+					if (warnings != null) {
+						warnings.add(parser.getWarnings());
+					}
+					vcards.add(vcard);
+				}
+				return vcards;
+			} finally {
+				if (closeWhenDone) {
+					IOUtils.closeQuietly(parser);
+				}
+			}
+		}
+
+		private JCardReader constructReader() throws IOException {
+			JCardReader parser = _constructReader();
+			for (Class<? extends VCardType> extendedType : extendedTypes) {
+				parser.registerExtendedType(extendedType);
+			}
 			return parser;
 		}
 
-		@Override
-		public VCard first() throws IOException {
-			try {
-				return super.first();
-			} catch (SAXException e) {
-				//not parsing XML
-			}
-			return null;
-		}
-
-		@Override
-		public List<VCard> all() throws IOException {
-			try {
-				return super.all();
-			} catch (SAXException e) {
-				//not parsing XML
-			}
-			return null;
-		}
+		abstract JCardReader _constructReader() throws IOException;
 	}
 
 	/**
@@ -1146,10 +1250,19 @@ public class Ezvcard {
 	 * @see Ezvcard#parseJson(Reader)
 	 */
 	public static class ParserChainJsonReader extends ParserChainJson<ParserChainJsonReader> {
-		private Reader reader;
+		private final Reader reader;
+		private final File file;
 
 		private ParserChainJsonReader(Reader reader) {
+			super(false);
 			this.reader = reader;
+			this.file = null;
+		}
+
+		private ParserChainJsonReader(File file) {
+			super(true);
+			this.reader = null;
+			this.file = file;
 		}
 
 		@Override
@@ -1163,8 +1276,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		JCardReader init() {
-			return new JCardReader(reader);
+		JCardReader _constructReader() throws IOException {
+			return (reader != null) ? new JCardReader(reader) : new JCardReader(file);
 		}
 	}
 
@@ -1173,9 +1286,10 @@ public class Ezvcard {
 	 * @see Ezvcard#parseJson(String)
 	 */
 	public static class ParserChainJsonString extends ParserChainJson<ParserChainJsonString> {
-		private String json;
+		private final String json;
 
 		private ParserChainJsonString(String json) {
+			super(false);
 			this.json = json;
 		}
 
@@ -1190,7 +1304,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		JCardReader init() {
+		JCardReader _constructReader() {
 			return new JCardReader(json);
 		}
 
@@ -1215,15 +1329,18 @@ public class Ezvcard {
 		}
 	}
 
-	static abstract class WriterChain {
+	static abstract class WriterChain<T> {
 		final Collection<VCard> vcards;
+
+		@SuppressWarnings("unchecked")
+		final T this_ = (T) this;
 
 		WriterChain(Collection<VCard> vcards) {
 			this.vcards = vcards;
 		}
 	}
 
-	static abstract class WriterChainText<T> extends WriterChain {
+	static abstract class WriterChainText<T> extends WriterChain<T> {
 		VCardVersion version;
 		boolean prodId = true;
 		boolean caretEncoding = false;
@@ -1247,10 +1364,9 @@ public class Ezvcard {
 		 * @param version the version to marshal the vCards to
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T version(VCardVersion version) {
 			this.version = version;
-			return (T) this;
+			return this_;
 		}
 
 		/**
@@ -1260,10 +1376,9 @@ public class Ezvcard {
 		 * @param include true to add PRODID (default), false not to
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T prodId(boolean include) {
 			this.prodId = include;
-			return (T) this;
+			return this_;
 		}
 
 		/**
@@ -1274,10 +1389,9 @@ public class Ezvcard {
 		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
-		@SuppressWarnings("unchecked")
 		public T caretEncoding(boolean enable) {
 			this.caretEncoding = enable;
-			return (T) this;
+			return this_;
 		}
 
 		/**
@@ -1455,7 +1569,7 @@ public class Ezvcard {
 		}
 	}
 
-	static abstract class WriterChainXml<T> extends WriterChain {
+	static abstract class WriterChainXml<T> extends WriterChain<T> {
 		boolean prodId = true;
 		int indent = -1;
 
@@ -1469,10 +1583,9 @@ public class Ezvcard {
 		 * @param include true to add PRODID (default), false not to
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T prodId(boolean include) {
 			this.prodId = include;
-			return (T) this;
+			return this_;
 		}
 
 		/**
@@ -1481,10 +1594,9 @@ public class Ezvcard {
 		 * @param indent the number of spaces in the indent string
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T indent(int indent) {
 			this.indent = indent;
-			return (T) this;
+			return this_;
 		}
 
 		/**
@@ -1553,7 +1665,7 @@ public class Ezvcard {
 
 			for (VCard vcard : vcards) {
 				doc.addVCard(vcard);
-				addWarnings(doc.getWarnings());
+				addWarnings(doc.getWriteWarnings());
 			}
 
 			return doc;
@@ -1656,7 +1768,7 @@ public class Ezvcard {
 	 * @see Ezvcard#writeHtml(Collection)
 	 * @see Ezvcard#writeHtml(VCard...)
 	 */
-	public static class WriterChainHtml extends WriterChain {
+	public static class WriterChainHtml extends WriterChain<WriterChainHtml> {
 		private WriterChainHtml(Collection<VCard> vcards) {
 			super(vcards);
 		}
@@ -1713,7 +1825,7 @@ public class Ezvcard {
 		}
 	}
 
-	static abstract class WriterChainJson<T> extends WriterChain {
+	static abstract class WriterChainJson<T> extends WriterChain<T> {
 		boolean prodId = true;
 		boolean indent = false;
 
@@ -1727,10 +1839,9 @@ public class Ezvcard {
 		 * @param include true to add PRODID (default), false not to
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T prodId(boolean include) {
 			this.prodId = include;
-			return (T) this;
+			return this_;
 		}
 
 		/**
@@ -1739,10 +1850,9 @@ public class Ezvcard {
 		 * false)
 		 * @return this
 		 */
-		@SuppressWarnings("unchecked")
 		public T indent(boolean indent) {
 			this.indent = indent;
-			return (T) this;
+			return this_;
 		}
 
 		/**

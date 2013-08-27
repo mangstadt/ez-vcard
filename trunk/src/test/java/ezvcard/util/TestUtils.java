@@ -53,6 +53,22 @@ public class TestUtils {
 	}
 
 	/**
+	 * Asserts the sizes of each warnings list within a list of warnings lists.
+	 * @param warningsLists the list of warnings lists
+	 * @param expectedSizes the expected sizes of each warnings list
+	 */
+	public static void assertWarningsLists(List<List<String>> warningsLists, int... expectedSizes) {
+		assertEquals(warningsLists.toString(), expectedSizes.length, warningsLists.size());
+
+		for (int i = 0; i < expectedSizes.length; i++) {
+			int expectedSize = expectedSizes[i];
+			List<String> warnings = warningsLists.get(i);
+
+			assertWarnings(expectedSize, warnings);
+		}
+	}
+
+	/**
 	 * Asserts the value of an {@link Integer} object.
 	 * @param expected the expected value
 	 * @param actual the actual value

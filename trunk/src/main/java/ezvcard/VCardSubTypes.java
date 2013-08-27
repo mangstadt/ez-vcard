@@ -47,6 +47,18 @@ import ezvcard.util.ListMultimap;
  * @author Michael Angstadt
  */
 public class VCardSubTypes extends ListMultimap<String, String> {
+	public static final String ALTID = "ALTID";
+	public static final String CHARSET = "CHARSET";
+	public static final String GEO = "GEO";
+	public static final String INDEX = "INDEX";
+	public static final String LABEL = "LABEL";
+	public static final String LANGUAGE = "LANGUAGE";
+	public static final String MEDIATYPE = "MEDIATYPE";
+	public static final String PID = "PID";
+	public static final String PREF = "PREF";
+	public static final String SORT_AS = "SORT-AS";
+	public static final String TZ = "TZ";
+
 	/**
 	 * Creates a list of parameters.
 	 */
@@ -130,7 +142,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @return the value or null if not found
 	 */
 	public String getCharset() {
-		return first("CHARSET");
+		return first(CHARSET);
 	}
 
 	/**
@@ -143,7 +155,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param charset the value or null to remove
 	 */
 	public void setCharset(String charset) {
-		replace("CHARSET", charset);
+		replace(CHARSET, charset);
 	}
 
 	/**
@@ -157,7 +169,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
 	 */
 	public String getLanguage() {
-		return first("LANGUAGE");
+		return first(LANGUAGE);
 	}
 
 	/**
@@ -171,7 +183,59 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
 	 */
 	public void setLanguage(String language) {
-		replace("LANGUAGE", language);
+		replace(LANGUAGE, language);
+	}
+
+	/**
+	 * <p>
+	 * Gets the LABEL sub type.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> <code>4.0</code>
+	 * </p>
+	 * @return the address label or null if not set
+	 */
+	public String getLabel() {
+		return first(LABEL);
+	}
+
+	/**
+	 * <p>
+	 * Sets the LABEL sub type.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> <code>4.0</code>
+	 * </p>
+	 * @param label the address label or null to remove
+	 */
+	public void setLabel(String label) {
+		replace(LABEL, label);
+	}
+
+	/**
+	 * <p>
+	 * Gets the TZ sub type.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> <code>4.0</code>
+	 * </p>
+	 * @return the timezone (e.g. "America/New_York") or null if not set
+	 */
+	public String getTimezone() {
+		return first(TZ);
+	}
+
+	/**
+	 * <p>
+	 * Sets the TZ sub type.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> <code>4.0</code>
+	 * </p>
+	 * @param tz the timezone (e.g. "America/New_York") or null to remove
+	 */
+	public void setTimezone(String tz) {
+		replace(TZ, tz);
 	}
 
 	/**
@@ -270,7 +334,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * couldn't be parsed into a number
 	 */
 	public Integer getPref() {
-		String pref = first("PREF");
+		String pref = first(PREF);
 		if (pref == null) {
 			return null;
 		}
@@ -316,7 +380,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 			throw new IllegalArgumentException("Preference value must be between 1 and 100 inclusive.");
 		}
 		String value = (pref == null) ? null : pref.toString();
-		replace("PREF", value);
+		replace(PREF, value);
 	}
 
 	/**
@@ -349,7 +413,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @return the ALTID or null if it doesn't exist
 	 */
 	public String getAltId() {
-		return first("ALTID");
+		return first(ALTID);
 	}
 
 	/**
@@ -382,7 +446,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param altId the ALTID or null to remove
 	 */
 	public void setAltId(String altId) {
-		replace("ALTID", altId);
+		replace(ALTID, altId);
 	}
 
 	/**
@@ -398,7 +462,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * present or null if the parameter value was in an incorrect format
 	 */
 	public double[] getGeo() {
-		String value = first("GEO");
+		String value = first(GEO);
 		if (value == null) {
 			return null;
 		}
@@ -425,7 +489,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 */
 	public void setGeo(double latitude, double longitude) {
 		GeoUri geoUri = new GeoUri(latitude, longitude, null, null, null);
-		replace("GEO", geoUri.toString());
+		replace(GEO, geoUri.toString());
 	}
 
 	/**
@@ -444,7 +508,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * parameter doesn't exist
 	 */
 	public List<String> getSortAs() {
-		return get("SORT-AS");
+		return get(SORT_AS);
 	}
 
 	/**
@@ -461,10 +525,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * given name is "Christine") or empty parameter list to remove
 	 */
 	public void setSortAs(String... names) {
-		removeAll("SORT-AS");
+		removeAll(SORT_AS);
 		if (names != null && names.length > 0) {
 			for (String name : names) {
-				put("SORT-AS", name);
+				put(SORT_AS, name);
 			}
 		}
 	}
@@ -518,7 +582,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * property. Index 0 will never be null, but index 1 may be null.
 	 */
 	public List<Integer[]> getPids() {
-		List<String> values = get("PID");
+		List<String> values = get(PID);
 		List<Integer[]> pids = new ArrayList<Integer[]>(values.size());
 		for (String value : values) {
 			try {
@@ -554,7 +618,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param localId the local ID
 	 */
 	public void addPid(int localId) {
-		put("PID", localId + "");
+		put(PID, localId + "");
 	}
 
 	/**
@@ -577,7 +641,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * unique identifier in the CLIENTPIDMAP property.
 	 */
 	public void addPid(int localId, int clientPidMapRef) {
-		put("PID", localId + "." + clientPidMapRef);
+		put(PID, localId + "." + clientPidMapRef);
 	}
 
 	/**
@@ -589,7 +653,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 */
 	public void removePids() {
-		removeAll("PID");
+		removeAll(PID);
 	}
 
 	/**
@@ -604,7 +668,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @return the media type (e.g. "image/jpeg") or null if it doesn't exist
 	 */
 	public String getMediaType() {
-		return first("MEDIATYPE");
+		return first(MEDIATYPE);
 	}
 
 	/**
@@ -619,7 +683,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param mediaType the media type (e.g. "image/jpeg") or null to remove
 	 */
 	public void setMediaType(String mediaType) {
-		replace("MEDIATYPE", mediaType);
+		replace(MEDIATYPE, mediaType);
 	}
 
 	/**
@@ -668,7 +732,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public Integer getIndex() {
-		String index = first("INDEX");
+		String index = first(INDEX);
 		if (index == null) {
 			return null;
 		}
@@ -697,10 +761,10 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 */
 	public void setIndex(Integer index) {
 		if (index != null && index <= 0) {
-			throw new IllegalArgumentException("INDEX value must be greater than 0.");
+			throw new IllegalArgumentException("Index value must be greater than 0.");
 		}
 		String value = (index == null) ? null : index.toString();
-		replace("INDEX", value);
+		replace(INDEX, value);
 	}
 
 	@Override

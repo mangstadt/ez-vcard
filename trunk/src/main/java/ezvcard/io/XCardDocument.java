@@ -1,10 +1,15 @@
 package ezvcard.io;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -17,17 +22,28 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.parameters.CalscaleParameter;
+import ezvcard.parameters.TypeParameter;
+import ezvcard.parameters.ValueParameter;
 import ezvcard.types.KindType;
 import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
+import ezvcard.types.RawType;
+import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
+import ezvcard.types.XmlType;
 import ezvcard.util.IOUtils;
 import ezvcard.util.ListMultimap;
 import ezvcard.util.XmlUtils;
@@ -61,39 +77,87 @@ import ezvcard.util.XmlUtils;
  either expressed or implied, of the FreeBSD Project.
  */
 
+//@formatter:off
 /**
- * Converts {@link VCard} objects to their XML representation (xCard format).
- * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
- */
+* <p>
+* Represents an XML document that contains vCard objects ("xCard" standard).
+* This class can be used to read and write xCard documents.
+* </p>
+* <p>
+* <b>Examples:</b>
+* 
+* <pre>
+* String xml =
+* "&lt;vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\"&gt;" +
+*   "&lt;vcard&gt;" +
+*     "&lt;fn&gt;" +
+*       "&lt;text&gt;John Doe&lt;/text&gt;" +
+*     "&lt;/fn&gt;" +
+*     "&lt;n&gt;" +
+*       "&lt;surname&gt;Doe&lt;/surname&gt;" +
+*        "&lt;given&gt;Johnathan&lt;/given&gt;" +
+*        "&lt;additional&gt;Jonny&lt;/additional&gt;" +
+*        "&lt;additional&gt;John&lt;/additional&gt;" +
+*        "&lt;prefix&gt;Mr.&lt;/prefix&gt;" +
+*        "&lt;suffix /&gt;" +
+*      "&lt;/n&gt;" +
+*    "&lt;/vcard&gt;" +
+* "&lt;/vcards&gt;";
+*     
+* //parsing an existing xCard document
+* XCardDocument xcard = new XCardDocument(xml);
+* List&lt;VCard&gt; vcards = xcard.parseAll();
+* 
+* //creating an empty xCard document
+* XCardDocument xcard = new XCardDocument();
+* 
+* //VCard objects can be added at any time
+* VCard vcard = ...
+* xcard.add(vcard);
+* 
+* //retrieving the raw XML DOM
+* Document document = xcard.getDocument();
+* 
+* //call one of the "write()" methods to output the xCard document
+* File file = new File("meeting.xml");
+* xcard.write(file);
+* </pre>
+* 
+* </p>
+* @author Michael Angstadt
+* @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
+*/
+//@formatter:on
 public class XCardDocument {
+	private static final VCardVersion version4 = VCardVersion.V4_0; //xCard only supports 4.0
+	private static final XCardNamespaceContext nsContext = new XCardNamespaceContext(version4, "v");
+
 	/**
 	 * Defines the names of the XML elements that are used to hold each
 	 * parameter's value.
 	 */
-	private static final Map<String, String> parameterChildElementNames;
-	static {
-		Map<String, String> m = new HashMap<String, String>();
-		m.put("altid", "text");
-		m.put("calscale", "text");
-		m.put("geo", "uri");
-		m.put("label", "text");
-		m.put("language", "language-tag");
-		m.put("mediatype", "text");
-		m.put("pid", "text");
-		m.put("pref", "integer");
-		m.put("sort-as", "text");
-		m.put("type", "text");
-		m.put("tz", "uri");
-		parameterChildElementNames = Collections.unmodifiableMap(m);
+	private final Map<String, ValueParameter> parameterDataTypes = new HashMap<String, ValueParameter>();
+	{
+		registerParameterDataType(VCardSubTypes.ALTID, ValueParameter.TEXT);
+		registerParameterDataType(CalscaleParameter.NAME, ValueParameter.TEXT);
+		registerParameterDataType(VCardSubTypes.GEO, ValueParameter.URI);
+		registerParameterDataType(VCardSubTypes.LABEL, ValueParameter.TEXT);
+		registerParameterDataType(VCardSubTypes.LANGUAGE, ValueParameter.LANGUAGE_TAG);
+		registerParameterDataType(VCardSubTypes.MEDIATYPE, ValueParameter.TEXT);
+		registerParameterDataType(VCardSubTypes.PID, ValueParameter.TEXT);
+		registerParameterDataType(VCardSubTypes.PREF, ValueParameter.INTEGER);
+		registerParameterDataType(VCardSubTypes.SORT_AS, ValueParameter.TEXT);
+		registerParameterDataType(TypeParameter.NAME, ValueParameter.TEXT);
+		registerParameterDataType(VCardSubTypes.TZ, ValueParameter.URI);
 	}
 
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private boolean addProdId = true;
-	private VCardVersion targetVersion = VCardVersion.V4_0; //xCard standard only supports 4.0
-	private List<String> warnings = new ArrayList<String>();
-	private final Document document;
-	private final Element root;
+	private List<List<String>> parseWarnings = new ArrayList<List<String>>();
+	private List<String> writeWarnings = new ArrayList<String>();
+	private Map<QName, Class<? extends VCardType>> extendedTypeClasses = new HashMap<QName, Class<? extends VCardType>>();
+	private Document document;
+	private Element root;
 
 	/**
 	 * Creates an xCard document.
@@ -102,6 +166,80 @@ public class XCardDocument {
 		document = XmlUtils.createDocument();
 		root = createElement("vcards");
 		document.appendChild(root);
+	}
+
+	/**
+	 * Parses an xCard document from a string.
+	 * @param xml the XML string to read the vCards from
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardDocument(String xml) throws SAXException {
+		try {
+			init(new StringReader(xml));
+		} catch (IOException e) {
+			//reading from string
+		}
+	}
+
+	/**
+	 * Parses an xCard document from an input stream.
+	 * @param in the input stream to read the vCards from
+	 * @throws IOException if there's a problem reading from the input stream
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardDocument(InputStream in) throws SAXException, IOException {
+		this(new InputStreamReader(in));
+	}
+
+	/**
+	 * Parses an xCard document from a file.
+	 * @param file the file to read the vCards from
+	 * @throws IOException if there's a problem reading from the file
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardDocument(File file) throws SAXException, IOException {
+		FileReader reader = null;
+		try {
+			reader = new FileReader(file);
+			init(reader);
+		} finally {
+			IOUtils.closeQuietly(reader);
+		}
+	}
+
+	/**
+	 * Parses an xCard document from a reader.
+	 * @param reader the reader to read the vCards from
+	 * @throws IOException if there's a problem reading from the reader
+	 * @throws SAXException if there's a problem parsing the XML
+	 */
+	public XCardDocument(Reader reader) throws SAXException, IOException {
+		init(reader);
+	}
+
+	/**
+	 * Wraps an existing XML DOM object.
+	 * @param document the XML DOM that contains the xCard document
+	 */
+	public XCardDocument(Document document) {
+		init(document);
+	}
+
+	private void init(Reader reader) throws SAXException, IOException {
+		init(XmlUtils.toDocument(reader));
+	}
+
+	private void init(Document document) {
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		xpath.setNamespaceContext(nsContext);
+
+		try {
+			//find the <vcards> element
+			String prefix = nsContext.getPrefix();
+			root = (Element) xpath.evaluate("//" + prefix + ":vcards", document, XPathConstants.NODE);
+		} catch (XPathExpressionException e) {
+			//never thrown, xpath expression is hard coded
+		}
 	}
 
 	/**
@@ -143,12 +281,49 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Gets the warnings from the last vCard that was marshalled. This list is
-	 * reset every time a new vCard is written.
+	 * Gets the warnings from the last vCard that was added. This list is reset
+	 * every time a new vCard is added.
 	 * @return the warnings or empty list if there were no warnings
+	 * @see #addVCard
 	 */
-	public List<String> getWarnings() {
-		return new ArrayList<String>(warnings);
+	public List<String> getWriteWarnings() {
+		return new ArrayList<String>(writeWarnings);
+	}
+
+	/**
+	 * Gets the warnings from the last parse operation.
+	 * @return the warnings (it is a "list of lists"--each parsed {@link VCard}
+	 * object has its own warnings list)
+	 * @see #parseAll
+	 * @see #parseFirst
+	 */
+	public List<List<String>> getParseWarnings() {
+		return parseWarnings;
+	}
+
+	/**
+	 * Registers the data type of an experimental parameter. Experimental
+	 * parameters use the "unknown" data type by default.
+	 * @param parameterName the parameter name (e.g. "x-foo")
+	 * @param dataType the data type or null to remove
+	 */
+	public void registerParameterDataType(String parameterName, ValueParameter dataType) {
+		parameterName = parameterName.toLowerCase();
+		if (dataType == null) {
+			parameterDataTypes.remove(parameterName);
+		} else {
+			parameterDataTypes.put(parameterName, dataType);
+		}
+	}
+
+	//@Override
+	public void registerExtendedType(Class<? extends VCardType> clazz) {
+		extendedTypeClasses.put(getQNameFromTypeClass(clazz), clazz);
+	}
+
+	//@Override
+	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
+		extendedTypeClasses.remove(getQNameFromTypeClass(clazz));
 	}
 
 	/**
@@ -157,6 +332,198 @@ public class XCardDocument {
 	 */
 	public Document getDocument() {
 		return document;
+	}
+
+	/**
+	 * Parses all the {@link VCard} objects from the xCard document.
+	 * @return the vCard objects
+	 */
+	public List<VCard> parseAll() {
+		parseWarnings.clear();
+
+		if (root == null) {
+			return Collections.emptyList();
+		}
+
+		List<VCard> vcards = new ArrayList<VCard>();
+		for (Element vcardElement : getVCardElements()) {
+			List<String> warnings = new ArrayList<String>();
+			parseWarnings.add(warnings);
+			VCard vcard = parseVCardElement(vcardElement, warnings);
+			vcards.add(vcard);
+		}
+
+		return vcards;
+	}
+
+	/**
+	 * Parses the first the {@link VCard} object from the xCard document.
+	 * @return the vCard object
+	 */
+	public VCard parseFirst() {
+		parseWarnings.clear();
+
+		if (root == null) {
+			return null;
+		}
+
+		List<Element> vcardElements = getVCardElements();
+		if (vcardElements.isEmpty()) {
+			return null;
+		}
+
+		List<String> warnings = new ArrayList<String>();
+		parseWarnings.add(warnings);
+		return parseVCardElement(vcardElements.get(0), warnings);
+	}
+
+	private VCard parseVCardElement(Element vcardElement, List<String> warnings) {
+		VCard vcard = new VCard();
+		vcard.setVersion(version4);
+
+		String ns = version4.getXmlNamespace();
+		List<Element> children = XmlUtils.toElementList(vcardElement.getChildNodes());
+		for (Element child : children) {
+			if ("group".equals(child.getLocalName()) && ns.equals(child.getNamespaceURI())) {
+				String group = child.getAttribute("name");
+				if (group.length() == 0) {
+					group = null;
+				}
+				List<Element> propElements = XmlUtils.toElementList(child.getChildNodes());
+				for (Element propElement : propElements) {
+					parseAndAddElement(propElement, group, vcard, warnings);
+				}
+			} else {
+				parseAndAddElement(child, null, vcard, warnings);
+			}
+		}
+
+		return vcard;
+	}
+
+	/**
+	 * Parses a property element from the XML document and adds the property to
+	 * the vCard.
+	 * @param element the element to parse
+	 * @param group the group name or null if the property does not belong to a
+	 * group
+	 * @param vcard the vCard object
+	 * @param warningsBuf the list to add the warnings to
+	 */
+	private void parseAndAddElement(Element element, String group, VCard vcard, List<String> warnings) {
+		List<String> warningsBuf = new ArrayList<String>();
+
+		VCardSubTypes subTypes = parseSubTypes(element);
+		VCardType type = createTypeObject(element.getLocalName(), element.getNamespaceURI());
+		type.setGroup(group);
+		try {
+			try {
+				type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);
+			} catch (UnsupportedOperationException e) {
+				//type class does not support xCard
+				warningsBuf.add("Property class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property instead.");
+				type = new XmlType();
+				type.setGroup(group);
+				type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);
+			}
+			vcard.addType(type);
+		} catch (SkipMeException e) {
+			warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
+		} catch (EmbeddedVCardException e) {
+			warningsBuf.add("Property will not be unmarshalled because xCard does not supported embedded vCards.");
+		} finally {
+			for (String warning : warningsBuf) {
+				addWarning(warning, type.getTypeName(), warnings);
+			}
+		}
+	}
+
+	/**
+	 * Parses the property parameters (aka "sub types").
+	 * @param element the property's XML element
+	 * @return the parsed parameters
+	 */
+	private VCardSubTypes parseSubTypes(Element element) {
+		VCardSubTypes subTypes = new VCardSubTypes();
+
+		List<Element> parametersElements = XmlUtils.toElementList(element.getElementsByTagNameNS(version4.getXmlNamespace(), "parameters"));
+		for (Element parametersElement : parametersElements) { // foreach "<parameters>" element (there should only be 1 though)
+			List<Element> paramElements = XmlUtils.toElementList(parametersElement.getChildNodes());
+			for (Element paramElement : paramElements) {
+				String name = paramElement.getLocalName().toUpperCase();
+				List<Element> valueElements = XmlUtils.toElementList(paramElement.getChildNodes());
+				if (valueElements.isEmpty()) {
+					String value = paramElement.getTextContent();
+					subTypes.put(name, value);
+				} else {
+					for (Element valueElement : valueElements) {
+						String value = valueElement.getTextContent();
+						subTypes.put(name, value);
+					}
+				}
+			}
+
+			//remove the <parameters> element from the DOM
+			element.removeChild(parametersElement);
+		}
+
+		return subTypes;
+	}
+
+	/**
+	 * Creates the appropriate VCardType instance given the vCard property name.
+	 * This method does not unmarshal the type, it just creates the type object.
+	 * @param name the property name (e.g. "fn")
+	 * @param ns the namespace of the element
+	 * @return the type that was created
+	 */
+	private VCardType createTypeObject(String name, String ns) {
+		name = name.toUpperCase();
+
+		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
+		if (clazz != null && VCardVersion.V4_0.getXmlNamespace().equals(ns)) {
+			try {
+				return clazz.newInstance();
+			} catch (Exception e) {
+				//it is the responsibility of the ez-vcard developer to ensure that this exception is never thrown
+				//all type classes defined in the ez-vcard library MUST have public, no-arg constructors
+				throw new RuntimeException(e);
+			}
+		} else {
+			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(new QName(ns, name.toLowerCase()));
+			if (extendedTypeClass != null) {
+				try {
+					return extendedTypeClass.newInstance();
+				} catch (Exception e) {
+					//this should never happen because the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
+					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" MUST have a public, no-arg constructor.");
+				}
+			} else if (name.startsWith("X-")) {
+				return new RawType(name);
+			} else {
+				//add as an XML property
+				return new XmlType();
+			}
+		}
+	}
+
+	/**
+	 * Gets the QName from a type class.
+	 * @param clazz the type class
+	 * @return the QName
+	 */
+	private QName getQNameFromTypeClass(Class<? extends VCardType> clazz) {
+		try {
+			VCardType type = clazz.newInstance();
+			QName qname = type.getQName();
+			if (qname == null) {
+				qname = new QName(version4.getXmlNamespace(), type.getTypeName().toLowerCase());
+			}
+			return qname;
+		} catch (Exception e) {
+			//there is no public, no-arg constructor
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -257,10 +624,10 @@ public class XCardDocument {
 	 * @param vcard the vCard to add
 	 */
 	public void addVCard(VCard vcard) {
-		warnings.clear();
+		writeWarnings.clear();
 
 		if (vcard.getFormattedName() == null) {
-			warnings.add("vCard version " + targetVersion + " requires that a formatted name property be defined.");
+			writeWarnings.add("vCard version " + version4 + " requires that a formatted name property be defined.");
 		}
 
 		ListMultimap<String, VCardType> typesToAdd = new ListMultimap<String, VCardType>(); //group the types by group name (null = no group name)
@@ -273,7 +640,7 @@ public class XCardDocument {
 
 			//determine if this type is supported by the target version
 			if (!supportsTargetVersion(type)) {
-				addWarning("This property is not supported by xCard (vCard version " + targetVersion + ") and will not be added to the xCard.  Supported versions are " + Arrays.toString(type.getSupportedVersions()), type.getTypeName());
+				addWarning("This property is not supported by xCard (vCard version " + version4 + ") and will not be added to the xCard.  Supported versions are " + Arrays.toString(type.getSupportedVersions()), type.getTypeName());
 				continue;
 			}
 
@@ -288,7 +655,7 @@ public class XCardDocument {
 
 		//add an extended type saying it was generated by this library
 		if (addProdId) {
-			EzvcardProdIdType prodId = new EzvcardProdIdType(targetVersion);
+			EzvcardProdIdType prodId = new EzvcardProdIdType(version4);
 			typesToAdd.put(prodId.getGroup(), prodId);
 		}
 
@@ -332,7 +699,7 @@ public class XCardDocument {
 	 */
 	private boolean supportsTargetVersion(VCardType type) {
 		for (VCardVersion version : type.getSupportedVersions()) {
-			if (version == targetVersion) {
+			if (version == version4) {
 				return true;
 			}
 		}
@@ -352,7 +719,7 @@ public class XCardDocument {
 		String ns, localPart;
 		if (qname == null) {
 			localPart = type.getTypeName().toLowerCase();
-			ns = targetVersion.getXmlNamespace();
+			ns = version4.getXmlNamespace();
 		} else {
 			localPart = qname.getLocalPart();
 			ns = qname.getNamespaceURI();
@@ -360,7 +727,7 @@ public class XCardDocument {
 		Element typeElement = createElement(localPart, ns);
 
 		//marshal the sub types
-		VCardSubTypes subTypes = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);
+		VCardSubTypes subTypes = type.marshalSubTypes(version4, warningsBuf, compatibilityMode, vcard);
 		subTypes.setValue(null); //don't include the VALUE parameter (modification of the "VCardSubTypes" object is safe because it's a copy)
 		if (!subTypes.isEmpty()) {
 			Element parametersElement = createElement("parameters");
@@ -368,10 +735,8 @@ public class XCardDocument {
 				String paramName = param.getKey();
 				Element parameterElement = createElement(paramName.toLowerCase());
 				for (String paramValue : param.getValue()) {
-					String valueElementName = parameterChildElementNames.get(paramName.toLowerCase());
-					if (valueElementName == null) {
-						valueElementName = "unknown";
-					}
+					ValueParameter dataType = parameterDataTypes.get(paramName.toLowerCase());
+					String valueElementName = (dataType == null) ? "unknown" : dataType.getValue().toLowerCase();
 					Element parameterValueElement = createElement(valueElementName);
 					parameterValueElement.setTextContent(paramValue);
 					parameterElement.appendChild(parameterValueElement);
@@ -382,9 +747,23 @@ public class XCardDocument {
 		}
 
 		//marshal the value
-		type.marshalXml(typeElement, targetVersion, warningsBuf, compatibilityMode);
+		type.marshalXml(typeElement, version4, warningsBuf, compatibilityMode);
 
 		return typeElement;
+	}
+
+	private List<Element> getVCardElements() {
+		return getChildElements(root, "vcard");
+	}
+
+	private List<Element> getChildElements(Element parent, String localName) {
+		List<Element> elements = new ArrayList<Element>();
+		for (Element child : XmlUtils.toElementList(parent.getChildNodes())) {
+			if (localName.equals(child.getLocalName()) && version4.getXmlNamespace().equals(child.getNamespaceURI())) {
+				elements.add(child);
+			}
+		}
+		return elements;
 	}
 
 	/**
@@ -393,7 +772,7 @@ public class XCardDocument {
 	 * @return the new XML element
 	 */
 	private Element createElement(String name) {
-		return createElement(name, targetVersion.getXmlNamespace());
+		return createElement(name, version4.getXmlNamespace());
 	}
 
 	/**
@@ -407,6 +786,10 @@ public class XCardDocument {
 	}
 
 	private void addWarning(String message, String propertyName) {
+		addWarning(message, propertyName, writeWarnings);
+	}
+
+	private void addWarning(String message, String propertyName, List<String> warnings) {
 		warnings.add(propertyName + " property: " + message);
 	}
 }

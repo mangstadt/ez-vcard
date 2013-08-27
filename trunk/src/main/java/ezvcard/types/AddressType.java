@@ -240,7 +240,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * @return the label or null if it doesn't have one
 	 */
 	public String getLabel() {
-		return subTypes.first("LABEL");
+		return subTypes.getLabel();
 	}
 
 	/**
@@ -248,7 +248,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * @param label the label or null to remove
 	 */
 	public void setLabel(String label) {
-		subTypes.replace("LABEL", label);
+		subTypes.setLabel(label);
 	}
 
 	/**
@@ -323,7 +323,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * exist
 	 */
 	public String getTimezone() {
-		return subTypes.first("TZ");
+		return subTypes.getTimezone();
 	}
 
 	/**
@@ -334,7 +334,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * @param timezone the timezone (e.g. "America/New_York") or null to remove
 	 */
 	public void setTimezone(String timezone) {
-		subTypes.replace("TZ", timezone);
+		subTypes.setTimezone(timezone);
 	}
 
 	@Override

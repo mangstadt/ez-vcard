@@ -1,5 +1,6 @@
 package ezvcard;
 
+import static ezvcard.util.TestUtils.assertWarningsLists;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import ezvcard.io.LuckyNumType;
-import ezvcard.io.XCardReader;
+import ezvcard.io.XCardNamespaceContext;
 import ezvcard.types.FormattedNameType;
 import ezvcard.util.VCardBuilder;
 import ezvcard.util.XCardBuilder;
@@ -63,7 +64,7 @@ import ezvcard.util.XmlUtils;
 public class EzvcardTest {
 	private final XPath xpath = XPathFactory.newInstance().newXPath();
 	{
-		xpath.setNamespaceContext(new XCardReader.XCardNamespaceContext("v"));
+		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
 	}
 
 	@Test
@@ -75,7 +76,7 @@ public class EzvcardTest {
 		VCard vcard = Ezvcard.parse(vb.toString()).warnings(warnings).first();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertEquals(1, warnings.size());
+		assertWarningsLists(warnings, 0);
 	}
 
 	@Test
@@ -97,7 +98,7 @@ public class EzvcardTest {
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
-		assertEquals(2, warnings.size());
+		assertWarningsLists(warnings, 0, 0);
 
 		assertFalse(it.hasNext());
 	}
@@ -139,7 +140,7 @@ public class EzvcardTest {
 		VCard vcard = Ezvcard.parseXml(xb.toString()).warnings(warnings).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertEquals(1, warnings.size());
+		assertWarningsLists(warnings, 0);
 	}
 
 	@Test
@@ -161,7 +162,7 @@ public class EzvcardTest {
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
-		assertEquals(2, warnings.size());
+		assertWarningsLists(warnings, 0, 0);
 
 		assertFalse(it.hasNext());
 	}
@@ -192,7 +193,7 @@ public class EzvcardTest {
 		VCard vcard = Ezvcard.parseHtml(html).warnings(warnings).first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertEquals(1, warnings.size());
+		assertWarningsLists(warnings, 0);
 	}
 
 	@Test
@@ -221,7 +222,7 @@ public class EzvcardTest {
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
-		assertEquals(2, warnings.size());
+		assertWarningsLists(warnings, 0, 0);
 
 		assertFalse(it.hasNext());
 	}
@@ -283,8 +284,7 @@ public class EzvcardTest {
 		VCard vcard = Ezvcard.parseJson(json).warnings(warnings).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertEquals(1, warnings.size());
-		assertEquals(0, warnings.get(0).size());
+		assertWarningsLists(warnings, 0);
 	}
 
 	@Test
@@ -320,9 +320,7 @@ public class EzvcardTest {
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
-		assertEquals(2, warnings.size());
-		assertEquals(0, warnings.get(0).size());
-		assertEquals(0, warnings.get(1).size());
+		assertWarningsLists(warnings, 0, 0);
 
 		assertFalse(it.hasNext());
 	}
@@ -415,10 +413,7 @@ public class EzvcardTest {
 		List<List<String>> warnings = new ArrayList<List<String>>();
 		Ezvcard.write(vcard1, vcard2, vcard3).warnings(warnings).go();
 
-		assertEquals(3, warnings.size());
-		assertFalse(warnings.get(0).isEmpty());
-		assertFalse(warnings.get(1).isEmpty());
-		assertTrue(warnings.get(2).isEmpty());
+		assertWarningsLists(warnings, 1, 2, 0);
 	}
 
 	@Test
@@ -559,10 +554,7 @@ public class EzvcardTest {
 		List<List<String>> warnings = new ArrayList<List<String>>();
 		Ezvcard.writeXml(vcard1, vcard2, vcard3).warnings(warnings).go();
 
-		assertEquals(3, warnings.size());
-		assertFalse(warnings.get(0).isEmpty());
-		assertFalse(warnings.get(1).isEmpty());
-		assertTrue(warnings.get(2).isEmpty());
+		assertWarningsLists(warnings, 1, 1, 0);
 	}
 
 	@Test
@@ -707,10 +699,7 @@ public class EzvcardTest {
 		List<List<String>> warnings = new ArrayList<List<String>>();
 		Ezvcard.writeJson(vcard1, vcard2, vcard3).warnings(warnings).go();
 
-		assertEquals(3, warnings.size());
-		assertEquals(1, warnings.get(0).size());
-		assertEquals(1, warnings.get(1).size());
-		assertEquals(0, warnings.get(2).size());
+		assertWarningsLists(warnings, 1, 1, 0);
 	}
 
 	@Test
