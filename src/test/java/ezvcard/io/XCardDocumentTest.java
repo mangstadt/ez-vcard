@@ -1,14 +1,20 @@
 package ezvcard.io;
 
+import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertWarningsLists;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.xpath.XPath;
@@ -31,19 +37,25 @@ import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.AnniversaryType;
 import ezvcard.types.BirthdayType;
+import ezvcard.types.EmailType;
 import ezvcard.types.FormattedNameType;
 import ezvcard.types.GenderType;
 import ezvcard.types.GeoType;
 import ezvcard.types.KeyType;
 import ezvcard.types.KindType;
+import ezvcard.types.LanguageType;
 import ezvcard.types.MemberType;
 import ezvcard.types.NoteType;
+import ezvcard.types.OrganizationType;
 import ezvcard.types.PhotoType;
 import ezvcard.types.ProdIdType;
+import ezvcard.types.RawType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
 import ezvcard.types.TimezoneType;
+import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
+import ezvcard.types.XmlType;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.XCardElement;
@@ -87,11 +99,453 @@ public class XCardDocumentTest {
 		XMLUnit.setIgnoreWhitespace(true);
 	}
 
+	@Test
+	public void parseAll() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+				"<n>" +
+					"<surname>House</surname>" +
+					"<given>Gregory</given>" +
+					"<additional />" +
+					"<prefix>Dr</prefix>" +
+					"<prefix>Mr</prefix>" +
+					"<suffix>MD</suffix>" +
+				"</n>" +
+			"</vcard>" +
+			"<vcard>" +
+				"<fn><text>Dr. Lisa Cuddy M.D.</text></fn>" +
+				"<n>" +
+					"<surname>Cuddy</surname>" +
+					"<given>Lisa</given>" +
+					"<additional />" +
+					"<prefix>Dr</prefix>" +
+					"<prefix>Ms</prefix>" +
+					"<suffix>MD</suffix>" +
+				"</n>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		Iterator<VCard> it = xcard.parseAll().iterator();
+
+		{
+			VCard vcard = it.next();
+			assertEquals(VCardVersion.V4_0, vcard.getVersion());
+			assertEquals(2, vcard.getAllTypes().size());
+
+			FormattedNameType fn = vcard.getFormattedName();
+			assertEquals("Dr. Gregory House M.D.", fn.getValue());
+
+			StructuredNameType n = vcard.getStructuredName();
+			assertEquals("House", n.getFamily());
+			assertEquals("Gregory", n.getGiven());
+			assertTrue(n.getAdditional().isEmpty());
+			assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
+			assertEquals(Arrays.asList("MD"), n.getSuffixes());
+		}
+
+		{
+			VCard vcard = it.next();
+			assertEquals(VCardVersion.V4_0, vcard.getVersion());
+			assertEquals(2, vcard.getAllTypes().size());
+
+			FormattedNameType fn = vcard.getFormattedName();
+			assertEquals("Dr. Lisa Cuddy M.D.", fn.getValue());
+
+			StructuredNameType n = vcard.getStructuredName();
+			assertEquals("Cuddy", n.getFamily());
+			assertEquals("Lisa", n.getGiven());
+			assertTrue(n.getAdditional().isEmpty());
+			assertEquals(Arrays.asList("Dr", "Ms"), n.getPrefixes());
+			assertEquals(Arrays.asList("MD"), n.getSuffixes());
+		}
+
+		assertFalse(it.hasNext());
+
+		assertWarningsLists(xcard.getParseWarnings(), 0, 0);
+	}
+
+	@Test
+	public void parse_default_namespace() throws Exception {
+		//no namespace
+		//@formatter:off
+		String xml =
+		"<vcards>" +
+			"<vcard>" +
+				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		assertNull(xcard.parseFirst());
+		assertWarningsLists(xcard.getParseWarnings());
+	}
+
+	@Test
+	public void parse_wrong_namespace() throws Exception {
+		//wrong namespace
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"wrong\">" +
+			"<vcard>" +
+				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		assertNull(xcard.parseFirst());
+		assertWarningsLists(xcard.getParseWarnings());
+	}
+
+	@Test
+	public void parse_preserve_whitespace() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<note><text>  This \t  is \n   a   note </text></note>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		VCard vcard = xcard.parseFirst();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+
+		assertEquals(1, vcard.getNotes().size());
+
+		NoteType note = vcard.getNotes().get(0);
+		assertEquals("  This \t  is \n   a   note ", note.getValue());
+
+		assertWarningsLists(xcard.getParseWarnings(), 0);
+	}
+
+	public void parse_parameters() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				//zero params
+				"<note>" +
+					"<text>Note 1</text>" +
+				"</note>" +
+				
+				//one param
+				"<note>" +
+					"<parameters>" +
+						"<altid><text>1</text></altid>" +
+					"</parameters>" +
+					"<text>Hello world!</text>" +
+				"</note>" +
+				
+				//two params
+				"<note>" +
+					"<parameters>" +
+						"<altid><text>1</text></altid>" +
+						"<language><language-tag>fr</language-tag></language>" +
+					"</parameters>" +
+					"<text>Bonjour tout le monde!</text>" +
+				"</note>" +
+				
+				//a param with multiple values
+				"<tel>" +
+					"<parameters>" +
+						"<type>" +
+							"<text>work</text>" +
+							"<text>voice</text>" +
+						"</type>" +
+					"</parameters>" +
+					"<uri>tel:+1-555-555-1234</uri>" +
+				"</tel>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		VCard vcard = xcard.parseFirst();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(4, vcard.getAllTypes().size());
+
+		{
+			Iterator<NoteType> it = vcard.getNotes().iterator();
+
+			NoteType note = it.next();
+			assertEquals("Note 1", note.getValue());
+			assertTrue(note.getSubTypes().isEmpty());
+
+			note = it.next();
+			assertEquals("Hello world!", note.getValue());
+			assertEquals(1, note.getSubTypes().size());
+			assertEquals("1", note.getAltId());
+
+			note = it.next();
+			assertEquals("Bonjour tout le monde!", note.getValue());
+			assertEquals(2, note.getSubTypes().size());
+			assertEquals("1", note.getAltId());
+			assertEquals("fr", note.getLanguage());
+
+			assertFalse(it.hasNext());
+		}
+
+		{
+			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+
+			TelephoneType tel = it.next();
+			assertEquals("+1-555-555-1234", tel.getUri().getNumber());
+			assertEquals(2, tel.getSubTypes().size());
+			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
+
+			assertFalse(it.hasNext());
+		}
+
+		assertWarningsLists(xcard.getParseWarnings(), 0);
+	}
+
+	@Test
+	public void parse_group() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<group name=\"item1\">" +
+					"<fn><text>John Doe</text></fn>" +
+					"<note><text>Hello world!</text></note>" +
+				"</group>" +
+				"<note><text>A property without a group</text></note>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		VCard vcard = xcard.parseFirst();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(3, vcard.getAllTypes().size());
+
+		FormattedNameType fn = vcard.getFormattedName();
+		assertEquals("John Doe", fn.getValue());
+		assertEquals("item1", fn.getGroup());
+
+		{
+			Iterator<NoteType> it = vcard.getNotes().iterator();
+
+			NoteType note = it.next();
+			assertEquals("Hello world!", note.getValue());
+			assertEquals("item1", note.getGroup());
+
+			note = it.next();
+			assertEquals("A property without a group", note.getValue());
+			assertNull(note.getGroup());
+
+			assertFalse(it.hasNext());
+		}
+
+		assertWarningsLists(xcard.getParseWarnings(), 0);
+	}
+
+	@Test
+	public void parse_non_standard_elements() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				//XmlType (non-standard type that does not start with "x-")
+				"<a href=\"http://www.website.com\">website</a>" +
+				
+				//LuckyNumType (with marshal methods and with QName)
+				"<a:lucky-num xmlns:a=\"http://luckynum.com\"><a:num>21</a:num></a:lucky-num>" +
+				
+				//SalaryType (with marshal methods and without QName)
+				"<x-salary><integer>1000000</integer></x-salary>" +
+				
+				//AgeType (without marshal methods and without QName)
+				//should be unmarshalled as XmlType
+				"<x-age><integer>24</integer></x-age>" +
+				
+				//RawType (extended type that starts with "x-")
+				"<x-gender><text>m</text></x-gender>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		xcard.registerExtendedType(LuckyNumType.class);
+		xcard.registerExtendedType(SalaryType.class);
+		xcard.registerExtendedType(AgeType.class);
+
+		VCard vcard = xcard.parseFirst();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(5, vcard.getAllTypes().size());
+
+		{
+			Iterator<XmlType> it = vcard.getXmls().iterator();
+
+			XmlType xmlType = it.next();
+			assertEquals("<a href=\"http://www.website.com\" xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">website</a>", xmlType.getValue());
+
+			xmlType = it.next();
+			//X-AGE was not unmarshalled because its type class does not support xCard;
+			assertEquals("<x-age xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><integer>24</integer></x-age>", xmlType.getValue());
+
+			assertFalse(it.hasNext());
+		}
+
+		LuckyNumType luckyNum = vcard.getType(LuckyNumType.class);
+		assertEquals(21, luckyNum.luckyNum);
+
+		SalaryType salary = vcard.getType(SalaryType.class);
+		assertEquals(1000000, salary.salary);
+
+		RawType gender = vcard.getExtendedType("X-GENDER");
+		assertEquals("m", gender.getValue());
+
+		//warning for AgeType not supporting xCard
+		assertWarningsLists(xcard.getParseWarnings(), 1);
+	}
+
+	@Test
+	public void parse_skip_vcard_without_namespace() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard xmlns=\"http://example.com\">" +
+				"<fn><text>John Doe</text></fn>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		assertNull(xcard.parseFirst());
+		assertWarningsLists(xcard.getParseWarnings());
+	}
+
+	@Test
+	public void parse_skipMeException() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">" +
+			"<vcard>" +
+				"<a:lucky-num><a:num>24</a:num></a:lucky-num>" +
+				"<a:lucky-num><a:num>13</a:num></a:lucky-num>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcr = new XCardDocument(xml);
+		xcr.registerExtendedType(LuckyNumType.class);
+
+		VCard vcard = xcr.parseFirst();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(1, vcard.getAllTypes().size());
+
+		LuckyNumType luckyNum = vcard.getType(LuckyNumType.class);
+		assertEquals(24, luckyNum.luckyNum);
+
+		assertWarningsLists(xcr.getParseWarnings(), 1);
+	}
+
+	@Test
+	public void parse_not_root() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<foo xmlns=\"http://foobar.com\">" +
+			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcard>" +
+					"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+					"<n>" +
+						"<surname>House</surname>" +
+						"<given>Gregory</given>" +
+						"<additional />" +
+						"<prefix>Dr</prefix>" +
+						"<prefix>Mr</prefix>" +
+						"<suffix>MD</suffix>" +
+					"</n>" +
+				"</vcard>" +
+			"</vcards>" +
+		"</foo>";
+		//@formatter:on
+
+		XCardDocument xcr = new XCardDocument(xml);
+		VCard vcard = xcr.parseFirst();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(2, vcard.getAllTypes().size());
+
+		FormattedNameType fn = vcard.getFormattedName();
+		assertEquals("Dr. Gregory House M.D.", fn.getValue());
+
+		StructuredNameType n = vcard.getStructuredName();
+		assertEquals("House", n.getFamily());
+		assertEquals("Gregory", n.getGiven());
+		assertTrue(n.getAdditional().isEmpty());
+		assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
+		assertEquals(Arrays.asList("MD"), n.getSuffixes());
+
+		assertWarningsLists(xcr.getParseWarnings(), 0);
+	}
+
+	@Test
+	public void parse_empty() throws Throwable {
+		XCardDocument xcard = new XCardDocument();
+
+		Document actual = xcard.getDocument();
+		Document expected = XmlUtils.toDocument("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"/>");
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void parse_with_namespace_prefix() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<v:vcards xmlns:v=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<v:vcard>" +
+				"<v:fn><v:text>Dr. Gregory House M.D.</v:text></v:fn>" +
+				"<v:n>" +
+					"<v:surname>House</v:surname>" +
+					"<v:given>Gregory</v:given>" +
+					"<v:additional />" +
+					"<v:prefix>Dr</v:prefix>" +
+					"<v:prefix>Mr</v:prefix>" +
+					"<v:suffix>MD</v:suffix>" +
+				"</v:n>" +
+			"</v:vcard>" +
+		"</v:vcards>";
+		//@formatter:on
+
+		XCardDocument xcr = new XCardDocument(xml);
+
+		VCard vcard = xcr.parseFirst();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(2, vcard.getAllTypes().size());
+
+		FormattedNameType fn = vcard.getFormattedName();
+		assertEquals("Dr. Gregory House M.D.", fn.getValue());
+
+		StructuredNameType n = vcard.getStructuredName();
+		assertEquals("House", n.getFamily());
+		assertEquals("Gregory", n.getGiven());
+		assertTrue(n.getAdditional().isEmpty());
+		assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
+		assertEquals(Arrays.asList("MD"), n.getSuffixes());
+
+		assertWarningsLists(xcr.getParseWarnings(), 0);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void registerExtendedType_no_default_constructor() throws Throwable {
+		XCardDocument xcard = new XCardDocument();
+		xcard.registerExtendedType(BadType.class);
+	}
+
 	/**
 	 * A basic test with one type.
 	 */
 	@Test
-	public void basicType() throws Exception {
+	public void addVCard_basicType() throws Throwable {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
@@ -116,7 +570,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void check_supported_versions() throws Exception {
+	public void addVCard_check_supported_versions() throws Throwable {
 		//all properties support the version
 		{
 			VCard vcard = new VCard();
@@ -125,7 +579,7 @@ public class XCardDocumentTest {
 			XCardDocument doc = new XCardDocument();
 			doc.addVCard(vcard);
 
-			List<String> warnings = doc.getWarnings();
+			List<String> warnings = doc.getWriteWarnings();
 			assertTrue(warnings.isEmpty());
 		}
 
@@ -138,7 +592,7 @@ public class XCardDocumentTest {
 			XCardDocument doc = new XCardDocument();
 			doc.addVCard(vcard);
 
-			List<String> warnings = doc.getWarnings();
+			List<String> warnings = doc.getWriteWarnings();
 			assertWarnings(1, warnings);
 
 			//property not written to vCard
@@ -148,14 +602,14 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void required_properties() throws Exception {
+	public void addVCard_required_properties() throws Throwable {
 		//without FN
 		{
 			VCard vcard = new VCard();
 			XCardDocument doc = new XCardDocument();
 			doc.addVCard(vcard);
 
-			List<String> warnings = doc.getWarnings();
+			List<String> warnings = doc.getWriteWarnings();
 			assertWarnings(1, warnings);
 		}
 
@@ -167,7 +621,7 @@ public class XCardDocumentTest {
 			XCardDocument doc = new XCardDocument();
 			doc.addVCard(vcard);
 
-			List<String> warnings = doc.getWarnings();
+			List<String> warnings = doc.getWriteWarnings();
 			assertTrue(warnings.isEmpty());
 		}
 	}
@@ -176,7 +630,7 @@ public class XCardDocumentTest {
 	 * Makes sure it can marshal parameters.
 	 */
 	@Test
-	public void parameters() throws Exception {
+	public void addVCard_parameters() throws Throwable {
 		VCard vcard = new VCard();
 		NoteType note = new NoteType("This is a\nnote.");
 		note.setLanguage("en");
@@ -215,7 +669,7 @@ public class XCardDocumentTest {
 	 * Makes sure it can marshal groups.
 	 */
 	@Test
-	public void group() throws Exception {
+	public void addVCard_group() throws Throwable {
 		VCard vcard = new VCard();
 
 		FormattedNameType fn = new FormattedNameType("John Doe");
@@ -274,7 +728,7 @@ public class XCardDocumentTest {
 	 * Makes sure it can add multiple vCards to the same document.
 	 */
 	@Test
-	public void multiple() throws Exception {
+	public void addVCard_multiple() throws Throwable {
 		VCard vcard1 = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard1.setFormattedName(fn);
@@ -307,13 +761,13 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void setAddProdId() throws Exception {
+	public void setAddProdId() throws Throwable {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
 
 		XPath xpath = XPathFactory.newInstance().newXPath();
-		xpath.setNamespaceContext(new XCardReader.XCardNamespaceContext("v"));
+		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.addVCard(vcard);
@@ -334,7 +788,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void setAddProdId_overwrites_existing_prodId() throws Exception {
+	public void setAddProdId_overwrites_existing_prodId() throws Throwable {
 		VCard vcard = new VCard();
 
 		FormattedNameType fn = new FormattedNameType("John Doe");
@@ -344,7 +798,7 @@ public class XCardDocumentTest {
 		vcard.setProdId(prodId);
 
 		XPath xpath = XPathFactory.newInstance().newXPath();
-		xpath.setNamespaceContext(new XCardReader.XCardNamespaceContext("v"));
+		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
@@ -365,7 +819,7 @@ public class XCardDocumentTest {
 	 * NOT be marshalled.
 	 */
 	@Test
-	public void skipMeException() throws Exception {
+	public void addVCard_skipMeException() throws Throwable {
 		VCard vcard = new VCard();
 
 		//add FN property so a warning isn't generated (4.0 requires FN to be present)
@@ -385,7 +839,7 @@ public class XCardDocumentTest {
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
-		assertWarnings(1, xcm.getWarnings());
+		assertWarnings(1, xcm.getWriteWarnings());
 
 		Document actual = xcm.getDocument();
 
@@ -407,7 +861,7 @@ public class XCardDocumentTest {
 	 * Tests how extended types are marshalled.
 	 */
 	@Test
-	public void extendedTypes() throws Exception {
+	public void addVCard_extendedTypes() throws Throwable {
 		VCard vcard = new VCard();
 
 		//contains marshal methods and QName
@@ -429,7 +883,7 @@ public class XCardDocumentTest {
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
-		assertWarnings(1, xcm.getWarnings());
+		assertWarnings(1, xcm.getWriteWarnings());
 
 		Document actual = xcm.getDocument();
 
@@ -449,7 +903,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void prettyPrint() throws Exception {
+	public void write_prettyPrint() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedNameType("John Doe"));
 
@@ -475,7 +929,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void kind_and_member_combination() throws Exception {
+	public void addVCard_kind_and_member_combination() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.addMember(new MemberType("http://uri.com"));
@@ -488,7 +942,7 @@ public class XCardDocumentTest {
 			doc.addVCard(vcard);
 			String xml = doc.write();
 
-			List<String> warnings = doc.getWarnings();
+			List<String> warnings = doc.getWriteWarnings();
 			assertTrue(warnings.isEmpty());
 
 			VCard parsedVCard = Ezvcard.parseXml(xml).first();
@@ -505,7 +959,7 @@ public class XCardDocumentTest {
 			doc.addVCard(vcard);
 			String xml = doc.write();
 
-			List<String> warnings = doc.getWarnings();
+			List<String> warnings = doc.getWriteWarnings();
 			assertWarnings(1, warnings);
 
 			VCard parsedVCard = Ezvcard.parseXml(xml).first();
@@ -515,21 +969,21 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void embedded_vcards_not_supported() throws Exception {
+	public void addVCard_embedded_vcards_not_supported() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.addType(new EmbeddedType());
 
 		XCardDocument doc = new XCardDocument();
 		doc.addVCard(vcard);
-		assertWarnings(1, doc.getWarnings());
+		assertWarnings(1, doc.getWriteWarnings());
 
 		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
 		assertTrue(parsedVCard.getExtendedTypes().isEmpty());
 	}
 
 	@Test
-	public void rfc6351_example() throws Throwable {
+	public void write_rfc6351_example() throws Throwable {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("Simon Perreault");
@@ -598,13 +1052,99 @@ public class XCardDocumentTest {
 		assertExample(vcard, "rfc6351-example.xml");
 	}
 
-	private void assertExample(VCard ical, String exampleFileName) throws IOException, SAXException {
-		XCardDocument xcal = new XCardDocument();
-		xcal.setAddProdId(false);
-		xcal.addVCard(ical);
+	@Test
+	public void read_rfc6351_example() throws Throwable {
+		XCardDocument xcard = new XCardDocument(getClass().getResourceAsStream("rfc6351-example.xml"));
+
+		List<VCard> vcards = xcard.parseAll();
+		assertEquals(1, vcards.size());
+
+		VCard vcard = vcards.get(0);
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertEquals(16, vcard.getAllTypes().size());
+
+		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
+
+		StructuredNameType n = vcard.getStructuredName();
+		assertEquals("Perreault", n.getFamily());
+		assertEquals("Simon", n.getGiven());
+		assertEquals(Arrays.asList(), n.getAdditional());
+		assertEquals(Arrays.asList(), n.getPrefixes());
+		assertEquals(Arrays.asList("ing. jr", "M.Sc."), n.getSuffixes());
+
+		PartialDate expectedBday = PartialDate.date(null, 2, 3);
+		PartialDate actualBday = vcard.getBirthday().getPartialDate();
+		assertEquals(expectedBday, actualBday);
+
+		PartialDate expectedAnniversary = PartialDate.dateTime(2009, 8, 8, 14, 30, null, -5, 0);
+		PartialDate actualAnniversary = vcard.getAnniversary().getPartialDate();
+		assertEquals(expectedAnniversary, actualAnniversary);
+
+		assertTrue(vcard.getGender().isMale());
+
+		LanguageType lang = vcard.getLanguages().get(0);
+		assertEquals("fr", lang.getValue());
+		assertIntEquals(1, lang.getPref());
+
+		lang = vcard.getLanguages().get(1);
+		assertEquals("en", lang.getValue());
+		assertIntEquals(2, lang.getPref());
+
+		OrganizationType org = vcard.getOrganization();
+		assertEquals(Arrays.asList("Viagenie"), org.getValues());
+		assertEquals("work", org.getType());
+
+		AddressType adr = vcard.getAddresses().get(0);
+		assertNull(adr.getPoBox());
+		assertNull(adr.getExtendedAddress());
+		assertEquals("2875 boul. Laurier, suite D2-630", adr.getStreetAddress());
+		assertEquals("Quebec", adr.getLocality());
+		assertEquals("QC", adr.getRegion());
+		assertEquals("G1V 2M2", adr.getPostalCode());
+		assertEquals("Canada", adr.getCountry());
+		assertEquals("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2", adr.getLabel());
+		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
+
+		TelephoneType tel = vcard.getTelephoneNumbers().get(0);
+		TelUri expectedUri = TelUri.global("+1-418-656-9254");
+		expectedUri.setExtension("102");
+		assertEquals(expectedUri, tel.getUri());
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
+
+		tel = vcard.getTelephoneNumbers().get(1);
+		expectedUri = TelUri.global("+1-418-262-6501");
+		assertEquals(expectedUri, tel.getUri());
+		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
+
+		EmailType email = vcard.getEmails().get(0);
+		assertEquals("simon.perreault@viagenie.ca", email.getValue());
+		assertSetEquals(email.getTypes(), EmailTypeParameter.WORK);
+
+		GeoType geo = vcard.getGeo();
+		assertEquals(Double.valueOf(46.766336), geo.getLatitude());
+		assertEquals(Double.valueOf(-71.28955), geo.getLongitude());
+		assertEquals("work", geo.getType());
+
+		KeyType key = vcard.getKeys().get(0);
+		assertEquals("http://www.viagenie.ca/simon.perreault/simon.asc", key.getUrl());
+		assertEquals("work", key.getType());
+
+		assertEquals("America/Montreal", vcard.getTimezone().getText());
+
+		UrlType url = vcard.getUrls().get(0);
+		assertEquals("http://nomis80.org", url.getValue());
+		assertEquals("home", url.getType());
+
+		assertWarningsLists(xcard.getParseWarnings(), 0);
+	}
+
+	private void assertExample(VCard vcard, String exampleFileName) throws IOException, SAXException {
+		XCardDocument xcard = new XCardDocument();
+		xcard.setAddProdId(false);
+		xcard.addVCard(vcard);
 
 		Document expected = XmlUtils.toDocument(new InputStreamReader(getClass().getResourceAsStream(exampleFileName)));
-		Document actual = xcal.getDocument();
+		Document actual = xcard.getDocument();
 
 		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
 	}
