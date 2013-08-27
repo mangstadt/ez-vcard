@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -61,8 +62,47 @@ public class XmlTypeTest {
 		warnings.clear();
 	}
 
+	@Test(expected = SAXException.class)
+	public void invalid_xml() throws Throwable {
+		new XmlType("not valid XML");
+	}
+
 	@Test
-	public void marshalXml() throws Exception {
+	public void unmarshalText() throws Throwable {
+		VCardVersion version = VCardVersion.V4_0;
+		XmlType t = new XmlType();
+		t.unmarshalText(subTypes, "<a href=\"http://www.example.com\">some html</a>", version, warnings, compatibilityMode);
+
+		assertXMLEqual(XmlUtils.toDocument("<a href=\"http://www.example.com\">some html</a>"), t.getDocument());
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void unmarshalText_invalid() throws Throwable {
+		VCardVersion version = VCardVersion.V4_0;
+		XmlType t = new XmlType();
+		t.unmarshalText(subTypes, "invalid", version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void marshalText() throws Throwable {
+		VCardVersion version = VCardVersion.V4_0;
+		String expected = "<a href=\"http://www.example.com\">some html</a>";
+		XmlType xml = new XmlType(expected);
+		String actual = xml.marshalText(version, warnings, compatibilityMode);
+
+		assertEquals(expected, actual);
+		assertWarnings(0, warnings);
+	}
+
+	@Test(expected = SkipMeException.class)
+	public void marshalText_null() throws Throwable {
+		VCardVersion version = VCardVersion.V4_0;
+		XmlType xml = new XmlType();
+		xml.marshalText(version, warnings, compatibilityMode);
+	}
+
+	@Test
+	public void marshalXml() throws Throwable {
 		VCardVersion version = VCardVersion.V4_0;
 		Document actual = XmlUtils.toDocument("<root></root>");
 		Element root = XmlUtils.getRootElement(actual);
@@ -75,26 +115,17 @@ public class XmlTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
-	public void marshalXml_invalid_xml() throws Exception {
-		VCardVersion version = VCardVersion.V4_0;
-		Document actual = XmlUtils.toDocument("<root></root>");
-		Element root = XmlUtils.getRootElement(actual);
-
-		XmlType xml = new XmlType("not valid XML");
-		xml.marshalXml(root, version, warnings, compatibilityMode);
-	}
-
 	@Test
-	public void unmarshalXml() throws Exception {
+	public void unmarshalXml() throws Throwable {
 		VCardVersion version = VCardVersion.V4_0;
 		String xml = "<a href=\"http://www.example.com\">some html</a>";
-		Document document = XmlUtils.toDocument(xml);
-		Element element = XmlUtils.getRootElement(document);
+		Document expected = XmlUtils.toDocument(xml);
+		Element element = XmlUtils.getRootElement(expected);
 		XmlType t = new XmlType();
 		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 
-		assertEquals("<a href=\"http://www.example.com\">some html</a>", t.getValue());
+		assertXMLEqual(expected, t.getDocument());
 		assertWarnings(0, warnings);
 	}
+
 }
