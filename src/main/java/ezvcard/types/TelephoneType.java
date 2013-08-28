@@ -186,7 +186,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (version == VCardVersion.V4_0 && uri != null) {
 			copy.setValue(VCardDataType.URI);
 		} else {
@@ -219,13 +219,11 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			if (version == VCardVersion.V4_0) {
 				sb.append(uri.toString());
 			} else {
-				warnings.add("Tel URIs are not supported by vCard version " + version + ".  The URI will be converted to a string.  Some data may be lost.");
-
 				sb.append(VCardStringUtils.escape(uri.getNumber()));
 
 				String ext = uri.getExtension();
@@ -260,7 +258,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			parent.append(VCardDataType.URI, uri.toString());
 		} else if (text != null) {
@@ -312,7 +310,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		if (uri != null) {
 			return JCardValue.single(VCardDataType.URI, uri.toString());
 		}
@@ -334,6 +332,28 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			}
 		} else {
 			setText(valueStr);
+		}
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (uri == null && text == null) {
+			warnings.add("Property has neither a URI nor a text value associated with it.");
+		}
+
+		if (uri != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
+			warnings.add("\"tel\" URIs are not supported by vCard version " + version.getVersion() + ".  The URI will be converted to a string.  Some data may be lost.");
+		}
+
+		for (TelephoneTypeParameter type : getTypes()) {
+			if (type == TelephoneTypeParameter.PREF) {
+				//ignore because it is converted to a PREF parameter for 4.0 vCards
+				continue;
+			}
+
+			if (!type.isSupported(version)) {
+				warnings.add("Type value \"" + type.getValue() + "\" is not supported in version " + version.getVersion() + ".");
+			}
 		}
 	}
 }

@@ -51,15 +51,36 @@ import ezvcard.parameters.EmailTypeParameter;
  * @author Michael Angstadt
  */
 public class EmailTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final VCard vcard = new VCard();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final VCard vcard = new VCard();
 
 	@After
 	public void after() {
 		warnings.clear();
 		subTypes.clear();
+	}
+
+	@Test
+	public void validate() {
+		EmailType t = new EmailType();
+		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+
+		t.setValue("johndoe@example.com");
+		assertWarnings(0, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, t.validate(VCardVersion.V4_0, vcard));
+
+		t.addType(EmailTypeParameter.AOL);
+		t.addType(EmailTypeParameter.INTERNET);
+		t.addType(EmailTypeParameter.HOME);
+		t.addType(EmailTypeParameter.PREF);
+		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(2, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(2, t.validate(VCardVersion.V4_0, vcard));
 	}
 
 	/**
@@ -71,12 +92,11 @@ public class EmailTypeTest {
 		VCardVersion version = VCardVersion.V2_1;
 		EmailType t = new EmailType();
 		t.addType(EmailTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes(), EmailTypeParameter.PREF.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -88,12 +108,11 @@ public class EmailTypeTest {
 		VCardVersion version = VCardVersion.V3_0;
 		EmailType t = new EmailType();
 		t.addType(EmailTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes(), EmailTypeParameter.PREF.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -105,12 +124,11 @@ public class EmailTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		EmailType t = new EmailType();
 		t.addType(EmailTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, new VCard());
 
 		assertEquals(1, subTypes.size());
 		assertIntEquals(1, subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -130,16 +148,15 @@ public class EmailTypeTest {
 		t2.setPref(2);
 		vcard.addEmail(t2);
 
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes(), EmailTypeParameter.PREF.getValue());
 
-		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -159,19 +176,15 @@ public class EmailTypeTest {
 		t2.setPref(2);
 		vcard.addEmail(t2);
 
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes(), EmailTypeParameter.PREF.getValue());
-		assertWarnings(0, warnings);
 
-		warnings.clear();
-
-		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -192,18 +205,14 @@ public class EmailTypeTest {
 		vcard.addEmail(t2);
 
 		version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertIntEquals(1, subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 
-		warnings.clear();
-
-		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertIntEquals(2, subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 	}
 }

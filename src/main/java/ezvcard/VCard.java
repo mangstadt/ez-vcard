@@ -16,6 +16,7 @@ import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
+import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.io.VCardWriter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
@@ -4663,6 +4664,43 @@ public class VCard implements Iterable<VCardType> {
 	public <T extends VCardType & HasAltId> void setTypeAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
 		removeTypes(propertyClass);
 		addTypeAlt(propertyClass, altRepresentations);
+	}
+
+	/**
+	 * Checks this vCard for data consistency problems or deviations from the
+	 * spec. These problems will not prevent the vCard from being written to a
+	 * data stream, but may prevent it from being parsed correctly by the
+	 * consuming application. These problems can largely be avoided by reading
+	 * the Javadocs of the property classes, or by being familiar with the vCard
+	 * standard.
+	 * @param version the version to check the vCard against (use 4.0 for xCard
+	 * and jCard)
+	 * @return the validation warnings
+	 */
+	public ValidationWarnings validate(VCardVersion version) {
+		List<WarningsGroup> groups = new ArrayList<WarningsGroup>();
+
+		//validate overall vCard object
+		List<String> vcardWarnings = new ArrayList<String>();
+		if (getStructuredName() == null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
+			vcardWarnings.add("A structured name property must be defined.");
+		}
+		if (getFormattedName() == null && (version == VCardVersion.V3_0 || version == VCardVersion.V4_0)) {
+			vcardWarnings.add("A formatted name property must be defined.");
+		}
+		if (!vcardWarnings.isEmpty()) {
+			groups.add(new WarningsGroup(null, vcardWarnings));
+		}
+
+		//validate properties
+		for (VCardType property : this) {
+			List<String> warnings = property.validate(version, this);
+			if (!warnings.isEmpty()) {
+				groups.add(new WarningsGroup(property, warnings));
+			}
+		}
+
+		return new ValidationWarnings(groups, version);
 	}
 
 	/**

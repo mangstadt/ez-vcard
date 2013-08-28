@@ -1,8 +1,12 @@
 package ezvcard;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.parameters.CalscaleParameter;
@@ -60,6 +64,31 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	public static final String TYPE = "TYPE";
 	public static final String TZ = "TZ";
 	public static final String VALUE = "VALUE";
+
+	private static final Map<String, Set<VCardVersion>> supportedVersions;
+	static {
+		Map<String, Set<VCardVersion>> m = new HashMap<String, Set<VCardVersion>>();
+		m.put(ALTID, EnumSet.of(VCardVersion.V4_0));
+		m.put(CALSCALE, EnumSet.of(VCardVersion.V4_0));
+		m.put(CHARSET, EnumSet.of(VCardVersion.V2_1));
+		m.put(GEO, EnumSet.of(VCardVersion.V4_0));
+		m.put(INDEX, EnumSet.of(VCardVersion.V4_0));
+
+		//don't check LABEL because this is removed and converted to LABEL properties for 2.1 and 3.0 vCards 
+		//m.put(LABEL, EnumSet.of(VCardVersion.V4_0));
+
+		m.put(LEVEL, EnumSet.of(VCardVersion.V4_0));
+		m.put(MEDIATYPE, EnumSet.of(VCardVersion.V4_0));
+		m.put(PID, EnumSet.of(VCardVersion.V4_0));
+
+		//don't check PREF because this is removed and converted to "TYPE=PREF" for 2.1 and 3.0 vCards
+		//m.put(PREF, EnumSet.of(VCardVersion.V4_0));
+
+		m.put(SORT_AS, EnumSet.of(VCardVersion.V4_0));
+		m.put(TZ, EnumSet.of(VCardVersion.V4_0));
+
+		supportedVersions = Collections.unmodifiableMap(m);
+	}
 
 	/**
 	 * Creates a list of parameters.
@@ -797,6 +826,86 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 		}
 		String value = (index == null) ? null : index.toString();
 		replace(INDEX, value);
+	}
+
+	/**
+	 * Checks this parameters list for data consistency problems or deviations
+	 * from the spec. These problems will not prevent the vCard from being
+	 * written to a data stream, but may prevent it from being parsed correctly
+	 * by the consuming application.
+	 * @return a list of warnings or an empty list if no problems were found
+	 */
+	public List<String> validate(VCardVersion version) {
+		List<String> warnings = new ArrayList<String>(0);
+
+		String nonStandard = "%s parameter has a non-standard value (\"%s\").  Standard values are: %s";
+		String malformed = "%s parameter has a malformed value (\"%s\").";
+		String paramNotSupported = "%s parameter is not supported by version " + version.getVersion() + ".";
+		String valueNotSupported = "%s parameter value (\"%s\") is not supported by version " + version.getVersion() + ".";
+
+		String value = first(CALSCALE);
+		if (value != null && CalscaleParameter.find(value) == null) {
+			warnings.add(String.format(nonStandard, CALSCALE, value, CalscaleParameter.all()));
+		}
+
+		value = first(ENCODING);
+		if (value != null) {
+			EncodingParameter encoding = EncodingParameter.find(value);
+			if (encoding == null) {
+				warnings.add(String.format(nonStandard, ENCODING, value, EncodingParameter.all()));
+			} else if (!encoding.isSupported(version)) {
+				warnings.add(String.format(valueNotSupported, ENCODING, value));
+			}
+		}
+
+		try {
+			getGeo();
+		} catch (IllegalStateException e) {
+			warnings.add(String.format(malformed, GEO, first(GEO)));
+		}
+
+		try {
+			getIndex();
+		} catch (IllegalStateException e) {
+			warnings.add(String.format(malformed, INDEX, first(INDEX)));
+		}
+
+		try {
+			getPids();
+		} catch (IllegalStateException e) {
+			warnings.add(String.format(malformed, PID, first(PID)));
+		}
+
+		try {
+			getPref();
+		} catch (IllegalStateException e) {
+			warnings.add(String.format(malformed, PREF, first(PREF)));
+		}
+
+		value = first(VALUE);
+		if (value != null) {
+			VCardDataType dataType = VCardDataType.find(value);
+			if (dataType == null) {
+				warnings.add(String.format(nonStandard, VALUE, value, VCardDataType.all()));
+			} else if (!dataType.isSupported(version)) {
+				warnings.add(String.format(valueNotSupported, VALUE, value));
+			}
+		}
+
+		for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
+			String name = entry.getKey();
+			value = first(name);
+			if (value == null) {
+				continue;
+			}
+
+			Set<VCardVersion> versions = entry.getValue();
+			if (!versions.contains(version)) {
+				warnings.add(String.format(paramNotSupported, name));
+			}
+		}
+
+		return warnings;
 	}
 
 	@Override

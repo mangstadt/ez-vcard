@@ -53,17 +53,17 @@ import ezvcard.util.HtmlUtils;
  * @author Michael Angstadt
  */
 public class AgentTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 
-	final VCard vcard = new VCard();
-	final String url = "http://mi5.co.uk/007";
-	final AgentType urlType = new AgentType(url);
-	final AgentType vcardType = new AgentType(vcard);
-	final AgentType emptyType = new AgentType();
+	private final VCard vcard = new VCard();
+	private final String url = "http://mi5.co.uk/007";
+	private final AgentType urlType = new AgentType(url);
+	private final AgentType vcardType = new AgentType(vcard);
+	private final AgentType emptyType = new AgentType();
 
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	AgentType agentType;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private AgentType agentType;
 
 	@Before
 	public void before() {
@@ -73,95 +73,105 @@ public class AgentTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(1, agentType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, agentType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(2, agentType.validate(VCardVersion.V4_0, vcard));
+
+		VCard agentVCard = new VCard();
+		agentType.setVCard(agentVCard);
+		assertWarnings(1, agentType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(2, agentType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(2, agentType.validate(VCardVersion.V4_0, vcard));
+
+		agentType.setUrl(url);
+		assertWarnings(0, agentType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, agentType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, agentType.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalSubTypes_url_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = urlType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = urlType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals(VCardDataType.URL, subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_url_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = urlType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = urlType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals(VCardDataType.URI, subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_vcard_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = vcardType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = vcardType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_vcard_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = vcardType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = vcardType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_url_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = urlType.marshalText(version, warnings, compatibilityMode);
+		String actual = urlType.marshalText(version, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_url_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		String actual = urlType.marshalText(version, warnings, compatibilityMode);
+		String actual = urlType.marshalText(version, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_vcard_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		try {
-			vcardType.marshalText(version, warnings, compatibilityMode);
+			vcardType.marshalText(version, compatibilityMode);
 			fail();
 		} catch (EmbeddedVCardException e) {
 			assertEquals(vcard, e.getVCard());
 		}
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_vcard_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		try {
-			vcardType.marshalText(version, warnings, compatibilityMode);
+			vcardType.marshalText(version, compatibilityMode);
 			fail();
 		} catch (EmbeddedVCardException e) {
 			assertEquals(vcard, e.getVCard());
 		}
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_no_url_or_vcard_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		emptyType.marshalText(version, warnings, compatibilityMode);
+		emptyType.marshalText(version, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_no_url_or_vcard_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		emptyType.marshalText(version, warnings, compatibilityMode);
+		emptyType.marshalText(version, compatibilityMode);
 	}
 
 	@Test

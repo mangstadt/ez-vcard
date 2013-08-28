@@ -338,7 +338,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		//replace "TYPE=pref" with "PREF=1"
 		if (version == VCardVersion.V4_0) {
 			if (getTypes().contains(AddressTypeParameter.PREF)) {
@@ -370,7 +370,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		List<String> values = Arrays.asList(poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
 		VCardStringUtils.join(values, ";", sb, new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String value) {
@@ -404,7 +404,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append("pobox", poBox); //the XML element still needs to be printed if value == null
 		parent.append("ext", extendedAddress);
 		parent.append("street", streetAddress);
@@ -446,7 +446,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		return JCardValue.structured(VCardDataType.TEXT, poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
 	}
 
@@ -461,6 +461,19 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		region = nextJsonComponent(it);
 		postalCode = nextJsonComponent(it);
 		country = nextJsonComponent(it);
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		for (AddressTypeParameter type : getTypes()) {
+			if (type == AddressTypeParameter.PREF) {
+				//ignore because it is converted to a PREF parameter for 4.0 vCards
+				continue;
+			}
+			if (!type.isSupported(version)) {
+				warnings.add("Type value \"" + type.getValue() + "\" is not supported in version " + version.getVersion() + ".");
+			}
+		}
 	}
 
 	private String nextJsonComponent(Iterator<List<String>> it) {

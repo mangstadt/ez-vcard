@@ -2,6 +2,7 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
+import ezvcard.VCardVersion;
 import ezvcard.types.AddressType;
 import ezvcard.types.LabelType;
 
@@ -42,7 +43,7 @@ import ezvcard.types.LabelType;
  * </p>
  * @author Michael Angstadt
  */
-public class AddressTypeParameter extends VCardParameter {
+public class AddressTypeParameter extends VersionedVCardParameter {
 	private static final VCardParameterCaseClasses<AddressTypeParameter> enums = new VCardParameterCaseClasses<AddressTypeParameter>(AddressTypeParameter.class);
 
 	/**
@@ -58,30 +59,30 @@ public class AddressTypeParameter extends VCardParameter {
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
-	public static final AddressTypeParameter DOM = new AddressTypeParameter("dom");
+	public static final AddressTypeParameter DOM = new AddressTypeParameter("dom", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
-	public static final AddressTypeParameter INTL = new AddressTypeParameter("intl");
+	public static final AddressTypeParameter INTL = new AddressTypeParameter("intl", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
-	public static final AddressTypeParameter POSTAL = new AddressTypeParameter("postal");
+	public static final AddressTypeParameter POSTAL = new AddressTypeParameter("postal", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
-	public static final AddressTypeParameter PARCEL = new AddressTypeParameter("parcel");
+	public static final AddressTypeParameter PARCEL = new AddressTypeParameter("parcel", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
-	public static final AddressTypeParameter PREF = new AddressTypeParameter("pref");
+	public static final AddressTypeParameter PREF = new AddressTypeParameter("pref", VCardVersion.V2_1, VCardVersion.V3_0);
 
-	private AddressTypeParameter(String value) {
-		super(value);
+	private AddressTypeParameter(String value, VCardVersion... supportedVersions) {
+		super(value, supportedVersions);
 	}
 
 	/**

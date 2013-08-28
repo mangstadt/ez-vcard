@@ -2,6 +2,8 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
+import ezvcard.VCardVersion;
+
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
  * 
@@ -67,36 +69,36 @@ import java.util.Collection;
  * @author George El-Haddad Mar 10, 2010
  * @author Michael Angstadt
  */
-public class EncodingParameter extends VCardParameter {
+public class EncodingParameter extends VersionedVCardParameter {
 	private static final VCardParameterCaseClasses<EncodingParameter> enums = new VCardParameterCaseClasses<EncodingParameter>(EncodingParameter.class);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
-	public static final EncodingParameter QUOTED_PRINTABLE = new EncodingParameter("quoted-printable");
+	public static final EncodingParameter QUOTED_PRINTABLE = new EncodingParameter("quoted-printable", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
-	public static final EncodingParameter BASE64 = new EncodingParameter("base64");
+	public static final EncodingParameter BASE64 = new EncodingParameter("base64", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
-	public static final EncodingParameter _8BIT = new EncodingParameter("8bit");
+	public static final EncodingParameter _8BIT = new EncodingParameter("8bit", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1</code>
 	 */
-	public static final EncodingParameter _7BIT = new EncodingParameter("7bit");
+	public static final EncodingParameter _7BIT = new EncodingParameter("7bit", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0</code>
 	 */
-	public static final EncodingParameter B = new EncodingParameter("b");
+	public static final EncodingParameter B = new EncodingParameter("b", VCardVersion.V3_0);
 
-	private EncodingParameter(String value) {
-		super(value);
+	private EncodingParameter(String value, VCardVersion... supportedVersions) {
+		super(value, supportedVersions);
 	}
 
 	/**

@@ -8,14 +8,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.types.KindType;
-import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.TextType;
 import ezvcard.types.VCardType;
@@ -56,7 +53,6 @@ import ezvcard.util.JCardValue;
  */
 public class JCardWriter implements Closeable {
 	private final JCardRawWriter writer;
-	private final List<String> warnings = new ArrayList<String>();
 	private final VCardVersion targetVersion = VCardVersion.V4_0;
 	private boolean addProdId = true;
 
@@ -122,30 +118,12 @@ public class JCardWriter implements Closeable {
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void write(final VCard vcard) throws IOException {
-		warnings.clear();
-
-		if (vcard.getFormattedName() == null) {
-			warnings.add("vCard version " + targetVersion + " requires that a formatted name property be defined.");
-		}
-
 		List<VCardType> typesToAdd = new ArrayList<VCardType>();
 		typesToAdd.add(new TextType("version", targetVersion.getVersion()));
 
 		for (VCardType type : vcard) {
 			if (addProdId && type instanceof ProdIdType) {
 				//do not add the PRODID in the vCard if "addProdId" is true
-				continue;
-			}
-
-			//determine if this type is supported by the target version
-			if (!supportsTargetVersion(type)) {
-				addWarning("This property is not supported by vCard version " + targetVersion + " and will not be added to the vCard.  Supported versions are: " + Arrays.toString(type.getSupportedVersions()), type.getTypeName());
-				continue;
-			}
-
-			//check for correct KIND value if there are MEMBER types
-			if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
-				addWarning("Value must be set to \"group\" if the vCard contains " + MemberType.NAME + " properties.", KindType.NAME);
 				continue;
 			}
 
@@ -160,54 +138,25 @@ public class JCardWriter implements Closeable {
 
 		writer.writeStartVCard();
 
-		List<String> warningsBuf = new ArrayList<String>();
 		for (VCardType type : typesToAdd) {
 			//marshal the value
-			warningsBuf.clear();
 			JCardValue value = null;
 			try {
-				value = type.marshalJson(targetVersion, warningsBuf);
+				value = type.marshalJson(targetVersion);
 			} catch (SkipMeException e) {
-				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 				continue;
 			} catch (EmbeddedVCardException e) {
-				warningsBuf.add("Property will not be marshalled because jCard does not supported embedded vCards.");
-			} finally {
-				for (String warning : warningsBuf) {
-					addWarning(warning, type.getTypeName());
-				}
+				continue;
 			}
 
 			//marshal the sub types
-			warningsBuf.clear();
-			VCardSubTypes subTypes;
-			try {
-				subTypes = type.marshalSubTypes(targetVersion, warningsBuf, CompatibilityMode.RFC, vcard);
-			} finally {
-				for (String warning : warningsBuf) {
-					addWarning(warning, type.getTypeName());
-				}
-			}
+			VCardSubTypes subTypes = type.marshalSubTypes(targetVersion, CompatibilityMode.RFC, vcard);
 			subTypes.removeValue(); //remove all VALUE parameters
 
 			writer.writeProperty(type.getGroup(), type.getTypeName().toLowerCase(), subTypes, value);
 		}
 
 		writer.writeEndVCard();
-	}
-
-	/**
-	 * Determines if a property is supported by the target version.
-	 * @param type the property
-	 * @return true if it is supported, false if not
-	 */
-	private boolean supportsTargetVersion(VCardType type) {
-		for (VCardVersion version : type.getSupportedVersions()) {
-			if (version == targetVersion) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -246,15 +195,6 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Gets the warnings from the last vCard that was marshalled. This list is
-	 * reset every time a new vCard is written.
-	 * @return the warnings or empty list if there were no warnings
-	 */
-	public List<String> getWarnings() {
-		return new ArrayList<String>(warnings);
-	}
-
-	/**
 	 * Ends the jCard data stream, but does not close the underlying writer.
 	 * @throws IOException if there's a problem closing the stream
 	 */
@@ -268,9 +208,5 @@ public class JCardWriter implements Closeable {
 	 */
 	public void close() throws IOException {
 		writer.close();
-	}
-
-	private void addWarning(String message, String propertyName) {
-		warnings.add(propertyName + " property: " + message);
 	}
 }

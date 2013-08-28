@@ -81,7 +81,7 @@ public class RawType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		sb.append(value);
 	}
 

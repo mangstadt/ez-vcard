@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -56,6 +57,7 @@ import ezvcard.util.XCardElement;
 public class TextTypeTest {
 	private final List<String> warnings = new ArrayList<String>();
 	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCard vcard = new VCard();
 	private final VCardSubTypes subTypes = new VCardSubTypes();
 
 	private final TextType textType = new TextType("NAME", "This is a test of the TextType.\nOne, two, three; and \\four\\.");
@@ -69,13 +71,23 @@ public class TextTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, textType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, textType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, textType.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalText() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "This is a test of the TextType.\nOne\\, two\\, three\\; and \\\\four\\\\."; //newlines are escaped in the VCardWriter
-		String actual = textType.marshalText(version, warnings, compatibilityMode);
+		String actual = textType.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -86,19 +98,17 @@ public class TextTypeTest {
 		Document expected = xe.document();
 		xe = new XCardElement(textType.getTypeName().toLowerCase());
 		Document actual = xe.document();
-		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		textType.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = textType.marshalJson(version, warnings);
+		JCardValue value = textType.marshalJson(version);
 
 		assertJCardValue(VCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.", value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test

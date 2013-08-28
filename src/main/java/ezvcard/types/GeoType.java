@@ -2,6 +2,7 @@ package ezvcard.types;
 
 import java.util.List;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -239,7 +240,7 @@ public class GeoType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		sb.append(write(version));
 	}
 
@@ -250,7 +251,7 @@ public class GeoType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append(VCardDataType.URI, write(parent.version()));
 	}
 
@@ -290,13 +291,23 @@ public class GeoType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		return JCardValue.single(VCardDataType.URI, write(version));
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		parse(value.getSingleValued(), version, warnings);
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (getLatitude() == null) {
+			warnings.add("Latitude is missing.");
+		}
+		if (getLongitude() == null) {
+			warnings.add("Longitude is missing.");
+		}
 	}
 
 	private void parse(String value, VCardVersion version, List<String> warnings) {

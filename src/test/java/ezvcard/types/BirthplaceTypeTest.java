@@ -56,25 +56,25 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class BirthplaceTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final VCard vcard = new VCard();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final VCard vcard = new VCard();
 
-	final String text = "Philadelphia, PA";
-	final String textEscaped = "Philadelphia\\, PA";
-	final String uri = "geo:39.970806,-75.174809";
-	final BirthplaceType textType = new BirthplaceType();
+	private final String text = "Philadelphia, PA";
+	private final String textEscaped = "Philadelphia\\, PA";
+	private final String uri = "geo:39.970806,-75.174809";
+	private final BirthplaceType textType = new BirthplaceType();
 	{
 		textType.setText(text);
 	}
 
-	final BirthplaceType uriType = new BirthplaceType();
+	private final BirthplaceType uriType = new BirthplaceType();
 	{
 		uriType.setUri(uri);
 	}
-	final BirthplaceType emptyType = new BirthplaceType();
-	BirthplaceType t;
+	private final BirthplaceType emptyType = new BirthplaceType();
+	private BirthplaceType t;
 
 	@Before
 	public void before() {
@@ -84,46 +84,57 @@ public class BirthplaceTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(2, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(2, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(1, textType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, textType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, textType.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(1, uriType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, uriType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, uriType.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalSubTypes_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = textType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = uriType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = uriType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals(VCardDataType.URI, subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = textType.marshalText(version, warnings, compatibilityMode);
+		String actual = textType.marshalText(version, compatibilityMode);
 
 		assertEquals(textEscaped, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = uriType.marshalText(version, warnings, compatibilityMode);
+		String actual = uriType.marshalText(version, compatibilityMode);
 
 		assertEquals(uri, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_empty() {
 		VCardVersion version = VCardVersion.V4_0;
-		emptyType.marshalText(version, warnings, compatibilityMode);
+		emptyType.marshalText(version, compatibilityMode);
 	}
 
 	@Test
@@ -134,10 +145,9 @@ public class BirthplaceTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		textType.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -148,41 +158,38 @@ public class BirthplaceTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		uriType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		uriType.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalXml_empty() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		emptyType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		emptyType.marshalXml(xe.element(), version, compatibilityMode);
 	}
 
 	@Test
 	public void marshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = textType.marshalJson(version, warnings);
+		JCardValue value = textType.marshalJson(version);
 
 		assertJCardValue(VCardDataType.TEXT, text, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = uriType.marshalJson(version, warnings);
+		JCardValue value = uriType.marshalJson(version);
 
 		assertJCardValue(VCardDataType.URI, uri, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalJson_empty() {
 		VCardVersion version = VCardVersion.V4_0;
-		emptyType.marshalJson(version, warnings);
+		emptyType.marshalJson(version);
 	}
 
 	@Test

@@ -3,6 +3,7 @@ package ezvcard.types;
 import java.util.ArrayList;
 import java.util.List;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -83,7 +84,7 @@ public class TextListType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		VCardStringUtils.join(values, separator + "", sb, new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String value) {
 				sb.append(VCardStringUtils.escape(value));
@@ -97,7 +98,7 @@ public class TextListType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append("text", values);
 	}
 
@@ -108,7 +109,7 @@ public class TextListType extends VCardType {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		Object[] values = this.values.toArray(new Object[0]);
 		if (separator == ';' && values.length > 1) {
 			return JCardValue.structured(VCardDataType.TEXT, values);
@@ -129,6 +130,13 @@ public class TextListType extends VCardType {
 			for (String valueStr : value.getMultivalued()) {
 				values.add(valueStr);
 			}
+		}
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (values.isEmpty()) {
+			warnings.add("Property value is empty.");
 		}
 	}
 }

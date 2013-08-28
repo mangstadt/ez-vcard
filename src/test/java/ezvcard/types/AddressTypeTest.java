@@ -59,13 +59,13 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class AddressTypeTest {
-	final VCardVersion version = VCardVersion.V2_1;
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final VCard vcard = new VCard();
+	private final VCardVersion version = VCardVersion.V2_1;
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final VCard vcard = new VCard();
 
-	final AddressType allFields = new AddressType();
+	private final AddressType allFields = new AddressType();
 	{
 		allFields.setPoBox("P.O. Box 1234;");
 		allFields.setExtendedAddress("Apt, 11");
@@ -75,7 +75,7 @@ public class AddressTypeTest {
 		allFields.setPostalCode("12345");
 		allFields.setCountry("USA");
 	}
-	final AddressType someFields = new AddressType();
+	private final AddressType someFields = new AddressType();
 	{
 		someFields.setPoBox("P.O. Box 1234;");
 		someFields.setExtendedAddress(null);
@@ -85,8 +85,8 @@ public class AddressTypeTest {
 		someFields.setPostalCode("12345");
 		someFields.setCountry(null);
 	}
-	final AddressType noFields = new AddressType();
-	AddressType t;
+	private final AddressType noFields = new AddressType();
+	private AddressType t;
 
 	@Before
 	public void before() {
@@ -96,36 +96,47 @@ public class AddressTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(0, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, t.validate(VCardVersion.V4_0, vcard));
+
+		t.addType(AddressTypeParameter.DOM);
+		t.addType(AddressTypeParameter.HOME);
+		t.addType(AddressTypeParameter.PREF);
+		assertWarnings(0, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalSubTypes_label_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		t.setLabel("label");
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.first("LABEL"));
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_label_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		t.setLabel("label");
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.first("LABEL"));
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_label_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		t.setLabel("label");
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals("label", subTypes.first("LABEL"));
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -136,12 +147,11 @@ public class AddressTypeTest {
 	public void marshalSubTypes_type_pref_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		t.addType(AddressTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes(), AddressTypeParameter.PREF.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -152,12 +162,11 @@ public class AddressTypeTest {
 	public void marshalSubTypes_type_pref_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		t.addType(AddressTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes(), AddressTypeParameter.PREF.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -168,12 +177,11 @@ public class AddressTypeTest {
 	public void marshalSubTypes_type_pref_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		t.addType(AddressTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, new VCard());
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, new VCard());
 
 		assertEquals(1, subTypes.size());
 		assertIntEquals(1, subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -193,16 +201,15 @@ public class AddressTypeTest {
 		t2.setPref(2);
 		vcard.addAddress(t2);
 
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes(), AddressTypeParameter.PREF.getValue());
 
-		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -222,19 +229,15 @@ public class AddressTypeTest {
 		t2.setPref(2);
 		vcard.addAddress(t2);
 
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes(), AddressTypeParameter.PREF.getValue());
-		assertWarnings(0, warnings);
 
-		warnings.clear();
-
-		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 	}
 
 	/**
@@ -255,46 +258,39 @@ public class AddressTypeTest {
 		vcard.addAddress(t2);
 
 		version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertIntEquals(1, subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 
-		warnings.clear();
-
-		subTypes = t2.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertIntEquals(2, subTypes.getPref());
 		assertSetEquals(subTypes.getTypes());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_all_fields() {
 		String expected = "P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA";
-		String actual = allFields.marshalText(version, warnings, compatibilityMode);
+		String actual = allFields.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_some_fields() {
 		String expected = "P.O. Box 1234\\;;;;Austin;TX;12345;";
-		String actual = someFields.marshalText(version, warnings, compatibilityMode);
+		String actual = someFields.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_no_fields() {
 		String expected = ";;;;;;";
-		String actual = noFields.marshalText(version, warnings, compatibilityMode);
+		String actual = noFields.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -312,10 +308,9 @@ public class AddressTypeTest {
 
 		xe = new XCardElement(AddressType.NAME.toLowerCase());
 		Document actual = xe.document();
-		allFields.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		allFields.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -333,10 +328,9 @@ public class AddressTypeTest {
 
 		xe = new XCardElement(AddressType.NAME.toLowerCase());
 		Document actual = xe.document();
-		someFields.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		someFields.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -354,16 +348,15 @@ public class AddressTypeTest {
 
 		xe = new XCardElement(AddressType.NAME.toLowerCase());
 		Document actual = xe.document();
-		noFields.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		noFields.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_all_fields() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = allFields.marshalJson(version, warnings);
+		JCardValue value = allFields.marshalJson(version);
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
@@ -380,13 +373,12 @@ public class AddressTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_some_fields() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = someFields.marshalJson(version, warnings);
+		JCardValue value = someFields.marshalJson(version);
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
@@ -403,13 +395,12 @@ public class AddressTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_no_fields() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = noFields.marshalJson(version, warnings);
+		JCardValue value = noFields.marshalJson(version);
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
@@ -426,7 +417,6 @@ public class AddressTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test

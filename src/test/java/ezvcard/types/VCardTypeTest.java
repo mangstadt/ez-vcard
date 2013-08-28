@@ -7,6 +7,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,6 +77,15 @@ public class VCardTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		ValidateType t = new ValidateType();
+		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+		assertTrue(t.validateCalled);
+	}
+
+	@Test
 	public void marshalXml() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(VCardTypeImpl.NAME.toLowerCase());
@@ -83,7 +93,7 @@ public class VCardTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(VCardTypeImpl.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		type.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		type.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
 		assertWarnings(0, warnings);
@@ -92,7 +102,7 @@ public class VCardTypeTest {
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = type.marshalJson(version, warnings);
+		JCardValue value = type.marshalJson(version);
 
 		assertJCardValue(null, type.value, value);
 		assertWarnings(0, warnings);
@@ -105,7 +115,7 @@ public class VCardTypeTest {
 		type.value = "value";
 		type.getSubTypes().setValue(VCardDataType.BOOLEAN);
 
-		JCardValue value = type.marshalJson(version, warnings);
+		JCardValue value = type.marshalJson(version);
 
 		assertJCardValue(VCardDataType.BOOLEAN, type.value, value);
 		assertWarnings(0, warnings);
@@ -205,7 +215,7 @@ public class VCardTypeTest {
 
 	@Test
 	public void marshalSubTypes() {
-		assertFalse(t.getSubTypes() == t.marshalSubTypes(VCardVersion.V2_1, warnings, compatibilityMode, vcard)); //should create a copy
+		assertFalse(t.getSubTypes() == t.marshalSubTypes(VCardVersion.V2_1, compatibilityMode, vcard)); //should create a copy
 	}
 
 	@Test
@@ -236,13 +246,42 @@ public class VCardTypeTest {
 		}
 
 		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 			value.append(this.value);
 		}
 
 		@Override
 		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 			this.value = value;
+		}
+	}
+
+	private class ValidateType extends VCardType {
+		public static final String NAME = "NAME";
+		public boolean validateCalled = false;
+
+		public ValidateType() {
+			super(NAME);
+		}
+
+		@Override
+		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		public VCardVersion[] getSupportedVersions() {
+			return new VCardVersion[] { VCardVersion.V3_0 };
+		}
+
+		@Override
+		public void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+			validateCalled = true;
 		}
 	}
 }

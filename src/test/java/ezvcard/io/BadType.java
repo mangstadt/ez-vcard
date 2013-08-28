@@ -44,7 +44,7 @@ class BadType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 		//empty
 	}
 

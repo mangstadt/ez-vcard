@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -143,7 +144,7 @@ public class XmlType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		String xml = write();
 		sb.append(VCardStringUtils.escape(xml));
 	}
@@ -155,7 +156,7 @@ public class XmlType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (document == null) {
 			throw new SkipMeException("Property does not have a value associated with it.");
 		}
@@ -177,7 +178,7 @@ public class XmlType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		String value = write();
 		return JCardValue.single(VCardDataType.TEXT, value);
 	}
@@ -185,6 +186,13 @@ public class XmlType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		parse(value.getSingleValued());
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (document == null) {
+			warnings.add("Property value is null.");
+		}
 	}
 
 	private void parse(String xml) {

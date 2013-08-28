@@ -59,25 +59,36 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class GenderTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final VCard vcard = new VCard();
-	final String gender = "M";
-	final String text = "te;xt";
-	final String escapedText = "te\\;xt";
-	final GenderType genderType = GenderType.male();
-	final GenderType genderTypeWithText = GenderType.male();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final VCard vcard = new VCard();
+	private final String gender = "M";
+	private final String text = "te;xt";
+	private final String escapedText = "te\\;xt";
+	private final GenderType genderType = GenderType.male();
+	private final GenderType genderTypeWithText = GenderType.male();
 	{
 		genderTypeWithText.setText(text);
 	}
-	GenderType t;
+	private GenderType t;
 
 	@Before
 	public void before() {
 		t = new GenderType();
 		warnings.clear();
 		subTypes.clear();
+	}
+
+	@Test
+	public void validate() {
+		assertWarnings(2, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(2, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(1, genderType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, genderType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, genderType.validate(VCardVersion.V4_0, vcard));
 	}
 
 	@Test
@@ -163,19 +174,17 @@ public class GenderTypeTest {
 	@Test
 	public void marshalText() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = genderType.marshalText(version, warnings, compatibilityMode);
+		String actual = genderType.marshalText(version, compatibilityMode);
 
 		assertEquals(gender, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_with_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = genderTypeWithText.marshalText(version, warnings, compatibilityMode);
+		String actual = genderTypeWithText.marshalText(version, compatibilityMode);
 
 		assertEquals(gender + ";" + escapedText, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -186,10 +195,9 @@ public class GenderTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		genderType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		genderType.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -201,25 +209,23 @@ public class GenderTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		genderTypeWithText.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		genderTypeWithText.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = genderType.marshalJson(version, warnings);
+		JCardValue value = genderType.marshalJson(version);
 
 		assertJCardValue(VCardDataType.TEXT, gender, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_with_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = genderTypeWithText.marshalJson(version, warnings);
+		JCardValue value = genderTypeWithText.marshalJson(version);
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
@@ -232,7 +238,6 @@ public class GenderTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test

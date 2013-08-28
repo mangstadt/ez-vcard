@@ -2,6 +2,7 @@ package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
+import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
@@ -55,6 +56,7 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
+import ezvcard.types.VCardType;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 
@@ -717,6 +719,7 @@ public class VCardReaderTest {
 			assertFalse(it.hasNext());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0), vcard.getEmails().get(0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -869,6 +872,7 @@ public class VCardReaderTest {
 			assertEquals("item2", f.getGroup());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0), vcard.getEmails().get(0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -912,6 +916,8 @@ public class VCardReaderTest {
 			assertFalse(it.hasNext());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0));
+		assertWarnings(0, reader.getWarnings());
 		vcard = reader.readNext();
 
 		//VERSION
@@ -944,6 +950,8 @@ public class VCardReaderTest {
 			assertFalse(it.hasNext());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0));
+		assertWarnings(0, reader.getWarnings());
 		vcard = reader.readNext();
 
 		//VERSION
@@ -976,6 +984,7 @@ public class VCardReaderTest {
 			assertFalse(it.hasNext());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -1168,6 +1177,7 @@ public class VCardReaderTest {
 			assertEquals("MyCustom", f.getValue());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -1359,6 +1369,7 @@ public class VCardReaderTest {
 			assertEquals("_$!<HomePage>!$_", f.getValue());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -1610,6 +1621,7 @@ public class VCardReaderTest {
 			assertEquals("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", f.getValue());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0), vcard.getEmails().get(0), vcard.getEmails().get(1));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -1818,6 +1830,7 @@ public class VCardReaderTest {
 			assertEquals("Jenny", f.getValue());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V2_1), vcard.getNickname());
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -2059,6 +2072,7 @@ public class VCardReaderTest {
 			assertEquals("TheSpouse", f.getValue());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V2_1), vcard.getNickname(), vcard.getFbUrls().get(0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -2277,6 +2291,7 @@ public class VCardReaderTest {
 			assertEquals("6B29A774-D124-4822-B8D0-2780EC117F60\\:ABPerson", f.getValue());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0), vcard.getEmails().get(0), vcard.getPhotos().get(0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -2463,6 +2478,7 @@ public class VCardReaderTest {
 			assertEquals(c.getTime(), f.getTimestamp());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V2_1), vcard.getNickname(), vcard.getFbUrls().get(0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -2661,6 +2677,7 @@ public class VCardReaderTest {
 			assertEquals("1990-04-30", f.getValue());
 		}
 
+		assertValidate(vcard.validate(VCardVersion.V3_0), vcard.getStructuredName(), vcard.getFormattedName(), vcard.getOrganization(), vcard.getNickname(), vcard.getAddresses().get(0), vcard.getAddresses().get(1), vcard.getTitles().get(0), vcard.getCategories(), vcard.getNotes().get(0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -2747,6 +2764,7 @@ public class VCardReaderTest {
 		assertEquals("http://nomis80.org", url.getValue());
 		assertEquals("home", url.getType());
 
+		assertValidate(vcard.validate(VCardVersion.V4_0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
@@ -2793,6 +2811,7 @@ public class VCardReaderTest {
 
 			assertEquals("http://home.earthlink.net/~fdawson", vcard.getUrls().get(0).getValue());
 
+			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
 			assertWarnings(0, reader.getWarnings());
 		}
 
@@ -2828,6 +2847,7 @@ public class VCardReaderTest {
 			assertEquals("howes@netscape.com", email.getValue());
 			assertSetEquals(email.getTypes(), EmailTypeParameter.INTERNET);
 
+			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
 			assertWarnings(0, reader.getWarnings());
 		}
 

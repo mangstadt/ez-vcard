@@ -2,6 +2,7 @@ package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
+import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -303,7 +304,7 @@ public class JCardReaderTest {
 		}
 
 		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 			//empty
 		}
 
@@ -400,6 +401,7 @@ public class JCardReaderTest {
 		assertEquals("http://nomis80.org", url.getValue());
 		assertEquals("home", url.getType());
 
+		assertValidate(vcard.validate(VCardVersion.V4_0));
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}

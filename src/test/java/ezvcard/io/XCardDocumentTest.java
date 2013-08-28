@@ -2,7 +2,7 @@ package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertWarningsLists;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
@@ -42,9 +42,7 @@ import ezvcard.types.FormattedNameType;
 import ezvcard.types.GenderType;
 import ezvcard.types.GeoType;
 import ezvcard.types.KeyType;
-import ezvcard.types.KindType;
 import ezvcard.types.LanguageType;
-import ezvcard.types.MemberType;
 import ezvcard.types.NoteType;
 import ezvcard.types.OrganizationType;
 import ezvcard.types.PhotoType;
@@ -569,63 +567,6 @@ public class XCardDocumentTest {
 		assertXMLEqual(expected, actual);
 	}
 
-	@Test
-	public void addVCard_check_supported_versions() throws Throwable {
-		//all properties support the version
-		{
-			VCard vcard = new VCard();
-			vcard.setFormattedName("John Doe");
-
-			XCardDocument doc = new XCardDocument();
-			doc.addVCard(vcard);
-
-			List<String> warnings = doc.getWriteWarnings();
-			assertTrue(warnings.isEmpty());
-		}
-
-		//one property does not support the version
-		{
-			VCard vcard = new VCard();
-			vcard.setFormattedName("John Doe");
-			vcard.setMailer("Thunderbird");
-
-			XCardDocument doc = new XCardDocument();
-			doc.addVCard(vcard);
-
-			List<String> warnings = doc.getWriteWarnings();
-			assertWarnings(1, warnings);
-
-			//property not written to vCard
-			VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
-			assertNull(parsedVCard.getMailer());
-		}
-	}
-
-	@Test
-	public void addVCard_required_properties() throws Throwable {
-		//without FN
-		{
-			VCard vcard = new VCard();
-			XCardDocument doc = new XCardDocument();
-			doc.addVCard(vcard);
-
-			List<String> warnings = doc.getWriteWarnings();
-			assertWarnings(1, warnings);
-		}
-
-		//with FN
-		{
-			VCard vcard = new VCard();
-			vcard.setFormattedName("John Doe");
-
-			XCardDocument doc = new XCardDocument();
-			doc.addVCard(vcard);
-
-			List<String> warnings = doc.getWriteWarnings();
-			assertTrue(warnings.isEmpty());
-		}
-	}
-
 	/**
 	 * Makes sure it can marshal parameters.
 	 */
@@ -839,8 +780,6 @@ public class XCardDocumentTest {
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
 
-		assertWarnings(1, xcm.getWriteWarnings());
-
 		Document actual = xcm.getDocument();
 
 		//@formatter:off
@@ -882,8 +821,6 @@ public class XCardDocumentTest {
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.addVCard(vcard);
-
-		assertWarnings(1, xcm.getWriteWarnings());
 
 		Document actual = xcm.getDocument();
 
@@ -929,46 +866,6 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void addVCard_kind_and_member_combination() throws Throwable {
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		vcard.addMember(new MemberType("http://uri.com"));
-
-		//correct KIND
-		{
-			vcard.setKind(KindType.group());
-
-			XCardDocument doc = new XCardDocument();
-			doc.addVCard(vcard);
-			String xml = doc.write();
-
-			List<String> warnings = doc.getWriteWarnings();
-			assertTrue(warnings.isEmpty());
-
-			VCard parsedVCard = Ezvcard.parseXml(xml).first();
-			assertEquals("group", parsedVCard.getKind().getValue());
-			assertEquals(1, parsedVCard.getMembers().size());
-			assertEquals("http://uri.com", parsedVCard.getMembers().get(0).getUri());
-		}
-
-		//wrong KIND
-		{
-			vcard.setKind(KindType.individual());
-
-			XCardDocument doc = new XCardDocument();
-			doc.addVCard(vcard);
-			String xml = doc.write();
-
-			List<String> warnings = doc.getWriteWarnings();
-			assertWarnings(1, warnings);
-
-			VCard parsedVCard = Ezvcard.parseXml(xml).first();
-			assertEquals("individual", parsedVCard.getKind().getValue());
-			assertTrue(parsedVCard.getMembers().isEmpty());
-		}
-	}
-
-	@Test
 	public void addVCard_embedded_vcards_not_supported() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
@@ -976,7 +873,6 @@ public class XCardDocumentTest {
 
 		XCardDocument doc = new XCardDocument();
 		doc.addVCard(vcard);
-		assertWarnings(1, doc.getWriteWarnings());
 
 		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
 		assertTrue(parsedVCard.getExtendedTypes().isEmpty());
@@ -1048,6 +944,8 @@ public class XCardDocumentTest {
 		vcard.setTimezone(new TimezoneType("America/Montreal"));
 
 		vcard.addUrl("http://nomis80.org").setType("home");
+
+		assertValidate(vcard.validate(VCardVersion.V4_0));
 
 		assertExample(vcard, "rfc6351-example.xml");
 	}
@@ -1135,6 +1033,7 @@ public class XCardDocumentTest {
 		assertEquals("http://nomis80.org", url.getValue());
 		assertEquals("home", url.getType());
 
+		assertValidate(vcard.validate(VCardVersion.V4_0));
 		assertWarningsLists(xcard.getParseWarnings(), 0);
 	}
 
@@ -1155,7 +1054,7 @@ public class XCardDocumentTest {
 		}
 
 		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 			//do nothing
 		}
 
@@ -1165,7 +1064,7 @@ public class XCardDocumentTest {
 		}
 
 		@Override
-		protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+		protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 			throw new EmbeddedVCardException(new VCard());
 		}
 	}

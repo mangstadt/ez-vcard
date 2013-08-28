@@ -14,7 +14,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
-import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -57,12 +56,11 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class StructuredNameTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final VCard vcard = new VCard();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
 
-	final StructuredNameType allValues = new StructuredNameType();
+	private final StructuredNameType allValues = new StructuredNameType();
 	{
 		allValues.setGiven("Jonathan");
 		allValues.setFamily("Doe");
@@ -72,7 +70,7 @@ public class StructuredNameTypeTest {
 		allValues.addSuffix("III");
 	}
 
-	final StructuredNameType emptyValues = new StructuredNameType();
+	private final StructuredNameType emptyValues = new StructuredNameType();
 	{
 		emptyValues.setGiven("Jonathan");
 		emptyValues.setFamily(null);
@@ -80,7 +78,7 @@ public class StructuredNameTypeTest {
 		emptyValues.addAdditional("John");
 	}
 
-	final StructuredNameType allEmptyValues = new StructuredNameType();
+	private final StructuredNameType allEmptyValues = new StructuredNameType();
 
 	@After
 	public void after() {
@@ -91,27 +89,24 @@ public class StructuredNameTypeTest {
 	public void marshalText() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III";
-		String actual = allValues.marshalText(version, warnings, compatibilityMode);
+		String actual = allValues.marshalText(version, compatibilityMode);
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_empty_values() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = ";Jonathan;Joh\\;nny\\,,John;;";
-		String actual = emptyValues.marshalText(version, warnings, compatibilityMode);
+		String actual = emptyValues.marshalText(version, compatibilityMode);
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_all_empty_values() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = ";;;;";
-		String actual = allEmptyValues.marshalText(version, warnings, compatibilityMode);
+		String actual = allEmptyValues.marshalText(version, compatibilityMode);
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -128,10 +123,9 @@ public class StructuredNameTypeTest {
 
 		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
 		Document actual = xe.document();
-		allValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		allValues.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -148,10 +142,9 @@ public class StructuredNameTypeTest {
 
 		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
 		Document actual = xe.document();
-		emptyValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		emptyValues.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -167,16 +160,15 @@ public class StructuredNameTypeTest {
 
 		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
 		Document actual = xe.document();
-		allEmptyValues.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		allEmptyValues.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = allValues.marshalJson(version, warnings);
+		JCardValue value = allValues.marshalJson(version);
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
@@ -192,13 +184,12 @@ public class StructuredNameTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = emptyValues.marshalJson(version, warnings);
+		JCardValue value = emptyValues.marshalJson(version);
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
@@ -214,13 +205,12 @@ public class StructuredNameTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_all_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = allEmptyValues.marshalJson(version, warnings);
+		JCardValue value = allEmptyValues.marshalJson(version);
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
@@ -236,7 +226,6 @@ public class StructuredNameTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test

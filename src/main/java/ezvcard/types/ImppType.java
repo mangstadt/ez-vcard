@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -437,7 +438,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		sb.append(write());
 	}
 
@@ -448,7 +449,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append(VCardDataType.URI, write());
 	}
 
@@ -476,13 +477,20 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		return JCardValue.single(VCardDataType.URI, write());
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		parse(value.getSingleValued());
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (uri == null) {
+			warnings.add("Property value is null.");
+		}
 	}
 
 	private void parse(String value) {

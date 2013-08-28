@@ -82,6 +82,21 @@ public class TimezoneTypeTest {
 		warnings.clear();
 	}
 
+	@Test
+	public void validate() {
+		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, offset.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, offset.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, offset.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(1, text.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, text.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, text.validate(VCardVersion.V4_0, vcard));
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void setOffset_minute_less_than_0() {
 		new TimezoneType().setOffset(0, -1);
@@ -139,182 +154,165 @@ public class TimezoneTypeTest {
 
 	public void marshalSubTypes_offset_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = offset.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = offset.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_offset_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = offset.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = offset.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
 		assertNull(subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_offset_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = offset.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = offset.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals(VCardDataType.UTC_OFFSET, subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = text.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = text.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = text.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = text.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals(VCardDataType.TEXT, subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_text_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = text.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = text.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_offset_and_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_offset_and_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_offset_and_text_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_offset_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = offset.marshalText(version, warnings, compatibilityMode);
+		String actual = offset.marshalText(version, compatibilityMode);
 
 		assertEquals(offsetStrBasic, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_offset_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		String actual = offset.marshalText(version, warnings, compatibilityMode);
+		String actual = offset.marshalText(version, compatibilityMode);
 
 		assertEquals(offsetStrExtended, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_offset_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = offset.marshalText(version, warnings, compatibilityMode);
+		String actual = offset.marshalText(version, compatibilityMode);
 
 		assertEquals(offsetStrBasic, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		text.marshalText(version, warnings, compatibilityMode);
+		text.marshalText(version, compatibilityMode);
 	}
 
 	@Test
 	public void marshalText_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		String actual = text.marshalText(version, warnings, compatibilityMode);
+		String actual = text.marshalText(version, compatibilityMode);
 
 		assertEquals(textStr, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_text_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = text.marshalText(version, warnings, compatibilityMode);
+		String actual = text.marshalText(version, compatibilityMode);
 
 		assertEquals(textStr, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_offset_and_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = offsetAndText.marshalText(version, warnings, compatibilityMode);
+		String actual = offsetAndText.marshalText(version, compatibilityMode);
 
 		assertEquals(offsetStrBasic, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_offset_and_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		String actual = offsetAndText.marshalText(version, warnings, compatibilityMode);
+		String actual = offsetAndText.marshalText(version, compatibilityMode);
 
 		assertEquals(offsetStrExtended, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_offset_and_text_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = offsetAndText.marshalText(version, warnings, compatibilityMode);
+		String actual = offsetAndText.marshalText(version, compatibilityMode);
 
 		assertEquals(textStr, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_no_offset_or_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		empty.marshalText(version, warnings, compatibilityMode);
+		empty.marshalText(version, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_no_offset_or_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		empty.marshalText(version, warnings, compatibilityMode);
+		empty.marshalText(version, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_no_offset_or_text_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalText(version, warnings, compatibilityMode);
+		empty.marshalText(version, compatibilityMode);
 	}
 
 	/////////////////////////////////////////////////
@@ -327,10 +325,9 @@ public class TimezoneTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		offset.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		offset.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -341,10 +338,9 @@ public class TimezoneTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		text.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		text.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -355,17 +351,16 @@ public class TimezoneTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		offsetAndText.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		offsetAndText.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalXml_no_offset_or_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		empty.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		empty.marshalXml(xe.element(), version, compatibilityMode);
 	}
 
 	/////////////////////////////////////////////////
@@ -373,34 +368,31 @@ public class TimezoneTypeTest {
 	@Test
 	public void marshalJson_offset() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = offset.marshalJson(version, warnings);
+		JCardValue value = offset.marshalJson(version);
 
 		assertJCardValue(VCardDataType.UTC_OFFSET, offsetStrExtended, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = text.marshalJson(version, warnings);
+		JCardValue value = text.marshalJson(version);
 
 		assertJCardValue(VCardDataType.TEXT, textStr, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_offset_and_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = offsetAndText.marshalJson(version, warnings);
+		JCardValue value = offsetAndText.marshalJson(version);
 
 		assertJCardValue(VCardDataType.TEXT, textStr, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalJson_no_offset_or_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalJson(version, warnings);
+		empty.marshalJson(version);
 	}
 
 	/////////////////////////////////////////////////

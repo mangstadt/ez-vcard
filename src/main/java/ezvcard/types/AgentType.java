@@ -7,6 +7,8 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.ValidationWarnings;
+import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
@@ -148,7 +150,7 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (url != null) {
 			VCardDataType vp = (version == VCardVersion.V2_1) ? VCardDataType.URL : VCardDataType.URI;
 			copy.setValue(vp);
@@ -158,14 +160,18 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		if (url != null) {
 			sb.append(url);
-		} else if (vcard != null) {
-			throw new EmbeddedVCardException(vcard);
-		} else {
-			throw new SkipMeException("Property has neither a URL nor an embedded vCard.");
+			return;
 		}
+
+		if (vcard != null) {
+			throw new EmbeddedVCardException(vcard);
+		}
+
+		//don't write an empty value because parsers could interpret that as there being an embedded vCard on the next line
+		throw new SkipMeException("Property has neither a URL nor an embedded vCard.");
 	}
 
 	@Override
@@ -188,6 +194,25 @@ public class AgentType extends VCardType {
 				setUrl(href);
 			} else {
 				setUrl(element.value());
+			}
+		}
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (url == null && this.vcard == null) {
+			warnings.add("Property has neither a URL nor an embedded vCard.");
+		}
+
+		if (this.vcard != null) {
+			ValidationWarnings validationWarnings = this.vcard.validate(version);
+			for (WarningsGroup group : validationWarnings) {
+				VCardType property = group.getProperty();
+				String prefix = (property == null) ? "" : "[" + property.getClass().getSimpleName() + "]: ";
+
+				for (String warning : group.getMessages()) {
+					warnings.add(prefix + warning);
+				}
 			}
 		}
 	}

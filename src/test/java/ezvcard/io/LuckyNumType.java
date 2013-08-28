@@ -55,7 +55,7 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}
@@ -63,7 +63,7 @@ public class LuckyNumType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (luckyNum == 13) {
 			throw new SkipMeException("Invalid lucky number.");
 		}

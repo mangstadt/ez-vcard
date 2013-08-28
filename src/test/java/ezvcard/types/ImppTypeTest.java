@@ -16,6 +16,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -58,17 +59,30 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class ImppTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final String uri = "aim:john.doe@aol.com";
-	final String badUri = ":::";
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final ImppType impp = new ImppType(uri);
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCard vcard = new VCard();
+	private final String uri = "aim:john.doe@aol.com";
+	private final String badUri = ":::";
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final ImppType impp = new ImppType(uri);
 
 	@After
 	public void after() {
 		warnings.clear();
 		subTypes.clear();
+	}
+
+	@Test
+	public void validate() {
+		ImppType empty = new ImppType();
+		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(1, impp.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, impp.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, impp.validate(VCardVersion.V4_0, vcard));
 	}
 
 	@Test
@@ -186,16 +200,15 @@ public class ImppTypeTest {
 	@Test
 	public void marshalText() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = impp.marshalText(version, warnings, compatibilityMode);
+		String actual = impp.marshalText(version, compatibilityMode);
 		assertEquals(uri, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_no_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		ImppType impp = new ImppType();
-		impp.marshalText(version, warnings, compatibilityMode);
+		impp.marshalText(version, compatibilityMode);
 	}
 
 	@Test
@@ -206,9 +219,8 @@ public class ImppTypeTest {
 		Document expected = xe.document();
 		xe = new XCardElement(ImppType.NAME);
 		Document actual = xe.document();
-		impp.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		impp.marshalXml(xe.element(), version, compatibilityMode);
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -216,23 +228,22 @@ public class ImppTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		ImppType impp = new ImppType();
 		XCardElement xe = new XCardElement(ImppType.NAME);
-		impp.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		impp.marshalXml(xe.element(), version, compatibilityMode);
 	}
 
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = impp.marshalJson(version, warnings);
+		JCardValue value = impp.marshalJson(version);
 
 		assertJCardValue(VCardDataType.URI, uri, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalJson_no_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		ImppType impp = new ImppType();
-		impp.marshalJson(version, warnings);
+		impp.marshalJson(version);
 	}
 
 	@Test

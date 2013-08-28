@@ -242,7 +242,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		MediaTypeParameter contentType = this.contentType;
 		if (contentType == null) {
 			contentType = new MediaTypeParameter(null, null, null);
@@ -290,7 +290,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		sb.append(write(version));
 	}
 
@@ -301,7 +301,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append(VCardDataType.URI, write(parent.version()));
 	}
 
@@ -341,7 +341,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		return JCardValue.single(VCardDataType.URI, write(version));
 	}
 
@@ -349,6 +349,13 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
 		parse(valueStr, version, warnings, CompatibilityMode.RFC);
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (url == null && data == null) {
+			warnings.add("Property has neither a URL nor binary data attached to it.");
+		}
 	}
 
 	/**

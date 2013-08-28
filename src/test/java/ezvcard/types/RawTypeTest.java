@@ -54,12 +54,11 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class RawTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final String propertyValue = "value;value";
-	final String propertyValueEscaped = "value\\;value";
-	final RawTypeImpl type = new RawTypeImpl(propertyValue);
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final String propertyValue = "value;value";
+	private final RawTypeImpl type = new RawTypeImpl(propertyValue);
 
 	@After
 	public void after() {
@@ -69,9 +68,8 @@ public class RawTypeTest {
 	@Test
 	public void marshalText() {
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = type.marshalText(version, warnings, compatibilityMode);
+		String actual = type.marshalText(version, compatibilityMode);
 		assertEquals(propertyValue, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -82,18 +80,16 @@ public class RawTypeTest {
 		Document expected = xe.document();
 		xe = new XCardElement(RawTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
-		type.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		type.marshalXml(xe.element(), version, compatibilityMode);
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = type.marshalJson(version, warnings);
+		JCardValue value = type.marshalJson(version);
 
 		assertJCardValue(null, propertyValue, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test

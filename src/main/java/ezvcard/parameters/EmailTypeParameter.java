@@ -2,6 +2,7 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
+import ezvcard.VCardVersion;
 import ezvcard.types.EmailType;
 
 /*
@@ -40,86 +41,86 @@ import ezvcard.types.EmailType;
  * </p>
  * @author Michael Angstadt
  */
-public class EmailTypeParameter extends VCardParameter {
+public class EmailTypeParameter extends VersionedVCardParameter {
 	private static final VCardParameterCaseClasses<EmailTypeParameter> enums = new VCardParameterCaseClasses<EmailTypeParameter>(EmailTypeParameter.class);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
-	public static final EmailTypeParameter INTERNET = new EmailTypeParameter("internet");
+	public static final EmailTypeParameter INTERNET = new EmailTypeParameter("internet", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
-	public static final EmailTypeParameter X400 = new EmailTypeParameter("x400");
+	public static final EmailTypeParameter X400 = new EmailTypeParameter("x400", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
 	 */
-	public static final EmailTypeParameter PREF = new EmailTypeParameter("pref");
+	public static final EmailTypeParameter PREF = new EmailTypeParameter("pref", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter AOL = new EmailTypeParameter("aol");
+	public static final EmailTypeParameter AOL = new EmailTypeParameter("aol", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter APPLELINK = new EmailTypeParameter("applelink");
+	public static final EmailTypeParameter APPLELINK = new EmailTypeParameter("applelink", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter ATTMAIL = new EmailTypeParameter("attmail");
+	public static final EmailTypeParameter ATTMAIL = new EmailTypeParameter("attmail", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter CIS = new EmailTypeParameter("cis");
+	public static final EmailTypeParameter CIS = new EmailTypeParameter("cis", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter EWORLD = new EmailTypeParameter("eworld");
+	public static final EmailTypeParameter EWORLD = new EmailTypeParameter("eworld", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter IBMMAIL = new EmailTypeParameter("ibmmail");
+	public static final EmailTypeParameter IBMMAIL = new EmailTypeParameter("ibmmail", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter MCIMAIL = new EmailTypeParameter("mcimail");
+	public static final EmailTypeParameter MCIMAIL = new EmailTypeParameter("mcimail", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter POWERSHARE = new EmailTypeParameter("powershare");
+	public static final EmailTypeParameter POWERSHARE = new EmailTypeParameter("powershare", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter PRODIGY = new EmailTypeParameter("prodigy");
+	public static final EmailTypeParameter PRODIGY = new EmailTypeParameter("prodigy", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
 	 */
-	public static final EmailTypeParameter TLX = new EmailTypeParameter("tlx");
+	public static final EmailTypeParameter TLX = new EmailTypeParameter("tlx", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final EmailTypeParameter HOME = new EmailTypeParameter("home");
+	public static final EmailTypeParameter HOME = new EmailTypeParameter("home", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final EmailTypeParameter WORK = new EmailTypeParameter("work");
+	public static final EmailTypeParameter WORK = new EmailTypeParameter("work", VCardVersion.V4_0);
 
-	private EmailTypeParameter(String value) {
-		super(value);
+	private EmailTypeParameter(String value, VCardVersion... supportedVersions) {
+		super(value, supportedVersions);
 	}
 
 	/**

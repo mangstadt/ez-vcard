@@ -146,7 +146,7 @@ public class LanguageType extends TextType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append(VCardDataType.LANGUAGE_TAG, getValue());
 	}
 
@@ -156,7 +156,7 @@ public class LanguageType extends TextType implements HasAltId {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		return JCardValue.single(VCardDataType.LANGUAGE_TAG, value);
 	}
 }
