@@ -357,6 +357,8 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
+	 * @throws IllegalStateException if the parameter value is malformed and
+	 * cannot be parsed
 	 * @return the preference value or null if it doesn't exist or null if it
 	 * couldn't be parsed into a number
 	 */
@@ -369,7 +371,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 		try {
 			return Integer.valueOf(pref);
 		} catch (NumberFormatException e) {
-			return null;
+			throw new IllegalStateException(PREF + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
 		}
 	}
 
@@ -485,6 +487,8 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
+	 * @throws IllegalStateException if the parameter value is malformed and
+	 * cannot be parsed
 	 * @return the latitude (index 0) and longitude (index 1) or null if not
 	 * present or null if the parameter value was in an incorrect format
 	 */
@@ -498,7 +502,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 			GeoUri geoUri = new GeoUri(value);
 			return new double[] { geoUri.getCoordA(), geoUri.getCoordB() };
 		} catch (IllegalArgumentException e) {
-			return null;
+			throw new IllegalStateException(GEO + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
 		}
 	}
 
@@ -604,6 +608,8 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
+	 * @throws IllegalStateException if the parameter value is malformed and
+	 * cannot be parsed
 	 * @return the PID values or empty set if there are none. Index 0 is the
 	 * local ID and index 1 is the ID used to reference the CLIENTPIDMAP
 	 * property. Index 0 will never be null, but index 1 may be null.
@@ -612,16 +618,13 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 		List<String> values = get(PID);
 		List<Integer[]> pids = new ArrayList<Integer[]>(values.size());
 		for (String value : values) {
+			String split[] = value.split("\\.");
 			try {
-				String split[] = value.split("\\.");
-				Integer pid[] = new Integer[2];
-				pid[0] = Integer.valueOf(split[0]);
-				if (split.length > 1) {
-					pid[1] = Integer.valueOf(split[1]);
-				}
-				pids.add(pid);
+				Integer localId = Integer.valueOf(split[0]);
+				Integer clientPidMapRef = (split.length > 1) ? Integer.valueOf(split[1]) : null;
+				pids.add(new Integer[] { localId, clientPidMapRef });
 			} catch (NumberFormatException e) {
-				//skip
+				throw new IllegalStateException(PID + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
 			}
 		}
 		return pids;
@@ -754,6 +757,8 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * <p>
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 * </p>
+	 * @throws IllegalStateException if the parameter value is malformed and
+	 * cannot be parsed
 	 * @return the INDEX value or null if it doesn't exist or null if it
 	 * couldn't be parsed into a number
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -767,7 +772,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 		try {
 			return Integer.valueOf(index);
 		} catch (NumberFormatException e) {
-			return null;
+			throw new IllegalStateException(INDEX + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
 		}
 	}
 

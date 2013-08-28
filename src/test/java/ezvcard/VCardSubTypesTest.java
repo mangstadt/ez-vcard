@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /*
@@ -45,42 +46,47 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class VCardSubTypesTest {
+	private VCardSubTypes subTypes;
+
+	@Before
+	public void before() {
+		subTypes = new VCardSubTypes();
+	}
+
 	@Test
 	public void case_insensitive() {
 		//tests to make sure sanitizeKey() is implemented correctly
 		//ListMultimapTest tests the rest of the get/put/remove methods
-		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.put("NUMBERS", "1");
 		assertEquals("1", subTypes.first("numbers"));
 	}
 
 	@Test
 	public void getPref() {
-		VCardSubTypes subTypes = new VCardSubTypes();
-
-		subTypes.replace("PREF", "1");
-		assertIntEquals(1, subTypes.getPref());
-
-		subTypes.replace("PREF", "invalid");
 		assertNull(subTypes.getPref());
+		subTypes.put("PREF", "1");
+		assertIntEquals(1, subTypes.getPref());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void getPref_malformed() {
+		subTypes.put("PREF", "invalid");
+		subTypes.getPref();
 	}
 
 	@Test
 	public void setPref() {
-		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setPref(1);
 		assertEquals("1", subTypes.first("PREF"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setPref_too_low() {
-		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setPref(-1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setPref_too_high() {
-		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setPref(101);
 	}
 
@@ -89,7 +95,7 @@ public class VCardSubTypesTest {
 	 */
 	@Test
 	public void geo() {
-		VCardSubTypes subTypes = new VCardSubTypes();
+		assertNull(subTypes.getGeo());
 		subTypes.setGeo(-10.98887888, 20.12344111);
 
 		//make sure it builds the correct text value
@@ -107,12 +113,18 @@ public class VCardSubTypesTest {
 		}
 	}
 
+	@Test(expected = IllegalStateException.class)
+	public void geo_malformed() {
+		subTypes.put("GEO", "invalid");
+		subTypes.getGeo();
+	}
+
 	/**
 	 * Make sure it handles PID values correctly.
 	 */
 	@Test
 	public void pid() {
-		VCardSubTypes subTypes = new VCardSubTypes();
+		assertTrue(subTypes.getPids().isEmpty());
 		subTypes.addPid(1);
 		subTypes.addPid(2, 1);
 
@@ -130,39 +142,44 @@ public class VCardSubTypesTest {
 		assertFalse(it.hasNext());
 	}
 
+	@Test(expected = IllegalStateException.class)
+	public void pid_malformed() {
+		subTypes.put("PID", "1.1");
+		subTypes.put("PID", "invalid");
+		subTypes.getPids();
+	}
+
 	@Test
 	public void getIndex() {
-		VCardSubTypes subTypes = new VCardSubTypes();
-
-		subTypes.replace("INDEX", "1");
-		assertIntEquals(1, subTypes.getIndex());
-
-		subTypes.replace("INDEX", "invalid");
 		assertNull(subTypes.getIndex());
+		subTypes.put("INDEX", "1");
+		assertIntEquals(1, subTypes.getIndex());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void getIndex_malformed() {
+		subTypes.put("INDEX", "invalid");
+		subTypes.getIndex();
 	}
 
 	@Test
 	public void setIndex() {
-		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setIndex(1);
 		assertEquals("1", subTypes.first("INDEX"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setIndex_negative() {
-		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setIndex(-1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setIndex_zero() {
-		VCardSubTypes subTypes = new VCardSubTypes();
 		subTypes.setIndex(0);
 	}
 
 	@Test
 	public void sortAs() {
-		VCardSubTypes subTypes = new VCardSubTypes();
 		assertTrue(subTypes.getSortAs().isEmpty());
 
 		subTypes = new VCardSubTypes();
