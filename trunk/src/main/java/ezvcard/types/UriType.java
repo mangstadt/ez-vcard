@@ -66,7 +66,7 @@ public class UriType extends TextType {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append(VCardDataType.URI, getValue());
 	}
 
@@ -81,7 +81,7 @@ public class UriType extends TextType {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		return JCardValue.single(VCardDataType.URI, value);
 	}
 }

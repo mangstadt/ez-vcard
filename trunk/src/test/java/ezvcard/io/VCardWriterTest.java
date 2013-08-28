@@ -1,17 +1,14 @@
 package ezvcard.io;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringWriter;
-import java.util.List;
 
 import org.junit.Test;
 
-import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
@@ -25,14 +22,13 @@ import ezvcard.types.FormattedNameType;
 import ezvcard.types.GenderType;
 import ezvcard.types.GeoType;
 import ezvcard.types.KeyType;
-import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
-import ezvcard.types.MemberType;
 import ezvcard.types.NoteType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
 import ezvcard.types.TimezoneType;
+import ezvcard.types.VCardType;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 
@@ -93,167 +89,6 @@ public class VCardWriterTest {
 		//@formatter:on
 
 		assertEquals(actual, expected);
-	}
-
-	@Test
-	public void check_supported_versions() throws Throwable {
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		StructuredNameType n = new StructuredNameType();
-		n.setGiven("John");
-		n.setFamily("Doe");
-		vcard.setStructuredName(n);
-		vcard.setMailer("Thunderbird");
-
-		//all properties support the version
-		{
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertTrue(warnings.isEmpty());
-
-			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
-			assertEquals("Thunderbird", parsedVCard.getMailer().getValue());
-		}
-
-		//one property does not support the version
-		{
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertWarnings(1, warnings);
-
-			//property not written to vCard
-			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
-			assertNull(parsedVCard.getMailer());
-		}
-	}
-
-	@Test
-	public void required_properties_21() throws Throwable {
-		VCardVersion version = VCardVersion.V2_1;
-
-		//without N
-		{
-			VCard vcard = new VCard();
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, version);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertWarnings(1, warnings);
-		}
-
-		//with N
-		{
-			VCard vcard = new VCard();
-			StructuredNameType n = new StructuredNameType();
-			n.setFamily("Joe");
-			n.setGiven("John");
-			vcard.setStructuredName(n);
-
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, version);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertTrue(warnings.isEmpty());
-		}
-	}
-
-	@Test
-	public void required_properties_30() throws Throwable {
-		VCardVersion version = VCardVersion.V3_0;
-
-		//without N or FN
-		{
-			VCard vcard = new VCard();
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, version);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertWarnings(2, warnings);
-		}
-
-		//with N
-		{
-			VCard vcard = new VCard();
-			StructuredNameType n = new StructuredNameType();
-			n.setFamily("Joe");
-			n.setGiven("John");
-			vcard.setStructuredName(n);
-
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, version);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertWarnings(1, warnings);
-		}
-
-		//with FN
-		{
-			VCard vcard = new VCard();
-			vcard.setFormattedName("John Doe");
-
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, version);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertWarnings(1, warnings);
-		}
-
-		//with both
-		{
-			VCard vcard = new VCard();
-			StructuredNameType n = new StructuredNameType();
-			n.setFamily("Joe");
-			n.setGiven("John");
-			vcard.setStructuredName(n);
-			vcard.setFormattedName("John Doe");
-
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, version);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertTrue(warnings.isEmpty());
-		}
-	}
-
-	@Test
-	public void required_properties_40() throws Throwable {
-		VCardVersion version = VCardVersion.V4_0;
-
-		//without FN
-		{
-			VCard vcard = new VCard();
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, version);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertWarnings(1, warnings);
-		}
-
-		//with FN
-		{
-			VCard vcard = new VCard();
-			vcard.setFormattedName("John Doe");
-
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, version);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertTrue(warnings.isEmpty());
-		}
 	}
 
 	@Test
@@ -373,7 +208,6 @@ public class VCardWriterTest {
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
-		assertWarnings(3, vcw.getWarnings()); //each vCard is missing the N property, which is required for 2.1
 		String actual = sw.toString();
 
 		//@formatter:off
@@ -432,7 +266,6 @@ public class VCardWriterTest {
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
-		assertWarnings(3, vcw.getWarnings()); //each vCard is missing the N property, which is required for 3.0
 		String actual = sw.toString();
 
 		//@formatter:off
@@ -524,6 +357,7 @@ public class VCardWriterTest {
 		"VERSION:4.0\r\n" +
 		"ADR;LABEL=\"123 Main St.\\nAustin, TX 12345\";TYPE=home:;;123 Main St.;Austin;TX;12345;\r\n" +
 		"ADR;TYPE=work:;;222 Broadway;New York;NY;99999;\r\n" +
+		"LABEL;TYPE=parcel:22 Spruce Ln.\\nChicago\\, IL 11111\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -557,8 +391,6 @@ public class VCardWriterTest {
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 
-		assertWarnings(1, vcw.getWarnings());
-
 		String actual = sw.toString();
 
 		//@formatter:off
@@ -571,70 +403,6 @@ public class VCardWriterTest {
 		//@formatter:on
 
 		assertEquals(actual, expected);
-	}
-
-	@Test
-	public void kind_and_member_combination() throws Throwable {
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		vcard.addMember(new MemberType("http://uri.com"));
-
-		//correct KIND
-		{
-			vcard.setKind(KindType.group());
-
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertTrue(warnings.isEmpty());
-
-			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
-			assertEquals("group", parsedVCard.getKind().getValue());
-			assertEquals(1, parsedVCard.getMembers().size());
-			assertEquals("http://uri.com", parsedVCard.getMembers().get(0).getUri());
-		}
-
-		//wrong KIND
-		{
-			vcard.setKind(KindType.individual());
-
-			StringWriter sw = new StringWriter();
-			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
-			vcw.write(vcard);
-
-			List<String> warnings = vcw.getWarnings();
-			assertWarnings(1, warnings);
-
-			VCard parsedVCard = Ezvcard.parse(sw.toString()).first();
-			assertEquals("individual", parsedVCard.getKind().getValue());
-			assertTrue(parsedVCard.getMembers().isEmpty());
-		}
-	}
-
-	@Test
-	public void invalid_parameter_chars() throws Throwable {
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe").getSubTypes().put("X-TEST", "one" + ((char) 28) + "two");
-
-		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
-		vcw.setAddProdId(false);
-		vcw.write(vcard);
-
-		String actual = sw.toString();
-
-		//@formatter:off
-		String expected =
-		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
-		"FN;X-TEST=onetwo:John Doe\r\n" +
-		"END:VCARD\r\n";
-		//@formatter:on
-
-		assertEquals(actual, expected);
-		assertWarnings(1, vcw.getWarnings());
 	}
 
 	@Test
@@ -705,6 +473,8 @@ public class VCardWriterTest {
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
+		assertValidate(vcard.validate(VCardVersion.V4_0));
+
 		StringWriter sw = new StringWriter();
 		VCardWriter writer = new VCardWriter(sw, VCardVersion.V4_0);
 		writer.setAddProdId(false);
@@ -771,6 +541,8 @@ public class VCardWriterTest {
 
 			vcard.addUrl("http://home.earthlink.net/÷fdawson");
 
+			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
+
 			writer.write(vcard);
 		}
 
@@ -794,6 +566,8 @@ public class VCardWriterTest {
 			vcard.addTelephoneNumber("+1-415-528-4164", TelephoneTypeParameter.FAX, TelephoneTypeParameter.WORK);
 
 			vcard.addEmail("howes@netscape.com", EmailTypeParameter.INTERNET);
+
+			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
 
 			writer.write(vcard);
 		}

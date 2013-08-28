@@ -356,30 +356,6 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_one_with_warnings() throws Exception {
-		VCard vcard = new VCard();
-		vcard.setVersion(VCardVersion.V4_0);
-		//missing "FN" property will cause a warning
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.write(vcard).warnings(warnings).go();
-
-		assertFalse(warnings.isEmpty());
-	}
-
-	@Test
-	public void write_one_without_warnings() throws Exception {
-		VCard vcard = new VCard();
-		vcard.setVersion(VCardVersion.V4_0);
-		vcard.setFormattedName("John Doe");
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.write(vcard).warnings(warnings).go();
-
-		assertTrue(warnings.isEmpty());
-	}
-
-	@Test
 	public void write_multiple() throws Exception {
 		VCard vcard1 = new VCard();
 		vcard1.setVersion(VCardVersion.V2_1);
@@ -393,27 +369,6 @@ public class EzvcardTest {
 
 		String actual = Ezvcard.write(vcard1, vcard2, vcard3).go();
 		assertTrue(actual.matches("(?s)BEGIN:VCARD.*?VERSION:2\\.1.*?FN:John Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:3\\.0.*?FN:Jane Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:4\\.0.*?FN:Janet Doe.*?END:VCARD.*"));
-	}
-
-	@Test
-	public void write_multiple_warnings() throws Exception {
-		VCard vcard1 = new VCard();
-		vcard1.setVersion(VCardVersion.V2_1);
-		//missing "N" property will cause a warning
-
-		VCard vcard2 = new VCard();
-		vcard2.setVersion(VCardVersion.V3_0);
-		//missing "N" and "FN" properties will cause 2 warnings
-
-		VCard vcard3 = new VCard();
-		vcard3.setVersion(VCardVersion.V4_0);
-		vcard3.setFormattedName("John Doe");
-		//no warnings should be generated
-
-		List<List<String>> warnings = new ArrayList<List<String>>();
-		Ezvcard.write(vcard1, vcard2, vcard3).warnings(warnings).go();
-
-		assertWarningsLists(warnings, 1, 2, 0);
 	}
 
 	@Test
@@ -502,28 +457,6 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeXml_one_with_warnings() throws Exception {
-		VCard vcard = new VCard();
-		//missing "FN" property will cause a warning
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.writeXml(vcard).warnings(warnings).go();
-
-		assertFalse(warnings.isEmpty());
-	}
-
-	@Test
-	public void writeXml_one_without_warnings() throws Exception {
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.writeXml(vcard).warnings(warnings).go();
-
-		assertTrue(warnings.isEmpty());
-	}
-
-	@Test
 	public void writeXml_multiple() throws Exception {
 		VCard vcard1 = new VCard();
 		vcard1.setFormattedName("John Doe");
@@ -538,23 +471,6 @@ public class EzvcardTest {
 		assertEquals(vcard1.getFormattedName().getValue(), nl.item(0).getTextContent());
 		assertEquals(vcard2.getFormattedName().getValue(), nl.item(1).getTextContent());
 		assertEquals(vcard3.getFormattedName().getValue(), nl.item(2).getTextContent());
-	}
-
-	@Test
-	public void writeXml_multiple_warnings() throws Exception {
-		VCard vcard1 = new VCard();
-		//missing "FN" property will cause a warning
-
-		VCard vcard2 = new VCard();
-		//missing "FN" property will cause a warning
-
-		VCard vcard3 = new VCard();
-		vcard3.setFormattedName("Janet Doe");
-
-		List<List<String>> warnings = new ArrayList<List<String>>();
-		Ezvcard.writeXml(vcard1, vcard2, vcard3).warnings(warnings).go();
-
-		assertWarningsLists(warnings, 1, 1, 0);
 	}
 
 	@Test
@@ -628,27 +544,6 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeJson_one_with_warnings() {
-		VCard vcard = new VCard();
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.writeJson(vcard).warnings(warnings).go();
-
-		assertEquals(1, warnings.size());
-	}
-
-	@Test
-	public void writeJson_one_without_warnings() {
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.writeJson(vcard).warnings(warnings).go();
-
-		assertEquals(0, warnings.size());
-	}
-
-	@Test
 	public void writeJson_multiple() {
 		VCard vcard1 = new VCard();
 		vcard1.setFormattedName(new FormattedNameType("John Doe"));
@@ -682,24 +577,6 @@ public class EzvcardTest {
 		//@formatter:on
 		String actual = Ezvcard.writeJson(vcard1, vcard2, vcard3).prodId(false).go();
 		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void writeJson_multiple_warnings() {
-		VCard vcard1 = new VCard();
-		//missing "FN" property will cause a warning
-
-		VCard vcard2 = new VCard();
-		//missing "FN" property will cause a warning
-
-		VCard vcard3 = new VCard();
-		vcard3.setFormattedName("John Doe");
-		//no warnings should be generated
-
-		List<List<String>> warnings = new ArrayList<List<String>>();
-		Ezvcard.writeJson(vcard1, vcard2, vcard3).warnings(warnings).go();
-
-		assertWarningsLists(warnings, 1, 1, 0);
 	}
 
 	@Test

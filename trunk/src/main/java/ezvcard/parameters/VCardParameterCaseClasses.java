@@ -2,6 +2,7 @@ package ezvcard.parameters;
 
 import java.lang.reflect.Constructor;
 
+import ezvcard.VCardVersion;
 import ezvcard.util.CaseClasses;
 
 /*
@@ -42,13 +43,21 @@ public class VCardParameterCaseClasses<T extends VCardParameter> extends CaseCla
 
 	@Override
 	protected T create(String value) {
+		//reflection: return new ClassName(value);
 		try {
-			//reflection: return new ClassName(value);
+			//try (String) constructor
 			Constructor<T> constructor = clazz.getDeclaredConstructor(String.class);
 			constructor.setAccessible(true);
 			return constructor.newInstance(value);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			try {
+				//try (String, VCardVersion...) constructor
+				Constructor<T> constructor = clazz.getDeclaredConstructor(String.class, VCardVersion[].class);
+				constructor.setAccessible(true);
+				return constructor.newInstance(value, new VCardVersion[] {});
+			} catch (Exception e2) {
+				throw new RuntimeException(e2);
+			}
 		}
 	}
 

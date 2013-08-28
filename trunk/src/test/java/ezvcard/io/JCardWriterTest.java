@@ -1,6 +1,6 @@
 package ezvcard.io;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,8 +26,6 @@ import ezvcard.types.BirthdayType;
 import ezvcard.types.GenderType;
 import ezvcard.types.GeoType;
 import ezvcard.types.KeyType;
-import ezvcard.types.KindType;
-import ezvcard.types.MemberType;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
 import ezvcard.types.TimezoneType;
@@ -92,7 +90,6 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
-		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
@@ -129,7 +126,6 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
-		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
@@ -149,7 +145,6 @@ public class JCardWriterTest {
 		Matcher m = p.matcher(sw.toString());
 		assertTrue(m.find());
 		assertFalse(m.find());
-		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
@@ -182,7 +177,6 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
-		assertWarnings(0, writer.getWarnings());
 	}
 
 	@Test
@@ -191,20 +185,6 @@ public class JCardWriterTest {
 		JCardWriter writer = new JCardWriter(sw);
 		writer.close();
 		assertEquals("", sw.toString());
-		assertWarnings(0, writer.getWarnings());
-	}
-
-	@Test
-	public void check_required_properties() throws Throwable {
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
-
-		VCard vcard = new VCard();
-		writer.write(vcard);
-		assertWarnings(1, writer.getWarnings()); //FN is required
-
-		writer.close();
 	}
 
 	@Test
@@ -217,7 +197,6 @@ public class JCardWriterTest {
 		vcard.setFormattedName("John Doe");
 		vcard.addExtendedType("x-type", "value");
 		writer.write(vcard);
-		assertWarnings(0, writer.getWarnings());
 
 		writer.close();
 
@@ -244,7 +223,6 @@ public class JCardWriterTest {
 		vcard.setFormattedName("John Doe");
 		vcard.addType(new TypeForTesting(JCardValue.single(VCardDataType.TEXT, "value")));
 		writer.write(vcard);
-		assertWarnings(0, writer.getWarnings());
 
 		writer.close();
 
@@ -273,7 +251,6 @@ public class JCardWriterTest {
 		prop.luckyNum = 13;
 		vcard.addType(prop);
 		writer.write(vcard);
-		assertWarnings(1, writer.getWarnings());
 
 		writer.close();
 
@@ -287,88 +264,6 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
-	}
-
-	@Test
-	public void unsupported_version() throws Throwable {
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
-
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		vcard.setMailer("mailer");
-		writer.write(vcard);
-		assertWarnings(1, writer.getWarnings());
-
-		writer.close();
-
-		//@formatter:off
-		String expected =
-		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{},\"text\",\"John Doe\"]" +
-		  "]" +
-		"]";
-		//@formatter:on
-		assertEquals(expected, sw.toString());
-	}
-
-	@Test
-	public void kind_and_member_combination() throws Throwable {
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		vcard.addMember(new MemberType("http://uri.com"));
-
-		//correct KIND
-		{
-			vcard.setKind(KindType.group());
-
-			StringWriter sw = new StringWriter();
-			JCardWriter writer = new JCardWriter(sw);
-			writer.setAddProdId(false);
-			writer.write(vcard);
-			writer.close();
-
-			//@formatter:off
-			String expected =
-			"[\"vcard\"," +
-			  "[" +
-			    "[\"version\",{},\"text\",\"4.0\"]," +
-			    "[\"fn\",{},\"text\",\"John Doe\"]," +
-			    "[\"member\",{},\"uri\",\"http://uri.com\"]," +
-			    "[\"kind\",{},\"text\",\"group\"]" +
-			  "]" +
-			"]";
-			//@formatter:on
-			assertEquals(expected, sw.toString());
-			assertWarnings(0, writer.getWarnings());
-		}
-
-		//wrong KIND
-		{
-			vcard.setKind(KindType.individual());
-
-			StringWriter sw = new StringWriter();
-			JCardWriter writer = new JCardWriter(sw);
-			writer.setAddProdId(false);
-			writer.write(vcard);
-			writer.close();
-
-			//@formatter:off
-			String expected =
-			"[\"vcard\"," +
-			  "[" +
-			    "[\"version\",{},\"text\",\"4.0\"]," +
-			    "[\"fn\",{},\"text\",\"John Doe\"]," +
-			    "[\"kind\",{},\"text\",\"individual\"]" +
-			  "]" +
-			"]";
-			//@formatter:on
-			assertEquals(expected, sw.toString());
-			assertWarnings(1, writer.getWarnings());
-		}
 	}
 
 	@Test
@@ -439,6 +334,8 @@ public class JCardWriterTest {
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
+		assertValidate(vcard.validate(VCardVersion.V4_0));
+
 		assertExample(vcard, "jcard-example.json", new Filter() {
 			public String filter(String json) {
 				//replace "date-and-or-time" data types with the data types ez-vcard uses
@@ -481,7 +378,7 @@ public class JCardWriterTest {
 		}
 
 		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 			//empty
 		}
 
@@ -491,7 +388,7 @@ public class JCardWriterTest {
 		}
 
 		@Override
-		protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+		protected JCardValue doMarshalJson(VCardVersion version) {
 			return value;
 		}
 	}

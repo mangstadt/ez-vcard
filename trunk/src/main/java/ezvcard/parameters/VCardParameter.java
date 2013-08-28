@@ -57,7 +57,7 @@ public class VCardParameter {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " = " + value;
+		return value;
 	}
 
 	@Override

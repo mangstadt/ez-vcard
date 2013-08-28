@@ -2,8 +2,6 @@ package ezvcard.io;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -128,6 +126,12 @@ public class JohnDoeVCard {
 
 		vcard.setRevision(RevisionType.now());
 
+		//validate vCard for version 3.0
+		System.out.println(vcard.validate(VCardVersion.V3_0));
+
+		//validate vCard for version 4.0
+		System.out.println(vcard.validate(VCardVersion.V4_0));
+
 		//write vCard
 		file = new File("john-doe.vcf");
 		writeVCard(vcard, file, VCardVersion.V3_0);
@@ -150,43 +154,21 @@ public class JohnDoeVCard {
 
 	private static void writeVCard(VCard vcard, File file, VCardVersion version) throws IOException {
 		System.out.println("Writing " + file.getName() + "...");
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.write(vcard).version(version).warnings(warnings).go(file);
-
-		System.out.println("Completed with " + warnings.size() + " warnings.");
-		for (String warning : warnings) {
-			System.out.println("* " + warning);
-		}
+		Ezvcard.write(vcard).version(version).go(file);
 	}
 
 	private static void writeXCard(VCard vcard, File file) throws IOException, TransformerException {
 		System.out.println("Writing " + file.getName() + "...");
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.writeXml(vcard).indent(2).warnings(warnings).go(file);
-
-		System.out.println("Completed with " + warnings.size() + " warnings.");
-		for (String warning : warnings) {
-			System.out.println("* " + warning);
-		}
+		Ezvcard.writeXml(vcard).indent(2).go(file);
 	}
 
 	private static void writeHCard(VCard vcard, File file) throws IOException {
 		System.out.println("Writing " + file.getName() + "...");
-
 		Ezvcard.writeHtml(vcard).go(file);
 	}
 
 	private static void writeJCard(VCard vcard, File file) throws IOException {
 		System.out.println("Writing " + file.getName() + "...");
-
-		List<String> warnings = new ArrayList<String>();
-		Ezvcard.writeJson(vcard).warnings(warnings).go(file);
-
-		System.out.println("Completed with " + warnings.size() + " warnings.");
-		for (String warning : warnings) {
-			System.out.println("* " + warning);
-		}
+		Ezvcard.writeJson(vcard).go(file);
 	}
 }

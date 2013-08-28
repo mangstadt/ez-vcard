@@ -196,7 +196,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (uri != null) {
 			copy.setValue(VCardDataType.URI);
 		} else if (text != null) {
@@ -205,7 +205,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			sb.append(uri);
 		} else if (text != null) {
@@ -226,7 +226,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			parent.append(VCardDataType.URI, uri);
 		} else if (text != null) {
@@ -252,7 +252,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		if (uri != null) {
 			return JCardValue.single(VCardDataType.URI, uri);
 		} else if (text != null) {
@@ -269,6 +269,13 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 			setText(valueStr);
 		} else {
 			setUri(valueStr);
+		}
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (uri == null && text == null) {
+			warnings.add("Property has neither a URI nor a text value associated with it.");
 		}
 	}
 }

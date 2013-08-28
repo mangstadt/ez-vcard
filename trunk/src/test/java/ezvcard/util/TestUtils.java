@@ -1,15 +1,21 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.VCardDataType;
+import ezvcard.ValidationWarnings;
+import ezvcard.ValidationWarnings.WarningsGroup;
+import ezvcard.types.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -71,6 +77,32 @@ public class TestUtils {
 	}
 
 	/**
+	 * Asserts that a validation warnings list is correct.
+	 * @param warnings the warnings list
+	 * @param expectedProperties the property objects that are expected to have
+	 * warnings. The object should be added multiple times to this vararg
+	 * parameter, depending on how many warnings it is expected to have (e.g. 3
+	 * times for 3 warnings)
+	 */
+	public static void assertValidate(ValidationWarnings warnings, VCardType... expectedProperties) {
+		Counts<VCardType> expectedCounts = new Counts<VCardType>();
+		for (VCardType expectedProperty : expectedProperties) {
+			expectedCounts.increment(expectedProperty);
+		}
+
+		Counts<Object> actualCounts = new Counts<Object>();
+		for (WarningsGroup warning : warnings) {
+			assertTrue(warning.getMessages().size() > 0);
+			for (int i = 0; i < warning.getMessages().size(); i++) {
+				VCardType property = warning.getProperty();
+				actualCounts.increment(property);
+			}
+		}
+
+		assertEquals(warnings.toString(), expectedCounts, actualCounts);
+	}
+
+	/**
 	 * Asserts the value of an {@link Integer} object.
 	 * @param expected the expected value
 	 * @param actual the actual value
@@ -123,6 +155,45 @@ public class TestUtils {
 
 		public Iterator<Object[]> iterator() {
 			return tests.iterator();
+		}
+	}
+
+	/**
+	 * Keeps a count of how many identical instances of an object there are.
+	 */
+	private static class Counts<T> {
+		private final Map<T, Integer> map = new HashMap<T, Integer>();
+
+		public void increment(T t) {
+			Integer value = getCount(t);
+			map.put(t, value++);
+		}
+
+		public Integer getCount(T t) {
+			Integer value = map.get(t);
+			return (value == null) ? 0 : value;
+		}
+
+		@Override
+		public int hashCode() {
+			return map.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Counts<?> other = (Counts<?>) obj;
+			return map.equals(other.map);
+		}
+
+		@Override
+		public String toString() {
+			return map.toString();
 		}
 	}
 

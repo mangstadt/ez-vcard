@@ -61,31 +61,31 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  * @author Michael Angstadt
  */
 public class BinaryTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final VCard vcard = new VCard();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final VCard vcard = new VCard();
 
-	final String url = "http://example.com/image.jpg";
-	final byte[] data = "data".getBytes();
-	final String base64Data = Base64.encodeBase64String(data);
-	final String dataUri = new DataUri("image/jpeg", data).toString();
+	private final String url = "http://example.com/image.jpg";
+	private final byte[] data = "data".getBytes();
+	private final String base64Data = Base64.encodeBase64String(data);
+	private final String dataUri = new DataUri("image/jpeg", data).toString();
 
-	final BinaryTypeImpl withUrl = new BinaryTypeImpl();
+	private final BinaryTypeImpl withUrl = new BinaryTypeImpl();
 	{
 		withUrl.setUrl(url, ImageTypeParameter.JPEG);
 	}
-	final BinaryTypeImpl withDataNoContentType = new BinaryTypeImpl();
+	private final BinaryTypeImpl withDataNoContentType = new BinaryTypeImpl();
 	{
 		withDataNoContentType.setData(data, null);
 	}
-	final BinaryTypeImpl withData = new BinaryTypeImpl();
+	private final BinaryTypeImpl withData = new BinaryTypeImpl();
 	{
 		withData.setData(data, ImageTypeParameter.JPEG);
 		withData.setType("work");
 	}
-	final BinaryTypeImpl empty = new BinaryTypeImpl();
-	BinaryTypeImpl binaryType;
+	private final BinaryTypeImpl empty = new BinaryTypeImpl();
+	private BinaryTypeImpl binaryType;
 
 	@Before
 	public void before() {
@@ -95,189 +95,188 @@ public class BinaryTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(1, binaryType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, binaryType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, binaryType.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, withUrl.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, withUrl.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, withUrl.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, withData.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, withData.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, withData.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalSubTypes_url_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = withUrl.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withUrl.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
 		assertEquals(VCardDataType.URL, subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_url_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = withUrl.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withUrl.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
 		assertEquals(VCardDataType.URI, subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
 		assertNull(subTypes.getMediaType());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_url_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = withUrl.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withUrl.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getValue());
 		assertNull(subTypes.getType());
 		assertEquals(ImageTypeParameter.JPEG.getMediaType(), subTypes.getMediaType());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_no_content_type_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = withDataNoContentType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withDataNoContentType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals(EncodingParameter.BASE64, subTypes.getEncoding());
 		assertNull(subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_no_content_type_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = withDataNoContentType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withDataNoContentType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertEquals(EncodingParameter.B, subTypes.getEncoding());
 		assertNull(subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_no_content_type_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = withDataNoContentType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withDataNoContentType.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(1, subTypes.size());
 		assertNull(subTypes.getEncoding());
 		assertEquals(VCardDataType.URI, subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_binary_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = withData.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withData.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
 		assertEquals(EncodingParameter.BASE64, subTypes.getEncoding());
 		assertNull(subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_binary_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = withData.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withData.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
 		assertEquals(EncodingParameter.B, subTypes.getEncoding());
 		assertNull(subTypes.getValue());
 		assertEquals(ImageTypeParameter.JPEG.getValue(), subTypes.getType());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_binary_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = withData.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = withData.marshalSubTypes(version, compatibilityMode, vcard);
 
 		assertEquals(2, subTypes.size());
 		assertNull(subTypes.getEncoding());
 		assertEquals(VCardDataType.URI, subTypes.getValue());
 		assertEquals("work", subTypes.getType());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_url_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
+		String actual = withUrl.marshalText(version, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_url_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
+		String actual = withUrl.marshalText(version, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_url_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = withUrl.marshalText(version, warnings, compatibilityMode);
+		String actual = withUrl.marshalText(version, compatibilityMode);
 
 		assertEquals(url, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_binary_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = withData.marshalText(version, warnings, compatibilityMode);
+		String actual = withData.marshalText(version, compatibilityMode);
 
 		assertEquals(base64Data, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_binary_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		String actual = withData.marshalText(version, warnings, compatibilityMode);
+		String actual = withData.marshalText(version, compatibilityMode);
 
 		assertEquals(base64Data, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_binary_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = withData.marshalText(version, warnings, compatibilityMode);
+		String actual = withData.marshalText(version, compatibilityMode);
 
 		assertEquals(dataUri, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_binary_no_content_type_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = withDataNoContentType.marshalText(version, warnings, compatibilityMode);
+		String actual = withDataNoContentType.marshalText(version, compatibilityMode);
 
 		assertEquals(new DataUri("application/octet-stream", data).toString(), actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_empty_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		empty.marshalText(version, warnings, compatibilityMode);
+		empty.marshalText(version, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_empty_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		empty.marshalText(version, warnings, compatibilityMode);
+		empty.marshalText(version, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_empty_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalText(version, warnings, compatibilityMode);
+		empty.marshalText(version, compatibilityMode);
 	}
 
 	@Test
@@ -290,10 +289,9 @@ public class BinaryTypeTest {
 		xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
 
-		withUrl.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		withUrl.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -306,10 +304,9 @@ public class BinaryTypeTest {
 		xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
 
-		withData.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		withData.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -317,31 +314,29 @@ public class BinaryTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
 
-		empty.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		empty.marshalXml(xe.element(), version, compatibilityMode);
 	}
 
 	@Test
 	public void marshalJson_url() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = withUrl.marshalJson(version, warnings);
+		JCardValue value = withUrl.marshalJson(version);
 
 		assertJCardValue(VCardDataType.URI, url, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_binary() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = withData.marshalJson(version, warnings);
+		JCardValue value = withData.marshalJson(version);
 
 		assertJCardValue(VCardDataType.URI, dataUri, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalJson_empty() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalJson(version, warnings);
+		empty.marshalJson(version);
 	}
 
 	@Test

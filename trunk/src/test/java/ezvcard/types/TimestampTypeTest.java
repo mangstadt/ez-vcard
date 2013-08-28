@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -59,13 +60,14 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TimestampTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private VCard vcard = new VCard();
+	private final VCardSubTypes subTypes = new VCardSubTypes();
 
-	final String basic = "19800605T131020Z";
-	final String extended = "1980-06-05T13:10:20Z";
-	final Date timestampDate;
+	private final String basic = "19800605T131020Z";
+	private final String extended = "1980-06-05T13:10:20Z";
+	private final Date timestampDate;
 	{
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		c.clear();
@@ -77,9 +79,9 @@ public class TimestampTypeTest {
 		c.set(Calendar.SECOND, 20);
 		timestampDate = c.getTime();
 	}
-	final TimestampType timestamp = new TimestampType("NAME", timestampDate);
-	final TimestampType noValue = new TimestampType("NAME");
-	TimestampType t;
+	private final TimestampType timestamp = new TimestampType("NAME", timestampDate);
+	private final TimestampType noValue = new TimestampType("NAME");
+	private TimestampType t;
 
 	@Before
 	public void before() {
@@ -89,18 +91,28 @@ public class TimestampTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(1, noValue.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, noValue.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, noValue.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, timestamp.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, timestamp.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, timestamp.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalText() {
 		VCardVersion version = VCardVersion.V2_1;
-		String actual = timestamp.marshalText(version, warnings, compatibilityMode);
+		String actual = timestamp.marshalText(version, compatibilityMode);
 
 		assertEquals(basic, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_no_value() {
 		VCardVersion version = VCardVersion.V2_1;
-		noValue.marshalText(version, warnings, compatibilityMode);
+		noValue.marshalText(version, compatibilityMode);
 	}
 
 	@Test
@@ -112,32 +124,30 @@ public class TimestampTypeTest {
 		xe = new XCardElement(timestamp.getTypeName().toLowerCase());
 		Document actualDoc = xe.document();
 		Element element = xe.element();
-		timestamp.marshalXml(element, version, warnings, compatibilityMode);
+		timestamp.marshalXml(element, version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalXml_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(noValue.getTypeName().toLowerCase());
-		noValue.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		noValue.marshalXml(xe.element(), version, compatibilityMode);
 	}
 
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = timestamp.marshalJson(version, warnings);
+		JCardValue value = timestamp.marshalJson(version);
 
 		assertJCardValue(VCardDataType.TIMESTAMP, extended, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalJson_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
-		noValue.marshalJson(version, warnings);
+		noValue.marshalJson(version);
 	}
 
 	@Test

@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -47,16 +48,17 @@ import ezvcard.io.CompatibilityMode;
  * @author Michael Angstadt
  */
 public class CategoriesTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final VCardSubTypes subTypes = new VCardSubTypes();
+	private final List<String> warnings = new ArrayList<String>();
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final VCard vcard = new VCard();
 
-	final CategoriesType withValues = new CategoriesType();
+	private final CategoriesType withValues = new CategoriesType();
 	{
 		withValues.addValue("One");
 		withValues.addValue("T,wo");
 		withValues.addValue("Thr;ee");
 	}
-	CategoriesType t;
+	private CategoriesType t;
 
 	@Before
 	public void before() {
@@ -66,15 +68,25 @@ public class CategoriesTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, withValues.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, withValues.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, withValues.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalText_kde() {
 		//comma delimiters are escaped for KDE
 		VCardVersion version = VCardVersion.V2_1;
 		CompatibilityMode compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
 		String expected = "One\\,T\\,wo\\,Thr\\;ee";
-		String actual = withValues.marshalText(version, warnings, compatibilityMode);
+		String actual = withValues.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -82,10 +94,9 @@ public class CategoriesTypeTest {
 		VCardVersion version = VCardVersion.V2_1;
 		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 		String expected = "One,T\\,wo,Thr\\;ee";
-		String actual = withValues.marshalText(version, warnings, compatibilityMode);
+		String actual = withValues.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test

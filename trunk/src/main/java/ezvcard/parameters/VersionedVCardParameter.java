@@ -1,9 +1,10 @@
-package ezvcard.io;
+package ezvcard.parameters;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Set;
 
 import ezvcard.VCardVersion;
-import ezvcard.types.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,28 +36,28 @@ import ezvcard.types.VCardType;
  */
 
 /**
- * An extended type class used for testing that does NOT contain XML marshalling
- * methods, nor a QName.
+ * Represents a parameter whose values are supported by a variety of different
+ * vCard versions.
  * @author Michael Angstadt
  */
-public class AgeType extends VCardType {
-	public int age;
+public class VersionedVCardParameter extends VCardParameter {
+	protected final Set<VCardVersion> supportedVersions;
 
-	public AgeType() {
-		super("X-AGE");
+	public VersionedVCardParameter(String value, VCardVersion... supportedVersions) {
+		super(value);
+		if (supportedVersions.length == 0) {
+			supportedVersions = VCardVersion.values();
+		}
+		this.supportedVersions = EnumSet.copyOf(Arrays.asList(supportedVersions));
 	}
 
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(age);
+	/**
+	 * Determines if the parameter value is supported by the given vCard
+	 * version.
+	 * @param version the vCard version
+	 * @return true if it is supported, false if not
+	 */
+	public boolean isSupported(VCardVersion version) {
+		return supportedVersions.contains(version);
 	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		age = Integer.parseInt(value);
-	}
-
-	//	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	public QName getQName();
 }

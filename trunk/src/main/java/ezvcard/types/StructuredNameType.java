@@ -241,7 +241,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalText(final StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(final StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 		List<List<String>> values = new ArrayList<List<String>>();
 		values.add(Arrays.asList(family));
 		values.add(Arrays.asList(given));
@@ -293,7 +293,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append("surname", family); //the XML element still needs to be printed if value == null
 		parent.append("given", given);
 		parent.append("additional", additional);
@@ -325,7 +325,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		List<List<?>> values = new ArrayList<List<?>>();
 		values.add(Arrays.asList(family));
 		values.add(Arrays.asList(given));

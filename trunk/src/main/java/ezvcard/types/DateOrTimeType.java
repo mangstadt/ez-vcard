@@ -204,7 +204,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		VCardDataType value = null;
 		if (text != null && version == VCardVersion.V4_0) {
 			value = VCardDataType.TEXT;
@@ -213,7 +213,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
 			if (text != null) {
 				throw new SkipMeException("Text values are not supported in vCard version " + version + ".");
@@ -250,7 +250,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
 		} else if (partialDate != null) {
@@ -302,7 +302,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		VCardDataType dataType;
 		String value;
 
@@ -341,6 +341,22 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 			setText(valueStr);
 		} else {
 			parseDate(valueStr, version, warnings);
+		}
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (date == null && partialDate == null && text == null) {
+			warnings.add("Property has no value associated with it.");
+		}
+
+		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
+			if (text != null) {
+				warnings.add("Text values are not supported in version " + version + ".");
+			}
+			if (partialDate != null) {
+				warnings.add("Reduced accuracy or truncated dates are not supported in version " + version + ".");
+			}
 		}
 	}
 

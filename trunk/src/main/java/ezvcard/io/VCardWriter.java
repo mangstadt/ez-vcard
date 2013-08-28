@@ -9,22 +9,17 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.VCardRawWriter.ProblemsListener;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.types.AddressType;
-import ezvcard.types.KindType;
 import ezvcard.types.LabelType;
-import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.VCardType;
 import ezvcard.util.VCardStringUtils;
-import ezvcard.util.org.apache.commons.codec.EncoderException;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -62,7 +57,6 @@ import ezvcard.util.org.apache.commons.codec.EncoderException;
 public class VCardWriter implements Closeable {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private boolean addProdId = true;
-	private List<String> warnings = new ArrayList<String>();
 	private final VCardRawWriter writer;
 
 	/**
@@ -156,15 +150,6 @@ public class VCardWriter implements Closeable {
 	 */
 	public VCardWriter(Writer writer, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) {
 		this.writer = new VCardRawWriter(writer, targetVersion, foldingScheme, newline);
-		this.writer.setProblemsListener(new ProblemsListener() {
-			public void onParameterValueChanged(String propertyName, String parameterName, String originalValue, String modifiedValue) {
-				addWarning("\"" + parameterName + "\" parameter contained one or more characters which are not allowed in vCard " + VCardWriter.this.writer.getVersion() + " parameter values.  These characters were removed.", propertyName);
-			}
-
-			public void onQuotedPrintableEncodingFailed(String propertyName, String propertyValue, EncoderException thrown) {
-				addWarning("A unexpected error occurred while encoding the property's value into \"quoted-printable\" encoding.  Value will not be encoded: " + thrown.getMessage(), propertyName);
-			}
-		});
 	}
 
 	/**
@@ -280,38 +265,16 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Gets the warnings from the last vCard that was marshalled. This list is
-	 * reset every time a new vCard is written.
-	 * @return the warnings or empty list if there were no warnings
-	 */
-	public List<String> getWarnings() {
-		return new ArrayList<String>(warnings);
-	}
-
-	/**
 	 * Writes a vCard to the stream.
 	 * @param vcard the vCard to write
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void write(VCard vcard) throws IOException {
-		warnings.clear();
 		write(vcard, addProdId);
 	}
 
 	private void write(VCard vcard, boolean addProdId) throws IOException {
 		VCardVersion targetVersion = writer.getVersion();
-
-		if (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0) {
-			if (vcard.getStructuredName() == null) {
-				warnings.add("vCard version " + targetVersion + " requires that a structured name property be defined.");
-			}
-		}
-
-		if (targetVersion == VCardVersion.V3_0 || targetVersion == VCardVersion.V4_0) {
-			if (vcard.getFormattedName() == null) {
-				warnings.add("vCard version " + targetVersion + " requires that a formatted name property be defined.");
-			}
-		}
 
 		List<VCardType> typesToAdd = new ArrayList<VCardType>();
 		for (VCardType type : vcard) {
@@ -320,22 +283,10 @@ public class VCardWriter implements Closeable {
 				continue;
 			}
 
-			//determine if this type is supported by the target version
-			if (!supportsTargetVersion(type)) {
-				addWarning("This property is not supported by vCard version " + targetVersion + " and will not be added to the vCard.  Supported versions are: " + Arrays.toString(type.getSupportedVersions()), type.getTypeName());
-				continue;
-			}
-
-			//check for correct KIND value if there are MEMBER types
-			if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
-				addWarning("Value must be set to \"group\" if the vCard contains " + MemberType.NAME + " properties.", KindType.NAME);
-				continue;
-			}
-
 			typesToAdd.add(type);
 
 			//add LABEL types for each ADR type if the target version is 2.1 or 3.0
-			if (type instanceof AddressType && targetVersion != VCardVersion.V4_0) {
+			if (type instanceof AddressType && (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0)) {
 				AddressType adr = (AddressType) type;
 				String labelStr = adr.getLabel();
 				if (labelStr != null) {
@@ -357,35 +308,20 @@ public class VCardWriter implements Closeable {
 		writer.writeBeginComponent("VCARD");
 		writer.writeVersion();
 
-		List<String> warningsBuf = new ArrayList<String>();
 		for (VCardType type : typesToAdd) {
 			//marshal the value
-			warningsBuf.clear();
 			String value = null;
 			VCard nestedVCard = null;
 			try {
-				value = type.marshalText(targetVersion, warningsBuf, compatibilityMode);
+				value = type.marshalText(targetVersion, compatibilityMode);
 			} catch (SkipMeException e) {
-				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
 				continue;
 			} catch (EmbeddedVCardException e) {
 				nestedVCard = e.getVCard();
-			} finally {
-				for (String warning : warningsBuf) {
-					addWarning(warning, type.getTypeName());
-				}
 			}
 
 			//marshal the sub types
-			warningsBuf.clear();
-			VCardSubTypes parameters;
-			try {
-				parameters = type.marshalSubTypes(targetVersion, warningsBuf, compatibilityMode, vcard);
-			} finally {
-				for (String warning : warningsBuf) {
-					addWarning(warning, type.getTypeName());
-				}
-			}
+			VCardSubTypes parameters = type.marshalSubTypes(targetVersion, compatibilityMode, vcard);
 
 			if (nestedVCard == null) {
 				writer.writeProperty(type.getGroup(), type.getTypeName(), parameters, value);
@@ -404,10 +340,6 @@ public class VCardWriter implements Closeable {
 						agentWriter.write(nestedVCard);
 					} catch (IOException e) {
 						//writing to a string
-					} finally {
-						for (String w : agentWriter.getWarnings()) {
-							addWarning("Problem marshalling embedded vCard value: " + w, type.getTypeName());
-						}
 					}
 
 					String vCardStr = sw.toString();
@@ -420,23 +352,10 @@ public class VCardWriter implements Closeable {
 		writer.writeEndComponent("VCARD");
 	}
 
-	private boolean supportsTargetVersion(VCardType type) {
-		for (VCardVersion version : type.getSupportedVersions()) {
-			if (version == writer.getVersion()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Closes the underlying {@link Writer} object.
 	 */
 	public void close() throws IOException {
 		writer.close();
-	}
-
-	private void addWarning(String message, String propertyName) {
-		warnings.add(propertyName + " property: " + message);
 	}
 }

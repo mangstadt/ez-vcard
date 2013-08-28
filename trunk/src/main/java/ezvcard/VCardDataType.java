@@ -1,6 +1,9 @@
 package ezvcard;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
 
 import ezvcard.util.CaseClasses;
 
@@ -53,82 +56,87 @@ public class VCardDataType {
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (p.18-9)</code>
 	 */
-	public static final VCardDataType URL = new VCardDataType("url");
+	public static final VCardDataType URL = new VCardDataType("url", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>2.1 (p.8-9)</code>
 	 */
-	public static final VCardDataType CONTENT_ID = new VCardDataType("content-id");
+	public static final VCardDataType CONTENT_ID = new VCardDataType("content-id", VCardVersion.V2_1);
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0</code>
 	 */
-	public static final VCardDataType BINARY = new VCardDataType("binary");
+	public static final VCardDataType BINARY = new VCardDataType("binary", VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final VCardDataType URI = new VCardDataType("uri");
+	public static final VCardDataType URI = new VCardDataType("uri", VCardVersion.V3_0, VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
+	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
 	 */
 	public static final VCardDataType TEXT = new VCardDataType("text");
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final VCardDataType DATE = new VCardDataType("date");
+	public static final VCardDataType DATE = new VCardDataType("date", VCardVersion.V3_0, VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final VCardDataType TIME = new VCardDataType("time");
+	public static final VCardDataType TIME = new VCardDataType("time", VCardVersion.V3_0, VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
 	 */
-	public static final VCardDataType DATE_TIME = new VCardDataType("date-time");
+	public static final VCardDataType DATE_TIME = new VCardDataType("date-time", VCardVersion.V3_0, VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final VCardDataType DATE_AND_OR_TIME = new VCardDataType("date-and-or-time");
+	public static final VCardDataType DATE_AND_OR_TIME = new VCardDataType("date-and-or-time", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final VCardDataType TIMESTAMP = new VCardDataType("timestamp");
+	public static final VCardDataType TIMESTAMP = new VCardDataType("timestamp", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final VCardDataType BOOLEAN = new VCardDataType("boolean");
+	public static final VCardDataType BOOLEAN = new VCardDataType("boolean", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final VCardDataType INTEGER = new VCardDataType("integer");
+	public static final VCardDataType INTEGER = new VCardDataType("integer", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final VCardDataType FLOAT = new VCardDataType("float");
+	public static final VCardDataType FLOAT = new VCardDataType("float", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final VCardDataType UTC_OFFSET = new VCardDataType("utc-offset");
+	public static final VCardDataType UTC_OFFSET = new VCardDataType("utc-offset", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> <code>4.0</code>
 	 */
-	public static final VCardDataType LANGUAGE_TAG = new VCardDataType("language-tag");
+	public static final VCardDataType LANGUAGE_TAG = new VCardDataType("language-tag", VCardVersion.V4_0);
 
 	private final String name;
+	private final Set<VCardVersion> supportedVersions;
 
-	private VCardDataType(String name) {
+	private VCardDataType(String name, VCardVersion... supportedVersions) {
 		this.name = name;
+		if (supportedVersions.length == 0) {
+			supportedVersions = VCardVersion.values();
+		}
+		this.supportedVersions = EnumSet.copyOf(Arrays.asList(supportedVersions));
 	}
 
 	/**
@@ -137,6 +145,15 @@ public class VCardDataType {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Determines if the data type is supported by the given vCard version.
+	 * @param version the vCard version
+	 * @return true if it is supported, false if not
+	 */
+	public boolean isSupported(VCardVersion version) {
+		return supportedVersions.contains(version);
 	}
 
 	@Override

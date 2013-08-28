@@ -150,7 +150,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		//replace "TYPE=pref" with "PREF=1"
 		if (version == VCardVersion.V4_0) {
 			if (getTypes().contains(EmailTypeParameter.PREF)) {
@@ -177,7 +177,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		sb.append(VCardStringUtils.escape(getValue()));
 	}
 
@@ -187,7 +187,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		parent.append(VCardDataType.TEXT, getValue());
 	}
 
@@ -220,12 +220,29 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		return JCardValue.single(VCardDataType.TEXT, getValue());
 	}
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		setValue(value.getSingleValued());
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (value == null) {
+			warnings.add("Property value is null.");
+		}
+
+		for (EmailTypeParameter type : getTypes()) {
+			if (type == EmailTypeParameter.PREF) {
+				//ignore because it is converted to a PREF parameter for 4.0 vCards
+				continue;
+			}
+			if (!type.isSupported(version)) {
+				warnings.add("Type value \"" + type.getValue() + "\" is not supported in version " + version.getVersion() + ".");
+			}
+		}
 	}
 }

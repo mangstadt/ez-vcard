@@ -1,5 +1,6 @@
 package ezvcard;
 
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -15,6 +16,7 @@ import ezvcard.types.HasAltId;
 import ezvcard.types.NoteType;
 import ezvcard.types.RawType;
 import ezvcard.types.RevisionType;
+import ezvcard.types.StructuredNameType;
 import ezvcard.types.VCardType;
 
 /*
@@ -196,6 +198,36 @@ public class VCardTest {
 		assertEquals(expected, vcard.getTypesAlt(HasAltIdImpl.class));
 	}
 
+	@Test
+	public void validate_vcard() {
+		VCard vcard = new VCard();
+		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardType) null);
+		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null, (VCardType) null);
+		assertValidate(vcard.validate(VCardVersion.V4_0), (VCardType) null);
+
+		vcard.setFormattedName("John Doe");
+		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardType) null);
+		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
+		assertValidate(vcard.validate(VCardVersion.V4_0));
+
+		vcard.setStructuredName(new StructuredNameType());
+		assertValidate(vcard.validate(VCardVersion.V2_1));
+		assertValidate(vcard.validate(VCardVersion.V3_0));
+		assertValidate(vcard.validate(VCardVersion.V4_0));
+	}
+
+	@Test
+	public void validate_properties() {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		VCardTypeImpl prop = new VCardTypeImpl("test");
+		vcard.addType(prop);
+
+		assertValidate(vcard.validate(VCardVersion.V4_0), prop);
+		assertEquals(VCardVersion.V4_0, prop.validateVersion);
+		assertTrue(vcard == prop.validateVCard);
+	}
+
 	private class HasAltIdImpl extends VCardType implements HasAltId {
 		private String altId;
 
@@ -215,7 +247,7 @@ public class VCardTest {
 		}
 
 		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 			//empty
 		}
 
@@ -226,18 +258,28 @@ public class VCardTest {
 	}
 
 	private class VCardTypeImpl extends VCardType {
+		public VCardVersion validateVersion;
+		public VCard validateVCard;
+
 		public VCardTypeImpl(String typeName) {
 			super(typeName);
 		}
 
 		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 			//empty
 		}
 
 		@Override
 		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 			//empty
+		}
+
+		@Override
+		public void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+			validateVersion = version;
+			validateVCard = vcard;
+			warnings.add("Test");
 		}
 	}
 }

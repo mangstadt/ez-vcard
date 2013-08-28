@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -57,6 +58,7 @@ import ezvcard.util.XCardElement;
 public class TextListTypeTest {
 	private final List<String> warnings = new ArrayList<String>();
 	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCard vcard = new VCard();
 	private final VCardSubTypes subTypes = new VCardSubTypes();
 	private final TextListTypeImpl zeroItems = new TextListTypeImpl();
 	private final TextListTypeImpl oneItem = new TextListTypeImpl();
@@ -94,43 +96,50 @@ public class TextListTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(1, zeroItems.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, zeroItems.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, zeroItems.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, oneItem.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, oneItem.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, oneItem.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalText_zero_items() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "";
-		String actual = zeroItems.marshalText(version, warnings, compatibilityMode);
+		String actual = zeroItems.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_one_item() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "one";
-		String actual = oneItem.marshalText(version, warnings, compatibilityMode);
+		String actual = oneItem.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_multiple_items() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "one,two,three";
-		String actual = multipleItems.marshalText(version, warnings, compatibilityMode);
+		String actual = multipleItems.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_escape_special_chars() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "on\\,e,tw\\;o,three";
-		String actual = specialChars.marshalText(version, warnings, compatibilityMode);
+		String actual = specialChars.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -141,10 +150,9 @@ public class TextListTypeTest {
 		t.addValue("two");
 		t.addValue("three");
 		String expected = "one*two*three";
-		String actual = t.marshalText(version, warnings, compatibilityMode);
+		String actual = t.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -155,10 +163,9 @@ public class TextListTypeTest {
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
-		zeroItems.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		zeroItems.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -169,10 +176,9 @@ public class TextListTypeTest {
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
-		oneItem.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		oneItem.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -185,35 +191,32 @@ public class TextListTypeTest {
 		Document expected = xe.document();
 		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		Document actual = xe.document();
-		multipleItems.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		multipleItems.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_zero_items() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = zeroItems.marshalJson(version, warnings);
+		JCardValue value = zeroItems.marshalJson(version);
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 		assertTrue(value.getValues().isEmpty());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_one_item() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = oneItem.marshalJson(version, warnings);
+		JCardValue value = oneItem.marshalJson(version);
 
 		assertJCardValue(VCardDataType.TEXT, "one", value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_multiple_items() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = multipleItems.marshalJson(version, warnings);
+		JCardValue value = multipleItems.marshalJson(version);
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
@@ -225,13 +228,12 @@ public class TextListTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_structured() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = multipleItemsStructured.marshalJson(version, warnings);
+		JCardValue value = multipleItemsStructured.marshalJson(version);
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
@@ -245,13 +247,12 @@ public class TextListTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_structured_one_item() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = oneItemStructured.marshalJson(version, warnings);
+		JCardValue value = oneItemStructured.marshalJson(version);
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
@@ -261,7 +262,6 @@ public class TextListTypeTest {
 		);
 		//@formatter:on
 		assertEquals(expected, value.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test

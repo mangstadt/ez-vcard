@@ -1,9 +1,11 @@
-package ezvcard.io;
+package ezvcard.types;
 
-import java.util.List;
+import static ezvcard.util.TestUtils.assertWarnings;
 
+import org.junit.Test;
+
+import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.types.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,28 +37,36 @@ import ezvcard.types.VCardType;
  */
 
 /**
- * An extended type class used for testing that does NOT contain XML marshalling
- * methods, nor a QName.
  * @author Michael Angstadt
  */
-public class AgeType extends VCardType {
-	public int age;
+public class MemberTypeTest {
+	@Test
+	public void validate() {
+		VCard vcard = new VCard();
+		MemberType member = new MemberType();
+		assertWarnings(3, member.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(3, member.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(2, member.validate(VCardVersion.V4_0, vcard));
 
-	public AgeType() {
-		super("X-AGE");
+		member.setUri("uri");
+		VCard group = new VCard();
+		group.setKind(KindType.group());
+		group.addMember(member);
+		assertWarnings(1, member.validate(VCardVersion.V2_1, group));
+		assertWarnings(1, member.validate(VCardVersion.V3_0, group));
+		assertWarnings(0, member.validate(VCardVersion.V4_0, group));
+
+		VCard notGroup = new VCard();
+		notGroup.setKind(KindType.application());
+		group.addMember(member);
+		assertWarnings(2, member.validate(VCardVersion.V2_1, notGroup));
+		assertWarnings(2, member.validate(VCardVersion.V3_0, notGroup));
+		assertWarnings(1, member.validate(VCardVersion.V4_0, notGroup));
+
+		VCard noKind = new VCard();
+		group.addMember(member);
+		assertWarnings(2, member.validate(VCardVersion.V2_1, noKind));
+		assertWarnings(2, member.validate(VCardVersion.V3_0, noKind));
+		assertWarnings(1, member.validate(VCardVersion.V4_0, noKind));
 	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(age);
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		age = Integer.parseInt(value);
-	}
-
-	//	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	public QName getQName();
 }

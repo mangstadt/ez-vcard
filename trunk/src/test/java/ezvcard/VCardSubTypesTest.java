@@ -1,6 +1,7 @@
 package ezvcard;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -12,6 +13,9 @@ import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import ezvcard.parameters.CalscaleParameter;
+import ezvcard.parameters.EncodingParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -51,6 +55,68 @@ public class VCardSubTypesTest {
 	@Before
 	public void before() {
 		subTypes = new VCardSubTypes();
+	}
+
+	@Test
+	public void validate_non_standard_values() {
+		subTypes.setCalscale(CalscaleParameter.get("foo"));
+		subTypes.setEncoding(EncodingParameter.get("foo"));
+		subTypes.setValue(VCardDataType.get("foo"));
+
+		assertWarnings(4, subTypes.validate(VCardVersion.V2_1));
+		assertWarnings(4, subTypes.validate(VCardVersion.V3_0));
+		assertWarnings(3, subTypes.validate(VCardVersion.V4_0));
+	}
+
+	@Test
+	public void validate_malformed_values() {
+		subTypes.put("GEO", "invalid");
+		subTypes.put("INDEX", "invalid");
+		subTypes.put("PREF", "invalid");
+		subTypes.put("PID", "invalid");
+
+		assertWarnings(7, subTypes.validate(VCardVersion.V2_1));
+		assertWarnings(7, subTypes.validate(VCardVersion.V3_0));
+		assertWarnings(4, subTypes.validate(VCardVersion.V4_0));
+	}
+
+	@Test
+	public void validate_supported_versions() {
+		subTypes.setAltId("value");
+		subTypes.setCalscale(CalscaleParameter.GREGORIAN);
+		subTypes.setCharset("value");
+		subTypes.setGeo(1, 1);
+		subTypes.setIndex(1);
+		subTypes.setLanguage("value");
+		subTypes.setLevel("value");
+		subTypes.setMediaType("value");
+		subTypes.setSortAs("value");
+		subTypes.setTimezone("value");
+
+		assertWarnings(8, subTypes.validate(VCardVersion.V2_1));
+		assertWarnings(9, subTypes.validate(VCardVersion.V3_0));
+		assertWarnings(1, subTypes.validate(VCardVersion.V4_0));
+	}
+
+	@Test
+	public void validate_value_supported_versions() {
+		subTypes.setEncoding(EncodingParameter._7BIT);
+		subTypes.setValue(VCardDataType.CONTENT_ID);
+		assertWarnings(0, subTypes.validate(VCardVersion.V2_1));
+		assertWarnings(2, subTypes.validate(VCardVersion.V3_0));
+		assertWarnings(2, subTypes.validate(VCardVersion.V4_0));
+
+		subTypes.setEncoding(EncodingParameter.B);
+		subTypes.setValue(VCardDataType.BINARY);
+		assertWarnings(2, subTypes.validate(VCardVersion.V2_1));
+		assertWarnings(0, subTypes.validate(VCardVersion.V3_0));
+		assertWarnings(2, subTypes.validate(VCardVersion.V4_0));
+
+		subTypes.setEncoding(null);
+		subTypes.setValue(VCardDataType.DATE_AND_OR_TIME);
+		assertWarnings(1, subTypes.validate(VCardVersion.V2_1));
+		assertWarnings(1, subTypes.validate(VCardVersion.V3_0));
+		assertWarnings(0, subTypes.validate(VCardVersion.V4_0));
 	}
 
 	@Test

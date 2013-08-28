@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -53,20 +54,32 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class UriTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCard vcard = new VCard();
+	private final VCardSubTypes subTypes = new VCardSubTypes();
 
-	final String uri = "http://www.example.com";
-	final UriType withValue = new UriType("NAME", uri);
-	final UriType empty = new UriType("NAME");
-	UriType t;
+	private final String uri = "http://www.example.com";
+	private final UriType withValue = new UriType("NAME", uri);
+	private final UriType empty = new UriType("NAME");
+	private UriType t;
 
 	@Before
 	public void before() {
 		t = new UriType("NAME");
 		subTypes.clear();
 		warnings.clear();
+	}
+
+	@Test
+	public void validate() {
+		assertWarnings(1, empty.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, withValue.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, withValue.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
 	}
 
 	@Test
@@ -78,10 +91,9 @@ public class UriTypeTest {
 
 		xe = new XCardElement(withValue.getTypeName().toLowerCase());
 		Document actual = xe.document();
-		withValue.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		withValue.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -93,28 +105,25 @@ public class UriTypeTest {
 
 		xe = new XCardElement(empty.getTypeName().toLowerCase());
 		Document actual = xe.document();
-		empty.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		empty.marshalXml(xe.element(), version, compatibilityMode);
 
 		assertXMLEqual(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = withValue.marshalJson(version, warnings);
+		JCardValue value = withValue.marshalJson(version);
 
 		assertJCardValue(VCardDataType.URI, uri, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = empty.marshalJson(version, warnings);
+		JCardValue value = empty.marshalJson(version);
 
 		assertJCardValue(VCardDataType.URI, null, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test

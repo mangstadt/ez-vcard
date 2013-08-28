@@ -213,7 +213,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		if (text != null) {
 			MediaTypeParameter contentType = getContentType();
 			if (contentType == null) {
@@ -231,20 +231,16 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			}
 			return;
 		}
-		super.doMarshalSubTypes(copy, version, warnings, compatibilityMode, vcard);
+		super.doMarshalSubTypes(copy, version, compatibilityMode, vcard);
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			sb.append(VCardStringUtils.escape(text));
 			return;
 		}
-
-		if (getUrl() != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
-			warnings.add("vCard version " + version + " does not allow URLs to be used.");
-		}
-		super.doMarshalText(sb, version, warnings, compatibilityMode);
+		super.doMarshalText(sb, version, compatibilityMode);
 	}
 
 	@Override
@@ -257,12 +253,12 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
 			return;
 		}
-		super.doMarshalXml(parent, warnings, compatibilityMode);
+		super.doMarshalXml(parent, compatibilityMode);
 	}
 
 	@Override
@@ -315,11 +311,11 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		if (text != null) {
 			return JCardValue.single(VCardDataType.TEXT, text);
 		}
-		return super.doMarshalJson(version, warnings);
+		return super.doMarshalJson(version);
 	}
 
 	@Override
@@ -361,6 +357,17 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 				setText(value, contentType);
 			}
 			break;
+		}
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (url == null && data == null && text == null) {
+			warnings.add("Property has no value attached to it.");
+		}
+
+		if (url != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
+			warnings.add("URL values are not permitted in version " + version.getVersion() + ".");
 		}
 	}
 

@@ -331,7 +331,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		switch (version) {
 		case V3_0:
 			if (!hasOffset() && hasText()) {
@@ -347,7 +347,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		checkForValue();
 
 		if (version == null) {
@@ -397,7 +397,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		checkForValue();
 
 		if (hasText()) {
@@ -441,7 +441,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		checkForValue();
 
 		VCardDataType dataType;
@@ -462,6 +462,16 @@ public class TimezoneType extends VCardType implements HasAltId {
 		String valueStr = value.getSingleValued();
 		VCardDataType dataType = value.getDataType();
 		parse(valueStr, dataType == VCardDataType.TEXT, dataType == VCardDataType.UTC_OFFSET, version, warnings);
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (!hasOffset() && !hasText()) {
+			warnings.add("Property does not have text or a UTC offset associated with it.");
+		}
+		if (!hasOffset() && version == VCardVersion.V2_1) {
+			warnings.add("Property requires a UTC offset for its value in version " + version.getVersion() + ".");
+		}
 	}
 
 	private void checkForValue() {

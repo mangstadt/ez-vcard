@@ -204,11 +204,11 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for more control over the parsing.
+	 * Use {@link XCardDocument} for more control over the parsing.
 	 * </p>
 	 * @param xml the XML document
 	 * @return chainer object for completing the parse operation
-	 * @see XCardReader
+	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlString parseXml(String xml) {
@@ -220,11 +220,11 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for more control over the parsing.
+	 * Use {@link XCardDocument} for more control over the parsing.
 	 * </p>
 	 * @param file the XML file
 	 * @return chainer object for completing the parse operation
-	 * @see XCardReader
+	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlReader parseXml(File file) {
@@ -236,11 +236,11 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for more control over the parsing.
+	 * Use {@link XCardDocument} for more control over the parsing.
 	 * </p>
 	 * @param in the input stream to the XML document
 	 * @return chainer object for completing the parse operation
-	 * @see XCardReader
+	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlReader parseXml(InputStream in) {
@@ -252,11 +252,11 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for more control over the parsing.
+	 * Use {@link XCardDocument} for more control over the parsing.
 	 * </p>
 	 * @param reader the reader to the XML document
 	 * @return chainer object for completing the parse operation
-	 * @see XCardReader
+	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlReader parseXml(Reader reader) {
@@ -268,11 +268,11 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardReader} for more control over the parsing.
+	 * Use {@link XCardDocument} for more control over the parsing.
 	 * </p>
 	 * @param document the XML document
 	 * @return chainer object for completing the parse operation
-	 * @see XCardReader
+	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlDom parseXml(Document document) {
@@ -707,11 +707,11 @@ public class Ezvcard {
 			VCardReader parser = constructReader();
 
 			try {
-				VCard ical = parser.readNext();
+				VCard vcard = parser.readNext();
 				if (warnings != null) {
 					warnings.add(parser.getWarnings());
 				}
-				return ical;
+				return vcard;
 			} finally {
 				if (closeWhenDone) {
 					IOUtils.closeQuietly(parser);
@@ -852,11 +852,11 @@ public class Ezvcard {
 		@Override
 		public VCard first() throws IOException, SAXException {
 			XCardDocument document = constructDocument();
-			VCard ical = document.parseFirst();
+			VCard vcard = document.parseFirst();
 			if (warnings != null) {
 				warnings.addAll(document.getParseWarnings());
 			}
-			return ical;
+			return vcard;
 		}
 
 		@Override
@@ -1463,11 +1463,8 @@ public class Ezvcard {
 					vcardWriter.setTargetVersion((vcardVersion == null) ? VCardVersion.V3_0 : vcardVersion);
 				}
 				vcardWriter.write(vcard);
-				addWarnings(vcardWriter.getWarnings());
 			}
 		}
-
-		abstract void addWarnings(List<String> warnings);
 	}
 
 	/**
@@ -1476,8 +1473,6 @@ public class Ezvcard {
 	 * @see Ezvcard#write(VCard...)
 	 */
 	public static class WriterChainTextMulti extends WriterChainText<WriterChainTextMulti> {
-		private List<List<String>> warnings;
-
 		private WriterChainTextMulti(Collection<VCard> vcards) {
 			super(vcards);
 		}
@@ -1496,30 +1491,6 @@ public class Ezvcard {
 		public WriterChainTextMulti caretEncoding(boolean enable) {
 			return super.caretEncoding(enable);
 		}
-
-		/**
-		 * Provides a list object that any marshal warnings will be put into.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
-		 * @param warnings the list object that will be populated with the
-		 * warnings of each marshalled vCard. Each element of the list is the
-		 * list of warnings for one of the marshalled vCards. Therefore, the
-		 * size of this list will be equal to the number of written vCards. If a
-		 * vCard does not have any warnings, then its warning list will be
-		 * empty.
-		 * @return this
-		 */
-		public WriterChainTextMulti warnings(List<List<String>> warnings) {
-			this.warnings = warnings;
-			return this;
-		}
-
-		@Override
-		void addWarnings(List<String> warnings) {
-			if (this.warnings != null) {
-				this.warnings.add(warnings);
-			}
-		}
 	}
 
 	/**
@@ -1527,8 +1498,6 @@ public class Ezvcard {
 	 * @see Ezvcard#write(VCard)
 	 */
 	public static class WriterChainTextSingle extends WriterChainText<WriterChainTextSingle> {
-		private List<String> warnings;
-
 		private WriterChainTextSingle(VCard vcard) {
 			super(Arrays.asList(vcard));
 		}
@@ -1546,26 +1515,6 @@ public class Ezvcard {
 		@Override
 		public WriterChainTextSingle caretEncoding(boolean enable) {
 			return super.caretEncoding(enable);
-		}
-
-		/**
-		 * Provides a list object that any marshal warnings will be put into.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
-		 * @param warnings the list object that will be populated with the
-		 * warnings of the marshalled vCard.
-		 * @return this
-		 */
-		public WriterChainTextSingle warnings(List<String> warnings) {
-			this.warnings = warnings;
-			return this;
-		}
-
-		@Override
-		void addWarnings(List<String> warnings) {
-			if (this.warnings != null) {
-				this.warnings.addAll(warnings);
-			}
 		}
 	}
 
@@ -1665,13 +1614,10 @@ public class Ezvcard {
 
 			for (VCard vcard : vcards) {
 				doc.addVCard(vcard);
-				addWarnings(doc.getWriteWarnings());
 			}
 
 			return doc;
 		}
-
-		abstract void addWarnings(List<String> warnings);
 	}
 
 	/**
@@ -1680,8 +1626,6 @@ public class Ezvcard {
 	 * @see Ezvcard#writeXml(VCard...)
 	 */
 	public static class WriterChainXmlMulti extends WriterChainXml<WriterChainXmlMulti> {
-		private List<List<String>> warnings;
-
 		private WriterChainXmlMulti(Collection<VCard> vcards) {
 			super(vcards);
 		}
@@ -1695,30 +1639,6 @@ public class Ezvcard {
 		public WriterChainXmlMulti indent(int indent) {
 			return super.indent(indent);
 		}
-
-		/**
-		 * Provides a list object that any marshal warnings will be put into.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
-		 * @param warnings the list object that will be populated with the
-		 * warnings of each marshalled vCard. Each element of the list is the
-		 * list of warnings for one of the marshalled vCards. Therefore, the
-		 * size of this list will be equal to the number of written vCards. If a
-		 * vCard does not have any warnings, then its warning list will be
-		 * empty.
-		 * @return this
-		 */
-		public WriterChainXmlMulti warnings(List<List<String>> warnings) {
-			this.warnings = warnings;
-			return this;
-		}
-
-		@Override
-		void addWarnings(List<String> warnings) {
-			if (this.warnings != null) {
-				this.warnings.add(warnings);
-			}
-		}
 	}
 
 	/**
@@ -1726,8 +1646,6 @@ public class Ezvcard {
 	 * @see Ezvcard#writeXml(VCard)
 	 */
 	public static class WriterChainXmlSingle extends WriterChainXml<WriterChainXmlSingle> {
-		private List<String> warnings;
-
 		private WriterChainXmlSingle(VCard vcard) {
 			super(Arrays.asList(vcard));
 		}
@@ -1740,26 +1658,6 @@ public class Ezvcard {
 		@Override
 		public WriterChainXmlSingle indent(int indent) {
 			return super.indent(indent);
-		}
-
-		/**
-		 * Provides a list object that any marshal warnings will be put into.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
-		 * @param warnings the list object that will be populated with the
-		 * warnings of each marshalled vCard.
-		 * @return this
-		 */
-		public WriterChainXmlSingle warnings(List<String> warnings) {
-			this.warnings = warnings;
-			return this;
-		}
-
-		@Override
-		void addWarnings(List<String> warnings) {
-			if (this.warnings != null) {
-				this.warnings.addAll(warnings);
-			}
 		}
 	}
 
@@ -1905,14 +1803,11 @@ public class Ezvcard {
 			try {
 				for (VCard vcard : vcards) {
 					jcardWriter.write(vcard);
-					addWarnings(jcardWriter.getWarnings());
 				}
 			} finally {
 				jcardWriter.closeJsonStream();
 			}
 		}
-
-		abstract void addWarnings(List<String> warnings);
 	}
 
 	/**
@@ -1921,8 +1816,6 @@ public class Ezvcard {
 	 * @see Ezvcard#writeJson(VCard...)
 	 */
 	public static class WriterChainJsonMulti extends WriterChainJson<WriterChainJsonMulti> {
-		private List<List<String>> warnings;
-
 		private WriterChainJsonMulti(Collection<VCard> vcards) {
 			super(vcards);
 		}
@@ -1936,30 +1829,6 @@ public class Ezvcard {
 		public WriterChainJsonMulti indent(boolean indent) {
 			return super.indent(indent);
 		}
-
-		/**
-		 * Provides a list object that any marshal warnings will be put into.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
-		 * @param warnings the list object that will be populated with the
-		 * warnings of each marshalled vCard. Each element of the list is the
-		 * list of warnings for one of the marshalled vCards. Therefore, the
-		 * size of this list will be equal to the number of written vCards. If a
-		 * vCard does not have any warnings, then its warning list will be
-		 * empty.
-		 * @return this
-		 */
-		public WriterChainJsonMulti warnings(List<List<String>> warnings) {
-			this.warnings = warnings;
-			return this;
-		}
-
-		@Override
-		void addWarnings(List<String> warnings) {
-			if (this.warnings != null) {
-				this.warnings.add(warnings);
-			}
-		}
 	}
 
 	/**
@@ -1967,8 +1836,6 @@ public class Ezvcard {
 	 * @see Ezvcard#writeJson(VCard)
 	 */
 	public static class WriterChainJsonSingle extends WriterChainJson<WriterChainJsonSingle> {
-		private List<String> warnings;
-
 		private WriterChainJsonSingle(VCard vcard) {
 			super(Arrays.asList(vcard));
 		}
@@ -1981,26 +1848,6 @@ public class Ezvcard {
 		@Override
 		public WriterChainJsonSingle indent(boolean indent) {
 			return super.indent(indent);
-		}
-
-		/**
-		 * Provides a list object that any marshal warnings will be put into.
-		 * Warnings usually occur when there is a property in the VCard that is
-		 * not supported by the version to which the vCard is being marshalled.
-		 * @param warnings the list object that will be populated with the
-		 * warnings of the marshalled vCard.
-		 * @return this
-		 */
-		public WriterChainJsonSingle warnings(List<String> warnings) {
-			this.warnings = warnings;
-			return this;
-		}
-
-		@Override
-		void addWarnings(List<String> warnings) {
-			if (this.warnings != null) {
-				this.warnings.addAll(warnings);
-			}
 		}
 	}
 

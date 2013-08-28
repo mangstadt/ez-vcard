@@ -55,19 +55,19 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class RelatedTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final VCard vcard = new VCard();
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final VCard vcard = new VCard();
 
-	final String text = "Edna Smith";
-	final RelatedType textType = new RelatedType();
+	private final String text = "Edna Smith";
+	private final RelatedType textType = new RelatedType();
 	{
 		textType.setText(text);
 	}
 
-	final String uri = "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af";
-	final RelatedType uriType = new RelatedType();
+	private final String uri = "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af";
+	private final RelatedType uriType = new RelatedType();
 	{
 		uriType.setUri(uri);
 	}
@@ -78,53 +78,64 @@ public class RelatedTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		RelatedType empty = new RelatedType();
+		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(2, empty.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(1, textType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, textType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, textType.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(1, uriType.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, uriType.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, uriType.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalSubTypes_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = textType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = textType.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertEquals(VCardDataType.TEXT, subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = uriType.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = uriType.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(1, subTypes.size());
 		assertEquals(VCardDataType.URI, subTypes.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalSubTypes_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
-		VCardSubTypes subTypes = t.marshalSubTypes(version, warnings, compatibilityMode, vcard);
+		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
 		assertEquals(0, subTypes.size());
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = textType.marshalText(version, warnings, compatibilityMode);
+		String actual = textType.marshalText(version, compatibilityMode);
 		assertEquals(text, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		String actual = uriType.marshalText(version, warnings, compatibilityMode);
+		String actual = uriType.marshalText(version, compatibilityMode);
 		assertEquals(uri, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
-		t.marshalText(version, warnings, compatibilityMode);
+		t.marshalText(version, compatibilityMode);
 	}
 
 	@Test
@@ -135,9 +146,8 @@ public class RelatedTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		textType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		textType.marshalXml(xe.element(), version, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -148,9 +158,8 @@ public class RelatedTypeTest {
 		Document expectedDoc = xe.document();
 		xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		Document actualDoc = xe.document();
-		uriType.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		uriType.marshalXml(xe.element(), version, compatibilityMode);
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -160,32 +169,30 @@ public class RelatedTypeTest {
 		xe.append(VCardDataType.URI, uri);
 		xe = new XCardElement(RelatedType.NAME.toLowerCase());
 		RelatedType t = new RelatedType();
-		t.marshalXml(xe.element(), version, warnings, compatibilityMode);
+		t.marshalXml(xe.element(), version, compatibilityMode);
 	}
 
 	@Test
 	public void marshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = textType.marshalJson(version, warnings);
+		JCardValue value = textType.marshalJson(version);
 
 		assertJCardValue(VCardDataType.TEXT, text, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson_uri() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = uriType.marshalJson(version, warnings);
+		JCardValue value = uriType.marshalJson(version);
 
 		assertJCardValue(VCardDataType.URI, uri, value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalJson_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
-		t.marshalJson(version, warnings);
+		t.marshalJson(version);
 	}
 
 	@Test

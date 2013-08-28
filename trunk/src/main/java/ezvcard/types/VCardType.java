@@ -1,5 +1,7 @@
 package ezvcard.types;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -95,12 +97,58 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
+	 * Checks the property for data consistency problems or deviations from the
+	 * spec. These problems will not prevent the property from being written to
+	 * a data stream, but may prevent it from being parsed correctly by the
+	 * consuming application. These problems can largely be avoided by reading
+	 * the Javadocs of the property class, or by being familiar with the vCard
+	 * standard.
+	 * @param version the version to check the property against (use 4.0 for
+	 * xCard and jCard)
+	 * @param vcard the vCard this property belongs to
+	 * @see VCard#validate
+	 * @return a list of warnings or an empty list if no problems were found
+	 */
+	public final List<String> validate(VCardVersion version, VCard vcard) {
+		List<String> warnings = new ArrayList<String>(0);
+
+		//check the supported versions
+		VCardVersion[] supportedVersions = getSupportedVersions();
+		boolean found = false;
+		for (VCardVersion v : supportedVersions) {
+			if (v == version) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			warnings.add("Property is not supported by version " + version.getVersion() + ".  Supported versions are: " + Arrays.toString(supportedVersions));
+		}
+
+		//check parameters
+		warnings.addAll(subTypes.validate(version));
+
+		_validate(warnings, version, vcard);
+
+		return warnings;
+	}
+
+	/**
+	 * Checks the property for data consistency problems or deviations from the
+	 * spec. Meant to be overridden by child classes that wish to provide
+	 * validation logic.
+	 * @param warnings the list to add the warnings to
+	 * @param version the version to check the property against
+	 * @param vcard the vCard this property belongs to
+	 */
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		//empty
+	}
+
+	/**
 	 * Converts this type object to a string for sending over the wire. It is
 	 * NOT responsible for folding.
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
 	 * @return the string for sending over the wire
@@ -109,9 +157,9 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws EmbeddedVCardException if the value of this type is an embedded
 	 * vCard (i.e. the AGENT type)
 	 */
-	public final String marshalText(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	public final String marshalText(VCardVersion version, CompatibilityMode compatibilityMode) {
 		StringBuilder sb = new StringBuilder();
-		doMarshalText(sb, version, warnings, compatibilityMode);
+		doMarshalText(sb, version, compatibilityMode);
 		return sb.toString();
 	}
 
@@ -120,9 +168,6 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * NOT responsible for folding.
 	 * @param value the buffer to add the marshalled value to
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
 	 * @throws SkipMeException if this type should NOT be marshalled into the
@@ -130,7 +175,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @throws EmbeddedVCardException if the value of this type is an embedded
 	 * vCard (i.e. the AGENT type)
 	 */
-	protected abstract void doMarshalText(StringBuilder value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode);
+	protected abstract void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode);
 
 	/**
 	 * Marshals this type for inclusion in an xCard (XML document).
@@ -138,17 +183,14 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * into. For example, this would be the "&lt;fn&gt;" element for the "FN"
 	 * type.
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
 	 * @throws SkipMeException if this type should NOT be marshalled into the
 	 * vCard
 	 */
-	public final void marshalXml(Element parent, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	public final void marshalXml(Element parent, VCardVersion version, CompatibilityMode compatibilityMode) {
 		XCardElement wrapper = new XCardElement(parent, version);
-		doMarshalXml(wrapper, warnings, compatibilityMode);
+		doMarshalXml(wrapper, compatibilityMode);
 	}
 
 	/**
@@ -157,45 +199,36 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @param parent the XML element that the type's value will be inserted
 	 * into. For example, this would be the "&lt;fn&gt;" element for the "FN"
 	 * type.
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
 	 * @throws SkipMeException if this type should NOT be marshalled into the
 	 * vCard
 	 */
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = marshalText(parent.version(), warnings, compatibilityMode);
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
+		String value = marshalText(parent.version(), compatibilityMode);
 		parent.append("unknown", value);
 	}
 
 	/**
 	 * Marshals this type for inclusion in a jCard (JSON document).
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
 	 * @return the marshalled jCard value
 	 * @throws SkipMeException if this type should NOT be marshalled into the
 	 * vCard
 	 */
-	public final JCardValue marshalJson(VCardVersion version, List<String> warnings) {
-		return doMarshalJson(version, warnings);
+	public final JCardValue marshalJson(VCardVersion version) {
+		return doMarshalJson(version);
 	}
 
 	/**
 	 * Marshals this type for inclusion in a jCard (JSON document).
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
 	 * @return the marshalled jCard value
 	 * @throws SkipMeException if this type should NOT be marshalled into the
 	 * vCard
 	 */
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
-		String valueStr = marshalText(version, warnings, CompatibilityMode.RFC);
+	protected JCardValue doMarshalJson(VCardVersion version) {
+		String valueStr = marshalText(version, CompatibilityMode.RFC);
 
 		//determine the data type based on the VALUE parameter
 		VCardDataType dataType = subTypes.getValue();
@@ -205,17 +238,14 @@ public abstract class VCardType implements Comparable<VCardType> {
 	/**
 	 * Gets the Sub Types to send over the wire.
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
 	 * @param vcard the vCard that is being marshalled
 	 * @return the sub types that will be sent
 	 */
-	public final VCardSubTypes marshalSubTypes(VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	public final VCardSubTypes marshalSubTypes(VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		VCardSubTypes copy = new VCardSubTypes(subTypes);
-		doMarshalSubTypes(copy, version, warnings, compatibilityMode, vcard);
+		doMarshalSubTypes(copy, version, compatibilityMode, vcard);
 		return copy;
 	}
 
@@ -232,14 +262,11 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * This object is a copy of the {@link VCardType#subTypes} field, so any
 	 * modifications done to this object will not effect the state of the field.
 	 * @param version the version vCard that is being generated
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * marshalling process
 	 * @param compatibilityMode allows the programmer to customize the
 	 * marshalling process depending on the expected consumer of the vCard
 	 * @param vcard the {@link VCard} object that is being marshalled
 	 */
-	protected void doMarshalSubTypes(VCardSubTypes subTypes, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode, VCard vcard) {
+	protected void doMarshalSubTypes(VCardSubTypes subTypes, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
 		//do nothing
 	}
 
@@ -473,7 +500,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	/**
 	 * Replaces all existing values of a parameter with the given value.
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
-	 * @param values the parameter value
+	 * @param value the parameter value
 	 */
 	public void setSubType(String name, String value) {
 		subTypes.replace(name, value);

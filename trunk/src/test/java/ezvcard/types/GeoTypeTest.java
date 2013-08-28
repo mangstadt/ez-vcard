@@ -58,12 +58,12 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class GeoTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCard vcard = new VCard();
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final GeoType withValue = new GeoType(-12.34, 56.7777777777777);
-	GeoType geo;
+	private final List<String> warnings = new ArrayList<String>();
+	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
+	private final VCard vcard = new VCard();
+	private final VCardSubTypes subTypes = new VCardSubTypes();
+	private final GeoType withValue = new GeoType(-12.34, 56.7777777777777);
+	private GeoType geo;
 
 	@Before
 	public void before() {
@@ -73,33 +73,41 @@ public class GeoTypeTest {
 	}
 
 	@Test
+	public void validate() {
+		assertWarnings(2, geo.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(2, geo.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(2, geo.validate(VCardVersion.V4_0, vcard));
+
+		assertWarnings(0, withValue.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, withValue.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
+	}
+
+	@Test
 	public void marshalText_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		String expected = "-12.34;56.777778";
-		String actual = withValue.marshalText(version, warnings, compatibilityMode);
+		String actual = withValue.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		String expected = "-12.34;56.777778";
-		String actual = withValue.marshalText(version, warnings, compatibilityMode);
+		String actual = withValue.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalText_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		String expected = "geo:-12.34,56.777778";
-		String actual = withValue.marshalText(version, warnings, compatibilityMode);
+		String actual = withValue.marshalText(version, compatibilityMode);
 
 		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -107,7 +115,7 @@ public class GeoTypeTest {
 		VCardVersion version = VCardVersion.V2_1;
 		GeoType geo = new GeoType();
 		geo.setLongitude(56.777778);
-		geo.marshalText(version, warnings, compatibilityMode);
+		geo.marshalText(version, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
@@ -115,14 +123,14 @@ public class GeoTypeTest {
 		VCardVersion version = VCardVersion.V2_1;
 		GeoType geo = new GeoType();
 		geo.setLatitude(-12.34);
-		geo.marshalText(version, warnings, compatibilityMode);
+		geo.marshalText(version, compatibilityMode);
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalText_latitude_and_longitude_missing() {
 		VCardVersion version = VCardVersion.V2_1;
 		GeoType geo = new GeoType();
-		geo.marshalText(version, warnings, compatibilityMode);
+		geo.marshalText(version, compatibilityMode);
 	}
 
 	@Test
@@ -134,19 +142,17 @@ public class GeoTypeTest {
 		xe = new XCardElement(GeoType.NAME);
 		Document actualDoc = xe.document();
 		Element element = xe.element();
-		withValue.marshalXml(element, version, warnings, compatibilityMode);
+		withValue.marshalXml(element, version, compatibilityMode);
 
 		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void marshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = withValue.marshalJson(version, warnings);
+		JCardValue value = withValue.marshalJson(version);
 
 		assertJCardValue(VCardDataType.URI, "geo:-12.34,56.777778", value);
-		assertWarnings(0, warnings);
 	}
 
 	@Test
@@ -387,7 +393,7 @@ public class GeoTypeTest {
 		uri.setCoordA(-12.34);
 		uri.setCoordB(56.7878);
 		uri.setCoordC(99.11);
-		String actual = geo.marshalText(VCardVersion.V4_0, warnings, compatibilityMode);
+		String actual = geo.marshalText(VCardVersion.V4_0, compatibilityMode);
 		String expected = "geo:-12.34,56.7878,99.11";
 		assertEquals(expected, actual);
 	}

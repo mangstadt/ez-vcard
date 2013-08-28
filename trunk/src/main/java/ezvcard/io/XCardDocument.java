@@ -13,7 +13,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +34,6 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.types.KindType;
-import ezvcard.types.MemberType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.RawType;
 import ezvcard.types.TypeList;
@@ -152,7 +149,6 @@ public class XCardDocument {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private boolean addProdId = true;
 	private List<List<String>> parseWarnings = new ArrayList<List<String>>();
-	private List<String> writeWarnings = new ArrayList<String>();
 	private Map<QName, Class<? extends VCardType>> extendedTypeClasses = new HashMap<QName, Class<? extends VCardType>>();
 	private Document document;
 	private Element root;
@@ -276,16 +272,6 @@ public class XCardDocument {
 	 */
 	public void setAddProdId(boolean addProdId) {
 		this.addProdId = addProdId;
-	}
-
-	/**
-	 * Gets the warnings from the last vCard that was added. This list is reset
-	 * every time a new vCard is added.
-	 * @return the warnings or empty list if there were no warnings
-	 * @see #addVCard
-	 */
-	public List<String> getWriteWarnings() {
-		return new ArrayList<String>(writeWarnings);
 	}
 
 	/**
@@ -631,29 +617,11 @@ public class XCardDocument {
 	 * @param vcard the vCard to add
 	 */
 	public void addVCard(VCard vcard) {
-		writeWarnings.clear();
-
-		if (vcard.getFormattedName() == null) {
-			writeWarnings.add("vCard version " + version4 + " requires that a formatted name property be defined.");
-		}
-
 		ListMultimap<String, VCardType> typesToAdd = new ListMultimap<String, VCardType>(); //group the types by group name (null = no group name)
 
 		for (VCardType type : vcard) {
 			if (addProdId && type instanceof ProdIdType) {
 				//do not add the PRODID in the vCard if "addProdId" is true
-				continue;
-			}
-
-			//determine if this type is supported by the target version
-			if (!supportsTargetVersion(type)) {
-				addWarning("This property is not supported by xCard (vCard version " + version4 + ") and will not be added to the xCard.  Supported versions are " + Arrays.toString(type.getSupportedVersions()), type.getTypeName());
-				continue;
-			}
-
-			//check for correct KIND value if there are MEMBER types
-			if (type instanceof MemberType && (vcard.getKind() == null || !vcard.getKind().isGroup())) {
-				addWarning("Value must be set to \"group\" if the vCard contains " + MemberType.NAME + " properties.", KindType.NAME);
 				continue;
 			}
 
@@ -679,20 +647,14 @@ public class XCardDocument {
 				parent = vcardElement;
 			}
 
-			List<String> warningsBuf = new ArrayList<String>();
 			for (VCardType type : typesToAdd.get(groupName)) {
-				warningsBuf.clear();
 				try {
-					Element typeElement = marshalType(type, vcard, warningsBuf);
+					Element typeElement = marshalType(type, vcard);
 					parent.appendChild(typeElement);
 				} catch (SkipMeException e) {
-					warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
+					//skip property
 				} catch (EmbeddedVCardException e) {
-					warningsBuf.add("Property will not be marshalled because xCard does not supported embedded vCards.");
-				} finally {
-					for (String warning : warningsBuf) {
-						addWarning(warning, type.getTypeName());
-					}
+					//skip property
 				}
 			}
 		}
@@ -700,28 +662,13 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Determines if a type supports the target version.
-	 * @param type the type
-	 * @return true if it supports the target version, false if not
-	 */
-	private boolean supportsTargetVersion(VCardType type) {
-		for (VCardVersion version : type.getSupportedVersions()) {
-			if (version == version4) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * Marshals a type object to an XML element.
 	 * @param type the type object to marshal
 	 * @param vcard the vcard the type belongs to
-	 * @param warningsBuf the list to add the warnings to
 	 * @return the XML element or null not to add anything to the final XML
 	 * document
 	 */
-	private Element marshalType(VCardType type, VCard vcard, List<String> warningsBuf) {
+	private Element marshalType(VCardType type, VCard vcard) {
 		QName qname = type.getQName();
 		String ns, localPart;
 		if (qname == null) {
@@ -734,7 +681,7 @@ public class XCardDocument {
 		Element typeElement = createElement(localPart, ns);
 
 		//marshal the sub types
-		VCardSubTypes subTypes = type.marshalSubTypes(version4, warningsBuf, compatibilityMode, vcard);
+		VCardSubTypes subTypes = type.marshalSubTypes(version4, compatibilityMode, vcard);
 		subTypes.setValue(null); //don't include the VALUE parameter (modification of the "VCardSubTypes" object is safe because it's a copy)
 		if (!subTypes.isEmpty()) {
 			Element parametersElement = createElement("parameters");
@@ -754,7 +701,7 @@ public class XCardDocument {
 		}
 
 		//marshal the value
-		type.marshalXml(typeElement, version4, warningsBuf, compatibilityMode);
+		type.marshalXml(typeElement, version4, compatibilityMode);
 
 		return typeElement;
 	}
@@ -790,10 +737,6 @@ public class XCardDocument {
 	 */
 	private Element createElement(String name, String ns) {
 		return document.createElementNS(ns, name);
-	}
-
-	private void addWarning(String message, String propertyName) {
-		addWarning(message, propertyName, writeWarnings);
 	}
 
 	private void addWarning(String message, String propertyName, List<String> warnings) {

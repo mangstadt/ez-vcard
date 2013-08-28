@@ -1,9 +1,17 @@
-package ezvcard.io;
+package ezvcard;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
 import java.util.List;
 
-import ezvcard.VCardVersion;
+import org.junit.Test;
+
+import ezvcard.ValidationWarnings.WarningsGroup;
+import ezvcard.io.CompatibilityMode;
 import ezvcard.types.VCardType;
+import ezvcard.util.TestUtils.Tests;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,35 +36,50 @@ import ezvcard.types.VCardType;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
- The views and conclusions contained in the software and documentation are those
- of the authors and should not be interpreted as representing official policies, 
- either expressed or implied, of the FreeBSD Project.
  */
 
 /**
- * An extended type class used for testing that does NOT contain XML marshalling
- * methods, nor a QName.
  * @author Michael Angstadt
  */
-public class AgeType extends VCardType {
-	public int age;
+public class WarningsGroupTest {
+	@Test
+	public void toString_() {
+		//@formatter:off
+		Tests tests = new Tests();
+		tests.add(
+			"one",
+			new WarningsGroup(null, Arrays.asList("one"))
+		);
+		tests.add(
+			"[TestProperty]: one" + NEWLINE + 
+			"[TestProperty]: two",
+			new WarningsGroup(new TestProperty(), Arrays.asList("one", "two"))
+		);
+		//@formatter:on
 
-	public AgeType() {
-		super("X-AGE");
+		for (Object[] test : tests) {
+			String expected = (String) test[0];
+			WarningsGroup group = (WarningsGroup) test[1];
+			String actual = group.toString();
+
+			assertEquals(expected, actual);
+		}
 	}
 
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(age);
+	private class TestProperty extends VCardType {
+		public TestProperty() {
+			super("TEST1");
+		}
+
+		@Override
+		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
+			//empty
+		}
+
+		@Override
+		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+			//empty
+		}
 	}
 
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		age = Integer.parseInt(value);
-	}
-
-	//	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	public QName getQName();
 }

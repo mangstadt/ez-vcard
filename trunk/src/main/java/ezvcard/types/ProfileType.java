@@ -2,8 +2,8 @@ package ezvcard.types;
 
 import java.util.List;
 
+import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -66,16 +66,15 @@ public class ProfileType extends TextType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if ("VCARD".equalsIgnoreCase(value)) {
-			//see RFC 2426 p.5
-			warnings.add("The only valid value for this property is \"VCARD\", but it is \"" + value + "\".");
-		}
-		super.doMarshalText(sb, version, warnings, compatibilityMode);
+	public VCardVersion[] getSupportedVersions() {
+		return new VCardVersion[] { VCardVersion.V3_0 };
 	}
 
 	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V3_0 };
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (!"VCARD".equalsIgnoreCase(value)) {
+			//see RFC 2426 p.5
+			warnings.add("The only valid value for this property is \"VCARD\", but it is \"" + value + "\".");
+		}
 	}
 }

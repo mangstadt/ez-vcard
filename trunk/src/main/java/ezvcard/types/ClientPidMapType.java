@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
@@ -171,7 +172,7 @@ public class ClientPidMapType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		checkForValue();
 		sb.append(pid).append(';').append(VCardStringUtils.escape(uri));
 	}
@@ -188,7 +189,7 @@ public class ClientPidMapType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode) {
+	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		checkForValue();
 
 		if (uri != null) {
@@ -208,7 +209,7 @@ public class ClientPidMapType extends VCardType {
 	}
 
 	@Override
-	protected JCardValue doMarshalJson(VCardVersion version, List<String> warnings) {
+	protected JCardValue doMarshalJson(VCardVersion version) {
 		checkForValue();
 
 		return JCardValue.structured(VCardDataType.TEXT, pid + "", uri);
@@ -222,6 +223,13 @@ public class ClientPidMapType extends VCardType {
 		pid = (str == null) ? null : parsePid(str);
 
 		uri = nextJsonComponent(it);
+	}
+
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (pid == null && uri == null) {
+			warnings.add("Property has no value associated with it.");
+		}
 	}
 
 	private void checkForValue() {
