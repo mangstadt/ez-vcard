@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -52,33 +51,6 @@ public class GeoUriTest {
 	@After
 	public void after() {
 		Locale.setDefault(defaultLocale);
-	}
-
-	@Test
-	public void buildNumberFormat() {
-		NumberFormat nf = GeoUri.buildNumberFormat(0);
-		assertEquals("12", nf.format(12.388));
-
-		nf = GeoUri.buildNumberFormat(-1);
-		assertEquals("12", nf.format(12.388));
-
-		nf = GeoUri.buildNumberFormat(1);
-		assertEquals("12.4", nf.format(12.388));
-
-		nf = GeoUri.buildNumberFormat(2);
-		assertEquals("12.39", nf.format(12.388));
-
-		nf = GeoUri.buildNumberFormat(3);
-		assertEquals("12.388", nf.format(12.388));
-	}
-
-	@Test
-	public void buildNumberFormat_other_locale() {
-		//Germany uses "," as the decimal separator, but "." should still be used in a geo URI
-		Locale.setDefault(Locale.GERMANY);
-
-		NumberFormat nf = GeoUri.buildNumberFormat(2);
-		assertEquals("-12.39", nf.format(-12.388));
 	}
 
 	@Test
@@ -279,7 +251,7 @@ public class GeoUriTest {
 		uri.setUncertainty(12.0);
 		uri.addParameter("param", "value");
 		uri.addParameter("param2", "value2");
-		assertEquals("geo:12.34,45.67,-21.43;crs=theCrs;u=12;param=value;param2=value2", uri.toString());
+		assertEquals("geo:12.34,45.67,-21.43;crs=theCrs;u=12.0;param=value;param2=value2", uri.toString());
 	}
 
 	@Test
@@ -359,6 +331,6 @@ public class GeoUriTest {
 		uri.setCoordB(45.67);
 		uri.setCoordC(-21.43);
 		uri.setUncertainty(12.0);
-		assertEquals("geo:12.34,45.67,-21.43;u=12", uri.toString());
+		assertEquals("geo:12.34,45.67,-21.43;u=12.0", uri.toString());
 	}
 }
