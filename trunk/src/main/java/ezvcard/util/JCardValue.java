@@ -40,7 +40,7 @@ import ezvcard.types.StructuredNameType;
  */
 
 /**
- * Holds the data type and value of a jCal property.
+ * Holds the data type and value of a jCard property.
  * @author Michael Angstadt
  */
 public class JCardValue {
@@ -48,7 +48,7 @@ public class JCardValue {
 	private final List<JsonValue> values;
 
 	/**
-	 * Creates a new jCal value.
+	 * Creates a new jCard value.
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 */
@@ -58,7 +58,7 @@ public class JCardValue {
 	}
 
 	/**
-	 * Creates a new jCal value.
+	 * Creates a new jCard value.
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 */
@@ -71,7 +71,7 @@ public class JCardValue {
 	 * Creates a single-valued value.
 	 * @param dataType the data type or null for "unknown"
 	 * @param value the value
-	 * @return the jCal value
+	 * @return the jCard value
 	 */
 	public static JCardValue single(VCardDataType dataType, Object value) {
 		return new JCardValue(dataType, new JsonValue(value));
@@ -81,7 +81,7 @@ public class JCardValue {
 	 * Creates a multi-valued value.
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
-	 * @return the jCal value
+	 * @return the jCard value
 	 */
 	public static JCardValue multi(VCardDataType dataType, Object... values) {
 		return multi(dataType, Arrays.asList(values));
@@ -91,7 +91,7 @@ public class JCardValue {
 	 * Creates a multi-valued value.
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
-	 * @return the jCal value
+	 * @return the jCard value
 	 */
 	public static JCardValue multi(VCardDataType dataType, List<?> values) {
 		List<JsonValue> multiValues = new ArrayList<JsonValue>(values.size());
@@ -105,7 +105,7 @@ public class JCardValue {
 	 * Creates a structured value.
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
-	 * @return the jCal value
+	 * @return the jCard value
 	 */
 	public static JCardValue structured(VCardDataType dataType, Object... values) {
 		List<List<?>> valuesList = new ArrayList<List<?>>(values.length);
@@ -119,7 +119,7 @@ public class JCardValue {
 	 * Creates a structured value.
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
-	 * @return the jCal value
+	 * @return the jCard value
 	 */
 	public static JCardValue structured(VCardDataType dataType, List<List<?>> values) {
 		List<JsonValue> array = new ArrayList<JsonValue>(values.size());
