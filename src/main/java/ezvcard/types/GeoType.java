@@ -1,6 +1,5 @@
 package ezvcard.types;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import ezvcard.VCardDataType;
@@ -10,6 +9,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
+import ezvcard.util.VCardFloatFormatter;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -339,8 +339,8 @@ public class GeoType extends VCardType implements HasAltId {
 		if (version == VCardVersion.V4_0) {
 			return uri.toString(6);
 		} else {
-			NumberFormat nf = GeoUri.buildNumberFormat(6);
-			return nf.format(getLatitude()) + ';' + nf.format(getLongitude());
+			VCardFloatFormatter formatter = new VCardFloatFormatter(6);
+			return formatter.format(getLatitude()) + ';' + formatter.format(getLongitude());
 		}
 	}
 }

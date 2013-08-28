@@ -1,9 +1,6 @@
 package ezvcard.util;
 
 import java.net.URI;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -308,16 +305,16 @@ public class GeoUri {
 	 * @return the geo URI's string representation
 	 */
 	public String toString(int decimals) {
-		NumberFormat nf = buildNumberFormat(decimals);
+		VCardFloatFormatter formatter = new VCardFloatFormatter(decimals);
 		StringBuilder sb = new StringBuilder("geo:");
 
 		if (coordA != null) {
-			sb.append(nf.format(coordA));
+			sb.append(formatter.format(coordA));
 		}
 
 		sb.append(',');
 		if (coordB != null) {
-			sb.append(nf.format(coordB));
+			sb.append(formatter.format(coordB));
 		}
 
 		if (coordC != null) {
@@ -333,7 +330,7 @@ public class GeoUri {
 
 		if (uncertainty != null) {
 			sb.append(';').append(PARAM_UNCERTAINTY).append('=');
-			sb.append(nf.format(uncertainty));
+			sb.append(formatter.format(uncertainty));
 		}
 
 		for (Map.Entry<String, String> entry : parameters.entrySet()) {
@@ -375,32 +372,5 @@ public class GeoUri {
 		}
 		m.appendTail(sb);
 		return sb.toString();
-	}
-
-	/**
-	 * Builds a number formatter object for displaying latitudes/longitudes as
-	 * strings.
-	 * @param decimals the number of decimals to display
-	 * @return the number formatter
-	 */
-	public static NumberFormat buildNumberFormat(int decimals) {
-		StringBuilder sb = new StringBuilder();
-		sb.append('0');
-		if (decimals > 0) {
-			sb.append('.');
-			for (int i = 0; i < decimals; i++) {
-				sb.append('#');
-			}
-		}
-
-		DecimalFormat df = new DecimalFormat(sb.toString());
-
-		//decimal separator differs by locale (e.g. Germany uses ",")
-		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-		symbols.setDecimalSeparator('.');
-		symbols.setMinusSign('-');
-		df.setDecimalFormatSymbols(symbols);
-
-		return df;
 	}
 }
