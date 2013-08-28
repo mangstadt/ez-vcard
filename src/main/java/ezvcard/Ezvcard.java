@@ -790,6 +790,7 @@ public class Ezvcard {
 		}
 
 		@Override
+		@SuppressWarnings("resource")
 		VCardReader _constructReader() throws IOException {
 			return (reader != null) ? new VCardReader(reader) : new VCardReader(file);
 		}
@@ -1276,6 +1277,7 @@ public class Ezvcard {
 		}
 
 		@Override
+		@SuppressWarnings("resource")
 		JCardReader _constructReader() throws IOException {
 			return (reader != null) ? new JCardReader(reader) : new JCardReader(file);
 		}
@@ -1450,6 +1452,7 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the writer
 		 */
 		public void go(Writer writer) throws IOException {
+			@SuppressWarnings("resource")
 			VCardWriter vcardWriter = new VCardWriter(writer);
 			if (version != null) {
 				vcardWriter.setTargetVersion(version);
@@ -1797,6 +1800,7 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the writer
 		 */
 		public void go(Writer writer) throws IOException {
+			@SuppressWarnings("resource")
 			JCardWriter jcardWriter = new JCardWriter(writer, vcards.size() > 1);
 			jcardWriter.setAddProdId(prodId);
 			jcardWriter.setIndent(indent);

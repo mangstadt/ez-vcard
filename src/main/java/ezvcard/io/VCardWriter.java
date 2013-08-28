@@ -19,6 +19,7 @@ import ezvcard.types.AddressType;
 import ezvcard.types.LabelType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.VCardType;
+import ezvcard.util.IOUtils;
 import ezvcard.util.VCardStringUtils;
 
 /*
@@ -340,6 +341,8 @@ public class VCardWriter implements Closeable {
 						agentWriter.write(nestedVCard);
 					} catch (IOException e) {
 						//writing to a string
+					} finally {
+						IOUtils.closeQuietly(agentWriter);
 					}
 
 					String vCardStr = sw.toString();

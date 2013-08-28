@@ -49,6 +49,7 @@ import ezvcard.io.VCardRawReader.VCardDataStreamListener;
 /**
  * @author Michael Angstadt
  */
+@SuppressWarnings("resource")
 public class VCardRawReaderTest {
 	@Test
 	public void basic() throws Exception {

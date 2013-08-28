@@ -68,6 +68,7 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
+@SuppressWarnings("resource")
 public class JCardReaderTest {
 	@Test
 	public void read_single() throws Throwable {

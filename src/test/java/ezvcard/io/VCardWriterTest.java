@@ -64,6 +64,7 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
+@SuppressWarnings("resource")
 public class VCardWriterTest {
 	/**
 	 * Tests to make sure it contains the BEGIN, VERSION, and END types.

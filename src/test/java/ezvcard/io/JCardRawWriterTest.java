@@ -45,6 +45,7 @@ import ezvcard.util.JsonValue;
 /**
  * @author Michael Angstadt
  */
+@SuppressWarnings("resource")
 public class JCardRawWriterTest {
 	@Test
 	public void write_multiple() throws Throwable {
