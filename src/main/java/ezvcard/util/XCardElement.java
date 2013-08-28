@@ -93,7 +93,7 @@ public class XCardElement {
 
 	/**
 	 * Gets the first value with one of the given data types.
-	 * @param dataType the data type(s) to look for (null signifies the
+	 * @param dataTypes the data type(s) to look for (null signifies the
 	 * "unknown" data type)
 	 * @return the value or null if not found
 	 */
