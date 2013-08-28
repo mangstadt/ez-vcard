@@ -37,6 +37,7 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
+@SuppressWarnings("resource")
 public class FoldedLineReaderTest {
 	@Test
 	public void readLine() throws Exception {

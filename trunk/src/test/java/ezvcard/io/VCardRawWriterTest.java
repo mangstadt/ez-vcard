@@ -47,6 +47,7 @@ import ezvcard.util.org.apache.commons.codec.EncoderException;
 /**
  * @author Michael Angstadt
  */
+@SuppressWarnings("resource")
 public class VCardRawWriterTest {
 	@Test
 	public void writeBeginComponent() throws Exception {

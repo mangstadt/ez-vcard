@@ -50,6 +50,7 @@ import ezvcard.util.JsonValue;
 /**
  * @author Michael Angstadt
  */
+@SuppressWarnings("resource")
 public class JCardRawReaderTest {
 	@Test
 	public void basic() throws Throwable {

@@ -92,6 +92,7 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
+@SuppressWarnings("resource")
 public class VCardReaderTest {
 	/**
 	 * Tests to make sure it can read sub types properly

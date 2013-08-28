@@ -26,6 +26,7 @@ import ezvcard.types.LabelType;
 import ezvcard.types.RawType;
 import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
+import ezvcard.util.IOUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.org.apache.commons.codec.DecoderException;
 import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
@@ -434,8 +435,8 @@ public class VCardReader implements Closeable {
 				} else {
 					//the property value should be an embedded vCard (3.0 style)
 					value = VCardStringUtils.unescape(value);
-					VCardReader agentReader = new VCardReader(value);
 
+					VCardReader agentReader = new VCardReader(value);
 					agentReader.setCompatibilityMode(compatibilityMode);
 					try {
 						VCard nestedVCard = agentReader.readNext();
@@ -448,6 +449,7 @@ public class VCardReader implements Closeable {
 						for (String w : agentReader.getWarnings()) {
 							addWarning("Problem unmarshalling nested vCard value: " + w, type.getTypeName());
 						}
+						IOUtils.closeQuietly(agentReader);
 					}
 				}
 
