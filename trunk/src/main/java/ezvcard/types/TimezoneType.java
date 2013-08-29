@@ -350,10 +350,6 @@ public class TimezoneType extends VCardType implements HasAltId {
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		checkForValue();
 
-		if (version == null) {
-			version = VCardVersion.V2_1;
-		}
-
 		boolean writeText = true;
 		switch (version) {
 		case V2_1:
@@ -481,10 +477,6 @@ public class TimezoneType extends VCardType implements HasAltId {
 	}
 
 	private void parse(String value, boolean isTextDataType, boolean isUtcOffsetDataType, VCardVersion version, List<String> warnings) {
-		if (version == null) {
-			version = VCardVersion.V2_1;
-		}
-
 		switch (version) {
 		case V2_1:
 			//e.g. "-05:00"
