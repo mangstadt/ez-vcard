@@ -281,10 +281,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * @param subTypes the sub types that were parsed
 	 * @param value the unfolded value from off the wire. If the wire value is
 	 * in "quoted-printable" encoding, it will be decoded.
-	 * @param version the version of the vCard that is being read or null if the
-	 * VERSION type has not been parsed yet (v3.0 and v4.0 require that the
-	 * VERSION type be at the top of the vCard, but v2.1 has no such
-	 * requirement)
+	 * @param version the version of the vCard that is being read
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
 	 * unmarshalling process
@@ -304,10 +301,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * Unmarshals the type value from off the wire.
 	 * @param value the unfolded value from off the wire. If the wire value is
 	 * in the "quoted-printable" encoding, it will be decoded.
-	 * @param version the version of the vCard that is being read or null if the
-	 * VERSION type has not been parsed yet (v3.0 and v4.0 require that the
-	 * VERSION type be at the top of the vCard, but v2.1 has no such
-	 * requirement)
+	 * @param version the version of the vCard that is being read
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
 	 * unmarshalling process

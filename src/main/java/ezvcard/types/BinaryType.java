@@ -421,10 +421,6 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	}
 
 	private void parse(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (version == null) {
-			version = VCardVersion.V2_1;
-		}
-
 		T contentType = parseContentType(version);
 
 		switch (version) {
@@ -464,7 +460,9 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	private String write(VCardVersion version) {
 		if (url != null) {
 			return url;
-		} else if (data != null) {
+		}
+
+		if (data != null) {
 			if (version == VCardVersion.V4_0) {
 				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
 				DataUri uri = new DataUri(mediaType, data);
@@ -472,8 +470,8 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 			} else {
 				return new String(Base64.encodeBase64(data));
 			}
-		} else {
-			throw new SkipMeException("Property has neither a URL nor binary data attached to it.");
 		}
+
+		throw new SkipMeException("Property has neither a URL nor binary data attached to it.");
 	}
 }
