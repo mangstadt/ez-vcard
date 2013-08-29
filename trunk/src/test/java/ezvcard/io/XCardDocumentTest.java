@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
@@ -567,9 +568,6 @@ public class XCardDocumentTest {
 		assertXMLEqual(expected, actual);
 	}
 
-	/**
-	 * Makes sure it can marshal parameters.
-	 */
 	@Test
 	public void addVCard_parameters() throws Throwable {
 		VCard vcard = new VCard();
@@ -578,10 +576,12 @@ public class XCardDocumentTest {
 		note.addPid(1, 1);
 		note.addPid(2, 2);
 		note.getSubTypes().put("X-CUSTOM", "xxx");
+		note.getSubTypes().put("X-INT", "11");
 		vcard.addNote(note);
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
+		xcm.registerParameterDataType("X-INT", VCardDataType.INTEGER);
 		xcm.addVCard(vcard);
 
 		Document actual = xcm.getDocument();
@@ -595,6 +595,7 @@ public class XCardDocumentTest {
 						"<language><language-tag>en</language-tag></language>" +
 						"<pid><text>1.1</text><text>2.2</text></pid>" +
 						"<x-custom><unknown>xxx</unknown></x-custom>" +
+						"<x-int><integer>11</integer></x-int>" +
 					"</parameters>" +
 					"<text>This is a\nnote.</text>" +
 				"</note>" +
