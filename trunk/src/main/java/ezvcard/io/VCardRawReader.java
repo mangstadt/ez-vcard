@@ -353,7 +353,7 @@ public class VCardRawReader implements Closeable {
 
 	/**
 	 * Instructs a {@link VCardRawReader} to stop reading from the data stream
-	 * when thrown from an {@link VCardDataStreamListener} implementation.
+	 * when thrown from a {@link VCardDataStreamListener} implementation.
 	 * @author Michael Angstadt
 	 */
 	@SuppressWarnings("serial")
