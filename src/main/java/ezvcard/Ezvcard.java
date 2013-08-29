@@ -1654,7 +1654,7 @@ public class Ezvcard {
 			doc.setVersionStrict(versionStrict);
 
 			for (VCard vcard : vcards) {
-				doc.addVCard(vcard);
+				doc.add(vcard);
 			}
 
 			return doc;
@@ -1768,7 +1768,7 @@ public class Ezvcard {
 		public void go(Writer writer) throws IOException {
 			HCardPage page = new HCardPage();
 			for (VCard vcard : vcards) {
-				page.addVCard(vcard);
+				page.add(vcard);
 			}
 			page.write(writer);
 		}

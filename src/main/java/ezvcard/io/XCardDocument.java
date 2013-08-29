@@ -114,7 +114,7 @@ import ezvcard.util.XmlUtils;
 * Document document = xcard.getDocument();
 * 
 * //call one of the "write()" methods to output the xCard document
-* File file = new File("meeting.xml");
+* File file = new File("johndoe.xml");
 * xcard.write(file);
 * </pre>
 * 
@@ -637,7 +637,7 @@ public class XCardDocument {
 	 * Adds a vCard to the XML document.
 	 * @param vcard the vCard to add
 	 */
-	public void addVCard(VCard vcard) {
+	public void add(VCard vcard) {
 		ListMultimap<String, VCardType> typesToAdd = new ListMultimap<String, VCardType>(); //group the types by group name (null = no group name)
 
 		for (VCardType type : vcard) {

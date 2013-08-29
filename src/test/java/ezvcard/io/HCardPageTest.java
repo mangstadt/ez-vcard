@@ -224,7 +224,7 @@ public class HCardPageTest {
 		//create template
 		VCard expected = createFullVCard();
 		HCardPage template = new HCardPage();
-		template.addVCard(expected);
+		template.add(expected);
 		String html = template.write();
 
 		//write to file for manual inspection
@@ -505,7 +505,7 @@ public class HCardPageTest {
 	private Document generate(VCard... vcards) throws TemplateException {
 		HCardPage template = new HCardPage();
 		for (VCard vcard : vcards) {
-			template.addVCard(vcard);
+			template.add(vcard);
 		}
 		return Jsoup.parse(template.write());
 	}

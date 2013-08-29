@@ -79,7 +79,7 @@ public class HCardPage {
 	 * Adds a vCard to the HTML page.
 	 * @param vcard the vCard to add
 	 */
-	public void addVCard(VCard vcard) {
+	public void add(VCard vcard) {
 		vcards.add(vcard);
 	}
 
