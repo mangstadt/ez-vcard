@@ -313,6 +313,7 @@ public class VCardRawReader implements Closeable {
 
 		/**
 		 * Called when a property is read.
+		 * @param group the group name or null if no group was defined
 		 * @param name the property name (e.g. "VERSION")
 		 * @param parameters the parameters
 		 * @param value the property value
