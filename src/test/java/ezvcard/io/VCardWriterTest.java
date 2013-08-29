@@ -358,7 +358,6 @@ public class VCardWriterTest {
 		"VERSION:4.0\r\n" +
 		"ADR;LABEL=\"123 Main St.\\nAustin, TX 12345\";TYPE=home:;;123 Main St.;Austin;TX;12345;\r\n" +
 		"ADR;TYPE=work:;;222 Broadway;New York;NY;99999;\r\n" +
-		"LABEL;TYPE=parcel:22 Spruce Ln.\\nChicago\\, IL 11111\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -400,6 +399,39 @@ public class VCardWriterTest {
 		"VERSION:2.1\r\n" +
 		"N:;;;;\r\n" +
 		"X-LUCKY-NUM:24\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void setVersionStrict() throws Throwable {
+		VCard vcard = new VCard();
+		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
+		vcw.setAddProdId(false);
+		vcw.write(vcard);
+		vcw.setVersionStrict(false);
+		vcw.write(vcard);
+		vcw.setVersionStrict(true);
+		vcw.write(vcard);
+
+		String actual = sw.toString();
+
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"MAILER:mailer\r\n" +
+		"END:VCARD\r\n" + 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 

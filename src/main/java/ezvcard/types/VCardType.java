@@ -89,6 +89,20 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
+	 * Determines if this property is supported by the given version.
+	 * @param version the version
+	 * @return true if it is supported, false if not
+	 */
+	public boolean isSupported(VCardVersion version) {
+		for (VCardVersion v : getSupportedVersions()) {
+			if (v == version) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Gets the vCard versions that support this type.
 	 * @return the vCard versions that support this type.
 	 */
@@ -113,16 +127,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 		List<String> warnings = new ArrayList<String>(0);
 
 		//check the supported versions
-		VCardVersion[] supportedVersions = getSupportedVersions();
-		boolean found = false;
-		for (VCardVersion v : supportedVersions) {
-			if (v == version) {
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			warnings.add("Property is not supported by version " + version.getVersion() + ".  Supported versions are: " + Arrays.toString(supportedVersions));
+		if (!isSupported(version)) {
+			warnings.add("Property is not supported by version " + version.getVersion() + ".  Supported versions are: " + Arrays.toString(getSupportedVersions()));
 		}
 
 		//check parameters

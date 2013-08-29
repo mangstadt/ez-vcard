@@ -58,6 +58,7 @@ import ezvcard.util.VCardStringUtils;
 public class VCardWriter implements Closeable {
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private boolean addProdId = true;
+	private boolean versionStrict = true;
 	private final VCardRawWriter writer;
 
 	/**
@@ -212,6 +213,26 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
+	 * Gets whether properties that do not support the target version will be
+	 * excluded from the written vCard.
+	 * @return true to exclude properties that do not support the target
+	 * version, false to include them anyway (defaults to true)
+	 */
+	public boolean isVersionStrict() {
+		return versionStrict;
+	}
+
+	/**
+	 * Sets whether properties that do not support the target version will be
+	 * excluded from the written vCard.
+	 * @param versionStrict true to exclude properties that do not support the
+	 * target version, false to include them anyway (defaults to true)
+	 */
+	public void setVersionStrict(boolean versionStrict) {
+		this.versionStrict = versionStrict;
+	}
+
+	/**
 	 * <p>
 	 * Gets whether the writer will apply circumflex accent encoding on
 	 * parameter values (disabled by default, only applies to 3.0 and 4.0
@@ -284,6 +305,11 @@ public class VCardWriter implements Closeable {
 				continue;
 			}
 
+			if (versionStrict && !type.isSupported(targetVersion)) {
+				//do not add the property to the vCard if it is not supported by the target version
+				continue;
+			}
+
 			typesToAdd.add(type);
 
 			//add LABEL types for each ADR type if the target version is 2.1 or 3.0
@@ -336,6 +362,7 @@ public class VCardWriter implements Closeable {
 					StringWriter sw = new StringWriter();
 					VCardWriter agentWriter = new VCardWriter(sw, targetVersion, null, "\n");
 					agentWriter.setAddProdId(false);
+					agentWriter.setVersionStrict(versionStrict);
 					agentWriter.setCompatibilityMode(compatibilityMode);
 					try {
 						agentWriter.write(nestedVCard);
