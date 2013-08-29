@@ -94,11 +94,7 @@ public class RawType extends VCardType {
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		Element theElement = element.element();
 		Element child = XmlUtils.getFirstChildElement(theElement);
-		if (child == null) {
-			value = theElement.getTextContent();
-		} else {
-			value = child.getTextContent();
-		}
+		value = (child == null) ? theElement.getTextContent() : child.getTextContent();
 	}
 
 	@Override

@@ -519,12 +519,14 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	static URI parseUriFromLink(String linkUri) {
 		for (ImHtmlLink imLink : htmlParseableProtocols) {
 			String handle = imLink.parseHandle(linkUri);
-			if (handle != null) {
-				try {
-					return new URI(imLink.getProtocol(), handle, null);
-				} catch (URISyntaxException e) {
-					throw new IllegalArgumentException(e);
-				}
+			if (handle == null) {
+				continue;
+			}
+
+			try {
+				return new URI(imLink.getProtocol(), handle, null);
+			} catch (URISyntaxException e) {
+				throw new IllegalArgumentException(e);
 			}
 		}
 		return null;
@@ -585,10 +587,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 		 */
 		public String parseHandle(String linkUri) {
 			Matcher m = linkRegex.matcher(linkUri);
-			if (m.find()) {
-				return m.group(handleGroup);
-			}
-			return null;
+			return m.find() ? m.group(handleGroup) : null;
 		}
 
 		/**

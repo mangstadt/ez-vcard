@@ -73,11 +73,11 @@ public class UriType extends TextType {
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String href = element.absUrl("href");
-		if (href.length() > 0) {
-			setValue(href);
-		} else {
+		if (href.length() == 0) {
 			super.doUnmarshalHtml(element, warnings);
+			return;
 		}
+		setValue(href);
 	}
 
 	@Override

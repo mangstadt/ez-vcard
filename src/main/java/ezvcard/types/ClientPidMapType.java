@@ -182,10 +182,10 @@ public class ClientPidMapType extends VCardType {
 		String split[] = value.split(";", 2);
 		if (split.length < 2) {
 			throw new SkipMeException("Unable to parse.  Value must contain a PID and a URI, separated by a semi-colon.");
-		} else {
-			pid = parsePid(split[0]);
-			uri = VCardStringUtils.unescape(split[1]);
 		}
+
+		pid = parsePid(split[0]);
+		uri = VCardStringUtils.unescape(split[1]);
 	}
 
 	@Override
@@ -204,8 +204,8 @@ public class ClientPidMapType extends VCardType {
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		uri = element.first(VCardDataType.URI);
 
-		String value = element.first("sourceid");
-		pid = (value == null) ? null : parsePid(value);
+		String sourceid = element.first("sourceid");
+		pid = (sourceid == null) ? null : parsePid(sourceid);
 	}
 
 	@Override

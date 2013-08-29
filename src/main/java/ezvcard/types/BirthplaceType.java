@@ -155,27 +155,28 @@ public class BirthplaceType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		if (uri != null) {
-			copy.setValue(VCardDataType.URI);
-		}
+		copy.setValue((uri == null) ? null : VCardDataType.URI);
 	}
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			sb.append(uri);
-		} else if (text != null) {
-			sb.append(VCardStringUtils.escape(text));
-		} else {
-			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+			return;
 		}
+		if (text != null) {
+			sb.append(VCardStringUtils.escape(text));
+			return;
+		}
+		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
-		VCardDataType valueParam = subTypes.getValue();
-		if (valueParam == VCardDataType.URI) {
+
+		VCardDataType dataType = subTypes.getValue();
+		if (dataType == VCardDataType.URI) {
 			setUri(value);
 		} else {
 			setText(value);
@@ -186,11 +187,13 @@ public class BirthplaceType extends VCardType implements HasAltId {
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			parent.append(VCardDataType.URI, uri);
-		} else if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
-		} else {
-			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+			return;
 		}
+		if (text != null) {
+			parent.append(VCardDataType.TEXT, text);
+			return;
+		}
+		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
 
 	@Override
@@ -214,11 +217,11 @@ public class BirthplaceType extends VCardType implements HasAltId {
 	protected JCardValue doMarshalJson(VCardVersion version) {
 		if (uri != null) {
 			return JCardValue.single(VCardDataType.URI, uri);
-		} else if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
-		} else {
-			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 		}
+		if (text != null) {
+			return JCardValue.single(VCardDataType.TEXT, text);
+		}
+		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
 
 	@Override

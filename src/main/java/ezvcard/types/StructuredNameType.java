@@ -253,9 +253,10 @@ public class StructuredNameType extends VCardType implements HasAltId {
 			public void handle(StringBuilder sb, List<String> v) {
 				VCardStringUtils.join(v, ",", value, new JoinCallback<String>() {
 					public void handle(StringBuilder sb, String v) {
-						if (v != null) {
-							sb.append(VCardStringUtils.escape(v));
+						if (v == null) {
+							return;
 						}
+						sb.append(VCardStringUtils.escape(v));
 					}
 				});
 			}
@@ -359,9 +360,10 @@ public class StructuredNameType extends VCardType implements HasAltId {
 		List<String> values = it.next();
 		List<String> nonEmpty = new ArrayList<String>(values.size());
 		for (String valueStr : values) {
-			if (valueStr.length() > 0) {
-				nonEmpty.add(valueStr);
+			if (valueStr.length() == 0) {
+				continue;
 			}
+			nonEmpty.add(valueStr);
 		}
 		return nonEmpty;
 	}

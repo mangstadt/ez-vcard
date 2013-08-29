@@ -140,9 +140,10 @@ public class CategoriesType extends TextListType implements HasAltId {
 					sb.append(VCardStringUtils.escape(value));
 				}
 			});
-		} else {
-			super.doMarshalText(sb, version, compatibilityMode);
+			return;
 		}
+
+		super.doMarshalText(sb, version, compatibilityMode);
 	}
 
 	@Override
@@ -156,11 +157,10 @@ public class CategoriesType extends TextListType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String rel = element.attr("rel");
-		if (rel.length() > 0) {
-			addValue(rel);
-		} else {
-			addValue(element.value());
+		String value = element.attr("rel");
+		if (value.length() == 0) {
+			value = element.value();
 		}
+		addValue(value);
 	}
 }

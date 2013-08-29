@@ -188,34 +188,37 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
+		if (!"audio".equals(elementName) && !"source".equals(elementName)) {
+			super.doUnmarshalHtml(element, warnings);
+			return;
+		}
+
 		if ("audio".equals(elementName)) {
-			org.jsoup.nodes.Element sourceElement = element.getElement().getElementsByTag("source").first();
-			if (sourceElement == null) {
+			//parse its child "<source>" element
+			org.jsoup.nodes.Element source = element.getElement().getElementsByTag("source").first();
+			if (source == null) {
 				throw new SkipMeException("No <source> element found beneath <audio> element.");
 			}
-		}
-		if ("source".equals(elementName)) {
-			SoundTypeParameter mediaType = null;
-			String type = element.attr("type");
-			if (type.length() > 0) {
-				mediaType = buildMediaTypeObj(type);
-			}
 
-			String src = element.absUrl("src");
-			if (src.length() > 0) {
-				try {
-					DataUri uri = new DataUri(src);
-					mediaType = buildMediaTypeObj(uri.getContentType());
-					setData(uri.getData(), mediaType);
-				} catch (IllegalArgumentException e) {
-					//TODO create buildTypeObjFromExtension() method
-					setUrl(src, null);
-				}
-			} else {
-				throw new SkipMeException("<source> tag does not have a \"src\" attribute.");
-			}
-		} else {
-			super.doUnmarshalHtml(element, warnings);
+			element = new HCardElement(source);
+		}
+
+		String type = element.attr("type");
+		SoundTypeParameter mediaType = (type.length() == 0) ? null : buildMediaTypeObj(type);
+
+		String src = element.absUrl("src");
+		if (src.length() == 0) {
+			throw new SkipMeException("<source> tag does not have a \"src\" attribute.");
+		}
+
+		try {
+			DataUri uri = new DataUri(src);
+			mediaType = buildMediaTypeObj(uri.getContentType());
+			setData(uri.getData(), mediaType);
+		} catch (IllegalArgumentException e) {
+			//not a data URI
+			//TODO create buildTypeObjFromExtension() method
+			setUrl(src, null);
 		}
 	}
 }

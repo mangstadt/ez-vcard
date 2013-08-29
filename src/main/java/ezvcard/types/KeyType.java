@@ -12,7 +12,6 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
-import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
@@ -214,51 +213,52 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		if (text != null) {
-			MediaTypeParameter contentType = getContentType();
-			if (contentType == null) {
-				contentType = new MediaTypeParameter(null, null, null);
-			}
-
-			copy.setValue(VCardDataType.TEXT);
-			copy.setEncoding(null);
-			if (version == VCardVersion.V4_0) {
-				//don't null out TYPE, it could be set to "home", "work", etc
-				copy.setMediaType(contentType.getMediaType());
-			} else {
-				copy.setType(contentType.getValue());
-				copy.setMediaType(null);
-			}
+		if (text == null) {
+			super.doMarshalSubTypes(copy, version, compatibilityMode, vcard);
 			return;
 		}
-		super.doMarshalSubTypes(copy, version, compatibilityMode, vcard);
+
+		copy.setValue(VCardDataType.TEXT);
+		copy.setEncoding(null);
+
+		switch (version) {
+		case V2_1:
+		case V3_0:
+			copy.setType((contentType == null) ? null : contentType.getValue());
+			copy.setMediaType(null);
+			break;
+		case V4_0:
+			//don't null out TYPE, it could be set to "home", "work", etc
+			copy.setMediaType((contentType == null) ? null : contentType.getMediaType());
+			break;
+		}
 	}
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (text != null) {
-			sb.append(VCardStringUtils.escape(text));
+		if (text == null) {
+			super.doMarshalText(sb, version, compatibilityMode);
 			return;
 		}
-		super.doMarshalText(sb, version, compatibilityMode);
+		sb.append(VCardStringUtils.escape(text));
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (subTypes.getValue() == VCardDataType.TEXT) {
-			parseText(VCardStringUtils.unescape(value), version);
+		if (subTypes.getValue() != VCardDataType.TEXT) {
+			super.doUnmarshalText(value, version, warnings, compatibilityMode);
 			return;
 		}
-		super.doUnmarshalText(value, version, warnings, compatibilityMode);
+		parseText(VCardStringUtils.unescape(value), version);
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
+		if (text == null) {
+			super.doMarshalXml(parent, compatibilityMode);
 			return;
 		}
-		super.doMarshalXml(parent, compatibilityMode);
+		parent.append(VCardDataType.TEXT, text);
 	}
 
 	@Override
@@ -305,6 +305,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			KeyTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
 			setData(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
+			//not a data URI
 			//TODO create buildTypeObjFromExtension() method
 			setUrl(href, null);
 		}
@@ -312,10 +313,10 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
+		if (text == null) {
+			return super.doMarshalJson(version);
 		}
-		return super.doMarshalJson(version);
+		return JCardValue.single(VCardDataType.TEXT, text);
 	}
 
 	@Override
@@ -336,7 +337,6 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			KeyTypeParameter contentType = parseContentType(version);
 			setUrl(valueStr, contentType);
 		}
-		return;
 	}
 
 	@Override

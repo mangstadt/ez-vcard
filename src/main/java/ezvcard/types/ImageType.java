@@ -108,22 +108,24 @@ public class ImageType extends BinaryType<ImageTypeParameter> {
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
-		if ("img".equals(elementName)) {
-			String src = element.absUrl("src");
-			if (src.length() > 0) {
-				try {
-					DataUri uri = new DataUri(src);
-					ImageTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
-					setData(uri.getData(), mediaType);
-				} catch (IllegalArgumentException e) {
-					//TODO create buildTypeObjFromExtension() method
-					setUrl(src, null);
-				}
-			} else {
-				throw new SkipMeException("<img> tag does not have a \"src\" attribute.");
-			}
-		} else {
+		if (!"img".equals(elementName)) {
 			super.doUnmarshalHtml(element, warnings);
+			return;
+		}
+
+		String src = element.absUrl("src");
+		if (src.length() == 0) {
+			throw new SkipMeException("<img> tag does not have a \"src\" attribute.");
+		}
+
+		try {
+			DataUri uri = new DataUri(src);
+			ImageTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
+			setData(uri.getData(), mediaType);
+		} catch (IllegalArgumentException e) {
+			//not a data URI
+			//TODO create buildTypeObjFromExtension() method
+			setUrl(src, null);
 		}
 	}
 }

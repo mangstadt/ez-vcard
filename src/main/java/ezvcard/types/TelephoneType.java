@@ -187,34 +187,40 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		if (version == VCardVersion.V4_0 && uri != null) {
-			copy.setValue(VCardDataType.URI);
-		} else {
+		switch (version) {
+		case V2_1:
+		case V3_0:
 			copy.setValue(null);
-		}
-
-		//replace "TYPE=pref" with "PREF=1"
-		if (version == VCardVersion.V4_0) {
-			if (getTypes().contains(TelephoneTypeParameter.PREF)) {
-				copy.removeType(TelephoneTypeParameter.PREF.getValue());
-				copy.setPref(1);
-			}
-		} else {
 			copy.setPref(null);
 
 			//find the TEL with the lowest PREF value in the vCard
 			TelephoneType mostPreferred = null;
 			for (TelephoneType tel : vcard.getTelephoneNumbers()) {
 				Integer pref = tel.getPref();
-				if (pref != null) {
-					if (mostPreferred == null || pref < mostPreferred.getPref()) {
-						mostPreferred = tel;
-					}
+				if (pref == null) {
+					continue;
+				}
+
+				if (mostPreferred == null || pref < mostPreferred.getPref()) {
+					mostPreferred = tel;
 				}
 			}
 			if (this == mostPreferred) {
 				copy.addType(TelephoneTypeParameter.PREF.getValue());
 			}
+
+			break;
+		case V4_0:
+			VCardDataType dataType = (uri == null) ? null : VCardDataType.URI;
+			copy.setValue(dataType);
+
+			//replace "TYPE=pref" with "PREF=1"
+			if (getTypes().contains(TelephoneTypeParameter.PREF)) {
+				copy.removeType(TelephoneTypeParameter.PREF.getValue());
+				copy.setPref(1);
+			}
+
+			break;
 		}
 	}
 
@@ -245,27 +251,30 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		value = VCardStringUtils.unescape(value);
+
 		if (subTypes.getValue() == VCardDataType.URI) {
 			try {
 				setUri(TelUri.parse(value));
+				return;
 			} catch (IllegalArgumentException e) {
 				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
-				setText(value);
 			}
-		} else {
-			setText(value);
 		}
+
+		setText(value);
 	}
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (uri != null) {
 			parent.append(VCardDataType.URI, uri.toString());
-		} else if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
-		} else {
-			throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+			return;
 		}
+		if (text != null) {
+			parent.append(VCardDataType.TEXT, text);
+			return;
+		}
+		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
 
 	@Override
@@ -298,15 +307,12 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		}
 
 		String href = element.attr("href");
-		if (href.length() > 0) {
-			try {
-				setUri(TelUri.parse(href));
-				return;
-			} catch (IllegalArgumentException e) {
-				//not a tel URI
-			}
+		try {
+			setUri(TelUri.parse(href));
+		} catch (IllegalArgumentException e) {
+			//not a tel URI
+			setText(element.value());
 		}
-		setText(element.value());
 	}
 
 	@Override
@@ -326,13 +332,13 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		if (value.getDataType() == VCardDataType.URI) {
 			try {
 				setUri(TelUri.parse(valueStr));
+				return;
 			} catch (IllegalArgumentException e) {
 				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
-				setText(valueStr);
 			}
-		} else {
-			setText(valueStr);
 		}
+
+		setText(valueStr);
 	}
 
 	@Override
