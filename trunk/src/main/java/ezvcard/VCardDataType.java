@@ -48,8 +48,8 @@ public class VCardDataType {
 		}
 
 		@Override
-		protected boolean matches(VCardDataType object, String value) {
-			return object.name.equalsIgnoreCase(value);
+		protected boolean matches(VCardDataType dataType, String value) {
+			return dataType.name.equalsIgnoreCase(value);
 		}
 	};
 
@@ -141,7 +141,7 @@ public class VCardDataType {
 
 	/**
 	 * Gets the name of the data type.
-	 * @return the name of the data type (e.g. "uri")
+	 * @return the name of the data type (e.g. "text")
 	 */
 	public String getName() {
 		return name;
@@ -162,30 +162,30 @@ public class VCardDataType {
 	}
 
 	/**
-	 * Searches for a parameter value that is defined as a static constant in
-	 * this class.
-	 * @param value the parameter value
-	 * @return the object or null if not found
+	 * Searches for a data type that is defined as a static constant in this
+	 * class.
+	 * @param dataType the data type name (e.g. "text")
+	 * @return the data type or null if not found
 	 */
-	public static VCardDataType find(String value) {
-		return enums.find(value);
+	public static VCardDataType find(String dataType) {
+		return enums.find(dataType);
 	}
 
 	/**
-	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * Searches for a data type and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
 	 * <code>==</code> equality.
-	 * @param value the parameter value
-	 * @return the object
+	 * @param dataType data type name (e.g. "text")
+	 * @return the data type
 	 */
-	public static VCardDataType get(String value) {
-		return enums.get(value);
+	public static VCardDataType get(String dataType) {
+		return enums.get(dataType);
 	}
 
 	/**
-	 * Gets all of the parameter values that are defined as static constants in
-	 * this class.
-	 * @return the parameter values
+	 * Gets all of the data types that are defined as static constants in this
+	 * class.
+	 * @return the data types
 	 */
 	public static Collection<VCardDataType> all() {
 		return enums.all();
