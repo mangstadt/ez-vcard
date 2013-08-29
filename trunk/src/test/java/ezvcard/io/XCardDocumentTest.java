@@ -544,14 +544,14 @@ public class XCardDocumentTest {
 	 * A basic test with one type.
 	 */
 	@Test
-	public void addVCard_basicType() throws Throwable {
+	public void add_basicType() throws Throwable {
 		VCard vcard = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 
 		Document actual = xcm.getDocument();
 
@@ -569,7 +569,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void addVCard_parameters() throws Throwable {
+	public void add_parameters() throws Throwable {
 		VCard vcard = new VCard();
 		NoteType note = new NoteType("This is a\nnote.");
 		note.setLanguage("en");
@@ -582,7 +582,7 @@ public class XCardDocumentTest {
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
 		xcm.registerParameterDataType("X-INT", VCardDataType.INTEGER);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 
 		Document actual = xcm.getDocument();
 
@@ -611,7 +611,7 @@ public class XCardDocumentTest {
 	 * Makes sure it can marshal groups.
 	 */
 	@Test
-	public void addVCard_group() throws Throwable {
+	public void add_group() throws Throwable {
 		VCard vcard = new VCard();
 
 		FormattedNameType fn = new FormattedNameType("John Doe");
@@ -632,7 +632,7 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 
 		Document actual = xcm.getDocument();
 
@@ -670,7 +670,7 @@ public class XCardDocumentTest {
 	 * Makes sure it can add multiple vCards to the same document.
 	 */
 	@Test
-	public void addVCard_multiple() throws Throwable {
+	public void add_multiple() throws Throwable {
 		VCard vcard1 = new VCard();
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard1.setFormattedName(fn);
@@ -681,8 +681,8 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.addVCard(vcard1);
-		xcm.addVCard(vcard2);
+		xcm.add(vcard1);
+		xcm.add(vcard2);
 
 		Document actual = xcm.getDocument();
 
@@ -712,19 +712,19 @@ public class XCardDocumentTest {
 		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
 
 		XCardDocument xcm = new XCardDocument();
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 		Double actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
 		assertEquals(Double.valueOf(1), actual);
 
 		xcm = new XCardDocument();
 		xcm.setAddProdId(true);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 		actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
 		assertEquals(Double.valueOf(1), actual);
 
 		xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 		actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
 		assertEquals(Double.valueOf(0), actual);
 	}
@@ -744,13 +744,13 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 		String actual = (String) xpath.evaluate("/v:vcards/v:vcard/v:prodid/v:text", xcm.getDocument(), XPathConstants.STRING);
 		assertEquals(prodId.getValue(), actual);
 
 		xcm = new XCardDocument();
 		xcm.setAddProdId(true);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 		actual = (String) xpath.evaluate("/v:vcards/v:vcard/v:prodid/v:text", xcm.getDocument(), XPathConstants.STRING);
 		assertEquals(new EzvcardProdIdType(VCardVersion.V4_0).getValue(), actual);
 	}
@@ -763,13 +763,13 @@ public class XCardDocumentTest {
 		XCardDocument xcard = new XCardDocument();
 		xcard.setAddProdId(false);
 
-		xcard.addVCard(vcard);
+		xcard.add(vcard);
 
 		xcard.setVersionStrict(false);
-		xcard.addVCard(vcard);
+		xcard.add(vcard);
 
 		xcard.setVersionStrict(true);
-		xcard.addVCard(vcard);
+		xcard.add(vcard);
 
 		Document actual = xcard.getDocument();
 
@@ -794,7 +794,7 @@ public class XCardDocumentTest {
 	 * NOT be marshalled.
 	 */
 	@Test
-	public void addVCard_skipMeException() throws Throwable {
+	public void add_skipMeException() throws Throwable {
 		VCard vcard = new VCard();
 
 		//add FN property so a warning isn't generated (4.0 requires FN to be present)
@@ -812,7 +812,7 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 
 		Document actual = xcm.getDocument();
 
@@ -834,7 +834,7 @@ public class XCardDocumentTest {
 	 * Tests how extended types are marshalled.
 	 */
 	@Test
-	public void addVCard_extendedTypes() throws Throwable {
+	public void add_extendedTypes() throws Throwable {
 		VCard vcard = new VCard();
 
 		//contains marshal methods and QName
@@ -854,7 +854,7 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 
 		Document actual = xcm.getDocument();
 
@@ -880,7 +880,7 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.addVCard(vcard);
+		xcm.add(vcard);
 
 		String actual = xcm.write(2);
 
@@ -900,13 +900,13 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void addVCard_embedded_vcards_not_supported() throws Throwable {
+	public void add_embedded_vcards_not_supported() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.addType(new EmbeddedType());
 
 		XCardDocument doc = new XCardDocument();
-		doc.addVCard(vcard);
+		doc.add(vcard);
 
 		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
 		assertTrue(parsedVCard.getExtendedTypes().isEmpty());
@@ -1074,7 +1074,7 @@ public class XCardDocumentTest {
 	private void assertExample(VCard vcard, String exampleFileName) throws IOException, SAXException {
 		XCardDocument xcard = new XCardDocument();
 		xcard.setAddProdId(false);
-		xcard.addVCard(vcard);
+		xcard.add(vcard);
 
 		Document expected = XmlUtils.toDocument(new InputStreamReader(getClass().getResourceAsStream(exampleFileName)));
 		Document actual = xcard.getDocument();
