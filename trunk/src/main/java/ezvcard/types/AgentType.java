@@ -151,12 +151,11 @@ public class AgentType extends VCardType {
 
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
+		VCardDataType dataType = null;
 		if (url != null) {
-			VCardDataType vp = (version == VCardVersion.V2_1) ? VCardDataType.URL : VCardDataType.URI;
-			copy.setValue(vp);
-		} else {
-			copy.setValue(null);
+			dataType = (version == VCardVersion.V2_1) ? VCardDataType.URL : VCardDataType.URI;
 		}
+		copy.setValue(dataType);
 	}
 
 	@Override
@@ -176,11 +175,10 @@ public class AgentType extends VCardType {
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (subTypes.getValue() != null) {
-			setUrl(VCardStringUtils.unescape(value));
-		} else {
+		if (subTypes.getValue() == null) {
 			throw new EmbeddedVCardException(new Injector());
 		}
+		setUrl(VCardStringUtils.unescape(value));
 	}
 
 	@Override
@@ -188,14 +186,13 @@ public class AgentType extends VCardType {
 		Set<String> classes = element.classNames();
 		if (classes.contains("vcard")) {
 			throw new EmbeddedVCardException(new Injector());
-		} else {
-			String href = element.absUrl("href");
-			if (href.length() > 0) {
-				setUrl(href);
-			} else {
-				setUrl(element.value());
-			}
 		}
+
+		String url = element.absUrl("href");
+		if (url.length() == 0) {
+			url = element.value();
+		}
+		setUrl(url);
 	}
 
 	@Override

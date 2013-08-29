@@ -266,7 +266,11 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 				copy.setMediaType(contentType.getMediaType());
 				break;
 			}
-		} else if (data != null) {
+
+			return;
+		}
+
+		if (data != null) {
 			copy.setMediaType(null);
 
 			switch (version) {
@@ -317,26 +321,27 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
-		if ("object".equals(elementName)) {
-			String data = element.absUrl("data");
-			if (data.length() > 0) {
-				try {
-					DataUri uri = new DataUri(data);
-					T mediaType = buildMediaTypeObj(uri.getContentType());
-					setData(uri.getData(), mediaType);
-				} catch (IllegalArgumentException e) {
-					T mediaType = null;
-					String type = element.attr("type");
-					if (type.length() > 0) {
-						mediaType = buildMediaTypeObj(type);
-					}
-					setUrl(data, mediaType);
-				}
-			} else {
-				throw new SkipMeException("<object> tag does not have a \"data\" attribute.");
-			}
-		} else {
+		if (!"object".equals(elementName)) {
 			throw new SkipMeException("Cannot parse HTML tag \"" + elementName + "\".");
+		}
+
+		String data = element.absUrl("data");
+		if (data.length() == 0) {
+			throw new SkipMeException("<object> tag does not have a \"data\" attribute.");
+		}
+
+		try {
+			DataUri uri = new DataUri(data);
+			T mediaType = buildMediaTypeObj(uri.getContentType());
+			setData(uri.getData(), mediaType);
+		} catch (IllegalArgumentException e) {
+			//not a data URI
+			T mediaType = null;
+			String type = element.attr("type");
+			if (type.length() > 0) {
+				mediaType = buildMediaTypeObj(type);
+			}
+			setUrl(data, mediaType);
 		}
 	}
 

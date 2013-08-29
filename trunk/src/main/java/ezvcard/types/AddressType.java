@@ -339,33 +339,38 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		//replace "TYPE=pref" with "PREF=1"
-		if (version == VCardVersion.V4_0) {
-			if (getTypes().contains(AddressTypeParameter.PREF)) {
-				copy.removeType(AddressTypeParameter.PREF.getValue());
-				copy.setPref(1);
-			}
-		} else {
+		switch (version) {
+		case V2_1:
+		case V3_0:
 			copy.setPref(null);
 
 			//find the ADR with the lowest PREF value in the vCard
 			AddressType mostPreferred = null;
 			for (AddressType adr : vcard.getAddresses()) {
 				Integer pref = adr.getPref();
-				if (pref != null) {
-					if (mostPreferred == null || pref < mostPreferred.getPref()) {
-						mostPreferred = adr;
-					}
+				if (pref == null) {
+					continue;
+				}
+
+				if (mostPreferred == null || pref < mostPreferred.getPref()) {
+					mostPreferred = adr;
 				}
 			}
 			if (this == mostPreferred) {
 				copy.addType(AddressTypeParameter.PREF.getValue());
 			}
-		}
 
-		//remove the LABEL parameter
-		if (version != VCardVersion.V4_0) {
+			//remove the LABEL parameter
+			//by the time this line of code is reached, VCardWriter will have created a LABEL property from this property's LABEL parameter
 			copy.removeAll("LABEL");
+
+			break;
+		case V4_0:
+			if (getTypes().contains(AddressTypeParameter.PREF)) {
+				copy.removeType(AddressTypeParameter.PREF.getValue());
+				copy.setPref(1);
+			}
+			break;
 		}
 	}
 
@@ -374,9 +379,10 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 		List<String> values = Arrays.asList(poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
 		VCardStringUtils.join(values, ";", sb, new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String value) {
-				if (value != null) {
-					sb.append(VCardStringUtils.escape(value));
+				if (value == null) {
+					return;
 				}
+				sb.append(VCardStringUtils.escape(value));
 			}
 		});
 	}
@@ -470,6 +476,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 				//ignore because it is converted to a PREF parameter for 4.0 vCards
 				continue;
 			}
+
 			if (!type.isSupported(version)) {
 				warnings.add("Type value \"" + type.getValue() + "\" is not supported in version " + version.getVersion() + ".");
 			}

@@ -260,9 +260,10 @@ public class GeoType extends VCardType implements HasAltId {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			parse(value, element.version(), warnings);
-		} else {
-			throw new SkipMeException("No URI found.");
+			return;
 		}
+
+		throw new SkipMeException("No URI found.");
 	}
 
 	@Override
@@ -311,33 +312,41 @@ public class GeoType extends VCardType implements HasAltId {
 	}
 
 	private void parse(String value, VCardVersion version, List<String> warnings) {
-		if (version == VCardVersion.V4_0) {
-			try {
-				uri = new GeoUri(value);
-			} catch (IllegalArgumentException e) {
-				throw new SkipMeException("Invalid geo URI: " + value);
-			}
-		} else {
+		switch (version) {
+		case V2_1:
+		case V3_0:
 			String split[] = value.split(";");
-
 			if (split.length != 2) {
 				throw new SkipMeException("Invalid value: " + value);
 			}
 
-			uri = new GeoUri();
-			String latitude = split[0];
-			String longitude = split[1];
+			String latitudeStr = split[0];
+			String longitudeStr = split[1];
 
+			Double latitude;
 			try {
-				setLatitude(Double.valueOf(latitude));
+				latitude = Double.valueOf(latitudeStr);
 			} catch (NumberFormatException e) {
-				throw new SkipMeException("Could not parse latitude: " + latitude);
+				throw new SkipMeException("Could not parse latitude: " + latitudeStr);
 			}
 
+			Double longitude;
 			try {
-				setLongitude(Double.valueOf(longitude));
+				longitude = Double.valueOf(longitudeStr);
 			} catch (NumberFormatException e) {
-				throw new SkipMeException("Could not parse longtude: " + longitude);
+				throw new SkipMeException("Could not parse longtude: " + longitudeStr);
+			}
+
+			uri = new GeoUri();
+			setLatitude(latitude);
+			setLongitude(longitude);
+			
+			break;
+		case V4_0:
+			try {
+				uri = new GeoUri(value);
+			} catch (IllegalArgumentException e) {
+				throw new SkipMeException("Invalid geo URI: " + value);
 			}
 		}
 	}
@@ -346,12 +355,15 @@ public class GeoType extends VCardType implements HasAltId {
 		if (getLatitude() == null || getLongitude() == null) {
 			throw new SkipMeException("Latitude and/or longitude is missing.");
 		}
-
-		if (version == VCardVersion.V4_0) {
-			return uri.toString(6);
-		} else {
+		
+		switch(version){
+		case V2_1:
+		case V3_0:
 			VCardFloatFormatter formatter = new VCardFloatFormatter(6);
 			return formatter.format(getLatitude()) + ';' + formatter.format(getLongitude());
+		case V4_0:
+			return uri.toString(6);
 		}
+		return null; //needed to prevent compilation error
 	}
 }

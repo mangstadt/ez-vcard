@@ -120,16 +120,19 @@ public class TextListType extends VCardType {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		values.clear();
+		
 		if (separator == ';') {
 			for (List<String> valueStr : value.getStructured()) {
-				if (!valueStr.isEmpty()) {
-					values.add(valueStr.get(0));
+				if (valueStr.isEmpty()) {
+					continue;
 				}
+				values.add(valueStr.get(0));
 			}
-		} else {
-			for (String valueStr : value.getMultivalued()) {
-				values.add(valueStr);
-			}
+			return;
+		}
+
+		for (String valueStr : value.getMultivalued()) {
+			values.add(valueStr);
 		}
 	}
 

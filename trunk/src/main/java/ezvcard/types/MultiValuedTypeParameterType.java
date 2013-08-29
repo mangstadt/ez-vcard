@@ -58,9 +58,11 @@ public abstract class MultiValuedTypeParameterType<T extends VCardParameter> ext
 		Set<T> types = new HashSet<T>();
 		for (String value : typesStr) {
 			T type = buildTypeObj(value);
-			if (type != null) {
-				types.add(type);
+			if (type == null) {
+				continue;
 			}
+
+			types.add(type);
 		}
 		return types;
 	}

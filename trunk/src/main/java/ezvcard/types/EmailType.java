@@ -151,28 +151,34 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		//replace "TYPE=pref" with "PREF=1"
-		if (version == VCardVersion.V4_0) {
-			if (getTypes().contains(EmailTypeParameter.PREF)) {
-				copy.removeType(EmailTypeParameter.PREF.getValue());
-				copy.setPref(1);
-			}
-		} else {
+		switch (version) {
+		case V2_1:
+		case V3_0:
 			copy.setPref(null);
 
 			//find the EMAIL with the lowest PREF value in the vCard
 			EmailType mostPreferred = null;
 			for (EmailType email : vcard.getEmails()) {
 				Integer pref = email.getPref();
-				if (pref != null) {
-					if (mostPreferred == null || pref < mostPreferred.getPref()) {
-						mostPreferred = email;
-					}
+				if (pref == null) {
+					continue;
+				}
+
+				if (mostPreferred == null || pref < mostPreferred.getPref()) {
+					mostPreferred = email;
 				}
 			}
 			if (this == mostPreferred) {
 				copy.addType(EmailTypeParameter.PREF.getValue());
 			}
+			break;
+		case V4_0:
+			//replace "TYPE=pref" with "PREF=1"
+			if (getTypes().contains(EmailTypeParameter.PREF)) {
+				copy.removeType(EmailTypeParameter.PREF.getValue());
+				copy.setPref(1);
+			}
+			break;
 		}
 	}
 
