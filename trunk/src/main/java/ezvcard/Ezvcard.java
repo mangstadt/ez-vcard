@@ -1345,6 +1345,7 @@ public class Ezvcard {
 	static abstract class WriterChainText<T> extends WriterChain<T> {
 		VCardVersion version;
 		boolean prodId = true;
+		boolean versionStrict = true;
 		boolean caretEncoding = false;
 
 		WriterChainText(Collection<VCard> vcards) {
@@ -1386,13 +1387,23 @@ public class Ezvcard {
 		/**
 		 * Sets whether the writer will use circumflex accent encoding for vCard
 		 * 3.0 and 4.0 parameter values (disabled by default).
-		 * 
 		 * @param enable true to use circumflex accent encoding, false not to
 		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
 		public T caretEncoding(boolean enable) {
 			this.caretEncoding = enable;
+			return this_;
+		}
+
+		/**
+		 * Sets whether properties that do not support the target version will
+		 * be excluded from the written vCard.
+		 * @param versionStrict true to exclude properties that do not support
+		 * the target version, false to include them anyway (defaults to true)
+		 */
+		public T versionStrict(boolean versionStrict) {
+			this.versionStrict = versionStrict;
 			return this_;
 		}
 
@@ -1459,11 +1470,15 @@ public class Ezvcard {
 			}
 			vcardWriter.setAddProdId(prodId);
 			vcardWriter.setCaretEncodingEnabled(caretEncoding);
+			vcardWriter.setVersionStrict(versionStrict);
 
 			for (VCard vcard : vcards) {
 				if (version == null) {
 					VCardVersion vcardVersion = vcard.getVersion();
-					vcardWriter.setTargetVersion((vcardVersion == null) ? VCardVersion.V3_0 : vcardVersion);
+					if (vcardVersion == null) {
+						vcardVersion = VCardVersion.V3_0;
+					}
+					vcardWriter.setTargetVersion(vcardVersion);
 				}
 				vcardWriter.write(vcard);
 			}
@@ -1494,6 +1509,11 @@ public class Ezvcard {
 		public WriterChainTextMulti caretEncoding(boolean enable) {
 			return super.caretEncoding(enable);
 		}
+
+		@Override
+		public WriterChainTextMulti versionStrict(boolean versionStrict) {
+			return super.versionStrict(versionStrict);
+		}
 	}
 
 	/**
@@ -1519,10 +1539,16 @@ public class Ezvcard {
 		public WriterChainTextSingle caretEncoding(boolean enable) {
 			return super.caretEncoding(enable);
 		}
+
+		@Override
+		public WriterChainTextSingle versionStrict(boolean versionStrict) {
+			return super.versionStrict(versionStrict);
+		}
 	}
 
 	static abstract class WriterChainXml<T> extends WriterChain<T> {
 		boolean prodId = true;
+		boolean versionStrict = true;
 		int indent = -1;
 
 		WriterChainXml(Collection<VCard> vcards) {
@@ -1548,6 +1574,17 @@ public class Ezvcard {
 		 */
 		public T indent(int indent) {
 			this.indent = indent;
+			return this_;
+		}
+
+		/**
+		 * Sets whether properties that do not support xCard (vCard version 4.0)
+		 * will be excluded from the written vCard.
+		 * @param versionStrict true to exclude properties that do not support
+		 * xCard, false to include them anyway (defaults to true)
+		 */
+		public T versionStrict(boolean versionStrict) {
+			this.versionStrict = versionStrict;
 			return this_;
 		}
 
@@ -1614,6 +1651,7 @@ public class Ezvcard {
 		private XCardDocument createXCardDocument() {
 			XCardDocument doc = new XCardDocument();
 			doc.setAddProdId(prodId);
+			doc.setVersionStrict(versionStrict);
 
 			for (VCard vcard : vcards) {
 				doc.addVCard(vcard);
@@ -1642,6 +1680,11 @@ public class Ezvcard {
 		public WriterChainXmlMulti indent(int indent) {
 			return super.indent(indent);
 		}
+
+		@Override
+		public WriterChainXmlMulti versionStrict(boolean versionStrict) {
+			return super.versionStrict(versionStrict);
+		}
 	}
 
 	/**
@@ -1661,6 +1704,11 @@ public class Ezvcard {
 		@Override
 		public WriterChainXmlSingle indent(int indent) {
 			return super.indent(indent);
+		}
+
+		@Override
+		public WriterChainXmlSingle versionStrict(boolean versionStrict) {
+			return super.versionStrict(versionStrict);
 		}
 	}
 
@@ -1728,6 +1776,7 @@ public class Ezvcard {
 
 	static abstract class WriterChainJson<T> extends WriterChain<T> {
 		boolean prodId = true;
+		boolean versionStrict = true;
 		boolean indent = false;
 
 		WriterChainJson(Collection<VCard> vcards) {
@@ -1753,6 +1802,17 @@ public class Ezvcard {
 		 */
 		public T indent(boolean indent) {
 			this.indent = indent;
+			return this_;
+		}
+
+		/**
+		 * Sets whether properties that do not support jCard (vCard version 4.0)
+		 * will be excluded from the written vCard.
+		 * @param versionStrict true to exclude properties that do not support
+		 * jCard, false to include them anyway (defaults to true)
+		 */
+		public T versionStrict(boolean versionStrict) {
+			this.versionStrict = versionStrict;
 			return this_;
 		}
 
@@ -1804,6 +1864,7 @@ public class Ezvcard {
 			JCardWriter jcardWriter = new JCardWriter(writer, vcards.size() > 1);
 			jcardWriter.setAddProdId(prodId);
 			jcardWriter.setIndent(indent);
+			jcardWriter.setVersionStrict(versionStrict);
 			try {
 				for (VCard vcard : vcards) {
 					jcardWriter.write(vcard);
@@ -1833,6 +1894,11 @@ public class Ezvcard {
 		public WriterChainJsonMulti indent(boolean indent) {
 			return super.indent(indent);
 		}
+
+		@Override
+		public WriterChainJsonMulti versionStrict(boolean versionStrict) {
+			return super.versionStrict(versionStrict);
+		}
 	}
 
 	/**
@@ -1852,6 +1918,11 @@ public class Ezvcard {
 		@Override
 		public WriterChainJsonSingle indent(boolean indent) {
 			return super.indent(indent);
+		}
+
+		@Override
+		public WriterChainJsonSingle versionStrict(boolean versionStrict) {
+			return super.versionStrict(versionStrict);
 		}
 	}
 

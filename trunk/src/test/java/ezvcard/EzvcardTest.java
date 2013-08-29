@@ -418,6 +418,22 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void write_versionStrict() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setVersion(VCardVersion.V4_0);
+		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+
+		String actual = Ezvcard.write(vcard).go();
+		assertFalse(actual.contains("\r\nMAILER:"));
+
+		actual = Ezvcard.write(vcard).versionStrict(true).go();
+		assertFalse(actual.contains("\r\nMAILER:"));
+
+		actual = Ezvcard.write(vcard).versionStrict(false).go();
+		assertTrue(actual.contains("\r\nMAILER:"));
+	}
+
+	@Test
 	public void writeXml_go() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
@@ -488,6 +504,24 @@ public class EzvcardTest {
 		dom = Ezvcard.writeXml(vcard).prodId(false).dom();
 		count = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", dom, XPathConstants.NUMBER);
 		assertEquals(Double.valueOf(0), count);
+	}
+
+	@Test
+	public void writeXml_versionStrict() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+
+		Document dom = Ezvcard.writeXml(vcard).dom();
+		Double count = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:mailer)", dom, XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(0), count);
+
+		dom = Ezvcard.writeXml(vcard).versionStrict(true).dom();
+		count = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:mailer)", dom, XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(0), count);
+
+		dom = Ezvcard.writeXml(vcard).versionStrict(false).dom();
+		count = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:mailer)", dom, XPathConstants.NUMBER);
+		assertEquals(Double.valueOf(1), count);
 	}
 
 	@Test
@@ -582,7 +616,6 @@ public class EzvcardTest {
 	@Test
 	public void writeJson_prodId() {
 		VCard vcard = new VCard();
-		vcard.setVersion(VCardVersion.V4_0);
 
 		String actual = Ezvcard.writeJson(vcard).go();
 		assertTrue(actual.contains("[\"prodid\","));
@@ -595,9 +628,23 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void writeJson_versionStrict() {
+		VCard vcard = new VCard();
+		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+
+		String actual = Ezvcard.writeJson(vcard).go();
+		assertFalse(actual.contains("[\"mailer\","));
+
+		actual = Ezvcard.writeJson(vcard).versionStrict(true).go();
+		assertFalse(actual.contains("[\"mailer\","));
+
+		actual = Ezvcard.writeJson(vcard).versionStrict(false).go();
+		assertTrue(actual.contains("[\"mailer\","));
+	}
+
+	@Test
 	public void writeJson_indent() {
 		VCard vcard = new VCard();
-		vcard.setVersion(VCardVersion.V4_0);
 
 		//defaults to "false"
 		String actual = Ezvcard.writeJson(vcard).go();

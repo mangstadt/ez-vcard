@@ -55,6 +55,7 @@ public class JCardWriter implements Closeable {
 	private final JCardRawWriter writer;
 	private final VCardVersion targetVersion = VCardVersion.V4_0;
 	private boolean addProdId = true;
+	private boolean versionStrict = true;
 
 	/**
 	 * Creates a jCard writer.
@@ -127,6 +128,11 @@ public class JCardWriter implements Closeable {
 				continue;
 			}
 
+			if (versionStrict && !type.isSupported(targetVersion)) {
+				//do not add the property to the vCard if it is not supported by the target version
+				continue;
+			}
+
 			typesToAdd.add(type);
 		}
 
@@ -175,6 +181,26 @@ public class JCardWriter implements Closeable {
 	 */
 	public void setAddProdId(boolean addProdId) {
 		this.addProdId = addProdId;
+	}
+
+	/**
+	 * Gets whether properties that do not support jCard (vCard version 4.0)
+	 * will be excluded from the written vCard.
+	 * @return true to exclude properties that do not support jCard, false to
+	 * include them anyway (defaults to true)
+	 */
+	public boolean isVersionStrict() {
+		return versionStrict;
+	}
+
+	/**
+	 * Sets whether properties that do not support jCard (vCard version 4.0)
+	 * will be excluded from the written vCard.
+	 * @param versionStrict true to exclude properties that do not support
+	 * jCard, false to include them anyway (defaults to true)
+	 */
+	public void setVersionStrict(boolean versionStrict) {
+		this.versionStrict = versionStrict;
 	}
 
 	/**

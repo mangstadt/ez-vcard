@@ -148,8 +148,9 @@ public class XCardDocument {
 
 	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private boolean addProdId = true;
-	private List<List<String>> parseWarnings = new ArrayList<List<String>>();
-	private Map<QName, Class<? extends VCardType>> extendedTypeClasses = new HashMap<QName, Class<? extends VCardType>>();
+	private boolean versionStrict = true;
+	private final List<List<String>> parseWarnings = new ArrayList<List<String>>();
+	private final Map<QName, Class<? extends VCardType>> extendedTypeClasses = new HashMap<QName, Class<? extends VCardType>>();
 	private Document document;
 	private Element root;
 
@@ -272,6 +273,26 @@ public class XCardDocument {
 	 */
 	public void setAddProdId(boolean addProdId) {
 		this.addProdId = addProdId;
+	}
+
+	/**
+	 * Gets whether properties that do not support xCard (vCard version 4.0)
+	 * will be excluded from the written vCard.
+	 * @return true to exclude properties that do not support xCard, false to
+	 * include them anyway (defaults to true)
+	 */
+	public boolean isVersionStrict() {
+		return versionStrict;
+	}
+
+	/**
+	 * Sets whether properties that do not support xCard (vCard version 4.0)
+	 * will be excluded from the written vCard.
+	 * @param versionStrict true to exclude properties that do not support
+	 * xCard, false to include them anyway (defaults to true)
+	 */
+	public void setVersionStrict(boolean versionStrict) {
+		this.versionStrict = versionStrict;
 	}
 
 	/**
@@ -622,6 +643,11 @@ public class XCardDocument {
 		for (VCardType type : vcard) {
 			if (addProdId && type instanceof ProdIdType) {
 				//do not add the PRODID in the vCard if "addProdId" is true
+				continue;
+			}
+
+			if (versionStrict && !type.isSupported(version4)) {
+				//do not add the property to the vCard if it is not supported by the target version
 				continue;
 			}
 

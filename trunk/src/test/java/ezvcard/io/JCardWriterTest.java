@@ -148,6 +148,49 @@ public class JCardWriterTest {
 	}
 
 	@Test
+	public void setVersionStrict() throws Throwable {
+		VCard vcard = new VCard();
+		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw, true);
+		writer.setAddProdId(false);
+
+		writer.write(vcard);
+
+		writer.setVersionStrict(false);
+		writer.write(vcard);
+
+		writer.setVersionStrict(true);
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[" +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]" +
+		    "]" +
+		  "]," +
+	  	  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]," +
+		      "[\"mailer\",{},\"text\",\"mailer\"]" +
+		    "]" +
+		  "]," +
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\",{},\"text\",\"4.0\"]" +
+		    "]" +
+		  "]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
 	public void setIndent() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw, true);

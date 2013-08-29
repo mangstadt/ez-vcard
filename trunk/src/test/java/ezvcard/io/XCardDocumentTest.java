@@ -754,6 +754,39 @@ public class XCardDocumentTest {
 		assertEquals(new EzvcardProdIdType(VCardVersion.V4_0).getValue(), actual);
 	}
 
+	@Test
+	public void setVersionStrict() throws Throwable {
+		VCard vcard = new VCard();
+		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+
+		XCardDocument xcard = new XCardDocument();
+		xcard.setAddProdId(false);
+
+		xcard.addVCard(vcard);
+
+		xcard.setVersionStrict(false);
+		xcard.addVCard(vcard);
+
+		xcard.setVersionStrict(true);
+		xcard.addVCard(vcard);
+
+		Document actual = xcard.getDocument();
+
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard/>" +
+			"<vcard>" +
+				"<mailer><text>mailer</text></mailer>" +
+			"</vcard>" +
+			"<vcard/>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		assertXMLEqual(expected, actual);
+	}
+
 	/**
 	 * If the type's marshal method throws a {@link SkipMeException}, then a
 	 * warning should be added to the warnings list and the type object should
