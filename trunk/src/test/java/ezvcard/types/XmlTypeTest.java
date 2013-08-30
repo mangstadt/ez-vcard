@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.XmlUtils;
@@ -91,7 +92,7 @@ public class XmlTypeTest {
 		assertXMLEqual(XmlUtils.toDocument("<a href=\"http://www.example.com\">some html</a>"), t.getDocument());
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_invalid() throws Throwable {
 		VCardVersion version = VCardVersion.V4_0;
 		XmlType t = new XmlType();

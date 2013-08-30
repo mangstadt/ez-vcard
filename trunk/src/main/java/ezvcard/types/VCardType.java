@@ -12,6 +12,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
@@ -289,6 +290,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * unmarshalling process depending on where the vCard came from
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws EmbeddedVCardException if the value of this type is an embedded
 	 * vCard (i.e. the AGENT type)
 	 */
@@ -309,6 +311,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * process depending on where the vCard came from
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws EmbeddedVCardException if the value of this type is an embedded
 	 * vCard (i.e. the AGENT type)
 	 */
@@ -329,6 +332,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * unmarshalling process depending on where the vCard came from
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws UnsupportedOperationException if the type class does not support
 	 * xCard parsing
 	 */
@@ -351,11 +355,63 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * unmarshalling process depending on where the vCard came from
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws UnsupportedOperationException if the type class does not support
 	 * xCard parsing
 	 */
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		throw new UnsupportedOperationException("This type class does not support the parsing of xCards.");
+	}
+
+	/**
+	 * Creates a {@link CannotParseException}, indicating that the XML elements
+	 * that the parser expected to find are missing from the property's XML
+	 * element.
+	 * @param dataTypes the expected data types (null for "unknown")
+	 */
+	protected static CannotParseException missingXmlElements(VCardDataType... dataTypes) {
+		String[] elements = new String[dataTypes.length];
+		for (int i = 0; i < dataTypes.length; i++) {
+			VCardDataType dataType = dataTypes[i];
+			elements[i] = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
+		}
+		return missingXmlElements(elements);
+	}
+
+	/**
+	 * Creates a {@link CannotParseException}, indicating that the XML elements
+	 * that the parser expected to find are missing from property's XML element.
+	 * @param elements the names of the expected XML elements.
+	 */
+	protected static CannotParseException missingXmlElements(String... elements) {
+		String message;
+
+		switch (elements.length) {
+		case 0:
+			message = "Property value empty.";
+			break;
+		case 1:
+			message = "Property value empty (no <" + elements[0] + "> element found).";
+			break;
+		case 2:
+			message = "Property value empty (no <" + elements[0] + "> or <" + elements[1] + "> elements found).";
+			break;
+		default:
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Property value empty (no ");
+			VCardStringUtils.join(Arrays.asList(elements).subList(0, elements.length - 1), ", ", sb, new JoinCallback<String>() {
+				public void handle(StringBuilder sb, String value) {
+					sb.append('<').append(value).append('>');
+				}
+			});
+			sb.append(", or <").append(elements[elements.length - 1]).append("> elements found).");
+
+			message = sb.toString();
+			break;
+		}
+
+		return new CannotParseException(message);
 	}
 
 	/**
@@ -366,6 +422,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * unmarshalling process
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws EmbeddedVCardException if the value of this type is an embedded
 	 * vCard (i.e. the AGENT type)
 	 * @throws UnsupportedOperationException if the type class does not support
@@ -384,6 +441,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * unmarshalling process
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws EmbeddedVCardException if the value of this type is an embedded
 	 * vCard (i.e. the AGENT type)
 	 */
@@ -402,6 +460,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * unmarshalling process
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws CannotParseException if the property value could not be parsed
 	 */
 	public final void unmarshalJson(VCardSubTypes subTypes, JCardValue value, VCardVersion version, List<String> warnings) {
 		this.subTypes = subTypes;
@@ -417,6 +476,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * unmarshalling process
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
+	 * @throws CannotParseException if the property value could not be parsed
 	 */
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		doUnmarshalText(jcardValueToString(value), version, warnings, CompatibilityMode.RFC);

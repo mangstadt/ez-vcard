@@ -18,6 +18,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
@@ -513,7 +514,7 @@ public class BinaryTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_empty() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
@@ -568,14 +569,14 @@ public class BinaryTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_no_data_attribute() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<object type=\"image/gif\" />");
 
 		binaryType.unmarshalHtml(element, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_no_object_tag() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div />");
 

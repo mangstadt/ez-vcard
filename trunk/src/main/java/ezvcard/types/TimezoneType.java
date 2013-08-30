@@ -8,6 +8,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
@@ -73,7 +74,7 @@ import ezvcard.util.XCardElement;
  * Parsing===================
  * 
  * vCard 2.1:
- * Parse as UTC offset.  If invalid, throw SkipMeException.
+ * Parse as UTC offset.  If invalid, throw CannotParseException.
  * 
  * vCard 3.0, hCard:
  * VALUE=text:			Treat as text
@@ -81,18 +82,18 @@ import ezvcard.util.XCardElement;
  * 
  * vCard 4.0, jCard:
  * VALUE=text:			Treat as text
- * VALUE=utc-offset:	Parse as UTC offset.  If invalid, throw SkipMeException
+ * VALUE=utc-offset:	Parse as UTC offset.  If invalid, throw CannotParseException
  * VALUE=uri:			Not going to support this, as there is no description of what a timezone URI looks like
  * No VALUE param:		Parse as UTC offset.  If invalid, treat as text
  * 
  * xCard:
  * text	| utc-offset	| result
- * no	| no			| throw SkipMeException
+ * no	| no			| throw CannotParseException
  * yes	| no			| OK
  * no	| yes			| OK
- * no	| invalid		| throw SkipMeException
- * yes	| yes			| Parse both
- * yes	| invalid		| Add warning, ignore utc-offset
+ * no	| invalid		| throw CannotParseException
+ * yes	| yes			| Parse text
+ * yes	| invalid		| Parse text
  * 
  * Writing===================
  * 
@@ -413,27 +414,23 @@ public class TimezoneType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String text = element.first(VCardDataType.TEXT);
-		String utcOffset = element.first(VCardDataType.UTC_OFFSET);
-
-		if (text == null && utcOffset == null) {
-			throw new SkipMeException("No timezone data found.");
-		}
-
 		if (text != null) {
 			setText(text);
+			return;
 		}
 
+		String utcOffset = element.first(VCardDataType.UTC_OFFSET);
 		if (utcOffset != null) {
 			try {
 				int offsets[] = VCardDateFormatter.parseTimeZone(utcOffset);
 				setOffset(offsets[0], offsets[1]);
 			} catch (IllegalArgumentException e) {
-				if (text == null) {
-					throw new SkipMeException("Unable to parse UTC offset: " + utcOffset);
-				}
-				warnings.add("Ignoring invalid UTC offset: " + utcOffset);
+				throw new CannotParseException("Unable to parse UTC offset.");
 			}
+			return;
 		}
+
+		throw missingXmlElements(VCardDataType.TEXT, VCardDataType.UTC_OFFSET);
 	}
 
 	@Override
@@ -473,6 +470,10 @@ public class TimezoneType extends VCardType implements HasAltId {
 	}
 
 	private void parse(String value, VCardDataType dataType, VCardVersion version, List<String> warnings) {
+		if (value == null || value.length() == 0) {
+			return;
+		}
+
 		switch (version) {
 		case V2_1:
 			//e.g. "-05:00"
@@ -480,7 +481,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 				int offsets[] = VCardDateFormatter.parseTimeZone(value);
 				setOffset(offsets[0], offsets[1]);
 			} catch (IllegalArgumentException e) {
-				throw new SkipMeException("Unable to parse UTC offset: " + value);
+				throw new CannotParseException("Unable to parse UTC offset.");
 			}
 			break;
 		case V3_0:
@@ -512,7 +513,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 				setOffset(offsets[0], offsets[1]);
 			} catch (IllegalArgumentException e) {
 				if (dataType == VCardDataType.UTC_OFFSET) {
-					throw new SkipMeException("Unable to parse UTC offset: " + value);
+					throw new CannotParseException("Unable to parse UTC offset.");
 				}
 				setText(value);
 			}

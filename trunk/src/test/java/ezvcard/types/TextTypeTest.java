@@ -17,6 +17,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
@@ -133,6 +134,13 @@ public class TextTypeTest {
 
 		assertEquals(expected, actual);
 		assertWarnings(0, warnings);
+	}
+
+	@Test(expected = CannotParseException.class)
+	public void unmarshalXml_empty() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement("name");
+		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
 
 	@Test

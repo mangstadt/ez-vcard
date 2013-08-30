@@ -19,6 +19,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
@@ -408,13 +409,13 @@ public class TimezoneTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_2_1_invalid_offset() {
 		VCardVersion version = VCardVersion.V2_1;
 		t.unmarshalText(subTypes, "invalid", version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_2_1_text() {
 		VCardVersion version = VCardVersion.V2_1;
 		subTypes.setValue(VCardDataType.TEXT);
@@ -489,7 +490,7 @@ public class TimezoneTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_4_0_invalid_offset__utc_offset_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setValue(VCardDataType.UTC_OFFSET);
@@ -531,7 +532,7 @@ public class TimezoneTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_4_0_text__utc_offset_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setValue(VCardDataType.UTC_OFFSET);
@@ -552,7 +553,7 @@ public class TimezoneTypeTest {
 
 	/////////////////////////////////////////////////
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_empty() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
@@ -585,7 +586,7 @@ public class TimezoneTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_invalid_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
@@ -595,20 +596,22 @@ public class TimezoneTypeTest {
 
 	@Test
 	public void unmarshalXml_offset_and_text() {
+		//text is preferred
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
 		xe.append(VCardDataType.TEXT, textStr);
 		xe.append(VCardDataType.UTC_OFFSET, offsetStrExtended);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
-		assertEquals(hourOffset, t.getHourOffset());
-		assertEquals(minuteOffset, t.getMinuteOffset());
+		assertNull(t.getHourOffset());
+		assertNull(t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
 		assertWarnings(0, warnings);
 	}
 
 	@Test
 	public void unmarshalXml_invalid_offset_and_text() {
+		//text is preferred
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
 		xe.append(VCardDataType.TEXT, textStr);
@@ -618,7 +621,7 @@ public class TimezoneTypeTest {
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
 		assertEquals(textStr, t.getText());
-		assertWarnings(1, warnings);
+		assertWarnings(0, warnings);
 	}
 
 	/////////////////////////////////////////////////
@@ -703,7 +706,7 @@ public class TimezoneTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalJson_invalid_offset() {
 		VCardVersion version = VCardVersion.V4_0;
 

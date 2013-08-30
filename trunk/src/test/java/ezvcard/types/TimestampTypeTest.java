@@ -21,6 +21,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
@@ -168,7 +169,7 @@ public class TimestampTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_bad_timestamp() {
 		VCardVersion version = VCardVersion.V2_1;
 		t.unmarshalText(subTypes, "bad value", version, warnings, compatibilityMode);
@@ -183,14 +184,14 @@ public class TimestampTypeTest {
 		assertEquals(timestampDate, t.getTimestamp());
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_no_timestamp_element() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_bad_timestamp() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement("name");
@@ -225,7 +226,7 @@ public class TimestampTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_bad_value() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>bad value</div>");
 		t.unmarshalHtml(element, warnings);
@@ -243,7 +244,7 @@ public class TimestampTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalJson_bad_value() {
 		VCardVersion version = VCardVersion.V4_0;
 

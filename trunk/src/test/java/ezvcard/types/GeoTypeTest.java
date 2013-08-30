@@ -18,6 +18,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.GeoUri;
@@ -185,37 +186,37 @@ public class GeoTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_bad_latitude() {
 		VCardVersion version = VCardVersion.V2_1;
 		geo.unmarshalText(subTypes, "12.34;not-a-number", version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_bad_longitude() {
 		VCardVersion version = VCardVersion.V2_1;
 		geo.unmarshalText(subTypes, "not-a-number;12.34", version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_missing_longitude() {
 		VCardVersion version = VCardVersion.V2_1;
 		geo.unmarshalText(subTypes, "12.34", version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_bad_latitude_and_longitude() {
 		VCardVersion version = VCardVersion.V2_1;
 		geo.unmarshalText(subTypes, "not a;number", version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_bad_value() {
 		VCardVersion version = VCardVersion.V2_1;
 		geo.unmarshalText(subTypes, "random text", version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		geo.unmarshalText(subTypes, "bad:uri", version, warnings, compatibilityMode);
@@ -235,7 +236,7 @@ public class GeoTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(GeoType.NAME.toLowerCase());
@@ -244,7 +245,7 @@ public class GeoTypeTest {
 		geo.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_no_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(GeoType.NAME.toLowerCase());
@@ -269,7 +270,7 @@ public class GeoTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_missing_latitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
@@ -281,7 +282,7 @@ public class GeoTypeTest {
 		geo.unmarshalHtml(element, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_missing_longitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
@@ -293,7 +294,7 @@ public class GeoTypeTest {
 		geo.unmarshalHtml(element, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_bad_latitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
@@ -306,7 +307,7 @@ public class GeoTypeTest {
 		geo.unmarshalHtml(element, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_bad_longitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
@@ -319,7 +320,7 @@ public class GeoTypeTest {
 		geo.unmarshalHtml(element, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_bad_latitude_and_longitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
@@ -332,7 +333,7 @@ public class GeoTypeTest {
 		geo.unmarshalHtml(element, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_missing_latitude_and_longitude() {
 		//@formatter:off
 		org.jsoup.nodes.Element element = HtmlUtils.toElement(
@@ -355,7 +356,7 @@ public class GeoTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalJson_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = JCardValue.single(VCardDataType.URI, "bad:uri");

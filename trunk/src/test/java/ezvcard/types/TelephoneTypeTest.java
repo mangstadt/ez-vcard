@@ -19,8 +19,8 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
@@ -476,7 +476,7 @@ public class TelephoneTypeTest {
 		assertWarnings(1, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());

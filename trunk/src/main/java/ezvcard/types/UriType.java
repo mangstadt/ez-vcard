@@ -62,7 +62,13 @@ public class UriType extends TextType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(element.first(VCardDataType.URI));
+		String value = element.first(VCardDataType.URI);
+		if (value != null) {
+			setValue(value);
+			return;
+		}
+
+		throw missingXmlElements(VCardDataType.URI);
 	}
 
 	@Override

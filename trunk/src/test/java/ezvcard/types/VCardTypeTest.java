@@ -21,6 +21,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
@@ -235,6 +236,24 @@ public class VCardTypeTest {
 		assertEquals(-1, one.compareTo(null1));
 		assertEquals(1, null1.compareTo(one));
 		assertEquals(0, null1.compareTo(null2));
+	}
+
+	@Test
+	public void missingXmlElements() {
+		CannotParseException e = VCardType.missingXmlElements(new String[0]);
+		assertEquals("Property value empty.", e.getMessage());
+
+		e = VCardType.missingXmlElements("one");
+		assertEquals("Property value empty (no <one> element found).", e.getMessage());
+
+		e = VCardType.missingXmlElements("one", "two");
+		assertEquals("Property value empty (no <one> or <two> elements found).", e.getMessage());
+
+		e = VCardType.missingXmlElements("one", "two", "THREE");
+		assertEquals("Property value empty (no <one>, <two>, or <THREE> elements found).", e.getMessage());
+
+		e = VCardType.missingXmlElements(VCardDataType.TEXT, null, VCardDataType.DATE);
+		assertEquals("Property value empty (no <text>, <unknown>, or <date> elements found).", e.getMessage());
 	}
 
 	private class VCardTypeImpl extends VCardType {

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import ezvcard.io.SkipMeException;
+import ezvcard.io.CannotParseException;
 import ezvcard.parameters.SoundTypeParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
@@ -197,19 +197,19 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 			//parse its child "<source>" element
 			org.jsoup.nodes.Element source = element.getElement().getElementsByTag("source").first();
 			if (source == null) {
-				throw new SkipMeException("No <source> element found beneath <audio> element.");
+				throw new CannotParseException("No <source> tag found beneath <audio> tag.");
 			}
 
 			element = new HCardElement(source);
 		}
 
-		String type = element.attr("type");
-		SoundTypeParameter mediaType = (type.length() == 0) ? null : buildMediaTypeObj(type);
-
 		String src = element.absUrl("src");
 		if (src.length() == 0) {
-			throw new SkipMeException("<source> tag does not have a \"src\" attribute.");
+			throw new CannotParseException("<source> tag does not have a \"src\" attribute.");
 		}
+
+		String type = element.attr("type");
+		SoundTypeParameter mediaType = (type.length() == 0) ? null : buildMediaTypeObj(type);
 
 		try {
 			DataUri uri = new DataUri(src);

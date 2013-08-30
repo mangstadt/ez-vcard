@@ -21,6 +21,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
@@ -562,7 +563,7 @@ public class DateOrTimeTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_date_invalid() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<time>June 5, 1980</time>");
 
@@ -656,13 +657,13 @@ public class DateOrTimeTypeTest {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_reducedAccuracyDate_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		type.unmarshalText(subTypes, reducedAccuracyDate.toDateAndOrTime(false), version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_reducedAccuracyDate_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		type.unmarshalText(subTypes, reducedAccuracyDate.toDateAndOrTime(false), version, warnings, compatibilityMode);
@@ -713,13 +714,13 @@ public class DateOrTimeTypeTest {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_reducedAccuracyDateTime_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 		type.unmarshalText(subTypes, reducedAccuracyDateTime.toDateAndOrTime(false), version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_reducedAccuracyDateTime_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 		type.unmarshalText(subTypes, reducedAccuracyDateTime.toDateAndOrTime(false), version, warnings, compatibilityMode);
@@ -770,14 +771,14 @@ public class DateOrTimeTypeTest {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
 
 		type.unmarshalText(subTypes, textEscaped, version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
 
@@ -815,7 +816,7 @@ public class DateOrTimeTypeTest {
 		VCardVersion version = VCardVersion.V4_0;
 
 		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
-		xe.append("text", text);
+		xe.append(VCardDataType.TEXT, text);
 		Element input = xe.element();
 		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 
@@ -824,6 +825,15 @@ public class DateOrTimeTypeTest {
 		assertEquals(text, type.getText());
 		assertTrue(warnings.isEmpty());
 		assertWarnings(0, warnings);
+	}
+
+	@Test(expected = CannotParseException.class)
+	public void unmarshalXml_empty() {
+		VCardVersion version = VCardVersion.V4_0;
+
+		XCardElement xe = new XCardElement(DateOrTimeTypeImpl.NAME.toLowerCase());
+		Element input = xe.element();
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
 	}
 
 	@Test

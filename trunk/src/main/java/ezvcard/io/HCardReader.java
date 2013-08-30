@@ -1,5 +1,7 @@
 package ezvcard.io;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -336,6 +338,8 @@ public class HCardReader {
 							continue;
 						} catch (SkipMeException e) {
 							//URL is not an instant messenger URL
+						} catch (CannotParseException e) {
+							//URL is not an instant messenger URL
 						}
 					}
 				}
@@ -351,12 +355,14 @@ public class HCardReader {
 			try {
 				type.unmarshalHtml(element, warningsBuffer);
 
-				//add to vcard
+				//LABELs must be treated specially so they can be matched up with their ADRs
 				if (type instanceof LabelType) {
-					//LABELs must be treated specially so they can be matched up with their ADRs
 					labels.add((LabelType) type);
-				} else if (type instanceof NicknameType) {
-					//add all NICKNAMEs to the same type object
+					continue;
+				}
+
+				//add all NICKNAMEs to the same type object
+				if (type instanceof NicknameType) {
 					NicknameType nn = (NicknameType) type;
 					if (nickname == null) {
 						nickname = nn;
@@ -364,8 +370,11 @@ public class HCardReader {
 					} else {
 						nickname.getValues().addAll(nn.getValues());
 					}
-				} else if (type instanceof CategoriesType) {
-					//add all CATEGORIES to the same type object
+					continue;
+				}
+
+				//add all CATEGORIES to the same type object
+				if (type instanceof CategoriesType) {
 					CategoriesType c = (CategoriesType) type;
 					if (categories == null) {
 						categories = c;
@@ -373,11 +382,15 @@ public class HCardReader {
 					} else {
 						categories.getValues().addAll(c.getValues());
 					}
-				} else {
-					curVCard.addType(type);
+					continue;
 				}
 			} catch (SkipMeException e) {
 				warningsBuffer.add("Property has requested that it be skipped: " + e.getMessage());
+				continue;
+			} catch (CannotParseException e) {
+				String html = element.outerHtml();
+				warningsBuffer.add("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  HTML: " + html + NEWLINE + "  Reason: " + e.getMessage());
+				type = new RawType(className, html);
 			} catch (EmbeddedVCardException e) {
 				if (HtmlUtils.isChildOf(element, embeddedVCards)) {
 					//prevents multiple-nested embedded elements from overwriting each other
@@ -394,15 +407,17 @@ public class HCardReader {
 						warningsBuffer.add("Problem unmarshalling nested vCard value: " + w);
 					}
 				}
-				curVCard.addType(type);
 			} catch (UnsupportedOperationException e) {
 				//type class does not support hCard
 				warningsBuffer.add("Property class \"" + type.getClass().getName() + "\" does not support hCard unmarshalling.");
+				continue;
 			} finally {
 				for (String warning : warningsBuffer) {
 					addWarning(warning, type.getTypeName());
 				}
 			}
+
+			curVCard.addType(type);
 		}
 
 		for (Element child : element.children()) {
@@ -417,32 +432,36 @@ public class HCardReader {
 	 * @return the type object or null if the type name was not recognized
 	 */
 	private VCardType createTypeObject(String typeName) {
-		typeName = typeName.toLowerCase();
-		VCardType t = null;
+		//parse as a standard property
 		Class<? extends VCardType> clazz = TypeList.getTypeClassByHCardTypeName(typeName);
 		if (clazz != null) {
 			try {
-				//create a new instance of the class
-				t = clazz.newInstance();
+				return clazz.newInstance();
 			} catch (Exception e) {
-				//it is the responsibility of the ez-vcard developer to ensure that this exception is never thrown
-				//all type classes defined in the ez-vcard library MUST have public, no-arg constructors
+				//should never be thrown
+				//all type classes must have public, no-arg constructors
 				throw new RuntimeException(e);
 			}
-		} else {
-			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(typeName);
-			if (extendedTypeClass != null) {
-				try {
-					t = extendedTypeClass.newInstance();
-				} catch (Exception e) {
-					//this should never happen because the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
-				}
-			} else if (typeName.startsWith("x-")) {
-				t = new RawType(typeName); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
+		}
+
+		//parse as a registered extended type class
+		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(typeName.toLowerCase());
+		if (extendedTypeClass != null) {
+			try {
+				return extendedTypeClass.newInstance();
+			} catch (Exception e) {
+				//should never be thrown
+				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
+				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
 			}
 		}
-		return t;
+
+		//parse as a RawType
+		if (typeName.toUpperCase().startsWith("X-")) {
+			return new RawType(typeName); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
+		}
+
+		return null;
 	}
 
 	/**

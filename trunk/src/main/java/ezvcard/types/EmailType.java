@@ -199,7 +199,13 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(element.first(VCardDataType.TEXT));
+		String value = element.first(VCardDataType.TEXT);
+		if (value != null) {
+			setValue(value);
+			return;
+		}
+
+		throw missingXmlElements(VCardDataType.TEXT);
 	}
 
 	@Override

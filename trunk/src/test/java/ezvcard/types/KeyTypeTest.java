@@ -18,8 +18,8 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -254,7 +254,7 @@ public class KeyTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(KeyType.NAME.toLowerCase());

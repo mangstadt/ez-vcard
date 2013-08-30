@@ -5,6 +5,7 @@ import java.util.List;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.GeoUri;
@@ -263,7 +264,7 @@ public class GeoType extends VCardType implements HasAltId {
 			return;
 		}
 
-		throw new SkipMeException("No URI found.");
+		throw missingXmlElements(VCardDataType.URI);
 	}
 
 	@Override
@@ -272,22 +273,22 @@ public class GeoType extends VCardType implements HasAltId {
 
 		String latitude = element.firstValue("latitude");
 		if (latitude == null) {
-			throw new SkipMeException("Latitude missing.");
+			throw new CannotParseException("Latitude missing.");
 		}
 		try {
 			setLatitude(Double.parseDouble(latitude));
 		} catch (NumberFormatException e) {
-			throw new SkipMeException("Could not parse latitude: " + latitude);
+			throw new CannotParseException("Could not parse latitude: " + latitude);
 		}
 
 		String longitude = element.firstValue("longitude");
 		if (longitude == null) {
-			throw new SkipMeException("Longitude missing.");
+			throw new CannotParseException("Longitude missing.");
 		}
 		try {
 			setLongitude(Double.parseDouble(longitude));
 		} catch (NumberFormatException e) {
-			throw new SkipMeException("Could not parse longitude: " + longitude);
+			throw new CannotParseException("Could not parse longitude: " + longitude);
 		}
 	}
 
@@ -312,12 +313,16 @@ public class GeoType extends VCardType implements HasAltId {
 	}
 
 	private void parse(String value, VCardVersion version, List<String> warnings) {
+		if (value == null || value.length() == 0) {
+			return;
+		}
+
 		switch (version) {
 		case V2_1:
 		case V3_0:
 			String split[] = value.split(";");
 			if (split.length != 2) {
-				throw new SkipMeException("Invalid value: " + value);
+				throw new CannotParseException("Incorrect data format.  Value must contain a latitude and longitude, separated by a semi-colon.");
 			}
 
 			String latitudeStr = split[0];
@@ -327,26 +332,26 @@ public class GeoType extends VCardType implements HasAltId {
 			try {
 				latitude = Double.valueOf(latitudeStr);
 			} catch (NumberFormatException e) {
-				throw new SkipMeException("Could not parse latitude: " + latitudeStr);
+				throw new CannotParseException("Could not parse latitude: " + latitudeStr);
 			}
 
 			Double longitude;
 			try {
 				longitude = Double.valueOf(longitudeStr);
 			} catch (NumberFormatException e) {
-				throw new SkipMeException("Could not parse longtude: " + longitudeStr);
+				throw new CannotParseException("Could not parse longtude: " + longitudeStr);
 			}
 
 			uri = new GeoUri();
 			setLatitude(latitude);
 			setLongitude(longitude);
-			
+
 			break;
 		case V4_0:
 			try {
 				uri = new GeoUri(value);
 			} catch (IllegalArgumentException e) {
-				throw new SkipMeException("Invalid geo URI: " + value);
+				throw new CannotParseException("Invalid geo URI.");
 			}
 		}
 	}
@@ -355,8 +360,8 @@ public class GeoType extends VCardType implements HasAltId {
 		if (getLatitude() == null || getLongitude() == null) {
 			throw new SkipMeException("Latitude and/or longitude is missing.");
 		}
-		
-		switch(version){
+
+		switch (version) {
 		case V2_1:
 		case V3_0:
 			VCardFloatFormatter formatter = new VCardFloatFormatter(6);

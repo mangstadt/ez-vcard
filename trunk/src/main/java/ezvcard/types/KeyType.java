@@ -9,8 +9,8 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.KeyTypeParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
@@ -284,7 +284,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 			return;
 		}
 
-		throw new SkipMeException("No value found.");
+		throw missingXmlElements(VCardDataType.TEXT, VCardDataType.URI);
 	}
 
 	@Override
@@ -297,7 +297,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 		String href = element.absUrl("href");
 		if (href.length() == 0) {
-			throw new SkipMeException("<a> tag does not have a \"href\" attribute.");
+			throw new CannotParseException("<a> tag does not have a \"href\" attribute.");
 		}
 
 		try {

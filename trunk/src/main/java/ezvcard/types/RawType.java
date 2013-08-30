@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
@@ -92,9 +93,27 @@ public class RawType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		Element theElement = element.element();
-		Element child = XmlUtils.getFirstChildElement(theElement);
-		value = (child == null) ? theElement.getTextContent() : child.getTextContent();
+		List<Element> children = XmlUtils.toElementList(element.element().getChildNodes());
+		if (children.isEmpty()) {
+			//get the text content of the property element
+			value = element.element().getTextContent();
+			return;
+		}
+
+		//get the text content of the first child element with the xCard namespace
+		for (Element child : children) {
+			if (!element.version().getXmlNamespace().equals(child.getNamespaceURI())) {
+				continue;
+			}
+
+			VCardDataType dataType = VCardDataType.get(child.getLocalName());
+			subTypes.setValue(dataType);
+			value = child.getTextContent();
+			return;
+		}
+
+		//get the text content of the first child element
+		value = XmlUtils.getFirstChildElement(element.element()).getTextContent();
 	}
 
 	@Override

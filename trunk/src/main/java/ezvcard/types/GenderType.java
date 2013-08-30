@@ -258,8 +258,14 @@ public class GenderType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setGender(element.first("sex"));
-		setText(element.first("identity"));
+		String sex = element.first("sex");
+		if (sex != null) {
+			setGender(sex);
+			setText(element.first("identity")); //optional field
+			return;
+		}
+
+		throw missingXmlElements("sex");
 	}
 
 	@Override
