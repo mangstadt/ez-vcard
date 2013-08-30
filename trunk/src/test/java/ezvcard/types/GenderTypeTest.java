@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
@@ -190,29 +189,12 @@ public class GenderTypeTest {
 
 	@Test
 	public void marshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.append("sex", gender);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		genderType.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(genderType, "<sex>" + gender + "</sex>");
 	}
 
 	@Test
 	public void marshalXml_with_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		xe.append("sex", gender);
-		xe.append("identity", text);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(BirthplaceType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		genderTypeWithText.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(genderTypeWithText, "<sex>" + gender + "</sex><identity>" + text + "</identity>");
 	}
 
 	@Test

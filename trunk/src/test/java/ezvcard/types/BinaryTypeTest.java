@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -282,40 +281,17 @@ public class BinaryTypeTest {
 
 	@Test
 	public void marshalXml_url() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.append(VCardDataType.URI, url);
-		Document expected = xe.document();
-
-		xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		Document actual = xe.document();
-
-		withUrl.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(withUrl, "<uri>" + url + "</uri>");
 	}
 
 	@Test
 	public void marshalXml_binary() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		xe.append(VCardDataType.URI, dataUri);
-		Document expected = xe.document();
-
-		xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-		Document actual = xe.document();
-
-		withData.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(withData, "<uri>" + dataUri + "</uri>");
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalXml_empty() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(BinaryTypeImpl.NAME.toLowerCase());
-
-		empty.marshalXml(xe.element(), version, compatibilityMode);
+		assertMarshalXml(empty, "");
 	}
 
 	@Test
@@ -334,10 +310,12 @@ public class BinaryTypeTest {
 		assertJCardValue(VCardDataType.URI, dataUri, value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalJson_empty() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalJson(version);
+		JCardValue value = empty.marshalJson(version);
+
+		assertJCardValue(VCardDataType.URI, "", value);
 	}
 
 	@Test

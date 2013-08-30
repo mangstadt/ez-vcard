@@ -2,9 +2,9 @@ package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -328,28 +327,12 @@ public class TelephoneTypeTest {
 
 	@Test
 	public void marshalXml_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, number);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		marshalObjText.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(marshalObjText, "<text>" + number + "</text>");
 	}
 
 	@Test
 	public void marshalXml_uri() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		xe.append(VCardDataType.URI, uriWithExt);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(TelephoneType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		marshalObjUri.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(marshalObjUri, "<uri>" + uriWithExt + "</uri>");
 	}
 
 	@Test

@@ -1,9 +1,9 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -93,15 +92,7 @@ public class TextTypeTest {
 
 	@Test
 	public void marshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(textType.getTypeName().toLowerCase());
-		xe.append(VCardDataType.TEXT, "This is a test of the TextType.\nOne, two, three; and \\four\\.");
-		Document expected = xe.document();
-		xe = new XCardElement(textType.getTypeName().toLowerCase());
-		Document actual = xe.document();
-		textType.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(textType, "<text>This is a test of the TextType.\nOne, two, three; and \\four\\.</text>");
 	}
 
 	@Test

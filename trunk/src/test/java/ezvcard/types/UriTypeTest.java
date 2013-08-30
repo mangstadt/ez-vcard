@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -84,30 +83,12 @@ public class UriTypeTest {
 
 	@Test
 	public void marshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
-		xe.append(VCardDataType.URI, uri);
-		Document expected = xe.document();
-
-		xe = new XCardElement(withValue.getTypeName().toLowerCase());
-		Document actual = xe.document();
-		withValue.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(withValue, "<uri>" + uri + "</uri>");
 	}
 
 	@Test
 	public void marshalXml_no_value() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(empty.getTypeName().toLowerCase());
-		xe.append(VCardDataType.URI, "");
-		Document expected = xe.document();
-
-		xe = new XCardElement(empty.getTypeName().toLowerCase());
-		Document actual = xe.document();
-		empty.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(empty, "<uri/>");
 	}
 
 	@Test

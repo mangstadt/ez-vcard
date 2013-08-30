@@ -2,8 +2,8 @@ package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -13,7 +13,6 @@ import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -320,48 +319,22 @@ public class TimezoneTypeTest {
 
 	@Test
 	public void marshalXml_offset() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.append(VCardDataType.UTC_OFFSET, offsetStrBasic);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		offset.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(offset, "<utc-offset>" + offsetStrBasic + "</utc-offset>");
 	}
 
 	@Test
 	public void marshalXml_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, textStr);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		text.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(text, "<text>" + textStr + "</text>");
 	}
 
 	@Test
 	public void marshalXml_offset_and_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, textStr);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		offsetAndText.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(offsetAndText, "<text>" + textStr + "</text>");
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalXml_no_offset_or_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		empty.marshalXml(xe.element(), version, compatibilityMode);
+		assertMarshalXml(empty, "");
 	}
 
 	/////////////////////////////////////////////////

@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
@@ -136,16 +135,7 @@ public class GeoTypeTest {
 
 	@Test
 	public void marshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(GeoType.NAME);
-		xe.append(VCardDataType.URI, "geo:-12.34,56.777778");
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(GeoType.NAME);
-		Document actualDoc = xe.document();
-		Element element = xe.element();
-		withValue.marshalXml(element, version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(withValue, "<uri>geo:-12.34,56.777778</uri>");
 	}
 
 	@Test

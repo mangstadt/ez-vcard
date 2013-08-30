@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -158,43 +157,17 @@ public class TextListTypeTest {
 
 	@Test
 	public void marshalXml_zero_items() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, null);
-		Document expected = xe.document();
-		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		Document actual = xe.document();
-		zeroItems.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(zeroItems, "<text/>");
 	}
 
 	@Test
 	public void marshalXml_one_item() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, "one");
-		Document expected = xe.document();
-		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		Document actual = xe.document();
-		oneItem.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(oneItem, "<text>one</text>");
 	}
 
 	@Test
 	public void marshalXml_multiple_items() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, "one");
-		xe.append(VCardDataType.TEXT, "two");
-		xe.append(VCardDataType.TEXT, "three");
-		Document expected = xe.document();
-		xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
-		Document actual = xe.document();
-		multipleItems.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(multipleItems, "<text>one</text><text>two</text><text>three</text>");
 	}
 
 	@Test

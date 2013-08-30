@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -104,25 +103,12 @@ public class ClientPidMapTypeTest {
 
 	@Test
 	public void marshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		xe.append(VCardDataType.URI, uri);
-		xe.append("sourceid", pid + "");
-		Document expected = xe.document();
-
-		xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		Document actual = xe.document();
-
-		withValue.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(withValue, "<uri>" + uri + "</uri><sourceid>" + pid + "</sourceid>");
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalXml_empty() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
-		empty.marshalXml(xe.element(), version, compatibilityMode);
+		assertMarshalXml(empty, "");
 	}
 
 	@Test
