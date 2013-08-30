@@ -1,7 +1,7 @@
 package ezvcard.types;
 
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
@@ -111,58 +110,43 @@ public class StructuredNameTypeTest {
 
 	@Test
 	public void marshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
-		xe.append("surname", "Doe");
-		xe.append("given", "Jonathan");
-		xe.append("additional", "Joh;nny,");
-		xe.append("additional", "John");
-		xe.append("prefix", "Mr.");
-		xe.append("suffix", "III");
-		Document expected = xe.document();
-
-		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
-		Document actual = xe.document();
-		allValues.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		//@formatter:off
+		assertMarshalXml(allValues,
+		"<surname>Doe</surname>" +
+		"<given>Jonathan</given>" +
+		"<additional>Joh;nny,</additional>" +
+		"<additional>John</additional>" +
+		"<prefix>Mr.</prefix>" +
+		"<suffix>III</suffix>"
+		);
+		//@formatter:on
 	}
 
 	@Test
 	public void marshalXml_empty_values() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
-		xe.append("surname", (String) null);
-		xe.append("given", "Jonathan");
-		xe.append("additional", "Joh;nny,");
-		xe.append("additional", "John");
-		xe.append("prefix", (String) null);
-		xe.append("suffix", (String) null);
-		Document expected = xe.document();
-
-		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
-		Document actual = xe.document();
-		emptyValues.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		//@formatter:off
+		assertMarshalXml(emptyValues,
+		"<surname/>" +
+		"<given>Jonathan</given>" +
+		"<additional>Joh;nny,</additional>" +
+		"<additional>John</additional>" +
+		"<prefix/>" +
+		"<suffix/>"
+		);
+		//@formatter:on
 	}
 
 	@Test
 	public void marshalXml_all_empty_values() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
-		xe.append("surname", (String) null);
-		xe.append("given", (String) null);
-		xe.append("additional", (String) null);
-		xe.append("prefix", (String) null);
-		xe.append("suffix", (String) null);
-		Document expected = xe.document();
-
-		xe = new XCardElement(StructuredNameType.NAME.toLowerCase());
-		Document actual = xe.document();
-		allEmptyValues.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		//@formatter:off
+		assertMarshalXml(allEmptyValues,
+		"<surname/>" +
+		"<given/>" +
+		"<additional/>" +
+		"<prefix/>" +
+		"<suffix/>"
+		);
+		//@formatter:on
 	}
 
 	@Test

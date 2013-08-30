@@ -1,9 +1,9 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -295,62 +294,47 @@ public class AddressTypeTest {
 
 	@Test
 	public void marshalXml_all_fields() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(AddressType.NAME.toLowerCase());
-		xe.append("pobox", "P.O. Box 1234;");
-		xe.append("ext", "Apt, 11");
-		xe.append("street", "123 Main St");
-		xe.append("locality", "Austin");
-		xe.append("region", "TX");
-		xe.append("code", "12345");
-		xe.append("country", "USA");
-		Document expected = xe.document();
-
-		xe = new XCardElement(AddressType.NAME.toLowerCase());
-		Document actual = xe.document();
-		allFields.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		//@formatter:off
+		assertMarshalXml(allFields,
+		"<pobox>P.O. Box 1234;</pobox>" +
+		"<ext>Apt, 11</ext>" +
+		"<street>123 Main St</street>" +
+		"<locality>Austin</locality>"+
+		"<region>TX</region>" +
+		"<code>12345</code>" +
+		"<country>USA</country>"
+		);
+		//@formatter:on
 	}
 
 	@Test
 	public void marshalXml_some_fields() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(AddressType.NAME.toLowerCase());
-		xe.append("pobox", "P.O. Box 1234;");
-		xe.append("ext", (String) null);
-		xe.append("street", (String) null);
-		xe.append("locality", "Austin");
-		xe.append("region", "TX");
-		xe.append("code", "12345");
-		xe.append("country", (String) null);
-		Document expected = xe.document();
-
-		xe = new XCardElement(AddressType.NAME.toLowerCase());
-		Document actual = xe.document();
-		someFields.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		//@formatter:off
+		assertMarshalXml(someFields,
+		"<pobox>P.O. Box 1234;</pobox>" +
+		"<ext/>" +
+		"<street/>" +
+		"<locality>Austin</locality>" +
+		"<region>TX</region>" +
+		"<code>12345</code>" +
+		"<country/>"
+		);
+		//@formatter:on
 	}
 
 	@Test
 	public void marshalXml_no_fields() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(AddressType.NAME.toLowerCase());
-		xe.append("pobox", (String) null);
-		xe.append("ext", (String) null);
-		xe.append("street", (String) null);
-		xe.append("locality", (String) null);
-		xe.append("region", (String) null);
-		xe.append("code", (String) null);
-		xe.append("country", (String) null);
-		Document expected = xe.document();
-
-		xe = new XCardElement(AddressType.NAME.toLowerCase());
-		Document actual = xe.document();
-		noFields.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expected, actual);
+		//@formatter:off
+		assertMarshalXml(noFields,
+		"<pobox/>" +
+		"<ext/>" +
+		"<street/>" +
+		"<locality/>" +
+		"<region/>" +
+		"<code/>" +
+		"<country/>"
+		);
+		//@formatter:on
 	}
 
 	@Test

@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -214,22 +213,12 @@ public class ImppTypeTest {
 
 	@Test
 	public void marshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(ImppType.NAME);
-		xe.append(VCardDataType.URI, uri);
-		Document expected = xe.document();
-		xe = new XCardElement(ImppType.NAME);
-		Document actual = xe.document();
-		impp.marshalXml(xe.element(), version, compatibilityMode);
-		assertXMLEqual(expected, actual);
+		assertMarshalXml(impp, "<uri>" + uri + "</uri>");
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalXml_no_uri() {
-		VCardVersion version = VCardVersion.V4_0;
-		ImppType impp = new ImppType();
-		XCardElement xe = new XCardElement(ImppType.NAME);
-		impp.marshalXml(xe.element(), version, compatibilityMode);
+		assertMarshalXml(impp, "");
 	}
 
 	@Test

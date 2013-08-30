@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import ezvcard.VCard;
@@ -140,35 +139,17 @@ public class DeathplaceTypeTest {
 
 	@Test
 	public void marshalXml_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, text);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		textType.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(textType, "<text>" + text + "</text>");
 	}
 
 	@Test
 	public void marshalXml_uri() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
-		xe.append(VCardDataType.URI, uri);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		uriType.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
+		assertMarshalXml(uriType, "<uri>" + uri + "</uri>");
 	}
 
 	@Test(expected = SkipMeException.class)
 	public void marshalXml_empty() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(DeathplaceType.NAME.toLowerCase());
-		emptyType.marshalXml(xe.element(), version, compatibilityMode);
+		assertMarshalXml(emptyType, "");
 	}
 
 	@Test

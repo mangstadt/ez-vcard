@@ -1,8 +1,8 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
+import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -88,16 +87,7 @@ public class VCardTypeTest {
 
 	@Test
 	public void marshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(VCardTypeImpl.NAME.toLowerCase());
-		xe.append("unknown", type.value);
-		Document expectedDoc = xe.document();
-		xe = new XCardElement(VCardTypeImpl.NAME.toLowerCase());
-		Document actualDoc = xe.document();
-		type.marshalXml(xe.element(), version, compatibilityMode);
-
-		assertXMLEqual(expectedDoc, actualDoc);
-		assertWarnings(0, warnings);
+		assertMarshalXml(type, "<unknown>" + type.value + "</unknown>");
 	}
 
 	@Test

@@ -1,5 +1,6 @@
 package ezvcard.util;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -12,9 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import ezvcard.VCardDataType;
+import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarnings.WarningsGroup;
+import ezvcard.io.CompatibilityMode;
 import ezvcard.types.VCardType;
 
 /*
@@ -135,6 +141,27 @@ public class TestUtils {
 			expectedSet.add(expectedElement);
 		}
 		assertEquals(expectedSet, actualSet);
+	}
+
+	/**
+	 * Asserts the marshalling of an xCard property.
+	 * @param type the property to marshal
+	 * @param expectedInnerXml the expected inner XML of the property element
+	 */
+	public static void assertMarshalXml(VCardType type, String expectedInnerXml) {
+		VCardVersion version = VCardVersion.V4_0;
+		String typeName = type.getTypeName().toLowerCase();
+
+		Document expected, actual;
+		try {
+			expected = XmlUtils.toDocument("<" + typeName + " xmlns=\"" + version.getXmlNamespace() + "\">" + expectedInnerXml + "</" + typeName + ">");
+			actual = XmlUtils.toDocument("<" + typeName + " xmlns=\"" + version.getXmlNamespace() + "\" />");
+		} catch (SAXException e) {
+			throw new RuntimeException(e);
+		}
+
+		type.marshalXml(XmlUtils.getRootElement(actual), version, CompatibilityMode.RFC);
+		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
 	}
 
 	/**
