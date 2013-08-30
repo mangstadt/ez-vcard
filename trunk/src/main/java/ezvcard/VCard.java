@@ -4525,6 +4525,14 @@ public class VCard implements Iterable<VCardType> {
 	}
 
 	/**
+	 * Removes a property instance from the vCard.
+	 * @param property the property to remove
+	 */
+	public void removeType(VCardType property) {
+		properties.remove(property.getClass(), property);
+	}
+
+	/**
 	 * Removes all properties of a given class.
 	 * @param clazz the class of the properties to remove (e.g. "Note.class")
 	 */
