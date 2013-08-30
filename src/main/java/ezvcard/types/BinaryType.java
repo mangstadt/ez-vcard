@@ -10,6 +10,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
@@ -312,22 +313,24 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String value = element.first(VCardDataType.URI);
-		if (value == null) {
-			throw new SkipMeException("No value found.");
+		if (value != null) {
+			parse(value, element.version(), warnings, compatibilityMode);
+			return;
 		}
-		parse(value, element.version(), warnings, compatibilityMode);
+
+		throw missingXmlElements(VCardDataType.URI);
 	}
 
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
 		if (!"object".equals(elementName)) {
-			throw new SkipMeException("Cannot parse HTML tag \"" + elementName + "\".");
+			throw new CannotParseException("Cannot parse <" + elementName + "> tag (<object> tag expected).");
 		}
 
 		String data = element.absUrl("data");
 		if (data.length() == 0) {
-			throw new SkipMeException("<object> tag does not have a \"data\" attribute.");
+			throw new CannotParseException("<object> tag does not have a \"data\" attribute.");
 		}
 
 		try {

@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImppTypeParameter;
@@ -455,7 +456,13 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		parse(element.first(VCardDataType.URI));
+		String value = element.first(VCardDataType.URI);
+		if (value != null) {
+			parse(value);
+			return;
+		}
+
+		throw missingXmlElements(VCardDataType.URI);
 	}
 
 	@Override
@@ -472,7 +479,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 			}
 			setUri(uri);
 		} catch (IllegalArgumentException e) {
-			throw new SkipMeException("Could not parse instant messenger information out of link: " + href);
+			throw new CannotParseException("Could not parse instant messenger information from link: " + href);
 		}
 	}
 
@@ -494,13 +501,14 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	}
 
 	private void parse(String value) {
-		if (value == null) {
-			throw new SkipMeException("No URI found.");
+		if (value == null || value.length() == 0) {
+			return;
 		}
+
 		try {
 			setUri(value);
 		} catch (IllegalArgumentException e) {
-			throw new SkipMeException("Cannot parse URI \"" + value + "\": " + e.getMessage());
+			throw new CannotParseException("Cannot parse URI \"" + value + "\": " + e.getMessage());
 		}
 	}
 

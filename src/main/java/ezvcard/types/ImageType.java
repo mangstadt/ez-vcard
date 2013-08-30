@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import ezvcard.io.SkipMeException;
+import ezvcard.io.CannotParseException;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
@@ -115,7 +115,7 @@ public class ImageType extends BinaryType<ImageTypeParameter> {
 
 		String src = element.absUrl("src");
 		if (src.length() == 0) {
-			throw new SkipMeException("<img> tag does not have a \"src\" attribute.");
+			throw new CannotParseException("<img> tag does not have a \"src\" attribute.");
 		}
 
 		try {

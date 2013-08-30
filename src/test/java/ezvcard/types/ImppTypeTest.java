@@ -20,6 +20,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
@@ -255,7 +256,7 @@ public class ImppTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		ImppType impp = new ImppType();
@@ -273,7 +274,7 @@ public class ImppTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ImppType.NAME);
@@ -282,7 +283,7 @@ public class ImppTypeTest {
 		impp.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_no_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ImppType.NAME);
@@ -308,7 +309,7 @@ public class ImppTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalHtml_bad_uri() {
 		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>theuser</div>");
 		ImppType impp = new ImppType();
@@ -327,7 +328,7 @@ public class ImppTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalJson_bad_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = JCardValue.single(VCardDataType.URI, badUri);

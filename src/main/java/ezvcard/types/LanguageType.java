@@ -152,7 +152,13 @@ public class LanguageType extends TextType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(element.first(VCardDataType.LANGUAGE_TAG));
+		String value = element.first(VCardDataType.LANGUAGE_TAG);
+		if (value != null) {
+			setValue(value);
+			return;
+		}
+
+		throw missingXmlElements(VCardDataType.LANGUAGE_TAG);
 	}
 
 	@Override

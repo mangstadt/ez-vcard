@@ -7,6 +7,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
@@ -249,9 +250,10 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		value = VCardStringUtils.unescape(value);
 		if (version == VCardVersion.V4_0 && subTypes.getValue() == VCardDataType.TEXT) {
 			setText(value);
-		} else {
-			parseDate(value, version, warnings);
+			return;
 		}
+
+		parseDate(value, version, warnings);
 	}
 
 	@Override
@@ -294,9 +296,16 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		String value = element.first(VCardDataType.DATE, VCardDataType.DATE_TIME, VCardDataType.DATE_AND_OR_TIME);
 		if (value != null) {
 			parseDate(value, element.version(), warnings);
-		} else {
-			setText(element.first(VCardDataType.TEXT));
+			return;
 		}
+
+		value = element.first(VCardDataType.TEXT);
+		if (value != null) {
+			setText(value);
+			return;
+		}
+
+		throw missingXmlElements(VCardDataType.DATE, VCardDataType.DATE_TIME, VCardDataType.DATE_AND_OR_TIME, VCardDataType.TEXT);
 	}
 
 	@Override
@@ -354,9 +363,10 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		String valueStr = value.getSingleValued();
 		if (value.getDataType() == VCardDataType.TEXT) {
 			setText(valueStr);
-		} else {
-			parseDate(valueStr, version, warnings);
+			return;
 		}
+
+		parseDate(valueStr, version, warnings);
 	}
 
 	@Override
@@ -381,13 +391,13 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 			setDate(VCardDateFormatter.parse(value), hasTime);
 		} catch (IllegalArgumentException e) {
 			if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
-				throw new SkipMeException("Date string could not be parsed: " + value);
+				throw new CannotParseException("Date string could not be parsed.");
 			}
 
 			try {
 				setPartialDate(new PartialDate(value));
 			} catch (IllegalArgumentException e2) {
-				warnings.add("Date string could not be parsed.  Assuming it's a text value: " + value);
+				warnings.add("Date string could not be parsed.  Treating it as a text value.");
 				setText(value);
 			}
 		}

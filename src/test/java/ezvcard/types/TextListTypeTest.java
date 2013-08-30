@@ -18,6 +18,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
@@ -300,14 +301,11 @@ public class TextListTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_zero_values() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TextListTypeImpl.NAME.toLowerCase());
 		testObj.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
-
-		assertEquals(Arrays.asList(), testObj.getValues());
-		assertWarnings(0, warnings);
 	}
 
 	@Test

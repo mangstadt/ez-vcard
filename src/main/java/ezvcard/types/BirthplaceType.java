@@ -210,7 +210,7 @@ public class BirthplaceType extends VCardType implements HasAltId {
 			return;
 		}
 
-		throw new SkipMeException("No text or URI elements found.");
+		throw missingXmlElements(VCardDataType.TEXT, VCardDataType.URI);
 	}
 
 	@Override
@@ -227,7 +227,8 @@ public class BirthplaceType extends VCardType implements HasAltId {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		String valueStr = value.getSingleValued();
-		if (value.getDataType() == VCardDataType.URI) {
+		VCardDataType dataType = value.getDataType();
+		if (dataType == VCardDataType.URI) {
 			setUri(valueStr);
 		} else {
 			setText(valueStr);

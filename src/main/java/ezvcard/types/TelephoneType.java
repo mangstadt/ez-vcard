@@ -296,7 +296,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			return;
 		}
 
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		throw missingXmlElements(VCardDataType.URI, VCardDataType.TEXT);
 	}
 
 	@Override

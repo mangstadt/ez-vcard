@@ -1,5 +1,7 @@
 package ezvcard.io;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -428,28 +430,35 @@ public class XCardDocument {
 		List<String> warningsBuf = new ArrayList<String>();
 
 		VCardSubTypes subTypes = parseSubTypes(element);
-		VCardType type = createTypeObject(element.getLocalName(), element.getNamespaceURI());
+		String propertyName = element.getLocalName();
+		VCardType type = createTypeObject(propertyName, element.getNamespaceURI());
 		type.setGroup(group);
 		try {
-			try {
-				type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);
-			} catch (UnsupportedOperationException e) {
-				//type class does not support xCard
-				warningsBuf.add("Property class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property instead.");
-				type = new XmlType();
-				type.setGroup(group);
-				type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);
-			}
-			vcard.addType(type);
+			type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);
 		} catch (SkipMeException e) {
 			warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
+			return;
+		} catch (CannotParseException e) {
+			String xml = XmlUtils.toString(element);
+			warningsBuf.add("Property value could not be parsed.  It will be unmarshalled as a " + XmlType.NAME + " property instead." + NEWLINE + "  XML: " + xml + NEWLINE + "  Reason: " + e.getMessage());
+			type = new XmlType();
+			type.setGroup(group);
+			type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);
+		} catch (UnsupportedOperationException e) {
+			warningsBuf.add("Property class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property instead.");
+			type = new XmlType();
+			type.setGroup(group);
+			type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);
 		} catch (EmbeddedVCardException e) {
 			warningsBuf.add("Property will not be unmarshalled because xCard does not supported embedded vCards.");
+			return;
 		} finally {
 			for (String warning : warningsBuf) {
 				addWarning(warning, type.getTypeName(), warnings);
 			}
 		}
+
+		vcard.addType(type);
 	}
 
 	/**
@@ -492,33 +501,37 @@ public class XCardDocument {
 	 * @return the type that was created
 	 */
 	private VCardType createTypeObject(String name, String ns) {
-		name = name.toUpperCase();
-
+		//parse as a standard property
 		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
 		if (clazz != null && VCardVersion.V4_0.getXmlNamespace().equals(ns)) {
 			try {
 				return clazz.newInstance();
 			} catch (Exception e) {
-				//it is the responsibility of the ez-vcard developer to ensure that this exception is never thrown
-				//all type classes defined in the ez-vcard library MUST have public, no-arg constructors
+				//should never be thrown
+				//all type classes must have public, no-arg constructors
 				throw new RuntimeException(e);
 			}
-		} else {
-			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(new QName(ns, name.toLowerCase()));
-			if (extendedTypeClass != null) {
-				try {
-					return extendedTypeClass.newInstance();
-				} catch (Exception e) {
-					//this should never happen because the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" MUST have a public, no-arg constructor.");
-				}
-			} else if (name.startsWith("X-")) {
-				return new RawType(name);
-			} else {
-				//add as an XML property
-				return new XmlType();
+		}
+
+		//parse as a registered extended type class
+		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(new QName(ns, name.toLowerCase()));
+		if (extendedTypeClass != null) {
+			try {
+				return extendedTypeClass.newInstance();
+			} catch (Exception e) {
+				//should never be thrown
+				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
+				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" MUST have a public, no-arg constructor.");
 			}
 		}
+
+		//parse as a RawType
+		if (name.toUpperCase().startsWith("X-")) {
+			return new RawType(name);
+		}
+
+		//parse as an XML property
+		return new XmlType();
 	}
 
 	/**

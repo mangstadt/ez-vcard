@@ -104,8 +104,13 @@ public class TextListType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		values.clear();
-		values.addAll(element.all(VCardDataType.TEXT));
+		List<String> values = element.all(VCardDataType.TEXT);
+		if (!values.isEmpty()) {
+			this.values = values;
+			return;
+		}
+
+		throw missingXmlElements(VCardDataType.TEXT);
 	}
 
 	@Override
@@ -120,7 +125,7 @@ public class TextListType extends VCardType {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		values.clear();
-		
+
 		if (separator == ';') {
 			for (List<String> valueStr : value.getStructured()) {
 				if (valueStr.isEmpty()) {

@@ -8,6 +8,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.JCardValue;
@@ -106,7 +107,7 @@ public class ClientPidMapType extends VCardType {
 	 * Creates an empty client PID map property.
 	 */
 	public ClientPidMapType() {
-		super(NAME);
+		this(null, null);
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class ClientPidMapType extends VCardType {
 	 * @param pid the PID
 	 * @param uri the globally unique URI
 	 */
-	public ClientPidMapType(int pid, String uri) {
+	public ClientPidMapType(Integer pid, String uri) {
 		super(NAME);
 		this.pid = pid;
 		this.uri = uri;
@@ -125,7 +126,7 @@ public class ClientPidMapType extends VCardType {
 	 * @param pid the PID
 	 * @return a CLIENTPIDMAP type with a random UID URI
 	 */
-	public static ClientPidMapType random(int pid) {
+	public static ClientPidMapType random(Integer pid) {
 		String uuid = UUID.randomUUID().toString();
 		return new ClientPidMapType(pid, "urn:uuid:" + uuid);
 	}
@@ -181,11 +182,12 @@ public class ClientPidMapType extends VCardType {
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 		String split[] = value.split(";", 2);
 		if (split.length < 2) {
-			throw new SkipMeException("Unable to parse.  Value must contain a PID and a URI, separated by a semi-colon.");
+			throw new CannotParseException("Incorrect data format.  Value must contain a PID and a URI, separated by a semi-colon.");
 		}
 
-		pid = parsePid(split[0]);
-		uri = VCardStringUtils.unescape(split[1]);
+		String pid = split[0];
+		String uri = VCardStringUtils.unescape(split[1]);
+		parse(pid, uri);
 	}
 
 	@Override
@@ -202,10 +204,20 @@ public class ClientPidMapType extends VCardType {
 
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		uri = element.first(VCardDataType.URI);
-
 		String sourceid = element.first("sourceid");
-		pid = (sourceid == null) ? null : parsePid(sourceid);
+		String uri = element.first(VCardDataType.URI);
+
+		if (uri == null && sourceid == null) {
+			throw missingXmlElements(VCardDataType.URI.getName().toLowerCase(), "sourceid");
+		}
+		if (uri == null) {
+			throw missingXmlElements(VCardDataType.URI);
+		}
+		if (sourceid == null) {
+			throw missingXmlElements("sourceid");
+		}
+
+		parse(sourceid, uri);
 	}
 
 	@Override
@@ -219,10 +231,9 @@ public class ClientPidMapType extends VCardType {
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		Iterator<List<String>> it = value.getStructured().iterator();
 
-		String str = nextJsonComponent(it);
-		pid = (str == null) ? null : parsePid(str);
-
-		uri = nextJsonComponent(it);
+		String pid = nextJsonComponent(it);
+		String uri = nextJsonComponent(it);
+		parse(pid, uri);
 	}
 
 	@Override
@@ -238,12 +249,14 @@ public class ClientPidMapType extends VCardType {
 		}
 	}
 
-	private Integer parsePid(String value) {
+	private void parse(String pid, String uri) {
 		try {
-			return Integer.parseInt(value);
+			this.pid = Integer.parseInt(pid);
 		} catch (NumberFormatException e) {
-			throw new SkipMeException("Unable to parse PID component: " + e.getMessage());
+			throw new CannotParseException("Unable to parse PID component.");
 		}
+
+		this.uri = uri;
 	}
 
 	private String nextJsonComponent(Iterator<List<String>> it) {

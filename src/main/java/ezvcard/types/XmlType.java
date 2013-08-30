@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
@@ -196,10 +197,14 @@ public class XmlType extends VCardType implements HasAltId {
 	}
 
 	private void parse(String xml) {
+		if (xml == null || xml.length() == 0) {
+			return;
+		}
+
 		try {
 			document = XmlUtils.toDocument(xml);
 		} catch (SAXException e) {
-			throw new SkipMeException("Cannot parse value as XML: " + xml);
+			throw new CannotParseException("Cannot parse value as XML.");
 		}
 	}
 

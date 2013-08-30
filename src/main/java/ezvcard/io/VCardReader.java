@@ -1,5 +1,7 @@
 package ezvcard.io;
 
+import static ezvcard.util.VCardStringUtils.NEWLINE;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -198,34 +200,35 @@ public class VCardReader implements Closeable {
 	 * @return the Type that was created
 	 */
 	private VCardType createTypeObject(String name) {
+		//parse as a standard property
 		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
-		VCardType t;
 		if (clazz != null) {
 			try {
-				//create a new instance of the class
-				t = clazz.newInstance();
+				return clazz.newInstance();
 			} catch (Exception e) {
-				//it is the responsibility of the ez-vcard developer to ensure that this exception is never thrown
-				//all type classes defined in the ez-vcard library MUST have public, no-arg constructors
+				//should never be thrown
+				//all type classes must have public, no-arg constructors
 				throw new RuntimeException(e);
 			}
-		} else {
-			Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
-			if (extendedTypeClass != null) {
-				try {
-					t = extendedTypeClass.newInstance();
-				} catch (Exception e) {
-					//this should never happen because the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-					throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
-				}
-			} else {
-				t = new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
-				if (!name.startsWith("X-")) {
-					addWarning("Non-standard property found.  Treating it as an extended property.", name);
-				}
+		}
+
+		//parse as a registered extended type class
+		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name.toUpperCase());
+		if (extendedTypeClass != null) {
+			try {
+				return extendedTypeClass.newInstance();
+			} catch (Exception e) {
+				//should never be thrown
+				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
+				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
 			}
 		}
-		return t;
+
+		//parse as a RawType
+		if (!name.toUpperCase().startsWith("X-")) {
+			addWarning("Non-standard property found.  Treating it as an extended property.", name);
+		}
+		return new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
 	}
 
 	/**
@@ -421,11 +424,15 @@ public class VCardReader implements Closeable {
 				if (type instanceof LabelType) {
 					//LABELs must be treated specially so they can be matched up with their ADRs
 					labels.add((LabelType) type);
-				} else {
-					curVCard.addType(type);
+					return;
 				}
 			} catch (SkipMeException e) {
 				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
+				return;
+			} catch (CannotParseException e) {
+				warningsBuf.add("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + value + NEWLINE + "  Reason: " + e.getMessage());
+				type = new RawType(name, value);
+				type.setGroup(group);
 			} catch (EmbeddedVCardException e) {
 				//parse an embedded vCard (i.e. the AGENT type)
 
@@ -452,13 +459,13 @@ public class VCardReader implements Closeable {
 						IOUtils.closeQuietly(agentReader);
 					}
 				}
-
-				curVCard.addType(type);
 			} finally {
 				for (String warning : warningsBuf) {
 					addWarning(warning, name);
 				}
 			}
+
+			curVCard.addType(type);
 		}
 
 		public void endComponent(String name) {

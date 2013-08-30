@@ -117,6 +117,24 @@ public class RawTypeTest {
 	}
 
 	@Test
+	public void unmarshalXml_non_xcard_child_elements() {
+		VCardVersion version = VCardVersion.V4_0;
+		RawTypeImpl type = new RawTypeImpl();
+		XCardElement xe = new XCardElement(RawTypeImpl.NAME.toLowerCase());
+		Element child1 = xe.document().createElementNS("http://example.com", "one");
+		child1.setTextContent("1");
+		xe.element().appendChild(child1);
+		Element child2 = xe.document().createElementNS("http://example.com", "two");
+		child2.setTextContent("2");
+		xe.element().appendChild(child2);
+		Element input = xe.element();
+		type.unmarshalXml(subTypes, input, version, warnings, compatibilityMode);
+
+		assertEquals("1", type.getValue());
+		assertWarnings(0, warnings);
+	}
+
+	@Test
 	public void unmarshalXml_no_child_elements() {
 		VCardVersion version = VCardVersion.V4_0;
 		RawTypeImpl type = new RawTypeImpl();

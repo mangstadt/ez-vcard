@@ -18,6 +18,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.JCardValue;
@@ -167,13 +168,13 @@ public class ClientPidMapTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_no_semicolon() {
 		VCardVersion version = VCardVersion.V4_0;
 		clientPidMapType.unmarshalText(subTypes, "no semicolon", version, warnings, compatibilityMode);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalText_bad_pid() {
 		VCardVersion version = VCardVersion.V4_0;
 		clientPidMapType.unmarshalText(subTypes, "foo;bar", version, warnings, compatibilityMode);
@@ -193,12 +194,38 @@ public class ClientPidMapTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_bad_pid() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
 		xe.append(VCardDataType.URI, uri);
 		xe.append("sourceid", "foo");
+
+		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = CannotParseException.class)
+	public void unmarshalXml_no_pid() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
+		xe.append(VCardDataType.URI, uri);
+
+		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = CannotParseException.class)
+	public void unmarshalXml_no_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
+		xe.append("sourceid", "1");
+
+		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = CannotParseException.class)
+	public void unmarshalXml_no_pid_or_uri() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(ClientPidMapType.NAME.toLowerCase());
 
 		clientPidMapType.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 	}
@@ -215,7 +242,7 @@ public class ClientPidMapTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test(expected = CannotParseException.class)
 	public void unmarshalJson_bad_pid() {
 		VCardVersion version = VCardVersion.V4_0;
 		JCardValue value = JCardValue.structured(VCardDataType.TEXT, "foo", uri);

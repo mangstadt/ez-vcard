@@ -200,7 +200,7 @@ public class DeathplaceType extends VCardType implements HasAltId {
 			return;
 		}
 
-		throw new SkipMeException("No text or URI elements found.");
+		throw missingXmlElements(VCardDataType.TEXT, VCardDataType.URI);
 	}
 
 	@Override

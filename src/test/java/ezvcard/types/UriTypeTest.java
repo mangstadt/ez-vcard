@@ -4,7 +4,6 @@ import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -137,14 +137,11 @@ public class UriTypeTest {
 		assertWarnings(0, warnings);
 	}
 
-	@Test
+	@Test(expected = CannotParseException.class)
 	public void unmarshalXml_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(withValue.getTypeName().toLowerCase());
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
-
-		assertNull(t.getValue());
-		assertWarnings(0, warnings);
 	}
 
 	@Test

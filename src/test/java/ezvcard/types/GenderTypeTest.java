@@ -21,6 +21,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
@@ -291,6 +292,25 @@ public class GenderTypeTest {
 		assertTrue(t.isMale());
 		assertEquals(text, t.getText());
 		assertWarnings(0, warnings);
+	}
+
+	@Test(expected = CannotParseException.class)
+	public void unmarshalXml_no_sex_or_identity() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(GenderType.NAME.toLowerCase());
+
+		Element element = xe.element();
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+	}
+
+	@Test(expected = CannotParseException.class)
+	public void unmarshalXml_no_sex() {
+		VCardVersion version = VCardVersion.V4_0;
+		XCardElement xe = new XCardElement(GenderType.NAME.toLowerCase());
+		xe.append("identity", text);
+
+		Element element = xe.element();
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
 	}
 
 	@Test
