@@ -123,26 +123,32 @@ public class JCardValue {
 	 */
 	public static JCardValue structured(VCardDataType dataType, List<List<?>> values) {
 		List<JsonValue> array = new ArrayList<JsonValue>(values.size());
+
 		for (List<?> list : values) {
 			if (list.isEmpty()) {
 				array.add(new JsonValue(""));
-			} else if (list.size() == 1) {
+				continue;
+			}
+
+			if (list.size() == 1) {
 				Object value = list.get(0);
 				if (value == null) {
 					value = "";
 				}
 				array.add(new JsonValue(value));
-			} else {
-				List<JsonValue> subArray = new ArrayList<JsonValue>(list.size());
-				for (Object value : list) {
-					if (value == null) {
-						value = "";
-					}
-					subArray.add(new JsonValue(value));
-				}
-				array.add(new JsonValue(subArray));
+				continue;
 			}
+
+			List<JsonValue> subArray = new ArrayList<JsonValue>(list.size());
+			for (Object value : list) {
+				if (value == null) {
+					value = "";
+				}
+				subArray.add(new JsonValue(value));
+			}
+			array.add(new JsonValue(subArray));
 		}
+
 		return new JCardValue(dataType, new JsonValue(array));
 	}
 
@@ -164,17 +170,16 @@ public class JCardValue {
 
 	/**
 	 * Gets the value of a single-valued property (such as {@link NoteType}).
-	 * @return the value or null if not found
+	 * @return the value or empty string if not found
 	 */
 	public String getSingleValued() {
 		if (values.isEmpty()) {
-			return null;
+			return "";
 		}
 
 		JsonValue first = values.get(0);
-
 		if (first.isNull()) {
-			return null;
+			return "";
 		}
 
 		Object obj = first.getValue();
@@ -191,7 +196,7 @@ public class JCardValue {
 			}
 		}
 
-		return null;
+		return "";
 	}
 
 	/**
@@ -212,7 +217,7 @@ public class JCardValue {
 			List<List<String>> valuesStr = new ArrayList<List<String>>(array.size());
 			for (JsonValue value : array) {
 				if (value.isNull()) {
-					valuesStr.add(Arrays.asList((String) null));
+					valuesStr.add(Arrays.asList(""));
 					continue;
 				}
 
@@ -227,7 +232,7 @@ public class JCardValue {
 					List<String> subValuesStr = new ArrayList<String>(subArray.size());
 					for (JsonValue subArrayValue : subArray) {
 						if (subArrayValue.isNull()) {
-							subValuesStr.add(null);
+							subValuesStr.add("");
 							continue;
 						}
 
@@ -255,7 +260,7 @@ public class JCardValue {
 		//["gender", {}, "text", null]
 		if (first.isNull()) {
 			List<List<String>> values = new ArrayList<List<String>>(1);
-			values.add(Arrays.asList((String) null));
+			values.add(Arrays.asList(""));
 			return values;
 		}
 
@@ -275,13 +280,14 @@ public class JCardValue {
 		List<String> multi = new ArrayList<String>(values.size());
 		for (JsonValue value : values) {
 			if (value.isNull()) {
-				multi.add(null);
+				multi.add("");
 				continue;
 			}
 
 			Object obj = value.getValue();
 			if (obj != null) {
 				multi.add(obj.toString());
+				continue;
 			}
 		}
 		return multi;

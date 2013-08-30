@@ -88,7 +88,7 @@ public class JCardValueTest {
 	public void getSingleValued_null() {
 		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue((Object) null));
 		assertEquals(VCardDataType.TEXT, value.getDataType());
-		assertEquals(null, value.getSingleValued());
+		assertEquals("", value.getSingleValued());
 	}
 
 	@Test
@@ -104,7 +104,7 @@ public class JCardValueTest {
 		object.put("a", new JsonValue("one"));
 		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(object));
 		assertEquals(VCardDataType.TEXT, value.getDataType());
-		assertEquals(null, value.getSingleValued());
+		assertEquals("", value.getSingleValued());
 	}
 
 	@Test
@@ -129,7 +129,7 @@ public class JCardValueTest {
 	public void getMultivalued() {
 		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null));
 		assertEquals(VCardDataType.TEXT, value.getDataType());
-		assertEquals(Arrays.asList("value1", "false", null), value.getMultivalued());
+		assertEquals(Arrays.asList("value1", "false", ""), value.getMultivalued());
 	}
 
 	@Test
@@ -170,7 +170,7 @@ public class JCardValueTest {
 	public void getStructured() {
 		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null))));
 		assertEquals(VCardDataType.TEXT, value.getDataType());
-		assertEquals(Arrays.asList(Arrays.asList("value1"), Arrays.asList("false"), Arrays.asList((String) null)), value.getStructured());
+		assertEquals(Arrays.asList(Arrays.asList("value1"), Arrays.asList("false"), Arrays.asList((String) "")), value.getStructured());
 	}
 
 	@SuppressWarnings("unchecked")
