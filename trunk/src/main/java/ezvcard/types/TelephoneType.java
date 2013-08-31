@@ -7,7 +7,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
@@ -244,8 +243,6 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 			sb.append(VCardStringUtils.escape(text));
 			return;
 		}
-
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
 
 	@Override
@@ -266,15 +263,15 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			parent.append(VCardDataType.URI, uri.toString());
-			return;
-		}
 		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
 			return;
 		}
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		if (uri != null) {
+			parent.append(VCardDataType.URI, uri.toString());
+			return;
+		}
+		parent.append(VCardDataType.TEXT, "");
 	}
 
 	@Override
@@ -317,13 +314,13 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (uri != null) {
-			return JCardValue.single(VCardDataType.URI, uri.toString());
-		}
 		if (text != null) {
 			return JCardValue.single(VCardDataType.TEXT, text);
 		}
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		if (uri != null) {
+			return JCardValue.single(VCardDataType.URI, uri.toString());
+		}
+		return JCardValue.single(VCardDataType.TEXT, "");
 	}
 
 	@Override

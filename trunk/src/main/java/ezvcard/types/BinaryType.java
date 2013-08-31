@@ -12,7 +12,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.util.DataUri;
@@ -480,6 +479,6 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 			}
 		}
 
-		throw new SkipMeException("Property has neither a URL nor binary data attached to it.");
+		return "";
 	}
 }

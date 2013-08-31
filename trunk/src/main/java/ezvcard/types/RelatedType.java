@@ -7,7 +7,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.RelatedTypeParameter;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -216,7 +215,6 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 			sb.append(VCardStringUtils.escape(text));
 			return;
 		}
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
 	}
 
 	@Override
@@ -239,7 +237,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 			parent.append(VCardDataType.TEXT, text);
 			return;
 		}
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		parent.append(VCardDataType.URI, "");
 	}
 
 	@Override
@@ -267,7 +265,7 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 		if (text != null) {
 			return JCardValue.single(VCardDataType.TEXT, text);
 		}
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		return JCardValue.single(VCardDataType.URI, "");
 	}
 
 	@Override

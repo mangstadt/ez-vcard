@@ -16,7 +16,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
@@ -159,7 +158,7 @@ public class XmlType extends VCardType implements HasAltId {
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
 		if (document == null) {
-			throw new SkipMeException("Property does not have a value associated with it.");
+			return;
 		}
 
 		//add XML element to marshalled document
@@ -210,7 +209,7 @@ public class XmlType extends VCardType implements HasAltId {
 
 	private String write() {
 		if (document == null) {
-			throw new SkipMeException("Property does not have a value associated with it.");
+			return "";
 		}
 
 		Map<String, String> props = new HashMap<String, String>();

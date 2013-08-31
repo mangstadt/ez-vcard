@@ -12,7 +12,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.ImppTypeParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
@@ -440,7 +439,9 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(write());
+		if (uri != null) {
+			sb.append(uri.toString());
+		}
 	}
 
 	@Override
@@ -451,7 +452,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.URI, write());
+		parent.append(VCardDataType.URI, (uri == null) ? "" : uri.toString());
 	}
 
 	@Override
@@ -485,7 +486,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.URI, write());
+		return JCardValue.single(VCardDataType.URI, (uri == null) ? "" : uri.toString());
 	}
 
 	@Override
@@ -510,13 +511,6 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 		} catch (IllegalArgumentException e) {
 			throw new CannotParseException("Cannot parse URI \"" + value + "\": " + e.getMessage());
 		}
-	}
-
-	private String write() {
-		if (uri == null) {
-			throw new SkipMeException("No URI given.");
-		}
-		return uri.toString();
 	}
 
 	/**

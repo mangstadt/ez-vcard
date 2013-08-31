@@ -19,7 +19,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.util.DataUri;
@@ -261,22 +260,28 @@ public class BinaryTypeTest {
 		assertEquals(new DataUri("application/octet-stream", data).toString(), actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_empty_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		empty.marshalText(version, compatibilityMode);
+		String actual = empty.marshalText(version, compatibilityMode);
+
+		assertEquals("", actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_empty_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		empty.marshalText(version, compatibilityMode);
+		String actual = empty.marshalText(version, compatibilityMode);
+
+		assertEquals("", actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_empty_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalText(version, compatibilityMode);
+		String actual = empty.marshalText(version, compatibilityMode);
+
+		assertEquals("", actual);
 	}
 
 	@Test
@@ -289,9 +294,9 @@ public class BinaryTypeTest {
 		assertMarshalXml(withData, "<uri>" + dataUri + "</uri>");
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalXml_empty() {
-		assertMarshalXml(empty, "");
+		assertMarshalXml(empty, "<uri/>");
 	}
 
 	@Test

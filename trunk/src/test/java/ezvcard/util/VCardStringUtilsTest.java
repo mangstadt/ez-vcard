@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public class VCardStringUtilsTest {
 		actual = VCardStringUtils.unescape("\\\\ \\, \\; \\n \\\\\\,");
 		expected = "\\ , ; " + VCardStringUtils.NEWLINE + " \\,";
 		assertEquals(expected, actual);
+
+		assertNull(VCardStringUtils.unescape(null));
 	}
 
 	@Test
@@ -65,6 +68,8 @@ public class VCardStringUtilsTest {
 		actual = VCardStringUtils.escape("One; Two, Three\\ Four\n Five\r\n Six\r");
 		expected = "One\\; Two\\, Three\\\\ Four\n Five\r\n Six\r";
 		assertEquals(expected, actual);
+
+		assertNull(VCardStringUtils.escape(null));
 	}
 
 	@Test
@@ -74,6 +79,8 @@ public class VCardStringUtilsTest {
 		actual = VCardStringUtils.escapeNewlines("One; Two, Three\\ Four\n Five\r\n Six\r");
 		expected = "One; Two, Three\\ Four\\n Five\\n Six\\n";
 		assertEquals(expected, actual);
+
+		assertNull(VCardStringUtils.escapeNewlines(null));
 	}
 
 	@Test
@@ -82,6 +89,7 @@ public class VCardStringUtilsTest {
 		assertTrue(VCardStringUtils.containsNewlines("One\rTwo"));
 		assertTrue(VCardStringUtils.containsNewlines("One\r\nTwo"));
 		assertFalse(VCardStringUtils.containsNewlines("One, Two"));
+		assertFalse(VCardStringUtils.containsNewlines(null));
 	}
 
 	@Test
@@ -95,6 +103,8 @@ public class VCardStringUtilsTest {
 		actual = VCardStringUtils.ltrim("\n \t \t \n ");
 		expected = "";
 		assertEquals(actual, expected);
+
+		assertNull(VCardStringUtils.ltrim(null));
 	}
 
 	@Test
@@ -108,6 +118,8 @@ public class VCardStringUtilsTest {
 		actual = VCardStringUtils.rtrim("\n \t \t \n ");
 		expected = "";
 		assertEquals(actual, expected);
+
+		assertNull(VCardStringUtils.rtrim(null));
 	}
 
 	@Test

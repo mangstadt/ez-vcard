@@ -22,7 +22,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
@@ -246,16 +245,24 @@ public class DateOrTimeTypeTest {
 		reducedAccuracyDateType.setPartialDate(reducedAccuracyDate);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_reducedAccuracy_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		reducedAccuracyDateType.marshalText(version, compatibilityMode);
+		String actual = reducedAccuracyDateType.marshalText(version, compatibilityMode);
+		assertEquals("", actual);
+
+		VCardSubTypes subTypes = reducedAccuracyDateType.marshalSubTypes(version, compatibilityMode, vcard);
+		assertNull(subTypes.getValue());
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_reducedAccuracy_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		reducedAccuracyDateType.marshalText(version, compatibilityMode);
+		String actual = reducedAccuracyDateType.marshalText(version, compatibilityMode);
+		assertEquals("", actual);
+
+		VCardSubTypes subTypes = reducedAccuracyDateType.marshalSubTypes(version, compatibilityMode, vcard);
+		assertNull(subTypes.getValue());
 	}
 
 	@Test
@@ -288,16 +295,24 @@ public class DateOrTimeTypeTest {
 		reducedAccuracyDateTimeType.setPartialDate(reducedAccuracyDateTime);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_reducedAccuracyDateTime_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		reducedAccuracyDateTimeType.marshalText(version, compatibilityMode);
+		String actual = reducedAccuracyDateTimeType.marshalText(version, compatibilityMode);
+		assertEquals("", actual);
+
+		VCardSubTypes subTypes = reducedAccuracyDateTimeType.marshalSubTypes(version, compatibilityMode, vcard);
+		assertNull(subTypes.getValue());
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_reducedAccuracyDateTime_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		reducedAccuracyDateTimeType.marshalText(version, compatibilityMode);
+		String actual = reducedAccuracyDateTimeType.marshalText(version, compatibilityMode);
+		assertEquals("", actual);
+
+		VCardSubTypes subTypes = reducedAccuracyDateTimeType.marshalSubTypes(version, compatibilityMode, vcard);
+		assertNull(subTypes.getValue());
 	}
 
 	@Test
@@ -330,27 +345,25 @@ public class DateOrTimeTypeTest {
 		textType.setText(text);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_text_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		textType.marshalText(version, compatibilityMode);
+		String actual = textType.marshalText(version, compatibilityMode);
+		assertEquals("", actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_text_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		textType.marshalText(version, compatibilityMode);
+		String actual = textType.marshalText(version, compatibilityMode);
+		assertEquals("", actual);
 	}
 
 	@Test
 	public void marshalText_text_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
 		String actual = textType.marshalText(version, compatibilityMode);
-		assertEquals(actual, textEscaped);
-
-		VCardSubTypes subTypes = textType.marshalSubTypes(version, compatibilityMode, vcard);
-		assertEquals(VCardDataType.TEXT, subTypes.getValue());
-		assertNull(subTypes.getCalscale());
+		assertEquals(textEscaped, actual);
 	}
 
 	@Test
@@ -370,33 +383,41 @@ public class DateOrTimeTypeTest {
 
 	final DateOrTimeTypeImpl nothingType = new DateOrTimeTypeImpl();
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_nothing_2_1() {
 		VCardVersion version = VCardVersion.V2_1;
-		nothingType.marshalText(version, compatibilityMode);
+		String value = nothingType.marshalText(version, compatibilityMode);
+
+		assertEquals("", value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_nothing_3_0() {
 		VCardVersion version = VCardVersion.V3_0;
-		nothingType.marshalText(version, compatibilityMode);
+		String value = nothingType.marshalText(version, compatibilityMode);
+
+		assertEquals("", value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_nothing_4_0() {
 		VCardVersion version = VCardVersion.V4_0;
-		nothingType.marshalText(version, compatibilityMode);
+		String value = nothingType.marshalText(version, compatibilityMode);
+
+		assertEquals("", value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalXml_nothing() {
-		assertMarshalXml(nothingType, "");
+		assertMarshalXml(nothingType, "<date-and-or-time/>");
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalJson_nothing() {
 		VCardVersion version = VCardVersion.V4_0;
-		nothingType.marshalJson(version);
+		JCardValue value = nothingType.marshalJson(version);
+
+		assertJCardValue(VCardDataType.DATE_AND_OR_TIME, "", value);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////

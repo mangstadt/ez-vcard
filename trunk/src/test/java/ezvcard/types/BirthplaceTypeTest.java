@@ -19,7 +19,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -131,10 +130,12 @@ public class BirthplaceTypeTest {
 		assertEquals(uri, actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_empty() {
 		VCardVersion version = VCardVersion.V4_0;
-		emptyType.marshalText(version, compatibilityMode);
+		String actual = emptyType.marshalText(version, compatibilityMode);
+
+		assertEquals("", actual);
 	}
 
 	@Test
@@ -147,9 +148,9 @@ public class BirthplaceTypeTest {
 		assertMarshalXml(uriType, "<uri>" + uri + "</uri>");
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalXml_empty() {
-		assertMarshalXml(emptyType, "");
+		assertMarshalXml(emptyType, "<text/>");
 	}
 
 	@Test
@@ -168,10 +169,12 @@ public class BirthplaceTypeTest {
 		assertJCardValue(VCardDataType.URI, uri, value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalJson_empty() {
 		VCardVersion version = VCardVersion.V4_0;
-		emptyType.marshalJson(version);
+		JCardValue value = emptyType.marshalJson(version);
+
+		assertJCardValue(VCardDataType.TEXT, "", value);
 	}
 
 	@Test

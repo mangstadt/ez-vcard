@@ -7,7 +7,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.JCardValue;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
@@ -160,15 +159,14 @@ public class BirthplaceType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			sb.append(uri);
-			return;
-		}
 		if (text != null) {
 			sb.append(VCardStringUtils.escape(text));
 			return;
 		}
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		if (uri != null) {
+			sb.append(uri);
+			return;
+		}
 	}
 
 	@Override
@@ -185,15 +183,15 @@ public class BirthplaceType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			parent.append(VCardDataType.URI, uri);
-			return;
-		}
 		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
 			return;
 		}
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		if (uri != null) {
+			parent.append(VCardDataType.URI, uri);
+			return;
+		}
+		parent.append(VCardDataType.TEXT, "");
 	}
 
 	@Override
@@ -215,13 +213,13 @@ public class BirthplaceType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (uri != null) {
-			return JCardValue.single(VCardDataType.URI, uri);
-		}
 		if (text != null) {
 			return JCardValue.single(VCardDataType.TEXT, text);
 		}
-		throw new SkipMeException("Property has neither a URI nor a text value associated with it.");
+		if (uri != null) {
+			return JCardValue.single(VCardDataType.URI, uri);
+		}
+		return JCardValue.single(VCardDataType.TEXT, "");
 	}
 
 	@Override

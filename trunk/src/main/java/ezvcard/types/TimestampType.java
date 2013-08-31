@@ -8,7 +8,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.JCardValue;
@@ -130,7 +129,6 @@ public class TimestampType extends VCardType {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		checkForValue();
 		return JCardValue.single(VCardDataType.TIMESTAMP, writeValue(true));
 	}
 
@@ -147,14 +145,11 @@ public class TimestampType extends VCardType {
 		}
 	}
 
-	private void checkForValue() {
-		if (timestamp == null) {
-			throw new SkipMeException("Property has no timestamp value associated with it.");
-		}
-	}
-
 	private String writeValue(boolean extended) {
-		checkForValue();
+		if (timestamp == null) {
+			return "";
+		}
+
 		ISOFormat format = extended ? ISOFormat.UTC_TIME_EXTENDED : ISOFormat.UTC_TIME_BASIC;
 		return VCardDateFormatter.format(timestamp, format);
 	}

@@ -19,7 +19,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.JCardValue;
 import ezvcard.util.JsonValue;
 import ezvcard.util.XCardElement;
@@ -95,10 +94,12 @@ public class ClientPidMapTypeTest {
 		assertEquals(pid + ";" + uri, actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_empty() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalText(version, compatibilityMode);
+		String actual = empty.marshalText(version, compatibilityMode);
+
+		assertEquals("null;null", actual);
 	}
 
 	@Test
@@ -106,9 +107,9 @@ public class ClientPidMapTypeTest {
 		assertMarshalXml(withValue, "<uri>" + uri + "</uri><sourceid>" + pid + "</sourceid>");
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalXml_empty() {
-		assertMarshalXml(empty, "");
+		assertMarshalXml(empty, "<sourceid/><uri/>");
 	}
 
 	@Test
@@ -120,7 +121,7 @@ public class ClientPidMapTypeTest {
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
 			new JsonValue(Arrays.asList(
-				new JsonValue("1"),
+				new JsonValue(1),
 				new JsonValue("urn:uuid:1234")
 			))
 		);
@@ -128,10 +129,20 @@ public class ClientPidMapTypeTest {
 		assertEquals(expected, value.getValues());
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalJson_empty() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalJson(version);
+		JCardValue value = empty.marshalJson(version);
+
+		//@formatter:off
+		List<JsonValue> expected = Arrays.asList(
+			new JsonValue(Arrays.asList(
+				new JsonValue(""),
+				new JsonValue("")
+			))
+		);
+		//@formatter:on
+		assertEquals(expected, value.getValues());
 	}
 
 	@Test

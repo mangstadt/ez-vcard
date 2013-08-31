@@ -21,7 +21,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -204,11 +203,13 @@ public class ImppTypeTest {
 		assertEquals(uri, actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_no_uri() {
 		VCardVersion version = VCardVersion.V4_0;
 		ImppType impp = new ImppType();
-		impp.marshalText(version, compatibilityMode);
+		String value = impp.marshalText(version, compatibilityMode);
+
+		assertEquals("", value);
 	}
 
 	@Test
@@ -216,9 +217,9 @@ public class ImppTypeTest {
 		assertMarshalXml(impp, "<uri>" + uri + "</uri>");
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalXml_no_uri() {
-		assertMarshalXml(impp, "");
+		assertMarshalXml(new ImppType(), "<uri/>");
 	}
 
 	@Test
@@ -229,11 +230,13 @@ public class ImppTypeTest {
 		assertJCardValue(VCardDataType.URI, uri, value);
 	}
 
-	@Test(expected = SkipMeException.class)
-	public void marshalJson_no_uri() {
+	@Test
+	public void marshalJson_no_uri() {	
 		VCardVersion version = VCardVersion.V4_0;
 		ImppType impp = new ImppType();
-		impp.marshalJson(version);
+		JCardValue value = impp.marshalJson(version);
+
+		assertJCardValue(VCardDataType.URI, "", value);
 	}
 
 	@Test

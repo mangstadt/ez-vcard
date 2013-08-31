@@ -18,7 +18,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -109,11 +108,13 @@ public class XmlTypeTest {
 		assertEquals(expected, actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_null() throws Throwable {
 		VCardVersion version = VCardVersion.V4_0;
 		XmlType xml = new XmlType();
-		xml.marshalText(version, compatibilityMode);
+		String value = xml.marshalText(version, compatibilityMode);
+
+		assertEquals("", value);
 	}
 
 	@Test
