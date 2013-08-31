@@ -191,10 +191,6 @@ public class VCardDateFormatter {
 	 * @return the formatted timezone (e.g. "+0530" or "+05:30")
 	 */
 	public static String formatTimeZone(int hourOffset, int minuteOffset, boolean extended) {
-		if (minuteOffset < 0 || minuteOffset > 59) {
-			throw new IllegalArgumentException("Minute offset must be between 0 and 59.");
-		}
-
 		StringBuilder sb = new StringBuilder();
 		boolean positive = hourOffset >= 0;
 
