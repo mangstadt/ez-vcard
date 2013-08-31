@@ -1,6 +1,7 @@
 package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertSetEquals;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -10,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -21,6 +23,7 @@ import ezvcard.types.AddressType;
 import ezvcard.types.EmailType;
 import ezvcard.types.ImppType;
 import ezvcard.types.LabelType;
+import ezvcard.types.RawType;
 import ezvcard.types.TelephoneType;
 import ezvcard.types.UrlType;
 
@@ -709,6 +712,70 @@ public class HCardReaderTest {
 			assertFalse(it.hasNext());
 		}
 
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void registerExtendedType() {
+		//@formatter:off
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"x-lucky-num\">24</span>" +
+					"<span class=\"x-lucky-num\">22</span>" +
+					"<span class=\"x-gender\">male</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+		reader.registerExtendedType(LuckyNumType.class);
+
+		VCard vcard = reader.readNext();
+		assertEquals(3, vcard.getAllTypes().size());
+
+		//read a type that has a type class
+		List<LuckyNumType> luckyNumTypes = vcard.getTypes(LuckyNumType.class);
+		assertEquals(2, luckyNumTypes.size());
+		assertEquals(24, luckyNumTypes.get(0).luckyNum);
+		assertEquals(22, luckyNumTypes.get(1).luckyNum);
+		assertTrue(vcard.getExtendedTypes("X-LUCKY-NUM").isEmpty());
+
+		//read a type without a type class
+		List<RawType> genderTypes = vcard.getExtendedTypes("X-GENDER");
+		assertEquals(1, genderTypes.size());
+		assertEquals("male", genderTypes.get(0).getValue());
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void registerExtendedType_overrides_standard_type_classes() {
+		//@formatter:off
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"fn\">John Doe</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html.toString());
+		reader.registerExtendedType(MyFormattedNameType.class);
+
+		VCard vcard = reader.readNext();
+		assertEquals(1, vcard.getAllTypes().size());
+
+		//read a type that has a type class
+		MyFormattedNameType fn = vcard.getType(MyFormattedNameType.class);
+		assertEquals("JOHN DOE", fn.value);
+
+		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 

@@ -127,6 +127,18 @@ public class JCardReader implements Closeable {
 	 * @return the Type that was created
 	 */
 	private VCardType createTypeObject(String name) {
+		//parse as a registered extended type class (extended type classes should override standard ones)
+		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
+		if (extendedTypeClass != null) {
+			try {
+				return extendedTypeClass.newInstance();
+			} catch (Exception e) {
+				//should never be thrown
+				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
+				throw new RuntimeException("Extended property class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
+			}
+		}
+
 		//parse as a standard property
 		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
 		if (clazz != null) {
@@ -136,18 +148,6 @@ public class JCardReader implements Closeable {
 				//should never be thrown
 				//all type classes must have public, no-arg constructors
 				throw new RuntimeException(e);
-			}
-		}
-
-		//parse as a registered extended type class
-		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
-		if (extendedTypeClass != null) {
-			try {
-				return extendedTypeClass.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-				throw new RuntimeException("Extended property class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
 			}
 		}
 

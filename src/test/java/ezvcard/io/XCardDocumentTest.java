@@ -368,6 +368,9 @@ public class XCardDocumentTest {
 				
 				//RawType (extended type that starts with "x-")
 				"<x-gender><text>m</text></x-gender>" +
+				
+				//override standard type classes
+				"<fn><name>John Doe</name></fn>" +
 			"</vcard>" +
 		"</vcards>";
 		//@formatter:on
@@ -376,10 +379,11 @@ public class XCardDocumentTest {
 		xcard.registerExtendedType(LuckyNumType.class);
 		xcard.registerExtendedType(SalaryType.class);
 		xcard.registerExtendedType(AgeType.class);
+		xcard.registerExtendedType(MyFormattedNameType.class);
 
 		VCard vcard = xcard.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(5, vcard.getAllTypes().size());
+		assertEquals(6, vcard.getAllTypes().size());
 
 		{
 			Iterator<XmlType> it = vcard.getXmls().iterator();
@@ -402,6 +406,9 @@ public class XCardDocumentTest {
 
 		RawType gender = vcard.getExtendedType("X-GENDER");
 		assertEquals("m", gender.getValue());
+
+		MyFormattedNameType fn = vcard.getType(MyFormattedNameType.class);
+		assertEquals("JOHN DOE", fn.value);
 
 		//warning for AgeType not supporting xCard
 		assertWarningsLists(xcard.getParseWarnings(), 1);
