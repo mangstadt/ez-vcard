@@ -7,7 +7,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
@@ -357,17 +356,25 @@ public class GeoType extends VCardType implements HasAltId {
 	}
 
 	private String write(VCardVersion version) {
-		if (getLatitude() == null || getLongitude() == null) {
-			throw new SkipMeException("Latitude and/or longitude is missing.");
-		}
-
 		switch (version) {
 		case V2_1:
 		case V3_0:
 			VCardFloatFormatter formatter = new VCardFloatFormatter(6);
-			return formatter.format(getLatitude()) + ';' + formatter.format(getLongitude());
+			StringBuilder sb = new StringBuilder();
+
+			if (getLatitude() != null) {
+				sb.append(formatter.format(getLatitude()));
+			}
+
+			sb.append(';');
+
+			if (getLongitude() != null) {
+				sb.append(formatter.format(getLongitude()));
+			}
+
+			return sb.toString();
 		case V4_0:
-			return uri.toString(6);
+			return uri.toString(6); //"uri" will never be null
 		}
 		return null; //needed to prevent compilation error
 	}

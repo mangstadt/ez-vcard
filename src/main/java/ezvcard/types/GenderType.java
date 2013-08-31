@@ -250,7 +250,7 @@ public class GenderType extends VCardType {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append("sex", (gender == null) ? "" : gender);
+		parent.append("sex", gender);
 		if (text != null) {
 			parent.append("identity", text);
 		}

@@ -184,7 +184,10 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(VCardStringUtils.escape(getValue()));
+		if (value != null) {
+			sb.append(VCardStringUtils.escape(value));
+			return;
+		}
 	}
 
 	@Override
@@ -194,7 +197,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.TEXT, getValue());
+		parent.append(VCardDataType.TEXT, value);
 	}
 
 	@Override
@@ -233,7 +236,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.TEXT, getValue());
+		return JCardValue.single(VCardDataType.TEXT, value);
 	}
 
 	@Override

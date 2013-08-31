@@ -9,7 +9,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameters.CalscaleParameter;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
@@ -215,16 +214,13 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			if (text != null) {
-				throw new SkipMeException("Text values are not supported in vCard version " + version + ".");
-			}
-			if (partialDate != null) {
-				throw new SkipMeException("Reduced accuracy or truncated dates are not supported in vCard version " + version + ".");
-			}
-		case V4_0:
+		if (date != null) {
+			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
+			sb.append(VCardDateFormatter.format(date, format));
+			return;
+		}
+
+		if (version == VCardVersion.V4_0) {
 			if (text != null) {
 				sb.append(VCardStringUtils.escape(text));
 				return;
@@ -233,16 +229,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 				sb.append(partialDate.toDateAndOrTime(false));
 				return;
 			}
-			break;
 		}
-
-		if (date != null) {
-			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
-			sb.append(VCardDateFormatter.format(date, format));
-			return;
-		}
-
-		throw new SkipMeException("Property has no date value associated with it.");
 	}
 
 	@Override
@@ -258,8 +245,12 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
+		if (date != null) {
+			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
+			String value = VCardDateFormatter.format(date, format);
+			VCardDataType dataType = dateHasTime ? VCardDataType.DATE_TIME : VCardDataType.DATE;
+
+			parent.append(dataType, value);
 			return;
 		}
 
@@ -279,16 +270,12 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 			return;
 		}
 
-		if (date != null) {
-			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
-			String value = VCardDateFormatter.format(date, format);
-			VCardDataType dataType = dateHasTime ? VCardDataType.DATE_TIME : VCardDataType.DATE;
-
-			parent.append(dataType, value);
+		if (text != null) {
+			parent.append(VCardDataType.TEXT, text);
 			return;
 		}
 
-		throw new SkipMeException("Property has no value associated with it.");
+		parent.append(VCardDataType.DATE_AND_OR_TIME, "");
 	}
 
 	@Override
@@ -325,10 +312,6 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
-		}
-
 		if (date != null) {
 			VCardDataType dataType = dateHasTime ? VCardDataType.DATE_TIME : VCardDataType.DATE;
 
@@ -355,7 +338,11 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 			return JCardValue.single(dataType, value);
 		}
 
-		throw new SkipMeException("Property has no value associated with it.");
+		if (text != null) {
+			return JCardValue.single(VCardDataType.TEXT, text);
+		}
+
+		return JCardValue.single(VCardDataType.DATE_AND_OR_TIME, "");
 	}
 
 	@Override

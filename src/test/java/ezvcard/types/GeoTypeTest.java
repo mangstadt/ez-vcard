@@ -19,7 +19,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.GeoUri;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
@@ -110,27 +109,33 @@ public class GeoTypeTest {
 		assertEquals(expected, actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_latitude_missing() {
 		VCardVersion version = VCardVersion.V2_1;
 		GeoType geo = new GeoType();
 		geo.setLongitude(56.777778);
-		geo.marshalText(version, compatibilityMode);
+		String value = geo.marshalText(version, compatibilityMode);
+
+		assertEquals(";56.777778", value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_longitude_missing() {
 		VCardVersion version = VCardVersion.V2_1;
 		GeoType geo = new GeoType();
 		geo.setLatitude(-12.34);
-		geo.marshalText(version, compatibilityMode);
+		String value = geo.marshalText(version, compatibilityMode);
+
+		assertEquals("-12.34;", value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_latitude_and_longitude_missing() {
 		VCardVersion version = VCardVersion.V2_1;
 		GeoType geo = new GeoType();
-		geo.marshalText(version, compatibilityMode);
+		String value = geo.marshalText(version, compatibilityMode);
+
+		assertEquals(";", value);
 	}
 
 	@Test

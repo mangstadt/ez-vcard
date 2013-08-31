@@ -21,7 +21,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -108,10 +107,12 @@ public class TimestampTypeTest {
 		assertEquals(basic, actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_no_value() {
 		VCardVersion version = VCardVersion.V2_1;
-		noValue.marshalText(version, compatibilityMode);
+		String value = noValue.marshalText(version, compatibilityMode);
+
+		assertEquals("", value);
 	}
 
 	@Test
@@ -119,9 +120,9 @@ public class TimestampTypeTest {
 		assertMarshalXml(timestamp, "<timestamp>" + basic + "</timestamp>");
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalXml_no_value() {
-		assertMarshalXml(noValue, "");
+		assertMarshalXml(noValue, "<timestamp/>");
 	}
 
 	@Test
@@ -132,10 +133,12 @@ public class TimestampTypeTest {
 		assertJCardValue(VCardDataType.TIMESTAMP, extended, value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalJson_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
-		noValue.marshalJson(version);
+		JCardValue value = noValue.marshalJson(version);
+
+		assertJCardValue(VCardDataType.TIMESTAMP, "", value);
 	}
 
 	@Test

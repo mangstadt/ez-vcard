@@ -18,7 +18,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
 
@@ -131,11 +130,13 @@ public class RelatedTypeTest {
 		assertEquals(uri, actual);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalText_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
-		t.marshalText(version, compatibilityMode);
+		String value = t.marshalText(version, compatibilityMode);
+
+		assertEquals("", value);
 	}
 
 	@Test
@@ -148,10 +149,10 @@ public class RelatedTypeTest {
 		assertMarshalXml(uriType, "<uri>" + uri + "</uri>");
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalXml_no_value() {
 		RelatedType t = new RelatedType();
-		assertMarshalXml(t, "<uri>" + uri + "</uri>");
+		assertMarshalXml(t, "<uri/>");
 	}
 
 	@Test
@@ -170,11 +171,13 @@ public class RelatedTypeTest {
 		assertJCardValue(VCardDataType.URI, uri, value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalJson_no_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		RelatedType t = new RelatedType();
-		t.marshalJson(version);
+		JCardValue value = t.marshalJson(version);
+
+		assertJCardValue(VCardDataType.URI, "", value);
 	}
 
 	@Test

@@ -52,6 +52,10 @@ public class VCardStringUtils {
 	 * @return the unescaped text
 	 */
 	public static String unescape(String text) {
+		if (text == null) {
+			return null;
+		}
+
 		StringBuilder sb = new StringBuilder(text.length());
 		boolean escaped = false;
 		for (int i = 0; i < text.length(); i++) {
@@ -87,6 +91,10 @@ public class VCardStringUtils {
 	 * @return the escaped text
 	 */
 	public static String escape(String text) {
+		if (text == null) {
+			return null;
+		}
+
 		String chars = "\\,;";
 		for (int i = 0; i < chars.length(); i++) {
 			String ch = chars.substring(i, i + 1);
@@ -109,6 +117,10 @@ public class VCardStringUtils {
 	 * @return the escaped text
 	 */
 	public static String escapeNewlines(String text) {
+		if (text == null) {
+			return null;
+		}
+
 		return text.replaceAll("\\r\\n|\\r|\\n", "\\\\n");
 	}
 
@@ -118,7 +130,7 @@ public class VCardStringUtils {
 	 * @return true if it contains one or more newline characters, false if not
 	 */
 	public static boolean containsNewlines(String text) {
-		return text.contains("\n") || text.contains("\r");
+		return text != null && (text.contains("\n") || text.contains("\r"));
 	}
 
 	/**
@@ -165,6 +177,10 @@ public class VCardStringUtils {
 	 * @return the trimmed string
 	 */
 	public static String ltrim(String string) {
+		if (string == null) {
+			return null;
+		}
+
 		int i;
 		for (i = 0; i < string.length() && Character.isWhitespace(string.charAt(i)); i++) {
 			//do nothing
@@ -178,6 +194,10 @@ public class VCardStringUtils {
 	 * @return the trimmed string
 	 */
 	public static String rtrim(String string) {
+		if (string == null) {
+			return null;
+		}
+
 		int i;
 		for (i = string.length() - 1; i >= 0 && Character.isWhitespace(string.charAt(i)); i--) {
 			//do nothing
