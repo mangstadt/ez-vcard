@@ -501,6 +501,18 @@ public class XCardDocument {
 	 * @return the type that was created
 	 */
 	private VCardType createTypeObject(String name, String ns) {
+		//parse as a registered extended type class (extended type classes should override standard ones)
+		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(new QName(ns, name.toLowerCase()));
+		if (extendedTypeClass != null) {
+			try {
+				return extendedTypeClass.newInstance();
+			} catch (Exception e) {
+				//should never be thrown
+				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
+				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" MUST have a public, no-arg constructor.");
+			}
+		}
+
 		//parse as a standard property
 		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
 		if (clazz != null && VCardVersion.V4_0.getXmlNamespace().equals(ns)) {
@@ -510,18 +522,6 @@ public class XCardDocument {
 				//should never be thrown
 				//all type classes must have public, no-arg constructors
 				throw new RuntimeException(e);
-			}
-		}
-
-		//parse as a registered extended type class
-		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(new QName(ns, name.toLowerCase()));
-		if (extendedTypeClass != null) {
-			try {
-				return extendedTypeClass.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" MUST have a public, no-arg constructor.");
 			}
 		}
 

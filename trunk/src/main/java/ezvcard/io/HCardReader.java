@@ -73,12 +73,12 @@ import ezvcard.util.HtmlUtils;
  */
 public class HCardReader {
 	private String pageUrl;
-	private List<String> warnings = new ArrayList<String>();
-	private Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
+	private final List<String> warnings = new ArrayList<String>();
+	private final Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private Elements vcardElements;
 	private Iterator<Element> it;
-	private List<LabelType> labels = new ArrayList<LabelType>();
-	private List<String> warningsBuffer = new ArrayList<String>();
+	private final List<LabelType> labels = new ArrayList<LabelType>();
+	private final List<String> warningsBuffer = new ArrayList<String>();
 	private VCard curVCard;
 	private Elements embeddedVCards = new Elements();
 	private NicknameType nickname;
@@ -432,6 +432,18 @@ public class HCardReader {
 	 * @return the type object or null if the type name was not recognized
 	 */
 	private VCardType createTypeObject(String typeName) {
+		//parse as a registered extended type class (extended type classes should override standard ones)
+		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(typeName.toLowerCase());
+		if (extendedTypeClass != null) {
+			try {
+				return extendedTypeClass.newInstance();
+			} catch (Exception e) {
+				//should never be thrown
+				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
+				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
+			}
+		}
+
 		//parse as a standard property
 		Class<? extends VCardType> clazz = TypeList.getTypeClassByHCardTypeName(typeName);
 		if (clazz != null) {
@@ -441,18 +453,6 @@ public class HCardReader {
 				//should never be thrown
 				//all type classes must have public, no-arg constructors
 				throw new RuntimeException(e);
-			}
-		}
-
-		//parse as a registered extended type class
-		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(typeName.toLowerCase());
-		if (extendedTypeClass != null) {
-			try {
-				return extendedTypeClass.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
 			}
 		}
 

@@ -259,6 +259,29 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
+	@Test
+	public void readExtendedType_override_standard_type_classes() throws Throwable {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		reader.registerExtendedType(MyFormattedNameType.class);
+		VCard vcard = reader.readNext();
+		assertEquals(1, vcard.getAllTypes().size());
+
+		//read a type that has a type class
+		MyFormattedNameType fn = vcard.getType(MyFormattedNameType.class);
+		assertEquals("JOHN DOE", fn.value);
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
 	@Test(expected = RuntimeException.class)
 	public void registerExtendedType_no_default_constructor() throws Throwable {
 		VCardReader reader = new VCardReader("");

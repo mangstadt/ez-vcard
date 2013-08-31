@@ -271,6 +271,29 @@ public class JCardReaderTest {
 		assertWarnings(0, reader.getWarnings());
 	}
 
+	@Test
+	public void readExtendedType_override_standard_type_classes() throws Throwable {
+		//@formatter:off
+		String json =
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
+		    "]" +
+		  "]";
+		//@formatter:on
+
+		JCardReader reader = new JCardReader(json);
+		reader.registerExtendedType(MyFormattedNameType.class);
+		VCard vcard = reader.readNext();
+		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+
+		MyFormattedNameType prop = vcard.getType(MyFormattedNameType.class);
+		assertEquals("JOHN DOE", prop.value);
+		assertWarnings(0, reader.getWarnings());
+	}
+
 	@Test(expected = RuntimeException.class)
 	public void registerExtendedType_no_default_constructor() throws Throwable {
 		JCardReader reader = new JCardReader("");
