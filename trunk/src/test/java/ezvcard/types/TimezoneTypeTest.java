@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -20,9 +21,9 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.JCardValue;
+import ezvcard.util.TestUtils.Tests;
 import ezvcard.util.XCardElement;
 
 /*
@@ -63,15 +64,18 @@ public class TimezoneTypeTest {
 	private final VCardSubTypes subTypes = new VCardSubTypes();
 	private final VCard vcard = new VCard();
 
+	private final TimeZone newYork = TimeZone.getTimeZone("America/New_York");
 	private final Integer hourOffset = -5;
 	private final Integer minuteOffset = 30;
 	private final String offsetStrExtended = "-05:30";
 	private final String offsetStrBasic = "-0530";
-	private final String textStr = "America/New_York";
-	private final String offsetWithText = offsetStrExtended + ";EDT;" + textStr;
+	private final String timezoneIdStr = "America/New_York";
+	private final String textStr = "some text";
+	private final String offsetWithText = offsetStrExtended + ";EDT;" + timezoneIdStr;
 	private final TimezoneType offset = new TimezoneType(hourOffset, minuteOffset);
+	private final TimezoneType timezoneId = new TimezoneType(timezoneIdStr);
 	private final TimezoneType text = new TimezoneType(textStr);
-	private final TimezoneType offsetAndText = new TimezoneType(hourOffset, minuteOffset, textStr);
+	private final TimezoneType offsetAndTimezoneId = new TimezoneType(hourOffset, minuteOffset, timezoneIdStr);
 	private final TimezoneType empty = new TimezoneType();
 	private TimezoneType t;
 
@@ -92,19 +96,22 @@ public class TimezoneTypeTest {
 		assertWarnings(0, offset.validate(VCardVersion.V3_0, vcard));
 		assertWarnings(0, offset.validate(VCardVersion.V4_0, vcard));
 
-		assertWarnings(1, text.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, text.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, text.validate(VCardVersion.V4_0, vcard));
+		assertWarnings(1, timezoneId.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, timezoneId.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, timezoneId.validate(VCardVersion.V4_0, vcard));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void setOffset_minute_less_than_0() {
-		new TimezoneType().setOffset(0, -1);
-	}
+	@Test
+	public void constructor_timezone() {
+		TimezoneType tz = new TimezoneType(newYork);
 
-	@Test(expected = IllegalArgumentException.class)
-	public void setOffset_minute_greater_than_59() {
-		new TimezoneType().setOffset(0, 60);
+		assertEquals(newYork.getID(), tz.getText());
+		if (newYork.inDaylightTime(new Date())) {
+			assertIntEquals(-4, tz.getHourOffset());
+		} else {
+			assertIntEquals(-5, tz.getHourOffset());
+		}
+		assertIntEquals(0, tz.getMinuteOffset());
 	}
 
 	@Test
@@ -128,191 +135,99 @@ public class TimezoneTypeTest {
 		assertNull(t.getMinuteOffset());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void constructor_minuteOffset_less_than_0() {
-		new TimezoneType(0, -1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void constructor_minuteOffset_greater_than_59() {
-		new TimezoneType(0, 60);
+	@Test
+	public void toTimeZone_offset() {
+		TimezoneType t = new TimezoneType(-5, 30);
+		TimeZone actual = t.toTimeZone();
+		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), actual.getRawOffset());
 	}
 
 	@Test
-	public void toTimeZone() {
-		TimezoneType t = new TimezoneType(-5, 30);
-		TimeZone tz = t.toTimeZone();
-		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), tz.getRawOffset());
+	public void toTimeZone_timezone_id() {
+		TimezoneType t = new TimezoneType(newYork.getID());
+		TimeZone actual = t.toTimeZone();
+		assertEquals(newYork, actual);
 	}
 
 	@Test
 	public void toTimeZone_text() {
-		TimezoneType t = new TimezoneType("America/New_York");
-		TimeZone tz = t.toTimeZone();
-		assertNull(tz);
-	}
-
-	public void marshalSubTypes_offset_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = offset.marshalSubTypes(version, compatibilityMode, vcard);
-
-		assertEquals(0, subTypes.size());
-		assertNull(subTypes.getValue());
+		TimezoneType t = new TimezoneType("text");
+		TimeZone actual = t.toTimeZone();
+		assertNull(actual);
 	}
 
 	@Test
-	public void marshalSubTypes_offset_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = offset.marshalSubTypes(version, compatibilityMode, vcard);
-
-		assertEquals(0, subTypes.size());
-		assertNull(subTypes.getValue());
+	public void toTimeZone_text_and_offset() {
+		TimezoneType t = new TimezoneType(-5, 30, "text");
+		TimeZone actual = t.toTimeZone();
+		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), actual.getRawOffset());
+		assertEquals("text", actual.getID());
 	}
 
 	@Test
-	public void marshalSubTypes_offset_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = offset.marshalSubTypes(version, compatibilityMode, vcard);
+	public void marshalSubTypes() {
+		Tests tests = new Tests();
+		tests.add(VCardVersion.V2_1, offset, null);
+		tests.add(VCardVersion.V3_0, offset, null);
+		tests.add(VCardVersion.V4_0, offset, VCardDataType.UTC_OFFSET);
 
-		assertEquals(1, subTypes.size());
-		assertEquals(VCardDataType.UTC_OFFSET, subTypes.getValue());
+		tests.add(VCardVersion.V2_1, timezoneId, null);
+		tests.add(VCardVersion.V3_0, timezoneId, VCardDataType.TEXT);
+		tests.add(VCardVersion.V4_0, timezoneId, null);
+
+		tests.add(VCardVersion.V2_1, text, null);
+		tests.add(VCardVersion.V3_0, text, VCardDataType.TEXT);
+		tests.add(VCardVersion.V4_0, text, null);
+
+		tests.add(VCardVersion.V2_1, offsetAndTimezoneId, null);
+		tests.add(VCardVersion.V3_0, offsetAndTimezoneId, null);
+		tests.add(VCardVersion.V4_0, offsetAndTimezoneId, null);
+
+		int i = 0;
+		for (Object[] test : tests) {
+			VCardVersion version = (VCardVersion) test[0];
+			TimezoneType type = (TimezoneType) test[1];
+			VCardDataType expectedDataType = (VCardDataType) test[2];
+
+			VCardSubTypes subTypes = type.marshalSubTypes(version, compatibilityMode, vcard);
+			assertEquals("Test " + i, expectedDataType, subTypes.getValue());
+			i++;
+		}
 	}
 
 	@Test
-	public void marshalSubTypes_text_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = text.marshalSubTypes(version, compatibilityMode, vcard);
+	public void marshalText() {
+		Tests tests = new Tests();
+		tests.add(VCardVersion.V2_1, offset, offsetStrBasic);
+		tests.add(VCardVersion.V3_0, offset, offsetStrExtended);
+		tests.add(VCardVersion.V4_0, offset, offsetStrBasic);
 
-		assertEquals(0, subTypes.size());
-	}
+		tests.add(VCardVersion.V2_1, timezoneId, newYork.inDaylightTime(new Date()) ? "-0400" : "-0500");
+		tests.add(VCardVersion.V3_0, timezoneId, timezoneIdStr);
+		tests.add(VCardVersion.V4_0, timezoneId, timezoneIdStr);
 
-	@Test
-	public void marshalSubTypes_text_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = text.marshalSubTypes(version, compatibilityMode, vcard);
+		tests.add(VCardVersion.V2_1, text, "");
+		tests.add(VCardVersion.V3_0, text, textStr);
+		tests.add(VCardVersion.V4_0, text, textStr);
 
-		assertEquals(1, subTypes.size());
-		assertEquals(VCardDataType.TEXT, subTypes.getValue());
-	}
+		tests.add(VCardVersion.V2_1, offsetAndTimezoneId, offsetStrBasic);
+		tests.add(VCardVersion.V3_0, offsetAndTimezoneId, offsetStrExtended);
+		tests.add(VCardVersion.V4_0, offsetAndTimezoneId, timezoneIdStr);
 
-	@Test
-	public void marshalSubTypes_text_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = text.marshalSubTypes(version, compatibilityMode, vcard);
+		tests.add(VCardVersion.V2_1, empty, "");
+		tests.add(VCardVersion.V3_0, empty, "");
+		tests.add(VCardVersion.V4_0, empty, "");
 
-		assertEquals(0, subTypes.size());
-	}
+		int i = 0;
+		for (Object[] test : tests) {
+			VCardVersion version = (VCardVersion) test[0];
+			TimezoneType type = (TimezoneType) test[1];
+			String expected = (String) test[2];
 
-	@Test
-	public void marshalSubTypes_offset_and_text_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, compatibilityMode, vcard);
-
-		assertEquals(0, subTypes.size());
-	}
-
-	@Test
-	public void marshalSubTypes_offset_and_text_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, compatibilityMode, vcard);
-
-		assertEquals(0, subTypes.size());
-	}
-
-	@Test
-	public void marshalSubTypes_offset_and_text_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = offsetAndText.marshalSubTypes(version, compatibilityMode, vcard);
-
-		assertEquals(0, subTypes.size());
-	}
-
-	@Test
-	public void marshalText_offset_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		String actual = offset.marshalText(version, compatibilityMode);
-
-		assertEquals(offsetStrBasic, actual);
-	}
-
-	@Test
-	public void marshalText_offset_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		String actual = offset.marshalText(version, compatibilityMode);
-
-		assertEquals(offsetStrExtended, actual);
-	}
-
-	@Test
-	public void marshalText_offset_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		String actual = offset.marshalText(version, compatibilityMode);
-
-		assertEquals(offsetStrBasic, actual);
-	}
-
-	@Test(expected = SkipMeException.class)
-	public void marshalText_text_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		text.marshalText(version, compatibilityMode);
-	}
-
-	@Test
-	public void marshalText_text_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		String actual = text.marshalText(version, compatibilityMode);
-
-		assertEquals(textStr, actual);
-	}
-
-	@Test
-	public void marshalText_text_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		String actual = text.marshalText(version, compatibilityMode);
-
-		assertEquals(textStr, actual);
-	}
-
-	@Test
-	public void marshalText_offset_and_text_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		String actual = offsetAndText.marshalText(version, compatibilityMode);
-
-		assertEquals(offsetStrBasic, actual);
-	}
-
-	@Test
-	public void marshalText_offset_and_text_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		String actual = offsetAndText.marshalText(version, compatibilityMode);
-
-		assertEquals(offsetStrExtended, actual);
-	}
-
-	@Test
-	public void marshalText_offset_and_text_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		String actual = offsetAndText.marshalText(version, compatibilityMode);
-
-		assertEquals(textStr, actual);
-	}
-
-	@Test(expected = SkipMeException.class)
-	public void marshalText_no_offset_or_text_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		empty.marshalText(version, compatibilityMode);
-	}
-
-	@Test(expected = SkipMeException.class)
-	public void marshalText_no_offset_or_text_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		empty.marshalText(version, compatibilityMode);
-	}
-
-	@Test(expected = SkipMeException.class)
-	public void marshalText_no_offset_or_text_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalText(version, compatibilityMode);
+			String actual = type.marshalText(version, compatibilityMode);
+			assertEquals("Test " + i, expected, actual);
+			i++;
+		}
 	}
 
 	/////////////////////////////////////////////////
@@ -324,17 +239,17 @@ public class TimezoneTypeTest {
 
 	@Test
 	public void marshalXml_text() {
-		assertMarshalXml(text, "<text>" + textStr + "</text>");
+		assertMarshalXml(timezoneId, "<text>" + timezoneIdStr + "</text>");
 	}
 
 	@Test
 	public void marshalXml_offset_and_text() {
-		assertMarshalXml(offsetAndText, "<text>" + textStr + "</text>");
+		assertMarshalXml(offsetAndTimezoneId, "<text>" + timezoneIdStr + "</text>");
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalXml_no_offset_or_text() {
-		assertMarshalXml(empty, "");
+		assertMarshalXml(empty, "<text/>");
 	}
 
 	/////////////////////////////////////////////////
@@ -350,23 +265,25 @@ public class TimezoneTypeTest {
 	@Test
 	public void marshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = text.marshalJson(version);
+		JCardValue value = timezoneId.marshalJson(version);
 
-		assertJCardValue(VCardDataType.TEXT, textStr, value);
+		assertJCardValue(VCardDataType.TEXT, timezoneIdStr, value);
 	}
 
 	@Test
 	public void marshalJson_offset_and_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = offsetAndText.marshalJson(version);
+		JCardValue value = offsetAndTimezoneId.marshalJson(version);
 
-		assertJCardValue(VCardDataType.TEXT, textStr, value);
+		assertJCardValue(VCardDataType.TEXT, timezoneIdStr, value);
 	}
 
-	@Test(expected = SkipMeException.class)
+	@Test
 	public void marshalJson_no_offset_or_text() {
 		VCardVersion version = VCardVersion.V4_0;
-		empty.marshalJson(version);
+		JCardValue value = empty.marshalJson(version);
+
+		assertJCardValue(VCardDataType.TEXT, "", value);
 	}
 
 	/////////////////////////////////////////////////
@@ -497,11 +414,11 @@ public class TimezoneTypeTest {
 	@Test
 	public void unmarshalText_4_0_text__no_value() {
 		VCardVersion version = VCardVersion.V4_0;
-		t.unmarshalText(subTypes, textStr, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, timezoneIdStr, version, warnings, compatibilityMode);
 
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
-		assertEquals(textStr, t.getText());
+		assertEquals(timezoneIdStr, t.getText());
 		assertWarnings(0, warnings);
 	}
 
@@ -509,18 +426,18 @@ public class TimezoneTypeTest {
 	public void unmarshalText_4_0_text__utc_offset_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setValue(VCardDataType.UTC_OFFSET);
-		t.unmarshalText(subTypes, textStr, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, timezoneIdStr, version, warnings, compatibilityMode);
 	}
 
 	@Test
 	public void unmarshalText_4_0_text__text_value() {
 		VCardVersion version = VCardVersion.V4_0;
 		subTypes.setValue(VCardDataType.TEXT);
-		t.unmarshalText(subTypes, textStr, version, warnings, compatibilityMode);
+		t.unmarshalText(subTypes, timezoneIdStr, version, warnings, compatibilityMode);
 
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
-		assertEquals(textStr, t.getText());
+		assertEquals(timezoneIdStr, t.getText());
 		assertWarnings(0, warnings);
 	}
 
@@ -537,12 +454,12 @@ public class TimezoneTypeTest {
 	public void unmarshalXml_text() {
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, textStr);
+		xe.append(VCardDataType.TEXT, timezoneIdStr);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
-		assertEquals(textStr, t.getText());
+		assertEquals(timezoneIdStr, t.getText());
 		assertWarnings(0, warnings);
 	}
 
@@ -572,13 +489,13 @@ public class TimezoneTypeTest {
 		//text is preferred
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, textStr);
+		xe.append(VCardDataType.TEXT, timezoneIdStr);
 		xe.append(VCardDataType.UTC_OFFSET, offsetStrExtended);
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
-		assertEquals(textStr, t.getText());
+		assertEquals(timezoneIdStr, t.getText());
 		assertWarnings(0, warnings);
 	}
 
@@ -587,13 +504,13 @@ public class TimezoneTypeTest {
 		//text is preferred
 		VCardVersion version = VCardVersion.V4_0;
 		XCardElement xe = new XCardElement(TimezoneType.NAME.toLowerCase());
-		xe.append(VCardDataType.TEXT, textStr);
+		xe.append(VCardDataType.TEXT, timezoneIdStr);
 		xe.append(VCardDataType.UTC_OFFSET, "invalid");
 		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
 
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
-		assertEquals(textStr, t.getText());
+		assertEquals(timezoneIdStr, t.getText());
 		assertWarnings(0, warnings);
 	}
 
@@ -625,13 +542,13 @@ public class TimezoneTypeTest {
 
 	@Test
 	public void unmarshalHtml_text() {
-		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + offsetStrExtended + ";EDT;" + textStr + "</div>");
+		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + offsetStrExtended + ";EDT;" + timezoneIdStr + "</div>");
 
 		t.unmarshalHtml(element, warnings);
 
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
-		assertEquals(offsetStrExtended + ";EDT;" + textStr, t.getText());
+		assertEquals(offsetStrExtended + ";EDT;" + timezoneIdStr, t.getText());
 		assertWarnings(1, warnings);
 	}
 
@@ -641,13 +558,13 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_text() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(VCardDataType.TEXT, textStr);
+		JCardValue value = JCardValue.single(VCardDataType.TEXT, timezoneIdStr);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
-		assertEquals(textStr, t.getText());
+		assertEquals(timezoneIdStr, t.getText());
 		assertWarnings(0, warnings);
 	}
 
@@ -655,13 +572,13 @@ public class TimezoneTypeTest {
 	public void unmarshalJson_text_other_data_type() {
 		VCardVersion version = VCardVersion.V4_0;
 
-		JCardValue value = JCardValue.single(VCardDataType.BOOLEAN, textStr);
+		JCardValue value = JCardValue.single(VCardDataType.BOOLEAN, timezoneIdStr);
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 
 		assertNull(t.getHourOffset());
 		assertNull(t.getMinuteOffset());
-		assertEquals(textStr, t.getText());
+		assertEquals(timezoneIdStr, t.getText());
 		assertWarnings(0, warnings);
 	}
 
