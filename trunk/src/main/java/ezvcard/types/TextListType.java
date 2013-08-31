@@ -99,7 +99,7 @@ public class TextListType extends VCardType {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append("text", values);
+		parent.append(VCardDataType.TEXT.getName().toLowerCase(), values);
 	}
 
 	@Override
