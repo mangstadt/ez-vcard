@@ -528,7 +528,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 		}
 
 		try {
-			GeoUri geoUri = new GeoUri(value);
+			GeoUri geoUri = GeoUri.parse(value);
 			return new double[] { geoUri.getCoordA(), geoUri.getCoordB() };
 		} catch (IllegalArgumentException e) {
 			throw new IllegalStateException(GEO + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
@@ -548,7 +548,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * @param longitude the longitude
 	 */
 	public void setGeo(double latitude, double longitude) {
-		GeoUri geoUri = new GeoUri(latitude, longitude, null, null, null);
+		GeoUri geoUri = new GeoUri.Builder(latitude, longitude).build();
 		replace(GEO, geoUri.toString());
 	}
 

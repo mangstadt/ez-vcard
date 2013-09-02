@@ -93,13 +93,13 @@ import ezvcard.util.XCardElement;
  */
 public class GeoType extends VCardType implements HasAltId {
 	public static final String NAME = "GEO";
-	private GeoUri uri = new GeoUri();
+	private GeoUri uri;
 
 	/**
 	 * Creates an empty geo property.
 	 */
 	public GeoType() {
-		this(null, null);
+		this(null);
 	}
 
 	/**
@@ -108,9 +108,16 @@ public class GeoType extends VCardType implements HasAltId {
 	 * @param longitude the longitude
 	 */
 	public GeoType(Double latitude, Double longitude) {
+		this(new GeoUri.Builder(latitude, longitude).build());
+	}
+
+	/**
+	 * Creates a geo property.
+	 * @param uri the geo URI
+	 */
+	public GeoType(GeoUri uri) {
 		super(NAME);
-		setLatitude(latitude);
-		setLongitude(longitude);
+		this.uri = uri;
 	}
 
 	/**
@@ -118,7 +125,7 @@ public class GeoType extends VCardType implements HasAltId {
 	 * @return the latitude
 	 */
 	public Double getLatitude() {
-		return uri.getCoordA();
+		return (uri == null) ? null : uri.getCoordA();
 	}
 
 	/**
@@ -126,7 +133,11 @@ public class GeoType extends VCardType implements HasAltId {
 	 * @param latitude the latitude
 	 */
 	public void setLatitude(Double latitude) {
-		uri.setCoordA(latitude);
+		if (uri == null) {
+			uri = new GeoUri.Builder(latitude, null).build();
+		} else {
+			uri = new GeoUri.Builder(uri).coordA(latitude).build();
+		}
 	}
 
 	/**
@@ -134,7 +145,7 @@ public class GeoType extends VCardType implements HasAltId {
 	 * @return the longitude
 	 */
 	public Double getLongitude() {
-		return uri.getCoordB();
+		return (uri == null) ? null : uri.getCoordB();
 	}
 
 	/**
@@ -142,20 +153,37 @@ public class GeoType extends VCardType implements HasAltId {
 	 * @param longitude the longitude
 	 */
 	public void setLongitude(Double longitude) {
-		uri.setCoordB(longitude);
+		if (uri == null) {
+			uri = new GeoUri.Builder(null, longitude).build();
+		} else {
+			uri = new GeoUri.Builder(uri).coordB(longitude).build();
+		}
 	}
 
 	/**
 	 * Gets the raw object used for storing the GEO information. This can be
-	 * used to supplement the GEO value with additional information (such as the
-	 * altitude). Geo URIs are only supported by vCard version 4.0. Everything
-	 * but latitude and longitude will be lost when marshalling to an earlier
-	 * vCard version.
-	 * @return the geo URI object
+	 * used to supplement the GEO value with additional information (such as
+	 * altitude or level of accuracy). Geo URIs are only supported by vCard
+	 * version 4.0. Only latitude and longitude values are used when marshalling
+	 * to earlier vCard versions.
+	 * @return the geo URI object or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc5870">RFC 5870</a>
 	 */
 	public GeoUri getGeoUri() {
 		return uri;
+	}
+
+	/**
+	 * Sets the raw object used for storing the GEO information. This can be
+	 * used to supplement the GEO value with additional information (such as
+	 * altitude or level of accuracy). Geo URIs are only supported by vCard
+	 * version 4.0. Only latitude and longitude values are used when marshalling
+	 * to earlier vCard versions.
+	 * @param uri the geo URI object
+	 * @see <a href="http://tools.ietf.org/html/rfc5870">RFC 5870</a>
+	 */
+	public void setGeoUri(GeoUri uri) {
+		this.uri = uri;
 	}
 
 	/**
@@ -268,27 +296,31 @@ public class GeoType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		uri = new GeoUri();
-
-		String latitude = element.firstValue("latitude");
-		if (latitude == null) {
+		String latitudeStr = element.firstValue("latitude");
+		if (latitudeStr == null) {
 			throw new CannotParseException("Latitude missing.");
 		}
+
+		Double latitude;
 		try {
-			setLatitude(Double.parseDouble(latitude));
+			latitude = Double.parseDouble(latitudeStr);
 		} catch (NumberFormatException e) {
-			throw new CannotParseException("Could not parse latitude: " + latitude);
+			throw new CannotParseException("Could not parse latitude: " + latitudeStr);
 		}
 
-		String longitude = element.firstValue("longitude");
-		if (longitude == null) {
+		String longitudeStr = element.firstValue("longitude");
+		if (longitudeStr == null) {
 			throw new CannotParseException("Longitude missing.");
 		}
+
+		Double longitude;
 		try {
-			setLongitude(Double.parseDouble(longitude));
+			longitude = Double.parseDouble(longitudeStr);
 		} catch (NumberFormatException e) {
-			throw new CannotParseException("Could not parse longitude: " + longitude);
+			throw new CannotParseException("Could not parse longitude: " + longitudeStr);
 		}
+
+		uri = new GeoUri.Builder(latitude, longitude).build();
 	}
 
 	@Override
@@ -325,8 +357,6 @@ public class GeoType extends VCardType implements HasAltId {
 			}
 
 			String latitudeStr = split[0];
-			String longitudeStr = split[1];
-
 			Double latitude;
 			try {
 				latitude = Double.valueOf(latitudeStr);
@@ -334,6 +364,7 @@ public class GeoType extends VCardType implements HasAltId {
 				throw new CannotParseException("Could not parse latitude: " + latitudeStr);
 			}
 
+			String longitudeStr = split[1];
 			Double longitude;
 			try {
 				longitude = Double.valueOf(longitudeStr);
@@ -341,40 +372,36 @@ public class GeoType extends VCardType implements HasAltId {
 				throw new CannotParseException("Could not parse longtude: " + longitudeStr);
 			}
 
-			uri = new GeoUri();
-			setLatitude(latitude);
-			setLongitude(longitude);
-
+			uri = new GeoUri.Builder(latitude, longitude).build();
 			break;
 		case V4_0:
 			try {
-				uri = new GeoUri(value);
+				uri = GeoUri.parse(value);
 			} catch (IllegalArgumentException e) {
 				throw new CannotParseException("Invalid geo URI.");
 			}
+			break;
 		}
 	}
 
 	private String write(VCardVersion version) {
+		if (uri == null) {
+			return "";
+		}
+
 		switch (version) {
 		case V2_1:
 		case V3_0:
 			VCardFloatFormatter formatter = new VCardFloatFormatter(6);
 			StringBuilder sb = new StringBuilder();
 
-			if (getLatitude() != null) {
-				sb.append(formatter.format(getLatitude()));
-			}
-
+			sb.append(formatter.format(getLatitude()));
 			sb.append(';');
-
-			if (getLongitude() != null) {
-				sb.append(formatter.format(getLongitude()));
-			}
+			sb.append(formatter.format(getLongitude()));
 
 			return sb.toString();
 		case V4_0:
-			return uri.toString(6); //"uri" will never be null
+			return uri.toString(6);
 		}
 		return null; //needed to prevent compilation error
 	}
