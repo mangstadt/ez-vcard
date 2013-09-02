@@ -123,8 +123,8 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void global() {
-		TelUri uri = TelUri.global("+1-212-555-0101");
+	public void builder_global() {
+		TelUri uri = new TelUri.Builder("+1-212-555-0101").build();
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
 		assertNull(uri.getPhoneContext());
@@ -133,18 +133,18 @@ public class TelUriTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void global_no_plus() {
-		TelUri.global("1-212-555-0101");
+	public void builder_global_no_plus() {
+		new TelUri.Builder("1-212-555-0101");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void global_invalid() {
-		TelUri.global("abc123");
+	public void builder_global_invalid() {
+		new TelUri.Builder("abc123");
 	}
 
 	@Test
-	public void local() {
-		TelUri uri = TelUri.local("0101", "example.com");
+	public void builder_local() {
+		TelUri uri = new TelUri.Builder("0101", "example.com").build();
 		assertEquals("0101", uri.getNumber());
 		assertNull(uri.getExtension());
 		assertEquals("example.com", uri.getPhoneContext());
@@ -153,65 +153,55 @@ public class TelUriTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void local_invalid() {
-		TelUri.local("abc123", "example.com");
-	}
-
-	@Test
-	public void setExtension() {
-		TelUri uri = TelUri.global("+1-212-555-0101");
-		uri.setExtension("123");
-		assertEquals("123", uri.getExtension());
+	public void builder_local_invalid() {
+		new TelUri.Builder("abc123", "example.com");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setExtension_invalid() {
-		TelUri uri = TelUri.global("+1-212-555-0101");
-		uri.setExtension("!not-valid!");
+	public void builder_extension_invalid() {
+		new TelUri.Builder("+1-212-555-0101").extension("!not-valid!");
 	}
 
 	@Test
-	public void getParameter_non_existant_param() {
-		TelUri uri = TelUri.global("+1-212-555-0101");
-		assertNull(uri.getParameter("non-existant"));
-	}
+	public void builder_parameter() {
+		TelUri uri = new TelUri.Builder("+1-212-555-0101").parameter("one", "1").parameter("two", "2").parameter("one", null).build();
 
-	@Test
-	public void addParameter() {
-		TelUri uri = TelUri.global("+1-212-555-0101");
-		uri.addParameter("param", "value");
-		assertEquals("value", uri.getParameter("param"));
+		assertNull(uri.getParameter("one")); //removed
+		assertEquals("2", uri.getParameter("two"));
+		assertNull(uri.getParameter("three"));
+
+		Map<String, String> expected = new HashMap<String, String>();
+		expected.put("two", "2");
+		assertEquals(expected, uri.getParameters());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void addParameter_invalid_name() {
-		TelUri uri = TelUri.global("+1-212-555-0101");
-		uri.addParameter("!not-valid!", "the value");
+	public void builder_parmaeter_invalid_name() {
+		new TelUri.Builder("+1-212-555-0101").parameter("!not-valid!", "the value");
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void getParameters_unmodifiable() {
+		TelUri uri = new TelUri.Builder("+1-212-555-0101").build();
+		uri.getParameters().put("one", "1");
 	}
 
 	@Test
 	public void toString_() {
-		TelUri uri = TelUri.global("+1-212-555-0101");
-		uri.setExtension("101");
-
+		TelUri uri = new TelUri.Builder("+1-212-555-0101").extension("101").build();
 		assertEquals("tel:+1-212-555-0101;ext=101", uri.toString());
 	}
 
 	//see RFC 3966, bottom of p.5
 	@Test
 	public void toString_parameter_order() {
-		TelUri uri = TelUri.local("1010", "example.com");
-		uri.setExtension("101");
-		uri.addParameter("zebra", "z-value");
-		uri.addParameter("apple", "a-value");
-
+		TelUri uri = new TelUri.Builder("1010", "example.com").extension("101").parameter("zebra", "z-value").parameter("apple", "a-value").build();
 		assertEquals("tel:1010;ext=101;phone-context=example.com;apple=a-value;zebra=z-value", uri.toString());
 	}
 
 	@Test
 	public void toString_special_chars_in_param_value() {
-		TelUri uri = TelUri.global("+1-212-555-0101");
-		uri.addParameter("param", "with = special & chars");
+		TelUri uri = new TelUri.Builder("+1-212-555-0101").parameter("param", "with = special & chars").build();
 		assertEquals("tel:+1-212-555-0101;param=with%20%3d%20special%20&%20chars", uri.toString());
 	}
 }

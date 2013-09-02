@@ -407,11 +407,10 @@ public class HCardPageTest {
 		email.addType(EmailTypeParameter.WORK);
 		vcard.addEmail(email);
 
-		TelephoneType tel = new TelephoneType(TelUri.global("+1-555-222-3333"));
-		tel.getUri().setExtension("101");
+		TelephoneType tel = new TelephoneType(new TelUri.Builder("+1-555-222-3333").extension("101").build());
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType(TelUri.global("+1-555-333-4444"));
+		tel = new TelephoneType(new TelUri.Builder("+1-555-333-4444").build());
 		tel.addType(TelephoneTypeParameter.WORK);
 		vcard.addTelephoneNumber(tel);
 
