@@ -1,6 +1,7 @@
 package ezvcard.parameters;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -48,7 +49,9 @@ public class VersionedVCardParameter extends VCardParameter {
 		if (supportedVersions.length == 0) {
 			supportedVersions = VCardVersion.values();
 		}
-		this.supportedVersions = EnumSet.copyOf(Arrays.asList(supportedVersions));
+
+		Set<VCardVersion> set = EnumSet.copyOf(Arrays.asList(supportedVersions));
+		this.supportedVersions = Collections.unmodifiableSet(set);
 	}
 
 	/**
