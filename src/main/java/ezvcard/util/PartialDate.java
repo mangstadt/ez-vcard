@@ -61,7 +61,7 @@ import java.util.regex.Pattern;
  * </p>
  * @author Michael Angstadt
  */
-public class PartialDate {
+public final class PartialDate {
 	private static final int SKIP = -1;
 	private static final int YEAR = 0;
 	private static final int MONTH = 1;
@@ -96,6 +96,7 @@ public class PartialDate {
 	};
 	//@formatter:on
 
+	//package-private for unit testing
 	final Integer[] components = new Integer[8];
 
 	/**
