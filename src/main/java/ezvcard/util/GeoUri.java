@@ -123,11 +123,13 @@ public final class GeoUri {
 			throw new IllegalArgumentException("Invalid geo URI: " + uri);
 		}
 
-		Builder builder = new Builder(Double.parseDouble(m.group(1)), Double.parseDouble(m.group(3)));
+		Builder builder = new Builder();
+		builder.coordA = Double.parseDouble(m.group(1));
+		builder.coordB = Double.parseDouble(m.group(3));
 
 		String coordCStr = m.group(6);
 		if (coordCStr != null) {
-			builder.coordC(Double.valueOf(coordCStr));
+			builder.coordC = Double.valueOf(coordCStr);
 		}
 
 		String paramsStr = m.group(9);
@@ -140,20 +142,20 @@ public final class GeoUri {
 				String paramValue = (paramSplit.length > 1) ? decodeParamValue(paramSplit[1]) : "";
 
 				if (PARAM_CRS.equalsIgnoreCase(paramName)) {
-					builder.crs(paramValue);
+					builder.crs = paramValue;
 					continue;
 				}
 
 				if (PARAM_UNCERTAINTY.equalsIgnoreCase(paramName)) {
 					try {
-						builder.uncertainty(Double.valueOf(paramValue));
+						builder.uncertainty = Double.valueOf(paramValue);
 						continue;
 					} catch (NumberFormatException e) {
 						//if it can't be parsed, then treat it as an ordinary parameter
 					}
 				}
 
-				builder.parameter(paramName, paramValue);
+				builder.parameters.put(paramName, paramValue);
 			}
 		}
 
@@ -256,26 +258,30 @@ public final class GeoUri {
 
 		//if the CRS is WGS-84, then it doesn't have to be displayed
 		if (crs != null && !crs.equalsIgnoreCase(CRS_WGS84)) {
-			sb.append(';').append(PARAM_CRS).append('=');
-			sb.append(crs);
+			writeParameter(PARAM_CRS, crs, sb);
 		}
 
 		if (uncertainty != null) {
-			sb.append(';').append(PARAM_UNCERTAINTY).append('=');
-			sb.append(formatter.format(uncertainty));
+			writeParameter(PARAM_UNCERTAINTY, formatter.format(uncertainty), sb);
 		}
 
 		for (Map.Entry<String, String> entry : parameters.entrySet()) {
 			String name = entry.getKey();
 			String value = entry.getValue();
-
-			sb.append(';');
-			sb.append(name); //note: the param name is validated in "addParameter()"
-			sb.append('=');
-			sb.append(encodeParamValue(value));
+			writeParameter(name, value, sb);
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * Writes a parameter to a string.
+	 * @param name the parameter name
+	 * @param value the parameter value
+	 * @param sb the string to write to
+	 */
+	private void writeParameter(String name, String value, StringBuilder sb) {
+		sb.append(';').append(name).append('=').append(encodeParamValue(value));
 	}
 
 	private static boolean isLabelText(String text) {
@@ -319,19 +325,33 @@ public final class GeoUri {
 		private Double uncertainty;
 		private Map<String, String> parameters;
 
-		public Builder(Double coordA, Double coordB) {
-			coordA(coordA);
-			coordB(coordB);
+		private Builder() {
+			//for internal use
 			parameters = new LinkedHashMap<String, String>(0); //set initial size to 0 because parameters are rarely used
 		}
 
-		public Builder(GeoUri uri) {
-			coordA(uri.coordA);
-			coordB(uri.coordB);
-			this.coordC = uri.coordC;
-			this.crs = uri.crs;
-			this.uncertainty = uri.uncertainty;
-			this.parameters = new LinkedHashMap<String, String>(uri.parameters);
+		/**
+		 * Creates a new {@link GeoUri} builder.
+		 * @param coordA the first coordinate (i.e. latitude)
+		 * @param coordB the second coordinate (i.e. longitude)
+		 */
+		public Builder(Double coordA, Double coordB) {
+			this();
+			coordA(coordA);
+			coordB(coordB);
+		}
+
+		/**
+		 * Creates a new {@link GeoUri} builder.
+		 * @param original the {@link GeoUri} object to copy from
+		 */
+		public Builder(GeoUri original) {
+			coordA(original.coordA);
+			coordB(original.coordB);
+			this.coordC = original.coordC;
+			this.crs = original.crs;
+			this.uncertainty = original.uncertainty;
+			this.parameters = new LinkedHashMap<String, String>(original.parameters);
 		}
 
 		/**
