@@ -839,8 +839,6 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 		List<String> warnings = new ArrayList<String>(0);
 
 		String nonStandard = "%s parameter has a non-standard value (\"%s\").  Standard values are: %s";
-		String malformed = "%s parameter has a malformed value (\"%s\").";
-		String paramNotSupported = "%s parameter is not supported by version " + version.getVersion() + ".";
 		String valueNotSupported = "%s parameter value (\"%s\") is not supported by version " + version.getVersion() + ".";
 
 		String value = first(CALSCALE);
@@ -857,6 +855,18 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 				warnings.add(String.format(valueNotSupported, ENCODING, value));
 			}
 		}
+
+		value = first(VALUE);
+		if (value != null) {
+			VCardDataType dataType = VCardDataType.find(value);
+			if (dataType == null) {
+				warnings.add(String.format(nonStandard, VALUE, value, VCardDataType.all()));
+			} else if (!dataType.isSupported(version)) {
+				warnings.add(String.format(valueNotSupported, VALUE, value));
+			}
+		}
+
+		String malformed = "%s parameter has a malformed value (\"%s\").";
 
 		try {
 			getGeo();
@@ -882,16 +892,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 			warnings.add(String.format(malformed, PREF, first(PREF)));
 		}
 
-		value = first(VALUE);
-		if (value != null) {
-			VCardDataType dataType = VCardDataType.find(value);
-			if (dataType == null) {
-				warnings.add(String.format(nonStandard, VALUE, value, VCardDataType.all()));
-			} else if (!dataType.isSupported(version)) {
-				warnings.add(String.format(valueNotSupported, VALUE, value));
-			}
-		}
-
+		String paramNotSupported = "%s parameter is not supported by version " + version.getVersion() + ".";
 		for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
 			String name = entry.getKey();
 			value = first(name);
