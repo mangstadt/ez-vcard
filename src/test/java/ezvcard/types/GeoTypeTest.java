@@ -116,7 +116,7 @@ public class GeoTypeTest {
 		geo.setLongitude(56.777778);
 		String value = geo.marshalText(version, compatibilityMode);
 
-		assertEquals(";56.777778", value);
+		assertEquals("0.0;56.777778", value);
 	}
 
 	@Test
@@ -126,7 +126,7 @@ public class GeoTypeTest {
 		geo.setLatitude(-12.34);
 		String value = geo.marshalText(version, compatibilityMode);
 
-		assertEquals("-12.34;", value);
+		assertEquals("-12.34;0.0", value);
 	}
 
 	@Test
@@ -135,7 +135,7 @@ public class GeoTypeTest {
 		GeoType geo = new GeoType();
 		String value = geo.marshalText(version, compatibilityMode);
 
-		assertEquals(";", value);
+		assertEquals("", value);
 	}
 
 	@Test
@@ -362,7 +362,7 @@ public class GeoTypeTest {
 	@Test
 	public void latitude() {
 		assertNull(geo.getLatitude());
-		assertNull(geo.getGeoUri().getCoordA());
+		assertNull(geo.getGeoUri());
 
 		geo.setLatitude(-12.34);
 		assertEquals(-12.34, geo.getLatitude(), 0.1);
@@ -372,7 +372,7 @@ public class GeoTypeTest {
 	@Test
 	public void longitude() {
 		assertNull(geo.getLongitude());
-		assertNull(geo.getGeoUri().getCoordB());
+		assertNull(geo.getGeoUri());
 
 		geo.setLongitude(56.7878);
 		assertEquals(56.7878, geo.getLongitude(), 0.1);
@@ -382,13 +382,10 @@ public class GeoTypeTest {
 	@Test
 	public void getGeoUri() {
 		GeoUri uri = geo.getGeoUri();
-		assertNull(uri.getCoordA());
-		assertNull(uri.getCoordB());
+		assertNull(uri);
 
 		//user can further customize the geo URI
-		uri.setCoordA(-12.34);
-		uri.setCoordB(56.7878);
-		uri.setCoordC(99.11);
+		geo.setGeoUri(new GeoUri.Builder(-12.34, 56.7878).coordC(99.11).build());
 		String actual = geo.marshalText(VCardVersion.V4_0, compatibilityMode);
 		String expected = "geo:-12.34,56.7878,99.11";
 		assertEquals(expected, actual);

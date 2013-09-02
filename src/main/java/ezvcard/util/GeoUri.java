@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,12 +42,27 @@ import java.util.regex.Pattern;
  * Represents a URI for encoding a geographical position.
  * </p>
  * <p>
- * Example: <code>geo:12.341,56.784</code>
+ * Example geo URI: <code>geo:40.714623,-74.006605</code>
+ * </p>
+ * <p>
+ * This class is immutable. Use the {@link Builder} object to construct a new
+ * instance, or the {@link #parse} method to parse a geo URI string.
+ * </p>
+ * 
+ * <p>
+ * <b>Examples:</b>
+ * 
+ * <pre>
+ * GeoUri uri = new GeoUri.Builder(40.714623, -74.006605).coordC(1.1).build();
+ * GeoUri uri = GeoUri.parse(&quot;geo:40.714623,-74.006605,1.1&quot;);
+ * GeoUri copy = new GeoUri.Builder(original).coordC(2.1).build();
+ * </pre>
+ * 
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc5870">RFC 5870</a>
  */
-public class GeoUri {
+public final class GeoUri {
 	/**
 	 * The coordinate reference system used by GPS (the default).
 	 */
@@ -67,77 +83,81 @@ public class GeoUri {
 	 */
 	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
 
+	/**
+	 * Validates parameter names.
+	 */
+	private static final Pattern labelTextPattern = Pattern.compile("(?i)^[-a-z0-9]+$");
+
+	/**
+	 * Parses geo URIs.
+	 */
+	private static final Pattern uriPattern = Pattern.compile("(?i)^geo:(-?\\d+(\\.\\d+)?),(-?\\d+(\\.\\d+)?)(,(-?\\d+(\\.\\d+)?))?(;(.*))?$");
+
 	private static final String PARAM_CRS = "crs";
 	private static final String PARAM_UNCERTAINTY = "u";
 
-	private Double coordA;
-	private Double coordB;
-	private Double coordC;
-	private String crs;
-	private Double uncertainty;
-	private Map<String, String> parameters = new LinkedHashMap<String, String>();
+	private final Double coordA;
+	private final Double coordB;
+	private final Double coordC;
+	private final String crs;
+	private final Double uncertainty;
+	private final Map<String, String> parameters;
 
-	/**
-	 * Creates an empty geo URI.
-	 */
-	public GeoUri() {
-		//do nothing
-	}
-
-	/**
-	 * Creates a geo URI.
-	 * @param coordA the first coordinate (latitude, required)
-	 * @param coordB the second coordinate (longitude, required)
-	 * @param coordC the third coordinate (altitude, optional)
-	 * @param crs the coordinate system (optional, defaults to WGS-84)
-	 * @param uncertainty the accuracy of the coordinates (in meters, optional)
-	 */
-	public GeoUri(Double coordA, Double coordB, Double coordC, String crs, Double uncertainty) {
-		this.coordA = coordA;
-		this.coordB = coordB;
-		this.coordC = coordC;
-		this.crs = crs;
-		this.uncertainty = uncertainty;
+	private GeoUri(Builder builder) {
+		this.coordA = builder.coordA;
+		this.coordB = builder.coordB;
+		this.coordC = builder.coordC;
+		this.crs = builder.crs;
+		this.uncertainty = builder.uncertainty;
+		this.parameters = Collections.unmodifiableMap(builder.parameters);
 	}
 
 	/**
 	 * Parses a geo URI string.
-	 * @param uri the URI string
+	 * @param uri the URI string (e.g. "geo:40.714623,-74.006605")
 	 * @throws IllegalArgumentException if the string is not a valid geo URI
 	 */
-	public GeoUri(String uri) {
-		Pattern p = Pattern.compile("(?i)^geo:(-?\\d+(\\.\\d+)?),(-?\\d+(\\.\\d+)?)(,(-?\\d+(\\.\\d+)?))?(;(.*))?$");
-		Matcher m = p.matcher(uri);
-		if (m.find()) {
-			coordA = Double.parseDouble(m.group(1));
-			coordB = Double.parseDouble(m.group(3));
-
-			String coordCStr = m.group(6);
-			if (coordCStr != null) {
-				coordC = Double.valueOf(coordCStr);
-			}
-
-			String paramsStr = m.group(9);
-			if (paramsStr != null) {
-				String paramsArray[] = paramsStr.split(";");
-
-				for (String param : paramsArray) {
-					String paramSplit[] = param.split("=", 2);
-					String paramName = paramSplit[0];
-					String paramValue = paramSplit.length > 1 ? paramSplit[1] : "";
-					if (PARAM_CRS.equalsIgnoreCase(paramName)) {
-						crs = paramValue;
-					} else if (PARAM_UNCERTAINTY.equalsIgnoreCase(paramName)) {
-						uncertainty = Double.valueOf(paramValue);
-					} else {
-						paramValue = decodeParamValue(paramValue);
-						parameters.put(paramName, paramValue);
-					}
-				}
-			}
-		} else {
+	public static GeoUri parse(String uri) {
+		Matcher m = uriPattern.matcher(uri);
+		if (!m.find()) {
 			throw new IllegalArgumentException("Invalid geo URI: " + uri);
 		}
+
+		Builder builder = new Builder(Double.parseDouble(m.group(1)), Double.parseDouble(m.group(3)));
+
+		String coordCStr = m.group(6);
+		if (coordCStr != null) {
+			builder.coordC(Double.valueOf(coordCStr));
+		}
+
+		String paramsStr = m.group(9);
+		if (paramsStr != null) {
+			String paramsArray[] = paramsStr.split(";");
+
+			for (String param : paramsArray) {
+				String paramSplit[] = param.split("=", 2);
+				String paramName = paramSplit[0];
+				String paramValue = (paramSplit.length > 1) ? decodeParamValue(paramSplit[1]) : "";
+
+				if (PARAM_CRS.equalsIgnoreCase(paramName)) {
+					builder.crs(paramValue);
+					continue;
+				}
+
+				if (PARAM_UNCERTAINTY.equalsIgnoreCase(paramName)) {
+					try {
+						builder.uncertainty(Double.valueOf(paramValue));
+						continue;
+					} catch (NumberFormatException e) {
+						//if it can't be parsed, then treat it as an ordinary parameter
+					}
+				}
+
+				builder.parameter(paramName, paramValue);
+			}
+		}
+
+		return builder.build();
 	}
 
 	/**
@@ -149,14 +169,6 @@ public class GeoUri {
 	}
 
 	/**
-	 * Sets the first coordinate (latitude).
-	 * @param coordA the first coordinate
-	 */
-	public void setCoordA(Double coordA) {
-		this.coordA = coordA;
-	}
-
-	/**
 	 * Gets the second coordinate (longitude).
 	 * @return the second coordinate or null if there is none
 	 */
@@ -165,27 +177,11 @@ public class GeoUri {
 	}
 
 	/**
-	 * Sets the second coordinate (longitude).
-	 * @param coordB the second coordinate
-	 */
-	public void setCoordB(Double coordB) {
-		this.coordB = coordB;
-	}
-
-	/**
 	 * Gets the third coordinate (altitude).
 	 * @return the third coordinate or null if there is none
 	 */
 	public Double getCoordC() {
 		return coordC;
-	}
-
-	/**
-	 * Sets the third coordinate (altitude).
-	 * @param coordC the third coordinate or null to remove
-	 */
-	public void setCoordC(Double coordC) {
-		this.coordC = coordC;
 	}
 
 	/**
@@ -198,61 +194,11 @@ public class GeoUri {
 	}
 
 	/**
-	 * Sets the coordinate reference system.
-	 * @param crs the coordinate reference system (can only contain letters,
-	 * numbers, and hyphens) or null to use the default (WGS-84)
-	 * @throws IllegalArgumentException if the CRS name contains invalid
-	 * characters
-	 */
-	public void setCrs(String crs) {
-		if (crs != null && !isLabelText(crs)) {
-			throw new IllegalArgumentException("CRS can only contain letters, numbers, and hypens.");
-		}
-		this.crs = crs;
-	}
-
-	/**
 	 * Gets the uncertainty (how accurate the coordinates are).
 	 * @return the uncertainty (in meters) or null if not set
 	 */
 	public Double getUncertainty() {
 		return uncertainty;
-	}
-
-	/**
-	 * Sets the uncertainty (how accurate the coordinates are).
-	 * @param uncertainty the uncertainty (in meters) or null to remove
-	 */
-	public void setUncertainty(Double uncertainty) {
-		this.uncertainty = uncertainty;
-	}
-
-	/**
-	 * Adds a parameter.
-	 * @param name the parameter name (can only contain letters, numbers, and
-	 * hyphens)
-	 * @param value the parameter value
-	 * @throws IllegalArgumentException if the parameter name contains invalid
-	 * characters
-	 */
-	public void addParameter(String name, String value) {
-		if (!isLabelText(name)) {
-			throw new IllegalArgumentException("Parameter names can only contain letters, numbers, and hyphens.");
-		}
-
-		if (value == null) {
-			value = "";
-		}
-
-		parameters.put(name, value);
-	}
-
-	/**
-	 * Removes a parameter.
-	 * @param name the name of the parameter to remove
-	 */
-	public void removeParameter(String name) {
-		parameters.remove(name);
 	}
 
 	/**
@@ -269,7 +215,7 @@ public class GeoUri {
 	 * @return all the parameters
 	 */
 	public Map<String, String> getParameters() {
-		return new LinkedHashMap<String, String>(parameters);
+		return parameters;
 	}
 
 	/**
@@ -278,15 +224,6 @@ public class GeoUri {
 	 */
 	public URI toUri() {
 		return URI.create(toString());
-	}
-
-	/**
-	 * Determines if the geo URI is valid or not (in other words, if both the A
-	 * and B coordinates are present).
-	 * @return true if it is valid, false if not
-	 */
-	public boolean isValid() {
-		return coordA != null && coordB != null;
 	}
 
 	/**
@@ -308,14 +245,9 @@ public class GeoUri {
 		VCardFloatFormatter formatter = new VCardFloatFormatter(decimals);
 		StringBuilder sb = new StringBuilder("geo:");
 
-		if (coordA != null) {
-			sb.append(formatter.format(coordA));
-		}
-
+		sb.append(formatter.format(coordA));
 		sb.append(',');
-		if (coordB != null) {
-			sb.append(formatter.format(coordB));
-		}
+		sb.append(formatter.format(coordB));
 
 		if (coordC != null) {
 			sb.append(',');
@@ -336,6 +268,7 @@ public class GeoUri {
 		for (Map.Entry<String, String> entry : parameters.entrySet()) {
 			String name = entry.getKey();
 			String value = entry.getValue();
+
 			sb.append(';');
 			sb.append(name); //note: the param name is validated in "addParameter()"
 			sb.append('=');
@@ -345,11 +278,11 @@ public class GeoUri {
 		return sb.toString();
 	}
 
-	private boolean isLabelText(String text) {
-		return text.matches("(?i)[-a-z0-9]+");
+	private static boolean isLabelText(String text) {
+		return labelTextPattern.matcher(text).find();
 	}
 
-	private String encodeParamValue(String value) {
+	private static String encodeParamValue(String value) {
 		StringBuilder sb = new StringBuilder(value.length());
 		for (char c : value.toCharArray()) {
 			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || Arrays.binarySearch(validParamValueChars, c) >= 0) {
@@ -363,7 +296,7 @@ public class GeoUri {
 		return sb.toString();
 	}
 
-	private String decodeParamValue(String value) {
+	private static String decodeParamValue(String value) {
 		Matcher m = hexPattern.matcher(value);
 		StringBuffer sb = new StringBuffer();
 		while (m.find()) {
@@ -372,5 +305,119 @@ public class GeoUri {
 		}
 		m.appendTail(sb);
 		return sb.toString();
+	}
+
+	/**
+	 * Builder class for {@link GeoUri}.
+	 * @author Michael Angstadt
+	 */
+	public static class Builder {
+		private Double coordA;
+		private Double coordB;
+		private Double coordC;
+		private String crs;
+		private Double uncertainty;
+		private Map<String, String> parameters;
+
+		public Builder(Double coordA, Double coordB) {
+			coordA(coordA);
+			coordB(coordB);
+			parameters = new LinkedHashMap<String, String>(0); //set initial size to 0 because parameters are rarely used
+		}
+
+		public Builder(GeoUri uri) {
+			coordA(uri.coordA);
+			coordB(uri.coordB);
+			this.coordC = uri.coordC;
+			this.crs = uri.crs;
+			this.uncertainty = uri.uncertainty;
+			this.parameters = new LinkedHashMap<String, String>(uri.parameters);
+		}
+
+		/**
+		 * Sets the first coordinate (latitude).
+		 * @param coordA the first coordinate
+		 * @return this
+		 */
+		public Builder coordA(Double coordA) {
+			this.coordA = (coordA == null) ? 0.0 : coordA;
+			return this;
+		}
+
+		/**
+		 * Sets the second coordinate (longitude).
+		 * @param coordB the second coordinate
+		 * @return this
+		 */
+		public Builder coordB(Double coordB) {
+			this.coordB = (coordB == null) ? 0.0 : coordB;
+			return this;
+		}
+
+		/**
+		 * Sets the third coordinate (altitude).
+		 * @param coordC the third coordinate or null to remove
+		 * @return this
+		 */
+		public Builder coordC(Double coordC) {
+			this.coordC = coordC;
+			return this;
+		}
+
+		/**
+		 * Sets the coordinate reference system.
+		 * @param crs the coordinate reference system (can only contain letters,
+		 * numbers, and hyphens) or null to use the default (WGS-84)
+		 * @throws IllegalArgumentException if the CRS name contains invalid
+		 * characters
+		 * @return this
+		 */
+		public Builder crs(String crs) {
+			if (crs != null && !isLabelText(crs)) {
+				throw new IllegalArgumentException("CRS can only contain letters, numbers, and hypens.");
+			}
+			this.crs = crs;
+			return this;
+		}
+
+		/**
+		 * Sets the uncertainty (how accurate the coordinates are).
+		 * @param uncertainty the uncertainty (in meters) or null to remove
+		 * @return this
+		 */
+		public Builder uncertainty(Double uncertainty) {
+			this.uncertainty = uncertainty;
+			return this;
+		}
+
+		/**
+		 * Adds a parameter.
+		 * @param name the parameter name (can only contain letters, numbers,
+		 * and hyphens)
+		 * @param value the parameter value or null to remove the parameter
+		 * @throws IllegalArgumentException if the parameter name contains
+		 * invalid characters
+		 * @return this
+		 */
+		public Builder parameter(String name, String value) {
+			if (!isLabelText(name)) {
+				throw new IllegalArgumentException("Parameter names can only contain letters, numbers, and hyphens.");
+			}
+
+			if (value == null) {
+				parameters.remove(name);
+			} else {
+				parameters.put(name, value);
+			}
+			return this;
+		}
+
+		/**
+		 * Builds the final {@link GeoUri} object.
+		 * @return the object
+		 */
+		public GeoUri build() {
+			return new GeoUri(this);
+		}
 	}
 }
