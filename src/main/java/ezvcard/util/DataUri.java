@@ -40,19 +40,19 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  * Represents a URI for encoding binary data.
  * </p>
  * <p>
- * Example: <code>data:image/jpeg;base64,&lt;base64-encoded text&gt;</code>
+ * Example: <code>data:image/jpeg;base64,[base64 string]</code>
  * </p>
  * @author Michael Angstadt
  */
-public class DataUri {
+public final class DataUri {
 	private static final Pattern regex = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
-	private byte[] data;
-	private String contentType;
+	private final byte[] data;
+	private final String contentType;
 
 	/**
 	 * Creates a data URI.
-	 * @param data the binary data
 	 * @param contentType the content type (e.g. "image/jpeg")
+	 * @param data the binary data
 	 */
 	public DataUri(String contentType, byte[] data) {
 		this.contentType = contentType;
@@ -61,33 +61,26 @@ public class DataUri {
 
 	/**
 	 * Parses a data URI string.
-	 * @param uri the data URI to parse
+	 * @param uri the data URI to parse (e.g.
+	 * "data:image/jpeg;base64,[base64 string]")
 	 * @throws IllegalArgumentException if the given URI is not a valid data URI
 	 */
 	public DataUri(String uri) {
 		Matcher m = regex.matcher(uri);
-		if (m.find()) {
-			contentType = m.group(1);
-			data = Base64.decodeBase64(m.group(2));
-		} else {
+		if (!m.find()) {
 			throw new IllegalArgumentException("Invalid data URI: " + uri);
 		}
+
+		contentType = m.group(1);
+		data = Base64.decodeBase64(m.group(2));
 	}
 
 	/**
 	 * Gets the binary data.
-	 * @return the binary data or null if not set
+	 * @return the binary data
 	 */
 	public byte[] getData() {
 		return data;
-	}
-
-	/**
-	 * Sets the binary data.
-	 * @param data the binary data
-	 */
-	public void setData(byte[] data) {
-		this.data = data;
 	}
 
 	/**
@@ -96,14 +89,6 @@ public class DataUri {
 	 */
 	public String getContentType() {
 		return contentType;
-	}
-
-	/**
-	 * Sets the content type.
-	 * @param contentType the content type (e.g. "image/jpeg")
-	 */
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
 	}
 
 	/**
