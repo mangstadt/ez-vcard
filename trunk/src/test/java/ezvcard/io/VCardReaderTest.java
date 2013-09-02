@@ -2756,14 +2756,13 @@ public class VCardReaderTest {
 		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
 
 		TelephoneType tel = vcard.getTelephoneNumbers().get(0);
-		TelUri expectedUri = TelUri.global("+1-418-656-9254");
-		expectedUri.setExtension("102");
+		TelUri expectedUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		assertEquals(expectedUri, tel.getUri());
 		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 		assertIntEquals(1, tel.getPref());
 
 		tel = vcard.getTelephoneNumbers().get(1);
-		expectedUri = TelUri.global("+1-418-262-6501");
+		expectedUri = new TelUri.Builder("+1-418-262-6501").build();
 		assertEquals(expectedUri, tel.getUri());
 		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
 

@@ -476,15 +476,14 @@ public class VCardWriterTest {
 		adr.addType(AddressTypeParameter.WORK);
 		vcard.addAddress(adr);
 
-		TelUri telUri = TelUri.global("+1-418-656-9254");
-		telUri.setExtension("102");
+		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		TelephoneType tel = new TelephoneType(telUri);
 		tel.setPref(1);
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.VOICE);
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType(TelUri.global("+1-418-262-6501"));
+		tel = new TelephoneType(new TelUri.Builder("+1-418-262-6501").build());
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.VOICE);
 		tel.addType(TelephoneTypeParameter.CELL);

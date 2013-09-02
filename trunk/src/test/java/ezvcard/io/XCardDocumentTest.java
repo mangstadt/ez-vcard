@@ -957,14 +957,13 @@ public class XCardDocumentTest {
 		adr.setLabel("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2");
 		vcard.addAddress(adr);
 
-		TelUri telUri = TelUri.global("+1-418-656-9254");
-		telUri.setExtension("102");
+		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		TelephoneType tel = new TelephoneType(telUri);
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.VOICE);
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType(TelUri.global("+1-418-262-6501"));
+		tel = new TelephoneType(new TelUri.Builder("+1-418-262-6501").build());
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.TEXT);
 		tel.addType(TelephoneTypeParameter.VOICE);
@@ -1045,13 +1044,12 @@ public class XCardDocumentTest {
 		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
 
 		TelephoneType tel = vcard.getTelephoneNumbers().get(0);
-		TelUri expectedUri = TelUri.global("+1-418-656-9254");
-		expectedUri.setExtension("102");
+		TelUri expectedUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		assertEquals(expectedUri, tel.getUri());
 		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
 
 		tel = vcard.getTelephoneNumbers().get(1);
-		expectedUri = TelUri.global("+1-418-262-6501");
+		expectedUri = new TelUri.Builder("+1-418-262-6501").build();
 		assertEquals(expectedUri, tel.getUri());
 		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
 

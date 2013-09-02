@@ -68,10 +68,7 @@ public class TelephoneTypeTest {
 	private final String uri = "tel:" + number;
 	private final String uriWithExt = uri + ";ext=101";
 	private final TelephoneType marshalObjText = new TelephoneType(number);
-	private final TelephoneType marshalObjUri = new TelephoneType(TelUri.global(number));
-	{
-		marshalObjUri.getUri().setExtension("101");
-	}
+	private final TelephoneType marshalObjUri = new TelephoneType(new TelUri.Builder(number).extension("101").build());
 	private TelephoneType unmarshalObj;
 
 	@Before

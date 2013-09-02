@@ -57,8 +57,7 @@ import ezvcard.util.XCardElement;
  * tel.setPref(2); //the second-most preferred
  * vcard.addTelephoneNumber(tel);
  * 
- * TelUri uri = TelUri.global(&quot;+1-800-555-9876&quot;);
- * uri.setExtension(&quot;111&quot;);
+ * TelUri uri = new TelUri.Builder(&quot;+1-800-555-9876&quot;).extension(&quot;111&quot;).build();
  * tel = new TelephoneType(uri);
  * tel.addType(TelephoneTypeParameter.WORK);
  * tel.setPref(1); //the most preferred
