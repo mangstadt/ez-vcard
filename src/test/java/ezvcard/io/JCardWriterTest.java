@@ -6,13 +6,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -68,6 +71,9 @@ import ezvcard.util.TelUri;
  * @author Michael Angstadt
  */
 public class JCardWriterTest {
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
+
 	@Test
 	public void write_single_vcard() throws Throwable {
 		StringWriter sw = new StringWriter();
@@ -307,6 +313,30 @@ public class JCardWriterTest {
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void utf8() throws Throwable {
+		VCard vcard = new VCard();
+		vcard.addNote("\u019dote");
+
+		File file = tempFolder.newFile();
+		JCardWriter writer = new JCardWriter(file);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\",{},\"text\",\"4.0\"]," +
+				"[\"note\",{},\"text\",\"\u019dote\"]" +
+			"]" +
+		"]";
+		//@formatter:on
+		String actual = IOUtils.getFileContents(file, "UTF-8");
+		assertEquals(expected, actual);
 	}
 
 	@Test

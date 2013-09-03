@@ -8,12 +8,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -32,6 +36,7 @@ import ezvcard.types.TelephoneType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
+import ezvcard.util.IOUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -70,6 +75,9 @@ import ezvcard.util.TelUri;
  */
 @SuppressWarnings("resource")
 public class JCardReaderTest {
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
+
 	@Test
 	public void read_single() throws Throwable {
 		//@formatter:off
@@ -318,6 +326,30 @@ public class JCardReaderTest {
 		VCard vcard = reader.readNext();
 		assertEquals(0, vcard.getAllTypes().size());
 		assertWarnings(1, reader.getWarnings());
+	}
+
+	@Test
+	public void utf8() throws Throwable {
+		//@formatter:off
+		String json =
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"4.0\"]," +
+				"[\"note\", {}, \"text\", \"\u019dote\"]" +
+			"]" +
+		"]";
+		//@formatter:on
+		File file = tempFolder.newFile();
+		Writer writer = IOUtils.utf8Writer(file);
+		writer.write(json);
+		writer.close();
+
+		JCardReader reader = new JCardReader(file);
+		VCard vcard = reader.readNext();
+		assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
+
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	private static class TypeForTesting extends VCardType {

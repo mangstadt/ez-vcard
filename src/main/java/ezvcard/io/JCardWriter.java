@@ -1,11 +1,11 @@
 package ezvcard.io;
 
+import static ezvcard.util.IOUtils.utf8Writer;
+
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class JCardWriter implements Closeable {
 	 * @param out the output stream to write the vCard to
 	 */
 	public JCardWriter(OutputStream out) {
-		this(new OutputStreamWriter(out));
+		this(utf8Writer(out));
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class JCardWriter implements Closeable {
 	 * false not to
 	 */
 	public JCardWriter(OutputStream out, boolean wrapInArray) {
-		this(new OutputStreamWriter(out), wrapInArray);
+		this(utf8Writer(out), wrapInArray);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class JCardWriter implements Closeable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public JCardWriter(File file) throws IOException {
-		this(new FileWriter(file));
+		this(utf8Writer(file));
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class JCardWriter implements Closeable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public JCardWriter(File file, boolean wrapInArray) throws IOException {
-		this(new FileWriter(file), wrapInArray);
+		this(utf8Writer(file), wrapInArray);
 	}
 
 	/**

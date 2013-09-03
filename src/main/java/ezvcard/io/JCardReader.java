@@ -1,14 +1,13 @@
 package ezvcard.io;
 
+import static ezvcard.util.IOUtils.utf8Reader;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -79,7 +78,7 @@ public class JCardReader implements Closeable {
 	 * @param in the input stream to read the vCards from
 	 */
 	public JCardReader(InputStream in) {
-		this(new InputStreamReader(in));
+		this(utf8Reader(in));
 	}
 
 	/**
@@ -88,7 +87,7 @@ public class JCardReader implements Closeable {
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public JCardReader(File file) throws FileNotFoundException {
-		this(new FileReader(file));
+		this(utf8Reader(file));
 	}
 
 	/**
