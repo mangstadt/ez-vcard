@@ -422,12 +422,12 @@ public final class TelUri {
 		 * Creates a new {@link TelUri} builder.
 		 * @param original the {@link TelUri} object to copy from
 		 */
-		public Builder(TelUri uri) {
-			number = uri.number;
-			extension = uri.extension;
-			isdnSubaddress = uri.isdnSubaddress;
-			phoneContext = uri.phoneContext;
-			parameters = new TreeMap<String, String>(uri.parameters);
+		public Builder(TelUri original) {
+			number = original.number;
+			extension = original.extension;
+			isdnSubaddress = original.isdnSubaddress;
+			phoneContext = original.phoneContext;
+			parameters = new TreeMap<String, String>(original.parameters);
 		}
 
 		/**
