@@ -1,17 +1,14 @@
 package ezvcard.io;
 
+import static ezvcard.util.IOUtils.utf8Writer;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -171,11 +168,7 @@ public class XCardDocument {
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
 	public XCardDocument(String xml) throws SAXException {
-		try {
-			init(new StringReader(xml));
-		} catch (IOException e) {
-			//reading from string
-		}
+		this(XmlUtils.toDocument(xml));
 	}
 
 	/**
@@ -185,7 +178,7 @@ public class XCardDocument {
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
 	public XCardDocument(InputStream in) throws SAXException, IOException {
-		this(new InputStreamReader(in));
+		this(XmlUtils.toDocument(in));
 	}
 
 	/**
@@ -195,23 +188,33 @@ public class XCardDocument {
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
 	public XCardDocument(File file) throws SAXException, IOException {
-		FileReader reader = null;
+		InputStream in = new FileInputStream(file);
 		try {
-			reader = new FileReader(file);
-			init(reader);
+			init(XmlUtils.toDocument(in));
 		} finally {
-			IOUtils.closeQuietly(reader);
+			IOUtils.closeQuietly(in);
 		}
 	}
 
 	/**
+	 * <p>
 	 * Parses an xCard document from a reader.
+	 * </p>
+	 * <p>
+	 * Note that use of this constructor is discouraged. It ignores the
+	 * character encoding that is defined within the XML document itself, and
+	 * should only be used if the encoding is undefined or if the encoding needs
+	 * to be ignored for whatever reason. The
+	 * {@link #XCardDocument(InputStream)} constructor should be used instead,
+	 * since it takes the XML document's character encoding into account when
+	 * parsing.
+	 * </p>
 	 * @param reader the reader to read the vCards from
 	 * @throws IOException if there's a problem reading from the reader
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
 	public XCardDocument(Reader reader) throws SAXException, IOException {
-		init(reader);
+		this(XmlUtils.toDocument(reader));
 	}
 
 	/**
@@ -220,10 +223,6 @@ public class XCardDocument {
 	 */
 	public XCardDocument(Document document) {
 		init(document);
-	}
-
-	private void init(Reader reader) throws SAXException, IOException {
-		init(XmlUtils.toDocument(reader));
 	}
 
 	private void init(Document document) {
@@ -594,7 +593,7 @@ public class XCardDocument {
 	 * stream
 	 */
 	public void write(OutputStream out, int indent) throws TransformerException {
-		write(new OutputStreamWriter(out), indent);
+		write(utf8Writer(out), indent);
 	}
 
 	/**
@@ -613,9 +612,8 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the file
 	 */
 	public void write(File file, int indent) throws TransformerException, IOException {
-		FileWriter writer = null;
+		Writer writer = utf8Writer(file);
 		try {
-			writer = new FileWriter(file);
 			write(writer, indent);
 		} finally {
 			IOUtils.closeQuietly(writer);

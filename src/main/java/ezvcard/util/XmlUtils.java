@@ -1,6 +1,7 @@
 package ezvcard.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -73,9 +74,9 @@ public class XmlUtils {
 			DocumentBuilder db = fact.newDocumentBuilder();
 			return db.newDocument();
 		} catch (ParserConfigurationException e) {
-			//no complex configurations
+			//will probably never be thrown because we're not doing anything fancy with the configuration
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	/**
@@ -89,28 +90,55 @@ public class XmlUtils {
 			return toDocument(new StringReader(xml));
 		} catch (IOException e) {
 			//reading from string
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	/**
+	 * Parses an XML document from an input stream.
+	 * @param in the input stream
+	 * @return the parsed DOM
+	 * @throws SAXException if the XML is not valid
+	 * @throws IOException if there is a problem reading from the input stream
+	 */
+	public static Document toDocument(InputStream in) throws SAXException, IOException {
+		return toDocument(new InputSource(in));
+	}
+
+	/**
+	 * <p>
 	 * Parses an XML document from a reader.
+	 * </p>
+	 * <p>
+	 * Note that use of this method is discouraged. It ignores the character
+	 * encoding that is defined within the XML document itself, and should only
+	 * be used if the encoding is undefined or if the encoding needs to be
+	 * ignored for whatever reason. The {@link #toDocument(InputStream)} method
+	 * should be used instead, since it takes the XML document's character
+	 * encoding into account when parsing.
+	 * </p>
 	 * @param reader the reader
 	 * @return the parsed DOM
 	 * @throws SAXException if the XML is not valid
 	 * @throws IOException if there is a problem reading from the reader
+	 * @see <a
+	 * href="http://stackoverflow.com/q/3482494/13379">http://stackoverflow.com/q/3482494/13379</a>
 	 */
 	public static Document toDocument(Reader reader) throws SAXException, IOException {
+		return toDocument(new InputSource(reader));
+	}
+
+	private static Document toDocument(InputSource in) throws SAXException, IOException {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setNamespaceAware(true);
 			dbf.setIgnoringComments(true);
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			return db.parse(new InputSource(reader));
+			return db.parse(in);
 		} catch (ParserConfigurationException e) {
-			//never thrown because we're not doing anything fancy with the configuration
+			//will probably never be thrown because we're not doing anything fancy with the configuration
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	/**
