@@ -1465,7 +1465,8 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the output stream
 		 */
 		public void go(OutputStream out) throws IOException {
-			go(new OutputStreamWriter(out));
+			VCardWriter vcardWriter = (version == null) ? new VCardWriter(out) : new VCardWriter(out, version);
+			go(vcardWriter);
 		}
 
 		/**
@@ -1486,12 +1487,11 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the file
 		 */
 		public void go(File file, boolean append) throws IOException {
-			FileWriter writer = null;
+			VCardWriter vcardWriter = (version == null) ? new VCardWriter(file, append) : new VCardWriter(file, append, version);
 			try {
-				writer = new FileWriter(file, append);
-				go(writer);
+				go(vcardWriter);
 			} finally {
-				IOUtils.closeQuietly(writer);
+				IOUtils.closeQuietly(vcardWriter);
 			}
 		}
 
@@ -1501,11 +1501,12 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the writer
 		 */
 		public void go(Writer writer) throws IOException {
-			@SuppressWarnings("resource")
 			VCardWriter vcardWriter = new VCardWriter(writer);
-			if (version != null) {
-				vcardWriter.setTargetVersion(version);
-			}
+			vcardWriter.setTargetVersion(version);
+			go(vcardWriter);
+		}
+
+		private void go(VCardWriter vcardWriter) throws IOException {
 			vcardWriter.setAddProdId(prodId);
 			vcardWriter.setCaretEncodingEnabled(caretEncoding);
 			vcardWriter.setVersionStrict(versionStrict);
