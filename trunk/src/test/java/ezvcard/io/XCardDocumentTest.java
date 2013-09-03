@@ -11,8 +11,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +25,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -55,6 +59,7 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
+import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.XCardElement;
@@ -93,6 +98,9 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  */
 public class XCardDocumentTest {
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
+
 	@BeforeClass
 	public static void beforeClass() {
 		XMLUnit.setIgnoreWhitespace(true);
@@ -541,6 +549,26 @@ public class XCardDocumentTest {
 		assertWarningsLists(xcr.getParseWarnings(), 0);
 	}
 
+	@Test
+	public void parse_utf8() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+					"<note><text>\u019dote</text></note>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+		File file = tempFolder.newFile();
+		Writer writer = IOUtils.utf8Writer(file);
+		writer.write(xml);
+		writer.close();
+
+		XCardDocument xcard = new XCardDocument(file);
+		VCard vcard = xcard.parseFirst();
+		assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
+	}
+
 	@Test(expected = RuntimeException.class)
 	public void registerExtendedType_no_default_constructor() throws Throwable {
 		XCardDocument xcard = new XCardDocument();
@@ -904,6 +932,22 @@ public class XCardDocumentTest {
 
 		//use "String.contains()" to ignore the XML declaration at the top
 		assertTrue("Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual, actual.contains(expected));
+	}
+
+	@Test
+	public void write_utf8() throws Throwable {
+		VCard vcard = new VCard();
+		vcard.addNote("\u019dote");
+
+		XCardDocument xcard = new XCardDocument();
+		xcard.add(vcard);
+
+		File file = tempFolder.newFile();
+		xcard.write(file);
+
+		String xml = IOUtils.getFileContents(file, "UTF-8");
+		assertTrue(xml.matches("(?i)<\\?xml.*?encoding=\"utf-8\".*?\\?>.*"));
+		assertTrue(xml.matches(".*?<note><text>\u019dote</text></note>.*"));
 	}
 
 	@Test

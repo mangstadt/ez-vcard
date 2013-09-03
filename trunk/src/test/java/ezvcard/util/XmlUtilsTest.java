@@ -6,13 +6,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.OutputKeys;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -52,6 +57,9 @@ import org.xml.sax.SAXException;
  * @author Michael Angstadt
  */
 public class XmlUtilsTest {
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
+
 	//@formatter:off
 	private final String xml =
 		"<root>" +
@@ -88,6 +96,26 @@ public class XmlUtilsTest {
 		element = (Element) nodes.item(2);
 		assertEquals("child2", element.getLocalName());
 		assertEquals("http://example.com", element.getNamespaceURI());
+	}
+
+	@Test
+	public void toDocument_utf8() throws Exception {
+		//@formatter:off
+		String xml =
+		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+		"<root><child>\u1e08hild</child></root>";
+		//@formatter:on
+
+		File file = tempFolder.newFile();
+		Writer writer = IOUtils.utf8Writer(file);
+		writer.write(xml);
+		writer.close();
+
+		Document document = XmlUtils.toDocument(new FileInputStream(file));
+		Element root = (Element) document.getFirstChild();
+		NodeList nodes = root.getChildNodes();
+		Element child = (Element) nodes.item(0);
+		assertEquals("\u1e08hild", child.getTextContent());
 	}
 
 	@Test(expected = SAXException.class)

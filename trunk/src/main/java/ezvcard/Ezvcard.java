@@ -201,7 +201,7 @@ public class Ezvcard {
 
 	/**
 	 * <p>
-	 * Parses XML-encoded vCards (xCard).
+	 * Parses XML-encoded vCards (xCard) from a string.
 	 * </p>
 	 * <p>
 	 * Use {@link XCardDocument} for more control over the parsing.
@@ -217,7 +217,7 @@ public class Ezvcard {
 
 	/**
 	 * <p>
-	 * Parses XML-encoded vCards (xCard).
+	 * Parses XML-encoded vCards (xCard) from a file.
 	 * </p>
 	 * <p>
 	 * Use {@link XCardDocument} for more control over the parsing.
@@ -233,7 +233,7 @@ public class Ezvcard {
 
 	/**
 	 * <p>
-	 * Parses XML-encoded vCards (xCard).
+	 * Parses XML-encoded vCards (xCard) from an input stream.
 	 * </p>
 	 * <p>
 	 * Use {@link XCardDocument} for more control over the parsing.
@@ -244,12 +244,20 @@ public class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlReader parseXml(InputStream in) {
-		return parseXml(new InputStreamReader(in));
+		return new ParserChainXmlReader(in);
 	}
 
 	/**
 	 * <p>
-	 * Parses XML-encoded vCards (xCard).
+	 * Parses XML-encoded vCards (xCard) from a reader.
+	 * </p>
+	 * <p>
+	 * Note that use of this method is discouraged. It ignores the character
+	 * encoding that is defined within the XML document itself, and should only
+	 * be used if the encoding is undefined or if the encoding needs to be
+	 * ignored for whatever reason. The {@link #parseXml(InputStream)} method
+	 * should be used instead, since it takes the XML document's character
+	 * encoding into account when parsing.
 	 * </p>
 	 * <p>
 	 * Use {@link XCardDocument} for more control over the parsing.
@@ -888,17 +896,26 @@ public class Ezvcard {
 	 * @see Ezvcard#parseXml(Reader)
 	 */
 	public static class ParserChainXmlReader extends ParserChainXml<ParserChainXmlReader> {
-		private final Reader reader;
+		private final InputStream in;
 		private final File file;
+		private final Reader reader;
 
-		private ParserChainXmlReader(Reader reader) {
-			this.reader = reader;
+		private ParserChainXmlReader(InputStream in) {
+			this.in = in;
+			this.reader = null;
 			this.file = null;
 		}
 
 		private ParserChainXmlReader(File file) {
+			this.in = null;
 			this.reader = null;
 			this.file = file;
+		}
+
+		private ParserChainXmlReader(Reader reader) {
+			this.in = null;
+			this.reader = reader;
+			this.file = null;
 		}
 
 		@Override
@@ -913,7 +930,13 @@ public class Ezvcard {
 
 		@Override
 		XCardDocument _constructDocument() throws IOException, SAXException {
-			return (reader != null) ? new XCardDocument(reader) : new XCardDocument(file);
+			if (in != null) {
+				return new XCardDocument(in);
+			}
+			if (file != null) {
+				return new XCardDocument(file);
+			}
+			return new XCardDocument(reader);
 		}
 	}
 
