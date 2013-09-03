@@ -418,7 +418,7 @@ public class Ezvcard {
 	 * draft specification</a>
 	 */
 	public static ParserChainJsonReader parseJson(InputStream in) {
-		return parseJson(new InputStreamReader(in));
+		return new ParserChainJsonReader(in);
 	}
 
 	/**
@@ -1274,19 +1274,29 @@ public class Ezvcard {
 	 * @see Ezvcard#parseJson(Reader)
 	 */
 	public static class ParserChainJsonReader extends ParserChainJson<ParserChainJsonReader> {
-		private final Reader reader;
+		private final InputStream in;
 		private final File file;
+		private final Reader reader;
 
-		private ParserChainJsonReader(Reader reader) {
+		private ParserChainJsonReader(InputStream in) {
 			super(false);
-			this.reader = reader;
+			this.in = in;
+			this.reader = null;
 			this.file = null;
 		}
 
 		private ParserChainJsonReader(File file) {
 			super(true);
+			this.in = null;
 			this.reader = null;
 			this.file = file;
+		}
+
+		private ParserChainJsonReader(Reader reader) {
+			super(false);
+			this.in = null;
+			this.reader = reader;
+			this.file = null;
 		}
 
 		@Override
@@ -1300,9 +1310,14 @@ public class Ezvcard {
 		}
 
 		@Override
-		@SuppressWarnings("resource")
 		JCardReader _constructReader() throws IOException {
-			return (reader != null) ? new JCardReader(reader) : new JCardReader(file);
+			if (in != null) {
+				return new JCardReader(in);
+			}
+			if (file != null) {
+				return new JCardReader(file);
+			}
+			return new JCardReader(reader);
 		}
 	}
 
