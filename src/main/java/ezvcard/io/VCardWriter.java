@@ -1,5 +1,7 @@
 package ezvcard.io;
 
+import static ezvcard.util.IOUtils.utf8Writer;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
@@ -74,21 +76,23 @@ public class VCardWriter implements Closeable {
 	 * Creates a vCard writer (uses the standard folding scheme and newline
 	 * sequence).
 	 * @param out the output stream to write the vCard to
-	 * @param targetVersion the version that the vCards should conform to
+	 * @param targetVersion the version that the vCards should conform to (if
+	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 */
 	public VCardWriter(OutputStream out, VCardVersion targetVersion) {
-		this(new OutputStreamWriter(out), targetVersion);
+		this((targetVersion == VCardVersion.V4_0) ? utf8Writer(out) : new OutputStreamWriter(out), targetVersion);
 	}
 
 	/**
 	 * Creates a vCard writer.
 	 * @param out the output stream to write the vCard to
-	 * @param targetVersion the version that the vCards should conform to
+	 * @param targetVersion the version that the vCards should conform to (if
+	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 * @param foldingScheme the folding scheme to use or null not to fold at all
 	 * @param newline the newline sequence to use
 	 */
 	public VCardWriter(OutputStream out, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) {
-		this(new OutputStreamWriter(out), targetVersion, foldingScheme, newline);
+		this((targetVersion == VCardVersion.V4_0) ? utf8Writer(out) : new OutputStreamWriter(out), targetVersion, foldingScheme, newline);
 	}
 
 	/**
@@ -98,30 +102,48 @@ public class VCardWriter implements Closeable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public VCardWriter(File file) throws IOException {
-		this(new FileWriter(file));
+		this(new FileWriter(file, false));
+	}
+
+	/**
+	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
+	 * scheme and newline sequence).
+	 * @param file the file to write the vCard to
+	 * @param append true to append to the end of the file, false to overwrite
+	 * it
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public VCardWriter(File file, boolean append) throws IOException {
+		this(new FileWriter(file, append));
 	}
 
 	/**
 	 * Creates a vCard writer (uses the standard folding scheme and newline
 	 * sequence).
 	 * @param file the file to write the vCard to
-	 * @param targetVersion the version that the vCards should conform to
+	 * @param append true to append to the end of the file, false to overwrite
+	 * it
+	 * @param targetVersion the version that the vCards should conform to (if
+	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 * @throws IOException if there's a problem opening the file
 	 */
-	public VCardWriter(File file, VCardVersion targetVersion) throws IOException {
-		this(new FileWriter(file), targetVersion);
+	public VCardWriter(File file, boolean append, VCardVersion targetVersion) throws IOException {
+		this((targetVersion == VCardVersion.V4_0) ? utf8Writer(file, append) : new FileWriter(file, append), targetVersion);
 	}
 
 	/**
 	 * Creates a vCard writer.
 	 * @param file the file to write the vCard to
-	 * @param targetVersion the version that the vCards should conform to
+	 * @param append true to append to the end of the file, false to overwrite
+	 * it
+	 * @param targetVersion the version that the vCards should conform to (if
+	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 * @param foldingScheme the folding scheme to use or null not to fold at all
 	 * @param newline the newline sequence to use
 	 * @throws IOException if there's a problem opening the file
 	 */
-	public VCardWriter(File file, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) throws IOException {
-		this(new FileWriter(file), targetVersion, foldingScheme, newline);
+	public VCardWriter(File file, boolean append, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) throws IOException {
+		this((targetVersion == VCardVersion.V4_0) ? utf8Writer(file, append) : new FileWriter(file, append), targetVersion, foldingScheme, newline);
 	}
 
 	/**

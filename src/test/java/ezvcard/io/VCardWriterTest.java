@@ -5,9 +5,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -29,6 +33,7 @@ import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.VCardType;
+import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 
@@ -66,6 +71,9 @@ import ezvcard.util.TelUri;
  */
 @SuppressWarnings("resource")
 public class VCardWriterTest {
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
+
 	/**
 	 * Tests to make sure it contains the BEGIN, VERSION, and END types.
 	 */
@@ -436,6 +444,52 @@ public class VCardWriterTest {
 		//@formatter:on
 
 		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void utf8() throws Throwable {
+		VCard vcard = new VCard();
+		vcard.addNote("\u019dote");
+
+		File file = tempFolder.newFile();
+
+		//should be written as UTF-8
+		{
+			VCardWriter writer = new VCardWriter(file, false, VCardVersion.V4_0);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+			writer.close();
+
+			//@formatter:off
+			String expected = 
+			"BEGIN:VCARD\r\n" +
+				"VERSION:4.0\r\n" +
+				"NOTE:\u019dote\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			String actual = IOUtils.getFileContents(file, "UTF-8");
+			assertEquals(expected, actual);
+		}
+
+		//should be written using default encoding
+		if (!Charset.defaultCharset().name().equalsIgnoreCase("UTF-8")) { //don't test if the local machine's default encoding is UTF-8
+			VCardWriter writer = new VCardWriter(file);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+			writer.close();
+
+			//@formatter:off
+			String expected = 
+			"BEGIN:VCARD\r\n" +
+				"VERSION:3.0\r\n" +
+				"NOTE:?ote\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			String actual = IOUtils.getFileContents(file, "UTF-8");
+			assertEquals(expected, actual);
+		}
 	}
 
 	@Test
