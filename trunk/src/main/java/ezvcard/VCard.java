@@ -4441,9 +4441,8 @@ public class VCard implements Iterable<VCardType> {
 	 * @param clazz the property class
 	 * @return the property or null if not found
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends VCardType> T getType(Class<T> clazz) {
-		return (T) properties.first(clazz);
+		return clazz.cast(properties.first(clazz));
 	}
 
 	/**
@@ -4451,14 +4450,13 @@ public class VCard implements Iterable<VCardType> {
 	 * @param clazz the property class
 	 * @return the properties
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends VCardType> List<T> getTypes(Class<T> clazz) {
 		List<VCardType> props = properties.get(clazz);
 
 		//cast to the requested class
 		List<T> ret = new ArrayList<T>(props.size());
 		for (VCardType property : props) {
-			ret.add((T) property);
+			ret.add(clazz.cast(property));
 		}
 		return ret;
 	}

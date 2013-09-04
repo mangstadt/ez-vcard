@@ -144,7 +144,6 @@ public abstract class CaseClasses<T, V> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void init() {
 		Collection<T> preDefined = new ArrayList<T>();
 		for (Field field : clazz.getFields()) {
@@ -158,7 +157,7 @@ public abstract class CaseClasses<T, V> {
 				try {
 					Object obj = field.get(null);
 					if (obj != null) {
-						T c = (T) obj;
+						T c = clazz.cast(obj);
 						preDefined.add(c);
 					}
 				} catch (Exception ex) {
