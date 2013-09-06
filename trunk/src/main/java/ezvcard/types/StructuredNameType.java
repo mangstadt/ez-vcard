@@ -327,13 +327,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		List<List<?>> values = new ArrayList<List<?>>();
-		values.add(Arrays.asList(family));
-		values.add(Arrays.asList(given));
-		values.add(additional);
-		values.add(prefixes);
-		values.add(suffixes);
-		return JCardValue.structured(VCardDataType.TEXT, values);
+		return JCardValue.structured(VCardDataType.TEXT, family, given, additional, prefixes, suffixes);
 	}
 
 	@Override
