@@ -150,14 +150,21 @@ public class JCardValueTest {
 
 	@Test
 	public void structured() {
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, "value", 42, false, null);
+		JCardValue value = JCardValue.structured(VCardDataType.TEXT, "value", 42, false, null, Arrays.asList("one", "two"));
 
 		assertEquals(VCardDataType.TEXT, value.getDataType());
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
 			new JsonValue(Arrays.asList(
-				new JsonValue("value"), new JsonValue(42), new JsonValue(false), new JsonValue("")
+				new JsonValue("value"),
+				new JsonValue(42),
+				new JsonValue(false),
+				new JsonValue(""),
+				new JsonValue(Arrays.asList(
+					new JsonValue("one"),
+					new JsonValue("two")
+				))
 			))
 		);
 		//@formatter:on

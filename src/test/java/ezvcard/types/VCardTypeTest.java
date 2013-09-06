@@ -168,12 +168,7 @@ public class VCardTypeTest {
 	@Test
 	public void unmarshalJson_structured() {
 		VCardVersion version = VCardVersion.V4_0;
-
-		List<List<?>> values = new ArrayList<List<?>>();
-		values.add(Arrays.asList("one"));
-		values.add(Arrays.asList("two", "three"));
-		values.add(Arrays.asList("four"));
-		JCardValue value = JCardValue.structured(null, values);
+		JCardValue value = JCardValue.structured(null, "one", Arrays.asList("two", "three"), "four");
 
 		t.unmarshalJson(subTypes, value, version, warnings);
 

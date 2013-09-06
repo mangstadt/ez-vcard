@@ -102,7 +102,14 @@ public class JCardValue {
 	}
 
 	/**
+	 * <p>
 	 * Creates a structured value.
+	 * </p>
+	 * <p>
+	 * This method accepts a vararg of {@link Object} instances. {@link List}
+	 * objects will be treated as multi-valued components. Null objects will be
+	 * treated as empty components.
+	 * </p>
 	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 * @return the jCard value
@@ -110,7 +117,8 @@ public class JCardValue {
 	public static JCardValue structured(VCardDataType dataType, Object... values) {
 		List<List<?>> valuesList = new ArrayList<List<?>>(values.length);
 		for (Object value : values) {
-			valuesList.add(Arrays.asList(value));
+			List<?> list = (value instanceof List) ? (List<?>) value : Arrays.asList(value);
+			valuesList.add(list);
 		}
 		return structured(dataType, valuesList);
 	}

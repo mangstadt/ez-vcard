@@ -391,14 +391,7 @@ public class StructuredNameTypeTest {
 	@Test
 	public void unmarshalJson() {
 		VCardVersion version = VCardVersion.V4_0;
-
-		List<List<?>> values = new ArrayList<List<?>>();
-		values.add(Arrays.asList("Doe"));
-		values.add(Arrays.asList("Jonathan"));
-		values.add(Arrays.asList("Joh;nny,", "John"));
-		values.add(Arrays.asList("Mr."));
-		values.add(Arrays.asList("III"));
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, values);
+		JCardValue value = JCardValue.structured(VCardDataType.TEXT, "Doe", "Jonathan", Arrays.asList("Joh;nny,", "John"), "Mr.", "III");
 
 		StructuredNameType t = new StructuredNameType();
 		t.unmarshalJson(subTypes, value, version, warnings);
@@ -414,14 +407,7 @@ public class StructuredNameTypeTest {
 	@Test
 	public void unmarshalJson_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
-
-		List<List<?>> values = new ArrayList<List<?>>();
-		values.add(Arrays.asList(""));
-		values.add(Arrays.asList("Jonathan"));
-		values.add(Arrays.asList("Joh;nny,", "John"));
-		values.add(Arrays.asList(""));
-		values.add(Arrays.asList(""));
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, values);
+		JCardValue value = JCardValue.structured(VCardDataType.TEXT, null, "Jonathan", Arrays.asList("Joh;nny,", "John"), null, null);
 
 		StructuredNameType t = new StructuredNameType();
 		t.unmarshalJson(subTypes, value, version, warnings);
@@ -437,14 +423,7 @@ public class StructuredNameTypeTest {
 	@Test
 	public void unmarshalJson_all_empty_values() {
 		VCardVersion version = VCardVersion.V4_0;
-
-		List<List<?>> values = new ArrayList<List<?>>();
-		values.add(Arrays.asList(""));
-		values.add(Arrays.asList(""));
-		values.add(Arrays.asList(""));
-		values.add(Arrays.asList(""));
-		values.add(Arrays.asList(""));
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, values);
+		JCardValue value = JCardValue.structured(VCardDataType.TEXT, null, null, null, null, null);
 
 		StructuredNameType t = new StructuredNameType();
 		t.unmarshalJson(subTypes, value, version, warnings);
