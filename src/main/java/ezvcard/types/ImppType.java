@@ -57,7 +57,7 @@ import ezvcard.util.XCardElement;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //URI

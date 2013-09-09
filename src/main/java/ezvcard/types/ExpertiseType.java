@@ -42,7 +42,7 @@ import ezvcard.parameters.ExpertiseLevelParameter;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * ExpertiseType expertise = new ExpertiseType(&quot;Java programming&quot;);
  * expertise.setLevel(ExpertiseLevelParameter.EXPERT);

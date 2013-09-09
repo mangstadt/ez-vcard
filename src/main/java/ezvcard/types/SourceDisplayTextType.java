@@ -38,7 +38,7 @@ import ezvcard.VCardVersion;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * SourceDisplayTextType name = new SourceDisplayTextType(&quot;My vCard&quot;);
  * vcard.setSourceDisplayText(name);

@@ -41,7 +41,7 @@ import ezvcard.util.HCardElement;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * NicknameType nickname = new NicknameType();
  * nickname.addValue(&quot;Rick&quot;);

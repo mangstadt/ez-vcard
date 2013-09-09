@@ -52,7 +52,7 @@ import ezvcard.util.XCardElement;
  * <b>Adding an address</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * AddressType adr = new AddressType();
  * adr.setStreetAddress(&quot;123 Main St.&quot;);
@@ -73,7 +73,7 @@ import ezvcard.util.XCardElement;
  * <b>Getting the addresses</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * for (AddressType adr : vcard.getAddresses()){
  *   ...

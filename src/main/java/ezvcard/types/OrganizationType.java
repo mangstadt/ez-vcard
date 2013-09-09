@@ -42,7 +42,7 @@ import ezvcard.util.HCardElement;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * OrganizationType org = new OrganizationType();
  * org.addValue(&quot;Google&quot;);

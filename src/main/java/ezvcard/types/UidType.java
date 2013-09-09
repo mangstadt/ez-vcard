@@ -38,7 +38,7 @@ import java.util.UUID;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * UidType uid = new UidType(&quot;urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519&quot;);

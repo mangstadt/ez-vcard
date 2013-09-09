@@ -42,7 +42,7 @@ import ezvcard.VCardVersion;
  * <b>Adding members</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //KIND must be set to &quot;group&quot; in order to add MEMBERs
@@ -66,7 +66,7 @@ import ezvcard.VCardVersion;
  * <b>Getting members</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * KindType kind = vcard.getKind();
  * if (kind != null){

@@ -54,7 +54,7 @@ import ezvcard.util.XCardElement;
  * <b>Adding a key</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //URL (vCard 4.0 only; KEYs cannot have URLs in vCard 2.1 and 3.0)
@@ -84,7 +84,7 @@ import ezvcard.util.XCardElement;
  * <b>Getting the keys</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * 
  * int fileCount = 0;

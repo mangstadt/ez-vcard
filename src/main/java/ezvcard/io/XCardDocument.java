@@ -80,7 +80,7 @@ import ezvcard.util.XmlUtils;
 * <p>
 * <b>Examples:</b>
 * 
-* <pre>
+* <pre class="brush:java">
 * String xml =
 * "&lt;vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\"&gt;" +
 *   "&lt;vcard&gt;" +

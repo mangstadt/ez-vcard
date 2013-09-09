@@ -40,7 +40,7 @@ import ezvcard.VCardVersion;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * FbUrlType fburl = new FbUrlType(&quot;http://www.example.com/freebusy/janedoe&quot;);
  * vcard.addFbUrl(fburl);

@@ -40,7 +40,7 @@ import ezvcard.VCardVersion;
  * <b>Setting the time of death</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //complete date
@@ -67,7 +67,7 @@ import ezvcard.VCardVersion;
  * <b>Getting the time of death</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * DeathdateType deathdate = vcard.getDeathdate();
  * if (deathdate != null){

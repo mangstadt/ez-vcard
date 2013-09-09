@@ -124,7 +124,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	 * is only supported by vCard 4.0.
 	 * </p>
 	 * 
-	 * <pre>
+	 * <pre class="brush:java">
 	 * BirthdayType bday = new BirthdayType();
 	 * bday.setPartialDate(PartialDate.date(null, 4, 20)); //April 20
 	 * </pre>

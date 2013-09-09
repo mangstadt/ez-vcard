@@ -39,7 +39,7 @@ import ezvcard.VCardVersion;
  * <b>Setting the KIND</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * //use static methods to create a KindType object
  * VCard vcard = new VCard();
  * KindType kind = KindType.individual();
@@ -50,7 +50,7 @@ import ezvcard.VCardVersion;
  * <b>Getting the KIND</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * //use "is*" methods to determine the KindType value
  * VCard vcard = ...
  * KindType kind = vcard.getKind();

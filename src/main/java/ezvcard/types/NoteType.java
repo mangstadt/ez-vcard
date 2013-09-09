@@ -38,7 +38,7 @@ import java.util.List;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * NoteType note = new NoteType(&quot;This is a\nmiscellaneous comment.&quot;); //can contain newlines
  * note.setLanguage(&quot;en-us&quot;);

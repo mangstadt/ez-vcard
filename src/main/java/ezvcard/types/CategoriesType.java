@@ -44,7 +44,7 @@ import ezvcard.util.VCardStringUtils.JoinCallback;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * CategoriesType categories = new CategoriesType();
  * categories.addValue(&quot;programmer&quot;);

@@ -47,7 +47,7 @@ import ezvcard.util.XCardElement;
  * <b>Setting the gender</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * GenderType gender = GenderType.male();
  * vcard.setGender(gender);
@@ -57,7 +57,7 @@ import ezvcard.util.XCardElement;
  * <b>Getting the gender</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * GenderType gender = vcard.getGender();
  * if (gender != null){

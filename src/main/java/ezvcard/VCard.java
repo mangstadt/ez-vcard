@@ -500,7 +500,7 @@ public class VCard implements Iterable<VCardType> {
 	 * 
 	 * <p>
 	 * 
-	 * <pre>
+	 * <pre class="brush:java">
 	 * VCard vcard = ...
 	 * KindType kind = vcard.getKind();
 	 * if (kind != null && kind.isGroup()){
@@ -530,7 +530,7 @@ public class VCard implements Iterable<VCardType> {
 	 * 
 	 * <p>
 	 * 
-	 * <pre>
+	 * <pre class="brush:java">
 	 * VCard vcard = new VCard();
 	 * vcard.setKind(KindType.group());
 	 * vcard.addMember(...);

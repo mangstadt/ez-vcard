@@ -43,7 +43,7 @@ import ezvcard.parameters.InterestLevelParameter;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * //someone who attends all of his favorite hockey team's games in person.
  * VCard vcard = new VCard();
  * InterestType interest = new InterestType(&quot;hockey&quot;);
