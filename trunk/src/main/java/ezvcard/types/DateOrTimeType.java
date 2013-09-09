@@ -56,11 +56,6 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	private String text;
 	private Date date;
 	private PartialDate partialDate;
-
-	/**
-	 * True if the "date" or "reduceAccuracyDate" fields have a time component,
-	 * false if they just contain a date.
-	 */
 	private boolean dateHasTime;
 
 	/**
@@ -161,6 +156,17 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 		this.text = text;
 		date = null;
 		partialDate = null;
+		dateHasTime = false;
+	}
+
+	/**
+	 * Determines whether the "date" or "partialDate" fields have a time
+	 * component.
+	 * @return true if the date has a time component, false if it's strictly a
+	 * date, and false if a text value is defined
+	 */
+	public boolean hasTime() {
+		return dateHasTime;
 	}
 
 	/**
@@ -169,7 +175,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	 * value.
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the type of calendar or null if not found
 	 * @see VCardSubTypes#getCalscale
@@ -184,7 +190,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	 * value.
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param calscale the type of calendar or null to remove
 	 * @see VCardSubTypes#setCalscale

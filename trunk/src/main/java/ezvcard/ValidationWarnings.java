@@ -89,7 +89,7 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 
 	/**
 	 * Gets all validation warnings of a given property.
-	 * @param propertyClass the property (e.g. <code>TelephoneType.class</code>)
+	 * @param propertyClass the property (e.g. {@code TelephoneType.class})
 	 * or null to get the generic vCard warnings
 	 * @return the validation warnings
 	 */
@@ -150,7 +150,7 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 
 	/**
 	 * Iterates over each warning group (same as calling
-	 * <code>getWarnings().iterator()</code>).
+	 * {@code getWarnings().iterator()}).
 	 * @return the iterator
 	 */
 	public Iterator<WarningsGroup> iterator() {

@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  * Represents a URI for encoding telephone numbers.
  * </p>
  * <p>
- * Example tel URI: <code>tel:+1-212-555-0101</code>
+ * Example tel URI: {@code tel:+1-212-555-0101}
  * </p>
  * <p>
  * This class is immutable. Use the {@link Builder} object to construct a new
@@ -361,11 +361,11 @@ public final class TelUri {
 		 * <li>Contain at least 1 digit</li>
 		 * <li>Limit themselves to the following characters:
 		 * <ul>
-		 * <li><code>0-9</code> (digits)</li>
-		 * <li><code>-</code> (hypen)</li>
-		 * <li><code>.</code> (period)</li>
-		 * <li><code>(</code> (opening paraenthesis)</li>
-		 * <li><code>)</code> (closing paraenthesis)</li>
+		 * <li>{@code 0-9} (digits)</li>
+		 * <li>{@code -} (hypen)</li>
+		 * <li>{@code .} (period)</li>
+		 * <li>{@code (} (opening paraenthesis)</li>
+		 * <li>{@code )} (closing paraenthesis)</li>
 		 * </ul>
 		 * </li>
 		 * </ol>
@@ -389,20 +389,20 @@ public final class TelUri {
 		 * <ol>
 		 * <li>Contain at least 1 of the following characters:
 		 * <ul>
-		 * <li><code>0-9</code> (digit)</li>
-		 * <li><code>*</code> (asterisk)</li>
-		 * <li><code>#</code> (hash)</li>
+		 * <li>{@code 0-9} (digit)</li>
+		 * <li>{@code *} (asterisk)</li>
+		 * <li>{@code #} (hash)</li>
 		 * </ul>
 		 * </li>
 		 * <li>Limit themselves to the following characters:
 		 * <ul>
-		 * <li><code>0-9</code> (digits)</li>
-		 * <li><code>-</code> (hypen)</li>
-		 * <li><code>.</code> (period)</li>
-		 * <li><code>(</code> (opening paraenthesis)</li>
-		 * <li><code>)</code> (closing paraenthesis)</li>
-		 * <li><code>*</code> (asterisk)</li>
-		 * <li><code>#</code> (hash)</li>
+		 * <li>{@code 0-9} (digits)</li>
+		 * <li>{@code -} (hypen)</li>
+		 * <li>{@code .} (period)</li>
+		 * <li>{@code (} (opening paraenthesis)</li>
+		 * <li>{@code )} (closing paraenthesis)</li>
+		 * <li>{@code *} (asterisk)</li>
+		 * <li>{@code #} (hash)</li>
 		 * </ul>
 		 * </li>
 		 * </ol>
@@ -441,11 +441,11 @@ public final class TelUri {
 		 * <li>Contain at least 1 digit</li>
 		 * <li>Limit themselves to the following characters:
 		 * <ul>
-		 * <li><code>0-9</code> (digits)</li>
-		 * <li><code>-</code> (hypen)</li>
-		 * <li><code>.</code> (period)</li>
-		 * <li><code>(</code> (opening paraenthesis)</li>
-		 * <li><code>)</code> (closing paraenthesis)</li>
+		 * <li>{@code 0-9} (digits)</li>
+		 * <li>{@code -} (hypen)</li>
+		 * <li>{@code .} (period)</li>
+		 * <li>{@code (} (opening paraenthesis)</li>
+		 * <li>{@code )} (closing paraenthesis)</li>
 		 * </ul>
 		 * </li>
 		 * </ol>
@@ -481,20 +481,20 @@ public final class TelUri {
 		 * <ol>
 		 * <li>Contain at least 1 of the following characters:
 		 * <ul>
-		 * <li><code>0-9</code> (digit)</li>
-		 * <li><code>*</code> (asterisk)</li>
-		 * <li><code>#</code> (hash)</li>
+		 * <li>{@code 0-9} (digit)</li>
+		 * <li>{@code *} (asterisk)</li>
+		 * <li>{@code #} (hash)</li>
 		 * </ul>
 		 * </li>
 		 * <li>Limit themselves to the following characters:
 		 * <ul>
-		 * <li><code>0-9</code> (digits)</li>
-		 * <li><code>-</code> (hypen)</li>
-		 * <li><code>.</code> (period)</li>
-		 * <li><code>(</code> (opening paraenthesis)</li>
-		 * <li><code>)</code> (closing paraenthesis)</li>
-		 * <li><code>*</code> (asterisk)</li>
-		 * <li><code>#</code> (hash)</li>
+		 * <li>{@code 0-9} (digits)</li>
+		 * <li>{@code -} (hypen)</li>
+		 * <li>{@code .} (period)</li>
+		 * <li>{@code (} (opening paraenthesis)</li>
+		 * <li>{@code )} (closing paraenthesis)</li>
+		 * <li>{@code *} (asterisk)</li>
+		 * <li>{@code #} (hash)</li>
 		 * </ul>
 		 * </li>
 		 * </ol>

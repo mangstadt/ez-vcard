@@ -65,10 +65,10 @@ import ezvcard.VCardVersion;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>KIND</code>
+ * <b>Property name:</b> {@code KIND}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>4.0</code>
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
  */

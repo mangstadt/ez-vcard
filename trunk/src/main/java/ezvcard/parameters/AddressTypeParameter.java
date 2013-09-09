@@ -39,7 +39,7 @@ import ezvcard.types.LabelType;
  * Represents the TYPE parameter of the {@link AddressType} and
  * {@link LabelType} types.
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -47,37 +47,37 @@ public class AddressTypeParameter extends VersionedVCardParameter {
 	private static final VCardParameterCaseClasses<AddressTypeParameter> enums = new VCardParameterCaseClasses<AddressTypeParameter>(AddressTypeParameter.class);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
 	public static final AddressTypeParameter HOME = new AddressTypeParameter("home");
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
 	public static final AddressTypeParameter WORK = new AddressTypeParameter("work");
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
 	public static final AddressTypeParameter DOM = new AddressTypeParameter("dom", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
 	public static final AddressTypeParameter INTL = new AddressTypeParameter("intl", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
 	public static final AddressTypeParameter POSTAL = new AddressTypeParameter("postal", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
 	public static final AddressTypeParameter PARCEL = new AddressTypeParameter("parcel", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
 	public static final AddressTypeParameter PREF = new AddressTypeParameter("pref", VCardVersion.V2_1, VCardVersion.V3_0);
 
@@ -98,7 +98,7 @@ public class AddressTypeParameter extends VersionedVCardParameter {
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
-	 * <code>==</code> equality.
+	 * {@code ==} equality.
 	 * @param value the parameter value
 	 * @return the object
 	 */

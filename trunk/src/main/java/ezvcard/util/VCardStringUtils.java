@@ -83,9 +83,9 @@ public class VCardStringUtils {
 	 * These characters are:
 	 * </p>
 	 * <ul>
-	 * <li>backslashes (<code>\</code>)</li>
-	 * <li>commas (<code>,</code>)</li>
-	 * <li>semi-colons (<code>;</code>)</li>
+	 * <li>backslashes ({@code \})</li>
+	 * <li>commas ({@code ,})</li>
+	 * <li>semi-colons ({@code ;})</li>
 	 * </ul>
 	 * @param text the text to escape
 	 * @return the escaped text
@@ -109,9 +109,9 @@ public class VCardStringUtils {
 	 * This method escapes the following newline sequences:
 	 * </p>
 	 * <ul>
-	 * <li><code>\r\n</code></li>
-	 * <li><code>\r</code></li>
-	 * <li><code>\n</code></li>
+	 * <li>{@code \r\n}</li>
+	 * <li>{@code \r}</li>
+	 * <li>{@code \n}</li>
 	 * </ul>
 	 * @param text the text to escape
 	 * @return the escaped text
@@ -139,11 +139,11 @@ public class VCardStringUtils {
 	 * <p>
 	 * For example:
 	 * <p>
-	 * <code>splitBy("HE\:LLO::WORLD", ':', false, true)</code>
+	 * {@code splitBy("HE\:LLO::WORLD", ':', false, true)}
 	 * <p>
 	 * returns
 	 * <p>
-	 * <code>["HE:LLO", "", "WORLD"]</code>
+	 * {@code ["HE:LLO", "", "WORLD"]}
 	 * @param str the string to split
 	 * @param ch the character to split by
 	 * @param removeEmpties true to remove empty elements, false not to
@@ -279,7 +279,7 @@ public class VCardStringUtils {
 	}
 
 	/**
-	 * Callback interface used with various <code>VCardStringUtils.join()</code>
+	 * Callback interface used with various {@code VCardStringUtils.join()}
 	 * methods.
 	 * @author Michael Angstadt
 	 * @param <T> the value type

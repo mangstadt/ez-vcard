@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * Represents a URI for encoding a geographical position.
  * </p>
  * <p>
- * Example geo URI: <code>geo:40.714623,-74.006605</code>
+ * Example geo URI: {@code geo:40.714623,-74.006605}
  * </p>
  * <p>
  * This class is immutable. Use the {@link Builder} object to construct a new

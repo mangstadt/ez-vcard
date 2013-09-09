@@ -64,7 +64,7 @@ import ezvcard.types.SoundType;
 /**
  * Represents the TYPE parameter of the {@link SoundType} type.
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author George El-Haddad Mar 10, 2010
  * @author Michael Angstadt
@@ -101,7 +101,7 @@ public class SoundTypeParameter extends MediaTypeParameter {
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
-	 * <code>==</code> equality.
+	 * {@code ==} equality.
 	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
 	 * to not search by this value
 	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null

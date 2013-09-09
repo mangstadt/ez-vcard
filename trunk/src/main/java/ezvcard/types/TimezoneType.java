@@ -59,10 +59,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>TZ</code>
+ * <b>Property name:</b> {@code TZ}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * 
  * @author Michael Angstadt
@@ -273,7 +273,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	/**
 	 * Gets the TYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the TYPE value (typically, this will be either "work" or "home")
 	 * or null if it doesn't exist
@@ -285,7 +285,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	/**
 	 * Sets the TYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param type the TYPE value (this should be either "work" or "home") or
 	 * null to remove
@@ -297,7 +297,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	/**
 	 * Gets the MEDIATYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the media type or null if not set
 	 */
@@ -308,7 +308,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	/**
 	 * Sets the MEDIATYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param mediaType the media type or null to remove
 	 */

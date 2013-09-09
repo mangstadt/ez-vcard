@@ -81,10 +81,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>ADR</code>
+ * <b>Property name:</b> {@code ADR}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -255,7 +255,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * Gets the global positioning coordinates that are associated with this
 	 * address.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the latitude (index 0) and longitude (index 1) or null if not set
 	 * or null if the parameter value was in an incorrect format
@@ -269,7 +269,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 * Sets the global positioning coordinates that are associated with this
 	 * address.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param latitude the latitude
 	 * @param longitude the longitude
@@ -317,7 +317,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Gets the timezone that's associated with this address.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the timezone (e.g. "America/New_York") or null if it doesn't
 	 * exist
@@ -329,7 +329,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	/**
 	 * Sets the timezone that's associated with this address.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param timezone the timezone (e.g. "America/New_York") or null to remove
 	 */

@@ -55,10 +55,10 @@ import ezvcard.util.VCardStringUtils.JoinCallback;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>CATEGORIES</code>
+ * <b>Property name:</b> {@code CATEGORIES}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -110,7 +110,7 @@ public class CategoriesType extends TextListType implements HasAltId {
 	/**
 	 * Gets the TYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the TYPE value (typically, this will be either "work" or "home")
 	 * or null if it doesn't exist
@@ -122,7 +122,7 @@ public class CategoriesType extends TextListType implements HasAltId {
 	/**
 	 * Sets the TYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param type the TYPE value (this should be either "work" or "home") or
 	 * null to remove

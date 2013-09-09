@@ -72,10 +72,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>BIRTHPLACE</code>
+ * <b>Property name:</b> {@code BIRTHPLACE}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>4.0</code>
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>

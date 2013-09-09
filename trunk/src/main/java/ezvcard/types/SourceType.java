@@ -46,10 +46,10 @@ import java.util.List;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>SOURCE</code>
+ * <b>Property name:</b> {@code SOURCE}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */

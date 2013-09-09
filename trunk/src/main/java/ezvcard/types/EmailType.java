@@ -65,10 +65,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>EMAIL</code>
+ * <b>Property name:</b> {@code EMAIL}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */

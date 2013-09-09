@@ -65,10 +65,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>TEL</code>
+ * <b>Property name:</b> {@code TEL}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -123,7 +123,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	/**
 	 * Gets a "tel" URI representing the phone number.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the "tel" URI or null if it is not set
 	 */
@@ -134,7 +134,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	/**
 	 * Sets a "tel" URI representing the phone number.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param uri the "tel" URI
 	 */

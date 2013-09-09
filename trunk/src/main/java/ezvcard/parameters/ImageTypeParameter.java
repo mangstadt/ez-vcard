@@ -67,7 +67,7 @@ import ezvcard.types.PhotoType;
  * parameter, and data URIs of the {@link PhotoType} and {@link LogoType}
  * properties.
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author George El-Haddadt Mar 10, 2010
  * @author Michael Angstadt
@@ -101,7 +101,7 @@ public class ImageTypeParameter extends MediaTypeParameter {
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
-	 * <code>==</code> equality.
+	 * {@code ==} equality.
 	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
 	 * to not search by this value
 	 * @param mediaType the media type to search for (e.g. "image/png") or null

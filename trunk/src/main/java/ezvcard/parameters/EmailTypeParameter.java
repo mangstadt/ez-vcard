@@ -37,7 +37,7 @@ import ezvcard.types.EmailType;
 /**
  * Represents the TYPE parameter of the {@link EmailType} type.
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -45,77 +45,77 @@ public class EmailTypeParameter extends VersionedVCardParameter {
 	private static final VCardParameterCaseClasses<EmailTypeParameter> enums = new VCardParameterCaseClasses<EmailTypeParameter>(EmailTypeParameter.class);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
 	public static final EmailTypeParameter INTERNET = new EmailTypeParameter("internet", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
 	public static final EmailTypeParameter X400 = new EmailTypeParameter("x400", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
 	public static final EmailTypeParameter PREF = new EmailTypeParameter("pref", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter AOL = new EmailTypeParameter("aol", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter APPLELINK = new EmailTypeParameter("applelink", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter ATTMAIL = new EmailTypeParameter("attmail", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter CIS = new EmailTypeParameter("cis", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter EWORLD = new EmailTypeParameter("eworld", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter IBMMAIL = new EmailTypeParameter("ibmmail", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter MCIMAIL = new EmailTypeParameter("mcimail", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter POWERSHARE = new EmailTypeParameter("powershare", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter PRODIGY = new EmailTypeParameter("prodigy", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (suggested)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
 	 */
 	public static final EmailTypeParameter TLX = new EmailTypeParameter("tlx", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final EmailTypeParameter HOME = new EmailTypeParameter("home", VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final EmailTypeParameter WORK = new EmailTypeParameter("work", VCardVersion.V4_0);
 
@@ -136,7 +136,7 @@ public class EmailTypeParameter extends VersionedVCardParameter {
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
-	 * <code>==</code> equality.
+	 * {@code ==} equality.
 	 * @param value the parameter value
 	 * @return the object
 	 */

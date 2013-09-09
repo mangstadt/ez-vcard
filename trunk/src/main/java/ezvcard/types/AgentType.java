@@ -71,10 +71,10 @@ import ezvcard.util.VCardStringUtils;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>AGENT</code>
+ * <b>Property name:</b> {@code AGENT}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0}
  * </p>
  * 
  * @author Michael Angstadt

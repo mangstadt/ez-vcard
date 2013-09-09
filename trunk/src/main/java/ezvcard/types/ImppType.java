@@ -49,7 +49,7 @@ import ezvcard.util.XCardElement;
 
 /**
  * An instant message handle. The handle is represented as a URI in the format "
- * <code>&lt;IM-PROTOCOL&gt;:&lt;IM-HANDLE&gt;</code>". For example, someone
+ * {@code &lt;IM-PROTOCOL&gt;:&lt;IM-HANDLE&gt;}". For example, someone
  * with a Yahoo! Messenger handle of "johndoe@yahoo.com" would have an IMPP
  * vCard property value of "ymsgr:johndoe@yahoo.com".
  * 
@@ -70,10 +70,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>IMPP</code>
+ * <b>Property name:</b> {@code IMPP}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -373,7 +373,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Gets the MEDIATYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the media type or null if not set
 	 */
@@ -384,7 +384,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	/**
 	 * Sets the MEDIATYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param mediaType the media type or null to remove
 	 */
