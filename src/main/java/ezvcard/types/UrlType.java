@@ -45,10 +45,10 @@ import java.util.List;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>URL</code>
+ * <b>Property name:</b> {@code URL}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -73,7 +73,7 @@ public class UrlType extends UriType implements HasAltId {
 	/**
 	 * Gets the MEDIATYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the media type or null if not set
 	 */
@@ -84,7 +84,7 @@ public class UrlType extends UriType implements HasAltId {
 	/**
 	 * Sets the MEDIATYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param mediaType the media type or null to remove
 	 */
@@ -130,7 +130,7 @@ public class UrlType extends UriType implements HasAltId {
 	/**
 	 * Gets the TYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0*</code>
+	 * <b>Supported versions:</b> {@code 4.0*}
 	 * </p>
 	 * 
 	 * <p>
@@ -148,7 +148,7 @@ public class UrlType extends UriType implements HasAltId {
 	/**
 	 * Sets the TYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0*</code>
+	 * <b>Supported versions:</b> {@code 4.0*}
 	 * </p>
 	 * 
 	 * <p>

@@ -171,19 +171,19 @@ public class VCardRawWriter implements Closeable {
 	 * (when enabled)</th>
 	 * </tr>
 	 * <tr>
-	 * <td><code>"</code></td>
-	 * <td><code>'</code></td>
-	 * <td><code>^'</code></td>
+	 * <td>{@code "}</td>
+	 * <td>{@code '}</td>
+	 * <td>{@code ^'}</td>
 	 * </tr>
 	 * <tr>
 	 * <td><i>newline</i></td>
 	 * <td><code><i>space</i></code></td>
-	 * <td><code>^n</code></td>
+	 * <td>{@code ^n}</td>
 	 * </tr>
 	 * <tr>
-	 * <td><code>^</code></td>
-	 * <td><code>^</code></td>
-	 * <td><code>^^</code></td>
+	 * <td>{@code ^}</td>
+	 * <td>{@code ^}</td>
+	 * <td>{@code ^^}</td>
 	 * </tr>
 	 * </table>
 	 * 
@@ -225,19 +225,19 @@ public class VCardRawWriter implements Closeable {
 	 * (when enabled)</th>
 	 * </tr>
 	 * <tr>
-	 * <td><code>"</code></td>
-	 * <td><code>'</code></td>
-	 * <td><code>^'</code></td>
+	 * <td>{@code "}</td>
+	 * <td>{@code '}</td>
+	 * <td>{@code ^'}</td>
 	 * </tr>
 	 * <tr>
 	 * <td><i>newline</i></td>
 	 * <td><code><i>space</i></code></td>
-	 * <td><code>^n</code></td>
+	 * <td>{@code ^n}</td>
 	 * </tr>
 	 * <tr>
-	 * <td><code>^</code></td>
-	 * <td><code>^</code></td>
-	 * <td><code>^^</code></td>
+	 * <td>{@code ^}</td>
+	 * <td>{@code ^}</td>
+	 * <td>{@code ^^}</td>
 	 * </tr>
 	 * </table>
 	 * 
@@ -586,9 +586,9 @@ public class VCardRawWriter implements Closeable {
 	 * are:
 	 * </p>
 	 * <ul>
-	 * <li><code>\r\n</code></li>
-	 * <li><code>\r</code></li>
-	 * <li><code>\n</code></li>
+	 * <li>{@code \r\n}</li>
+	 * <li>{@code \r}</li>
+	 * <li>{@code \n}</li>
 	 * </ul>
 	 * @param text the text to escape
 	 * @return the escaped text
@@ -603,9 +603,9 @@ public class VCardRawWriter implements Closeable {
 	 * newline character sequences are:
 	 * </p>
 	 * <ul>
-	 * <li><code>\r\n</code></li>
-	 * <li><code>\r</code></li>
-	 * <li><code>\n</code></li>
+	 * <li>{@code \r\n}</li>
+	 * <li>{@code \r}</li>
+	 * <li>{@code \n}</li>
 	 * </ul>
 	 * @param text the text to escape
 	 * @return the escaped text

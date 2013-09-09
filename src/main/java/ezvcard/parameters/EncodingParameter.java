@@ -64,7 +64,7 @@ import ezvcard.VCardVersion;
 /**
  * Represents the "ENCODING" sub type.
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0}
  * </p>
  * @author George El-Haddad Mar 10, 2010
  * @author Michael Angstadt
@@ -73,27 +73,27 @@ public class EncodingParameter extends VersionedVCardParameter {
 	private static final VCardParameterCaseClasses<EncodingParameter> enums = new VCardParameterCaseClasses<EncodingParameter>(EncodingParameter.class);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1</code>
+	 * <b>Supported versions:</b> {@code 2.1}
 	 */
 	public static final EncodingParameter QUOTED_PRINTABLE = new EncodingParameter("quoted-printable", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1</code>
+	 * <b>Supported versions:</b> {@code 2.1}
 	 */
 	public static final EncodingParameter BASE64 = new EncodingParameter("base64", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1</code>
+	 * <b>Supported versions:</b> {@code 2.1}
 	 */
 	public static final EncodingParameter _8BIT = new EncodingParameter("8bit", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1</code>
+	 * <b>Supported versions:</b> {@code 2.1}
 	 */
 	public static final EncodingParameter _7BIT = new EncodingParameter("7bit", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>3.0</code>
+	 * <b>Supported versions:</b> {@code 3.0}
 	 */
 	public static final EncodingParameter B = new EncodingParameter("b", VCardVersion.V3_0);
 
@@ -114,7 +114,7 @@ public class EncodingParameter extends VersionedVCardParameter {
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
-	 * <code>==</code> equality.
+	 * {@code ==} equality.
 	 * @param value the parameter value
 	 * @return the object
 	 */

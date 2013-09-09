@@ -70,10 +70,10 @@ import ezvcard.util.XCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>RELATED</code>
+ * <b>Property name:</b> {@code RELATED}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>4.0</code>
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
  */

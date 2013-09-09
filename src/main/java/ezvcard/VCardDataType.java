@@ -55,77 +55,77 @@ public class VCardDataType {
 	};
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (p.18-9)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (p.18-9)}
 	 */
 	public static final VCardDataType URL = new VCardDataType("url", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1 (p.8-9)</code>
+	 * <b>Supported versions:</b> {@code 2.1 (p.8-9)}
 	 */
 	public static final VCardDataType CONTENT_ID = new VCardDataType("content-id", VCardVersion.V2_1);
 
 	/**
-	 * <b>Supported versions:</b> <code>3.0</code>
+	 * <b>Supported versions:</b> {@code 3.0}
 	 */
 	public static final VCardDataType BINARY = new VCardDataType("binary", VCardVersion.V3_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
+	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 */
 	public static final VCardDataType URI = new VCardDataType("uri", VCardVersion.V3_0, VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
 	public static final VCardDataType TEXT = new VCardDataType("text");
 
 	/**
-	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
+	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 */
 	public static final VCardDataType DATE = new VCardDataType("date", VCardVersion.V3_0, VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
+	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 */
 	public static final VCardDataType TIME = new VCardDataType("time", VCardVersion.V3_0, VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>3.0, 4.0</code>
+	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 */
 	public static final VCardDataType DATE_TIME = new VCardDataType("date-time", VCardVersion.V3_0, VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final VCardDataType DATE_AND_OR_TIME = new VCardDataType("date-and-or-time", VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final VCardDataType TIMESTAMP = new VCardDataType("timestamp", VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final VCardDataType BOOLEAN = new VCardDataType("boolean", VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final VCardDataType INTEGER = new VCardDataType("integer", VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final VCardDataType FLOAT = new VCardDataType("float", VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final VCardDataType UTC_OFFSET = new VCardDataType("utc-offset", VCardVersion.V4_0);
 
 	/**
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 */
 	public static final VCardDataType LANGUAGE_TAG = new VCardDataType("language-tag", VCardVersion.V4_0);
 
@@ -177,7 +177,7 @@ public class VCardDataType {
 	/**
 	 * Searches for a data type and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
-	 * <code>==</code> equality.
+	 * {@code ==} equality.
 	 * @param dataType data type name (e.g. "text")
 	 * @return the data type
 	 */

@@ -66,10 +66,10 @@ import ezvcard.util.XmlUtils;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>XML</code>
+ * <b>Property name:</b> {@code XML}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>4.0</code>
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
  */

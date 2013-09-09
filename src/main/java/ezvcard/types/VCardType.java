@@ -519,7 +519,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * </p>
 	 * <p>
 	 * Extended type classes should override this method. By default, this
-	 * method returns <code>null</code>, which instructs the marshallers to
+	 * method returns {@code null}, which instructs the marshallers to
 	 * assign the following qualified name to the type:<br>
 	 * <br>
 	 * Namespace: xCard namespace<br>
@@ -532,11 +532,19 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Gets all parameters associated with this type.
-	 * @return the type's parameters
+	 * Gets all of the property's parameters.
+	 * @return the property's parameters
 	 */
 	public VCardSubTypes getSubTypes() {
 		return subTypes;
+	}
+
+	/**
+	 * Sets the property's parameters.
+	 * @param subTypes the parameters
+	 */
+	public void setSubTypes(VCardSubTypes subTypes) {
+		this.subTypes = subTypes;
 	}
 
 	/**
@@ -625,7 +633,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * Gets all PID values.
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the PID values or empty set if there are none
 	 * @see VCardSubTypes#getPids
@@ -639,7 +647,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * Adds a PID value.
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param localId the local ID
 	 * @param clientPidMapRef the ID used to reference the property's globally
@@ -655,7 +663,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * Removes all PID values.
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @see VCardSubTypes#removePids
 	 */
@@ -671,7 +679,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * considered the least preferred.
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
 	 * @see VCardSubTypes#getPref
@@ -688,7 +696,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * considered the least preferred.
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param pref the preference value or null to remove
 	 * @see VCardSubTypes#setPref

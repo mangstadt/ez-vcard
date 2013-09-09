@@ -50,10 +50,10 @@ import ezvcard.parameters.ExpertiseLevelParameter;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>EXPERTISE</code>
+ * <b>Property name:</b> {@code EXPERTISE}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>4.0</code>
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>

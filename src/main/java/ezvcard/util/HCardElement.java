@@ -97,16 +97,16 @@ public class HCardElement {
 	 * Gets the hCard value of this element. The value is determined based on
 	 * the following:
 	 * <ol>
-	 * <li>If the element is <code>&lt;abbr&gt;</code> and contains a
-	 * <code>title</code> attribute, then the value of the <code>title</code>
+	 * <li>If the element is {@code <abbr>} and contains a
+	 * {@code title} attribute, then the value of the {@code title}
 	 * attribute is returned.</li>
 	 * <li>Else, if the element contains one or more child elements that have a
-	 * CSS class of <code>value</code>, then append together the text contents
+	 * CSS class of {@code value}, then append together the text contents
 	 * of these elements.</li>
 	 * <li>Else, use the text content of the element itself.</li>
 	 * </ol>
-	 * All <code>&lt;br&gt;</code> tags are converted to newlines. All text
-	 * within <code>&lt;del&gt;</code> tags are ignored.
+	 * All {@code <br>} tags are converted to newlines. All text
+	 * within {@code <del>} tags are ignored.
 	 * @return the element's hCard value
 	 */
 	public String value() {
@@ -154,7 +154,7 @@ public class HCardElement {
 
 	/**
 	 * Appends text to the element, replacing newlines with
-	 * <code>&lt;br&gt;</code> tags.
+	 * {@code <br>} tags.
 	 * @param text the text to append
 	 */
 	public void append(String text) {

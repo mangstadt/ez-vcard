@@ -106,10 +106,10 @@ import ezvcard.parameters.ImageTypeParameter;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>LOGO</code>
+ * <b>Property name:</b> {@code LOGO}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */

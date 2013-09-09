@@ -37,7 +37,7 @@ import ezvcard.types.ExpertiseType;
  * Represents a LEVEL parameter for the {@link ExpertiseType} property.
  * 
  * <p>
- * <b>Supported versions:</b> <code>4.0</code>
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
@@ -66,7 +66,7 @@ public class ExpertiseLevelParameter extends VCardParameter {
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
-	 * <code>==</code> equality.
+	 * {@code ==} equality.
 	 * @param value the parameter value
 	 * @return the object
 	 */

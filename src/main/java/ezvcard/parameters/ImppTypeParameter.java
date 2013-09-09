@@ -36,7 +36,7 @@ import ezvcard.types.ImppType;
 /**
  * Represents the TYPE parameter of the {@link ImppType} type.
  * <p>
- * <b>Supported versions:</b> <code>4.0</code>
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -67,7 +67,7 @@ public class ImppTypeParameter extends VCardParameter {
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
-	 * <code>==</code> equality.
+	 * {@code ==} equality.
 	 * @param value the parameter value
 	 * @return the object
 	 */

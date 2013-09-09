@@ -110,10 +110,10 @@ import ezvcard.util.HCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>SOUND</code>
+ * <b>Property name:</b> {@code SOUND}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>2.1, 3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */

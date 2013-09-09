@@ -40,7 +40,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  * Represents a URI for encoding binary data.
  * </p>
  * <p>
- * Example: <code>data:image/jpeg;base64,[base64 string]</code>
+ * Example: {@code data:image/jpeg;base64,[base64 string]}
  * </p>
  * @author Michael Angstadt
  */

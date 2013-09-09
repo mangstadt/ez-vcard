@@ -51,10 +51,10 @@ import ezvcard.util.HCardElement;
  * </pre>
  * 
  * <p>
- * <b>Property name:</b> <code>NICKNAME</code>
+ * <b>Property name:</b> {@code NICKNAME}
  * </p>
  * <p>
- * <b>Supported versions:</b> <code>3.0, 4.0</code>
+ * <b>Supported versions:</b> {@code 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -71,7 +71,7 @@ public class NicknameType extends TextListType implements HasAltId {
 	/**
 	 * Gets the TYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the TYPE value (typically, this will be either "work" or "home")
 	 * or null if it doesn't exist
@@ -83,7 +83,7 @@ public class NicknameType extends TextListType implements HasAltId {
 	/**
 	 * Sets the TYPE parameter.
 	 * <p>
-	 * <b>Supported versions:</b> <code>4.0</code>
+	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param type the TYPE value (this should be either "work" or "home") or
 	 * null to remove
