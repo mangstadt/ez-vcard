@@ -1,0 +1,223 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package ezvcard.parameters;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import java.lang.reflect.Field;<a name="line.3"></a>
+<FONT color="green">004</FONT>    import java.lang.reflect.Modifier;<a name="line.4"></a>
+<FONT color="green">005</FONT>    import java.util.HashSet;<a name="line.5"></a>
+<FONT color="green">006</FONT>    import java.util.Set;<a name="line.6"></a>
+<FONT color="green">007</FONT>    <a name="line.7"></a>
+<FONT color="green">008</FONT>    /*<a name="line.8"></a>
+<FONT color="green">009</FONT>     Copyright (c) 2012, Michael Angstadt<a name="line.9"></a>
+<FONT color="green">010</FONT>     All rights reserved.<a name="line.10"></a>
+<FONT color="green">011</FONT>    <a name="line.11"></a>
+<FONT color="green">012</FONT>     Redistribution and use in source and binary forms, with or without<a name="line.12"></a>
+<FONT color="green">013</FONT>     modification, are permitted provided that the following conditions are met: <a name="line.13"></a>
+<FONT color="green">014</FONT>    <a name="line.14"></a>
+<FONT color="green">015</FONT>     1. Redistributions of source code must retain the above copyright notice, this<a name="line.15"></a>
+<FONT color="green">016</FONT>     list of conditions and the following disclaimer. <a name="line.16"></a>
+<FONT color="green">017</FONT>     2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.17"></a>
+<FONT color="green">018</FONT>     this list of conditions and the following disclaimer in the documentation<a name="line.18"></a>
+<FONT color="green">019</FONT>     and/or other materials provided with the distribution. <a name="line.19"></a>
+<FONT color="green">020</FONT>    <a name="line.20"></a>
+<FONT color="green">021</FONT>     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.21"></a>
+<FONT color="green">022</FONT>     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.22"></a>
+<FONT color="green">023</FONT>     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.23"></a>
+<FONT color="green">024</FONT>     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.24"></a>
+<FONT color="green">025</FONT>     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.25"></a>
+<FONT color="green">026</FONT>     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.26"></a>
+<FONT color="green">027</FONT>     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.27"></a>
+<FONT color="green">028</FONT>     ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.28"></a>
+<FONT color="green">029</FONT>     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.29"></a>
+<FONT color="green">030</FONT>     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.30"></a>
+<FONT color="green">031</FONT>    <a name="line.31"></a>
+<FONT color="green">032</FONT>     The views and conclusions contained in the software and documentation are those<a name="line.32"></a>
+<FONT color="green">033</FONT>     of the authors and should not be interpreted as representing official policies, <a name="line.33"></a>
+<FONT color="green">034</FONT>     either expressed or implied, of the FreeBSD Project.<a name="line.34"></a>
+<FONT color="green">035</FONT>     */<a name="line.35"></a>
+<FONT color="green">036</FONT>    <a name="line.36"></a>
+<FONT color="green">037</FONT>    /**<a name="line.37"></a>
+<FONT color="green">038</FONT>     * Represents a vCard parameter (aka "sub type") whose values are pre-defined.<a name="line.38"></a>
+<FONT color="green">039</FONT>     * @author Michael Angstadt<a name="line.39"></a>
+<FONT color="green">040</FONT>     */<a name="line.40"></a>
+<FONT color="green">041</FONT>    public class VCardParameter {<a name="line.41"></a>
+<FONT color="green">042</FONT>            /**<a name="line.42"></a>
+<FONT color="green">043</FONT>             * The name (e.g. "TYPE").<a name="line.43"></a>
+<FONT color="green">044</FONT>             */<a name="line.44"></a>
+<FONT color="green">045</FONT>            protected final String name;<a name="line.45"></a>
+<FONT color="green">046</FONT>    <a name="line.46"></a>
+<FONT color="green">047</FONT>            /**<a name="line.47"></a>
+<FONT color="green">048</FONT>             * The value (e.g. "home").<a name="line.48"></a>
+<FONT color="green">049</FONT>             */<a name="line.49"></a>
+<FONT color="green">050</FONT>            protected final String value;<a name="line.50"></a>
+<FONT color="green">051</FONT>    <a name="line.51"></a>
+<FONT color="green">052</FONT>            /**<a name="line.52"></a>
+<FONT color="green">053</FONT>             * @param name the name (e.g. "TYPE")<a name="line.53"></a>
+<FONT color="green">054</FONT>             * @param value the value (e.g. "home")<a name="line.54"></a>
+<FONT color="green">055</FONT>             */<a name="line.55"></a>
+<FONT color="green">056</FONT>            public VCardParameter(String name, String value) {<a name="line.56"></a>
+<FONT color="green">057</FONT>                    this.name = name.toUpperCase();<a name="line.57"></a>
+<FONT color="green">058</FONT>                    this.value = (value == null) ? null : value.toLowerCase();<a name="line.58"></a>
+<FONT color="green">059</FONT>            }<a name="line.59"></a>
+<FONT color="green">060</FONT>    <a name="line.60"></a>
+<FONT color="green">061</FONT>            /**<a name="line.61"></a>
+<FONT color="green">062</FONT>             * Gets the parameter name.<a name="line.62"></a>
+<FONT color="green">063</FONT>             * @return the parameter name<a name="line.63"></a>
+<FONT color="green">064</FONT>             */<a name="line.64"></a>
+<FONT color="green">065</FONT>            public String getName() {<a name="line.65"></a>
+<FONT color="green">066</FONT>                    return name;<a name="line.66"></a>
+<FONT color="green">067</FONT>            }<a name="line.67"></a>
+<FONT color="green">068</FONT>    <a name="line.68"></a>
+<FONT color="green">069</FONT>            /**<a name="line.69"></a>
+<FONT color="green">070</FONT>             * Gets the value of the parameter.<a name="line.70"></a>
+<FONT color="green">071</FONT>             * @return the value of the parameter (e.g. "home")<a name="line.71"></a>
+<FONT color="green">072</FONT>             */<a name="line.72"></a>
+<FONT color="green">073</FONT>            public String getValue() {<a name="line.73"></a>
+<FONT color="green">074</FONT>                    return value;<a name="line.74"></a>
+<FONT color="green">075</FONT>            }<a name="line.75"></a>
+<FONT color="green">076</FONT>    <a name="line.76"></a>
+<FONT color="green">077</FONT>            @Override<a name="line.77"></a>
+<FONT color="green">078</FONT>            public String toString() {<a name="line.78"></a>
+<FONT color="green">079</FONT>                    return name + "=" + value;<a name="line.79"></a>
+<FONT color="green">080</FONT>            }<a name="line.80"></a>
+<FONT color="green">081</FONT>    <a name="line.81"></a>
+<FONT color="green">082</FONT>            @Override<a name="line.82"></a>
+<FONT color="green">083</FONT>            public int hashCode() {<a name="line.83"></a>
+<FONT color="green">084</FONT>                    final int prime = 31;<a name="line.84"></a>
+<FONT color="green">085</FONT>                    int result = 1;<a name="line.85"></a>
+<FONT color="green">086</FONT>                    result = prime * result + name.hashCode();<a name="line.86"></a>
+<FONT color="green">087</FONT>                    result = prime * result + ((value == null) ? 0 : value.hashCode());<a name="line.87"></a>
+<FONT color="green">088</FONT>                    return result;<a name="line.88"></a>
+<FONT color="green">089</FONT>            }<a name="line.89"></a>
+<FONT color="green">090</FONT>    <a name="line.90"></a>
+<FONT color="green">091</FONT>            @Override<a name="line.91"></a>
+<FONT color="green">092</FONT>            public boolean equals(Object obj) {<a name="line.92"></a>
+<FONT color="green">093</FONT>                    if (this == obj)<a name="line.93"></a>
+<FONT color="green">094</FONT>                            return true;<a name="line.94"></a>
+<FONT color="green">095</FONT>                    if (obj == null)<a name="line.95"></a>
+<FONT color="green">096</FONT>                            return false;<a name="line.96"></a>
+<FONT color="green">097</FONT>                    if (getClass() != obj.getClass())<a name="line.97"></a>
+<FONT color="green">098</FONT>                            return false;<a name="line.98"></a>
+<FONT color="green">099</FONT>                    VCardParameter other = (VCardParameter) obj;<a name="line.99"></a>
+<FONT color="green">100</FONT>                    if (!name.equals(other.name))<a name="line.100"></a>
+<FONT color="green">101</FONT>                            return false;<a name="line.101"></a>
+<FONT color="green">102</FONT>                    if (value == null) {<a name="line.102"></a>
+<FONT color="green">103</FONT>                            if (other.value != null)<a name="line.103"></a>
+<FONT color="green">104</FONT>                                    return false;<a name="line.104"></a>
+<FONT color="green">105</FONT>                    } else if (!value.equals(other.value))<a name="line.105"></a>
+<FONT color="green">106</FONT>                            return false;<a name="line.106"></a>
+<FONT color="green">107</FONT>                    return true;<a name="line.107"></a>
+<FONT color="green">108</FONT>            }<a name="line.108"></a>
+<FONT color="green">109</FONT>    <a name="line.109"></a>
+<FONT color="green">110</FONT>            /**<a name="line.110"></a>
+<FONT color="green">111</FONT>             * Searches the static objects of a child class for one that has a certain<a name="line.111"></a>
+<FONT color="green">112</FONT>             * value.<a name="line.112"></a>
+<FONT color="green">113</FONT>             * @param typeValue the type value to look for<a name="line.113"></a>
+<FONT color="green">114</FONT>             * @param clazz the child class<a name="line.114"></a>
+<FONT color="green">115</FONT>             * @return the object or null if not found<a name="line.115"></a>
+<FONT color="green">116</FONT>             */<a name="line.116"></a>
+<FONT color="green">117</FONT>            protected static &lt;T extends VCardParameter&gt; T findByValue(String typeValue, Class&lt;T&gt; clazz) {<a name="line.117"></a>
+<FONT color="green">118</FONT>                    for (T param : all(clazz)) {<a name="line.118"></a>
+<FONT color="green">119</FONT>                            if (param.getValue().equalsIgnoreCase(typeValue)) {<a name="line.119"></a>
+<FONT color="green">120</FONT>                                    return param;<a name="line.120"></a>
+<FONT color="green">121</FONT>                            }<a name="line.121"></a>
+<FONT color="green">122</FONT>                    }<a name="line.122"></a>
+<FONT color="green">123</FONT>                    return null;<a name="line.123"></a>
+<FONT color="green">124</FONT>            }<a name="line.124"></a>
+<FONT color="green">125</FONT>    <a name="line.125"></a>
+<FONT color="green">126</FONT>            /**<a name="line.126"></a>
+<FONT color="green">127</FONT>             * Gets all values that belong to a parameter class<a name="line.127"></a>
+<FONT color="green">128</FONT>             * @param &lt;T&gt;<a name="line.128"></a>
+<FONT color="green">129</FONT>             * @param clazz the parameter class<a name="line.129"></a>
+<FONT color="green">130</FONT>             * @return all of the parameter's values<a name="line.130"></a>
+<FONT color="green">131</FONT>             */<a name="line.131"></a>
+<FONT color="green">132</FONT>            @SuppressWarnings("unchecked")<a name="line.132"></a>
+<FONT color="green">133</FONT>            protected static &lt;T extends VCardParameter&gt; Set&lt;T&gt; all(Class&lt;T&gt; clazz) {<a name="line.133"></a>
+<FONT color="green">134</FONT>                    Set&lt;T&gt; params = new HashSet&lt;T&gt;();<a name="line.134"></a>
+<FONT color="green">135</FONT>    <a name="line.135"></a>
+<FONT color="green">136</FONT>                    for (Field field : clazz.getFields()) {<a name="line.136"></a>
+<FONT color="green">137</FONT>                            int modifiers = field.getModifiers();<a name="line.137"></a>
+<FONT color="green">138</FONT>                            //@formatter:off<a name="line.138"></a>
+<FONT color="green">139</FONT>                            if (Modifier.isStatic(modifiers) &amp;&amp;<a name="line.139"></a>
+<FONT color="green">140</FONT>                                    Modifier.isPublic(modifiers) &amp;&amp;<a name="line.140"></a>
+<FONT color="green">141</FONT>                                    field.getDeclaringClass() == clazz &amp;&amp;<a name="line.141"></a>
+<FONT color="green">142</FONT>                                    field.getType() == clazz) {<a name="line.142"></a>
+<FONT color="green">143</FONT>                                    //@formatter:on<a name="line.143"></a>
+<FONT color="green">144</FONT>                                    try {<a name="line.144"></a>
+<FONT color="green">145</FONT>                                            Object obj = field.get(null);<a name="line.145"></a>
+<FONT color="green">146</FONT>                                            if (obj != null) {<a name="line.146"></a>
+<FONT color="green">147</FONT>                                                    params.add((T) obj);<a name="line.147"></a>
+<FONT color="green">148</FONT>                                            }<a name="line.148"></a>
+<FONT color="green">149</FONT>                                    } catch (Exception ex) {<a name="line.149"></a>
+<FONT color="green">150</FONT>                                            //reflection error<a name="line.150"></a>
+<FONT color="green">151</FONT>                                    }<a name="line.151"></a>
+<FONT color="green">152</FONT>                            }<a name="line.152"></a>
+<FONT color="green">153</FONT>                    }<a name="line.153"></a>
+<FONT color="green">154</FONT>    <a name="line.154"></a>
+<FONT color="green">155</FONT>                    return params;<a name="line.155"></a>
+<FONT color="green">156</FONT>            }<a name="line.156"></a>
+<FONT color="green">157</FONT>    }<a name="line.157"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>
