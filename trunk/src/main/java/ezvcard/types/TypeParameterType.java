@@ -33,6 +33,7 @@ import ezvcard.parameters.VCardParameter;
 
 /**
  * Represents a type that has a TYPE parameter (for example, {@link PhotoType}).
+ * @param <T> the parameter class
  * @author Michael Angstadt
  */
 public abstract class TypeParameterType<T extends VCardParameter> extends VCardType {

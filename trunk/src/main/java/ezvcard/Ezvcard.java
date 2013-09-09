@@ -702,6 +702,7 @@ public class Ezvcard {
 		 * that use circumflex accent encoding (enabled by default).
 		 * 
 		 * @param enable true to use circumflex accent decoding, false not to
+		 * @return this
 		 * @see VCardReader#setCaretDecodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
@@ -1428,6 +1429,7 @@ public class Ezvcard {
 		 * Sets whether the writer will use circumflex accent encoding for vCard
 		 * 3.0 and 4.0 parameter values (disabled by default).
 		 * @param enable true to use circumflex accent encoding, false not to
+		 * @return this
 		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
@@ -1441,6 +1443,7 @@ public class Ezvcard {
 		 * be excluded from the written vCard.
 		 * @param versionStrict true to exclude properties that do not support
 		 * the target version, false to include them anyway (defaults to true)
+		 * @return this
 		 */
 		public T versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;
@@ -1623,6 +1626,7 @@ public class Ezvcard {
 		 * will be excluded from the written vCard.
 		 * @param versionStrict true to exclude properties that do not support
 		 * xCard, false to include them anyway (defaults to true)
+		 * @return this
 		 */
 		public T versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;
@@ -1851,6 +1855,7 @@ public class Ezvcard {
 		 * will be excluded from the written vCard.
 		 * @param versionStrict true to exclude properties that do not support
 		 * jCard, false to include them anyway (defaults to true)
+		 * @return this
 		 */
 		public T versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;

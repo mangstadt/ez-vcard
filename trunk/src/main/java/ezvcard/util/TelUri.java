@@ -101,6 +101,7 @@ public final class TelUri {
 	/**
 	 * Parses a tel URI.
 	 * @param uri the URI
+	 * @return the parsed tel URI
 	 * @throws IllegalArgumentException if the URI cannot be parsed
 	 */
 	public static TelUri parse(String uri) {
@@ -519,6 +520,7 @@ public final class TelUri {
 		/**
 		 * Sets the extension.
 		 * @param extension the extension (e.g. "101") or null to remove
+		 * @return this
 		 * @throws IllegalArgumentException if the extension contains characters
 		 * other than the following: digits, hypens, parenthesis, periods
 		 */
@@ -534,6 +536,7 @@ public final class TelUri {
 		/**
 		 * Sets the ISDN sub address.
 		 * @param isdnSubaddress the ISDN sub address or null to remove
+		 * @return this
 		 */
 		public Builder isdnSubaddress(String isdnSubaddress) {
 			this.isdnSubaddress = isdnSubaddress;
@@ -545,6 +548,7 @@ public final class TelUri {
 		 * @param name the parameter name (can only contain letters, numbers,
 		 * and hyphens)
 		 * @param value the parameter value or null to remove it
+		 * @return this
 		 * @throws IllegalArgumentException if the parameter name contains
 		 * invalid characters
 		 */

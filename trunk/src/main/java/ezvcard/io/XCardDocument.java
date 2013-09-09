@@ -600,6 +600,7 @@ public class XCardDocument {
 	 * Writes the XML document to a file without pretty-printing it.
 	 * @param file the file
 	 * @throws TransformerException if there's a problem writing to the file
+	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(File file) throws TransformerException, IOException {
 		write(file, -1);
@@ -610,6 +611,7 @@ public class XCardDocument {
 	 * @param file the file stream
 	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @throws TransformerException if there's a problem writing to the file
+	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(File file, int indent) throws TransformerException, IOException {
 		Writer writer = utf8Writer(file);
