@@ -162,9 +162,9 @@ public class XmlUtils {
 			toWriter(node, writer, outputProperties);
 			return writer.toString();
 		} catch (TransformerException e) {
-			//writing to string
+			//should never be thrown because we're writing to a string
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	/**

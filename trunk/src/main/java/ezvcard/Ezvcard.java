@@ -841,9 +841,9 @@ public class Ezvcard {
 			try {
 				return super.first();
 			} catch (IOException e) {
-				//reading from string
+				//should never be thrown because we're reading from a string
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 
 		@Override
@@ -851,9 +851,9 @@ public class Ezvcard {
 			try {
 				return super.all();
 			} catch (IOException e) {
-				//reading from string
+				//should never be thrown because we're reading from a string
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 	}
 
@@ -971,9 +971,9 @@ public class Ezvcard {
 			try {
 				return super.first();
 			} catch (IOException e) {
-				//reading from string
+				//should never be thrown because we're reading from a string
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 
 		@Override
@@ -981,9 +981,9 @@ public class Ezvcard {
 			try {
 				return super.all();
 			} catch (IOException e) {
-				//reading from string
+				//should never be thrown because we're reading from a string
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 	}
 
@@ -1018,11 +1018,12 @@ public class Ezvcard {
 			try {
 				return super.first();
 			} catch (IOException e) {
-				//reading from DOM
+				//should never be thrown because we're reading from a DOM
+				throw new RuntimeException(e);
 			} catch (SAXException e) {
-				//reading from DOM
+				//should never be thrown because we're reading from a DOM
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 
 		@Override
@@ -1030,11 +1031,12 @@ public class Ezvcard {
 			try {
 				return super.all();
 			} catch (IOException e) {
-				//reading from DOM
+				//should never be thrown because we're reading from a DOM
+				throw new RuntimeException(e);
 			} catch (SAXException e) {
-				//reading from DOM
+				//should never be thrown because we're reading from a DOM
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 	}
 
@@ -1185,9 +1187,9 @@ public class Ezvcard {
 			try {
 				return super.first();
 			} catch (IOException e) {
-				//reading from string
+				//should never be thrown because we're reading from a string
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 
 		@Override
@@ -1195,9 +1197,9 @@ public class Ezvcard {
 			try {
 				return super.all();
 			} catch (IOException e) {
-				//reading from string
+				//should never be thrown because we're reading from a string
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 	}
 
@@ -1353,9 +1355,9 @@ public class Ezvcard {
 			try {
 				return super.first();
 			} catch (IOException e) {
-				//reading from string
+				//should never be thrown because we're reading from a string
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 
 		@Override
@@ -1363,9 +1365,9 @@ public class Ezvcard {
 			try {
 				return super.all();
 			} catch (IOException e) {
-				//reading from string
+				//should never be thrown because we're reading from a string
+				throw new RuntimeException(e);
 			}
-			return null;
 		}
 	}
 
