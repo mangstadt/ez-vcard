@@ -44,7 +44,7 @@ import java.util.Collections;
  */
 public abstract class CaseClasses<T, V> {
 	protected final Class<T> clazz;
-	protected Collection<T> preDefined = null;
+	protected volatile Collection<T> preDefined = null;
 	protected Collection<T> runtimeDefined = null;
 
 	/**
@@ -77,7 +77,14 @@ public abstract class CaseClasses<T, V> {
 	 * @return the object or null if one wasn't found
 	 */
 	public T find(V value) {
-		return find(value, false, false);
+		checkInit();
+
+		for (T obj : preDefined) {
+			if (matches(obj, value)) {
+				return obj;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -87,42 +94,22 @@ public abstract class CaseClasses<T, V> {
 	 * @return the object
 	 */
 	public T get(V value) {
-		return find(value, true, true);
-	}
-
-	/**
-	 * Searches for a case object by value.
-	 * @param value the value
-	 * @param createIfNotFound true to create a new instance of the object if it
-	 * can't be found, false to return "null" if not found
-	 * @param searchRuntimeDefined true to include the runtime-defined objects
-	 * in the search, false not to
-	 * @return the object
-	 */
-	protected T find(V value, boolean createIfNotFound, boolean searchRuntimeDefined) {
-		checkInit();
-
-		for (T obj : preDefined) {
-			if (matches(obj, value)) {
-				return obj;
-			}
+		T found = find(value);
+		if (found != null) {
+			return found;
 		}
 
-		if (searchRuntimeDefined) {
-			synchronized (this) {
-				for (T obj : runtimeDefined) {
-					if (matches(obj, value)) {
-						return obj;
-					}
-				}
-				if (createIfNotFound) {
-					T created = create(value);
-					runtimeDefined.add(created);
-					return created;
+		synchronized (runtimeDefined) {
+			for (T obj : runtimeDefined) {
+				if (matches(obj, value)) {
+					return obj;
 				}
 			}
+
+			T created = create(value);
+			runtimeDefined.add(created);
+			return created;
 		}
-		return null;
 	}
 
 	/**
@@ -137,7 +124,8 @@ public abstract class CaseClasses<T, V> {
 	private void checkInit() {
 		if (preDefined == null) {
 			synchronized (this) {
-				if (preDefined == null) { //duplicate if condition needed for concurrency purposes
+				//"double check idiom" (Bloch p.283)
+				if (preDefined == null) {
 					init();
 				}
 			}
