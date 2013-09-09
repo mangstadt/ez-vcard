@@ -44,7 +44,7 @@ import ezvcard.util.XCardElement;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * LanguageType lang = new LanguageType(&quot;en&quot;);
  * lang.setPref(1); //most preferred

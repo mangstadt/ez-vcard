@@ -51,7 +51,7 @@ import ezvcard.util.XCardElement;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * EmailType email = new EmailType(&quot;superdude55@hotmail.com&quot;);

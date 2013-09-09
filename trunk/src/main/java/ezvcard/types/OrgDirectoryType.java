@@ -39,7 +39,7 @@ import ezvcard.VCardVersion;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * OrgDirectoryType orgDirectory = new OrgDirectoryType(&quot;http://www.company.com/staff&quot;);
  * vcard.addOrgDirectory(orgDirectory);

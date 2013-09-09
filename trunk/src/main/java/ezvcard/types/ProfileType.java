@@ -41,7 +41,7 @@ import ezvcard.VCardVersion;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * ProfileType profile = new ProfileType();
  * vcard.setProfile(profile);

@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
  * <p>
  * <b>Examples:</b>
  * 
- * <pre>
+ * <pre class="brush:java">
  * TelUri uri = new TelUri.Builder(&quot;+1-212-555-0101&quot;).extension(&quot;123&quot;).build();
  * TelUri uri = TelUri.parse(&quot;tel:+1-212-555-0101;ext=123&quot;);
  * TelUri copy = new TelUri.Builder(original).extension(&quot;124&quot;).build();

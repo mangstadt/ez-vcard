@@ -52,7 +52,7 @@ import ezvcard.util.VCardStringUtils;
  * <b>URL</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * AgentType agent = new AgentType(&quot;http://mi5.gov.uk/007&quot;);
  * vcard.setAgent(agent);
@@ -62,7 +62,7 @@ import ezvcard.util.VCardStringUtils;
  * <b>vCard</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * VCard agentVcard = new VCard();
  * agentVcard.setFormattedName(&quot;Agent 007&quot;);

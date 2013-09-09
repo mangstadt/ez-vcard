@@ -38,7 +38,7 @@ import java.util.List;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * FormattedNameType fn = new FormattedNameType(&quot;Dr. Gregory House M.D.&quot;);
  * vcard.setFormattedName(fn);

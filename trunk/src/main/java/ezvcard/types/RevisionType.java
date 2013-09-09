@@ -38,7 +38,7 @@ import java.util.Date;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * RevisionType rev = new RevisionType(new Date());
  * vcard.setRevision(rev);

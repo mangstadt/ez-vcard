@@ -38,7 +38,7 @@ import java.util.Date;
  * <b>Setting the birthday</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //complete date
@@ -65,7 +65,7 @@ import java.util.Date;
  * <b>Getting the birthday</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * BirthdayType bday = vcard.getBirthday();
  * if (bday != null){

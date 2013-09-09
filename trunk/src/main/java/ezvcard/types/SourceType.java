@@ -39,7 +39,7 @@ import java.util.List;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * SourceType source = new SourceType(&quot;http://www.company.com/employees/doe_john.vcf&quot;);
  * vcard.addSource(source);

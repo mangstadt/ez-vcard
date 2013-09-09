@@ -40,7 +40,7 @@ import ezvcard.VCardVersion;
  * <b>Setting the anniversary</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //complete date
@@ -67,7 +67,7 @@ import ezvcard.VCardVersion;
  * <b>Getting the anniversary</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * AnniversaryType anniversary = vcard.getAnniversary();
  * if (anniversary != null){

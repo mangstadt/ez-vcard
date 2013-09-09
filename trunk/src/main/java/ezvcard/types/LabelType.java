@@ -56,7 +56,7 @@ import ezvcard.util.VCardStringUtils;
  * used.
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * AddressType adr = new AddressType();
  * adr.setStreetAddress(&quot;123 Main St.&quot;);
@@ -83,7 +83,7 @@ import ezvcard.util.VCardStringUtils;
  * parameters.
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * for (LabelType label : vcard.getOrphanedLabels()) {
  * 	System.out.println(label.getValue());

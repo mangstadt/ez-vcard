@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * <p>
  * <b>Examples:</b>
  * 
- * <pre>
+ * <pre class="brush:java">
  * GeoUri uri = new GeoUri.Builder(40.714623, -74.006605).coordC(1.1).build();
  * GeoUri uri = GeoUri.parse(&quot;geo:40.714623,-74.006605,1.1&quot;);
  * GeoUri copy = new GeoUri.Builder(original).coordC(2.1).build();

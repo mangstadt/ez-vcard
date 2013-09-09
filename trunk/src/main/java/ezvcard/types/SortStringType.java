@@ -47,7 +47,7 @@ import ezvcard.VCardVersion;
  * <b>Code sample (2.1, 3.0)</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * StructuredNameType n = new StructuredNameType();
  * n.setFamily(&quot;d'Armour&quot;);
@@ -61,7 +61,7 @@ import ezvcard.VCardVersion;
  * <b>Code sample (4.0)</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * StructuredNameType n = new StructuredNameType();
  * n.setFamily(&quot;d'Armour&quot;);

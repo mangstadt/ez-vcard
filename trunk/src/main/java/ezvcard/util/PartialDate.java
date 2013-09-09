@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * A <b>truncated date</b> is a date where the "lesser" components are missing.
  * For example, "12:30" is truncated because the "seconds" component is missing.
  * 
- * <pre>
+ * <pre class="brush:java">
  * PartialDate date = PartialDate.time(12, 30, null);
  * </pre>
  * 
@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * missing. For example, "April 20" is reduced accuracy because the "year"
  * component is missing.
  * 
- * <pre>
+ * <pre class="brush:java">
  * PartialDate date = PartialDate.date(null, 4, 20);
  * </pre>
  * 

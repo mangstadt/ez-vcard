@@ -38,7 +38,7 @@ import ezvcard.VCardVersion;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * //sample values: PUBLIC, PRIVATE, CONFIDENTIAL
  * ClassificationType classType = new ClassificationType(&quot;PUBLIC&quot;);

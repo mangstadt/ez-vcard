@@ -43,7 +43,7 @@ import ezvcard.parameters.HobbyLevelParameter;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * //someone who likes to wind surf during the summer, but rents a boat instead of owning one
  * VCard vcard = new VCard();
  * HobbyType hobby = new HobbyType(&quot;wind surfing&quot;);

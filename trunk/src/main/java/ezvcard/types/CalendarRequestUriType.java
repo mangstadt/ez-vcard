@@ -40,7 +40,7 @@ import ezvcard.VCardVersion;
  * <b>Code sample</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * CalendarRequestUriType caladruri = new CalendarRequestUriType(&quot;mailto:janedoe@ibm.com&quot;);
  * caladruri.setPref(1);

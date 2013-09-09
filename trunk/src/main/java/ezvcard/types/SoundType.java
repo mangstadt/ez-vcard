@@ -46,7 +46,7 @@ import ezvcard.util.HCardElement;
  * <b>Adding a sound</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //URL
@@ -71,7 +71,7 @@ import ezvcard.util.HCardElement;
  * <b>Getting the sounds</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * 
  * int fileCount = 0;

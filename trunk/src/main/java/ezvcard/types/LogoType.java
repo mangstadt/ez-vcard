@@ -42,7 +42,7 @@ import ezvcard.parameters.ImageTypeParameter;
  * <b>Adding a logo</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //URL
@@ -67,7 +67,7 @@ import ezvcard.parameters.ImageTypeParameter;
  * <b>Getting the logos</b>
  * </p>
  * 
- * <pre>
+ * <pre class="brush:java">
  * VCard vcard = ...
  * 
  * int fileCount = 0;

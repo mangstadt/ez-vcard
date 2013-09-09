@@ -41,7 +41,7 @@ import ezvcard.util.VCardStringUtils.JoinCallback;
  * <p>
  * <b>Examples:</b>
  * 
- * <pre>
+ * <pre class="brush:java">
  * //validate a vCard object according to the rules of a specific version
  * ValidationWarnings warnings = vcard.validate(VCardVersion.V3_0);
  * 
