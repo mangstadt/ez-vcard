@@ -37,6 +37,7 @@ import ezvcard.parameters.VCardParameter;
 /**
  * Represents a vCard Type that has a TYPE parameter that can have multiple
  * values (for example, {@link AddressType}).
+ * @param <T> the parameter class
  * @author Michael Angstadt
  * @see SingleValuedTypeParameterType
  */

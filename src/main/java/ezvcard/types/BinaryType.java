@@ -109,7 +109,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	 * @param name the type name (e.g. "PHOTO")
 	 * @param in an input stream to the binary data (will be closed)
 	 * @param type the content type
-	 * @throws IOException
+	 * @throws IOException if there is a problem reading from the input stream
 	 */
 	public BinaryType(String name, InputStream in, T type) throws IOException {
 		this(name, IOUtils.toByteArray(in, true), type);
@@ -120,7 +120,7 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	 * @param name the type name (e.g. "PHOTO")
 	 * @param file the file containing the binary data
 	 * @param type the content type
-	 * @throws IOException
+	 * @throws IOException if there is a problem reading from the file
 	 */
 	public BinaryType(String name, File file, T type) throws IOException {
 		this(name, new FileInputStream(file), type);

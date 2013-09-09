@@ -115,6 +115,7 @@ public final class GeoUri {
 	/**
 	 * Parses a geo URI string.
 	 * @param uri the URI string (e.g. "geo:40.714623,-74.006605")
+	 * @return the parsed geo URI
 	 * @throws IllegalArgumentException if the string is not a valid geo URI
 	 */
 	public static GeoUri parse(String uri) {
