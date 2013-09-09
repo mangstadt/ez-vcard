@@ -159,6 +159,7 @@
 						<link>http://jsoup.org/apidocs/</link>
 						<link>http://fasterxml.github.io/jackson-core/javadoc/2.1.0/</link>
 					</links>
+					<quiet>true</quiet>
 
 					<!-- exclude commons-codec source -->
 					<excludePackageNames>ezvcard.util.org.*</excludePackageNames>
