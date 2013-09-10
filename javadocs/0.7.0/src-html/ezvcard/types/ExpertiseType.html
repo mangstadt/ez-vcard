@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package ezvcard.types;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import ezvcard.VCardSubTypes;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import ezvcard.VCardVersion;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import ezvcard.parameters.ExpertiseLevelParameter;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>/*<a name="line.7"></a>
+<span class="sourceLineNo">008</span> Copyright (c) 2012, Michael Angstadt<a name="line.8"></a>
+<span class="sourceLineNo">009</span> All rights reserved.<a name="line.9"></a>
+<span class="sourceLineNo">010</span><a name="line.10"></a>
+<span class="sourceLineNo">011</span> Redistribution and use in source and binary forms, with or without<a name="line.11"></a>
+<span class="sourceLineNo">012</span> modification, are permitted provided that the following conditions are met: <a name="line.12"></a>
+<span class="sourceLineNo">013</span><a name="line.13"></a>
+<span class="sourceLineNo">014</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.14"></a>
+<span class="sourceLineNo">015</span> list of conditions and the following disclaimer. <a name="line.15"></a>
+<span class="sourceLineNo">016</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.16"></a>
+<span class="sourceLineNo">017</span> this list of conditions and the following disclaimer in the documentation<a name="line.17"></a>
+<span class="sourceLineNo">018</span> and/or other materials provided with the distribution. <a name="line.18"></a>
+<span class="sourceLineNo">019</span><a name="line.19"></a>
+<span class="sourceLineNo">020</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.20"></a>
+<span class="sourceLineNo">021</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.21"></a>
+<span class="sourceLineNo">022</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.22"></a>
+<span class="sourceLineNo">023</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.23"></a>
+<span class="sourceLineNo">024</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.24"></a>
+<span class="sourceLineNo">025</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.25"></a>
+<span class="sourceLineNo">026</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.26"></a>
+<span class="sourceLineNo">027</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.27"></a>
+<span class="sourceLineNo">028</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.28"></a>
+<span class="sourceLineNo">029</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span> The views and conclusions contained in the software and documentation are those<a name="line.31"></a>
+<span class="sourceLineNo">032</span> of the authors and should not be interpreted as representing official policies, <a name="line.32"></a>
+<span class="sourceLineNo">033</span> either expressed or implied, of the FreeBSD Project.<a name="line.33"></a>
+<span class="sourceLineNo">034</span> */<a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>/**<a name="line.36"></a>
+<span class="sourceLineNo">037</span> * Defines a professional subject area that the person has knowledge of. For<a name="line.37"></a>
+<span class="sourceLineNo">038</span> * example, if the person is a Java software engineer, he or she might list<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * technologies such as "servlets", "SOAP", and "Spring".<a name="line.39"></a>
+<span class="sourceLineNo">040</span> * <a name="line.40"></a>
+<span class="sourceLineNo">041</span> * &lt;pre&gt;<a name="line.41"></a>
+<span class="sourceLineNo">042</span> * VCard vcard = new VCard();<a name="line.42"></a>
+<span class="sourceLineNo">043</span> * ExpertiseType expertise = new ExpertiseType(&amp;quot;Java programming&amp;quot;);<a name="line.43"></a>
+<span class="sourceLineNo">044</span> * expertise.setLevel(ExpertiseLevelParameter.EXPERT);<a name="line.44"></a>
+<span class="sourceLineNo">045</span> * vcard.addExpertise(expertise);<a name="line.45"></a>
+<span class="sourceLineNo">046</span> * &lt;/pre&gt;<a name="line.46"></a>
+<span class="sourceLineNo">047</span> * <a name="line.47"></a>
+<span class="sourceLineNo">048</span> * &lt;p&gt;<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * vCard property name: EXPERTISE<a name="line.49"></a>
+<span class="sourceLineNo">050</span> * &lt;/p&gt;<a name="line.50"></a>
+<span class="sourceLineNo">051</span> * &lt;p&gt;<a name="line.51"></a>
+<span class="sourceLineNo">052</span> * vCard versions: 4.0<a name="line.52"></a>
+<span class="sourceLineNo">053</span> * &lt;/p&gt;<a name="line.53"></a>
+<span class="sourceLineNo">054</span> * @author Michael Angstadt<a name="line.54"></a>
+<span class="sourceLineNo">055</span> * @see &lt;a href="http://tools.ietf.org/html/rfc6715"&gt;RFC 6715&lt;/a&gt;<a name="line.55"></a>
+<span class="sourceLineNo">056</span> */<a name="line.56"></a>
+<span class="sourceLineNo">057</span>public class ExpertiseType extends TextType {<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        public static final String NAME = "EXPERTISE";<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>        public ExpertiseType() {<a name="line.60"></a>
+<span class="sourceLineNo">061</span>                super(NAME);<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        }<a name="line.62"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
+<span class="sourceLineNo">064</span>        /**<a name="line.64"></a>
+<span class="sourceLineNo">065</span>         * @param skill the skill (e.g. "Java programming")<a name="line.65"></a>
+<span class="sourceLineNo">066</span>         */<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        public ExpertiseType(String skill) {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                super(NAME, skill);<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        }<a name="line.69"></a>
+<span class="sourceLineNo">070</span><a name="line.70"></a>
+<span class="sourceLineNo">071</span>        @Override<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        public VCardVersion[] getSupportedVersions() {<a name="line.72"></a>
+<span class="sourceLineNo">073</span>                return new VCardVersion[] { VCardVersion.V4_0 };<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        }<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>        /**<a name="line.76"></a>
+<span class="sourceLineNo">077</span>         * Gets the level of knowledge the person has for this skill.<a name="line.77"></a>
+<span class="sourceLineNo">078</span>         * @return the skill level (e.g. "beginner") or null if not set<a name="line.78"></a>
+<span class="sourceLineNo">079</span>         * @see VCardSubTypes#getLevel<a name="line.79"></a>
+<span class="sourceLineNo">080</span>         */<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        public ExpertiseLevelParameter getLevel() {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                String value = subTypes.getLevel();<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                if (value == null) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                        return null;<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                }<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                ExpertiseLevelParameter p = ExpertiseLevelParameter.valueOf(value);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                if (p == null) {<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                        p = new ExpertiseLevelParameter(value);<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                }<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                return p;<a name="line.90"></a>
+<span class="sourceLineNo">091</span>        }<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>        /**<a name="line.93"></a>
+<span class="sourceLineNo">094</span>         * Sets the level of knowledge the person has for this skill.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>         * @param level the skill level (e.g. "beginner") or null to remove<a name="line.95"></a>
+<span class="sourceLineNo">096</span>         * @see VCardSubTypes#setLevel<a name="line.96"></a>
+<span class="sourceLineNo">097</span>         */<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        public void setLevel(ExpertiseLevelParameter level) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                subTypes.setLevel(level.getValue());<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        }<a name="line.100"></a>
+<span class="sourceLineNo">101</span><a name="line.101"></a>
+<span class="sourceLineNo">102</span>        /**<a name="line.102"></a>
+<span class="sourceLineNo">103</span>         * Gets the INDEX parameter.<a name="line.103"></a>
+<span class="sourceLineNo">104</span>         * @return the INDEX or null if not set<a name="line.104"></a>
+<span class="sourceLineNo">105</span>         * @see VCardSubTypes#getIndex<a name="line.105"></a>
+<span class="sourceLineNo">106</span>         */<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        public Integer getIndex() {<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                return subTypes.getIndex();<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        }<a name="line.109"></a>
+<span class="sourceLineNo">110</span><a name="line.110"></a>
+<span class="sourceLineNo">111</span>        /**<a name="line.111"></a>
+<span class="sourceLineNo">112</span>         * Sets the INDEX parameter.<a name="line.112"></a>
+<span class="sourceLineNo">113</span>         * @param index the INDEX or null to remove<a name="line.113"></a>
+<span class="sourceLineNo">114</span>         * @see VCardSubTypes#setIndex<a name="line.114"></a>
+<span class="sourceLineNo">115</span>         */<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        public void setIndex(Integer index) {<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                subTypes.setIndex(index);<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        }<a name="line.118"></a>
+<span class="sourceLineNo">119</span><a name="line.119"></a>
+<span class="sourceLineNo">120</span>        /**<a name="line.120"></a>
+<span class="sourceLineNo">121</span>         * Gets the TYPE parameter.<a name="line.121"></a>
+<span class="sourceLineNo">122</span>         * @return the TYPE value (typically, this will be either "work" or "home")<a name="line.122"></a>
+<span class="sourceLineNo">123</span>         * or null if it doesn't exist<a name="line.123"></a>
+<span class="sourceLineNo">124</span>         */<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        public String getType() {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                return subTypes.getType();<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        }<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>        /**<a name="line.129"></a>
+<span class="sourceLineNo">130</span>         * Sets the TYPE parameter.<a name="line.130"></a>
+<span class="sourceLineNo">131</span>         * @param type the TYPE value (this should be either "work" or "home") or<a name="line.131"></a>
+<span class="sourceLineNo">132</span>         * null to remove<a name="line.132"></a>
+<span class="sourceLineNo">133</span>         */<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        public void setType(String type) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                subTypes.setType(type);<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        }<a name="line.136"></a>
+<span class="sourceLineNo">137</span><a name="line.137"></a>
+<span class="sourceLineNo">138</span>        /**<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         * Gets the language that the skill description is written in.<a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * @return the language or null if not set<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * @see VCardSubTypes#getLanguage<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         */<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        public String getLanguage() {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                return subTypes.getLanguage();<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        }<a name="line.145"></a>
+<span class="sourceLineNo">146</span><a name="line.146"></a>
+<span class="sourceLineNo">147</span>        /**<a name="line.147"></a>
+<span class="sourceLineNo">148</span>         * Sets the language that the skill description is written in.<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         * @param language the language or null to remove<a name="line.149"></a>
+<span class="sourceLineNo">150</span>         * @see VCardSubTypes#setLanguage<a name="line.150"></a>
+<span class="sourceLineNo">151</span>         */<a name="line.151"></a>
+<span class="sourceLineNo">152</span>        public void setLanguage(String language) {<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                subTypes.setLanguage(language);<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        }<a name="line.154"></a>
+<span class="sourceLineNo">155</span><a name="line.155"></a>
+<span class="sourceLineNo">156</span>        /**<a name="line.156"></a>
+<span class="sourceLineNo">157</span>         * Gets the preference value.<a name="line.157"></a>
+<span class="sourceLineNo">158</span>         * &lt;p&gt;<a name="line.158"></a>
+<span class="sourceLineNo">159</span>         * vCard versions: 4.0<a name="line.159"></a>
+<span class="sourceLineNo">160</span>         * &lt;/p&gt;<a name="line.160"></a>
+<span class="sourceLineNo">161</span>         * @return the preference value or null if it doesn't exist<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         * @see VCardSubTypes#getPref<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         */<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        public Integer getPref() {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                return subTypes.getPref();<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        }<a name="line.166"></a>
+<span class="sourceLineNo">167</span><a name="line.167"></a>
+<span class="sourceLineNo">168</span>        /**<a name="line.168"></a>
+<span class="sourceLineNo">169</span>         * Sets the preference value.<a name="line.169"></a>
+<span class="sourceLineNo">170</span>         * &lt;p&gt;<a name="line.170"></a>
+<span class="sourceLineNo">171</span>         * vCard versions: 4.0<a name="line.171"></a>
+<span class="sourceLineNo">172</span>         * &lt;/p&gt;<a name="line.172"></a>
+<span class="sourceLineNo">173</span>         * @param pref the preference value or null to remove<a name="line.173"></a>
+<span class="sourceLineNo">174</span>         * @see VCardSubTypes#setPref<a name="line.174"></a>
+<span class="sourceLineNo">175</span>         */<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        public void setPref(Integer pref) {<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                subTypes.setPref(pref);<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        }<a name="line.178"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>        /**<a name="line.180"></a>
+<span class="sourceLineNo">181</span>         * Gets the ALTID.<a name="line.181"></a>
+<span class="sourceLineNo">182</span>         * &lt;p&gt;<a name="line.182"></a>
+<span class="sourceLineNo">183</span>         * vCard versions: 4.0<a name="line.183"></a>
+<span class="sourceLineNo">184</span>         * &lt;/p&gt;<a name="line.184"></a>
+<span class="sourceLineNo">185</span>         * @return the ALTID or null if it doesn't exist<a name="line.185"></a>
+<span class="sourceLineNo">186</span>         * @see VCardSubTypes#getAltId<a name="line.186"></a>
+<span class="sourceLineNo">187</span>         */<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        public String getAltId() {<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                return subTypes.getAltId();<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        }<a name="line.190"></a>
+<span class="sourceLineNo">191</span><a name="line.191"></a>
+<span class="sourceLineNo">192</span>        /**<a name="line.192"></a>
+<span class="sourceLineNo">193</span>         * Sets the ALTID.<a name="line.193"></a>
+<span class="sourceLineNo">194</span>         * &lt;p&gt;<a name="line.194"></a>
+<span class="sourceLineNo">195</span>         * vCard versions: 4.0<a name="line.195"></a>
+<span class="sourceLineNo">196</span>         * &lt;/p&gt;<a name="line.196"></a>
+<span class="sourceLineNo">197</span>         * @param altId the ALTID or null to remove<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * @see VCardSubTypes#setAltId<a name="line.198"></a>
+<span class="sourceLineNo">199</span>         */<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        public void setAltId(String altId) {<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                subTypes.setAltId(altId);<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        }<a name="line.202"></a>
+<span class="sourceLineNo">203</span>}<a name="line.203"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

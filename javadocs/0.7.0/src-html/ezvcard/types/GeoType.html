@@ -1,0 +1,444 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package ezvcard.types;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.text.DecimalFormat;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.text.NumberFormat;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.List;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.Set;<a name="line.6"></a>
+<span class="sourceLineNo">007</span><a name="line.7"></a>
+<span class="sourceLineNo">008</span>import ezvcard.VCard;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import ezvcard.VCardSubTypes;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import ezvcard.VCardVersion;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import ezvcard.io.CompatibilityMode;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import ezvcard.io.SkipMeException;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import ezvcard.parameters.ValueParameter;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import ezvcard.util.GeoUri;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import ezvcard.util.HCardElement;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import ezvcard.util.XCardElement;<a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span>/*<a name="line.18"></a>
+<span class="sourceLineNo">019</span> Copyright (c) 2012, Michael Angstadt<a name="line.19"></a>
+<span class="sourceLineNo">020</span> All rights reserved.<a name="line.20"></a>
+<span class="sourceLineNo">021</span><a name="line.21"></a>
+<span class="sourceLineNo">022</span> Redistribution and use in source and binary forms, with or without<a name="line.22"></a>
+<span class="sourceLineNo">023</span> modification, are permitted provided that the following conditions are met: <a name="line.23"></a>
+<span class="sourceLineNo">024</span><a name="line.24"></a>
+<span class="sourceLineNo">025</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.25"></a>
+<span class="sourceLineNo">026</span> list of conditions and the following disclaimer. <a name="line.26"></a>
+<span class="sourceLineNo">027</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.27"></a>
+<span class="sourceLineNo">028</span> this list of conditions and the following disclaimer in the documentation<a name="line.28"></a>
+<span class="sourceLineNo">029</span> and/or other materials provided with the distribution. <a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.31"></a>
+<span class="sourceLineNo">032</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.32"></a>
+<span class="sourceLineNo">033</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.33"></a>
+<span class="sourceLineNo">034</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.34"></a>
+<span class="sourceLineNo">035</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.35"></a>
+<span class="sourceLineNo">036</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.36"></a>
+<span class="sourceLineNo">037</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.37"></a>
+<span class="sourceLineNo">038</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.38"></a>
+<span class="sourceLineNo">039</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.39"></a>
+<span class="sourceLineNo">040</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.40"></a>
+<span class="sourceLineNo">041</span><a name="line.41"></a>
+<span class="sourceLineNo">042</span> The views and conclusions contained in the software and documentation are those<a name="line.42"></a>
+<span class="sourceLineNo">043</span> of the authors and should not be interpreted as representing official policies, <a name="line.43"></a>
+<span class="sourceLineNo">044</span> either expressed or implied, of the FreeBSD Project.<a name="line.44"></a>
+<span class="sourceLineNo">045</span> */<a name="line.45"></a>
+<span class="sourceLineNo">046</span><a name="line.46"></a>
+<span class="sourceLineNo">047</span>/**<a name="line.47"></a>
+<span class="sourceLineNo">048</span> * A set of latitude/longitude coordinates. There is no rule for what these<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * coordinates must represent, but the meaning could vary depending on the value<a name="line.49"></a>
+<span class="sourceLineNo">050</span> * of the vCard KIND type.<a name="line.50"></a>
+<span class="sourceLineNo">051</span> * <a name="line.51"></a>
+<span class="sourceLineNo">052</span> * &lt;ul&gt;<a name="line.52"></a>
+<span class="sourceLineNo">053</span> * &lt;li&gt;"individual": the location of the person's home or workplace.&lt;/li&gt;<a name="line.53"></a>
+<span class="sourceLineNo">054</span> * &lt;li&gt;"group": the location of the group's meeting place.&lt;/li&gt;<a name="line.54"></a>
+<span class="sourceLineNo">055</span> * &lt;li&gt;"org": the coordinates of the organization's headquarters.&lt;/li&gt;<a name="line.55"></a>
+<span class="sourceLineNo">056</span> * &lt;li&gt;"location": the coordinates of the location itself.&lt;/li&gt;<a name="line.56"></a>
+<span class="sourceLineNo">057</span> * &lt;/ul&gt;<a name="line.57"></a>
+<span class="sourceLineNo">058</span> * <a name="line.58"></a>
+<span class="sourceLineNo">059</span> * &lt;pre&gt;<a name="line.59"></a>
+<span class="sourceLineNo">060</span> * VCard vcard = new VCard();<a name="line.60"></a>
+<span class="sourceLineNo">061</span> * GeoType geo = new GeoType(-123.456, 12.54);<a name="line.61"></a>
+<span class="sourceLineNo">062</span> * vcard.setGeo(geo);<a name="line.62"></a>
+<span class="sourceLineNo">063</span> * &lt;/pre&gt;<a name="line.63"></a>
+<span class="sourceLineNo">064</span> * <a name="line.64"></a>
+<span class="sourceLineNo">065</span> * &lt;p&gt;<a name="line.65"></a>
+<span class="sourceLineNo">066</span> * vCard property name: GEO<a name="line.66"></a>
+<span class="sourceLineNo">067</span> * &lt;/p&gt;<a name="line.67"></a>
+<span class="sourceLineNo">068</span> * &lt;p&gt;<a name="line.68"></a>
+<span class="sourceLineNo">069</span> * vCard versions: 2.1, 3.0, 4.0<a name="line.69"></a>
+<span class="sourceLineNo">070</span> * &lt;/p&gt;<a name="line.70"></a>
+<span class="sourceLineNo">071</span> * @author Michael Angstadt<a name="line.71"></a>
+<span class="sourceLineNo">072</span> */<a name="line.72"></a>
+<span class="sourceLineNo">073</span>public class GeoType extends VCardType {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        public static final String NAME = "GEO";<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        private GeoUri uri = new GeoUri();<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>        public GeoType() {<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                this(null, null);<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        }<a name="line.79"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">081</span>        /**<a name="line.81"></a>
+<span class="sourceLineNo">082</span>         * @param latitude the latitude<a name="line.82"></a>
+<span class="sourceLineNo">083</span>         * @param longitude the longitude<a name="line.83"></a>
+<span class="sourceLineNo">084</span>         */<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        public GeoType(Double latitude, Double longitude) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                super(NAME);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                setLatitude(latitude);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                setLongitude(longitude);<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        }<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        /**<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         * Gets the latitude.<a name="line.92"></a>
+<span class="sourceLineNo">093</span>         * @return the latitude<a name="line.93"></a>
+<span class="sourceLineNo">094</span>         */<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        public Double getLatitude() {<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                return uri.getCoordA();<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        }<a name="line.97"></a>
+<span class="sourceLineNo">098</span><a name="line.98"></a>
+<span class="sourceLineNo">099</span>        /**<a name="line.99"></a>
+<span class="sourceLineNo">100</span>         * Sets the latitude.<a name="line.100"></a>
+<span class="sourceLineNo">101</span>         * @param latitude the latitude<a name="line.101"></a>
+<span class="sourceLineNo">102</span>         */<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        public void setLatitude(Double latitude) {<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                uri.setCoordA(latitude);<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        }<a name="line.105"></a>
+<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">107</span>        /**<a name="line.107"></a>
+<span class="sourceLineNo">108</span>         * Gets the longitude.<a name="line.108"></a>
+<span class="sourceLineNo">109</span>         * @return the longitude<a name="line.109"></a>
+<span class="sourceLineNo">110</span>         */<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        public Double getLongitude() {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                return uri.getCoordB();<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
+<span class="sourceLineNo">114</span><a name="line.114"></a>
+<span class="sourceLineNo">115</span>        /**<a name="line.115"></a>
+<span class="sourceLineNo">116</span>         * Sets the longitude.<a name="line.116"></a>
+<span class="sourceLineNo">117</span>         * @param longitude the longitude<a name="line.117"></a>
+<span class="sourceLineNo">118</span>         */<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        public void setLongitude(Double longitude) {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                uri.setCoordB(longitude);<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        }<a name="line.121"></a>
+<span class="sourceLineNo">122</span><a name="line.122"></a>
+<span class="sourceLineNo">123</span>        /**<a name="line.123"></a>
+<span class="sourceLineNo">124</span>         * Gets the raw object used for storing the GEO information. This can be<a name="line.124"></a>
+<span class="sourceLineNo">125</span>         * used to supplement the GEO value with additional information (such as the<a name="line.125"></a>
+<span class="sourceLineNo">126</span>         * altitude). Geo URIs are only supported by vCard version 4.0. Everything<a name="line.126"></a>
+<span class="sourceLineNo">127</span>         * but latitude and longitude will be lost when marshalling to an earlier<a name="line.127"></a>
+<span class="sourceLineNo">128</span>         * vCard version.<a name="line.128"></a>
+<span class="sourceLineNo">129</span>         * @return the geo URI object<a name="line.129"></a>
+<span class="sourceLineNo">130</span>         * @see &lt;a href="http://tools.ietf.org/html/rfc5870"&gt;RFC 5870&lt;/a&gt;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>         */<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        public GeoUri getGeoUri() {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                return uri;<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        }<a name="line.134"></a>
+<span class="sourceLineNo">135</span><a name="line.135"></a>
+<span class="sourceLineNo">136</span>        /**<a name="line.136"></a>
+<span class="sourceLineNo">137</span>         * Gets the TYPE parameter.<a name="line.137"></a>
+<span class="sourceLineNo">138</span>         * &lt;p&gt;<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         * vCard versions: 4.0<a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * &lt;/p&gt;<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * @return the TYPE value (typically, this will be either "work" or "home")<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         * or null if it doesn't exist<a name="line.142"></a>
+<span class="sourceLineNo">143</span>         */<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        public String getType() {<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                return subTypes.getType();<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        }<a name="line.146"></a>
+<span class="sourceLineNo">147</span><a name="line.147"></a>
+<span class="sourceLineNo">148</span>        /**<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         * Sets the TYPE parameter.<a name="line.149"></a>
+<span class="sourceLineNo">150</span>         * &lt;p&gt;<a name="line.150"></a>
+<span class="sourceLineNo">151</span>         * vCard versions: 4.0<a name="line.151"></a>
+<span class="sourceLineNo">152</span>         * &lt;/p&gt;<a name="line.152"></a>
+<span class="sourceLineNo">153</span>         * @param type the TYPE value (this should be either "work" or "home") or<a name="line.153"></a>
+<span class="sourceLineNo">154</span>         * null to remove<a name="line.154"></a>
+<span class="sourceLineNo">155</span>         */<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        public void setType(String type) {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                subTypes.setType(type);<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        }<a name="line.158"></a>
+<span class="sourceLineNo">159</span><a name="line.159"></a>
+<span class="sourceLineNo">160</span>        /**<a name="line.160"></a>
+<span class="sourceLineNo">161</span>         * Gets the MEDIATYPE parameter.<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         * &lt;p&gt;<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         * vCard versions: 4.0<a name="line.163"></a>
+<span class="sourceLineNo">164</span>         * &lt;/p&gt;<a name="line.164"></a>
+<span class="sourceLineNo">165</span>         * @return the media type or null if not set<a name="line.165"></a>
+<span class="sourceLineNo">166</span>         */<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        public String getMediaType() {<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                return subTypes.getMediaType();<a name="line.168"></a>
+<span class="sourceLineNo">169</span>        }<a name="line.169"></a>
+<span class="sourceLineNo">170</span><a name="line.170"></a>
+<span class="sourceLineNo">171</span>        /**<a name="line.171"></a>
+<span class="sourceLineNo">172</span>         * Sets the MEDIATYPE parameter.<a name="line.172"></a>
+<span class="sourceLineNo">173</span>         * &lt;p&gt;<a name="line.173"></a>
+<span class="sourceLineNo">174</span>         * vCard versions: 4.0<a name="line.174"></a>
+<span class="sourceLineNo">175</span>         * &lt;/p&gt;<a name="line.175"></a>
+<span class="sourceLineNo">176</span>         * @param mediaType the media type or null to remove<a name="line.176"></a>
+<span class="sourceLineNo">177</span>         */<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        public void setMediaType(String mediaType) {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                subTypes.setMediaType(mediaType);<a name="line.179"></a>
+<span class="sourceLineNo">180</span>        }<a name="line.180"></a>
+<span class="sourceLineNo">181</span><a name="line.181"></a>
+<span class="sourceLineNo">182</span>        /**<a name="line.182"></a>
+<span class="sourceLineNo">183</span>         * Gets all PID parameter values.<a name="line.183"></a>
+<span class="sourceLineNo">184</span>         * &lt;p&gt;<a name="line.184"></a>
+<span class="sourceLineNo">185</span>         * vCard versions: 4.0<a name="line.185"></a>
+<span class="sourceLineNo">186</span>         * &lt;/p&gt;<a name="line.186"></a>
+<span class="sourceLineNo">187</span>         * @return the PID values or empty set if there are none<a name="line.187"></a>
+<span class="sourceLineNo">188</span>         * @see VCardSubTypes#getPids<a name="line.188"></a>
+<span class="sourceLineNo">189</span>         */<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        public Set&lt;Integer[]&gt; getPids() {<a name="line.190"></a>
+<span class="sourceLineNo">191</span>                return subTypes.getPids();<a name="line.191"></a>
+<span class="sourceLineNo">192</span>        }<a name="line.192"></a>
+<span class="sourceLineNo">193</span><a name="line.193"></a>
+<span class="sourceLineNo">194</span>        /**<a name="line.194"></a>
+<span class="sourceLineNo">195</span>         * Adds a PID value.<a name="line.195"></a>
+<span class="sourceLineNo">196</span>         * &lt;p&gt;<a name="line.196"></a>
+<span class="sourceLineNo">197</span>         * vCard versions: 4.0<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * &lt;/p&gt;<a name="line.198"></a>
+<span class="sourceLineNo">199</span>         * @param localId the local ID<a name="line.199"></a>
+<span class="sourceLineNo">200</span>         * @param clientPidMapRef the ID used to reference the property's globally<a name="line.200"></a>
+<span class="sourceLineNo">201</span>         * unique identifier in the CLIENTPIDMAP property.<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         * @see VCardSubTypes#addPid(int, int)<a name="line.202"></a>
+<span class="sourceLineNo">203</span>         */<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        public void addPid(int localId, int clientPidMapRef) {<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                subTypes.addPid(localId, clientPidMapRef);<a name="line.205"></a>
+<span class="sourceLineNo">206</span>        }<a name="line.206"></a>
+<span class="sourceLineNo">207</span><a name="line.207"></a>
+<span class="sourceLineNo">208</span>        /**<a name="line.208"></a>
+<span class="sourceLineNo">209</span>         * Removes all PID values.<a name="line.209"></a>
+<span class="sourceLineNo">210</span>         * &lt;p&gt;<a name="line.210"></a>
+<span class="sourceLineNo">211</span>         * vCard versions: 4.0<a name="line.211"></a>
+<span class="sourceLineNo">212</span>         * &lt;/p&gt;<a name="line.212"></a>
+<span class="sourceLineNo">213</span>         * @see VCardSubTypes#removePids<a name="line.213"></a>
+<span class="sourceLineNo">214</span>         */<a name="line.214"></a>
+<span class="sourceLineNo">215</span>        public void removePids() {<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                subTypes.removePids();<a name="line.216"></a>
+<span class="sourceLineNo">217</span>        }<a name="line.217"></a>
+<span class="sourceLineNo">218</span><a name="line.218"></a>
+<span class="sourceLineNo">219</span>        /**<a name="line.219"></a>
+<span class="sourceLineNo">220</span>         * Gets the preference value.<a name="line.220"></a>
+<span class="sourceLineNo">221</span>         * &lt;p&gt;<a name="line.221"></a>
+<span class="sourceLineNo">222</span>         * vCard versions: 4.0<a name="line.222"></a>
+<span class="sourceLineNo">223</span>         * &lt;/p&gt;<a name="line.223"></a>
+<span class="sourceLineNo">224</span>         * @return the preference value or null if it doesn't exist<a name="line.224"></a>
+<span class="sourceLineNo">225</span>         * @see VCardSubTypes#getPref<a name="line.225"></a>
+<span class="sourceLineNo">226</span>         */<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        public Integer getPref() {<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                return subTypes.getPref();<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        }<a name="line.229"></a>
+<span class="sourceLineNo">230</span><a name="line.230"></a>
+<span class="sourceLineNo">231</span>        /**<a name="line.231"></a>
+<span class="sourceLineNo">232</span>         * Sets the preference value.<a name="line.232"></a>
+<span class="sourceLineNo">233</span>         * &lt;p&gt;<a name="line.233"></a>
+<span class="sourceLineNo">234</span>         * vCard versions: 4.0<a name="line.234"></a>
+<span class="sourceLineNo">235</span>         * &lt;/p&gt;<a name="line.235"></a>
+<span class="sourceLineNo">236</span>         * @param pref the preference value or null to remove<a name="line.236"></a>
+<span class="sourceLineNo">237</span>         * @see VCardSubTypes#setPref<a name="line.237"></a>
+<span class="sourceLineNo">238</span>         */<a name="line.238"></a>
+<span class="sourceLineNo">239</span>        public void setPref(Integer pref) {<a name="line.239"></a>
+<span class="sourceLineNo">240</span>                subTypes.setPref(pref);<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        }<a name="line.241"></a>
+<span class="sourceLineNo">242</span><a name="line.242"></a>
+<span class="sourceLineNo">243</span>        /**<a name="line.243"></a>
+<span class="sourceLineNo">244</span>         * Gets the ALTID.<a name="line.244"></a>
+<span class="sourceLineNo">245</span>         * &lt;p&gt;<a name="line.245"></a>
+<span class="sourceLineNo">246</span>         * vCard versions: 4.0<a name="line.246"></a>
+<span class="sourceLineNo">247</span>         * &lt;/p&gt;<a name="line.247"></a>
+<span class="sourceLineNo">248</span>         * @return the ALTID or null if it doesn't exist<a name="line.248"></a>
+<span class="sourceLineNo">249</span>         * @see VCardSubTypes#getAltId<a name="line.249"></a>
+<span class="sourceLineNo">250</span>         */<a name="line.250"></a>
+<span class="sourceLineNo">251</span>        public String getAltId() {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>                return subTypes.getAltId();<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        }<a name="line.253"></a>
+<span class="sourceLineNo">254</span><a name="line.254"></a>
+<span class="sourceLineNo">255</span>        /**<a name="line.255"></a>
+<span class="sourceLineNo">256</span>         * Sets the ALTID.<a name="line.256"></a>
+<span class="sourceLineNo">257</span>         * &lt;p&gt;<a name="line.257"></a>
+<span class="sourceLineNo">258</span>         * vCard versions: 4.0<a name="line.258"></a>
+<span class="sourceLineNo">259</span>         * &lt;/p&gt;<a name="line.259"></a>
+<span class="sourceLineNo">260</span>         * @param altId the ALTID or null to remove<a name="line.260"></a>
+<span class="sourceLineNo">261</span>         * @see VCardSubTypes#setAltId<a name="line.261"></a>
+<span class="sourceLineNo">262</span>         */<a name="line.262"></a>
+<span class="sourceLineNo">263</span>        public void setAltId(String altId) {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>                subTypes.setAltId(altId);<a name="line.264"></a>
+<span class="sourceLineNo">265</span>        }<a name="line.265"></a>
+<span class="sourceLineNo">266</span><a name="line.266"></a>
+<span class="sourceLineNo">267</span>        @Override<a name="line.267"></a>
+<span class="sourceLineNo">268</span>        protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode, VCard vcard) {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                if (version == VCardVersion.V4_0) {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                        copy.setValue(ValueParameter.URI);<a name="line.270"></a>
+<span class="sourceLineNo">271</span>                }<a name="line.271"></a>
+<span class="sourceLineNo">272</span>        }<a name="line.272"></a>
+<span class="sourceLineNo">273</span><a name="line.273"></a>
+<span class="sourceLineNo">274</span>        @Override<a name="line.274"></a>
+<span class="sourceLineNo">275</span>        protected void doMarshalValue(StringBuilder sb, VCardVersion version, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode) {<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                if (getLatitude() == null || getLongitude() == null) {<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                        throw new SkipMeException("Latitude and/or longitude is missing.");<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                }<a name="line.278"></a>
+<span class="sourceLineNo">279</span><a name="line.279"></a>
+<span class="sourceLineNo">280</span>                if (version == VCardVersion.V4_0) {<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                        sb.append(uri.toString(6));<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                } else {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                        NumberFormat nf = new DecimalFormat("0.######");<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                        sb.append(nf.format(getLatitude()));<a name="line.284"></a>
+<span class="sourceLineNo">285</span>                        sb.append(';');<a name="line.285"></a>
+<span class="sourceLineNo">286</span>                        sb.append(nf.format(getLongitude()));<a name="line.286"></a>
+<span class="sourceLineNo">287</span>                }<a name="line.287"></a>
+<span class="sourceLineNo">288</span>        }<a name="line.288"></a>
+<span class="sourceLineNo">289</span><a name="line.289"></a>
+<span class="sourceLineNo">290</span>        @Override<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        protected void doUnmarshalValue(String value, VCardVersion version, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode) {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>                try {<a name="line.292"></a>
+<span class="sourceLineNo">293</span>                        //4.0 syntax: GEO;VALUE=uri:geo:12,23<a name="line.293"></a>
+<span class="sourceLineNo">294</span>                        uri = new GeoUri(value);<a name="line.294"></a>
+<span class="sourceLineNo">295</span>                } catch (IllegalArgumentException e) {<a name="line.295"></a>
+<span class="sourceLineNo">296</span>                        //2.1/3.0 syntax: GEO:12;34<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                        String split[] = value.split(";");<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                        uri = new GeoUri();<a name="line.298"></a>
+<span class="sourceLineNo">299</span><a name="line.299"></a>
+<span class="sourceLineNo">300</span>                        try {<a name="line.300"></a>
+<span class="sourceLineNo">301</span>                                setLatitude(Double.valueOf(split[0]));<a name="line.301"></a>
+<span class="sourceLineNo">302</span>                        } catch (NumberFormatException e2) {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                                //do nothing (handled below)<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                        }<a name="line.304"></a>
+<span class="sourceLineNo">305</span><a name="line.305"></a>
+<span class="sourceLineNo">306</span>                        boolean longMissing = false;<a name="line.306"></a>
+<span class="sourceLineNo">307</span>                        if (split.length &gt; 1) {<a name="line.307"></a>
+<span class="sourceLineNo">308</span>                                try {<a name="line.308"></a>
+<span class="sourceLineNo">309</span>                                        setLongitude(Double.valueOf(split[1]));<a name="line.309"></a>
+<span class="sourceLineNo">310</span>                                } catch (NumberFormatException e2) {<a name="line.310"></a>
+<span class="sourceLineNo">311</span>                                        //do nothing (handled below)<a name="line.311"></a>
+<span class="sourceLineNo">312</span>                                }<a name="line.312"></a>
+<span class="sourceLineNo">313</span>                        } else {<a name="line.313"></a>
+<span class="sourceLineNo">314</span>                                longMissing = true;<a name="line.314"></a>
+<span class="sourceLineNo">315</span>                        }<a name="line.315"></a>
+<span class="sourceLineNo">316</span><a name="line.316"></a>
+<span class="sourceLineNo">317</span>                        if (getLatitude() == null &amp;&amp; getLongitude() == null) {<a name="line.317"></a>
+<span class="sourceLineNo">318</span>                                throw new SkipMeException("Unparseable value: \"" + value + "\"");<a name="line.318"></a>
+<span class="sourceLineNo">319</span>                        } else if (longMissing) {<a name="line.319"></a>
+<span class="sourceLineNo">320</span>                                warnings.add("Longitude missing from " + NAME + " type value: \"" + value + "\"");<a name="line.320"></a>
+<span class="sourceLineNo">321</span>                        } else if (getLatitude() == null) {<a name="line.321"></a>
+<span class="sourceLineNo">322</span>                                warnings.add("Could not parse latitude from " + NAME + " type value: \"" + value + "\"");<a name="line.322"></a>
+<span class="sourceLineNo">323</span>                        } else if (getLongitude() == null) {<a name="line.323"></a>
+<span class="sourceLineNo">324</span>                                warnings.add("Could not parse longitude from " + NAME + " type value: \"" + value + "\"");<a name="line.324"></a>
+<span class="sourceLineNo">325</span>                        }<a name="line.325"></a>
+<span class="sourceLineNo">326</span>                }<a name="line.326"></a>
+<span class="sourceLineNo">327</span>        }<a name="line.327"></a>
+<span class="sourceLineNo">328</span><a name="line.328"></a>
+<span class="sourceLineNo">329</span>        @Override<a name="line.329"></a>
+<span class="sourceLineNo">330</span>        protected void doMarshalValue(XCardElement parent, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode) {<a name="line.330"></a>
+<span class="sourceLineNo">331</span>                StringBuilder sb = new StringBuilder();<a name="line.331"></a>
+<span class="sourceLineNo">332</span>                doMarshalValue(sb, parent.getVersion(), warnings, compatibilityMode);<a name="line.332"></a>
+<span class="sourceLineNo">333</span>                parent.appendUri(sb.toString());<a name="line.333"></a>
+<span class="sourceLineNo">334</span>        }<a name="line.334"></a>
+<span class="sourceLineNo">335</span><a name="line.335"></a>
+<span class="sourceLineNo">336</span>        @Override<a name="line.336"></a>
+<span class="sourceLineNo">337</span>        protected void doUnmarshalValue(XCardElement element, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode) {<a name="line.337"></a>
+<span class="sourceLineNo">338</span>                String value = element.getUri();<a name="line.338"></a>
+<span class="sourceLineNo">339</span>                if (value != null) {<a name="line.339"></a>
+<span class="sourceLineNo">340</span>                        doUnmarshalValue(value, element.getVersion(), warnings, compatibilityMode);<a name="line.340"></a>
+<span class="sourceLineNo">341</span>                }<a name="line.341"></a>
+<span class="sourceLineNo">342</span>        }<a name="line.342"></a>
+<span class="sourceLineNo">343</span><a name="line.343"></a>
+<span class="sourceLineNo">344</span>        @Override<a name="line.344"></a>
+<span class="sourceLineNo">345</span>        protected void doUnmarshalHtml(HCardElement element, List&lt;String&gt; warnings) {<a name="line.345"></a>
+<span class="sourceLineNo">346</span>                String latitude = element.firstValue("latitude");<a name="line.346"></a>
+<span class="sourceLineNo">347</span>                if (latitude == null) {<a name="line.347"></a>
+<span class="sourceLineNo">348</span>                        warnings.add("Latitude missing from " + NAME + " type.");<a name="line.348"></a>
+<span class="sourceLineNo">349</span>                } else {<a name="line.349"></a>
+<span class="sourceLineNo">350</span>                        try {<a name="line.350"></a>
+<span class="sourceLineNo">351</span>                                setLatitude(Double.parseDouble(latitude));<a name="line.351"></a>
+<span class="sourceLineNo">352</span>                        } catch (NumberFormatException e) {<a name="line.352"></a>
+<span class="sourceLineNo">353</span>                                warnings.add("Could not parse latitude from " + NAME + " type.");<a name="line.353"></a>
+<span class="sourceLineNo">354</span>                        }<a name="line.354"></a>
+<span class="sourceLineNo">355</span>                }<a name="line.355"></a>
+<span class="sourceLineNo">356</span><a name="line.356"></a>
+<span class="sourceLineNo">357</span>                String longitude = element.firstValue("longitude");<a name="line.357"></a>
+<span class="sourceLineNo">358</span>                if (longitude == null) {<a name="line.358"></a>
+<span class="sourceLineNo">359</span>                        warnings.add("Longitude missing from " + NAME + " type.");<a name="line.359"></a>
+<span class="sourceLineNo">360</span>                } else {<a name="line.360"></a>
+<span class="sourceLineNo">361</span>                        try {<a name="line.361"></a>
+<span class="sourceLineNo">362</span>                                setLongitude(Double.parseDouble(longitude));<a name="line.362"></a>
+<span class="sourceLineNo">363</span>                        } catch (NumberFormatException e) {<a name="line.363"></a>
+<span class="sourceLineNo">364</span>                                warnings.add("Could not parse longitude from " + NAME + " type.");<a name="line.364"></a>
+<span class="sourceLineNo">365</span>                        }<a name="line.365"></a>
+<span class="sourceLineNo">366</span>                }<a name="line.366"></a>
+<span class="sourceLineNo">367</span><a name="line.367"></a>
+<span class="sourceLineNo">368</span>                if (getLatitude() == null &amp;&amp; getLongitude() == null) {<a name="line.368"></a>
+<span class="sourceLineNo">369</span>                        throw new SkipMeException("Unparsable value.");<a name="line.369"></a>
+<span class="sourceLineNo">370</span>                }<a name="line.370"></a>
+<span class="sourceLineNo">371</span>        }<a name="line.371"></a>
+<span class="sourceLineNo">372</span>}<a name="line.372"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

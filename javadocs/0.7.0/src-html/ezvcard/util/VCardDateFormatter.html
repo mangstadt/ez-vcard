@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package ezvcard.util;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.text.DateFormat;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.text.ParseException;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.Date;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.TimeZone;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.util.regex.Matcher;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.util.regex.Pattern;<a name="line.8"></a>
+<span class="sourceLineNo">009</span><a name="line.9"></a>
+<span class="sourceLineNo">010</span>/*<a name="line.10"></a>
+<span class="sourceLineNo">011</span> Copyright (c) 2012, Michael Angstadt<a name="line.11"></a>
+<span class="sourceLineNo">012</span> All rights reserved.<a name="line.12"></a>
+<span class="sourceLineNo">013</span><a name="line.13"></a>
+<span class="sourceLineNo">014</span> Redistribution and use in source and binary forms, with or without<a name="line.14"></a>
+<span class="sourceLineNo">015</span> modification, are permitted provided that the following conditions are met: <a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.17"></a>
+<span class="sourceLineNo">018</span> list of conditions and the following disclaimer. <a name="line.18"></a>
+<span class="sourceLineNo">019</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.19"></a>
+<span class="sourceLineNo">020</span> this list of conditions and the following disclaimer in the documentation<a name="line.20"></a>
+<span class="sourceLineNo">021</span> and/or other materials provided with the distribution. <a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.23"></a>
+<span class="sourceLineNo">024</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.24"></a>
+<span class="sourceLineNo">025</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.25"></a>
+<span class="sourceLineNo">026</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.26"></a>
+<span class="sourceLineNo">027</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.27"></a>
+<span class="sourceLineNo">028</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.28"></a>
+<span class="sourceLineNo">029</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.29"></a>
+<span class="sourceLineNo">030</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.30"></a>
+<span class="sourceLineNo">031</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.31"></a>
+<span class="sourceLineNo">032</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.32"></a>
+<span class="sourceLineNo">033</span><a name="line.33"></a>
+<span class="sourceLineNo">034</span> The views and conclusions contained in the software and documentation are those<a name="line.34"></a>
+<span class="sourceLineNo">035</span> of the authors and should not be interpreted as representing official policies, <a name="line.35"></a>
+<span class="sourceLineNo">036</span> either expressed or implied, of the FreeBSD Project.<a name="line.36"></a>
+<span class="sourceLineNo">037</span> */<a name="line.37"></a>
+<span class="sourceLineNo">038</span><a name="line.38"></a>
+<span class="sourceLineNo">039</span>/**<a name="line.39"></a>
+<span class="sourceLineNo">040</span> * Helper class that formats and parses vCard dates. vCard dates adhere to the<a name="line.40"></a>
+<span class="sourceLineNo">041</span> * ISO8601 date format standard.<a name="line.41"></a>
+<span class="sourceLineNo">042</span> * @author Michael Angstadt<a name="line.42"></a>
+<span class="sourceLineNo">043</span> */<a name="line.43"></a>
+<span class="sourceLineNo">044</span>public class VCardDateFormatter {<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        /**<a name="line.45"></a>
+<span class="sourceLineNo">046</span>         * Regular expression used to parse timezone offset strings.<a name="line.46"></a>
+<span class="sourceLineNo">047</span>         */<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        private static final Pattern timeZoneRegex = Pattern.compile("^([-\\+])?(\\d{1,2})(:?(\\d{2}))?$");<a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span>        /**<a name="line.50"></a>
+<span class="sourceLineNo">051</span>         * Formats a date for inclusion in a vCard.<a name="line.51"></a>
+<span class="sourceLineNo">052</span>         * @param date the date to format<a name="line.52"></a>
+<span class="sourceLineNo">053</span>         * @param format the format to use<a name="line.53"></a>
+<span class="sourceLineNo">054</span>         * @return the formatted date<a name="line.54"></a>
+<span class="sourceLineNo">055</span>         */<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        public static String format(Date date, ISOFormat format) {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                return format(date, format, TimeZone.getDefault());<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        }<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>        /**<a name="line.60"></a>
+<span class="sourceLineNo">061</span>         * Formats a date for inclusion in a vCard.<a name="line.61"></a>
+<span class="sourceLineNo">062</span>         * @param date the date to format<a name="line.62"></a>
+<span class="sourceLineNo">063</span>         * @param format the format to use<a name="line.63"></a>
+<span class="sourceLineNo">064</span>         * @param timeZone the time zone to format the date in. This will be ignored<a name="line.64"></a>
+<span class="sourceLineNo">065</span>         * if the specified ISOFormat is a "UTC" format<a name="line.65"></a>
+<span class="sourceLineNo">066</span>         * @return the formatted date<a name="line.66"></a>
+<span class="sourceLineNo">067</span>         */<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        public static String format(Date date, ISOFormat format, TimeZone timeZone) {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                switch (format) {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                case UTC_TIME_BASIC:<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                case UTC_TIME_EXTENDED:<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                        timeZone = TimeZone.getTimeZone("UTC");<a name="line.72"></a>
+<span class="sourceLineNo">073</span>                        break;<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                }<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>                DateFormat df = format.getFormatDateFormat();<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                df.setTimeZone(timeZone);<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                String str = df.format(date);<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>                switch (format) {<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                case TIME_EXTENDED:<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                        //add a colon to the timezone<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                        //example: converts "2012-07-05T22:31:41-0400" to "2012-07-05T22:31:41-04:00"<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                        str = str.replaceAll("([-\\+]\\d{2})(\\d{2})$", "$1:$2");<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                        break;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                }<a name="line.86"></a>
+<span class="sourceLineNo">087</span><a name="line.87"></a>
+<span class="sourceLineNo">088</span>                return str;<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        }<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        /**<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         * Parses a vCard date.<a name="line.92"></a>
+<span class="sourceLineNo">093</span>         * @param dateStr the date string to parse<a name="line.93"></a>
+<span class="sourceLineNo">094</span>         * @return the parsed date<a name="line.94"></a>
+<span class="sourceLineNo">095</span>         * @throws IllegalArgumentException if the date string isn't in one of the<a name="line.95"></a>
+<span class="sourceLineNo">096</span>         * accepted ISO8601 formats<a name="line.96"></a>
+<span class="sourceLineNo">097</span>         */<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        public static Date parse(String dateStr) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                //find out what ISOFormat the date is in<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                ISOFormat format = null;<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                for (ISOFormat f : ISOFormat.values()) {<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                        if (f.matches(dateStr)) {<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                                format = f;<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                                break;<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                        }<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                }<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                if (format == null) {<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                        throw new IllegalArgumentException("Date string is not in a valid ISO-8601 format.");<a name="line.108"></a>
+<span class="sourceLineNo">109</span>                }<a name="line.109"></a>
+<span class="sourceLineNo">110</span><a name="line.110"></a>
+<span class="sourceLineNo">111</span>                //tweak the date string to make it work with SimpleDateFormat<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                switch (format) {<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                case TIME_EXTENDED:<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                case HCARD_TIME_TAG:<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                        //SimpleDateFormat doesn't recognize timezone offsets that have colons<a name="line.115"></a>
+<span class="sourceLineNo">116</span>                        //so remove the colon from the timezone offset<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                        dateStr = dateStr.replaceAll("([-\\+]\\d{2}):(\\d{2})$", "$1$2");<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                        break;<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                case UTC_TIME_BASIC:<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                case UTC_TIME_EXTENDED:<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                        //SimpleDateFormat doesn't recognize "Z"<a name="line.121"></a>
+<span class="sourceLineNo">122</span>                        dateStr = dateStr.replace("Z", "+0000");<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                        break;<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                }<a name="line.124"></a>
+<span class="sourceLineNo">125</span><a name="line.125"></a>
+<span class="sourceLineNo">126</span>                //parse the date<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                DateFormat df = format.getParseDateFormat();<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                try {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                        return df.parse(dateStr);<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                } catch (ParseException e) {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                        //should never be thrown because the string is checked against a regex<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                        return null;<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                }<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        }<a name="line.134"></a>
+<span class="sourceLineNo">135</span><a name="line.135"></a>
+<span class="sourceLineNo">136</span>        /**<a name="line.136"></a>
+<span class="sourceLineNo">137</span>         * Parses a timezone that's in ISO8601 format.<a name="line.137"></a>
+<span class="sourceLineNo">138</span>         * @param offsetStr the timezone offset string (e.g. "-0500" or "-05:00")<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         * @return the hour offset (index 0) and the minute offset (index 1)<a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * @throws IllegalArgumentException if the timezone string isn't in the<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * right format<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         */<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        public static int[] parseTimeZone(String offsetStr) {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                Matcher m = timeZoneRegex.matcher(offsetStr);<a name="line.144"></a>
+<span class="sourceLineNo">145</span><a name="line.145"></a>
+<span class="sourceLineNo">146</span>                if (!m.find()) {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                        throw new IllegalArgumentException("Offset string is not in ISO8610 format: " + offsetStr);<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                }<a name="line.148"></a>
+<span class="sourceLineNo">149</span><a name="line.149"></a>
+<span class="sourceLineNo">150</span>                String sign = m.group(1);<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                boolean positive;<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                if ("-".equals(sign)) {<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                        positive = false;<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                } else {<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                        positive = true;<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                }<a name="line.156"></a>
+<span class="sourceLineNo">157</span><a name="line.157"></a>
+<span class="sourceLineNo">158</span>                String hourStr = m.group(2);<a name="line.158"></a>
+<span class="sourceLineNo">159</span>                int hourOffset = Integer.parseInt(hourStr);<a name="line.159"></a>
+<span class="sourceLineNo">160</span>                if (!positive) {<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                        hourOffset *= -1;<a name="line.161"></a>
+<span class="sourceLineNo">162</span>                }<a name="line.162"></a>
+<span class="sourceLineNo">163</span><a name="line.163"></a>
+<span class="sourceLineNo">164</span>                String minuteStr = m.group(4);<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                int minuteOffset = (minuteStr == null) ? 0 : Integer.parseInt(minuteStr);<a name="line.165"></a>
+<span class="sourceLineNo">166</span><a name="line.166"></a>
+<span class="sourceLineNo">167</span>                return new int[] { hourOffset, minuteOffset };<a name="line.167"></a>
+<span class="sourceLineNo">168</span>        }<a name="line.168"></a>
+<span class="sourceLineNo">169</span><a name="line.169"></a>
+<span class="sourceLineNo">170</span>        /**<a name="line.170"></a>
+<span class="sourceLineNo">171</span>         * Formats a {@link TimeZone} object according to ISO8601 rules.<a name="line.171"></a>
+<span class="sourceLineNo">172</span>         * <a name="line.172"></a>
+<span class="sourceLineNo">173</span>         * @param timeZone the timezone to format<a name="line.173"></a>
+<span class="sourceLineNo">174</span>         * @param extended true to use "extended" format, false not to. Extended<a name="line.174"></a>
+<span class="sourceLineNo">175</span>         * format will put a colon between the hour and minute.<a name="line.175"></a>
+<span class="sourceLineNo">176</span>         * @return the formatted timezone (e.g. "+0530" or "+05:30")<a name="line.176"></a>
+<span class="sourceLineNo">177</span>         */<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        public static String formatTimeZone(TimeZone timeZone, boolean extended) {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                int hours = timeZone.getRawOffset() / 1000 / 60 / 60;<a name="line.179"></a>
+<span class="sourceLineNo">180</span>                int minutes = Math.abs((timeZone.getRawOffset() / 1000) / 60) % 60;<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                return formatTimeZone(hours, minutes, extended);<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        }<a name="line.182"></a>
+<span class="sourceLineNo">183</span><a name="line.183"></a>
+<span class="sourceLineNo">184</span>        /**<a name="line.184"></a>
+<span class="sourceLineNo">185</span>         * Formats a timezone offset according to ISO8601 rules.<a name="line.185"></a>
+<span class="sourceLineNo">186</span>         * <a name="line.186"></a>
+<span class="sourceLineNo">187</span>         * @param hourOffset the hour offset<a name="line.187"></a>
+<span class="sourceLineNo">188</span>         * @param minuteOffset the minute offset (must be between 0 and 59)<a name="line.188"></a>
+<span class="sourceLineNo">189</span>         * @param extended true to use "extended" format, false not to. Extended<a name="line.189"></a>
+<span class="sourceLineNo">190</span>         * format will put a colon between the hour and minute.<a name="line.190"></a>
+<span class="sourceLineNo">191</span>         * @return the formatted timezone (e.g. "+0530" or "+05:30")<a name="line.191"></a>
+<span class="sourceLineNo">192</span>         */<a name="line.192"></a>
+<span class="sourceLineNo">193</span>        public static String formatTimeZone(int hourOffset, int minuteOffset, boolean extended) {<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                if (minuteOffset &lt; 0 || minuteOffset &gt; 59) {<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                        throw new IllegalArgumentException("Minute offset must be between 0 and 59.");<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                }<a name="line.196"></a>
+<span class="sourceLineNo">197</span><a name="line.197"></a>
+<span class="sourceLineNo">198</span>                StringBuilder sb = new StringBuilder();<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                boolean positive = hourOffset &gt;= 0;<a name="line.199"></a>
+<span class="sourceLineNo">200</span><a name="line.200"></a>
+<span class="sourceLineNo">201</span>                sb.append(positive ? '+' : '-');<a name="line.201"></a>
+<span class="sourceLineNo">202</span><a name="line.202"></a>
+<span class="sourceLineNo">203</span>                hourOffset = Math.abs(hourOffset);<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                if (hourOffset &lt; 10) {<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                        sb.append('0');<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                }<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                sb.append(hourOffset);<a name="line.207"></a>
+<span class="sourceLineNo">208</span><a name="line.208"></a>
+<span class="sourceLineNo">209</span>                if (extended) {<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                        sb.append(':');<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                }<a name="line.211"></a>
+<span class="sourceLineNo">212</span><a name="line.212"></a>
+<span class="sourceLineNo">213</span>                if (minuteOffset &lt; 10) {<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                        sb.append('0');<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                }<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                sb.append(minuteOffset);<a name="line.216"></a>
+<span class="sourceLineNo">217</span><a name="line.217"></a>
+<span class="sourceLineNo">218</span>                return sb.toString();<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        }<a name="line.219"></a>
+<span class="sourceLineNo">220</span><a name="line.220"></a>
+<span class="sourceLineNo">221</span>        private VCardDateFormatter() {<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                //hide constructor<a name="line.222"></a>
+<span class="sourceLineNo">223</span>        }<a name="line.223"></a>
+<span class="sourceLineNo">224</span>}<a name="line.224"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
