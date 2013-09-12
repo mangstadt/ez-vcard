@@ -324,7 +324,7 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getSingleValued();
+		String valueStr = value.asSingle();
 		if (value.getDataType() == VCardDataType.URI) {
 			try {
 				setUri(TelUri.parse(valueStr));

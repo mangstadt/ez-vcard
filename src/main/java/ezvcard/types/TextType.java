@@ -121,7 +121,7 @@ public class TextType extends VCardType {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		setValue(value.getSingleValued());
+		setValue(value.asSingle());
 	}
 
 	@Override

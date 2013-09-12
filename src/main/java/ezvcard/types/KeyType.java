@@ -321,7 +321,7 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getSingleValued();
+		String valueStr = value.asSingle();
 		if (value.getDataType() == VCardDataType.TEXT) {
 			parseText(valueStr, version);
 			return;

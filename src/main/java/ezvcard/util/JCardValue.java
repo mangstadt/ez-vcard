@@ -180,7 +180,7 @@ public class JCardValue {
 	 * Gets the value of a single-valued property (such as {@link NoteType}).
 	 * @return the value or empty string if not found
 	 */
-	public String getSingleValued() {
+	public String asSingle() {
 		if (values.isEmpty()) {
 			return "";
 		}
@@ -212,7 +212,7 @@ public class JCardValue {
 	 * {@link StructuredNameType}).
 	 * @return the values or empty list if not found
 	 */
-	public List<List<String>> getStructured() {
+	public List<List<String>> asStructured() {
 		if (values.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -280,7 +280,7 @@ public class JCardValue {
 	 * ).
 	 * @return the values or empty list if not found
 	 */
-	public List<String> getMultivalued() {
+	public List<String> asMultivalued() {
 		if (values.isEmpty()) {
 			return Collections.emptyList();
 		}

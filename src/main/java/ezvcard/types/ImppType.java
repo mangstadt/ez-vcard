@@ -491,7 +491,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		parse(value.getSingleValued());
+		parse(value.asSingle());
 	}
 
 	@Override

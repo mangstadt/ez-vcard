@@ -458,7 +458,7 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		Iterator<List<String>> it = value.getStructured().iterator();
+		Iterator<List<String>> it = value.asStructured().iterator();
 
 		poBox = nextJsonComponent(it);
 		extendedAddress = nextJsonComponent(it);

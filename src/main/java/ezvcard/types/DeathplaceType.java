@@ -214,7 +214,7 @@ public class DeathplaceType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getSingleValued();
+		String valueStr = value.asSingle();
 		if (value.getDataType() == VCardDataType.URI) {
 			setUri(valueStr);
 		} else {
