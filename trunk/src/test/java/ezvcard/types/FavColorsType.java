@@ -127,7 +127,7 @@ public class FavColorsType extends VCardType {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		favColors.clear();
-		for (String valueStr : value.asMultivalued()) {
+		for (String valueStr : value.asMulti()) {
 			favColors.add(valueStr);
 		}
 	}

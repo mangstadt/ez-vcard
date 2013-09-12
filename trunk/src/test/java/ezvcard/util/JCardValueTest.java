@@ -129,14 +129,14 @@ public class JCardValueTest {
 	public void asMulti() {
 		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null));
 		assertEquals(VCardDataType.TEXT, value.getDataType());
-		assertEquals(Arrays.asList("value1", "false", ""), value.asMultivalued());
+		assertEquals(Arrays.asList("value1", "false", ""), value.asMulti());
 	}
 
 	@Test
 	public void asMulti_array() {
 		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false))));
 		assertEquals(VCardDataType.TEXT, value.getDataType());
-		assertEquals(Arrays.asList(), value.asMultivalued());
+		assertEquals(Arrays.asList(), value.asMulti());
 	}
 
 	@Test
@@ -145,7 +145,7 @@ public class JCardValueTest {
 		object.put("a", new JsonValue("one"));
 		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(object));
 		assertEquals(VCardDataType.TEXT, value.getDataType());
-		assertEquals(Arrays.asList(), value.asMultivalued());
+		assertEquals(Arrays.asList(), value.asMulti());
 	}
 
 	@Test
