@@ -484,7 +484,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 
 	private String jcardValueToString(JCardValue value) {
 		if (value.getValues().size() > 1) {
-			List<String> multi = value.asMultivalued();
+			List<String> multi = value.asMulti();
 			if (multi != null) {
 				return VCardStringUtils.join(multi, ",", new JoinCallback<String>() {
 					public void handle(StringBuilder sb, String value) {

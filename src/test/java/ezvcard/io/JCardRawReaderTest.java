@@ -370,14 +370,14 @@ public class JCardRawReaderTest {
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals(Arrays.asList("one", "two", "three"), value.asMultivalued());
+					assertEquals(Arrays.asList("one", "two", "three"), value.asMulti());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals(Arrays.asList("one"), value.asMultivalued());
+					assertEquals(Arrays.asList("one"), value.asMulti());
 					break;
 				}
 			}

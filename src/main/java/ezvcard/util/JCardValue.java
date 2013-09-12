@@ -280,7 +280,7 @@ public class JCardValue {
 	 * ).
 	 * @return the values or empty list if not found
 	 */
-	public List<String> asMultivalued() {
+	public List<String> asMulti() {
 		if (values.isEmpty()) {
 			return Collections.emptyList();
 		}

@@ -136,7 +136,7 @@ public class TextListType extends VCardType {
 			return;
 		}
 
-		for (String valueStr : value.asMultivalued()) {
+		for (String valueStr : value.asMulti()) {
 			values.add(valueStr);
 		}
 	}
