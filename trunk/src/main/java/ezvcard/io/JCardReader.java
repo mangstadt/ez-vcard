@@ -234,7 +234,7 @@ public class JCardReader implements Closeable {
 				//don't unmarshal "version" because we don't treat it as a property
 				versionFound = true;
 
-				VCardVersion version = VCardVersion.valueOfByStr(value.getSingleValued());
+				VCardVersion version = VCardVersion.valueOfByStr(value.asSingle());
 				if (version != VCardVersion.V4_0) {
 					addWarning("Version must be \"" + VCardVersion.V4_0.getVersion() + "\"", "version");
 				}

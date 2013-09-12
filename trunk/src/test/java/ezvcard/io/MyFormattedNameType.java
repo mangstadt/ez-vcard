@@ -80,6 +80,6 @@ public class MyFormattedNameType extends VCardType {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		this.value = value.getSingleValued().toUpperCase();
+		this.value = value.asSingle().toUpperCase();
 	}
 }

@@ -134,7 +134,7 @@ public class TimestampType extends VCardType {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getSingleValued();
+		String valueStr = value.asSingle();
 		parse(valueStr);
 	}
 

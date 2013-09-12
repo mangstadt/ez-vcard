@@ -127,7 +127,7 @@ public class TextListType extends VCardType {
 		values.clear();
 
 		if (separator == ';') {
-			for (List<String> valueStr : value.getStructured()) {
+			for (List<String> valueStr : value.asStructured()) {
 				if (valueStr.isEmpty()) {
 					continue;
 				}
@@ -136,7 +136,7 @@ public class TextListType extends VCardType {
 			return;
 		}
 
-		for (String valueStr : value.getMultivalued()) {
+		for (String valueStr : value.asMultivalued()) {
 			values.add(valueStr);
 		}
 	}

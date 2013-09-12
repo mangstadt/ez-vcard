@@ -275,7 +275,7 @@ public class JCardReaderTest {
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(1, vcard.getAllTypes().size());
 		TypeForTesting prop = vcard.getType(TypeForTesting.class);
-		assertEquals("value", prop.value.getSingleValued());
+		assertEquals("value", prop.value.asSingle());
 		assertWarnings(0, reader.getWarnings());
 	}
 

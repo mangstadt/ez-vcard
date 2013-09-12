@@ -332,7 +332,7 @@ public class StructuredNameType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		Iterator<List<String>> it = value.getStructured().iterator();
+		Iterator<List<String>> it = value.asStructured().iterator();
 
 		family = nextJsonComponent(it);
 		given = nextJsonComponent(it);

@@ -484,7 +484,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 
 	private String jcardValueToString(JCardValue value) {
 		if (value.getValues().size() > 1) {
-			List<String> multi = value.getMultivalued();
+			List<String> multi = value.asMultivalued();
 			if (multi != null) {
 				return VCardStringUtils.join(multi, ",", new JoinCallback<String>() {
 					public void handle(StringBuilder sb, String value) {
@@ -495,7 +495,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 		}
 
 		if (!value.getValues().isEmpty() && value.getValues().get(0).getArray() != null) {
-			List<List<String>> structured = value.getStructured();
+			List<List<String>> structured = value.asStructured();
 			if (structured != null) {
 				return VCardStringUtils.join(structured, ";", new JoinCallback<List<String>>() {
 					public void handle(StringBuilder sb, List<String> value) {
@@ -509,7 +509,7 @@ public abstract class VCardType implements Comparable<VCardType> {
 			}
 		}
 
-		return value.getSingleValued();
+		return value.asSingle();
 	}
 
 	/**

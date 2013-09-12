@@ -75,14 +75,14 @@ public class JCardRawReaderTest {
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals("one", value.getSingleValued());
+					assertEquals("one", value.asSingle());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop2", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.INTEGER, value.getDataType());
-					assertEquals("2", value.getSingleValued());
+					assertEquals("2", value.asSingle());
 					break;
 				}
 			}
@@ -123,14 +123,14 @@ public class JCardRawReaderTest {
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals("one", value.getSingleValued());
+					assertEquals("one", value.asSingle());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop2", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.INTEGER, value.getDataType());
-					assertEquals("2", value.getSingleValued());
+					assertEquals("2", value.asSingle());
 					break;
 				}
 			}
@@ -151,14 +151,14 @@ public class JCardRawReaderTest {
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals("three", value.getSingleValued());
+					assertEquals("three", value.asSingle());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop2", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.INTEGER, value.getDataType());
-					assertEquals("4", value.getSingleValued());
+					assertEquals("4", value.asSingle());
 					break;
 				}
 			}
@@ -196,7 +196,7 @@ public class JCardRawReaderTest {
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals("value", value.getSingleValued());
+					assertEquals("value", value.asSingle());
 					break;
 				}
 			}
@@ -238,7 +238,7 @@ public class JCardRawReaderTest {
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals("one", value.getSingleValued());
+					assertEquals("one", value.asSingle());
 					break;
 				}
 			}
@@ -265,14 +265,14 @@ public class JCardRawReaderTest {
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals("one", value.getSingleValued());
+					assertEquals("one", value.asSingle());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop2", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.INTEGER, value.getDataType());
-					assertEquals("2", value.getSingleValued());
+					assertEquals("2", value.asSingle());
 					break;
 				}
 			}
@@ -329,14 +329,14 @@ public class JCardRawReaderTest {
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals(Arrays.asList(Arrays.asList("one"), Arrays.asList("two", "three"), Arrays.asList("four")), value.getStructured());
+					assertEquals(Arrays.asList(Arrays.asList("one"), Arrays.asList("two", "three"), Arrays.asList("four")), value.asStructured());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals(Arrays.asList(), value.getStructured());
+					assertEquals(Arrays.asList(), value.asStructured());
 					break;
 				}
 			}
@@ -370,14 +370,14 @@ public class JCardRawReaderTest {
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals(Arrays.asList("one", "two", "three"), value.getMultivalued());
+					assertEquals(Arrays.asList("one", "two", "three"), value.asMultivalued());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals(Arrays.asList("one"), value.getMultivalued());
+					assertEquals(Arrays.asList("one"), value.asMultivalued());
 					break;
 				}
 			}
@@ -501,7 +501,7 @@ public class JCardRawReaderTest {
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertNull(value.getDataType());
-					assertEquals("value", value.getSingleValued());
+					assertEquals("value", value.asSingle());
 					break;
 				}
 			}
@@ -533,7 +533,7 @@ public class JCardRawReaderTest {
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertTrue(VCardDataType.get("foo") == value.getDataType());
-					assertEquals("value", value.getSingleValued());
+					assertEquals("value", value.asSingle());
 					break;
 				}
 			}
@@ -610,7 +610,7 @@ public class JCardRawReaderTest {
 					assertEquals(Arrays.asList("two"), parameters.get("b"));
 					assertEquals(Arrays.asList("three", "four"), parameters.get("c"));
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals("value", value.getSingleValued());
+					assertEquals("value", value.asSingle());
 					break;
 				}
 			}
@@ -642,7 +642,7 @@ public class JCardRawReaderTest {
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
 					assertEquals(VCardDataType.TEXT, value.getDataType());
-					assertEquals("value", value.getSingleValued());
+					assertEquals("value", value.asSingle());
 					break;
 				}
 			}

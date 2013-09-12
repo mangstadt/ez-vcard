@@ -330,7 +330,7 @@ public class GeoType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		parse(value.getSingleValued(), version, warnings);
+		parse(value.asSingle(), version, warnings);
 	}
 
 	@Override

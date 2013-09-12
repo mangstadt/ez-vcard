@@ -241,7 +241,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		setValue(value.getSingleValued());
+		setValue(value.asSingle());
 	}
 
 	@Override

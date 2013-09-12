@@ -278,7 +278,7 @@ public class GenderType extends VCardType {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		Iterator<List<String>> it = value.getStructured().iterator();
+		Iterator<List<String>> it = value.asStructured().iterator();
 		gender = nextJsonComponent(it);
 		text = nextJsonComponent(it);
 	}

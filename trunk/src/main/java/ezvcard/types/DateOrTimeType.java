@@ -353,7 +353,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.getSingleValued();
+		String valueStr = value.asSingle();
 		if (value.getDataType() == VCardDataType.TEXT) {
 			setText(valueStr);
 			return;
