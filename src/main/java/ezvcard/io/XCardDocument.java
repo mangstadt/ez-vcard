@@ -484,9 +484,6 @@ public class XCardDocument {
 					}
 				}
 			}
-
-			//remove the <parameters> element from the DOM
-			element.removeChild(parametersElement);
 		}
 
 		return subTypes;

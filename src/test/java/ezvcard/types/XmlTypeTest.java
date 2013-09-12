@@ -143,4 +143,29 @@ public class XmlTypeTest {
 		assertWarnings(0, warnings);
 	}
 
+	@Test
+	public void unmarshalXml_remove_parameters() throws Throwable {
+		//@formatter:off
+		String inputXml =
+		"<a href=\"http://www.example.com\">" +
+			"<parameters xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<one>1</one>" +
+			"</parameters>" +
+			"text" +
+		"</a>";
+		//@formatter:on
+		VCardVersion version = VCardVersion.V4_0;
+
+		Document inputDocument = XmlUtils.toDocument(inputXml);
+		Element element = XmlUtils.getRootElement(inputDocument);
+		XmlType t = new XmlType();
+		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
+
+		String expectedXml = "<a href=\"http://www.example.com\">text</a>";
+		Document expectedDocument = XmlUtils.toDocument(expectedXml);
+
+		assertXMLEqual(expectedDocument, t.getDocument());
+		assertWarnings(0, warnings);
+	}
+
 }
