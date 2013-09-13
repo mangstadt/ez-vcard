@@ -122,7 +122,7 @@ public class VCardDateFormatter {
 			return df.parse(dateStr);
 		} catch (ParseException e) {
 			//should never be thrown because the string is checked against a regex
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
