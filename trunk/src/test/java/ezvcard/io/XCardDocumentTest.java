@@ -62,6 +62,7 @@ import ezvcard.types.XmlType;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
+import ezvcard.util.UtcOffset;
 import ezvcard.util.XCardElement;
 import ezvcard.util.XmlUtils;
 
@@ -981,7 +982,7 @@ public class XCardDocumentTest {
 		vcard.setBirthday(bday);
 
 		AnniversaryType anniversary = new AnniversaryType();
-		anniversary.setPartialDate(PartialDate.dateTime(2009, 8, 8, 14, 30, null, -5, 0));
+		anniversary.setPartialDate(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(GenderType.male());
@@ -1058,7 +1059,7 @@ public class XCardDocumentTest {
 		PartialDate actualBday = vcard.getBirthday().getPartialDate();
 		assertEquals(expectedBday, actualBday);
 
-		PartialDate expectedAnniversary = PartialDate.dateTime(2009, 8, 8, 14, 30, null, -5, 0);
+		PartialDate expectedAnniversary = PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0));
 		PartialDate actualAnniversary = vcard.getAnniversary().getPartialDate();
 		assertEquals(expectedAnniversary, actualAnniversary);
 

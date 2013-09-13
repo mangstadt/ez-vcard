@@ -36,6 +36,7 @@ import ezvcard.types.VCardType;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
+import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -510,7 +511,7 @@ public class VCardWriterTest {
 		vcard.setBirthday(bday);
 
 		AnniversaryType anniversary = new AnniversaryType();
-		anniversary.setPartialDate(PartialDate.dateTime(2009, 8, 8, 14, 30, null, -5, 0));
+		anniversary.setPartialDate(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(GenderType.male());

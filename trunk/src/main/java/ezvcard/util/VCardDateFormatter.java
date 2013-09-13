@@ -4,8 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -42,11 +40,6 @@ import java.util.regex.Pattern;
  * @author Michael Angstadt
  */
 public class VCardDateFormatter {
-	/**
-	 * Regular expression used to parse timezone offset strings.
-	 */
-	private static final Pattern timeZoneRegex = Pattern.compile("^([-\\+])?(\\d{1,2})(:?(\\d{2}))?$");
-
 	/**
 	 * Formats a date for inclusion in a vCard.
 	 * @param date the date to format
@@ -131,87 +124,6 @@ public class VCardDateFormatter {
 			//should never be thrown because the string is checked against a regex
 			return null;
 		}
-	}
-
-	/**
-	 * Parses a timezone that's in ISO8601 format.
-	 * @param offsetStr the timezone offset string (e.g. "-0500" or "-05:00")
-	 * @return the hour offset (index 0) and the minute offset (index 1)
-	 * @throws IllegalArgumentException if the timezone string isn't in the
-	 * right format
-	 */
-	public static int[] parseTimeZone(String offsetStr) {
-		Matcher m = timeZoneRegex.matcher(offsetStr);
-
-		if (!m.find()) {
-			throw new IllegalArgumentException("Offset string is not in ISO8610 format: " + offsetStr);
-		}
-
-		String sign = m.group(1);
-		boolean positive;
-		if ("-".equals(sign)) {
-			positive = false;
-		} else {
-			positive = true;
-		}
-
-		String hourStr = m.group(2);
-		int hourOffset = Integer.parseInt(hourStr);
-		if (!positive) {
-			hourOffset *= -1;
-		}
-
-		String minuteStr = m.group(4);
-		int minuteOffset = (minuteStr == null) ? 0 : Integer.parseInt(minuteStr);
-
-		return new int[] { hourOffset, minuteOffset };
-	}
-
-	/**
-	 * Formats a {@link TimeZone} object according to ISO8601 rules.
-	 * 
-	 * @param timeZone the timezone to format
-	 * @param extended true to use "extended" format, false not to. Extended
-	 * format will put a colon between the hour and minute.
-	 * @return the formatted timezone (e.g. "+0530" or "+05:30")
-	 */
-	public static String formatTimeZone(TimeZone timeZone, boolean extended) {
-		int hours = timeZone.getRawOffset() / 1000 / 60 / 60;
-		int minutes = Math.abs((timeZone.getRawOffset() / 1000) / 60) % 60;
-		return formatTimeZone(hours, minutes, extended);
-	}
-
-	/**
-	 * Formats a timezone offset according to ISO8601 rules.
-	 * 
-	 * @param hourOffset the hour offset
-	 * @param minuteOffset the minute offset (must be between 0 and 59)
-	 * @param extended true to use "extended" format, false not to. Extended
-	 * format will put a colon between the hour and minute.
-	 * @return the formatted timezone (e.g. "+0530" or "+05:30")
-	 */
-	public static String formatTimeZone(int hourOffset, int minuteOffset, boolean extended) {
-		StringBuilder sb = new StringBuilder();
-		boolean positive = hourOffset >= 0;
-
-		sb.append(positive ? '+' : '-');
-
-		hourOffset = Math.abs(hourOffset);
-		if (hourOffset < 10) {
-			sb.append('0');
-		}
-		sb.append(hourOffset);
-
-		if (extended) {
-			sb.append(':');
-		}
-
-		if (minuteOffset < 10) {
-			sb.append('0');
-		}
-		sb.append(minuteOffset);
-
-		return sb.toString();
 	}
 
 	private VCardDateFormatter() {
