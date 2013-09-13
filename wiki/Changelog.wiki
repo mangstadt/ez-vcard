@@ -11,7 +11,7 @@ _ in development _
  * *Improved UTF-8 support*: UTF-8 encoding is now used essentially whenever a `File` or `InputStream/OutputStream` object is passed into one of ez-vcard's reader/writer classes.  Java `Reader/Writer` objects are configured to use their own character encoding, so they are not effected by this change.
   * If a `File` or `OutputStream` object is passed into a plain-text vCard writer, and the target version is 4.0, UTF-8 encoding will be used. All other versions will use the JVM's default character encoding.
   * If a `File` or `OutputStream` object is passed into a xCard or jCard writer, UTF-8 encoding will be used.
-  * If a `File` or `InputStream` object is passed into a plain-text vCard reader, UTF-8 encoding will be used.
+  * If a `File` or `InputStream` object is passed into a plain-text vCard reader, the JVM's default character encoding is still used for backwards compatibility to older vCard versions.
   * If a `File` or `InputStream` object is passed into a xCard reader, the "encoding" attribute in the header portion of the XML document will be properly taken into account.  Before, it was ignored and the document was always parsed according to the JVM's default character encoding.
   * If a `File` or `InputStream` object is passed into a jCard reader, UTF-8 decoding will be used.
  
