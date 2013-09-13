@@ -12,7 +12,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
-import ezvcard.util.VCardDateFormatter;
+import ezvcard.util.UtcOffset;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 
@@ -121,15 +121,14 @@ import ezvcard.util.XCardElement;
 public class TimezoneType extends VCardType implements HasAltId {
 	public static final String NAME = "TZ";
 
-	private Integer hourOffset;
-	private Integer minuteOffset;
+	private UtcOffset offset;
 	private String text;
 
 	/**
 	 * Creates an empty timezone property.
 	 */
 	public TimezoneType() {
-		this(null, null, null);
+		this((UtcOffset) null, null);
 	}
 
 	/**
@@ -140,7 +139,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	 * Database</a> (e.g. "America/New_York")
 	 */
 	public TimezoneType(String text) {
-		this(null, null, text);
+		this(null, text);
 	}
 
 	/**
@@ -149,7 +148,15 @@ public class TimezoneType extends VCardType implements HasAltId {
 	 * @param minuteOffset the minute component of the UTC offset (e.g. 0)
 	 */
 	public TimezoneType(Integer hourOffset, Integer minuteOffset) {
-		this(hourOffset, minuteOffset, null);
+		this(new UtcOffset(hourOffset, minuteOffset));
+	}
+
+	/**
+	 * Creates a timezone property.
+	 * @param offset the UTC offset
+	 */
+	public TimezoneType(UtcOffset offset) {
+		this(offset, null);
 	}
 
 	/**
@@ -162,8 +169,20 @@ public class TimezoneType extends VCardType implements HasAltId {
 	 * Database</a> (e.g. "America/New_York")
 	 */
 	public TimezoneType(Integer hourOffset, Integer minuteOffset, String text) {
+		this(new UtcOffset(hourOffset, minuteOffset), text);
+	}
+
+	/**
+	 * Creates a timezone property.
+	 * @param offset the UTC offset
+	 * @param text a free-form string representing the timezone, preferably a
+	 * timezone ID from the <a
+	 * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Olson
+	 * Database</a> (e.g. "America/New_York")
+	 */
+	public TimezoneType(UtcOffset offset, String text) {
 		super(NAME);
-		setOffset(hourOffset, minuteOffset);
+		setOffset(offset);
 		setText(text);
 	}
 
@@ -172,12 +191,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	 * @param timezone the timezone
 	 */
 	public TimezoneType(TimeZone timezone) {
-		super(NAME);
-
-		setText(timezone.getID());
-
-		Integer[] offset = offsetFromTimezone(timezone);
-		setOffset(offset[0], offset[1]);
+		this(offsetFromTimezone(timezone), timezone.getID());
 	}
 
 	/**
@@ -185,7 +199,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	 * @return the hour component of the UTC offset or null if not set
 	 */
 	public Integer getHourOffset() {
-		return hourOffset;
+		return (offset == null) ? null : offset.getHour();
 	}
 
 	/**
@@ -193,30 +207,24 @@ public class TimezoneType extends VCardType implements HasAltId {
 	 * @return the minute component of the UTC offset or null if not set
 	 */
 	public Integer getMinuteOffset() {
-		return minuteOffset;
+		return (offset == null) ? null : offset.getMinute();
 	}
 
 	/**
 	 * Sets the UTC offset.
-	 * @param hourOffset the hour offset (e.g. -5) or null to remove
-	 * @param minuteOffset the minute offset (e.g. 0) or null to remove
+	 * @param hourOffset the hour offset (e.g. -5)
+	 * @param minuteOffset the minute offset (e.g. 0)
 	 */
-	public void setOffset(Integer hourOffset, Integer minuteOffset) {
-		if (hourOffset != null && minuteOffset == null) {
-			minuteOffset = 0;
-		} else if (hourOffset == null && minuteOffset != null) {
-			hourOffset = 0;
-		}
-		this.hourOffset = hourOffset;
-		this.minuteOffset = minuteOffset;
+	public void setOffset(int hourOffset, int minuteOffset) {
+		setOffset(new UtcOffset(hourOffset, minuteOffset));
 	}
 
-	private boolean hasOffset() {
-		return hourOffset != null && minuteOffset != null;
-	}
-
-	private boolean hasText() {
-		return text != null;
+	/**
+	 * Sets the UTC offset.
+	 * @param offset the UTC offset
+	 */
+	public void setOffset(UtcOffset offset) {
+		this.offset = offset;
 	}
 
 	/**
@@ -247,22 +255,22 @@ public class TimezoneType extends VCardType implements HasAltId {
 	 * offset data
 	 */
 	public TimeZone toTimeZone() {
-		if (hasText()) {
+		if (text != null) {
 			TimeZone timezone = timezoneFromId(text);
 			if (timezone != null) {
 				return timezone;
 			}
 		}
 
-		if (hasOffset()) {
-			int rawHourOffset = hourOffset * 60 * 60 * 1000;
-			int rawMinuteOffset = minuteOffset * 60 * 1000;
+		if (offset != null) {
+			int rawHourOffset = offset.getHour() * 60 * 60 * 1000;
+			int rawMinuteOffset = offset.getMinute() * 60 * 1000;
 			if (rawHourOffset < 0) {
 				rawMinuteOffset *= -1;
 			}
 			int rawOffset = rawHourOffset + rawMinuteOffset;
 
-			String id = hasText() ? text : "";
+			String id = (text == null) ? "" : text;
 
 			return new SimpleTimeZone(rawOffset, id);
 		}
@@ -360,12 +368,12 @@ public class TimezoneType extends VCardType implements HasAltId {
 			dataType = null;
 			break;
 		case V3_0:
-			if (!hasOffset() && hasText()) {
+			if (offset == null && text != null) {
 				dataType = VCardDataType.TEXT;
 			}
 			break;
 		case V4_0:
-			if (hasOffset() && !hasText()) {
+			if (offset != null && text == null) {
 				dataType = VCardDataType.UTC_OFFSET;
 			}
 			break;
@@ -378,32 +386,32 @@ public class TimezoneType extends VCardType implements HasAltId {
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
 		switch (version) {
 		case V2_1:
-			if (hasOffset()) {
-				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, false)); //2.1 allows either basic or extended
+			if (offset != null) {
+				sb.append(offset.toString(false)); //2.1 allows either basic or extended
 				return;
 			}
 
-			if (hasText()) {
+			if (text != null) {
 				//attempt to find the offset by treating the text as a timezone ID, like "America/New_York"
 				TimeZone timezone = timezoneFromId(text);
 				if (timezone != null) {
-					Integer offset[] = offsetFromTimezone(timezone);
-					sb.append(VCardDateFormatter.formatTimeZone(offset[0], offset[1], false));
+					UtcOffset offset = offsetFromTimezone(timezone);
+					sb.append(offset.toString(false));
 				}
 				return;
 			}
 		case V3_0:
-			if (hasOffset()) {
-				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true)); //3.0 only allows extended
-			} else if (hasText()) {
+			if (offset != null) {
+				sb.append(offset.toString(true)); //3.0 only allows extended
+			} else if (text != null) {
 				sb.append(VCardStringUtils.escape(text));
 			}
 			return;
 		case V4_0:
-			if (hasText()) {
+			if (text != null) {
 				sb.append(VCardStringUtils.escape(text));
-			} else if (hasOffset()) {
-				sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, false)); //4.0 only allows basic
+			} else if (offset != null) {
+				sb.append(offset.toString(false)); //4.0 only allows basic
 			}
 			return;
 		}
@@ -418,14 +426,13 @@ public class TimezoneType extends VCardType implements HasAltId {
 
 	@Override
 	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (hasText()) {
+		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
 			return;
 		}
 
-		if (hasOffset()) {
-			String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, false);
-			parent.append(VCardDataType.UTC_OFFSET, offset);
+		if (offset != null) {
+			parent.append(VCardDataType.UTC_OFFSET, offset.toString(false));
 			return;
 		}
 
@@ -443,8 +450,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 		String utcOffset = element.first(VCardDataType.UTC_OFFSET);
 		if (utcOffset != null) {
 			try {
-				int offsets[] = VCardDateFormatter.parseTimeZone(utcOffset);
-				setOffset(offsets[0], offsets[1]);
+				setOffset(UtcOffset.parse(utcOffset));
 			} catch (IllegalArgumentException e) {
 				throw new CannotParseException("Unable to parse UTC offset.");
 			}
@@ -461,13 +467,12 @@ public class TimezoneType extends VCardType implements HasAltId {
 
 	@Override
 	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (hasText()) {
+		if (text != null) {
 			return JCardValue.single(VCardDataType.TEXT, text);
 		}
 
-		if (hasOffset()) {
-			String value = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);
-			return JCardValue.single(VCardDataType.UTC_OFFSET, value);
+		if (offset != null) {
+			return JCardValue.single(VCardDataType.UTC_OFFSET, offset.toString(true));
 		}
 
 		return JCardValue.single(VCardDataType.TEXT, "");
@@ -482,13 +487,13 @@ public class TimezoneType extends VCardType implements HasAltId {
 
 	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
-		if (!hasOffset() && !hasText()) {
+		if (offset == null && text == null) {
 			warnings.add("Property does not have text or UTC offset values associated with it.");
 		}
-		if (!hasOffset() && version == VCardVersion.V2_1) {
+		if (offset == null && version == VCardVersion.V2_1) {
 			warnings.add("Property requires a UTC offset for its value in version " + version.getVersion() + ".");
 		}
-		if (hasOffset() && (minuteOffset < 0 || minuteOffset > 59)) {
+		if (offset != null && (offset.getMinute() < 0 || offset.getMinute() > 59)) {
 			warnings.add("Minute offset must be between 0 and 59.");
 		}
 	}
@@ -502,8 +507,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 		case V2_1:
 			//e.g. "-05:00"
 			try {
-				int offsets[] = VCardDateFormatter.parseTimeZone(value);
-				setOffset(offsets[0], offsets[1]);
+				setOffset(UtcOffset.parse(value));
 			} catch (IllegalArgumentException e) {
 				throw new CannotParseException("Unable to parse UTC offset.");
 			}
@@ -517,8 +521,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 			}
 
 			try {
-				int offsets[] = VCardDateFormatter.parseTimeZone(value);
-				setOffset(offsets[0], offsets[1]);
+				setOffset(UtcOffset.parse(value));
 			} catch (IllegalArgumentException e) {
 				warnings.add("Unable to parse UTC offset.  Treating as text: " + value);
 				setText(value);
@@ -533,8 +536,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 			}
 
 			try {
-				int offsets[] = VCardDateFormatter.parseTimeZone(value);
-				setOffset(offsets[0], offsets[1]);
+				setOffset(UtcOffset.parse(value));
 			} catch (IllegalArgumentException e) {
 				if (dataType == VCardDataType.UTC_OFFSET) {
 					throw new CannotParseException("Unable to parse UTC offset.");
@@ -545,17 +547,17 @@ public class TimezoneType extends VCardType implements HasAltId {
 		}
 	}
 
-	private Integer[] offsetFromTimezone(TimeZone timezone) {
+	private static UtcOffset offsetFromTimezone(TimeZone timezone) {
 		long offsetMs = timezone.getOffset(System.currentTimeMillis());
 		int hours = (int) (offsetMs / 1000 / 60 / 60);
 		int minutes = (int) ((offsetMs / 1000 / 60) % 60);
 		if (minutes < 0) {
 			minutes *= -1;
 		}
-		return new Integer[] { hours, minutes };
+		return new UtcOffset(hours, minutes);
 	}
 
-	private TimeZone timezoneFromId(String id) {
+	private static TimeZone timezoneFromId(String id) {
 		TimeZone timezone = TimeZone.getTimeZone(id);
 		return "GMT".equals(timezone.getID()) ? null : timezone;
 	}

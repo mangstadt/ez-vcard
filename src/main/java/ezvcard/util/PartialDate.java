@@ -118,7 +118,7 @@ public final class PartialDate {
 	 * a component value is invalid (e.g. a negative month)
 	 */
 	public static PartialDate date(Integer year, Integer month, Integer date) {
-		return new PartialDate(year, month, date, null, null, null, null, null);
+		return new PartialDate(year, month, date, null, null, null, null);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public final class PartialDate {
 	 * a component value is invalid (e.g. a negative minute)
 	 */
 	public static PartialDate time(Integer hour, Integer minute, Integer second) {
-		return time(hour, minute, second, null, null);
+		return time(hour, minute, second, null);
 	}
 
 	/**
@@ -158,14 +158,13 @@ public final class PartialDate {
 	 * @param hour the hour or null to exclude
 	 * @param minute the minute or null to exclude
 	 * @param second the second or null to exclude
-	 * @param timezoneHour the timezone hour or null to exclude
-	 * @param timezoneMinute the timezone minute or null to exclude
+	 * @param offset the UTC offset or null to exclude
 	 * @return the partial date
 	 * @throws IllegalArgumentException if an invalid combination is entered or
 	 * a component value is invalid (e.g. a negative minute)
 	 */
-	public static PartialDate time(Integer hour, Integer minute, Integer second, Integer timezoneHour, Integer timezoneMinute) {
-		return new PartialDate(null, null, null, hour, minute, second, timezoneHour, timezoneMinute);
+	public static PartialDate time(Integer hour, Integer minute, Integer second, UtcOffset offset) {
+		return new PartialDate(null, null, null, hour, minute, second, offset);
 	}
 
 	/**
@@ -192,7 +191,7 @@ public final class PartialDate {
 	 * a component value is invalid (e.g. a negative minute)
 	 */
 	public static PartialDate dateTime(Integer year, Integer month, Integer date, Integer hour, Integer minute, Integer second) {
-		return dateTime(year, month, date, hour, minute, second, null, null);
+		return dateTime(year, month, date, hour, minute, second, null);
 	}
 
 	/**
@@ -214,14 +213,13 @@ public final class PartialDate {
 	 * @param hour the hour or null to exclude
 	 * @param minute the minute or null to exclude
 	 * @param second the second or null to exclude
-	 * @param timezoneHour the timezone hour or null to exclude
-	 * @param timezoneMinute the timezone minute or null to exclude
+	 * @param offset the UTC offset or null to exclude
 	 * @return the partial date
 	 * @throws IllegalArgumentException if an invalid combination is entered or
 	 * a component value is invalid (e.g. a negative minute)
 	 */
-	public static PartialDate dateTime(Integer year, Integer month, Integer date, Integer hour, Integer minute, Integer second, Integer timezoneHour, Integer timezoneMinute) {
-		return new PartialDate(year, month, date, hour, minute, second, timezoneHour, timezoneMinute);
+	public static PartialDate dateTime(Integer year, Integer month, Integer date, Integer hour, Integer minute, Integer second, UtcOffset offset) {
+		return new PartialDate(year, month, date, hour, minute, second, offset);
 	}
 
 	/**
@@ -243,12 +241,11 @@ public final class PartialDate {
 	 * @param hour the hour or null to exclude
 	 * @param minute the minute or null to exclude
 	 * @param second the second or null to exclude
-	 * @param timezoneHour the timezone hour or null to exclude
-	 * @param timezoneMinute the timezone minute or null to exclude
+	 * @param offset the UTC offset or null to exclude
 	 * @throws IllegalArgumentException if an invalid combination is entered or
 	 * a component value is invalid (e.g. a negative minute)
 	 */
-	public PartialDate(Integer year, Integer month, Integer date, Integer hour, Integer minute, Integer second, Integer timezoneHour, Integer timezoneMinute) {
+	public PartialDate(Integer year, Integer month, Integer date, Integer hour, Integer minute, Integer second, UtcOffset offset) {
 		//check for illegal values
 		if (month != null && (month < 1 || month > 12)) {
 			throw new IllegalArgumentException("Month must be between 1 and 12 inclusive.");
@@ -265,7 +262,7 @@ public final class PartialDate {
 		if (second != null && (second < 0 || second > 59)) {
 			throw new IllegalArgumentException("Second must be between 0 and 59 inclusive.");
 		}
-		if (timezoneMinute != null && (timezoneMinute < 0 || timezoneMinute > 59)) {
+		if (offset != null && (offset.getMinute() < 0 || offset.getMinute() > 59)) {
 			throw new IllegalArgumentException("Timezone minute must be between 0 and 59 inclusive.");
 		}
 
@@ -276,9 +273,6 @@ public final class PartialDate {
 		if (hour != null && minute == null && second != null) {
 			throw new IllegalArgumentException("Invalid time component combination: hour, second");
 		}
-		if (timezoneHour == null && timezoneMinute != null) {
-			throw new IllegalArgumentException("Timezone minute was specified without an hour component.");
-		}
 
 		//assign values
 		components[YEAR] = year;
@@ -287,8 +281,8 @@ public final class PartialDate {
 		components[HOUR] = hour;
 		components[MINUTE] = minute;
 		components[SECOND] = second;
-		components[TIMEZONE_HOUR] = timezoneHour;
-		components[TIMEZONE_MINUTE] = timezoneMinute;
+		components[TIMEZONE_HOUR] = (offset == null) ? null : offset.getHour();
+		components[TIMEZONE_MINUTE] = (offset == null) ? null : offset.getMinute();
 	}
 
 	/**
@@ -495,7 +489,7 @@ public final class PartialDate {
 				if (timezone[1] == null) {
 					timezone[1] = 0;
 				}
-				sb.append(VCardDateFormatter.formatTimeZone(timezone[0], timezone[1], extended));
+				sb.append(new UtcOffset(timezone[0], timezone[1]).toString(extended));
 			}
 		}
 

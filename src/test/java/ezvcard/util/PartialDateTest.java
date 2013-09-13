@@ -98,9 +98,7 @@ public class PartialDateTest {
 			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, null, 60}),
 			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, 32, -5, 30}, "T-2032-0530", "T-20:32-05:30"),
 			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, 32, -5, 0}, "T-2032-0500", "T-20:32-05:00"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, 32, -5, null}, "T-2032-0500", "T-20:32-05:00"),
 			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, 32, 5, 30}, "T-2032+0530","T-20:32+05:30"),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, 20, 32, null, 30})
 		};
 		//@formatter:on
 
@@ -110,7 +108,7 @@ public class PartialDateTest {
 				if (testCase.params.length == 3) {
 					d = PartialDate.time(testCase.params[0], testCase.params[1], testCase.params[2]);
 				} else {
-					d = PartialDate.time(testCase.params[0], testCase.params[1], testCase.params[2], testCase.params[3], testCase.params[4]);
+					d = PartialDate.time(testCase.params[0], testCase.params[1], testCase.params[2], new UtcOffset(testCase.params[3], testCase.params[4]));
 				}
 
 				if (testCase.exception) {
@@ -128,7 +126,7 @@ public class PartialDateTest {
 
 	@Test
 	public void toDateAndOrTime_date_and_time() {
-		PartialDate d = PartialDate.dateTime(null, 4, 20, 5, null, null, -5, null);
+		PartialDate d = PartialDate.dateTime(null, 4, 20, 5, null, null, new UtcOffset(-5, 0));
 		assertEquals("--0420T05-0500", d.toDateAndOrTime(false));
 		assertEquals("--04-20T05-05:00", d.toDateAndOrTime(true));
 	}
@@ -197,16 +195,16 @@ public class PartialDateTest {
 
 	@Test
 	public void equals() {
-		PartialDate d1 = new PartialDate(null, 4, 20, 5, null, null, null, null);
-		PartialDate d2 = new PartialDate(null, 4, 20, 5, null, null, null, null);
-		PartialDate d3 = new PartialDate(null, 4, 20, 5, 20, null, null, null);
+		PartialDate d1 = new PartialDate(null, 4, 20, 5, null, null, null);
+		PartialDate d2 = new PartialDate(null, 4, 20, 5, null, null, null);
+		PartialDate d3 = new PartialDate(null, 4, 20, 5, 20, null, null);
 		assertTrue(d1.equals(d2));
 		assertTrue(d2.equals(d1));
 		assertTrue(d1.equals(d1));
 		assertFalse(d1.equals(d3));
 	}
 
-	static class ToDateAndOrTimeTestCase {
+	private static class ToDateAndOrTimeTestCase {
 		Integer[] params;
 		String expectedBasic, expectedExtended;
 		boolean exception;
@@ -228,7 +226,7 @@ public class PartialDateTest {
 		}
 	}
 
-	static class ParseTestCase {
+	private static class ParseTestCase {
 		String string;
 		Integer[] expectedComponents;
 		boolean exception;

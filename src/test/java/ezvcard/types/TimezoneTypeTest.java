@@ -115,27 +115,6 @@ public class TimezoneTypeTest {
 	}
 
 	@Test
-	public void setOffset_null_hour() {
-		t.setOffset(null, 30);
-		assertIntEquals(0, t.getHourOffset());
-		assertIntEquals(30, t.getMinuteOffset());
-	}
-
-	@Test
-	public void setOffset_null_minute() {
-		t.setOffset(-5, null);
-		assertEquals(Integer.valueOf(-5), t.getHourOffset());
-		assertIntEquals(0, t.getMinuteOffset());
-	}
-
-	@Test
-	public void setOffset_null_hour_and_minute() {
-		t.setOffset(null, null);
-		assertNull(t.getHourOffset());
-		assertNull(t.getMinuteOffset());
-	}
-
-	@Test
 	public void toTimeZone_offset() {
 		TimezoneType t = new TimezoneType(-5, 30);
 		TimeZone actual = t.toTimeZone();
