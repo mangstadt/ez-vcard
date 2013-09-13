@@ -211,6 +211,14 @@ public class TimezoneType extends VCardType implements HasAltId {
 	}
 
 	/**
+	 * Gets the UTC offset.
+	 * @return the UTC offset or null if not set
+	 */
+	public UtcOffset getOffset() {
+		return offset;
+	}
+
+	/**
 	 * Sets the UTC offset.
 	 * @param hourOffset the hour offset (e.g. -5)
 	 * @param minuteOffset the minute offset (e.g. 0)
