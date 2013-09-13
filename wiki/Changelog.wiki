@@ -1,5 +1,59 @@
 #summary Documents all the changes that were made to every version of the library
 
+= 0.8.4-SNAPSHOT =
+_ in development _
+
+*Major changes:*
+
+ * *Validation framework*: Added a validation framework that checks `VCard` objects for errors.  It can be invoked by calling `VCard.validate()`.  The writer classes no longer generate a list of warnings when a `VCard` is written.
+ * *XCardDocument/XCardReader merge*: Merged the `XCardReader` class into the `XCardDocument` class.  `XCardDocument` is now used to both read and write xCards.
+ * *Unparsable properties no longer ignored*: Added a `CannotParseException`, which is thrown if a property value cannot be parsed.  This will cause the property to be unmarshalled as a `RawType` instead of being completely ignored, allowing for its raw value to be retrieved.  For xCards, such properties will be unmarshalled as `XmlType` properties.
+ * *Improved UTF-8 support*: UTF-8 encoding is now used essentially whenever a `File` or `InputStream/OutputStream` object is passed into one of ez-vcard's reader/writer classes.  Java `Reader/Writer` objects are configured to use their own character encoding, so they are not effected by this change.
+  * If a `File` or `OutputStream` object is passed into a plain-text vCard writer, and the target version is 4.0, UTF-8 encoding will be used. All other versions will use the JVM's default character encoding.
+  * If a `File` or `OutputStream` object is passed into a xCard or jCard writer, UTF-8 encoding will be used.
+  * If a `File` or `InputStream` object is passed into a plain-text vCard reader, UTF-8 encoding will be used.
+  * If a `File` or `InputStream` object is passed into a xCard reader, the "encoding" attribute in the header portion of the XML document will be properly taken into account.  Before, it was ignored and the document was parsed according to the JVM's default character encoding.
+  * If a `File` or `InputStream` object is passed into a jCard reader, UTF-8 decoding will be used.
+ 
+Other changes:
+
+ * Added the `VCardDataType` class, which represents a vCard data type (such as "text" and "uri"). It replaces the `ValueParameter` and `JCardDataType` classes.
+ * Added the ability to append onto existing files when writing plain-text files with the `Ezvcard` class.
+ * The `Ezvcard.parse(File)` methods no longer throw a `FileNotFoundException`.
+ * Added the `XCardDocument.registerParameterDataType()` method for setting the data types of extended parameters.
+ * The `XmlType` property now stores its value as a `Document` object instead of a `String`.
+ * The following `VCardSubType` methods now throw an `IllegalStateException` when their parameter value cannot be parsed (for example, if the PREF parameter is non-numeric).  Before, they would return "null", which was misleading (the typical meaning of "null" is that the property does not exist).  Raw parameter values can still be retrieved using the `get()` method.
+  * `getPref()`
+  * `getGeo()`
+  * `getPids()`
+  * `getIndex()`
+ * Added a `versionStrict` flag to the writer classes.  When enabled, properties that do not support the target vCard version will not be written to the data stream (for example, a GENDER property, which is only supported by 4.0, will not be written to a 2.1 vCard).  This is how the writers have functioned in the past.  When the flag is disabled, properties that do not support the target vCard version will be written anyway.  This setting is enabled by default.
+ * A `CannotParseException` is now consistently thrown during the parsing of xCard properties when the XML element which holds the property's value cannot be found.  Before, a `SkipMeException` was sometimes thrown, but not always.
+ * Changed the behavior for how properties with empty values are written.  Before, they were not written to the vCard at all, but now they are.  The new `VCard.validate()` method can be called to check for properties that have empty or inappropriate values.
+ * Changes to the `TimezoneType` property:
+  * Now accepts a `java.util.TimeZone` object as its value.
+  * If it only contains a text value and it is being written to a 2.1 vCard, it will attempt to calculate the UTC offset by treating the text value as an Olson timezone ID.
+  * When parsing an xCard, if its xCard value contains both a `<text>` and a `<uri>` element (which is not allowed), only the `<text>` element will be parsed.  Before, both were parsed.
+ * User-defined type classes can now override the standard type classes.  This means that it's now possible to create alternative type classes for standard properties like ADR.
+ * Made the following classes immutable:
+  * `DataUri`
+  * `GeoUri`
+  * `TelUri`
+ * Added the following methods to `VCardType`:
+  * `getSubType(String)`
+  * `getSubTypes(String)`
+  * `setSubType(String, String)`
+  * `addSubType(String, String)`
+  * `removeSubType(String)`
+  * `removeType(VCardType)`
+ * Renamed the following methods:
+  * `XCardDocument.addVCard` --> `add`
+  * `HCardPage.addVCard` --> `add`
+  * `JCardValue.getSingleValued` --> `asSingle`
+  * `JCardValue.getMultivalued` --> `asMulti`
+  * `JCardValue.getStructured` --> `asStructured`
+ * Added syntax highlighting to the code samples in the Javadocs. :)
+
 = 0.8.3 =
 _August 4, 2013_
 
