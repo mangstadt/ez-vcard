@@ -54,7 +54,23 @@ import ezvcard.util.JCardValue;
  */
 
 /**
+ * <p>
  * Parses {@link VCard} objects from a JSON data stream (jCard format).
+ * </p>
+ * <p>
+ * <b>Example:</b>
+ * 
+ * <pre class="brush:java">
+ * File file = new File("vcards.json");
+ * JCardReader jcardReader = new JCardReader(file);
+ * VCard vcard;
+ * while ((vcard = jcardReader.readNext()) != null){
+ *   ...
+ * }
+ * jcardReader.close();
+ * </pre>
+ * 
+ * </p>
  * @author Michael Angstadt
  * @see <a
  * href="http://tools.ietf.org/html/draft-kewisch-vcard-in-json-04">jCard
@@ -66,7 +82,7 @@ public class JCardReader implements Closeable {
 	private final Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 
 	/**
-	 * Creates a jCard reader.
+	 * Creates a reader that parses jCards from a JSON string.
 	 * @param json the JSON string
 	 */
 	public JCardReader(String json) {
@@ -74,7 +90,7 @@ public class JCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a jCard reader.
+	 * Creates a reader that parses jCards from an input stream.
 	 * @param in the input stream to read the vCards from
 	 */
 	public JCardReader(InputStream in) {
@@ -82,7 +98,7 @@ public class JCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a jCard reader.
+	 * Creates a reader that parses jCards from a file.
 	 * @param file the file to read the vCards from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
@@ -91,7 +107,7 @@ public class JCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a jCard reader.
+	 * Creates a reader that parses jCards from a reader.
 	 * @param reader the reader to read the vCards from
 	 */
 	public JCardReader(Reader reader) {

@@ -66,7 +66,22 @@ import ezvcard.util.HtmlUtils;
  */
 
 /**
+ * <p>
  * Parses {@link VCard} objects from an HTML page (hCard format).
+ * </p>
+ * <p>
+ * <b>Example:</b>
+ * 
+ * <pre class="brush:java">
+ * URL url = new URL("http://example.com");
+ * HCardReader hcardReader = new HCardReader(url);
+ * VCard vcard;
+ * while ((vcard = hcardReader.readNext()) != null){
+ *   ...
+ * }
+ * </pre>
+ * 
+ * </p>
  * @author Michael Angstadt
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
@@ -85,7 +100,7 @@ public class HCardReader {
 	private CategoriesType categories;
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from a URL.
 	 * @param url the URL of the webpage
 	 * @throws IOException if there's a problem loading the webpage
 	 */
@@ -96,7 +111,7 @@ public class HCardReader {
 	}
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from an input stream.
 	 * @param in the input stream to the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
@@ -105,7 +120,7 @@ public class HCardReader {
 	}
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from an input stream.
 	 * @param in the input stream to the HTML page
 	 * @param pageUrl the original URL of the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
@@ -118,7 +133,7 @@ public class HCardReader {
 	}
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from a file.
 	 * @param file the HTML file
 	 * @throws IOException if there's a problem reading the HTML file
 	 */
@@ -127,7 +142,7 @@ public class HCardReader {
 	}
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from a file.
 	 * @param file the HTML file
 	 * @param pageUrl the original URL of the HTML page
 	 * @throws IOException if there's a problem reading the HTML file
@@ -140,7 +155,7 @@ public class HCardReader {
 	}
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from a reader.
 	 * @param reader the input stream to the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
@@ -149,7 +164,7 @@ public class HCardReader {
 	}
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from a reader.
 	 * @param reader the input stream to the HTML page
 	 * @param pageUrl the original URL of the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
@@ -171,7 +186,7 @@ public class HCardReader {
 	}
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from a string.
 	 * @param html the HTML page
 	 */
 	public HCardReader(String html) {
@@ -179,7 +194,7 @@ public class HCardReader {
 	}
 
 	/**
-	 * Creates an hCard reader.
+	 * Creates a reader that parses hCards from a string.
 	 * @param html the HTML page
 	 * @param pageUrl the original URL of the HTML page
 	 */

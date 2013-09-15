@@ -63,7 +63,23 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  */
 
 /**
+ * <p>
  * Parses {@link VCard} objects from a plain-text vCard data stream.
+ * </p>
+ * <p>
+ * <b>Example:</b>
+ * 
+ * <pre class="brush:java">
+ * File file = new File("vcards.vcf");
+ * VCardReader vcardReader = new VCardReader(file);
+ * VCard vcard;
+ * while ((vcard = vcardReader.readNext()) != null){
+ *   ...
+ * }
+ * vcardReader.close();
+ * </pre>
+ * 
+ * </p>
  * @author Michael Angstadt
  */
 public class VCardReader implements Closeable {
@@ -73,7 +89,7 @@ public class VCardReader implements Closeable {
 	private final VCardRawReader reader;
 
 	/**
-	 * Creates a vCard reader.
+	 * Creates a reader that parses vCards from a string.
 	 * @param str the string to read the vCards from
 	 */
 	public VCardReader(String str) {
@@ -81,7 +97,7 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard reader.
+	 * Creates a reader that parses vCards from an input stream.
 	 * @param in the input stream to read the vCards from
 	 */
 	public VCardReader(InputStream in) {
@@ -89,7 +105,7 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard reader.
+	 * Creates a reader that parses vCards from a file.
 	 * @param file the file to read the vCards from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
@@ -98,7 +114,7 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard reader.
+	 * Creates a reader that parses vCards from a reader.
 	 * @param reader the reader to read the vCards from
 	 */
 	public VCardReader(Reader reader) {

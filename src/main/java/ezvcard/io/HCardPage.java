@@ -53,7 +53,25 @@ import freemarker.template.TemplateException;
  */
 
 /**
+ * <p>
  * Writes {@link VCard} objects to a templated HTML page (hCard format).
+ * </p>
+ * <p>
+ * <b>Example:</b>
+ * 
+ * <pre class="brush:java">
+ * VCard vcard1 = ...
+ * VCard vcard2 = ...
+ * 
+ * HCardPage page = new HCardPage();
+ * page.add(vcard1);
+ * page.add(vcard2);
+ * 
+ * File file = new File("hcard.html");
+ * page.write(file);
+ * </pre>
+ * 
+ * </p>
  * @author Michael Angstadt
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
