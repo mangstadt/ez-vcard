@@ -54,7 +54,24 @@ import ezvcard.util.VCardStringUtils;
  */
 
 /**
+ * <p>
  * Writes {@link VCard} objects to a plain-text vCard data stream.
+ * </p>
+ * <p>
+ * <b>Example:</b>
+ * 
+ * <pre class="brush:java">
+ * VCard vcard1 = ...
+ * VCard vcard2 = ...
+ * 
+ * File file = new File("vcard.vcf");
+ * VCardWriter vcardWriter = new VCardWriter(file);
+ * vcardWriter.write(vcard1);
+ * vcardWriter.write(vcard2);
+ * vcardWriter.close();
+ * </pre>
+ * 
+ * </p>
  * @author Michael Angstadt
  */
 public class VCardWriter implements Closeable {
@@ -64,8 +81,8 @@ public class VCardWriter implements Closeable {
 	private final VCardRawWriter writer;
 
 	/**
-	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
-	 * scheme and newline sequence).
+	 * Creates a writer that writes to an output stream (writes v3.0 vCards and
+	 * uses the standard folding scheme and newline sequence).
 	 * @param out the output stream to write the vCard to
 	 */
 	public VCardWriter(OutputStream out) {
@@ -73,8 +90,8 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer (uses the standard folding scheme and newline
-	 * sequence).
+	 * Creates a writer that writes to an output stream (uses the standard
+	 * folding scheme and newline sequence).
 	 * @param out the output stream to write the vCard to
 	 * @param targetVersion the version that the vCards should conform to (if
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
@@ -84,7 +101,7 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer.
+	 * Creates a writer that writes to an output stream.
 	 * @param out the output stream to write the vCard to
 	 * @param targetVersion the version that the vCards should conform to (if
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
@@ -96,8 +113,8 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
-	 * scheme and newline sequence).
+	 * Creates a writer that writes to a file (writes v3.0 vCards and uses the
+	 * standard folding scheme and newline sequence).
 	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem opening the file
 	 */
@@ -106,8 +123,8 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
-	 * scheme and newline sequence).
+	 * Creates a writer that writes to a file (writes v3.0 vCards and uses the
+	 * standard folding scheme and newline sequence).
 	 * @param file the file to write the vCard to
 	 * @param append true to append to the end of the file, false to overwrite
 	 * it
@@ -118,8 +135,8 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer (uses the standard folding scheme and newline
-	 * sequence).
+	 * Creates a writer that writes to a file (uses the standard folding scheme
+	 * and newline sequence).
 	 * @param file the file to write the vCard to
 	 * @param append true to append to the end of the file, false to overwrite
 	 * it
@@ -132,7 +149,7 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer.
+	 * Creates a writer that writes to a file.
 	 * @param file the file to write the vCard to
 	 * @param append true to append to the end of the file, false to overwrite
 	 * it
@@ -147,8 +164,8 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
-	 * scheme and newline sequence).
+	 * Creates a writer that writes to a writer (writes v3.0 vCards and uses the
+	 * standard folding scheme and newline sequence).
 	 * @param writer the writer to write the vCard to
 	 */
 	public VCardWriter(Writer writer) {
@@ -156,8 +173,8 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer (uses the standard folding scheme and newline
-	 * sequence).
+	 * Creates a writer that writes to a writer (uses the standard folding
+	 * scheme and newline sequence).
 	 * @param writer the writer to write the vCard to
 	 * @param targetVersion the version that the vCards should conform to
 	 */
@@ -166,7 +183,7 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a vCard writer.
+	 * Creates a writer that writes to a writer.
 	 * @param writer the writer to write the vCard to
 	 * @param targetVersion the version that the vCards should conform to
 	 * @param foldingScheme the folding scheme to use or null not to fold at all

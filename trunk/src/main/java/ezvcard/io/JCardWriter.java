@@ -48,7 +48,24 @@ import ezvcard.util.JCardValue;
  */
 
 /**
+ * <p>
  * Writes {@link VCard} objects to a JSON data stream (jCard format).
+ * </p>
+ * <p>
+ * <b>Example:</b>
+ * 
+ * <pre class="brush:java">
+ * VCard vcard1 = ...
+ * VCard vcard2 = ...
+ * 
+ * File file = new File("vcard.json");
+ * JCardWriter jcardWriter = new JCardWriter(file);
+ * jcardWriter.write(vcard1);
+ * jcardWriter.write(vcard2);
+ * jcardWriter.close(); //"close()" must be called in order to terminate the JSON object
+ * </pre>
+ * 
+ * </p>
  * @author Michael Angstadt
  */
 public class JCardWriter implements Closeable {
@@ -58,7 +75,7 @@ public class JCardWriter implements Closeable {
 	private boolean versionStrict = true;
 
 	/**
-	 * Creates a jCard writer.
+	 * Creates a writer that writes jCards to an output stream.
 	 * @param out the output stream to write the vCard to
 	 */
 	public JCardWriter(OutputStream out) {
@@ -66,7 +83,7 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a jCard writer.
+	 * Creates a writer that writes jCards to an output stream.
 	 * @param out the output stream to write the vCard to
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
@@ -76,7 +93,7 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a jCard writer.
+	 * Creates a writer that writes jCards to a file.
 	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem opening the file
 	 */
@@ -85,7 +102,7 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a jCard writer.
+	 * Creates a writer that writes jCards to a file.
 	 * @param file the file to write the vCard to
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
@@ -96,7 +113,7 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a jCard writer.
+	 * Creates a writer that writes jCards to a writer.
 	 * @param writer the writer to write the vCard to
 	 */
 	public JCardWriter(Writer writer) {
@@ -104,7 +121,7 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a jCard writer.
+	 * Creates a writer that writes jCards to a writer.
 	 * @param writer the writer to write the vCard to
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
