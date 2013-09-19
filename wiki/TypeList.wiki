@@ -8,7 +8,7 @@ Defines a mailing address.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/AddressType.html AddressType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/AddressType.html AddressType]
 
 {{{
 VCard vcard = new VCard();
@@ -39,7 +39,7 @@ An embedded vCard or URL containing the information of someone who represents th
 
 *vCard versions:* 2.1, 3.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/AgentType.html AgentType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/AgentType.html AgentType]
 
 {{{
 //URL
@@ -60,7 +60,7 @@ Defines the person's anniversary.
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/AnniversaryType.html AnniversaryType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/AnniversaryType.html AnniversaryType]
 
 {{{
 VCard vcard = new VCard();
@@ -106,7 +106,7 @@ Defines the person's birthday.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/BirthdayType.html BirthdayType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/BirthdayType.html BirthdayType]
 
 {{{
 VCard vcard = new VCard();
@@ -152,7 +152,7 @@ Defines the location of the person's birth.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/BirthplaceType.html BirthplaceType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/BirthplaceType.html BirthplaceType]
 
 {{{
 VCard vcard = new VCard();
@@ -183,7 +183,7 @@ A URL to use for sending a scheduling request to the person's calendar.
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/CalendarRequestUriType.html CalendarRequestUriType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/CalendarRequestUriType.html CalendarRequestUriType]
 
 {{{
 VCard vcard = new VCard();
@@ -200,7 +200,7 @@ A URL to the person's calendar.
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/CalendarUriType.html CalendarUriType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/CalendarUriType.html CalendarUriType]
 
 {{{
 VCard vcard = new VCard();
@@ -213,7 +213,7 @@ A list of keywords (aka "tags") that can be used to describe the person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/CategoriesType.html CategoriesType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/CategoriesType.html CategoriesType]
 
 {{{
 VCard vcard = new VCard();
@@ -230,7 +230,7 @@ Describes the sensitivity of the information in the vCard.
 
 *vCard versions:* 3.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ClassificationType.html ClassificationType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/ClassificationType.html ClassificationType]
 
 {{{
 VCard vcard = new VCard();
@@ -246,7 +246,7 @@ The CLIENTPIDMAP type and the PID parameter are used during the synchronization 
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ClientPidMapType.html ClientPidMapType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/ClientPidMapType.html ClientPidMapType]
 
 {{{
 VCard vcard = new VCard();
@@ -276,7 +276,7 @@ Defines the person's time of death.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/DeathdateType.html DeathdateType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/DeathdateType.html DeathdateType]
 
 {{{
 VCard vcard = new VCard();
@@ -322,7 +322,7 @@ Defines the location of the person's death.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/DeathplaceType.html DeathplaceType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/DeathplaceType.html DeathplaceType]
 
 {{{
 VCard vcard = new VCard();
@@ -343,7 +343,7 @@ An email address associated with a person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/EmailType.html EmailType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/EmailType.html EmailType]
 
 {{{
 VCard vcard = new VCard();
@@ -363,7 +363,7 @@ Defines a professional subject area that the person has knowledge of. For exampl
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ExpertiseType.html ExpertiseType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/ExpertiseType.html ExpertiseType]
 
 {{{
 VCard vcard = new VCard();
@@ -377,7 +377,7 @@ A URL that shows when the person is free/busy on their calendar.
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/FbUrlType.html FbUrlType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/FbUrlType.html FbUrlType]
 
 {{{
 VCard vcard = new VCard();
@@ -390,7 +390,7 @@ Shows how the person's name should be displayed.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/FormattedNameType.html FormattedNameType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/FormattedNameType.html FormattedNameType]
 
 {{{
 VCard vcard = new VCard();
@@ -403,7 +403,7 @@ Defines the person's sex.
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/GenderType.html GenderType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/GenderType.html GenderType]
 
 {{{
 VCard vcard = new VCard();
@@ -434,7 +434,7 @@ A set of latitude/longitude coordinates. There is no rule for what these coordin
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/GeoType.html GeoType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/GeoType.html GeoType]
 
 {{{
 VCard vcard = new VCard();
@@ -447,7 +447,7 @@ Defines a recreational activity that the person actively engages in. For example
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/HobbyType.html HobbyType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/HobbyType.html HobbyType]
 
 {{{
 //someone who likes to wind surf during the summer, but rents a boat instead of owning one
@@ -462,7 +462,7 @@ An instant message handle.  The handle is represented as a URI in the format "`<
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ImppType.html ImppType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/ImppType.html ImppType]
 
 {{{
 VCard vcard = new VCard();
@@ -481,7 +481,7 @@ Defines a recreational activity that the person is interested in. For example, i
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/InterestType.html InterestType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/InterestType.html InterestType]
 
 {{{
 //someone who attends all of his favorite hockey team's games in person.
@@ -496,7 +496,7 @@ A public key for encryption.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/KeyType.html KeyType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/KeyType.html KeyType]
 
 {{{
 VCard vcard = new VCard();
@@ -568,7 +568,7 @@ Defines the type of entity that this vCard represents, such as an individual or 
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/KindType.html KindType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/KindType.html KindType]
 
 {{{
 //use static methods to create a KindType object
@@ -596,7 +596,7 @@ Defines the exact text to put on the mailing label when mailing a package or let
 
 *vCard versions:* 2.1, 3.0, 4.0`*`
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/LabelType.html LabelType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/LabelType.html LabelType]
 
 `*`The LABEL type is not supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When marshalling a vCard, ez-vcard will use either the LABEL type or the LABEL parameter, depending on the requested vCard version.
 
@@ -629,7 +629,7 @@ A language that the person reads/speaks.
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/LanguageType.html LanguageType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/LanguageType.html LanguageType]
 
 {{{
 VCard vcard = new VCard();
@@ -646,7 +646,7 @@ A company logo.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/LogoType.html LogoType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/LogoType.html LogoType]
 
 {{{
 VCard vcard = new VCard();
@@ -712,7 +712,7 @@ The email client that the person uses.
 
 *vCard versions:* 2.1, 3.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/MailerType.html MailerType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/MailerType.html MailerType]
 
 {{{
 VCard vcard = new VCard();
@@ -725,7 +725,7 @@ The members that make up the group.  This type can only be used if the KIND type
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/MemberType.html MemberType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/MemberType.html MemberType]
 
 {{{
 VCard vcard = new VCard();
@@ -767,7 +767,7 @@ Multiple instances of this type can be added *ONLY* if each instance has an ALTI
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/StructuredNameType.html StructuredNameType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/StructuredNameType.html StructuredNameType]
 
 {{{
 VCard vcard = new VCard();
@@ -784,7 +784,7 @@ Provides a textual representation of the SOURCE type.
 
 *vCard versions:* 3.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/SourceDisplayTextType.html SourceDisplayTextType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/SourceDisplayTextType.html SourceDisplayTextType]
 
 {{{
 VCard vcard = new VCard();
@@ -797,7 +797,7 @@ A list of nicknames the person goes by.
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/NicknameType.html NicknameType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/NicknameType.html NicknameType]
 
 {{{
 VCard vcard = new VCard();
@@ -813,7 +813,7 @@ A free-form text field that contains miscellaneous information.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/NoteType.html NoteType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/NoteType.html NoteType]
 
 {{{
 VCard vcard = new VCard();
@@ -827,7 +827,7 @@ A list of organizations the person belongs to.  The list is ordered.  It starts 
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/OrganizationType.html OrganizationType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/OrganizationType.html OrganizationType]
 
 {{{
 VCard vcard = new VCard();
@@ -843,7 +843,7 @@ Defines a URI representing the person's work place, which can be used to lookup 
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/OrgDirectoryType.html OrgDirectoryType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/OrgDirectoryType.html OrgDirectoryType]
 
 {{{
 VCard vcard = new VCard();
@@ -856,7 +856,7 @@ A photo attached to the vCard (such as a portrait of the person).
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/PhotoType.html PhotoType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/PhotoType.html PhotoType]
 
 {{{
 VCard vcard = new VCard();
@@ -922,7 +922,7 @@ Defines the product that created the vCard.
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ProdIdType.html ProdIdType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/ProdIdType.html ProdIdType]
 
 {{{
 VCard vcard = new VCard();
@@ -935,7 +935,7 @@ Marks the vCard as being a vCard (it is generally not needed).
 
 *vCard versions:* 3.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/ProfileType.html ProfileType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/ProfileType.html ProfileType]
 
 {{{
 VCard vcard = new VCard();
@@ -948,7 +948,7 @@ Other people that the person is related to.  It can contain either a URI or a pl
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/RelatedType.html RelatedType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/RelatedType.html RelatedType]
 
 {{{
 VCard vcard = new VCard();
@@ -975,7 +975,7 @@ The date that the vCard was last modified by its owner.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/RevisionType.html RevisionType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/RevisionType.html RevisionType]
 
 {{{
 VCard vcard = new VCard();
@@ -988,7 +988,7 @@ The function that the person plays in his or her organization.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/RoleType.html RoleType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/RoleType.html RoleType]
 
 {{{
 VCard vcard = new VCard();
@@ -1001,7 +1001,7 @@ Defines a string that should be used when an application sorts this vCard in som
 
 *vCard versions:* 2.1, 3.0, 4.0`*`
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/SortStringType.html SortStringType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/SortStringType.html SortStringType]
 
 `*`The SORT-STRING type is not supported in 4.0.  Instead, a SORT-AS parameter can be added to the N (`StructuredNameType`) and/or ORG (`OrganizationType`) types.
 
@@ -1029,7 +1029,7 @@ A sound to attach to the vCard, such as a pronunciation of the person's name.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/SoundType.html SoundType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/SoundType.html SoundType]
 
 {{{
 VCard vcard = new VCard();
@@ -1095,7 +1095,7 @@ A URL that can be used to retrieve the most up-to-date version of the person's v
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/SourceType.html SourceType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/SourceType.html SourceType]
 
 {{{
 VCard vcard = new VCard();
@@ -1108,7 +1108,7 @@ A telephone number that the person can be reached at.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/TelephoneType.html TelephoneType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/TelephoneType.html TelephoneType]
 
 {{{
 VCard vcard = new VCard();
@@ -1130,7 +1130,7 @@ Contains the timezone that the person lives/works in.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/TimezoneType.html TimezoneType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/TimezoneType.html TimezoneType]
 
 {{{
 VCard vcard = new VCard();
@@ -1143,7 +1143,7 @@ The person's position or job in his or her organization.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/TitleType.html TitleType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/TitleType.html TitleType]
 
 {{{
 VCard vcard = new VCard();
@@ -1156,7 +1156,7 @@ A globally unique identifier of the person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/UidType.html UidType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/UidType.html UidType]
 
 {{{
 VCard vcard = new VCard();
@@ -1174,7 +1174,7 @@ A URL pointing to the person's homepage or business website.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/UrlType.html UrlType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/UrlType.html UrlType]
 
 {{{
 VCard vcard = new VCard();
@@ -1187,7 +1187,7 @@ Any XML data that is attached to the vCard.  This is used if the vCard was encod
 
 *vCard versions:* 4.0
 
-*Java class:* [http://mikeangstadt.name/ezvcard/latest/index.html?ezvcard/types/XmlType.html XmlType]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/types/XmlType.html XmlType]
 
 {{{
 VCard vcard = new VCard();
