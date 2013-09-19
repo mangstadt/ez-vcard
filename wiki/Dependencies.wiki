@@ -36,4 +36,4 @@ Maven-enabled projects can exclude dependencies like so:
 </dependency>
 }}}
 
-ez-vcard also uses [http://commons.apache.org/codec/ Apache Commons Codec] version 1.6.  Selected portions of the source code have been inserted directly into the ez-vcard code base in order to resolve an Android compatibility issue (see [https://groups.google.com/forum/?fromgroups=#!topic/ez-vcard-discuss/w2TK7yetwr8 this discussion]).  The package names of the source files were changed from "org.apache.commons.codec" to "ezvcard.util.org.apache.commons.codec".
+ez-vcard also uses [http://commons.apache.org/codec/ Apache Commons Codec] version 1.6.  Selected portions of the library's source code have been inserted directly into the ez-vcard code base in order to resolve an Android compatibility issue (see [https://groups.google.com/forum/?fromgroups=#!topic/ez-vcard-discuss/w2TK7yetwr8 this discussion]).
