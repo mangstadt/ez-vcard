@@ -1,5 +1,11 @@
 #summary Archive of all past news entries.
 
+*September 19, 2013*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.8.4] released.  This release adds a validation framework, better UTF-8 support, and a large number of other, relatively minor, changes.
+
+See the [Changelog changelog] for a complete list of changes.
+
 *August 4, 2013*
 
 [http://code.google.com/p/ez-vcard/downloads/list Version 0.8.3] released.  This release adds updated jCard support and includes a host of bug fixes and other changes.
