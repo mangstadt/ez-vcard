@@ -3,8 +3,6 @@ package ezvcard.io;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.transform.TransformerException;
-
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -57,7 +55,40 @@ import ezvcard.types.UidType;
  * @author Michael Angstadt
  */
 public class JohnDoeVCard {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Throwable {
+		VCard vcard = createVCard();
+
+		//validate vCard for version 3.0
+		System.out.println("Version 3.0 validation warnings:");
+		System.out.println(vcard.validate(VCardVersion.V3_0));
+		System.out.println();
+
+		//validate vCard for version 4.0 (xCard and jCard use this version)
+		System.out.println("Version 4.0 validation warnings:");
+		System.out.println(vcard.validate(VCardVersion.V4_0));
+
+		//write vCard
+		File file = new File("john-doe.vcf");
+		System.out.println("Writing " + file.getName() + "...");
+		Ezvcard.write(vcard).version(VCardVersion.V3_0).go(file);
+
+		//write xCard
+		file = new File("john-doe.xml");
+		System.out.println("Writing " + file.getName() + "...");
+		Ezvcard.writeXml(vcard).indent(2).go(file);
+
+		//write hCard
+		file = new File("john-doe.html");
+		System.out.println("Writing " + file.getName() + "...");
+		Ezvcard.writeHtml(vcard).go(file);
+
+		//write jCard
+		file = new File("john-doe.json");
+		System.out.println("Writing " + file.getName() + "...");
+		Ezvcard.writeJson(vcard).go(file);
+	}
+
+	private static VCard createVCard() throws IOException {
 		VCard vcard = new VCard();
 
 		vcard.setKind(KindType.individual());
@@ -126,49 +157,6 @@ public class JohnDoeVCard {
 
 		vcard.setRevision(RevisionType.now());
 
-		//validate vCard for version 3.0
-		System.out.println(vcard.validate(VCardVersion.V3_0));
-
-		//validate vCard for version 4.0
-		System.out.println(vcard.validate(VCardVersion.V4_0));
-
-		//write vCard
-		file = new File("john-doe.vcf");
-		writeVCard(vcard, file, VCardVersion.V3_0);
-		System.out.println();
-
-		//write xCard
-		file = new File("john-doe.xml");
-		writeXCard(vcard, file);
-		System.out.println();
-
-		//write hCard
-		file = new File("john-doe.html");
-		writeHCard(vcard, file);
-		System.out.println();
-
-		//write jCard
-		file = new File("john-doe.json");
-		writeJCard(vcard, file);
-	}
-
-	private static void writeVCard(VCard vcard, File file, VCardVersion version) throws IOException {
-		System.out.println("Writing " + file.getName() + "...");
-		Ezvcard.write(vcard).version(version).go(file);
-	}
-
-	private static void writeXCard(VCard vcard, File file) throws IOException, TransformerException {
-		System.out.println("Writing " + file.getName() + "...");
-		Ezvcard.writeXml(vcard).indent(2).go(file);
-	}
-
-	private static void writeHCard(VCard vcard, File file) throws IOException {
-		System.out.println("Writing " + file.getName() + "...");
-		Ezvcard.writeHtml(vcard).go(file);
-	}
-
-	private static void writeJCard(VCard vcard, File file) throws IOException {
-		System.out.println("Writing " + file.getName() + "...");
-		Ezvcard.writeJson(vcard).go(file);
+		return vcard;
 	}
 }
