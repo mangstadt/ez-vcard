@@ -75,7 +75,8 @@ public class JCardWriter implements Closeable {
 	private boolean versionStrict = true;
 
 	/**
-	 * Creates a writer that writes jCards to an output stream.
+	 * Creates a writer that writes jCards to an output stream (UTF-8 encoding
+	 * will be used).
 	 * @param out the output stream to write the vCard to
 	 */
 	public JCardWriter(OutputStream out) {
@@ -83,7 +84,8 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a writer that writes jCards to an output stream.
+	 * Creates a writer that writes jCards to an output stream (UTF-8 encoding
+	 * will be used).
 	 * @param out the output stream to write the vCard to
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
@@ -93,7 +95,8 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a writer that writes jCards to a file.
+	 * Creates a writer that writes jCards to a file (UTF-8 encoding will be
+	 * used).
 	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem opening the file
 	 */
@@ -102,7 +105,8 @@ public class JCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates a writer that writes jCards to a file.
+	 * Creates a writer that writes jCards to a file (UTF-8 encoding will be
+	 * used).
 	 * @param file the file to write the vCard to
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
