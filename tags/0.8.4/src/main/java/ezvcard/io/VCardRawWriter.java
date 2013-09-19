@@ -1,0 +1,655 @@
+package ezvcard.io;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import ezvcard.VCardSubTypes;
+import ezvcard.VCardVersion;
+import ezvcard.parameters.EncodingParameter;
+import ezvcard.util.org.apache.commons.codec.EncoderException;
+import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
+
+/*
+ Copyright (c) 2013, Michael Angstadt
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met: 
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer. 
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution. 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies, 
+ either expressed or implied, of the FreeBSD Project.
+ */
+
+/**
+ * Writes data to an vCard data stream.
+ * @author Michael Angstadt
+ */
+public class VCardRawWriter implements Closeable {
+	/**
+	 * Regular expression used to determine if a parameter value needs to be
+	 * quoted.
+	 */
+	private static final Pattern quoteMeRegex = Pattern.compile(".*?[,:;].*");
+
+	/**
+	 * Regular expression used to detect newline character sequences.
+	 */
+	private static final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
+
+	/**
+	 * Regular expression used to determine if a property name contains any
+	 * invalid characters.
+	 */
+	private static final Pattern propertyNameRegex = Pattern.compile("(?i)[-a-z0-9]+");
+
+	/**
+	 * The characters that are not valid in parameter values and that should be
+	 * removed.
+	 */
+	private static final Map<VCardVersion, BitSet> invalidParamValueChars = new HashMap<VCardVersion, BitSet>();
+	static {
+		BitSet controlChars = new BitSet(128);
+		controlChars.set(0, 31);
+		controlChars.set(127);
+		controlChars.set('\t', false); //allow
+		controlChars.set('\n', false); //allow
+		controlChars.set('\r', false); //allow
+
+		//2.1
+		{
+			BitSet bitSet = new BitSet(128);
+			bitSet.or(controlChars);
+
+			bitSet.set(',');
+			bitSet.set('.');
+			bitSet.set(':');
+			bitSet.set('=');
+			bitSet.set('[');
+			bitSet.set(']');
+
+			invalidParamValueChars.put(VCardVersion.V2_1, bitSet);
+		}
+
+		//3.0, 4.0
+		{
+			BitSet bitSet = new BitSet(128);
+			bitSet.or(controlChars);
+
+			invalidParamValueChars.put(VCardVersion.V3_0, bitSet);
+			invalidParamValueChars.put(VCardVersion.V4_0, bitSet);
+		}
+	}
+
+	private final String newline;
+	private boolean caretEncodingEnabled = false;
+	private final FoldingScheme foldingScheme;
+	private final Writer writer;
+	private ProblemsListener problemsListener;
+	private VCardVersion version;
+
+	/**
+	 * Creates a vCard raw writer using the standard folding scheme and newline
+	 * sequence.
+	 * @param writer the writer to the data stream
+	 * @param version the vCard version to adhere to
+	 */
+	public VCardRawWriter(Writer writer, VCardVersion version) {
+		this(writer, version, FoldingScheme.MIME_DIR);
+	}
+
+	/**
+	 * Creates a vCard raw writer using the standard newline sequence.
+	 * @param writer the writer to the data stream
+	 * @param version the vCard version to adhere to
+	 * @param foldingScheme the folding scheme to use or null not to fold at all
+	 */
+	public VCardRawWriter(Writer writer, VCardVersion version, FoldingScheme foldingScheme) {
+		this(writer, version, foldingScheme, "\r\n");
+	}
+
+	/**
+	 * Creates a vCard raw writer.
+	 * @param writer the writer to the data stream
+	 * @param version the vCard version to adhere to
+	 * @param foldingScheme the folding scheme to use or null not to fold at all
+	 * @param newline the newline sequence to use
+	 */
+	public VCardRawWriter(Writer writer, VCardVersion version, FoldingScheme foldingScheme, String newline) {
+		if (foldingScheme == null) {
+			this.writer = writer;
+		} else {
+			this.writer = new FoldedLineWriter(writer, foldingScheme.getLineLength(), foldingScheme.getIndent(), newline);
+		}
+		this.version = version;
+		this.foldingScheme = foldingScheme;
+		this.newline = newline;
+	}
+
+	/**
+	 * <p>
+	 * Gets whether the writer will apply circumflex accent encoding on
+	 * parameter values (disabled by default, only applies to 3.0 and 4.0
+	 * vCards). This escaping mechanism allows for newlines and double quotes to
+	 * be included in parameter values.
+	 * </p>
+	 * 
+	 * <p>
+	 * When disabled, the writer will replace newlines with spaces and double
+	 * quotes with single quotes.
+	 * </p>
+	 * 
+	 * <table border="1">
+	 * <tr>
+	 * <th>Character</th>
+	 * <th>Replacement<br>
+	 * (when disabled)</th>
+	 * <th>Replacement<br>
+	 * (when enabled)</th>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code "}</td>
+	 * <td>{@code '}</td>
+	 * <td>{@code ^'}</td>
+	 * </tr>
+	 * <tr>
+	 * <td><i>newline</i></td>
+	 * <td><code><i>space</i></code></td>
+	 * <td>{@code ^n}</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code ^}</td>
+	 * <td>{@code ^}</td>
+	 * <td>{@code ^^}</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * <p>
+	 * Example:
+	 * </p>
+	 * 
+	 * <pre>
+	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
+	 *  sburgh, PA 15212":40.446816;80.00566
+	 * </pre>
+	 * 
+	 * @return true if circumflex accent encoding is enabled, false if not
+	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 */
+	public boolean isCaretEncodingEnabled() {
+		return caretEncodingEnabled;
+	}
+
+	/**
+	 * <p>
+	 * Sets whether the writer will apply circumflex accent encoding on
+	 * parameter values (disabled by default, only applies to 3.0 and 4.0
+	 * vCards). This escaping mechanism allows for newlines and double quotes to
+	 * be included in parameter values.
+	 * </p>
+	 * 
+	 * <p>
+	 * When disabled, the writer will replace newlines with spaces and double
+	 * quotes with single quotes.
+	 * </p>
+	 * 
+	 * <table border="1">
+	 * <tr>
+	 * <th>Character</th>
+	 * <th>Replacement<br>
+	 * (when disabled)</th>
+	 * <th>Replacement<br>
+	 * (when enabled)</th>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code "}</td>
+	 * <td>{@code '}</td>
+	 * <td>{@code ^'}</td>
+	 * </tr>
+	 * <tr>
+	 * <td><i>newline</i></td>
+	 * <td><code><i>space</i></code></td>
+	 * <td>{@code ^n}</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code ^}</td>
+	 * <td>{@code ^}</td>
+	 * <td>{@code ^^}</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * <p>
+	 * Example:
+	 * </p>
+	 * 
+	 * <pre>
+	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
+	 *  sburgh, PA 15212":40.446816;80.00566
+	 * </pre>
+	 * 
+	 * @param enable true to use circumflex accent encoding, false not to
+	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 */
+	public void setCaretEncodingEnabled(boolean enable) {
+		caretEncodingEnabled = enable;
+	}
+
+	/**
+	 * Gets the vCard version that the writer is adhering to.
+	 * @return the version
+	 */
+	public VCardVersion getVersion() {
+		return version;
+	}
+
+	/**
+	 * Sets the vCard version that the writer should adhere to.
+	 * @param version the version
+	 */
+	public void setVersion(VCardVersion version) {
+		this.version = version;
+	}
+
+	/**
+	 * Gets the newline sequence that is used to separate lines.
+	 * @return the newline sequence
+	 */
+	public String getNewline() {
+		return newline;
+	}
+
+	/**
+	 * Gets the problems listener.
+	 * @return the listener or null if not set
+	 */
+	public ProblemsListener getProblemsListener() {
+		return problemsListener;
+	}
+
+	/**
+	 * Sets the problems listener.
+	 * @param problemsListener the listener or null to remove
+	 */
+	public void setProblemsListener(ProblemsListener problemsListener) {
+		this.problemsListener = problemsListener;
+	}
+
+	/**
+	 * Gets the rules for how each line is folded.
+	 * @return the folding scheme or null if the lines are not folded
+	 */
+	public FoldingScheme getFoldingScheme() {
+		return foldingScheme;
+	}
+
+	/**
+	 * Writes a property marking the beginning of a component (in other words,
+	 * writes a "BEGIN:NAME" property).
+	 * @param componentName the component name (e.g. "VCARD")
+	 * @throws IOException if there's an I/O problem
+	 */
+	public void writeBeginComponent(String componentName) throws IOException {
+		writeProperty("BEGIN", componentName);
+	}
+
+	/**
+	 * Writes a property marking the end of a component (in other words, writes
+	 * a "END:NAME" property).
+	 * @param componentName the component name (e.g. "VCARD")
+	 * @throws IOException if there's an I/O problem
+	 */
+	public void writeEndComponent(String componentName) throws IOException {
+		writeProperty("END", componentName);
+	}
+
+	/**
+	 * Writes a "VERSION" property, based on the vCard version that the writer
+	 * is adhering to.
+	 * @throws IOException if there's an I/O problem
+	 */
+	public void writeVersion() throws IOException {
+		writeProperty("VERSION", version.getVersion());
+	}
+
+	/**
+	 * Writes a property to the vCard data stream.
+	 * @param propertyName the property name (e.g. "FN")
+	 * @param value the property value
+	 * @throws IllegalArgumentException if the property name contains invalid
+	 * characters
+	 * @throws IOException if there's an I/O problem
+	 */
+	public void writeProperty(String propertyName, String value) throws IOException {
+		writeProperty(null, propertyName, new VCardSubTypes(), value);
+	}
+
+	/**
+	 * Writes a property to the vCard data stream.
+	 * @param group the group or null if there is no group
+	 * @param propertyName the property name (e.g. "FN")
+	 * @param parameters the property parameters
+	 * @param value the property value
+	 * @throws IllegalArgumentException if the group or property name contains
+	 * invalid characters
+	 * @throws IOException if there's an I/O problem
+	 */
+	public void writeProperty(String group, String propertyName, VCardSubTypes parameters, String value) throws IOException {
+		//validate the group name
+		if (group != null && !propertyNameRegex.matcher(group).matches()) {
+			throw new IllegalArgumentException("Group contains invalid characters.  Valid characters are letters, numbers, and hyphens: " + group);
+		}
+
+		//validate the property name
+		if (!propertyNameRegex.matcher(propertyName).matches()) {
+			throw new IllegalArgumentException("Property name contains invalid characters.  Valid characters are letters, numbers, and hyphens: " + propertyName);
+		}
+
+		value = sanitizeValue(propertyName, parameters, value);
+
+		//write the group
+		if (group != null) {
+			writer.append(group);
+			writer.append('.');
+		}
+
+		//write the property name
+		writer.append(propertyName);
+
+		//write the parameters
+		for (Map.Entry<String, List<String>> subType : parameters) {
+			String parameterName = subType.getKey();
+			List<String> parameterValues = subType.getValue();
+			if (parameterValues.isEmpty()) {
+				continue;
+			}
+
+			if (version == VCardVersion.V2_1) {
+				boolean isTypeParameter = VCardSubTypes.TYPE.equalsIgnoreCase(parameterName);
+				for (String parameterValue : parameterValues) {
+					parameterValue = sanitizeParameterValue(parameterValue, parameterName, propertyName);
+
+					if (isTypeParameter) {
+						//e.g. ADR;HOME;WORK:
+						writer.append(';').append(parameterValue.toUpperCase());
+					} else {
+						//e.g. ADR;FOO=bar;FOO=car:
+						writer.append(';').append(parameterName).append('=').append(parameterValue);
+					}
+				}
+			} else {
+				//e.g. ADR;TYPE=home,work,"another,value":
+
+				boolean first = true;
+				writer.append(';').append(parameterName).append('=');
+				for (String parameterValue : parameterValues) {
+					if (!first) {
+						writer.append(',');
+					}
+
+					parameterValue = sanitizeParameterValue(parameterValue, parameterName, propertyName);
+
+					//surround with double quotes if contains special chars
+					if (quoteMeRegex.matcher(parameterValue).matches()) {
+						writer.append('"');
+						writer.append(parameterValue);
+						writer.append('"');
+					} else {
+						writer.append(parameterValue);
+					}
+
+					first = false;
+				}
+			}
+		}
+
+		writer.append(':');
+
+		//write the property value
+		writer.append(value);
+
+		writer.append(newline);
+	}
+
+	/**
+	 * Sanitizes a property value for safe inclusion in a vCard.
+	 * @param propertyName the property name
+	 * @param parameters the parameters
+	 * @param value the value to sanitize
+	 * @return the sanitized value
+	 */
+	private String sanitizeValue(String propertyName, VCardSubTypes parameters, String value) {
+		if (value == null) {
+			return "";
+		}
+
+		if (version == VCardVersion.V2_1) {
+			if (containsNewlines(value)) {
+				//2.1 does not support the "\n" escape sequence (see "Delimiters" sub-section in section 2 of the specs)
+				QuotedPrintableCodec codec = new QuotedPrintableCodec();
+				try {
+					value = codec.encode(value);
+					parameters.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
+					return value;
+				} catch (EncoderException e) {
+					if (problemsListener != null) {
+						problemsListener.onQuotedPrintableEncodingFailed(propertyName, value, e);
+					}
+				}
+			} else {
+				return value;
+			}
+		}
+
+		return escapeNewlines(value);
+	}
+
+	/**
+	 * Removes or escapes all invalid characters in a parameter value.
+	 * @param parameterValue the parameter value
+	 * @param parameterName the parameter name
+	 * @param propertyName the name of the property to which the parameter
+	 * belongs
+	 * @return the sanitized parameter value
+	 */
+	private String sanitizeParameterValue(String parameterValue, String parameterName, String propertyName) {
+		String modifiedValue = null;
+		boolean valueChanged = false;
+
+		//Note: String reference comparisons ("==") are used because the Pattern class returns the same instance if the String wasn't changed
+
+		switch (version) {
+		case V2_1:
+			//remove invalid characters
+			modifiedValue = removeInvalidParameterValueChars(parameterValue);
+
+			//replace newlines with spaces
+			modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll(" ");
+
+			//check to see if value was changed
+			valueChanged = (parameterValue != modifiedValue);
+
+			//escape backslashes
+			modifiedValue = modifiedValue.replace("\\", "\\\\");
+
+			//escape semi-colons (see section 2)
+			modifiedValue = modifiedValue.replace(";", "\\;");
+
+			break;
+
+		case V3_0:
+			//remove invalid characters
+			modifiedValue = removeInvalidParameterValueChars(parameterValue);
+
+			if (caretEncodingEnabled) {
+				valueChanged = (modifiedValue != parameterValue);
+
+				//apply caret encoding
+				modifiedValue = applyCaretEncoding(modifiedValue);
+			} else {
+				//replace double quotes with single quotes
+				modifiedValue = modifiedValue.replace('"', '\'');
+
+				//replace newlines with spaces
+				modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll(" ");
+
+				valueChanged = (modifiedValue != parameterValue);
+			}
+
+			break;
+
+		case V4_0:
+			//remove invalid characters
+			modifiedValue = removeInvalidParameterValueChars(parameterValue);
+
+			if (caretEncodingEnabled) {
+				valueChanged = (modifiedValue != parameterValue);
+
+				//apply caret encoding
+				modifiedValue = applyCaretEncoding(modifiedValue);
+			} else {
+				//replace double quotes with single quotes
+				modifiedValue = modifiedValue.replace('"', '\'');
+
+				valueChanged = (modifiedValue != parameterValue);
+
+				//backslash-escape newlines (for the "LABEL" parameter)
+				modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll("\\\\\\n");
+			}
+
+			break;
+		}
+
+		if (valueChanged && problemsListener != null) {
+			problemsListener.onParameterValueChanged(propertyName, parameterName, parameterValue, modifiedValue);
+		}
+
+		return modifiedValue;
+	}
+
+	/**
+	 * Removes invalid characters from a parameter value.
+	 * @param value the parameter value
+	 * @return the sanitized parameter value
+	 */
+	private String removeInvalidParameterValueChars(String value) {
+		BitSet invalidChars = invalidParamValueChars.get(version);
+		StringBuilder sb = new StringBuilder(value.length());
+
+		for (int i = 0; i < value.length(); i++) {
+			char ch = value.charAt(i);
+			if (!invalidChars.get(ch)) {
+				sb.append(ch);
+			}
+		}
+
+		return (sb.length() == value.length()) ? value : sb.toString();
+	}
+
+	/**
+	 * Applies circumflex accent encoding to a string.
+	 * @param value the string
+	 * @return the encoded string
+	 */
+	private String applyCaretEncoding(String value) {
+		value = value.replace("^", "^^");
+		value = newlineRegex.matcher(value).replaceAll("^n");
+		value = value.replace("\"", "^'");
+		return value;
+	}
+
+	/**
+	 * <p>
+	 * Escapes all newline character sequences. The newline character sequences
+	 * are:
+	 * </p>
+	 * <ul>
+	 * <li>{@code \r\n}</li>
+	 * <li>{@code \r}</li>
+	 * <li>{@code \n}</li>
+	 * </ul>
+	 * @param text the text to escape
+	 * @return the escaped text
+	 */
+	private String escapeNewlines(String text) {
+		return newlineRegex.matcher(text).replaceAll("\\\\n");
+	}
+
+	/**
+	 * <p>
+	 * Determines if a string has at least one newline character sequence. The
+	 * newline character sequences are:
+	 * </p>
+	 * <ul>
+	 * <li>{@code \r\n}</li>
+	 * <li>{@code \r}</li>
+	 * <li>{@code \n}</li>
+	 * </ul>
+	 * @param text the text to escape
+	 * @return the escaped text
+	 */
+	private boolean containsNewlines(String text) {
+		return newlineRegex.matcher(text).find();
+	}
+
+	/**
+	 * Closes the underlying {@link Writer} object.
+	 */
+	public void close() throws IOException {
+		writer.close();
+	}
+
+	/**
+	 * A listener whose methods are invoked when non-critical issues occur
+	 * during the writing process.
+	 * @author Michael Angstadt
+	 */
+	public static interface ProblemsListener {
+		/**
+		 * Called when a parameter value is changed in a lossy way, due to it
+		 * containing invalid characters. If a character can be escaped (such as
+		 * the "^" character when caret encoding is enabled), then this does not
+		 * count as the parameter being modified because it can be decoded
+		 * without losing any information.
+		 * @param propertyName the name of the property to which the parameter
+		 * belongs
+		 * @param parameterName the parameter name
+		 * @param originalValue the original parameter value
+		 * @param modifiedValue the modified parameter value
+		 */
+		void onParameterValueChanged(String propertyName, String parameterName, String originalValue, String modifiedValue);
+
+		/**
+		 * Called if a problem occurs while converting a property value to
+		 * quoted-printable encoding. A property value is converted to
+		 * quoted-printable encoding if it contains newlines and is being
+		 * written to a 2.1 vCard.
+		 * @param propertyName the property name
+		 * @param propertyValue the property value
+		 * @param thrown the thrown exception
+		 */
+		void onQuotedPrintableEncodingFailed(String propertyName, String propertyValue, EncoderException thrown);
+	}
+}
