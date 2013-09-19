@@ -12,6 +12,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
 import ezvcard.io.CompatibilityMode;
 import ezvcard.io.SkipMeException;
 import ezvcard.util.HCardElement;
@@ -37,22 +38,10 @@ public class FavColorsType extends VCardType {
 		favColors.add(color);
 	}
 
-	@Override
-	public String getLanguage() {
-		return subTypes.getLanguage();
-	}
-
-	@Override
-	public void setLanguage(String language) {
-		subTypes.setLanguage(language);
-	}
-
 	//modifies the property's parameters before the property is written
 	@Override
 	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		if (version == VCardVersion.V2_1) {
-			copy.setLanguage(null); //remove the "LANGUAGE" parameter
-		}
+		copy.setValue(VCardDataType.TEXT);
 	}
 
 	//writes the property value to a plain-text vCard
@@ -95,9 +84,13 @@ public class FavColorsType extends VCardType {
 	//parses the property from an XML document
 	@Override
 	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		favColors.clear();
 		NodeList nl = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "color");
 		List<Element> colorElements = XmlUtils.toElementList(nl);
+		if (colorElements.isEmpty()) {
+			throw new CannotParseException("No <color> elements found.");
+		}
+
+		favColors.clear();
 		for (Element colorElement : colorElements) {
 			favColors.add(colorElement.getTextContent());
 		}
@@ -129,6 +122,19 @@ public class FavColorsType extends VCardType {
 		favColors.clear();
 		for (String valueStr : value.asMulti()) {
 			favColors.add(valueStr);
+		}
+	}
+
+	//validates the property's data
+	//invoked when "VCard.validate()" is called
+	@Override
+	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		if (favColors.isEmpty()) {
+			warnings.add("No colors are defined.");
+		}
+
+		if (favColors.contains("periwinkle") && version == VCardVersion.V4_0) {
+			warnings.add("Periwinkle is deprecated in vCard 4.0.");
 		}
 	}
 
