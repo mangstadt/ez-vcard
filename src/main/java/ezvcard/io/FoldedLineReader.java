@@ -43,10 +43,9 @@ import ezvcard.util.VCardStringUtils;
  */
 public class FoldedLineReader extends BufferedReader {
 	/**
-	 * Regular expression used for the incorrectly folded lines that Outlook can
-	 * generate.
+	 * Regular expression used to detect "quoted-printable" property values.
 	 */
-	private static final Pattern outlookQuirk = Pattern.compile("[^:]*?QUOTED-PRINTABLE.*?:.*?=", Pattern.CASE_INSENSITIVE);
+	private static final Pattern foldedQuotedPrintableValueRegex = Pattern.compile("[^:]*?QUOTED-PRINTABLE.*?:.*?=", Pattern.CASE_INSENSITIVE);
 
 	private String lastLine;
 	private int lastLineNum = 0, lineCount = 0;
@@ -81,7 +80,7 @@ public class FoldedLineReader extends BufferedReader {
 	 * between folded lines, which, if not ignored, will cause the parser to
 	 * incorrectly parse the vCard.
 	 * @return the next non-empty line or null of EOF
-	 * @throws IOException
+	 * @throws IOException if there's a problem reading from the reader
 	 */
 	private String readNonEmptyLine() throws IOException {
 		String line;
@@ -95,8 +94,8 @@ public class FoldedLineReader extends BufferedReader {
 	}
 
 	/**
-	 * Reads the next line, unfolding it if necessary.
-	 * @return the next line or null if EOF
+	 * Reads the next unfolded line.
+	 * @return the next unfolded line or null if EOF
 	 * @throws IOException if there's a problem reading from the reader
 	 */
 	@Override
@@ -104,16 +103,15 @@ public class FoldedLineReader extends BufferedReader {
 		String wholeLine = (lastLine == null) ? readNonEmptyLine() : lastLine;
 		lastLine = null;
 		if (wholeLine == null) {
+			//end of stream
 			return null;
 		}
 
 		//@formatter:off
 		/*
-		 * Outlook incorrectly folds lines that are QUOTED-PRINTABLE. It puts a
-		 * "=" at the end of a line to signal that the line's newline characters
-		 * should be ignored and that the vCard parser should continue to read
-		 * the next line as if it were part of the current line. It does not
-		 * prepend each additional line with whitespace.
+		 * Lines that are QUOTED-PRINTABLE are folded in a strange way. A "=" is
+		 * appended to the end of a line to signal that the next line is folded.
+		 * Also, each folded line is not prepend with whitespace.
 		 * 
 		 * For example:
 		 * 
@@ -129,49 +127,65 @@ public class FoldedLineReader extends BufferedReader {
 		 * In the example above, note how there is an empty line directly above
 		 * END. This is still part of the NOTE property value because the 3rd
 		 * line of NOTE ends with a "=".
+		 * 
+		 * This behavior has only been observed in Outlook vCards.
 		 */
 		//@formatter:on
 
 		boolean foldedQuotedPrintableLine = false;
-		if (outlookQuirk.matcher(wholeLine).matches()) {
+		if (foldedQuotedPrintableValueRegex.matcher(wholeLine).matches()) {
 			foldedQuotedPrintableLine = true;
-			wholeLine = wholeLine.substring(0, wholeLine.length() - 1); //chop off the ending "="
+
+			//chop off the trailing "="
+			wholeLine = wholeLine.substring(0, wholeLine.length() - 1);
 		}
 
-		//long lines are folded
 		lastLineNum = lineCount;
-		StringBuilder wholeLineSb = new StringBuilder(wholeLine);
+		StringBuilder unfoldedLine = new StringBuilder(wholeLine);
 		while (true) {
 			String line = foldedQuotedPrintableLine ? super.readLine() : readNonEmptyLine();
 			if (line == null) {
+				//end of stream
 				break;
-			} else if (foldedQuotedPrintableLine) {
+			}
+
+			if (foldedQuotedPrintableLine) {
 				line = VCardStringUtils.ltrim(line);
 
 				boolean endsInEquals = line.endsWith("=");
 				if (endsInEquals) {
+					//chop off the trailing "="
 					line = line.substring(0, line.length() - 1);
 				}
 
-				wholeLineSb.append(line);
+				unfoldedLine.append(line);
 
-				if (!endsInEquals) {
+				if (endsInEquals) {
+					//there are more folded lines
+					continue;
+				} else {
+					//end of the folded line
 					break;
 				}
-			} else if (line.length() > 0 && Character.isWhitespace(line.charAt(0))) {
-				//the line was folded
+			}
+
+			if (line.length() > 0 && Character.isWhitespace(line.charAt(0))) {
+				//the line is folded
 
 				int lastWhitespace = 1;
-				//Evolution will include real whitespace chars alongside the folding char
+				//Note: Evolution will include real whitespace chars alongside the folding char
 				while (lastWhitespace < line.length() && Character.isWhitespace(line.charAt(lastWhitespace))) {
 					lastWhitespace++;
 				}
-				wholeLineSb.append(line.substring(lastWhitespace));
-			} else {
-				lastLine = line;
-				break;
+				unfoldedLine.append(line.substring(lastWhitespace));
+
+				continue;
 			}
+
+			lastLine = line;
+			break;
 		}
-		return wholeLineSb.toString();
+
+		return unfoldedLine.toString();
 	}
 }
