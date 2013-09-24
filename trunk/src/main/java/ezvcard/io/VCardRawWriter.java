@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.EncodingParameter;
-import ezvcard.util.org.apache.commons.codec.EncoderException;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -630,16 +629,5 @@ public class VCardRawWriter implements Closeable {
 		 * @param modifiedValue the modified parameter value
 		 */
 		void onParameterValueChanged(String propertyName, String parameterName, String originalValue, String modifiedValue);
-
-		/**
-		 * Called if a problem occurs while converting a property value to
-		 * quoted-printable encoding. A property value is converted to
-		 * quoted-printable encoding if it contains newlines and is being
-		 * written to a 2.1 vCard.
-		 * @param propertyName the property name
-		 * @param propertyValue the property value
-		 * @param thrown the thrown exception
-		 */
-		void onQuotedPrintableEncodingFailed(String propertyName, String propertyValue, EncoderException thrown);
 	}
 }
