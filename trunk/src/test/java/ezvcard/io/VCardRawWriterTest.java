@@ -1,7 +1,6 @@
 package ezvcard.io;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.VCardRawWriter.ProblemsListener;
 import ezvcard.parameters.EncodingParameter;
-import ezvcard.util.org.apache.commons.codec.EncoderException;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -450,10 +448,6 @@ public class VCardRawWriterTest {
 
 		public final void onParameterValueChanged(String propertyName, String parameterName, String originalValue, String modifiedValue) {
 			onParameterValueChanged++;
-		}
-
-		public final void onQuotedPrintableEncodingFailed(String propertyName, String propertyValue, EncoderException e) {
-			fail("\"onQuotedPrintableEncodingFailed\" should not have been called.");
 		}
 	}
 
