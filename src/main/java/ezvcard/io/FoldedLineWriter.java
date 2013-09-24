@@ -42,7 +42,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 public class FoldedLineWriter extends Writer {
 	private final Writer writer;
 	private int curLineLength = 0;
-	private int lineLength;
+	private Integer lineLength;
 	private String indent;
 	private String newline;
 
@@ -50,8 +50,7 @@ public class FoldedLineWriter extends Writer {
 	 * Creates a folded line writer.
 	 * @param writer the writer object to wrap
 	 * @param lineLength the maximum length a line can be before it is folded
-	 * (excluding the newline), or a value of less than 1 to signal that no
-	 * folding should take place
+	 * (excluding the newline), or null disable folding
 	 * @param indent the string to prepend to each folded line (e.g. a single
 	 * space character)
 	 * @param newline the newline sequence to use (e.g. "\r\n")
@@ -60,7 +59,7 @@ public class FoldedLineWriter extends Writer {
 	 * @throws IllegalArgumentException if the length of the indent string is
 	 * greater than the max line length
 	 */
-	public FoldedLineWriter(Writer writer, int lineLength, String indent, String newline) {
+	public FoldedLineWriter(Writer writer, Integer lineLength, String indent, String newline) {
 		this.writer = writer;
 		setLineLength(lineLength);
 		setIndent(indent);
@@ -68,7 +67,7 @@ public class FoldedLineWriter extends Writer {
 	}
 
 	/**
-	 * Writes a string of text, followed by a newline.
+	 * Writes a string, followed by a newline.
 	 * @param str the text to write
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
@@ -78,15 +77,27 @@ public class FoldedLineWriter extends Writer {
 	}
 
 	/**
-	 * Writes a portion of an array of characters.
+	 * Writes a string.
+	 * @param str the string to write
+	 * @param quotedPrintable true if the string has been encoded in
+	 * quoted-printable encoding, false if not
+	 * @return this
+	 * @throws IOException if there's a problem writing to the output stream
+	 */
+	public FoldedLineWriter append(CharSequence str, boolean quotedPrintable) throws IOException {
+		write(str, quotedPrintable);
+		return this;
+	}
+
+	/**
+	 * Writes a string.
 	 * @param str the string to write
 	 * @param quotedPrintable true if the string has been encoded in
 	 * quoted-printable encoding, false if not
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
-	public FoldedLineWriter append(CharSequence str, boolean quotedPrintable) throws IOException {
+	public void write(CharSequence str, boolean quotedPrintable) throws IOException {
 		write(str.toString().toCharArray(), 0, str.length(), quotedPrintable);
-		return this;
 	}
 
 	@Override
@@ -104,9 +115,7 @@ public class FoldedLineWriter extends Writer {
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void write(char[] cbuf, int off, int len, boolean quotedPrintable) throws IOException {
-		int effectiveLineLength = lineLength;
-
-		//encode into quoted-printable
+		//encode to quoted-printable
 		if (quotedPrintable) {
 			QuotedPrintableCodec codec = new QuotedPrintableCodec();
 			try {
@@ -115,20 +124,26 @@ public class FoldedLineWriter extends Writer {
 				len = cbuf.length;
 			} catch (EncoderException e) {
 				//only thrown if an unsupported charset is passed into the codec
+				throw new RuntimeException(e);
 			}
-
-			effectiveLineLength -= 1; //"=" must be appended onto each line
 		}
 
-		if (lineLength <= 0) {
-			//line folding is disabled
+		if (lineLength == null) {
+			//if line folding is disabled, then write directly to the Writer
 			writer.write(cbuf, off, len);
 			return;
 		}
 
-		//TODO "len" is being treated as the index in the char array to stop at!
+		int effectiveLineLength = lineLength;
+		if (quotedPrintable) {
+			//"=" must be appended onto each line
+			effectiveLineLength -= 1;
+		}
+
 		int encodedCharPos = -1;
-		for (int i = off; i < len; i++) {
+		int start = off;
+		int end = off + len;
+		for (int i = start; i < end; i++) {
 			char c = cbuf[i];
 
 			//keep track of the quoted-printable characters to prevent them from being cut in two at a folding boundary
@@ -140,17 +155,17 @@ public class FoldedLineWriter extends Writer {
 			}
 
 			if (c == '\n') {
-				writer.write(cbuf, off, i - off + 1);
+				writer.write(cbuf, start, i - start + 1);
 				curLineLength = 0;
-				off = i + 1;
+				start = i + 1;
 				continue;
 			}
 
 			if (c == '\r') {
-				if (i == len - 1 || cbuf[i + 1] != '\n') {
-					writer.write(cbuf, off, i - off + 1);
+				if (i == end - 1 || cbuf[i + 1] != '\n') {
+					writer.write(cbuf, start, i - start + 1);
 					curLineLength = 0;
-					off = i + 1;
+					start = i + 1;
 				} else {
 					curLineLength++;
 				}
@@ -165,11 +180,11 @@ public class FoldedLineWriter extends Writer {
 				//if the last characters on the line are whitespace, then exceed the max line length in order to include the whitespace on the same line
 				//otherwise it will be lost because it will merge with the padding on the next line
 				if (Character.isWhitespace(c)) {
-					while (Character.isWhitespace(c) && i < len - 1) {
+					while (Character.isWhitespace(c) && i < end - 1) {
 						i++;
 						c = cbuf[i];
 					}
-					if (i >= len - 1) {
+					if (i >= end - 1) {
 						//the rest of the char array is whitespace, so leave the loop
 						break;
 					}
@@ -178,20 +193,20 @@ public class FoldedLineWriter extends Writer {
 				//if we are in the middle of a quoted-printable encoded char, then exceed the max line length in order to print out the rest of the char
 				if (encodedCharPos > 0) {
 					i += 3 - encodedCharPos;
-					if (i >= len - 1) {
+					if (i >= end - 1) {
 						//the rest of the char array was an encoded char, so leave the loop
 						break;
 					}
 				}
 
-				writer.write(cbuf, off, i - off);
+				writer.write(cbuf, start, i - start);
 				if (quotedPrintable) {
 					writer.write('=');
 				}
 				writer.write(newline);
 				writer.write(indent);
 				curLineLength = indent.length() + 1;
-				off = i;
+				start = i;
 
 				continue;
 			}
@@ -199,7 +214,7 @@ public class FoldedLineWriter extends Writer {
 			curLineLength++;
 		}
 
-		writer.write(cbuf, off, len - off);
+		writer.write(cbuf, start, end - start);
 	}
 
 	/**
@@ -221,18 +236,23 @@ public class FoldedLineWriter extends Writer {
 	/**
 	 * Gets the maximum length a line can be before it is folded (excluding the
 	 * newline).
-	 * @return the line length
+	 * @return the line length or null if folding is disabled
 	 */
-	public int getLineLength() {
+	public Integer getLineLength() {
 		return lineLength;
 	}
 
 	/**
 	 * Sets the maximum length a line can be before it is folded (excluding the
 	 * newline).
-	 * @param lineLength the line length or a value &lt;= 0 to disable folding
+	 * @param lineLength the line length or null to disable folding
+	 * @throws IllegalArgumentException if the line length is less than or equal
+	 * to zero
 	 */
-	public void setLineLength(int lineLength) {
+	public void setLineLength(Integer lineLength) {
+		if (lineLength != null && lineLength <= 0) {
+			throw new IllegalArgumentException("Line length must be greater than 0.");
+		}
 		this.lineLength = lineLength;
 	}
 
@@ -251,7 +271,7 @@ public class FoldedLineWriter extends Writer {
 	 * greater than the max line length
 	 */
 	public void setIndent(String indent) {
-		if (indent != null && lineLength > 0 && indent.length() >= lineLength) {
+		if (lineLength != null && indent.length() >= lineLength) {
 			throw new IllegalArgumentException("The length of the indent string must be less than the max line length.");
 		}
 		this.indent = indent;

@@ -41,25 +41,27 @@ import org.junit.Test;
 @SuppressWarnings("resource")
 public class FoldedLineWriterTest {
 	@Test
-	public void write() throws Exception {
+	public void write() throws Throwable {
 		StringWriter sw = new StringWriter();
 		FoldedLineWriter writer = new FoldedLineWriter(sw, 10, " ", "\r\n");
-		writer.append("line\r\nThis line should be    ");
-		writer.append("new line");
-		writer.append("aa");
-		writer.append("line");
-		writer.append("\r\n0123456789\r\n");
 
-		writer.append("0123456789", true);
-		writer.append("\r\n");
-		writer.append("01234567=", true);
-		writer.append("\r\n");
-		writer.append("01234567==", true);
-		writer.append("\r\n");
-		writer.append("short", true);
-		writer.append("\r\n");
-		writer.append("quoted-printable line", true);
+		writer.write("line\r\nThis line should be    ");
+		writer.write("new line");
+		writer.write("aa");
+		writer.write("line");
+		writer.write("\r\n0123456789\r\n");
 
+		writer.write("0123456789", true);
+		writer.write("\r\n");
+		writer.write("01234567=", true);
+		writer.write("\r\n");
+		writer.write("01234567==", true);
+		writer.write("\r\n");
+		writer.write("short", true);
+		writer.write("\r\n");
+		writer.write("quoted-printable line", true);
+
+		writer.close();
 		String actual = sw.toString();
 
 		//@formatter:off
@@ -79,6 +81,26 @@ public class FoldedLineWriterTest {
 		"quoted-pr=\r\n" +
 		" intable =\r\n" +
 		" line";
+		//@formatter:on
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void write_sub_array() throws Throwable {
+		StringWriter sw = new StringWriter();
+		FoldedLineWriter writer = new FoldedLineWriter(sw, 10, " ", "\r\n");
+
+		String str = "This line should be folded.";
+		writer.write(str, 5, 14);
+
+		writer.close();
+		String actual = sw.toString();
+
+		//@formatter:off
+		String expected =
+		"line shoul\r\n" +
+		" d be";
 		//@formatter:on
 
 		assertEquals(expected, actual);
