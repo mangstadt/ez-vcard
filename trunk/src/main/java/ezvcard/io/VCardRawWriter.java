@@ -138,7 +138,7 @@ public class VCardRawWriter implements Closeable {
 	 */
 	public VCardRawWriter(Writer writer, VCardVersion version, FoldingScheme foldingScheme, String newline) {
 		if (foldingScheme == null) {
-			this.writer = new FoldedLineWriter(writer, -1, null, newline);
+			this.writer = new FoldedLineWriter(writer, null, "", newline);
 		} else {
 			this.writer = new FoldedLineWriter(writer, foldingScheme.getLineLength(), foldingScheme.getIndent(), newline);
 		}
