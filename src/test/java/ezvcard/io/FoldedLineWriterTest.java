@@ -44,14 +44,43 @@ public class FoldedLineWriterTest {
 	public void write() throws Exception {
 		StringWriter sw = new StringWriter();
 		FoldedLineWriter writer = new FoldedLineWriter(sw, 10, " ", "\r\n");
-		writer.write("line\r\nThis line should be    ");
-		writer.write("new line");
-		writer.write("aa");
-		writer.write("line");
-		writer.append("22");
+		writer.append("line\r\nThis line should be    ");
+		writer.append("new line");
+		writer.append("aa");
+		writer.append("line");
+		writer.append("\r\n0123456789\r\n");
+
+		writer.append("0123456789", true);
+		writer.append("\r\n");
+		writer.append("01234567=", true);
+		writer.append("\r\n");
+		writer.append("01234567==", true);
+		writer.append("\r\n");
+		writer.append("short", true);
+		writer.append("\r\n");
+		writer.append("quoted-printable line", true);
 
 		String actual = sw.toString();
-		String expected = "line\r\nThis line \r\n should be    \r\n new linea\r\n aline22";
+
+		//@formatter:off
+		String expected =
+		"line\r\n" +
+		"This line \r\n" +
+		" should be    \r\n" +
+		" new linea\r\n" +
+		" aline\r\n" +
+		"0123456789\r\n" +
+		"012345678=\r\n" +
+		" 9\r\n" +
+		"01234567=3D\r\n" +
+		"01234567=3D=\r\n" +
+		" =3D\r\n" +
+		"short\r\n" +
+		"quoted-pr=\r\n" +
+		" intable =\r\n" +
+		" line";
+		//@formatter:on
+
 		assertEquals(expected, actual);
 	}
 }
