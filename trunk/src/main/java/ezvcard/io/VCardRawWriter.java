@@ -13,7 +13,6 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.util.org.apache.commons.codec.EncoderException;
-import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -107,7 +106,7 @@ public class VCardRawWriter implements Closeable {
 	private final String newline;
 	private boolean caretEncodingEnabled = false;
 	private final FoldingScheme foldingScheme;
-	private final Writer writer;
+	private final FoldedLineWriter writer;
 	private ProblemsListener problemsListener;
 	private VCardVersion version;
 
@@ -140,7 +139,7 @@ public class VCardRawWriter implements Closeable {
 	 */
 	public VCardRawWriter(Writer writer, VCardVersion version, FoldingScheme foldingScheme, String newline) {
 		if (foldingScheme == null) {
-			this.writer = writer;
+			this.writer = new FoldedLineWriter(writer, -1, null, newline);
 		} else {
 			this.writer = new FoldedLineWriter(writer, foldingScheme.getLineLength(), foldingScheme.getIndent(), newline);
 		}
@@ -351,7 +350,9 @@ public class VCardRawWriter implements Closeable {
 	 * @param group the group or null if there is no group
 	 * @param propertyName the property name (e.g. "FN")
 	 * @param parameters the property parameters
-	 * @param value the property value
+	 * @param value the property value (will be converted to "quoted-printable"
+	 * encoding if the {@link EncodingParameter#QUOTED_PRINTABLE} parameter is
+	 * set)
 	 * @throws IllegalArgumentException if the group or property name contains
 	 * invalid characters
 	 * @throws IOException if there's an I/O problem
@@ -428,7 +429,8 @@ public class VCardRawWriter implements Closeable {
 		writer.append(':');
 
 		//write the property value
-		writer.append(value);
+		boolean quotedPrintable = (parameters.getEncoding() == EncodingParameter.QUOTED_PRINTABLE);
+		writer.append(value, quotedPrintable);
 
 		writer.append(newline);
 	}
@@ -445,22 +447,10 @@ public class VCardRawWriter implements Closeable {
 			return "";
 		}
 
-		if (version == VCardVersion.V2_1) {
-			if (containsNewlines(value)) {
-				//2.1 does not support the "\n" escape sequence (see "Delimiters" sub-section in section 2 of the specs)
-				QuotedPrintableCodec codec = new QuotedPrintableCodec();
-				try {
-					value = codec.encode(value);
-					parameters.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
-					return value;
-				} catch (EncoderException e) {
-					if (problemsListener != null) {
-						problemsListener.onQuotedPrintableEncodingFailed(propertyName, value, e);
-					}
-				}
-			} else {
-				return value;
-			}
+		if (version == VCardVersion.V2_1 && containsNewlines(value)) {
+			//2.1 does not support the "\n" escape sequence (see "Delimiters" sub-section in section 2 of the specs)
+			parameters.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
+			return value;
 		}
 
 		return escapeNewlines(value);

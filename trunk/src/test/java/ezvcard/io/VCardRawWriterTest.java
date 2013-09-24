@@ -13,6 +13,7 @@ import org.junit.Test;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.VCardRawWriter.ProblemsListener;
+import ezvcard.parameters.EncodingParameter;
 import ezvcard.util.org.apache.commons.codec.EncoderException;
 
 /*
@@ -228,14 +229,14 @@ public class VCardRawWriterTest {
 		//replaces \ with \\
 		//replaces ; with \;
 		//replaces newline with space
-		tests.add(VCardVersion.V2_1, false, "PROP;X-TEST=^…\\\\\\;\"\t ;X-TEST=normal:\r\n");
+		tests.add(VCardVersion.V2_1, false, "PROP;X-TEST=^ï¿½\\\\\\;\"\t ;X-TEST=normal:\r\n");
 
 		//2.1 with caret escaping (ignored)
 		//removes , : = [ ] FS
 		//replaces \ with \\
 		//replaces ; with \;
 		//replaces newline with space
-		tests.add(VCardVersion.V2_1, true, "PROP;X-TEST=^…\\\\\\;\"\t ;X-TEST=normal:\r\n");
+		tests.add(VCardVersion.V2_1, true, "PROP;X-TEST=^ï¿½\\\\\\;\"\t ;X-TEST=normal:\r\n");
 
 		//3.0 without caret escaping
 		//removes FS
@@ -243,7 +244,7 @@ public class VCardRawWriterTest {
 		//replaces newline with space
 		//replaces " with '
 		//surrounds in double quotes, since it contains , ; or :
-		tests.add(VCardVersion.V3_0, false, "PROP;X-TEST=\"^…\\,;:=[]'\t \",normal:\r\n");
+		tests.add(VCardVersion.V3_0, false, "PROP;X-TEST=\"^ï¿½\\,;:=[]'\t \",normal:\r\n");
 
 		//3.0 with caret escaping (same as 4.0)
 		//removes FS
@@ -251,7 +252,7 @@ public class VCardRawWriterTest {
 		//replaces newline with ^n
 		//replaces " with ^'
 		//surrounds in double quotes, since it contains , ; or :
-		tests.add(VCardVersion.V3_0, true, "PROP;X-TEST=\"^^…\\,;:=[]^'\t^n\",normal:\r\n");
+		tests.add(VCardVersion.V3_0, true, "PROP;X-TEST=\"^^ï¿½\\,;:=[]^'\t^n\",normal:\r\n");
 
 		//4.0 without caret escaping
 		//removes FS
@@ -259,7 +260,7 @@ public class VCardRawWriterTest {
 		//replaces newline with \n
 		//replaces " with '
 		//surrounds in double quotes, since it contains , ; or :
-		tests.add(VCardVersion.V4_0, false, "PROP;X-TEST=\"^…\\,;:=[]'\t\\n\",normal:\r\n");
+		tests.add(VCardVersion.V4_0, false, "PROP;X-TEST=\"^ï¿½\\,;:=[]'\t\\n\",normal:\r\n");
 
 		//4.0 with caret escaping
 		//removes FS
@@ -267,7 +268,7 @@ public class VCardRawWriterTest {
 		//replaces newline with ^n
 		//replaces " with ^'
 		//surrounds in double quotes, since it contains , ; or :
-		tests.add(VCardVersion.V4_0, true, "PROP;X-TEST=\"^^…\\,;:=[]^'\t^n\",normal:\r\n");
+		tests.add(VCardVersion.V4_0, true, "PROP;X-TEST=\"^^ï¿½\\,;:=[]^'\t^n\",normal:\r\n");
 
 		for (Object[] test : tests) {
 			VCardVersion version = (VCardVersion) test[0];
@@ -281,7 +282,7 @@ public class VCardRawWriterTest {
 			writer.setProblemsListener(listener);
 
 			VCardSubTypes parameters = new VCardSubTypes();
-			parameters.put("X-TEST", "^…\\,;:=[]\"\t\n" + ((char) 28));
+			parameters.put("X-TEST", "^ï¿½\\,;:=[]\"\t\n" + ((char) 28));
 			parameters.put("X-TEST", "normal");
 			writer.writeProperty(null, "PROP", parameters, "");
 
@@ -415,6 +416,33 @@ public class VCardRawWriterTest {
 			String actual = sw.toString();
 			assertEquals(expected, actual);
 		}
+	}
+
+	/**
+	 * Property values that use "quoted-printable" encoding must include a "="
+	 * at the end of the line if the next line is folded.
+	 */
+	@Test
+	public void quoted_printable_line() throws Exception {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, new FoldingScheme(40, " "));
+
+		VCardSubTypes parameters = new VCardSubTypes();
+		parameters.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
+
+		writer.writeProperty(null, "PROP", parameters, "quoted-printable \r\nline");
+		writer.writeProperty(null, "PROP", parameters, "short");
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"PROP;ENCODING=quoted-printable:quoted-p=\r\n" +
+		" rintable =0D=0Aline\r\n" +
+		"PROP;ENCODING=quoted-printable:short\r\n";
+		//@formatter:on
+
+		String actual = sw.toString();
+		assertEquals(expected, actual);
 	}
 
 	private class ProblemsListenerImpl implements ProblemsListener {
