@@ -1,0 +1,847 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package ezvcard.io;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import static ezvcard.util.IOUtils.utf8Writer;<a name="line.3"></a>
+<FONT color="green">004</FONT>    import static ezvcard.util.VCardStringUtils.NEWLINE;<a name="line.4"></a>
+<FONT color="green">005</FONT>    <a name="line.5"></a>
+<FONT color="green">006</FONT>    import java.io.File;<a name="line.6"></a>
+<FONT color="green">007</FONT>    import java.io.FileInputStream;<a name="line.7"></a>
+<FONT color="green">008</FONT>    import java.io.IOException;<a name="line.8"></a>
+<FONT color="green">009</FONT>    import java.io.InputStream;<a name="line.9"></a>
+<FONT color="green">010</FONT>    import java.io.OutputStream;<a name="line.10"></a>
+<FONT color="green">011</FONT>    import java.io.Reader;<a name="line.11"></a>
+<FONT color="green">012</FONT>    import java.io.StringWriter;<a name="line.12"></a>
+<FONT color="green">013</FONT>    import java.io.Writer;<a name="line.13"></a>
+<FONT color="green">014</FONT>    import java.util.ArrayList;<a name="line.14"></a>
+<FONT color="green">015</FONT>    import java.util.Collections;<a name="line.15"></a>
+<FONT color="green">016</FONT>    import java.util.HashMap;<a name="line.16"></a>
+<FONT color="green">017</FONT>    import java.util.List;<a name="line.17"></a>
+<FONT color="green">018</FONT>    import java.util.Map;<a name="line.18"></a>
+<FONT color="green">019</FONT>    <a name="line.19"></a>
+<FONT color="green">020</FONT>    import javax.xml.namespace.QName;<a name="line.20"></a>
+<FONT color="green">021</FONT>    import javax.xml.transform.OutputKeys;<a name="line.21"></a>
+<FONT color="green">022</FONT>    import javax.xml.transform.TransformerException;<a name="line.22"></a>
+<FONT color="green">023</FONT>    import javax.xml.xpath.XPath;<a name="line.23"></a>
+<FONT color="green">024</FONT>    import javax.xml.xpath.XPathConstants;<a name="line.24"></a>
+<FONT color="green">025</FONT>    import javax.xml.xpath.XPathExpressionException;<a name="line.25"></a>
+<FONT color="green">026</FONT>    import javax.xml.xpath.XPathFactory;<a name="line.26"></a>
+<FONT color="green">027</FONT>    <a name="line.27"></a>
+<FONT color="green">028</FONT>    import org.w3c.dom.Document;<a name="line.28"></a>
+<FONT color="green">029</FONT>    import org.w3c.dom.Element;<a name="line.29"></a>
+<FONT color="green">030</FONT>    import org.xml.sax.SAXException;<a name="line.30"></a>
+<FONT color="green">031</FONT>    <a name="line.31"></a>
+<FONT color="green">032</FONT>    import ezvcard.VCard;<a name="line.32"></a>
+<FONT color="green">033</FONT>    import ezvcard.VCardDataType;<a name="line.33"></a>
+<FONT color="green">034</FONT>    import ezvcard.VCardSubTypes;<a name="line.34"></a>
+<FONT color="green">035</FONT>    import ezvcard.VCardVersion;<a name="line.35"></a>
+<FONT color="green">036</FONT>    import ezvcard.types.ProdIdType;<a name="line.36"></a>
+<FONT color="green">037</FONT>    import ezvcard.types.RawType;<a name="line.37"></a>
+<FONT color="green">038</FONT>    import ezvcard.types.TypeList;<a name="line.38"></a>
+<FONT color="green">039</FONT>    import ezvcard.types.VCardType;<a name="line.39"></a>
+<FONT color="green">040</FONT>    import ezvcard.types.XmlType;<a name="line.40"></a>
+<FONT color="green">041</FONT>    import ezvcard.util.IOUtils;<a name="line.41"></a>
+<FONT color="green">042</FONT>    import ezvcard.util.ListMultimap;<a name="line.42"></a>
+<FONT color="green">043</FONT>    import ezvcard.util.XmlUtils;<a name="line.43"></a>
+<FONT color="green">044</FONT>    <a name="line.44"></a>
+<FONT color="green">045</FONT>    /*<a name="line.45"></a>
+<FONT color="green">046</FONT>     Copyright (c) 2013, Michael Angstadt<a name="line.46"></a>
+<FONT color="green">047</FONT>     All rights reserved.<a name="line.47"></a>
+<FONT color="green">048</FONT>    <a name="line.48"></a>
+<FONT color="green">049</FONT>     Redistribution and use in source and binary forms, with or without<a name="line.49"></a>
+<FONT color="green">050</FONT>     modification, are permitted provided that the following conditions are met: <a name="line.50"></a>
+<FONT color="green">051</FONT>    <a name="line.51"></a>
+<FONT color="green">052</FONT>     1. Redistributions of source code must retain the above copyright notice, this<a name="line.52"></a>
+<FONT color="green">053</FONT>     list of conditions and the following disclaimer. <a name="line.53"></a>
+<FONT color="green">054</FONT>     2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.54"></a>
+<FONT color="green">055</FONT>     this list of conditions and the following disclaimer in the documentation<a name="line.55"></a>
+<FONT color="green">056</FONT>     and/or other materials provided with the distribution. <a name="line.56"></a>
+<FONT color="green">057</FONT>    <a name="line.57"></a>
+<FONT color="green">058</FONT>     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.58"></a>
+<FONT color="green">059</FONT>     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.59"></a>
+<FONT color="green">060</FONT>     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.60"></a>
+<FONT color="green">061</FONT>     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.61"></a>
+<FONT color="green">062</FONT>     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.62"></a>
+<FONT color="green">063</FONT>     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.63"></a>
+<FONT color="green">064</FONT>     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.64"></a>
+<FONT color="green">065</FONT>     ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.65"></a>
+<FONT color="green">066</FONT>     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.66"></a>
+<FONT color="green">067</FONT>     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.67"></a>
+<FONT color="green">068</FONT>    <a name="line.68"></a>
+<FONT color="green">069</FONT>     The views and conclusions contained in the software and documentation are those<a name="line.69"></a>
+<FONT color="green">070</FONT>     of the authors and should not be interpreted as representing official policies, <a name="line.70"></a>
+<FONT color="green">071</FONT>     either expressed or implied, of the FreeBSD Project.<a name="line.71"></a>
+<FONT color="green">072</FONT>     */<a name="line.72"></a>
+<FONT color="green">073</FONT>    <a name="line.73"></a>
+<FONT color="green">074</FONT>    //@formatter:off<a name="line.74"></a>
+<FONT color="green">075</FONT>    /**<a name="line.75"></a>
+<FONT color="green">076</FONT>    * &lt;p&gt;<a name="line.76"></a>
+<FONT color="green">077</FONT>    * Represents an XML document that contains vCard objects ("xCard" standard).<a name="line.77"></a>
+<FONT color="green">078</FONT>    * This class can be used to read and write xCard documents.<a name="line.78"></a>
+<FONT color="green">079</FONT>    * &lt;/p&gt;<a name="line.79"></a>
+<FONT color="green">080</FONT>    * &lt;p&gt;<a name="line.80"></a>
+<FONT color="green">081</FONT>    * &lt;b&gt;Examples:&lt;/b&gt;<a name="line.81"></a>
+<FONT color="green">082</FONT>    * <a name="line.82"></a>
+<FONT color="green">083</FONT>    * &lt;pre class="brush:java"&gt;<a name="line.83"></a>
+<FONT color="green">084</FONT>    * String xml =<a name="line.84"></a>
+<FONT color="green">085</FONT>    * "&amp;lt;vcards xmlns=\"urn:ietf:params:xml:ns:vcard-4.0\"&amp;gt;" +<a name="line.85"></a>
+<FONT color="green">086</FONT>    *   "&amp;lt;vcard&amp;gt;" +<a name="line.86"></a>
+<FONT color="green">087</FONT>    *     "&amp;lt;fn&amp;gt;" +<a name="line.87"></a>
+<FONT color="green">088</FONT>    *       "&amp;lt;text&amp;gt;John Doe&amp;lt;/text&amp;gt;" +<a name="line.88"></a>
+<FONT color="green">089</FONT>    *     "&amp;lt;/fn&amp;gt;" +<a name="line.89"></a>
+<FONT color="green">090</FONT>    *     "&amp;lt;n&amp;gt;" +<a name="line.90"></a>
+<FONT color="green">091</FONT>    *       "&amp;lt;surname&amp;gt;Doe&amp;lt;/surname&amp;gt;" +<a name="line.91"></a>
+<FONT color="green">092</FONT>    *        "&amp;lt;given&amp;gt;Johnathan&amp;lt;/given&amp;gt;" +<a name="line.92"></a>
+<FONT color="green">093</FONT>    *        "&amp;lt;additional&amp;gt;Jonny&amp;lt;/additional&amp;gt;" +<a name="line.93"></a>
+<FONT color="green">094</FONT>    *        "&amp;lt;additional&amp;gt;John&amp;lt;/additional&amp;gt;" +<a name="line.94"></a>
+<FONT color="green">095</FONT>    *        "&amp;lt;prefix&amp;gt;Mr.&amp;lt;/prefix&amp;gt;" +<a name="line.95"></a>
+<FONT color="green">096</FONT>    *        "&amp;lt;suffix /&amp;gt;" +<a name="line.96"></a>
+<FONT color="green">097</FONT>    *      "&amp;lt;/n&amp;gt;" +<a name="line.97"></a>
+<FONT color="green">098</FONT>    *    "&amp;lt;/vcard&amp;gt;" +<a name="line.98"></a>
+<FONT color="green">099</FONT>    * "&amp;lt;/vcards&amp;gt;";<a name="line.99"></a>
+<FONT color="green">100</FONT>    *     <a name="line.100"></a>
+<FONT color="green">101</FONT>    * //parsing an existing xCard document<a name="line.101"></a>
+<FONT color="green">102</FONT>    * XCardDocument xcard = new XCardDocument(xml);<a name="line.102"></a>
+<FONT color="green">103</FONT>    * List&amp;lt;VCard&amp;gt; vcards = xcard.parseAll();<a name="line.103"></a>
+<FONT color="green">104</FONT>    * <a name="line.104"></a>
+<FONT color="green">105</FONT>    * //creating an empty xCard document<a name="line.105"></a>
+<FONT color="green">106</FONT>    * XCardDocument xcard = new XCardDocument();<a name="line.106"></a>
+<FONT color="green">107</FONT>    * <a name="line.107"></a>
+<FONT color="green">108</FONT>    * //VCard objects can be added at any time<a name="line.108"></a>
+<FONT color="green">109</FONT>    * VCard vcard = ...<a name="line.109"></a>
+<FONT color="green">110</FONT>    * xcard.add(vcard);<a name="line.110"></a>
+<FONT color="green">111</FONT>    * <a name="line.111"></a>
+<FONT color="green">112</FONT>    * //retrieving the raw XML DOM<a name="line.112"></a>
+<FONT color="green">113</FONT>    * Document document = xcard.getDocument();<a name="line.113"></a>
+<FONT color="green">114</FONT>    * <a name="line.114"></a>
+<FONT color="green">115</FONT>    * //call one of the "write()" methods to output the xCard document<a name="line.115"></a>
+<FONT color="green">116</FONT>    * File file = new File("johndoe.xml");<a name="line.116"></a>
+<FONT color="green">117</FONT>    * xcard.write(file);<a name="line.117"></a>
+<FONT color="green">118</FONT>    * &lt;/pre&gt;<a name="line.118"></a>
+<FONT color="green">119</FONT>    * <a name="line.119"></a>
+<FONT color="green">120</FONT>    * &lt;/p&gt;<a name="line.120"></a>
+<FONT color="green">121</FONT>    * @author Michael Angstadt<a name="line.121"></a>
+<FONT color="green">122</FONT>    * @see &lt;a href="http://tools.ietf.org/html/rfc6351"&gt;RFC 6351&lt;/a&gt;<a name="line.122"></a>
+<FONT color="green">123</FONT>    */<a name="line.123"></a>
+<FONT color="green">124</FONT>    //@formatter:on<a name="line.124"></a>
+<FONT color="green">125</FONT>    public class XCardDocument {<a name="line.125"></a>
+<FONT color="green">126</FONT>            private static final VCardVersion version4 = VCardVersion.V4_0; //xCard only supports 4.0<a name="line.126"></a>
+<FONT color="green">127</FONT>            private static final XCardNamespaceContext nsContext = new XCardNamespaceContext(version4, "v");<a name="line.127"></a>
+<FONT color="green">128</FONT>    <a name="line.128"></a>
+<FONT color="green">129</FONT>            /**<a name="line.129"></a>
+<FONT color="green">130</FONT>             * Defines the names of the XML elements that are used to hold each<a name="line.130"></a>
+<FONT color="green">131</FONT>             * parameter's value.<a name="line.131"></a>
+<FONT color="green">132</FONT>             */<a name="line.132"></a>
+<FONT color="green">133</FONT>            private final Map&lt;String, VCardDataType&gt; parameterDataTypes = new HashMap&lt;String, VCardDataType&gt;();<a name="line.133"></a>
+<FONT color="green">134</FONT>            {<a name="line.134"></a>
+<FONT color="green">135</FONT>                    registerParameterDataType(VCardSubTypes.ALTID, VCardDataType.TEXT);<a name="line.135"></a>
+<FONT color="green">136</FONT>                    registerParameterDataType(VCardSubTypes.CALSCALE, VCardDataType.TEXT);<a name="line.136"></a>
+<FONT color="green">137</FONT>                    registerParameterDataType(VCardSubTypes.GEO, VCardDataType.URI);<a name="line.137"></a>
+<FONT color="green">138</FONT>                    registerParameterDataType(VCardSubTypes.LABEL, VCardDataType.TEXT);<a name="line.138"></a>
+<FONT color="green">139</FONT>                    registerParameterDataType(VCardSubTypes.LANGUAGE, VCardDataType.LANGUAGE_TAG);<a name="line.139"></a>
+<FONT color="green">140</FONT>                    registerParameterDataType(VCardSubTypes.MEDIATYPE, VCardDataType.TEXT);<a name="line.140"></a>
+<FONT color="green">141</FONT>                    registerParameterDataType(VCardSubTypes.PID, VCardDataType.TEXT);<a name="line.141"></a>
+<FONT color="green">142</FONT>                    registerParameterDataType(VCardSubTypes.PREF, VCardDataType.INTEGER);<a name="line.142"></a>
+<FONT color="green">143</FONT>                    registerParameterDataType(VCardSubTypes.SORT_AS, VCardDataType.TEXT);<a name="line.143"></a>
+<FONT color="green">144</FONT>                    registerParameterDataType(VCardSubTypes.TYPE, VCardDataType.TEXT);<a name="line.144"></a>
+<FONT color="green">145</FONT>                    registerParameterDataType(VCardSubTypes.TZ, VCardDataType.URI);<a name="line.145"></a>
+<FONT color="green">146</FONT>            }<a name="line.146"></a>
+<FONT color="green">147</FONT>    <a name="line.147"></a>
+<FONT color="green">148</FONT>            private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;<a name="line.148"></a>
+<FONT color="green">149</FONT>            private boolean addProdId = true;<a name="line.149"></a>
+<FONT color="green">150</FONT>            private boolean versionStrict = true;<a name="line.150"></a>
+<FONT color="green">151</FONT>            private final List&lt;List&lt;String&gt;&gt; parseWarnings = new ArrayList&lt;List&lt;String&gt;&gt;();<a name="line.151"></a>
+<FONT color="green">152</FONT>            private final Map&lt;QName, Class&lt;? extends VCardType&gt;&gt; extendedTypeClasses = new HashMap&lt;QName, Class&lt;? extends VCardType&gt;&gt;();<a name="line.152"></a>
+<FONT color="green">153</FONT>            private Document document;<a name="line.153"></a>
+<FONT color="green">154</FONT>            private Element root;<a name="line.154"></a>
+<FONT color="green">155</FONT>    <a name="line.155"></a>
+<FONT color="green">156</FONT>            /**<a name="line.156"></a>
+<FONT color="green">157</FONT>             * Creates an xCard document.<a name="line.157"></a>
+<FONT color="green">158</FONT>             */<a name="line.158"></a>
+<FONT color="green">159</FONT>            public XCardDocument() {<a name="line.159"></a>
+<FONT color="green">160</FONT>                    document = XmlUtils.createDocument();<a name="line.160"></a>
+<FONT color="green">161</FONT>                    root = createElement("vcards");<a name="line.161"></a>
+<FONT color="green">162</FONT>                    document.appendChild(root);<a name="line.162"></a>
+<FONT color="green">163</FONT>            }<a name="line.163"></a>
+<FONT color="green">164</FONT>    <a name="line.164"></a>
+<FONT color="green">165</FONT>            /**<a name="line.165"></a>
+<FONT color="green">166</FONT>             * Parses an xCard document from a string.<a name="line.166"></a>
+<FONT color="green">167</FONT>             * @param xml the XML string to read the vCards from<a name="line.167"></a>
+<FONT color="green">168</FONT>             * @throws SAXException if there's a problem parsing the XML<a name="line.168"></a>
+<FONT color="green">169</FONT>             */<a name="line.169"></a>
+<FONT color="green">170</FONT>            public XCardDocument(String xml) throws SAXException {<a name="line.170"></a>
+<FONT color="green">171</FONT>                    this(XmlUtils.toDocument(xml));<a name="line.171"></a>
+<FONT color="green">172</FONT>            }<a name="line.172"></a>
+<FONT color="green">173</FONT>    <a name="line.173"></a>
+<FONT color="green">174</FONT>            /**<a name="line.174"></a>
+<FONT color="green">175</FONT>             * Parses an xCard document from an input stream.<a name="line.175"></a>
+<FONT color="green">176</FONT>             * @param in the input stream to read the vCards from<a name="line.176"></a>
+<FONT color="green">177</FONT>             * @throws IOException if there's a problem reading from the input stream<a name="line.177"></a>
+<FONT color="green">178</FONT>             * @throws SAXException if there's a problem parsing the XML<a name="line.178"></a>
+<FONT color="green">179</FONT>             */<a name="line.179"></a>
+<FONT color="green">180</FONT>            public XCardDocument(InputStream in) throws SAXException, IOException {<a name="line.180"></a>
+<FONT color="green">181</FONT>                    this(XmlUtils.toDocument(in));<a name="line.181"></a>
+<FONT color="green">182</FONT>            }<a name="line.182"></a>
+<FONT color="green">183</FONT>    <a name="line.183"></a>
+<FONT color="green">184</FONT>            /**<a name="line.184"></a>
+<FONT color="green">185</FONT>             * Parses an xCard document from a file.<a name="line.185"></a>
+<FONT color="green">186</FONT>             * @param file the file to read the vCards from<a name="line.186"></a>
+<FONT color="green">187</FONT>             * @throws IOException if there's a problem reading from the file<a name="line.187"></a>
+<FONT color="green">188</FONT>             * @throws SAXException if there's a problem parsing the XML<a name="line.188"></a>
+<FONT color="green">189</FONT>             */<a name="line.189"></a>
+<FONT color="green">190</FONT>            public XCardDocument(File file) throws SAXException, IOException {<a name="line.190"></a>
+<FONT color="green">191</FONT>                    InputStream in = new FileInputStream(file);<a name="line.191"></a>
+<FONT color="green">192</FONT>                    try {<a name="line.192"></a>
+<FONT color="green">193</FONT>                            init(XmlUtils.toDocument(in));<a name="line.193"></a>
+<FONT color="green">194</FONT>                    } finally {<a name="line.194"></a>
+<FONT color="green">195</FONT>                            IOUtils.closeQuietly(in);<a name="line.195"></a>
+<FONT color="green">196</FONT>                    }<a name="line.196"></a>
+<FONT color="green">197</FONT>            }<a name="line.197"></a>
+<FONT color="green">198</FONT>    <a name="line.198"></a>
+<FONT color="green">199</FONT>            /**<a name="line.199"></a>
+<FONT color="green">200</FONT>             * &lt;p&gt;<a name="line.200"></a>
+<FONT color="green">201</FONT>             * Parses an xCard document from a reader.<a name="line.201"></a>
+<FONT color="green">202</FONT>             * &lt;/p&gt;<a name="line.202"></a>
+<FONT color="green">203</FONT>             * &lt;p&gt;<a name="line.203"></a>
+<FONT color="green">204</FONT>             * Note that use of this constructor is discouraged. It ignores the<a name="line.204"></a>
+<FONT color="green">205</FONT>             * character encoding that is defined within the XML document itself, and<a name="line.205"></a>
+<FONT color="green">206</FONT>             * should only be used if the encoding is undefined or if the encoding needs<a name="line.206"></a>
+<FONT color="green">207</FONT>             * to be ignored for whatever reason. The<a name="line.207"></a>
+<FONT color="green">208</FONT>             * {@link #XCardDocument(InputStream)} constructor should be used instead,<a name="line.208"></a>
+<FONT color="green">209</FONT>             * since it takes the XML document's character encoding into account when<a name="line.209"></a>
+<FONT color="green">210</FONT>             * parsing.<a name="line.210"></a>
+<FONT color="green">211</FONT>             * &lt;/p&gt;<a name="line.211"></a>
+<FONT color="green">212</FONT>             * @param reader the reader to read the vCards from<a name="line.212"></a>
+<FONT color="green">213</FONT>             * @throws IOException if there's a problem reading from the reader<a name="line.213"></a>
+<FONT color="green">214</FONT>             * @throws SAXException if there's a problem parsing the XML<a name="line.214"></a>
+<FONT color="green">215</FONT>             */<a name="line.215"></a>
+<FONT color="green">216</FONT>            public XCardDocument(Reader reader) throws SAXException, IOException {<a name="line.216"></a>
+<FONT color="green">217</FONT>                    this(XmlUtils.toDocument(reader));<a name="line.217"></a>
+<FONT color="green">218</FONT>            }<a name="line.218"></a>
+<FONT color="green">219</FONT>    <a name="line.219"></a>
+<FONT color="green">220</FONT>            /**<a name="line.220"></a>
+<FONT color="green">221</FONT>             * Wraps an existing XML DOM object.<a name="line.221"></a>
+<FONT color="green">222</FONT>             * @param document the XML DOM that contains the xCard document<a name="line.222"></a>
+<FONT color="green">223</FONT>             */<a name="line.223"></a>
+<FONT color="green">224</FONT>            public XCardDocument(Document document) {<a name="line.224"></a>
+<FONT color="green">225</FONT>                    init(document);<a name="line.225"></a>
+<FONT color="green">226</FONT>            }<a name="line.226"></a>
+<FONT color="green">227</FONT>    <a name="line.227"></a>
+<FONT color="green">228</FONT>            private void init(Document document) {<a name="line.228"></a>
+<FONT color="green">229</FONT>                    XPath xpath = XPathFactory.newInstance().newXPath();<a name="line.229"></a>
+<FONT color="green">230</FONT>                    xpath.setNamespaceContext(nsContext);<a name="line.230"></a>
+<FONT color="green">231</FONT>    <a name="line.231"></a>
+<FONT color="green">232</FONT>                    try {<a name="line.232"></a>
+<FONT color="green">233</FONT>                            //find the &lt;vcards&gt; element<a name="line.233"></a>
+<FONT color="green">234</FONT>                            String prefix = nsContext.getPrefix();<a name="line.234"></a>
+<FONT color="green">235</FONT>                            root = (Element) xpath.evaluate("//" + prefix + ":vcards", document, XPathConstants.NODE);<a name="line.235"></a>
+<FONT color="green">236</FONT>                    } catch (XPathExpressionException e) {<a name="line.236"></a>
+<FONT color="green">237</FONT>                            //never thrown, xpath expression is hard coded<a name="line.237"></a>
+<FONT color="green">238</FONT>                    }<a name="line.238"></a>
+<FONT color="green">239</FONT>            }<a name="line.239"></a>
+<FONT color="green">240</FONT>    <a name="line.240"></a>
+<FONT color="green">241</FONT>            /**<a name="line.241"></a>
+<FONT color="green">242</FONT>             * Gets the compatibility mode. Used for customizing the marshalling process<a name="line.242"></a>
+<FONT color="green">243</FONT>             * to target a particular application.<a name="line.243"></a>
+<FONT color="green">244</FONT>             * @return the compatibility mode<a name="line.244"></a>
+<FONT color="green">245</FONT>             */<a name="line.245"></a>
+<FONT color="green">246</FONT>            @Deprecated<a name="line.246"></a>
+<FONT color="green">247</FONT>            public CompatibilityMode getCompatibilityMode() {<a name="line.247"></a>
+<FONT color="green">248</FONT>                    return compatibilityMode;<a name="line.248"></a>
+<FONT color="green">249</FONT>            }<a name="line.249"></a>
+<FONT color="green">250</FONT>    <a name="line.250"></a>
+<FONT color="green">251</FONT>            /**<a name="line.251"></a>
+<FONT color="green">252</FONT>             * Sets the compatibility mode. Used for customizing the marshalling process<a name="line.252"></a>
+<FONT color="green">253</FONT>             * to target a particular application.<a name="line.253"></a>
+<FONT color="green">254</FONT>             * @param compatibilityMode the compatibility mode<a name="line.254"></a>
+<FONT color="green">255</FONT>             */<a name="line.255"></a>
+<FONT color="green">256</FONT>            @Deprecated<a name="line.256"></a>
+<FONT color="green">257</FONT>            public void setCompatibilityMode(CompatibilityMode compatibilityMode) {<a name="line.257"></a>
+<FONT color="green">258</FONT>                    this.compatibilityMode = compatibilityMode;<a name="line.258"></a>
+<FONT color="green">259</FONT>            }<a name="line.259"></a>
+<FONT color="green">260</FONT>    <a name="line.260"></a>
+<FONT color="green">261</FONT>            /**<a name="line.261"></a>
+<FONT color="green">262</FONT>             * Gets whether or not a "PRODID" type will be added to each vCard, saying<a name="line.262"></a>
+<FONT color="green">263</FONT>             * that the vCard was generated by this library.<a name="line.263"></a>
+<FONT color="green">264</FONT>             * @return true if it will be added, false if not (defaults to true)<a name="line.264"></a>
+<FONT color="green">265</FONT>             */<a name="line.265"></a>
+<FONT color="green">266</FONT>            public boolean isAddProdId() {<a name="line.266"></a>
+<FONT color="green">267</FONT>                    return addProdId;<a name="line.267"></a>
+<FONT color="green">268</FONT>            }<a name="line.268"></a>
+<FONT color="green">269</FONT>    <a name="line.269"></a>
+<FONT color="green">270</FONT>            /**<a name="line.270"></a>
+<FONT color="green">271</FONT>             * Sets whether or not to add a "PRODID" type to each vCard, saying that the<a name="line.271"></a>
+<FONT color="green">272</FONT>             * vCard was generated by this library.<a name="line.272"></a>
+<FONT color="green">273</FONT>             * @param addProdId true to add this type, false not to (defaults to true)<a name="line.273"></a>
+<FONT color="green">274</FONT>             */<a name="line.274"></a>
+<FONT color="green">275</FONT>            public void setAddProdId(boolean addProdId) {<a name="line.275"></a>
+<FONT color="green">276</FONT>                    this.addProdId = addProdId;<a name="line.276"></a>
+<FONT color="green">277</FONT>            }<a name="line.277"></a>
+<FONT color="green">278</FONT>    <a name="line.278"></a>
+<FONT color="green">279</FONT>            /**<a name="line.279"></a>
+<FONT color="green">280</FONT>             * Gets whether properties that do not support xCard (vCard version 4.0)<a name="line.280"></a>
+<FONT color="green">281</FONT>             * will be excluded from the written vCard.<a name="line.281"></a>
+<FONT color="green">282</FONT>             * @return true to exclude properties that do not support xCard, false to<a name="line.282"></a>
+<FONT color="green">283</FONT>             * include them anyway (defaults to true)<a name="line.283"></a>
+<FONT color="green">284</FONT>             */<a name="line.284"></a>
+<FONT color="green">285</FONT>            public boolean isVersionStrict() {<a name="line.285"></a>
+<FONT color="green">286</FONT>                    return versionStrict;<a name="line.286"></a>
+<FONT color="green">287</FONT>            }<a name="line.287"></a>
+<FONT color="green">288</FONT>    <a name="line.288"></a>
+<FONT color="green">289</FONT>            /**<a name="line.289"></a>
+<FONT color="green">290</FONT>             * Sets whether properties that do not support xCard (vCard version 4.0)<a name="line.290"></a>
+<FONT color="green">291</FONT>             * will be excluded from the written vCard.<a name="line.291"></a>
+<FONT color="green">292</FONT>             * @param versionStrict true to exclude properties that do not support<a name="line.292"></a>
+<FONT color="green">293</FONT>             * xCard, false to include them anyway (defaults to true)<a name="line.293"></a>
+<FONT color="green">294</FONT>             */<a name="line.294"></a>
+<FONT color="green">295</FONT>            public void setVersionStrict(boolean versionStrict) {<a name="line.295"></a>
+<FONT color="green">296</FONT>                    this.versionStrict = versionStrict;<a name="line.296"></a>
+<FONT color="green">297</FONT>            }<a name="line.297"></a>
+<FONT color="green">298</FONT>    <a name="line.298"></a>
+<FONT color="green">299</FONT>            /**<a name="line.299"></a>
+<FONT color="green">300</FONT>             * Gets the warnings from the last parse operation.<a name="line.300"></a>
+<FONT color="green">301</FONT>             * @return the warnings (it is a "list of lists"--each parsed {@link VCard}<a name="line.301"></a>
+<FONT color="green">302</FONT>             * object has its own warnings list)<a name="line.302"></a>
+<FONT color="green">303</FONT>             * @see #parseAll<a name="line.303"></a>
+<FONT color="green">304</FONT>             * @see #parseFirst<a name="line.304"></a>
+<FONT color="green">305</FONT>             */<a name="line.305"></a>
+<FONT color="green">306</FONT>            public List&lt;List&lt;String&gt;&gt; getParseWarnings() {<a name="line.306"></a>
+<FONT color="green">307</FONT>                    return parseWarnings;<a name="line.307"></a>
+<FONT color="green">308</FONT>            }<a name="line.308"></a>
+<FONT color="green">309</FONT>    <a name="line.309"></a>
+<FONT color="green">310</FONT>            /**<a name="line.310"></a>
+<FONT color="green">311</FONT>             * Registers the data type of an experimental parameter. Experimental<a name="line.311"></a>
+<FONT color="green">312</FONT>             * parameters use the "unknown" data type by default.<a name="line.312"></a>
+<FONT color="green">313</FONT>             * @param parameterName the parameter name (e.g. "x-foo")<a name="line.313"></a>
+<FONT color="green">314</FONT>             * @param dataType the data type or null to remove<a name="line.314"></a>
+<FONT color="green">315</FONT>             */<a name="line.315"></a>
+<FONT color="green">316</FONT>            public void registerParameterDataType(String parameterName, VCardDataType dataType) {<a name="line.316"></a>
+<FONT color="green">317</FONT>                    parameterName = parameterName.toLowerCase();<a name="line.317"></a>
+<FONT color="green">318</FONT>                    if (dataType == null) {<a name="line.318"></a>
+<FONT color="green">319</FONT>                            parameterDataTypes.remove(parameterName);<a name="line.319"></a>
+<FONT color="green">320</FONT>                    } else {<a name="line.320"></a>
+<FONT color="green">321</FONT>                            parameterDataTypes.put(parameterName, dataType);<a name="line.321"></a>
+<FONT color="green">322</FONT>                    }<a name="line.322"></a>
+<FONT color="green">323</FONT>            }<a name="line.323"></a>
+<FONT color="green">324</FONT>    <a name="line.324"></a>
+<FONT color="green">325</FONT>            /**<a name="line.325"></a>
+<FONT color="green">326</FONT>             * Registers an extended type class.<a name="line.326"></a>
+<FONT color="green">327</FONT>             * @param clazz the extended type class to register (MUST have a public,<a name="line.327"></a>
+<FONT color="green">328</FONT>             * no-arg constructor)<a name="line.328"></a>
+<FONT color="green">329</FONT>             * @throws RuntimeException if the class doesn't have a public, no-arg<a name="line.329"></a>
+<FONT color="green">330</FONT>             * constructor<a name="line.330"></a>
+<FONT color="green">331</FONT>             */<a name="line.331"></a>
+<FONT color="green">332</FONT>            public void registerExtendedType(Class&lt;? extends VCardType&gt; clazz) {<a name="line.332"></a>
+<FONT color="green">333</FONT>                    extendedTypeClasses.put(getQNameFromTypeClass(clazz), clazz);<a name="line.333"></a>
+<FONT color="green">334</FONT>            }<a name="line.334"></a>
+<FONT color="green">335</FONT>    <a name="line.335"></a>
+<FONT color="green">336</FONT>            /**<a name="line.336"></a>
+<FONT color="green">337</FONT>             * Removes an extended type class that was previously registered.<a name="line.337"></a>
+<FONT color="green">338</FONT>             * @param clazz the extended type class to remove<a name="line.338"></a>
+<FONT color="green">339</FONT>             */<a name="line.339"></a>
+<FONT color="green">340</FONT>            public void unregisterExtendedType(Class&lt;? extends VCardType&gt; clazz) {<a name="line.340"></a>
+<FONT color="green">341</FONT>                    extendedTypeClasses.remove(getQNameFromTypeClass(clazz));<a name="line.341"></a>
+<FONT color="green">342</FONT>            }<a name="line.342"></a>
+<FONT color="green">343</FONT>    <a name="line.343"></a>
+<FONT color="green">344</FONT>            /**<a name="line.344"></a>
+<FONT color="green">345</FONT>             * Gets the XML document that was generated.<a name="line.345"></a>
+<FONT color="green">346</FONT>             * @return the XML document<a name="line.346"></a>
+<FONT color="green">347</FONT>             */<a name="line.347"></a>
+<FONT color="green">348</FONT>            public Document getDocument() {<a name="line.348"></a>
+<FONT color="green">349</FONT>                    return document;<a name="line.349"></a>
+<FONT color="green">350</FONT>            }<a name="line.350"></a>
+<FONT color="green">351</FONT>    <a name="line.351"></a>
+<FONT color="green">352</FONT>            /**<a name="line.352"></a>
+<FONT color="green">353</FONT>             * Parses all the {@link VCard} objects from the xCard document.<a name="line.353"></a>
+<FONT color="green">354</FONT>             * @return the vCard objects<a name="line.354"></a>
+<FONT color="green">355</FONT>             */<a name="line.355"></a>
+<FONT color="green">356</FONT>            public List&lt;VCard&gt; parseAll() {<a name="line.356"></a>
+<FONT color="green">357</FONT>                    parseWarnings.clear();<a name="line.357"></a>
+<FONT color="green">358</FONT>    <a name="line.358"></a>
+<FONT color="green">359</FONT>                    if (root == null) {<a name="line.359"></a>
+<FONT color="green">360</FONT>                            return Collections.emptyList();<a name="line.360"></a>
+<FONT color="green">361</FONT>                    }<a name="line.361"></a>
+<FONT color="green">362</FONT>    <a name="line.362"></a>
+<FONT color="green">363</FONT>                    List&lt;VCard&gt; vcards = new ArrayList&lt;VCard&gt;();<a name="line.363"></a>
+<FONT color="green">364</FONT>                    for (Element vcardElement : getVCardElements()) {<a name="line.364"></a>
+<FONT color="green">365</FONT>                            List&lt;String&gt; warnings = new ArrayList&lt;String&gt;();<a name="line.365"></a>
+<FONT color="green">366</FONT>                            parseWarnings.add(warnings);<a name="line.366"></a>
+<FONT color="green">367</FONT>                            VCard vcard = parseVCardElement(vcardElement, warnings);<a name="line.367"></a>
+<FONT color="green">368</FONT>                            vcards.add(vcard);<a name="line.368"></a>
+<FONT color="green">369</FONT>                    }<a name="line.369"></a>
+<FONT color="green">370</FONT>    <a name="line.370"></a>
+<FONT color="green">371</FONT>                    return vcards;<a name="line.371"></a>
+<FONT color="green">372</FONT>            }<a name="line.372"></a>
+<FONT color="green">373</FONT>    <a name="line.373"></a>
+<FONT color="green">374</FONT>            /**<a name="line.374"></a>
+<FONT color="green">375</FONT>             * Parses the first the {@link VCard} object from the xCard document.<a name="line.375"></a>
+<FONT color="green">376</FONT>             * @return the vCard object<a name="line.376"></a>
+<FONT color="green">377</FONT>             */<a name="line.377"></a>
+<FONT color="green">378</FONT>            public VCard parseFirst() {<a name="line.378"></a>
+<FONT color="green">379</FONT>                    parseWarnings.clear();<a name="line.379"></a>
+<FONT color="green">380</FONT>    <a name="line.380"></a>
+<FONT color="green">381</FONT>                    if (root == null) {<a name="line.381"></a>
+<FONT color="green">382</FONT>                            return null;<a name="line.382"></a>
+<FONT color="green">383</FONT>                    }<a name="line.383"></a>
+<FONT color="green">384</FONT>    <a name="line.384"></a>
+<FONT color="green">385</FONT>                    List&lt;Element&gt; vcardElements = getVCardElements();<a name="line.385"></a>
+<FONT color="green">386</FONT>                    if (vcardElements.isEmpty()) {<a name="line.386"></a>
+<FONT color="green">387</FONT>                            return null;<a name="line.387"></a>
+<FONT color="green">388</FONT>                    }<a name="line.388"></a>
+<FONT color="green">389</FONT>    <a name="line.389"></a>
+<FONT color="green">390</FONT>                    List&lt;String&gt; warnings = new ArrayList&lt;String&gt;();<a name="line.390"></a>
+<FONT color="green">391</FONT>                    parseWarnings.add(warnings);<a name="line.391"></a>
+<FONT color="green">392</FONT>                    return parseVCardElement(vcardElements.get(0), warnings);<a name="line.392"></a>
+<FONT color="green">393</FONT>            }<a name="line.393"></a>
+<FONT color="green">394</FONT>    <a name="line.394"></a>
+<FONT color="green">395</FONT>            private VCard parseVCardElement(Element vcardElement, List&lt;String&gt; warnings) {<a name="line.395"></a>
+<FONT color="green">396</FONT>                    VCard vcard = new VCard();<a name="line.396"></a>
+<FONT color="green">397</FONT>                    vcard.setVersion(version4);<a name="line.397"></a>
+<FONT color="green">398</FONT>    <a name="line.398"></a>
+<FONT color="green">399</FONT>                    String ns = version4.getXmlNamespace();<a name="line.399"></a>
+<FONT color="green">400</FONT>                    List&lt;Element&gt; children = XmlUtils.toElementList(vcardElement.getChildNodes());<a name="line.400"></a>
+<FONT color="green">401</FONT>                    for (Element child : children) {<a name="line.401"></a>
+<FONT color="green">402</FONT>                            if ("group".equals(child.getLocalName()) &amp;&amp; ns.equals(child.getNamespaceURI())) {<a name="line.402"></a>
+<FONT color="green">403</FONT>                                    String group = child.getAttribute("name");<a name="line.403"></a>
+<FONT color="green">404</FONT>                                    if (group.length() == 0) {<a name="line.404"></a>
+<FONT color="green">405</FONT>                                            group = null;<a name="line.405"></a>
+<FONT color="green">406</FONT>                                    }<a name="line.406"></a>
+<FONT color="green">407</FONT>                                    List&lt;Element&gt; propElements = XmlUtils.toElementList(child.getChildNodes());<a name="line.407"></a>
+<FONT color="green">408</FONT>                                    for (Element propElement : propElements) {<a name="line.408"></a>
+<FONT color="green">409</FONT>                                            parseAndAddElement(propElement, group, vcard, warnings);<a name="line.409"></a>
+<FONT color="green">410</FONT>                                    }<a name="line.410"></a>
+<FONT color="green">411</FONT>                            } else {<a name="line.411"></a>
+<FONT color="green">412</FONT>                                    parseAndAddElement(child, null, vcard, warnings);<a name="line.412"></a>
+<FONT color="green">413</FONT>                            }<a name="line.413"></a>
+<FONT color="green">414</FONT>                    }<a name="line.414"></a>
+<FONT color="green">415</FONT>    <a name="line.415"></a>
+<FONT color="green">416</FONT>                    return vcard;<a name="line.416"></a>
+<FONT color="green">417</FONT>            }<a name="line.417"></a>
+<FONT color="green">418</FONT>    <a name="line.418"></a>
+<FONT color="green">419</FONT>            /**<a name="line.419"></a>
+<FONT color="green">420</FONT>             * Parses a property element from the XML document and adds the property to<a name="line.420"></a>
+<FONT color="green">421</FONT>             * the vCard.<a name="line.421"></a>
+<FONT color="green">422</FONT>             * @param element the element to parse<a name="line.422"></a>
+<FONT color="green">423</FONT>             * @param group the group name or null if the property does not belong to a<a name="line.423"></a>
+<FONT color="green">424</FONT>             * group<a name="line.424"></a>
+<FONT color="green">425</FONT>             * @param vcard the vCard object<a name="line.425"></a>
+<FONT color="green">426</FONT>             * @param warningsBuf the list to add the warnings to<a name="line.426"></a>
+<FONT color="green">427</FONT>             */<a name="line.427"></a>
+<FONT color="green">428</FONT>            private void parseAndAddElement(Element element, String group, VCard vcard, List&lt;String&gt; warnings) {<a name="line.428"></a>
+<FONT color="green">429</FONT>                    List&lt;String&gt; warningsBuf = new ArrayList&lt;String&gt;();<a name="line.429"></a>
+<FONT color="green">430</FONT>    <a name="line.430"></a>
+<FONT color="green">431</FONT>                    VCardSubTypes subTypes = parseSubTypes(element);<a name="line.431"></a>
+<FONT color="green">432</FONT>                    String propertyName = element.getLocalName();<a name="line.432"></a>
+<FONT color="green">433</FONT>                    VCardType type = createTypeObject(propertyName, element.getNamespaceURI());<a name="line.433"></a>
+<FONT color="green">434</FONT>                    type.setGroup(group);<a name="line.434"></a>
+<FONT color="green">435</FONT>                    try {<a name="line.435"></a>
+<FONT color="green">436</FONT>                            type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);<a name="line.436"></a>
+<FONT color="green">437</FONT>                    } catch (SkipMeException e) {<a name="line.437"></a>
+<FONT color="green">438</FONT>                            warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());<a name="line.438"></a>
+<FONT color="green">439</FONT>                            return;<a name="line.439"></a>
+<FONT color="green">440</FONT>                    } catch (CannotParseException e) {<a name="line.440"></a>
+<FONT color="green">441</FONT>                            String xml = XmlUtils.toString(element);<a name="line.441"></a>
+<FONT color="green">442</FONT>                            warningsBuf.add("Property value could not be parsed.  It will be unmarshalled as a " + XmlType.NAME + " property instead." + NEWLINE + "  XML: " + xml + NEWLINE + "  Reason: " + e.getMessage());<a name="line.442"></a>
+<FONT color="green">443</FONT>                            type = new XmlType();<a name="line.443"></a>
+<FONT color="green">444</FONT>                            type.setGroup(group);<a name="line.444"></a>
+<FONT color="green">445</FONT>                            type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);<a name="line.445"></a>
+<FONT color="green">446</FONT>                    } catch (UnsupportedOperationException e) {<a name="line.446"></a>
+<FONT color="green">447</FONT>                            warningsBuf.add("Property class \"" + type.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.NAME + " property instead.");<a name="line.447"></a>
+<FONT color="green">448</FONT>                            type = new XmlType();<a name="line.448"></a>
+<FONT color="green">449</FONT>                            type.setGroup(group);<a name="line.449"></a>
+<FONT color="green">450</FONT>                            type.unmarshalXml(subTypes, element, version4, warningsBuf, compatibilityMode);<a name="line.450"></a>
+<FONT color="green">451</FONT>                    } catch (EmbeddedVCardException e) {<a name="line.451"></a>
+<FONT color="green">452</FONT>                            warningsBuf.add("Property will not be unmarshalled because xCard does not supported embedded vCards.");<a name="line.452"></a>
+<FONT color="green">453</FONT>                            return;<a name="line.453"></a>
+<FONT color="green">454</FONT>                    } finally {<a name="line.454"></a>
+<FONT color="green">455</FONT>                            for (String warning : warningsBuf) {<a name="line.455"></a>
+<FONT color="green">456</FONT>                                    addWarning(warning, type.getTypeName(), warnings);<a name="line.456"></a>
+<FONT color="green">457</FONT>                            }<a name="line.457"></a>
+<FONT color="green">458</FONT>                    }<a name="line.458"></a>
+<FONT color="green">459</FONT>    <a name="line.459"></a>
+<FONT color="green">460</FONT>                    vcard.addType(type);<a name="line.460"></a>
+<FONT color="green">461</FONT>            }<a name="line.461"></a>
+<FONT color="green">462</FONT>    <a name="line.462"></a>
+<FONT color="green">463</FONT>            /**<a name="line.463"></a>
+<FONT color="green">464</FONT>             * Parses the property parameters (aka "sub types").<a name="line.464"></a>
+<FONT color="green">465</FONT>             * @param element the property's XML element<a name="line.465"></a>
+<FONT color="green">466</FONT>             * @return the parsed parameters<a name="line.466"></a>
+<FONT color="green">467</FONT>             */<a name="line.467"></a>
+<FONT color="green">468</FONT>            private VCardSubTypes parseSubTypes(Element element) {<a name="line.468"></a>
+<FONT color="green">469</FONT>                    VCardSubTypes subTypes = new VCardSubTypes();<a name="line.469"></a>
+<FONT color="green">470</FONT>    <a name="line.470"></a>
+<FONT color="green">471</FONT>                    List&lt;Element&gt; parametersElements = XmlUtils.toElementList(element.getElementsByTagNameNS(version4.getXmlNamespace(), "parameters"));<a name="line.471"></a>
+<FONT color="green">472</FONT>                    for (Element parametersElement : parametersElements) { // foreach "&lt;parameters&gt;" element (there should only be 1 though)<a name="line.472"></a>
+<FONT color="green">473</FONT>                            List&lt;Element&gt; paramElements = XmlUtils.toElementList(parametersElement.getChildNodes());<a name="line.473"></a>
+<FONT color="green">474</FONT>                            for (Element paramElement : paramElements) {<a name="line.474"></a>
+<FONT color="green">475</FONT>                                    String name = paramElement.getLocalName().toUpperCase();<a name="line.475"></a>
+<FONT color="green">476</FONT>                                    List&lt;Element&gt; valueElements = XmlUtils.toElementList(paramElement.getChildNodes());<a name="line.476"></a>
+<FONT color="green">477</FONT>                                    if (valueElements.isEmpty()) {<a name="line.477"></a>
+<FONT color="green">478</FONT>                                            String value = paramElement.getTextContent();<a name="line.478"></a>
+<FONT color="green">479</FONT>                                            subTypes.put(name, value);<a name="line.479"></a>
+<FONT color="green">480</FONT>                                    } else {<a name="line.480"></a>
+<FONT color="green">481</FONT>                                            for (Element valueElement : valueElements) {<a name="line.481"></a>
+<FONT color="green">482</FONT>                                                    String value = valueElement.getTextContent();<a name="line.482"></a>
+<FONT color="green">483</FONT>                                                    subTypes.put(name, value);<a name="line.483"></a>
+<FONT color="green">484</FONT>                                            }<a name="line.484"></a>
+<FONT color="green">485</FONT>                                    }<a name="line.485"></a>
+<FONT color="green">486</FONT>                            }<a name="line.486"></a>
+<FONT color="green">487</FONT>                    }<a name="line.487"></a>
+<FONT color="green">488</FONT>    <a name="line.488"></a>
+<FONT color="green">489</FONT>                    return subTypes;<a name="line.489"></a>
+<FONT color="green">490</FONT>            }<a name="line.490"></a>
+<FONT color="green">491</FONT>    <a name="line.491"></a>
+<FONT color="green">492</FONT>            /**<a name="line.492"></a>
+<FONT color="green">493</FONT>             * Creates the appropriate VCardType instance given the vCard property name.<a name="line.493"></a>
+<FONT color="green">494</FONT>             * This method does not unmarshal the type, it just creates the type object.<a name="line.494"></a>
+<FONT color="green">495</FONT>             * @param name the property name (e.g. "fn")<a name="line.495"></a>
+<FONT color="green">496</FONT>             * @param ns the namespace of the element<a name="line.496"></a>
+<FONT color="green">497</FONT>             * @return the type that was created<a name="line.497"></a>
+<FONT color="green">498</FONT>             */<a name="line.498"></a>
+<FONT color="green">499</FONT>            private VCardType createTypeObject(String name, String ns) {<a name="line.499"></a>
+<FONT color="green">500</FONT>                    //parse as a registered extended type class (extended type classes should override standard ones)<a name="line.500"></a>
+<FONT color="green">501</FONT>                    Class&lt;? extends VCardType&gt; extendedTypeClass = extendedTypeClasses.get(new QName(ns, name.toLowerCase()));<a name="line.501"></a>
+<FONT color="green">502</FONT>                    if (extendedTypeClass != null) {<a name="line.502"></a>
+<FONT color="green">503</FONT>                            try {<a name="line.503"></a>
+<FONT color="green">504</FONT>                                    return extendedTypeClass.newInstance();<a name="line.504"></a>
+<FONT color="green">505</FONT>                            } catch (Exception e) {<a name="line.505"></a>
+<FONT color="green">506</FONT>                                    //should never be thrown<a name="line.506"></a>
+<FONT color="green">507</FONT>                                    //the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method<a name="line.507"></a>
+<FONT color="green">508</FONT>                                    throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" MUST have a public, no-arg constructor.");<a name="line.508"></a>
+<FONT color="green">509</FONT>                            }<a name="line.509"></a>
+<FONT color="green">510</FONT>                    }<a name="line.510"></a>
+<FONT color="green">511</FONT>    <a name="line.511"></a>
+<FONT color="green">512</FONT>                    //parse as a standard property<a name="line.512"></a>
+<FONT color="green">513</FONT>                    Class&lt;? extends VCardType&gt; clazz = TypeList.getTypeClass(name);<a name="line.513"></a>
+<FONT color="green">514</FONT>                    if (clazz != null &amp;&amp; VCardVersion.V4_0.getXmlNamespace().equals(ns)) {<a name="line.514"></a>
+<FONT color="green">515</FONT>                            try {<a name="line.515"></a>
+<FONT color="green">516</FONT>                                    return clazz.newInstance();<a name="line.516"></a>
+<FONT color="green">517</FONT>                            } catch (Exception e) {<a name="line.517"></a>
+<FONT color="green">518</FONT>                                    //should never be thrown<a name="line.518"></a>
+<FONT color="green">519</FONT>                                    //all type classes must have public, no-arg constructors<a name="line.519"></a>
+<FONT color="green">520</FONT>                                    throw new RuntimeException(e);<a name="line.520"></a>
+<FONT color="green">521</FONT>                            }<a name="line.521"></a>
+<FONT color="green">522</FONT>                    }<a name="line.522"></a>
+<FONT color="green">523</FONT>    <a name="line.523"></a>
+<FONT color="green">524</FONT>                    //parse as a RawType<a name="line.524"></a>
+<FONT color="green">525</FONT>                    if (name.toUpperCase().startsWith("X-")) {<a name="line.525"></a>
+<FONT color="green">526</FONT>                            return new RawType(name);<a name="line.526"></a>
+<FONT color="green">527</FONT>                    }<a name="line.527"></a>
+<FONT color="green">528</FONT>    <a name="line.528"></a>
+<FONT color="green">529</FONT>                    //parse as an XML property<a name="line.529"></a>
+<FONT color="green">530</FONT>                    return new XmlType();<a name="line.530"></a>
+<FONT color="green">531</FONT>            }<a name="line.531"></a>
+<FONT color="green">532</FONT>    <a name="line.532"></a>
+<FONT color="green">533</FONT>            /**<a name="line.533"></a>
+<FONT color="green">534</FONT>             * Gets the QName from a type class.<a name="line.534"></a>
+<FONT color="green">535</FONT>             * @param clazz the type class<a name="line.535"></a>
+<FONT color="green">536</FONT>             * @return the QName<a name="line.536"></a>
+<FONT color="green">537</FONT>             */<a name="line.537"></a>
+<FONT color="green">538</FONT>            private QName getQNameFromTypeClass(Class&lt;? extends VCardType&gt; clazz) {<a name="line.538"></a>
+<FONT color="green">539</FONT>                    try {<a name="line.539"></a>
+<FONT color="green">540</FONT>                            VCardType type = clazz.newInstance();<a name="line.540"></a>
+<FONT color="green">541</FONT>                            QName qname = type.getQName();<a name="line.541"></a>
+<FONT color="green">542</FONT>                            if (qname == null) {<a name="line.542"></a>
+<FONT color="green">543</FONT>                                    qname = new QName(version4.getXmlNamespace(), type.getTypeName().toLowerCase());<a name="line.543"></a>
+<FONT color="green">544</FONT>                            }<a name="line.544"></a>
+<FONT color="green">545</FONT>                            return qname;<a name="line.545"></a>
+<FONT color="green">546</FONT>                    } catch (Exception e) {<a name="line.546"></a>
+<FONT color="green">547</FONT>                            //there is no public, no-arg constructor<a name="line.547"></a>
+<FONT color="green">548</FONT>                            throw new RuntimeException(e);<a name="line.548"></a>
+<FONT color="green">549</FONT>                    }<a name="line.549"></a>
+<FONT color="green">550</FONT>            }<a name="line.550"></a>
+<FONT color="green">551</FONT>    <a name="line.551"></a>
+<FONT color="green">552</FONT>            /**<a name="line.552"></a>
+<FONT color="green">553</FONT>             * Writes the XML document to a string without pretty-printing it.<a name="line.553"></a>
+<FONT color="green">554</FONT>             * @return the XML string<a name="line.554"></a>
+<FONT color="green">555</FONT>             */<a name="line.555"></a>
+<FONT color="green">556</FONT>            public String write() {<a name="line.556"></a>
+<FONT color="green">557</FONT>                    return write(-1);<a name="line.557"></a>
+<FONT color="green">558</FONT>            }<a name="line.558"></a>
+<FONT color="green">559</FONT>    <a name="line.559"></a>
+<FONT color="green">560</FONT>            /**<a name="line.560"></a>
+<FONT color="green">561</FONT>             * Writes the XML document to a string and pretty-prints it.<a name="line.561"></a>
+<FONT color="green">562</FONT>             * @param indent the number of indent spaces to use for pretty-printing<a name="line.562"></a>
+<FONT color="green">563</FONT>             * @return the XML string<a name="line.563"></a>
+<FONT color="green">564</FONT>             */<a name="line.564"></a>
+<FONT color="green">565</FONT>            public String write(int indent) {<a name="line.565"></a>
+<FONT color="green">566</FONT>                    StringWriter sw = new StringWriter();<a name="line.566"></a>
+<FONT color="green">567</FONT>                    try {<a name="line.567"></a>
+<FONT color="green">568</FONT>                            write(sw, indent);<a name="line.568"></a>
+<FONT color="green">569</FONT>                    } catch (TransformerException e) {<a name="line.569"></a>
+<FONT color="green">570</FONT>                            //writing to string<a name="line.570"></a>
+<FONT color="green">571</FONT>                    }<a name="line.571"></a>
+<FONT color="green">572</FONT>                    return sw.toString();<a name="line.572"></a>
+<FONT color="green">573</FONT>            }<a name="line.573"></a>
+<FONT color="green">574</FONT>    <a name="line.574"></a>
+<FONT color="green">575</FONT>            /**<a name="line.575"></a>
+<FONT color="green">576</FONT>             * Writes the XML document to an output stream without pretty-printing it.<a name="line.576"></a>
+<FONT color="green">577</FONT>             * @param out the output stream<a name="line.577"></a>
+<FONT color="green">578</FONT>             * @throws TransformerException if there's a problem writing to the output<a name="line.578"></a>
+<FONT color="green">579</FONT>             * stream<a name="line.579"></a>
+<FONT color="green">580</FONT>             */<a name="line.580"></a>
+<FONT color="green">581</FONT>            public void write(OutputStream out) throws TransformerException {<a name="line.581"></a>
+<FONT color="green">582</FONT>                    write(out, -1);<a name="line.582"></a>
+<FONT color="green">583</FONT>            }<a name="line.583"></a>
+<FONT color="green">584</FONT>    <a name="line.584"></a>
+<FONT color="green">585</FONT>            /**<a name="line.585"></a>
+<FONT color="green">586</FONT>             * Writes the XML document to an output stream and pretty-prints it.<a name="line.586"></a>
+<FONT color="green">587</FONT>             * @param out the output stream<a name="line.587"></a>
+<FONT color="green">588</FONT>             * @param indent the number of indent spaces to use for pretty-printing<a name="line.588"></a>
+<FONT color="green">589</FONT>             * @throws TransformerException if there's a problem writing to the output<a name="line.589"></a>
+<FONT color="green">590</FONT>             * stream<a name="line.590"></a>
+<FONT color="green">591</FONT>             */<a name="line.591"></a>
+<FONT color="green">592</FONT>            public void write(OutputStream out, int indent) throws TransformerException {<a name="line.592"></a>
+<FONT color="green">593</FONT>                    write(utf8Writer(out), indent);<a name="line.593"></a>
+<FONT color="green">594</FONT>            }<a name="line.594"></a>
+<FONT color="green">595</FONT>    <a name="line.595"></a>
+<FONT color="green">596</FONT>            /**<a name="line.596"></a>
+<FONT color="green">597</FONT>             * Writes the XML document to a file without pretty-printing it.<a name="line.597"></a>
+<FONT color="green">598</FONT>             * @param file the file<a name="line.598"></a>
+<FONT color="green">599</FONT>             * @throws TransformerException if there's a problem writing to the file<a name="line.599"></a>
+<FONT color="green">600</FONT>             * @throws IOException if there's a problem writing to the file<a name="line.600"></a>
+<FONT color="green">601</FONT>             */<a name="line.601"></a>
+<FONT color="green">602</FONT>            public void write(File file) throws TransformerException, IOException {<a name="line.602"></a>
+<FONT color="green">603</FONT>                    write(file, -1);<a name="line.603"></a>
+<FONT color="green">604</FONT>            }<a name="line.604"></a>
+<FONT color="green">605</FONT>    <a name="line.605"></a>
+<FONT color="green">606</FONT>            /**<a name="line.606"></a>
+<FONT color="green">607</FONT>             * Writes the XML document to a file and pretty-prints it.<a name="line.607"></a>
+<FONT color="green">608</FONT>             * @param file the file stream<a name="line.608"></a>
+<FONT color="green">609</FONT>             * @param indent the number of indent spaces to use for pretty-printing<a name="line.609"></a>
+<FONT color="green">610</FONT>             * @throws TransformerException if there's a problem writing to the file<a name="line.610"></a>
+<FONT color="green">611</FONT>             * @throws IOException if there's a problem writing to the file<a name="line.611"></a>
+<FONT color="green">612</FONT>             */<a name="line.612"></a>
+<FONT color="green">613</FONT>            public void write(File file, int indent) throws TransformerException, IOException {<a name="line.613"></a>
+<FONT color="green">614</FONT>                    Writer writer = utf8Writer(file);<a name="line.614"></a>
+<FONT color="green">615</FONT>                    try {<a name="line.615"></a>
+<FONT color="green">616</FONT>                            write(writer, indent);<a name="line.616"></a>
+<FONT color="green">617</FONT>                    } finally {<a name="line.617"></a>
+<FONT color="green">618</FONT>                            IOUtils.closeQuietly(writer);<a name="line.618"></a>
+<FONT color="green">619</FONT>                    }<a name="line.619"></a>
+<FONT color="green">620</FONT>            }<a name="line.620"></a>
+<FONT color="green">621</FONT>    <a name="line.621"></a>
+<FONT color="green">622</FONT>            /**<a name="line.622"></a>
+<FONT color="green">623</FONT>             * Writes the XML document to a writer without pretty-printing it.<a name="line.623"></a>
+<FONT color="green">624</FONT>             * @param writer the writer<a name="line.624"></a>
+<FONT color="green">625</FONT>             * @throws TransformerException if there's a problem writing to the writer<a name="line.625"></a>
+<FONT color="green">626</FONT>             */<a name="line.626"></a>
+<FONT color="green">627</FONT>            public void write(Writer writer) throws TransformerException {<a name="line.627"></a>
+<FONT color="green">628</FONT>                    write(writer, -1);<a name="line.628"></a>
+<FONT color="green">629</FONT>            }<a name="line.629"></a>
+<FONT color="green">630</FONT>    <a name="line.630"></a>
+<FONT color="green">631</FONT>            /**<a name="line.631"></a>
+<FONT color="green">632</FONT>             * Writes the XML document to a writer and pretty-prints it.<a name="line.632"></a>
+<FONT color="green">633</FONT>             * @param writer the writer<a name="line.633"></a>
+<FONT color="green">634</FONT>             * @param indent the number of indent spaces to use for pretty-printing<a name="line.634"></a>
+<FONT color="green">635</FONT>             * @throws TransformerException if there's a problem writing to the writer<a name="line.635"></a>
+<FONT color="green">636</FONT>             */<a name="line.636"></a>
+<FONT color="green">637</FONT>            public void write(Writer writer, int indent) throws TransformerException {<a name="line.637"></a>
+<FONT color="green">638</FONT>                    Map&lt;String, String&gt; properties = new HashMap&lt;String, String&gt;();<a name="line.638"></a>
+<FONT color="green">639</FONT>                    if (indent &gt;= 0) {<a name="line.639"></a>
+<FONT color="green">640</FONT>                            properties.put(OutputKeys.INDENT, "yes");<a name="line.640"></a>
+<FONT color="green">641</FONT>                            properties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");<a name="line.641"></a>
+<FONT color="green">642</FONT>                    }<a name="line.642"></a>
+<FONT color="green">643</FONT>                    XmlUtils.toWriter(document, writer, properties);<a name="line.643"></a>
+<FONT color="green">644</FONT>            }<a name="line.644"></a>
+<FONT color="green">645</FONT>    <a name="line.645"></a>
+<FONT color="green">646</FONT>            /**<a name="line.646"></a>
+<FONT color="green">647</FONT>             * Adds a vCard to the XML document.<a name="line.647"></a>
+<FONT color="green">648</FONT>             * @param vcard the vCard to add<a name="line.648"></a>
+<FONT color="green">649</FONT>             */<a name="line.649"></a>
+<FONT color="green">650</FONT>            public void add(VCard vcard) {<a name="line.650"></a>
+<FONT color="green">651</FONT>                    ListMultimap&lt;String, VCardType&gt; typesToAdd = new ListMultimap&lt;String, VCardType&gt;(); //group the types by group name (null = no group name)<a name="line.651"></a>
+<FONT color="green">652</FONT>    <a name="line.652"></a>
+<FONT color="green">653</FONT>                    for (VCardType type : vcard) {<a name="line.653"></a>
+<FONT color="green">654</FONT>                            if (addProdId &amp;&amp; type instanceof ProdIdType) {<a name="line.654"></a>
+<FONT color="green">655</FONT>                                    //do not add the PRODID in the vCard if "addProdId" is true<a name="line.655"></a>
+<FONT color="green">656</FONT>                                    continue;<a name="line.656"></a>
+<FONT color="green">657</FONT>                            }<a name="line.657"></a>
+<FONT color="green">658</FONT>    <a name="line.658"></a>
+<FONT color="green">659</FONT>                            if (versionStrict &amp;&amp; !type.isSupported(version4)) {<a name="line.659"></a>
+<FONT color="green">660</FONT>                                    //do not add the property to the vCard if it is not supported by the target version<a name="line.660"></a>
+<FONT color="green">661</FONT>                                    continue;<a name="line.661"></a>
+<FONT color="green">662</FONT>                            }<a name="line.662"></a>
+<FONT color="green">663</FONT>    <a name="line.663"></a>
+<FONT color="green">664</FONT>                            typesToAdd.put(type.getGroup(), type);<a name="line.664"></a>
+<FONT color="green">665</FONT>                    }<a name="line.665"></a>
+<FONT color="green">666</FONT>    <a name="line.666"></a>
+<FONT color="green">667</FONT>                    //add an extended type saying it was generated by this library<a name="line.667"></a>
+<FONT color="green">668</FONT>                    if (addProdId) {<a name="line.668"></a>
+<FONT color="green">669</FONT>                            EzvcardProdIdType prodId = new EzvcardProdIdType(version4);<a name="line.669"></a>
+<FONT color="green">670</FONT>                            typesToAdd.put(prodId.getGroup(), prodId);<a name="line.670"></a>
+<FONT color="green">671</FONT>                    }<a name="line.671"></a>
+<FONT color="green">672</FONT>    <a name="line.672"></a>
+<FONT color="green">673</FONT>                    //marshal each type object<a name="line.673"></a>
+<FONT color="green">674</FONT>                    Element vcardElement = createElement("vcard");<a name="line.674"></a>
+<FONT color="green">675</FONT>                    for (String groupName : typesToAdd.keySet()) {<a name="line.675"></a>
+<FONT color="green">676</FONT>                            Element parent;<a name="line.676"></a>
+<FONT color="green">677</FONT>                            if (groupName != null) {<a name="line.677"></a>
+<FONT color="green">678</FONT>                                    Element groupElement = createElement("group");<a name="line.678"></a>
+<FONT color="green">679</FONT>                                    groupElement.setAttribute("name", groupName);<a name="line.679"></a>
+<FONT color="green">680</FONT>                                    vcardElement.appendChild(groupElement);<a name="line.680"></a>
+<FONT color="green">681</FONT>                                    parent = groupElement;<a name="line.681"></a>
+<FONT color="green">682</FONT>                            } else {<a name="line.682"></a>
+<FONT color="green">683</FONT>                                    parent = vcardElement;<a name="line.683"></a>
+<FONT color="green">684</FONT>                            }<a name="line.684"></a>
+<FONT color="green">685</FONT>    <a name="line.685"></a>
+<FONT color="green">686</FONT>                            for (VCardType type : typesToAdd.get(groupName)) {<a name="line.686"></a>
+<FONT color="green">687</FONT>                                    try {<a name="line.687"></a>
+<FONT color="green">688</FONT>                                            Element typeElement = marshalType(type, vcard);<a name="line.688"></a>
+<FONT color="green">689</FONT>                                            parent.appendChild(typeElement);<a name="line.689"></a>
+<FONT color="green">690</FONT>                                    } catch (SkipMeException e) {<a name="line.690"></a>
+<FONT color="green">691</FONT>                                            //skip property<a name="line.691"></a>
+<FONT color="green">692</FONT>                                    } catch (EmbeddedVCardException e) {<a name="line.692"></a>
+<FONT color="green">693</FONT>                                            //skip property<a name="line.693"></a>
+<FONT color="green">694</FONT>                                    }<a name="line.694"></a>
+<FONT color="green">695</FONT>                            }<a name="line.695"></a>
+<FONT color="green">696</FONT>                    }<a name="line.696"></a>
+<FONT color="green">697</FONT>                    root.appendChild(vcardElement);<a name="line.697"></a>
+<FONT color="green">698</FONT>            }<a name="line.698"></a>
+<FONT color="green">699</FONT>    <a name="line.699"></a>
+<FONT color="green">700</FONT>            /**<a name="line.700"></a>
+<FONT color="green">701</FONT>             * Marshals a type object to an XML element.<a name="line.701"></a>
+<FONT color="green">702</FONT>             * @param type the type object to marshal<a name="line.702"></a>
+<FONT color="green">703</FONT>             * @param vcard the vcard the type belongs to<a name="line.703"></a>
+<FONT color="green">704</FONT>             * @return the XML element or null not to add anything to the final XML<a name="line.704"></a>
+<FONT color="green">705</FONT>             * document<a name="line.705"></a>
+<FONT color="green">706</FONT>             */<a name="line.706"></a>
+<FONT color="green">707</FONT>            private Element marshalType(VCardType type, VCard vcard) {<a name="line.707"></a>
+<FONT color="green">708</FONT>                    QName qname = type.getQName();<a name="line.708"></a>
+<FONT color="green">709</FONT>                    String ns, localPart;<a name="line.709"></a>
+<FONT color="green">710</FONT>                    if (qname == null) {<a name="line.710"></a>
+<FONT color="green">711</FONT>                            localPart = type.getTypeName().toLowerCase();<a name="line.711"></a>
+<FONT color="green">712</FONT>                            ns = version4.getXmlNamespace();<a name="line.712"></a>
+<FONT color="green">713</FONT>                    } else {<a name="line.713"></a>
+<FONT color="green">714</FONT>                            localPart = qname.getLocalPart();<a name="line.714"></a>
+<FONT color="green">715</FONT>                            ns = qname.getNamespaceURI();<a name="line.715"></a>
+<FONT color="green">716</FONT>                    }<a name="line.716"></a>
+<FONT color="green">717</FONT>                    Element typeElement = createElement(localPart, ns);<a name="line.717"></a>
+<FONT color="green">718</FONT>    <a name="line.718"></a>
+<FONT color="green">719</FONT>                    //marshal the sub types<a name="line.719"></a>
+<FONT color="green">720</FONT>                    VCardSubTypes subTypes = type.marshalSubTypes(version4, compatibilityMode, vcard);<a name="line.720"></a>
+<FONT color="green">721</FONT>                    subTypes.setValue(null); //don't include the VALUE parameter (modification of the "VCardSubTypes" object is safe because it's a copy)<a name="line.721"></a>
+<FONT color="green">722</FONT>                    if (!subTypes.isEmpty()) {<a name="line.722"></a>
+<FONT color="green">723</FONT>                            Element parametersElement = createElement("parameters");<a name="line.723"></a>
+<FONT color="green">724</FONT>                            for (Map.Entry&lt;String, List&lt;String&gt;&gt; param : subTypes) {<a name="line.724"></a>
+<FONT color="green">725</FONT>                                    String paramName = param.getKey();<a name="line.725"></a>
+<FONT color="green">726</FONT>                                    Element parameterElement = createElement(paramName.toLowerCase());<a name="line.726"></a>
+<FONT color="green">727</FONT>                                    for (String paramValue : param.getValue()) {<a name="line.727"></a>
+<FONT color="green">728</FONT>                                            VCardDataType dataType = parameterDataTypes.get(paramName.toLowerCase());<a name="line.728"></a>
+<FONT color="green">729</FONT>                                            String valueElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();<a name="line.729"></a>
+<FONT color="green">730</FONT>                                            Element parameterValueElement = createElement(valueElementName);<a name="line.730"></a>
+<FONT color="green">731</FONT>                                            parameterValueElement.setTextContent(paramValue);<a name="line.731"></a>
+<FONT color="green">732</FONT>                                            parameterElement.appendChild(parameterValueElement);<a name="line.732"></a>
+<FONT color="green">733</FONT>                                    }<a name="line.733"></a>
+<FONT color="green">734</FONT>                                    parametersElement.appendChild(parameterElement);<a name="line.734"></a>
+<FONT color="green">735</FONT>                            }<a name="line.735"></a>
+<FONT color="green">736</FONT>                            typeElement.appendChild(parametersElement);<a name="line.736"></a>
+<FONT color="green">737</FONT>                    }<a name="line.737"></a>
+<FONT color="green">738</FONT>    <a name="line.738"></a>
+<FONT color="green">739</FONT>                    //marshal the value<a name="line.739"></a>
+<FONT color="green">740</FONT>                    type.marshalXml(typeElement, version4, compatibilityMode);<a name="line.740"></a>
+<FONT color="green">741</FONT>    <a name="line.741"></a>
+<FONT color="green">742</FONT>                    return typeElement;<a name="line.742"></a>
+<FONT color="green">743</FONT>            }<a name="line.743"></a>
+<FONT color="green">744</FONT>    <a name="line.744"></a>
+<FONT color="green">745</FONT>            private List&lt;Element&gt; getVCardElements() {<a name="line.745"></a>
+<FONT color="green">746</FONT>                    return getChildElements(root, "vcard");<a name="line.746"></a>
+<FONT color="green">747</FONT>            }<a name="line.747"></a>
+<FONT color="green">748</FONT>    <a name="line.748"></a>
+<FONT color="green">749</FONT>            private List&lt;Element&gt; getChildElements(Element parent, String localName) {<a name="line.749"></a>
+<FONT color="green">750</FONT>                    List&lt;Element&gt; elements = new ArrayList&lt;Element&gt;();<a name="line.750"></a>
+<FONT color="green">751</FONT>                    for (Element child : XmlUtils.toElementList(parent.getChildNodes())) {<a name="line.751"></a>
+<FONT color="green">752</FONT>                            if (localName.equals(child.getLocalName()) &amp;&amp; version4.getXmlNamespace().equals(child.getNamespaceURI())) {<a name="line.752"></a>
+<FONT color="green">753</FONT>                                    elements.add(child);<a name="line.753"></a>
+<FONT color="green">754</FONT>                            }<a name="line.754"></a>
+<FONT color="green">755</FONT>                    }<a name="line.755"></a>
+<FONT color="green">756</FONT>                    return elements;<a name="line.756"></a>
+<FONT color="green">757</FONT>            }<a name="line.757"></a>
+<FONT color="green">758</FONT>    <a name="line.758"></a>
+<FONT color="green">759</FONT>            /**<a name="line.759"></a>
+<FONT color="green">760</FONT>             * Creates a new XML element.<a name="line.760"></a>
+<FONT color="green">761</FONT>             * @param name the name of the XML element<a name="line.761"></a>
+<FONT color="green">762</FONT>             * @return the new XML element<a name="line.762"></a>
+<FONT color="green">763</FONT>             */<a name="line.763"></a>
+<FONT color="green">764</FONT>            private Element createElement(String name) {<a name="line.764"></a>
+<FONT color="green">765</FONT>                    return createElement(name, version4.getXmlNamespace());<a name="line.765"></a>
+<FONT color="green">766</FONT>            }<a name="line.766"></a>
+<FONT color="green">767</FONT>    <a name="line.767"></a>
+<FONT color="green">768</FONT>            /**<a name="line.768"></a>
+<FONT color="green">769</FONT>             * Creates a new XML element.<a name="line.769"></a>
+<FONT color="green">770</FONT>             * @param name the name of the XML element<a name="line.770"></a>
+<FONT color="green">771</FONT>             * @param ns the namespace of the XML element<a name="line.771"></a>
+<FONT color="green">772</FONT>             * @return the new XML element<a name="line.772"></a>
+<FONT color="green">773</FONT>             */<a name="line.773"></a>
+<FONT color="green">774</FONT>            private Element createElement(String name, String ns) {<a name="line.774"></a>
+<FONT color="green">775</FONT>                    return document.createElementNS(ns, name);<a name="line.775"></a>
+<FONT color="green">776</FONT>            }<a name="line.776"></a>
+<FONT color="green">777</FONT>    <a name="line.777"></a>
+<FONT color="green">778</FONT>            private void addWarning(String message, String propertyName, List&lt;String&gt; warnings) {<a name="line.778"></a>
+<FONT color="green">779</FONT>                    warnings.add(propertyName + " property: " + message);<a name="line.779"></a>
+<FONT color="green">780</FONT>            }<a name="line.780"></a>
+<FONT color="green">781</FONT>    }<a name="line.781"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>
