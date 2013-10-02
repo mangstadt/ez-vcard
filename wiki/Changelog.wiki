@@ -27,7 +27,7 @@ Other changes:
  * The `Ezvcard.parse(File)` methods no longer throw a `FileNotFoundException`.
  * Added the `XCardDocument.registerParameterDataType()` method for setting the data types of extended parameters.
  * The `XmlType` property now stores its value as a `Document` object instead of a `String`.
- * The following `VCardSubType` methods now throw an `IllegalStateException` when their parameter value cannot be parsed (for example, if the PREF parameter is non-numeric).  Before, they would return "null", which was misleading (the typical meaning of "null" is that the property does not exist).  Raw parameter values can still be retrieved using the `get()` method.
+ * The following `VCardSubType` methods now throw an `IllegalStateException` when their parameter value cannot be parsed (for example, if the PREF parameter is non-numeric).  Before, they would return "null", which was misleading because "null" also means that the parameter does not exist.  Raw parameter values can still be retrieved using the `get()` method.
   * `getPref()`
   * `getGeo()`
   * `getPids()`
