@@ -342,6 +342,8 @@ public class VCardWriter implements Closeable {
 	 * Writes a vCard to the stream.
 	 * @param vcard the vCard to write
 	 * @throws IOException if there's a problem writing to the output stream
+	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
+	 * custom property class (see: {@link #registerScribe})
 	 */
 	public void write(VCard vcard) throws IOException {
 		write(vcard, addProdId);
@@ -361,6 +363,11 @@ public class VCardWriter implements Closeable {
 			if (versionStrict && !type.getSupportedVersions().contains(targetVersion)) {
 				//do not add the property to the vCard if it is not supported by the target version
 				continue;
+			}
+
+			//check for scribes before writing anything to the stream
+			if (index.getPropertyScribe(type) == null) {
+				throw new IllegalArgumentException("No scribe found for property class \"" + type.getClass().getName() + "\".");
 			}
 
 			typesToAdd.add(type);
@@ -395,9 +402,6 @@ public class VCardWriter implements Closeable {
 
 		for (VCardType type : typesToAdd) {
 			VCardPropertyScribe scribe = index.getPropertyScribe(type);
-			if (scribe == null) {
-				throw new IllegalArgumentException("No marshaller found for property class \"" + type.getClass().getName() + "\".");
-			}
 
 			//marshal the value
 			String value = null;

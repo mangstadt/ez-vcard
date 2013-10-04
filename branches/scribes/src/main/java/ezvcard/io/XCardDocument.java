@@ -583,6 +583,8 @@ public class XCardDocument {
 	/**
 	 * Adds a vCard to the XML document.
 	 * @param vcard the vCard to add
+	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
+	 * custom property class (see: {@link #registerScribe})
 	 */
 	public void add(VCard vcard) {
 		ListMultimap<String, VCardType> typesToAdd = new ListMultimap<String, VCardType>(); //group the types by group name (null = no group name)
@@ -596,6 +598,11 @@ public class XCardDocument {
 			if (versionStrict && !type.getSupportedVersions().contains(version4)) {
 				//do not add the property to the vCard if it is not supported by the target version
 				continue;
+			}
+
+			//check for scribes before writing anything to the stream
+			if (index.getPropertyScribe(type) == null) {
+				throw new IllegalArgumentException("No scribe found for property class \"" + type.getClass().getName() + "\".");
 			}
 
 			typesToAdd.put(type.getGroup(), type);
