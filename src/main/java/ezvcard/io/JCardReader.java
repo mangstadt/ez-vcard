@@ -11,17 +11,17 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.JCardRawReader.JCardDataStreamListener;
 import ezvcard.types.RawType;
-import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.RawPropertyScribe;
+import ezvcard.types.scribes.VCardPropertyScribe;
+import ezvcard.types.scribes.VCardPropertyScribe.Result;
 import ezvcard.util.JCardValue;
 
 /*
@@ -77,9 +77,9 @@ import ezvcard.util.JCardValue;
  * draft</a>
  */
 public class JCardReader implements Closeable {
+	private ScribeIndex index = new ScribeIndex();
 	private final List<String> warnings = new ArrayList<String>();
 	private final JCardRawReader reader;
-	private final Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 
 	/**
 	 * Creates a reader that parses jCards from a JSON string.
@@ -136,75 +136,32 @@ public class JCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates the appropriate {@link VCardType} instance, given the type name.
-	 * This method does not unmarshal the type, it just creates the type object.
-	 * @param name the type name (e.g. "FN")
-	 * @return the Type that was created
+	 * <p>
+	 * Registers a property scribe. This is the same as calling:
+	 * </p>
+	 * <p>
+	 * {@code getScribeIndex().register(scribe)}
+	 * </p>
+	 * @param scribe the scribe to register
 	 */
-	private VCardType createTypeObject(String name) {
-		//parse as a registered extended type class (extended type classes should override standard ones)
-		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name);
-		if (extendedTypeClass != null) {
-			try {
-				return extendedTypeClass.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-				throw new RuntimeException("Extended property class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
-			}
-		}
-
-		//parse as a standard property
-		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
-		if (clazz != null) {
-			try {
-				return clazz.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//all type classes must have public, no-arg constructors
-				throw new RuntimeException(e);
-			}
-		}
-
-		//parse as a RawType
-		if (!name.toUpperCase().startsWith("X-")) {
-			addWarning("Non-standard property \"" + name + "\" found.  Treating it as an extended property.");
-		}
-		return new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
+	public void registerScribe(VCardPropertyScribe<? extends VCardType> scribe) {
+		index.register(scribe);
 	}
 
 	/**
-	 * Gets the type name from a type class.
-	 * @param clazz the type class
-	 * @return the type name
+	 * Gets the scribe index.
+	 * @return the scribe index
 	 */
-	private String getTypeNameFromTypeClass(Class<? extends VCardType> clazz) {
-		try {
-			VCardType t = clazz.newInstance();
-			return t.getTypeName().toLowerCase();
-		} catch (Exception e) {
-			//there is no public, no-arg constructor
-			throw new RuntimeException(e);
-		}
+	public ScribeIndex getScribeIndex() {
+		return index;
 	}
 
 	/**
-	 * Registers an extended type class.
-	 * @param clazz the extended type class to register (MUST have a public,
-	 * no-arg constructor)
-	 * @throws RuntimeException if the class doesn't have a public, no-arg
-	 * constructor
+	 * Sets the scribe index.
+	 * @param index the scribe index
 	 */
-	public void registerExtendedType(Class<? extends VCardType> clazz) {
-		extendedTypeClasses.put(getTypeNameFromTypeClass(clazz), clazz);
-	}
-
-	/**
-	 * Removes an extended type class that was previously registered.
-	 * @param clazz the extended type class to remove
-	 */
-	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
-		extendedTypeClasses.remove(getTypeNameFromTypeClass(clazz));
+	public void setScribeIndex(ScribeIndex index) {
+		this.index = index;
 	}
 
 	/**
@@ -236,7 +193,6 @@ public class JCardReader implements Closeable {
 	}
 
 	private class JCardDataStreamListenerImpl implements JCardDataStreamListener {
-		private final List<String> warningsBuf = new ArrayList<String>();
 		private VCard vcard = null;
 		private boolean versionFound = false;
 
@@ -252,38 +208,44 @@ public class JCardReader implements Closeable {
 
 				VCardVersion version = VCardVersion.valueOfByStr(value.asSingle());
 				if (version != VCardVersion.V4_0) {
-					addWarning("Version must be \"" + VCardVersion.V4_0.getVersion() + "\"", "version");
+					addWarning("Version must be \"" + VCardVersion.V4_0.getVersion() + "\"", propertyName);
 				}
 				return;
 			}
 
-			VCardType type = createTypeObject(propertyName);
-			type.setGroup(group);
+			VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(propertyName);
+			if (scribe == null) {
+				scribe = new RawPropertyScribe(propertyName);
+			}
 
-			//unmarshal the text string into the object
-			warningsBuf.clear();
+			VCardType property;
 			try {
-				type.unmarshalJson(parameters, value, VCardVersion.V4_0, warningsBuf);
+				Result<? extends VCardType> result = scribe.parseJson(value, value.getDataType(), parameters);
+
+				for (String warning : result.getWarnings()) {
+					addWarning(warning, propertyName);
+				}
+
+				property = result.getProperty();
+				property.setGroup(group);
 			} catch (SkipMeException e) {
-				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
+				addWarning("Property has requested that it be skipped: " + e.getMessage(), propertyName);
 				return;
 			} catch (CannotParseException e) {
-				type = new RawType(propertyName);
-				type.setGroup(group);
-				type.unmarshalJson(parameters, value, vcard.getVersion(), warningsBuf);
+				scribe = new RawPropertyScribe(propertyName);
+				Result<? extends VCardType> result = scribe.parseJson(value, value.getDataType(), parameters);
 
-				String valueStr = ((RawType) type).getValue();
-				warningsBuf.add("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + valueStr + NEWLINE + "  Reason: " + e.getMessage());
-			} catch (EmbeddedVCardException e) {
-				warningsBuf.add("Property will not be unmarshalled because jCard does not supported embedded vCards.");
+				property = result.getProperty();
+				property.setGroup(group);
+
+				String valueStr = ((RawType) property).getValue();
+				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + valueStr + NEWLINE + "  Reason: " + e.getMessage(), propertyName);
+			} catch (EmbeddedVCardExceptionNew e) {
+				addWarning("Property will not be unmarshalled because jCard does not supported embedded vCards.", propertyName);
 				return;
-			} finally {
-				for (String warning : warningsBuf) {
-					addWarning(warning, type.getTypeName());
-				}
 			}
 
-			vcard.addType(type);
+			vcard.addType(property);
 		}
 	}
 }

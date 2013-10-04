@@ -1,6 +1,5 @@
 package ezvcard.types;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ezvcard.VCard;
@@ -45,8 +44,7 @@ import ezvcard.util.XCardElement;
  * Represents a type whose value is a list of textual values.
  * @author Michael Angstadt
  */
-public class TextListType extends VCardType {
-	protected List<String> values = new ArrayList<String>();
+public class TextListType extends ListProperty<String> {
 	private final char separator;
 
 	/**
@@ -57,30 +55,6 @@ public class TextListType extends VCardType {
 	public TextListType(String name, char separator) {
 		super(name);
 		this.separator = separator;
-	}
-
-	/**
-	 * Gest the list of values.
-	 * @return the list of values
-	 */
-	public List<String> getValues() {
-		return values;
-	}
-
-	/**
-	 * Adds a value to the list.
-	 * @param value the value to add
-	 */
-	public void addValue(String value) {
-		values.add(value);
-	}
-
-	/**
-	 * Removes a value from the list.
-	 * @param value the value to remove
-	 */
-	public void removeValue(String value) {
-		values.remove(value);
 	}
 
 	@Override

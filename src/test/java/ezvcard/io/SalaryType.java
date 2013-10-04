@@ -3,8 +3,10 @@ package ezvcard.io;
 import java.util.List;
 
 import ezvcard.VCardDataType;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.XCardElement;
 
 /*
@@ -48,25 +50,50 @@ public class SalaryType extends VCardType {
 		super("X-SALARY");
 	}
 
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(salary);
+	public SalaryType(int salary) {
+		this();
+		this.salary = salary;
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.element().setTextContent(salary + "");
+	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
+		//TODO remove
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		salary = Integer.parseInt(value);
+		//TODO remove
 	}
 
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		salary = Integer.parseInt(element.first(VCardDataType.INTEGER));
+	public static class SalaryScribe extends VCardPropertyScribe<SalaryType> {
+		public SalaryScribe() {
+			super(SalaryType.class, "X-SALARY");
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return VCardDataType.INTEGER;
+		}
+
+		@Override
+		protected String _writeText(SalaryType property, VCardVersion version) {
+			return property.salary + "";
+		}
+
+		@Override
+		protected SalaryType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			return new SalaryType(Integer.parseInt(value));
+		}
+
+		@Override
+		protected void _writeXml(SalaryType property, XCardElement parent) {
+			parent.element().setTextContent(property.salary + "");
+		}
+
+		@Override
+		protected SalaryType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+			return new SalaryType(Integer.parseInt(element.first(VCardDataType.INTEGER)));
+		}
 	}
 
-	//	public QName getQName();
 }

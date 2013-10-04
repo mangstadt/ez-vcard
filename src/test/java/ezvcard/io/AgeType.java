@@ -2,8 +2,11 @@ package ezvcard.io;
 
 import java.util.List;
 
+import ezvcard.VCardDataType;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.VCardPropertyScribe;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -46,17 +49,39 @@ public class AgeType extends VCardType {
 		super("X-AGE");
 	}
 
+	public AgeType(int age) {
+		this();
+		this.age = age;
+	}
+
 	@Override
 	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(age);
+		//TODO remove
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		age = Integer.parseInt(value);
+		//TODO remove
 	}
 
-	//	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	public QName getQName();
+	public static class AgeScribe extends VCardPropertyScribe<AgeType> {
+		public AgeScribe() {
+			super(AgeType.class, "X-AGE");
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return null;
+		}
+
+		@Override
+		protected String _writeText(AgeType property, VCardVersion version) {
+			return property.age + "";
+		}
+
+		@Override
+		protected AgeType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			return new AgeType(Integer.parseInt(value));
+		}
+	}
 }

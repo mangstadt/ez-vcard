@@ -9,10 +9,8 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
@@ -31,9 +29,11 @@ import ezvcard.types.NicknameType;
 import ezvcard.types.RawType;
 import ezvcard.types.SourceType;
 import ezvcard.types.TelephoneType;
-import ezvcard.types.TypeList;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.RawPropertyScribe;
+import ezvcard.types.scribes.VCardPropertyScribe;
+import ezvcard.types.scribes.VCardPropertyScribe.Result;
 import ezvcard.util.HtmlUtils;
 
 /*
@@ -87,17 +87,21 @@ import ezvcard.util.HtmlUtils;
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
 public class HCardReader {
+	private ScribeIndex index = new ScribeIndex();
 	private String pageUrl;
 	private final List<String> warnings = new ArrayList<String>();
-	private final Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
 	private Elements vcardElements;
 	private Iterator<Element> it;
 	private final List<LabelType> labels = new ArrayList<LabelType>();
-	private final List<String> warningsBuffer = new ArrayList<String>();
 	private VCard curVCard;
 	private Elements embeddedVCards = new Elements();
 	private NicknameType nickname;
 	private CategoriesType categories;
+
+	private final String urlPropertyName = index.getPropertyScribe(UrlType.class).getPropertyName().toLowerCase();
+	private final String categoriesName = index.getPropertyScribe(CategoriesType.class).getPropertyName().toLowerCase();
+	private final String emailName = index.getPropertyScribe(EmailType.class).getPropertyName().toLowerCase();
+	private final String telName = index.getPropertyScribe(TelephoneType.class).getPropertyName().toLowerCase();
 
 	/**
 	 * Creates a reader that parses hCards from a URL.
@@ -250,22 +254,32 @@ public class HCardReader {
 	}
 
 	/**
-	 * Registers an extended type class.
-	 * @param clazz the extended type class to register (MUST have a public,
-	 * no-arg constructor)
-	 * @throws RuntimeException if the class doesn't have a public, no-arg
-	 * constructor
+	 * <p>
+	 * Registers a property scribe. This is the same as calling:
+	 * </p>
+	 * <p>
+	 * {@code getScribeIndex().register(scribe)}
+	 * </p>
+	 * @param scribe the scribe to register
 	 */
-	public void registerExtendedType(Class<? extends VCardType> clazz) {
-		extendedTypeClasses.put(getTypeNameFromTypeClass(clazz), clazz);
+	public void registerScribe(VCardPropertyScribe<? extends VCardType> scribe) {
+		index.register(scribe);
 	}
 
 	/**
-	 * Removes an extended type class that was previously registered.
-	 * @param clazz the extended type class to remove
+	 * Gets the scribe index.
+	 * @return the scribe index
 	 */
-	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
-		extendedTypeClasses.remove(getTypeNameFromTypeClass(clazz));
+	public ScribeIndex getScribeIndex() {
+		return index;
+	}
+
+	/**
+	 * Sets the scribe index.
+	 * @param index the scribe index
+	 */
+	public void setScribeIndex(ScribeIndex index) {
+		this.index = index;
 	}
 
 	/**
@@ -296,7 +310,6 @@ public class HCardReader {
 		}
 
 		warnings.clear();
-		warningsBuffer.clear();
 		labels.clear();
 		nickname = null;
 		categories = null;
@@ -333,22 +346,23 @@ public class HCardReader {
 	private void visit(Element element) {
 		Set<String> classNames = element.classNames();
 		for (String className : classNames) {
-			if (UrlType.NAME.equalsIgnoreCase(className)) {
+			className = className.toLowerCase();
+
+			if (urlPropertyName.equalsIgnoreCase(className)) {
 				String href = element.attr("href");
 				if (href.length() > 0) {
-					if (!classNames.contains(EmailType.NAME.toLowerCase()) && href.matches("(?i)mailto:.*")) {
-						className = EmailType.NAME;
-					} else if (!classNames.contains(TelephoneType.NAME.toLowerCase()) && href.matches("(?i)tel:.*")) {
-						className = TelephoneType.NAME;
+					if (!classNames.contains(emailName) && href.matches("(?i)mailto:.*")) {
+						className = emailName;
+					} else if (!classNames.contains(telName) && href.matches("(?i)tel:.*")) {
+						className = telName;
 					} else {
 						//try parsing as IMPP
-						warningsBuffer.clear();
-						ImppType impp = new ImppType();
+						VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(ImppType.class);
 						try {
-							impp.unmarshalHtml(element, warningsBuffer);
-							curVCard.addType(impp);
-							for (String warning : warningsBuffer) {
-								addWarning(warning, impp.getTypeName());
+							Result<? extends VCardType> result = scribe.parseHtml(element);
+							curVCard.addType(result.getProperty());
+							for (String warning : result.getWarnings()) {
+								addWarning(warning, scribe.getPropertyName());
 							}
 							continue;
 						} catch (SkipMeException e) {
@@ -360,25 +374,39 @@ public class HCardReader {
 				}
 			}
 
-			VCardType type = createTypeObject(className);
-			if (type == null) {
-				//if no type class is found, then it must be an arbitrary CSS class that has nothing to do with vCard
-				continue;
+			//hCard uses a different name for the CATEGORIES property
+			if ("category".equalsIgnoreCase(className)) {
+				className = categoriesName;
 			}
 
-			warningsBuffer.clear();
+			VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(className);
+			if (scribe == null) {
+				//if no scribe is found, and the class name doesn't start with "x-", then it must be an arbitrary CSS class that has nothing to do with vCard
+				if (!className.startsWith("x-")) {
+					continue;
+				}
+				scribe = new RawPropertyScribe(className);
+			}
+
+			VCardType property;
 			try {
-				type.unmarshalHtml(element, warningsBuffer);
+				Result<? extends VCardType> result = scribe.parseHtml(element);
+
+				for (String warning : result.getWarnings()) {
+					addWarning(warning, className);
+				}
+
+				property = result.getProperty();
 
 				//LABELs must be treated specially so they can be matched up with their ADRs
-				if (type instanceof LabelType) {
-					labels.add((LabelType) type);
+				if (property instanceof LabelType) {
+					labels.add((LabelType) property);
 					continue;
 				}
 
 				//add all NICKNAMEs to the same type object
-				if (type instanceof NicknameType) {
-					NicknameType nn = (NicknameType) type;
+				if (property instanceof NicknameType) {
+					NicknameType nn = (NicknameType) property;
 					if (nickname == null) {
 						nickname = nn;
 						curVCard.addType(nickname);
@@ -389,8 +417,8 @@ public class HCardReader {
 				}
 
 				//add all CATEGORIES to the same type object
-				if (type instanceof CategoriesType) {
-					CategoriesType c = (CategoriesType) type;
+				if (property instanceof CategoriesType) {
+					CategoriesType c = (CategoriesType) property;
 					if (categories == null) {
 						categories = c;
 						curVCard.addType(categories);
@@ -400,17 +428,19 @@ public class HCardReader {
 					continue;
 				}
 			} catch (SkipMeException e) {
-				warningsBuffer.add("Property has requested that it be skipped: " + e.getMessage());
+				addWarning("Property has requested that it be skipped: " + e.getMessage(), className);
 				continue;
 			} catch (CannotParseException e) {
 				String html = element.outerHtml();
-				warningsBuffer.add("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  HTML: " + html + NEWLINE + "  Reason: " + e.getMessage());
-				type = new RawType(className, html);
-			} catch (EmbeddedVCardException e) {
+				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  HTML: " + html + NEWLINE + "  Reason: " + e.getMessage(), className);
+				property = new RawType(className, html);
+			} catch (EmbeddedVCardExceptionNew e) {
 				if (HtmlUtils.isChildOf(element, embeddedVCards)) {
 					//prevents multiple-nested embedded elements from overwriting each other
 					continue;
 				}
+
+				property = e.getProperty();
 
 				embeddedVCards.add(element);
 				HCardReader embeddedReader = new HCardReader(element, pageUrl);
@@ -419,78 +449,16 @@ public class HCardReader {
 					e.injectVCard(embeddedVCard);
 				} finally {
 					for (String w : embeddedReader.getWarnings()) {
-						warningsBuffer.add("Problem unmarshalling nested vCard value: " + w);
+						addWarning("Problem unmarshalling nested vCard value: " + w, className);
 					}
-				}
-			} catch (UnsupportedOperationException e) {
-				//type class does not support hCard
-				warningsBuffer.add("Property class \"" + type.getClass().getName() + "\" does not support hCard unmarshalling.");
-				continue;
-			} finally {
-				for (String warning : warningsBuffer) {
-					addWarning(warning, type.getTypeName());
 				}
 			}
 
-			curVCard.addType(type);
+			curVCard.addType(property);
 		}
 
 		for (Element child : element.children()) {
 			visit(child);
-		}
-	}
-
-	/**
-	 * Creates the appropriate {@link VCardType} instance, given the type name.
-	 * This method does not unmarshal the type, it just creates the type object.
-	 * @param typeName the type name (e.g. "fn")
-	 * @return the type object or null if the type name was not recognized
-	 */
-	private VCardType createTypeObject(String typeName) {
-		//parse as a registered extended type class (extended type classes should override standard ones)
-		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(typeName.toLowerCase());
-		if (extendedTypeClass != null) {
-			try {
-				return extendedTypeClass.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
-			}
-		}
-
-		//parse as a standard property
-		Class<? extends VCardType> clazz = TypeList.getTypeClassByHCardTypeName(typeName);
-		if (clazz != null) {
-			try {
-				return clazz.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//all type classes must have public, no-arg constructors
-				throw new RuntimeException(e);
-			}
-		}
-
-		//parse as a RawType
-		if (typeName.toUpperCase().startsWith("X-")) {
-			return new RawType(typeName); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
-		}
-
-		return null;
-	}
-
-	/**
-	 * Gets the type name from a type class.
-	 * @param clazz the type class
-	 * @return the type name
-	 */
-	private String getTypeNameFromTypeClass(Class<? extends VCardType> clazz) {
-		try {
-			VCardType t = clazz.newInstance();
-			return t.getTypeName().toLowerCase();
-		} catch (Exception e) {
-			//there is no public, no-arg constructor
-			throw new RuntimeException(e);
 		}
 	}
 

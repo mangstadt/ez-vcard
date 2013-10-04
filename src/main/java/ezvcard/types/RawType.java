@@ -46,6 +46,7 @@ import ezvcard.util.XmlUtils;
  */
 public class RawType extends VCardType {
 	private String value;
+	private VCardDataType dataType;
 
 	/**
 	 * Creates a raw property.
@@ -61,8 +62,19 @@ public class RawType extends VCardType {
 	 * @param value the type value
 	 */
 	public RawType(String name, String value) {
+		this(name, value, null);
+	}
+
+	/**
+	 * Creates a raw property.
+	 * @param name the type name (e.g. "NOTE")
+	 * @param value the type value
+	 * @param dataType the value's data type
+	 */
+	public RawType(String name, String value, VCardDataType dataType) {
 		super(name);
 		this.value = value;
+		this.dataType = dataType;
 	}
 
 	/**
@@ -79,6 +91,22 @@ public class RawType extends VCardType {
 	 */
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	/**
+	 * Gets the data type of the property's value.
+	 * @return the data type or null if unknown
+	 */
+	public VCardDataType getDataType() {
+		return dataType;
+	}
+
+	/**
+	 * Sets the data type of the property's value.
+	 * @param dataType the data type or null if unknown
+	 */
+	public void setDataType(VCardDataType dataType) {
+		this.dataType = dataType;
 	}
 
 	@Override

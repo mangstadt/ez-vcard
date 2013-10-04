@@ -7,8 +7,11 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import ezvcard.VCardDataType;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.HCardElement;
 import ezvcard.util.XCardElement;
 
@@ -47,56 +50,84 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class LuckyNumType extends VCardType {
-	private static final QName qname = new QName("http://luckynum.com", "lucky-num");
 	public int luckyNum;
 
 	public LuckyNumType() {
 		super("X-LUCKY-NUM");
 	}
 
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
-		sb.append(luckyNum);
+	private LuckyNumType(int luckyNum) {
+		this();
+		this.luckyNum = luckyNum;
 	}
 
 	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
-		parent.element().setTextContent(luckyNum + "");
+	protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
+		//TODO remove
 	}
 
 	@Override
 	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		luckyNum = Integer.parseInt(value);
-		if (luckyNum == 13) {
-			throw new SkipMeException("Invalid lucky number.");
-		}
+		//TODO remove
 	}
 
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		NodeList nodeList = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
-		if (nodeList.getLength() > 0) {
-			Element num = (Element) nodeList.item(0);
-			luckyNum = Integer.parseInt(num.getTextContent());
+	public static class LuckyNumScribe extends VCardPropertyScribe<LuckyNumType> {
+		public LuckyNumScribe() {
+			super(LuckyNumType.class, "X-LUCKY-NUM", new QName("http://luckynum.com", "lucky-num"));
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return VCardDataType.INTEGER;
+		}
+
+		@Override
+		protected String _writeText(LuckyNumType property, VCardVersion version) {
+			int luckyNum = property.luckyNum;
 			if (luckyNum == 13) {
 				throw new SkipMeException("Invalid lucky number.");
 			}
+			return luckyNum + "";
 		}
-	}
 
-	@Override
-	public QName getQName() {
-		return qname;
-	}
+		@Override
+		protected LuckyNumType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			int luckyNum = Integer.parseInt(value);
+			if (luckyNum == 13) {
+				throw new SkipMeException("Invalid lucky number.");
+			}
 
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		luckyNum = Integer.parseInt(element.value());
+			return new LuckyNumType(luckyNum);
+		}
+
+		@Override
+		protected void _writeXml(LuckyNumType property, XCardElement parent) {
+			int luckyNum = property.luckyNum;
+			if (luckyNum == 13) {
+				throw new SkipMeException("Invalid lucky number.");
+			}
+			parent.element().setTextContent(luckyNum + "");
+		}
+
+		@Override
+		protected LuckyNumType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+			NodeList nodeList = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
+			if (nodeList.getLength() == 0) {
+				return new LuckyNumType();
+			}
+
+			Element num = (Element) nodeList.item(0);
+			int luckyNum = Integer.parseInt(num.getTextContent());
+			if (luckyNum == 13) {
+				throw new SkipMeException("Invalid lucky number.");
+			}
+
+			return new LuckyNumType(luckyNum);
+		}
+
+		@Override
+		protected LuckyNumType _parseHtml(HCardElement element, List<String> warnings) {
+			return new LuckyNumType(Integer.parseInt(element.value()));
+		}
 	}
 }

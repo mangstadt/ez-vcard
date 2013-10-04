@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -115,6 +117,23 @@ public class TestUtils {
 	 */
 	public static void assertIntEquals(int expected, Integer actual) {
 		assertEquals(Integer.valueOf(expected), actual);
+	}
+
+	/**
+	 * Builds a timezone object with the given offset.
+	 * @param hours the hour offset
+	 * @param minutes the minute offset
+	 * @return the timezone object
+	 */
+	public static TimeZone buildTimezone(int hours, int minutes) {
+		int hourMillis = 1000 * 60 * 60 * hours;
+
+		int minuteMillis = 1000 * 60 * minutes;
+		if (hours < 0) {
+			minuteMillis *= -1;
+		}
+
+		return new SimpleTimeZone(hourMillis + minuteMillis, "");
 	}
 
 	/**
@@ -222,6 +241,16 @@ public class TestUtils {
 		public String toString() {
 			return map.toString();
 		}
+	}
+
+	/**
+	 * Creates an array from the given vararg parameters (syntax is less verbose
+	 * than creating an array the normal way).
+	 * @param values the values
+	 * @return the array
+	 */
+	public static <T> T[] each(T... values) {
+		return values;
 	}
 
 	private TestUtils() {

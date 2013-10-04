@@ -3,8 +3,10 @@ package ezvcard.io;
 import java.util.List;
 
 import ezvcard.VCardDataType;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
 import ezvcard.util.XCardElement;
@@ -48,6 +50,11 @@ public class MyFormattedNameType extends VCardType {
 		super("FN");
 	}
 
+	public MyFormattedNameType(String value) {
+		this();
+		this.value = value;
+	}
+
 	@Override
 	protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 		value.append(this.value.toUpperCase());
@@ -81,5 +88,51 @@ public class MyFormattedNameType extends VCardType {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		this.value = value.asSingle().toUpperCase();
+	}
+
+	public static class MyFormattedNameScribe extends VCardPropertyScribe<MyFormattedNameType> {
+		public MyFormattedNameScribe() {
+			super(MyFormattedNameType.class, "FN");
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return VCardDataType.get("name");
+		}
+
+		@Override
+		protected String _writeText(MyFormattedNameType property, VCardVersion version) {
+			return property.value.toUpperCase();
+		}
+
+		@Override
+		protected MyFormattedNameType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			return new MyFormattedNameType(value.toUpperCase());
+		}
+
+		@Override
+		protected void _writeXml(MyFormattedNameType property, XCardElement parent) {
+			parent.append("name", property.value);
+		}
+
+		@Override
+		protected MyFormattedNameType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+			return new MyFormattedNameType(element.first("name").toUpperCase());
+		}
+
+		@Override
+		protected MyFormattedNameType _parseHtml(HCardElement element, List<String> warnings) {
+			return new MyFormattedNameType(element.value().toUpperCase());
+		}
+
+		@Override
+		protected JCardValue _writeJson(MyFormattedNameType property) {
+			return JCardValue.single(null, property.value.toUpperCase());
+		}
+
+		@Override
+		protected MyFormattedNameType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+			return new MyFormattedNameType(value.asSingle().toUpperCase());
+		}
 	}
 }

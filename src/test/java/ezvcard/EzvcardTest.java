@@ -23,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import ezvcard.io.LuckyNumType;
+import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.XCardNamespaceContext;
 import ezvcard.types.FormattedNameType;
 import ezvcard.util.VCardBuilder;
@@ -108,7 +109,7 @@ public class EzvcardTest {
 		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
 		vb.prop("X-LUCKY-NUM").value("22");
 
-		VCard vcard = Ezvcard.parse(vb.toString()).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parse(vb.toString()).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
 		assertEquals(1, ext.size());
@@ -172,7 +173,7 @@ public class EzvcardTest {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("http://luckynum.com", "lucky-num", "<num>22</num>");
 
-		VCard vcard = Ezvcard.parseXml(xb.toString()).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseXml(xb.toString()).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
 		assertEquals(1, ext.size());
@@ -236,7 +237,7 @@ public class EzvcardTest {
 		"</div>";
 		//@formatter:on
 
-		VCard vcard = Ezvcard.parseHtml(html).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseHtml(html).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
 		assertEquals(1, ext.size());
@@ -337,7 +338,7 @@ public class EzvcardTest {
 		  "]";
 		//@formatter:on
 
-		VCard vcard = Ezvcard.parseJson(json).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseJson(json).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
 		assertEquals(1, ext.size());

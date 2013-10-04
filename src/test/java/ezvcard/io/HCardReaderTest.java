@@ -17,6 +17,8 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.io.LuckyNumType.LuckyNumScribe;
+import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.AddressType;
@@ -731,7 +733,7 @@ public class HCardReaderTest {
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
-		reader.registerExtendedType(LuckyNumType.class);
+		reader.registerScribe(new LuckyNumScribe());
 
 		VCard vcard = reader.readNext();
 		assertEquals(3, vcard.getAllTypes().size());
@@ -766,7 +768,7 @@ public class HCardReaderTest {
 		//@formatter:on
 
 		HCardReader reader = new HCardReader(html.toString());
-		reader.registerExtendedType(MyFormattedNameType.class);
+		reader.registerScribe(new MyFormattedNameScribe());
 
 		VCard vcard = reader.readNext();
 		assertEquals(1, vcard.getAllTypes().size());
@@ -777,11 +779,5 @@ public class HCardReaderTest {
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void registerExtendedType_no_default_constructor() throws Exception {
-		HCardReader reader = new HCardReader("");
-		reader.registerExtendedType(BadType.class);
 	}
 }

@@ -19,7 +19,9 @@ import org.junit.rules.TemporaryFolder;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
@@ -33,6 +35,7 @@ import ezvcard.types.StructuredNameType;
 import ezvcard.types.TelephoneType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.IOUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
@@ -267,6 +270,7 @@ public class JCardWriterTest {
 	public void write_extended_property() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
+		writer.registerScribe(new TypeForTestingScribe());
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
@@ -293,6 +297,7 @@ public class JCardWriterTest {
 	public void skipMeException() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
+		writer.registerScribe(new LuckyNumScribe());
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
@@ -463,6 +468,32 @@ public class JCardWriterTest {
 		@Override
 		protected JCardValue doMarshalJson(VCardVersion version) {
 			return value;
+		}
+	}
+
+	private static class TypeForTestingScribe extends VCardPropertyScribe<TypeForTesting> {
+		public TypeForTestingScribe() {
+			super(TypeForTesting.class, "X-TYPE");
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return VCardDataType.TEXT;
+		}
+
+		@Override
+		protected String _writeText(TypeForTesting property, VCardVersion version) {
+			return null;
+		}
+
+		@Override
+		protected TypeForTesting _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			return null;
+		}
+
+		@Override
+		protected JCardValue _writeJson(TypeForTesting property) {
+			return property.value;
 		}
 	}
 }

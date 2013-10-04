@@ -126,6 +126,16 @@ public class VCardDateFormatter {
 		}
 	}
 
+	/**
+	 * Gets the {@link TimeZone} object that corresponds to the given ID.
+	 * @param timezoneId the timezone ID (e.g. "America/New_York")
+	 * @return the timezone object or null if not found
+	 */
+	public static TimeZone parseTimeZoneId(String timezoneId) {
+		TimeZone timezone = TimeZone.getTimeZone(timezoneId);
+		return "GMT".equals(timezone.getID()) ? null : timezone;
+	}
+
 	private VCardDateFormatter() {
 		//hide constructor
 	}

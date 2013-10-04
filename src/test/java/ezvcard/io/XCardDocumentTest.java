@@ -34,7 +34,12 @@ import org.xml.sax.SAXException;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.AgeType.AgeScribe;
+import ezvcard.io.LuckyNumType.LuckyNumScribe;
+import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
+import ezvcard.io.SalaryType.SalaryScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.ImageTypeParameter;
@@ -59,6 +64,7 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
 import ezvcard.types.XmlType;
+import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -362,33 +368,46 @@ public class XCardDocumentTest {
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
-				//XmlType (non-standard type that does not start with "x-")
-				"<a href=\"http://www.website.com\">website</a>" +
+				//xCard namespace:  no
+				//scribe:           no
+				//expected:         XML property
+				"<foo xmlns=\"http://example.com\">bar</foo>" +
 				
-				//LuckyNumType (with marshal methods and with QName)
+				//xCard namespace:  no
+				//scribe:           yes
+				//parseXml impl:    yes
+				//expected:         LuckyNumType
 				"<a:lucky-num xmlns:a=\"http://luckynum.com\"><a:num>21</a:num></a:lucky-num>" +
 				
-				//SalaryType (with marshal methods and without QName)
+				//xCard namespace:  yes
+				//scribe:           yes
+				//parseXml impl:    yes
+				//expected:         SalaryType
 				"<x-salary><integer>1000000</integer></x-salary>" +
 				
-				//AgeType (without marshal methods and without QName)
-				//should be unmarshalled as XmlType
+				//xCard namespace:  yes
+				//parseXml impl:    no
+				//expected:         AgeType (should be unmarshalled using the default parseXml implementation)
 				"<x-age><integer>24</integer></x-age>" +
 				
-				//RawType (extended type that starts with "x-")
+				//xCard namespace:  yes
+				//scribe:           no
+				//expected:         RawType
 				"<x-gender><text>m</text></x-gender>" +
 				
-				//override standard type classes
+				//xCard namespace:  yes
+				//scribe:           yes (standard scribe overridden)
+				//expected:         MyFormattedNameType
 				"<fn><name>John Doe</name></fn>" +
 			"</vcard>" +
 		"</vcards>";
 		//@formatter:on
 
 		XCardDocument xcard = new XCardDocument(xml);
-		xcard.registerExtendedType(LuckyNumType.class);
-		xcard.registerExtendedType(SalaryType.class);
-		xcard.registerExtendedType(AgeType.class);
-		xcard.registerExtendedType(MyFormattedNameType.class);
+		xcard.registerScribe(new LuckyNumScribe());
+		xcard.registerScribe(new SalaryScribe());
+		xcard.registerScribe(new AgeScribe());
+		xcard.registerScribe(new MyFormattedNameScribe());
 
 		VCard vcard = xcard.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -398,11 +417,7 @@ public class XCardDocumentTest {
 			Iterator<XmlType> it = vcard.getXmls().iterator();
 
 			XmlType xmlType = it.next();
-			assertXMLEqual(XmlUtils.toDocument("<a href=\"http://www.website.com\" xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">website</a>"), xmlType.getDocument());
-
-			xmlType = it.next();
-			//X-AGE was not unmarshalled because its type class does not support xCard;
-			assertXMLEqual(XmlUtils.toDocument("<x-age xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><integer>24</integer></x-age>"), xmlType.getDocument());
+			assertXMLEqual(XmlUtils.toDocument("<foo xmlns=\"http://example.com\">bar</foo>"), xmlType.getDocument());
 
 			assertFalse(it.hasNext());
 		}
@@ -413,6 +428,9 @@ public class XCardDocumentTest {
 		SalaryType salary = vcard.getType(SalaryType.class);
 		assertEquals(1000000, salary.salary);
 
+		AgeType age = vcard.getType(AgeType.class);
+		assertEquals(24, age.age);
+
 		RawType gender = vcard.getExtendedType("X-GENDER");
 		assertEquals("m", gender.getValue());
 
@@ -420,7 +438,7 @@ public class XCardDocumentTest {
 		assertEquals("JOHN DOE", fn.value);
 
 		//warning for AgeType not supporting xCard
-		assertWarningsLists(xcard.getParseWarnings(), 1);
+		assertWarningsLists(xcard.getParseWarnings(), 0);
 	}
 
 	@Test
@@ -452,7 +470,7 @@ public class XCardDocumentTest {
 		//@formatter:on
 
 		XCardDocument xcr = new XCardDocument(xml);
-		xcr.registerExtendedType(LuckyNumType.class);
+		xcr.registerScribe(new LuckyNumScribe());
 
 		VCard vcard = xcr.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -568,12 +586,6 @@ public class XCardDocumentTest {
 		XCardDocument xcard = new XCardDocument(file);
 		VCard vcard = xcard.parseFirst();
 		assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void registerExtendedType_no_default_constructor() throws Throwable {
-		XCardDocument xcard = new XCardDocument();
-		xcard.registerExtendedType(BadType.class);
 	}
 
 	/**
@@ -788,7 +800,7 @@ public class XCardDocumentTest {
 		xcm.setAddProdId(true);
 		xcm.add(vcard);
 		actual = (String) xpath.evaluate("/v:vcards/v:vcard/v:prodid/v:text", xcm.getDocument(), XPathConstants.STRING);
-		assertEquals(new EzvcardProdIdType(VCardVersion.V4_0).getValue(), actual);
+		assertTrue("Actual: " + actual, actual.startsWith("ez-vcard"));
 	}
 
 	@Test
@@ -848,6 +860,7 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
+		xcm.registerScribe(new LuckyNumScribe());
 		xcm.add(vcard);
 
 		Document actual = xcm.getDocument();
@@ -864,6 +877,18 @@ public class XCardDocumentTest {
 		//@formatter:on
 
 		assertXMLEqual(expected, actual);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void add_no_scribe_registered() throws Throwable {
+		VCard vcard = new VCard();
+
+		LuckyNumType num = new LuckyNumType();
+		num.luckyNum = 24;
+		vcard.addType(num);
+
+		XCardDocument xcm = new XCardDocument();
+		xcm.add(vcard);
 	}
 
 	/**
@@ -890,6 +915,9 @@ public class XCardDocumentTest {
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
+		xcm.registerScribe(new LuckyNumScribe());
+		xcm.registerScribe(new SalaryScribe());
+		xcm.registerScribe(new AgeScribe());
 		xcm.add(vcard);
 
 		Document actual = xcm.getDocument();
@@ -906,7 +934,7 @@ public class XCardDocumentTest {
 		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
 
-		assertXMLEqual(expected, actual);
+		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
 	}
 
 	@Test
@@ -958,6 +986,7 @@ public class XCardDocumentTest {
 		vcard.addType(new EmbeddedType());
 
 		XCardDocument doc = new XCardDocument();
+		doc.registerScribe(new EmbeddedTypeScribe());
 		doc.add(vcard);
 
 		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
@@ -1146,10 +1175,31 @@ public class XCardDocumentTest {
 		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 			//do nothing
 		}
+	}
+
+	private static class EmbeddedTypeScribe extends VCardPropertyScribe<EmbeddedType> {
+		public EmbeddedTypeScribe() {
+			super(EmbeddedType.class, "EMBEDDED");
+		}
 
 		@Override
-		protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-			throw new EmbeddedVCardException(new VCard());
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return null;
+		}
+
+		@Override
+		protected String _writeText(EmbeddedType property, VCardVersion version) {
+			return null;
+		}
+
+		@Override
+		protected EmbeddedType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			return null;
+		}
+
+		@Override
+		protected void _writeXml(EmbeddedType property, XCardElement parent) {
+			throw new EmbeddedVCardExceptionNew(new VCard());
 		}
 	}
 }

@@ -20,7 +20,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
+import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.LuckyNumType.LuckyNumScribe;
+import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
@@ -36,6 +40,7 @@ import ezvcard.types.TelephoneType;
 import ezvcard.types.TimezoneType;
 import ezvcard.types.UrlType;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.IOUtils;
 import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
@@ -269,7 +274,7 @@ public class JCardReaderTest {
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
-		reader.registerExtendedType(TypeForTesting.class);
+		reader.registerScribe(new TypeForTestingScribe());
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -292,7 +297,7 @@ public class JCardReaderTest {
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
-		reader.registerExtendedType(MyFormattedNameType.class);
+		reader.registerScribe(new MyFormattedNameScribe());
 		VCard vcard = reader.readNext();
 		assertEquals(1, vcard.getAllTypes().size());
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
@@ -300,12 +305,6 @@ public class JCardReaderTest {
 		MyFormattedNameType prop = vcard.getType(MyFormattedNameType.class);
 		assertEquals("JOHN DOE", prop.value);
 		assertWarnings(0, reader.getWarnings());
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void registerExtendedType_no_default_constructor() throws Throwable {
-		JCardReader reader = new JCardReader("");
-		reader.registerExtendedType(BadType.class);
 	}
 
 	@Test
@@ -321,7 +320,7 @@ public class JCardReaderTest {
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
-		reader.registerExtendedType(LuckyNumType.class);
+		reader.registerScribe(new LuckyNumScribe());
 
 		VCard vcard = reader.readNext();
 		assertEquals(0, vcard.getAllTypes().size());
@@ -359,6 +358,11 @@ public class JCardReaderTest {
 			super("X-TYPE");
 		}
 
+		public TypeForTesting(JCardValue value) {
+			this();
+			this.value = value;
+		}
+
 		@Override
 		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
 			//empty
@@ -368,11 +372,33 @@ public class JCardReaderTest {
 		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
 			//empty
 		}
+	}
+
+	private static class TypeForTestingScribe extends VCardPropertyScribe<TypeForTesting> {
+		public TypeForTestingScribe() {
+			super(TypeForTesting.class, "X-TYPE");
+		}
 
 		@Override
-		protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-			this.value = value;
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return VCardDataType.TEXT;
 		}
+
+		@Override
+		protected String _writeText(TypeForTesting property, VCardVersion version) {
+			return "";
+		}
+
+		@Override
+		protected TypeForTesting _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			return new TypeForTesting();
+		}
+
+		@Override
+		protected TypeForTesting _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+			return new TypeForTesting(value);
+		}
+
 	}
 
 	@Test

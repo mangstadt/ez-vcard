@@ -13,10 +13,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -26,8 +24,10 @@ import ezvcard.parameters.EncodingParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.LabelType;
 import ezvcard.types.RawType;
-import ezvcard.types.TypeList;
 import ezvcard.types.VCardType;
+import ezvcard.types.scribes.RawPropertyScribe;
+import ezvcard.types.scribes.VCardPropertyScribe;
+import ezvcard.types.scribes.VCardPropertyScribe.Result;
 import ezvcard.util.IOUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.org.apache.commons.codec.DecoderException;
@@ -83,9 +83,8 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * @author Michael Angstadt
  */
 public class VCardReader implements Closeable {
-	private CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
 	private final List<String> warnings = new ArrayList<String>();
-	private final Map<String, Class<? extends VCardType>> extendedTypeClasses = new HashMap<String, Class<? extends VCardType>>();
+	private ScribeIndex index = new ScribeIndex();
 	private final VCardRawReader reader;
 
 	/**
@@ -144,42 +143,32 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
-	 * Gets the compatibility mode. Used for customizing the unmarshalling
-	 * process based on the application that generated the vCard.
-	 * @return the compatibility mode
+	 * <p>
+	 * Registers a property scribe. This is the same as calling:
+	 * </p>
+	 * <p>
+	 * {@code getScribeIndex().register(scribe)}
+	 * </p>
+	 * @param scribe the scribe to register
 	 */
-	@Deprecated
-	public CompatibilityMode getCompatibilityMode() {
-		return compatibilityMode;
+	public void registerScribe(VCardPropertyScribe<? extends VCardType> scribe) {
+		index.register(scribe);
 	}
 
 	/**
-	 * Sets the compatibility mode. Used for customizing the unmarshalling
-	 * process based on the application that generated the vCard.
-	 * @param compatibilityMode the compatibility mode
+	 * Gets the scribe index.
+	 * @return the scribe index
 	 */
-	@Deprecated
-	public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
-		this.compatibilityMode = compatibilityMode;
+	public ScribeIndex getScribeIndex() {
+		return index;
 	}
 
 	/**
-	 * Registers an extended type class.
-	 * @param clazz the extended type class to register (MUST have a public,
-	 * no-arg constructor)
-	 * @throws RuntimeException if the class doesn't have a public, no-arg
-	 * constructor
+	 * Sets the scribe index.
+	 * @param index the scribe index
 	 */
-	public void registerExtendedType(Class<? extends VCardType> clazz) {
-		extendedTypeClasses.put(getTypeNameFromTypeClass(clazz), clazz);
-	}
-
-	/**
-	 * Removes an extended type class that was previously registered.
-	 * @param clazz the extended type class to remove
-	 */
-	public void unregisterExtendedType(Class<? extends VCardType> clazz) {
-		extendedTypeClasses.remove(getTypeNameFromTypeClass(clazz));
+	public void setScribeIndex(ScribeIndex index) {
+		this.index = index;
 	}
 
 	/**
@@ -207,59 +196,6 @@ public class VCardReader implements Closeable {
 		reader.start(listener);
 
 		return listener.root;
-	}
-
-	/**
-	 * Creates the appropriate {@link VCardType} instance, given the type name.
-	 * This method does not unmarshal the type, it just creates the type object.
-	 * @param name the type name (e.g. "FN")
-	 * @return the Type that was created
-	 */
-	private VCardType createTypeObject(String name) {
-		//parse as a registered extended type class (extended type classes should override standard ones)
-		Class<? extends VCardType> extendedTypeClass = extendedTypeClasses.get(name.toUpperCase());
-		if (extendedTypeClass != null) {
-			try {
-				return extendedTypeClass.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//the type class is checked to see if it has a public, no-arg constructor in the "registerExtendedType" method
-				throw new RuntimeException("Extended type class \"" + extendedTypeClass.getName() + "\" must have a public, no-arg constructor.");
-			}
-		}
-
-		//parse as a standard property
-		Class<? extends VCardType> clazz = TypeList.getTypeClass(name);
-		if (clazz != null) {
-			try {
-				return clazz.newInstance();
-			} catch (Exception e) {
-				//should never be thrown
-				//all type classes must have public, no-arg constructors
-				throw new RuntimeException(e);
-			}
-		}
-
-		//parse as a RawType
-		if (!name.toUpperCase().startsWith("X-")) {
-			addWarning("Non-standard property found.  Treating it as an extended property.", name);
-		}
-		return new RawType(name); //use RawType instead of TextType because we don't want to unescape any characters that might be meaningful to this type
-	}
-
-	/**
-	 * Gets the type name from a type class.
-	 * @param clazz the type class
-	 * @return the type name
-	 */
-	private String getTypeNameFromTypeClass(Class<? extends VCardType> clazz) {
-		try {
-			VCardType t = clazz.newInstance();
-			return t.getTypeName().toUpperCase();
-		} catch (Exception e) {
-			//there is no public, no-arg constructor
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
@@ -372,9 +308,8 @@ public class VCardReader implements Closeable {
 	private class VCardDataStreamListenerImpl implements VCardRawReader.VCardDataStreamListener {
 		private VCard root;
 		private final List<LabelType> labels = new ArrayList<LabelType>();
-		private final List<String> warningsBuf = new ArrayList<String>();
 		private final LinkedList<VCard> vcardStack = new LinkedList<VCard>();
-		private EmbeddedVCardException embeddedVCardException;
+		private EmbeddedVCardExceptionNew embeddedVCardException;
 
 		public void beginComponent(String name) {
 			if (!"VCARD".equalsIgnoreCase(name)) {
@@ -419,38 +354,58 @@ public class VCardReader implements Closeable {
 				embeddedVCardException = null;
 			}
 
-			handleNamelessParameters(parameters);
-
-			handleQuotedMultivaluedTypeParams(parameters);
-
-			value = decodeQuotedPrintable(name, parameters, value);
-
-			//create the type object
-			VCardType type = createTypeObject(name);
-			type.setGroup(group);
-
-			//unmarshal the text string into the object
 			VCard curVCard = vcardStack.getLast();
 			VCardVersion version = curVCard.getVersion();
-			warningsBuf.clear();
-			try {
-				type.unmarshalText(parameters, value, version, warningsBuf, compatibilityMode);
 
-				//add to vcard
-				if (type instanceof LabelType) {
+			//massage the parameters
+			handleNamelessParameters(parameters);
+			handleQuotedMultivaluedTypeParams(parameters);
+
+			//decode property value from quoted-printable
+			value = decodeQuotedPrintable(name, parameters, value);
+
+			//get the scribe
+			VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(name);
+			if (scribe == null) {
+				scribe = new RawPropertyScribe(name);
+			}
+
+			//get the data type
+			VCardDataType dataType = parameters.getValue();
+			if (dataType == null) {
+				//use the default data type if there is no VALUE parameter
+				dataType = scribe.defaultDataType(version);
+			} else {
+				//remove VALUE parameter if it is set
+				parameters.setValue(null);
+			}
+
+			VCardType property;
+			try {
+				Result<? extends VCardType> result = scribe.parseText(value, dataType, version, parameters);
+
+				for (String warning : result.getWarnings()) {
+					addWarning(warning, name);
+				}
+
+				property = result.getProperty();
+				property.setGroup(group);
+
+				if (property instanceof LabelType) {
 					//LABELs must be treated specially so they can be matched up with their ADRs
-					labels.add((LabelType) type);
+					labels.add((LabelType) property);
 					return;
 				}
 			} catch (SkipMeException e) {
-				warningsBuf.add("Property has requested that it be skipped: " + e.getMessage());
+				addWarning("Property has requested that it be skipped: " + e.getMessage(), name);
 				return;
 			} catch (CannotParseException e) {
-				warningsBuf.add("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + value + NEWLINE + "  Reason: " + e.getMessage());
-				type = new RawType(name, value);
-				type.setGroup(group);
-			} catch (EmbeddedVCardException e) {
+				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + value + NEWLINE + "  Reason: " + e.getMessage(), name);
+				property = new RawType(name, value);
+				property.setGroup(group);
+			} catch (EmbeddedVCardExceptionNew e) {
 				//parse an embedded vCard (i.e. the AGENT type)
+				property = e.getProperty();
 
 				if (value.length() == 0 || version == VCardVersion.V2_1) {
 					//a nested vCard is expected to be next (2.1 style)
@@ -460,28 +415,23 @@ public class VCardReader implements Closeable {
 					value = VCardStringUtils.unescape(value);
 
 					VCardReader agentReader = new VCardReader(value);
-					agentReader.setCompatibilityMode(compatibilityMode);
 					try {
 						VCard nestedVCard = agentReader.readNext();
 						if (nestedVCard != null) {
 							e.injectVCard(nestedVCard);
 						}
 					} catch (IOException e2) {
-						//reading from a string
+						//shouldn't be thrown because we're reading from a string
 					} finally {
 						for (String w : agentReader.getWarnings()) {
-							addWarning("Problem unmarshalling nested vCard value: " + w, type.getTypeName());
+							addWarning("Problem unmarshalling nested vCard value: " + w, name);
 						}
 						IOUtils.closeQuietly(agentReader);
 					}
 				}
-			} finally {
-				for (String warning : warningsBuf) {
-					addWarning(warning, name);
-				}
 			}
 
-			curVCard.addType(type);
+			curVCard.addType(property);
 		}
 
 		public void endComponent(String name) {

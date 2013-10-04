@@ -2,7 +2,6 @@ package ezvcard.types;
 
 import java.util.List;
 
-import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CompatibilityMode;
@@ -44,9 +43,7 @@ import ezvcard.util.XCardElement;
  * Represents a type whose value is just a regular text value.
  * @author Michael Angstadt
  */
-public class TextType extends VCardType {
-	protected String value;
-
+public class TextType extends SimpleProperty<String> {
 	/**
 	 * Creates a property that contains text.
 	 * @param name the type name (e.g. "NOTE")
@@ -61,24 +58,7 @@ public class TextType extends VCardType {
 	 * @param value the type value
 	 */
 	public TextType(String name, String value) {
-		super(name);
-		this.value = value;
-	}
-
-	/**
-	 * Gets the value of this type.
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * Sets the value of this type.
-	 * @param value the new value
-	 */
-	public void setValue(String value) {
-		this.value = value;
+		super(name, value);
 	}
 
 	@Override
@@ -122,12 +102,5 @@ public class TextType extends VCardType {
 	@Override
 	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
 		setValue(value.asSingle());
-	}
-
-	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
-		if (value == null) {
-			warnings.add("Property value is null.");
-		}
 	}
 }

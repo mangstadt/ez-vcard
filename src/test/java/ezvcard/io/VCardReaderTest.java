@@ -21,6 +21,8 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.io.LuckyNumType.LuckyNumScribe;
+import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.ImageTypeParameter;
@@ -241,7 +243,7 @@ public class VCardReaderTest {
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
-		reader.registerExtendedType(LuckyNumType.class);
+		reader.registerScribe(new LuckyNumScribe());
 		VCard vcard = reader.readNext();
 
 		//read a type that has a type class
@@ -271,7 +273,7 @@ public class VCardReaderTest {
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
-		reader.registerExtendedType(MyFormattedNameType.class);
+		reader.registerScribe(new MyFormattedNameScribe());
 		VCard vcard = reader.readNext();
 		assertEquals(1, vcard.getAllTypes().size());
 
@@ -281,12 +283,6 @@ public class VCardReaderTest {
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void registerExtendedType_no_default_constructor() throws Throwable {
-		VCardReader reader = new VCardReader("");
-		reader.registerExtendedType(BadType.class);
 	}
 
 	/**
@@ -472,7 +468,7 @@ public class VCardReaderTest {
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
-		reader.registerExtendedType(LuckyNumType.class);
+		reader.registerScribe(new LuckyNumScribe());
 		VCard vcard = reader.readNext();
 
 		List<LuckyNumType> luckyNumTypes = vcard.getTypes(LuckyNumType.class);
@@ -1315,7 +1311,7 @@ public class VCardReaderTest {
 			assertEquals("item3", f.getGroup());
 			assertEquals(null, f.getPoBox());
 			assertEquals(null, f.getExtendedAddress());
-			assertEquals("Silicon Alley 5,", f.getStreetAddress());
+			assertEquals("Silicon Alley 5", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());
@@ -1741,7 +1737,7 @@ public class VCardReaderTest {
 			f = it.next();
 			assertEquals(null, f.getPoBox());
 			assertEquals(null, f.getExtendedAddress());
-			assertEquals("Silicon Alley 5,", f.getStreetAddress());
+			assertEquals("Silicon Alley 5", f.getStreetAddress());
 			assertEquals("New York", f.getLocality());
 			assertEquals("New York", f.getRegion());
 			assertEquals("12345", f.getPostalCode());

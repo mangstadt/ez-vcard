@@ -15,6 +15,7 @@ import org.junit.rules.TemporaryFolder;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
@@ -398,6 +399,7 @@ public class VCardWriterTest {
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
 		vcw.setAddProdId(false);
+		vcw.registerScribe(new LuckyNumScribe());
 		vcw.write(vcard);
 
 		String actual = sw.toString();
