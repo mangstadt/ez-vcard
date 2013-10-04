@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.CalendarUriType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.CalendarUriType;
  */
 public class CalendarUriScribe extends UriPropertyScribe<CalendarUriType> {
 	public CalendarUriScribe() {
-		super(CalendarUriType.class, "CALURI", VCardVersion.V4_0);
+		super(CalendarUriType.class, "CALURI");
 	}
 
 	@Override

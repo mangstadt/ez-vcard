@@ -3,7 +3,6 @@ package ezvcard.types.scribes;
 import java.util.List;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
 import ezvcard.types.LabelType;
 import ezvcard.util.HCardElement;
 
@@ -38,7 +37,7 @@ import ezvcard.util.HCardElement;
  */
 public class LabelScribe extends SimplePropertyScribe<LabelType> {
 	public LabelScribe() {
-		super(LabelType.class, "LABEL", VCardDataType.TEXT, VCardVersion.V2_1, VCardVersion.V3_0);
+		super(LabelType.class, "LABEL", VCardDataType.TEXT);
 	}
 
 	@Override

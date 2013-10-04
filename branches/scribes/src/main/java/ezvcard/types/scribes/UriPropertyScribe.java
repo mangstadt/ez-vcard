@@ -3,7 +3,6 @@ package ezvcard.types.scribes;
 import java.util.List;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
 import ezvcard.types.TextType;
 import ezvcard.util.HCardElement;
 
@@ -38,8 +37,8 @@ import ezvcard.util.HCardElement;
  * @author Michael Angstadt
  */
 public abstract class UriPropertyScribe<T extends TextType> extends StringPropertyScribe<T> {
-	public UriPropertyScribe(Class<T> clazz, String propertyName, VCardVersion... supportedVersions) {
-		super(clazz, propertyName, VCardDataType.URI, supportedVersions);
+	public UriPropertyScribe(Class<T> clazz, String propertyName) {
+		super(clazz, propertyName, VCardDataType.URI);
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package ezvcard.types.scribes;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
 import ezvcard.types.LanguageType;
 
 /*
@@ -35,7 +34,7 @@ import ezvcard.types.LanguageType;
  */
 public class LanguageScribe extends StringPropertyScribe<LanguageType> {
 	public LanguageScribe() {
-		super(LanguageType.class, "LANG", VCardDataType.LANGUAGE_TAG, VCardVersion.V4_0);
+		super(LanguageType.class, "LANG", VCardDataType.LANGUAGE_TAG);
 	}
 
 	@Override

@@ -3,7 +3,9 @@ package ezvcard.types;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -161,6 +163,11 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	public ImppType(String protocol, String handle) {
 		this();
 		setUri(protocol, handle);
+	}
+
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
 	}
 
 	/**
@@ -430,11 +437,6 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	@Override
 	protected ImppTypeParameter buildTypeObj(String type) {
 		return ImppTypeParameter.get(type);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V3_0, VCardVersion.V4_0 };
 	}
 
 	@Override

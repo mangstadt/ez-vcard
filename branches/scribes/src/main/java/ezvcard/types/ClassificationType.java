@@ -1,5 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import ezvcard.VCardVersion;
 
 /*
@@ -73,7 +76,7 @@ public class ClassificationType extends TextType {
 	}
 
 	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V3_0 };
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V3_0);
 	}
 }

@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.ProfileType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.ProfileType;
  */
 public class ProfileScribe extends StringPropertyScribe<ProfileType> {
 	public ProfileScribe() {
-		super(ProfileType.class, "PROFILE", VCardVersion.V3_0);
+		super(ProfileType.class, "PROFILE");
 	}
 
 	@Override

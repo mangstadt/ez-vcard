@@ -44,8 +44,8 @@ import ezvcard.util.XCardElement;
  * @param <T> the property class
  */
 public abstract class DateOrTimePropertyScribe<T extends DateOrTimeType> extends VCardPropertyScribe<T> {
-	public DateOrTimePropertyScribe(Class<T> clazz, String propertyName, VCardVersion... supportedVersions) {
-		super(clazz, propertyName, supportedVersions);
+	public DateOrTimePropertyScribe(Class<T> clazz, String propertyName) {
+		super(clazz, propertyName);
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import ezvcard.VCardVersion;
 
 /*
@@ -97,7 +100,7 @@ public class SortStringType extends TextType {
 	}
 
 	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V2_1, VCardVersion.V3_0 };
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
 	}
 }

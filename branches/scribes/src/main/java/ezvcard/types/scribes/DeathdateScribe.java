@@ -2,7 +2,6 @@ package ezvcard.types.scribes;
 
 import java.util.Date;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.DeathdateType;
 import ezvcard.util.PartialDate;
 
@@ -37,7 +36,7 @@ import ezvcard.util.PartialDate;
  */
 public class DeathdateScribe extends DateOrTimePropertyScribe<DeathdateType> {
 	public DeathdateScribe() {
-		super(DeathdateType.class, "DEATHDATE", VCardVersion.V4_0);
+		super(DeathdateType.class, "DEATHDATE");
 	}
 
 	@Override

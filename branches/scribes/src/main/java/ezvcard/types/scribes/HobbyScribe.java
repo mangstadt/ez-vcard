@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.HobbyType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.HobbyType;
  */
 public class HobbyScribe extends StringPropertyScribe<HobbyType> {
 	public HobbyScribe() {
-		super(HobbyType.class, "HOBBY", VCardVersion.V4_0);
+		super(HobbyType.class, "HOBBY");
 	}
 
 	@Override

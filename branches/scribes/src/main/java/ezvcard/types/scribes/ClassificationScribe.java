@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.ClassificationType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.ClassificationType;
  */
 public class ClassificationScribe extends StringPropertyScribe<ClassificationType> {
 	public ClassificationScribe() {
-		super(ClassificationType.class, "CLASS", VCardVersion.V3_0);
+		super(ClassificationType.class, "CLASS");
 	}
 
 	@Override

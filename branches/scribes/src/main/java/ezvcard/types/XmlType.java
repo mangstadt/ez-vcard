@@ -1,8 +1,10 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.OutputKeys;
 
@@ -112,6 +114,11 @@ public class XmlType extends VCardType implements HasAltId {
 		this.document = document;
 	}
 
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
+	}
+
 	/**
 	 * Gets the value of this property.
 	 * @return the XML DOM or null if not set
@@ -136,11 +143,6 @@ public class XmlType extends VCardType implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 
 	@Override

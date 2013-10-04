@@ -6,12 +6,9 @@ import static ezvcard.util.VCardStringUtils.join;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
@@ -70,16 +67,14 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	protected final Class<T> clazz;
 	protected final String propertyName;
 	protected final QName qname;
-	protected final Set<VCardVersion> supportedVersions;
 
 	/**
 	 * Creates a new marshaller.
 	 * @param clazz the property class
 	 * @param propertyName the property name (e.g. "FN")
-	 * @param supportedVersions the vCard versions that support this property
 	 */
-	public VCardPropertyScribe(Class<T> clazz, String propertyName, VCardVersion... supportedVersions) {
-		this(clazz, propertyName, new QName(VCardVersion.V4_0.getXmlNamespace(), propertyName.toLowerCase()), supportedVersions);
+	public VCardPropertyScribe(Class<T> clazz, String propertyName) {
+		this(clazz, propertyName, new QName(VCardVersion.V4_0.getXmlNamespace(), propertyName.toLowerCase()));
 	}
 
 	/**
@@ -89,18 +84,11 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	 * @param qname the XML element name and namespace to use for xCard
 	 * documents (by default, the XML element name is set to the lower-cased
 	 * property name, and the element namespace is set to the xCard namespace)
-	 * @param supportedVersions the vCard versions that support this property
 	 */
-	public VCardPropertyScribe(Class<T> clazz, String propertyName, QName qname, VCardVersion... supportedVersions) {
+	public VCardPropertyScribe(Class<T> clazz, String propertyName, QName qname) {
 		this.clazz = clazz;
 		this.propertyName = propertyName;
 		this.qname = qname;
-
-		if (supportedVersions.length == 0) {
-			supportedVersions = VCardVersion.values();
-		}
-		Set<VCardVersion> set = EnumSet.copyOf(Arrays.asList(supportedVersions));
-		this.supportedVersions = Collections.unmodifiableSet(set);
 	}
 
 	/**
@@ -125,23 +113,6 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	 */
 	public QName getQName() {
 		return qname;
-	}
-
-	/**
-	 * Determines if the property is supported by the given vCard version.
-	 * @param version the vCard version
-	 * @return true if it is supported, false if not
-	 */
-	public boolean isSupported(VCardVersion version) {
-		return supportedVersions.contains(version);
-	}
-
-	/**
-	 * Gets the vCard versions that support this property.
-	 * @return the supported versions
-	 */
-	public Set<VCardVersion> getSupportedVersions() {
-		return supportedVersions;
 	}
 
 	/**

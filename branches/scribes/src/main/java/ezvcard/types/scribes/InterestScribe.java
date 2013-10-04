@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.InterestType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.InterestType;
  */
 public class InterestScribe extends StringPropertyScribe<InterestType> {
 	public InterestScribe() {
-		super(InterestType.class, "INTEREST", VCardVersion.V4_0);
+		super(InterestType.class, "INTEREST");
 	}
 
 	@Override

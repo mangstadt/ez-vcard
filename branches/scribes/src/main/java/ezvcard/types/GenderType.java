@@ -1,7 +1,9 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -106,6 +108,11 @@ public class GenderType extends VCardType {
 	public GenderType(String gender) {
 		super(NAME);
 		this.gender = gender;
+	}
+
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**
@@ -221,11 +228,6 @@ public class GenderType extends VCardType {
 	 */
 	public static GenderType unknown() {
 		return new GenderType(UNKNOWN);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 
 	@Override

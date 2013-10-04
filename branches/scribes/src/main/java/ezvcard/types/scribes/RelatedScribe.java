@@ -40,7 +40,7 @@ import ezvcard.util.XCardElement;
  */
 public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	public RelatedScribe() {
-		super(RelatedType.class, "RELATED", VCardVersion.V4_0);
+		super(RelatedType.class, "RELATED");
 	}
 
 	@Override

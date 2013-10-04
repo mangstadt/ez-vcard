@@ -40,7 +40,7 @@ import ezvcard.util.XCardElement;
  */
 public class GenderScribe extends VCardPropertyScribe<GenderType> {
 	public GenderScribe() {
-		super(GenderType.class, "GENDER", VCardVersion.V4_0);
+		super(GenderType.class, "GENDER");
 	}
 
 	@Override

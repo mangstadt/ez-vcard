@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.ProdIdType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.ProdIdType;
  */
 public class ProductIdScribe extends StringPropertyScribe<ProdIdType> {
 	public ProductIdScribe() {
-		super(ProdIdType.class, "PRODID", VCardVersion.V3_0, VCardVersion.V4_0);
+		super(ProdIdType.class, "PRODID");
 	}
 
 	@Override

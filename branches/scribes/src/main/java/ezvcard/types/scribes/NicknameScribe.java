@@ -2,7 +2,6 @@ package ezvcard.types.scribes;
 
 import java.util.List;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.NicknameType;
 import ezvcard.util.HCardElement;
 
@@ -37,7 +36,7 @@ import ezvcard.util.HCardElement;
  */
 public class NicknameScribe extends ListPropertyScribe<NicknameType> {
 	public NicknameScribe() {
-		super(NicknameType.class, "NICKNAME", VCardVersion.V3_0, VCardVersion.V4_0);
+		super(NicknameType.class, "NICKNAME");
 	}
 
 	@Override

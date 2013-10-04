@@ -1,5 +1,6 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -110,6 +111,11 @@ public class AgentType extends VCardType {
 		setVCard(vcard);
 	}
 
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
+	}
+
 	/**
 	 * Gets the URL to the agent's information.
 	 * @return the URL or null if not set
@@ -142,11 +148,6 @@ public class AgentType extends VCardType {
 	public void setVCard(VCard vcard) {
 		this.vcard = vcard;
 		url = null;
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V2_1, VCardVersion.V3_0 };
 	}
 
 	@Override

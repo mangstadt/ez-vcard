@@ -358,11 +358,7 @@ public class VCardWriter implements Closeable {
 				continue;
 			}
 
-			VCardPropertyScribe scribe = index.getPropertyScribe(type);
-			if (scribe == null) {
-				throw new IllegalArgumentException("No marshaller found for property class \"" + type.getClass().getName() + "\".");
-			}
-			if (versionStrict && !scribe.isSupported(targetVersion)) {
+			if (versionStrict && !type.getSupportedVersions().contains(targetVersion)) {
 				//do not add the property to the vCard if it is not supported by the target version
 				continue;
 			}

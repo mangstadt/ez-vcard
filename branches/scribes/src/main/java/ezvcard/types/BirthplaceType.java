@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -93,6 +95,11 @@ public class BirthplaceType extends VCardType implements HasAltId {
 		super(NAME);
 	}
 
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
+	}
+
 	/**
 	 * Gets the URI value.
 	 * @return the URI value or null if no URI value is set
@@ -145,11 +152,6 @@ public class BirthplaceType extends VCardType implements HasAltId {
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.SourceDisplayTextType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.SourceDisplayTextType;
  */
 public class SourceDisplayTextScribe extends StringPropertyScribe<SourceDisplayTextType> {
 	public SourceDisplayTextScribe() {
-		super(SourceDisplayTextType.class, "NAME", VCardVersion.V3_0);
+		super(SourceDisplayTextType.class, "NAME");
 	}
 
 	@Override

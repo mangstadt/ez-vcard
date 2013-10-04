@@ -588,17 +588,12 @@ public class XCardDocument {
 		ListMultimap<String, VCardType> typesToAdd = new ListMultimap<String, VCardType>(); //group the types by group name (null = no group name)
 
 		for (VCardType type : vcard) {
-			VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(type);
-			if (scribe == null) {
-				throw new IllegalArgumentException("No marshaller found for property class \"" + type.getClass().getName() + "\".");
-			}
-
 			if (addProdId && type instanceof ProdIdType) {
 				//do not add the PRODID in the vCard if "addProdId" is true
 				continue;
 			}
 
-			if (versionStrict && !scribe.isSupported(version4)) {
+			if (versionStrict && !type.getSupportedVersions().contains(version4)) {
 				//do not add the property to the vCard if it is not supported by the target version
 				continue;
 			}

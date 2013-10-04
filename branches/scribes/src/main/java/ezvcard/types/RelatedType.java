@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -88,6 +90,11 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	 */
 	public RelatedType() {
 		super(NAME);
+	}
+
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**
@@ -182,11 +189,6 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 
 	@Override

@@ -2,7 +2,9 @@ package ezvcard.types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -90,25 +92,26 @@ public abstract class VCardType implements Comparable<VCardType> {
 	}
 
 	/**
-	 * Determines if this property is supported by the given version.
-	 * @param version the version
-	 * @return true if it is supported, false if not
+	 * Gets the vCard versions that support this property.
+	 * @return the vCard versions that support this property.
 	 */
-	public boolean isSupported(VCardVersion version) {
-		for (VCardVersion v : getSupportedVersions()) {
-			if (v == version) {
-				return true;
-			}
-		}
-		return false;
+	public final Set<VCardVersion> getSupportedVersions() {
+		return _supportedVersions();
 	}
 
 	/**
-	 * Gets the vCard versions that support this type.
+	 * <p>
+	 * Gets the vCard versions that support this property.
+	 * </p>
+	 * <p>
+	 * This method should be overridden by child classes if the property does
+	 * not support all vCard versions. The default implementation of this method
+	 * returns all vCard versions.
+	 * </p>
 	 * @return the vCard versions that support this type.
 	 */
-	public VCardVersion[] getSupportedVersions() {
-		return VCardVersion.values();
+	protected Set<VCardVersion> _supportedVersions() {
+		return EnumSet.copyOf(Arrays.asList(VCardVersion.values()));
 	}
 
 	/**
@@ -128,8 +131,9 @@ public abstract class VCardType implements Comparable<VCardType> {
 		List<String> warnings = new ArrayList<String>(0);
 
 		//check the supported versions
-		if (!isSupported(version)) {
-			warnings.add("Property is not supported by version " + version.getVersion() + ".  Supported versions are: " + Arrays.toString(getSupportedVersions()));
+		Set<VCardVersion> supportedVersions = getSupportedVersions();
+		if (!supportedVersions.contains(version)) {
+			warnings.add("Property is not supported by version " + version.getVersion() + ".  Supported versions are: " + supportedVersions);
 		}
 
 		//check parameters
@@ -519,8 +523,8 @@ public abstract class VCardType implements Comparable<VCardType> {
 	 * </p>
 	 * <p>
 	 * Extended type classes should override this method. By default, this
-	 * method returns {@code null}, which instructs the marshallers to
-	 * assign the following qualified name to the type:<br>
+	 * method returns {@code null}, which instructs the marshallers to assign
+	 * the following qualified name to the type:<br>
 	 * <br>
 	 * Namespace: xCard namespace<br>
 	 * Local part: a lower-cased version of the type name
