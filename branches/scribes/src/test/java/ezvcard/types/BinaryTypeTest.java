@@ -1,11 +1,9 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
 import ezvcard.parameters.ImageTypeParameter;
 
 /*
@@ -43,24 +41,16 @@ import ezvcard.parameters.ImageTypeParameter;
 public class BinaryTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		BinaryTypeImpl empty = new BinaryTypeImpl();
-		assertWarnings(1, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).run(1);
 
 		BinaryTypeImpl withUrl = new BinaryTypeImpl();
 		withUrl.setUrl("http://example.com/image.jpg", ImageTypeParameter.JPEG);
-		assertWarnings(0, withUrl.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withUrl.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withUrl.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withUrl).run(0);
 
 		BinaryTypeImpl withData = new BinaryTypeImpl();
 		withData.setData("data".getBytes(), ImageTypeParameter.JPEG);
-		assertWarnings(0, withData.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withData.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withData.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withData).run(0);
 	}
 
 	private class BinaryTypeImpl extends BinaryType<ImageTypeParameter> {

@@ -1,12 +1,11 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 
 /*
@@ -47,24 +46,22 @@ public class RelatedTypeTest {
 
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		RelatedType empty = new RelatedType();
-		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
 		RelatedType withText = new RelatedType();
 		withText.setText(text);
-		assertWarnings(1, withText.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, withText.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withText.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
 
 		RelatedType withUri = new RelatedType();
 		withUri.setUri(uri);
-		assertWarnings(1, withUri.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, withUri.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withUri.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);
 	}
 
 	@Test

@@ -1,14 +1,11 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
 import org.junit.Test;
-
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -45,18 +42,12 @@ import ezvcard.VCardVersion;
 public class ListPropertyTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		ListPropertyImpl zeroItems = new ListPropertyImpl();
-		assertWarnings(1, zeroItems.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, zeroItems.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, zeroItems.validate(VCardVersion.V4_0, vcard));
+		assertValidate(zeroItems).run(1);
 
 		ListPropertyImpl oneItem = new ListPropertyImpl();
 		oneItem.addValue("one");
-		assertWarnings(0, oneItem.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, oneItem.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, oneItem.validate(VCardVersion.V4_0, vcard));
+		assertValidate(oneItem).run(0);
 	}
 
 	@Test

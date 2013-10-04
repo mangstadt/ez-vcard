@@ -1,6 +1,6 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
@@ -42,22 +42,17 @@ import ezvcard.VCardVersion;
 public class AgentTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		AgentType property = new AgentType();
-		assertWarnings(1, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(2, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
+		assertValidate(property).versions(VCardVersion.V4_0).run(2);
 
 		VCard agentVCard = new VCard();
 		property.setVCard(agentVCard);
-		assertWarnings(1, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(2, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).versions(VCardVersion.V2_1).run(1);
+		assertValidate(property).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(2);
 
 		property.setUrl("http://example.com");
-		assertWarnings(0, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(0);
+		assertValidate(property).versions(VCardVersion.V4_0).run(1);
 	}
 }

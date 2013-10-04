@@ -14,7 +14,9 @@ import java.util.Set;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
+import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.types.VCardType;
@@ -112,6 +114,57 @@ public class TestUtils {
 		}
 
 		assertEquals(warnings.toString(), expectedCounts, actualCounts);
+	}
+
+	/**
+	 * Asserts the validation of a property object.
+	 * @param property the property object
+	 * @return the validation checker object
+	 */
+	public static ValidateChecker assertValidate(VCardType property) {
+		return new ValidateChecker(property);
+	}
+
+	public static class ValidateChecker {
+		private final VCardType property;
+		private VCard vcard;
+		private VCardVersion versions[] = VCardVersion.values();
+
+		public ValidateChecker(VCardType property) {
+			this.property = property;
+			vcard(new VCard());
+		}
+
+		/**
+		 * Defines the versions to check (defaults to all versions).
+		 * @param versions the versions to check
+		 * @return this
+		 */
+		public ValidateChecker versions(VCardVersion... versions) {
+			this.versions = versions;
+			return this;
+		}
+
+		/**
+		 * Defines the vCard instance to use (defaults to an empty vCard).
+		 * @param vcard the vCard instance
+		 * @return this
+		 */
+		public ValidateChecker vcard(VCard vcard) {
+			vcard.addType(property);
+			this.vcard = vcard;
+			return this;
+		}
+
+		/**
+		 * Performs the validation check.
+		 * @param expected the expected number of validation warnings
+		 */
+		public void run(int expected) {
+			for (VCardVersion version : versions) {
+				assertWarnings("Version " + version, expected, property.validate(version, vcard));
+			}
+		}
 	}
 
 	/**

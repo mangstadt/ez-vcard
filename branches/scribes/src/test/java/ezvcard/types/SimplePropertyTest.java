@@ -1,11 +1,8 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
-
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -42,17 +39,11 @@ import ezvcard.VCardVersion;
 public class SimplePropertyTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		SimplePropertyImpl empty = new SimplePropertyImpl(null);
-		assertWarnings(1, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).run(1);
 
 		SimplePropertyImpl withValue = new SimplePropertyImpl("text");
-		assertWarnings(0, withValue.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withValue.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withValue).run(0);
 	}
 
 	private class SimplePropertyImpl extends SimpleProperty<String> {

@@ -1,10 +1,9 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.EmailTypeParameter;
 
@@ -43,24 +42,18 @@ import ezvcard.parameters.EmailTypeParameter;
 public class EmailTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		EmailType property = new EmailType(null);
-		assertWarnings(1, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).run(1);
 
 		property.setValue("johndoe@example.com");
-		assertWarnings(0, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).run(0);
 
 		property.addType(EmailTypeParameter.AOL);
 		property.addType(EmailTypeParameter.INTERNET);
 		property.addType(EmailTypeParameter.HOME);
 		property.addType(EmailTypeParameter.PREF);
-		assertWarnings(1, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(2, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).versions(VCardVersion.V2_1).run(1);
+		assertValidate(property).versions(VCardVersion.V3_0).run(2);
+		assertValidate(property).versions(VCardVersion.V4_0).run(2);
 	}
 }

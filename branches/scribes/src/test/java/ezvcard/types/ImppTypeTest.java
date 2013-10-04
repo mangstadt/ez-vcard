@@ -1,6 +1,6 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 
 /*
@@ -46,17 +45,15 @@ import ezvcard.VCardVersion;
 public class ImppTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		ImppType empty = new ImppType((String) null);
-		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(1);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
 		ImppType withValue = new ImppType("aim:john.doe@aol.com");
-		assertWarnings(1, withValue.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withValue.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withValue).versions(VCardVersion.V3_0).run(0);
+		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

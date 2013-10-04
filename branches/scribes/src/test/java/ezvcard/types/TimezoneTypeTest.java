@@ -1,7 +1,7 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -10,7 +10,6 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.util.UtcOffset;
 
@@ -51,22 +50,18 @@ public class TimezoneTypeTest {
 
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		TimezoneType empty = new TimezoneType((UtcOffset) null);
-		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(1);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
 		TimezoneType withOffset = new TimezoneType(-5, 30);
-		assertWarnings(0, withOffset.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withOffset.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withOffset.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withOffset).run(0);
 
 		TimezoneType withText = new TimezoneType("America/New_York");
-		assertWarnings(1, withText.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withText.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withText.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withText).versions(VCardVersion.V3_0).run(0);
+		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
 	}
 
 	@Test

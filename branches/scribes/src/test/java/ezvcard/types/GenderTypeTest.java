@@ -1,13 +1,12 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 
 /*
@@ -45,17 +44,15 @@ import ezvcard.VCardVersion;
 public class GenderTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		GenderType empty = new GenderType(null);
-		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
 		GenderType male = GenderType.male();
-		assertWarnings(1, male.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, male.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, male.validate(VCardVersion.V4_0, vcard));
+		assertValidate(male).versions(VCardVersion.V2_1).run(1);
+		assertValidate(male).versions(VCardVersion.V3_0).run(1);
+		assertValidate(male).versions(VCardVersion.V4_0).run(0);
 	}
 
 	@Test
