@@ -2,7 +2,6 @@ package ezvcard.types.scribes;
 
 import java.util.List;
 
-import ezvcard.VCardDataType;
 import ezvcard.types.LabelType;
 import ezvcard.util.HCardElement;
 
@@ -35,19 +34,14 @@ import ezvcard.util.HCardElement;
  * Marshals {@link LabelType} properties.
  * @author Michael Angstadt
  */
-public class LabelScribe extends SimplePropertyScribe<LabelType> {
+public class LabelScribe extends StringPropertyScribe<LabelType> {
 	public LabelScribe() {
-		super(LabelType.class, "LABEL", VCardDataType.TEXT);
+		super(LabelType.class, "LABEL");
 	}
 
 	@Override
 	protected LabelType _parseValue(String value) {
 		return new LabelType(value);
-	}
-
-	@Override
-	protected String _writeValue(LabelType property) {
-		return property.getValue();
 	}
 
 	@Override
