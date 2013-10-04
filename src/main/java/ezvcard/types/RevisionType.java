@@ -52,7 +52,7 @@ import java.util.Date;
  * </p>
  * @author Michael Angstadt
  */
-public class RevisionType extends TimestampType {
+public class RevisionType extends SimpleProperty<Date> {
 	/**
 	 * Creates a revision property.
 	 * @param date the last-modified date
