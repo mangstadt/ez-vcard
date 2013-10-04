@@ -49,9 +49,9 @@ import ezvcard.util.XCardElement;
 
 /**
  * An instant message handle. The handle is represented as a URI in the format "
- * {@code &lt;IM-PROTOCOL&gt;:&lt;IM-HANDLE&gt;}". For example, someone
- * with a Yahoo! Messenger handle of "johndoe@yahoo.com" would have an IMPP
- * vCard property value of "ymsgr:johndoe@yahoo.com".
+ * {@code <IM-PROTOCOL>:<IM-HANDLE>}". For example, someone with a Yahoo!
+ * Messenger handle of "johndoe@yahoo.com" would have an IMPP vCard property
+ * value of "ymsgr:johndoe@yahoo.com".
  * 
  * <p>
  * <b>Code sample</b>
