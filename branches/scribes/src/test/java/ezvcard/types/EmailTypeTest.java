@@ -1,21 +1,11 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertIntEquals;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
 import org.junit.Test;
 
 import ezvcard.VCard;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EmailTypeParameter;
 
 /*
@@ -51,168 +41,26 @@ import ezvcard.parameters.EmailTypeParameter;
  * @author Michael Angstadt
  */
 public class EmailTypeTest {
-	private final List<String> warnings = new ArrayList<String>();
-	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	private final VCardSubTypes subTypes = new VCardSubTypes();
-	private final VCard vcard = new VCard();
-
-	@After
-	public void after() {
-		warnings.clear();
-		subTypes.clear();
-	}
-
 	@Test
 	public void validate() {
-		EmailType t = new EmailType();
-		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, t.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
-
-		t.setValue("johndoe@example.com");
-		assertWarnings(0, t.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, t.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, t.validate(VCardVersion.V4_0, vcard));
-
-		t.addType(EmailTypeParameter.AOL);
-		t.addType(EmailTypeParameter.INTERNET);
-		t.addType(EmailTypeParameter.HOME);
-		t.addType(EmailTypeParameter.PREF);
-		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, t.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(2, t.validate(VCardVersion.V4_0, vcard));
-	}
-
-	/**
-	 * If a property contains a "TYPE=pref" parameter and it's being marshalled
-	 * to 4.0, it should replace "TYPE=pref" with "PREF=1".
-	 */
-	@Test
-	public void marshalSubTypes_type_pref_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-		EmailType t = new EmailType();
-		t.addType(EmailTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
-
-		assertEquals(1, subTypes.size());
-		assertNull(subTypes.getPref());
-		assertSetEquals(subTypes.getTypes(), EmailTypeParameter.PREF.getValue());
-	}
-
-	/**
-	 * If a property contains a "TYPE=pref" parameter and it's being marshalled
-	 * to 4.0, it should replace "TYPE=pref" with "PREF=1".
-	 */
-	@Test
-	public void marshalSubTypes_type_pref_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-		EmailType t = new EmailType();
-		t.addType(EmailTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, vcard);
-
-		assertEquals(1, subTypes.size());
-		assertNull(subTypes.getPref());
-		assertSetEquals(subTypes.getTypes(), EmailTypeParameter.PREF.getValue());
-	}
-
-	/**
-	 * If a property contains a "TYPE=pref" parameter and it's being marshalled
-	 * to 4.0, it should replace "TYPE=pref" with "PREF=1".
-	 */
-	@Test
-	public void marshalSubTypes_type_pref_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-		EmailType t = new EmailType();
-		t.addType(EmailTypeParameter.PREF);
-		VCardSubTypes subTypes = t.marshalSubTypes(version, compatibilityMode, new VCard());
-
-		assertEquals(1, subTypes.size());
-		assertIntEquals(1, subTypes.getPref());
-		assertSetEquals(subTypes.getTypes());
-	}
-
-	/**
-	 * If properties contain "PREF" parameters and they're being marshalled to
-	 * 2.1/3.0, then it should find the type with the lowest PREF value and add
-	 * "TYPE=pref" to it.
-	 */
-	@Test
-	public void marshalSubTypes_pref_parameter_2_1() {
-		VCardVersion version = VCardVersion.V2_1;
-
 		VCard vcard = new VCard();
-		EmailType t1 = new EmailType();
-		t1.setPref(1);
-		vcard.addEmail(t1);
-		EmailType t2 = new EmailType();
-		t2.setPref(2);
-		vcard.addEmail(t2);
 
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
-		assertEquals(1, subTypes.size());
-		assertNull(subTypes.getPref());
-		assertSetEquals(subTypes.getTypes(), EmailTypeParameter.PREF.getValue());
+		EmailType property = new EmailType(null);
+		assertWarnings(1, property.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, property.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, property.validate(VCardVersion.V4_0, vcard));
 
-		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
-		assertEquals(0, subTypes.size());
-		assertNull(subTypes.getPref());
-		assertSetEquals(subTypes.getTypes());
-	}
+		property.setValue("johndoe@example.com");
+		assertWarnings(0, property.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, property.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, property.validate(VCardVersion.V4_0, vcard));
 
-	/**
-	 * If properties contain "PREF" parameters and they're being marshalled to
-	 * 2.1/3.0, then it should find the type with the lowest PREF value and add
-	 * "TYPE=pref" to it.
-	 */
-	@Test
-	public void marshalSubTypes_pref_parameter_3_0() {
-		VCardVersion version = VCardVersion.V3_0;
-
-		VCard vcard = new VCard();
-		EmailType t1 = new EmailType();
-		t1.setPref(1);
-		vcard.addEmail(t1);
-		EmailType t2 = new EmailType();
-		t2.setPref(2);
-		vcard.addEmail(t2);
-
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
-		assertEquals(1, subTypes.size());
-		assertNull(subTypes.getPref());
-		assertSetEquals(subTypes.getTypes(), EmailTypeParameter.PREF.getValue());
-
-		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
-		assertEquals(0, subTypes.size());
-		assertNull(subTypes.getPref());
-		assertSetEquals(subTypes.getTypes());
-	}
-
-	/**
-	 * If properties contain "PREF" parameters and they're being marshalled to
-	 * 2.1/3.0, then it should find the type with the lowest PREF value and add
-	 * "TYPE=pref" to it.
-	 */
-	@Test
-	public void marshalSubTypes_pref_parameter_4_0() {
-		VCardVersion version = VCardVersion.V4_0;
-
-		VCard vcard = new VCard();
-		EmailType t1 = new EmailType();
-		t1.setPref(1);
-		vcard.addEmail(t1);
-		EmailType t2 = new EmailType();
-		t2.setPref(2);
-		vcard.addEmail(t2);
-
-		version = VCardVersion.V4_0;
-		VCardSubTypes subTypes = t1.marshalSubTypes(version, compatibilityMode, vcard);
-		assertEquals(1, subTypes.size());
-		assertIntEquals(1, subTypes.getPref());
-		assertSetEquals(subTypes.getTypes());
-
-		subTypes = t2.marshalSubTypes(version, compatibilityMode, vcard);
-		assertEquals(1, subTypes.size());
-		assertIntEquals(2, subTypes.getPref());
-		assertSetEquals(subTypes.getTypes());
+		property.addType(EmailTypeParameter.AOL);
+		property.addType(EmailTypeParameter.INTERNET);
+		property.addType(EmailTypeParameter.HOME);
+		property.addType(EmailTypeParameter.PREF);
+		assertWarnings(1, property.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(2, property.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(2, property.validate(VCardVersion.V4_0, vcard));
 	}
 }

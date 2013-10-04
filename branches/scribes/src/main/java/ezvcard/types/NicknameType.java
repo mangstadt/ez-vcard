@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -61,15 +60,6 @@ import ezvcard.util.HCardElement;
  * @author Michael Angstadt
  */
 public class NicknameType extends TextListType implements HasAltId {
-	public static final String NAME = "NICKNAME";
-
-	/**
-	 * Creates a nickname property.
-	 */
-	public NicknameType() {
-		super(NAME, ',');
-	}
-
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
@@ -142,10 +132,5 @@ public class NicknameType extends TextListType implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		addValue(element.value());
 	}
 }

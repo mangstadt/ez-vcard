@@ -46,23 +46,8 @@ import ezvcard.util.XCardElement;
 public class SalaryType extends VCardType {
 	public int salary;
 
-	public SalaryType() {
-		super("X-SALARY");
-	}
-
 	public SalaryType(int salary) {
-		this();
 		this.salary = salary;
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		//TODO remove
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//TODO remove
 	}
 
 	public static class SalaryScribe extends VCardPropertyScribe<SalaryType> {

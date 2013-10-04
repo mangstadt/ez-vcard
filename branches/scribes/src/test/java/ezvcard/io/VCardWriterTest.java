@@ -387,13 +387,11 @@ public class VCardWriterTest {
 		StructuredNameType n = new StructuredNameType();
 		vcard.setStructuredName(n);
 
-		LuckyNumType num = new LuckyNumType();
-		num.luckyNum = 24;
+		LuckyNumType num = new LuckyNumType(24);
 		vcard.addType(num);
 
 		//should be skipped
-		num = new LuckyNumType();
-		num.luckyNum = 13;
+		num = new LuckyNumType(13);
 		vcard.addType(num);
 
 		StringWriter sw = new StringWriter();

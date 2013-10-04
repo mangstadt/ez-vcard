@@ -450,7 +450,7 @@ public class VCardWriter implements Closeable {
 
 					String vCardStr = sw.toString();
 					vCardStr = VCardStringUtils.escape(vCardStr);
-					writer.writeProperty(type.getGroup(), type.getTypeName(), parameters, vCardStr);
+					writer.writeProperty(type.getGroup(), scribe.getPropertyName(), parameters, vCardStr);
 				}
 			}
 		}

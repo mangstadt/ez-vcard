@@ -1,19 +1,10 @@
 package ezvcard.types;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.EmailTypeParameter;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -73,23 +64,13 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> implements HasAltId {
-	public static final String NAME = "EMAIL";
-
 	private String value;
-
-	/**
-	 * Creates an empty email property.
-	 */
-	public EmailType() {
-		this(null);
-	}
 
 	/**
 	 * Creates an email property.
 	 * @param email the email (e.g. "johndoe@example.com")
 	 */
 	public EmailType(String email) {
-		super(NAME);
 		setValue(email);
 	}
 
@@ -147,101 +128,6 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			copy.setPref(null);
-
-			//find the EMAIL with the lowest PREF value in the vCard
-			EmailType mostPreferred = null;
-			for (EmailType email : vcard.getEmails()) {
-				Integer pref = email.getPref();
-				if (pref == null) {
-					continue;
-				}
-
-				if (mostPreferred == null || pref < mostPreferred.getPref()) {
-					mostPreferred = email;
-				}
-			}
-			if (this == mostPreferred) {
-				copy.addType(EmailTypeParameter.PREF.getValue());
-			}
-			break;
-		case V4_0:
-			//replace "TYPE=pref" with "PREF=1"
-			if (getTypes().contains(EmailTypeParameter.PREF)) {
-				copy.removeType(EmailTypeParameter.PREF.getValue());
-				copy.setPref(1);
-			}
-			break;
-		}
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (value != null) {
-			sb.append(VCardStringUtils.escape(value));
-			return;
-		}
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(VCardStringUtils.unescape(value));
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.TEXT, value);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.TEXT);
-		if (value != null) {
-			setValue(value);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.TEXT);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		List<String> types = element.types();
-		for (String type : types) {
-			subTypes.addType(type);
-		}
-
-		//check to see if the email address is within in "mailto:" link
-		String email = null;
-		String href = element.attr("href");
-		if (href.length() > 0) {
-			Pattern p = Pattern.compile("^mailto:(.*)$", Pattern.CASE_INSENSITIVE);
-			Matcher m = p.matcher(href);
-			if (m.find()) {
-				email = m.group(1);
-			}
-		}
-		if (email == null) {
-			email = element.value();
-		}
-		setValue(email);
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.TEXT, value);
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		setValue(value.asSingle());
 	}
 
 	@Override

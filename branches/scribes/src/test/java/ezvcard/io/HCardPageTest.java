@@ -46,6 +46,7 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
+import ezvcard.types.scribes.SortStringScribe;
 import ezvcard.util.TelUri;
 import freemarker.template.TemplateException;
 
@@ -141,6 +142,8 @@ public class HCardPageTest {
 
 	@Test
 	public void sort_string_logic() throws Exception {
+		SortStringScribe scribe = new SortStringScribe();
+
 		//N;SORT-AS, ORG;SORT-AS, SORT_STRING
 		{
 			VCard vcard = new VCard();
@@ -154,8 +157,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortStringType ss = new SortStringType();
-			ss.unmarshalHtml(elements.first(), null);
+			SortStringType ss = scribe.parseHtml(elements.first()).getProperty();
 			assertEquals("Doe", ss.getValue());
 		}
 
@@ -171,8 +173,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortStringType ss = new SortStringType();
-			ss.unmarshalHtml(elements.first(), null);
+			SortStringType ss = scribe.parseHtml(elements.first()).getProperty();
 			assertEquals("Smith", ss.getValue());
 		}
 
@@ -185,8 +186,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortStringType ss = new SortStringType();
-			ss.unmarshalHtml(elements.first(), null);
+			SortStringType ss = scribe.parseHtml(elements.first()).getProperty();
 			assertEquals("Jones", ss.getValue());
 		}
 	}
@@ -254,7 +254,7 @@ public class HCardPageTest {
 
 		assertEquals(expected.getBirthday().getDate(), actual.getBirthday().getDate());
 
-		assertEquals(expected.getRevision().getTimestamp(), actual.getRevision().getTimestamp());
+		assertEquals(expected.getRevision().getValue(), actual.getRevision().getValue());
 
 		assertEquals(expected.getGeo().getLatitude(), actual.getGeo().getLatitude());
 		assertEquals(expected.getGeo().getLongitude(), actual.getGeo().getLongitude());

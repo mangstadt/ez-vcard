@@ -4545,7 +4545,7 @@ public class VCard implements Iterable<VCardType> {
 	 */
 	public RawType getExtendedType(String name) {
 		for (RawType raw : getTypes(RawType.class)) {
-			if (raw.getTypeName().equalsIgnoreCase(name)) {
+			if (raw.getPropertyName().equalsIgnoreCase(name)) {
 				return raw;
 			}
 		}
@@ -4561,7 +4561,7 @@ public class VCard implements Iterable<VCardType> {
 		List<RawType> props = new ArrayList<RawType>();
 
 		for (RawType raw : getTypes(RawType.class)) {
-			if (raw.getTypeName().equalsIgnoreCase(name)) {
+			if (raw.getPropertyName().equalsIgnoreCase(name)) {
 				props.add(raw);
 			}
 		}

@@ -104,7 +104,7 @@ public class RevisionScribe extends VCardPropertyScribe<RevisionType> {
 	}
 
 	private String write(RevisionType property, boolean extended) {
-		Date timestamp = property.getTimestamp();
+		Date timestamp = property.getValue();
 		if (timestamp == null) {
 			return "";
 		}

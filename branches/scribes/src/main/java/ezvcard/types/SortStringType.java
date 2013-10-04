@@ -82,21 +82,12 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class SortStringType extends TextType {
-	public static final String NAME = "SORT-STRING";
-
-	/**
-	 * Creates an empty sort-string property.
-	 */
-	public SortStringType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a sort-string property.
 	 * @param sortString the sort string
 	 */
 	public SortStringType(String sortString) {
-		super(NAME, sortString);
+		super(sortString);
 	}
 
 	@Override

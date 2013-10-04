@@ -1,19 +1,11 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import ezvcard.VCard;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -48,79 +40,19 @@ import ezvcard.io.CompatibilityMode;
  * @author Michael Angstadt
  */
 public class CategoriesTypeTest {
-	private final List<String> warnings = new ArrayList<String>();
-	private final VCardSubTypes subTypes = new VCardSubTypes();
-	private final VCard vcard = new VCard();
-
-	private final CategoriesType withValues = new CategoriesType();
-	{
-		withValues.addValue("One");
-		withValues.addValue("T,wo");
-		withValues.addValue("Thr;ee");
-	}
-	private CategoriesType t;
-
-	@Before
-	public void before() {
-		t = new CategoriesType();
-		warnings.clear();
-		subTypes.clear();
-	}
-
 	@Test
 	public void validate() {
-		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, t.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+		VCard vcard = new VCard();
 
-		assertWarnings(0, withValues.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withValues.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withValues.validate(VCardVersion.V4_0, vcard));
-	}
+		CategoriesType empty = new CategoriesType();
+		assertWarnings(1, empty.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
 
-	@Test
-	public void marshalText_kde() {
-		//comma delimiters are escaped for KDE
-		VCardVersion version = VCardVersion.V2_1;
-		CompatibilityMode compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
-		String expected = "One\\,T\\,wo\\,Thr\\;ee";
-		String actual = withValues.marshalText(version, compatibilityMode);
-
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void marshalText_rfc() {
-		VCardVersion version = VCardVersion.V2_1;
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		String expected = "One,T\\,wo,Thr\\;ee";
-		String actual = withValues.marshalText(version, compatibilityMode);
-
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void doUnmarshalText_kde() {
-		//comma delimiters are escaped for KDE
-		VCardVersion version = VCardVersion.V2_1;
-		CompatibilityMode compatibilityMode = CompatibilityMode.KDE_ADDRESS_BOOK;
-		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
-		List<String> expected = Arrays.asList("One", "T", "wo", "Thr;ee");
-		List<String> actual = t.getValues();
-
-		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void doUnmarshalText_rfc() {
-		VCardVersion version = VCardVersion.V2_1;
-		CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-		t.unmarshalText(subTypes, "One\\,T\\,wo\\,Thr\\;ee", version, warnings, compatibilityMode);
-		List<String> expected = Arrays.asList("One,T,wo,Thr;ee");
-		List<String> actual = t.getValues();
-
-		assertEquals(expected, actual);
-		assertWarnings(0, warnings);
+		CategoriesType withValue = new CategoriesType();
+		withValue.addValue("one");
+		assertWarnings(0, withValue.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, withValue.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
 	}
 }

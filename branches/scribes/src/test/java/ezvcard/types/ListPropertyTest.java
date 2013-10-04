@@ -2,15 +2,13 @@ package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import org.junit.Test;
 
-import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.util.HtmlUtils;
+import ezvcard.VCard;
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -44,54 +42,35 @@ import ezvcard.util.HtmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class ImageTypeTest {
+public class ListPropertyTest {
 	@Test
-	public void buildTypeObject_predefined_type() {
-		ImageType image = new ImageType("IMAGE");
-		assertTrue(ImageTypeParameter.JPEG == image.buildTypeObj("jpeg"));
+	public void validate() {
+		VCard vcard = new VCard();
+
+		ListPropertyImpl zeroItems = new ListPropertyImpl();
+		assertWarnings(1, zeroItems.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, zeroItems.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, zeroItems.validate(VCardVersion.V4_0, vcard));
+
+		ListPropertyImpl oneItem = new ListPropertyImpl();
+		oneItem.addValue("one");
+		assertWarnings(0, oneItem.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, oneItem.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, oneItem.validate(VCardVersion.V4_0, vcard));
 	}
 
 	@Test
-	public void buildTypeObject_predefined_type_case_insensitive() {
-		ImageType image = new ImageType("IMAGE");
-		assertTrue(ImageTypeParameter.JPEG == image.buildTypeObj("Jpeg"));
+	public void removeValue() {
+		ListPropertyImpl property = new ListPropertyImpl();
+		property.addValue("one");
+		property.addValue("two");
+		property.addValue("three");
+		property.removeValue("two");
+		property.removeValue("four");
+		assertEquals(Arrays.asList("one", "three"), property.getValues());
 	}
 
-	@Test
-	public void buildTypeObject_unknown_type() {
-		ImageType image = new ImageType("IMAGE");
-		ImageTypeParameter foo = image.buildTypeObj("foo");
-		assertEquals("foo", foo.getValue());
-	}
-
-	@Test
-	public void buildMediaTypeObject_predefined_type() {
-		ImageType image = new ImageType("IMAGE");
-		assertTrue(ImageTypeParameter.JPEG == image.buildMediaTypeObj("image/jpeg"));
-	}
-
-	@Test
-	public void buildMediaTypeObject_predefined_type_case_insensitive() {
-		ImageType image = new ImageType("IMAGE");
-		assertTrue(ImageTypeParameter.JPEG == image.buildMediaTypeObj("Image/Jpeg"));
-	}
-
-	@Test
-	public void buildMediaTypeObject_unknown_type() {
-		ImageType image = new ImageType("IMAGE");
-		ImageTypeParameter foo = image.buildMediaTypeObj("image/foo");
-		assertEquals("image/foo", foo.getMediaType());
-	}
-
-	@Test
-	public void unmarshalHtml() {
-		List<String> warnings = new ArrayList<String>();
-		ImageType image = new ImageType("IMAGE");
-		org.jsoup.nodes.Element element = HtmlUtils.toElement("<img src=\"image.jpg\" />");
-
-		image.unmarshalHtml(element, warnings);
-
-		assertEquals("image.jpg", image.getUrl());
-		assertWarnings(0, warnings);
+	private class ListPropertyImpl extends ListProperty<String> {
+		//empty
 	}
 }

@@ -53,21 +53,12 @@ import java.util.List;
  * @author Michael Angstadt
  */
 public class FormattedNameType extends TextType implements HasAltId {
-	public static final String NAME = "FN";
-
-	/**
-	 * Creates an empty formatted name property.
-	 */
-	public FormattedNameType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a formatted name property.
 	 * @param name the person's name (e.g. "John Doe")
 	 */
 	public FormattedNameType(String name) {
-		super(NAME, name);
+		super(name);
 	}
 
 	/**

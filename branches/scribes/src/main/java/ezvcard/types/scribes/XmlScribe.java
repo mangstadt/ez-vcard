@@ -60,7 +60,7 @@ public class XmlScribe extends VCardPropertyScribe<XmlType> {
 
 	@Override
 	protected String _writeText(XmlType property, VCardVersion version) {
-		Document value = property.getDocument();
+		Document value = property.getValue();
 		if (value == null) {
 			return "";
 		}
@@ -90,7 +90,7 @@ public class XmlScribe extends VCardPropertyScribe<XmlType> {
 		XmlType xml = new XmlType(element.element());
 
 		//remove the <parameters> element
-		Element root = XmlUtils.getRootElement(xml.getDocument());
+		Element root = XmlUtils.getRootElement(xml.getValue());
 		for (Element child : XmlUtils.toElementList(root.getChildNodes())) {
 			if ("parameters".equals(child.getLocalName()) && VCardVersion.V4_0.getXmlNamespace().equals(child.getNamespaceURI())) {
 				root.removeChild(child);
@@ -103,7 +103,7 @@ public class XmlScribe extends VCardPropertyScribe<XmlType> {
 	@Override
 	protected JCardValue _writeJson(XmlType property) {
 		String xml = null;
-		Document value = property.getDocument();
+		Document value = property.getValue();
 		if (value != null) {
 			xml = valueToString(value);
 		}

@@ -114,22 +114,13 @@ import ezvcard.parameters.ImageTypeParameter;
  * @author Michael Angstadt
  */
 public class PhotoType extends ImageType {
-	public static final String NAME = "PHOTO";
-
-	/**
-	 * Creates an empty photo property.
-	 */
-	public PhotoType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates a photo property.
 	 * @param url the URL to the photo
 	 * @param type the content type (e.g. JPEG)
 	 */
 	public PhotoType(String url, ImageTypeParameter type) {
-		super(NAME, url, type);
+		super(url, type);
 	}
 
 	/**
@@ -138,7 +129,7 @@ public class PhotoType extends ImageType {
 	 * @param type the content type (e.g. JPEG)
 	 */
 	public PhotoType(byte[] data, ImageTypeParameter type) {
-		super(NAME, data, type);
+		super(data, type);
 	}
 
 	/**
@@ -148,7 +139,7 @@ public class PhotoType extends ImageType {
 	 * @throws IOException if there's a problem reading from the input stream
 	 */
 	public PhotoType(InputStream in, ImageTypeParameter type) throws IOException {
-		super(NAME, in, type);
+		super(in, type);
 	}
 
 	/**
@@ -158,6 +149,6 @@ public class PhotoType extends ImageType {
 	 * @throws IOException if there's a problem reading from the file
 	 */
 	public PhotoType(File file, ImageTypeParameter type) throws IOException {
-		super(NAME, file, type);
+		super(file, type);
 	}
 }

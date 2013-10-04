@@ -54,21 +54,12 @@ import java.util.List;
  * @author Michael Angstadt
  */
 public class TitleType extends TextType implements HasAltId {
-	public static final String NAME = "TITLE";
-
-	/**
-	 * Creates an empty title property.
-	 */
-	public TitleType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a title property.
 	 * @param title the title (e.g. "Team Lead")
 	 */
 	public TitleType(String title) {
-		super(NAME, title);
+		super(title);
 	}
 
 	@Override

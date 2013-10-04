@@ -40,14 +40,6 @@ import ezvcard.parameters.VCardParameter;
  */
 public abstract class SingleValuedTypeParameterType<T extends VCardParameter> extends TypeParameterType<T> {
 	/**
-	 * Creates a single-valued type parameter property.
-	 * @param name the type name (e.g. "PHOTO")
-	 */
-	public SingleValuedTypeParameterType(String name) {
-		super(name);
-	}
-
-	/**
 	 * Gets the value of the TYPE parameter.
 	 * @return the TYPE value or null if it has no TYPE value
 	 */

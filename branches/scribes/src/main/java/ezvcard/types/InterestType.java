@@ -64,21 +64,12 @@ import ezvcard.parameters.InterestLevelParameter;
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
 public class InterestType extends TextType implements HasAltId {
-	public static final String NAME = "INTEREST";
-
-	/**
-	 * Creates an empty interest property.
-	 */
-	public InterestType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates an interest property.
 	 * @param interest the hobby (e.g. "wind surfing")
 	 */
 	public InterestType(String interest) {
-		super(NAME, interest);
+		super(interest);
 	}
 
 	@Override

@@ -57,22 +57,13 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class ClassificationType extends TextType {
-	public static final String NAME = "CLASS";
-
-	/**
-	 * Creates an empty classification property.
-	 */
-	public ClassificationType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a classification property.
 	 * @param classValue the classification (e.g. "PUBLIC", "PRIVATE",
 	 * "CONFIDENTIAL")
 	 */
 	public ClassificationType(String classValue) {
-		super(NAME, classValue);
+		super(classValue);
 	}
 
 	@Override

@@ -46,48 +46,8 @@ import ezvcard.util.XCardElement;
 public class MyFormattedNameType extends VCardType {
 	public String value;
 
-	public MyFormattedNameType() {
-		super("FN");
-	}
-
 	public MyFormattedNameType(String value) {
-		this();
 		this.value = value;
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-		value.append(this.value.toUpperCase());
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		this.value = value.toUpperCase();
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append("name", value);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		this.value = element.first("name").toUpperCase();
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		value = element.value().toUpperCase();
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.get("name"), value.toUpperCase());
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		this.value = value.asSingle().toUpperCase();
 	}
 
 	public static class MyFormattedNameScribe extends VCardPropertyScribe<MyFormattedNameType> {

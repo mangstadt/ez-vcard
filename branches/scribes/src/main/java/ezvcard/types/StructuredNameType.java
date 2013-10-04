@@ -1,19 +1,9 @@
 package ezvcard.types;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.VCardStringUtils.JoinCallback;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -70,20 +60,11 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class StructuredNameType extends VCardType implements HasAltId {
-	public static final String NAME = "N";
-
 	private String family;
 	private String given;
 	private List<String> additional = new ArrayList<String>();
 	private List<String> prefixes = new ArrayList<String>();
 	private List<String> suffixes = new ArrayList<String>();
-
-	/**
-	 * Creates a structured name property.
-	 */
-	public StructuredNameType() {
-		super(NAME);
-	}
 
 	/**
 	 * Gets the family name (aka "last name").
@@ -238,127 +219,5 @@ public class StructuredNameType extends VCardType implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected void doMarshalText(final StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-		List<List<String>> values = new ArrayList<List<String>>();
-		values.add(Arrays.asList(family));
-		values.add(Arrays.asList(given));
-		values.add(additional);
-		values.add(prefixes);
-		values.add(suffixes);
-
-		VCardStringUtils.join(values, ";", value, new JoinCallback<List<String>>() {
-			public void handle(StringBuilder sb, List<String> v) {
-				VCardStringUtils.join(v, ",", value, new JoinCallback<String>() {
-					public void handle(StringBuilder sb, String v) {
-						if (v == null) {
-							return;
-						}
-						sb.append(VCardStringUtils.escape(v));
-					}
-				});
-			}
-		});
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//preserve empty items and don't unescape escaped characters (e.g. "additional" might have escaped commas)
-		Iterator<String> it = VCardStringUtils.splitBy(value, ';', false, false).iterator();
-
-		family = nextTextComponent(it);
-		given = nextTextComponent(it);
-		additional = nextTextListComponent(it);
-		prefixes = nextTextListComponent(it);
-		suffixes = nextTextListComponent(it);
-	}
-
-	private String nextTextComponent(Iterator<String> it) {
-		if (!it.hasNext()) {
-			return null;
-		}
-
-		String value = it.next();
-		return (value.length() == 0) ? null : VCardStringUtils.unescape(value);
-	}
-
-	private List<String> nextTextListComponent(Iterator<String> it) {
-		if (!it.hasNext()) {
-			return new ArrayList<String>(0);
-		}
-
-		String value = it.next();
-		return VCardStringUtils.splitBy(value, ',', true, true);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append("surname", family); //the XML element still needs to be printed if value == null
-		parent.append("given", given);
-		parent.append("additional", additional);
-		parent.append("prefix", prefixes);
-		parent.append("suffix", suffixes);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		family = sanitizeXml(element, "surname");
-		given = sanitizeXml(element, "given");
-		additional = element.all("additional");
-		prefixes = element.all("prefix");
-		suffixes = element.all("suffix");
-	}
-
-	private String sanitizeXml(XCardElement element, String name) {
-		String value = element.first(name);
-		return (value != null && value.length() == 0) ? null : value;
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		family = element.firstValue("family-name");
-		given = element.firstValue("given-name");
-		additional = element.allValues("additional-name");
-		prefixes = element.allValues("honorific-prefix");
-		suffixes = element.allValues("honorific-suffix");
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.structured(VCardDataType.TEXT, family, given, additional, prefixes, suffixes);
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		Iterator<List<String>> it = value.asStructured().iterator();
-
-		family = nextJsonComponent(it);
-		given = nextJsonComponent(it);
-		additional = nextJsonListComponent(it);
-		prefixes = nextJsonListComponent(it);
-		suffixes = nextJsonListComponent(it);
-	}
-
-	private String nextJsonComponent(Iterator<List<String>> it) {
-		List<String> values = nextJsonListComponent(it);
-		return values.isEmpty() ? null : values.get(0);
-	}
-
-	private List<String> nextJsonListComponent(Iterator<List<String>> it) {
-		if (!it.hasNext()) {
-			return new ArrayList<String>(0);
-		}
-
-		List<String> values = it.next();
-		List<String> nonEmpty = new ArrayList<String>(values.size());
-		for (String valueStr : values) {
-			if (valueStr.length() == 0) {
-				continue;
-			}
-			nonEmpty.add(valueStr);
-		}
-		return nonEmpty;
 	}
 }

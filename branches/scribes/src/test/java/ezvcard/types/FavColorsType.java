@@ -13,22 +13,42 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.io.SkipMeException;
+import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.HCardElement;
 import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
 import ezvcard.util.XCardElement;
 import ezvcard.util.XmlUtils;
 
-public class FavColorsType extends VCardType {
-	private static final QName qname = new QName("http://fav-colors.net", "fav-colors");
-	private List<String> favColors = new ArrayList<String>();
+/*
+ Copyright (c) 2013, Michael Angstadt
+ All rights reserved.
 
-	//default constructor required
-	public FavColorsType() {
-		super("X-FAV-COLORS");
-	}
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met: 
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer. 
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution. 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * @author Michael Angstadt
+ */
+public class FavColorsType extends VCardType {
+	private List<String> favColors = new ArrayList<String>();
 
 	public List<String> getFavColors() {
 		return favColors;
@@ -38,93 +58,15 @@ public class FavColorsType extends VCardType {
 		favColors.add(color);
 	}
 
-	//modifies the property's parameters before the property is written
-	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		copy.setValue(VCardDataType.TEXT);
+	public String getLang() {
+		return subTypes.getLanguage();
 	}
 
-	//writes the property value to a plain-text vCard
-	@Override
-	protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (!favColors.isEmpty()) {
-			for (String color : sanitizeColors(compatibilityMode)) {
-				value.append(VCardStringUtils.escape(color)).append(',');
-			}
-			value.deleteCharAt(value.length() - 1); //remove last comma
-		}
+	public void setLang(String lang) {
+		subTypes.setLanguage(lang);
 	}
 
-	//parses the property's value from a plain-text vCard
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		favColors = VCardStringUtils.splitBy(value, ',', true, true);
-		if (favColors.contains("periwinkle") && version == VCardVersion.V4_0) {
-			warnings.add("Periwinkle is deprecated in vCard 4.0.");
-		}
-	}
-
-	//the XML namespace and element name to use when reading/writing from/to an XML document
-	@Override
-	public QName getQName() {
-		return qname;
-	}
-
-	//writes the property to an XML document
-	@Override
-	protected void doMarshalXml(XCardElement element, CompatibilityMode compatibilityMode) {
-		Element theElement = element.element();
-		for (String color : sanitizeColors(compatibilityMode)) {
-			Element colorElement = theElement.getOwnerDocument().createElementNS(qname.getNamespaceURI(), "color");
-			colorElement.setTextContent(color);
-			theElement.appendChild(colorElement);
-		}
-	}
-
-	//parses the property from an XML document
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		NodeList nl = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "color");
-		List<Element> colorElements = XmlUtils.toElementList(nl);
-		if (colorElements.isEmpty()) {
-			throw new CannotParseException("No <color> elements found.");
-		}
-
-		favColors.clear();
-		for (Element colorElement : colorElements) {
-			favColors.add(colorElement.getTextContent());
-		}
-		if (favColors.contains("periwinkle")) {
-			warnings.add("Periwinkle is deprecated in vCard 4.0.");
-		}
-	}
-
-	//parses the property value from an HTML page
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String lang = element.attr("lang");
-		setLanguage((lang.length() == 0) ? null : lang);
-
-		favColors.clear();
-		favColors.addAll(element.allValues("color")); //gets the hCard values of all descendant elements that have a CSS class named "color"
-	}
-
-	//writes the property to a JSON stream
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		List<String> santizied = sanitizeColors(CompatibilityMode.RFC);
-		return JCardValue.multi(VCardDataType.TEXT, santizied);
-	}
-
-	//parses the property value from a JSON stream
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		favColors.clear();
-		for (String valueStr : value.asMulti()) {
-			favColors.add(valueStr);
-		}
-	}
-
+	//optional
 	//validates the property's data
 	//invoked when "VCard.validate()" is called
 	@Override
@@ -138,18 +80,116 @@ public class FavColorsType extends VCardType {
 		}
 	}
 
-	private List<String> sanitizeColors(CompatibilityMode compatibilityMode) {
-		List<String> colors = new ArrayList<String>(favColors.size());
-		for (String color : favColors) {
-			if (compatibilityMode == CompatibilityMode.MS_OUTLOOK && "blue".equals(color)) {
-				//Microsoft uses "azure" instead of "blue"
-				color = "azure";
-			} else if ("apple".equals(color)) {
-				//this exception will prevent the property from being written to the vCard
-				throw new SkipMeException("This property will not be marshalled because \"apple\" is not a color.");
-			}
-			colors.add(color);
+	public static class FavColorsScribe extends VCardPropertyScribe<FavColorsType> {
+		public FavColorsScribe() {
+			super(FavColorsType.class, "X-FAV-COLORS", new QName("http://fav-colors.net", "fav-colors"));
 		}
-		return colors;
+
+		//required
+		//defines the property's default vCard data type
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return VCardDataType.TEXT;
+		}
+
+		//optional
+		//determines the data type based on the property value
+		@Override
+		protected VCardDataType _dataType(FavColorsType property, VCardVersion version) {
+			return _defaultDataType(version);
+		}
+
+		//optional
+		//modifies the property's parameters before the property is written
+		@Override
+		protected void _prepareParameters(FavColorsType property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+			if (copy.getLanguage() == null) {
+				copy.setLanguage("en");
+			}
+		}
+
+		//required
+		//writes the property value to a plain-text vCard
+		@Override
+		protected String _writeText(FavColorsType property, VCardVersion version) {
+			StringBuilder sb = new StringBuilder();
+			if (!property.getFavColors().isEmpty()) {
+				for (String color : property.getFavColors()) {
+					sb.append(escape(color)).append(',');
+				}
+				sb.deleteCharAt(sb.length() - 1); //remove last comma
+			}
+			return sb.toString();
+		}
+
+		//required
+		//parses the property's value from a plain-text vCard
+		@Override
+		protected FavColorsType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			FavColorsType prop = new FavColorsType();
+			for (String color : list(value)) {
+				prop.addFavColor(color);
+			}
+			return prop;
+		}
+
+		//optional
+		//writes the property to an XML document
+		@Override
+		protected void _writeXml(FavColorsType property, XCardElement element) {
+			Element theElement = element.element();
+			for (String color : property.getFavColors()) {
+				Element colorElement = theElement.getOwnerDocument().createElementNS(qname.getNamespaceURI(), "color");
+				colorElement.setTextContent(color);
+				theElement.appendChild(colorElement);
+			}
+		}
+
+		//optional
+		//parses the property from an XML document
+		@Override
+		protected FavColorsType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+			NodeList nl = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "color");
+			List<Element> colorElements = XmlUtils.toElementList(nl);
+			if (colorElements.isEmpty()) {
+				throw new CannotParseException("No <color> elements found.");
+			}
+
+			FavColorsType property = new FavColorsType();
+			for (Element colorElement : colorElements) {
+				property.addFavColor(colorElement.getTextContent());
+			}
+			return property;
+		}
+
+		//optional
+		//parses the property value from an HTML page
+		@Override
+		protected FavColorsType _parseHtml(HCardElement element, List<String> warnings) {
+			FavColorsType property = new FavColorsType();
+
+			String lang = element.attr("lang");
+			property.setLang((lang.length() == 0) ? null : lang);
+
+			property.getFavColors().addAll(element.allValues("color")); //gets the hCard values of all descendant elements that have a CSS class named "color"
+
+			return property;
+		}
+
+		//optional
+		//writes the property to a JSON stream
+		@Override
+		protected JCardValue _writeJson(FavColorsType property) {
+			return JCardValue.multi(VCardDataType.TEXT, property.getFavColors());
+		}
+
+		//optional
+		//parses the property value from a JSON stream
+		@Override
+		protected FavColorsType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+			FavColorsType property = new FavColorsType();
+			property.getFavColors().addAll(value.asMulti());
+			return property;
+		}
 	}
 }

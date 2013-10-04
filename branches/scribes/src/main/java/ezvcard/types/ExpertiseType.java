@@ -62,21 +62,12 @@ import ezvcard.parameters.ExpertiseLevelParameter;
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
 public class ExpertiseType extends TextType implements HasAltId {
-	public static final String NAME = "EXPERTISE";
-
-	/**
-	 * Creates an empty expertise property.
-	 */
-	public ExpertiseType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates an expertise property.
 	 * @param skill the skill (e.g. "Java programming")
 	 */
 	public ExpertiseType(String skill) {
-		super(NAME, skill);
+		super(skill);
 	}
 
 	@Override

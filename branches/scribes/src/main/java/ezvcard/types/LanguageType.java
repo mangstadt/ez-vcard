@@ -4,11 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.JCardValue;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -66,21 +62,12 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class LanguageType extends TextType implements HasAltId {
-	public static final String NAME = "LANG";
-
-	/**
-	 * Creates an empty language property.
-	 */
-	public LanguageType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates a language property.
 	 * @param language the language (e.g. "en-ca")
 	 */
 	public LanguageType(String language) {
-		super(NAME, language);
+		super(language);
 	}
 
 	@Override
@@ -145,26 +132,5 @@ public class LanguageType extends TextType implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.LANGUAGE_TAG, getValue());
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.LANGUAGE_TAG);
-		if (value != null) {
-			setValue(value);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.LANGUAGE_TAG);
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.LANGUAGE_TAG, value);
 	}
 }

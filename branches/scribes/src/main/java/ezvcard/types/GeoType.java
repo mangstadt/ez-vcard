@@ -3,16 +3,8 @@ package ezvcard.types;
 import java.util.List;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.util.GeoUri;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardFloatFormatter;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -92,15 +84,7 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class GeoType extends VCardType implements HasAltId {
-	public static final String NAME = "GEO";
 	private GeoUri uri;
-
-	/**
-	 * Creates an empty geo property.
-	 */
-	public GeoType() {
-		this(null);
-	}
 
 	/**
 	 * Creates a geo property.
@@ -116,7 +100,6 @@ public class GeoType extends VCardType implements HasAltId {
 	 * @param uri the geo URI
 	 */
 	public GeoType(GeoUri uri) {
-		super(NAME);
 		this.uri = uri;
 	}
 
@@ -268,72 +251,6 @@ public class GeoType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(write(version));
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value);
-		parse(value, version, warnings);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.URI, write(parent.version()));
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.URI);
-		if (value != null) {
-			parse(value, element.version(), warnings);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.URI);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String latitudeStr = element.firstValue("latitude");
-		if (latitudeStr == null) {
-			throw new CannotParseException("Latitude missing.");
-		}
-
-		Double latitude;
-		try {
-			latitude = Double.parseDouble(latitudeStr);
-		} catch (NumberFormatException e) {
-			throw new CannotParseException("Could not parse latitude: " + latitudeStr);
-		}
-
-		String longitudeStr = element.firstValue("longitude");
-		if (longitudeStr == null) {
-			throw new CannotParseException("Longitude missing.");
-		}
-
-		Double longitude;
-		try {
-			longitude = Double.parseDouble(longitudeStr);
-		} catch (NumberFormatException e) {
-			throw new CannotParseException("Could not parse longitude: " + longitudeStr);
-		}
-
-		uri = new GeoUri.Builder(latitude, longitude).build();
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.URI, write(version));
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		parse(value.asSingle(), version, warnings);
-	}
-
-	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		if (getLatitude() == null) {
 			warnings.add("Latitude is missing.");
@@ -341,68 +258,5 @@ public class GeoType extends VCardType implements HasAltId {
 		if (getLongitude() == null) {
 			warnings.add("Longitude is missing.");
 		}
-	}
-
-	private void parse(String value, VCardVersion version, List<String> warnings) {
-		if (value == null || value.length() == 0) {
-			return;
-		}
-
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			String split[] = value.split(";");
-			if (split.length != 2) {
-				throw new CannotParseException("Incorrect data format.  Value must contain a latitude and longitude, separated by a semi-colon.");
-			}
-
-			String latitudeStr = split[0];
-			Double latitude;
-			try {
-				latitude = Double.valueOf(latitudeStr);
-			} catch (NumberFormatException e) {
-				throw new CannotParseException("Could not parse latitude: " + latitudeStr);
-			}
-
-			String longitudeStr = split[1];
-			Double longitude;
-			try {
-				longitude = Double.valueOf(longitudeStr);
-			} catch (NumberFormatException e) {
-				throw new CannotParseException("Could not parse longtude: " + longitudeStr);
-			}
-
-			uri = new GeoUri.Builder(latitude, longitude).build();
-			break;
-		case V4_0:
-			try {
-				uri = GeoUri.parse(value);
-			} catch (IllegalArgumentException e) {
-				throw new CannotParseException("Invalid geo URI.");
-			}
-			break;
-		}
-	}
-
-	private String write(VCardVersion version) {
-		if (uri == null) {
-			return "";
-		}
-
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			VCardFloatFormatter formatter = new VCardFloatFormatter(6);
-			StringBuilder sb = new StringBuilder();
-
-			sb.append(formatter.format(getLatitude()));
-			sb.append(';');
-			sb.append(formatter.format(getLongitude()));
-
-			return sb.toString();
-		case V4_0:
-			return uri.toString(6);
-		}
-		return null; //needed to prevent compilation error
 	}
 }

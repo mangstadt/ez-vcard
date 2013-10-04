@@ -45,23 +45,8 @@ import ezvcard.types.scribes.VCardPropertyScribe;
 public class AgeType extends VCardType {
 	public int age;
 
-	public AgeType() {
-		super("X-AGE");
-	}
-
 	public AgeType(int age) {
-		this();
 		this.age = age;
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		//TODO remove
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//TODO remove
 	}
 
 	public static class AgeScribe extends VCardPropertyScribe<AgeType> {

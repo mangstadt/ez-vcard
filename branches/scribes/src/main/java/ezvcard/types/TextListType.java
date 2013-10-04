@@ -1,16 +1,5 @@
 package ezvcard.types;
 
-import java.util.List;
-
-import ezvcard.VCard;
-import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.VCardStringUtils.JoinCallback;
-import ezvcard.util.XCardElement;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -45,80 +34,5 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TextListType extends ListProperty<String> {
-	private final char separator;
-
-	/**
-	 * Creates a property that contains a list of textual values.
-	 * @param name the type name (e.g. "NICKNAME")
-	 * @param separator the delimiter to use (e.g. ",")
-	 */
-	public TextListType(String name, char separator) {
-		super(name);
-		this.separator = separator;
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		VCardStringUtils.join(values, separator + "", sb, new JoinCallback<String>() {
-			public void handle(StringBuilder sb, String value) {
-				sb.append(VCardStringUtils.escape(value));
-			}
-		});
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		values = VCardStringUtils.splitBy(value, separator, true, true);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.TEXT.getName().toLowerCase(), values);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		List<String> values = element.all(VCardDataType.TEXT);
-		if (!values.isEmpty()) {
-			this.values = values;
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.TEXT);
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		Object[] values = this.values.toArray(new Object[0]);
-		if (separator == ';' && values.length > 1) {
-			return JCardValue.structured(VCardDataType.TEXT, values);
-		}
-		return JCardValue.multi(VCardDataType.TEXT, values);
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		values.clear();
-
-		if (separator == ';') {
-			for (List<String> valueStr : value.asStructured()) {
-				if (valueStr.isEmpty()) {
-					continue;
-				}
-				values.add(valueStr.get(0));
-			}
-			return;
-		}
-
-		for (String valueStr : value.asMulti()) {
-			values.add(valueStr);
-		}
-	}
-
-	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
-		if (values.isEmpty()) {
-			warnings.add("Property value is empty.");
-		}
-	}
+	//empty
 }

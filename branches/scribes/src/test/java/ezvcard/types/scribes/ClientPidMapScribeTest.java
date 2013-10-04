@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import ezvcard.types.ClientPidMapType;
-import ezvcard.types.scribes.ClientPidMapScribe;
 import ezvcard.types.scribes.Sensei.Check;
 import ezvcard.util.JCardValue;
 
@@ -49,7 +48,7 @@ public class ClientPidMapScribeTest {
 	private final String uri = "urn:uuid:1234";
 
 	private final ClientPidMapType withValue = new ClientPidMapType(pid, uri);
-	private final ClientPidMapType empty = new ClientPidMapType();
+	private final ClientPidMapType empty = new ClientPidMapType(null, null);
 
 	@Test
 	public void writeText() {

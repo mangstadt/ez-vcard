@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import ezvcard.io.CompatibilityMode;
 import ezvcard.types.HasAltId;
 import ezvcard.types.NoteType;
 import ezvcard.types.RawType;
@@ -91,7 +90,7 @@ public class VCardTest {
 	public void addExtendedType() {
 		VCard vcard = new VCard();
 		RawType type = vcard.addExtendedType("NAME", "value");
-		assertEquals("NAME", type.getTypeName());
+		assertEquals("NAME", type.getPropertyName());
 		assertEquals("value", type.getValue());
 		assertEquals(Arrays.asList(type), vcard.getExtendedTypes("NAME"));
 	}
@@ -99,7 +98,7 @@ public class VCardTest {
 	@Test
 	public void addType() {
 		VCard vcard = new VCard();
-		VCardTypeImpl type = new VCardTypeImpl("NAME");
+		VCardTypeImpl type = new VCardTypeImpl();
 		vcard.addType(type);
 		assertEquals(Arrays.asList(type), vcard.getTypes(type.getClass()));
 	}
@@ -220,7 +219,7 @@ public class VCardTest {
 	public void validate_properties() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		VCardTypeImpl prop = new VCardTypeImpl("test");
+		VCardTypeImpl prop = new VCardTypeImpl();
 		vcard.addType(prop);
 
 		assertValidate(vcard.validate(VCardVersion.V4_0), prop);
@@ -232,7 +231,6 @@ public class VCardTest {
 		private String altId;
 
 		public HasAltIdImpl(String altId) {
-			super("NAME");
 			this.altId = altId;
 		}
 
@@ -245,35 +243,11 @@ public class VCardTest {
 		public void setAltId(String altId) {
 			this.altId = altId;
 		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
 	}
 
 	private class VCardTypeImpl extends VCardType {
 		public VCardVersion validateVersion;
 		public VCard validateVCard;
-
-		public VCardTypeImpl(String typeName) {
-			super(typeName);
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
 
 		@Override
 		public void _validate(List<String> warnings, VCardVersion version, VCard vcard) {

@@ -417,7 +417,7 @@ public class XCardDocumentTest {
 			Iterator<XmlType> it = vcard.getXmls().iterator();
 
 			XmlType xmlType = it.next();
-			assertXMLEqual(XmlUtils.toDocument("<foo xmlns=\"http://example.com\">bar</foo>"), xmlType.getDocument());
+			assertXMLEqual(XmlUtils.toDocument("<foo xmlns=\"http://example.com\">bar</foo>"), xmlType.getValue());
 
 			assertFalse(it.hasNext());
 		}
@@ -849,13 +849,11 @@ public class XCardDocumentTest {
 		FormattedNameType fn = new FormattedNameType("John Doe");
 		vcard.setFormattedName(fn);
 
-		LuckyNumType num = new LuckyNumType();
-		num.luckyNum = 24;
+		LuckyNumType num = new LuckyNumType(24);
 		vcard.addType(num);
 
 		//should be skipped
-		num = new LuckyNumType();
-		num.luckyNum = 13;
+		num = new LuckyNumType(13);
 		vcard.addType(num);
 
 		XCardDocument xcm = new XCardDocument();
@@ -883,8 +881,7 @@ public class XCardDocumentTest {
 	public void add_no_scribe_registered() throws Throwable {
 		VCard vcard = new VCard();
 
-		LuckyNumType num = new LuckyNumType();
-		num.luckyNum = 24;
+		LuckyNumType num = new LuckyNumType(24);
 		vcard.addType(num);
 
 		XCardDocument xcm = new XCardDocument();
@@ -899,18 +896,15 @@ public class XCardDocumentTest {
 		VCard vcard = new VCard();
 
 		//contains marshal methods and QName
-		LuckyNumType num = new LuckyNumType();
-		num.luckyNum = 24;
+		LuckyNumType num = new LuckyNumType(24);
 		vcard.addType(num);
 
 		//contains marshal methods, but does not have a QName
-		SalaryType salary = new SalaryType();
-		salary.salary = 1000000;
+		SalaryType salary = new SalaryType(1000000);
 		vcard.addType(salary);
 
 		//does not contain marshal methods nor QName
-		AgeType age = new AgeType();
-		age.age = 22;
+		AgeType age = new AgeType(22);
 		vcard.addType(age);
 
 		XCardDocument xcm = new XCardDocument();
@@ -1162,19 +1156,7 @@ public class XCardDocumentTest {
 	}
 
 	private static class EmbeddedType extends VCardType {
-		public EmbeddedType() {
-			super("EMBEDDED");
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//do nothing
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//do nothing
-		}
+		//empty
 	}
 
 	private static class EmbeddedTypeScribe extends VCardPropertyScribe<EmbeddedType> {

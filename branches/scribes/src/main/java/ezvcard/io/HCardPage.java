@@ -152,6 +152,7 @@ public class HCardPage {
 		map.put("noProfile", readImage("no-profile.png", ImageTypeParameter.PNG));
 		map.put("ezVCardVersion", Ezvcard.VERSION);
 		map.put("ezVCardUrl", Ezvcard.URL);
+		map.put("scribeIndex", new ScribeIndex());
 		try {
 			template.process(map, writer);
 		} catch (TemplateException e) {

@@ -57,21 +57,12 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class FbUrlType extends UriType implements HasAltId {
-	public static final String NAME = "FBURL";
-
-	/**
-	 * Creates an empty free/busy URL property.
-	 */
-	public FbUrlType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates a free/busy URL property.
 	 * @param uri the URI
 	 */
 	public FbUrlType(String uri) {
-		super(NAME, uri);
+		super(uri);
 	}
 
 	@Override

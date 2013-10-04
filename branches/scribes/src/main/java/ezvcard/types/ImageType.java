@@ -3,12 +3,8 @@ package ezvcard.types;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
-import ezvcard.io.CannotParseException;
 import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.util.DataUri;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -47,85 +43,39 @@ import ezvcard.util.HCardElement;
 public class ImageType extends BinaryType<ImageTypeParameter> {
 	/**
 	 * Creates an image property.
-	 * @param typeName the type name (e.g. "PHOTO")
-	 */
-	public ImageType(String typeName) {
-		super(typeName);
-	}
-
-	/**
-	 * Creates an image property.
-	 * @param typeName the type name (e.g. "PHOTO")
 	 * @param url the URL to the image
 	 * @param type the content type (e.g. JPEG)
 	 */
-	public ImageType(String typeName, String url, ImageTypeParameter type) {
-		super(typeName, url, type);
+	public ImageType(String url, ImageTypeParameter type) {
+		super(url, type);
 	}
 
 	/**
 	 * Creates an image property.
-	 * @param typeName the type name (e.g. "PHOTO")
 	 * @param data the binary data of the image
 	 * @param type the content type (e.g. JPEG)
 	 */
-	public ImageType(String typeName, byte[] data, ImageTypeParameter type) {
-		super(typeName, data, type);
+	public ImageType(byte[] data, ImageTypeParameter type) {
+		super(data, type);
 	}
 
 	/**
 	 * Creates an image property.
-	 * @param typeName the type name (e.g. "PHOTO")
 	 * @param in an input stream to the binary data (will be closed)
 	 * @param type the content type (e.g. JPEG)
 	 * @throws IOException if there's a problem reading from the input stream
 	 */
-	public ImageType(String typeName, InputStream in, ImageTypeParameter type) throws IOException {
-		super(typeName, in, type);
+	public ImageType(InputStream in, ImageTypeParameter type) throws IOException {
+		super(in, type);
 	}
 
 	/**
 	 * Creates an image property.
-	 * @param typeName the type name (e.g. "PHOTO")
 	 * @param file the image file
 	 * @param type the content type (e.g. JPEG)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public ImageType(String typeName, File file, ImageTypeParameter type) throws IOException {
-		super(typeName, file, type);
-	}
-
-	@Override
-	protected ImageTypeParameter buildTypeObj(String type) {
-		return ImageTypeParameter.get(type, null, null);
-	}
-
-	@Override
-	protected ImageTypeParameter buildMediaTypeObj(String mediaType) {
-		return ImageTypeParameter.get(null, mediaType, null);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String elementName = element.tagName();
-		if (!"img".equals(elementName)) {
-			super.doUnmarshalHtml(element, warnings);
-			return;
-		}
-
-		String src = element.absUrl("src");
-		if (src.length() == 0) {
-			throw new CannotParseException("<img> tag does not have a \"src\" attribute.");
-		}
-
-		try {
-			DataUri uri = new DataUri(src);
-			ImageTypeParameter mediaType = buildMediaTypeObj(uri.getContentType());
-			setData(uri.getData(), mediaType);
-		} catch (IllegalArgumentException e) {
-			//not a data URI
-			//TODO create buildTypeObjFromExtension() method
-			setUrl(src, null);
-		}
+	public ImageType(File file, ImageTypeParameter type) throws IOException {
+		super(file, type);
 	}
 }

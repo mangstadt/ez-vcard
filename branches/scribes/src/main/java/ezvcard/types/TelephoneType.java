@@ -3,16 +3,9 @@ package ezvcard.types;
 import java.util.List;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.TelephoneTypeParameter;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
 import ezvcard.util.TelUri;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -73,24 +66,14 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypeParameter> implements HasAltId {
-	public static final String NAME = "TEL";
-
 	private String text;
 	private TelUri uri;
-
-	/**
-	 * Creates an empty telephone property.
-	 */
-	public TelephoneType() {
-		super(NAME);
-	}
 
 	/**
 	 * Creates a telephone property.
 	 * @param text the telephone number (e.g. "(123) 555-6789")
 	 */
 	public TelephoneType(String text) {
-		this();
 		setText(text);
 	}
 
@@ -99,7 +82,6 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	 * @param uri a "tel" URI representing the telephone number (vCard 4.0 only)
 	 */
 	public TelephoneType(TelUri uri) {
-		this();
 		setUri(uri);
 	}
 
@@ -181,160 +163,6 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	@Override
 	protected TelephoneTypeParameter buildTypeObj(String type) {
 		return TelephoneTypeParameter.get(type);
-	}
-
-	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			copy.setValue(null);
-			copy.setPref(null);
-
-			//find the TEL with the lowest PREF value in the vCard
-			TelephoneType mostPreferred = null;
-			for (TelephoneType tel : vcard.getTelephoneNumbers()) {
-				Integer pref = tel.getPref();
-				if (pref == null) {
-					continue;
-				}
-
-				if (mostPreferred == null || pref < mostPreferred.getPref()) {
-					mostPreferred = tel;
-				}
-			}
-			if (this == mostPreferred) {
-				copy.addType(TelephoneTypeParameter.PREF.getValue());
-			}
-
-			break;
-		case V4_0:
-			VCardDataType dataType = (uri == null) ? null : VCardDataType.URI;
-			copy.setValue(dataType);
-
-			//replace "TYPE=pref" with "PREF=1"
-			if (getTypes().contains(TelephoneTypeParameter.PREF)) {
-				copy.removeType(TelephoneTypeParameter.PREF.getValue());
-				copy.setPref(1);
-			}
-
-			break;
-		}
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			if (version == VCardVersion.V4_0) {
-				sb.append(uri.toString());
-			} else {
-				sb.append(VCardStringUtils.escape(uri.getNumber()));
-
-				String ext = uri.getExtension();
-				if (ext != null) {
-					sb.append(" x").append(ext);
-				}
-			}
-			return;
-		}
-
-		if (text != null) {
-			sb.append(VCardStringUtils.escape(text));
-			return;
-		}
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value);
-
-		if (subTypes.getValue() == VCardDataType.URI) {
-			try {
-				setUri(TelUri.parse(value));
-				return;
-			} catch (IllegalArgumentException e) {
-				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
-			}
-		}
-
-		setText(value);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
-			return;
-		}
-		if (uri != null) {
-			parent.append(VCardDataType.URI, uri.toString());
-			return;
-		}
-		parent.append(VCardDataType.TEXT, "");
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.URI);
-		if (value != null) {
-			try {
-				setUri(TelUri.parse(value));
-			} catch (IllegalArgumentException e) {
-				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
-				setText(value);
-			}
-			return;
-		}
-
-		value = element.first(VCardDataType.TEXT);
-		if (value != null) {
-			setText(value);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.URI, VCardDataType.TEXT);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		List<String> types = element.types();
-		for (String type : types) {
-			subTypes.addType(type);
-		}
-
-		String href = element.attr("href");
-		try {
-			setUri(TelUri.parse(href));
-		} catch (IllegalArgumentException e) {
-			//not a tel URI
-			setText(element.value());
-		}
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
-		}
-		if (uri != null) {
-			return JCardValue.single(VCardDataType.URI, uri.toString());
-		}
-		return JCardValue.single(VCardDataType.TEXT, "");
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.asSingle();
-		if (value.getDataType() == VCardDataType.URI) {
-			try {
-				setUri(TelUri.parse(valueStr));
-				return;
-			} catch (IllegalArgumentException e) {
-				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
-			}
-		}
-
-		setText(valueStr);
 	}
 
 	@Override

@@ -2,15 +2,10 @@ package ezvcard.types.scribes;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import org.junit.Test;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.types.VCardType;
-import ezvcard.types.scribes.SimplePropertyScribe;
 import ezvcard.types.scribes.Sensei.Check;
 
 /*
@@ -118,18 +113,7 @@ public class SimplePropertyScribeTest {
 		public String value;
 
 		public TestProperty(String value) {
-			super("NAME");
 			this.value = value;
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//TODO remove
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//TODO remove
 		}
 	}
 

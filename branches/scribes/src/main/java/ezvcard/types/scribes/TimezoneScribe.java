@@ -201,7 +201,7 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 
 	private TimezoneType parse(String value, VCardDataType dataType, VCardVersion version, List<String> warnings) {
 		if (value == null || value.length() == 0) {
-			return new TimezoneType();
+			return new TimezoneType((String) null);
 		}
 
 		switch (version) {
@@ -224,7 +224,7 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 			}
 		}
 
-		return new TimezoneType();
+		return new TimezoneType((String) null);
 	}
 
 	private UtcOffset offsetFromTimezone(TimeZone timezone) {

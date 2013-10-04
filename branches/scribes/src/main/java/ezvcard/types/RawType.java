@@ -1,15 +1,6 @@
 package ezvcard.types;
 
-import java.util.List;
-
-import org.w3c.dom.Element;
-
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardElement;
-import ezvcard.util.XCardElement;
-import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -44,53 +35,45 @@ import ezvcard.util.XmlUtils;
  * Holds the type value as-is. No escaping or unescaping is done on the value.
  * @author Michael Angstadt
  */
-public class RawType extends VCardType {
-	private String value;
+public class RawType extends TextType {
+	private String propertyName;
 	private VCardDataType dataType;
 
 	/**
 	 * Creates a raw property.
-	 * @param name the type name (e.g. "NOTE")
-	 */
-	public RawType(String name) {
-		this(name, null);
-	}
-
-	/**
-	 * Creates a raw property.
-	 * @param name the type name (e.g. "NOTE")
+	 * @param propertyName the property name (e.g. "X-GENDER")
 	 * @param value the type value
 	 */
-	public RawType(String name, String value) {
-		this(name, value, null);
+	public RawType(String propertyName, String value) {
+		this(propertyName, value, null);
 	}
 
 	/**
 	 * Creates a raw property.
-	 * @param name the type name (e.g. "NOTE")
+	 * @param propertyName the property name (e.g. "X-GENDER")
 	 * @param value the type value
 	 * @param dataType the value's data type
 	 */
-	public RawType(String name, String value, VCardDataType dataType) {
-		super(name);
-		this.value = value;
+	public RawType(String propertyName, String value, VCardDataType dataType) {
+		super(value);
+		this.propertyName = propertyName;
 		this.dataType = dataType;
 	}
 
 	/**
-	 * Gets the raw value of the property.
-	 * @return the value
+	 * Gets the name of the property.
+	 * @return the property name
 	 */
-	public String getValue() {
-		return value;
+	public String getPropertyName() {
+		return propertyName;
 	}
 
 	/**
-	 * Sets the raw value of the property.
-	 * @param value the value
+	 * Sets the name of the property.
+	 * @param propertyName the property name
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
 	}
 
 	/**
@@ -107,45 +90,5 @@ public class RawType extends VCardType {
 	 */
 	public void setDataType(VCardDataType dataType) {
 		this.dataType = dataType;
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(value);
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		this.value = value;
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		List<Element> children = XmlUtils.toElementList(element.element().getChildNodes());
-		if (children.isEmpty()) {
-			//get the text content of the property element
-			value = element.element().getTextContent();
-			return;
-		}
-
-		//get the text content of the first child element with the xCard namespace
-		for (Element child : children) {
-			if (!element.version().getXmlNamespace().equals(child.getNamespaceURI())) {
-				continue;
-			}
-
-			VCardDataType dataType = VCardDataType.get(child.getLocalName());
-			subTypes.setValue(dataType);
-			value = child.getTextContent();
-			return;
-		}
-
-		//get the text content of the first child element
-		value = XmlUtils.getFirstChildElement(element.element()).getTextContent();
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		setValue(element.value());
 	}
 }

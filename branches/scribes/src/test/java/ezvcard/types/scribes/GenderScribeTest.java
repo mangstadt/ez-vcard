@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import ezvcard.types.GenderType;
-import ezvcard.types.scribes.GenderScribe;
 import ezvcard.types.scribes.Sensei.Check;
 import ezvcard.util.JCardValue;
 
@@ -50,7 +49,7 @@ public class GenderScribeTest {
 	private final String textEscaped = "te\\;xt";
 
 	private final GenderType withGender = GenderType.male();
-	private final GenderType withText = new GenderType();
+	private final GenderType withText = new GenderType(null);
 	{
 		withText.setText(text);
 	}
@@ -58,7 +57,7 @@ public class GenderScribeTest {
 	{
 		withGenderAndText.setText(text);
 	}
-	private final GenderType empty = new GenderType();
+	private final GenderType empty = new GenderType(null);
 
 	@Test
 	public void writeText() {

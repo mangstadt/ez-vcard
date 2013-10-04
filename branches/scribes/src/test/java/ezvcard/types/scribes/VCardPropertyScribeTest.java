@@ -21,7 +21,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.types.VCardType;
 import ezvcard.types.scribes.Sensei.Check;
 import ezvcard.types.scribes.VCardPropertyScribe.SemiStructuredIterator;
@@ -477,19 +476,8 @@ public class VCardPropertyScribeTest {
 		}
 
 		public TestProperty(String value, VCardDataType parsedDataType) {
-			super("NAME");
 			this.value = value;
 			this.parsedDataType = parsedDataType;
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//TODO remove me
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//TODO remove me
 		}
 	}
 }

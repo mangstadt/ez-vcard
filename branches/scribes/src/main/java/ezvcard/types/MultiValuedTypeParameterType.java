@@ -43,14 +43,6 @@ import ezvcard.parameters.VCardParameter;
  */
 public abstract class MultiValuedTypeParameterType<T extends VCardParameter> extends TypeParameterType<T> {
 	/**
-	 * Creates a multi-valued type parameter property.
-	 * @param typeName the type name (e.g. "ADR")
-	 */
-	public MultiValuedTypeParameterType(String typeName) {
-		super(typeName);
-	}
-
-	/**
 	 * Gets all the TYPE parameters.
 	 * @return all the TYPE parameters or empty set if there are none
 	 */

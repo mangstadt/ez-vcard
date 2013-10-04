@@ -3,7 +3,6 @@ package ezvcard.types;
 import java.util.List;
 
 import ezvcard.VCardSubTypes;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -60,15 +59,6 @@ import ezvcard.util.HCardElement;
  * @author Michael Angstadt
  */
 public class OrganizationType extends TextListType implements HasAltId {
-	public static final String NAME = "ORG";
-
-	/**
-	 * Creates an organization property.
-	 */
-	public OrganizationType() {
-		super(NAME, ';');
-	}
-
 	@Override
 	public String getLanguage() {
 		return super.getLanguage();
@@ -169,22 +159,5 @@ public class OrganizationType extends TextListType implements HasAltId {
 	 */
 	public void setSortAs(String... names) {
 		subTypes.setSortAs(names);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String orgName = element.firstValue("organization-name");
-		if (orgName != null) {
-			addValue(orgName);
-		}
-
-		String orgUnit = element.firstValue("organization-unit");
-		if (orgUnit != null) {
-			addValue(orgUnit);
-		}
-
-		if (getValues().isEmpty()) {
-			addValue(element.value());
-		}
 	}
 }

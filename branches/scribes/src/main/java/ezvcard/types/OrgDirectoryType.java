@@ -58,20 +58,11 @@ import ezvcard.VCardVersion;
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
 public class OrgDirectoryType extends UriType implements HasAltId {
-	public static final String NAME = "ORG-DIRECTORY";
-
-	/**
-	 * Creates an empty organization directory property.
-	 */
-	public OrgDirectoryType() {
-		this(null);
-	}
-
 	/**
 	 * @param uri the URI
 	 */
 	public OrgDirectoryType(String uri) {
-		super(NAME, uri);
+		super(uri);
 	}
 
 	@Override

@@ -1,15 +1,11 @@
 package ezvcard.types;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.util.HCardElement;
-import ezvcard.util.VCardStringUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -101,23 +97,13 @@ import ezvcard.util.VCardStringUtils;
  * @author Michael Angstadt
  */
 public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter> {
-	public static final String NAME = "LABEL";
-
 	private String value;
-
-	/**
-	 * Creates an empty label property.
-	 */
-	public LabelType() {
-		this(null);
-	}
 
 	/**
 	 * Creates a label property.
 	 * @param label the label value
 	 */
 	public LabelType(String label) {
-		super(NAME);
 		setValue(label);
 	}
 
@@ -155,27 +141,5 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (value != null) {
-			sb.append(VCardStringUtils.escape(value));
-		}
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(VCardStringUtils.unescape(value));
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		List<String> types = element.types();
-		for (String type : types) {
-			subTypes.addType(type);
-		}
-
-		setValue(element.value());
 	}
 }

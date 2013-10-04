@@ -13,7 +13,6 @@ import org.junit.Test;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.types.DateOrTimeType;
-import ezvcard.types.scribes.DateOrTimePropertyScribe;
 import ezvcard.types.scribes.Sensei.Check;
 import ezvcard.util.DefaultTimezoneRule;
 import ezvcard.util.PartialDate;
@@ -218,11 +217,7 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	private static class DateOrTimeTypeImpl extends DateOrTimeType {
-		public static final String NAME = "DATE";
-
-		public DateOrTimeTypeImpl() {
-			super(NAME);
-		}
+		//empty
 	}
 
 	private Check<DateOrTimeTypeImpl> hasText(final String text) {

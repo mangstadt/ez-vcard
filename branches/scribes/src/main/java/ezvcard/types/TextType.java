@@ -1,14 +1,5 @@
 package ezvcard.types;
 
-import java.util.List;
-
-import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -46,61 +37,9 @@ import ezvcard.util.XCardElement;
 public class TextType extends SimpleProperty<String> {
 	/**
 	 * Creates a property that contains text.
-	 * @param name the type name (e.g. "NOTE")
-	 */
-	public TextType(String name) {
-		this(name, null);
-	}
-
-	/**
-	 * Creates a property that contains text.
-	 * @param name the type name (e.g. "NOTE")
 	 * @param value the type value
 	 */
-	public TextType(String name, String value) {
-		super(name, value);
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (value != null) {
-			sb.append(VCardStringUtils.escape(value));
-		}
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		setValue(VCardStringUtils.unescape(value));
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.TEXT, value);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.TEXT);
-		if (value != null) {
-			setValue(value);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.TEXT);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		setValue(element.value());
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.TEXT, value);
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		setValue(value.asSingle());
+	public TextType(String value) {
+		super(value);
 	}
 }

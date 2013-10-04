@@ -688,7 +688,7 @@ public class VCardReaderTest {
 			c.set(Calendar.HOUR_OF_DAY, 13);
 			c.set(Calendar.MINUTE, 32);
 			c.set(Calendar.SECOND, 54);
-			assertEquals(c.getTime(), t.getTimestamp());
+			assertEquals(c.getTime(), t.getValue());
 		}
 
 		//extended types
@@ -697,13 +697,13 @@ public class VCardReaderTest {
 
 			Iterator<RawType> it = vcard.getExtendedTypes("X-COUCHDB-APPLICATION-ANNOTATIONS").iterator();
 			RawType t = it.next();
-			assertEquals("X-COUCHDB-APPLICATION-ANNOTATIONS", t.getTypeName());
+			assertEquals("X-COUCHDB-APPLICATION-ANNOTATIONS", t.getPropertyName());
 			assertEquals("{\"Evolution\":{\"revision\":\"2012-03-05T13:32:54Z\"}}", t.getValue());
 			assertFalse(it.hasNext());
 
 			it = vcard.getExtendedTypes("X-AIM").iterator();
 			t = it.next();
-			assertEquals("X-AIM", t.getTypeName());
+			assertEquals("X-AIM", t.getPropertyName());
 			assertEquals("johnny5@aol.com", t.getValue());
 			assertEquals("HOME", t.getSubTypes().getType());
 			assertEquals("cb9e11fc-bb97-4222-9cd8-99820c1de454", t.getSubTypes().first("X-COUCHDB-UUID"));
@@ -711,31 +711,31 @@ public class VCardReaderTest {
 
 			it = vcard.getExtendedTypes("X-EVOLUTION-FILE-AS").iterator();
 			t = it.next();
-			assertEquals("X-EVOLUTION-FILE-AS", t.getTypeName());
+			assertEquals("X-EVOLUTION-FILE-AS", t.getPropertyName());
 			assertEquals("Doe\\, John", t.getValue());
 			assertFalse(it.hasNext());
 
 			it = vcard.getExtendedTypes("X-EVOLUTION-SPOUSE").iterator();
 			t = it.next();
-			assertEquals("X-EVOLUTION-SPOUSE", t.getTypeName());
+			assertEquals("X-EVOLUTION-SPOUSE", t.getPropertyName());
 			assertEquals("Maria", t.getValue());
 			assertFalse(it.hasNext());
 
 			it = vcard.getExtendedTypes("X-EVOLUTION-MANAGER").iterator();
 			t = it.next();
-			assertEquals("X-EVOLUTION-MANAGER", t.getTypeName());
+			assertEquals("X-EVOLUTION-MANAGER", t.getPropertyName());
 			assertEquals("Big Blue", t.getValue());
 			assertFalse(it.hasNext());
 
 			it = vcard.getExtendedTypes("X-EVOLUTION-ASSISTANT").iterator();
 			t = it.next();
-			assertEquals("X-EVOLUTION-ASSISTANT", t.getTypeName());
+			assertEquals("X-EVOLUTION-ASSISTANT", t.getPropertyName());
 			assertEquals("Little Red", t.getValue());
 			assertFalse(it.hasNext());
 
 			it = vcard.getExtendedTypes("X-EVOLUTION-ANNIVERSARY").iterator();
 			t = it.next();
-			assertEquals("X-EVOLUTION-ANNIVERSARY", t.getTypeName());
+			assertEquals("X-EVOLUTION-ANNIVERSARY", t.getPropertyName());
 			assertEquals("1980-03-22", t.getValue());
 			assertFalse(it.hasNext());
 		}
@@ -865,30 +865,30 @@ public class VCardReaderTest {
 			assertEquals(6, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedTypes("X-PHONETIC-FIRST-NAME").get(0);
-			assertEquals("X-PHONETIC-FIRST-NAME", f.getTypeName());
+			assertEquals("X-PHONETIC-FIRST-NAME", f.getPropertyName());
 			assertEquals("Jon", f.getValue());
 
 			f = vcard.getExtendedTypes("X-PHONETIC-LAST-NAME").get(0);
-			assertEquals("X-PHONETIC-LAST-NAME", f.getTypeName());
+			assertEquals("X-PHONETIC-LAST-NAME", f.getPropertyName());
 			assertEquals("Dow", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ABDATE").get(0);
-			assertEquals("X-ABDATE", f.getTypeName());
+			assertEquals("X-ABDATE", f.getPropertyName());
 			assertEquals("1975-03-01", f.getValue());
 			assertEquals("item1", f.getGroup());
 
 			f = vcard.getExtendedTypes("X-ABLABEL").get(0);
-			assertEquals("X-ABLabel", f.getTypeName());
+			assertEquals("X-ABLabel", f.getPropertyName());
 			assertEquals("_$!<Anniversary>!$_", f.getValue());
 			assertEquals("item1", f.getGroup());
 
 			f = vcard.getExtendedTypes("X-ABLABEL").get(1);
-			assertEquals("X-ABLabel", f.getTypeName());
+			assertEquals("X-ABLabel", f.getPropertyName());
 			assertEquals("_$!<Spouse>!$_", f.getValue());
 			assertEquals("item2", f.getGroup());
 
 			f = vcard.getExtendedTypes("X-ABRELATEDNAMES").get(0);
-			assertEquals("X-ABRELATEDNAMES", f.getTypeName());
+			assertEquals("X-ABRELATEDNAMES", f.getPropertyName());
 			assertEquals("Jenny", f.getValue());
 			assertEquals("item2", f.getGroup());
 		}
@@ -1142,15 +1142,15 @@ public class VCardReaderTest {
 			assertEquals(12, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedTypes("X-PHONETIC-FIRST-NAME").get(0);
-			assertEquals("X-PHONETIC-FIRST-NAME", f.getTypeName());
+			assertEquals("X-PHONETIC-FIRST-NAME", f.getPropertyName());
 			assertEquals("Grregg", f.getValue());
 
 			f = vcard.getExtendedTypes("X-PHONETIC-LAST-NAME").get(0);
-			assertEquals("X-PHONETIC-LAST-NAME", f.getTypeName());
+			assertEquals("X-PHONETIC-LAST-NAME", f.getPropertyName());
 			assertEquals("Dart-mowth", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ICQ").get(0);
-			assertEquals("X-ICQ", f.getTypeName());
+			assertEquals("X-ICQ", f.getPropertyName());
 			assertEquals("123456789", f.getValue());
 
 			Iterator<RawType> abLabelIt = vcard.getExtendedTypes("X-ABLABEL").iterator();
@@ -1184,17 +1184,17 @@ public class VCardReaderTest {
 
 			f = vcard.getExtendedTypes("X-ABDATE").get(0);
 			assertEquals("item4", f.getGroup());
-			assertEquals("X-ABDATE", f.getTypeName());
+			assertEquals("X-ABDATE", f.getPropertyName());
 			assertEquals("1970-06-02", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ABRELATEDNAMES").get(0);
 			assertEquals("item5", f.getGroup());
-			assertEquals("X-ABRELATEDNAMES", f.getTypeName());
+			assertEquals("X-ABRELATEDNAMES", f.getPropertyName());
 			assertEquals("MySpouse", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ABRELATEDNAMES").get(1);
 			assertEquals("item6", f.getGroup());
-			assertEquals("X-ABRELATEDNAMES", f.getTypeName());
+			assertEquals("X-ABRELATEDNAMES", f.getPropertyName());
 			assertEquals("MyCustom", f.getValue());
 		}
 
@@ -1371,22 +1371,22 @@ public class VCardReaderTest {
 
 			RawType f = vcard.getExtendedTypes("X-ABLABEL").get(0);
 			assertEquals("item2", f.getGroup());
-			assertEquals("X-ABLabel", f.getTypeName());
+			assertEquals("X-ABLabel", f.getPropertyName());
 			assertEquals("_$!<AssistantPhone>!$_", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ABADR").get(0);
 			assertEquals("item3", f.getGroup());
-			assertEquals("X-ABADR", f.getTypeName());
+			assertEquals("X-ABADR", f.getPropertyName());
 			assertEquals("Silicon Alley", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ABADR").get(1);
 			assertEquals("item4", f.getGroup());
-			assertEquals("X-ABADR", f.getTypeName());
+			assertEquals("X-ABADR", f.getPropertyName());
 			assertEquals("Street 4, Building 6,\\n Floor 8\\nNew York\\nUSA", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ABLABEL").get(1);
 			assertEquals("item5", f.getGroup());
-			assertEquals("X-ABLabel", f.getTypeName());
+			assertEquals("X-ABLabel", f.getPropertyName());
 			assertEquals("_$!<HomePage>!$_", f.getValue());
 		}
 
@@ -1626,19 +1626,19 @@ public class VCardReaderTest {
 
 			RawType f = vcard.getExtendedTypes("X-ABLABEL").get(0);
 			assertEquals("item2", f.getGroup());
-			assertEquals("X-ABLabel", f.getTypeName());
+			assertEquals("X-ABLabel", f.getPropertyName());
 			assertEquals("_$!<HomePage>!$_", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ABUID").get(0);
-			assertEquals("X-ABUID", f.getTypeName());
+			assertEquals("X-ABUID", f.getPropertyName());
 			assertEquals("0E7602CC-443E-4B82-B4B1-90F62F99A199:ABPerson", f.getValue());
 
 			f = vcard.getExtendedTypes("X-GENERATOR").get(0);
-			assertEquals("X-GENERATOR", f.getTypeName());
+			assertEquals("X-GENERATOR", f.getPropertyName());
 			assertEquals("Cardme Generator", f.getValue());
 
 			f = vcard.getExtendedTypes("X-LONG-STRING").get(0);
-			assertEquals("X-LONG-STRING", f.getTypeName());
+			assertEquals("X-LONG-STRING", f.getPropertyName());
 			assertEquals("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", f.getValue());
 		}
 
@@ -1818,7 +1818,7 @@ public class VCardReaderTest {
 			c.set(Calendar.HOUR_OF_DAY, 13);
 			c.set(Calendar.MINUTE, 19);
 			c.set(Calendar.SECOND, 33);
-			assertEquals(c.getTime(), f.getTimestamp());
+			assertEquals(c.getTime(), f.getValue());
 		}
 
 		//extended types
@@ -1826,28 +1826,28 @@ public class VCardReaderTest {
 			assertEquals(6, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedTypes("X-MS-OL-DEFAULT-POSTAL-ADDRESS").get(0);
-			assertEquals("X-MS-OL-DEFAULT-POSTAL-ADDRESS", f.getTypeName());
+			assertEquals("X-MS-OL-DEFAULT-POSTAL-ADDRESS", f.getPropertyName());
 			assertEquals("2", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-ANNIVERSARY").get(0);
-			assertEquals("X-MS-ANNIVERSARY", f.getTypeName());
+			assertEquals("X-MS-ANNIVERSARY", f.getPropertyName());
 			assertEquals("20110113", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-IMADDRESS").get(0);
-			assertEquals("X-MS-IMADDRESS", f.getTypeName());
+			assertEquals("X-MS-IMADDRESS", f.getPropertyName());
 			assertEquals("johny5@aol.com", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-OL-DESIGN").get(0);
-			assertEquals("X-MS-OL-DESIGN", f.getTypeName());
+			assertEquals("X-MS-OL-DESIGN", f.getPropertyName());
 			assertEquals("<card xmlns=\"http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards\" ver=\"1.0\" layout=\"left\" bgcolor=\"ffffff\"><img xmlns=\"\" align=\"tleft\" area=\"32\" use=\"photo\"/><fld xmlns=\"\" prop=\"name\" align=\"left\" dir=\"ltr\" style=\"b\" color=\"000000\" size=\"10\"/><fld xmlns=\"\" prop=\"org\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"title\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"dept\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"telwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Work</label></fld><fld xmlns=\"\" prop=\"telhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Home</label></fld><fld xmlns=\"\" prop=\"email\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"webwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/></card>", f.getValue());
 			assertEquals("utf-8", f.getSubTypes().getCharset());
 
 			f = vcard.getExtendedTypes("X-MS-MANAGER").get(0);
-			assertEquals("X-MS-MANAGER", f.getTypeName());
+			assertEquals("X-MS-MANAGER", f.getPropertyName());
 			assertEquals("Big Blue", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-ASSISTANT").get(0);
-			assertEquals("X-MS-ASSISTANT", f.getTypeName());
+			assertEquals("X-MS-ASSISTANT", f.getPropertyName());
 			assertEquals("Jenny", f.getValue());
 		}
 
@@ -2051,7 +2051,7 @@ public class VCardReaderTest {
 			c.set(Calendar.HOUR_OF_DAY, 18);
 			c.set(Calendar.MINUTE, 46);
 			c.set(Calendar.SECOND, 31);
-			assertEquals(c.getTime(), f.getTimestamp());
+			assertEquals(c.getTime(), f.getValue());
 		}
 
 		//extended types
@@ -2059,37 +2059,37 @@ public class VCardReaderTest {
 			assertEquals(8, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedTypes("X-MS-TEL").get(0);
-			assertEquals("X-MS-TEL", f.getTypeName());
+			assertEquals("X-MS-TEL", f.getPropertyName());
 			assertEquals("(111) 555-4444", f.getValue());
 			assertSetEquals(f.getSubTypes().getTypes(), "VOICE", "CALLBACK");
 
 			f = vcard.getExtendedTypes("X-MS-OL-DEFAULT-POSTAL-ADDRESS").get(0);
-			assertEquals("X-MS-OL-DEFAULT-POSTAL-ADDRESS", f.getTypeName());
+			assertEquals("X-MS-OL-DEFAULT-POSTAL-ADDRESS", f.getPropertyName());
 			assertEquals("2", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-ANNIVERSARY").get(0);
-			assertEquals("X-MS-ANNIVERSARY", f.getTypeName());
+			assertEquals("X-MS-ANNIVERSARY", f.getPropertyName());
 			assertEquals("20120801", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-IMADDRESS").get(0);
-			assertEquals("X-MS-IMADDRESS", f.getTypeName());
+			assertEquals("X-MS-IMADDRESS", f.getPropertyName());
 			assertEquals("im@aim.com", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-OL-DESIGN").get(0);
-			assertEquals("X-MS-OL-DESIGN", f.getTypeName());
+			assertEquals("X-MS-OL-DESIGN", f.getPropertyName());
 			assertEquals("<card xmlns=\"http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards\" ver=\"1.0\" layout=\"left\" bgcolor=\"ffffff\"><img xmlns=\"\" align=\"tleft\" area=\"32\" use=\"photo\"/><fld xmlns=\"\" prop=\"name\" align=\"left\" dir=\"ltr\" style=\"b\" color=\"000000\" size=\"10\"/><fld xmlns=\"\" prop=\"org\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"title\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"dept\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"telwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Work</label></fld><fld xmlns=\"\" prop=\"telcell\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Mobile</label></fld><fld xmlns=\"\" prop=\"telhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Home</label></fld><fld xmlns=\"\" prop=\"email\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"webwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/></card>", f.getValue());
 			assertEquals("utf-8", f.getSubTypes().getCharset());
 
 			f = vcard.getExtendedTypes("X-MS-MANAGER").get(0);
-			assertEquals("X-MS-MANAGER", f.getTypeName());
+			assertEquals("X-MS-MANAGER", f.getPropertyName());
 			assertEquals("TheManagerName", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-ASSISTANT").get(0);
-			assertEquals("X-MS-ASSISTANT", f.getTypeName());
+			assertEquals("X-MS-ASSISTANT", f.getPropertyName());
 			assertEquals("TheAssistantName", f.getValue());
 
 			f = vcard.getExtendedTypes("X-MS-SPOUSE").get(0);
-			assertEquals("X-MS-SPOUSE", f.getTypeName());
+			assertEquals("X-MS-SPOUSE", f.getPropertyName());
 			assertEquals("TheSpouse", f.getValue());
 		}
 
@@ -2269,46 +2269,46 @@ public class VCardReaderTest {
 			assertEquals(9, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedTypes("X-PHONETIC-FIRST-NAME").get(0);
-			assertEquals("X-PHONETIC-FIRST-NAME", f.getTypeName());
+			assertEquals("X-PHONETIC-FIRST-NAME", f.getPropertyName());
 			assertEquals("Jon", f.getValue());
 
 			f = vcard.getExtendedTypes("X-PHONETIC-LAST-NAME").get(0);
-			assertEquals("X-PHONETIC-LAST-NAME", f.getTypeName());
+			assertEquals("X-PHONETIC-LAST-NAME", f.getPropertyName());
 			assertEquals("Dow", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ABLABEL").get(0);
-			assertEquals("X-ABLabel", f.getTypeName());
+			assertEquals("X-ABLabel", f.getPropertyName());
 			assertEquals("AssistantPhone", f.getValue());
 			assertEquals("item1", f.getGroup());
 
 			f = vcard.getExtendedTypes("X-ABADR").get(0);
-			assertEquals("X-ABADR", f.getTypeName());
+			assertEquals("X-ABADR", f.getPropertyName());
 			assertEquals("Silicon Alley", f.getValue());
 			assertEquals("item2", f.getGroup());
 
 			f = vcard.getExtendedTypes("X-ABADR").get(1);
-			assertEquals("X-ABADR", f.getTypeName());
+			assertEquals("X-ABADR", f.getPropertyName());
 			assertEquals("Street 4, Building 6,\\nFloor 8\\nNew York\\nUSA", f.getValue());
 			assertEquals("item3", f.getGroup());
 
 			f = vcard.getExtendedTypes("X-ABLABEL").get(1);
-			assertEquals("X-ABLabel", f.getTypeName());
+			assertEquals("X-ABLabel", f.getPropertyName());
 			assertEquals("_$!<HomePage>!$_", f.getValue());
 			assertEquals("item4", f.getGroup());
 
 			f = vcard.getExtendedTypes("X-ABRELATEDNAMES").get(0);
-			assertEquals("X-ABRELATEDNAMES", f.getTypeName());
+			assertEquals("X-ABRELATEDNAMES", f.getPropertyName());
 			assertEquals("Jenny", f.getValue());
 			assertEquals("item5", f.getGroup());
 			assertSetEquals(f.getSubTypes().getTypes(), "pref");
 
 			f = vcard.getExtendedTypes("X-ABLABEL").get(2);
-			assertEquals("X-ABLabel", f.getTypeName());
+			assertEquals("X-ABLabel", f.getPropertyName());
 			assertEquals("Spouse", f.getValue());
 			assertEquals("item5", f.getGroup());
 
 			f = vcard.getExtendedTypes("X-ABUID").get(0);
-			assertEquals("X-ABUID", f.getTypeName());
+			assertEquals("X-ABUID", f.getPropertyName());
 			assertEquals("6B29A774-D124-4822-B8D0-2780EC117F60\\:ABPerson", f.getValue());
 		}
 
@@ -2496,7 +2496,7 @@ public class VCardReaderTest {
 			c.set(Calendar.HOUR_OF_DAY, 21);
 			c.set(Calendar.MINUTE, 5);
 			c.set(Calendar.SECOND, 25);
-			assertEquals(c.getTime(), f.getTimestamp());
+			assertEquals(c.getTime(), f.getValue());
 		}
 
 		assertValidate(vcard.validate(VCardVersion.V2_1), vcard.getNickname(), vcard.getFbUrls().get(0));
@@ -2690,11 +2690,11 @@ public class VCardReaderTest {
 			assertEquals(2, countExtTypes(vcard));
 
 			RawType f = vcard.getExtendedTypes("X-SPOUSE").get(0);
-			assertEquals("X-SPOUSE", f.getTypeName());
+			assertEquals("X-SPOUSE", f.getPropertyName());
 			assertEquals("TheSpouse", f.getValue());
 
 			f = vcard.getExtendedTypes("X-ANNIVERSARY").get(0);
-			assertEquals("X-ANNIVERSARY", f.getTypeName());
+			assertEquals("X-ANNIVERSARY", f.getPropertyName());
 			assertEquals("1990-04-30", f.getValue());
 		}
 

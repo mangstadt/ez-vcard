@@ -1,17 +1,11 @@
 package ezvcard.types;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -81,8 +75,6 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class GenderType extends VCardType {
-	public static final String NAME = "GENDER";
-
 	public static final String MALE = "M";
 	public static final String FEMALE = "F";
 	public static final String OTHER = "O";
@@ -93,20 +85,11 @@ public class GenderType extends VCardType {
 	private String text;
 
 	/**
-	 * Creates an empty gender property. Use of this constructor is discouraged.
-	 * Please use one of the static factory methods to create a new GENDER type.
-	 */
-	public GenderType() {
-		super(NAME);
-	}
-
-	/**
 	 * Creates a gender property. Use of this constructor is discouraged. Please
 	 * use one of the static factory methods to create a new GENDER type.
 	 * @param gender the gender value (e.g. "F")
 	 */
 	public GenderType(String gender) {
-		super(NAME);
 		this.gender = gender;
 	}
 
@@ -231,78 +214,9 @@ public class GenderType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (gender != null) {
-			sb.append(gender);
-		}
-		if (text != null) {
-			sb.append(';');
-			sb.append(VCardStringUtils.escape(text));
-		}
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String split[] = value.split(";", 2);
-		setGender(split[0].toUpperCase());
-		if (split.length > 1) {
-			setText(VCardStringUtils.unescape(split[1]));
-		}
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append("sex", gender);
-		if (text != null) {
-			parent.append("identity", text);
-		}
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String sex = element.first("sex");
-		if (sex != null) {
-			setGender(sex);
-			setText(element.first("identity")); //optional field
-			return;
-		}
-
-		throw missingXmlElements("sex");
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (text == null) {
-			return JCardValue.single(VCardDataType.TEXT, gender);
-		}
-		return JCardValue.structured(VCardDataType.TEXT, gender, text);
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		Iterator<List<String>> it = value.asStructured().iterator();
-		gender = nextJsonComponent(it);
-		text = nextJsonComponent(it);
-	}
-
-	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		if (gender == null) {
 			warnings.add("Property value is null.");
 		}
-	}
-
-	private String nextJsonComponent(Iterator<List<String>> it) {
-		if (!it.hasNext()) {
-			return null;
-		}
-
-		List<String> values = it.next();
-		if (values.isEmpty()) {
-			return null;
-		}
-
-		String value = values.get(0);
-		return (value == null || value.length() == 0) ? null : value;
 	}
 }

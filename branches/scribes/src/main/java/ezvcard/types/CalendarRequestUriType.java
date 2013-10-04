@@ -61,21 +61,12 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class CalendarRequestUriType extends UriType implements HasAltId {
-	public static final String NAME = "CALADRURI";
-
-	/**
-	 * Creates an empty calendar request URI property.
-	 */
-	public CalendarRequestUriType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates a calendar request URI property.
 	 * @param uri the calendar request URI
 	 */
 	public CalendarRequestUriType(String uri) {
-		super(NAME, uri);
+		super(uri);
 	}
 
 	@Override

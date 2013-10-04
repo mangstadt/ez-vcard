@@ -1,27 +1,14 @@
 package ezvcard.types;
 
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import javax.xml.transform.OutputKeys;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -75,18 +62,7 @@ import ezvcard.util.XmlUtils;
  * </p>
  * @author Michael Angstadt
  */
-public class XmlType extends VCardType implements HasAltId {
-	public static final String NAME = "XML";
-
-	private Document document;
-
-	/**
-	 * Creates an empty XML property.
-	 */
-	public XmlType() {
-		this((Document) null);
-	}
-
+public class XmlType extends SimpleProperty<Document> implements HasAltId {
 	/**
 	 * Creates an XML property.
 	 * @param xml the XML to use as the property's value
@@ -110,29 +86,12 @@ public class XmlType extends VCardType implements HasAltId {
 	 * @param document the XML document to use as the property's value
 	 */
 	public XmlType(Document document) {
-		super(NAME);
-		this.document = document;
+		super(document);
 	}
 
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
-	}
-
-	/**
-	 * Gets the value of this property.
-	 * @return the XML DOM or null if not set
-	 */
-	public Document getDocument() {
-		return document;
-	}
-
-	/**
-	 * Sets the value of this property.
-	 * @param document the XML DOM or null to remove
-	 */
-	public void setDocument(Document document) {
-		this.document = document;
 	}
 
 	//@Override
@@ -143,88 +102,6 @@ public class XmlType extends VCardType implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		String xml = write();
-		sb.append(VCardStringUtils.escape(xml));
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value);
-		parse(value);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (document == null) {
-			return;
-		}
-
-		//add XML element to marshalled document
-		Element root = XmlUtils.getRootElement(document);
-		Node imported = parent.element().getOwnerDocument().importNode(root, true);
-		parent.element().appendChild(imported);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		document = detachElement(element.element());
-
-		//remove the <parameters> element
-		Element root = XmlUtils.getRootElement(document);
-		for (Element child : XmlUtils.toElementList(root.getChildNodes())) {
-			if ("parameters".equals(child.getLocalName()) && VCardVersion.V4_0.getXmlNamespace().equals(child.getNamespaceURI())) {
-				root.removeChild(child);
-			}
-		}
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		parse(element.value());
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		String value = write();
-		return JCardValue.single(VCardDataType.TEXT, value);
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		parse(value.asSingle());
-	}
-
-	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
-		if (document == null) {
-			warnings.add("Property value is null.");
-		}
-	}
-
-	private void parse(String xml) {
-		if (xml == null || xml.length() == 0) {
-			return;
-		}
-
-		try {
-			document = XmlUtils.toDocument(xml);
-		} catch (SAXException e) {
-			throw new CannotParseException("Cannot parse value as XML.");
-		}
-	}
-
-	private String write() {
-		if (document == null) {
-			return "";
-		}
-
-		Map<String, String> props = new HashMap<String, String>();
-		props.put(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		return XmlUtils.toString(document, props);
 	}
 
 	private static Document detachElement(Element element) {

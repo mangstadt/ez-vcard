@@ -3,12 +3,8 @@ package ezvcard.types;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
-import ezvcard.io.CannotParseException;
 import ezvcard.parameters.SoundTypeParameter;
-import ezvcard.util.DataUri;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -118,22 +114,13 @@ import ezvcard.util.HCardElement;
  * @author Michael Angstadt
  */
 public class SoundType extends BinaryType<SoundTypeParameter> {
-	public static final String NAME = "SOUND";
-
-	/**
-	 * Creates an empty sound property.
-	 */
-	public SoundType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates a sound property.
 	 * @param url the URL to the sound file
 	 * @param type the content type (e.g. OGG)
 	 */
 	public SoundType(String url, SoundTypeParameter type) {
-		super(NAME, url, type);
+		super(url, type);
 	}
 
 	/**
@@ -142,7 +129,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	 * @param type the content type (e.g. OGG)
 	 */
 	public SoundType(byte[] data, SoundTypeParameter type) {
-		super(NAME, data, type);
+		super(data, type);
 	}
 
 	/**
@@ -152,7 +139,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	 * @throws IOException if there's a problem reading from the input stream
 	 */
 	public SoundType(InputStream in, SoundTypeParameter type) throws IOException {
-		super(NAME, in, type);
+		super(in, type);
 	}
 
 	/**
@@ -162,7 +149,7 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	 * @throws IOException if there's a problem reading from the file
 	 */
 	public SoundType(File file, SoundTypeParameter type) throws IOException {
-		super(NAME, file, type);
+		super(file, type);
 	}
 
 	@Override
@@ -173,52 +160,5 @@ public class SoundType extends BinaryType<SoundTypeParameter> {
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
-	}
-
-	@Override
-	protected SoundTypeParameter buildTypeObj(String type) {
-		return SoundTypeParameter.get(type, null, null);
-	}
-
-	@Override
-	protected SoundTypeParameter buildMediaTypeObj(String mediaType) {
-		return SoundTypeParameter.get(null, mediaType, null);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String elementName = element.tagName();
-		if (!"audio".equals(elementName) && !"source".equals(elementName)) {
-			super.doUnmarshalHtml(element, warnings);
-			return;
-		}
-
-		if ("audio".equals(elementName)) {
-			//parse its child "<source>" element
-			org.jsoup.nodes.Element source = element.getElement().getElementsByTag("source").first();
-			if (source == null) {
-				throw new CannotParseException("No <source> tag found beneath <audio> tag.");
-			}
-
-			element = new HCardElement(source);
-		}
-
-		String src = element.absUrl("src");
-		if (src.length() == 0) {
-			throw new CannotParseException("<source> tag does not have a \"src\" attribute.");
-		}
-
-		String type = element.attr("type");
-		SoundTypeParameter mediaType = (type.length() == 0) ? null : buildMediaTypeObj(type);
-
-		try {
-			DataUri uri = new DataUri(src);
-			mediaType = buildMediaTypeObj(uri.getContentType());
-			setData(uri.getData(), mediaType);
-		} catch (IllegalArgumentException e) {
-			//not a data URI
-			//TODO create buildTypeObjFromExtension() method
-			setUrl(src, null);
-		}
 	}
 }
