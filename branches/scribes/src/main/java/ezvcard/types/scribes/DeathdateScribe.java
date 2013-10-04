@@ -41,22 +41,16 @@ public class DeathdateScribe extends DateOrTimePropertyScribe<DeathdateType> {
 
 	@Override
 	protected DeathdateType newInstance(String text) {
-		DeathdateType property = new DeathdateType();
-		property.setText(text);
-		return property;
+		return new DeathdateType(text);
 	}
 
 	@Override
 	protected DeathdateType newInstance(Date date, boolean hasTime) {
-		DeathdateType property = new DeathdateType();
-		property.setDate(date, hasTime);
-		return property;
+		return new DeathdateType(date, hasTime);
 	}
 
 	@Override
 	protected DeathdateType newInstance(PartialDate partialDate) {
-		DeathdateType property = new DeathdateType();
-		property.setPartialDate(partialDate);
-		return property;
+		return new DeathdateType(partialDate);
 	}
 }

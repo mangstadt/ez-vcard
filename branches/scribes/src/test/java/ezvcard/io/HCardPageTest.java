@@ -447,13 +447,12 @@ public class HCardPageTest {
 		org.addValue("GMail");
 		vcard.setOrganization(org);
 
-		BirthdayType bday = new BirthdayType();
 		Calendar c = Calendar.getInstance();
 		c.clear();
 		c.set(Calendar.YEAR, 1970);
 		c.set(Calendar.MONTH, Calendar.MARCH);
 		c.set(Calendar.DATE, 8);
-		bday.setDate(c.getTime(), false);
+		BirthdayType bday = new BirthdayType(c.getTime(), false);
 		vcard.setBirthday(bday);
 
 		vcard.addUrl(new UrlType("http://company.com"));

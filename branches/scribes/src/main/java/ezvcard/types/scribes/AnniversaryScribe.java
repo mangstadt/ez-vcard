@@ -41,22 +41,16 @@ public class AnniversaryScribe extends DateOrTimePropertyScribe<AnniversaryType>
 
 	@Override
 	protected AnniversaryType newInstance(String text) {
-		AnniversaryType property = new AnniversaryType();
-		property.setText(text);
-		return property;
+		return new AnniversaryType(text);
 	}
 
 	@Override
 	protected AnniversaryType newInstance(Date date, boolean hasTime) {
-		AnniversaryType property = new AnniversaryType();
-		property.setDate(date, hasTime);
-		return property;
+		return new AnniversaryType(date, hasTime);
 	}
 
 	@Override
 	protected AnniversaryType newInstance(PartialDate partialDate) {
-		AnniversaryType property = new AnniversaryType();
-		property.setPartialDate(partialDate);
-		return property;
+		return new AnniversaryType(partialDate);
 	}
 }

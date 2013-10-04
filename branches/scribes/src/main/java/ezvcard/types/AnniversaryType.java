@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
+import ezvcard.util.PartialDate;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -95,18 +96,37 @@ import ezvcard.VCardVersion;
  */
 public class AnniversaryType extends DateOrTimeType {
 	/**
-	 * Creates an empty anniversary property.
-	 */
-	public AnniversaryType() {
-		super();
-	}
-
-	/**
 	 * Creates an anniversary property.
 	 * @param date the anniversary date
 	 */
 	public AnniversaryType(Date date) {
 		super(date);
+	}
+
+	/**
+	 * Creates an anniversary property.
+	 * @param date the anniversary date
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
+	 */
+	public AnniversaryType(Date date, boolean hasTime) {
+		super(date, hasTime);
+	}
+
+	/**
+	 * Creates an anniversary property.
+	 * @param partialDate the partial anniversary date (vCard 4.0 only)
+	 */
+	public AnniversaryType(PartialDate partialDate) {
+		super(partialDate);
+	}
+
+	/**
+	 * Creates an anniversary property.
+	 * @param text the text value (vCard 4.0 only)
+	 */
+	public AnniversaryType(String text) {
+		super(text);
 	}
 
 	@Override

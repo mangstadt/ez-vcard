@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
+import ezvcard.util.PartialDate;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -96,18 +97,37 @@ import ezvcard.VCardVersion;
  */
 public class DeathdateType extends DateOrTimeType {
 	/**
-	 * Creates an empty deathdate property.
+	 * Creates a deathdate property.
+	 * @param date the deathdate
 	 */
-	public DeathdateType() {
-		super();
+	public DeathdateType(Date date) {
+		super(date);
 	}
 
 	/**
 	 * Creates a deathdate property.
-	 * @param date the time of death
+	 * @param date the deathdate
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
 	 */
-	public DeathdateType(Date date) {
-		super(date);
+	public DeathdateType(Date date, boolean hasTime) {
+		super(date, hasTime);
+	}
+
+	/**
+	 * Creates a deathdate property.
+	 * @param partialDate the deathdate (vCard 4.0 only)
+	 */
+	public DeathdateType(PartialDate partialDate) {
+		super(partialDate);
+	}
+
+	/**
+	 * Creates a deathdate property.
+	 * @param text the text value (vCard 4.0 only)
+	 */
+	public DeathdateType(String text) {
+		super(text);
 	}
 
 	@Override

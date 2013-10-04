@@ -2,6 +2,8 @@ package ezvcard.types;
 
 import java.util.Date;
 
+import ezvcard.util.PartialDate;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -91,17 +93,36 @@ import java.util.Date;
  */
 public class BirthdayType extends DateOrTimeType {
 	/**
-	 * Creates an empty birthday property.
-	 */
-	public BirthdayType() {
-		super();
-	}
-
-	/**
 	 * Creates a birthday property.
 	 * @param date the birthday
 	 */
 	public BirthdayType(Date date) {
 		super(date);
+	}
+
+	/**
+	 * Creates a birthday property.
+	 * @param date the birthday
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
+	 */
+	public BirthdayType(Date date, boolean hasTime) {
+		super(date, hasTime);
+	}
+
+	/**
+	 * Creates a birthday property.
+	 * @param partialDate the birthday (vCard 4.0 only)
+	 */
+	public BirthdayType(PartialDate partialDate) {
+		super(partialDate);
+	}
+
+	/**
+	 * Creates a birthday property.
+	 * @param text the text value (vCard 4.0 only)
+	 */
+	public BirthdayType(String text) {
+		super(text);
 	}
 }
