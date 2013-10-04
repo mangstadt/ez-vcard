@@ -44,8 +44,8 @@ import ezvcard.util.XCardElement;
 public abstract class SimplePropertyScribe<T extends VCardType> extends VCardPropertyScribe<T> {
 	protected final VCardDataType dataType;
 
-	public SimplePropertyScribe(Class<T> clazz, String propertyName, VCardDataType dataType, VCardVersion... supportedVersions) {
-		super(clazz, propertyName, supportedVersions);
+	public SimplePropertyScribe(Class<T> clazz, String propertyName, VCardDataType dataType) {
+		super(clazz, propertyName);
 		this.dataType = dataType;
 	}
 

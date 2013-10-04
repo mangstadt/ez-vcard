@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -120,6 +122,11 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 	}
 
 	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
+	}
+
+	@Override
 	protected AddressTypeParameter buildTypeObj(String type) {
 		return AddressTypeParameter.get(type);
 	}
@@ -148,11 +155,6 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V2_1, VCardVersion.V3_0 };
 	}
 
 	@Override

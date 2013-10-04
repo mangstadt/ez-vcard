@@ -57,7 +57,7 @@ public class ImppScribe extends VCardPropertyScribe<ImppType> {
 	public static final String YAHOO = "ymsgr";
 
 	public ImppScribe() {
-		super(ImppType.class, "IMPP", VCardVersion.V3_0, VCardVersion.V4_0);
+		super(ImppType.class, "IMPP");
 	}
 
 	@Override

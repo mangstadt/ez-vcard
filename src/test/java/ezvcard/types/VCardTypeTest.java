@@ -2,8 +2,8 @@ package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertJCardValue;
 import static ezvcard.util.TestUtils.assertMarshalXml;
+import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -11,7 +11,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -178,7 +180,7 @@ public class VCardTypeTest {
 
 	@Test
 	public void getSupportedVersions() {
-		assertArrayEquals(VCardVersion.values(), t.getSupportedVersions());
+		assertSetEquals(t.getSupportedVersions(), VCardVersion.values());
 	}
 
 	@Test
@@ -279,8 +281,8 @@ public class VCardTypeTest {
 		}
 
 		@Override
-		public VCardVersion[] getSupportedVersions() {
-			return new VCardVersion[] { VCardVersion.V3_0 };
+		public Set<VCardVersion> _supportedVersions() {
+			return EnumSet.of(VCardVersion.V3_0);
 		}
 
 		@Override

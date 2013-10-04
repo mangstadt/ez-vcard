@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -106,6 +108,11 @@ public class MemberType extends UriType implements HasAltId {
 		setUri(uri);
 	}
 
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
+	}
+
 	/**
 	 * Gets the URI value.
 	 * @return the URI value or null if no URI value is set
@@ -205,14 +212,9 @@ public class MemberType extends UriType implements HasAltId {
 	}
 
 	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
-	}
-
-	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		super._validate(warnings, version, vcard);
-		
+
 		if (vcard.getKind() == null || !vcard.getKind().isGroup()) {
 			warnings.add("The " + KindType.class.getSimpleName() + " property must be set to \"group\" if the vCard contains " + MemberType.class.getSimpleName() + " properties.");
 		}

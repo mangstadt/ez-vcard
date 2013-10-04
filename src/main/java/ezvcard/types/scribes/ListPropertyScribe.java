@@ -40,8 +40,8 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public abstract class ListPropertyScribe<T extends TextListType> extends VCardPropertyScribe<T> {
-	public ListPropertyScribe(Class<T> clazz, String propertyName, VCardVersion... supportedVersions) {
-		super(clazz, propertyName, supportedVersions);
+	public ListPropertyScribe(Class<T> clazz, String propertyName) {
+		super(clazz, propertyName);
 	}
 
 	@Override

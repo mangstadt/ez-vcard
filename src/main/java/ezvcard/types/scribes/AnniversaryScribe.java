@@ -2,7 +2,6 @@ package ezvcard.types.scribes;
 
 import java.util.Date;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.AnniversaryType;
 import ezvcard.util.PartialDate;
 
@@ -37,7 +36,7 @@ import ezvcard.util.PartialDate;
  */
 public class AnniversaryScribe extends DateOrTimePropertyScribe<AnniversaryType> {
 	public AnniversaryScribe() {
-		super(AnniversaryType.class, "ANNIVERSARY", VCardVersion.V4_0);
+		super(AnniversaryType.class, "ANNIVERSARY");
 	}
 
 	@Override

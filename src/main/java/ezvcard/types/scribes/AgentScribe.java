@@ -44,7 +44,7 @@ import ezvcard.util.HCardElement;
  */
 public class AgentScribe extends VCardPropertyScribe<AgentType> {
 	public AgentScribe() {
-		super(AgentType.class, "AGENT", VCardVersion.V2_1, VCardVersion.V3_0);
+		super(AgentType.class, "AGENT");
 	}
 
 	@Override

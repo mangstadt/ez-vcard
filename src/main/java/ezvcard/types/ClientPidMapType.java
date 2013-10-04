@@ -1,7 +1,9 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import ezvcard.VCard;
@@ -130,6 +132,11 @@ public class ClientPidMapType extends VCardType {
 		return new ClientPidMapType(pid, "urn:uuid:" + uuid);
 	}
 
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
+	}
+
 	/**
 	 * Gets the value that is used to link the URI in this property to the
 	 * property that the URI belongs to.
@@ -164,11 +171,6 @@ public class ClientPidMapType extends VCardType {
 	 */
 	public void setUri(String uri) {
 		this.uri = uri;
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 
 	@Override

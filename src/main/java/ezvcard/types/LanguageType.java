@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -81,6 +83,11 @@ public class LanguageType extends TextType implements HasAltId {
 		super(NAME, language);
 	}
 
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
+	}
+
 	/**
 	 * Gets the TYPE parameter.
 	 * <p>
@@ -138,11 +145,6 @@ public class LanguageType extends TextType implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 
 	@Override

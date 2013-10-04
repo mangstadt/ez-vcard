@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -267,26 +266,6 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void supported_versions_default() {
-		assertSetEquals(scribe.getSupportedVersions(), VCardVersion.V2_1, VCardVersion.V3_0, VCardVersion.V4_0);
-
-		assertTrue(scribe.isSupported(VCardVersion.V2_1));
-		assertTrue(scribe.isSupported(VCardVersion.V3_0));
-		assertTrue(scribe.isSupported(VCardVersion.V4_0));
-	}
-
-	@Test
-	public void supported_versions_custom() {
-		VCardPropertyMarshallerImpl m = new VCardPropertyMarshallerImpl(VCardVersion.V4_0);
-
-		assertSetEquals(m.getSupportedVersions(), VCardVersion.V4_0);
-
-		assertFalse(m.isSupported(VCardVersion.V2_1));
-		assertFalse(m.isSupported(VCardVersion.V3_0));
-		assertTrue(m.isSupported(VCardVersion.V4_0));
-	}
-
-	@Test
 	public void dataType_default() {
 		TestProperty property = new TestProperty("value");
 		sensei.assertDataType(property).run(VCardDataType.TEXT);
@@ -466,10 +445,6 @@ public class VCardPropertyScribeTest {
 	private class VCardPropertyMarshallerImpl extends VCardPropertyScribe<TestProperty> {
 		private VCardPropertyMarshallerImpl() {
 			super(TestProperty.class, "TEST");
-		}
-
-		private VCardPropertyMarshallerImpl(VCardVersion version) {
-			super(TestProperty.class, "TEST", version);
 		}
 
 		private VCardPropertyMarshallerImpl(QName qname) {

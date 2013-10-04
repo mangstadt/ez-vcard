@@ -148,17 +148,12 @@ public class JCardWriter implements Closeable {
 		List<VCardType> typesToAdd = new ArrayList<VCardType>();
 
 		for (VCardType type : vcard) {
-			VCardPropertyScribe scribe = index.getPropertyScribe(type);
-			if (scribe == null) {
-				throw new IllegalArgumentException("No marshaller found for property class \"" + type.getClass().getName() + "\".  vCard will not be written.");
-			}
-
 			if (addProdId && type instanceof ProdIdType) {
 				//do not add the PRODID in the vCard if "addProdId" is true
 				continue;
 			}
 
-			if (versionStrict && !scribe.isSupported(targetVersion)) {
+			if (versionStrict && !type.getSupportedVersions().contains(targetVersion)) {
 				//do not add the property to the vCard if it is not supported by the target version
 				continue;
 			}

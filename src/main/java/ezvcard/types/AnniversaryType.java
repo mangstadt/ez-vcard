@@ -1,6 +1,8 @@
 package ezvcard.types;
 
 import java.util.Date;
+import java.util.EnumSet;
+import java.util.Set;
 
 import ezvcard.VCardVersion;
 
@@ -110,7 +112,7 @@ public class AnniversaryType extends DateOrTimeType {
 	}
 
 	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
 	}
 }

@@ -1,5 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.ExpertiseLevelParameter;
@@ -77,8 +80,8 @@ public class ExpertiseType extends TextType implements HasAltId {
 	}
 
 	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**

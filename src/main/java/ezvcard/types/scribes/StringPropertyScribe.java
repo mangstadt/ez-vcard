@@ -1,7 +1,6 @@
 package ezvcard.types.scribes;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
 import ezvcard.types.TextType;
 
 /*
@@ -35,12 +34,12 @@ import ezvcard.types.TextType;
  * @author Michael Angstadt
  */
 public abstract class StringPropertyScribe<T extends TextType> extends SimplePropertyScribe<T> {
-	public StringPropertyScribe(Class<T> clazz, String propertyName, VCardVersion... supportedVersions) {
-		this(clazz, propertyName, VCardDataType.TEXT, supportedVersions);
+	public StringPropertyScribe(Class<T> clazz, String propertyName) {
+		this(clazz, propertyName, VCardDataType.TEXT);
 	}
 
-	public StringPropertyScribe(Class<T> clazz, String propertyName, VCardDataType dataType, VCardVersion... supportedVersions) {
-		super(clazz, propertyName, dataType, supportedVersions);
+	public StringPropertyScribe(Class<T> clazz, String propertyName, VCardDataType dataType) {
+		super(clazz, propertyName, dataType);
 	}
 
 	@Override

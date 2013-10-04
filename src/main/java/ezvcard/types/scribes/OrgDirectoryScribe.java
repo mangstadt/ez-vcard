@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.OrgDirectoryType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.OrgDirectoryType;
  */
 public class OrgDirectoryScribe extends StringPropertyScribe<OrgDirectoryType> {
 	public OrgDirectoryScribe() {
-		super(OrgDirectoryType.class, "ORG-DIRECTORY", VCardVersion.V4_0);
+		super(OrgDirectoryType.class, "ORG-DIRECTORY");
 	}
 
 	@Override

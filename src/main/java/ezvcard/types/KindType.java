@@ -1,5 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import ezvcard.VCardVersion;
 
 /*
@@ -97,6 +100,11 @@ public class KindType extends TextType {
 	 */
 	public KindType(String kind) {
 		super(NAME, kind);
+	}
+
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**
@@ -197,10 +205,5 @@ public class KindType extends TextType {
 	 */
 	public static KindType device() {
 		return new KindType(DEVICE);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 }

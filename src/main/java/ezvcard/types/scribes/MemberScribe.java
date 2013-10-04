@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.MemberType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.MemberType;
  */
 public class MemberScribe extends StringPropertyScribe<MemberType> {
 	public MemberScribe() {
-		super(MemberType.class, "MEMBER", VCardVersion.V4_0);
+		super(MemberType.class, "MEMBER");
 	}
 
 	@Override

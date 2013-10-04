@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.KindType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.KindType;
  */
 public class KindScribe extends StringPropertyScribe<KindType> {
 	public KindScribe() {
-		super(KindType.class, "KIND", VCardVersion.V4_0);
+		super(KindType.class, "KIND");
 	}
 
 	@Override

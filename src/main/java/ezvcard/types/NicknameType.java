@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCardVersion;
 import ezvcard.util.HCardElement;
@@ -66,6 +68,11 @@ public class NicknameType extends TextListType implements HasAltId {
 	 */
 	public NicknameType() {
 		super(NAME, ',');
+	}
+
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
 	}
 
 	/**
@@ -135,11 +142,6 @@ public class NicknameType extends TextListType implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V3_0, VCardVersion.V4_0 };
 	}
 
 	@Override

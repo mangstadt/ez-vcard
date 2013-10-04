@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.FbUrlType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.FbUrlType;
  */
 public class FreeBusyUrlScribe extends UriPropertyScribe<FbUrlType> {
 	public FreeBusyUrlScribe() {
-		super(FbUrlType.class, "FBURL", VCardVersion.V4_0);
+		super(FbUrlType.class, "FBURL");
 	}
 
 	@Override

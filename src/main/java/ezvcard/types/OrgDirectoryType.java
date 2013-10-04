@@ -1,5 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import ezvcard.VCardVersion;
 
 /*
@@ -72,8 +75,8 @@ public class OrgDirectoryType extends UriType implements HasAltId {
 	}
 
 	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	@Override

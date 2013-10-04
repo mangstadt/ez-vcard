@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.ExpertiseType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.ExpertiseType;
  */
 public class ExpertiseScribe extends StringPropertyScribe<ExpertiseType> {
 	public ExpertiseScribe() {
-		super(ExpertiseType.class, "EXPERTISE", VCardVersion.V4_0);
+		super(ExpertiseType.class, "EXPERTISE");
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.SortStringType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.SortStringType;
  */
 public class SortStringScribe extends StringPropertyScribe<SortStringType> {
 	public SortStringScribe() {
-		super(SortStringType.class, "SORT-STRING", VCardVersion.V2_1, VCardVersion.V3_0);
+		super(SortStringType.class, "SORT-STRING");
 	}
 
 	@Override

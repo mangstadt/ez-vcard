@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCardVersion;
 
@@ -74,6 +76,11 @@ public class CalendarRequestUriType extends UriType implements HasAltId {
 	 */
 	public CalendarRequestUriType(String uri) {
 		super(NAME, uri);
+	}
+
+	@Override
+	public Set<VCardVersion> _supportedVersions() {
+		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**
@@ -155,10 +162,5 @@ public class CalendarRequestUriType extends UriType implements HasAltId {
 	 */
 	public void setType(String type) {
 		subTypes.setType(type);
-	}
-
-	@Override
-	public VCardVersion[] getSupportedVersions() {
-		return new VCardVersion[] { VCardVersion.V4_0 };
 	}
 }

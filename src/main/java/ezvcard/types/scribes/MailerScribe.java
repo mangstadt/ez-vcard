@@ -1,6 +1,5 @@
 package ezvcard.types.scribes;
 
-import ezvcard.VCardVersion;
 import ezvcard.types.MailerType;
 
 /*
@@ -34,7 +33,7 @@ import ezvcard.types.MailerType;
  */
 public class MailerScribe extends StringPropertyScribe<MailerType> {
 	public MailerScribe() {
-		super(MailerType.class, "MAILER", VCardVersion.V2_1, VCardVersion.V3_0);
+		super(MailerType.class, "MAILER");
 	}
 
 	@Override
