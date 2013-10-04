@@ -107,7 +107,7 @@ public class FoldedLineWriter extends Writer {
 
 	/**
 	 * Writes a portion of an array of characters.
-	 * @param buf the array of characters
+	 * @param cbuf the array of characters
 	 * @param off the offset from which to start writing characters
 	 * @param len the number of characters to write
 	 * @param quotedPrintable true to convert the string to "quoted-printable"
