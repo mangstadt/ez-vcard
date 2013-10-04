@@ -38,7 +38,6 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-@SuppressWarnings("resource")
 public class FoldedLineWriterTest {
 	@Test
 	public void write() throws Throwable {
