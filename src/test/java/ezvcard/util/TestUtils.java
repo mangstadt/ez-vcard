@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,7 +14,6 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarnings.WarningsGroup;
@@ -191,19 +189,6 @@ public class TestUtils {
 		}
 
 		return new SimpleTimeZone(hourMillis + minuteMillis, "");
-	}
-
-	/**
-	 * Asserts the value of a single-valued jCard value.
-	 * @param expectedDataType the expected data type
-	 * @param expectedValue the expected value
-	 * @param actualValue the actual jCard value
-	 */
-	public static void assertJCardValue(VCardDataType expectedDataType, String expectedValue, JCardValue actualValue) {
-		assertEquals(expectedDataType, actualValue.getDataType());
-
-		List<JsonValue> expected = Arrays.asList(new JsonValue(expectedValue));
-		assertEquals(expected, actualValue.getValues());
 	}
 
 	/**

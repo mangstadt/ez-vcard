@@ -64,8 +64,8 @@ public class ClientPidMapScribeTest {
 
 	@Test
 	public void writeJson() {
-		sensei.assertWriteJson(withValue).run(JCardValue.structured(null, 1, "urn:uuid:1234"));
-		sensei.assertWriteJson(empty).run(JCardValue.structured(null, "", ""));
+		sensei.assertWriteJson(withValue).run(JCardValue.structured(1, "urn:uuid:1234"));
+		sensei.assertWriteJson(empty).run(JCardValue.structured("", ""));
 	}
 
 	@Test
@@ -88,13 +88,13 @@ public class ClientPidMapScribeTest {
 
 	@Test
 	public void parseJson() {
-		JCardValue value = JCardValue.structured(null, pid + "", uri);
+		JCardValue value = JCardValue.structured(pid + "", uri);
 		sensei.assertParseJson(value).run(has(pid, uri));
 
-		value = JCardValue.structured(null, "not-a-number", uri);
+		value = JCardValue.structured("not-a-number", uri);
 		sensei.assertParseJson(value).cannotParse();
 
-		value = JCardValue.structured(null, pid + "");
+		value = JCardValue.structured(pid + "");
 		sensei.assertParseJson(value).run(has(pid, null));
 	}
 

@@ -94,7 +94,7 @@ public class RevisionScribe extends VCardPropertyScribe<RevisionType> {
 
 	@Override
 	protected JCardValue _writeJson(RevisionType property) {
-		return JCardValue.single(VCardDataType.TIMESTAMP, write(property, true));
+		return JCardValue.single(write(property, true));
 	}
 
 	@Override

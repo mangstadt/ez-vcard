@@ -110,7 +110,7 @@ public class Sensei<T extends VCardType> {
 	 * @return the tester object
 	 */
 	public ParseJsonTest assertParseJson(String value) {
-		return assertParseJson(JCardValue.single(null, value));
+		return assertParseJson(JCardValue.single(value));
 	}
 
 	/**

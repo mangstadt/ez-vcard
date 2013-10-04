@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.types.AddressType;
@@ -173,9 +172,9 @@ public class AddressScribeTest {
 
 	@Test
 	public void writeJson() {
-		sensei.assertWriteJson(withAllFields).run(JCardValue.structured(null, "P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA"));
-		sensei.assertWriteJson(withSomeFields).run(JCardValue.structured(null, "P.O. Box 1234;", "", "", "Austin", "TX", "12345", ""));
-		sensei.assertWriteJson(empty).run(JCardValue.structured(null, "", "", "", "", "", "", ""));
+		sensei.assertWriteJson(withAllFields).run(JCardValue.structured("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA"));
+		sensei.assertWriteJson(withSomeFields).run(JCardValue.structured("P.O. Box 1234;", "", "", "Austin", "TX", "12345", ""));
+		sensei.assertWriteJson(empty).run(JCardValue.structured("", "", "", "", "", "", ""));
 	}
 
 	@Test
@@ -267,19 +266,19 @@ public class AddressScribeTest {
 
 	@Test
 	public void parseJson() {
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, "P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA");
+		JCardValue value = JCardValue.structured("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA");
 		sensei.assertParseJson(value).run(is(withAllFields));
 
-		value = JCardValue.structured(VCardDataType.TEXT, "P.O. Box 1234;", "", "", "Austin", "TX", "12345", "");
+		value = JCardValue.structured("P.O. Box 1234;", "", "", "Austin", "TX", "12345", "");
 		sensei.assertParseJson(value).run(is(withSomeFields));
 
-		value = JCardValue.structured(VCardDataType.TEXT, "", null, "", "", "", "", "");
+		value = JCardValue.structured("", null, "", "", "", "", "");
 		sensei.assertParseJson(value).run(is(empty));
 
-		value = JCardValue.structured(VCardDataType.TEXT);
+		value = JCardValue.structured();
 		sensei.assertParseJson(value).run(is(empty));
 
-		value = JCardValue.structured(VCardDataType.TEXT, "P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin");
+		value = JCardValue.structured("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin");
 		sensei.assertParseJson(value).run(new Check<AddressType>() {
 			public void check(AddressType property) {
 				assertEquals("P.O. Box 1234;", property.getPoBox());

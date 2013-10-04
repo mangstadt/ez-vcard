@@ -237,7 +237,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void structured_parse_jcard_value() {
-		JCardValue input = JCardValue.structured(null, "one", Arrays.asList("two", "three,four"), null, "", "five;six");
+		JCardValue input = JCardValue.structured("one", Arrays.asList("two", "three,four"), null, "", "five;six");
 
 		//using "nextComponent()"
 		StructuredIterator it = VCardPropertyScribe.structured(input);
@@ -394,7 +394,7 @@ public class VCardPropertyScribeTest {
 	@Test
 	public void parseJson_single() {
 		final VCardSubTypes params = new VCardSubTypes();
-		JCardValue value = JCardValue.single(null, "value");
+		JCardValue value = JCardValue.single("value");
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).params(params).warnings(1).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
@@ -405,7 +405,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseJson_list() {
-		JCardValue value = JCardValue.multi(null, "value1", "val,;ue2");
+		JCardValue value = JCardValue.multi("value1", "val,;ue2");
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings(1).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value1,val\\,\\;ue2", property.value);
@@ -415,7 +415,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseJson_structured() {
-		JCardValue value = JCardValue.structured(null, null, "value1", "val,;ue2", Arrays.asList("value3", "value4"));
+		JCardValue value = JCardValue.structured(null, "value1", "val,;ue2", Arrays.asList("value3", "value4"));
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings(1).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals(";value1;val\\,\\;ue2;value3,value4", property.value);

@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import ezvcard.VCardDataType;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -42,9 +40,7 @@ import ezvcard.VCardDataType;
 public class JCardValueTest {
 	@Test
 	public void single() {
-		JCardValue value = JCardValue.single(VCardDataType.TEXT, "value");
-
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = JCardValue.single("value");
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -57,9 +53,7 @@ public class JCardValueTest {
 
 	@Test
 	public void single_null() {
-		JCardValue value = JCardValue.single(VCardDataType.TEXT, null);
-
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = JCardValue.single(null);
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -72,29 +66,25 @@ public class JCardValueTest {
 
 	@Test
 	public void asSingle() {
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue("value1"), new JsonValue("value2"));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue("value1"), new JsonValue("value2"));
 		assertEquals("value1", value.asSingle());
 	}
 
 	@Test
 	public void asSingle_non_string() {
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(false));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue(false));
 		assertEquals("false", value.asSingle());
 	}
 
 	@Test
 	public void asSingle_null() {
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue((Object) null));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue((Object) null));
 		assertEquals("", value.asSingle());
 	}
 
 	@Test
 	public void asSingle_array() {
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue("value1"))));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue("value1"))));
 		assertEquals("value1", value.asSingle());
 	}
 
@@ -102,16 +92,13 @@ public class JCardValueTest {
 	public void asSingle_object() {
 		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
 		object.put("a", new JsonValue("one"));
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(object));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue(object));
 		assertEquals("", value.asSingle());
 	}
 
 	@Test
 	public void multi() {
-		JCardValue value = JCardValue.multi(VCardDataType.TEXT, "value", 42, false, null);
-
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = JCardValue.multi("value", 42, false, null);
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -127,15 +114,13 @@ public class JCardValueTest {
 
 	@Test
 	public void asMulti() {
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null));
 		assertEquals(Arrays.asList("value1", "false", ""), value.asMulti());
 	}
 
 	@Test
 	public void asMulti_array() {
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false))));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false))));
 		assertEquals(Arrays.asList(), value.asMulti());
 	}
 
@@ -143,16 +128,13 @@ public class JCardValueTest {
 	public void asMulti_object() {
 		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
 		object.put("a", new JsonValue("one"));
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(object));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue(object));
 		assertEquals(Arrays.asList(), value.asMulti());
 	}
 
 	@Test
 	public void structured() {
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, "value", 42, false, null, Arrays.asList("one", "two"));
-
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = JCardValue.structured("value", 42, false, null, Arrays.asList("one", "two"));
 
 		//@formatter:off
 		List<JsonValue> expected = Arrays.asList(
@@ -175,16 +157,14 @@ public class JCardValueTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void asStructured() {
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null))));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null))));
 		assertEquals(Arrays.asList(Arrays.asList("value1"), Arrays.asList("false"), Arrays.asList((String) "")), value.asStructured());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void asStructured_single_value() {
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue("value1"));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue("value1"));
 		assertEquals(Arrays.asList(Arrays.asList("value1")), value.asStructured());
 	}
 
@@ -192,8 +172,7 @@ public class JCardValueTest {
 	public void asStructured_object() {
 		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
 		object.put("a", new JsonValue("one"));
-		JCardValue value = new JCardValue(VCardDataType.TEXT, new JsonValue(object));
-		assertEquals(VCardDataType.TEXT, value.getDataType());
+		JCardValue value = new JCardValue(new JsonValue(object));
 		assertEquals(Arrays.asList(), value.asStructured());
 	}
 }

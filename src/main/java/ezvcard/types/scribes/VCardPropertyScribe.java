@@ -381,7 +381,7 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	 */
 	protected JCardValue _writeJson(T property) {
 		String value = writeText(property, VCardVersion.V4_0);
-		return JCardValue.single(null, value); //TODO remove data type from JCardValue
+		return JCardValue.single(value);
 	}
 
 	/**

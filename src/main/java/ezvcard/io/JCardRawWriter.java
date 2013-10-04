@@ -125,13 +125,14 @@ public class JCardRawWriter implements Closeable {
 	/**
 	 * Writes a property to the current component.
 	 * @param propertyName the property name (e.g. "version")
+	 * @param dataType the data type or null for "unknown"
 	 * @param value the property value
 	 * @throws IllegalStateException if the "vcard" component was never opened
 	 * or was just closed ({@link #writeStartVCard} must be called first)
 	 * @throws IOException if there's an I/O problem
 	 */
-	public void writeProperty(String propertyName, JCardValue value) throws IOException {
-		writeProperty(null, propertyName, new VCardSubTypes(), value);
+	public void writeProperty(String propertyName, VCardDataType dataType, JCardValue value) throws IOException {
+		writeProperty(null, propertyName, new VCardSubTypes(), dataType, value);
 	}
 
 	/**
@@ -139,12 +140,13 @@ public class JCardRawWriter implements Closeable {
 	 * @param group the group or null if there is no group
 	 * @param propertyName the property name (e.g. "version")
 	 * @param parameters the parameters
+	 * @param dataType the data type or null for "unknown"
 	 * @param value the property value
 	 * @throws IllegalStateException if the "vcard" component was never opened
 	 * or was just closed ({@link #writeStartVCard} must be called first)
 	 * @throws IOException if there's an I/O problem
 	 */
-	public void writeProperty(String group, String propertyName, VCardSubTypes parameters, JCardValue value) throws IOException {
+	public void writeProperty(String group, String propertyName, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) throws IOException {
 		if (!open) {
 			throw new IllegalStateException("Call \"writeStartVCard\" first.");
 		}
@@ -183,7 +185,6 @@ public class JCardRawWriter implements Closeable {
 		jg.writeEndObject(); //end parameters object
 
 		//write data type
-		VCardDataType dataType = value.getDataType();
 		jg.writeString((dataType == null) ? "unknown" : dataType.getName().toLowerCase());
 
 		//write value

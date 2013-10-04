@@ -182,15 +182,15 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 	protected JCardValue _writeJson(TimezoneType property) {
 		String text = property.getText();
 		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
+			return JCardValue.single(text);
 		}
 
 		UtcOffset offset = property.getOffset();
 		if (offset != null) {
-			return JCardValue.single(VCardDataType.UTC_OFFSET, offset.toString(true));
+			return JCardValue.single(offset.toString(true));
 		}
 
-		return JCardValue.single(VCardDataType.TEXT, "");
+		return JCardValue.single("");
 	}
 
 	@Override

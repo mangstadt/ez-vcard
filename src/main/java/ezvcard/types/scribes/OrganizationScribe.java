@@ -108,14 +108,14 @@ public class OrganizationScribe extends VCardPropertyScribe<OrganizationType> {
 	protected JCardValue _writeJson(OrganizationType property) {
 		List<String> values = property.getValues();
 		if (values.isEmpty()) {
-			return JCardValue.single(null, "");
+			return JCardValue.single("");
 		}
 
 		if (values.size() == 1) {
-			return JCardValue.single(null, values.get(0));
+			return JCardValue.single(values.get(0));
 		}
 
-		return JCardValue.structured(null, values);
+		return JCardValue.structured(values);
 	}
 
 	@Override

@@ -143,7 +143,7 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	@Override
 	protected JCardValue _writeJson(AddressType property) {
 		//@formatter:off
-		return JCardValue.structured(dataType(property, VCardVersion.V4_0), //TODO remove data type
+		return JCardValue.structured(
 			property.getPoBox(),
 			property.getExtendedAddress(),
 			property.getStreetAddress(),

@@ -79,10 +79,10 @@ public abstract class ListPropertyScribe<T extends TextListType> extends VCardPr
 	protected JCardValue _writeJson(T property) {
 		List<String> values = property.getValues();
 		if (values.isEmpty()) {
-			return JCardValue.single(null, "");
+			return JCardValue.single("");
 		}
 
-		return JCardValue.multi(null, values);
+		return JCardValue.multi(values);
 	}
 
 	@Override

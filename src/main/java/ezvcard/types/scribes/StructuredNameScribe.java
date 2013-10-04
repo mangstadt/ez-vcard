@@ -109,7 +109,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredNameType
 
 	@Override
 	protected JCardValue _writeJson(StructuredNameType property) {
-		return JCardValue.structured(null, property.getFamily(), property.getGiven(), property.getAdditional(), property.getPrefixes(), property.getSuffixes());
+		return JCardValue.structured(property.getFamily(), property.getGiven(), property.getAdditional(), property.getPrefixes(), property.getSuffixes());
 	}
 
 	@Override

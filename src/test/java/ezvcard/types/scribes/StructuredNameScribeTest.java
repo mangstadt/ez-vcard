@@ -6,9 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import ezvcard.VCardDataType;
 import ezvcard.types.StructuredNameType;
-import ezvcard.types.scribes.StructuredNameScribe;
 import ezvcard.types.scribes.Sensei.Check;
 import ezvcard.util.JCardValue;
 
@@ -106,9 +104,9 @@ public class StructuredNameScribeTest {
 
 	@Test
 	public void writeJson() {
-		sensei.assertWriteJson(withAllValues).run(JCardValue.structured(null, "Doe", "Jonathan", Arrays.asList("Joh;nny,", "John"), "Mr.", "III"));
-		sensei.assertWriteJson(withEmptyValues).run(JCardValue.structured(null, "", "Jonathan", Arrays.asList("Joh;nny,", "John"), "", ""));
-		sensei.assertWriteJson(empty).run(JCardValue.structured(null, "", "", "", "", ""));
+		sensei.assertWriteJson(withAllValues).run(JCardValue.structured("Doe", "Jonathan", Arrays.asList("Joh;nny,", "John"), "Mr.", "III"));
+		sensei.assertWriteJson(withEmptyValues).run(JCardValue.structured("", "Jonathan", Arrays.asList("Joh;nny,", "John"), "", ""));
+		sensei.assertWriteJson(empty).run(JCardValue.structured("", "", "", "", ""));
 	}
 
 	@Test
@@ -182,16 +180,16 @@ public class StructuredNameScribeTest {
 
 	@Test
 	public void parseJson() {
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, "Doe", "Jonathan", Arrays.asList("Joh;nny,", "John"), "Mr.", "III");
+		JCardValue value = JCardValue.structured("Doe", "Jonathan", Arrays.asList("Joh;nny,", "John"), "Mr.", "III");
 		sensei.assertParseJson(value).run(is(withAllValues));
 
-		value = JCardValue.structured(VCardDataType.TEXT, null, "Jonathan", Arrays.asList("Joh;nny,", "John"), "", null);
+		value = JCardValue.structured(null, "Jonathan", Arrays.asList("Joh;nny,", "John"), "", null);
 		sensei.assertParseJson(value).run(is(withEmptyValues));
 
-		value = JCardValue.structured(VCardDataType.TEXT, null, "Jonathan", Arrays.asList("Joh;nny,", "John"));
+		value = JCardValue.structured(null, "Jonathan", Arrays.asList("Joh;nny,", "John"));
 		sensei.assertParseJson(value).run(is(withEmptyValues));
 
-		value = JCardValue.structured(VCardDataType.TEXT, null, null, "", null, null);
+		value = JCardValue.structured(null, null, "", null, null);
 		sensei.assertParseJson(value).run(is(empty));
 
 		sensei.assertParseJson("").run(is(empty));

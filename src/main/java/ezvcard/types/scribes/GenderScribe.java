@@ -105,9 +105,9 @@ public class GenderScribe extends VCardPropertyScribe<GenderType> {
 		String text = property.getText();
 
 		if (text == null) {
-			return JCardValue.single(VCardDataType.TEXT, gender);
+			return JCardValue.single(gender);
 		}
-		return JCardValue.structured(VCardDataType.TEXT, gender, text);
+		return JCardValue.structured(gender, text);
 	}
 
 	@Override

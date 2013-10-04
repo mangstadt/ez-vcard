@@ -94,7 +94,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMapType> {
 
 	@Override
 	protected JCardValue _writeJson(ClientPidMapType property) {
-		return JCardValue.structured(VCardDataType.TEXT, property.getPid(), property.getUri());
+		return JCardValue.structured(property.getPid(), property.getUri());
 	}
 
 	@Override

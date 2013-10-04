@@ -133,15 +133,15 @@ public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
 	protected JCardValue _writeJson(DeathplaceType property) {
 		String text = property.getText();
 		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
+			return JCardValue.single(text);
 		}
 
 		String uri = property.getUri();
 		if (uri != null) {
-			return JCardValue.single(VCardDataType.URI, uri);
+			return JCardValue.single(uri);
 		}
 
-		return JCardValue.single(VCardDataType.TEXT, "");
+		return JCardValue.single("");
 	}
 
 	@Override

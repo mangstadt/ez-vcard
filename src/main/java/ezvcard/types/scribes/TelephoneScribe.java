@@ -159,15 +159,15 @@ public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
 	protected JCardValue _writeJson(TelephoneType property) {
 		String text = property.getText();
 		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
+			return JCardValue.single(text);
 		}
 
 		TelUri uri = property.getUri();
 		if (uri != null) {
-			return JCardValue.single(VCardDataType.URI, uri.toString());
+			return JCardValue.single(uri.toString());
 		}
 
-		return JCardValue.single(VCardDataType.TEXT, "");
+		return JCardValue.single("");
 	}
 
 	@Override
