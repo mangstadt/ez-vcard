@@ -1,10 +1,9 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.KeyTypeParameter;
 
@@ -43,22 +42,16 @@ import ezvcard.parameters.KeyTypeParameter;
 public class KeyTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		KeyType empty = new KeyType((String) null, null);
-		assertWarnings(1, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).run(1);
 
 		KeyType withUrl = new KeyType("http://example.com", KeyTypeParameter.PGP);
-		assertWarnings(1, withUrl.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, withUrl.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withUrl.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withUrl).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withUrl).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withUrl).versions(VCardVersion.V4_0).run(0);
 
 		KeyType withText = new KeyType((String) null, KeyTypeParameter.PGP);
 		withText.setText("abc123", KeyTypeParameter.PGP);
-		assertWarnings(0, withText.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withText.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withText.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withText).run(0);
 	}
 }

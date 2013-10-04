@@ -1,10 +1,9 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.util.TelUri;
 
@@ -43,21 +42,15 @@ import ezvcard.util.TelUri;
 public class TelephoneTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		TelephoneType empty = new TelephoneType((String) null);
-		assertWarnings(1, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).run(1);
 
 		TelephoneType withText = new TelephoneType("(800) 555-5555");
-		assertWarnings(0, withText.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withText.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withText.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withText).run(0);
 
 		TelephoneType withUri = new TelephoneType(new TelUri.Builder("+1-800-555-5555").extension("101").build());
-		assertWarnings(1, withUri.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, withUri.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withUri.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);
 	}
 }

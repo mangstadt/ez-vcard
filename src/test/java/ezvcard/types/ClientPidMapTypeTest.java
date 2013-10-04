@@ -1,12 +1,11 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 
 /*
@@ -44,17 +43,15 @@ import ezvcard.VCardVersion;
 public class ClientPidMapTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		ClientPidMapType empty = new ClientPidMapType(null, null);
-		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
 		ClientPidMapType withValue = new ClientPidMapType(1, "urn:uuid:1234");
-		assertWarnings(1, withValue.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, withValue.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withValue).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
 	}
 
 	@Test

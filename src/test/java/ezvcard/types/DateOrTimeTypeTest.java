@@ -1,13 +1,12 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.util.PartialDate;
 
@@ -46,12 +45,8 @@ import ezvcard.util.PartialDate;
 public class DateOrTimeTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		DateOrTimeTypeImpl empty = new DateOrTimeTypeImpl();
-		assertWarnings(1, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).run(1);
 
 		DateOrTimeTypeImpl withDate = new DateOrTimeTypeImpl();
 		Calendar c = Calendar.getInstance();
@@ -61,21 +56,19 @@ public class DateOrTimeTypeTest {
 		c.set(Calendar.DAY_OF_MONTH, 5);
 		Date date = c.getTime();
 		withDate.setDate(date, false);
-		assertWarnings(0, withDate.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withDate.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withDate.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withDate).run(0);
 
 		DateOrTimeTypeImpl withPartialDate = new DateOrTimeTypeImpl();
 		withPartialDate.setPartialDate(PartialDate.date(null, 6, 5));
-		assertWarnings(1, withPartialDate.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, withPartialDate.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withPartialDate.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withPartialDate).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withPartialDate).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withPartialDate).versions(VCardVersion.V4_0).run(0);
 
 		DateOrTimeTypeImpl withText = new DateOrTimeTypeImpl();
 		withText.setText("text");
-		assertWarnings(1, withText.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, withText.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withText.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
 	}
 
 	private static class DateOrTimeTypeImpl extends DateOrTimeType {

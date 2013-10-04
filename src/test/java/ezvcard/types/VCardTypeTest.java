@@ -1,7 +1,7 @@
 package ezvcard.types;
 
 import static ezvcard.util.TestUtils.assertSetEquals;
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -50,12 +50,10 @@ import ezvcard.VCardVersion;
 public class VCardTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		ValidateType property = new ValidateType();
-		assertWarnings(1, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).versions(VCardVersion.V2_1).run(1);
+		assertValidate(property).versions(VCardVersion.V3_0).run(0);
+		assertValidate(property).versions(VCardVersion.V4_0).run(1);
 		assertTrue(property.validateCalled);
 	}
 

@@ -1,10 +1,9 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.AddressTypeParameter;
 
@@ -43,19 +42,13 @@ import ezvcard.parameters.AddressTypeParameter;
 public class AddressTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		AddressType property = new AddressType();
-		assertWarnings(0, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).run(0);
 
 		property.addType(AddressTypeParameter.DOM);
 		property.addType(AddressTypeParameter.HOME);
 		property.addType(AddressTypeParameter.PREF);
-		assertWarnings(0, property.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, property.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, property.validate(VCardVersion.V4_0, vcard));
+		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(0);
+		assertValidate(property).versions(VCardVersion.V4_0).run(1);
 	}
-
 }

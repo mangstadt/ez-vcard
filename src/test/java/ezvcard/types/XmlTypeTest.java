@@ -1,12 +1,11 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
 
 /*
@@ -44,17 +43,15 @@ import ezvcard.VCardVersion;
 public class XmlTypeTest {
 	@Test
 	public void validate() throws Throwable {
-		VCard vcard = new VCard();
-
 		XmlType empty = new XmlType((Document) null);
-		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
 		XmlType withValue = new XmlType("<foo/>");
-		assertWarnings(1, withValue.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, withValue.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withValue).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
 	}
 
 	@Test(expected = SAXException.class)

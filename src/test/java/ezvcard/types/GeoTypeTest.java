@@ -1,13 +1,10 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
-
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -44,17 +41,11 @@ import ezvcard.VCardVersion;
 public class GeoTypeTest {
 	@Test
 	public void validate() {
-		VCard vcard = new VCard();
-
 		GeoType empty = new GeoType(null);
-		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, empty.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(2, empty.validate(VCardVersion.V4_0, vcard));
+		assertValidate(empty).run(2);
 
 		GeoType withValue = new GeoType(-12.34, 56.78);
-		assertWarnings(0, withValue.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, withValue.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
+		assertValidate(withValue).run(0);
 	}
 
 	@Test
