@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -73,7 +74,7 @@ import ezvcard.parameters.RelatedTypeParameter;
  * </p>
  * @author Michael Angstadt
  */
-public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParameter> implements HasAltId {
+public class RelatedType extends VCardType implements HasAltId {
 	private String uri;
 	private String text;
 
@@ -141,6 +142,35 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 		uri = null;
 	}
 
+	/**
+	 * Gets all the TYPE parameters.
+	 * @return the TYPE parameters or empty set if there are none
+	 */
+	public Set<RelatedTypeParameter> getTypes() {
+		Set<String> values = subTypes.getTypes();
+		Set<RelatedTypeParameter> types = new HashSet<RelatedTypeParameter>(values.size());
+		for (String value : values) {
+			types.add(RelatedTypeParameter.get(value));
+		}
+		return types;
+	}
+
+	/**
+	 * Adds a TYPE parameter.
+	 * @param type the TYPE parameter to add
+	 */
+	public void addType(RelatedTypeParameter type) {
+		subTypes.addType(type.getValue());
+	}
+
+	/**
+	 * Removes a TYPE parameter.
+	 * @param type the TYPE parameter to remove
+	 */
+	public void removeType(RelatedTypeParameter type) {
+		subTypes.removeType(type.getValue());
+	}
+
 	@Override
 	public List<Integer[]> getPids() {
 		return super.getPids();
@@ -174,11 +204,6 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected RelatedTypeParameter buildTypeObj(String type) {
-		return RelatedTypeParameter.get(type);
 	}
 
 	@Override

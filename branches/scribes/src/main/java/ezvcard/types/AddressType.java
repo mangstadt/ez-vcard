@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
@@ -79,7 +81,7 @@ import ezvcard.parameters.AddressTypeParameter;
  * </p>
  * @author Michael Angstadt
  */
-public class AddressType extends MultiValuedTypeParameterType<AddressTypeParameter> implements HasAltId {
+public class AddressType extends VCardType implements HasAltId {
 	private String poBox;
 	private String extendedAddress;
 	private String streetAddress;
@@ -87,11 +89,6 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	private String region;
 	private String postalCode;
 	private String country;
-
-	@Override
-	protected AddressTypeParameter buildTypeObj(String type) {
-		return AddressTypeParameter.get(type);
-	}
 
 	/**
 	 * Gets the P.O. (post office) box.
@@ -205,6 +202,35 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	 */
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	/**
+	 * Gets all the TYPE parameters.
+	 * @return the TYPE parameters or empty set if there are none
+	 */
+	public Set<AddressTypeParameter> getTypes() {
+		Set<String> values = subTypes.getTypes();
+		Set<AddressTypeParameter> types = new HashSet<AddressTypeParameter>(values.size());
+		for (String value : values) {
+			types.add(AddressTypeParameter.get(value));
+		}
+		return types;
+	}
+
+	/**
+	 * Adds a TYPE parameter.
+	 * @param type the TYPE parameter to add
+	 */
+	public void addType(AddressTypeParameter type) {
+		subTypes.addType(type.getValue());
+	}
+
+	/**
+	 * Removes a TYPE parameter.
+	 * @param type the TYPE parameter to remove
+	 */
+	public void removeType(AddressTypeParameter type) {
+		subTypes.removeType(type.getValue());
 	}
 
 	@Override

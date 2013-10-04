@@ -1,6 +1,7 @@
 package ezvcard.types;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
 import ezvcard.VCard;
@@ -96,15 +97,13 @@ import ezvcard.parameters.AddressTypeParameter;
  * </p>
  * @author Michael Angstadt
  */
-public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter> {
-	private String value;
-
+public class LabelType extends TextType {
 	/**
 	 * Creates a label property.
 	 * @param label the label value
 	 */
 	public LabelType(String label) {
-		setValue(label);
+		super(label);
 	}
 
 	@Override
@@ -112,25 +111,33 @@ public class LabelType extends MultiValuedTypeParameterType<AddressTypeParameter
 		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
 	}
 
-	@Override
-	protected AddressTypeParameter buildTypeObj(String type) {
-		return AddressTypeParameter.get(type);
+	/**
+	 * Gets all the TYPE parameters.
+	 * @return the TYPE parameters or empty set if there are none
+	 */
+	public Set<AddressTypeParameter> getTypes() {
+		Set<String> values = subTypes.getTypes();
+		Set<AddressTypeParameter> types = new HashSet<AddressTypeParameter>(values.size());
+		for (String value : values) {
+			types.add(AddressTypeParameter.get(value));
+		}
+		return types;
 	}
 
 	/**
-	 * Gets the label value.
-	 * @return the label value
+	 * Adds a TYPE parameter.
+	 * @param type the TYPE parameter to add
 	 */
-	public String getValue() {
-		return value;
+	public void addType(AddressTypeParameter type) {
+		subTypes.addType(type.getValue());
 	}
 
 	/**
-	 * Sets the label value.
-	 * @param value the label value
+	 * Removes a TYPE parameter.
+	 * @param type the TYPE parameter to remove
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public void removeType(AddressTypeParameter type) {
+		subTypes.removeType(type.getValue());
 	}
 
 	@Override
