@@ -217,7 +217,9 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	private static class DateOrTimeTypeImpl extends DateOrTimeType {
-		//empty
+		public DateOrTimeTypeImpl() {
+			super((Date) null);
+		}
 	}
 
 	private Check<DateOrTimeTypeImpl> hasText(final String text) {

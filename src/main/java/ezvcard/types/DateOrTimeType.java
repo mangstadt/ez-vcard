@@ -51,25 +51,36 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	/**
 	 * Creates a date-and-or-time property.
+	 * @param date the date value
 	 */
-	public DateOrTimeType() {
-		//empty
+	public DateOrTimeType(Date date) {
+		this(date, false);
 	}
 
 	/**
 	 * Creates a date-and-or-time property.
 	 * @param date the date value
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
 	 */
-	public DateOrTimeType(Date date) {
-		setDate(date, false);
+	public DateOrTimeType(Date date, boolean hasTime) {
+		setDate(date, hasTime);
 	}
 
 	/**
 	 * Creates a date-and-or-time property.
-	 * @param partialDate the date value
+	 * @param partialDate the partial date value (vCard 4.0 only)
 	 */
 	public DateOrTimeType(PartialDate partialDate) {
 		setPartialDate(partialDate);
+	}
+
+	/**
+	 * Creates a date-and-or-time property.
+	 * @param text the text value (vCard 4.0 only)
+	 */
+	public DateOrTimeType(String text) {
+		setText(text);
 	}
 
 	/**
@@ -83,12 +94,12 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	/**
 	 * Sets the value of this type to a complete date.
 	 * @param date the date
-	 * @param dateHasTime true if the date contains a time component, false if
-	 * it's just a date
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
 	 */
-	public void setDate(Date date, boolean dateHasTime) {
+	public void setDate(Date date, boolean hasTime) {
 		this.date = date;
-		this.dateHasTime = dateHasTime;
+		this.dateHasTime = (date == null) ? false : hasTime;
 		text = null;
 		partialDate = null;
 	}
@@ -120,7 +131,7 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	 */
 	public void setPartialDate(PartialDate partialDate) {
 		this.partialDate = partialDate;
-		dateHasTime = partialDate.hasTimeComponent();
+		dateHasTime = (partialDate == null) ? false : partialDate.hasTimeComponent();
 		text = null;
 		date = null;
 	}

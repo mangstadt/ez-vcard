@@ -72,6 +72,8 @@ public class DateOrTimeTypeTest {
 	}
 
 	private static class DateOrTimeTypeImpl extends DateOrTimeType {
-		//empty
+		public DateOrTimeTypeImpl() {
+			super((Date) null);
+		}
 	}
 }

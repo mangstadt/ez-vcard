@@ -41,22 +41,16 @@ public class BirthdayScribe extends DateOrTimePropertyScribe<BirthdayType> {
 
 	@Override
 	protected BirthdayType newInstance(String text) {
-		BirthdayType property = new BirthdayType();
-		property.setText(text);
-		return property;
+		return new BirthdayType(text);
 	}
 
 	@Override
 	protected BirthdayType newInstance(Date date, boolean hasTime) {
-		BirthdayType property = new BirthdayType();
-		property.setDate(date, hasTime);
-		return property;
+		return new BirthdayType(date, hasTime);
 	}
 
 	@Override
 	protected BirthdayType newInstance(PartialDate partialDate) {
-		BirthdayType property = new BirthdayType();
-		property.setPartialDate(partialDate);
-		return property;
+		return new BirthdayType(partialDate);
 	}
 }

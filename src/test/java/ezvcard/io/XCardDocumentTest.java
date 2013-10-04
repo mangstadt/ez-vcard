@@ -1000,12 +1000,10 @@ public class XCardDocumentTest {
 		n.addSuffix("M.Sc.");
 		vcard.setStructuredName(n);
 
-		BirthdayType bday = new BirthdayType();
-		bday.setPartialDate(PartialDate.date(null, 2, 3));
+		BirthdayType bday = new BirthdayType(PartialDate.date(null, 2, 3));
 		vcard.setBirthday(bday);
 
-		AnniversaryType anniversary = new AnniversaryType();
-		anniversary.setPartialDate(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
+		AnniversaryType anniversary = new AnniversaryType(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(GenderType.male());
