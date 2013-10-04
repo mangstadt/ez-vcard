@@ -108,7 +108,7 @@ public class XmlScribe extends VCardPropertyScribe<XmlType> {
 			xml = valueToString(value);
 		}
 
-		return JCardValue.single(null, xml);
+		return JCardValue.single(xml);
 	}
 
 	@Override

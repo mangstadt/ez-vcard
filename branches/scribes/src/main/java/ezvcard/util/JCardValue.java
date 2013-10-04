@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import ezvcard.VCardDataType;
 import ezvcard.types.CategoriesType;
 import ezvcard.types.NoteType;
 import ezvcard.types.StructuredNameType;
@@ -44,61 +43,53 @@ import ezvcard.types.StructuredNameType;
  * @author Michael Angstadt
  */
 public class JCardValue {
-	private final VCardDataType dataType;
 	private final List<JsonValue> values;
 
 	/**
 	 * Creates a new jCard value.
-	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 */
-	public JCardValue(VCardDataType dataType, List<JsonValue> values) {
-		this.dataType = dataType;
+	public JCardValue(List<JsonValue> values) {
 		this.values = Collections.unmodifiableList(values);
 	}
 
 	/**
 	 * Creates a new jCard value.
-	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 */
-	public JCardValue(VCardDataType dataType, JsonValue... values) {
-		this.dataType = dataType;
+	public JCardValue(JsonValue... values) {
 		this.values = Arrays.asList(values); //unmodifiable
 	}
 
 	/**
 	 * Creates a single-valued value.
-	 * @param dataType the data type or null for "unknown"
 	 * @param value the value
 	 * @return the jCard value
 	 */
-	public static JCardValue single(VCardDataType dataType, Object value) {
-		return new JCardValue(dataType, new JsonValue(value));
+	public static JCardValue single(Object value) {
+		return new JCardValue(new JsonValue(value));
 	}
 
 	/**
 	 * Creates a multi-valued value.
-	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 * @return the jCard value
 	 */
-	public static JCardValue multi(VCardDataType dataType, Object... values) {
-		return multi(dataType, Arrays.asList(values));
+	public static JCardValue multi(Object... values) {
+		return multi(Arrays.asList(values));
 	}
 
 	/**
 	 * Creates a multi-valued value.
-	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 * @return the jCard value
 	 */
-	public static JCardValue multi(VCardDataType dataType, List<?> values) {
+	public static JCardValue multi(List<?> values) {
 		List<JsonValue> multiValues = new ArrayList<JsonValue>(values.size());
 		for (Object value : values) {
 			multiValues.add(new JsonValue(value));
 		}
-		return new JCardValue(dataType, multiValues);
+		return new JCardValue(multiValues);
 	}
 
 	/**
@@ -110,26 +101,24 @@ public class JCardValue {
 	 * objects will be treated as multi-valued components. Null objects will be
 	 * treated as empty components.
 	 * </p>
-	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 * @return the jCard value
 	 */
-	public static JCardValue structured(VCardDataType dataType, Object... values) {
+	public static JCardValue structured(Object... values) {
 		List<List<?>> valuesList = new ArrayList<List<?>>(values.length);
 		for (Object value : values) {
 			List<?> list = (value instanceof List) ? (List<?>) value : Arrays.asList(value);
 			valuesList.add(list);
 		}
-		return structured(dataType, valuesList);
+		return structured(valuesList);
 	}
 
 	/**
 	 * Creates a structured value.
-	 * @param dataType the data type or null for "unknown"
 	 * @param values the values
 	 * @return the jCard value
 	 */
-	public static JCardValue structured(VCardDataType dataType, List<List<?>> values) {
+	public static JCardValue structured(List<List<?>> values) {
 		List<JsonValue> array = new ArrayList<JsonValue>(values.size());
 
 		for (List<?> list : values) {
@@ -157,15 +146,7 @@ public class JCardValue {
 			array.add(new JsonValue(subArray));
 		}
 
-		return new JCardValue(dataType, new JsonValue(array));
-	}
-
-	/**
-	 * Gets the jCard data type
-	 * @return the data type or null for "unknown"
-	 */
-	public VCardDataType getDataType() {
-		return dataType;
+		return new JCardValue(new JsonValue(array));
 	}
 
 	/**

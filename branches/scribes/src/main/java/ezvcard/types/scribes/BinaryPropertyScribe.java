@@ -191,7 +191,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryType<U>, U extends Me
 
 	@Override
 	protected JCardValue _writeJson(T property) {
-		return JCardValue.single(VCardDataType.URI, write(property, VCardVersion.V4_0));
+		return JCardValue.single(write(property, VCardVersion.V4_0));
 	}
 
 	@Override

@@ -127,15 +127,15 @@ public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	protected JCardValue _writeJson(RelatedType property) {
 		String uri = property.getUri();
 		if (uri != null) {
-			return JCardValue.single(VCardDataType.URI, uri);
+			return JCardValue.single(uri);
 		}
 
 		String text = property.getText();
 		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
+			return JCardValue.single(text);
 		}
 
-		return JCardValue.single(VCardDataType.URI, "");
+		return JCardValue.single("");
 	}
 
 	@Override

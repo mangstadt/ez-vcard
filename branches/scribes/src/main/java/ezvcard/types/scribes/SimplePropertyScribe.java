@@ -94,7 +94,7 @@ public abstract class SimplePropertyScribe<T extends VCardType> extends VCardPro
 			value = "";
 		}
 
-		return JCardValue.single(dataType, value);
+		return JCardValue.single(value);
 	}
 
 	@Override

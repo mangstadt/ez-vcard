@@ -77,9 +77,9 @@ public class GenderScribeTest {
 
 	@Test
 	public void writeJson() {
-		sensei.assertWriteJson(withGenderAndText).run(JCardValue.structured(null, gender, text));
+		sensei.assertWriteJson(withGenderAndText).run(JCardValue.structured(gender, text));
 		sensei.assertWriteJson(withGender).run(gender);
-		sensei.assertWriteJson(withText).run(JCardValue.structured(null, null, text));
+		sensei.assertWriteJson(withText).run(JCardValue.structured(null, text));
 		sensei.assertWriteJson(empty).run((String) null);
 	}
 
@@ -101,14 +101,14 @@ public class GenderScribeTest {
 
 	@Test
 	public void parseJson() {
-		sensei.assertParseJson(JCardValue.structured(null, gender, text)).run(is(withGenderAndText));
+		sensei.assertParseJson(JCardValue.structured(gender, text)).run(is(withGenderAndText));
 
 		//single-valued array
-		sensei.assertParseJson(JCardValue.structured(null, gender)).run(is(withGender));
+		sensei.assertParseJson(JCardValue.structured(gender)).run(is(withGender));
 
 		sensei.assertParseJson(gender).run(is(withGender));
 
-		sensei.assertParseJson(JCardValue.structured(null, null, text)).run(is(withText));
+		sensei.assertParseJson(JCardValue.structured(null, text)).run(is(withText));
 		sensei.assertParseJson("").run(is(empty));
 	}
 

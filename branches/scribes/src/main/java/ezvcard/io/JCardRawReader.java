@@ -149,8 +149,8 @@ public class JCardRawReader implements Closeable {
 		//get property value(s)
 		List<JsonValue> values = parseValues();
 
-		JCardValue value = new JCardValue(dataType, values);
-		listener.readProperty(group, propertyName, parameters, value);
+		JCardValue value = new JCardValue(values);
+		listener.readProperty(group, propertyName, parameters, dataType, value);
 	}
 
 	private VCardSubTypes parseParameters() throws IOException {
@@ -265,9 +265,10 @@ public class JCardRawReader implements Closeable {
 		 * @param group the group or null if there is not group
 		 * @param propertyName the property name (e.g. "summary")
 		 * @param parameters the parameters
+		 * @param dataType the data type or null for "unknown"
 		 * @param value the property value
 		 */
-		void readProperty(String group, String propertyName, VCardSubTypes parameters, JCardValue value);
+		void readProperty(String group, String propertyName, VCardSubTypes parameters, VCardDataType dataType, JCardValue value);
 	}
 
 	/**

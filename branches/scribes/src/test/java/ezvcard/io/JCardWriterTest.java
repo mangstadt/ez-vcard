@@ -275,7 +275,7 @@ public class JCardWriterTest {
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		vcard.addType(new TypeForTesting(JCardValue.single(VCardDataType.TEXT, "value")));
+		vcard.addType(new TypeForTesting(JCardValue.single("value")));
 		writer.write(vcard);
 
 		writer.close();

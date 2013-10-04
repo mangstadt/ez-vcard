@@ -87,7 +87,7 @@ public class MyFormattedNameType extends VCardType {
 
 		@Override
 		protected JCardValue _writeJson(MyFormattedNameType property) {
-			return JCardValue.single(null, property.value.toUpperCase());
+			return JCardValue.single(property.value.toUpperCase());
 		}
 
 		@Override

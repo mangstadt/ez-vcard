@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.JCardRawReader.JCardDataStreamListener;
@@ -201,7 +202,7 @@ public class JCardReader implements Closeable {
 			vcard.setVersion(VCardVersion.V4_0);
 		}
 
-		public void readProperty(String group, String propertyName, VCardSubTypes parameters, JCardValue value) {
+		public void readProperty(String group, String propertyName, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 			if ("version".equalsIgnoreCase(propertyName)) {
 				//don't unmarshal "version" because we don't treat it as a property
 				versionFound = true;
@@ -220,7 +221,7 @@ public class JCardReader implements Closeable {
 
 			VCardType property;
 			try {
-				Result<? extends VCardType> result = scribe.parseJson(value, value.getDataType(), parameters);
+				Result<? extends VCardType> result = scribe.parseJson(value, dataType, parameters);
 
 				for (String warning : result.getWarnings()) {
 					addWarning(warning, propertyName);
@@ -233,7 +234,7 @@ public class JCardReader implements Closeable {
 				return;
 			} catch (CannotParseException e) {
 				scribe = new RawPropertyScribe(propertyName);
-				Result<? extends VCardType> result = scribe.parseJson(value, value.getDataType(), parameters);
+				Result<? extends VCardType> result = scribe.parseJson(value, dataType, parameters);
 
 				property = result.getProperty();
 				property.setGroup(group);

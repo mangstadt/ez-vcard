@@ -111,7 +111,7 @@ public class ImppScribe extends VCardPropertyScribe<ImppType> {
 
 	@Override
 	protected JCardValue _writeJson(ImppType property) {
-		return JCardValue.single(null, write(property));
+		return JCardValue.single(write(property));
 	}
 
 	@Override

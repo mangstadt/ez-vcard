@@ -185,36 +185,21 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeType> extends
 		if (date != null) {
 			boolean hasTime = property.hasTime();
 			String value = date(date).time(hasTime).extended(true).utc(false).write();
-
-			VCardDataType dataType = hasTime ? VCardDataType.DATE_TIME : VCardDataType.DATE;
-
-			return JCardValue.single(dataType, value);
+			return JCardValue.single(value);
 		}
 
 		PartialDate partialDate = property.getPartialDate();
 		if (partialDate != null) {
-			VCardDataType dataType;
-			if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
-				dataType = VCardDataType.DATE_TIME;
-			} else if (partialDate.hasTimeComponent()) {
-				dataType = VCardDataType.TIME;
-			} else if (partialDate.hasDateComponent()) {
-				dataType = VCardDataType.DATE;
-			} else {
-				dataType = VCardDataType.DATE_AND_OR_TIME;
-			}
-
 			String value = partialDate.toDateAndOrTime(true);
-
-			return JCardValue.single(dataType, value);
+			return JCardValue.single(value);
 		}
 
 		String text = property.getText();
 		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
+			return JCardValue.single(text);
 		}
 
-		return JCardValue.single(VCardDataType.DATE_AND_OR_TIME, "");
+		return JCardValue.single("");
 	}
 
 	@Override

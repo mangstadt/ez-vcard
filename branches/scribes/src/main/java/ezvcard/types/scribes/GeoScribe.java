@@ -116,7 +116,7 @@ public class GeoScribe extends VCardPropertyScribe<GeoType> {
 
 	@Override
 	protected JCardValue _writeJson(GeoType property) {
-		return JCardValue.single(VCardDataType.URI, write(property, VCardVersion.V4_0));
+		return JCardValue.single(write(property, VCardVersion.V4_0));
 	}
 
 	@Override

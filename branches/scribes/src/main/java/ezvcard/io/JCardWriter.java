@@ -173,7 +173,7 @@ public class JCardWriter implements Closeable {
 		}
 
 		writer.writeStartVCard();
-		writer.writeProperty("version", JCardValue.single(VCardDataType.TEXT, targetVersion.getVersion()));
+		writer.writeProperty("version", VCardDataType.TEXT, JCardValue.single(targetVersion.getVersion()));
 
 		for (VCardType type : typesToAdd) {
 			VCardPropertyScribe scribe = index.getPropertyScribe(type);
@@ -183,9 +183,9 @@ public class JCardWriter implements Closeable {
 
 			try {
 				JCardValue value = scribe.writeJson(type);
-				value = new JCardValue(scribe.dataType(type, targetVersion), value.getValues());
+				value = new JCardValue(value.getValues());
 				VCardSubTypes subTypes = scribe.prepareParameters(type, targetVersion, vcard);
-				writer.writeProperty(type.getGroup(), scribe.getPropertyName().toLowerCase(), subTypes, value);
+				writer.writeProperty(type.getGroup(), scribe.getPropertyName().toLowerCase(), subTypes, scribe.dataType(type, targetVersion), value);
 			} catch (SkipMeException e) {
 				//property has requested not to be written
 			} catch (EmbeddedVCardExceptionNew e) {

@@ -68,20 +68,20 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals("one", value.asSingle());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop2", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.INTEGER, value.getDataType());
+					assertEquals(VCardDataType.INTEGER, dataType);
 					assertEquals("2", value.asSingle());
 					break;
 				}
@@ -116,20 +116,20 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals("one", value.asSingle());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop2", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.INTEGER, value.getDataType());
+					assertEquals(VCardDataType.INTEGER, dataType);
 					assertEquals("2", value.asSingle());
 					break;
 				}
@@ -144,20 +144,20 @@ public class JCardRawReaderTest {
 
 		listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals("three", value.asSingle());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop2", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.INTEGER, value.getDataType());
+					assertEquals(VCardDataType.INTEGER, dataType);
 					assertEquals("4", value.asSingle());
 					break;
 				}
@@ -189,13 +189,13 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals("value", value.asSingle());
 					break;
 				}
@@ -231,13 +231,13 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals("one", value.asSingle());
 					break;
 				}
@@ -258,20 +258,20 @@ public class JCardRawReaderTest {
 
 		listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop1", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals("one", value.asSingle());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop2", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.INTEGER, value.getDataType());
+					assertEquals(VCardDataType.INTEGER, dataType);
 					assertEquals("2", value.asSingle());
 					break;
 				}
@@ -296,7 +296,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				fail("Should not be called.");
 			}
 		};
@@ -322,20 +322,20 @@ public class JCardRawReaderTest {
 		TestListener listener = new TestListener() {
 			@SuppressWarnings("unchecked")
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals(Arrays.asList(Arrays.asList("one"), Arrays.asList("two", "three"), Arrays.asList("four")), value.asStructured());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals(Arrays.asList(), value.asStructured());
 					break;
 				}
@@ -363,20 +363,20 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals(Arrays.asList("one", "two", "three"), value.asMulti());
 					break;
 				case 2:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals(Arrays.asList("one"), value.asMulti());
 					break;
 				}
@@ -403,13 +403,13 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 
 					List<JsonValue> expected = new ArrayList<JsonValue>();
 					expected.add(new JsonValue(false));
@@ -450,13 +450,13 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 
 					List<JsonValue> expected = new ArrayList<JsonValue>();
 					Map<String, JsonValue> m = new HashMap<String, JsonValue>();
@@ -494,13 +494,13 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertNull(value.getDataType());
+					assertNull(dataType);
 					assertEquals("value", value.asSingle());
 					break;
 				}
@@ -526,13 +526,13 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertTrue(VCardDataType.get("foo") == value.getDataType());
+					assertTrue(VCardDataType.get("foo") == dataType);
 					assertEquals("value", value.asSingle());
 					break;
 				}
@@ -554,7 +554,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				//empty
 			}
 		};
@@ -576,7 +576,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				//empty
 			}
 		};
@@ -600,7 +600,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -609,7 +609,7 @@ public class JCardRawReaderTest {
 					assertEquals(Arrays.asList("one"), parameters.get("a"));
 					assertEquals(Arrays.asList("two"), parameters.get("b"));
 					assertEquals(Arrays.asList("three", "four"), parameters.get("c"));
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals("value", value.asSingle());
 					break;
 				}
@@ -635,13 +635,13 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertEquals("one", group);
 					assertEquals("prop", name);
 					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, value.getDataType());
+					assertEquals(VCardDataType.TEXT, dataType);
 					assertEquals("value", value.asSingle());
 					break;
 				}
@@ -659,11 +659,11 @@ public class JCardRawReaderTest {
 			calledBeginVCard++;
 		}
 
-		public final void readProperty(String group, String name, VCardSubTypes parameters, JCardValue value) {
+		public final void readProperty(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
 			calledReadProperty++;
-			readProperty_(group, name, parameters, value);
+			readProperty_(group, name, parameters, dataType, value);
 		}
 
-		protected abstract void readProperty_(String group, String name, VCardSubTypes parameters, JCardValue value);
+		protected abstract void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value);
 	}
 }
