@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.types.EmailType;
@@ -40,19 +39,14 @@ import ezvcard.util.HCardElement;
  * Marshals {@link EmailType} properties.
  * @author Michael Angstadt
  */
-public class EmailScribe extends SimplePropertyScribe<EmailType> {
+public class EmailScribe extends StringPropertyScribe<EmailType> {
 	public EmailScribe() {
-		super(EmailType.class, "EMAIL", VCardDataType.TEXT);
+		super(EmailType.class, "EMAIL");
 	}
 
 	@Override
 	protected void _prepareParameters(EmailType property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
-	}
-
-	@Override
-	protected String _writeValue(EmailType property) {
-		return property.getValue();
 	}
 
 	@Override
