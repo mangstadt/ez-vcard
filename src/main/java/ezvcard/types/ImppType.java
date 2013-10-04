@@ -3,6 +3,7 @@ package ezvcard.types;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ import ezvcard.parameters.ImppTypeParameter;
  * </p>
  * @author Michael Angstadt
  */
-public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> implements HasAltId {
+public class ImppType extends VCardType implements HasAltId {
 	private static final String AIM = "aim";
 	private static final String ICQ = "icq";
 	private static final String IRC = "irc";
@@ -323,6 +324,35 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	}
 
 	/**
+	 * Gets all the TYPE parameters.
+	 * @return the TYPE parameters or empty set if there are none
+	 */
+	public Set<ImppTypeParameter> getTypes() {
+		Set<String> values = subTypes.getTypes();
+		Set<ImppTypeParameter> types = new HashSet<ImppTypeParameter>(values.size());
+		for (String value : values) {
+			types.add(ImppTypeParameter.get(value));
+		}
+		return types;
+	}
+
+	/**
+	 * Adds a TYPE parameter.
+	 * @param type the TYPE parameter to add
+	 */
+	public void addType(ImppTypeParameter type) {
+		subTypes.addType(type.getValue());
+	}
+
+	/**
+	 * Removes a TYPE parameter.
+	 * @param type the TYPE parameter to remove
+	 */
+	public void removeType(ImppTypeParameter type) {
+		subTypes.removeType(type.getValue());
+	}
+
+	/**
 	 * Gets the MEDIATYPE parameter.
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -377,11 +407,6 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected ImppTypeParameter buildTypeObj(String type) {
-		return ImppTypeParameter.get(type);
 	}
 
 	@Override

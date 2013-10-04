@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -63,36 +65,42 @@ import ezvcard.parameters.EmailTypeParameter;
  * </p>
  * @author Michael Angstadt
  */
-public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> implements HasAltId {
-	private String value;
-
+public class EmailType extends TextType implements HasAltId {
 	/**
 	 * Creates an email property.
 	 * @param email the email (e.g. "johndoe@example.com")
 	 */
 	public EmailType(String email) {
-		setValue(email);
-	}
-
-	@Override
-	protected EmailTypeParameter buildTypeObj(String type) {
-		return EmailTypeParameter.get(type);
+		super(email);
 	}
 
 	/**
-	 * Gets the email address.
-	 * @return the email address (e.g. "johndoe@example.com")
+	 * Gets all the TYPE parameters.
+	 * @return the TYPE parameters or empty set if there are none
 	 */
-	public String getValue() {
-		return value;
+	public Set<EmailTypeParameter> getTypes() {
+		Set<String> values = subTypes.getTypes();
+		Set<EmailTypeParameter> types = new HashSet<EmailTypeParameter>(values.size());
+		for (String value : values) {
+			types.add(EmailTypeParameter.get(value));
+		}
+		return types;
 	}
 
 	/**
-	 * Sets the email address
-	 * @param email the email address (e.g. "johndoe@example.com")
+	 * Adds a TYPE parameter.
+	 * @param type the TYPE parameter to add
 	 */
-	public void setValue(String email) {
-		this.value = email;
+	public void addType(EmailTypeParameter type) {
+		subTypes.addType(type.getValue());
+	}
+
+	/**
+	 * Removes a TYPE parameter.
+	 * @param type the TYPE parameter to remove
+	 */
+	public void removeType(EmailTypeParameter type) {
+		subTypes.removeType(type.getValue());
 	}
 
 	@Override
@@ -132,9 +140,7 @@ public class EmailType extends MultiValuedTypeParameterType<EmailTypeParameter> 
 
 	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
-		if (value == null) {
-			warnings.add("Property value is null.");
-		}
+		super._validate(warnings, version, vcard);
 
 		for (EmailTypeParameter type : getTypes()) {
 			if (type == EmailTypeParameter.PREF) {

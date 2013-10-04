@@ -1,6 +1,8 @@
 package ezvcard.types;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -65,7 +67,7 @@ import ezvcard.util.TelUri;
  * </p>
  * @author Michael Angstadt
  */
-public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypeParameter> implements HasAltId {
+public class TelephoneType extends VCardType implements HasAltId {
 	private String text;
 	private TelUri uri;
 
@@ -125,6 +127,35 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 		this.uri = uri;
 	}
 
+	/**
+	 * Gets all the TYPE parameters.
+	 * @return the TYPE parameters or empty set if there are none
+	 */
+	public Set<TelephoneTypeParameter> getTypes() {
+		Set<String> values = subTypes.getTypes();
+		Set<TelephoneTypeParameter> types = new HashSet<TelephoneTypeParameter>(values.size());
+		for (String value : values) {
+			types.add(TelephoneTypeParameter.get(value));
+		}
+		return types;
+	}
+
+	/**
+	 * Adds a TYPE parameter.
+	 * @param type the TYPE parameter to add
+	 */
+	public void addType(TelephoneTypeParameter type) {
+		subTypes.addType(type.getValue());
+	}
+
+	/**
+	 * Removes a TYPE parameter.
+	 * @param type the TYPE parameter to remove
+	 */
+	public void removeType(TelephoneTypeParameter type) {
+		subTypes.removeType(type.getValue());
+	}
+
 	@Override
 	public List<Integer[]> getPids() {
 		return super.getPids();
@@ -158,11 +189,6 @@ public class TelephoneType extends MultiValuedTypeParameterType<TelephoneTypePar
 	//@Override
 	public void setAltId(String altId) {
 		subTypes.setAltId(altId);
-	}
-
-	@Override
-	protected TelephoneTypeParameter buildTypeObj(String type) {
-		return TelephoneTypeParameter.get(type);
 	}
 
 	@Override
