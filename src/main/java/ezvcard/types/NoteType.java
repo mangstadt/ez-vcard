@@ -54,21 +54,12 @@ import java.util.List;
  * @author Michael Angstadt
  */
 public class NoteType extends TextType implements HasAltId {
-	public static final String NAME = "NOTE";
-
-	/**
-	 * Creates an empty note property.
-	 */
-	public NoteType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a note property.
 	 * @param note the note text
 	 */
 	public NoteType(String note) {
-		super(NAME, note);
+		super(note);
 	}
 
 	@Override

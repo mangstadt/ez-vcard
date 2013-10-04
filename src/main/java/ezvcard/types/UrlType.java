@@ -53,21 +53,12 @@ import java.util.List;
  * @author Michael Angstadt
  */
 public class UrlType extends UriType implements HasAltId {
-	public static final String NAME = "URL";
-
-	/**
-	 * Creates an empty URL property.
-	 */
-	public UrlType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a URL property.
 	 * @param url the URL (e.g. "http://example.com")
 	 */
 	public UrlType(String url) {
-		super(NAME, url);
+		super(url);
 	}
 
 	/**

@@ -9,7 +9,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import ezvcard.types.RevisionType;
-import ezvcard.types.scribes.RevisionScribe;
 import ezvcard.types.scribes.Sensei.Check;
 import ezvcard.util.DefaultTimezoneRule;
 
@@ -124,7 +123,7 @@ public class RevisionScribeTest {
 	private Check<RevisionType> is(final RevisionType expected) {
 		return new Check<RevisionType>() {
 			public void check(RevisionType actual) {
-				assertEquals(expected.getTimestamp(), actual.getTimestamp());
+				assertEquals(expected.getValue(), actual.getValue());
 			}
 		};
 	}

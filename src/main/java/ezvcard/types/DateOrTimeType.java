@@ -4,19 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.CalscaleParameter;
-import ezvcard.util.HCardElement;
-import ezvcard.util.ISOFormat;
-import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
-import ezvcard.util.VCardDateFormatter;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -60,29 +51,24 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 
 	/**
 	 * Creates a date-and-or-time property.
-	 * @param typeName the name of the type (e.g. "BDAY")
 	 */
-	public DateOrTimeType(String typeName) {
-		super(typeName);
+	public DateOrTimeType() {
+		//empty
 	}
 
 	/**
 	 * Creates a date-and-or-time property.
-	 * @param typeName the name of the type (e.g. "BDAY")
 	 * @param date the date value
 	 */
-	public DateOrTimeType(String typeName, Date date) {
-		super(typeName);
+	public DateOrTimeType(Date date) {
 		setDate(date, false);
 	}
 
 	/**
 	 * Creates a date-and-or-time property.
-	 * @param typeName the name of the type (e.g. "BDAY")
 	 * @param partialDate the date value
 	 */
-	public DateOrTimeType(String typeName, PartialDate partialDate) {
-		super(typeName);
+	public DateOrTimeType(PartialDate partialDate) {
 		setPartialDate(partialDate);
 	}
 
@@ -210,159 +196,6 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardDataType dataType = null;
-		if (text != null && version == VCardVersion.V4_0) {
-			dataType = VCardDataType.TEXT;
-		}
-		copy.setValue(dataType);
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (date != null) {
-			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
-			sb.append(VCardDateFormatter.format(date, format));
-			return;
-		}
-
-		if (version == VCardVersion.V4_0) {
-			if (text != null) {
-				sb.append(VCardStringUtils.escape(text));
-				return;
-			}
-			if (partialDate != null) {
-				sb.append(partialDate.toDateAndOrTime(false));
-				return;
-			}
-		}
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value);
-		if (version == VCardVersion.V4_0 && subTypes.getValue() == VCardDataType.TEXT) {
-			setText(value);
-			return;
-		}
-
-		parseDate(value, version, warnings);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (date != null) {
-			ISOFormat format = dateHasTime ? ISOFormat.TIME_BASIC : ISOFormat.DATE_BASIC;
-			String value = VCardDateFormatter.format(date, format);
-			VCardDataType dataType = dateHasTime ? VCardDataType.DATE_TIME : VCardDataType.DATE;
-
-			parent.append(dataType, value);
-			return;
-		}
-
-		if (partialDate != null) {
-			VCardDataType dataType;
-			if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
-				dataType = VCardDataType.DATE_TIME;
-			} else if (partialDate.hasTimeComponent()) {
-				dataType = VCardDataType.TIME;
-			} else if (partialDate.hasDateComponent()) {
-				dataType = VCardDataType.DATE;
-			} else {
-				dataType = VCardDataType.DATE_AND_OR_TIME;
-			}
-
-			parent.append(dataType, partialDate.toDateAndOrTime(false));
-			return;
-		}
-
-		if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
-			return;
-		}
-
-		parent.append(VCardDataType.DATE_AND_OR_TIME, "");
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.DATE, VCardDataType.DATE_TIME, VCardDataType.DATE_AND_OR_TIME);
-		if (value != null) {
-			parseDate(value, element.version(), warnings);
-			return;
-		}
-
-		value = element.first(VCardDataType.TEXT);
-		if (value != null) {
-			setText(value);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.DATE, VCardDataType.DATE_TIME, VCardDataType.DATE_AND_OR_TIME, VCardDataType.TEXT);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String value = null;
-		if ("time".equals(element.tagName())) {
-			String datetime = element.attr("datetime");
-			if (datetime.length() > 0) {
-				value = datetime;
-			}
-		}
-		if (value == null) {
-			value = element.value();
-		}
-		parseDate(value, VCardVersion.V3_0, warnings);
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (date != null) {
-			VCardDataType dataType = dateHasTime ? VCardDataType.DATE_TIME : VCardDataType.DATE;
-
-			ISOFormat format = dateHasTime ? ISOFormat.TIME_EXTENDED : ISOFormat.DATE_EXTENDED;
-			String value = VCardDateFormatter.format(date, format);
-
-			return JCardValue.single(dataType, value);
-		}
-
-		if (partialDate != null) {
-			VCardDataType dataType;
-			if (partialDate.hasTimeComponent() && partialDate.hasDateComponent()) {
-				dataType = VCardDataType.DATE_TIME;
-			} else if (partialDate.hasTimeComponent()) {
-				dataType = VCardDataType.TIME;
-			} else if (partialDate.hasDateComponent()) {
-				dataType = VCardDataType.DATE;
-			} else {
-				dataType = VCardDataType.DATE_AND_OR_TIME;
-			}
-
-			String value = partialDate.toDateAndOrTime(true);
-
-			return JCardValue.single(dataType, value);
-		}
-
-		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
-		}
-
-		return JCardValue.single(VCardDataType.DATE_AND_OR_TIME, "");
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.asSingle();
-		if (value.getDataType() == VCardDataType.TEXT) {
-			setText(valueStr);
-			return;
-		}
-
-		parseDate(valueStr, version, warnings);
-	}
-
-	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		if (date == null && partialDate == null && text == null) {
 			warnings.add("Property has no value associated with it.");
@@ -374,24 +207,6 @@ public class DateOrTimeType extends VCardType implements HasAltId {
 			}
 			if (partialDate != null) {
 				warnings.add("Reduced accuracy or truncated dates are not supported in version " + version + ".");
-			}
-		}
-	}
-
-	private void parseDate(String value, VCardVersion version, List<String> warnings) {
-		try {
-			boolean hasTime = value.contains("T");
-			setDate(VCardDateFormatter.parse(value), hasTime);
-		} catch (IllegalArgumentException e) {
-			if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
-				throw new CannotParseException("Date string could not be parsed.");
-			}
-
-			try {
-				setPartialDate(new PartialDate(value));
-			} catch (IllegalArgumentException e2) {
-				warnings.add("Date string could not be parsed.  Treating it as a text value.");
-				setText(value);
 			}
 		}
 	}

@@ -1,32 +1,19 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertJCardValue;
-import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardValue;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -61,149 +48,33 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class VCardTypeTest {
-	final List<String> warnings = new ArrayList<String>();
-	final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	final VCardSubTypes subTypes = new VCardSubTypes();
-	final VCard vcard = new VCard();
-	final VCardTypeImpl type = new VCardTypeImpl();
-	{
-		type.value = "value";
-	}
-	VCardTypeImpl t;
-
-	@Before
-	public void before() {
-		t = new VCardTypeImpl();
-		subTypes.clear();
-		warnings.clear();
-	}
-
 	@Test
 	public void validate() {
-		ValidateType t = new ValidateType();
-		assertWarnings(1, t.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(0, t.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
-		assertTrue(t.validateCalled);
-	}
+		VCard vcard = new VCard();
 
-	@Test
-	public void marshalXml() {
-		assertMarshalXml(type, "<unknown>" + type.value + "</unknown>");
-	}
-
-	@Test
-	public void marshalJson() {
-		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = type.marshalJson(version);
-
-		assertJCardValue(null, type.value, value);
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void marshalJson_value_parameter() {
-		VCardVersion version = VCardVersion.V4_0;
-		VCardTypeImpl type = new VCardTypeImpl();
-		type.value = "value";
-		type.getSubTypes().setValue(VCardDataType.BOOLEAN);
-
-		JCardValue value = type.marshalJson(version);
-
-		assertJCardValue(VCardDataType.BOOLEAN, type.value, value);
-		assertWarnings(0, warnings);
-	}
-
-	@Test(expected = UnsupportedOperationException.class)
-	public void unmarshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(VCardTypeImpl.NAME.toLowerCase());
-		t.unmarshalXml(subTypes, xe.element(), version, warnings, compatibilityMode);
-	}
-
-	@Test
-	public void unmarshalHtml() {
-		org.jsoup.nodes.Element element = HtmlUtils.toElement("<div>" + type.value + "</div>");
-
-		t.unmarshalHtml(element, warnings);
-
-		assertEquals(type.value, t.value);
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalJson() {
-		VCardVersion version = VCardVersion.V4_0;
-
-		JCardValue value = JCardValue.single(VCardDataType.TEXT, type.value);
-
-		t.unmarshalJson(subTypes, value, version, warnings);
-
-		assertEquals(type.value, t.value);
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalJson_special_chars() {
-		VCardVersion version = VCardVersion.V4_0;
-
-		JCardValue value = JCardValue.single(VCardDataType.TEXT, "va,l;ue\\");
-
-		t.unmarshalJson(subTypes, value, version, warnings);
-
-		assertEquals("va,l;ue\\", t.value);
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalJson_list() {
-		VCardVersion version = VCardVersion.V4_0;
-
-		JCardValue value = JCardValue.multi(null, "one", "two", "three");
-
-		t.unmarshalJson(subTypes, value, version, warnings);
-
-		assertEquals("one,two,three", t.value);
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalJson_structured() {
-		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(null, "one", Arrays.asList("two", "three"), "four");
-
-		t.unmarshalJson(subTypes, value, version, warnings);
-
-		assertEquals("one;two,three;four", t.value);
-		assertWarnings(0, warnings);
+		ValidateType property = new ValidateType();
+		assertWarnings(1, property.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, property.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, property.validate(VCardVersion.V4_0, vcard));
+		assertTrue(property.validateCalled);
 	}
 
 	@Test
 	public void getSupportedVersions() {
-		assertSetEquals(t.getSupportedVersions(), VCardVersion.values());
-	}
+		VCardTypeImpl withoutSupportedVersions = new VCardTypeImpl();
+		assertSetEquals(withoutSupportedVersions.getSupportedVersions(), VCardVersion.values());
 
-	@Test
-	public void getTypeName() {
-		assertEquals(VCardTypeImpl.NAME, t.getTypeName());
+		ValidateType withSupportedVersions = new ValidateType();
+		assertSetEquals(withSupportedVersions.getSupportedVersions(), VCardVersion.V3_0);
 	}
 
 	@Test
 	public void group() {
-		assertNull(t.getGroup());
+		VCardTypeImpl property = new VCardTypeImpl();
+		assertNull(property.getGroup());
 
-		t.setGroup("group");
-		assertEquals("group", t.getGroup());
-	}
-
-	@Test
-	public void getQName() {
-		assertNull(t.getQName());
-	}
-
-	@Test
-	public void marshalSubTypes() {
-		assertFalse(t.getSubTypes() == t.marshalSubTypes(VCardVersion.V2_1, compatibilityMode, vcard)); //should create a copy
+		property.setGroup("group");
+		assertEquals("group", property.getGroup());
 	}
 
 	@Test
@@ -225,60 +96,12 @@ public class VCardTypeTest {
 		assertEquals(0, null1.compareTo(null2));
 	}
 
-	@Test
-	public void missingXmlElements() {
-		CannotParseException e = VCardType.missingXmlElements(new String[0]);
-		assertEquals("Property value empty.", e.getMessage());
-
-		e = VCardType.missingXmlElements("one");
-		assertEquals("Property value empty (no <one> element found).", e.getMessage());
-
-		e = VCardType.missingXmlElements("one", "two");
-		assertEquals("Property value empty (no <one> or <two> elements found).", e.getMessage());
-
-		e = VCardType.missingXmlElements("one", "two", "THREE");
-		assertEquals("Property value empty (no <one>, <two>, or <THREE> elements found).", e.getMessage());
-
-		e = VCardType.missingXmlElements(VCardDataType.TEXT, null, VCardDataType.DATE);
-		assertEquals("Property value empty (no <text>, <unknown>, or <date> elements found).", e.getMessage());
-	}
-
 	private class VCardTypeImpl extends VCardType {
-		public static final String NAME = "NAME";
-		public String value;
-
-		public VCardTypeImpl() {
-			super(NAME);
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			value.append(this.value);
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			this.value = value;
-		}
+		//empty
 	}
 
 	private class ValidateType extends VCardType {
-		public static final String NAME = "NAME";
 		public boolean validateCalled = false;
-
-		public ValidateType() {
-			super(NAME);
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
 
 		@Override
 		public Set<VCardVersion> _supportedVersions() {

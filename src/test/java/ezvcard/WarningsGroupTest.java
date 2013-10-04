@@ -4,12 +4,10 @@ import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.types.VCardType;
 import ezvcard.util.TestUtils.Tests;
 
@@ -67,19 +65,6 @@ public class WarningsGroupTest {
 	}
 
 	private class TestProperty extends VCardType {
-		public TestProperty() {
-			super("TEST1");
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
+		//empty
 	}
-
 }

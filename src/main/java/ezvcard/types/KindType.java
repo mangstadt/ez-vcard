@@ -76,8 +76,6 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class KindType extends TextType {
-	public static final String NAME = "KIND";
-
 	public static final String INDIVIDUAL = "individual";
 	public static final String GROUP = "group";
 	public static final String ORG = "org";
@@ -86,20 +84,12 @@ public class KindType extends TextType {
 	public static final String DEVICE = "device";
 
 	/**
-	 * Creates an empty kind property. Use of this constructor is discouraged.
-	 * Please use one of the static factory methods to create a new KIND type.
-	 */
-	public KindType() {
-		super(NAME);
-	}
-
-	/**
 	 * Creates a kind property. Use of this constructor is discouraged. Please
 	 * use one of the static factory methods to create a new KIND type.
 	 * @param kind the kind value (e.g. "group")
 	 */
 	public KindType(String kind) {
-		super(NAME, kind);
+		super(kind);
 	}
 
 	@Override

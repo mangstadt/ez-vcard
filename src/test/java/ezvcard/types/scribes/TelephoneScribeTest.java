@@ -74,7 +74,7 @@ public class TelephoneScribeTest {
 	public void prepareParameters_type_pref() {
 		//TODO move test to VCardPropertyScribeTest
 
-		TelephoneType property = new TelephoneType();
+		TelephoneType property = new TelephoneType((String) null);
 		property.addType(TelephoneTypeParameter.PREF);
 
 		//2.1 and 3.0 keep it
@@ -93,15 +93,15 @@ public class TelephoneScribeTest {
 	public void prepareParameters_pref_parameter() {
 		VCard vcard = new VCard();
 
-		TelephoneType tel2 = new TelephoneType();
+		TelephoneType tel2 = new TelephoneType((String) null);
 		tel2.setPref(2);
 		vcard.addTelephoneNumber(tel2);
 
-		TelephoneType tel1 = new TelephoneType();
+		TelephoneType tel1 = new TelephoneType((String) null);
 		tel1.setPref(1);
 		vcard.addTelephoneNumber(tel1);
 
-		TelephoneType tel3 = new TelephoneType();
+		TelephoneType tel3 = new TelephoneType((String) null);
 		vcard.addTelephoneNumber(tel3);
 
 		//2.1 and 3.0 converts the lowest PREF parameter to "TYPE=pref", and removes all the rest

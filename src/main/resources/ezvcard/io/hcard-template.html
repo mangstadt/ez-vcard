@@ -194,9 +194,9 @@
 			<br />
 		</#if>
 		
-		<#if v.revision?? && v.revision.timestamp??>
+		<#if v.revision?? && v.revision.value??>
 			<span class="l">vCard last updated: </span>
-			<time class="rev" datetime="${v.revision.timestamp?string("yyyy-MM-dd'T'HH:mm:ssZ")}">${v.revision.timestamp?string("MMMM d, yyyy h:mm aa z")}</time>
+			<time class="rev" datetime="${v.revision.value?string("yyyy-MM-dd'T'HH:mm:ssZ")}">${v.revision.value?string("MMMM d, yyyy h:mm aa z")}</time>
 			<br />
 		</#if>
 
@@ -319,7 +319,7 @@
 								<#else>
 									<#assign protocol=impp.protocol>
 								</#if>
-								<i>${protocol}</i>: <a class="url" href="${impp.buildLink()}">${impp.handle}</a><br />
+								<i>${protocol}</i>: <a class="url" href="${scribeIndex.getPropertyScribe(impp).writeHtmlLink(impp)}">${impp.handle}</a><br />
 							</#list>
 						</div>
 						<br />

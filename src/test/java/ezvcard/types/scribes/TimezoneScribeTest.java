@@ -60,7 +60,7 @@ public class TimezoneScribeTest {
 	private final TimezoneType withTimezoneId = new TimezoneType(timezoneIdStr);
 	private final TimezoneType withText = new TimezoneType(textStr);
 	private final TimezoneType withOffsetAndTimezoneId = new TimezoneType(offset, timezoneIdStr);
-	private final TimezoneType empty = new TimezoneType();
+	private final TimezoneType empty = new TimezoneType((String) null);
 
 	@Test
 	public void prepareParameters() {

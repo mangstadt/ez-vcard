@@ -11,7 +11,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.BinaryType;
-import ezvcard.types.scribes.BinaryPropertyScribe;
 import ezvcard.types.scribes.Sensei.Check;
 import ezvcard.util.DataUri;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
@@ -306,20 +305,8 @@ public class BinaryPropertyScribeTest {
 	}
 
 	private static class BinaryTypeImpl extends BinaryType<ImageTypeParameter> {
-		public static final String NAME = "NAME";
-
 		public BinaryTypeImpl() {
-			super(NAME);
-		}
-
-		@Override
-		protected ImageTypeParameter buildTypeObj(String type) {
-			return ImageTypeParameter.get(type, null, null);
-		}
-
-		@Override
-		protected ImageTypeParameter buildMediaTypeObj(String mediaType) {
-			return ImageTypeParameter.get(null, mediaType, null);
+			super((String) null, null);
 		}
 	}
 

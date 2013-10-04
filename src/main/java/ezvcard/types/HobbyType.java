@@ -64,21 +64,12 @@ import ezvcard.parameters.HobbyLevelParameter;
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
 public class HobbyType extends TextType implements HasAltId {
-	public static final String NAME = "HOBBY";
-
-	/**
-	 * Creates an empty hobby property.
-	 */
-	public HobbyType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates a hobby property.
 	 * @param hobby the hobby (e.g. "wind surfing")
 	 */
 	public HobbyType(String hobby) {
-		super(NAME, hobby);
+		super(hobby);
 	}
 
 	@Override

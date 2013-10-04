@@ -90,22 +90,12 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class MemberType extends UriType implements HasAltId {
-	public static final String NAME = "MEMBER";
-
-	/**
-	 * Creates an empty member property.
-	 */
-	public MemberType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates a member property.
 	 * @param uri the URI representing the member
 	 */
 	public MemberType(String uri) {
-		super(NAME);
-		setUri(uri);
+		super(uri);
 	}
 
 	@Override

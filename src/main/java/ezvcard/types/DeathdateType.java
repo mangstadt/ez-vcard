@@ -95,13 +95,11 @@ import ezvcard.VCardVersion;
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
  */
 public class DeathdateType extends DateOrTimeType {
-	public static final String NAME = "DEATHDATE";
-
 	/**
 	 * Creates an empty deathdate property.
 	 */
 	public DeathdateType() {
-		super(NAME);
+		super();
 	}
 
 	/**
@@ -109,7 +107,7 @@ public class DeathdateType extends DateOrTimeType {
 	 * @param date the time of death
 	 */
 	public DeathdateType(Date date) {
-		super(NAME, date);
+		super(date);
 	}
 
 	@Override

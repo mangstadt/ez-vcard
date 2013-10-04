@@ -53,21 +53,12 @@ import java.util.Date;
  * @author Michael Angstadt
  */
 public class RevisionType extends TimestampType {
-	public static final String NAME = "REV";
-
-	/**
-	 * Creates an empty revision property.
-	 */
-	public RevisionType() {
-		super(NAME);
-	}
-
 	/**
 	 * Creates a revision property.
 	 * @param date the last-modified date
 	 */
 	public RevisionType(Date date) {
-		super(NAME, date);
+		super(date);
 	}
 
 	/**

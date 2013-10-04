@@ -1,9 +1,11 @@
 package ezvcard.types;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static ezvcard.util.TestUtils.assertWarnings;
 
 import org.junit.Test;
+
+import ezvcard.VCard;
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -37,43 +39,25 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class TypeListTest {
+public class SimplePropertyTest {
 	@Test
-	public void getTypeClass() {
-		assertEquals(AddressType.class, TypeList.getTypeClass("ADR"));
+	public void validate() {
+		VCard vcard = new VCard();
+
+		SimplePropertyImpl empty = new SimplePropertyImpl(null);
+		assertWarnings(1, empty.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+
+		SimplePropertyImpl withValue = new SimplePropertyImpl("text");
+		assertWarnings(0, withValue.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(0, withValue.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, withValue.validate(VCardVersion.V4_0, vcard));
 	}
 
-	@Test
-	public void getTypeClass_case_insensitive() {
-		assertEquals(AddressType.class, TypeList.getTypeClass("aDr"));
-	}
-
-	@Test
-	public void getTypeClass_not_found() {
-		assertNull(TypeList.getTypeClass("non-existant"));
-	}
-
-	@Test
-	public void getTypeClassByHCardTypeName() {
-		assertEquals(AddressType.class, TypeList.getTypeClassByHCardTypeName("adr"));
-	}
-
-	@Test
-	public void getTypeClassByHCardTypeName_case_insensitive() {
-		assertEquals(AddressType.class, TypeList.getTypeClassByHCardTypeName("AdR"));
-	}
-
-	@Test
-	public void getTypeClassByHCardTypeName_not_found() {
-		assertNull(TypeList.getTypeClassByHCardTypeName("non-existant"));
-	}
-
-	/**
-	 * hCard uses a different name for the CATEGORIES property.
-	 */
-	@Test
-	public void getTypeClassByHCardTypeName_categories() {
-		assertEquals(CategoriesType.class, TypeList.getTypeClassByHCardTypeName("categories"));
-		assertEquals(CategoriesType.class, TypeList.getTypeClassByHCardTypeName("category"));
+	private class SimplePropertyImpl extends SimpleProperty<String> {
+		public SimplePropertyImpl(String value) {
+			super(value);
+		}
 	}
 }

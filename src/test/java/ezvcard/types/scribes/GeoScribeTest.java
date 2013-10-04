@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.types.GeoType;
-import ezvcard.types.scribes.GeoScribe;
 import ezvcard.types.scribes.Sensei.Check;
 
 /*
@@ -49,7 +48,7 @@ public class GeoScribeTest {
 	private final GeoType withLatitude = new GeoType(-12.34, null);
 	private final GeoType withLongitude = new GeoType(null, 56.78);
 	private final GeoType withManyDecimals = new GeoType(-12.3444444444, 56.7777777777);
-	private final GeoType empty = new GeoType();
+	private final GeoType empty = new GeoType(null);
 
 	@Test
 	public void writeText() {

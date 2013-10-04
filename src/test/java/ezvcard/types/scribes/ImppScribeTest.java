@@ -7,7 +7,6 @@ import java.net.URI;
 import org.junit.Test;
 
 import ezvcard.types.ImppType;
-import ezvcard.types.scribes.ImppScribe;
 import ezvcard.types.scribes.Sensei.Check;
 
 /*
@@ -162,7 +161,7 @@ public class ImppScribeTest {
 
 	@Test
 	public void writeHtmlLink() {
-		assertWriteHtmlLink(new ImppType(), null);
+		assertWriteHtmlLink(new ImppType((String) null), null);
 		assertWriteHtmlLink(ImppType.aim("theuser"), "aim:goim?screenname=theuser");
 		assertWriteHtmlLink(ImppType.skype("theuser"), "skype:theuser");
 		assertWriteHtmlLink(ImppType.icq("123456789"), "icq:message?uin=123456789");

@@ -56,21 +56,12 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class MailerType extends TextType {
-	public static final String NAME = "MAILER";
-
-	/**
-	 * Creates an empty mailer property.
-	 */
-	public MailerType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a mailer property.
 	 * @param emailClient the name of the email client (e.g. "Thunderbird")
 	 */
 	public MailerType(String emailClient) {
-		super(NAME, emailClient);
+		super(emailClient);
 	}
 
 	@Override

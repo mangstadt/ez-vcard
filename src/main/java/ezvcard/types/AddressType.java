@@ -1,20 +1,11 @@
 package ezvcard.types;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.VCardStringUtils.JoinCallback;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -89,8 +80,6 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class AddressType extends MultiValuedTypeParameterType<AddressTypeParameter> implements HasAltId {
-	public static final String NAME = "ADR";
-
 	private String poBox;
 	private String extendedAddress;
 	private String streetAddress;
@@ -98,13 +87,6 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	private String region;
 	private String postalCode;
 	private String country;
-
-	/**
-	 * Creates an address property.
-	 */
-	public AddressType() {
-		super(NAME);
-	}
 
 	@Override
 	protected AddressTypeParameter buildTypeObj(String type) {
@@ -338,138 +320,6 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			copy.setPref(null);
-
-			//find the ADR with the lowest PREF value in the vCard
-			AddressType mostPreferred = null;
-			for (AddressType adr : vcard.getAddresses()) {
-				Integer pref = adr.getPref();
-				if (pref == null) {
-					continue;
-				}
-
-				if (mostPreferred == null || pref < mostPreferred.getPref()) {
-					mostPreferred = adr;
-				}
-			}
-			if (this == mostPreferred) {
-				copy.addType(AddressTypeParameter.PREF.getValue());
-			}
-
-			//remove the LABEL parameter
-			//by the time this line of code is reached, VCardWriter will have created a LABEL property from this property's LABEL parameter
-			copy.removeAll("LABEL");
-
-			break;
-		case V4_0:
-			if (getTypes().contains(AddressTypeParameter.PREF)) {
-				copy.removeType(AddressTypeParameter.PREF.getValue());
-				copy.setPref(1);
-			}
-			break;
-		}
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		List<String> values = Arrays.asList(poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
-		VCardStringUtils.join(values, ";", sb, new JoinCallback<String>() {
-			public void handle(StringBuilder sb, String value) {
-				if (value == null) {
-					return;
-				}
-				sb.append(VCardStringUtils.escape(value));
-			}
-		});
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		Iterator<String> it = VCardStringUtils.splitBy(value, ';', false, true).iterator();
-
-		poBox = nextTextComponent(it);
-		extendedAddress = nextTextComponent(it);
-		streetAddress = nextTextComponent(it);
-		locality = nextTextComponent(it);
-		region = nextTextComponent(it);
-		postalCode = nextTextComponent(it);
-		country = nextTextComponent(it);
-	}
-
-	private String nextTextComponent(Iterator<String> it) {
-		if (!it.hasNext()) {
-			return null;
-		}
-
-		String value = it.next();
-		return (value.length() == 0) ? null : value;
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append("pobox", poBox); //the XML element still needs to be printed if value == null
-		parent.append("ext", extendedAddress);
-		parent.append("street", streetAddress);
-		parent.append("locality", locality);
-		parent.append("region", region);
-		parent.append("code", postalCode);
-		parent.append("country", country);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		poBox = sanitizeXml(element, "pobox");
-		extendedAddress = sanitizeXml(element, "ext");
-		streetAddress = sanitizeXml(element, "street");
-		locality = sanitizeXml(element, "locality");
-		region = sanitizeXml(element, "region");
-		postalCode = sanitizeXml(element, "code");
-		country = sanitizeXml(element, "country");
-	}
-
-	private String sanitizeXml(XCardElement element, String name) {
-		String value = element.first(name);
-		return (value != null && value.length() == 0) ? null : value;
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		poBox = element.firstValue("post-office-box");
-		extendedAddress = element.firstValue("extended-address");
-		streetAddress = element.firstValue("street-address");
-		locality = element.firstValue("locality");
-		region = element.firstValue("region");
-		postalCode = element.firstValue("postal-code");
-		country = element.firstValue("country-name");
-		List<String> types = element.types();
-		for (String type : types) {
-			subTypes.addType(type);
-		}
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.structured(VCardDataType.TEXT, poBox, extendedAddress, streetAddress, locality, region, postalCode, country);
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		Iterator<List<String>> it = value.asStructured().iterator();
-
-		poBox = nextJsonComponent(it);
-		extendedAddress = nextJsonComponent(it);
-		streetAddress = nextJsonComponent(it);
-		locality = nextJsonComponent(it);
-		region = nextJsonComponent(it);
-		postalCode = nextJsonComponent(it);
-		country = nextJsonComponent(it);
-	}
-
-	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		for (AddressTypeParameter type : getTypes()) {
 			if (type == AddressTypeParameter.PREF) {
@@ -481,19 +331,5 @@ public class AddressType extends MultiValuedTypeParameterType<AddressTypeParamet
 				warnings.add("Type value \"" + type.getValue() + "\" is not supported in version " + version.getVersion() + ".");
 			}
 		}
-	}
-
-	private String nextJsonComponent(Iterator<List<String>> it) {
-		if (!it.hasNext()) {
-			return null;
-		}
-
-		List<String> values = it.next();
-		if (values.isEmpty()) {
-			return null;
-		}
-
-		String value = values.get(0);
-		return (value == null || value.length() == 0) ? null : value;
 	}
 }

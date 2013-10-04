@@ -4,7 +4,6 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -43,16 +42,11 @@ import ezvcard.io.CompatibilityMode;
 public class SimpleProperty<T> extends VCardType {
 	protected T value;
 
-	public SimpleProperty(T value) {
-		this(null, value);
-	}
-
 	/**
 	 * Creates a valued property
 	 * @param value the value
 	 */
-	public SimpleProperty(String name, T value) {
-		super(name); //TODO remove
+	public SimpleProperty(T value) {
 		this.value = value;
 	}
 
@@ -70,16 +64,6 @@ public class SimpleProperty<T> extends VCardType {
 	 */
 	public void setValue(T value) {
 		this.value = value;
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		//TODO remove
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//TODO remove
 	}
 
 	@Override

@@ -53,21 +53,12 @@ import java.util.List;
  * @author Michael Angstadt
  */
 public class RoleType extends TextType implements HasAltId {
-	public static final String NAME = "ROLE";
-
-	/**
-	 * Creates an empty role property.
-	 */
-	public RoleType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a role property.
 	 * @param role the role (e.g. "Software Developer")
 	 */
 	public RoleType(String role) {
-		super(NAME, role);
+		super(role);
 	}
 
 	@Override

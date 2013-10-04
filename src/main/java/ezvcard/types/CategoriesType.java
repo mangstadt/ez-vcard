@@ -2,12 +2,6 @@ package ezvcard.types;
 
 import java.util.List;
 
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardElement;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.VCardStringUtils.JoinCallback;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -63,15 +57,6 @@ import ezvcard.util.VCardStringUtils.JoinCallback;
  * @author Michael Angstadt
  */
 public class CategoriesType extends TextListType implements HasAltId {
-	public static final String NAME = "CATEGORIES";
-
-	/**
-	 * Creates a categories property.
-	 */
-	public CategoriesType() {
-		super(NAME, ',');
-	}
-
 	@Override
 	public List<Integer[]> getPids() {
 		return super.getPids();
@@ -129,38 +114,5 @@ public class CategoriesType extends TextListType implements HasAltId {
 	 */
 	public void setType(String type) {
 		subTypes.setType(type);
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (compatibilityMode == CompatibilityMode.KDE_ADDRESS_BOOK) {
-			//KDE escapes all the comma delimiters
-			VCardStringUtils.join(values, "\\,", sb, new JoinCallback<String>() {
-				public void handle(StringBuilder sb, String value) {
-					sb.append(VCardStringUtils.escape(value));
-				}
-			});
-			return;
-		}
-
-		super.doMarshalText(sb, version, compatibilityMode);
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (compatibilityMode == CompatibilityMode.KDE_ADDRESS_BOOK) {
-			//KDE escapes all the comma delimiters
-			value = VCardStringUtils.unescape(value);
-		}
-		super.doUnmarshalText(value, version, warnings, compatibilityMode);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String value = element.attr("rel");
-		if (value.length() == 0) {
-			value = element.value();
-		}
-		addValue(value);
 	}
 }

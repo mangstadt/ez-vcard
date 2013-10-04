@@ -43,30 +43,31 @@ public class MemberTypeTest {
 	@Test
 	public void validate() {
 		VCard vcard = new VCard();
-		MemberType member = new MemberType();
-		assertWarnings(3, member.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(3, member.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(2, member.validate(VCardVersion.V4_0, vcard));
 
-		member.setUri("uri");
+		MemberType property = new MemberType(null);
+		assertWarnings(3, property.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(3, property.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(2, property.validate(VCardVersion.V4_0, vcard));
+
+		property.setUri("uri");
 		VCard group = new VCard();
 		group.setKind(KindType.group());
-		group.addMember(member);
-		assertWarnings(1, member.validate(VCardVersion.V2_1, group));
-		assertWarnings(1, member.validate(VCardVersion.V3_0, group));
-		assertWarnings(0, member.validate(VCardVersion.V4_0, group));
+		group.addMember(property);
+		assertWarnings(1, property.validate(VCardVersion.V2_1, group));
+		assertWarnings(1, property.validate(VCardVersion.V3_0, group));
+		assertWarnings(0, property.validate(VCardVersion.V4_0, group));
 
 		VCard notGroup = new VCard();
 		notGroup.setKind(KindType.application());
-		group.addMember(member);
-		assertWarnings(2, member.validate(VCardVersion.V2_1, notGroup));
-		assertWarnings(2, member.validate(VCardVersion.V3_0, notGroup));
-		assertWarnings(1, member.validate(VCardVersion.V4_0, notGroup));
+		group.addMember(property);
+		assertWarnings(2, property.validate(VCardVersion.V2_1, notGroup));
+		assertWarnings(2, property.validate(VCardVersion.V3_0, notGroup));
+		assertWarnings(1, property.validate(VCardVersion.V4_0, notGroup));
 
 		VCard noKind = new VCard();
-		group.addMember(member);
-		assertWarnings(2, member.validate(VCardVersion.V2_1, noKind));
-		assertWarnings(2, member.validate(VCardVersion.V3_0, noKind));
-		assertWarnings(1, member.validate(VCardVersion.V4_0, noKind));
+		group.addMember(property);
+		assertWarnings(2, property.validate(VCardVersion.V2_1, noKind));
+		assertWarnings(2, property.validate(VCardVersion.V3_0, noKind));
+		assertWarnings(1, property.validate(VCardVersion.V4_0, noKind));
 	}
 }

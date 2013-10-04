@@ -229,7 +229,7 @@ public class ScribeIndex {
 	public VCardPropertyScribe<? extends VCardType> getPropertyScribe(VCardType property) {
 		if (property instanceof RawType) {
 			RawType raw = (RawType) property;
-			return new RawPropertyScribe(raw.getTypeName());
+			return new RawPropertyScribe(raw.getPropertyName());
 		}
 
 		return getPropertyScribe(property.getClass());

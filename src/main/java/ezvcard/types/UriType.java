@@ -1,13 +1,5 @@
 package ezvcard.types;
 
-import java.util.List;
-
-import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -45,49 +37,9 @@ import ezvcard.util.XCardElement;
 public class UriType extends TextType {
 	/**
 	 * Creates a property whose value is a URI.
-	 * @param name the type name (e.g. "URL")
-	 */
-	public UriType(String name) {
-		super(name);
-	}
-
-	/**
-	 * Creates a property whose value is a URI.
-	 * @param name the type name (e.g. "URL")
 	 * @param uri the type value
 	 */
-	public UriType(String name, String uri) {
-		super(name, uri);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.URI);
-		if (value != null) {
-			setValue(value);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.URI);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.URI, getValue());
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String href = element.absUrl("href");
-		if (href.length() == 0) {
-			super.doUnmarshalHtml(element, warnings);
-			return;
-		}
-		setValue(href);
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.URI, value);
+	public UriType(String uri) {
+		super(uri);
 	}
 }

@@ -38,14 +38,6 @@ import ezvcard.parameters.VCardParameter;
  */
 public abstract class TypeParameterType<T extends VCardParameter> extends VCardType {
 	/**
-	 * Creates a property that has a TYPE parameter.
-	 * @param name the type name (e.g. "PHOTO").
-	 */
-	public TypeParameterType(String name) {
-		super(name);
-	}
-
-	/**
 	 * Builds an object that wraps the value of the TYPE parameter.
 	 * @param type the value of the TYPE parameter
 	 * @return the object wrapper

@@ -1,6 +1,5 @@
 package ezvcard.util;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -15,14 +14,9 @@ import java.util.Set;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.types.VCardType;
 
 /*
@@ -66,6 +60,16 @@ public class TestUtils {
 	 */
 	public static void assertWarnings(int expectedSize, List<String> warnings) {
 		assertEquals(warnings.toString(), expectedSize, warnings.size());
+	}
+
+	/**
+	 * Asserts that a warnings list is a certain size.
+	 * @param message a message to print if the test fails
+	 * @param expectedSize the expected size of the warnings list
+	 * @param warnings the warnings list
+	 */
+	public static void assertWarnings(String message, int expectedSize, List<String> warnings) {
+		assertEquals(message + " " + warnings.toString(), expectedSize, warnings.size());
 	}
 
 	/**
@@ -160,27 +164,6 @@ public class TestUtils {
 			expectedSet.add(expectedElement);
 		}
 		assertEquals(expectedSet, actualSet);
-	}
-
-	/**
-	 * Asserts the marshalling of an xCard property.
-	 * @param type the property to marshal
-	 * @param expectedInnerXml the expected inner XML of the property element
-	 */
-	public static void assertMarshalXml(VCardType type, String expectedInnerXml) {
-		VCardVersion version = VCardVersion.V4_0;
-		String typeName = type.getTypeName().toLowerCase();
-
-		Document expected, actual;
-		try {
-			expected = XmlUtils.toDocument("<" + typeName + " xmlns=\"" + version.getXmlNamespace() + "\">" + expectedInnerXml + "</" + typeName + ">");
-			actual = XmlUtils.toDocument("<" + typeName + " xmlns=\"" + version.getXmlNamespace() + "\" />");
-		} catch (SAXException e) {
-			throw new RuntimeException(e);
-		}
-
-		type.marshalXml(XmlUtils.getRootElement(actual), version, CompatibilityMode.RFC);
-		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
 	}
 
 	/**

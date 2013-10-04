@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.types.RawType;
-import ezvcard.types.scribes.RawPropertyScribe;
 import ezvcard.types.scribes.Sensei.Check;
 
 /*
@@ -61,7 +60,7 @@ public class RawPropertyScribeTest {
 	private Check<RawType> has(final String name, final String value, final VCardDataType dataType) {
 		return new Check<RawType>() {
 			public void check(RawType property) {
-				assertEquals(name, property.getTypeName());
+				assertEquals(name, property.getPropertyName());
 				assertEquals(value, property.getValue());
 				assertEquals(dataType, property.getDataType());
 			}

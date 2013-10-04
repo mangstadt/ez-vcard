@@ -12,7 +12,6 @@ import java.util.List;
 import org.junit.Test;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.types.VCardType;
 
 /*
@@ -98,34 +97,10 @@ public class ValidationWarningsTest {
 	}
 
 	private class TestProperty1 extends VCardType {
-		public TestProperty1() {
-			super("TEST1");
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
+		//empty
 	}
 
 	private class TestProperty2 extends VCardType {
-		public TestProperty2() {
-			super("TEST2");
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
+		//empty
 	}
 }

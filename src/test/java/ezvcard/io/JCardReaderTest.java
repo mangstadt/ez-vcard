@@ -354,23 +354,8 @@ public class JCardReaderTest {
 	private static class TypeForTesting extends VCardType {
 		public JCardValue value;
 
-		public TypeForTesting() {
-			super("X-TYPE");
-		}
-
 		public TypeForTesting(JCardValue value) {
-			this();
 			this.value = value;
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
 		}
 	}
 
@@ -391,7 +376,7 @@ public class JCardReaderTest {
 
 		@Override
 		protected TypeForTesting _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
-			return new TypeForTesting();
+			return new TypeForTesting(null);
 		}
 
 		@Override

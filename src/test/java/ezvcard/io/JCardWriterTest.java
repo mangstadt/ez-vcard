@@ -302,7 +302,7 @@ public class JCardWriterTest {
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		LuckyNumType prop = new LuckyNumType();
+		LuckyNumType prop = new LuckyNumType(0);
 		prop.luckyNum = 13;
 		vcard.addType(prop);
 		writer.write(vcard);
@@ -451,23 +451,7 @@ public class JCardWriterTest {
 		public JCardValue value;
 
 		public TypeForTesting(JCardValue value) {
-			super("X-TYPE");
 			this.value = value;
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected JCardValue doMarshalJson(VCardVersion version) {
-			return value;
 		}
 	}
 

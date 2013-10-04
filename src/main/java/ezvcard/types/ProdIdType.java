@@ -56,21 +56,12 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class ProdIdType extends TextType {
-	public static final String NAME = "PRODID";
-
-	/**
-	 * Creates an empty product ID property.
-	 */
-	public ProdIdType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a product ID property.
 	 * @param prodId the prod ID
 	 */
 	public ProdIdType(String prodId) {
-		super(NAME, prodId);
+		super(prodId);
 	}
 
 	@Override

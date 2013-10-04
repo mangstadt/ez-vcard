@@ -90,13 +90,11 @@ import java.util.Date;
  * @author Michael Angstadt
  */
 public class BirthdayType extends DateOrTimeType {
-	public static final String NAME = "BDAY";
-
 	/**
 	 * Creates an empty birthday property.
 	 */
 	public BirthdayType() {
-		super(NAME);
+		super();
 	}
 
 	/**
@@ -104,6 +102,6 @@ public class BirthdayType extends DateOrTimeType {
 	 * @param date the birthday
 	 */
 	public BirthdayType(Date date) {
-		super(NAME, date);
+		super(date);
 	}
 }

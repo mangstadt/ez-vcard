@@ -5,7 +5,6 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -45,14 +44,6 @@ public class ListProperty<T> extends VCardType {
 	protected List<T> values = new ArrayList<T>();
 
 	/**
-	 * Creates a property that contains a list of textual values.
-	 * @param name the type name (e.g. "NICKNAME")
-	 */
-	public ListProperty(String name) {
-		super(name);
-	}
-
-	/**
 	 * Gest the list of values.
 	 * @return the list of values
 	 */
@@ -74,16 +65,6 @@ public class ListProperty<T> extends VCardType {
 	 */
 	public void removeValue(T value) {
 		values.remove(value);
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		//TODO remove
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//TODO remove
 	}
 
 	@Override

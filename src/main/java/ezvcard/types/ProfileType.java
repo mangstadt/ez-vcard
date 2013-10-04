@@ -58,13 +58,8 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class ProfileType extends TextType {
-	public static final String NAME = "PROFILE";
-
-	/**
-	 * Creates a profile property.
-	 */
 	public ProfileType() {
-		super(NAME, "VCARD");
+		super("VCARD");
 	}
 
 	@Override

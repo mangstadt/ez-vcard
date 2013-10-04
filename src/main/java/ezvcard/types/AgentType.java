@@ -5,16 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.SkipMeException;
-import ezvcard.util.HCardElement;
-import ezvcard.util.VCardStringUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -81,8 +74,6 @@ import ezvcard.util.VCardStringUtils;
  * @author Michael Angstadt
  */
 public class AgentType extends VCardType {
-	public static final String NAME = "AGENT";
-
 	private String url;
 	private VCard vcard;
 
@@ -90,7 +81,7 @@ public class AgentType extends VCardType {
 	 * Creates an empty agent property.
 	 */
 	public AgentType() {
-		super(NAME);
+		//empty
 	}
 
 	/**
@@ -98,7 +89,6 @@ public class AgentType extends VCardType {
 	 * @param url a URL pointing to the agent's information
 	 */
 	public AgentType(String url) {
-		super(NAME);
 		setUrl(url);
 	}
 
@@ -107,7 +97,6 @@ public class AgentType extends VCardType {
 	 * @param vcard a vCard containing the agent's information
 	 */
 	public AgentType(VCard vcard) {
-		super(NAME);
 		setVCard(vcard);
 	}
 
@@ -151,52 +140,6 @@ public class AgentType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardDataType dataType = null;
-		if (url != null) {
-			dataType = (version == VCardVersion.V2_1) ? VCardDataType.URL : VCardDataType.URI;
-		}
-		copy.setValue(dataType);
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (url != null) {
-			sb.append(url);
-			return;
-		}
-
-		if (vcard != null) {
-			throw new EmbeddedVCardException(vcard);
-		}
-
-		//don't write an empty value because parsers could interpret that as there being an embedded vCard on the next line
-		throw new SkipMeException("Property has neither a URL nor an embedded vCard.");
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		if (subTypes.getValue() == null) {
-			throw new EmbeddedVCardException(new Injector());
-		}
-		setUrl(VCardStringUtils.unescape(value));
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		Set<String> classes = element.classNames();
-		if (classes.contains("vcard")) {
-			throw new EmbeddedVCardException(new Injector());
-		}
-
-		String url = element.absUrl("href");
-		if (url.length() == 0) {
-			url = element.value();
-		}
-		setUrl(url);
-	}
-
-	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		if (url == null && this.vcard == null) {
 			warnings.add("Property has neither a URL nor an embedded vCard.");
@@ -212,12 +155,6 @@ public class AgentType extends VCardType {
 					warnings.add(prefix + warning);
 				}
 			}
-		}
-	}
-
-	private class Injector implements EmbeddedVCardException.InjectionCallback {
-		public void injectVCard(VCard vcard) {
-			setVCard(vcard);
 		}
 	}
 }

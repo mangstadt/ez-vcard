@@ -56,21 +56,12 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class SourceDisplayTextType extends TextType {
-	public static final String NAME = "NAME";
-
-	/**
-	 * Creates an empty source display text property.
-	 */
-	public SourceDisplayTextType() {
-		this(null);
-	}
-
 	/**
 	 * Creates a source display text property.
 	 * @param displayText the display text
 	 */
 	public SourceDisplayTextType(String displayText) {
-		super(NAME, displayText);
+		super(displayText);
 	}
 
 	@Override

@@ -1,20 +1,13 @@
 package ezvcard.types;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -99,17 +92,8 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class ClientPidMapType extends VCardType {
-	public static final String NAME = "CLIENTPIDMAP";
-
 	private Integer pid;
 	private String uri;
-
-	/**
-	 * Creates an empty client PID map property.
-	 */
-	public ClientPidMapType() {
-		this(null, null);
-	}
 
 	/**
 	 * Creates a client PID map property.
@@ -117,7 +101,6 @@ public class ClientPidMapType extends VCardType {
 	 * @param uri the globally unique URI
 	 */
 	public ClientPidMapType(Integer pid, String uri) {
-		super(NAME);
 		this.pid = pid;
 		this.uri = uri;
 	}
@@ -174,88 +157,9 @@ public class ClientPidMapType extends VCardType {
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(pid).append(';').append(VCardStringUtils.escape(uri));
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String split[] = value.split(";", 2);
-		if (split.length < 2) {
-			throw new CannotParseException("Incorrect data format.  Value must contain a PID and a URI, separated by a semi-colon.");
-		}
-
-		String pid = split[0];
-		String uri = VCardStringUtils.unescape(split[1]);
-		parse(pid, uri);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append("sourceid", (pid == null) ? "" : pid.toString());
-		parent.append(VCardDataType.URI, uri);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String sourceid = element.first("sourceid");
-		String uri = element.first(VCardDataType.URI);
-
-		if (uri == null && sourceid == null) {
-			throw missingXmlElements(VCardDataType.URI.getName().toLowerCase(), "sourceid");
-		}
-		if (uri == null) {
-			throw missingXmlElements(VCardDataType.URI);
-		}
-		if (sourceid == null) {
-			throw missingXmlElements("sourceid");
-		}
-
-		parse(sourceid, uri);
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.structured(VCardDataType.TEXT, pid, uri);
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		Iterator<List<String>> it = value.asStructured().iterator();
-
-		String pid = nextJsonComponent(it);
-		String uri = nextJsonComponent(it);
-		parse(pid, uri);
-	}
-
-	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		if (pid == null && uri == null) {
 			warnings.add("Property has no value associated with it.");
 		}
-	}
-
-	private void parse(String pid, String uri) {
-		try {
-			this.pid = Integer.parseInt(pid);
-		} catch (NumberFormatException e) {
-			throw new CannotParseException("Unable to parse PID component.");
-		}
-
-		this.uri = uri;
-	}
-
-	private String nextJsonComponent(Iterator<List<String>> it) {
-		if (!it.hasNext()) {
-			return null;
-		}
-
-		List<String> values = it.next();
-		if (values.isEmpty()) {
-			return null;
-		}
-
-		String value = values.get(0);
-		return (value == null || value.length() == 0) ? null : value;
 	}
 }

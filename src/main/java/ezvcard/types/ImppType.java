@@ -2,23 +2,13 @@ package ezvcard.types;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.ImppTypeParameter;
-import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -80,8 +70,6 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> implements HasAltId {
-	public static final String NAME = "IMPP";
-
 	private static final String AIM = "aim";
 	private static final String ICQ = "icq";
 	private static final String IRC = "irc";
@@ -91,47 +79,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	private static final String XMPP = "xmpp";
 	private static final String YAHOO = "ymsgr";
 
-	/**
-	 * List of recognized IM protocols that can be parsed from an HTML link
-	 * (hCard).
-	 */
-	private static final List<ImHtmlLink> htmlParseableProtocols = new ArrayList<ImHtmlLink>();
-	static {
-		//http://en.wikipedia.org/wiki/AOL_Instant_Messenger#URI_scheme
-		htmlParseableProtocols.add(new ImHtmlLink(AIM, "(goim|addbuddy)\\?.*?\\bscreenname=(.*?)(&|$)", 2, "goim?screenname=%s"));
-
-		//http://en.wikipedia.org/wiki/Yahoo!_Messenger#URI_scheme
-		htmlParseableProtocols.add(new ImHtmlLink(YAHOO, "(sendim|addfriend|sendfile|call)\\?(.*)", 2, "sendim?%s"));
-
-		//http://developer.skype.com/skype-uri/skype-uri-ref-api
-		htmlParseableProtocols.add(new ImHtmlLink(SKYPE, "(.*?)(\\?|$)", 1, "%s"));
-
-		//http://www.tech-recipes.com/rx/1157/msn-messenger-msnim-hyperlink-command-codes/
-		htmlParseableProtocols.add(new ImHtmlLink(MSN, "(chat|add|voice|video)\\?contact=(.*?)(&|$)", 2, "chat?contact=%s"));
-
-		//http://www.tech-recipes.com/rx/1157/msn-messenger-msnim-hyperlink-command-codes/
-		htmlParseableProtocols.add(new ImHtmlLink(XMPP, "(.*?)(\\?|$)", 1, "%s?message"));
-
-		//http://forums.miranda-im.org/showthread.php?26589-Add-support-to-quot-icq-message-uin-12345-quot-web-links
-		htmlParseableProtocols.add(new ImHtmlLink(ICQ, "message\\?uin=(\\d+)", 1, "message?uin=%s"));
-
-		//SIP: http://en.wikipedia.org/wiki/Session_Initiation_Protocol
-		//leave as-is
-		htmlParseableProtocols.add(new ImHtmlLink(SIP));
-
-		//IRC: http://stackoverflow.com/questions/11970897/how-do-i-open-a-query-window-using-the-irc-uri-scheme
-		//IRC handles are not globally unique, so leave as-is
-		htmlParseableProtocols.add(new ImHtmlLink(IRC));
-	}
-
 	private URI uri;
-
-	/**
-	 * Creates an empty IMPP property.
-	 */
-	public ImppType() {
-		super(NAME);
-	}
 
 	/**
 	 * Creates an IMPP property. Note that this class has static factory methods
@@ -140,7 +88,6 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	 * @throws IllegalArgumentException if the URI is not a valid URI
 	 */
 	public ImppType(String uri) {
-		this();
 		setUri(uri);
 	}
 
@@ -150,7 +97,6 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	 * @param uri the IM URI (e.g. "aim:johndoe@aol.com")
 	 */
 	public ImppType(URI uri) {
-		this();
 		setUri(uri);
 	}
 
@@ -161,7 +107,6 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	 * @param handle the IM handle (e.g. "johndoe@aol.com")
 	 */
 	public ImppType(String protocol, String handle) {
-		this();
 		setUri(protocol, handle);
 	}
 
@@ -329,7 +274,7 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	 * @throws IllegalArgumentException if the URI is not a valid URI
 	 */
 	public void setUri(String uri) {
-		setUri(URI.create(uri));
+		setUri((uri == null) ? null : URI.create(uri));
 	}
 
 	/**
@@ -440,171 +385,9 @@ public class ImppType extends MultiValuedTypeParameterType<ImppTypeParameter> im
 	}
 
 	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			sb.append(uri.toString());
-		}
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value);
-		parse(value);
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.append(VCardDataType.URI, (uri == null) ? "" : uri.toString());
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.URI);
-		if (value != null) {
-			parse(value);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.URI);
-	}
-
-	@Override
-	protected void doUnmarshalHtml(HCardElement element, List<String> warnings) {
-		String href = element.attr("href");
-		if (href.length() == 0) {
-			href = element.value();
-		}
-
-		try {
-			URI uri = parseUriFromLink(href);
-			if (uri == null) {
-				throw new IllegalArgumentException();
-			}
-			setUri(uri);
-		} catch (IllegalArgumentException e) {
-			throw new CannotParseException("Could not parse instant messenger information from link: " + href);
-		}
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		return JCardValue.single(VCardDataType.URI, (uri == null) ? "" : uri.toString());
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		parse(value.asSingle());
-	}
-
-	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		if (uri == null) {
 			warnings.add("Property value is null.");
-		}
-	}
-
-	private void parse(String value) {
-		if (value == null || value.length() == 0) {
-			return;
-		}
-
-		try {
-			setUri(value);
-		} catch (IllegalArgumentException e) {
-			throw new CannotParseException("Cannot parse URI \"" + value + "\": " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Parses an IM URI from an HTML link.
-	 * @param linkUri the HTML link (e.g. "aim:goim?screenname=theuser")
-	 * @return the IM URI or null if not recognized
-	 */
-	static URI parseUriFromLink(String linkUri) {
-		for (ImHtmlLink imLink : htmlParseableProtocols) {
-			String handle = imLink.parseHandle(linkUri);
-			if (handle == null) {
-				continue;
-			}
-
-			try {
-				return new URI(imLink.getProtocol(), handle, null);
-			} catch (URISyntaxException e) {
-				throw new IllegalArgumentException(e);
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Builds a URI suitable for use as a link on a webpage.
-	 * @return the link URI (e.g. "aim:goim?screenname=theuser") or null if the
-	 * IMPP URI was never set
-	 */
-	public String buildLink() {
-		if (uri == null) {
-			return null;
-		}
-
-		String protocol = uri.getScheme();
-		String handle = uri.getSchemeSpecificPart();
-
-		for (ImHtmlLink imLink : htmlParseableProtocols) {
-			if (protocol.equals(imLink.getProtocol())) {
-				return imLink.buildLink(handle);
-			}
-		}
-		return uri.toString();
-	}
-
-	private static class ImHtmlLink {
-		private final Pattern linkRegex;
-		private final String protocol;
-		private final int handleGroup;
-		private final String linkFormat;
-
-		/**
-		 * @param protocol the IM protocol (e.g. "aim")
-		 */
-		public ImHtmlLink(String protocol) {
-			this(protocol, "(.*)", 1, "%s");
-		}
-
-		/**
-		 * @param protocol the IM protocol (e.g. "aim")
-		 * @param linkRegex the regular expression used to parse a link
-		 * @param handleGroup the group number from the regular expression that
-		 * contains the IM handle
-		 * @param linkFormat the format string for building a link
-		 */
-		public ImHtmlLink(String protocol, String linkRegex, int handleGroup, String linkFormat) {
-			this.linkRegex = Pattern.compile('^' + protocol + ':' + linkRegex, Pattern.CASE_INSENSITIVE);
-			this.protocol = protocol;
-			this.handleGroup = handleGroup;
-			this.linkFormat = protocol + ':' + linkFormat;
-		}
-
-		/**
-		 * Parses the IM handle out of a link.
-		 * @param linkUri the link
-		 * @return the IM handle or null if it can't be found
-		 */
-		public String parseHandle(String linkUri) {
-			Matcher m = linkRegex.matcher(linkUri);
-			return m.find() ? m.group(handleGroup) : null;
-		}
-
-		/**
-		 * Builds a link for inclusion in a webpage.
-		 * @param handle the IM handle
-		 * @return the link
-		 */
-		public String buildLink(String handle) {
-			return String.format(linkFormat, handle);
-		}
-
-		public String getProtocol() {
-			return protocol;
 		}
 	}
 }

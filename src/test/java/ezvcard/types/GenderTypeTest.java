@@ -1,30 +1,14 @@
 package ezvcard.types;
 
-import static ezvcard.util.TestUtils.assertJCardValue;
-import static ezvcard.util.TestUtils.assertMarshalXml;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CannotParseException;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.util.JCardValue;
-import ezvcard.util.JsonValue;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -59,36 +43,19 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class GenderTypeTest {
-	private final List<String> warnings = new ArrayList<String>();
-	private final CompatibilityMode compatibilityMode = CompatibilityMode.RFC;
-	private final VCardSubTypes subTypes = new VCardSubTypes();
-	private final VCard vcard = new VCard();
-	private final String gender = "M";
-	private final String text = "te;xt";
-	private final String escapedText = "te\\;xt";
-	private final GenderType genderType = GenderType.male();
-	private final GenderType genderTypeWithText = GenderType.male();
-	{
-		genderTypeWithText.setText(text);
-	}
-	private GenderType t;
-
-	@Before
-	public void before() {
-		t = new GenderType();
-		warnings.clear();
-		subTypes.clear();
-	}
-
 	@Test
 	public void validate() {
-		assertWarnings(2, t.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(2, t.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(1, t.validate(VCardVersion.V4_0, vcard));
+		VCard vcard = new VCard();
 
-		assertWarnings(1, genderType.validate(VCardVersion.V2_1, vcard));
-		assertWarnings(1, genderType.validate(VCardVersion.V3_0, vcard));
-		assertWarnings(0, genderType.validate(VCardVersion.V4_0, vcard));
+		GenderType empty = new GenderType(null);
+		assertWarnings(2, empty.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(2, empty.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(1, empty.validate(VCardVersion.V4_0, vcard));
+
+		GenderType male = GenderType.male();
+		assertWarnings(1, male.validate(VCardVersion.V2_1, vcard));
+		assertWarnings(1, male.validate(VCardVersion.V3_0, vcard));
+		assertWarnings(0, male.validate(VCardVersion.V4_0, vcard));
 	}
 
 	@Test
@@ -169,168 +136,5 @@ public class GenderTypeTest {
 	public void unknown() {
 		GenderType gender = GenderType.unknown();
 		assertEquals("U", gender.getGender());
-	}
-
-	@Test
-	public void marshalText() {
-		VCardVersion version = VCardVersion.V4_0;
-		String actual = genderType.marshalText(version, compatibilityMode);
-
-		assertEquals(gender, actual);
-	}
-
-	@Test
-	public void marshalText_with_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		String actual = genderTypeWithText.marshalText(version, compatibilityMode);
-
-		assertEquals(gender + ";" + escapedText, actual);
-	}
-
-	@Test
-	public void marshalXml() {
-		assertMarshalXml(genderType, "<sex>" + gender + "</sex>");
-	}
-
-	@Test
-	public void marshalXml_with_text() {
-		assertMarshalXml(genderTypeWithText, "<sex>" + gender + "</sex><identity>" + text + "</identity>");
-	}
-
-	@Test
-	public void marshalJson() {
-		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = genderType.marshalJson(version);
-
-		assertJCardValue(VCardDataType.TEXT, gender, value);
-	}
-
-	@Test
-	public void marshalJson_with_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = genderTypeWithText.marshalJson(version);
-
-		assertEquals(VCardDataType.TEXT, value.getDataType());
-
-		//@formatter:off
-		List<JsonValue> expected = Arrays.asList(
-			new JsonValue(Arrays.asList(
-				new JsonValue(gender),
-				new JsonValue(text)
-			))
-		);
-		//@formatter:on
-		assertEquals(expected, value.getValues());
-	}
-
-	@Test
-	public void unmarshalText() {
-		VCardVersion version = VCardVersion.V4_0;
-		t.unmarshalText(subTypes, gender, version, warnings, compatibilityMode);
-
-		assertEquals(gender, t.getGender());
-		assertTrue(t.isMale());
-		assertNull(t.getText());
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalText_with_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		t.unmarshalText(subTypes, gender + ";" + escapedText, version, warnings, compatibilityMode);
-
-		assertEquals(gender, t.getGender());
-		assertTrue(t.isMale());
-		assertEquals(text, t.getText());
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalXml() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(GenderType.NAME.toLowerCase());
-		xe.append("sex", gender);
-
-		Element element = xe.element();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-
-		assertEquals(gender, t.getGender());
-		assertTrue(t.isMale());
-		assertNull(t.getText());
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalXml_with_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(GenderType.NAME.toLowerCase());
-		xe.append("sex", gender);
-		xe.append("identity", text);
-
-		Element element = xe.element();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-
-		assertEquals(gender, t.getGender());
-		assertTrue(t.isMale());
-		assertEquals(text, t.getText());
-		assertWarnings(0, warnings);
-	}
-
-	@Test(expected = CannotParseException.class)
-	public void unmarshalXml_no_sex_or_identity() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(GenderType.NAME.toLowerCase());
-
-		Element element = xe.element();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-	}
-
-	@Test(expected = CannotParseException.class)
-	public void unmarshalXml_no_sex() {
-		VCardVersion version = VCardVersion.V4_0;
-		XCardElement xe = new XCardElement(GenderType.NAME.toLowerCase());
-		xe.append("identity", text);
-
-		Element element = xe.element();
-		t.unmarshalXml(subTypes, element, version, warnings, compatibilityMode);
-	}
-
-	@Test
-	public void unmarshalJson() {
-		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.single(VCardDataType.TEXT, gender);
-
-		t.unmarshalJson(subTypes, value, version, warnings);
-
-		assertEquals(gender, t.getGender());
-		assertTrue(t.isMale());
-		assertNull(t.getText());
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalJson_gender_in_array() {
-		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, gender);
-
-		t.unmarshalJson(subTypes, value, version, warnings);
-
-		assertEquals(gender, t.getGender());
-		assertTrue(t.isMale());
-		assertNull(t.getText());
-		assertWarnings(0, warnings);
-	}
-
-	@Test
-	public void unmarshalJson_with_text() {
-		VCardVersion version = VCardVersion.V4_0;
-		JCardValue value = JCardValue.structured(VCardDataType.TEXT, gender, text);
-
-		t.unmarshalJson(subTypes, value, version, warnings);
-
-		assertEquals(gender, t.getGender());
-		assertTrue(t.isMale());
-		assertEquals(text, t.getText());
-		assertWarnings(0, warnings);
 	}
 }

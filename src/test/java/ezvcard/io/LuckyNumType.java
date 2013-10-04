@@ -52,23 +52,8 @@ import ezvcard.util.XCardElement;
 public class LuckyNumType extends VCardType {
 	public int luckyNum;
 
-	public LuckyNumType() {
-		super("X-LUCKY-NUM");
-	}
-
-	private LuckyNumType(int luckyNum) {
-		this();
+	public LuckyNumType(int luckyNum) {
 		this.luckyNum = luckyNum;
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-		//TODO remove
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		//TODO remove
 	}
 
 	public static class LuckyNumScribe extends VCardPropertyScribe<LuckyNumType> {
@@ -113,7 +98,7 @@ public class LuckyNumType extends VCardType {
 		protected LuckyNumType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 			NodeList nodeList = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
 			if (nodeList.getLength() == 0) {
-				return new LuckyNumType();
+				return new LuckyNumType(0);
 			}
 
 			Element num = (Element) nodeList.item(0);

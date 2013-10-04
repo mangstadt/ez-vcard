@@ -5,14 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCard;
-import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.CompatibilityMode;
 import ezvcard.parameters.RelatedTypeParameter;
-import ezvcard.util.JCardValue;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -80,17 +74,8 @@ import ezvcard.util.XCardElement;
  * @author Michael Angstadt
  */
 public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParameter> implements HasAltId {
-	public static final String NAME = "RELATED";
-
 	private String uri;
 	private String text;
-
-	/**
-	 * Creates a related property.
-	 */
-	public RelatedType() {
-		super(NAME);
-	}
 
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
@@ -194,90 +179,6 @@ public class RelatedType extends MultiValuedTypeParameterType<RelatedTypeParamet
 	@Override
 	protected RelatedTypeParameter buildTypeObj(String type) {
 		return RelatedTypeParameter.get(type);
-	}
-
-	@Override
-	protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, CompatibilityMode compatibilityMode, VCard vcard) {
-		VCardDataType dataType = null;
-		if (uri != null) {
-			dataType = VCardDataType.URI;
-		} else if (text != null) {
-			dataType = VCardDataType.TEXT;
-		}
-		copy.setValue(dataType);
-	}
-
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			sb.append(uri);
-			return;
-		}
-		if (text != null) {
-			sb.append(VCardStringUtils.escape(text));
-			return;
-		}
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		value = VCardStringUtils.unescape(value);
-		if (subTypes.getValue() == VCardDataType.TEXT) {
-			setText(value);
-		} else {
-			setUri(value);
-		}
-	}
-
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		if (uri != null) {
-			parent.append(VCardDataType.URI, uri);
-			return;
-		}
-		if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
-			return;
-		}
-		parent.append(VCardDataType.URI, "");
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		String value = element.first(VCardDataType.URI);
-		if (value != null) {
-			setUri(value);
-			return;
-		}
-
-		value = element.first(VCardDataType.TEXT);
-		if (value != null) {
-			setText(value);
-			return;
-		}
-
-		throw missingXmlElements(VCardDataType.URI, VCardDataType.TEXT);
-	}
-
-	@Override
-	protected JCardValue doMarshalJson(VCardVersion version) {
-		if (uri != null) {
-			return JCardValue.single(VCardDataType.URI, uri);
-		}
-		if (text != null) {
-			return JCardValue.single(VCardDataType.TEXT, text);
-		}
-		return JCardValue.single(VCardDataType.URI, "");
-	}
-
-	@Override
-	protected void doUnmarshalJson(JCardValue value, VCardVersion version, List<String> warnings) {
-		String valueStr = value.asSingle();
-		if (value.getDataType() == VCardDataType.TEXT) {
-			setText(valueStr);
-		} else {
-			setUri(valueStr);
-		}
 	}
 
 	@Override

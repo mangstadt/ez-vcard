@@ -94,13 +94,11 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class AnniversaryType extends DateOrTimeType {
-	public static final String NAME = "ANNIVERSARY";
-
 	/**
 	 * Creates an empty anniversary property.
 	 */
 	public AnniversaryType() {
-		super(NAME);
+		super();
 	}
 
 	/**
@@ -108,7 +106,7 @@ public class AnniversaryType extends DateOrTimeType {
 	 * @param date the anniversary date
 	 */
 	public AnniversaryType(Date date) {
-		super(NAME, date);
+		super(date);
 	}
 
 	@Override
