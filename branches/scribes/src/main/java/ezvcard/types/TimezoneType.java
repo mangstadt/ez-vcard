@@ -174,7 +174,7 @@ public class TimezoneType extends VCardType implements HasAltId {
 	 * @param timezone the timezone
 	 */
 	public TimezoneType(TimeZone timezone) {
-		this(offsetFromTimezone(timezone), timezone.getID());
+		this(UtcOffset.parse(timezone), timezone.getID());
 	}
 
 	/**
@@ -361,15 +361,5 @@ public class TimezoneType extends VCardType implements HasAltId {
 		if (offset != null && (offset.getMinute() < 0 || offset.getMinute() > 59)) {
 			warnings.add("Minute offset must be between 0 and 59.");
 		}
-	}
-
-	private static UtcOffset offsetFromTimezone(TimeZone timezone) {
-		long offsetMs = timezone.getOffset(System.currentTimeMillis());
-		int hours = (int) (offsetMs / 1000 / 60 / 60);
-		int minutes = (int) ((offsetMs / 1000 / 60) % 60);
-		if (minutes < 0) {
-			minutes *= -1;
-		}
-		return new UtcOffset(hours, minutes);
 	}
 }
