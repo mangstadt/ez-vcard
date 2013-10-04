@@ -1,5 +1,6 @@
 package ezvcard.util;
 
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,6 +79,21 @@ public final class UtcOffset {
 		int minuteOffset = (minuteStr == null) ? 0 : Integer.parseInt(minuteStr);
 
 		return new UtcOffset(hourOffset, minuteOffset);
+	}
+
+	/**
+	 * Creates a UTC offset from a {@link TimeZone} object.
+	 * @param timezone the timezone
+	 * @return the UTC offset
+	 */
+	public static UtcOffset parse(TimeZone timezone) {
+		long offsetMs = timezone.getOffset(System.currentTimeMillis());
+		int hours = (int) (offsetMs / 1000 / 60 / 60);
+		int minutes = (int) ((offsetMs / 1000 / 60) % 60);
+		if (minutes < 0) {
+			minutes *= -1;
+		}
+		return new UtcOffset(hours, minutes);
 	}
 
 	/**

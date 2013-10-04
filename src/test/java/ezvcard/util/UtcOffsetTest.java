@@ -1,5 +1,6 @@
 package ezvcard.util;
 
+import static ezvcard.util.TestUtils.buildTimezone;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -91,6 +92,13 @@ public class UtcOffsetTest {
 	private void assertParse(String input, int expectedHour, int expectedMinute) {
 		UtcOffset expected = new UtcOffset(expectedHour, expectedMinute);
 		UtcOffset actual = UtcOffset.parse(input);
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void parse_timezone() {
+		UtcOffset expected = new UtcOffset(1, 0);
+		UtcOffset actual = UtcOffset.parse(buildTimezone(1, 0));
 		assertEquals(expected, actual);
 	}
 
