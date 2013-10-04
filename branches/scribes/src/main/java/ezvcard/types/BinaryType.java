@@ -63,6 +63,10 @@ public abstract class BinaryType<T extends MediaTypeParameter> extends VCardType
 	 */
 	protected T contentType;
 
+	public BinaryType() {
+		//empty
+	}
+
 	/**
 	 * Creates a binary property.
 	 * @param url the URL to the resource

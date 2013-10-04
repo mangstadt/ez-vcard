@@ -126,6 +126,13 @@ public class KeyType extends BinaryType<KeyTypeParameter> {
 	private String text;
 
 	/**
+	 * Creates an empty key property.
+	 */
+	public KeyType() {
+		super();
+	}
+
+	/**
 	 * Creates a key property.
 	 * @param data the binary data
 	 * @param type the type of key (e.g. PGP)

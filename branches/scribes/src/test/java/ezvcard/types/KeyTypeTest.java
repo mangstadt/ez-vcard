@@ -42,7 +42,7 @@ import ezvcard.parameters.KeyTypeParameter;
 public class KeyTypeTest {
 	@Test
 	public void validate() {
-		KeyType empty = new KeyType((String) null, null);
+		KeyType empty = new KeyType();
 		assertValidate(empty).run(1);
 
 		KeyType withUrl = new KeyType("http://example.com", KeyTypeParameter.PGP);
