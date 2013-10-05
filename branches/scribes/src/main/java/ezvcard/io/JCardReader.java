@@ -241,7 +241,7 @@ public class JCardReader implements Closeable {
 
 				String valueStr = ((RawType) property).getValue();
 				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + valueStr + NEWLINE + "  Reason: " + e.getMessage(), propertyName);
-			} catch (EmbeddedVCardExceptionNew e) {
+			} catch (EmbeddedVCardException e) {
 				addWarning("Property will not be unmarshalled because jCard does not supported embedded vCards.", propertyName);
 				return;
 			}

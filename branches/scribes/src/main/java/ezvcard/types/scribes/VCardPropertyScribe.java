@@ -20,7 +20,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
-import ezvcard.io.EmbeddedVCardExceptionNew;
+import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.VCardRawWriter;
 import ezvcard.types.VCardType;
@@ -213,7 +213,7 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	 * property's value
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
-	 * @throws EmbeddedVCardExceptionNew if the property value is an embedded
+	 * @throws EmbeddedVCardException if the property value is an embedded
 	 * vCard (i.e. the AGENT property)
 	 */
 	public final Result<T> parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters) {
@@ -247,7 +247,7 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
-	 * @throws EmbeddedVCardExceptionNew if the property value is an embedded
+	 * @throws EmbeddedVCardException if the property value is an embedded
 	 * vCard (i.e. the AGENT property)
 	 */
 	public final Result<T> parseHtml(org.jsoup.nodes.Element element) {
@@ -479,7 +479,7 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws SkipMeException if this property should NOT be added to the
 	 * {@link VCard} object
-	 * @throws EmbeddedVCardExceptionNew if the value of this property is an
+	 * @throws EmbeddedVCardException if the value of this property is an
 	 * embedded vCard (i.e. the AGENT property)
 	 */
 	protected T _parseHtml(HCardElement element, List<String> warnings) {

@@ -449,7 +449,7 @@ public class XCardDocument {
 			property.setGroup(group);
 
 			addWarning("Property class \"" + property.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + XmlType.class.getSimpleName() + " property instead.", propertyName, warnings);
-		} catch (EmbeddedVCardExceptionNew e) {
+		} catch (EmbeddedVCardException e) {
 			addWarning("Property will not be unmarshalled because xCard does not supported embedded vCards.", propertyName, warnings);
 			return;
 		}
@@ -633,7 +633,7 @@ public class XCardDocument {
 					parent.appendChild(typeElement);
 				} catch (SkipMeException e) {
 					//skip property
-				} catch (EmbeddedVCardExceptionNew e) {
+				} catch (EmbeddedVCardException e) {
 					//skip property
 				}
 			}

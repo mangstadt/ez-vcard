@@ -309,7 +309,7 @@ public class VCardReader implements Closeable {
 		private VCard root;
 		private final List<LabelType> labels = new ArrayList<LabelType>();
 		private final LinkedList<VCard> vcardStack = new LinkedList<VCard>();
-		private EmbeddedVCardExceptionNew embeddedVCardException;
+		private EmbeddedVCardException embeddedVCardException;
 
 		public void beginComponent(String name) {
 			if (!"VCARD".equalsIgnoreCase(name)) {
@@ -403,7 +403,7 @@ public class VCardReader implements Closeable {
 				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + value + NEWLINE + "  Reason: " + e.getMessage(), name);
 				property = new RawType(name, value);
 				property.setGroup(group);
-			} catch (EmbeddedVCardExceptionNew e) {
+			} catch (EmbeddedVCardException e) {
 				//parse an embedded vCard (i.e. the AGENT type)
 				property = e.getProperty();
 

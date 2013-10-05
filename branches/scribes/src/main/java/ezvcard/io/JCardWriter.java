@@ -192,7 +192,7 @@ public class JCardWriter implements Closeable {
 				writer.writeProperty(type.getGroup(), scribe.getPropertyName().toLowerCase(), subTypes, scribe.dataType(type, targetVersion), value);
 			} catch (SkipMeException e) {
 				//property has requested not to be written
-			} catch (EmbeddedVCardExceptionNew e) {
+			} catch (EmbeddedVCardException e) {
 				//don't write because jCard does not support embedded vCards
 			}
 		}
