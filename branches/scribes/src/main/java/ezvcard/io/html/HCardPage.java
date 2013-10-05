@@ -14,7 +14,7 @@ import java.util.Map;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
-import ezvcard.io.ScribeIndex;
+import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.types.PhotoType;
 import ezvcard.util.DataUri;
