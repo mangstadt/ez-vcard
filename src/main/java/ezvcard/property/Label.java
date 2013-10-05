@@ -44,10 +44,10 @@ import ezvcard.parameter.AddressType;
  * </p>
  * 
  * <p>
- * The LABEL type is not supported in 4.0. Instead, labels are included as a
- * parameter to their corresponding {@link Address}. When marshalling a
- * vCard, ez-vcard will use either the LABEL type or the LABEL parameter,
- * depending on the requested vCard version.
+ * The LABEL property is not supported in 4.0. Instead, labels are included as a
+ * parameter to their corresponding {@link Address}. When marshalling a vCard,
+ * ez-vcard will use either the LABEL property or the LABEL parameter, depending
+ * on the requested vCard version.
  * </p>
  * 
  * <p>
@@ -67,18 +67,18 @@ import ezvcard.parameter.AddressType;
  * </pre>
  * 
  * <p>
- * The {@link VCard#addOrphanedLabel} method adds a LABEL type to the vCard.
- * However, use of this method is discouraged because it creates a LABEL type
- * that's not associated with an address. Also, orphaned LABEL types are ignored
- * when creating version 4.0 vCards because the LABEL type is not supported by
- * vCard 4.0.
+ * The {@link VCard#addOrphanedLabel} method adds a LABEL property to the vCard.
+ * However, use of this method is discouraged because it creates a LABEL
+ * property that's not associated with an address. Also, orphaned LABEL
+ * properties are ignored when creating version 4.0 vCards because the LABEL
+ * property is not supported by vCard 4.0.
  * </p>
  * 
  * <p>
  * The {@link VCard#getOrphanedLabels} method can be used after parsing a
- * version 2.1 or 3.0 vCard to retrieve any LABEL types which the parser could
- * not assign to an address. A LABEL is assigned to an address if the LABEL's
- * list of TYPE parameters is identical to the address's list of TYPE
+ * version 2.1 or 3.0 vCard to retrieve any LABEL properties which the parser
+ * could not assign to an address. A LABEL is assigned to an address if the
+ * LABEL's list of TYPE parameters is identical to the address's list of TYPE
  * parameters.
  * </p>
  * 
@@ -116,7 +116,7 @@ public class Label extends TextProperty {
 	 * @return the TYPE parameters or empty set if there are none
 	 */
 	public Set<AddressType> getTypes() {
-		Set<String> values = subTypes.getTypes();
+		Set<String> values = parameters.getTypes();
 		Set<AddressType> types = new HashSet<AddressType>(values.size());
 		for (String value : values) {
 			types.add(AddressType.get(value));
@@ -129,7 +129,7 @@ public class Label extends TextProperty {
 	 * @param type the TYPE parameter to add
 	 */
 	public void addType(AddressType type) {
-		subTypes.addType(type.getValue());
+		parameters.addType(type.getValue());
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class Label extends TextProperty {
 	 * @param type the TYPE parameter to remove
 	 */
 	public void removeType(AddressType type) {
-		subTypes.removeType(type.getValue());
+		parameters.removeType(type.getValue());
 	}
 
 	@Override

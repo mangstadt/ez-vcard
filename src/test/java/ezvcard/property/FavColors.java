@@ -59,11 +59,11 @@ public class FavColors extends VCardProperty {
 	}
 
 	public String getLang() {
-		return subTypes.getLanguage();
+		return parameters.getLanguage();
 	}
 
 	public void setLang(String lang) {
-		subTypes.setLanguage(lang);
+		parameters.setLanguage(lang);
 	}
 
 	//optional

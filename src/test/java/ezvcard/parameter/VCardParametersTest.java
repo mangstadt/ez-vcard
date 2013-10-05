@@ -50,110 +50,110 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class VCardParametersTest {
-	private VCardParameters subTypes;
+	private VCardParameters parameters;
 
 	@Before
 	public void before() {
-		subTypes = new VCardParameters();
+		parameters = new VCardParameters();
 	}
 
 	@Test
 	public void validate_non_standard_values() {
-		subTypes.setCalscale(Calscale.get("foo"));
-		subTypes.setEncoding(Encoding.get("foo"));
-		subTypes.setValue(VCardDataType.get("foo"));
+		parameters.setCalscale(Calscale.get("foo"));
+		parameters.setEncoding(Encoding.get("foo"));
+		parameters.setValue(VCardDataType.get("foo"));
 
-		assertWarnings(4, subTypes.validate(VCardVersion.V2_1));
-		assertWarnings(4, subTypes.validate(VCardVersion.V3_0));
-		assertWarnings(3, subTypes.validate(VCardVersion.V4_0));
+		assertWarnings(4, parameters.validate(VCardVersion.V2_1));
+		assertWarnings(4, parameters.validate(VCardVersion.V3_0));
+		assertWarnings(3, parameters.validate(VCardVersion.V4_0));
 	}
 
 	@Test
 	public void validate_malformed_values() {
-		subTypes.put("GEO", "invalid");
-		subTypes.put("INDEX", "invalid");
-		subTypes.put("PREF", "invalid");
-		subTypes.put("PID", "invalid");
+		parameters.put("GEO", "invalid");
+		parameters.put("INDEX", "invalid");
+		parameters.put("PREF", "invalid");
+		parameters.put("PID", "invalid");
 
-		assertWarnings(7, subTypes.validate(VCardVersion.V2_1));
-		assertWarnings(7, subTypes.validate(VCardVersion.V3_0));
-		assertWarnings(4, subTypes.validate(VCardVersion.V4_0));
+		assertWarnings(7, parameters.validate(VCardVersion.V2_1));
+		assertWarnings(7, parameters.validate(VCardVersion.V3_0));
+		assertWarnings(4, parameters.validate(VCardVersion.V4_0));
 	}
 
 	@Test
 	public void validate_supported_versions() {
-		subTypes.setAltId("value");
-		subTypes.setCalscale(Calscale.GREGORIAN);
-		subTypes.setCharset("value");
-		subTypes.setGeo(1, 1);
-		subTypes.setIndex(1);
-		subTypes.setLanguage("value");
-		subTypes.setLevel("value");
-		subTypes.setMediaType("value");
-		subTypes.setSortAs("value");
-		subTypes.setTimezone("value");
+		parameters.setAltId("value");
+		parameters.setCalscale(Calscale.GREGORIAN);
+		parameters.setCharset("value");
+		parameters.setGeo(1, 1);
+		parameters.setIndex(1);
+		parameters.setLanguage("value");
+		parameters.setLevel("value");
+		parameters.setMediaType("value");
+		parameters.setSortAs("value");
+		parameters.setTimezone("value");
 
-		assertWarnings(8, subTypes.validate(VCardVersion.V2_1));
-		assertWarnings(9, subTypes.validate(VCardVersion.V3_0));
-		assertWarnings(1, subTypes.validate(VCardVersion.V4_0));
+		assertWarnings(8, parameters.validate(VCardVersion.V2_1));
+		assertWarnings(9, parameters.validate(VCardVersion.V3_0));
+		assertWarnings(1, parameters.validate(VCardVersion.V4_0));
 	}
 
 	@Test
 	public void validate_value_supported_versions() {
-		subTypes.setEncoding(Encoding._7BIT);
-		subTypes.setValue(VCardDataType.CONTENT_ID);
-		assertWarnings(0, subTypes.validate(VCardVersion.V2_1));
-		assertWarnings(2, subTypes.validate(VCardVersion.V3_0));
-		assertWarnings(2, subTypes.validate(VCardVersion.V4_0));
+		parameters.setEncoding(Encoding._7BIT);
+		parameters.setValue(VCardDataType.CONTENT_ID);
+		assertWarnings(0, parameters.validate(VCardVersion.V2_1));
+		assertWarnings(2, parameters.validate(VCardVersion.V3_0));
+		assertWarnings(2, parameters.validate(VCardVersion.V4_0));
 
-		subTypes.setEncoding(Encoding.B);
-		subTypes.setValue(VCardDataType.BINARY);
-		assertWarnings(2, subTypes.validate(VCardVersion.V2_1));
-		assertWarnings(0, subTypes.validate(VCardVersion.V3_0));
-		assertWarnings(2, subTypes.validate(VCardVersion.V4_0));
+		parameters.setEncoding(Encoding.B);
+		parameters.setValue(VCardDataType.BINARY);
+		assertWarnings(2, parameters.validate(VCardVersion.V2_1));
+		assertWarnings(0, parameters.validate(VCardVersion.V3_0));
+		assertWarnings(2, parameters.validate(VCardVersion.V4_0));
 
-		subTypes.setEncoding(null);
-		subTypes.setValue(VCardDataType.DATE_AND_OR_TIME);
-		assertWarnings(1, subTypes.validate(VCardVersion.V2_1));
-		assertWarnings(1, subTypes.validate(VCardVersion.V3_0));
-		assertWarnings(0, subTypes.validate(VCardVersion.V4_0));
+		parameters.setEncoding(null);
+		parameters.setValue(VCardDataType.DATE_AND_OR_TIME);
+		assertWarnings(1, parameters.validate(VCardVersion.V2_1));
+		assertWarnings(1, parameters.validate(VCardVersion.V3_0));
+		assertWarnings(0, parameters.validate(VCardVersion.V4_0));
 	}
 
 	@Test
 	public void case_insensitive() {
 		//tests to make sure sanitizeKey() is implemented correctly
 		//ListMultimapTest tests the rest of the get/put/remove methods
-		subTypes.put("NUMBERS", "1");
-		assertEquals("1", subTypes.first("numbers"));
+		parameters.put("NUMBERS", "1");
+		assertEquals("1", parameters.first("numbers"));
 	}
 
 	@Test
 	public void getPref() {
-		assertNull(subTypes.getPref());
-		subTypes.put("PREF", "1");
-		assertIntEquals(1, subTypes.getPref());
+		assertNull(parameters.getPref());
+		parameters.put("PREF", "1");
+		assertIntEquals(1, parameters.getPref());
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void getPref_malformed() {
-		subTypes.put("PREF", "invalid");
-		subTypes.getPref();
+		parameters.put("PREF", "invalid");
+		parameters.getPref();
 	}
 
 	@Test
 	public void setPref() {
-		subTypes.setPref(1);
-		assertEquals("1", subTypes.first("PREF"));
+		parameters.setPref(1);
+		assertEquals("1", parameters.first("PREF"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setPref_too_low() {
-		subTypes.setPref(-1);
+		parameters.setPref(-1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setPref_too_high() {
-		subTypes.setPref(101);
+		parameters.setPref(101);
 	}
 
 	/**
@@ -161,28 +161,28 @@ public class VCardParametersTest {
 	 */
 	@Test
 	public void geo() {
-		assertNull(subTypes.getGeo());
-		subTypes.setGeo(-10.98887888, 20.12344111);
+		assertNull(parameters.getGeo());
+		parameters.setGeo(-10.98887888, 20.12344111);
 
 		//make sure it builds the correct text value
 		{
 			String expected = "geo:-10.988879,20.123441"; //it should round to 6 decimal places
-			String actual = subTypes.first("GEO");
+			String actual = parameters.first("GEO");
 			assertEquals(expected, actual);
 		}
 
 		//make sure it unmarshals the text value correctly
 		{
 			double[] expected = new double[] { -10.988879, 20.123441 };
-			double[] actual = subTypes.getGeo();
+			double[] actual = parameters.getGeo();
 			assertArrayEquals(expected, actual, .00001);
 		}
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void geo_malformed() {
-		subTypes.put("GEO", "invalid");
-		subTypes.getGeo();
+		parameters.put("GEO", "invalid");
+		parameters.getGeo();
 	}
 
 	/**
@@ -190,15 +190,15 @@ public class VCardParametersTest {
 	 */
 	@Test
 	public void pid() {
-		assertTrue(subTypes.getPids().isEmpty());
-		subTypes.addPid(1);
-		subTypes.addPid(2, 1);
+		assertTrue(parameters.getPids().isEmpty());
+		parameters.addPid(1);
+		parameters.addPid(2, 1);
 
 		//make sure it builds the correct string values
-		assertEquals(Arrays.asList("1", "2.1"), subTypes.get("PID"));
+		assertEquals(Arrays.asList("1", "2.1"), parameters.get("PID"));
 
 		//make sure it unmarshals the string values correctly
-		Iterator<Integer[]> it = subTypes.getPids().iterator();
+		Iterator<Integer[]> it = parameters.getPids().iterator();
 		Integer[] pid = it.next();
 		assertIntEquals(1, pid[0]);
 		assertNull(pid[1]);
@@ -210,68 +210,68 @@ public class VCardParametersTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void pid_malformed() {
-		subTypes.put("PID", "1.1");
-		subTypes.put("PID", "invalid");
-		subTypes.getPids();
+		parameters.put("PID", "1.1");
+		parameters.put("PID", "invalid");
+		parameters.getPids();
 	}
 
 	@Test
 	public void getIndex() {
-		assertNull(subTypes.getIndex());
-		subTypes.put("INDEX", "1");
-		assertIntEquals(1, subTypes.getIndex());
+		assertNull(parameters.getIndex());
+		parameters.put("INDEX", "1");
+		assertIntEquals(1, parameters.getIndex());
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void getIndex_malformed() {
-		subTypes.put("INDEX", "invalid");
-		subTypes.getIndex();
+		parameters.put("INDEX", "invalid");
+		parameters.getIndex();
 	}
 
 	@Test
 	public void setIndex() {
-		subTypes.setIndex(1);
-		assertEquals("1", subTypes.first("INDEX"));
+		parameters.setIndex(1);
+		assertEquals("1", parameters.first("INDEX"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setIndex_negative() {
-		subTypes.setIndex(-1);
+		parameters.setIndex(-1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setIndex_zero() {
-		subTypes.setIndex(0);
+		parameters.setIndex(0);
 	}
 
 	@Test
 	public void sortAs() {
-		assertTrue(subTypes.getSortAs().isEmpty());
+		assertTrue(parameters.getSortAs().isEmpty());
 
-		subTypes = new VCardParameters();
-		subTypes.setSortAs("one", "two");
-		assertEquals(Arrays.asList("one", "two"), subTypes.getSortAs());
-		assertEquals(Arrays.asList("one", "two"), subTypes.get("SORT-AS"));
+		parameters = new VCardParameters();
+		parameters.setSortAs("one", "two");
+		assertEquals(Arrays.asList("one", "two"), parameters.getSortAs());
+		assertEquals(Arrays.asList("one", "two"), parameters.get("SORT-AS"));
 
-		subTypes = new VCardParameters();
-		subTypes.put("SORT-AS", "one");
-		subTypes.put("SORT-AS", "two");
-		assertEquals(Arrays.asList("one", "two"), subTypes.getSortAs());
+		parameters = new VCardParameters();
+		parameters.put("SORT-AS", "one");
+		parameters.put("SORT-AS", "two");
+		assertEquals(Arrays.asList("one", "two"), parameters.getSortAs());
 
-		subTypes = new VCardParameters();
+		parameters = new VCardParameters();
 
-		subTypes.setSortAs("one", "three");
-		assertEquals(Arrays.asList("one", "three"), subTypes.getSortAs());
+		parameters.setSortAs("one", "three");
+		assertEquals(Arrays.asList("one", "three"), parameters.getSortAs());
 
-		subTypes.setSortAs();
-		assertTrue(subTypes.getSortAs().isEmpty());
+		parameters.setSortAs();
+		assertTrue(parameters.getSortAs().isEmpty());
 
-		subTypes.setSortAs("one", "two");
-		subTypes.setSortAs((String[]) null);
-		assertTrue(subTypes.getSortAs().isEmpty());
+		parameters.setSortAs("one", "two");
+		parameters.setSortAs((String[]) null);
+		assertTrue(parameters.getSortAs().isEmpty());
 
-		subTypes.setSortAs("one", "two");
-		subTypes.setSortAs((String) null);
-		assertEquals(Arrays.asList((String) null), subTypes.getSortAs());
+		parameters.setSortAs("one", "two");
+		parameters.setSortAs((String) null);
+		assertEquals(Arrays.asList((String) null), parameters.getSortAs());
 	}
 }

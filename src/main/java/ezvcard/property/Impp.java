@@ -84,7 +84,7 @@ public class Impp extends VCardProperty implements HasAltId {
 
 	/**
 	 * Creates an IMPP property. Note that this class has static factory methods
-	 * for creating IMPP types of common IM protocols.
+	 * for creating IMPP properties of common IM protocols.
 	 * @param uri the IM URI (e.g. "aim:johndoe@aol.com")
 	 * @throws IllegalArgumentException if the URI is not a valid URI
 	 */
@@ -93,8 +93,8 @@ public class Impp extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Constructs a new IMPP type. Note that this class has static factory
-	 * methods for creating IMPP types of common IM protocols.
+	 * Creates an IMPP property. Note that this class has static factory methods
+	 * for creating IMPP properties of common IM protocols.
 	 * @param uri the IM URI (e.g. "aim:johndoe@aol.com")
 	 */
 	public Impp(URI uri) {
@@ -102,8 +102,8 @@ public class Impp extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Constructs a new IMPP type. Note that this class has static factory
-	 * methods for creating IMPP types of common IM protocols.
+	 * Creates an IMPP property. Note that this class has static factory methods
+	 * for creating IMPP properties of common IM protocols.
 	 * @param protocol the IM protocol (e.g. "aim")
 	 * @param handle the IM handle (e.g. "johndoe@aol.com")
 	 */
@@ -328,7 +328,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * @return the TYPE parameters or empty set if there are none
 	 */
 	public Set<ImppType> getTypes() {
-		Set<String> values = subTypes.getTypes();
+		Set<String> values = parameters.getTypes();
 		Set<ImppType> types = new HashSet<ImppType>(values.size());
 		for (String value : values) {
 			types.add(ImppType.get(value));
@@ -341,7 +341,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * @param type the TYPE parameter to add
 	 */
 	public void addType(ImppType type) {
-		subTypes.addType(type.getValue());
+		parameters.addType(type.getValue());
 	}
 
 	/**
@@ -349,7 +349,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * @param type the TYPE parameter to remove
 	 */
 	public void removeType(ImppType type) {
-		subTypes.removeType(type.getValue());
+		parameters.removeType(type.getValue());
 	}
 
 	/**
@@ -360,7 +360,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * @return the media type or null if not set
 	 */
 	public String getMediaType() {
-		return subTypes.getMediaType();
+		return parameters.getMediaType();
 	}
 
 	/**
@@ -371,7 +371,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * @param mediaType the media type or null to remove
 	 */
 	public void setMediaType(String mediaType) {
-		subTypes.setMediaType(mediaType);
+		parameters.setMediaType(mediaType);
 	}
 
 	@Override
@@ -401,12 +401,12 @@ public class Impp extends VCardProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	@Override

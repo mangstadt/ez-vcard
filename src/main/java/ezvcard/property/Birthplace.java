@@ -121,12 +121,12 @@ public class Birthplace extends VCardProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	@Override

@@ -62,7 +62,7 @@ import ezvcard.property.Key;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Key} type.
+ * Represents the TYPE parameter of the {@link Key} property.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>

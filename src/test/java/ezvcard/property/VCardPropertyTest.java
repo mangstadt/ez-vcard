@@ -78,10 +78,10 @@ public class VCardPropertyTest {
 	@Test
 	public void compareTo() {
 		VCardTypeImpl one = new VCardTypeImpl();
-		one.getSubTypes().setPref(1);
+		one.getParameters().setPref(1);
 
 		VCardTypeImpl two = new VCardTypeImpl();
-		one.getSubTypes().setPref(2);
+		one.getParameters().setPref(2);
 
 		VCardTypeImpl null1 = new VCardTypeImpl();
 		VCardTypeImpl null2 = new VCardTypeImpl();

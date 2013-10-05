@@ -34,7 +34,7 @@ import ezvcard.property.Impp;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Impp} type.
+ * Represents the TYPE parameter of the {@link Impp} property.
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>

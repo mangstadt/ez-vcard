@@ -32,7 +32,8 @@ import ezvcard.VCardDataType;
  */
 
 /**
- * Holds the type value as-is. No escaping or unescaping is done on the value.
+ * Holds the property value as-is. No escaping or unescaping is done on the
+ * value.
  * @author Michael Angstadt
  */
 public class RawProperty extends TextProperty {
@@ -42,7 +43,7 @@ public class RawProperty extends TextProperty {
 	/**
 	 * Creates a raw property.
 	 * @param propertyName the property name (e.g. "X-GENDER")
-	 * @param value the type value
+	 * @param value the property value
 	 */
 	public RawProperty(String propertyName, String value) {
 		this(propertyName, value, null);
@@ -51,7 +52,7 @@ public class RawProperty extends TextProperty {
 	/**
 	 * Creates a raw property.
 	 * @param propertyName the property name (e.g. "X-GENDER")
-	 * @param value the type value
+	 * @param value the property value
 	 * @param dataType the value's data type
 	 */
 	public RawProperty(String propertyName, String value, VCardDataType dataType) {

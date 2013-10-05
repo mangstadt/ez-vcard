@@ -62,7 +62,7 @@ import ezvcard.property.Sound;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Sound} type.
+ * Represents the TYPE parameter of the {@link Sound} property.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>

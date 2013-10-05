@@ -50,7 +50,7 @@ public class LabelScribe extends StringPropertyScribe<Label> {
 
 		List<String> types = element.types();
 		for (String type : types) {
-			property.getSubTypes().addType(type);
+			property.getParameters().addType(type);
 		}
 
 		return property;

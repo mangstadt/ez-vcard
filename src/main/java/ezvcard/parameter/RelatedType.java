@@ -34,7 +34,7 @@ import ezvcard.property.Related;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Related} type.
+ * Represents the TYPE parameter of the {@link Related} property.
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>

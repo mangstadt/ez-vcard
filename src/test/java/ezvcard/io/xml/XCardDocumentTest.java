@@ -296,16 +296,16 @@ public class XCardDocumentTest {
 
 			Note note = it.next();
 			assertEquals("Note 1", note.getValue());
-			assertTrue(note.getSubTypes().isEmpty());
+			assertTrue(note.getParameters().isEmpty());
 
 			note = it.next();
 			assertEquals("Hello world!", note.getValue());
-			assertEquals(1, note.getSubTypes().size());
+			assertEquals(1, note.getParameters().size());
 			assertEquals("1", note.getAltId());
 
 			note = it.next();
 			assertEquals("Bonjour tout le monde!", note.getValue());
-			assertEquals(2, note.getSubTypes().size());
+			assertEquals(2, note.getParameters().size());
 			assertEquals("1", note.getAltId());
 			assertEquals("fr", note.getLanguage());
 
@@ -317,7 +317,7 @@ public class XCardDocumentTest {
 
 			Telephone tel = it.next();
 			assertEquals("+1-555-555-1234", tel.getUri().getNumber());
-			assertEquals(2, tel.getSubTypes().size());
+			assertEquals(2, tel.getParameters().size());
 			assertSetEquals(tel.getTypes(), TelephoneType.WORK, TelephoneType.VOICE);
 
 			assertFalse(it.hasNext());
@@ -628,8 +628,8 @@ public class XCardDocumentTest {
 		note.setLanguage("en");
 		note.addPid(1, 1);
 		note.addPid(2, 2);
-		note.getSubTypes().put("X-CUSTOM", "xxx");
-		note.getSubTypes().put("X-INT", "11");
+		note.getParameters().put("X-CUSTOM", "xxx");
+		note.getParameters().put("X-INT", "11");
 		vcard.addNote(note);
 
 		XCardDocument xcm = new XCardDocument();

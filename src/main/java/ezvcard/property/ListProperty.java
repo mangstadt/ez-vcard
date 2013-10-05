@@ -36,7 +36,7 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Represents a type whose value is a list of textual values.
+ * Represents a property whose value is a list of textual values.
  * @author Michael Angstadt
  * @param <T> the type of values sorted in the list
  */

@@ -436,7 +436,7 @@ public class HCardReader {
 				continue;
 			} catch (CannotParseException e) {
 				String html = element.outerHtml();
-				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  HTML: " + html + NEWLINE + "  Reason: " + e.getMessage(), className);
+				addWarning("Property value could not be parsed.  Property will be saved as an extended property instead." + NEWLINE + "  HTML: " + html + NEWLINE + "  Reason: " + e.getMessage(), className);
 				property = new RawProperty(className, html);
 			} catch (EmbeddedVCardException e) {
 				if (HtmlUtils.isChildOf(element, embeddedVCards)) {

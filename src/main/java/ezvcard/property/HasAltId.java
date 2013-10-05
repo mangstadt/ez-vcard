@@ -32,7 +32,7 @@ import ezvcard.parameter.VCardParameters;
  */
 
 /**
- * Shows that a type class supports the ALTID parameter.
+ * Shows that a property class supports the ALTID parameter.
  * @author Michael Angstadt
  */
 public interface HasAltId {

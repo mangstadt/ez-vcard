@@ -83,7 +83,7 @@ public class Hobby extends TextProperty implements HasAltId {
 	 * @see VCardParameters#getLevel
 	 */
 	public HobbyLevel getLevel() {
-		String value = subTypes.getLevel();
+		String value = parameters.getLevel();
 		return (value == null) ? null : HobbyLevel.get(value);
 	}
 
@@ -93,7 +93,7 @@ public class Hobby extends TextProperty implements HasAltId {
 	 * @see VCardParameters#setLevel
 	 */
 	public void setLevel(HobbyLevel level) {
-		subTypes.setLevel(level.getValue());
+		parameters.setLevel(level.getValue());
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class Hobby extends TextProperty implements HasAltId {
 	 * or null if it doesn't exist
 	 */
 	public String getType() {
-		return subTypes.getType();
+		return parameters.getType();
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class Hobby extends TextProperty implements HasAltId {
 	 * null to remove
 	 */
 	public void setType(String type) {
-		subTypes.setType(type);
+		parameters.setType(type);
 	}
 
 	@Override
@@ -146,11 +146,11 @@ public class Hobby extends TextProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 }

@@ -96,12 +96,12 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	private static Document detachElement(Element element) {
