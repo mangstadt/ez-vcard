@@ -21,12 +21,12 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.json.JCardValue;
 import ezvcard.types.VCardType;
 import ezvcard.types.scribes.Sensei.Check;
 import ezvcard.types.scribes.VCardPropertyScribe.SemiStructuredIterator;
 import ezvcard.types.scribes.VCardPropertyScribe.StructuredIterator;
 import ezvcard.util.DefaultTimezoneRule;
-import ezvcard.util.JCardValue;
 
 /*
  Copyright (c) 2013, Michael Angstadt

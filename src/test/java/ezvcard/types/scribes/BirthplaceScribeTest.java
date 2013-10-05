@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.types.BirthplaceType;
-import ezvcard.types.scribes.BirthplaceScribe;
 import ezvcard.types.scribes.Sensei.Check;
 
 /*

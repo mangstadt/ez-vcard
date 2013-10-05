@@ -17,7 +17,7 @@ import java.util.Set;
 import javax.xml.transform.TransformerException;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.io.VCardWriter;
+import ezvcard.io.text.VCardWriter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
 import ezvcard.types.AddressType;

@@ -22,15 +22,15 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
-import ezvcard.io.VCardRawWriter;
+import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.VCardRawWriter;
+import ezvcard.io.xml.XCardElement;
 import ezvcard.types.VCardType;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
-import ezvcard.util.JCardValue;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.VCardStringUtils.JoinCallback;
-import ezvcard.util.XCardElement;
 import ezvcard.util.XmlUtils;
 
 /*

@@ -21,10 +21,10 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.json.JCardValue;
 import ezvcard.types.VCardType;
 import ezvcard.types.scribes.VCardPropertyScribe.Result;
 import ezvcard.util.HtmlUtils;
-import ezvcard.util.JCardValue;
 import ezvcard.util.XmlUtils;
 
 /*

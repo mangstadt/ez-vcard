@@ -8,10 +8,10 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.io.json.JCardValue;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.scribes.Sensei.Check;
-import ezvcard.util.JCardValue;
 
 /*
  Copyright (c) 2013, Michael Angstadt

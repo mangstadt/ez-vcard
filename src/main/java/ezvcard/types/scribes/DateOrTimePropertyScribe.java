@@ -7,11 +7,11 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.json.JCardValue;
+import ezvcard.io.xml.XCardElement;
 import ezvcard.types.DateOrTimeType;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
 import ezvcard.util.PartialDate;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
