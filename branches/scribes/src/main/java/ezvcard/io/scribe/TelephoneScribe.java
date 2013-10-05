@@ -9,7 +9,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.TelephoneType;
+import ezvcard.property.Telephone;
 import ezvcard.util.TelUri;
 
 /*
@@ -38,12 +38,12 @@ import ezvcard.util.TelUri;
  */
 
 /**
- * Marshals {@link TelephoneType} properties.
+ * Marshals {@link Telephone} properties.
  * @author Michael Angstadt
  */
-public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
+public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	public TelephoneScribe() {
-		super(TelephoneType.class, "TEL");
+		super(Telephone.class, "TEL");
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
 	}
 
 	@Override
-	protected VCardDataType _dataType(TelephoneType property, VCardVersion version) {
+	protected VCardDataType _dataType(Telephone property, VCardVersion version) {
 		if (version == VCardVersion.V4_0) {
 			if (property.getText() != null) {
 				return VCardDataType.TEXT;
@@ -66,12 +66,12 @@ public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
 	}
 
 	@Override
-	protected void _prepareParameters(TelephoneType property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Telephone property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 	}
 
 	@Override
-	protected String _writeText(TelephoneType property, VCardVersion version) {
+	protected String _writeText(Telephone property, VCardVersion version) {
 		String text = property.getText();
 		if (text != null) {
 			return escape(text);
@@ -94,13 +94,13 @@ public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
 	}
 
 	@Override
-	protected TelephoneType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Telephone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value, dataType, warnings);
 	}
 
 	@Override
-	protected void _writeXml(TelephoneType property, XCardElement parent) {
+	protected void _writeXml(Telephone property, XCardElement parent) {
 		String text = property.getText();
 		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
@@ -117,19 +117,19 @@ public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
 	}
 
 	@Override
-	protected TelephoneType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Telephone _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
-			return new TelephoneType(text);
+			return new Telephone(text);
 		}
 
 		String uri = element.first(VCardDataType.URI);
 		if (uri != null) {
 			try {
-				return new TelephoneType(TelUri.parse(uri));
+				return new Telephone(TelUri.parse(uri));
 			} catch (IllegalArgumentException e) {
 				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
-				return new TelephoneType(uri);
+				return new Telephone(uri);
 			}
 		}
 
@@ -137,14 +137,14 @@ public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
 	}
 
 	@Override
-	protected TelephoneType _parseHtml(HCardElement element, List<String> warnings) {
-		TelephoneType property;
+	protected Telephone _parseHtml(HCardElement element, List<String> warnings) {
+		Telephone property;
 		String href = element.attr("href");
 		try {
-			property = new TelephoneType(TelUri.parse(href));
+			property = new Telephone(TelUri.parse(href));
 		} catch (IllegalArgumentException e) {
 			//not a tel URI
-			property = new TelephoneType(element.value());
+			property = new Telephone(element.value());
 		}
 
 		List<String> types = element.types();
@@ -156,7 +156,7 @@ public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(TelephoneType property) {
+	protected JCardValue _writeJson(Telephone property) {
 		String text = property.getText();
 		if (text != null) {
 			return JCardValue.single(text);
@@ -171,20 +171,20 @@ public class TelephoneScribe extends VCardPropertyScribe<TelephoneType> {
 	}
 
 	@Override
-	protected TelephoneType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Telephone _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 		return parse(valueStr, dataType, warnings);
 	}
 
-	private TelephoneType parse(String value, VCardDataType dataType, List<String> warnings) {
+	private Telephone parse(String value, VCardDataType dataType, List<String> warnings) {
 		try {
-			return new TelephoneType(TelUri.parse(value));
+			return new Telephone(TelUri.parse(value));
 		} catch (IllegalArgumentException e) {
 			if (dataType == VCardDataType.URI) {
 				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
 			}
 		}
 
-		return new TelephoneType(value);
+		return new Telephone(value);
 	}
 }

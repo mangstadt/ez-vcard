@@ -12,7 +12,7 @@ import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.EncodingParameter;
 import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.BinaryType;
+import ezvcard.property.BinaryProperty;
 import ezvcard.util.DataUri;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
@@ -47,7 +47,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  * @param <T> the property class
  * @param <U> the media type class
  */
-public abstract class BinaryPropertyScribe<T extends BinaryType<U>, U extends MediaTypeParameter> extends VCardPropertyScribe<T> {
+public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extends MediaTypeParameter> extends VCardPropertyScribe<T> {
 	public BinaryPropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}

@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.MemberType;
+import ezvcard.property.Member;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.MemberType;
  */
 
 /**
- * Marshals {@link MemberType} properties.
+ * Marshals {@link Member} properties.
  * @author Michael Angstadt
  */
-public class MemberScribe extends StringPropertyScribe<MemberType> {
+public class MemberScribe extends StringPropertyScribe<Member> {
 	public MemberScribe() {
-		super(MemberType.class, "MEMBER");
+		super(Member.class, "MEMBER");
 	}
 
 	@Override
-	protected MemberType _parseValue(String value) {
-		return new MemberType(value);
+	protected Member _parseValue(String value) {
+		return new Member(value);
 	}
 }

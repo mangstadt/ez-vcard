@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.ClientPidMapType;
+import ezvcard.property.ClientPidMap;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -42,13 +42,13 @@ import ezvcard.property.ClientPidMapType;
  */
 public class ClientPidMapScribeTest {
 	private final ClientPidMapScribe scribe = new ClientPidMapScribe();
-	private final Sensei<ClientPidMapType> sensei = new Sensei<ClientPidMapType>(scribe);
+	private final Sensei<ClientPidMap> sensei = new Sensei<ClientPidMap>(scribe);
 
 	private final int pid = 1;
 	private final String uri = "urn:uuid:1234";
 
-	private final ClientPidMapType withValue = new ClientPidMapType(pid, uri);
-	private final ClientPidMapType empty = new ClientPidMapType(null, null);
+	private final ClientPidMap withValue = new ClientPidMap(pid, uri);
+	private final ClientPidMap empty = new ClientPidMap(null, null);
 
 	@Test
 	public void writeText() {
@@ -98,9 +98,9 @@ public class ClientPidMapScribeTest {
 		sensei.assertParseJson(value).run(has(pid, null));
 	}
 
-	private Check<ClientPidMapType> has(final Integer pid, final String uri) {
-		return new Check<ClientPidMapType>() {
-			public void check(ClientPidMapType actual) {
+	private Check<ClientPidMap> has(final Integer pid, final String uri) {
+		return new Check<ClientPidMap>() {
+			public void check(ClientPidMap actual) {
 				assertEquals(pid, actual.getPid());
 				assertEquals(uri, actual.getUri());
 			}

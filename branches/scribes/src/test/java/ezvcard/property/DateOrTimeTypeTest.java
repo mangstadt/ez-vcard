@@ -71,7 +71,7 @@ public class DateOrTimeTypeTest {
 		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
 	}
 
-	private static class DateOrTimeTypeImpl extends DateOrTimeType {
+	private static class DateOrTimeTypeImpl extends DateOrTimeProperty {
 		public DateOrTimeTypeImpl() {
 			super((Date) null);
 		}

@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.ExpertiseType;
+import ezvcard.property.Expertise;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.ExpertiseType;
  */
 
 /**
- * Marshals {@link ExpertiseType} properties.
+ * Marshals {@link Expertise} properties.
  * @author Michael Angstadt
  */
-public class ExpertiseScribe extends StringPropertyScribe<ExpertiseType> {
+public class ExpertiseScribe extends StringPropertyScribe<Expertise> {
 	public ExpertiseScribe() {
-		super(ExpertiseType.class, "EXPERTISE");
+		super(Expertise.class, "EXPERTISE");
 	}
 
 	@Override
-	protected ExpertiseType _parseValue(String value) {
-		return new ExpertiseType(value);
+	protected Expertise _parseValue(String value) {
+		return new Expertise(value);
 	}
 }

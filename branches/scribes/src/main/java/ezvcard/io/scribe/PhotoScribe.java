@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
 import ezvcard.parameter.ImageTypeParameter;
-import ezvcard.property.PhotoType;
+import ezvcard.property.Photo;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -29,21 +29,21 @@ import ezvcard.property.PhotoType;
  */
 
 /**
- * Marshals {@link PhotoType} properties.
+ * Marshals {@link Photo} properties.
  * @author Michael Angstadt
  */
-public class PhotoScribe extends ImagePropertyScribe<PhotoType> {
+public class PhotoScribe extends ImagePropertyScribe<Photo> {
 	public PhotoScribe() {
-		super(PhotoType.class, "PHOTO");
+		super(Photo.class, "PHOTO");
 	}
 
 	@Override
-	protected PhotoType _newInstance(String uri, ImageTypeParameter contentType) {
-		return new PhotoType(uri, contentType);
+	protected Photo _newInstance(String uri, ImageTypeParameter contentType) {
+		return new Photo(uri, contentType);
 	}
 
 	@Override
-	protected PhotoType _newInstance(byte[] data, ImageTypeParameter contentType) {
-		return new PhotoType(data, contentType);
+	protected Photo _newInstance(byte[] data, ImageTypeParameter contentType) {
+		return new Photo(data, contentType);
 	}
 }

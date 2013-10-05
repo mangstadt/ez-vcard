@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.GenderType;
+import ezvcard.property.Gender;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,12 +35,12 @@ import ezvcard.property.GenderType;
  */
 
 /**
- * Marshals {@link GenderType} properties.
+ * Marshals {@link Gender} properties.
  * @author Michael Angstadt
  */
-public class GenderScribe extends VCardPropertyScribe<GenderType> {
+public class GenderScribe extends VCardPropertyScribe<Gender> {
 	public GenderScribe() {
-		super(GenderType.class, "GENDER");
+		super(Gender.class, "GENDER");
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class GenderScribe extends VCardPropertyScribe<GenderType> {
 	}
 
 	@Override
-	protected String _writeText(GenderType property, VCardVersion version) {
+	protected String _writeText(Gender property, VCardVersion version) {
 		String gender = property.getGender();
 		String text = property.getText();
 
@@ -63,7 +63,7 @@ public class GenderScribe extends VCardPropertyScribe<GenderType> {
 	}
 
 	@Override
-	protected GenderType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Gender _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		SemiStructuredIterator it = semistructured(value, 2);
 
 		String sex = it.next();
@@ -72,13 +72,13 @@ public class GenderScribe extends VCardPropertyScribe<GenderType> {
 		}
 		String text = it.next();
 
-		GenderType property = new GenderType(sex);
+		Gender property = new Gender(sex);
 		property.setText(text);
 		return property;
 	}
 
 	@Override
-	protected void _writeXml(GenderType property, XCardElement parent) {
+	protected void _writeXml(Gender property, XCardElement parent) {
 		parent.append("sex", property.getGender());
 
 		String text = property.getText();
@@ -88,10 +88,10 @@ public class GenderScribe extends VCardPropertyScribe<GenderType> {
 	}
 
 	@Override
-	protected GenderType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Gender _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		String sex = element.first("sex");
 		if (sex != null) {
-			GenderType property = new GenderType(sex);
+			Gender property = new Gender(sex);
 			property.setText(element.first("identity")); //optional field
 			return property;
 		}
@@ -100,7 +100,7 @@ public class GenderScribe extends VCardPropertyScribe<GenderType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(GenderType property) {
+	protected JCardValue _writeJson(Gender property) {
 		String gender = property.getGender();
 		String text = property.getText();
 
@@ -111,7 +111,7 @@ public class GenderScribe extends VCardPropertyScribe<GenderType> {
 	}
 
 	@Override
-	protected GenderType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Gender _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		StructuredIterator it = structured(value);
 
 		String sex = it.nextString();
@@ -120,7 +120,7 @@ public class GenderScribe extends VCardPropertyScribe<GenderType> {
 		}
 		String text = it.nextString();
 
-		GenderType property = new GenderType(sex);
+		Gender property = new Gender(sex);
 		property.setText(text);
 		return property;
 	}

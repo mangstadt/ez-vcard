@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.RelatedType;
+import ezvcard.property.Related;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,7 +34,7 @@ import ezvcard.property.RelatedType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link RelatedType} type.
+ * Represents the TYPE parameter of the {@link Related} type.
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>

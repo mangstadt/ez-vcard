@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.MailerType;
+import ezvcard.property.Mailer;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.MailerType;
  */
 
 /**
- * Marshals {@link MailerType} properties.
+ * Marshals {@link Mailer} properties.
  * @author Michael Angstadt
  */
-public class MailerScribe extends StringPropertyScribe<MailerType> {
+public class MailerScribe extends StringPropertyScribe<Mailer> {
 	public MailerScribe() {
-		super(MailerType.class, "MAILER");
+		super(Mailer.class, "MAILER");
 	}
 
 	@Override
-	protected MailerType _parseValue(String value) {
-		return new MailerType(value);
+	protected Mailer _parseValue(String value) {
+		return new Mailer(value);
 	}
 }

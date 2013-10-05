@@ -28,10 +28,10 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.EncodingParameter;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.AddressType;
-import ezvcard.property.LabelType;
-import ezvcard.property.RawType;
-import ezvcard.property.VCardType;
+import ezvcard.property.Address;
+import ezvcard.property.Label;
+import ezvcard.property.RawProperty;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.org.apache.commons.codec.DecoderException;
@@ -155,7 +155,7 @@ public class VCardReader implements Closeable {
 	 * </p>
 	 * @param scribe the scribe to register
 	 */
-	public void registerScribe(VCardPropertyScribe<? extends VCardType> scribe) {
+	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
 		index.register(scribe);
 	}
 
@@ -311,7 +311,7 @@ public class VCardReader implements Closeable {
 
 	private class VCardDataStreamListenerImpl implements VCardRawReader.VCardDataStreamListener {
 		private VCard root;
-		private final List<LabelType> labels = new ArrayList<LabelType>();
+		private final List<Label> labels = new ArrayList<Label>();
 		private final LinkedList<VCard> vcardStack = new LinkedList<VCard>();
 		private EmbeddedVCardException embeddedVCardException;
 
@@ -369,7 +369,7 @@ public class VCardReader implements Closeable {
 			value = decodeQuotedPrintable(name, parameters, value);
 
 			//get the scribe
-			VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(name);
+			VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(name);
 			if (scribe == null) {
 				scribe = new RawPropertyScribe(name);
 			}
@@ -384,9 +384,9 @@ public class VCardReader implements Closeable {
 				parameters.setValue(null);
 			}
 
-			VCardType property;
+			VCardProperty property;
 			try {
-				Result<? extends VCardType> result = scribe.parseText(value, dataType, version, parameters);
+				Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
 
 				for (String warning : result.getWarnings()) {
 					addWarning(warning, name);
@@ -395,9 +395,9 @@ public class VCardReader implements Closeable {
 				property = result.getProperty();
 				property.setGroup(group);
 
-				if (property instanceof LabelType) {
+				if (property instanceof Label) {
 					//LABELs must be treated specially so they can be matched up with their ADRs
-					labels.add((LabelType) property);
+					labels.add((Label) property);
 					return;
 				}
 			} catch (SkipMeException e) {
@@ -405,7 +405,7 @@ public class VCardReader implements Closeable {
 				return;
 			} catch (CannotParseException e) {
 				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + value + NEWLINE + "  Reason: " + e.getMessage(), name);
-				property = new RawType(name, value);
+				property = new RawProperty(name, value);
 				property.setGroup(group);
 			} catch (EmbeddedVCardException e) {
 				//parse an embedded vCard (i.e. the AGENT type)
@@ -452,9 +452,9 @@ public class VCardReader implements Closeable {
 			VCard curVCard = vcardStack.removeLast();
 
 			//assign labels to their addresses
-			for (LabelType label : labels) {
+			for (Label label : labels) {
 				boolean orphaned = true;
-				for (AddressType adr : curVCard.getAddresses()) {
+				for (Address adr : curVCard.getAddresses()) {
 					if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
 						adr.setLabel(label.getValue());
 						orphaned = false;

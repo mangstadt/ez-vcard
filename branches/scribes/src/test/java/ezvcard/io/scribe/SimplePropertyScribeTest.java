@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -109,7 +109,7 @@ public class SimplePropertyScribeTest {
 		}
 	}
 
-	private static class TestProperty extends VCardType {
+	private static class TestProperty extends VCardProperty {
 		public String value;
 
 		public TestProperty(String value) {

@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.InterestType;
+import ezvcard.property.Interest;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,7 +34,7 @@ import ezvcard.property.InterestType;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link InterestType} property.
+ * Represents a LEVEL parameter for the {@link Interest} property.
  * 
  * <p>
  * <b>Supported versions:</b> {@code 4.0}

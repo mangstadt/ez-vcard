@@ -5,7 +5,7 @@ import java.util.List;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.SoundTypeParameter;
-import ezvcard.property.SoundType;
+import ezvcard.property.Sound;
 import ezvcard.util.DataUri;
 
 /*
@@ -34,12 +34,12 @@ import ezvcard.util.DataUri;
  */
 
 /**
- * Marshals {@link SoundType} properties.
+ * Marshals {@link Sound} properties.
  * @author Michael Angstadt
  */
-public class SoundScribe extends BinaryPropertyScribe<SoundType, SoundTypeParameter> {
+public class SoundScribe extends BinaryPropertyScribe<Sound, SoundTypeParameter> {
 	public SoundScribe() {
-		super(SoundType.class, "SOUND");
+		super(Sound.class, "SOUND");
 	}
 
 	@Override
@@ -53,17 +53,17 @@ public class SoundScribe extends BinaryPropertyScribe<SoundType, SoundTypeParame
 	}
 
 	@Override
-	protected SoundType _newInstance(String uri, SoundTypeParameter contentType) {
-		return new SoundType(uri, contentType);
+	protected Sound _newInstance(String uri, SoundTypeParameter contentType) {
+		return new Sound(uri, contentType);
 	}
 
 	@Override
-	protected SoundType _newInstance(byte[] data, SoundTypeParameter contentType) {
-		return new SoundType(data, contentType);
+	protected Sound _newInstance(byte[] data, SoundTypeParameter contentType) {
+		return new Sound(data, contentType);
 	}
 
 	@Override
-	protected SoundType _parseHtml(HCardElement element, List<String> warnings) {
+	protected Sound _parseHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
 		if (!"audio".equals(elementName) && !"source".equals(elementName)) {
 			return super._parseHtml(element, warnings);
@@ -90,11 +90,11 @@ public class SoundScribe extends BinaryPropertyScribe<SoundType, SoundTypeParame
 		try {
 			DataUri uri = new DataUri(src);
 			mediaType = _buildMediaTypeObj(uri.getContentType());
-			return new SoundType(uri.getData(), mediaType);
+			return new Sound(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
 			//not a data URI
 			//TODO create buildTypeObjFromExtension() method
-			return new SoundType(src, null);
+			return new Sound(src, null);
 		}
 	}
 }

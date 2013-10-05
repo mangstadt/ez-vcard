@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.ImppType;
+import ezvcard.property.Impp;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,7 +34,7 @@ import ezvcard.property.ImppType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link ImppType} type.
+ * Represents the TYPE parameter of the {@link Impp} type.
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>

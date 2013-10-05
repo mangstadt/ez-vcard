@@ -11,7 +11,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.TelephoneTypeParameter;
-import ezvcard.property.TelephoneType;
+import ezvcard.property.Telephone;
 import ezvcard.util.TelUri;
 
 /*
@@ -48,15 +48,15 @@ import ezvcard.util.TelUri;
  */
 public class TelephoneScribeTest {
 	private final TelephoneScribe scribe = new TelephoneScribe();
-	private final Sensei<TelephoneType> sensei = new Sensei<TelephoneType>(scribe);
+	private final Sensei<Telephone> sensei = new Sensei<Telephone>(scribe);
 
 	private final String text = "(555) 555-1234";
 	private final String textWithExt = "+1-555-555-1234 x101";
 	private final String uri = "tel:+1-555-555-1234;ext=101";
 
-	private final TelephoneType withText = new TelephoneType(text);
-	private final TelephoneType withUri = new TelephoneType(new TelUri.Builder("+1-555-555-1234").extension("101").build());
-	private final TelephoneType empty = new TelephoneType((String) null);
+	private final Telephone withText = new Telephone(text);
+	private final Telephone withUri = new Telephone(new TelUri.Builder("+1-555-555-1234").extension("101").build());
+	private final Telephone empty = new Telephone((String) null);
 
 	@Test
 	public void dataType() {
@@ -74,7 +74,7 @@ public class TelephoneScribeTest {
 	public void prepareParameters_type_pref() {
 		//TODO move test to VCardPropertyScribeTest
 
-		TelephoneType property = new TelephoneType((String) null);
+		Telephone property = new Telephone((String) null);
 		property.addType(TelephoneTypeParameter.PREF);
 
 		//2.1 and 3.0 keep it
@@ -93,15 +93,15 @@ public class TelephoneScribeTest {
 	public void prepareParameters_pref_parameter() {
 		VCard vcard = new VCard();
 
-		TelephoneType tel2 = new TelephoneType((String) null);
+		Telephone tel2 = new Telephone((String) null);
 		tel2.setPref(2);
 		vcard.addTelephoneNumber(tel2);
 
-		TelephoneType tel1 = new TelephoneType((String) null);
+		Telephone tel1 = new Telephone((String) null);
 		tel1.setPref(1);
 		vcard.addTelephoneNumber(tel1);
 
-		TelephoneType tel3 = new TelephoneType((String) null);
+		Telephone tel3 = new Telephone((String) null);
 		vcard.addTelephoneNumber(tel3);
 
 		//2.1 and 3.0 converts the lowest PREF parameter to "TYPE=pref", and removes all the rest
@@ -177,8 +177,8 @@ public class TelephoneScribeTest {
 			"<span class=\"type\">cell</span>" +
 			"<span class=\"type\">foo</span>" +
 			"<span class=\"value\">" + text + "</span>" +
-		"</div>").run(new Check<TelephoneType>(){
-			public void check(TelephoneType property) {
+		"</div>").run(new Check<Telephone>(){
+			public void check(Telephone property) {
 				is(withText).check(property);
 				assertSetEquals(property.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.CELL, TelephoneTypeParameter.get("foo"));
 			}
@@ -204,18 +204,18 @@ public class TelephoneScribeTest {
 		sensei.assertParseJson("").dataType(VCardDataType.URI).warnings(1).run(hasText(""));
 	}
 
-	private Check<TelephoneType> hasText(final String text) {
-		return new Check<TelephoneType>() {
-			public void check(TelephoneType actual) {
+	private Check<Telephone> hasText(final String text) {
+		return new Check<Telephone>() {
+			public void check(Telephone actual) {
 				assertEquals(text, actual.getText());
 				assertNull(actual.getUri());
 			}
 		};
 	}
 
-	private Check<TelephoneType> is(final TelephoneType expected) {
-		return new Check<TelephoneType>() {
-			public void check(TelephoneType actual) {
+	private Check<Telephone> is(final Telephone expected) {
+		return new Check<Telephone>() {
+			public void check(Telephone actual) {
 				assertEquals(expected.getText(), actual.getText());
 				assertEquals(expected.getUri(), actual.getUri());
 			}

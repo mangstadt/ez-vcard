@@ -42,13 +42,13 @@ import ezvcard.util.TelUri;
 public class TelephoneTypeTest {
 	@Test
 	public void validate() {
-		TelephoneType empty = new TelephoneType((String) null);
+		Telephone empty = new Telephone((String) null);
 		assertValidate(empty).run(1);
 
-		TelephoneType withText = new TelephoneType("(800) 555-5555");
+		Telephone withText = new Telephone("(800) 555-5555");
 		assertValidate(withText).run(0);
 
-		TelephoneType withUri = new TelephoneType(new TelUri.Builder("+1-800-555-5555").extension("101").build());
+		Telephone withUri = new Telephone(new TelUri.Builder("+1-800-555-5555").extension("101").build());
 		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.BirthplaceType;
+import ezvcard.property.Birthplace;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -43,21 +43,21 @@ import ezvcard.property.BirthplaceType;
  */
 public class BirthplaceScribeTest {
 	private final BirthplaceScribe scribe = new BirthplaceScribe();
-	private final Sensei<BirthplaceType> sensei = new Sensei<BirthplaceType>(scribe);
+	private final Sensei<Birthplace> sensei = new Sensei<Birthplace>(scribe);
 
 	private final String text = "New York, NY";
 	private final String textEscaped = "New York\\, NY";
 	private final String uri = "geo:40.71448,-74.00598";
 
-	private final BirthplaceType withText = new BirthplaceType();
+	private final Birthplace withText = new Birthplace();
 	{
 		withText.setText(text);
 	}
-	private final BirthplaceType withUri = new BirthplaceType();
+	private final Birthplace withUri = new Birthplace();
 	{
 		withUri.setUri(uri);
 	}
-	private final BirthplaceType empty = new BirthplaceType();
+	private final Birthplace empty = new Birthplace();
 
 	@Test
 	public void dataType() {
@@ -111,18 +111,18 @@ public class BirthplaceScribeTest {
 		sensei.assertParseJson(text).dataType(VCardDataType.LANGUAGE_TAG).run(hasText(text));
 	}
 
-	private Check<BirthplaceType> hasText(final String text) {
-		return new Check<BirthplaceType>() {
-			public void check(BirthplaceType actual) {
+	private Check<Birthplace> hasText(final String text) {
+		return new Check<Birthplace>() {
+			public void check(Birthplace actual) {
 				assertEquals(text, actual.getText());
 				assertNull(actual.getUri());
 			}
 		};
 	}
 
-	private Check<BirthplaceType> hasUri(final String uri) {
-		return new Check<BirthplaceType>() {
-			public void check(BirthplaceType actual) {
+	private Check<Birthplace> hasUri(final String uri) {
+		return new Check<Birthplace>() {
+			public void check(Birthplace actual) {
 				assertNull(actual.getText());
 				assertEquals(uri, actual.getUri());
 			}

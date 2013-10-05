@@ -34,7 +34,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.VCardReader;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.io.xml.XCardDocument;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 
 /*
@@ -654,7 +654,7 @@ public class Ezvcard {
 		 * @param scribe the scribe
 		 * @return this
 		 */
-		public T register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public T register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			index.register(scribe);
 			return this_;
 		}
@@ -784,7 +784,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainTextReader register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainTextReader register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 
@@ -818,7 +818,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainTextString register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainTextString register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 
@@ -918,7 +918,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainXmlReader register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainXmlReader register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 
@@ -951,7 +951,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainXmlString register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainXmlString register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 
@@ -998,7 +998,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainXmlDom register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainXmlDom register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 
@@ -1119,7 +1119,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainHtmlReader register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainHtmlReader register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 
@@ -1160,7 +1160,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainHtmlString register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainHtmlString register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 
@@ -1297,7 +1297,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainJsonReader register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainJsonReader register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 
@@ -1331,7 +1331,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public ParserChainJsonString register(VCardPropertyScribe<? extends VCardType> scribe) {
+		public ParserChainJsonString register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			return super.register(scribe);
 		}
 

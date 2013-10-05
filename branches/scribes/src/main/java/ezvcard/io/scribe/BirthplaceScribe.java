@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.BirthplaceType;
+import ezvcard.property.Birthplace;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,12 +35,12 @@ import ezvcard.property.BirthplaceType;
  */
 
 /**
- * Marshals {@link BirthplaceType} properties.
+ * Marshals {@link Birthplace} properties.
  * @author Michael Angstadt
  */
-public class BirthplaceScribe extends VCardPropertyScribe<BirthplaceType> {
+public class BirthplaceScribe extends VCardPropertyScribe<Birthplace> {
 	public BirthplaceScribe() {
-		super(BirthplaceType.class, "BIRTHPLACE");
+		super(Birthplace.class, "BIRTHPLACE");
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class BirthplaceScribe extends VCardPropertyScribe<BirthplaceType> {
 	}
 
 	@Override
-	protected VCardDataType _dataType(BirthplaceType property, VCardVersion version) {
+	protected VCardDataType _dataType(Birthplace property, VCardVersion version) {
 		if (property.getText() != null) {
 			return VCardDataType.TEXT;
 		}
@@ -60,7 +60,7 @@ public class BirthplaceScribe extends VCardPropertyScribe<BirthplaceType> {
 	}
 
 	@Override
-	protected String _writeText(BirthplaceType property, VCardVersion version) {
+	protected String _writeText(Birthplace property, VCardVersion version) {
 		String value = property.getText();
 		if (value != null) {
 			return escape(value);
@@ -75,8 +75,8 @@ public class BirthplaceScribe extends VCardPropertyScribe<BirthplaceType> {
 	}
 
 	@Override
-	protected BirthplaceType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
-		BirthplaceType property = new BirthplaceType();
+	protected Birthplace _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		Birthplace property = new Birthplace();
 		value = unescape(value);
 
 		if (dataType == VCardDataType.TEXT) {
@@ -94,7 +94,7 @@ public class BirthplaceScribe extends VCardPropertyScribe<BirthplaceType> {
 	}
 
 	@Override
-	protected void _writeXml(BirthplaceType property, XCardElement parent) {
+	protected void _writeXml(Birthplace property, XCardElement parent) {
 		String text = property.getText();
 		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
@@ -111,8 +111,8 @@ public class BirthplaceScribe extends VCardPropertyScribe<BirthplaceType> {
 	}
 
 	@Override
-	protected BirthplaceType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
-		BirthplaceType property = new BirthplaceType();
+	protected Birthplace _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		Birthplace property = new Birthplace();
 
 		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
@@ -130,7 +130,7 @@ public class BirthplaceScribe extends VCardPropertyScribe<BirthplaceType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(BirthplaceType property) {
+	protected JCardValue _writeJson(Birthplace property) {
 		String text = property.getText();
 		if (text != null) {
 			return JCardValue.single(text);
@@ -145,8 +145,8 @@ public class BirthplaceScribe extends VCardPropertyScribe<BirthplaceType> {
 	}
 
 	@Override
-	protected BirthplaceType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
-		BirthplaceType property = new BirthplaceType();
+	protected Birthplace _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+		Birthplace property = new Birthplace();
 		String valueStr = value.asSingle();
 
 		if (dataType == VCardDataType.TEXT) {

@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.InterestType;
+import ezvcard.property.Interest;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.InterestType;
  */
 
 /**
- * Marshals {@link InterestType} properties.
+ * Marshals {@link Interest} properties.
  * @author Michael Angstadt
  */
-public class InterestScribe extends StringPropertyScribe<InterestType> {
+public class InterestScribe extends StringPropertyScribe<Interest> {
 	public InterestScribe() {
-		super(InterestType.class, "INTEREST");
+		super(Interest.class, "INTEREST");
 	}
 
 	@Override
-	protected InterestType _parseValue(String value) {
-		return new InterestType(value);
+	protected Interest _parseValue(String value) {
+		return new Interest(value);
 	}
 }

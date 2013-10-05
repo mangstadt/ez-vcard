@@ -3,7 +3,7 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import ezvcard.io.html.HCardElement;
-import ezvcard.property.CategoriesType;
+import ezvcard.property.Categories;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -31,28 +31,28 @@ import ezvcard.property.CategoriesType;
  */
 
 /**
- * Marshals {@link CategoriesType} properties.
+ * Marshals {@link Categories} properties.
  * @author Michael Angstadt
  */
-public class CategoriesScribe extends ListPropertyScribe<CategoriesType> {
+public class CategoriesScribe extends ListPropertyScribe<Categories> {
 	public CategoriesScribe() {
-		super(CategoriesType.class, "CATEGORIES");
+		super(Categories.class, "CATEGORIES");
 	}
 
 	@Override
-	protected CategoriesType _parseHtml(HCardElement element, List<String> warnings) {
+	protected Categories _parseHtml(HCardElement element, List<String> warnings) {
 		String value = element.attr("rel");
 		if (value.length() == 0) {
 			value = element.value();
 		}
 
-		CategoriesType property = _newInstance();
+		Categories property = _newInstance();
 		property.addValue(value);
 		return property;
 	}
 
 	@Override
-	protected CategoriesType _newInstance() {
-		return new CategoriesType();
+	protected Categories _newInstance() {
+		return new Categories();
 	}
 }

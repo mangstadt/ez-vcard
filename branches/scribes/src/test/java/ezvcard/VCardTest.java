@@ -12,11 +12,11 @@ import java.util.List;
 import org.junit.Test;
 
 import ezvcard.property.HasAltId;
-import ezvcard.property.NoteType;
-import ezvcard.property.RawType;
-import ezvcard.property.RevisionType;
-import ezvcard.property.StructuredNameType;
-import ezvcard.property.VCardType;
+import ezvcard.property.Note;
+import ezvcard.property.RawProperty;
+import ezvcard.property.Revision;
+import ezvcard.property.StructuredName;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -55,22 +55,22 @@ public class VCardTest {
 	public void getAllTypes() {
 		VCard vcard = new VCard();
 
-		//type stored in VCardType variable
-		RevisionType rev = RevisionType.now();
+		//type stored in VCardProperty variable
+		Revision rev = Revision.now();
 		vcard.setRevision(rev);
 
 		//type stored in a List
-		NoteType note = new NoteType("A note.");
+		Note note = new Note("A note.");
 		vcard.addNote(note);
 
 		//extended type with unique name
-		RawType xGender = vcard.addExtendedType("X-GENDER", "male");
+		RawProperty xGender = vcard.addExtendedType("X-GENDER", "male");
 
 		//extended types with same name
-		RawType xManager1 = vcard.addExtendedType("X-MANAGER", "Michael Scott");
-		RawType xManager2 = vcard.addExtendedType("X-MANAGER", "Pointy Haired Boss");
+		RawProperty xManager1 = vcard.addExtendedType("X-MANAGER", "Michael Scott");
+		RawProperty xManager2 = vcard.addExtendedType("X-MANAGER", "Pointy Haired Boss");
 
-		Collection<VCardType> types = vcard.getAllTypes();
+		Collection<VCardProperty> types = vcard.getAllTypes();
 		assertEquals(5, types.size());
 		assertTrue(types.contains(rev));
 		assertTrue(types.contains(note));
@@ -89,7 +89,7 @@ public class VCardTest {
 	@Test
 	public void addExtendedType() {
 		VCard vcard = new VCard();
-		RawType type = vcard.addExtendedType("NAME", "value");
+		RawProperty type = vcard.addExtendedType("NAME", "value");
 		assertEquals("NAME", type.getPropertyName());
 		assertEquals("value", type.getValue());
 		assertEquals(Arrays.asList(type), vcard.getExtendedTypes("NAME"));
@@ -200,16 +200,16 @@ public class VCardTest {
 	@Test
 	public void validate_vcard() {
 		VCard vcard = new VCard();
-		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardType) null);
-		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null, (VCardType) null);
-		assertValidate(vcard.validate(VCardVersion.V4_0), (VCardType) null);
+		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardProperty) null);
+		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null, (VCardProperty) null);
+		assertValidate(vcard.validate(VCardVersion.V4_0), (VCardProperty) null);
 
 		vcard.setFormattedName("John Doe");
-		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardType) null);
-		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
+		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardProperty) null);
+		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null);
 		assertValidate(vcard.validate(VCardVersion.V4_0));
 
-		vcard.setStructuredName(new StructuredNameType());
+		vcard.setStructuredName(new StructuredName());
 		assertValidate(vcard.validate(VCardVersion.V2_1));
 		assertValidate(vcard.validate(VCardVersion.V3_0));
 		assertValidate(vcard.validate(VCardVersion.V4_0));
@@ -227,7 +227,7 @@ public class VCardTest {
 		assertTrue(vcard == prop.validateVCard);
 	}
 
-	private class HasAltIdImpl extends VCardType implements HasAltId {
+	private class HasAltIdImpl extends VCardProperty implements HasAltId {
 		private String altId;
 
 		public HasAltIdImpl(String altId) {
@@ -245,7 +245,7 @@ public class VCardTest {
 		}
 	}
 
-	private class VCardTypeImpl extends VCardType {
+	private class VCardTypeImpl extends VCardProperty {
 		public VCardVersion validateVersion;
 		public VCard validateVCard;
 

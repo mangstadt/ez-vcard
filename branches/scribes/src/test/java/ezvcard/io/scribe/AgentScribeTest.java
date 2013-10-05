@@ -11,7 +11,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.AgentType;
+import ezvcard.property.Agent;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -47,13 +47,13 @@ import ezvcard.property.AgentType;
  */
 public class AgentScribeTest {
 	private final AgentScribe scribe = new AgentScribe();
-	private final Sensei<AgentType> sensei = new Sensei<AgentType>(scribe);
+	private final Sensei<Agent> sensei = new Sensei<Agent>(scribe);
 
 	private final VCard vcard = new VCard();
 	private final String url = "http://mi5.co.uk/007";
-	private final AgentType withUrl = new AgentType(url);
-	private final AgentType withVCard = new AgentType(vcard);
-	private final AgentType empty = new AgentType();
+	private final Agent withUrl = new Agent(url);
+	private final Agent withVCard = new Agent(vcard);
+	private final Agent empty = new Agent();
 
 	@Test
 	public void dataType() {
@@ -92,7 +92,7 @@ public class AgentScribeTest {
 			sensei.assertParseText("").versions(VCardVersion.V2_1).run();
 			fail();
 		} catch (EmbeddedVCardException e) {
-			AgentType property = (AgentType) e.getProperty();
+			Agent property = (Agent) e.getProperty();
 			assertNull(property.getUrl());
 			assertNull(property.getVCard());
 
@@ -108,7 +108,7 @@ public class AgentScribeTest {
 			sensei.assertParseText("BEGIN:VCARD\\nEND:VCARD").versions(VCardVersion.V3_0).run();
 			fail();
 		} catch (EmbeddedVCardException e) {
-			AgentType property = (AgentType) e.getProperty();
+			Agent property = (Agent) e.getProperty();
 			assertNull(property.getUrl());
 			assertNull(property.getVCard());
 
@@ -136,7 +136,7 @@ public class AgentScribeTest {
 
 			fail();
 		} catch (EmbeddedVCardException e) {
-			AgentType property = (AgentType) e.getProperty();
+			Agent property = (Agent) e.getProperty();
 			assertNull(property.getUrl());
 			assertNull(property.getVCard());
 
@@ -146,8 +146,8 @@ public class AgentScribeTest {
 		}
 	}
 
-	private final Check<AgentType> hasUrl = new Check<AgentType>() {
-		public void check(AgentType property) {
+	private final Check<Agent> hasUrl = new Check<Agent>() {
+		public void check(Agent property) {
 			assertEquals(url, property.getUrl());
 			assertNull(property.getVCard());
 		}

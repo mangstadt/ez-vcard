@@ -16,7 +16,7 @@ import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.parameter.ImageTypeParameter;
-import ezvcard.property.PhotoType;
+import ezvcard.property.Photo;
 import ezvcard.util.DataUri;
 import ezvcard.util.IOUtils;
 import freemarker.template.Configuration;
@@ -170,8 +170,8 @@ public class HCardPage {
 	 * @return the image
 	 * @throws IOException
 	 */
-	private PhotoType readImage(String name, ImageTypeParameter mediaType) throws IOException {
-		return new PhotoType(getClass().getResourceAsStream(name), mediaType);
+	private Photo readImage(String name, ImageTypeParameter mediaType) throws IOException {
+		return new Photo(getClass().getResourceAsStream(name), mediaType);
 	}
 
 	/**

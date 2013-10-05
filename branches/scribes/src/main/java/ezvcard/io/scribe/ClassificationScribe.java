@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.ClassificationType;
+import ezvcard.property.Classification;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.ClassificationType;
  */
 
 /**
- * Marshals {@link ClassificationType} properties.
+ * Marshals {@link Classification} properties.
  * @author Michael Angstadt
  */
-public class ClassificationScribe extends StringPropertyScribe<ClassificationType> {
+public class ClassificationScribe extends StringPropertyScribe<Classification> {
 	public ClassificationScribe() {
-		super(ClassificationType.class, "CLASS");
+		super(Classification.class, "CLASS");
 	}
 
 	@Override
-	protected ClassificationType _parseValue(String value) {
-		return new ClassificationType(value);
+	protected Classification _parseValue(String value) {
+		return new Classification(value);
 	}
 }

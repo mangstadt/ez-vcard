@@ -16,7 +16,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.XmlType;
+import ezvcard.property.Xml;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -45,12 +45,12 @@ import ezvcard.util.XmlUtils;
  */
 
 /**
- * Marshals {@link XmlType} properties.
+ * Marshals {@link Xml} properties.
  * @author Michael Angstadt
  */
-public class XmlScribe extends VCardPropertyScribe<XmlType> {
+public class XmlScribe extends VCardPropertyScribe<Xml> {
 	public XmlScribe() {
-		super(XmlType.class, "XML");
+		super(Xml.class, "XML");
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class XmlScribe extends VCardPropertyScribe<XmlType> {
 	}
 
 	@Override
-	protected String _writeText(XmlType property, VCardVersion version) {
+	protected String _writeText(Xml property, VCardVersion version) {
 		Document value = property.getValue();
 		if (value == null) {
 			return "";
@@ -70,24 +70,24 @@ public class XmlScribe extends VCardPropertyScribe<XmlType> {
 	}
 
 	@Override
-	protected XmlType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Xml _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		value = unescape(value);
 		try {
-			return new XmlType(value);
+			return new Xml(value);
 		} catch (SAXException e) {
 			throw new CannotParseException("Cannot parse value as XML: " + value);
 		}
 	}
 
 	@Override
-	protected void _writeXml(XmlType property, XCardElement element) {
-		//XmlType properties are handled as a special case when writing xCard documents, so this method should never get called (see: "XCardDocument" class)
+	protected void _writeXml(Xml property, XCardElement element) {
+		//Xml properties are handled as a special case when writing xCard documents, so this method should never get called (see: "XCardDocument" class)
 		super._writeXml(property, element);
 	}
 
 	@Override
-	protected XmlType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
-		XmlType xml = new XmlType(element.element());
+	protected Xml _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		Xml xml = new Xml(element.element());
 
 		//remove the <parameters> element
 		Element root = XmlUtils.getRootElement(xml.getValue());
@@ -101,7 +101,7 @@ public class XmlScribe extends VCardPropertyScribe<XmlType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(XmlType property) {
+	protected JCardValue _writeJson(Xml property) {
 		String xml = null;
 		Document value = property.getValue();
 		if (value != null) {
@@ -112,10 +112,10 @@ public class XmlScribe extends VCardPropertyScribe<XmlType> {
 	}
 
 	@Override
-	protected XmlType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Xml _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		try {
 			String xml = value.asSingle();
-			return (xml == null) ? new XmlType((Document) null) : new XmlType(xml);
+			return (xml == null) ? new Xml((Document) null) : new Xml(xml);
 		} catch (SAXException e) {
 			throw new CannotParseException("Cannot parse value as XML: " + value);
 		}

@@ -6,7 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -42,7 +42,7 @@ import ezvcard.property.VCardType;
  * methods, nor a QName.
  * @author Michael Angstadt
  */
-public class AgeType extends VCardType {
+public class AgeType extends VCardProperty {
 	public int age;
 
 	public AgeType(int age) {

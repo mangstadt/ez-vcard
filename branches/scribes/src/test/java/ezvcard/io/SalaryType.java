@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -43,7 +43,7 @@ import ezvcard.property.VCardType;
  * methods, but not a QName.
  * @author Michael Angstadt
  */
-public class SalaryType extends VCardType {
+public class SalaryType extends VCardProperty {
 	public int salary;
 
 	public SalaryType(int salary) {

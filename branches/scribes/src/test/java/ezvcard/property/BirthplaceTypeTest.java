@@ -46,18 +46,18 @@ public class BirthplaceTypeTest {
 
 	@Test
 	public void validate() {
-		BirthplaceType empty = new BirthplaceType();
+		Birthplace empty = new Birthplace();
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		BirthplaceType withText = new BirthplaceType();
+		Birthplace withText = new Birthplace();
 		withText.setText(text);
 		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
 
-		BirthplaceType withUri = new BirthplaceType();
+		Birthplace withUri = new Birthplace();
 		withUri.setUri(uri);
 		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
@@ -66,7 +66,7 @@ public class BirthplaceTypeTest {
 
 	@Test
 	public void setUri() {
-		BirthplaceType property = new BirthplaceType();
+		Birthplace property = new Birthplace();
 
 		assertNull(property.getUri());
 
@@ -79,7 +79,7 @@ public class BirthplaceTypeTest {
 
 	@Test
 	public void setText() {
-		BirthplaceType property = new BirthplaceType();
+		Birthplace property = new Birthplace();
 
 		assertNull(property.getText());
 

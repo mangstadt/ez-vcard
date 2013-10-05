@@ -2,7 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.Date;
 
-import ezvcard.property.AnniversaryType;
+import ezvcard.property.Anniversary;
 import ezvcard.util.PartialDate;
 
 /*
@@ -31,26 +31,26 @@ import ezvcard.util.PartialDate;
  */
 
 /**
- * Marshals {@link AnniversaryType} properties.
+ * Marshals {@link Anniversary} properties.
  * @author Michael Angstadt
  */
-public class AnniversaryScribe extends DateOrTimePropertyScribe<AnniversaryType> {
+public class AnniversaryScribe extends DateOrTimePropertyScribe<Anniversary> {
 	public AnniversaryScribe() {
-		super(AnniversaryType.class, "ANNIVERSARY");
+		super(Anniversary.class, "ANNIVERSARY");
 	}
 
 	@Override
-	protected AnniversaryType newInstance(String text) {
-		return new AnniversaryType(text);
+	protected Anniversary newInstance(String text) {
+		return new Anniversary(text);
 	}
 
 	@Override
-	protected AnniversaryType newInstance(Date date, boolean hasTime) {
-		return new AnniversaryType(date, hasTime);
+	protected Anniversary newInstance(Date date, boolean hasTime) {
+		return new Anniversary(date, hasTime);
 	}
 
 	@Override
-	protected AnniversaryType newInstance(PartialDate partialDate) {
-		return new AnniversaryType(partialDate);
+	protected Anniversary newInstance(PartialDate partialDate) {
+		return new Anniversary(partialDate);
 	}
 }

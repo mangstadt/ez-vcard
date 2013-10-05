@@ -42,19 +42,19 @@ import ezvcard.VCardVersion;
 public class MemberTypeTest {
 	@Test
 	public void validate() {
-		MemberType empty = new MemberType(null);
+		Member empty = new Member(null);
 		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(3);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(2);
 
-		MemberType withUri = new MemberType("uri");
+		Member withUri = new Member("uri");
 
 		VCard groupKind = new VCard();
-		groupKind.setKind(KindType.group());
+		groupKind.setKind(Kind.group());
 		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
 		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V4_0).run(0);
 
 		VCard nonGroupKind = new VCard();
-		nonGroupKind.setKind(KindType.application());
+		nonGroupKind.setKind(Kind.application());
 		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
 		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V4_0).run(1);
 

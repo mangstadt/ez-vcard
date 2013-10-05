@@ -41,16 +41,16 @@ import org.junit.Test;
 public class GeoTypeTest {
 	@Test
 	public void validate() {
-		GeoType empty = new GeoType(null);
+		Geo empty = new Geo(null);
 		assertValidate(empty).run(2);
 
-		GeoType withValue = new GeoType(-12.34, 56.78);
+		Geo withValue = new Geo(-12.34, 56.78);
 		assertValidate(withValue).run(0);
 	}
 
 	@Test
 	public void latitude() {
-		GeoType property = new GeoType(null);
+		Geo property = new Geo(null);
 		assertNull(property.getLatitude());
 		assertNull(property.getGeoUri());
 
@@ -61,7 +61,7 @@ public class GeoTypeTest {
 
 	@Test
 	public void longitude() {
-		GeoType property = new GeoType(null);
+		Geo property = new Geo(null);
 		assertNull(property.getLongitude());
 		assertNull(property.getGeoUri());
 

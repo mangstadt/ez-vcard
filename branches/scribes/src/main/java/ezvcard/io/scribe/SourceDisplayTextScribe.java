@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.SourceDisplayTextType;
+import ezvcard.property.SourceDisplayText;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.SourceDisplayTextType;
  */
 
 /**
- * Marshals {@link SourceDisplayTextType} properties.
+ * Marshals {@link SourceDisplayText} properties.
  * @author Michael Angstadt
  */
-public class SourceDisplayTextScribe extends StringPropertyScribe<SourceDisplayTextType> {
+public class SourceDisplayTextScribe extends StringPropertyScribe<SourceDisplayText> {
 	public SourceDisplayTextScribe() {
-		super(SourceDisplayTextType.class, "NAME");
+		super(SourceDisplayText.class, "NAME");
 	}
 
 	@Override
-	protected SourceDisplayTextType _parseValue(String value) {
-		return new SourceDisplayTextType(value);
+	protected SourceDisplayText _parseValue(String value) {
+		return new SourceDisplayText(value);
 	}
 }

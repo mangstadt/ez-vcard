@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.TitleType;
+import ezvcard.property.Title;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.TitleType;
  */
 
 /**
- * Marshals {@link TitleType} properties.
+ * Marshals {@link Title} properties.
  * @author Michael Angstadt
  */
-public class TitleScribe extends StringPropertyScribe<TitleType> {
+public class TitleScribe extends StringPropertyScribe<Title> {
 	public TitleScribe() {
-		super(TitleType.class, "TITLE");
+		super(Title.class, "TITLE");
 	}
 
 	@Override
-	protected TitleType _parseValue(String value) {
-		return new TitleType(value);
+	protected Title _parseValue(String value) {
+		return new Title(value);
 	}
 }

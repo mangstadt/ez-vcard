@@ -39,7 +39,7 @@ import ezvcard.VCardVersion;
  * @param <T> the class of the property's value
  * @author Michael Angstadt
  */
-public class SimpleProperty<T> extends VCardType {
+public class SimpleProperty<T> extends VCardProperty {
 	protected T value;
 
 	/**

@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.VCardStringUtils.JoinCallback;
 
@@ -48,8 +48,8 @@ import ezvcard.util.VCardStringUtils.JoinCallback;
  * //print all warnings to a string:
  * System.out.println(warnings.toString());
  * //sample output:
- * //FormattedNameType is not set (it is a required property).
- * //[GenderType]: Not supported by version 3.0.  Supported versions are: [4.0]
+ * //FormattedName is not set (it is a required property).
+ * //[Gender]: Not supported by version 3.0.  Supported versions are: [4.0]
  * 
  * //iterate over each warnings group
  * //this gives you access to the property object that threw each warning
@@ -65,7 +65,7 @@ import ezvcard.util.VCardStringUtils.JoinCallback;
  * }
  * 
  * //you can also get the warnings of specific properties
- * List&lt;WarningsGroup&gt; telWarnings = warnings.getByProperty(TelephoneType.class);
+ * List&lt;WarningsGroup&gt; telWarnings = warnings.getByProperty(Telephone.class);
  * </pre>
  * 
  * </p>
@@ -89,14 +89,14 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 
 	/**
 	 * Gets all validation warnings of a given property.
-	 * @param propertyClass the property (e.g. {@code TelephoneType.class})
+	 * @param propertyClass the property (e.g. {@code Telephone.class})
 	 * or null to get the generic vCard warnings
 	 * @return the validation warnings
 	 */
-	public List<WarningsGroup> getByProperty(Class<? extends VCardType> propertyClass) {
+	public List<WarningsGroup> getByProperty(Class<? extends VCardProperty> propertyClass) {
 		List<WarningsGroup> warnings = new ArrayList<WarningsGroup>();
 		for (WarningsGroup group : this.warnings) {
-			VCardType property = group.getProperty();
+			VCardProperty property = group.getProperty();
 			if (property == null) {
 				if (propertyClass == null) {
 					warnings.add(group);
@@ -139,8 +139,8 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 	 * </p>
 	 * 
 	 * <pre>
-	 * FormattedNameType is not set (it is a required property).
-	 * [GenderType]: Not supported by version 3.0.  Supported versions are: [4.0]
+	 * FormattedName is not set (it is a required property).
+	 * [Gender]: Not supported by version 3.0.  Supported versions are: [4.0]
 	 * </pre>
 	 */
 	@Override
@@ -162,7 +162,7 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 	 * @author Michael Angstadt
 	 */
 	public static class WarningsGroup {
-		private final VCardType property;
+		private final VCardProperty property;
 		private final List<String> messages;
 
 		/**
@@ -170,7 +170,7 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 		 * @param property the property that caused the warnings
 		 * @param messages the warning messages
 		 */
-		public WarningsGroup(VCardType property, List<String> messages) {
+		public WarningsGroup(VCardProperty property, List<String> messages) {
 			this.property = property;
 			this.messages = messages;
 		}
@@ -180,7 +180,7 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 		 * @return the property object or null if a component caused the
 		 * warnings.
 		 */
-		public VCardType getProperty() {
+		public VCardProperty getProperty() {
 			return property;
 		}
 
@@ -199,7 +199,7 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 		 * </p>
 		 * 
 		 * <pre>
-		 * [GenderType]: Not supported by version 3.0.  Supported versions are: [4.0]
+		 * [Gender]: Not supported by version 3.0.  Supported versions are: [4.0]
 		 * </pre>
 		 */
 		@Override

@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.RelatedType;
+import ezvcard.property.Related;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,12 +35,12 @@ import ezvcard.property.RelatedType;
  */
 
 /**
- * Marshals {@link RelatedType} properties.
+ * Marshals {@link Related} properties.
  * @author Michael Angstadt
  */
-public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
+public class RelatedScribe extends VCardPropertyScribe<Related> {
 	public RelatedScribe() {
-		super(RelatedType.class, "RELATED");
+		super(Related.class, "RELATED");
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	}
 
 	@Override
-	protected VCardDataType _dataType(RelatedType property, VCardVersion version) {
+	protected VCardDataType _dataType(Related property, VCardVersion version) {
 		if (property.getUri() != null) {
 			return VCardDataType.URI;
 		}
@@ -60,7 +60,7 @@ public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	}
 
 	@Override
-	protected String _writeText(RelatedType property, VCardVersion version) {
+	protected String _writeText(Related property, VCardVersion version) {
 		String uri = property.getUri();
 		if (uri != null) {
 			return uri;
@@ -75,10 +75,10 @@ public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	}
 
 	@Override
-	protected RelatedType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Related _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		value = unescape(value);
 
-		RelatedType property = new RelatedType();
+		Related property = new Related();
 		if (dataType == VCardDataType.TEXT) {
 			property.setText(value);
 		} else {
@@ -88,7 +88,7 @@ public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	}
 
 	@Override
-	protected void _writeXml(RelatedType property, XCardElement parent) {
+	protected void _writeXml(Related property, XCardElement parent) {
 		String uri = property.getUri();
 		if (uri != null) {
 			parent.append(VCardDataType.URI, uri);
@@ -105,17 +105,17 @@ public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	}
 
 	@Override
-	protected RelatedType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Related _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		String uri = element.first(VCardDataType.URI);
 		if (uri != null) {
-			RelatedType property = new RelatedType();
+			Related property = new Related();
 			property.setUri(uri);
 			return property;
 		}
 
 		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
-			RelatedType property = new RelatedType();
+			Related property = new Related();
 			property.setText(text);
 			return property;
 		}
@@ -124,7 +124,7 @@ public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(RelatedType property) {
+	protected JCardValue _writeJson(Related property) {
 		String uri = property.getUri();
 		if (uri != null) {
 			return JCardValue.single(uri);
@@ -139,10 +139,10 @@ public class RelatedScribe extends VCardPropertyScribe<RelatedType> {
 	}
 
 	@Override
-	protected RelatedType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Related _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 
-		RelatedType property = new RelatedType();
+		Related property = new Related();
 		if (dataType == VCardDataType.TEXT) {
 			property.setText(valueStr);
 		} else {

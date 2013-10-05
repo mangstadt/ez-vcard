@@ -94,11 +94,11 @@ public class VCardTypeTest {
 		assertEquals(0, null1.compareTo(null2));
 	}
 
-	private class VCardTypeImpl extends VCardType {
+	private class VCardTypeImpl extends VCardProperty {
 		//empty
 	}
 
-	private class ValidateType extends VCardType {
+	private class ValidateType extends VCardProperty {
 		public boolean validateCalled = false;
 
 		@Override

@@ -25,7 +25,7 @@ import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.scribe.VCardPropertyScribe.SemiStructuredIterator;
 import ezvcard.io.scribe.VCardPropertyScribe.StructuredIterator;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.DefaultTimezoneRule;
 
 /*
@@ -467,7 +467,7 @@ public class VCardPropertyScribeTest {
 		}
 	}
 
-	private class TestProperty extends VCardType {
+	private class TestProperty extends VCardProperty {
 		public String value;
 		public VCardDataType parsedDataType;
 

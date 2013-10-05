@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.StructuredNameType;
+import ezvcard.property.StructuredName;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -44,9 +44,9 @@ import ezvcard.property.StructuredNameType;
  */
 public class StructuredNameScribeTest {
 	private final StructuredNameScribe scribe = new StructuredNameScribe();
-	private final Sensei<StructuredNameType> sensei = new Sensei<StructuredNameType>(scribe);
+	private final Sensei<StructuredName> sensei = new Sensei<StructuredName>(scribe);
 
-	private final StructuredNameType withAllValues = new StructuredNameType();
+	private final StructuredName withAllValues = new StructuredName();
 	{
 		withAllValues.setGiven("Jonathan");
 		withAllValues.setFamily("Doe");
@@ -55,14 +55,14 @@ public class StructuredNameScribeTest {
 		withAllValues.addPrefix("Mr.");
 		withAllValues.addSuffix("III");
 	}
-	private final StructuredNameType withEmptyValues = new StructuredNameType();
+	private final StructuredName withEmptyValues = new StructuredName();
 	{
 		withEmptyValues.setGiven("Jonathan");
 		withEmptyValues.setFamily(null);
 		withEmptyValues.addAdditional("Joh;nny,");
 		withEmptyValues.addAdditional("John");
 	}
-	private final StructuredNameType empty = new StructuredNameType();
+	private final StructuredName empty = new StructuredName();
 
 	@Test
 	public void writeText() {
@@ -195,9 +195,9 @@ public class StructuredNameScribeTest {
 		sensei.assertParseJson("").run(is(empty));
 	}
 
-	private Check<StructuredNameType> is(final StructuredNameType expected) {
-		return new Check<StructuredNameType>() {
-			public void check(StructuredNameType actual) {
+	private Check<StructuredName> is(final StructuredName expected) {
+		return new Check<StructuredName>() {
+			public void check(StructuredName actual) {
 				assertEquals(expected.getFamily(), actual.getFamily());
 				assertEquals(expected.getGiven(), actual.getGiven());
 				assertEquals(expected.getAdditional(), actual.getAdditional());

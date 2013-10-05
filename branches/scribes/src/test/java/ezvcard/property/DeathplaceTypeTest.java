@@ -46,18 +46,18 @@ public class DeathplaceTypeTest {
 
 	@Test
 	public void validate() {
-		DeathplaceType empty = new DeathplaceType();
+		Deathplace empty = new Deathplace();
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		DeathplaceType withText = new DeathplaceType();
+		Deathplace withText = new Deathplace();
 		withText.setText(text);
 		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
 
-		DeathplaceType withUri = new DeathplaceType();
+		Deathplace withUri = new Deathplace();
 		withUri.setUri(uri);
 		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
@@ -66,7 +66,7 @@ public class DeathplaceTypeTest {
 
 	@Test
 	public void setUri() {
-		DeathplaceType property = new DeathplaceType();
+		Deathplace property = new Deathplace();
 
 		assertNull(property.getUri());
 
@@ -79,7 +79,7 @@ public class DeathplaceTypeTest {
 
 	@Test
 	public void setText() {
-		DeathplaceType property = new DeathplaceType();
+		Deathplace property = new Deathplace();
 
 		assertNull(property.getText());
 

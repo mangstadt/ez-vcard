@@ -50,15 +50,15 @@ public class TimezoneTypeTest {
 
 	@Test
 	public void validate() {
-		TimezoneType empty = new TimezoneType((UtcOffset) null);
+		Timezone empty = new Timezone((UtcOffset) null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(1);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		TimezoneType withOffset = new TimezoneType(-5, 30);
+		Timezone withOffset = new Timezone(-5, 30);
 		assertValidate(withOffset).run(0);
 
-		TimezoneType withText = new TimezoneType("America/New_York");
+		Timezone withText = new Timezone("America/New_York");
 		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withText).versions(VCardVersion.V3_0).run(0);
 		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
@@ -66,7 +66,7 @@ public class TimezoneTypeTest {
 
 	@Test
 	public void constructor_timezone() {
-		TimezoneType tz = new TimezoneType(newYork);
+		Timezone tz = new Timezone(newYork);
 
 		assertEquals(newYork.getID(), tz.getText());
 		if (newYork.inDaylightTime(new Date())) {
@@ -79,28 +79,28 @@ public class TimezoneTypeTest {
 
 	@Test
 	public void toTimeZone_offset() {
-		TimezoneType t = new TimezoneType(-5, 30);
+		Timezone t = new Timezone(-5, 30);
 		TimeZone actual = t.toTimeZone();
 		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), actual.getRawOffset());
 	}
 
 	@Test
 	public void toTimeZone_timezone_id() {
-		TimezoneType t = new TimezoneType(newYork.getID());
+		Timezone t = new Timezone(newYork.getID());
 		TimeZone actual = t.toTimeZone();
 		assertEquals(newYork, actual);
 	}
 
 	@Test
 	public void toTimeZone_text() {
-		TimezoneType t = new TimezoneType("text");
+		Timezone t = new Timezone("text");
 		TimeZone actual = t.toTimeZone();
 		assertNull(actual);
 	}
 
 	@Test
 	public void toTimeZone_text_and_offset() {
-		TimezoneType t = new TimezoneType(-5, 30, "text");
+		Timezone t = new Timezone(-5, 30, "text");
 		TimeZone actual = t.toTimeZone();
 		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), actual.getRawOffset());
 		assertEquals("text", actual.getID());

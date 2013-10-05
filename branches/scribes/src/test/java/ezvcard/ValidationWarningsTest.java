@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.Test;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -96,11 +96,11 @@ public class ValidationWarningsTest {
 		assertEquals(expected, actual);
 	}
 
-	private class TestProperty1 extends VCardType {
+	private class TestProperty1 extends VCardProperty {
 		//empty
 	}
 
-	private class TestProperty2 extends VCardType {
+	private class TestProperty2 extends VCardProperty {
 		//empty
 	}
 }

@@ -8,7 +8,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.OrganizationType;
+import ezvcard.property.Organization;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -36,12 +36,12 @@ import ezvcard.property.OrganizationType;
  */
 
 /**
- * Marshals {@link OrganizationType} properties.
+ * Marshals {@link Organization} properties.
  * @author Michael Angstadt
  */
-public class OrganizationScribe extends VCardPropertyScribe<OrganizationType> {
+public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	public OrganizationScribe() {
-		super(OrganizationType.class, "ORG");
+		super(Organization.class, "ORG");
 	}
 
 	@Override
@@ -50,13 +50,13 @@ public class OrganizationScribe extends VCardPropertyScribe<OrganizationType> {
 	}
 
 	@Override
-	protected String _writeText(OrganizationType property, VCardVersion version) {
+	protected String _writeText(Organization property, VCardVersion version) {
 		return structured(property.getValues());
 	}
 
 	@Override
-	protected OrganizationType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
-		OrganizationType property = new OrganizationType();
+	protected Organization _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		Organization property = new Organization();
 
 		SemiStructuredIterator it = semistructured(value);
 		while (it.hasNext()) {
@@ -67,15 +67,15 @@ public class OrganizationScribe extends VCardPropertyScribe<OrganizationType> {
 	}
 
 	@Override
-	protected void _writeXml(OrganizationType property, XCardElement parent) {
+	protected void _writeXml(Organization property, XCardElement parent) {
 		parent.append(VCardDataType.TEXT.getName().toLowerCase(), property.getValues());
 	}
 
 	@Override
-	protected OrganizationType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Organization _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		List<String> values = element.all(VCardDataType.TEXT);
 		if (!values.isEmpty()) {
-			OrganizationType property = new OrganizationType();
+			Organization property = new Organization();
 			property.getValues().addAll(values);
 			return property;
 		}
@@ -84,8 +84,8 @@ public class OrganizationScribe extends VCardPropertyScribe<OrganizationType> {
 	}
 
 	@Override
-	protected OrganizationType _parseHtml(HCardElement element, List<String> warnings) {
-		OrganizationType property = new OrganizationType();
+	protected Organization _parseHtml(HCardElement element, List<String> warnings) {
+		Organization property = new Organization();
 
 		String orgName = element.firstValue("organization-name");
 		if (orgName != null) {
@@ -105,7 +105,7 @@ public class OrganizationScribe extends VCardPropertyScribe<OrganizationType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(OrganizationType property) {
+	protected JCardValue _writeJson(Organization property) {
 		List<String> values = property.getValues();
 		if (values.isEmpty()) {
 			return JCardValue.single("");
@@ -119,8 +119,8 @@ public class OrganizationScribe extends VCardPropertyScribe<OrganizationType> {
 	}
 
 	@Override
-	protected OrganizationType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
-		OrganizationType property = new OrganizationType();
+	protected Organization _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+		Organization property = new Organization();
 
 		StructuredIterator it = structured(value);
 		while (it.hasNext()) {

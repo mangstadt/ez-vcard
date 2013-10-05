@@ -6,9 +6,9 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import ezvcard.VCardVersion;
-import ezvcard.property.RawType;
-import ezvcard.property.VCardType;
-import ezvcard.property.XmlType;
+import ezvcard.property.RawProperty;
+import ezvcard.property.VCardProperty;
+import ezvcard.property.Xml;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -74,9 +74,9 @@ import ezvcard.property.XmlType;
  */
 public class ScribeIndex {
 	//define standard property marshallers
-	private static final Map<String, VCardPropertyScribe<? extends VCardType>> standardByName = new HashMap<String, VCardPropertyScribe<? extends VCardType>>();
-	private static final Map<Class<? extends VCardType>, VCardPropertyScribe<? extends VCardType>> standardByClass = new HashMap<Class<? extends VCardType>, VCardPropertyScribe<? extends VCardType>>();
-	private static final Map<QName, VCardPropertyScribe<? extends VCardType>> standardByQName = new HashMap<QName, VCardPropertyScribe<? extends VCardType>>();
+	private static final Map<String, VCardPropertyScribe<? extends VCardProperty>> standardByName = new HashMap<String, VCardPropertyScribe<? extends VCardProperty>>();
+	private static final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> standardByClass = new HashMap<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>>();
+	private static final Map<QName, VCardPropertyScribe<? extends VCardProperty>> standardByQName = new HashMap<QName, VCardPropertyScribe<? extends VCardProperty>>();
 	static {
 		//2.1, RFC 2426, RFC 6350
 		registerStandard(new AddressScribe());
@@ -136,19 +136,19 @@ public class ScribeIndex {
 		registerStandard(new HobbyScribe());
 	}
 
-	private final Map<String, VCardPropertyScribe<? extends VCardType>> extendedByName = new HashMap<String, VCardPropertyScribe<? extends VCardType>>(0);
-	private final Map<Class<? extends VCardType>, VCardPropertyScribe<? extends VCardType>> extendedByClass = new HashMap<Class<? extends VCardType>, VCardPropertyScribe<? extends VCardType>>(0);
-	private final Map<QName, VCardPropertyScribe<? extends VCardType>> extendedByQName = new HashMap<QName, VCardPropertyScribe<? extends VCardType>>(0);
+	private final Map<String, VCardPropertyScribe<? extends VCardProperty>> extendedByName = new HashMap<String, VCardPropertyScribe<? extends VCardProperty>>(0);
+	private final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> extendedByClass = new HashMap<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>>(0);
+	private final Map<QName, VCardPropertyScribe<? extends VCardProperty>> extendedByQName = new HashMap<QName, VCardPropertyScribe<? extends VCardProperty>>(0);
 
 	/**
 	 * Gets a property scribe by name.
 	 * @param propertyName the property name (case-insensitive, e.g. "FN")
 	 * @return the property scribe or null if not found
 	 */
-	public VCardPropertyScribe<? extends VCardType> getPropertyScribe(String propertyName) {
+	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(String propertyName) {
 		propertyName = propertyName.toUpperCase();
 
-		VCardPropertyScribe<? extends VCardType> marshaller = extendedByName.get(propertyName);
+		VCardPropertyScribe<? extends VCardProperty> marshaller = extendedByName.get(propertyName);
 		if (marshaller != null) {
 			return marshaller;
 		}
@@ -161,8 +161,8 @@ public class ScribeIndex {
 	 * @param clazz the property class
 	 * @return the property scribe or null if not found
 	 */
-	public VCardPropertyScribe<? extends VCardType> getPropertyScribe(Class<? extends VCardType> clazz) {
-		VCardPropertyScribe<? extends VCardType> marshaller = extendedByClass.get(clazz);
+	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(Class<? extends VCardProperty> clazz) {
+		VCardPropertyScribe<? extends VCardProperty> marshaller = extendedByClass.get(clazz);
 		if (marshaller != null) {
 			return marshaller;
 		}
@@ -175,9 +175,9 @@ public class ScribeIndex {
 	 * @param property the property instance
 	 * @return the property scribe or null if not found
 	 */
-	public VCardPropertyScribe<? extends VCardType> getPropertyScribe(VCardType property) {
-		if (property instanceof RawType) {
-			RawType raw = (RawType) property;
+	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(VCardProperty property) {
+		if (property instanceof RawProperty) {
+			RawProperty raw = (RawProperty) property;
 			return new RawPropertyScribe(raw.getPropertyName());
 		}
 
@@ -189,8 +189,8 @@ public class ScribeIndex {
 	 * @param qname the XML local name and namespace
 	 * @return the property scribe or a {@link XmlScribe} if not found
 	 */
-	public VCardPropertyScribe<? extends VCardType> getPropertyScribe(QName qname) {
-		VCardPropertyScribe<? extends VCardType> marshaller = extendedByQName.get(qname);
+	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(QName qname) {
+		VCardPropertyScribe<? extends VCardProperty> marshaller = extendedByQName.get(qname);
 		if (marshaller != null) {
 			return marshaller;
 		}
@@ -204,14 +204,14 @@ public class ScribeIndex {
 			return new RawPropertyScribe(qname.getLocalPart().toUpperCase());
 		}
 
-		return getPropertyScribe(XmlType.class);
+		return getPropertyScribe(Xml.class);
 	}
 
 	/**
 	 * Registers a property scribe.
 	 * @param scribe the scribe to register
 	 */
-	public void register(VCardPropertyScribe<? extends VCardType> scribe) {
+	public void register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 		extendedByName.put(scribe.getPropertyName().toUpperCase(), scribe);
 		extendedByClass.put(scribe.getPropertyClass(), scribe);
 		extendedByQName.put(scribe.getQName(), scribe);
@@ -221,13 +221,13 @@ public class ScribeIndex {
 	 * Unregisters a property scribe.
 	 * @param scribe the scribe to unregister
 	 */
-	public void unregister(VCardPropertyScribe<? extends VCardType> scribe) {
+	public void unregister(VCardPropertyScribe<? extends VCardProperty> scribe) {
 		extendedByName.remove(scribe.getPropertyName().toUpperCase());
 		extendedByClass.remove(scribe.getPropertyClass());
 		extendedByQName.remove(scribe.getQName());
 	}
 
-	private static void registerStandard(VCardPropertyScribe<? extends VCardType> scribe) {
+	private static void registerStandard(VCardPropertyScribe<? extends VCardProperty> scribe) {
 		standardByName.put(scribe.getPropertyName().toUpperCase(), scribe);
 		standardByClass.put(scribe.getPropertyClass(), scribe);
 		standardByQName.put(scribe.getQName(), scribe);

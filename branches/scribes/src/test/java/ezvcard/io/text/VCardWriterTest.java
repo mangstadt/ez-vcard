@@ -21,21 +21,21 @@ import ezvcard.io.SkipMeException;
 import ezvcard.parameter.AddressTypeParameter;
 import ezvcard.parameter.EmailTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
-import ezvcard.property.AddressType;
-import ezvcard.property.AgentType;
-import ezvcard.property.AnniversaryType;
-import ezvcard.property.BirthdayType;
-import ezvcard.property.FormattedNameType;
-import ezvcard.property.GenderType;
-import ezvcard.property.GeoType;
-import ezvcard.property.KeyType;
-import ezvcard.property.LabelType;
-import ezvcard.property.NoteType;
-import ezvcard.property.ProdIdType;
-import ezvcard.property.StructuredNameType;
-import ezvcard.property.TelephoneType;
-import ezvcard.property.TimezoneType;
-import ezvcard.property.VCardType;
+import ezvcard.property.Address;
+import ezvcard.property.Agent;
+import ezvcard.property.Anniversary;
+import ezvcard.property.Birthday;
+import ezvcard.property.FormattedName;
+import ezvcard.property.Gender;
+import ezvcard.property.Geo;
+import ezvcard.property.Key;
+import ezvcard.property.Label;
+import ezvcard.property.Note;
+import ezvcard.property.ProductId;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Telephone;
+import ezvcard.property.Timezone;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -84,7 +84,7 @@ public class VCardWriterTest {
 	@Test
 	public void generalStructure() throws Throwable {
 		VCard vcard = new VCard();
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
 		StringWriter sw = new StringWriter();
@@ -107,7 +107,7 @@ public class VCardWriterTest {
 	@Test
 	public void setAddProdId() throws Throwable {
 		VCard vcard = new VCard();
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
 		//with X-PRODID (2.1)
@@ -175,10 +175,10 @@ public class VCardWriterTest {
 	public void setAddProdId_overwrites_existing_prodId() throws Throwable {
 		VCard vcard = new VCard();
 
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
-		ProdIdType prodId = new ProdIdType("Acme Co.");
+		ProductId prodId = new ProductId("Acme Co.");
 		vcard.setProdId(prodId);
 
 		StringWriter sw = new StringWriter();
@@ -201,20 +201,20 @@ public class VCardWriterTest {
 	public void nestedVCard() throws Throwable {
 		VCard vcard = new VCard();
 
-		FormattedNameType fn = new FormattedNameType("Michael Angstadt");
+		FormattedName fn = new FormattedName("Michael Angstadt");
 		vcard.setFormattedName(fn);
 
 		VCard agentVcard = new VCard();
-		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
-		agentVcard.addNote(new NoteType("Make sure that it properly folds long lines which are part of a nested AGENT type in a version 2.1 vCard."));
-		AgentType agent = new AgentType(agentVcard);
+		agentVcard.setFormattedName(new FormattedName("Agent 007"));
+		agentVcard.addNote(new Note("Make sure that it properly folds long lines which are part of a nested AGENT type in a version 2.1 vCard."));
+		Agent agent = new Agent(agentVcard);
 		vcard.setAgent(agent);
 
 		//i herd u liek AGENTs...
 		VCard secondAgentVCard = new VCard();
-		secondAgentVCard.setFormattedName(new FormattedNameType("Agent 009"));
-		secondAgentVCard.addNote(new NoteType("Make sure that it ALSO properly folds THIS long line because it's part of an AGENT that's inside of an AGENT."));
-		AgentType secondAgent = new AgentType(secondAgentVCard);
+		secondAgentVCard.setFormattedName(new FormattedName("Agent 009"));
+		secondAgentVCard.addNote(new Note("Make sure that it ALSO properly folds THIS long line because it's part of an AGENT that's inside of an AGENT."));
+		Agent secondAgent = new Agent(secondAgentVCard);
 		agentVcard.setAgent(secondAgent);
 
 		StringWriter sw = new StringWriter();
@@ -255,24 +255,24 @@ public class VCardWriterTest {
 	public void embeddedVCard() throws Throwable {
 		VCard vcard = new VCard();
 
-		FormattedNameType fn = new FormattedNameType("Michael Angstadt");
+		FormattedName fn = new FormattedName("Michael Angstadt");
 		vcard.setFormattedName(fn);
 
 		VCard agentVcard = new VCard();
-		agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
-		NoteType note = new NoteType("Bonne soirï¿½e, 007.");
+		agentVcard.setFormattedName(new FormattedName("Agent 007"));
+		Note note = new Note("Bonne soirï¿½e, 007.");
 		note.setLanguage("fr");
 		agentVcard.addNote(note);
-		AgentType agent = new AgentType(agentVcard);
+		Agent agent = new Agent(agentVcard);
 		vcard.setAgent(agent);
 
 		//i herd u liek AGENTs...
 		VCard secondAgentVCard = new VCard();
-		secondAgentVCard.setFormattedName(new FormattedNameType("Agent 009"));
-		note = new NoteType("Good evening, 009.");
+		secondAgentVCard.setFormattedName(new FormattedName("Agent 009"));
+		note = new Note("Good evening, 009.");
 		note.setLanguage("en");
 		secondAgentVCard.addNote(note);
-		AgentType secondAgent = new AgentType(secondAgentVCard);
+		Agent secondAgent = new Agent(secondAgentVCard);
 		agentVcard.setAgent(secondAgent);
 
 		StringWriter sw = new StringWriter();
@@ -312,7 +312,7 @@ public class VCardWriterTest {
 		VCard vcard = new VCard();
 
 		//address with label
-		AddressType adr = new AddressType();
+		Address adr = new Address();
 		adr.setStreetAddress("123 Main St.");
 		adr.setLocality("Austin");
 		adr.setRegion("TX");
@@ -322,7 +322,7 @@ public class VCardWriterTest {
 		vcard.addAddress(adr);
 
 		//address without label
-		adr = new AddressType();
+		adr = new Address();
 		adr.setStreetAddress("222 Broadway");
 		adr.setLocality("New York");
 		adr.setRegion("NY");
@@ -331,7 +331,7 @@ public class VCardWriterTest {
 		vcard.addAddress(adr);
 
 		//orphaned label
-		LabelType label = new LabelType("22 Spruce Ln.\r\nChicago, IL 11111");
+		Label label = new Label("22 Spruce Ln.\r\nChicago, IL 11111");
 		label.addType(AddressTypeParameter.PARCEL);
 		vcard.addOrphanedLabel(label);
 
@@ -386,7 +386,7 @@ public class VCardWriterTest {
 		VCard vcard = new VCard();
 
 		//add N property so a warning isn't generated (2.1 requires N to be present)
-		StructuredNameType n = new StructuredNameType();
+		StructuredName n = new StructuredName();
 		vcard.setStructuredName(n);
 
 		LuckyNumType num = new LuckyNumType(24);
@@ -501,27 +501,27 @@ public class VCardWriterTest {
 
 		vcard.setFormattedName("Simon Perreault");
 
-		StructuredNameType n = new StructuredNameType();
+		StructuredName n = new StructuredName();
 		n.setFamily("Perreault");
 		n.setGiven("Simon");
 		n.addSuffix("ing. jr");
 		n.addSuffix("M.Sc.");
 		vcard.setStructuredName(n);
 
-		BirthdayType bday = new BirthdayType(PartialDate.date(null, 2, 3));
+		Birthday bday = new Birthday(PartialDate.date(null, 2, 3));
 		vcard.setBirthday(bday);
 
-		AnniversaryType anniversary = new AnniversaryType(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
+		Anniversary anniversary = new Anniversary(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
 		vcard.setAnniversary(anniversary);
 
-		vcard.setGender(GenderType.male());
+		vcard.setGender(Gender.male());
 
 		vcard.addLanguage("fr").setPref(1);
 		vcard.addLanguage("en").setPref(2);
 
 		vcard.setOrganization("Viagenie").setType("work");
 
-		AddressType adr = new AddressType();
+		Address adr = new Address();
 		adr.setExtendedAddress("Suite D2-630");
 		adr.setStreetAddress("2875 Laurier");
 		adr.setLocality("Quebec");
@@ -532,13 +532,13 @@ public class VCardWriterTest {
 		vcard.addAddress(adr);
 
 		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
-		TelephoneType tel = new TelephoneType(telUri);
+		Telephone tel = new Telephone(telUri);
 		tel.setPref(1);
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.VOICE);
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType(new TelUri.Builder("+1-418-262-6501").build());
+		tel = new Telephone(new TelUri.Builder("+1-418-262-6501").build());
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.VOICE);
 		tel.addType(TelephoneTypeParameter.CELL);
@@ -548,15 +548,15 @@ public class VCardWriterTest {
 
 		vcard.addEmail("simon.perreault@viagenie.ca", EmailTypeParameter.WORK);
 
-		GeoType geo = new GeoType(46.772673, -71.282945);
+		Geo geo = new Geo(46.772673, -71.282945);
 		geo.setType("work");
 		vcard.setGeo(geo);
 
-		KeyType key = new KeyType("http://www.viagenie.ca/simon.perreault/simon.asc", null);
+		Key key = new Key("http://www.viagenie.ca/simon.perreault/simon.asc", null);
 		key.setType("work");
 		vcard.addKey(key);
 
-		vcard.setTimezone(new TimezoneType(-5, 0));
+		vcard.setTimezone(new Timezone(-5, 0));
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
@@ -609,7 +609,7 @@ public class VCardWriterTest {
 
 			vcard.setOrganization("Lotus Development Corporation");
 
-			AddressType adr = new AddressType();
+			Address adr = new Address();
 			adr.setStreetAddress("6544 Battleford Drive");
 			adr.setLocality("Raleigh");
 			adr.setRegion("NC");
@@ -628,7 +628,7 @@ public class VCardWriterTest {
 
 			vcard.addUrl("http://home.earthlink.net/÷fdawson");
 
-			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
+			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null);
 
 			writer.write(vcard);
 		}
@@ -640,7 +640,7 @@ public class VCardWriterTest {
 
 			vcard.setOrganization("Netscape Communications Corp.");
 
-			AddressType adr = new AddressType();
+			Address adr = new Address();
 			adr.setStreetAddress("501 E. Middlefield Rd.");
 			adr.setLocality("Mountain View");
 			adr.setRegion("CA");
@@ -654,7 +654,7 @@ public class VCardWriterTest {
 
 			vcard.addEmail("howes@netscape.com", EmailTypeParameter.INTERNET);
 
-			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
+			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null);
 
 			writer.write(vcard);
 		}

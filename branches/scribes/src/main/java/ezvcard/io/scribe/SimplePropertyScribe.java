@@ -8,7 +8,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -41,7 +41,7 @@ import ezvcard.property.VCardType;
  * @param <T> the property class
  * @author Michael Angstadt
  */
-public abstract class SimplePropertyScribe<T extends VCardType> extends VCardPropertyScribe<T> {
+public abstract class SimplePropertyScribe<T extends VCardProperty> extends VCardPropertyScribe<T> {
 	protected final VCardDataType dataType;
 
 	public SimplePropertyScribe(Class<T> clazz, String propertyName, VCardDataType dataType) {

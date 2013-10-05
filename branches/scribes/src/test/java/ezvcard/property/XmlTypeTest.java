@@ -43,12 +43,12 @@ import ezvcard.VCardVersion;
 public class XmlTypeTest {
 	@Test
 	public void validate() throws Throwable {
-		XmlType empty = new XmlType((Document) null);
+		Xml empty = new Xml((Document) null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		XmlType withValue = new XmlType("<foo/>");
+		Xml withValue = new Xml("<foo/>");
 		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withValue).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
@@ -56,6 +56,6 @@ public class XmlTypeTest {
 
 	@Test(expected = SAXException.class)
 	public void invalid_xml() throws Throwable {
-		new XmlType("not valid XML");
+		new Xml("not valid XML");
 	}
 }

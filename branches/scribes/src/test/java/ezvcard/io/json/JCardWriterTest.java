@@ -27,16 +27,16 @@ import ezvcard.parameter.AddressTypeParameter;
 import ezvcard.parameter.EmailTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.AddressType;
-import ezvcard.property.AnniversaryType;
-import ezvcard.property.BirthdayType;
-import ezvcard.property.GenderType;
-import ezvcard.property.GeoType;
-import ezvcard.property.KeyType;
-import ezvcard.property.StructuredNameType;
-import ezvcard.property.TelephoneType;
-import ezvcard.property.TimezoneType;
-import ezvcard.property.VCardType;
+import ezvcard.property.Address;
+import ezvcard.property.Anniversary;
+import ezvcard.property.Birthday;
+import ezvcard.property.Gender;
+import ezvcard.property.Geo;
+import ezvcard.property.Key;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Telephone;
+import ezvcard.property.Timezone;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -351,27 +351,27 @@ public class JCardWriterTest {
 
 		vcard.setFormattedName("SimonPerreault");
 
-		StructuredNameType n = new StructuredNameType();
+		StructuredName n = new StructuredName();
 		n.setFamily("Perreault");
 		n.setGiven("Simon");
 		n.addSuffix("ing.jr");
 		n.addSuffix("M.Sc.");
 		vcard.setStructuredName(n);
 
-		BirthdayType bday = new BirthdayType(PartialDate.date(null, 2, 3));
+		Birthday bday = new Birthday(PartialDate.date(null, 2, 3));
 		vcard.setBirthday(bday);
 
-		AnniversaryType anniversary = new AnniversaryType(PartialDate.dateTime(2009, 8, 8, 14, 30, 0, new UtcOffset(-5, 0)));
+		Anniversary anniversary = new Anniversary(PartialDate.dateTime(2009, 8, 8, 14, 30, 0, new UtcOffset(-5, 0)));
 		vcard.setAnniversary(anniversary);
 
-		vcard.setGender(GenderType.male());
+		vcard.setGender(Gender.male());
 
 		vcard.addLanguage("fr").setPref(1);
 		vcard.addLanguage("en").setPref(2);
 
 		vcard.setOrganization("Viagenie").setType("work");
 
-		AddressType adr = new AddressType();
+		Address adr = new Address();
 		adr.setExtendedAddress("SuiteD2-630");
 		adr.setStreetAddress("2875Laurier");
 		adr.setLocality("Quebec");
@@ -382,13 +382,13 @@ public class JCardWriterTest {
 		vcard.addAddress(adr);
 
 		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
-		TelephoneType tel = new TelephoneType(telUri);
+		Telephone tel = new Telephone(telUri);
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.VOICE);
 		tel.setPref(1);
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType(new TelUri.Builder("+1-418-262-6501").build());
+		tel = new Telephone(new TelUri.Builder("+1-418-262-6501").build());
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.CELL);
 		tel.addType(TelephoneTypeParameter.VOICE);
@@ -398,15 +398,15 @@ public class JCardWriterTest {
 
 		vcard.addEmail("simon.perreault@viagenie.ca", EmailTypeParameter.WORK);
 
-		GeoType geo = new GeoType(46.772673, -71.282945);
+		Geo geo = new Geo(46.772673, -71.282945);
 		geo.setType("work");
 		vcard.setGeo(geo);
 
-		KeyType key = new KeyType("http://www.viagenie.ca/simon.perreault/simon.asc", null);
+		Key key = new Key("http://www.viagenie.ca/simon.perreault/simon.asc", null);
 		key.setType("work");
 		vcard.addKey(key);
 
-		vcard.setTimezone(new TimezoneType(-5, 0));
+		vcard.setTimezone(new Timezone(-5, 0));
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
@@ -445,7 +445,7 @@ public class JCardWriterTest {
 		String filter(String json);
 	}
 
-	private static class TypeForTesting extends VCardType {
+	private static class TypeForTesting extends VCardProperty {
 		public JCardValue value;
 
 		public TypeForTesting(JCardValue value) {

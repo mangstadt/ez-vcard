@@ -41,7 +41,7 @@ import org.junit.Test;
 public class KindTypeTest {
 	@Test
 	public void isIndividual() {
-		KindType kind = new KindType("individual");
+		Kind kind = new Kind("individual");
 		assertTrue(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -52,7 +52,7 @@ public class KindTypeTest {
 
 	@Test
 	public void isGroup() {
-		KindType kind = new KindType("group");
+		Kind kind = new Kind("group");
 		assertFalse(kind.isIndividual());
 		assertTrue(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -63,7 +63,7 @@ public class KindTypeTest {
 
 	@Test
 	public void isOrg() {
-		KindType kind = new KindType("org");
+		Kind kind = new Kind("org");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertTrue(kind.isOrg());
@@ -74,7 +74,7 @@ public class KindTypeTest {
 
 	@Test
 	public void isLocation() {
-		KindType kind = new KindType("location");
+		Kind kind = new Kind("location");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -85,7 +85,7 @@ public class KindTypeTest {
 
 	@Test
 	public void isApplication() {
-		KindType kind = new KindType("application");
+		Kind kind = new Kind("application");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -96,7 +96,7 @@ public class KindTypeTest {
 
 	@Test
 	public void isDevice() {
-		KindType kind = new KindType("device");
+		Kind kind = new Kind("device");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -107,37 +107,37 @@ public class KindTypeTest {
 
 	@Test
 	public void individual() {
-		KindType kind = KindType.individual();
+		Kind kind = Kind.individual();
 		assertEquals("individual", kind.getValue());
 	}
 
 	@Test
 	public void group() {
-		KindType kind = KindType.group();
+		Kind kind = Kind.group();
 		assertEquals("group", kind.getValue());
 	}
 
 	@Test
 	public void org() {
-		KindType kind = KindType.org();
+		Kind kind = Kind.org();
 		assertEquals("org", kind.getValue());
 	}
 
 	@Test
 	public void location() {
-		KindType kind = KindType.location();
+		Kind kind = Kind.location();
 		assertEquals("location", kind.getValue());
 	}
 
 	@Test
 	public void application() {
-		KindType kind = KindType.application();
+		Kind kind = Kind.application();
 		assertEquals("application", kind.getValue());
 	}
 
 	@Test
 	public void device() {
-		KindType kind = KindType.device();
+		Kind kind = Kind.device();
 		assertEquals("device", kind.getValue());
 	}
 }

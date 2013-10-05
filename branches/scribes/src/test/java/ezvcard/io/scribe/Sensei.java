@@ -23,7 +23,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.XmlUtils;
 
@@ -57,7 +57,7 @@ import ezvcard.util.XmlUtils;
  * @param <T> the property class
  * @author Michael Angstadt
  */
-public class Sensei<T extends VCardType> {
+public class Sensei<T extends VCardProperty> {
 	private final VCardPropertyScribe<T> scribe;
 
 	/**
@@ -65,7 +65,7 @@ public class Sensei<T extends VCardType> {
 	 * @param scribe the property scribe
 	 * @return the new instance
 	 */
-	public static <T extends VCardType> Sensei<T> create(VCardPropertyScribe<T> scribe) {
+	public static <T extends VCardProperty> Sensei<T> create(VCardPropertyScribe<T> scribe) {
 		return new Sensei<T>(scribe);
 	}
 
@@ -659,7 +659,7 @@ public class Sensei<T extends VCardType> {
 	 * Used for validating the contents of a parsed property object.
 	 * @param <T> the property class
 	 */
-	public static interface Check<T extends VCardType> {
+	public static interface Check<T extends VCardProperty> {
 		/**
 		 * Validates the contents of the parsed property object.
 		 * @param property the parsed property object

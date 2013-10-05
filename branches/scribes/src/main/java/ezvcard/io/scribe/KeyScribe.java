@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
 import ezvcard.parameter.KeyTypeParameter;
-import ezvcard.property.KeyType;
+import ezvcard.property.Key;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -29,12 +29,12 @@ import ezvcard.property.KeyType;
  */
 
 /**
- * Marshals {@link KeyType} properties.
+ * Marshals {@link Key} properties.
  * @author Michael Angstadt
  */
-public class KeyScribe extends BinaryPropertyScribe<KeyType, KeyTypeParameter> {
+public class KeyScribe extends BinaryPropertyScribe<Key, KeyTypeParameter> {
 	public KeyScribe() {
-		super(KeyType.class, "KEY");
+		super(Key.class, "KEY");
 	}
 
 	@Override
@@ -48,12 +48,12 @@ public class KeyScribe extends BinaryPropertyScribe<KeyType, KeyTypeParameter> {
 	}
 
 	@Override
-	protected KeyType _newInstance(String uri, KeyTypeParameter contentType) {
-		return new KeyType(uri, contentType);
+	protected Key _newInstance(String uri, KeyTypeParameter contentType) {
+		return new Key(uri, contentType);
 	}
 
 	@Override
-	protected KeyType _newInstance(byte[] data, KeyTypeParameter contentType) {
-		return new KeyType(data, contentType);
+	protected Key _newInstance(byte[] data, KeyTypeParameter contentType) {
+		return new Key(data, contentType);
 	}
 }

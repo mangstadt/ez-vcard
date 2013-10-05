@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.FbUrlType;
+import ezvcard.property.FreeBusyUrl;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.FbUrlType;
  */
 
 /**
- * Marshals {@link FbUrlType} properties.
+ * Marshals {@link FreeBusyUrl} properties.
  * @author Michael Angstadt
  */
-public class FreeBusyUrlScribe extends UriPropertyScribe<FbUrlType> {
+public class FreeBusyUrlScribe extends UriPropertyScribe<FreeBusyUrl> {
 	public FreeBusyUrlScribe() {
-		super(FbUrlType.class, "FBURL");
+		super(FreeBusyUrl.class, "FBURL");
 	}
 
 	@Override
-	protected FbUrlType _parseValue(String value) {
-		return new FbUrlType(value);
+	protected FreeBusyUrl _parseValue(String value) {
+		return new FreeBusyUrl(value);
 	}
 }

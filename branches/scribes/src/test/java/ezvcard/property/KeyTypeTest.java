@@ -42,15 +42,15 @@ import ezvcard.parameter.KeyTypeParameter;
 public class KeyTypeTest {
 	@Test
 	public void validate() {
-		KeyType empty = new KeyType();
+		Key empty = new Key();
 		assertValidate(empty).run(1);
 
-		KeyType withUrl = new KeyType("http://example.com", KeyTypeParameter.PGP);
+		Key withUrl = new Key("http://example.com", KeyTypeParameter.PGP);
 		assertValidate(withUrl).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withUrl).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withUrl).versions(VCardVersion.V4_0).run(0);
 
-		KeyType withText = new KeyType((String) null, KeyTypeParameter.PGP);
+		Key withText = new Key((String) null, KeyTypeParameter.PGP);
 		withText.setText("abc123", KeyTypeParameter.PGP);
 		assertValidate(withText).run(0);
 	}
