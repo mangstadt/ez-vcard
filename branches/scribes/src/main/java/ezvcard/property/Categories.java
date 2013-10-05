@@ -84,12 +84,12 @@ public class Categories extends TextListProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class Categories extends TextListProperty implements HasAltId {
 	 * or null if it doesn't exist
 	 */
 	public String getType() {
-		return subTypes.getType();
+		return parameters.getType();
 	}
 
 	/**
@@ -113,6 +113,6 @@ public class Categories extends TextListProperty implements HasAltId {
 	 * null to remove
 	 */
 	public void setType(String type) {
-		subTypes.setType(type);
+		parameters.setType(type);
 	}
 }

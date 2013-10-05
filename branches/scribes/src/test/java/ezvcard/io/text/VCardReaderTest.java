@@ -104,7 +104,7 @@ public class VCardReaderTest {
 	 * Tests to make sure it can read sub types properly
 	 */
 	@Test
-	public void getSubTypes() throws Throwable {
+	public void getParameters() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -119,17 +119,17 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		Note note = vcard.getNotes().get(0);
-		assertEquals(1, note.getSubTypes().size());
-		assertEquals("8", note.getSubTypes().first("X-SIZE"));
-		assertEquals("8", note.getSubTypes().first("x-size"));
-		assertNull(note.getSubTypes().first("non-existant"));
+		assertEquals(1, note.getParameters().size());
+		assertEquals("8", note.getParameters().first("X-SIZE"));
+		assertEquals("8", note.getParameters().first("x-size"));
+		assertNull(note.getParameters().first("non-existant"));
 
 		Address adr = vcard.getAddresses().get(0);
-		assertEquals(2, adr.getSubTypes().size());
+		assertEquals(2, adr.getParameters().size());
 		assertSetEquals(adr.getTypes(), AddressType.HOME, AddressType.WORK);
 
 		Label label = vcard.getOrphanedLabels().get(0);
-		assertEquals(2, label.getSubTypes().size());
+		assertEquals(2, label.getParameters().size());
 		assertSetEquals(label.getTypes(), AddressType.DOM, AddressType.PARCEL);
 
 		assertWarnings(0, reader.getWarnings());
@@ -153,19 +153,19 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		Address adr = vcard.getAddresses().get(0);
-		assertEquals(3, adr.getSubTypes().size());
+		assertEquals(3, adr.getParameters().size());
 		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
 
 		adr = vcard.getAddresses().get(1);
-		assertEquals(3, adr.getSubTypes().size());
+		assertEquals(3, adr.getParameters().size());
 		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
 
 		adr = vcard.getAddresses().get(2);
-		assertEquals(3, adr.getSubTypes().size());
+		assertEquals(3, adr.getParameters().size());
 		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
 
 		adr = vcard.getAddresses().get(3);
-		assertEquals(3, adr.getSubTypes().size());
+		assertEquals(3, adr.getParameters().size());
 		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
 
 		assertWarnings(0, reader.getWarnings());
@@ -192,7 +192,7 @@ public class VCardReaderTest {
 
 		Label label = vcard.getOrphanedLabels().get(0);
 		assertEquals("123 Main St.\r\nAustin, TX 91827\r\nUSA", label.getValue());
-		assertNull(label.getSubTypes().getEncoding()); //ENCODING sub type should be removed
+		assertNull(label.getParameters().getEncoding()); //ENCODING sub type should be removed
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
@@ -416,8 +416,8 @@ public class VCardReaderTest {
 
 	/**
 	 * LABEL types should be assigned to an ADR and stored in the
-	 * "Address.getLabel()" field. LABELs that could not be assigned to an
-	 * ADR should go in "VCard.getOrphanedLabels()".
+	 * "Address.getLabel()" field. LABELs that could not be assigned to an ADR
+	 * should go in "VCard.getOrphanedLabels()".
 	 */
 	@Test
 	public void readLabel() throws Throwable {
@@ -555,7 +555,7 @@ public class VCardReaderTest {
 
 			Url t = it.next();
 			assertEquals("http://www.ibm.com", t.getValue());
-			assertEquals("0abc9b8d-0845-47d0-9a91-3db5bb74620d", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("0abc9b8d-0845-47d0-9a91-3db5bb74620d", t.getParameters().first("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -567,12 +567,12 @@ public class VCardReaderTest {
 			Telephone t = it.next();
 			assertEquals("905-666-1234", t.getText());
 			assertSetEquals(t.getTypes(), TelephoneType.CELL);
-			assertEquals("c2fa1caa-2926-4087-8971-609cfc7354ce", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("c2fa1caa-2926-4087-8971-609cfc7354ce", t.getParameters().first("X-COUCHDB-UUID"));
 
 			t = it.next();
 			assertEquals("905-555-1234", t.getText());
 			assertSetEquals(t.getTypes(), TelephoneType.WORK, TelephoneType.VOICE);
-			assertEquals("fbfb2722-4fd8-4dbf-9abd-eeb24072fd8e", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("fbfb2722-4fd8-4dbf-9abd-eeb24072fd8e", t.getParameters().first("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -645,7 +645,7 @@ public class VCardReaderTest {
 			Email t = it.next();
 			assertEquals("john.doe@ibm.com", t.getValue());
 			assertSetEquals(t.getTypes(), EmailType.WORK);
-			assertEquals("83a75a5d-2777-45aa-bab5-76a4bd972490", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("83a75a5d-2777-45aa-bab5-76a4bd972490", t.getParameters().first("X-COUCHDB-UUID"));
 
 			assertFalse(it.hasNext());
 		}
@@ -708,8 +708,8 @@ public class VCardReaderTest {
 			t = it.next();
 			assertEquals("X-AIM", t.getPropertyName());
 			assertEquals("johnny5@aol.com", t.getValue());
-			assertEquals("HOME", t.getSubTypes().getType());
-			assertEquals("cb9e11fc-bb97-4222-9cd8-99820c1de454", t.getSubTypes().first("X-COUCHDB-UUID"));
+			assertEquals("HOME", t.getParameters().getType());
+			assertEquals("cb9e11fc-bb97-4222-9cd8-99820c1de454", t.getParameters().first("X-COUCHDB-UUID"));
 			assertFalse(it.hasNext());
 
 			it = vcard.getExtendedTypes("X-EVOLUTION-FILE-AS").iterator();
@@ -1661,7 +1661,7 @@ public class VCardReaderTest {
 		//N
 		{
 			StructuredName f = vcard.getStructuredName();
-			assertEquals("en-us", f.getSubTypes().getLanguage());
+			assertEquals("en-us", f.getParameters().getLanguage());
 			assertEquals("Doe", f.getFamily());
 			assertEquals("John", f.getGiven());
 			assertEquals(Arrays.asList("Richter", "James"), f.getAdditional());
@@ -1843,7 +1843,7 @@ public class VCardReaderTest {
 			f = vcard.getExtendedTypes("X-MS-OL-DESIGN").get(0);
 			assertEquals("X-MS-OL-DESIGN", f.getPropertyName());
 			assertEquals("<card xmlns=\"http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards\" ver=\"1.0\" layout=\"left\" bgcolor=\"ffffff\"><img xmlns=\"\" align=\"tleft\" area=\"32\" use=\"photo\"/><fld xmlns=\"\" prop=\"name\" align=\"left\" dir=\"ltr\" style=\"b\" color=\"000000\" size=\"10\"/><fld xmlns=\"\" prop=\"org\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"title\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"dept\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"telwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Work</label></fld><fld xmlns=\"\" prop=\"telhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Home</label></fld><fld xmlns=\"\" prop=\"email\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"webwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/></card>", f.getValue());
-			assertEquals("utf-8", f.getSubTypes().getCharset());
+			assertEquals("utf-8", f.getParameters().getCharset());
 
 			f = vcard.getExtendedTypes("X-MS-MANAGER").get(0);
 			assertEquals("X-MS-MANAGER", f.getPropertyName());
@@ -1870,7 +1870,7 @@ public class VCardReaderTest {
 		//N
 		{
 			StructuredName f = vcard.getStructuredName();
-			assertEquals("en-us", f.getSubTypes().getLanguage());
+			assertEquals("en-us", f.getParameters().getLanguage());
 			assertEquals("Angstadt", f.getFamily());
 			assertEquals("Michael", f.getGiven());
 			assertTrue(f.getAdditional().isEmpty());
@@ -1912,7 +1912,7 @@ public class VCardReaderTest {
 
 			Note f = it.next();
 			assertEquals("This is the NOTE field	\r\nI assume it encodes this text inside a NOTE vCard type.\r\nBut I'm not sure because there's text formatting going on here.\r\nIt does not preserve the formatting", f.getValue());
-			assertEquals("us-ascii", f.getSubTypes().getCharset());
+			assertEquals("us-ascii", f.getParameters().getCharset());
 
 			assertFalse(it.hasNext());
 		}
@@ -2064,7 +2064,7 @@ public class VCardReaderTest {
 			RawProperty f = vcard.getExtendedTypes("X-MS-TEL").get(0);
 			assertEquals("X-MS-TEL", f.getPropertyName());
 			assertEquals("(111) 555-4444", f.getValue());
-			assertSetEquals(f.getSubTypes().getTypes(), "VOICE", "CALLBACK");
+			assertSetEquals(f.getParameters().getTypes(), "VOICE", "CALLBACK");
 
 			f = vcard.getExtendedTypes("X-MS-OL-DEFAULT-POSTAL-ADDRESS").get(0);
 			assertEquals("X-MS-OL-DEFAULT-POSTAL-ADDRESS", f.getPropertyName());
@@ -2081,7 +2081,7 @@ public class VCardReaderTest {
 			f = vcard.getExtendedTypes("X-MS-OL-DESIGN").get(0);
 			assertEquals("X-MS-OL-DESIGN", f.getPropertyName());
 			assertEquals("<card xmlns=\"http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards\" ver=\"1.0\" layout=\"left\" bgcolor=\"ffffff\"><img xmlns=\"\" align=\"tleft\" area=\"32\" use=\"photo\"/><fld xmlns=\"\" prop=\"name\" align=\"left\" dir=\"ltr\" style=\"b\" color=\"000000\" size=\"10\"/><fld xmlns=\"\" prop=\"org\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"title\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"dept\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"telwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Work</label></fld><fld xmlns=\"\" prop=\"telcell\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Mobile</label></fld><fld xmlns=\"\" prop=\"telhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Home</label></fld><fld xmlns=\"\" prop=\"email\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"webwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/></card>", f.getValue());
-			assertEquals("utf-8", f.getSubTypes().getCharset());
+			assertEquals("utf-8", f.getParameters().getCharset());
 
 			f = vcard.getExtendedTypes("X-MS-MANAGER").get(0);
 			assertEquals("X-MS-MANAGER", f.getPropertyName());
@@ -2303,7 +2303,7 @@ public class VCardReaderTest {
 			assertEquals("X-ABRELATEDNAMES", f.getPropertyName());
 			assertEquals("Jenny", f.getValue());
 			assertEquals("item5", f.getGroup());
-			assertSetEquals(f.getSubTypes().getTypes(), "pref");
+			assertSetEquals(f.getParameters().getTypes(), "pref");
 
 			f = vcard.getExtendedTypes("X-ABLABEL").get(2);
 			assertEquals("X-ABLabel", f.getPropertyName());

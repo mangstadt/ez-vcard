@@ -67,8 +67,8 @@ public class Uid extends UriProperty {
 	}
 
 	/**
-	 * Generates a UID type that contains a random UID URI.
-	 * @return a UID type with a random UID URI
+	 * Generates a UID property that contains a random UID URI.
+	 * @return a UID property with a random UID URI
 	 */
 	public static Uid random() {
 		String uuid = UUID.randomUUID().toString();

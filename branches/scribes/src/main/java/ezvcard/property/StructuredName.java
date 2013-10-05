@@ -161,7 +161,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 * @see VCardParameters#getSortAs
 	 */
 	public List<String> getSortAs() {
-		return subTypes.getSortAs();
+		return parameters.getSortAs();
 	}
 
 	/**
@@ -178,9 +178,9 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 */
 	public void setSortAs(String family) {
 		if (family == null) {
-			subTypes.setSortAs();
+			parameters.setSortAs();
 		} else {
-			subTypes.setSortAs(family);
+			parameters.setSortAs(family);
 		}
 	}
 
@@ -198,7 +198,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 * @param given the sortable given name
 	 */
 	public void setSortAs(String family, String given) {
-		subTypes.setSortAs(family, given);
+		parameters.setSortAs(family, given);
 	}
 
 	@Override
@@ -213,11 +213,11 @@ public class StructuredName extends VCardProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 }

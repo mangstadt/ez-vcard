@@ -30,7 +30,7 @@ package ezvcard.property;
  */
 
 /**
- * Represents a type whose value is a list of textual values.
+ * Represents a property whose value is a list of textual values.
  * @author Michael Angstadt
  */
 public class TextListProperty extends ListProperty<String> {

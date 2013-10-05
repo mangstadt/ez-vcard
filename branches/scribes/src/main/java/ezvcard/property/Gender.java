@@ -86,7 +86,7 @@ public class Gender extends VCardProperty {
 
 	/**
 	 * Creates a gender property. Use of this constructor is discouraged. Please
-	 * use one of the static factory methods to create a new GENDER type.
+	 * use one of the static factory methods to create a new GENDER property.
 	 * @param gender the gender value (e.g. "F")
 	 */
 	public Gender(String gender) {
@@ -99,7 +99,7 @@ public class Gender extends VCardProperty {
 	}
 
 	/**
-	 * Gets the additional text associated with this gender type.
+	 * Gets the additional text associated with this property.
 	 * @return the additional text or null if there is no text
 	 */
 	public String getText() {
@@ -107,7 +107,7 @@ public class Gender extends VCardProperty {
 	}
 
 	/**
-	 * Sets the additional text associated with this gender type.
+	 * Sets the additional text associated with this property.
 	 * @param text additional text or null to remove
 	 */
 	public void setText(String text) {
@@ -157,7 +157,7 @@ public class Gender extends VCardProperty {
 
 	/**
 	 * Determines if the gender is "none" or not. A group, organization, or
-	 * location may have this gender type.
+	 * location may have this gender property.
 	 * @return true if the gender is "none", false if not
 	 */
 	public boolean isNone() {
@@ -173,41 +173,41 @@ public class Gender extends VCardProperty {
 	}
 
 	/**
-	 * Creates a gender type whose value is set to "male".
-	 * @return a "male" gender type
+	 * Creates a gender property whose value is set to "male".
+	 * @return a "male" gender property
 	 */
 	public static Gender male() {
 		return new Gender(MALE);
 	}
 
 	/**
-	 * Creates a gender type whose value is set to "female".
-	 * @return a "female" gender type
+	 * Creates a gender property whose value is set to "female".
+	 * @return a "female" gender property
 	 */
 	public static Gender female() {
 		return new Gender(FEMALE);
 	}
 
 	/**
-	 * Creates a gender type whose value is set to "other".
-	 * @return an "other" gender type
+	 * Creates a gender property whose value is set to "other".
+	 * @return an "other" gender property
 	 */
 	public static Gender other() {
 		return new Gender(OTHER);
 	}
 
 	/**
-	 * Creates a gender type whose value is set to "none". Groups,
-	 * organizations, and locations should be given this gender type.
-	 * @return a "none" gender type
+	 * Creates a gender property whose value is set to "none". Groups,
+	 * organizations, and locations should be given this gender property.
+	 * @return a "none" gender property
 	 */
 	public static Gender none() {
 		return new Gender(NONE);
 	}
 
 	/**
-	 * Creates a gender type whose value is set to "unknown".
-	 * @return a "unknown" gender type
+	 * Creates a gender property whose value is set to "unknown".
+	 * @return a "unknown" gender property
 	 */
 	public static Gender unknown() {
 		return new Gender(UNKNOWN);

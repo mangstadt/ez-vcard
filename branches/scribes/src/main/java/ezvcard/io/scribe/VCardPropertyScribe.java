@@ -126,7 +126,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 */
 	public final VCardParameters prepareParameters(T property, VCardVersion version, VCard vcard) {
 		//make a copy because the property should not get modified when it is marshalled
-		VCardParameters copy = new VCardParameters(property.getSubTypes());
+		VCardParameters copy = new VCardParameters(property.getParameters());
 		_prepareParameters(property, copy, version, vcard);
 		return copy;
 	}
@@ -219,7 +219,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	public final Result<T> parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters) {
 		List<String> warnings = new ArrayList<String>(0);
 		T property = _parseText(value, dataType, version, parameters, warnings);
-		property.setSubTypes(parameters);
+		property.setParameters(parameters);
 		return new Result<T>(property, warnings);
 	}
 
@@ -236,7 +236,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	public final Result<T> parseXml(Element element, VCardParameters parameters) {
 		List<String> warnings = new ArrayList<String>(0);
 		T property = _parseXml(new XCardElement(element), parameters, warnings);
-		property.setSubTypes(parameters);
+		property.setParameters(parameters);
 		return new Result<T>(property, warnings);
 	}
 
@@ -271,7 +271,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	public final Result<T> parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters) {
 		List<String> warnings = new ArrayList<String>(0);
 		T property = _parseJson(value, dataType, parameters, warnings);
-		property.setSubTypes(parameters);
+		property.setParameters(parameters);
 		return new Result<T>(property, warnings);
 	}
 
@@ -486,7 +486,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		String value = escape(element.value());
 		VCardParameters parameters = new VCardParameters();
 		T property = _parseText(value, null, VCardVersion.V3_0, parameters, warnings);
-		property.setSubTypes(parameters);
+		property.setParameters(parameters);
 		return property;
 	}
 
@@ -1115,12 +1115,12 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 			//find the property with the lowest PREF value in the vCard
 			VCardProperty mostPreferred = null;
 			for (VCardProperty p : vcard.getTypes(property.getClass())) {
-				Integer pref = p.getSubTypes().getPref();
+				Integer pref = p.getParameters().getPref();
 				if (pref == null) {
 					continue;
 				}
 
-				if (mostPreferred == null || pref < mostPreferred.getSubTypes().getPref()) {
+				if (mostPreferred == null || pref < mostPreferred.getParameters().getPref()) {
 					mostPreferred = p;
 				}
 			}
@@ -1131,7 +1131,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 
 			break;
 		case V4_0:
-			for (String type : property.getSubTypes().getTypes()) {
+			for (String type : property.getParameters().getTypes()) {
 				if ("pref".equalsIgnoreCase(type)) {
 					copy.removeType(type);
 					copy.setPref(1);

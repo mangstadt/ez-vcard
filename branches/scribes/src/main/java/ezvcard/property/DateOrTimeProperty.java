@@ -92,7 +92,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the value of this type to a complete date.
+	 * Sets the value of this property to a complete date.
 	 * @param date the date
 	 * @param hasTime true to include the date's time component, false if it's
 	 * strictly a date
@@ -117,8 +117,8 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 
 	/**
 	 * <p>
-	 * Sets the value of this type to a reduced accuracy or truncated date. This
-	 * is only supported by vCard 4.0.
+	 * Sets the value of this property to a reduced accuracy or truncated date.
+	 * This is only supported by vCard 4.0.
 	 * </p>
 	 * 
 	 * <pre class="brush:java">
@@ -145,8 +145,8 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the value of this type to a text string. This is only supported by
-	 * vCard 4.0.
+	 * Sets the value of this property to a text string. This is only supported
+	 * by vCard 4.0.
 	 * @param text the text value
 	 */
 	public void setText(String text) {
@@ -178,7 +178,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * @see VCardParameters#getCalscale
 	 */
 	public Calscale getCalscale() {
-		return subTypes.getCalscale();
+		return parameters.getCalscale();
 	}
 
 	/**
@@ -193,17 +193,17 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * @see VCardParameters#setCalscale
 	 */
 	public void setCalscale(Calscale calscale) {
-		subTypes.setCalscale(calscale);
+		parameters.setCalscale(calscale);
 	}
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	@Override

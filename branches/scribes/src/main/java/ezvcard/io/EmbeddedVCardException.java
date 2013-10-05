@@ -34,8 +34,8 @@ import ezvcard.property.VCardProperty;
  */
 
 /**
- * Thrown during the marshalling/unmarshalling of a type to signal to the
- * marshaller that the type's value is a nested (2.1 style) or embedded (3.0
+ * Thrown during the marshalling/unmarshalling of a property to signal to the
+ * marshaller that the property's value is a nested (2.1 style) or embedded (3.0
  * style) vCard.
  * @author Michael Angstadt
  */
@@ -46,7 +46,7 @@ public class EmbeddedVCardException extends VCardException {
 
 	/**
 	 * Thrown to unmarshal a nested or embedded vCard.
-	 * @param callback injects the unmarshalled vCard into the type object
+	 * @param callback injects the unmarshalled vCard into the property object
 	 */
 	public EmbeddedVCardException(InjectionCallback callback) {
 		this.callback = callback;

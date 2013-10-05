@@ -1,6 +1,5 @@
 package ezvcard.property;
 
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -31,13 +30,13 @@ package ezvcard.property;
  */
 
 /**
- * Represents a type whose value is a URI (for example, {@link Url}).
+ * Represents a property whose value is a URI (for example, {@link Url}).
  * @author Michael Angstadt
  */
 public class UriProperty extends TextProperty {
 	/**
 	 * Creates a property whose value is a URI.
-	 * @param uri the type value
+	 * @param uri the property value
 	 */
 	public UriProperty(String uri) {
 		super(uri);

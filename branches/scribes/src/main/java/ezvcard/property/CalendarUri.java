@@ -78,7 +78,7 @@ public class CalendarUri extends UriProperty implements HasAltId {
 	 * @return the media type or null if not set
 	 */
 	public String getMediaType() {
-		return subTypes.getMediaType();
+		return parameters.getMediaType();
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class CalendarUri extends UriProperty implements HasAltId {
 	 * @param mediaType the media type or null to remove
 	 */
 	public void setMediaType(String mediaType) {
-		subTypes.setMediaType(mediaType);
+		parameters.setMediaType(mediaType);
 	}
 
 	@Override
@@ -119,12 +119,12 @@ public class CalendarUri extends UriProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class CalendarUri extends UriProperty implements HasAltId {
 	 * or null if it doesn't exist
 	 */
 	public String getType() {
-		return subTypes.getType();
+		return parameters.getType();
 	}
 
 	/**
@@ -148,6 +148,6 @@ public class CalendarUri extends UriProperty implements HasAltId {
 	 * null to remove
 	 */
 	public void setType(String type) {
-		subTypes.setType(type);
+		parameters.setType(type);
 	}
 }

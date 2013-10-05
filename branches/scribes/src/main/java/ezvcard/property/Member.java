@@ -37,8 +37,8 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * The members that make up the group. This type can only be used if
- * {@link Kind} is set to "group".
+ * The members that make up the group. This property can only be used if the
+ * {@link Kind} property is set to "group".
  * 
  * <p>
  * <b>Adding members</b>
@@ -171,12 +171,12 @@ public class Member extends UriProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class Member extends UriProperty implements HasAltId {
 	 * @return the media type or null if not set
 	 */
 	public String getMediaType() {
-		return subTypes.getMediaType();
+		return parameters.getMediaType();
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class Member extends UriProperty implements HasAltId {
 	 * @param mediaType the media type or null to remove
 	 */
 	public void setMediaType(String mediaType) {
-		subTypes.setMediaType(mediaType);
+		parameters.setMediaType(mediaType);
 	}
 
 	@Override

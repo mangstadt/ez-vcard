@@ -661,7 +661,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param classification the classification (e.g. "PUBLIC", "PRIVATE",
 	 * "CONFIDENTIAL") or null to remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Classification setClassification(String classification) {
 		Classification type = null;
@@ -713,7 +713,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @param source the source URI (e.g. "http://example.com/vcard.vcf")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Source addSource(String source) {
 		Source type = new Source(source);
@@ -801,7 +801,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param sourceDisplayText a textual representation of the vCard source or
 	 * null to remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public SourceDisplayText setSourceDisplayText(String sourceDisplayText) {
 		SourceDisplayText type = null;
@@ -983,7 +983,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param formattedName the formatted name (e.g. "John Doe") or null to
 	 * remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public FormattedName setFormattedName(String formattedName) {
 		FormattedName type = null;
@@ -1247,7 +1247,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @param nicknames the nickname(s) (e.g. "Jonny") or null to remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Nickname setNickname(String... nicknames) {
 		Nickname type = null;
@@ -1318,7 +1318,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param sortString the sort string (e.g. "Armour" if the person's last
 	 * name is "d'Armour") or null to remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public SortString setSortString(String sortString) {
 		SortString type = null;
@@ -1367,7 +1367,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param title the title (e.g. "V.P. Research and Development")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Title addTitle(String title) {
 		Title type = new Title(title);
@@ -1453,7 +1453,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param role the role (e.g. "Executive")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Role addRole(String role) {
 		Role type = new Role(role);
@@ -2201,7 +2201,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param rev the last modified time or null to remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Revision setRevision(Date rev) {
 		Revision type = null;
@@ -2252,7 +2252,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @param prodId the product ID (e.g. "ez-vcard 1.0") or null to remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public ProductId setProdId(String prodId) {
 		ProductId type = null;
@@ -2402,7 +2402,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param email the email address to add (e.g. "johndoe@aol.com")
 	 * @param types the type(s) to assign to the email
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Email addEmail(String email, EmailType... types) {
 		Email type = new Email(email);
@@ -2494,7 +2494,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * "+1 555-555-5555")
 	 * @param types the type(s) to assign to the telephone number (e.g. "cell",
 	 * "work", etc)
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Telephone addTelephoneNumber(String telephoneNumber, TelephoneType... types) {
 		Telephone type = new Telephone(telephoneNumber);
@@ -2583,7 +2583,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
 	 * @param mailer the email client (e.g. "Thunderbird") or null to remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Mailer setMailer(String mailer) {
 		Mailer type = null;
@@ -2635,7 +2635,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param url the URL to add (e.g. "http://example.com")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Url addUrl(String url) {
 		Url type = new Url(url);
@@ -2975,7 +2975,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param latitude the latitude
 	 * @param longitude the longitude
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Geo setGeo(double latitude, double longitude) {
 		Geo type = new Geo(latitude, longitude);
@@ -3147,7 +3147,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param departments the ordered list of department(s), starting with the
 	 * broadest and ending with the most specific (e.g. "Google", "GMail Team",
 	 * "Spam Detection Squad") or null to remove
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Organization setOrganization(String... departments) {
 		Organization type = null;
@@ -3330,7 +3330,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param categories the category or categories (e.g. "swimmer", "biker",
 	 * "knitter")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Categories setCategories(String... categories) {
 		Categories type = null;
@@ -3410,7 +3410,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param note the note to add
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Note addNote(String note) {
 		Note type = new Note(note);
@@ -3726,7 +3726,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param language the language to add (e.g. "en-us")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 */
 	public Language addLanguage(String language) {
 		Language type = new Language(language);
@@ -4117,7 +4117,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param expertise the professional skill to add (e.g. "programming")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public Expertise addExpertise(String expertise) {
@@ -4293,7 +4293,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param interest the interest to add (e.g. "football")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public Interest addInterest(String interest) {
@@ -4381,7 +4381,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param orgDirectory the organization directory to add (e.g.
 	 * "http://company.com/staff")
-	 * @return the type object that was created
+	 * @return the property object that was created
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public OrgDirectory addOrgDirectory(String orgDirectory) {

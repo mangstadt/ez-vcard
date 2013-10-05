@@ -1,6 +1,5 @@
 package ezvcard.property;
 
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -31,13 +30,13 @@ package ezvcard.property;
  */
 
 /**
- * Represents a type whose value is just a regular text value.
+ * Represents a property whose value is just a regular text value.
  * @author Michael Angstadt
  */
 public class TextProperty extends SimpleProperty<String> {
 	/**
 	 * Creates a property that contains text.
-	 * @param value the type value
+	 * @param value the property value
 	 */
 	public TextProperty(String value) {
 		super(value);

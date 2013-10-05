@@ -149,7 +149,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 
 		List<String> types = element.types();
 		for (String type : types) {
-			property.getSubTypes().addType(type);
+			property.getParameters().addType(type);
 		}
 
 		return property;

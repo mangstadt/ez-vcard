@@ -36,8 +36,8 @@ import ezvcard.property.Label;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Address} and
- * {@link Label} types.
+ * Represents the TYPE parameter of the {@link Address} and {@link Label}
+ * properties.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>

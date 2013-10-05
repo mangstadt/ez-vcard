@@ -36,7 +36,7 @@ import ezvcard.parameter.ImageType;
  */
 
 /**
- * Represents a vCard type that stores image data (for example,
+ * Represents a vCard property that stores image data (for example,
  * {@link Photo}).
  * @author Michael Angstadt
  */

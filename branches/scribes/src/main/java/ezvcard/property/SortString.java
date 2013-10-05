@@ -41,9 +41,9 @@ import ezvcard.VCardVersion;
  * </p>
  * 
  * <p>
- * The SORT-STRING type is not supported in 4.0. Instead, use the
- * {@link StructuredName#setSortAs} and/or
- * {@link Organization#setSortAs} methods.
+ * The SORT-STRING property is not supported in 4.0. Instead, use the
+ * {@link StructuredName#setSortAs} and/or {@link Organization#setSortAs}
+ * methods.
  * </p>
  * 
  * <p>

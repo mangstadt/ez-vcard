@@ -35,7 +35,7 @@ import ezvcard.property.Email;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Email} type.
+ * Represents the TYPE parameter of the {@link Email} properties.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>

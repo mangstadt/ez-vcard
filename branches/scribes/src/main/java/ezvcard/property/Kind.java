@@ -85,7 +85,7 @@ public class Kind extends TextProperty {
 
 	/**
 	 * Creates a kind property. Use of this constructor is discouraged. Please
-	 * use one of the static factory methods to create a new KIND type.
+	 * use one of the static factory methods to create a new KIND property.
 	 * @param kind the kind value (e.g. "group")
 	 */
 	public Kind(String kind) {
@@ -148,40 +148,40 @@ public class Kind extends TextProperty {
 	}
 
 	/**
-	 * Creates a new KIND type whose value is set to "individual".
-	 * @return the new KIND type
+	 * Creates a new KIND property whose value is set to "individual".
+	 * @return the new KIND property
 	 */
 	public static Kind individual() {
 		return new Kind(INDIVIDUAL);
 	}
 
 	/**
-	 * Creates a new KIND type whose value is set to "group".
-	 * @return the new KIND type
+	 * Creates a new KIND property whose value is set to "group".
+	 * @return the new KIND property
 	 */
 	public static Kind group() {
 		return new Kind(GROUP);
 	}
 
 	/**
-	 * Creates a new KIND type whose value is set to "org".
-	 * @return the new KIND type
+	 * Creates a new KIND property whose value is set to "org".
+	 * @return the new KIND property
 	 */
 	public static Kind org() {
 		return new Kind(ORG);
 	}
 
 	/**
-	 * Creates a new KIND type whose value is set to "location".
-	 * @return the new KIND type
+	 * Creates a new KIND property whose value is set to "location".
+	 * @return the new KIND property
 	 */
 	public static Kind location() {
 		return new Kind(LOCATION);
 	}
 
 	/**
-	 * Creates a new KIND type whose value is set to "application".
-	 * @return the new KIND type
+	 * Creates a new KIND property whose value is set to "application".
+	 * @return the new KIND property
 	 * @see <a href="http://tools.ietf.org/html/rfc6473">RFC 6473</a>
 	 */
 	public static Kind application() {
@@ -189,8 +189,8 @@ public class Kind extends TextProperty {
 	}
 
 	/**
-	 * Creates a new KIND type whose value is set to "device".
-	 * @return the new KIND type
+	 * Creates a new KIND property whose value is set to "device".
+	 * @return the new KIND property
 	 * @see <a href="http://tools.ietf.org/html/rfc6869">RFC 6869</a>
 	 */
 	public static Kind device() {

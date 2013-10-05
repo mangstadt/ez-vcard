@@ -209,7 +209,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the TYPE parameters or empty set if there are none
 	 */
 	public Set<AddressType> getTypes() {
-		Set<String> values = subTypes.getTypes();
+		Set<String> values = parameters.getTypes();
 		Set<AddressType> types = new HashSet<AddressType>(values.size());
 		for (String value : values) {
 			types.add(AddressType.get(value));
@@ -222,7 +222,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @param type the TYPE parameter to add
 	 */
 	public void addType(AddressType type) {
-		subTypes.addType(type.getValue());
+		parameters.addType(type.getValue());
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @param type the TYPE parameter to remove
 	 */
 	public void removeType(AddressType type) {
-		subTypes.removeType(type.getValue());
+		parameters.removeType(type.getValue());
 	}
 
 	@Override
@@ -248,7 +248,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the label or null if it doesn't have one
 	 */
 	public String getLabel() {
-		return subTypes.getLabel();
+		return parameters.getLabel();
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @param label the label or null to remove
 	 */
 	public void setLabel(String label) {
-		subTypes.setLabel(label);
+		parameters.setLabel(label);
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @see VCardParameters#getGeo
 	 */
 	public double[] getGeo() {
-		return subTypes.getGeo();
+		return parameters.getGeo();
 	}
 
 	/**
@@ -284,7 +284,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @see VCardParameters#setGeo
 	 */
 	public void setGeo(double latitude, double longitude) {
-		subTypes.setGeo(latitude, longitude);
+		parameters.setGeo(latitude, longitude);
 	}
 
 	@Override
@@ -314,12 +314,12 @@ public class Address extends VCardProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	/**
@@ -331,7 +331,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * exist
 	 */
 	public String getTimezone() {
-		return subTypes.getTimezone();
+		return parameters.getTimezone();
 	}
 
 	/**
@@ -342,7 +342,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @param timezone the timezone (e.g. "America/New_York") or null to remove
 	 */
 	public void setTimezone(String timezone) {
-		subTypes.setTimezone(timezone);
+		parameters.setTimezone(timezone);
 	}
 
 	@Override

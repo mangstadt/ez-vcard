@@ -169,7 +169,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * or null if it doesn't exist
 	 */
 	public String getType() {
-		return subTypes.getType();
+		return parameters.getType();
 	}
 
 	/**
@@ -182,7 +182,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * remove
 	 */
 	public void setType(String type) {
-		subTypes.setType(type);
+		parameters.setType(type);
 	}
 
 	@Override
@@ -212,12 +212,12 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	@Override

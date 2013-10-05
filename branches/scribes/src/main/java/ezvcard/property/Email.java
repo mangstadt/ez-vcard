@@ -79,7 +79,7 @@ public class Email extends TextProperty implements HasAltId {
 	 * @return the TYPE parameters or empty set if there are none
 	 */
 	public Set<EmailType> getTypes() {
-		Set<String> values = subTypes.getTypes();
+		Set<String> values = parameters.getTypes();
 		Set<EmailType> types = new HashSet<EmailType>(values.size());
 		for (String value : values) {
 			types.add(EmailType.get(value));
@@ -92,7 +92,7 @@ public class Email extends TextProperty implements HasAltId {
 	 * @param type the TYPE parameter to add
 	 */
 	public void addType(EmailType type) {
-		subTypes.addType(type.getValue());
+		parameters.addType(type.getValue());
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class Email extends TextProperty implements HasAltId {
 	 * @param type the TYPE parameter to remove
 	 */
 	public void removeType(EmailType type) {
-		subTypes.removeType(type.getValue());
+		parameters.removeType(type.getValue());
 	}
 
 	@Override
@@ -130,12 +130,12 @@ public class Email extends TextProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	@Override

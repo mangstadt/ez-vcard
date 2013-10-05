@@ -41,14 +41,14 @@ import ezvcard.parameter.VCardParameters;
 /**
  * <p>
  * Maps a globally-unique URI to a PID parameter value. The PID parameter can be
- * set on any type where multiple instances are allowed (such as
- * {@link Email} or {@link Address}, but not {@link StructuredName}
- * because only 1 instance of it is allowed). It allows an individual type
- * instance to be uniquely identifiable.
+ * set on any property where multiple instances are allowed (such as
+ * {@link Email} or {@link Address}, but not {@link StructuredName} because only
+ * 1 instance of it is allowed). It allows an individual property instance to be
+ * uniquely identifiable.
  * </p>
  * 
  * <p>
- * The CLIENTPIDMAP type and the PID parameter are used during the
+ * The CLIENTPIDMAP property and the PID parameter are used during the
  * synchronization (merging) process of two versions of the same vCard. For
  * example, if the user has a copy of her vCard on her desktop computer and her
  * smart phone, and she makes different modifications to each copy, then the two

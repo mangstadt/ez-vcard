@@ -45,16 +45,15 @@ import ezvcard.parameter.VCardParameters;
  */
 public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
-	 * The group that this type belongs to or null if it doesn't belong to a
+	 * The group that this property belongs to or null if it doesn't belong to a
 	 * group.
 	 */
 	protected String group;
 
 	/**
-	 * The list of attributes that are associated with this type (called
-	 * "sub types" or "parameters").
+	 * The property's parameters.
 	 */
-	protected VCardParameters subTypes = new VCardParameters();
+	protected VCardParameters parameters = new VCardParameters();
 
 	/**
 	 * Gets the vCard versions that support this property.
@@ -73,7 +72,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * not support all vCard versions. The default implementation of this method
 	 * returns all vCard versions.
 	 * </p>
-	 * @return the vCard versions that support this type.
+	 * @return the vCard versions that support this property.
 	 */
 	protected Set<VCardVersion> _supportedVersions() {
 		return EnumSet.copyOf(Arrays.asList(VCardVersion.values()));
@@ -102,7 +101,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		}
 
 		//check parameters
-		warnings.addAll(subTypes.validate(version));
+		warnings.addAll(parameters.validate(version));
 
 		_validate(warnings, version, vcard);
 
@@ -125,16 +124,16 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * Gets all of the property's parameters.
 	 * @return the property's parameters
 	 */
-	public VCardParameters getSubTypes() {
-		return subTypes;
+	public VCardParameters getParameters() {
+		return parameters;
 	}
 
 	/**
 	 * Sets the property's parameters.
-	 * @param subTypes the parameters
+	 * @param parameters the parameters
 	 */
-	public void setSubTypes(VCardParameters subTypes) {
-		this.subTypes = subTypes;
+	public void setParameters(VCardParameters parameters) {
+		this.parameters = parameters;
 	}
 
 	/**
@@ -142,8 +141,8 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
 	 * @return the parameter value or null if not found
 	 */
-	public String getSubType(String name) {
-		return subTypes.first(name);
+	public String getParameter(String name) {
+		return parameters.first(name);
 	}
 
 	/**
@@ -151,8 +150,8 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
 	 * @return the parameter values
 	 */
-	public List<String> getSubTypes(String name) {
-		return subTypes.get(name);
+	public List<String> getParameters(String name) {
+		return parameters.get(name);
 	}
 
 	/**
@@ -160,8 +159,8 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
 	 * @param value the parameter value
 	 */
-	public void setSubType(String name, String value) {
-		subTypes.replace(name, value);
+	public void setParameter(String name, String value) {
+		parameters.replace(name, value);
 	}
 
 	/**
@@ -169,20 +168,20 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
 	 * @param value the parameter value
 	 */
-	public void addSubType(String name, String value) {
-		subTypes.put(name, value);
+	public void addParameter(String name, String value) {
+		parameters.put(name, value);
 	}
 
 	/**
 	 * Removes a parameter from the property.
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
 	 */
-	public void removeSubType(String name) {
-		subTypes.removeAll(name);
+	public void removeParameter(String name) {
+		parameters.removeAll(name);
 	}
 
 	/**
-	 * Gets this type's group.
+	 * Gets this property's group.
 	 * @return the group or null if it does not belong to a group
 	 */
 	public String getGroup() {
@@ -190,20 +189,20 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	}
 
 	/**
-	 * Sets this type's group.
-	 * @param group the group or null to remove the type's group
+	 * Sets this property's group.
+	 * @param group the group or null to remove the property's group
 	 */
 	public void setGroup(String group) {
 		this.group = group;
 	}
 
 	/**
-	 * Sorts by PREF parameter ascending. Types that do not have a PREF
+	 * Sorts by PREF parameter ascending. Properties that do not have a PREF
 	 * parameter are pushed to the end of the list.
 	 */
 	public int compareTo(VCardProperty that) {
-		Integer pref0 = this.getSubTypes().getPref();
-		Integer pref1 = that.getSubTypes().getPref();
+		Integer pref0 = this.getParameters().getPref();
+		Integer pref1 = that.getParameters().getPref();
 		if (pref0 == null && pref1 == null) {
 			return 0;
 		}
@@ -229,7 +228,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#getPids
 	 */
 	List<Integer[]> getPids() {
-		return subTypes.getPids();
+		return parameters.getPids();
 	}
 
 	/**
@@ -245,7 +244,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#addPid(int, int)
 	 */
 	void addPid(int localId, int clientPidMapRef) {
-		subTypes.addPid(localId, clientPidMapRef);
+		parameters.addPid(localId, clientPidMapRef);
 	}
 
 	/**
@@ -258,7 +257,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#removePids
 	 */
 	void removePids() {
-		subTypes.removePids();
+		parameters.removePids();
 	}
 
 	/**
@@ -275,7 +274,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#getPref
 	 */
 	Integer getPref() {
-		return subTypes.getPref();
+		return parameters.getPref();
 	}
 
 	/**
@@ -292,7 +291,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#setPref
 	 */
 	void setPref(Integer pref) {
-		subTypes.setPref(pref);
+		parameters.setPref(pref);
 	}
 
 	/**
@@ -301,7 +300,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#getLanguage
 	 */
 	String getLanguage() {
-		return subTypes.getLanguage();
+		return parameters.getLanguage();
 	}
 
 	/**
@@ -310,7 +309,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#setLanguage
 	 */
 	void setLanguage(String language) {
-		subTypes.setLanguage(language);
+		parameters.setLanguage(language);
 	}
 
 	/**
@@ -322,7 +321,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#setIndex
 	 */
 	Integer getIndex() {
-		return subTypes.getIndex();
+		return parameters.getIndex();
 	}
 
 	/**
@@ -334,6 +333,6 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCardParameters#setIndex
 	 */
 	void setIndex(Integer index) {
-		subTypes.setIndex(index);
+		parameters.setIndex(index);
 	}
 }

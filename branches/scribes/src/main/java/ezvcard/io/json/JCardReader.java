@@ -243,7 +243,7 @@ public class JCardReader implements Closeable {
 				property.setGroup(group);
 
 				String valueStr = ((RawProperty) property).getValue();
-				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + valueStr + NEWLINE + "  Reason: " + e.getMessage(), propertyName);
+				addWarning("Property value could not be parsed.  Property will be saved as an extended property instead." + NEWLINE + "  Value: " + valueStr + NEWLINE + "  Reason: " + e.getMessage(), propertyName);
 			} catch (EmbeddedVCardException e) {
 				addWarning("Property will not be unmarshalled because jCard does not supported embedded vCards.", propertyName);
 				return;

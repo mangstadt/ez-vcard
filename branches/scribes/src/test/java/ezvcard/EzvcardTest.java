@@ -123,13 +123,13 @@ public class EzvcardTest {
 
 		//defaults to true
 		VCard vcard = Ezvcard.parse(vb.toString()).first();
-		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 
 		vcard = Ezvcard.parse(vb.toString()).caretDecoding(true).first();
-		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 
 		vcard = Ezvcard.parse(vb.toString()).caretDecoding(false).first();
-		assertEquals("George Herman ^'Babe^' Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+		assertEquals("George Herman ^'Babe^' Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 	}
 
 	@Test
@@ -405,7 +405,7 @@ public class EzvcardTest {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V4_0);
 		FormattedName fn = vcard.setFormattedName("test");
-		fn.getSubTypes().put("X-TEST", "George Herman \"Babe\" Ruth");
+		fn.getParameters().put("X-TEST", "George Herman \"Babe\" Ruth");
 
 		//default should be "false"
 		String actual = Ezvcard.write(vcard).go();

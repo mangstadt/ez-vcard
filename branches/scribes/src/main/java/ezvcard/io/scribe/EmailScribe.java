@@ -72,7 +72,7 @@ public class EmailScribe extends StringPropertyScribe<Email> {
 		//add TYPE parameters
 		List<String> types = element.types();
 		for (String type : types) {
-			property.getSubTypes().addType(type);
+			property.getParameters().addType(type);
 		}
 
 		return property;

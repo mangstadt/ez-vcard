@@ -69,7 +69,7 @@ public class Url extends UriProperty implements HasAltId {
 	 * @return the media type or null if not set
 	 */
 	public String getMediaType() {
-		return subTypes.getMediaType();
+		return parameters.getMediaType();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class Url extends UriProperty implements HasAltId {
 	 * @param mediaType the media type or null to remove
 	 */
 	public void setMediaType(String mediaType) {
-		subTypes.setMediaType(mediaType);
+		parameters.setMediaType(mediaType);
 	}
 
 	@Override
@@ -110,12 +110,12 @@ public class Url extends UriProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	/**
@@ -125,15 +125,15 @@ public class Url extends UriProperty implements HasAltId {
 	 * </p>
 	 * 
 	 * <p>
-	 * <i>* Some mail clients will add this parameter to URL types in 2.1 and
-	 * 3.0 vCards, however.</i>
+	 * <i>* Some mail clients will add this parameter to URL properties in 2.1
+	 * and 3.0 vCards, however.</i>
 	 * </p>
 	 * 
 	 * @return the TYPE value (typically, this will be either "work" or "home")
 	 * or null if it doesn't exist
 	 */
 	public String getType() {
-		return subTypes.getType();
+		return parameters.getType();
 	}
 
 	/**
@@ -143,13 +143,13 @@ public class Url extends UriProperty implements HasAltId {
 	 * </p>
 	 * 
 	 * <p>
-	 * <i>* Some mail clients will add this parameter to URL types in 2.1 and
-	 * 3.0 vCards, however.</i>
+	 * <i>* Some mail clients will add this parameter to URL properties in 2.1
+	 * and 3.0 vCards, however.</i>
 	 * </p>
 	 * @param type the TYPE value (this should be either "work" or "home") or
 	 * null to remove
 	 */
 	public void setType(String type) {
-		subTypes.setType(type);
+		parameters.setType(type);
 	}
 }

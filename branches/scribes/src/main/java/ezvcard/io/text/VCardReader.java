@@ -404,7 +404,7 @@ public class VCardReader implements Closeable {
 				addWarning("Property has requested that it be skipped: " + e.getMessage(), name);
 				return;
 			} catch (CannotParseException e) {
-				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + value + NEWLINE + "  Reason: " + e.getMessage(), name);
+				addWarning("Property value could not be parsed.  Property will be saved as an extended property instead." + NEWLINE + "  Value: " + value + NEWLINE + "  Reason: " + e.getMessage(), name);
 				property = new RawProperty(name, value);
 				property.setGroup(group);
 			} catch (EmbeddedVCardException e) {

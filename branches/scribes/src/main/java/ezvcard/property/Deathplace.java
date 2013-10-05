@@ -111,12 +111,12 @@ public class Deathplace extends VCardProperty implements HasAltId {
 
 	//@Overrde
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	@Override

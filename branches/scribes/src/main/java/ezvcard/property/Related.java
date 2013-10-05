@@ -147,7 +147,7 @@ public class Related extends VCardProperty implements HasAltId {
 	 * @return the TYPE parameters or empty set if there are none
 	 */
 	public Set<RelatedType> getTypes() {
-		Set<String> values = subTypes.getTypes();
+		Set<String> values = parameters.getTypes();
 		Set<RelatedType> types = new HashSet<RelatedType>(values.size());
 		for (String value : values) {
 			types.add(RelatedType.get(value));
@@ -160,7 +160,7 @@ public class Related extends VCardProperty implements HasAltId {
 	 * @param type the TYPE parameter to add
 	 */
 	public void addType(RelatedType type) {
-		subTypes.addType(type.getValue());
+		parameters.addType(type.getValue());
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class Related extends VCardProperty implements HasAltId {
 	 * @param type the TYPE parameter to remove
 	 */
 	public void removeType(RelatedType type) {
-		subTypes.removeType(type.getValue());
+		parameters.removeType(type.getValue());
 	}
 
 	@Override
@@ -198,12 +198,12 @@ public class Related extends VCardProperty implements HasAltId {
 
 	//@Override
 	public String getAltId() {
-		return subTypes.getAltId();
+		return parameters.getAltId();
 	}
 
 	//@Override
 	public void setAltId(String altId) {
-		subTypes.setAltId(altId);
+		parameters.setAltId(altId);
 	}
 
 	@Override

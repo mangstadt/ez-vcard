@@ -11,6 +11,9 @@ import java.util.Set;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.property.Address;
+import ezvcard.property.Organization;
+import ezvcard.property.StructuredName;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
 
@@ -44,7 +47,7 @@ import ezvcard.util.ListMultimap;
  */
 
 /**
- * Holds the parameters (aka "sub types") of a vCard Type.
+ * Holds the parameters (aka "sub types") of a vCard property.
  * @author Michael Angstadt
  */
 public class VCardParameters extends ListMultimap<String, String> {
@@ -107,8 +110,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the ENCODING sub type. This is used when the type value is encoded
-	 * in a form other than plain text.
+	 * Gets the ENCODING parameter. This is used when the property value is
+	 * encoded in a form other than plain text.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
@@ -122,8 +125,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the ENCODING sub type. This is used when the type value is encoded
-	 * in a form other than plain text.
+	 * Sets the ENCODING parameter. This is used when the property value is
+	 * encoded in a form other than plain text.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
@@ -136,8 +139,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the VALUE sub type. This defines what kind of value the type has,
-	 * such as "text" or "URI".
+	 * Gets the VALUE parameter. This defines what kind of data type the
+	 * property has, such as "text" or "URI". Only used in text-based vCards.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -151,8 +154,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the VALUE sub type. This defines what kind of value the type has,
-	 * such as "text" or "URI".
+	 * Sets the VALUE parameter. This defines what kind of data type the
+	 * property has, such as "text" or "URI". Only used in text-based vCards.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -165,8 +168,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Removes the VALUE sub type. This defines what kind of value the type has,
-	 * such as "text" or "URI".
+	 * Removes the VALUE parameter. This defines what kind of data type the
+	 * property has, such as "text" or "URI". Only used in text-based vCards.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -178,7 +181,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the CHARSET sub type.
+	 * Gets the CHARSET parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1}
@@ -191,7 +194,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the CHARSET sub type.
+	 * Sets the CHARSET parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1}
@@ -204,7 +207,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the LANGUAGE sub type.
+	 * Gets the LANGUAGE parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -218,7 +221,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the LANGUAGE sub type.
+	 * Sets the LANGUAGE parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -232,7 +235,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the LABEL sub type.
+	 * Gets the LABEL parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -245,7 +248,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the LABEL sub type.
+	 * Sets the LABEL parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -258,7 +261,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the TZ sub type.
+	 * Gets the TZ parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -271,7 +274,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the TZ sub type.
+	 * Sets the TZ parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -284,7 +287,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets all TYPE sub types.
+	 * Gets all TYPE parameters.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -297,7 +300,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Adds a TYPE sub type.
+	 * Adds a TYPE parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -310,7 +313,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the first TYPE sub type.
+	 * Gets the first TYPE parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -324,7 +327,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the TYPE sub type.
+	 * Sets the TYPE parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -337,7 +340,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Removes a TYPE sub type.
+	 * Removes a TYPE parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -350,7 +353,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Removes all TYPE sub types.
+	 * Removes all TYPE parameters.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -448,12 +451,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * </p>
 	 * 
 	 * <p>
-	 * For example, a vCard may contain multiple NOTE types that each have the
-	 * same ALTID. This means that each NOTE contains a different representation
-	 * of the same information. In the example below, the first three NOTEs have
-	 * the same ALTID. They each contain the same message, but each is written
-	 * in a different language. The other NOTEs have different (or absent)
-	 * ALTIDs, which means they are not associated with the top three.
+	 * For example, a vCard may contain multiple NOTE properties that each have
+	 * the same ALTID. This means that each NOTE contains a different
+	 * representation of the same information. In the example below, the first
+	 * three NOTEs have the same ALTID. They each contain the same message, but
+	 * each is written in a different language. The other NOTEs have different
+	 * (or absent) ALTIDs, which means they are not associated with the top
+	 * three.
 	 * </p>
 	 * 
 	 * <pre>
@@ -481,12 +485,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * </p>
 	 * 
 	 * <p>
-	 * For example, a vCard may contain multiple NOTE types that each have the
-	 * same ALTID. This means that each NOTE contains a different representation
-	 * of the same information. In the example below, the first three NOTEs have
-	 * the same ALTID. They each contain the same message, but each is written
-	 * in a different language. The other NOTEs have different (or absent)
-	 * ALTIDs, which means they are not associated with the top three.
+	 * For example, a vCard may contain multiple NOTE properties that each have
+	 * the same ALTID. This means that each NOTE contains a different
+	 * representation of the same information. In the example below, the first
+	 * three NOTEs have the same ALTID. They each contain the same message, but
+	 * each is written in a different language. The other NOTEs have different
+	 * (or absent) ALTIDs, which means they are not associated with the top
+	 * three.
 	 * </p>
 	 * 
 	 * <pre>
@@ -510,8 +515,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	/**
 	 * <p>
 	 * Gets the GEO parameter value. This is used to associate global
-	 * positioning information with a vCard type. It can be used with the ADR
-	 * type.
+	 * positioning information with a vCard property. It can be used with the
+	 * {@link Address} property.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -538,8 +543,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	/**
 	 * <p>
 	 * Sets the GEO parameter value. This is used to associate global
-	 * positioning information with a vCard type. It can be used with the ADR
-	 * type.
+	 * positioning information with a vCard property. It can be used with the
+	 * {@link Address} property.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -558,7 +563,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * values which the vCard should be sorted by (family and given names). This
 	 * is useful if the person's last name (defined in the N property) starts
 	 * with characters that should be ignored during sorting. It can be used
-	 * with the N and ORG types.
+	 * with the {@link StructuredName} and {@link Organization} properties.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -575,7 +580,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <p>
 	 * Sets the SORT-AS parameter value(s). This is useful with the N property
 	 * when the person's last name starts with characters that should be ignored
-	 * during sorting. It can be used with the N and ORG types.
+	 * during sorting. It can be used with the {@link StructuredName} and
+	 * {@link Organization} properties.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
