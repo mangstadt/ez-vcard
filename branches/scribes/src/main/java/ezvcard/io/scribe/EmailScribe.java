@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.EmailType;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt

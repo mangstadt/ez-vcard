@@ -4,11 +4,11 @@ import java.util.List;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.VCardType;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt

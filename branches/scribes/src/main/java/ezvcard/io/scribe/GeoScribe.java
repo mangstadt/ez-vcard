@@ -5,12 +5,12 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.GeoType;
 import ezvcard.util.GeoUri;
-import ezvcard.util.HCardElement;
 import ezvcard.util.VCardFloatFormatter;
 
 /*

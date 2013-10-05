@@ -1,4 +1,4 @@
-package ezvcard.util;
+package ezvcard.io.html;
 
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 
@@ -10,6 +10,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+
+import ezvcard.util.HtmlUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt

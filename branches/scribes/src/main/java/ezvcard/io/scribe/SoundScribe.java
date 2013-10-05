@@ -3,10 +3,10 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import ezvcard.io.CannotParseException;
+import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.SoundTypeParameter;
 import ezvcard.property.SoundType;
 import ezvcard.util.DataUri;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt

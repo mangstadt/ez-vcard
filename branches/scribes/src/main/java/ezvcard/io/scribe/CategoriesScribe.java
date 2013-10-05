@@ -2,8 +2,8 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import ezvcard.io.html.HCardElement;
 import ezvcard.property.CategoriesType;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
