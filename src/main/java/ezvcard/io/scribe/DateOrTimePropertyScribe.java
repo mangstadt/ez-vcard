@@ -10,7 +10,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.DateOrTimeType;
+import ezvcard.property.DateOrTimeProperty;
 import ezvcard.util.PartialDate;
 
 /*
@@ -43,7 +43,7 @@ import ezvcard.util.PartialDate;
  * @author Michael Angstadt
  * @param <T> the property class
  */
-public abstract class DateOrTimePropertyScribe<T extends DateOrTimeType> extends VCardPropertyScribe<T> {
+public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> extends VCardPropertyScribe<T> {
 	public DateOrTimePropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}

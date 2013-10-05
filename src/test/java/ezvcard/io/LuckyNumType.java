@@ -13,7 +13,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -49,7 +49,7 @@ import ezvcard.property.VCardType;
  * and a QName.
  * @author Michael Angstadt
  */
-public class LuckyNumType extends VCardType {
+public class LuckyNumType extends VCardProperty {
 	public int luckyNum;
 
 	public LuckyNumType(int luckyNum) {

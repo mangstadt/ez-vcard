@@ -7,7 +7,7 @@ import java.net.URI;
 import org.junit.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.ImppType;
+import ezvcard.property.Impp;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -43,13 +43,13 @@ import ezvcard.property.ImppType;
  */
 public class ImppScribeTest {
 	private final ImppScribe scribe = new ImppScribe();
-	private final Sensei<ImppType> sensei = new Sensei<ImppType>(scribe);
+	private final Sensei<Impp> sensei = new Sensei<Impp>(scribe);
 
 	private final String uri = "aim:johndoe";
 	private final String badUri = ":::";
 
-	private final ImppType withValue = new ImppType(uri);
-	private final ImppType empty = new ImppType((URI) null);
+	private final Impp withValue = new Impp(uri);
+	private final Impp empty = new Impp((URI) null);
 
 	@Test
 	public void marshalText() {
@@ -161,26 +161,26 @@ public class ImppScribeTest {
 
 	@Test
 	public void writeHtmlLink() {
-		assertWriteHtmlLink(new ImppType((String) null), null);
-		assertWriteHtmlLink(ImppType.aim("theuser"), "aim:goim?screenname=theuser");
-		assertWriteHtmlLink(ImppType.skype("theuser"), "skype:theuser");
-		assertWriteHtmlLink(ImppType.icq("123456789"), "icq:message?uin=123456789");
-		assertWriteHtmlLink(ImppType.msn("theuser"), "msnim:chat?contact=theuser");
-		assertWriteHtmlLink(ImppType.yahoo("theuser"), "ymsgr:sendim?theuser");
-		assertWriteHtmlLink(ImppType.irc("theuser"), "irc:theuser");
-		assertWriteHtmlLink(ImppType.sip("theuser"), "sip:theuser");
-		assertWriteHtmlLink(ImppType.xmpp("theuser"), "xmpp:theuser?message");
-		assertWriteHtmlLink(new ImppType("foo", "bar"), "foo:bar");
+		assertWriteHtmlLink(new Impp((String) null), null);
+		assertWriteHtmlLink(Impp.aim("theuser"), "aim:goim?screenname=theuser");
+		assertWriteHtmlLink(Impp.skype("theuser"), "skype:theuser");
+		assertWriteHtmlLink(Impp.icq("123456789"), "icq:message?uin=123456789");
+		assertWriteHtmlLink(Impp.msn("theuser"), "msnim:chat?contact=theuser");
+		assertWriteHtmlLink(Impp.yahoo("theuser"), "ymsgr:sendim?theuser");
+		assertWriteHtmlLink(Impp.irc("theuser"), "irc:theuser");
+		assertWriteHtmlLink(Impp.sip("theuser"), "sip:theuser");
+		assertWriteHtmlLink(Impp.xmpp("theuser"), "xmpp:theuser?message");
+		assertWriteHtmlLink(new Impp("foo", "bar"), "foo:bar");
 	}
 
-	private void assertWriteHtmlLink(ImppType property, String expectedUri) {
+	private void assertWriteHtmlLink(Impp property, String expectedUri) {
 		String actualUri = scribe.writeHtmlLink(property);
 		assertEquals(expectedUri, actualUri);
 	}
 
-	private Check<ImppType> is(final ImppType expected) {
-		return new Check<ImppType>() {
-			public void check(ImppType actual) {
+	private Check<Impp> is(final Impp expected) {
+		return new Check<Impp>() {
+			public void check(Impp actual) {
 				assertEquals(expected.getUri(), actual.getUri());
 			}
 		};

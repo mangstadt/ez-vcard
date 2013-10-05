@@ -53,7 +53,7 @@ public class BinaryTypeTest {
 		assertValidate(withData).run(0);
 	}
 
-	private class BinaryTypeImpl extends BinaryType<ImageTypeParameter> {
+	private class BinaryTypeImpl extends BinaryProperty<ImageTypeParameter> {
 		public BinaryTypeImpl() {
 			super((String) null, null);
 		}

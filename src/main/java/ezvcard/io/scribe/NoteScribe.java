@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.NoteType;
+import ezvcard.property.Note;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.NoteType;
  */
 
 /**
- * Marshals {@link NoteType} properties.
+ * Marshals {@link Note} properties.
  * @author Michael Angstadt
  */
-public class NoteScribe extends StringPropertyScribe<NoteType> {
+public class NoteScribe extends StringPropertyScribe<Note> {
 	public NoteScribe() {
-		super(NoteType.class, "NOTE");
+		super(Note.class, "NOTE");
 	}
 
 	@Override
-	protected NoteType _parseValue(String value) {
-		return new NoteType(value);
+	protected Note _parseValue(String value) {
+		return new Note(value);
 	}
 }

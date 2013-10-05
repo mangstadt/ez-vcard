@@ -10,7 +10,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.RevisionType;
+import ezvcard.property.Revision;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -38,12 +38,12 @@ import ezvcard.property.RevisionType;
  */
 
 /**
- * Marshals {@link RevisionType} properties.
+ * Marshals {@link Revision} properties.
  * @author Michael Angstadt
  */
-public class RevisionScribe extends VCardPropertyScribe<RevisionType> {
+public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	public RevisionScribe() {
-		super(RevisionType.class, "REV");
+		super(Revision.class, "REV");
 	}
 
 	@Override
@@ -52,22 +52,22 @@ public class RevisionScribe extends VCardPropertyScribe<RevisionType> {
 	}
 
 	@Override
-	protected String _writeText(RevisionType property, VCardVersion version) {
+	protected String _writeText(Revision property, VCardVersion version) {
 		return write(property, false);
 	}
 
 	@Override
-	protected RevisionType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Revision _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		return parse(value);
 	}
 
 	@Override
-	protected void _writeXml(RevisionType property, XCardElement parent) {
+	protected void _writeXml(Revision property, XCardElement parent) {
 		parent.append(VCardDataType.TIMESTAMP, write(property, false));
 	}
 
 	@Override
-	protected RevisionType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Revision _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.TIMESTAMP);
 		if (value != null) {
 			return parse(value);
@@ -77,7 +77,7 @@ public class RevisionScribe extends VCardPropertyScribe<RevisionType> {
 	}
 
 	@Override
-	protected RevisionType _parseHtml(HCardElement element, List<String> warnings) {
+	protected Revision _parseHtml(HCardElement element, List<String> warnings) {
 		String value = null;
 		if ("time".equals(element.tagName())) {
 			String datetime = element.attr("datetime");
@@ -93,17 +93,17 @@ public class RevisionScribe extends VCardPropertyScribe<RevisionType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(RevisionType property) {
+	protected JCardValue _writeJson(Revision property) {
 		return JCardValue.single(write(property, true));
 	}
 
 	@Override
-	protected RevisionType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Revision _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 		return parse(valueStr);
 	}
 
-	private String write(RevisionType property, boolean extended) {
+	private String write(Revision property, boolean extended) {
 		Date timestamp = property.getValue();
 		if (timestamp == null) {
 			return "";
@@ -112,13 +112,13 @@ public class RevisionScribe extends VCardPropertyScribe<RevisionType> {
 		return date(timestamp).time(true).utc(true).extended(extended).write();
 	}
 
-	private RevisionType parse(String value) {
+	private Revision parse(String value) {
 		if (value == null || value.length() == 0) {
-			return new RevisionType(null);
+			return new Revision(null);
 		}
 
 		try {
-			return new RevisionType(date(value));
+			return new Revision(date(value));
 		} catch (IllegalArgumentException e) {
 			throw new CannotParseException("Could not parse timestamp.");
 		}

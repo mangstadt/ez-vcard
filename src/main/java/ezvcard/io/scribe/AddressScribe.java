@@ -9,7 +9,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.AddressType;
+import ezvcard.property.Address;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -37,12 +37,12 @@ import ezvcard.property.AddressType;
  */
 
 /**
- * Marshals {@link AddressType} properties.
+ * Marshals {@link Address} properties.
  * @author Michael Angstadt
  */
-public class AddressScribe extends VCardPropertyScribe<AddressType> {
+public class AddressScribe extends VCardPropertyScribe<Address> {
 	public AddressScribe() {
-		super(AddressType.class, "ADR");
+		super(Address.class, "ADR");
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	}
 
 	@Override
-	protected void _prepareParameters(AddressType property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Address property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
@@ -62,7 +62,7 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	}
 
 	@Override
-	protected String _writeText(AddressType property, VCardVersion version) {
+	protected String _writeText(Address property, VCardVersion version) {
 		//@formatter:off
 		return structured(
 			property.getPoBox(),
@@ -77,8 +77,8 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	}
 
 	@Override
-	protected AddressType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
-		AddressType property = new AddressType();
+	protected Address _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		Address property = new Address();
 		StructuredIterator it = structured(value);
 
 		property.setPoBox(it.nextString());
@@ -93,7 +93,7 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	}
 
 	@Override
-	protected void _writeXml(AddressType property, XCardElement parent) {
+	protected void _writeXml(Address property, XCardElement parent) {
 		parent.append("pobox", property.getPoBox()); //Note: The XML element must always be added, even if the value is null
 		parent.append("ext", property.getExtendedAddress());
 		parent.append("street", property.getStreetAddress());
@@ -104,8 +104,8 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	}
 
 	@Override
-	protected AddressType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
-		AddressType property = new AddressType();
+	protected Address _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		Address property = new Address();
 		property.setPoBox(sanitizeXml(element, "pobox"));
 		property.setExtendedAddress(sanitizeXml(element, "ext"));
 		property.setStreetAddress(sanitizeXml(element, "street"));
@@ -122,8 +122,8 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	}
 
 	@Override
-	protected AddressType _parseHtml(HCardElement element, List<String> warnings) {
-		AddressType property = new AddressType();
+	protected Address _parseHtml(HCardElement element, List<String> warnings) {
+		Address property = new Address();
 		property.setPoBox(element.firstValue("post-office-box"));
 		property.setExtendedAddress(element.firstValue("extended-address"));
 		property.setStreetAddress(element.firstValue("street-address"));
@@ -141,7 +141,7 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(AddressType property) {
+	protected JCardValue _writeJson(Address property) {
 		//@formatter:off
 		return JCardValue.structured(
 			property.getPoBox(),
@@ -156,8 +156,8 @@ public class AddressScribe extends VCardPropertyScribe<AddressType> {
 	}
 
 	@Override
-	protected AddressType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
-		AddressType property = new AddressType();
+	protected Address _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+		Address property = new Address();
 		StructuredIterator it = structured(value);
 
 		property.setPoBox(it.nextString());

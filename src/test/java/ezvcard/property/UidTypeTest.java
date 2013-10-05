@@ -39,7 +39,7 @@ import org.junit.Test;
 public class UidTypeTest {
 	@Test
 	public void random() {
-		UidType uid = UidType.random();
+		Uid uid = Uid.random();
 		assertTrue(uid.getValue().matches("urn:uuid:[-\\da-f]+"));
 	}
 }

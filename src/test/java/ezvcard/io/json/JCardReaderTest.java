@@ -30,18 +30,18 @@ import ezvcard.parameter.AddressTypeParameter;
 import ezvcard.parameter.EmailTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.AddressType;
-import ezvcard.property.EmailType;
-import ezvcard.property.GeoType;
-import ezvcard.property.KeyType;
-import ezvcard.property.LanguageType;
-import ezvcard.property.OrganizationType;
-import ezvcard.property.RawType;
-import ezvcard.property.StructuredNameType;
-import ezvcard.property.TelephoneType;
-import ezvcard.property.TimezoneType;
-import ezvcard.property.UrlType;
-import ezvcard.property.VCardType;
+import ezvcard.property.Address;
+import ezvcard.property.Email;
+import ezvcard.property.Geo;
+import ezvcard.property.Key;
+import ezvcard.property.Language;
+import ezvcard.property.Organization;
+import ezvcard.property.RawProperty;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Telephone;
+import ezvcard.property.Timezone;
+import ezvcard.property.Url;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -256,7 +256,7 @@ public class JCardReaderTest {
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(1, vcard.getAllTypes().size());
-		RawType prop = vcard.getExtendedType("x-type");
+		RawProperty prop = vcard.getExtendedType("x-type");
 		assertEquals("value", prop.getValue());
 		assertWarnings(0, reader.getWarnings());
 	}
@@ -351,7 +351,7 @@ public class JCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	private static class TypeForTesting extends VCardType {
+	private static class TypeForTesting extends VCardProperty {
 		public JCardValue value;
 
 		public TypeForTesting(JCardValue value) {
@@ -396,7 +396,7 @@ public class JCardReaderTest {
 
 		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
 
-		StructuredNameType n = vcard.getStructuredName();
+		StructuredName n = vcard.getStructuredName();
 		assertEquals("Perreault", n.getFamily());
 		assertEquals("Simon", n.getGiven());
 		assertEquals(Arrays.asList(), n.getAdditional());
@@ -413,7 +413,7 @@ public class JCardReaderTest {
 
 		assertTrue(vcard.getGender().isMale());
 
-		LanguageType lang = vcard.getLanguages().get(0);
+		Language lang = vcard.getLanguages().get(0);
 		assertEquals("fr", lang.getValue());
 		assertIntEquals(1, lang.getPref());
 
@@ -421,11 +421,11 @@ public class JCardReaderTest {
 		assertEquals("en", lang.getValue());
 		assertIntEquals(2, lang.getPref());
 
-		OrganizationType org = vcard.getOrganization();
+		Organization org = vcard.getOrganization();
 		assertEquals(Arrays.asList("Viagenie"), org.getValues());
 		assertEquals("work", org.getType());
 
-		AddressType adr = vcard.getAddresses().get(0);
+		Address adr = vcard.getAddresses().get(0);
 		assertNull(adr.getPoBox());
 		assertEquals("Suite D2-630", adr.getExtendedAddress());
 		assertEquals("2875 Laurier", adr.getStreetAddress());
@@ -435,7 +435,7 @@ public class JCardReaderTest {
 		assertEquals("Canada", adr.getCountry());
 		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
 
-		TelephoneType tel = vcard.getTelephoneNumbers().get(0);
+		Telephone tel = vcard.getTelephoneNumbers().get(0);
 		TelUri expectedUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		assertEquals(expectedUri, tel.getUri());
 		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
@@ -446,24 +446,24 @@ public class JCardReaderTest {
 		assertEquals(expectedUri, tel.getUri());
 		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
 
-		EmailType email = vcard.getEmails().get(0);
+		Email email = vcard.getEmails().get(0);
 		assertEquals("simon.perreault@viagenie.ca", email.getValue());
 		assertSetEquals(email.getTypes(), EmailTypeParameter.WORK);
 
-		GeoType geo = vcard.getGeo();
+		Geo geo = vcard.getGeo();
 		assertEquals(Double.valueOf(46.772673), geo.getLatitude());
 		assertEquals(Double.valueOf(-71.282945), geo.getLongitude());
 		assertEquals("work", geo.getType());
 
-		KeyType key = vcard.getKeys().get(0);
+		Key key = vcard.getKeys().get(0);
 		assertEquals("http://www.viagenie.ca/simon.perreault/simon.asc", key.getUrl());
 		assertEquals("work", key.getType());
 
-		TimezoneType tz = vcard.getTimezone();
+		Timezone tz = vcard.getTimezone();
 		assertIntEquals(-5, tz.getHourOffset());
 		assertIntEquals(0, tz.getMinuteOffset());
 
-		UrlType url = vcard.getUrls().get(0);
+		Url url = vcard.getUrls().get(0);
 		assertEquals("http://nomis80.org", url.getValue());
 		assertEquals("home", url.getType());
 

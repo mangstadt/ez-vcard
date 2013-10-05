@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.xml.XCardNamespaceContext;
-import ezvcard.property.FormattedNameType;
+import ezvcard.property.FormattedName;
 import ezvcard.util.VCardBuilder;
 import ezvcard.util.XCardBuilder;
 import ezvcard.util.XmlUtils;
@@ -349,7 +349,7 @@ public class EzvcardTest {
 	public void write_one() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1);
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		String actual = Ezvcard.write(vcard).go();
 		assertTrue(actual.contains("VERSION:2.1"));
@@ -360,13 +360,13 @@ public class EzvcardTest {
 	public void write_multiple() throws Exception {
 		VCard vcard1 = new VCard();
 		vcard1.setVersion(VCardVersion.V2_1);
-		vcard1.setFormattedName(new FormattedNameType("John Doe"));
+		vcard1.setFormattedName(new FormattedName("John Doe"));
 		VCard vcard2 = new VCard();
 		vcard2.setVersion(VCardVersion.V3_0);
-		vcard2.setFormattedName(new FormattedNameType("Jane Doe"));
+		vcard2.setFormattedName(new FormattedName("Jane Doe"));
 		VCard vcard3 = new VCard();
 		vcard3.setVersion(VCardVersion.V4_0);
-		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
+		vcard3.setFormattedName(new FormattedName("Janet Doe"));
 
 		String actual = Ezvcard.write(vcard1, vcard2, vcard3).go();
 		assertTrue(actual.matches("(?s)BEGIN:VCARD.*?VERSION:2\\.1.*?FN:John Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:3\\.0.*?FN:Jane Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:4\\.0.*?FN:Janet Doe.*?END:VCARD.*"));
@@ -404,7 +404,7 @@ public class EzvcardTest {
 	public void write_caretEncoding() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V4_0);
-		FormattedNameType fn = vcard.setFormattedName("test");
+		FormattedName fn = vcard.setFormattedName("test");
 		fn.getSubTypes().put("X-TEST", "George Herman \"Babe\" Ruth");
 
 		//default should be "false"
@@ -446,7 +446,7 @@ public class EzvcardTest {
 	@Test
 	public void writeXml_dom() throws Exception {
 		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		Document actual = Ezvcard.writeXml(vcard).prodId(false).dom();
 
@@ -528,7 +528,7 @@ public class EzvcardTest {
 	@Test
 	public void writeXml_indent() throws Exception {
 		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		String actual = Ezvcard.writeXml(vcard).indent(2).go();
 		assertTrue(actual.contains("    <fn>" + NEWLINE + "      <text>John Doe</text>" + NEWLINE + "    </fn>"));
@@ -537,7 +537,7 @@ public class EzvcardTest {
 	@Test
 	public void writeHtml_one() throws Exception {
 		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		String actual = Ezvcard.writeHtml(vcard).go();
 		org.jsoup.nodes.Document document = Jsoup.parse(actual);
@@ -548,11 +548,11 @@ public class EzvcardTest {
 	@Test
 	public void writeHtml_multiple() throws Exception {
 		VCard vcard1 = new VCard();
-		vcard1.setFormattedName(new FormattedNameType("John Doe"));
+		vcard1.setFormattedName(new FormattedName("John Doe"));
 		VCard vcard2 = new VCard();
-		vcard2.setFormattedName(new FormattedNameType("Jane Doe"));
+		vcard2.setFormattedName(new FormattedName("Jane Doe"));
 		VCard vcard3 = new VCard();
-		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
+		vcard3.setFormattedName(new FormattedName("Janet Doe"));
 
 		String actual = Ezvcard.writeHtml(vcard1, vcard2, vcard3).go();
 		org.jsoup.nodes.Document document = Jsoup.parse(actual);
@@ -581,11 +581,11 @@ public class EzvcardTest {
 	@Test
 	public void writeJson_multiple() {
 		VCard vcard1 = new VCard();
-		vcard1.setFormattedName(new FormattedNameType("John Doe"));
+		vcard1.setFormattedName(new FormattedName("John Doe"));
 		VCard vcard2 = new VCard();
-		vcard2.setFormattedName(new FormattedNameType("Jane Doe"));
+		vcard2.setFormattedName(new FormattedName("Jane Doe"));
 		VCard vcard3 = new VCard();
-		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
+		vcard3.setFormattedName(new FormattedName("Janet Doe"));
 
 		//@formatter:off
 		String expected =

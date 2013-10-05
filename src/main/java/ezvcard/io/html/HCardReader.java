@@ -27,17 +27,17 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.property.AddressType;
-import ezvcard.property.CategoriesType;
-import ezvcard.property.EmailType;
-import ezvcard.property.ImppType;
-import ezvcard.property.LabelType;
-import ezvcard.property.NicknameType;
-import ezvcard.property.RawType;
-import ezvcard.property.SourceType;
-import ezvcard.property.TelephoneType;
-import ezvcard.property.UrlType;
-import ezvcard.property.VCardType;
+import ezvcard.property.Address;
+import ezvcard.property.Categories;
+import ezvcard.property.Email;
+import ezvcard.property.Impp;
+import ezvcard.property.Label;
+import ezvcard.property.Nickname;
+import ezvcard.property.RawProperty;
+import ezvcard.property.Source;
+import ezvcard.property.Telephone;
+import ezvcard.property.Url;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.HtmlUtils;
 
 /*
@@ -96,16 +96,16 @@ public class HCardReader {
 	private final List<String> warnings = new ArrayList<String>();
 	private Elements vcardElements;
 	private Iterator<Element> it;
-	private final List<LabelType> labels = new ArrayList<LabelType>();
+	private final List<Label> labels = new ArrayList<Label>();
 	private VCard curVCard;
 	private Elements embeddedVCards = new Elements();
-	private NicknameType nickname;
-	private CategoriesType categories;
+	private Nickname nickname;
+	private Categories categories;
 
-	private final String urlPropertyName = index.getPropertyScribe(UrlType.class).getPropertyName().toLowerCase();
-	private final String categoriesName = index.getPropertyScribe(CategoriesType.class).getPropertyName().toLowerCase();
-	private final String emailName = index.getPropertyScribe(EmailType.class).getPropertyName().toLowerCase();
-	private final String telName = index.getPropertyScribe(TelephoneType.class).getPropertyName().toLowerCase();
+	private final String urlPropertyName = index.getPropertyScribe(Url.class).getPropertyName().toLowerCase();
+	private final String categoriesName = index.getPropertyScribe(Categories.class).getPropertyName().toLowerCase();
+	private final String emailName = index.getPropertyScribe(Email.class).getPropertyName().toLowerCase();
+	private final String telName = index.getPropertyScribe(Telephone.class).getPropertyName().toLowerCase();
 
 	/**
 	 * Creates a reader that parses hCards from a URL.
@@ -266,7 +266,7 @@ public class HCardReader {
 	 * </p>
 	 * @param scribe the scribe to register
 	 */
-	public void registerScribe(VCardPropertyScribe<? extends VCardType> scribe) {
+	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
 		index.register(scribe);
 	}
 
@@ -321,7 +321,7 @@ public class HCardReader {
 		curVCard = new VCard();
 		curVCard.setVersion(VCardVersion.V3_0);
 		if (pageUrl != null) {
-			curVCard.addSource(new SourceType(pageUrl));
+			curVCard.addSource(new Source(pageUrl));
 		}
 
 		//visit all descendant nodes, depth-first
@@ -330,9 +330,9 @@ public class HCardReader {
 		}
 
 		//assign labels to their addresses
-		for (LabelType label : labels) {
+		for (Label label : labels) {
 			boolean orphaned = true;
-			for (AddressType adr : curVCard.getAddresses()) {
+			for (Address adr : curVCard.getAddresses()) {
 				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
 					adr.setLabel(label.getValue());
 					orphaned = false;
@@ -361,9 +361,9 @@ public class HCardReader {
 						className = telName;
 					} else {
 						//try parsing as IMPP
-						VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(ImppType.class);
+						VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(Impp.class);
 						try {
-							Result<? extends VCardType> result = scribe.parseHtml(element);
+							Result<? extends VCardProperty> result = scribe.parseHtml(element);
 							curVCard.addType(result.getProperty());
 							for (String warning : result.getWarnings()) {
 								addWarning(warning, scribe.getPropertyName());
@@ -383,7 +383,7 @@ public class HCardReader {
 				className = categoriesName;
 			}
 
-			VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(className);
+			VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(className);
 			if (scribe == null) {
 				//if no scribe is found, and the class name doesn't start with "x-", then it must be an arbitrary CSS class that has nothing to do with vCard
 				if (!className.startsWith("x-")) {
@@ -392,9 +392,9 @@ public class HCardReader {
 				scribe = new RawPropertyScribe(className);
 			}
 
-			VCardType property;
+			VCardProperty property;
 			try {
-				Result<? extends VCardType> result = scribe.parseHtml(element);
+				Result<? extends VCardProperty> result = scribe.parseHtml(element);
 
 				for (String warning : result.getWarnings()) {
 					addWarning(warning, className);
@@ -403,14 +403,14 @@ public class HCardReader {
 				property = result.getProperty();
 
 				//LABELs must be treated specially so they can be matched up with their ADRs
-				if (property instanceof LabelType) {
-					labels.add((LabelType) property);
+				if (property instanceof Label) {
+					labels.add((Label) property);
 					continue;
 				}
 
 				//add all NICKNAMEs to the same type object
-				if (property instanceof NicknameType) {
-					NicknameType nn = (NicknameType) property;
+				if (property instanceof Nickname) {
+					Nickname nn = (Nickname) property;
 					if (nickname == null) {
 						nickname = nn;
 						curVCard.addType(nickname);
@@ -421,8 +421,8 @@ public class HCardReader {
 				}
 
 				//add all CATEGORIES to the same type object
-				if (property instanceof CategoriesType) {
-					CategoriesType c = (CategoriesType) property;
+				if (property instanceof Categories) {
+					Categories c = (Categories) property;
 					if (categories == null) {
 						categories = c;
 						curVCard.addType(categories);
@@ -437,7 +437,7 @@ public class HCardReader {
 			} catch (CannotParseException e) {
 				String html = element.outerHtml();
 				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  HTML: " + html + NEWLINE + "  Reason: " + e.getMessage(), className);
-				property = new RawType(className, html);
+				property = new RawProperty(className, html);
 			} catch (EmbeddedVCardException e) {
 				if (HtmlUtils.isChildOf(element, embeddedVCards)) {
 					//prevents multiple-nested embedded elements from overwriting each other

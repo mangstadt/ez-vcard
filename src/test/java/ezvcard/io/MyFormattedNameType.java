@@ -9,7 +9,7 @@ import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -43,7 +43,7 @@ import ezvcard.property.VCardType;
 /**
  * @author Michael Angstadt
  */
-public class MyFormattedNameType extends VCardType {
+public class MyFormattedNameType extends VCardProperty {
 	public String value;
 
 	public MyFormattedNameType(String value) {

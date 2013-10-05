@@ -23,30 +23,30 @@ import ezvcard.parameter.EmailTypeParameter;
 import ezvcard.parameter.ImageTypeParameter;
 import ezvcard.parameter.SoundTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
-import ezvcard.property.AddressType;
-import ezvcard.property.BirthdayType;
-import ezvcard.property.CategoriesType;
-import ezvcard.property.ClassificationType;
-import ezvcard.property.EmailType;
-import ezvcard.property.FormattedNameType;
-import ezvcard.property.GeoType;
-import ezvcard.property.ImppType;
-import ezvcard.property.LogoType;
-import ezvcard.property.MailerType;
-import ezvcard.property.NicknameType;
-import ezvcard.property.NoteType;
-import ezvcard.property.OrganizationType;
-import ezvcard.property.PhotoType;
-import ezvcard.property.RevisionType;
-import ezvcard.property.RoleType;
-import ezvcard.property.SortStringType;
-import ezvcard.property.SoundType;
-import ezvcard.property.StructuredNameType;
-import ezvcard.property.TelephoneType;
-import ezvcard.property.TimezoneType;
-import ezvcard.property.TitleType;
-import ezvcard.property.UidType;
-import ezvcard.property.UrlType;
+import ezvcard.property.Address;
+import ezvcard.property.Birthday;
+import ezvcard.property.Categories;
+import ezvcard.property.Classification;
+import ezvcard.property.Email;
+import ezvcard.property.FormattedName;
+import ezvcard.property.Geo;
+import ezvcard.property.Impp;
+import ezvcard.property.Logo;
+import ezvcard.property.Mailer;
+import ezvcard.property.Nickname;
+import ezvcard.property.Note;
+import ezvcard.property.Organization;
+import ezvcard.property.Photo;
+import ezvcard.property.Revision;
+import ezvcard.property.Role;
+import ezvcard.property.SortString;
+import ezvcard.property.Sound;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Telephone;
+import ezvcard.property.Timezone;
+import ezvcard.property.Title;
+import ezvcard.property.Uid;
+import ezvcard.property.Url;
 import ezvcard.util.TelUri;
 import freemarker.template.TemplateException;
 
@@ -117,23 +117,23 @@ public class HCardPageTest {
 		assertTrue(document.select(".vcard .logo").isEmpty());
 
 		vcard = new VCard();
-		PhotoType photo = new PhotoType(mockData, ImageTypeParameter.JPEG);
+		Photo photo = new Photo(mockData, ImageTypeParameter.JPEG);
 		vcard.addPhoto(photo);
 		document = generate(vcard);
 		assertEquals(1, document.select(".vcard .photo").size());
 		assertTrue(document.select(".vcard .logo").isEmpty());
 
 		vcard = new VCard();
-		LogoType logo = new LogoType(mockData, ImageTypeParameter.PNG);
+		Logo logo = new Logo(mockData, ImageTypeParameter.PNG);
 		vcard.addLogo(logo);
 		document = generate(vcard);
 		assertTrue(document.select(".vcard .photo").isEmpty());
 		assertEquals(1, document.select(".vcard .logo").size());
 
 		vcard = new VCard();
-		photo = new PhotoType(mockData, ImageTypeParameter.JPEG);
+		photo = new Photo(mockData, ImageTypeParameter.JPEG);
 		vcard.addPhoto(photo);
-		logo = new LogoType(mockData, ImageTypeParameter.PNG);
+		logo = new Logo(mockData, ImageTypeParameter.PNG);
 		vcard.addLogo(logo);
 		document = generate(vcard);
 		assertEquals(1, document.select(".vcard .photo").size());
@@ -147,46 +147,46 @@ public class HCardPageTest {
 		//N;SORT-AS, ORG;SORT-AS, SORT_STRING
 		{
 			VCard vcard = new VCard();
-			StructuredNameType n = new StructuredNameType();
+			StructuredName n = new StructuredName();
 			n.setSortAs("Smith");
 			vcard.setStructuredName(n);
-			OrganizationType org = new OrganizationType();
+			Organization org = new Organization();
 			org.setSortAs("Jones");
 			vcard.setOrganization(org);
-			vcard.setSortString(new SortStringType("Doe"));
+			vcard.setSortString(new SortString("Doe"));
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortStringType ss = scribe.parseHtml(elements.first()).getProperty();
+			SortString ss = scribe.parseHtml(elements.first()).getProperty();
 			assertEquals("Doe", ss.getValue());
 		}
 
 		//N;SORT-AS, ORG;SORT-AS
 		{
 			VCard vcard = new VCard();
-			StructuredNameType n = new StructuredNameType();
+			StructuredName n = new StructuredName();
 			n.setSortAs("Smith");
 			vcard.setStructuredName(n);
-			OrganizationType org = new OrganizationType();
+			Organization org = new Organization();
 			org.setSortAs("Jones");
 			vcard.setOrganization(org);
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortStringType ss = scribe.parseHtml(elements.first()).getProperty();
+			SortString ss = scribe.parseHtml(elements.first()).getProperty();
 			assertEquals("Smith", ss.getValue());
 		}
 
 		//ORG;SORT-AS
 		{
 			VCard vcard = new VCard();
-			OrganizationType org = new OrganizationType();
+			Organization org = new Organization();
 			org.setSortAs("Jones");
 			vcard.setOrganization(org);
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortStringType ss = scribe.parseHtml(elements.first()).getProperty();
+			SortString ss = scribe.parseHtml(elements.first()).getProperty();
 			assertEquals("Jones", ss.getValue());
 		}
 	}
@@ -196,7 +196,7 @@ public class HCardPageTest {
 		//1 value
 		{
 			VCard vcard = new VCard();
-			OrganizationType org = new OrganizationType();
+			Organization org = new Organization();
 			org.addValue("Google");
 			vcard.setOrganization(org);
 			Document document = generate(vcard);
@@ -208,7 +208,7 @@ public class HCardPageTest {
 		//2 values
 		{
 			VCard vcard = new VCard();
-			OrganizationType org = new OrganizationType();
+			Organization org = new Organization();
 			org.addValue("Google");
 			org.addValue("GMail Team");
 			vcard.setOrganization(org);
@@ -263,8 +263,8 @@ public class HCardPageTest {
 		assertEquals(expected.getTimezone().getMinuteOffset(), actual.getTimezone().getMinuteOffset());
 
 		{
-			StructuredNameType e = expected.getStructuredName();
-			StructuredNameType a = actual.getStructuredName();
+			StructuredName e = expected.getStructuredName();
+			StructuredName a = actual.getStructuredName();
 			assertEquals(e.getFamily(), a.getFamily());
 			assertEquals(e.getGiven(), a.getGiven());
 			assertEquals(e.getAdditional(), a.getAdditional());
@@ -275,51 +275,51 @@ public class HCardPageTest {
 
 		assertEquals(expected.getTitles().size(), actual.getTitles().size());
 		for (int i = 0; i < expected.getTitles().size(); i++) {
-			TitleType e = expected.getTitles().get(i);
-			TitleType a = actual.getTitles().get(i);
+			Title e = expected.getTitles().get(i);
+			Title a = actual.getTitles().get(i);
 			assertEquals(e.getValue(), a.getValue());
 		}
 
 		assertEquals(expected.getRoles().size(), actual.getRoles().size());
 		for (int i = 0; i < expected.getRoles().size(); i++) {
-			RoleType e = expected.getRoles().get(i);
-			RoleType a = actual.getRoles().get(i);
+			Role e = expected.getRoles().get(i);
+			Role a = actual.getRoles().get(i);
 			assertEquals(e.getValue(), a.getValue());
 		}
 
 		assertEquals(expected.getNotes().size(), actual.getNotes().size());
 		for (int i = 0; i < expected.getNotes().size(); i++) {
-			NoteType e = expected.getNotes().get(i);
-			NoteType a = actual.getNotes().get(i);
+			Note e = expected.getNotes().get(i);
+			Note a = actual.getNotes().get(i);
 			assertEquals(e.getValue(), a.getValue());
 		}
 
 		assertEquals(expected.getUrls().size(), actual.getUrls().size());
 		for (int i = 0; i < expected.getUrls().size(); i++) {
-			UrlType e = expected.getUrls().get(i);
-			UrlType a = actual.getUrls().get(i);
+			Url e = expected.getUrls().get(i);
+			Url a = actual.getUrls().get(i);
 			assertEquals(e.getValue(), a.getValue());
 		}
 
 		assertEquals(expected.getImpps().size(), actual.getImpps().size());
 		for (int i = 0; i < expected.getImpps().size(); i++) {
-			ImppType e = expected.getImpps().get(i);
-			ImppType a = actual.getImpps().get(i);
+			Impp e = expected.getImpps().get(i);
+			Impp a = actual.getImpps().get(i);
 			assertEquals(e.getUri(), a.getUri());
 		}
 
 		assertEquals(expected.getEmails().size(), actual.getEmails().size());
 		for (int i = 0; i < expected.getEmails().size(); i++) {
-			EmailType e = expected.getEmails().get(i);
-			EmailType a = actual.getEmails().get(i);
+			Email e = expected.getEmails().get(i);
+			Email a = actual.getEmails().get(i);
 			assertEquals(e.getValue(), a.getValue());
 			assertEquals(e.getTypes(), a.getTypes());
 		}
 
 		assertEquals(expected.getTelephoneNumbers().size(), actual.getTelephoneNumbers().size());
 		for (int i = 0; i < expected.getTelephoneNumbers().size(); i++) {
-			TelephoneType e = expected.getTelephoneNumbers().get(i);
-			TelephoneType a = actual.getTelephoneNumbers().get(i);
+			Telephone e = expected.getTelephoneNumbers().get(i);
+			Telephone a = actual.getTelephoneNumbers().get(i);
 			if (e.getText() != null) {
 				assertEquals(e.getText(), a.getText());
 			} else {
@@ -335,8 +335,8 @@ public class HCardPageTest {
 
 		assertEquals(expected.getAddresses().size(), actual.getAddresses().size());
 		for (int i = 0; i < expected.getAddresses().size(); i++) {
-			AddressType e = expected.getAddresses().get(i);
-			AddressType a = actual.getAddresses().get(i);
+			Address e = expected.getAddresses().get(i);
+			Address a = actual.getAddresses().get(i);
 			assertEquals(e.getPoBox(), a.getPoBox());
 			assertEquals(e.getExtendedAddress(), a.getExtendedAddress());
 			assertEquals(e.getStreetAddress(), a.getStreetAddress());
@@ -350,16 +350,16 @@ public class HCardPageTest {
 
 		assertEquals(expected.getPhotos().size(), actual.getPhotos().size());
 		for (int i = 0; i < expected.getPhotos().size(); i++) {
-			PhotoType e = expected.getPhotos().get(i);
-			PhotoType a = actual.getPhotos().get(i);
+			Photo e = expected.getPhotos().get(i);
+			Photo a = actual.getPhotos().get(i);
 			assertEquals(e.getContentType(), a.getContentType());
 			assertArrayEquals(e.getData(), a.getData());
 		}
 
 		assertEquals(expected.getSounds().size(), actual.getSounds().size());
 		for (int i = 0; i < expected.getSounds().size(); i++) {
-			SoundType e = expected.getSounds().get(i);
-			SoundType a = actual.getSounds().get(i);
+			Sound e = expected.getSounds().get(i);
+			Sound a = actual.getSounds().get(i);
 			assertEquals(e.getContentType(), a.getContentType());
 			assertArrayEquals(e.getData(), a.getData());
 		}
@@ -372,7 +372,7 @@ public class HCardPageTest {
 	private VCard createFullVCard() throws IOException {
 		VCard vcard = new VCard();
 
-		StructuredNameType n = new StructuredNameType();
+		StructuredName n = new StructuredName();
 		n.setFamily("Claus");
 		n.setGiven("Santa");
 		n.addAdditional("Saint Nicholas");
@@ -383,44 +383,44 @@ public class HCardPageTest {
 		n.setSortAs("Claus");
 		vcard.setStructuredName(n);
 
-		vcard.setClassification(new ClassificationType("public"));
+		vcard.setClassification(new Classification("public"));
 
-		vcard.setMailer(new MailerType("Thunderbird"));
+		vcard.setMailer(new Mailer("Thunderbird"));
 
-		vcard.setFormattedName(new FormattedNameType("Santa Claus"));
+		vcard.setFormattedName(new FormattedName("Santa Claus"));
 
-		NicknameType nickname = new NicknameType();
+		Nickname nickname = new Nickname();
 		nickname.addValue("Kris Kringle");
 		vcard.setNickname(nickname);
 
-		vcard.addTitle(new TitleType("Manager"));
+		vcard.addTitle(new Title("Manager"));
 
-		vcard.addRole(new RoleType("Executive"));
-		vcard.addRole(new RoleType("Team Builder"));
+		vcard.addRole(new Role("Executive"));
+		vcard.addRole(new Role("Team Builder"));
 
-		EmailType email = new EmailType("johndoe@hotmail.com");
+		Email email = new Email("johndoe@hotmail.com");
 		email.addType(EmailTypeParameter.HOME);
 		email.addType(EmailTypeParameter.PREF);
 		vcard.addEmail(email);
 
-		email = new EmailType("doe.john@company.com");
+		email = new Email("doe.john@company.com");
 		email.addType(EmailTypeParameter.WORK);
 		vcard.addEmail(email);
 
-		TelephoneType tel = new TelephoneType(new TelUri.Builder("+1-555-222-3333").extension("101").build());
+		Telephone tel = new Telephone(new TelUri.Builder("+1-555-222-3333").extension("101").build());
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType(new TelUri.Builder("+1-555-333-4444").build());
+		tel = new Telephone(new TelUri.Builder("+1-555-333-4444").build());
 		tel.addType(TelephoneTypeParameter.WORK);
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType("(555) 111-2222");
+		tel = new Telephone("(555) 111-2222");
 		tel.addType(TelephoneTypeParameter.HOME);
 		tel.addType(TelephoneTypeParameter.VOICE);
 		tel.addType(TelephoneTypeParameter.PREF);
 		vcard.addTelephoneNumber(tel);
 
-		AddressType adr = new AddressType();
+		Address adr = new Address();
 		adr.setStreetAddress("123 Main St");
 		adr.setExtendedAddress("Apt 11");
 		adr.setLocality("Austin");
@@ -431,7 +431,7 @@ public class HCardPageTest {
 		adr.addType(AddressTypeParameter.HOME);
 		vcard.addAddress(adr);
 
-		adr = new AddressType();
+		adr = new Address();
 		adr.setPoBox("123");
 		adr.setStreetAddress("456 Wall St.");
 		adr.setLocality("New York");
@@ -442,7 +442,7 @@ public class HCardPageTest {
 		adr.addType(AddressTypeParameter.WORK);
 		vcard.addAddress(adr);
 
-		OrganizationType org = new OrganizationType();
+		Organization org = new Organization();
 		org.addValue("Google");
 		org.addValue("GMail");
 		vcard.setOrganization(org);
@@ -452,34 +452,34 @@ public class HCardPageTest {
 		c.set(Calendar.YEAR, 1970);
 		c.set(Calendar.MONTH, Calendar.MARCH);
 		c.set(Calendar.DATE, 8);
-		BirthdayType bday = new BirthdayType(c.getTime(), false);
+		Birthday bday = new Birthday(c.getTime(), false);
 		vcard.setBirthday(bday);
 
-		vcard.addUrl(new UrlType("http://company.com"));
+		vcard.addUrl(new Url("http://company.com"));
 
-		CategoriesType categories = new CategoriesType();
+		Categories categories = new Categories();
 		categories.addValue("business owner");
 		categories.addValue("jolly");
 		vcard.setCategories(categories);
 
-		vcard.addImpp(ImppType.aim("myhandle"));
-		vcard.addImpp(ImppType.yahoo("myhandle@yahoo.com"));
+		vcard.addImpp(Impp.aim("myhandle"));
+		vcard.addImpp(Impp.yahoo("myhandle@yahoo.com"));
 
-		vcard.addNote(new NoteType("I am proficient in Tiger-Crane Style,\nand I am more than proficient in the exquisite art of the Samurai sword."));
+		vcard.addNote(new Note("I am proficient in Tiger-Crane Style,\nand I am more than proficient in the exquisite art of the Samurai sword."));
 
-		vcard.setGeo(new GeoType(123.456, -98.123));
+		vcard.setGeo(new Geo(123.456, -98.123));
 
-		vcard.setTimezone(new TimezoneType(-6, 0, "America/Chicago"));
+		vcard.setTimezone(new Timezone(-6, 0, "America/Chicago"));
 
 		InputStream in = getClass().getResourceAsStream("hcard-portrait.jpg");
-		PhotoType photo = new PhotoType(in, ImageTypeParameter.JPEG);
+		Photo photo = new Photo(in, ImageTypeParameter.JPEG);
 		vcard.addPhoto(photo);
 
 		in = getClass().getResourceAsStream("hcard-sound.ogg");
-		SoundType sound = new SoundType(in, SoundTypeParameter.OGG);
+		Sound sound = new Sound(in, SoundTypeParameter.OGG);
 		vcard.addSound(sound);
 
-		vcard.setUid(new UidType("urn:uuid:ffce1595-cbe9-4418-9d0d-b015655d45f6"));
+		vcard.setUid(new Uid("urn:uuid:ffce1595-cbe9-4418-9d0d-b015655d45f6"));
 
 		c = Calendar.getInstance();
 		c.clear();
@@ -489,7 +489,7 @@ public class HCardPageTest {
 		c.set(Calendar.HOUR_OF_DAY, 13);
 		c.set(Calendar.MINUTE, 22);
 		c.set(Calendar.SECOND, 44);
-		vcard.setRevision(new RevisionType(c.getTime()));
+		vcard.setRevision(new Revision(c.getTime()));
 
 		return vcard;
 	}

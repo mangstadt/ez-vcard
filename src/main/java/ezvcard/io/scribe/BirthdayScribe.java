@@ -2,7 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.Date;
 
-import ezvcard.property.BirthdayType;
+import ezvcard.property.Birthday;
 import ezvcard.util.PartialDate;
 
 /*
@@ -31,26 +31,26 @@ import ezvcard.util.PartialDate;
  */
 
 /**
- * Marshals {@link BirthdayType} properties.
+ * Marshals {@link Birthday} properties.
  * @author Michael Angstadt
  */
-public class BirthdayScribe extends DateOrTimePropertyScribe<BirthdayType> {
+public class BirthdayScribe extends DateOrTimePropertyScribe<Birthday> {
 	public BirthdayScribe() {
-		super(BirthdayType.class, "BDAY");
+		super(Birthday.class, "BDAY");
 	}
 
 	@Override
-	protected BirthdayType newInstance(String text) {
-		return new BirthdayType(text);
+	protected Birthday newInstance(String text) {
+		return new Birthday(text);
 	}
 
 	@Override
-	protected BirthdayType newInstance(Date date, boolean hasTime) {
-		return new BirthdayType(date, hasTime);
+	protected Birthday newInstance(Date date, boolean hasTime) {
+		return new Birthday(date, hasTime);
 	}
 
 	@Override
-	protected BirthdayType newInstance(PartialDate partialDate) {
-		return new BirthdayType(partialDate);
+	protected Birthday newInstance(PartialDate partialDate) {
+		return new Birthday(partialDate);
 	}
 }

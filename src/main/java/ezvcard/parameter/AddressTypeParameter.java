@@ -3,8 +3,8 @@ package ezvcard.parameter;
 import java.util.Collection;
 
 import ezvcard.VCardVersion;
-import ezvcard.property.AddressType;
-import ezvcard.property.LabelType;
+import ezvcard.property.Address;
+import ezvcard.property.Label;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -36,8 +36,8 @@ import ezvcard.property.LabelType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link AddressType} and
- * {@link LabelType} types.
+ * Represents the TYPE parameter of the {@link Address} and
+ * {@link Label} types.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>

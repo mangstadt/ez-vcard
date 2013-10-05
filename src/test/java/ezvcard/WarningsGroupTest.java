@@ -8,7 +8,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.TestUtils.Tests;
 
 /*
@@ -64,7 +64,7 @@ public class WarningsGroupTest {
 		}
 	}
 
-	private class TestProperty extends VCardType {
+	private class TestProperty extends VCardProperty {
 		//empty
 	}
 }

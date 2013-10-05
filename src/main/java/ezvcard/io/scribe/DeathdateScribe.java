@@ -2,7 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.Date;
 
-import ezvcard.property.DeathdateType;
+import ezvcard.property.Deathdate;
 import ezvcard.util.PartialDate;
 
 /*
@@ -31,26 +31,26 @@ import ezvcard.util.PartialDate;
  */
 
 /**
- * Marshals {@link DeathdateType} properties.
+ * Marshals {@link Deathdate} properties.
  * @author Michael Angstadt
  */
-public class DeathdateScribe extends DateOrTimePropertyScribe<DeathdateType> {
+public class DeathdateScribe extends DateOrTimePropertyScribe<Deathdate> {
 	public DeathdateScribe() {
-		super(DeathdateType.class, "DEATHDATE");
+		super(Deathdate.class, "DEATHDATE");
 	}
 
 	@Override
-	protected DeathdateType newInstance(String text) {
-		return new DeathdateType(text);
+	protected Deathdate newInstance(String text) {
+		return new Deathdate(text);
 	}
 
 	@Override
-	protected DeathdateType newInstance(Date date, boolean hasTime) {
-		return new DeathdateType(date, hasTime);
+	protected Deathdate newInstance(Date date, boolean hasTime) {
+		return new Deathdate(date, hasTime);
 	}
 
 	@Override
-	protected DeathdateType newInstance(PartialDate partialDate) {
-		return new DeathdateType(partialDate);
+	protected Deathdate newInstance(PartialDate partialDate) {
+		return new Deathdate(partialDate);
 	}
 }

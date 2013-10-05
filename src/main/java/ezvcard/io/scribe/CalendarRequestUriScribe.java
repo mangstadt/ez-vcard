@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.CalendarRequestUriType;
+import ezvcard.property.CalendarRequestUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.CalendarRequestUriType;
  */
 
 /**
- * Marshals {@link CalendarRequestUriType} properties.
+ * Marshals {@link CalendarRequestUri} properties.
  * @author Michael Angstadt
  */
-public class CalendarRequestUriScribe extends UriPropertyScribe<CalendarRequestUriType> {
+public class CalendarRequestUriScribe extends UriPropertyScribe<CalendarRequestUri> {
 	public CalendarRequestUriScribe() {
-		super(CalendarRequestUriType.class, "CALADRURI");
+		super(CalendarRequestUri.class, "CALADRURI");
 	}
 
 	@Override
-	protected CalendarRequestUriType _parseValue(String value) {
-		return new CalendarRequestUriType(value);
+	protected CalendarRequestUri _parseValue(String value) {
+		return new CalendarRequestUri(value);
 	}
 }

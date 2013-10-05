@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.RawType;
+import ezvcard.property.RawProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -38,10 +38,10 @@ import ezvcard.property.RawType;
  */
 public class RawPropertyScribeTest {
 	private final RawPropertyScribe scribe = new RawPropertyScribe("RAW");
-	private final Sensei<RawType> sensei = new Sensei<RawType>(scribe);
+	private final Sensei<RawProperty> sensei = new Sensei<RawProperty>(scribe);
 
-	private final RawType withValue = new RawType("RAW", "value");
-	private final RawType empty = new RawType("RAW", null);
+	private final RawProperty withValue = new RawProperty("RAW", "value");
+	private final RawProperty empty = new RawProperty("RAW", null);
 
 	@Test
 	public void writeText() {
@@ -57,9 +57,9 @@ public class RawPropertyScribeTest {
 		sensei.assertParseText("").dataType(VCardDataType.TEXT).run(has("RAW", "", VCardDataType.TEXT));
 	}
 
-	private Check<RawType> has(final String name, final String value, final VCardDataType dataType) {
-		return new Check<RawType>() {
-			public void check(RawType property) {
+	private Check<RawProperty> has(final String name, final String value, final VCardDataType dataType) {
+		return new Check<RawProperty>() {
+			public void check(RawProperty property) {
 				assertEquals(name, property.getPropertyName());
 				assertEquals(value, property.getValue());
 				assertEquals(dataType, property.getDataType());

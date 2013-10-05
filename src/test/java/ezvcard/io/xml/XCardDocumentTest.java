@@ -51,26 +51,26 @@ import ezvcard.parameter.EmailTypeParameter;
 import ezvcard.parameter.ImageTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.AddressType;
-import ezvcard.property.AnniversaryType;
-import ezvcard.property.BirthdayType;
-import ezvcard.property.EmailType;
-import ezvcard.property.FormattedNameType;
-import ezvcard.property.GenderType;
-import ezvcard.property.GeoType;
-import ezvcard.property.KeyType;
-import ezvcard.property.LanguageType;
-import ezvcard.property.NoteType;
-import ezvcard.property.OrganizationType;
-import ezvcard.property.PhotoType;
-import ezvcard.property.ProdIdType;
-import ezvcard.property.RawType;
-import ezvcard.property.StructuredNameType;
-import ezvcard.property.TelephoneType;
-import ezvcard.property.TimezoneType;
-import ezvcard.property.UrlType;
-import ezvcard.property.VCardType;
-import ezvcard.property.XmlType;
+import ezvcard.property.Address;
+import ezvcard.property.Anniversary;
+import ezvcard.property.Birthday;
+import ezvcard.property.Email;
+import ezvcard.property.FormattedName;
+import ezvcard.property.Gender;
+import ezvcard.property.Geo;
+import ezvcard.property.Key;
+import ezvcard.property.Language;
+import ezvcard.property.Note;
+import ezvcard.property.Organization;
+import ezvcard.property.Photo;
+import ezvcard.property.ProductId;
+import ezvcard.property.RawProperty;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Telephone;
+import ezvcard.property.Timezone;
+import ezvcard.property.Url;
+import ezvcard.property.VCardProperty;
+import ezvcard.property.Xml;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -156,10 +156,10 @@ public class XCardDocumentTest {
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(2, vcard.getAllTypes().size());
 
-			FormattedNameType fn = vcard.getFormattedName();
+			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Gregory House M.D.", fn.getValue());
 
-			StructuredNameType n = vcard.getStructuredName();
+			StructuredName n = vcard.getStructuredName();
 			assertEquals("House", n.getFamily());
 			assertEquals("Gregory", n.getGiven());
 			assertTrue(n.getAdditional().isEmpty());
@@ -172,10 +172,10 @@ public class XCardDocumentTest {
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(2, vcard.getAllTypes().size());
 
-			FormattedNameType fn = vcard.getFormattedName();
+			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Lisa Cuddy M.D.", fn.getValue());
 
-			StructuredNameType n = vcard.getStructuredName();
+			StructuredName n = vcard.getStructuredName();
 			assertEquals("Cuddy", n.getFamily());
 			assertEquals("Lisa", n.getGiven());
 			assertTrue(n.getAdditional().isEmpty());
@@ -239,7 +239,7 @@ public class XCardDocumentTest {
 
 		assertEquals(1, vcard.getNotes().size());
 
-		NoteType note = vcard.getNotes().get(0);
+		Note note = vcard.getNotes().get(0);
 		assertEquals("  This \t  is \n   a   note ", note.getValue());
 
 		assertWarningsLists(xcard.getParseWarnings(), 0);
@@ -292,9 +292,9 @@ public class XCardDocumentTest {
 		assertEquals(4, vcard.getAllTypes().size());
 
 		{
-			Iterator<NoteType> it = vcard.getNotes().iterator();
+			Iterator<Note> it = vcard.getNotes().iterator();
 
-			NoteType note = it.next();
+			Note note = it.next();
 			assertEquals("Note 1", note.getValue());
 			assertTrue(note.getSubTypes().isEmpty());
 
@@ -313,9 +313,9 @@ public class XCardDocumentTest {
 		}
 
 		{
-			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+			Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
 
-			TelephoneType tel = it.next();
+			Telephone tel = it.next();
 			assertEquals("+1-555-555-1234", tel.getUri().getNumber());
 			assertEquals(2, tel.getSubTypes().size());
 			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
@@ -346,14 +346,14 @@ public class XCardDocumentTest {
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(3, vcard.getAllTypes().size());
 
-		FormattedNameType fn = vcard.getFormattedName();
+		FormattedName fn = vcard.getFormattedName();
 		assertEquals("John Doe", fn.getValue());
 		assertEquals("item1", fn.getGroup());
 
 		{
-			Iterator<NoteType> it = vcard.getNotes().iterator();
+			Iterator<Note> it = vcard.getNotes().iterator();
 
-			NoteType note = it.next();
+			Note note = it.next();
 			assertEquals("Hello world!", note.getValue());
 			assertEquals("item1", note.getGroup());
 
@@ -397,7 +397,7 @@ public class XCardDocumentTest {
 				
 				//xCard namespace:  yes
 				//scribe:           no
-				//expected:         RawType
+				//expected:         RawProperty
 				"<x-gender><text>m</text></x-gender>" +
 				
 				//xCard namespace:  yes
@@ -419,9 +419,9 @@ public class XCardDocumentTest {
 		assertEquals(6, vcard.getAllTypes().size());
 
 		{
-			Iterator<XmlType> it = vcard.getXmls().iterator();
+			Iterator<Xml> it = vcard.getXmls().iterator();
 
-			XmlType xmlType = it.next();
+			Xml xmlType = it.next();
 			assertXMLEqual(XmlUtils.toDocument("<foo xmlns=\"http://example.com\">bar</foo>"), xmlType.getValue());
 
 			assertFalse(it.hasNext());
@@ -436,7 +436,7 @@ public class XCardDocumentTest {
 		AgeType age = vcard.getType(AgeType.class);
 		assertEquals(24, age.age);
 
-		RawType gender = vcard.getExtendedType("X-GENDER");
+		RawProperty gender = vcard.getExtendedType("X-GENDER");
 		assertEquals("m", gender.getValue());
 
 		MyFormattedNameType fn = vcard.getType(MyFormattedNameType.class);
@@ -513,10 +513,10 @@ public class XCardDocumentTest {
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(2, vcard.getAllTypes().size());
 
-		FormattedNameType fn = vcard.getFormattedName();
+		FormattedName fn = vcard.getFormattedName();
 		assertEquals("Dr. Gregory House M.D.", fn.getValue());
 
-		StructuredNameType n = vcard.getStructuredName();
+		StructuredName n = vcard.getStructuredName();
 		assertEquals("House", n.getFamily());
 		assertEquals("Gregory", n.getGiven());
 		assertTrue(n.getAdditional().isEmpty());
@@ -560,10 +560,10 @@ public class XCardDocumentTest {
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(2, vcard.getAllTypes().size());
 
-		FormattedNameType fn = vcard.getFormattedName();
+		FormattedName fn = vcard.getFormattedName();
 		assertEquals("Dr. Gregory House M.D.", fn.getValue());
 
-		StructuredNameType n = vcard.getStructuredName();
+		StructuredName n = vcard.getStructuredName();
 		assertEquals("House", n.getFamily());
 		assertEquals("Gregory", n.getGiven());
 		assertTrue(n.getAdditional().isEmpty());
@@ -599,7 +599,7 @@ public class XCardDocumentTest {
 	@Test
 	public void add_basicType() throws Throwable {
 		VCard vcard = new VCard();
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
 		XCardDocument xcm = new XCardDocument();
@@ -624,7 +624,7 @@ public class XCardDocumentTest {
 	@Test
 	public void add_parameters() throws Throwable {
 		VCard vcard = new VCard();
-		NoteType note = new NoteType("This is a\nnote.");
+		Note note = new Note("This is a\nnote.");
 		note.setLanguage("en");
 		note.addPid(1, 1);
 		note.addPid(2, 2);
@@ -667,19 +667,19 @@ public class XCardDocumentTest {
 	public void add_group() throws Throwable {
 		VCard vcard = new VCard();
 
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
-		NoteType note = new NoteType("This is a\nnote.");
+		Note note = new Note("This is a\nnote.");
 		note.setGroup("group1");
 		note.setLanguage("en");
 		vcard.addNote(note);
 
-		PhotoType photo = new PhotoType("http://example.com/image.jpg", ImageTypeParameter.JPEG);
+		Photo photo = new Photo("http://example.com/image.jpg", ImageTypeParameter.JPEG);
 		photo.setGroup("group1");
 		vcard.addPhoto(photo);
 
-		note = new NoteType("Bonjour.");
+		note = new Note("Bonjour.");
 		note.setGroup("group2");
 		vcard.addNote(note);
 
@@ -725,11 +725,11 @@ public class XCardDocumentTest {
 	@Test
 	public void add_multiple() throws Throwable {
 		VCard vcard1 = new VCard();
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard1.setFormattedName(fn);
 
 		VCard vcard2 = new VCard();
-		NoteType note = new NoteType("Hello world!");
+		Note note = new Note("Hello world!");
 		vcard2.addNote(note);
 
 		XCardDocument xcm = new XCardDocument();
@@ -758,7 +758,7 @@ public class XCardDocumentTest {
 	@Test
 	public void setAddProdId() throws Throwable {
 		VCard vcard = new VCard();
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
 		XPath xpath = XPathFactory.newInstance().newXPath();
@@ -786,10 +786,10 @@ public class XCardDocumentTest {
 	public void setAddProdId_overwrites_existing_prodId() throws Throwable {
 		VCard vcard = new VCard();
 
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
-		ProdIdType prodId = new ProdIdType("Acme Co.");
+		ProductId prodId = new ProductId("Acme Co.");
 		vcard.setProdId(prodId);
 
 		XPath xpath = XPathFactory.newInstance().newXPath();
@@ -851,7 +851,7 @@ public class XCardDocumentTest {
 		VCard vcard = new VCard();
 
 		//add FN property so a warning isn't generated (4.0 requires FN to be present)
-		FormattedNameType fn = new FormattedNameType("John Doe");
+		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
 		LuckyNumType num = new LuckyNumType(24);
@@ -939,7 +939,7 @@ public class XCardDocumentTest {
 	@Test
 	public void write_prettyPrint() throws Throwable {
 		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
@@ -998,27 +998,27 @@ public class XCardDocumentTest {
 
 		vcard.setFormattedName("Simon Perreault");
 
-		StructuredNameType n = new StructuredNameType();
+		StructuredName n = new StructuredName();
 		n.setFamily("Perreault");
 		n.setGiven("Simon");
 		n.addSuffix("ing. jr");
 		n.addSuffix("M.Sc.");
 		vcard.setStructuredName(n);
 
-		BirthdayType bday = new BirthdayType(PartialDate.date(null, 2, 3));
+		Birthday bday = new Birthday(PartialDate.date(null, 2, 3));
 		vcard.setBirthday(bday);
 
-		AnniversaryType anniversary = new AnniversaryType(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
+		Anniversary anniversary = new Anniversary(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
 		vcard.setAnniversary(anniversary);
 
-		vcard.setGender(GenderType.male());
+		vcard.setGender(Gender.male());
 
 		vcard.addLanguage("fr").setPref(1);
 		vcard.addLanguage("en").setPref(2);
 
 		vcard.setOrganization("Viagenie").setType("work");
 
-		AddressType adr = new AddressType();
+		Address adr = new Address();
 		adr.setStreetAddress("2875 boul. Laurier, suite D2-630");
 		adr.setLocality("Quebec");
 		adr.setRegion("QC");
@@ -1029,12 +1029,12 @@ public class XCardDocumentTest {
 		vcard.addAddress(adr);
 
 		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
-		TelephoneType tel = new TelephoneType(telUri);
+		Telephone tel = new Telephone(telUri);
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.VOICE);
 		vcard.addTelephoneNumber(tel);
 
-		tel = new TelephoneType(new TelUri.Builder("+1-418-262-6501").build());
+		tel = new Telephone(new TelUri.Builder("+1-418-262-6501").build());
 		tel.addType(TelephoneTypeParameter.WORK);
 		tel.addType(TelephoneTypeParameter.TEXT);
 		tel.addType(TelephoneTypeParameter.VOICE);
@@ -1044,15 +1044,15 @@ public class XCardDocumentTest {
 
 		vcard.addEmail("simon.perreault@viagenie.ca", EmailTypeParameter.WORK);
 
-		GeoType geo = new GeoType(46.766336, -71.28955);
+		Geo geo = new Geo(46.766336, -71.28955);
 		geo.setType("work");
 		vcard.setGeo(geo);
 
-		KeyType key = new KeyType("http://www.viagenie.ca/simon.perreault/simon.asc", null);
+		Key key = new Key("http://www.viagenie.ca/simon.perreault/simon.asc", null);
 		key.setType("work");
 		vcard.addKey(key);
 
-		vcard.setTimezone(new TimezoneType("America/Montreal"));
+		vcard.setTimezone(new Timezone("America/Montreal"));
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
@@ -1074,7 +1074,7 @@ public class XCardDocumentTest {
 
 		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
 
-		StructuredNameType n = vcard.getStructuredName();
+		StructuredName n = vcard.getStructuredName();
 		assertEquals("Perreault", n.getFamily());
 		assertEquals("Simon", n.getGiven());
 		assertEquals(Arrays.asList(), n.getAdditional());
@@ -1091,7 +1091,7 @@ public class XCardDocumentTest {
 
 		assertTrue(vcard.getGender().isMale());
 
-		LanguageType lang = vcard.getLanguages().get(0);
+		Language lang = vcard.getLanguages().get(0);
 		assertEquals("fr", lang.getValue());
 		assertIntEquals(1, lang.getPref());
 
@@ -1099,11 +1099,11 @@ public class XCardDocumentTest {
 		assertEquals("en", lang.getValue());
 		assertIntEquals(2, lang.getPref());
 
-		OrganizationType org = vcard.getOrganization();
+		Organization org = vcard.getOrganization();
 		assertEquals(Arrays.asList("Viagenie"), org.getValues());
 		assertEquals("work", org.getType());
 
-		AddressType adr = vcard.getAddresses().get(0);
+		Address adr = vcard.getAddresses().get(0);
 		assertNull(adr.getPoBox());
 		assertNull(adr.getExtendedAddress());
 		assertEquals("2875 boul. Laurier, suite D2-630", adr.getStreetAddress());
@@ -1114,7 +1114,7 @@ public class XCardDocumentTest {
 		assertEquals("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2", adr.getLabel());
 		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
 
-		TelephoneType tel = vcard.getTelephoneNumbers().get(0);
+		Telephone tel = vcard.getTelephoneNumbers().get(0);
 		TelUri expectedUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		assertEquals(expectedUri, tel.getUri());
 		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
@@ -1124,22 +1124,22 @@ public class XCardDocumentTest {
 		assertEquals(expectedUri, tel.getUri());
 		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
 
-		EmailType email = vcard.getEmails().get(0);
+		Email email = vcard.getEmails().get(0);
 		assertEquals("simon.perreault@viagenie.ca", email.getValue());
 		assertSetEquals(email.getTypes(), EmailTypeParameter.WORK);
 
-		GeoType geo = vcard.getGeo();
+		Geo geo = vcard.getGeo();
 		assertEquals(Double.valueOf(46.766336), geo.getLatitude());
 		assertEquals(Double.valueOf(-71.28955), geo.getLongitude());
 		assertEquals("work", geo.getType());
 
-		KeyType key = vcard.getKeys().get(0);
+		Key key = vcard.getKeys().get(0);
 		assertEquals("http://www.viagenie.ca/simon.perreault/simon.asc", key.getUrl());
 		assertEquals("work", key.getType());
 
 		assertEquals("America/Montreal", vcard.getTimezone().getText());
 
-		UrlType url = vcard.getUrls().get(0);
+		Url url = vcard.getUrls().get(0);
 		assertEquals("http://nomis80.org", url.getValue());
 		assertEquals("home", url.getType());
 
@@ -1158,7 +1158,7 @@ public class XCardDocumentTest {
 		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
 	}
 
-	private static class EmbeddedType extends VCardType {
+	private static class EmbeddedType extends VCardProperty {
 		//empty
 	}
 

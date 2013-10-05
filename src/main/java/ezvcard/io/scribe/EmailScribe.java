@@ -8,7 +8,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.EmailType;
+import ezvcard.property.Email;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -36,26 +36,26 @@ import ezvcard.property.EmailType;
  */
 
 /**
- * Marshals {@link EmailType} properties.
+ * Marshals {@link Email} properties.
  * @author Michael Angstadt
  */
-public class EmailScribe extends StringPropertyScribe<EmailType> {
+public class EmailScribe extends StringPropertyScribe<Email> {
 	public EmailScribe() {
-		super(EmailType.class, "EMAIL");
+		super(Email.class, "EMAIL");
 	}
 
 	@Override
-	protected void _prepareParameters(EmailType property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Email property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 	}
 
 	@Override
-	protected EmailType _parseValue(String value) {
-		return new EmailType(value);
+	protected Email _parseValue(String value) {
+		return new Email(value);
 	}
 
 	@Override
-	protected EmailType _parseHtml(HCardElement element, List<String> warnings) {
+	protected Email _parseHtml(HCardElement element, List<String> warnings) {
 		//check to see if the email address is within in "mailto:" link
 		String email;
 		String href = element.attr("href");
@@ -67,7 +67,7 @@ public class EmailScribe extends StringPropertyScribe<EmailType> {
 			email = element.value();
 		}
 
-		EmailType property = new EmailType(email);
+		Email property = new Email(email);
 
 		//add TYPE parameters
 		List<String> types = element.types();

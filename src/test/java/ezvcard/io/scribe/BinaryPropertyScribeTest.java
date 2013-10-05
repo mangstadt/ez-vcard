@@ -11,7 +11,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.ImageTypeParameter;
-import ezvcard.property.BinaryType;
+import ezvcard.property.BinaryProperty;
 import ezvcard.util.DataUri;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
@@ -304,7 +304,7 @@ public class BinaryPropertyScribeTest {
 		}
 	}
 
-	private static class BinaryTypeImpl extends BinaryType<ImageTypeParameter> {
+	private static class BinaryTypeImpl extends BinaryProperty<ImageTypeParameter> {
 		public BinaryTypeImpl() {
 			super((String) null, null);
 		}

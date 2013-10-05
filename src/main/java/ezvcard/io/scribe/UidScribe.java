@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.UidType;
+import ezvcard.property.Uid;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.UidType;
  */
 
 /**
- * Marshals {@link UidType} properties.
+ * Marshals {@link Uid} properties.
  * @author Michael Angstadt
  */
-public class UidScribe extends UriPropertyScribe<UidType> {
+public class UidScribe extends UriPropertyScribe<Uid> {
 	public UidScribe() {
-		super(UidType.class, "UID");
+		super(Uid.class, "UID");
 	}
 
 	@Override
-	protected UidType _parseValue(String value) {
-		return new UidType(value);
+	protected Uid _parseValue(String value) {
+		return new Uid(value);
 	}
 }

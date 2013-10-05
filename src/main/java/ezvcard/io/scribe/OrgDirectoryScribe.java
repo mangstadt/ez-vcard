@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.OrgDirectoryType;
+import ezvcard.property.OrgDirectory;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.OrgDirectoryType;
  */
 
 /**
- * Marshals {@link OrgDirectoryType} properties.
+ * Marshals {@link OrgDirectory} properties.
  * @author Michael Angstadt
  */
-public class OrgDirectoryScribe extends StringPropertyScribe<OrgDirectoryType> {
+public class OrgDirectoryScribe extends StringPropertyScribe<OrgDirectory> {
 	public OrgDirectoryScribe() {
-		super(OrgDirectoryType.class, "ORG-DIRECTORY");
+		super(OrgDirectory.class, "ORG-DIRECTORY");
 	}
 
 	@Override
-	protected OrgDirectoryType _parseValue(String value) {
-		return new OrgDirectoryType(value);
+	protected OrgDirectory _parseValue(String value) {
+		return new OrgDirectory(value);
 	}
 }

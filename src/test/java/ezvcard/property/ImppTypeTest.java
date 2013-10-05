@@ -45,12 +45,12 @@ import ezvcard.VCardVersion;
 public class ImppTypeTest {
 	@Test
 	public void validate() {
-		ImppType empty = new ImppType((String) null);
+		Impp empty = new Impp((String) null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(1);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		ImppType withValue = new ImppType("aim:john.doe@aol.com");
+		Impp withValue = new Impp("aim:john.doe@aol.com");
 		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withValue).versions(VCardVersion.V3_0).run(0);
 		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
@@ -58,12 +58,12 @@ public class ImppTypeTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void bad_uri() {
-		new ImppType(":::");
+		new Impp(":::");
 	}
 
 	@Test
 	public void aim() {
-		ImppType impp = ImppType.aim("handle");
+		Impp impp = Impp.aim("handle");
 		assertEquals("aim:handle", impp.getUri().toString());
 		assertTrue(impp.isAim());
 		assertFalse(impp.isIrc());
@@ -77,7 +77,7 @@ public class ImppTypeTest {
 
 	@Test
 	public void irc() {
-		ImppType impp = ImppType.irc("handle");
+		Impp impp = Impp.irc("handle");
 		assertEquals("irc:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
 		assertTrue(impp.isIrc());
@@ -91,7 +91,7 @@ public class ImppTypeTest {
 
 	@Test
 	public void msn() {
-		ImppType impp = ImppType.msn("handle");
+		Impp impp = Impp.msn("handle");
 		assertEquals("msnim:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
 		assertFalse(impp.isIrc());
@@ -105,7 +105,7 @@ public class ImppTypeTest {
 
 	@Test
 	public void sip() {
-		ImppType impp = ImppType.sip("handle");
+		Impp impp = Impp.sip("handle");
 		assertEquals("sip:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
 		assertFalse(impp.isIrc());
@@ -119,7 +119,7 @@ public class ImppTypeTest {
 
 	@Test
 	public void xmpp() {
-		ImppType impp = ImppType.xmpp("handle");
+		Impp impp = Impp.xmpp("handle");
 		assertEquals("xmpp:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
 		assertFalse(impp.isIrc());
@@ -133,7 +133,7 @@ public class ImppTypeTest {
 
 	@Test
 	public void yahoo() {
-		ImppType impp = ImppType.yahoo("handle");
+		Impp impp = Impp.yahoo("handle");
 		assertEquals("ymsgr:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
 		assertFalse(impp.isIrc());
@@ -147,7 +147,7 @@ public class ImppTypeTest {
 
 	@Test
 	public void skype() {
-		ImppType impp = ImppType.skype("handle");
+		Impp impp = Impp.skype("handle");
 		assertEquals("skype:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
 		assertFalse(impp.isIrc());
@@ -161,7 +161,7 @@ public class ImppTypeTest {
 
 	@Test
 	public void icq() {
-		ImppType impp = ImppType.icq("123456789");
+		Impp impp = Impp.icq("123456789");
 		assertEquals("icq:123456789", impp.getUri().toString());
 		assertFalse(impp.isAim());
 		assertFalse(impp.isIrc());
@@ -175,25 +175,25 @@ public class ImppTypeTest {
 
 	@Test
 	public void getProtocol() {
-		ImppType impp = ImppType.aim("theuser");
+		Impp impp = Impp.aim("theuser");
 		assertEquals("aim", impp.getProtocol());
 	}
 
 	@Test
 	public void getProtocol_no_uri() {
-		ImppType impp = new ImppType((String) null);
+		Impp impp = new Impp((String) null);
 		assertNull(impp.getProtocol());
 	}
 
 	@Test
 	public void getHandle() {
-		ImppType impp = ImppType.aim("theuser");
+		Impp impp = Impp.aim("theuser");
 		assertEquals("theuser", impp.getHandle());
 	}
 
 	@Test
 	public void getHandle_no_uri() {
-		ImppType impp = new ImppType((String) null);
+		Impp impp = new Impp((String) null);
 		assertNull(impp.getHandle());
 	}
 }

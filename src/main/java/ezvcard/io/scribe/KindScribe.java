@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.KindType;
+import ezvcard.property.Kind;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.KindType;
  */
 
 /**
- * Marshals {@link KindType} properties.
+ * Marshals {@link Kind} properties.
  * @author Michael Angstadt
  */
-public class KindScribe extends StringPropertyScribe<KindType> {
+public class KindScribe extends StringPropertyScribe<Kind> {
 	public KindScribe() {
-		super(KindType.class, "KIND");
+		super(Kind.class, "KIND");
 	}
 
 	@Override
-	protected KindType _parseValue(String value) {
-		return new KindType(value);
+	protected Kind _parseValue(String value) {
+		return new Kind(value);
 	}
 }

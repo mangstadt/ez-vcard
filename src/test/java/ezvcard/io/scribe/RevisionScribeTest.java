@@ -9,7 +9,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.RevisionType;
+import ezvcard.property.Revision;
 import ezvcard.util.DefaultTimezoneRule;
 
 /*
@@ -49,7 +49,7 @@ public class RevisionScribeTest {
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
 	private final RevisionScribe scribe = new RevisionScribe();
-	private final Sensei<RevisionType> sensei = new Sensei<RevisionType>(scribe);
+	private final Sensei<Revision> sensei = new Sensei<Revision>(scribe);
 
 	private final Date datetime;
 	{
@@ -66,8 +66,8 @@ public class RevisionScribeTest {
 	private final String datetimeStr = "19800605T121020Z";
 	private final String datetimeStrExt = "1980-06-05T12:10:20Z";
 
-	private final RevisionType withValue = new RevisionType(datetime);
-	private final RevisionType empty = new RevisionType(null);
+	private final Revision withValue = new Revision(datetime);
+	private final Revision empty = new Revision(null);
 
 	@Test
 	public void writeText() {
@@ -120,9 +120,9 @@ public class RevisionScribeTest {
 		sensei.assertParseJson("").run(is(empty));
 	}
 
-	private Check<RevisionType> is(final RevisionType expected) {
-		return new Check<RevisionType>() {
-			public void check(RevisionType actual) {
+	private Check<Revision> is(final Revision expected) {
+		return new Check<Revision>() {
+			public void check(Revision actual) {
 				assertEquals(expected.getValue(), actual.getValue());
 			}
 		};

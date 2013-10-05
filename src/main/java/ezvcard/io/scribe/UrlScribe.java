@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.UrlType;
+import ezvcard.property.Url;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.UrlType;
  */
 
 /**
- * Marshals {@link UrlType} properties.
+ * Marshals {@link Url} properties.
  * @author Michael Angstadt
  */
-public class UrlScribe extends UriPropertyScribe<UrlType> {
+public class UrlScribe extends UriPropertyScribe<Url> {
 	public UrlScribe() {
-		super(UrlType.class, "URL");
+		super(Url.class, "URL");
 	}
 
 	@Override
-	protected UrlType _parseValue(String value) {
-		return new UrlType(value);
+	protected Url _parseValue(String value) {
+		return new Url(value);
 	}
 }

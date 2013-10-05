@@ -40,7 +40,7 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  * @param <T> the type of values sorted in the list
  */
-public class ListProperty<T> extends VCardType {
+public class ListProperty<T> extends VCardProperty {
 	protected List<T> values = new ArrayList<T>();
 
 	/**

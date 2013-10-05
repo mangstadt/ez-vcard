@@ -46,18 +46,18 @@ public class RelatedTypeTest {
 
 	@Test
 	public void validate() {
-		RelatedType empty = new RelatedType();
+		Related empty = new Related();
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		RelatedType withText = new RelatedType();
+		Related withText = new Related();
 		withText.setText(text);
 		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
 
-		RelatedType withUri = new RelatedType();
+		Related withUri = new Related();
 		withUri.setUri(uri);
 		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
@@ -66,7 +66,7 @@ public class RelatedTypeTest {
 
 	@Test
 	public void setUri() {
-		RelatedType t = new RelatedType();
+		Related t = new Related();
 		t.setText(text);
 		t.setUri(uri);
 
@@ -76,7 +76,7 @@ public class RelatedTypeTest {
 
 	@Test
 	public void setUriEmail() {
-		RelatedType t = new RelatedType();
+		Related t = new Related();
 		t.setText(text);
 		t.setUriEmail("john.doe@example.com");
 
@@ -86,7 +86,7 @@ public class RelatedTypeTest {
 
 	@Test
 	public void setUriIM() {
-		RelatedType t = new RelatedType();
+		Related t = new Related();
 		t.setText(text);
 		t.setUriIM("aim", "john.doe");
 
@@ -96,7 +96,7 @@ public class RelatedTypeTest {
 
 	@Test
 	public void setUriTelephone() {
-		RelatedType t = new RelatedType();
+		Related t = new Related();
 		t.setText(text);
 		t.setUriTelephone("555-555-5555");
 
@@ -106,7 +106,7 @@ public class RelatedTypeTest {
 
 	@Test
 	public void setText() {
-		RelatedType t = new RelatedType();
+		Related t = new Related();
 		t.setUri(uri);
 		t.setText(text);
 

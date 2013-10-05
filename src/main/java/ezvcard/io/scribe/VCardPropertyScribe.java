@@ -26,7 +26,7 @@ import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.VCardRawWriter;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.VCardStringUtils;
@@ -63,7 +63,7 @@ import ezvcard.util.XmlUtils;
  * @param <T> the property class
  * @author Michael Angstadt
  */
-public abstract class VCardPropertyScribe<T extends VCardType> {
+public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	protected final Class<T> clazz;
 	protected final String propertyName;
 	protected final QName qname;
@@ -1106,15 +1106,15 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	 * @param version the vCard version
 	 * @param vcard the vCard that's being marshalled
 	 */
-	protected static void handlePrefParam(VCardType property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected static void handlePrefParam(VCardProperty property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
 		switch (version) {
 		case V2_1:
 		case V3_0:
 			copy.setPref(null);
 
 			//find the property with the lowest PREF value in the vCard
-			VCardType mostPreferred = null;
-			for (VCardType p : vcard.getTypes(property.getClass())) {
+			VCardProperty mostPreferred = null;
+			for (VCardProperty p : vcard.getTypes(property.getClass())) {
 				Integer pref = p.getSubTypes().getPref();
 				if (pref == null) {
 					continue;
@@ -1147,7 +1147,7 @@ public abstract class VCardPropertyScribe<T extends VCardType> {
 	 * @author Michael Angstadt
 	 * @param <T> the unmarshalled property class
 	 */
-	public static class Result<T extends VCardType> {
+	public static class Result<T extends VCardProperty> {
 		private final T property;
 		private final List<String> warnings;
 

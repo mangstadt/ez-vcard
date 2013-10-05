@@ -42,7 +42,7 @@ import ezvcard.parameter.EmailTypeParameter;
 public class EmailTypeTest {
 	@Test
 	public void validate() {
-		EmailType property = new EmailType(null);
+		Email property = new Email(null);
 		assertValidate(property).run(1);
 
 		property.setValue("johndoe@example.com");

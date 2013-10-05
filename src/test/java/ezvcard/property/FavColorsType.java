@@ -47,7 +47,7 @@ import ezvcard.util.XmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class FavColorsType extends VCardType {
+public class FavColorsType extends VCardProperty {
 	private List<String> favColors = new ArrayList<String>();
 
 	public List<String> getFavColors() {

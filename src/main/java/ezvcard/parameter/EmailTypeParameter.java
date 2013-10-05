@@ -3,7 +3,7 @@ package ezvcard.parameter;
 import java.util.Collection;
 
 import ezvcard.VCardVersion;
-import ezvcard.property.EmailType;
+import ezvcard.property.Email;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,7 +35,7 @@ import ezvcard.property.EmailType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link EmailType} type.
+ * Represents the TYPE parameter of the {@link Email} type.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>

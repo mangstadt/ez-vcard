@@ -5,7 +5,7 @@ import java.util.List;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.ImageTypeParameter;
-import ezvcard.property.ImageType;
+import ezvcard.property.ImageProperty;
 import ezvcard.util.DataUri;
 
 /*
@@ -38,7 +38,7 @@ import ezvcard.util.DataUri;
  * @param <T> the property class
  * @author Michael Angstadt
  */
-public abstract class ImagePropertyScribe<T extends ImageType> extends BinaryPropertyScribe<T, ImageTypeParameter> {
+public abstract class ImagePropertyScribe<T extends ImageProperty> extends BinaryPropertyScribe<T, ImageTypeParameter> {
 	public ImagePropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}

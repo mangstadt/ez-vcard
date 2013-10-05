@@ -13,7 +13,7 @@ import org.junit.Test;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.DateOrTimeType;
+import ezvcard.property.DateOrTimeProperty;
 import ezvcard.util.DefaultTimezoneRule;
 import ezvcard.util.PartialDate;
 
@@ -216,7 +216,7 @@ public class DateOrTimePropertyScribeTest {
 		}
 	}
 
-	private static class DateOrTimeTypeImpl extends DateOrTimeType {
+	private static class DateOrTimeTypeImpl extends DateOrTimeProperty {
 		public DateOrTimeTypeImpl() {
 			super((Date) null);
 		}

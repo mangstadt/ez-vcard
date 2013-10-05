@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.HobbyType;
+import ezvcard.property.Hobby;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,7 +34,7 @@ import ezvcard.property.HobbyType;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link HobbyType} property.
+ * Represents a LEVEL parameter for the {@link Hobby} property.
  * 
  * <p>
  * <b>Supported versions:</b> {@code 4.0}

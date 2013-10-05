@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.DeathplaceType;
+import ezvcard.property.Deathplace;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,12 +35,12 @@ import ezvcard.property.DeathplaceType;
  */
 
 /**
- * Marshals {@link DeathplaceType} properties.
+ * Marshals {@link Deathplace} properties.
  * @author Michael Angstadt
  */
-public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
+public class DeathplaceScribe extends VCardPropertyScribe<Deathplace> {
 	public DeathplaceScribe() {
-		super(DeathplaceType.class, "DEATHPLACE");
+		super(Deathplace.class, "DEATHPLACE");
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
 	}
 
 	@Override
-	protected VCardDataType _dataType(DeathplaceType property, VCardVersion version) {
+	protected VCardDataType _dataType(Deathplace property, VCardVersion version) {
 		if (property.getText() != null) {
 			return VCardDataType.TEXT;
 		}
@@ -60,7 +60,7 @@ public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
 	}
 
 	@Override
-	protected String _writeText(DeathplaceType property, VCardVersion version) {
+	protected String _writeText(Deathplace property, VCardVersion version) {
 		String text = property.getText();
 		if (text != null) {
 			return escape(text);
@@ -75,8 +75,8 @@ public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
 	}
 
 	@Override
-	protected DeathplaceType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
-		DeathplaceType property = new DeathplaceType();
+	protected Deathplace _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		Deathplace property = new Deathplace();
 		value = unescape(value);
 
 		if (dataType == VCardDataType.TEXT) {
@@ -94,7 +94,7 @@ public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
 	}
 
 	@Override
-	protected void _writeXml(DeathplaceType property, XCardElement parent) {
+	protected void _writeXml(Deathplace property, XCardElement parent) {
 		String text = property.getText();
 		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
@@ -111,8 +111,8 @@ public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
 	}
 
 	@Override
-	protected DeathplaceType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
-		DeathplaceType property = new DeathplaceType();
+	protected Deathplace _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		Deathplace property = new Deathplace();
 
 		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
@@ -130,7 +130,7 @@ public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(DeathplaceType property) {
+	protected JCardValue _writeJson(Deathplace property) {
 		String text = property.getText();
 		if (text != null) {
 			return JCardValue.single(text);
@@ -145,8 +145,8 @@ public class DeathplaceScribe extends VCardPropertyScribe<DeathplaceType> {
 	}
 
 	@Override
-	protected DeathplaceType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
-		DeathplaceType property = new DeathplaceType();
+	protected Deathplace _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+		Deathplace property = new Deathplace();
 		String valueStr = value.asSingle();
 
 		if (dataType == VCardDataType.TEXT) {

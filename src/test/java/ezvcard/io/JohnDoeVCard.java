@@ -11,15 +11,15 @@ import ezvcard.parameter.EmailTypeParameter;
 import ezvcard.parameter.ImageTypeParameter;
 import ezvcard.parameter.SoundTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
-import ezvcard.property.AddressType;
-import ezvcard.property.GenderType;
-import ezvcard.property.KindType;
-import ezvcard.property.PhotoType;
-import ezvcard.property.RevisionType;
-import ezvcard.property.SoundType;
-import ezvcard.property.StructuredNameType;
-import ezvcard.property.TimezoneType;
-import ezvcard.property.UidType;
+import ezvcard.property.Address;
+import ezvcard.property.Gender;
+import ezvcard.property.Kind;
+import ezvcard.property.Photo;
+import ezvcard.property.Revision;
+import ezvcard.property.Sound;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Timezone;
+import ezvcard.property.Uid;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -91,13 +91,13 @@ public class JohnDoeVCard {
 	private static VCard createVCard() throws IOException {
 		VCard vcard = new VCard();
 
-		vcard.setKind(KindType.individual());
+		vcard.setKind(Kind.individual());
 
-		vcard.setGender(GenderType.male());
+		vcard.setGender(Gender.male());
 
 		vcard.addLanguage("en-US");
 
-		StructuredNameType n = new StructuredNameType();
+		StructuredName n = new StructuredName();
 		n.setFamily("Doe");
 		n.setGiven("Jonathan");
 		n.addPrefix("Mr");
@@ -111,7 +111,7 @@ public class JohnDoeVCard {
 
 		vcard.setOrganization("Acme Co. Ltd.", "Widget Department");
 
-		AddressType adr = new AddressType();
+		Address adr = new Address();
 		adr.setStreetAddress("123 Wall St.");
 		adr.setLocality("New York");
 		adr.setRegion("NY");
@@ -121,7 +121,7 @@ public class JohnDoeVCard {
 		adr.addType(AddressTypeParameter.WORK);
 		vcard.addAddress(adr);
 
-		adr = new AddressType();
+		adr = new Address();
 		adr.setStreetAddress("123 Main St.");
 		adr.setLocality("Albany");
 		adr.setRegion("NY");
@@ -143,19 +143,19 @@ public class JohnDoeVCard {
 
 		vcard.setGeo(37.6, -95.67);
 
-		vcard.setTimezone(new TimezoneType(-5, 0, "America/New_York"));
+		vcard.setTimezone(new Timezone(-5, 0, "America/New_York"));
 
 		File file = new File("portrait.jpg");
-		PhotoType photo = new PhotoType(file, ImageTypeParameter.JPEG);
+		Photo photo = new Photo(file, ImageTypeParameter.JPEG);
 		vcard.addPhoto(photo);
 
 		file = new File("pronunciation.ogg");
-		SoundType sound = new SoundType(file, SoundTypeParameter.OGG);
+		Sound sound = new Sound(file, SoundTypeParameter.OGG);
 		vcard.addSound(sound);
 
-		vcard.setUid(UidType.random());
+		vcard.setUid(Uid.random());
 
-		vcard.setRevision(RevisionType.now());
+		vcard.setRevision(Revision.now());
 
 		return vcard;
 	}

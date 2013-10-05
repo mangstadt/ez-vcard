@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.RelatedType;
+import ezvcard.property.Related;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -43,21 +43,21 @@ import ezvcard.property.RelatedType;
  */
 public class RelatedScribeTest {
 	private final RelatedScribe scribe = new RelatedScribe();
-	private final Sensei<RelatedType> sensei = new Sensei<RelatedType>(scribe);
+	private final Sensei<Related> sensei = new Sensei<Related>(scribe);
 
 	private final String text = "New York, NY";
 	private final String textEscaped = "New York\\, NY";
 	private final String uri = "geo:40.71448,-74.00598";
 
-	private final RelatedType withText = new RelatedType();
+	private final Related withText = new Related();
 	{
 		withText.setText(text);
 	}
-	private final RelatedType withUri = new RelatedType();
+	private final Related withUri = new Related();
 	{
 		withUri.setUri(uri);
 	}
-	private final RelatedType empty = new RelatedType();
+	private final Related empty = new Related();
 
 	@Test
 	public void dataType() {
@@ -111,18 +111,18 @@ public class RelatedScribeTest {
 		sensei.assertParseJson(uri).dataType(VCardDataType.LANGUAGE_TAG).run(hasUri(uri));
 	}
 
-	private Check<RelatedType> hasText(final String text) {
-		return new Check<RelatedType>() {
-			public void check(RelatedType actual) {
+	private Check<Related> hasText(final String text) {
+		return new Check<Related>() {
+			public void check(Related actual) {
 				assertEquals(text, actual.getText());
 				assertNull(actual.getUri());
 			}
 		};
 	}
 
-	private Check<RelatedType> hasUri(final String uri) {
-		return new Check<RelatedType>() {
-			public void check(RelatedType actual) {
+	private Check<Related> hasUri(final String uri) {
+		return new Check<Related>() {
+			public void check(Related actual) {
 				assertNull(actual.getText());
 				assertEquals(uri, actual.getUri());
 			}

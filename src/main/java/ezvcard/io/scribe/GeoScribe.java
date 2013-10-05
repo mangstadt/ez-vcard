@@ -9,7 +9,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.GeoType;
+import ezvcard.property.Geo;
 import ezvcard.util.GeoUri;
 import ezvcard.util.VCardFloatFormatter;
 
@@ -39,12 +39,12 @@ import ezvcard.util.VCardFloatFormatter;
  */
 
 /**
- * Marshals {@link GeoType} properties.
+ * Marshals {@link Geo} properties.
  * @author Michael Angstadt
  */
-public class GeoScribe extends VCardPropertyScribe<GeoType> {
+public class GeoScribe extends VCardPropertyScribe<Geo> {
 	public GeoScribe() {
-		super(GeoType.class, "GEO");
+		super(Geo.class, "GEO");
 	}
 
 	@Override
@@ -60,23 +60,23 @@ public class GeoScribe extends VCardPropertyScribe<GeoType> {
 	}
 
 	@Override
-	protected String _writeText(GeoType property, VCardVersion version) {
+	protected String _writeText(Geo property, VCardVersion version) {
 		return write(property, version);
 	}
 
 	@Override
-	protected GeoType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Geo _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value, version, warnings);
 	}
 
 	@Override
-	protected void _writeXml(GeoType property, XCardElement parent) {
+	protected void _writeXml(Geo property, XCardElement parent) {
 		parent.append(VCardDataType.URI, write(property, parent.version()));
 	}
 
 	@Override
-	protected GeoType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Geo _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			return parse(value, element.version(), warnings);
@@ -86,7 +86,7 @@ public class GeoScribe extends VCardPropertyScribe<GeoType> {
 	}
 
 	@Override
-	protected GeoType _parseHtml(HCardElement element, List<String> warnings) {
+	protected Geo _parseHtml(HCardElement element, List<String> warnings) {
 		String latitudeStr = element.firstValue("latitude");
 		if (latitudeStr == null) {
 			throw new CannotParseException("Latitude missing.");
@@ -111,22 +111,22 @@ public class GeoScribe extends VCardPropertyScribe<GeoType> {
 			throw new CannotParseException("Could not parse longitude: " + longitudeStr);
 		}
 
-		return new GeoType(latitude, longitude);
+		return new Geo(latitude, longitude);
 	}
 
 	@Override
-	protected JCardValue _writeJson(GeoType property) {
+	protected JCardValue _writeJson(Geo property) {
 		return JCardValue.single(write(property, VCardVersion.V4_0));
 	}
 
 	@Override
-	protected GeoType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Geo _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		return parse(value.asSingle(), VCardVersion.V4_0, warnings);
 	}
 
-	private GeoType parse(String value, VCardVersion version, List<String> warnings) {
+	private Geo parse(String value, VCardVersion version, List<String> warnings) {
 		if (value == null || value.length() == 0) {
-			return new GeoType(null);
+			return new Geo(null);
 		}
 
 		switch (version) {
@@ -153,10 +153,10 @@ public class GeoScribe extends VCardPropertyScribe<GeoType> {
 				throw new CannotParseException("Could not parse longtude: " + longitudeStr);
 			}
 
-			return new GeoType(latitude, longitude);
+			return new Geo(latitude, longitude);
 		case V4_0:
 			try {
-				return new GeoType(GeoUri.parse(value));
+				return new Geo(GeoUri.parse(value));
 			} catch (IllegalArgumentException e) {
 				throw new CannotParseException("Invalid geo URI.");
 			}
@@ -164,7 +164,7 @@ public class GeoScribe extends VCardPropertyScribe<GeoType> {
 		return null;
 	}
 
-	private String write(GeoType property, VCardVersion version) {
+	private String write(Geo property, VCardVersion version) {
 		if (property.getGeoUri() == null) {
 			return "";
 		}

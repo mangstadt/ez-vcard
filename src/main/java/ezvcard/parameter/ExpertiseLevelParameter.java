@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.ExpertiseType;
+import ezvcard.property.Expertise;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,7 +34,7 @@ import ezvcard.property.ExpertiseType;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link ExpertiseType} property.
+ * Represents a LEVEL parameter for the {@link Expertise} property.
  * 
  * <p>
  * <b>Supported versions:</b> {@code 4.0}

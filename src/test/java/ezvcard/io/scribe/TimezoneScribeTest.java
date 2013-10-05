@@ -10,7 +10,7 @@ import org.junit.Test;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.TimezoneType;
+import ezvcard.property.Timezone;
 import ezvcard.util.UtcOffset;
 
 /*
@@ -47,7 +47,7 @@ import ezvcard.util.UtcOffset;
  */
 public class TimezoneScribeTest {
 	private final TimezoneScribe scribe = new TimezoneScribe();
-	private final Sensei<TimezoneType> sensei = new Sensei<TimezoneType>(scribe);
+	private final Sensei<Timezone> sensei = new Sensei<Timezone>(scribe);
 
 	private final UtcOffset offset = new UtcOffset(-5, 0);
 	private final String offsetStrExtended = "-05:00";
@@ -56,11 +56,11 @@ public class TimezoneScribeTest {
 	private final String textStr = "some text";
 	private final TimeZone newYork = TimeZone.getTimeZone(timezoneIdStr);
 
-	private final TimezoneType withOffset = new TimezoneType(offset);
-	private final TimezoneType withTimezoneId = new TimezoneType(timezoneIdStr);
-	private final TimezoneType withText = new TimezoneType(textStr);
-	private final TimezoneType withOffsetAndTimezoneId = new TimezoneType(offset, timezoneIdStr);
-	private final TimezoneType empty = new TimezoneType((String) null);
+	private final Timezone withOffset = new Timezone(offset);
+	private final Timezone withTimezoneId = new Timezone(timezoneIdStr);
+	private final Timezone withText = new Timezone(textStr);
+	private final Timezone withOffsetAndTimezoneId = new Timezone(offset, timezoneIdStr);
+	private final Timezone empty = new Timezone((String) null);
 
 	@Test
 	public void prepareParameters() {
@@ -159,9 +159,9 @@ public class TimezoneScribeTest {
 		sensei.assertParseJson("").dataType(VCardDataType.TEXT).run(is(empty));
 	}
 
-	private Check<TimezoneType> is(final TimezoneType expected) {
-		return new Check<TimezoneType>() {
-			public void check(TimezoneType actual) {
+	private Check<Timezone> is(final Timezone expected) {
+		return new Check<Timezone>() {
+			public void check(Timezone actual) {
 				assertEquals(expected.getOffset(), actual.getOffset());
 				assertEquals(expected.getText(), actual.getText());
 			}

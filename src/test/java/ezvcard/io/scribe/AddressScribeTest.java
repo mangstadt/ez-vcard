@@ -11,7 +11,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.property.AddressType;
+import ezvcard.property.Address;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -47,9 +47,9 @@ import ezvcard.property.AddressType;
  */
 public class AddressScribeTest {
 	private final AddressScribe scribe = new AddressScribe();
-	private final Sensei<AddressType> sensei = new Sensei<AddressType>(scribe);
+	private final Sensei<Address> sensei = new Sensei<Address>(scribe);
 
-	private final AddressType withAllFields = new AddressType();
+	private final Address withAllFields = new Address();
 	{
 		withAllFields.setPoBox("P.O. Box 1234;");
 		withAllFields.setExtendedAddress("Apt, 11");
@@ -59,7 +59,7 @@ public class AddressScribeTest {
 		withAllFields.setPostalCode("12345");
 		withAllFields.setCountry("USA");
 	}
-	private final AddressType withSomeFields = new AddressType();
+	private final Address withSomeFields = new Address();
 	{
 		withSomeFields.setPoBox("P.O. Box 1234;");
 		withSomeFields.setExtendedAddress(null);
@@ -69,11 +69,11 @@ public class AddressScribeTest {
 		withSomeFields.setPostalCode("12345");
 		withSomeFields.setCountry(null);
 	}
-	private final AddressType empty = new AddressType();
+	private final Address empty = new Address();
 
 	@Test
 	public void prepareParameters_label() {
-		AddressType property = new AddressType();
+		Address property = new Address();
 		property.setLabel("label");
 
 		//2.1 and 3.0 should remove it
@@ -89,7 +89,7 @@ public class AddressScribeTest {
 	 */
 	@Test
 	public void prepareParameters_type_pref() {
-		AddressType property = new AddressType();
+		Address property = new Address();
 		property.addType(AddressTypeParameter.PREF);
 
 		//2.1 and 3.0 keep it
@@ -109,15 +109,15 @@ public class AddressScribeTest {
 		//TODO move this test to VCardPropertyScribeTest (except for the "label" part)
 		VCard vcard = new VCard();
 
-		AddressType adr2 = new AddressType();
+		Address adr2 = new Address();
 		adr2.setPref(2);
 		vcard.addAddress(adr2);
 
-		AddressType adr1 = new AddressType();
+		Address adr1 = new Address();
 		adr1.setPref(1);
 		vcard.addAddress(adr1);
 
-		AddressType adr3 = new AddressType();
+		Address adr3 = new Address();
 		vcard.addAddress(adr3);
 
 		//2.1 and 3.0 converts the lowest PREF parameter to "TYPE=pref", and removes all the rest
@@ -249,8 +249,8 @@ public class AddressScribeTest {
 			"<span class=\"region\">TX</span>" +
 			"<span class=\"postal-code\">12345</span>" +
 			"<span class=\"country-name\">USA</span>" +
-		"</div>").run(new Check<AddressType>(){
-			public void check(AddressType property) {
+		"</div>").run(new Check<Address>(){
+			public void check(Address property) {
 				assertEquals("P.O. Box 1234;", property.getPoBox());
 				assertEquals("Apt, 11", property.getExtendedAddress());
 				assertEquals("123 Main St", property.getStreetAddress());
@@ -279,8 +279,8 @@ public class AddressScribeTest {
 		sensei.assertParseJson(value).run(is(empty));
 
 		value = JCardValue.structured("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin");
-		sensei.assertParseJson(value).run(new Check<AddressType>() {
-			public void check(AddressType property) {
+		sensei.assertParseJson(value).run(new Check<Address>() {
+			public void check(Address property) {
 				assertEquals("P.O. Box 1234;", property.getPoBox());
 				assertEquals("Apt, 11", property.getExtendedAddress());
 				assertEquals("123 Main St", property.getStreetAddress());
@@ -292,9 +292,9 @@ public class AddressScribeTest {
 		});
 	}
 
-	private Check<AddressType> is(final AddressType property) {
-		return new Check<AddressType>() {
-			public void check(AddressType actual) {
+	private Check<Address> is(final Address property) {
+		return new Check<Address>() {
+			public void check(Address actual) {
 				assertEquals(property.getPoBox(), actual.getPoBox());
 				assertEquals(property.getExtendedAddress(), actual.getExtendedAddress());
 				assertEquals(property.getStreetAddress(), actual.getStreetAddress());

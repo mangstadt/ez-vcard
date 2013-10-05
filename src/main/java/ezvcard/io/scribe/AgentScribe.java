@@ -10,8 +10,8 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.AgentType;
-import ezvcard.property.VCardType;
+import ezvcard.property.Agent;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -39,12 +39,12 @@ import ezvcard.property.VCardType;
  */
 
 /**
- * Marshals {@link AgentType} properties.
+ * Marshals {@link Agent} properties.
  * @author Michael Angstadt
  */
-public class AgentScribe extends VCardPropertyScribe<AgentType> {
+public class AgentScribe extends VCardPropertyScribe<Agent> {
 	public AgentScribe() {
-		super(AgentType.class, "AGENT");
+		super(Agent.class, "AGENT");
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 	}
 
 	@Override
-	protected VCardDataType _dataType(AgentType property, VCardVersion version) {
+	protected VCardDataType _dataType(Agent property, VCardVersion version) {
 		if (property.getUrl() != null) {
 			return (version == VCardVersion.V2_1) ? VCardDataType.URL : VCardDataType.URI;
 		}
@@ -61,7 +61,7 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 	}
 
 	@Override
-	protected String _writeText(AgentType property, VCardVersion version) {
+	protected String _writeText(Agent property, VCardVersion version) {
 		String url = property.getUrl();
 		if (url != null) {
 			return url;
@@ -77,8 +77,8 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 	}
 
 	@Override
-	protected AgentType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
-		AgentType property = new AgentType();
+	protected Agent _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		Agent property = new Agent();
 
 		if (dataType == null) {
 			throw new EmbeddedVCardException(new Injector(property));
@@ -89,8 +89,8 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 	}
 
 	@Override
-	protected AgentType _parseHtml(HCardElement element, List<String> warnings) {
-		AgentType property = new AgentType();
+	protected Agent _parseHtml(HCardElement element, List<String> warnings) {
+		Agent property = new Agent();
 
 		Set<String> classes = element.classNames();
 		if (classes.contains("vcard")) {
@@ -107,9 +107,9 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 	}
 
 	private static class Injector implements EmbeddedVCardException.InjectionCallback {
-		private final AgentType property;
+		private final Agent property;
 
-		public Injector(AgentType property) {
+		public Injector(Agent property) {
 			this.property = property;
 		}
 
@@ -117,7 +117,7 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 			property.setVCard(vcard);
 		}
 
-		public VCardType getProperty() {
+		public VCardProperty getProperty() {
 			return property;
 		}
 	}

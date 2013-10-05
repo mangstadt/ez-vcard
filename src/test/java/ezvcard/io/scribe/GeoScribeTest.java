@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.GeoType;
+import ezvcard.property.Geo;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -42,13 +42,13 @@ import ezvcard.property.GeoType;
  */
 public class GeoScribeTest {
 	private final GeoScribe scribe = new GeoScribe();
-	private final Sensei<GeoType> sensei = new Sensei<GeoType>(scribe);
+	private final Sensei<Geo> sensei = new Sensei<Geo>(scribe);
 
-	private final GeoType withBoth = new GeoType(-12.34, 56.78);
-	private final GeoType withLatitude = new GeoType(-12.34, null);
-	private final GeoType withLongitude = new GeoType(null, 56.78);
-	private final GeoType withManyDecimals = new GeoType(-12.3444444444, 56.7777777777);
-	private final GeoType empty = new GeoType(null);
+	private final Geo withBoth = new Geo(-12.34, 56.78);
+	private final Geo withLatitude = new Geo(-12.34, null);
+	private final Geo withLongitude = new Geo(null, 56.78);
+	private final Geo withManyDecimals = new Geo(-12.3444444444, 56.7777777777);
+	private final Geo empty = new Geo(null);
 
 	@Test
 	public void writeText() {
@@ -184,9 +184,9 @@ public class GeoScribeTest {
 		sensei.assertParseJson("").run(is(empty));
 	}
 
-	private Check<GeoType> is(final GeoType expected) {
-		return new Check<GeoType>() {
-			public void check(GeoType actual) {
+	private Check<Geo> is(final Geo expected) {
+		return new Check<Geo>() {
+			public void check(Geo actual) {
 				assertEquals(expected.getGeoUri() == null, actual.getGeoUri() == null);
 				assertEquals(expected.getLatitude(), actual.getLatitude());
 				assertEquals(expected.getLongitude(), actual.getLongitude());

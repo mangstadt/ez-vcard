@@ -42,7 +42,7 @@ import ezvcard.VCardVersion;
 public class AgentTypeTest {
 	@Test
 	public void validate() {
-		AgentType property = new AgentType();
+		Agent property = new Agent();
 		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
 		assertValidate(property).versions(VCardVersion.V4_0).run(2);
 

@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.RoleType;
+import ezvcard.property.Role;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.RoleType;
  */
 
 /**
- * Marshals {@link RoleType} properties.
+ * Marshals {@link Role} properties.
  * @author Michael Angstadt
  */
-public class RoleScribe extends StringPropertyScribe<RoleType> {
+public class RoleScribe extends StringPropertyScribe<Role> {
 	public RoleScribe() {
-		super(RoleType.class, "ROLE");
+		super(Role.class, "ROLE");
 	}
 
 	@Override
-	protected RoleType _parseValue(String value) {
-		return new RoleType(value);
+	protected Role _parseValue(String value) {
+		return new Role(value);
 	}
 }

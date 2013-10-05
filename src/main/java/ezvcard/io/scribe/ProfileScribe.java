@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.ProfileType;
+import ezvcard.property.Profile;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,17 +28,17 @@ import ezvcard.property.ProfileType;
  */
 
 /**
- * Marshals {@link ProfileType} properties.
+ * Marshals {@link Profile} properties.
  * @author Michael Angstadt
  */
-public class ProfileScribe extends StringPropertyScribe<ProfileType> {
+public class ProfileScribe extends StringPropertyScribe<Profile> {
 	public ProfileScribe() {
-		super(ProfileType.class, "PROFILE");
+		super(Profile.class, "PROFILE");
 	}
 
 	@Override
-	protected ProfileType _parseValue(String value) {
-		ProfileType property = new ProfileType();
+	protected Profile _parseValue(String value) {
+		Profile property = new Profile();
 		property.setValue(value);
 		return property;
 	}

@@ -3,7 +3,7 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import ezvcard.io.html.HCardElement;
-import ezvcard.property.LabelType;
+import ezvcard.property.Label;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -31,22 +31,22 @@ import ezvcard.property.LabelType;
  */
 
 /**
- * Marshals {@link LabelType} properties.
+ * Marshals {@link Label} properties.
  * @author Michael Angstadt
  */
-public class LabelScribe extends StringPropertyScribe<LabelType> {
+public class LabelScribe extends StringPropertyScribe<Label> {
 	public LabelScribe() {
-		super(LabelType.class, "LABEL");
+		super(Label.class, "LABEL");
 	}
 
 	@Override
-	protected LabelType _parseValue(String value) {
-		return new LabelType(value);
+	protected Label _parseValue(String value) {
+		return new Label(value);
 	}
 
 	@Override
-	protected LabelType _parseHtml(HCardElement element, List<String> warnings) {
-		LabelType property = new LabelType(element.value());
+	protected Label _parseHtml(HCardElement element, List<String> warnings) {
+		Label property = new Label(element.value());
 
 		List<String> types = element.types();
 		for (String type : types) {

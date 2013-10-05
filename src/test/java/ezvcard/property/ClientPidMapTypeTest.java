@@ -43,12 +43,12 @@ import ezvcard.VCardVersion;
 public class ClientPidMapTypeTest {
 	@Test
 	public void validate() {
-		ClientPidMapType empty = new ClientPidMapType(null, null);
+		ClientPidMap empty = new ClientPidMap(null, null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		ClientPidMapType withValue = new ClientPidMapType(1, "urn:uuid:1234");
+		ClientPidMap withValue = new ClientPidMap(1, "urn:uuid:1234");
 		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withValue).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
@@ -56,7 +56,7 @@ public class ClientPidMapTypeTest {
 
 	@Test
 	public void random() {
-		ClientPidMapType clientpidmap = ClientPidMapType.random(2);
+		ClientPidMap clientpidmap = ClientPidMap.random(2);
 		assertIntEquals(2, clientpidmap.getPid());
 		assertTrue(clientpidmap.getUri().matches("urn:uuid:[-\\da-f]+"));
 	}

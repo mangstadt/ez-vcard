@@ -44,12 +44,12 @@ import ezvcard.VCardVersion;
 public class GenderTypeTest {
 	@Test
 	public void validate() {
-		GenderType empty = new GenderType(null);
+		Gender empty = new Gender(null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		GenderType male = GenderType.male();
+		Gender male = Gender.male();
 		assertValidate(male).versions(VCardVersion.V2_1).run(1);
 		assertValidate(male).versions(VCardVersion.V3_0).run(1);
 		assertValidate(male).versions(VCardVersion.V4_0).run(0);
@@ -57,7 +57,7 @@ public class GenderTypeTest {
 
 	@Test
 	public void isMale() {
-		GenderType gender = new GenderType("M");
+		Gender gender = new Gender("M");
 		assertTrue(gender.isMale());
 		assertFalse(gender.isFemale());
 		assertFalse(gender.isOther());
@@ -67,7 +67,7 @@ public class GenderTypeTest {
 
 	@Test
 	public void isFemale() {
-		GenderType gender = new GenderType("F");
+		Gender gender = new Gender("F");
 		assertFalse(gender.isMale());
 		assertTrue(gender.isFemale());
 		assertFalse(gender.isOther());
@@ -77,7 +77,7 @@ public class GenderTypeTest {
 
 	@Test
 	public void isOther() {
-		GenderType gender = new GenderType("O");
+		Gender gender = new Gender("O");
 		assertFalse(gender.isMale());
 		assertFalse(gender.isFemale());
 		assertTrue(gender.isOther());
@@ -87,7 +87,7 @@ public class GenderTypeTest {
 
 	@Test
 	public void isNone() {
-		GenderType gender = new GenderType("N");
+		Gender gender = new Gender("N");
 		assertFalse(gender.isMale());
 		assertFalse(gender.isFemale());
 		assertFalse(gender.isOther());
@@ -97,7 +97,7 @@ public class GenderTypeTest {
 
 	@Test
 	public void isUnknown() {
-		GenderType gender = new GenderType("U");
+		Gender gender = new Gender("U");
 		assertFalse(gender.isMale());
 		assertFalse(gender.isFemale());
 		assertFalse(gender.isOther());
@@ -107,31 +107,31 @@ public class GenderTypeTest {
 
 	@Test
 	public void male() {
-		GenderType gender = GenderType.male();
+		Gender gender = Gender.male();
 		assertEquals("M", gender.getGender());
 	}
 
 	@Test
 	public void female() {
-		GenderType gender = GenderType.female();
+		Gender gender = Gender.female();
 		assertEquals("F", gender.getGender());
 	}
 
 	@Test
 	public void other() {
-		GenderType gender = GenderType.other();
+		Gender gender = Gender.other();
 		assertEquals("O", gender.getGender());
 	}
 
 	@Test
 	public void none() {
-		GenderType gender = GenderType.none();
+		Gender gender = Gender.none();
 		assertEquals("N", gender.getGender());
 	}
 
 	@Test
 	public void unknown() {
-		GenderType gender = GenderType.unknown();
+		Gender gender = Gender.unknown();
 		assertEquals("U", gender.getGender());
 	}
 }

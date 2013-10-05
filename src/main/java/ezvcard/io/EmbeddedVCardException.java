@@ -2,7 +2,7 @@ package ezvcard.io;
 
 import ezvcard.VCard;
 import ezvcard.VCardException;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -87,7 +87,7 @@ public class EmbeddedVCardException extends VCardException {
 	 * Gets the property object that threw the exception.
 	 * @return the property object
 	 */
-	public VCardType getProperty() {
+	public VCardProperty getProperty() {
 		if (callback == null) {
 			return null;
 		}
@@ -110,6 +110,6 @@ public class EmbeddedVCardException extends VCardException {
 		 * {@link EmbeddedVCardException}.
 		 * @return the property object
 		 */
-		VCardType getProperty();
+		VCardProperty getProperty();
 	}
 }

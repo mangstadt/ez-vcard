@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
 import ezvcard.VCardDataType;
-import ezvcard.property.LanguageType;
+import ezvcard.property.Language;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -29,16 +29,16 @@ import ezvcard.property.LanguageType;
  */
 
 /**
- * Marshals {@link LanguageType} properties.
+ * Marshals {@link Language} properties.
  * @author Michael Angstadt
  */
-public class LanguageScribe extends StringPropertyScribe<LanguageType> {
+public class LanguageScribe extends StringPropertyScribe<Language> {
 	public LanguageScribe() {
-		super(LanguageType.class, "LANG", VCardDataType.LANGUAGE_TAG);
+		super(Language.class, "LANG", VCardDataType.LANGUAGE_TAG);
 	}
 
 	@Override
-	protected LanguageType _parseValue(String value) {
-		return new LanguageType(value);
+	protected Language _parseValue(String value) {
+		return new Language(value);
 	}
 }

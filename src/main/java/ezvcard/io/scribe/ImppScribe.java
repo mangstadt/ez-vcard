@@ -15,7 +15,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.ImppType;
+import ezvcard.property.Impp;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -43,10 +43,10 @@ import ezvcard.property.ImppType;
  */
 
 /**
- * Marshals {@link ImppType} properties.
+ * Marshals {@link Impp} properties.
  * @author Michael Angstadt
  */
-public class ImppScribe extends VCardPropertyScribe<ImppType> {
+public class ImppScribe extends VCardPropertyScribe<Impp> {
 	public static final String AIM = "aim";
 	public static final String ICQ = "icq";
 	public static final String IRC = "irc";
@@ -57,7 +57,7 @@ public class ImppScribe extends VCardPropertyScribe<ImppType> {
 	public static final String YAHOO = "ymsgr";
 
 	public ImppScribe() {
-		super(ImppType.class, "IMPP");
+		super(Impp.class, "IMPP");
 	}
 
 	@Override
@@ -66,23 +66,23 @@ public class ImppScribe extends VCardPropertyScribe<ImppType> {
 	}
 
 	@Override
-	protected String _writeText(ImppType property, VCardVersion version) {
+	protected String _writeText(Impp property, VCardVersion version) {
 		return write(property);
 	}
 
 	@Override
-	protected ImppType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Impp _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value);
 	}
 
 	@Override
-	protected void _writeXml(ImppType property, XCardElement parent) {
+	protected void _writeXml(Impp property, XCardElement parent) {
 		parent.append(VCardDataType.URI, write(property));
 	}
 
 	@Override
-	protected ImppType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Impp _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			return parse(value);
@@ -92,7 +92,7 @@ public class ImppScribe extends VCardPropertyScribe<ImppType> {
 	}
 
 	@Override
-	protected ImppType _parseHtml(HCardElement element, List<String> warnings) {
+	protected Impp _parseHtml(HCardElement element, List<String> warnings) {
 		String href = element.attr("href");
 		if (href.length() == 0) {
 			href = element.value();
@@ -103,34 +103,34 @@ public class ImppScribe extends VCardPropertyScribe<ImppType> {
 			if (uri == null) {
 				throw new IllegalArgumentException();
 			}
-			return new ImppType(uri);
+			return new Impp(uri);
 		} catch (IllegalArgumentException e) {
 			throw new CannotParseException("Could not parse instant messenger information from link: " + href);
 		}
 	}
 
 	@Override
-	protected JCardValue _writeJson(ImppType property) {
+	protected JCardValue _writeJson(Impp property) {
 		return JCardValue.single(write(property));
 	}
 
 	@Override
-	protected ImppType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Impp _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		return parse(value.asSingle());
 	}
 
-	private String write(ImppType property) {
+	private String write(Impp property) {
 		URI uri = property.getUri();
 		return (uri == null) ? "" : uri.toString();
 	}
 
-	private ImppType parse(String value) {
+	private Impp parse(String value) {
 		if (value == null || value.length() == 0) {
-			return new ImppType((URI) null);
+			return new Impp((URI) null);
 		}
 
 		try {
-			return new ImppType(value);
+			return new Impp(value);
 		} catch (IllegalArgumentException e) {
 			throw new CannotParseException("Cannot parse URI \"" + value + "\": " + e.getMessage());
 		}
@@ -200,7 +200,7 @@ public class ImppScribe extends VCardPropertyScribe<ImppType> {
 	 * @return the link URI (e.g. "aim:goim?screenname=theuser") or null if the
 	 * property has no URI
 	 */
-	public String writeHtmlLink(ImppType property) {
+	public String writeHtmlLink(Impp property) {
 		URI uri = property.getUri();
 		if (uri == null) {
 			return null;

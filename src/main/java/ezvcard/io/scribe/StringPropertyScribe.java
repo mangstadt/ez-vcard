@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
 import ezvcard.VCardDataType;
-import ezvcard.property.TextType;
+import ezvcard.property.TextProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -33,7 +33,7 @@ import ezvcard.property.TextType;
  * @param <T> the property class
  * @author Michael Angstadt
  */
-public abstract class StringPropertyScribe<T extends TextType> extends SimplePropertyScribe<T> {
+public abstract class StringPropertyScribe<T extends TextProperty> extends SimplePropertyScribe<T> {
 	public StringPropertyScribe(Class<T> clazz, String propertyName) {
 		this(clazz, propertyName, VCardDataType.TEXT);
 	}

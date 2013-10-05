@@ -3,7 +3,7 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import ezvcard.io.html.HCardElement;
-import ezvcard.property.NicknameType;
+import ezvcard.property.Nickname;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -31,24 +31,24 @@ import ezvcard.property.NicknameType;
  */
 
 /**
- * Marshals {@link NicknameType} properties.
+ * Marshals {@link Nickname} properties.
  * @author Michael Angstadt
  */
-public class NicknameScribe extends ListPropertyScribe<NicknameType> {
+public class NicknameScribe extends ListPropertyScribe<Nickname> {
 	public NicknameScribe() {
-		super(NicknameType.class, "NICKNAME");
+		super(Nickname.class, "NICKNAME");
 	}
 
 	@Override
-	protected NicknameType _parseHtml(HCardElement element, List<String> warnings) {
-		NicknameType property = _newInstance();
+	protected Nickname _parseHtml(HCardElement element, List<String> warnings) {
+		Nickname property = _newInstance();
 		property.addValue(element.value());
 		return property;
 	}
 
 	@Override
-	protected NicknameType _newInstance() {
-		return new NicknameType();
+	protected Nickname _newInstance() {
+		return new Nickname();
 	}
 
 }

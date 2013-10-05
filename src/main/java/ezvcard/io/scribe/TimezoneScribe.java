@@ -10,7 +10,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.TimezoneType;
+import ezvcard.property.Timezone;
 import ezvcard.util.UtcOffset;
 
 /*
@@ -39,12 +39,12 @@ import ezvcard.util.UtcOffset;
  */
 
 /**
- * Marshals {@link TimezoneType} properties.
+ * Marshals {@link Timezone} properties.
  * @author Michael Angstadt
  */
-public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
+public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 	public TimezoneScribe() {
-		super(TimezoneType.class, "TZ");
+		super(Timezone.class, "TZ");
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 	}
 
 	@Override
-	protected VCardDataType _dataType(TimezoneType property, VCardVersion version) {
+	protected VCardDataType _dataType(Timezone property, VCardVersion version) {
 		String text = property.getText();
 		UtcOffset offset = property.getOffset();
 
@@ -89,7 +89,7 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 	}
 
 	@Override
-	protected String _writeText(TimezoneType property, VCardVersion version) {
+	protected String _writeText(Timezone property, VCardVersion version) {
 		String text = property.getText();
 		UtcOffset offset = property.getOffset();
 
@@ -132,13 +132,13 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 	}
 
 	@Override
-	protected TimezoneType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Timezone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value, dataType, version, warnings);
 	}
 
 	@Override
-	protected void _writeXml(TimezoneType property, XCardElement parent) {
+	protected void _writeXml(Timezone property, XCardElement parent) {
 		String text = property.getText();
 		if (text != null) {
 			parent.append(VCardDataType.TEXT, text);
@@ -155,16 +155,16 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 	}
 
 	@Override
-	protected TimezoneType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Timezone _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
-			return new TimezoneType(text);
+			return new Timezone(text);
 		}
 
 		String utcOffset = element.first(VCardDataType.UTC_OFFSET);
 		if (utcOffset != null) {
 			try {
-				return new TimezoneType(UtcOffset.parse(utcOffset));
+				return new Timezone(UtcOffset.parse(utcOffset));
 			} catch (IllegalArgumentException e) {
 				throw new CannotParseException("Unable to parse UTC offset.");
 			}
@@ -174,12 +174,12 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 	}
 
 	@Override
-	protected TimezoneType _parseHtml(HCardElement element, List<String> warnings) {
+	protected Timezone _parseHtml(HCardElement element, List<String> warnings) {
 		return parse(element.value(), null, VCardVersion.V3_0, warnings);
 	}
 
 	@Override
-	protected JCardValue _writeJson(TimezoneType property) {
+	protected JCardValue _writeJson(Timezone property) {
 		String text = property.getText();
 		if (text != null) {
 			return JCardValue.single(text);
@@ -194,37 +194,37 @@ public class TimezoneScribe extends VCardPropertyScribe<TimezoneType> {
 	}
 
 	@Override
-	protected TimezoneType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Timezone _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 		return parse(valueStr, dataType, VCardVersion.V4_0, warnings);
 	}
 
-	private TimezoneType parse(String value, VCardDataType dataType, VCardVersion version, List<String> warnings) {
+	private Timezone parse(String value, VCardDataType dataType, VCardVersion version, List<String> warnings) {
 		if (value == null || value.length() == 0) {
-			return new TimezoneType((String) null);
+			return new Timezone((String) null);
 		}
 
 		switch (version) {
 		case V2_1:
 			//e.g. "-05:00"
 			try {
-				return new TimezoneType(UtcOffset.parse(value));
+				return new Timezone(UtcOffset.parse(value));
 			} catch (IllegalArgumentException e) {
 				throw new CannotParseException("Unable to parse UTC offset.");
 			}
 		case V3_0:
 		case V4_0:
 			try {
-				return new TimezoneType(UtcOffset.parse(value));
+				return new Timezone(UtcOffset.parse(value));
 			} catch (IllegalArgumentException e) {
 				if (dataType == VCardDataType.UTC_OFFSET) {
 					warnings.add("Unable to parse UTC offset.  Treating as text: " + value);
 				}
-				return new TimezoneType(value);
+				return new Timezone(value);
 			}
 		}
 
-		return new TimezoneType((String) null);
+		return new Timezone((String) null);
 	}
 
 	private UtcOffset offsetFromTimezone(TimeZone timezone) {

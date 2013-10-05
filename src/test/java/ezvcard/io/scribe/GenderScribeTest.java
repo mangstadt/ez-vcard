@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.property.GenderType;
+import ezvcard.property.Gender;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -42,22 +42,22 @@ import ezvcard.property.GenderType;
  */
 public class GenderScribeTest {
 	private final GenderScribe scribe = new GenderScribe();
-	private final Sensei<GenderType> sensei = new Sensei<GenderType>(scribe);
+	private final Sensei<Gender> sensei = new Sensei<Gender>(scribe);
 
 	private final String gender = "M";
 	private final String text = "te;xt";
 	private final String textEscaped = "te\\;xt";
 
-	private final GenderType withGender = GenderType.male();
-	private final GenderType withText = new GenderType(null);
+	private final Gender withGender = Gender.male();
+	private final Gender withText = new Gender(null);
 	{
 		withText.setText(text);
 	}
-	private final GenderType withGenderAndText = GenderType.male();
+	private final Gender withGenderAndText = Gender.male();
 	{
 		withGenderAndText.setText(text);
 	}
-	private final GenderType empty = new GenderType(null);
+	private final Gender empty = new Gender(null);
 
 	@Test
 	public void writeText() {
@@ -112,9 +112,9 @@ public class GenderScribeTest {
 		sensei.assertParseJson("").run(is(empty));
 	}
 
-	private Check<GenderType> is(final GenderType expected) {
-		return new Check<GenderType>() {
-			public void check(GenderType actual) {
+	private Check<Gender> is(final Gender expected) {
+		return new Check<Gender>() {
+			public void check(Gender actual) {
 				assertEquals(expected.getGender(), actual.getGender());
 				assertEquals(expected.getText(), actual.getText());
 			}

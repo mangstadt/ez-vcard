@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
 import ezvcard.parameter.ImageTypeParameter;
-import ezvcard.property.LogoType;
+import ezvcard.property.Logo;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -29,21 +29,21 @@ import ezvcard.property.LogoType;
  */
 
 /**
- * Marshals {@link LogoType} properties.
+ * Marshals {@link Logo} properties.
  * @author Michael Angstadt
  */
-public class LogoScribe extends ImagePropertyScribe<LogoType> {
+public class LogoScribe extends ImagePropertyScribe<Logo> {
 	public LogoScribe() {
-		super(LogoType.class, "LOGO");
+		super(Logo.class, "LOGO");
 	}
 
 	@Override
-	protected LogoType _newInstance(String uri, ImageTypeParameter contentType) {
-		return new LogoType(uri, contentType);
+	protected Logo _newInstance(String uri, ImageTypeParameter contentType) {
+		return new Logo(uri, contentType);
 	}
 
 	@Override
-	protected LogoType _newInstance(byte[] data, ImageTypeParameter contentType) {
-		return new LogoType(data, contentType);
+	protected Logo _newInstance(byte[] data, ImageTypeParameter contentType) {
+		return new Logo(data, contentType);
 	}
 }

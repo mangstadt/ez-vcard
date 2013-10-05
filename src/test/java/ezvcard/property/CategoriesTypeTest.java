@@ -39,10 +39,10 @@ import org.junit.Test;
 public class CategoriesTypeTest {
 	@Test
 	public void validate() {
-		CategoriesType empty = new CategoriesType();
+		Categories empty = new Categories();
 		assertValidate(empty).run(1);
 
-		CategoriesType withValue = new CategoriesType();
+		Categories withValue = new Categories();
 		withValue.addValue("one");
 		assertValidate(withValue).run(0);
 	}

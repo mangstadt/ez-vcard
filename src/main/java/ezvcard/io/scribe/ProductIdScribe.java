@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.ProdIdType;
+import ezvcard.property.ProductId;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.ProdIdType;
  */
 
 /**
- * Marshals {@link ProdIdType} properties.
+ * Marshals {@link ProductId} properties.
  * @author Michael Angstadt
  */
-public class ProductIdScribe extends StringPropertyScribe<ProdIdType> {
+public class ProductIdScribe extends StringPropertyScribe<ProductId> {
 	public ProductIdScribe() {
-		super(ProdIdType.class, "PRODID");
+		super(ProductId.class, "PRODID");
 	}
 
 	@Override
-	protected ProdIdType _parseValue(String value) {
-		return new ProdIdType(value);
+	protected ProductId _parseValue(String value) {
+		return new ProductId(value);
 	}
 }

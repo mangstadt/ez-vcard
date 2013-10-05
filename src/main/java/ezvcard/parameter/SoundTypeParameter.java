@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.SoundType;
+import ezvcard.property.Sound;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
@@ -62,7 +62,7 @@ import ezvcard.property.SoundType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link SoundType} type.
+ * Represents the TYPE parameter of the {@link Sound} type.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>

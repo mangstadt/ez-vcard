@@ -8,7 +8,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.ClientPidMapType;
+import ezvcard.property.ClientPidMap;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -36,12 +36,12 @@ import ezvcard.property.ClientPidMapType;
  */
 
 /**
- * Marshals {@link ClientPidMapType} properties.
+ * Marshals {@link ClientPidMap} properties.
  * @author Michael Angstadt
  */
-public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMapType> {
+public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	public ClientPidMapScribe() {
-		super(ClientPidMapType.class, "CLIENTPIDMAP");
+		super(ClientPidMap.class, "CLIENTPIDMAP");
 	}
 
 	@Override
@@ -50,12 +50,12 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMapType> {
 	}
 
 	@Override
-	protected String _writeText(ClientPidMapType property, VCardVersion version) {
+	protected String _writeText(ClientPidMap property, VCardVersion version) {
 		return structured(property.getPid(), property.getUri());
 	}
 
 	@Override
-	protected ClientPidMapType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected ClientPidMap _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
 		SemiStructuredIterator it = semistructured(value, 2);
 		String pid = it.next();
 		String uri = it.next();
@@ -67,7 +67,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMapType> {
 	}
 
 	@Override
-	protected void _writeXml(ClientPidMapType property, XCardElement parent) {
+	protected void _writeXml(ClientPidMap property, XCardElement parent) {
 		Integer pid = property.getPid();
 		parent.append("sourceid", (pid == null) ? "" : pid.toString());
 
@@ -75,7 +75,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMapType> {
 	}
 
 	@Override
-	protected ClientPidMapType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected ClientPidMap _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 		String sourceid = element.first("sourceid");
 		String uri = element.first(VCardDataType.URI);
 
@@ -93,21 +93,21 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMapType> {
 	}
 
 	@Override
-	protected JCardValue _writeJson(ClientPidMapType property) {
+	protected JCardValue _writeJson(ClientPidMap property) {
 		return JCardValue.structured(property.getPid(), property.getUri());
 	}
 
 	@Override
-	protected ClientPidMapType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected ClientPidMap _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
 		StructuredIterator it = structured(value);
 		String pid = it.nextString();
 		String uri = it.nextString();
 		return parse(pid, uri);
 	}
 
-	private ClientPidMapType parse(String pid, String uri) {
+	private ClientPidMap parse(String pid, String uri) {
 		try {
-			return new ClientPidMapType(Integer.parseInt(pid), uri);
+			return new ClientPidMap(Integer.parseInt(pid), uri);
 		} catch (NumberFormatException e) {
 			throw new CannotParseException("Unable to parse PID component.");
 		}

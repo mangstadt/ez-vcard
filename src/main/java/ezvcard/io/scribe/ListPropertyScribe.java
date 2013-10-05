@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.TextListType;
+import ezvcard.property.TextListProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -39,7 +39,7 @@ import ezvcard.property.TextListType;
  * @param <T> the property class
  * @author Michael Angstadt
  */
-public abstract class ListPropertyScribe<T extends TextListType> extends VCardPropertyScribe<T> {
+public abstract class ListPropertyScribe<T extends TextListProperty> extends VCardPropertyScribe<T> {
 	public ListPropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}

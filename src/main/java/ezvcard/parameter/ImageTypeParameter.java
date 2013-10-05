@@ -2,8 +2,8 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.LogoType;
-import ezvcard.property.PhotoType;
+import ezvcard.property.Logo;
+import ezvcard.property.Photo;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
@@ -64,7 +64,7 @@ import ezvcard.property.PhotoType;
 
 /**
  * Represents an image media type used in the TYPE parameter, MEDIATYPE
- * parameter, and data URIs of the {@link PhotoType} and {@link LogoType}
+ * parameter, and data URIs of the {@link Photo} and {@link Logo}
  * properties.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}

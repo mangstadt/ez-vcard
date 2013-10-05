@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import ezvcard.property.CategoriesType;
-import ezvcard.property.NoteType;
-import ezvcard.property.StructuredNameType;
+import ezvcard.property.Categories;
+import ezvcard.property.Note;
+import ezvcard.property.StructuredName;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -158,7 +158,7 @@ public class JCardValue {
 	}
 
 	/**
-	 * Gets the value of a single-valued property (such as {@link NoteType}).
+	 * Gets the value of a single-valued property (such as {@link Note}).
 	 * @return the value or empty string if not found
 	 */
 	public String asSingle() {
@@ -190,7 +190,7 @@ public class JCardValue {
 
 	/**
 	 * Gets the value of a structured property (such as
-	 * {@link StructuredNameType}).
+	 * {@link StructuredName}).
 	 * @return the values or empty list if not found
 	 */
 	public List<List<String>> asStructured() {
@@ -257,7 +257,7 @@ public class JCardValue {
 	}
 
 	/**
-	 * Gets the value of a multi-valued property (such as {@link CategoriesType}
+	 * Gets the value of a multi-valued property (such as {@link Categories}
 	 * ).
 	 * @return the values or empty list if not found
 	 */

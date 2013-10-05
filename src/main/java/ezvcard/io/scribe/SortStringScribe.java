@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.SortStringType;
+import ezvcard.property.SortString;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.SortStringType;
  */
 
 /**
- * Marshals {@link SortStringType} properties.
+ * Marshals {@link SortString} properties.
  * @author Michael Angstadt
  */
-public class SortStringScribe extends StringPropertyScribe<SortStringType> {
+public class SortStringScribe extends StringPropertyScribe<SortString> {
 	public SortStringScribe() {
-		super(SortStringType.class, "SORT-STRING");
+		super(SortString.class, "SORT-STRING");
 	}
 
 	@Override
-	protected SortStringType _parseValue(String value) {
-		return new SortStringType(value);
+	protected SortString _parseValue(String value) {
+		return new SortString(value);
 	}
 }

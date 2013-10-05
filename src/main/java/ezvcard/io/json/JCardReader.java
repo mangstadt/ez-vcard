@@ -25,8 +25,8 @@ import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.RawType;
-import ezvcard.property.VCardType;
+import ezvcard.property.RawProperty;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -148,7 +148,7 @@ public class JCardReader implements Closeable {
 	 * </p>
 	 * @param scribe the scribe to register
 	 */
-	public void registerScribe(VCardPropertyScribe<? extends VCardType> scribe) {
+	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
 		index.register(scribe);
 	}
 
@@ -217,14 +217,14 @@ public class JCardReader implements Closeable {
 				return;
 			}
 
-			VCardPropertyScribe<? extends VCardType> scribe = index.getPropertyScribe(propertyName);
+			VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(propertyName);
 			if (scribe == null) {
 				scribe = new RawPropertyScribe(propertyName);
 			}
 
-			VCardType property;
+			VCardProperty property;
 			try {
-				Result<? extends VCardType> result = scribe.parseJson(value, dataType, parameters);
+				Result<? extends VCardProperty> result = scribe.parseJson(value, dataType, parameters);
 
 				for (String warning : result.getWarnings()) {
 					addWarning(warning, propertyName);
@@ -237,12 +237,12 @@ public class JCardReader implements Closeable {
 				return;
 			} catch (CannotParseException e) {
 				scribe = new RawPropertyScribe(propertyName);
-				Result<? extends VCardType> result = scribe.parseJson(value, dataType, parameters);
+				Result<? extends VCardProperty> result = scribe.parseJson(value, dataType, parameters);
 
 				property = result.getProperty();
 				property.setGroup(group);
 
-				String valueStr = ((RawType) property).getValue();
+				String valueStr = ((RawProperty) property).getValue();
 				addWarning("Property value could not be parsed.  Property will be saved as an extended type instead." + NEWLINE + "  Value: " + valueStr + NEWLINE + "  Reason: " + e.getMessage(), propertyName);
 			} catch (EmbeddedVCardException e) {
 				addWarning("Property will not be unmarshalled because jCard does not supported embedded vCards.", propertyName);

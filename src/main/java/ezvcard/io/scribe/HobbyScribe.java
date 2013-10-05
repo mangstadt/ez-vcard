@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.HobbyType;
+import ezvcard.property.Hobby;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.HobbyType;
  */
 
 /**
- * Marshals {@link HobbyType} properties.
+ * Marshals {@link Hobby} properties.
  * @author Michael Angstadt
  */
-public class HobbyScribe extends StringPropertyScribe<HobbyType> {
+public class HobbyScribe extends StringPropertyScribe<Hobby> {
 	public HobbyScribe() {
-		super(HobbyType.class, "HOBBY");
+		super(Hobby.class, "HOBBY");
 	}
 
 	@Override
-	protected HobbyType _parseValue(String value) {
-		return new HobbyType(value);
+	protected Hobby _parseValue(String value) {
+		return new Hobby(value);
 	}
 }

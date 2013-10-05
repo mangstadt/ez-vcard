@@ -23,13 +23,13 @@ import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.parameter.AddressTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
-import ezvcard.property.AddressType;
-import ezvcard.property.EmailType;
-import ezvcard.property.ImppType;
-import ezvcard.property.LabelType;
-import ezvcard.property.RawType;
-import ezvcard.property.TelephoneType;
-import ezvcard.property.UrlType;
+import ezvcard.property.Address;
+import ezvcard.property.Email;
+import ezvcard.property.Impp;
+import ezvcard.property.Label;
+import ezvcard.property.RawProperty;
+import ezvcard.property.Telephone;
+import ezvcard.property.Url;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -327,9 +327,9 @@ public class HCardReaderTest {
 		assertTrue(vcard.getUrls().isEmpty());
 
 		{
-			Iterator<ImppType> it = vcard.getImpps().iterator();
+			Iterator<Impp> it = vcard.getImpps().iterator();
 
-			ImppType impp = it.next();
+			Impp impp = it.next();
 			assertEquals(URI.create("aim:ShoppingBuddy"), impp.getUri());
 
 			assertFalse(it.hasNext());
@@ -357,9 +357,9 @@ public class HCardReaderTest {
 		assertTrue(vcard.getUrls().isEmpty());
 
 		{
-			Iterator<EmailType> it = vcard.getEmails().iterator();
+			Iterator<Email> it = vcard.getEmails().iterator();
 
-			EmailType email = it.next();
+			Email email = it.next();
 			assertEquals("jdoe@hotmail.com", email.getValue());
 
 			assertFalse(it.hasNext());
@@ -387,9 +387,9 @@ public class HCardReaderTest {
 		assertTrue(vcard.getUrls().isEmpty());
 
 		{
-			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+			Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
 
-			TelephoneType tel = it.next();
+			Telephone tel = it.next();
 			assertEquals("+15555551234", tel.getUri().getNumber());
 
 			assertFalse(it.hasNext());
@@ -416,18 +416,18 @@ public class HCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		{
-			Iterator<UrlType> it = vcard.getUrls().iterator();
+			Iterator<Url> it = vcard.getUrls().iterator();
 
-			UrlType url = it.next();
+			Url url = it.next();
 			assertEquals("mailto:jdoe@hotmail.com", url.getValue());
 
 			assertFalse(it.hasNext());
 		}
 
 		{
-			Iterator<EmailType> it = vcard.getEmails().iterator();
+			Iterator<Email> it = vcard.getEmails().iterator();
 
-			EmailType email = it.next();
+			Email email = it.next();
 			assertEquals("jdoe@hotmail.com", email.getValue());
 
 			assertFalse(it.hasNext());
@@ -454,18 +454,18 @@ public class HCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		{
-			Iterator<UrlType> it = vcard.getUrls().iterator();
+			Iterator<Url> it = vcard.getUrls().iterator();
 
-			UrlType url = it.next();
+			Url url = it.next();
 			assertEquals("tel:+15555551234", url.getValue());
 
 			assertFalse(it.hasNext());
 		}
 
 		{
-			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+			Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
 
-			TelephoneType tel = it.next();
+			Telephone tel = it.next();
 			assertEquals("+15555551234", tel.getUri().getNumber());
 
 			assertFalse(it.hasNext());
@@ -498,9 +498,9 @@ public class HCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		{
-			Iterator<AddressType> it = vcard.getAddresses().iterator();
+			Iterator<Address> it = vcard.getAddresses().iterator();
 
-			AddressType adr = it.next();
+			Address adr = it.next();
 			assertEquals("123 Main St.", adr.getStreetAddress());
 			assertEquals("Austin", adr.getLocality());
 			assertEquals("TX", adr.getRegion());
@@ -512,9 +512,9 @@ public class HCardReaderTest {
 		}
 
 		{
-			Iterator<LabelType> it = vcard.getOrphanedLabels().iterator();
+			Iterator<Label> it = vcard.getOrphanedLabels().iterator();
 
-			LabelType label = it.next();
+			Label label = it.next();
 			assertEquals("456 Wall St., New York, NY 67890", label.getValue());
 			assertSetEquals(label.getTypes(), AddressTypeParameter.WORK);
 
@@ -669,16 +669,16 @@ public class HCardReaderTest {
 
 		//URL
 		{
-			Iterator<UrlType> it = vcard.getUrls().iterator();
+			Iterator<Url> it = vcard.getUrls().iterator();
 			assertEquals("http://www.commerce.net/", it.next().getValue());
 			assertFalse(it.hasNext());
 		}
 
 		//ADR
 		{
-			Iterator<AddressType> it = vcard.getAddresses().iterator();
+			Iterator<Address> it = vcard.getAddresses().iterator();
 
-			AddressType adr = it.next();
+			Address adr = it.next();
 			assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
 			assertNull(adr.getPoBox());
 			assertNull(adr.getExtendedAddress());
@@ -693,9 +693,9 @@ public class HCardReaderTest {
 
 		//TEL
 		{
-			Iterator<TelephoneType> it = vcard.getTelephoneNumbers().iterator();
+			Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
 
-			TelephoneType tel = it.next();
+			Telephone tel = it.next();
 			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK);
 			assertEquals("+1-650-289-4040", tel.getText());
 
@@ -708,9 +708,9 @@ public class HCardReaderTest {
 
 		//EMAIL
 		{
-			Iterator<EmailType> it = vcard.getEmails().iterator();
+			Iterator<Email> it = vcard.getEmails().iterator();
 
-			EmailType email = it.next();
+			Email email = it.next();
 			assertEquals("info@commerce.net", email.getValue());
 
 			assertFalse(it.hasNext());
@@ -748,7 +748,7 @@ public class HCardReaderTest {
 		assertTrue(vcard.getExtendedTypes("X-LUCKY-NUM").isEmpty());
 
 		//read a type without a type class
-		List<RawType> genderTypes = vcard.getExtendedTypes("X-GENDER");
+		List<RawProperty> genderTypes = vcard.getExtendedTypes("X-GENDER");
 		assertEquals(1, genderTypes.size());
 		assertEquals("male", genderTypes.get(0).getValue());
 

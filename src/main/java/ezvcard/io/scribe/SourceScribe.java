@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.SourceType;
+import ezvcard.property.Source;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.SourceType;
  */
 
 /**
- * Marshals {@link SourceType} properties.
+ * Marshals {@link Source} properties.
  * @author Michael Angstadt
  */
-public class SourceScribe extends UriPropertyScribe<SourceType> {
+public class SourceScribe extends UriPropertyScribe<Source> {
 	public SourceScribe() {
-		super(SourceType.class, "SOURCE");
+		super(Source.class, "SOURCE");
 	}
 
 	@Override
-	protected SourceType _parseValue(String value) {
-		return new SourceType(value);
+	protected Source _parseValue(String value) {
+		return new Source(value);
 	}
 }

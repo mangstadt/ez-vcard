@@ -4,7 +4,7 @@ import java.util.List;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.html.HCardElement;
-import ezvcard.property.TextType;
+import ezvcard.property.TextProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -36,7 +36,7 @@ import ezvcard.property.TextType;
  * @param <T> the property class
  * @author Michael Angstadt
  */
-public abstract class UriPropertyScribe<T extends TextType> extends StringPropertyScribe<T> {
+public abstract class UriPropertyScribe<T extends TextProperty> extends StringPropertyScribe<T> {
 	public UriPropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName, VCardDataType.URI);
 	}

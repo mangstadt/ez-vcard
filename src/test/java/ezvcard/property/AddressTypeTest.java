@@ -42,7 +42,7 @@ import ezvcard.parameter.AddressTypeParameter;
 public class AddressTypeTest {
 	@Test
 	public void validate() {
-		AddressType property = new AddressType();
+		Address property = new Address();
 		assertValidate(property).run(0);
 
 		property.addType(AddressTypeParameter.DOM);

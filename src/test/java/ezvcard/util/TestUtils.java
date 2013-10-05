@@ -17,7 +17,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.property.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -96,9 +96,9 @@ public class TestUtils {
 	 * parameter, depending on how many warnings it is expected to have (e.g. 3
 	 * times for 3 warnings)
 	 */
-	public static void assertValidate(ValidationWarnings warnings, VCardType... expectedProperties) {
-		Counts<VCardType> expectedCounts = new Counts<VCardType>();
-		for (VCardType expectedProperty : expectedProperties) {
+	public static void assertValidate(ValidationWarnings warnings, VCardProperty... expectedProperties) {
+		Counts<VCardProperty> expectedCounts = new Counts<VCardProperty>();
+		for (VCardProperty expectedProperty : expectedProperties) {
 			expectedCounts.increment(expectedProperty);
 		}
 
@@ -106,7 +106,7 @@ public class TestUtils {
 		for (WarningsGroup warning : warnings) {
 			assertTrue(warning.getMessages().size() > 0);
 			for (int i = 0; i < warning.getMessages().size(); i++) {
-				VCardType property = warning.getProperty();
+				VCardProperty property = warning.getProperty();
 				actualCounts.increment(property);
 			}
 		}
@@ -119,16 +119,16 @@ public class TestUtils {
 	 * @param property the property object
 	 * @return the validation checker object
 	 */
-	public static ValidateChecker assertValidate(VCardType property) {
+	public static ValidateChecker assertValidate(VCardProperty property) {
 		return new ValidateChecker(property);
 	}
 
 	public static class ValidateChecker {
-		private final VCardType property;
+		private final VCardProperty property;
 		private VCard vcard;
 		private VCardVersion versions[] = VCardVersion.values();
 
-		public ValidateChecker(VCardType property) {
+		public ValidateChecker(VCardProperty property) {
 			this.property = property;
 			vcard(new VCard());
 		}

@@ -5,7 +5,7 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.VCardSubTypes;
-import ezvcard.property.RawType;
+import ezvcard.property.RawProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -33,12 +33,12 @@ import ezvcard.property.RawType;
  */
 
 /**
- * Marshals {@link RawType} properties.
+ * Marshals {@link RawProperty} properties.
  * @author Michael Angstadt
  */
-public class RawPropertyScribe extends VCardPropertyScribe<RawType> {
+public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	public RawPropertyScribe(String propertyName) {
-		super(RawType.class, propertyName);
+		super(RawProperty.class, propertyName);
 	}
 
 	@Override
@@ -47,19 +47,19 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawType> {
 	}
 
 	@Override
-	protected VCardDataType _dataType(RawType property, VCardVersion version) {
+	protected VCardDataType _dataType(RawProperty property, VCardVersion version) {
 		return property.getDataType();
 	}
 
 	@Override
-	protected String _writeText(RawType property, VCardVersion version) {
+	protected String _writeText(RawProperty property, VCardVersion version) {
 		String value = property.getValue();
 		return (value == null) ? "" : value;
 	}
 
 	@Override
-	protected RawType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
-		RawType property = new RawType(propertyName, value);
+	protected RawProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		RawProperty property = new RawProperty(propertyName, value);
 		property.setDataType(dataType);
 		return property;
 	}

@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.property.FormattedNameType;
+import ezvcard.property.FormattedName;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,16 +28,16 @@ import ezvcard.property.FormattedNameType;
  */
 
 /**
- * Marshals {@link FormattedNameType} properties.
+ * Marshals {@link FormattedName} properties.
  * @author Michael Angstadt
  */
-public class FormattedNameScribe extends StringPropertyScribe<FormattedNameType> {
+public class FormattedNameScribe extends StringPropertyScribe<FormattedName> {
 	public FormattedNameScribe() {
-		super(FormattedNameType.class, "FN");
+		super(FormattedName.class, "FN");
 	}
 
 	@Override
-	protected FormattedNameType _parseValue(String value) {
-		return new FormattedNameType(value);
+	protected FormattedName _parseValue(String value) {
+		return new FormattedName(value);
 	}
 }
