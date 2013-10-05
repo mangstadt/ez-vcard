@@ -1,10 +1,7 @@
 package ezvcard.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -44,132 +41,6 @@ public class VCardStringUtils {
 	 * The local computer's newline character sequence.
 	 */
 	public static final String NEWLINE = System.getProperty("line.separator");
-
-	/**
-	 * Unescapes all special characters that are escaped with a backslash, as
-	 * well as escaped newlines.
-	 * @param text the text
-	 * @return the unescaped text
-	 */
-	public static String unescape(String text) {
-		if (text == null) {
-			return null;
-		}
-
-		StringBuilder sb = new StringBuilder(text.length());
-		boolean escaped = false;
-		for (int i = 0; i < text.length(); i++) {
-			char ch = text.charAt(i);
-			if (escaped) {
-				if (ch == 'n' || ch == 'N') {
-					//newlines appear as "\n" or "\N" (see RFC 2426 p.7)
-					sb.append(NEWLINE);
-				} else {
-					sb.append(ch);
-				}
-				escaped = false;
-			} else if (ch == '\\') {
-				escaped = true;
-			} else {
-				sb.append(ch);
-			}
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * Escapes all special characters within a vCard value.
-	 * <p>
-	 * These characters are:
-	 * </p>
-	 * <ul>
-	 * <li>backslashes ({@code \})</li>
-	 * <li>commas ({@code ,})</li>
-	 * <li>semi-colons ({@code ;})</li>
-	 * </ul>
-	 * @param text the text to escape
-	 * @return the escaped text
-	 */
-	public static String escape(String text) {
-		if (text == null) {
-			return null;
-		}
-
-		String chars = "\\,;";
-		for (int i = 0; i < chars.length(); i++) {
-			String ch = chars.substring(i, i + 1);
-			text = text.replace(ch, "\\" + ch);
-		}
-		return text;
-	}
-
-	/**
-	 * Escapes all newline characters within a vCard value.
-	 * <p>
-	 * This method escapes the following newline sequences:
-	 * </p>
-	 * <ul>
-	 * <li>{@code \r\n}</li>
-	 * <li>{@code \r}</li>
-	 * <li>{@code \n}</li>
-	 * </ul>
-	 * @param text the text to escape
-	 * @return the escaped text
-	 */
-	public static String escapeNewlines(String text) {
-		if (text == null) {
-			return null;
-		}
-
-		return text.replaceAll("\\r\\n|\\r|\\n", "\\\\n");
-	}
-
-	/**
-	 * Determines if a string contains one or more newline characters.
-	 * @param text the string
-	 * @return true if it contains one or more newline characters, false if not
-	 */
-	public static boolean containsNewlines(String text) {
-		return text != null && (text.contains("\n") || text.contains("\r"));
-	}
-
-	/**
-	 * Splits a string by a character, taking escaped characters into account.
-	 * Each split value is also trimmed.
-	 * <p>
-	 * For example:
-	 * <p>
-	 * {@code splitBy("HE\:LLO::WORLD", ':', false, true)}
-	 * <p>
-	 * returns
-	 * <p>
-	 * {@code ["HE:LLO", "", "WORLD"]}
-	 * @param str the string to split
-	 * @param ch the character to split by
-	 * @param removeEmpties true to remove empty elements, false not to
-	 * @param unescape true to unescape each split string, false not to
-	 * @return the split string
-	 * @see <a
-	 * href="http://stackoverflow.com/q/820172">http://stackoverflow.com/q/820172</a>
-	 */
-	public static List<String> splitBy(String str, char ch, boolean removeEmpties, boolean unescape) {
-		str = str.trim();
-		String split[] = str.split("\\s*(?<!\\\\)" + Pattern.quote(ch + "") + "\\s*", -1);
-
-		List<String> list = new ArrayList<String>(split.length);
-		for (String s : split) {
-			if (s.length() == 0 && removeEmpties) {
-				continue;
-			}
-
-			if (unescape) {
-				s = unescape(s);
-			}
-
-			list.add(s);
-		}
-		return list;
-	}
 
 	/**
 	 * Trims the whitespace off the left side of a string.

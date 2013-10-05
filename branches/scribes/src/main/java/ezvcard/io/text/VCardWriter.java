@@ -29,7 +29,6 @@ import ezvcard.property.ProductId;
 import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
-import ezvcard.util.VCardStringUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -458,7 +457,7 @@ public class VCardWriter implements Closeable {
 					}
 
 					String vCardStr = sw.toString();
-					vCardStr = VCardStringUtils.escape(vCardStr);
+					vCardStr = VCardPropertyScribe.escape(vCardStr);
 					writer.writeProperty(type.getGroup(), scribe.getPropertyName(), parameters, vCardStr);
 				}
 			}

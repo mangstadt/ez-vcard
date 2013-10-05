@@ -26,7 +26,6 @@ import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.xml.XCardNamespaceContext;
 import ezvcard.property.FormattedName;
-import ezvcard.util.VCardBuilder;
 import ezvcard.util.XCardBuilder;
 import ezvcard.util.XmlUtils;
 
@@ -70,11 +69,16 @@ public class EzvcardTest {
 
 	@Test
 	public void parse_first() throws Exception {
-		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
-		vb.prop("FN").value("John Doe");
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		//@formatter:off
+		String str = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
-		VCard vcard = Ezvcard.parse(vb.toString()).warnings(warnings).first();
+		List<List<String>> warnings = new ArrayList<List<String>>();
+		VCard vcard = Ezvcard.parse(str).warnings(warnings).first();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarningsLists(warnings, 0);
@@ -82,13 +86,20 @@ public class EzvcardTest {
 
 	@Test
 	public void parse_all() throws Exception {
-		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
-		vb.prop("FN").value("John Doe");
-		vb.begin(VCardVersion.V3_0);
-		vb.prop("FN").value("Jane Doe");
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		//@formatter:off
+		String str = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"FN:Jane Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
-		List<VCard> vcards = Ezvcard.parse(vb.toString()).warnings(warnings).all();
+		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<VCard> vcards = Ezvcard.parse(str).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
@@ -106,10 +117,15 @@ public class EzvcardTest {
 
 	@Test
 	public void parse_register() throws Exception {
-		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
-		vb.prop("X-LUCKY-NUM").value("22");
+		//@formatter:off
+		String str = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"X-LUCKY-NUM:22\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
-		VCard vcard = Ezvcard.parse(vb.toString()).register(new LuckyNumScribe()).first();
+		VCard vcard = Ezvcard.parse(str).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
 		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
 		assertEquals(1, ext.size());
@@ -118,17 +134,22 @@ public class EzvcardTest {
 
 	@Test
 	public void parse_caretDecoding() throws Exception {
-		VCardBuilder vb = new VCardBuilder(VCardVersion.V4_0);
-		vb.prop("FN").param("X-TEST", "George Herman ^'Babe^' Ruth").value("John Doe");
+		//@formatter:off
+		String str = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"FN;X-TEST=George Herman ^'Babe^' Ruth:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		//defaults to true
-		VCard vcard = Ezvcard.parse(vb.toString()).first();
+		VCard vcard = Ezvcard.parse(str).first();
 		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 
-		vcard = Ezvcard.parse(vb.toString()).caretDecoding(true).first();
+		vcard = Ezvcard.parse(str).caretDecoding(true).first();
 		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 
-		vcard = Ezvcard.parse(vb.toString()).caretDecoding(false).first();
+		vcard = Ezvcard.parse(str).caretDecoding(false).first();
 		assertEquals("George Herman ^'Babe^' Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 	}
 

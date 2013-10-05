@@ -33,7 +33,6 @@ import ezvcard.property.Label;
 import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
-import ezvcard.util.VCardStringUtils;
 import ezvcard.util.org.apache.commons.codec.DecoderException;
 import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
@@ -416,7 +415,7 @@ public class VCardReader implements Closeable {
 					embeddedVCardException = e;
 				} else {
 					//the property value should be an embedded vCard (3.0 style)
-					value = VCardStringUtils.unescape(value);
+					value = VCardPropertyScribe.unescape(value);
 
 					VCardReader agentReader = new VCardReader(value);
 					try {
