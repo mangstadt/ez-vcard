@@ -5,7 +5,7 @@ import static ezvcard.util.TestUtils.assertValidate;
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.EmailTypeParameter;
+import ezvcard.parameter.KeyTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -39,21 +39,19 @@ import ezvcard.parameter.EmailTypeParameter;
 /**
  * @author Michael Angstadt
  */
-public class EmailTypeTest {
+public class KeyTest {
 	@Test
 	public void validate() {
-		Email property = new Email(null);
-		assertValidate(property).run(1);
+		Key empty = new Key();
+		assertValidate(empty).run(1);
 
-		property.setValue("johndoe@example.com");
-		assertValidate(property).run(0);
+		Key withUrl = new Key("http://example.com", KeyTypeParameter.PGP);
+		assertValidate(withUrl).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withUrl).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withUrl).versions(VCardVersion.V4_0).run(0);
 
-		property.addType(EmailTypeParameter.AOL);
-		property.addType(EmailTypeParameter.INTERNET);
-		property.addType(EmailTypeParameter.HOME);
-		property.addType(EmailTypeParameter.PREF);
-		assertValidate(property).versions(VCardVersion.V2_1).run(1);
-		assertValidate(property).versions(VCardVersion.V3_0).run(2);
-		assertValidate(property).versions(VCardVersion.V4_0).run(2);
+		Key withText = new Key((String) null, KeyTypeParameter.PGP);
+		withText.setText("abc123", KeyTypeParameter.PGP);
+		assertValidate(withText).run(0);
 	}
 }

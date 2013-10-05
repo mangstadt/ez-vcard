@@ -1,6 +1,8 @@
 package ezvcard.property;
 
-import static org.junit.Assert.assertTrue;
+import static ezvcard.util.TestUtils.assertValidate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -36,10 +38,35 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class UidTypeTest {
+public class GeoTest {
 	@Test
-	public void random() {
-		Uid uid = Uid.random();
-		assertTrue(uid.getValue().matches("urn:uuid:[-\\da-f]+"));
+	public void validate() {
+		Geo empty = new Geo(null);
+		assertValidate(empty).run(2);
+
+		Geo withValue = new Geo(-12.34, 56.78);
+		assertValidate(withValue).run(0);
+	}
+
+	@Test
+	public void latitude() {
+		Geo property = new Geo(null);
+		assertNull(property.getLatitude());
+		assertNull(property.getGeoUri());
+
+		property.setLatitude(-12.34);
+		assertEquals(-12.34, property.getLatitude(), 0.1);
+		assertEquals(-12.34, property.getGeoUri().getCoordA(), 0.1);
+	}
+
+	@Test
+	public void longitude() {
+		Geo property = new Geo(null);
+		assertNull(property.getLongitude());
+		assertNull(property.getGeoUri());
+
+		property.setLongitude(56.7878);
+		assertEquals(56.7878, property.getLongitude(), 0.1);
+		assertEquals(56.7878, property.getGeoUri().getCoordB(), 0.1);
 	}
 }

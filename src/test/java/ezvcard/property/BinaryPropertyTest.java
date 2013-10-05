@@ -1,10 +1,10 @@
 package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
+
+import ezvcard.parameter.ImageTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -38,35 +38,24 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class GeoTypeTest {
+public class BinaryPropertyTest {
 	@Test
 	public void validate() {
-		Geo empty = new Geo(null);
-		assertValidate(empty).run(2);
+		BinaryTypeImpl empty = new BinaryTypeImpl();
+		assertValidate(empty).run(1);
 
-		Geo withValue = new Geo(-12.34, 56.78);
-		assertValidate(withValue).run(0);
+		BinaryTypeImpl withUrl = new BinaryTypeImpl();
+		withUrl.setUrl("http://example.com/image.jpg", ImageTypeParameter.JPEG);
+		assertValidate(withUrl).run(0);
+
+		BinaryTypeImpl withData = new BinaryTypeImpl();
+		withData.setData("data".getBytes(), ImageTypeParameter.JPEG);
+		assertValidate(withData).run(0);
 	}
 
-	@Test
-	public void latitude() {
-		Geo property = new Geo(null);
-		assertNull(property.getLatitude());
-		assertNull(property.getGeoUri());
-
-		property.setLatitude(-12.34);
-		assertEquals(-12.34, property.getLatitude(), 0.1);
-		assertEquals(-12.34, property.getGeoUri().getCoordA(), 0.1);
-	}
-
-	@Test
-	public void longitude() {
-		Geo property = new Geo(null);
-		assertNull(property.getLongitude());
-		assertNull(property.getGeoUri());
-
-		property.setLongitude(56.7878);
-		assertEquals(56.7878, property.getLongitude(), 0.1);
-		assertEquals(56.7878, property.getGeoUri().getCoordB(), 0.1);
+	private class BinaryTypeImpl extends BinaryProperty<ImageTypeParameter> {
+		public BinaryTypeImpl() {
+			super((String) null, null);
+		}
 	}
 }

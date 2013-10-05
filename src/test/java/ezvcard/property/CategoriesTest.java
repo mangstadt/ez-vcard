@@ -4,9 +4,6 @@ import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -39,27 +36,14 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class MemberTypeTest {
+public class CategoriesTest {
 	@Test
 	public void validate() {
-		Member empty = new Member(null);
-		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(3);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(2);
+		Categories empty = new Categories();
+		assertValidate(empty).run(1);
 
-		Member withUri = new Member("uri");
-
-		VCard groupKind = new VCard();
-		groupKind.setKind(Kind.group());
-		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
-		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V4_0).run(0);
-
-		VCard nonGroupKind = new VCard();
-		nonGroupKind.setKind(Kind.application());
-		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
-		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V4_0).run(1);
-
-		VCard withoutKind = new VCard();
-		assertValidate(withUri).vcard(withoutKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
-		assertValidate(withUri).vcard(withoutKind).versions(VCardVersion.V4_0).run(1);
+		Categories withValue = new Categories();
+		withValue.addValue("one");
+		assertValidate(withValue).run(0);
 	}
 }

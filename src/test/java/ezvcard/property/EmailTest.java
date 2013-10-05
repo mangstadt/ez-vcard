@@ -3,10 +3,9 @@ package ezvcard.property;
 import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import ezvcard.VCardVersion;
+import ezvcard.parameter.EmailTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -40,22 +39,21 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class XmlTypeTest {
+public class EmailTest {
 	@Test
-	public void validate() throws Throwable {
-		Xml empty = new Xml((Document) null);
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
+	public void validate() {
+		Email property = new Email(null);
+		assertValidate(property).run(1);
 
-		Xml withValue = new Xml("<foo/>");
-		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withValue).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
-	}
+		property.setValue("johndoe@example.com");
+		assertValidate(property).run(0);
 
-	@Test(expected = SAXException.class)
-	public void invalid_xml() throws Throwable {
-		new Xml("not valid XML");
+		property.addType(EmailTypeParameter.AOL);
+		property.addType(EmailTypeParameter.INTERNET);
+		property.addType(EmailTypeParameter.HOME);
+		property.addType(EmailTypeParameter.PREF);
+		assertValidate(property).versions(VCardVersion.V2_1).run(1);
+		assertValidate(property).versions(VCardVersion.V3_0).run(2);
+		assertValidate(property).versions(VCardVersion.V4_0).run(2);
 	}
 }

@@ -42,7 +42,7 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class ImppTypeTest {
+public class ImppTest {
 	@Test
 	public void validate() {
 		Impp empty = new Impp((String) null);

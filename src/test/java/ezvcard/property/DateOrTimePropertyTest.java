@@ -2,10 +2,13 @@ package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertValidate;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.Test;
 
-import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.util.PartialDate;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -39,20 +42,38 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class AgentTypeTest {
+public class DateOrTimePropertyTest {
 	@Test
 	public void validate() {
-		Agent property = new Agent();
-		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
-		assertValidate(property).versions(VCardVersion.V4_0).run(2);
+		DateOrTimeTypeImpl empty = new DateOrTimeTypeImpl();
+		assertValidate(empty).run(1);
 
-		VCard agentVCard = new VCard();
-		property.setVCard(agentVCard);
-		assertValidate(property).versions(VCardVersion.V2_1).run(1);
-		assertValidate(property).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(2);
+		DateOrTimeTypeImpl withDate = new DateOrTimeTypeImpl();
+		Calendar c = Calendar.getInstance();
+		c.clear();
+		c.set(Calendar.YEAR, 1980);
+		c.set(Calendar.MONTH, Calendar.JUNE);
+		c.set(Calendar.DAY_OF_MONTH, 5);
+		Date date = c.getTime();
+		withDate.setDate(date, false);
+		assertValidate(withDate).run(0);
 
-		property.setUrl("http://example.com");
-		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(0);
-		assertValidate(property).versions(VCardVersion.V4_0).run(1);
+		DateOrTimeTypeImpl withPartialDate = new DateOrTimeTypeImpl();
+		withPartialDate.setPartialDate(PartialDate.date(null, 6, 5));
+		assertValidate(withPartialDate).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withPartialDate).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withPartialDate).versions(VCardVersion.V4_0).run(0);
+
+		DateOrTimeTypeImpl withText = new DateOrTimeTypeImpl();
+		withText.setText("text");
+		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
+	}
+
+	private static class DateOrTimeTypeImpl extends DateOrTimeProperty {
+		public DateOrTimeTypeImpl() {
+			super((Date) null);
+		}
 	}
 }

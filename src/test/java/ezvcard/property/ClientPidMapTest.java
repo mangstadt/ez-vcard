@@ -40,7 +40,7 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class ClientPidMapTypeTest {
+public class ClientPidMapTest {
 	@Test
 	public void validate() {
 		ClientPidMap empty = new ClientPidMap(null, null);
