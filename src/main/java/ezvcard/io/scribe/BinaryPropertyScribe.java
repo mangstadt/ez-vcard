@@ -6,6 +6,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.EncodingParameter;
@@ -13,7 +14,6 @@ import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.BinaryType;
 import ezvcard.util.DataUri;
-import ezvcard.util.HCardElement;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*

@@ -1,4 +1,4 @@
-package ezvcard.util;
+package ezvcard.io.html;
 
 import static ezvcard.util.VCardStringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
@@ -14,6 +14,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.junit.Test;
+
+import ezvcard.util.HtmlUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt

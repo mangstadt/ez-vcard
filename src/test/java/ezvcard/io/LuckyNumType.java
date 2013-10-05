@@ -9,11 +9,11 @@ import org.w3c.dom.NodeList;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.html.HCardElement;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.VCardType;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt

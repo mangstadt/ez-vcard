@@ -6,11 +6,11 @@ import java.util.TimeZone;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.TimezoneType;
-import ezvcard.util.HCardElement;
 import ezvcard.util.UtcOffset;
 
 /*

@@ -3,8 +3,8 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import ezvcard.VCardDataType;
+import ezvcard.io.html.HCardElement;
 import ezvcard.property.TextType;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt

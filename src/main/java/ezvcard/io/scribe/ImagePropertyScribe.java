@@ -3,10 +3,10 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import ezvcard.io.CannotParseException;
+import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.ImageTypeParameter;
 import ezvcard.property.ImageType;
 import ezvcard.util.DataUri;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt

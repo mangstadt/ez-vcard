@@ -8,10 +8,10 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.AgentType;
 import ezvcard.property.VCardType;
-import ezvcard.util.HCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt
