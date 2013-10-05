@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.types.DeathplaceType;
-import ezvcard.types.scribes.DeathplaceScribe;
 import ezvcard.types.scribes.Sensei.Check;
 
 /*

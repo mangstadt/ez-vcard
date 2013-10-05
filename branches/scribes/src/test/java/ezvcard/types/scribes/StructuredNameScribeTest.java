@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import ezvcard.io.json.JCardValue;
 import ezvcard.types.StructuredNameType;
 import ezvcard.types.scribes.Sensei.Check;
-import ezvcard.util.JCardValue;
 
 /*
  Copyright (c) 2013, Michael Angstadt

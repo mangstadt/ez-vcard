@@ -24,15 +24,15 @@ import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import ezvcard.io.HCardPage;
-import ezvcard.io.HCardReader;
-import ezvcard.io.JCardParseException;
-import ezvcard.io.JCardReader;
-import ezvcard.io.JCardWriter;
 import ezvcard.io.ScribeIndex;
-import ezvcard.io.VCardReader;
-import ezvcard.io.VCardWriter;
-import ezvcard.io.XCardDocument;
+import ezvcard.io.html.HCardPage;
+import ezvcard.io.html.HCardReader;
+import ezvcard.io.json.JCardParseException;
+import ezvcard.io.json.JCardReader;
+import ezvcard.io.json.JCardWriter;
+import ezvcard.io.text.VCardReader;
+import ezvcard.io.text.VCardWriter;
+import ezvcard.io.xml.XCardDocument;
 import ezvcard.types.VCardType;
 import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.IOUtils;

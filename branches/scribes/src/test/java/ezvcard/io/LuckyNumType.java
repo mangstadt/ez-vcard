@@ -10,10 +10,10 @@ import org.w3c.dom.NodeList;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.xml.XCardElement;
 import ezvcard.types.VCardType;
 import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.HCardElement;
-import ezvcard.util.XCardElement;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import ezvcard.io.json.JCardValue;
 import ezvcard.types.GenderType;
 import ezvcard.types.scribes.Sensei.Check;
-import ezvcard.util.JCardValue;
 
 /*
  Copyright (c) 2013, Michael Angstadt

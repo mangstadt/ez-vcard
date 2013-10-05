@@ -7,13 +7,13 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.json.JCardValue;
+import ezvcard.io.xml.XCardElement;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
 import ezvcard.types.BinaryType;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
-import ezvcard.util.JCardValue;
-import ezvcard.util.XCardElement;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
