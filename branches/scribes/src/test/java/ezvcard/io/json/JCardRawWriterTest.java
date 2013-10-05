@@ -13,7 +13,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt

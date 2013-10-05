@@ -5,10 +5,10 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.AgentType;
 import ezvcard.property.VCardType;
 import ezvcard.util.HCardElement;

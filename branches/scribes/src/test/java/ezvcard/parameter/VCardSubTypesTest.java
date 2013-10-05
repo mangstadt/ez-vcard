@@ -1,4 +1,4 @@
-package ezvcard;
+package ezvcard.parameter;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertWarnings;
@@ -14,8 +14,8 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
-import ezvcard.parameter.CalscaleParameter;
-import ezvcard.parameter.EncodingParameter;
+import ezvcard.VCardDataType;
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2013, Michael Angstadt

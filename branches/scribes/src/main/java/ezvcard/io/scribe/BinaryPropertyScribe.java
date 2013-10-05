@@ -4,13 +4,13 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.EncodingParameter;
 import ezvcard.parameter.MediaTypeParameter;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.BinaryType;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;

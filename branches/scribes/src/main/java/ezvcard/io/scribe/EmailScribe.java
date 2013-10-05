@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ezvcard.VCard;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.EmailType;
 import ezvcard.util.HCardElement;
 

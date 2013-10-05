@@ -3,10 +3,10 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.StructuredNameType;
 import ezvcard.util.HCardElement;
 

@@ -20,6 +20,7 @@ import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.parameter.EmailTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.AddressType;
 import ezvcard.property.AgentType;
 import ezvcard.property.AnniversaryType;

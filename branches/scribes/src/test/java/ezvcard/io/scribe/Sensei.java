@@ -17,12 +17,12 @@ import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.VCardType;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.XmlUtils;

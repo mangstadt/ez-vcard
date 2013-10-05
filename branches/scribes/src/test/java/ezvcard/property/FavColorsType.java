@@ -10,12 +10,12 @@ import org.w3c.dom.NodeList;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.util.HCardElement;
 import ezvcard.util.XmlUtils;
 

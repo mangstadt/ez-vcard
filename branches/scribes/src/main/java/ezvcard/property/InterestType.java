@@ -3,9 +3,9 @@ package ezvcard.property;
 import java.util.EnumSet;
 import java.util.Set;
 
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.InterestLevelParameter;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt

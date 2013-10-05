@@ -17,8 +17,8 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonToken;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.io.json.JCardRawReader.JCardDataStreamListener;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt

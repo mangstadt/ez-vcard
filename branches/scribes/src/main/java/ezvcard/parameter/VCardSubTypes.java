@@ -1,4 +1,4 @@
-package ezvcard;
+package ezvcard.parameter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ezvcard.parameter.CalscaleParameter;
-import ezvcard.parameter.EncodingParameter;
+import ezvcard.VCardDataType;
+import ezvcard.VCardVersion;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
 

@@ -17,7 +17,6 @@ import org.w3c.dom.Element;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
@@ -25,6 +24,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.VCardRawWriter;
 import ezvcard.io.xml.XCardElement;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.VCardType;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;

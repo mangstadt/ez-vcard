@@ -3,9 +3,9 @@ package ezvcard.io;
 import java.util.List;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.VCardType;
 
 /*

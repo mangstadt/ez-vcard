@@ -1,6 +1,6 @@
 package ezvcard.property;
 
-import ezvcard.VCardSubTypes;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt

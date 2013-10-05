@@ -21,7 +21,6 @@ import org.junit.rules.TemporaryFolder;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.MyFormattedNameType;
@@ -30,6 +29,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressTypeParameter;
 import ezvcard.parameter.EmailTypeParameter;
 import ezvcard.parameter.TelephoneTypeParameter;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.AddressType;
 import ezvcard.property.EmailType;
 import ezvcard.property.GeoType;
