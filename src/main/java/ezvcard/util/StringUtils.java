@@ -36,7 +36,7 @@ import java.util.Map;
  * Helper class for dealing with vCard strings.
  * @author Michael Angstadt
  */
-public class VCardStringUtils {
+public class StringUtils {
 	/**
 	 * The local computer's newline character sequence.
 	 */
@@ -170,7 +170,7 @@ public class VCardStringUtils {
 		void handle(StringBuilder sb, K key, V value);
 	}
 
-	private VCardStringUtils() {
+	private StringUtils() {
 		//hide constructor
 	}
 }

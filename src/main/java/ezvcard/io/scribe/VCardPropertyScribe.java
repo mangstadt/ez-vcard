@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
-import static ezvcard.util.VCardStringUtils.NEWLINE;
-import static ezvcard.util.VCardStringUtils.join;
+import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.join;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +29,8 @@ import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.VCardStringUtils.JoinCallback;
+import ezvcard.util.StringUtils;
+import ezvcard.util.StringUtils.JoinCallback;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -1084,7 +1084,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 			StringBuilder sb = new StringBuilder();
 
 			sb.append("Property value empty (no ");
-			VCardStringUtils.join(Arrays.asList(elements).subList(0, elements.length - 1), ", ", sb, new JoinCallback<String>() {
+			StringUtils.join(Arrays.asList(elements).subList(0, elements.length - 1), ", ", sb, new JoinCallback<String>() {
 				public void handle(StringBuilder sb, String value) {
 					sb.append('<').append(value).append('>');
 				}

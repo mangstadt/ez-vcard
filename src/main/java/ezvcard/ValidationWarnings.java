@@ -6,8 +6,8 @@ import java.util.List;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.VCardStringUtils;
-import ezvcard.util.VCardStringUtils.JoinCallback;
+import ezvcard.util.StringUtils;
+import ezvcard.util.StringUtils.JoinCallback;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -145,7 +145,7 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 	 */
 	@Override
 	public String toString() {
-		return VCardStringUtils.join(warnings, VCardStringUtils.NEWLINE);
+		return StringUtils.join(warnings, StringUtils.NEWLINE);
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 		@Override
 		public String toString() {
 			final String prefix = (property == null) ? "" : "[" + property.getClass().getSimpleName() + "]: ";
-			return VCardStringUtils.join(messages, VCardStringUtils.NEWLINE, new JoinCallback<String>() {
+			return StringUtils.join(messages, StringUtils.NEWLINE, new JoinCallback<String>() {
 				public void handle(StringBuilder sb, String message) {
 					sb.append(prefix).append(message);
 				}

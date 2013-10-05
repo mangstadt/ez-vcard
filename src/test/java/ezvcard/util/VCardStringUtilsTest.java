@@ -11,8 +11,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import ezvcard.util.VCardStringUtils.JoinCallback;
-import ezvcard.util.VCardStringUtils.JoinMapCallback;
+import ezvcard.util.StringUtils.JoinCallback;
+import ezvcard.util.StringUtils.JoinMapCallback;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -51,36 +51,36 @@ public class VCardStringUtilsTest {
 	public void ltrim() {
 		String actual, expected;
 
-		actual = VCardStringUtils.ltrim("\n \t One two three \t \n ");
+		actual = StringUtils.ltrim("\n \t One two three \t \n ");
 		expected = "One two three \t \n ";
 		assertEquals(actual, expected);
 
-		actual = VCardStringUtils.ltrim("\n \t \t \n ");
+		actual = StringUtils.ltrim("\n \t \t \n ");
 		expected = "";
 		assertEquals(actual, expected);
 
-		assertNull(VCardStringUtils.ltrim(null));
+		assertNull(StringUtils.ltrim(null));
 	}
 
 	@Test
 	public void rtrim() {
 		String actual, expected;
 
-		actual = VCardStringUtils.rtrim("\n \t One two three \t \n ");
+		actual = StringUtils.rtrim("\n \t One two three \t \n ");
 		expected = "\n \t One two three";
 		assertEquals(actual, expected);
 
-		actual = VCardStringUtils.rtrim("\n \t \t \n ");
+		actual = StringUtils.rtrim("\n \t \t \n ");
 		expected = "";
 		assertEquals(actual, expected);
 
-		assertNull(VCardStringUtils.rtrim(null));
+		assertNull(StringUtils.rtrim(null));
 	}
 
 	@Test
 	public void join_multiple() {
 		Collection<String> values = Arrays.asList("one", "two", "three");
-		assertEquals("ONE,TWO,THREE", VCardStringUtils.join(values, ",", new JoinCallback<String>() {
+		assertEquals("ONE,TWO,THREE", StringUtils.join(values, ",", new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String str) {
 				sb.append(str.toUpperCase());
 			}
@@ -90,7 +90,7 @@ public class VCardStringUtilsTest {
 	@Test
 	public void join_single() {
 		Collection<String> values = Arrays.asList("one");
-		assertEquals("ONE", VCardStringUtils.join(values, ",", new JoinCallback<String>() {
+		assertEquals("ONE", StringUtils.join(values, ",", new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String str) {
 				sb.append(str.toUpperCase());
 			}
@@ -100,7 +100,7 @@ public class VCardStringUtilsTest {
 	@Test
 	public void join_empty() {
 		Collection<String> values = Arrays.asList();
-		assertEquals("", VCardStringUtils.join(values, ",", new JoinCallback<String>() {
+		assertEquals("", StringUtils.join(values, ",", new JoinCallback<String>() {
 			public void handle(StringBuilder sb, String str) {
 				sb.append(str.toUpperCase());
 			}
@@ -114,7 +114,7 @@ public class VCardStringUtilsTest {
 		values.add(1);
 		values.add("two");
 		values.add(null);
-		assertEquals("false,1,two,null", VCardStringUtils.join(values, ","));
+		assertEquals("false,1,two,null", StringUtils.join(values, ","));
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class VCardStringUtilsTest {
 		map.put(1, "one");
 		map.put(2, "two");
 		map.put(3, "three");
-		assertEquals("1 - one,2 - two,3 - three", VCardStringUtils.join(map, ",", new JoinMapCallback<Integer, String>() {
+		assertEquals("1 - one,2 - two,3 - three", StringUtils.join(map, ",", new JoinMapCallback<Integer, String>() {
 			public void handle(StringBuilder sb, Integer key, String value) {
 				sb.append(key).append(" - ").append(value);
 			}

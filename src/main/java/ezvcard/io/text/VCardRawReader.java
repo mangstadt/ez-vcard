@@ -1,6 +1,6 @@
 package ezvcard.io.text;
 
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.io.Reader;
 import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.util.VCardStringUtils;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -139,7 +139,7 @@ public class VCardRawReader implements Closeable {
 					String paramValue = buffer.toString();
 					if (version == VCardVersion.V2_1) {
 						//2.1 allows whitespace to surround the "=", so remove it
-						paramValue = VCardStringUtils.ltrim(paramValue);
+						paramValue = StringUtils.ltrim(paramValue);
 					}
 					parameters.put(curParamName, paramValue);
 					curParamName = null;
@@ -163,7 +163,7 @@ public class VCardRawReader implements Closeable {
 				String paramName = buffer.toString();
 				if (version == VCardVersion.V2_1) {
 					//2.1 allows whitespace to surround the "=", so remove it
-					paramName = VCardStringUtils.rtrim(paramName);
+					paramName = StringUtils.rtrim(paramName);
 				}
 				curParamName = paramName;
 				buffer.setLength(0);

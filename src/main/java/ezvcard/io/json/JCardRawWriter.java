@@ -1,6 +1,6 @@
 package ezvcard.io.json;
 
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.io.Closeable;
 import java.io.IOException;

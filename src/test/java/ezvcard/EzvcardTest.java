@@ -1,7 +1,7 @@
 package ezvcard;
 
 import static ezvcard.util.TestUtils.assertWarningsLists;
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
