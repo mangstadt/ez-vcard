@@ -585,7 +585,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param text the text to unescape
 	 * @return the unescaped text
 	 */
-	protected static String unescape(String text) {
+	public static String unescape(String text) {
 		if (text == null) {
 			return null;
 		}
@@ -642,7 +642,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param text the text to escape
 	 * @return the escaped text
 	 */
-	protected static String escape(String text) {
+	public static String escape(String text) {
 		if (text == null) {
 			return null;
 		}

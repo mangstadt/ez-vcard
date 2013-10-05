@@ -1,15 +1,12 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -51,48 +48,6 @@ import ezvcard.util.VCardStringUtils.JoinMapCallback;
  */
 public class VCardStringUtilsTest {
 	@Test
-	public void unescape() {
-		String expected, actual;
-
-		actual = VCardStringUtils.unescape("\\\\ \\, \\; \\n \\\\\\,");
-		expected = "\\ , ; " + VCardStringUtils.NEWLINE + " \\,";
-		assertEquals(expected, actual);
-
-		assertNull(VCardStringUtils.unescape(null));
-	}
-
-	@Test
-	public void escape() {
-		String actual, expected;
-
-		actual = VCardStringUtils.escape("One; Two, Three\\ Four\n Five\r\n Six\r");
-		expected = "One\\; Two\\, Three\\\\ Four\n Five\r\n Six\r";
-		assertEquals(expected, actual);
-
-		assertNull(VCardStringUtils.escape(null));
-	}
-
-	@Test
-	public void escapeNewlines() {
-		String actual, expected;
-
-		actual = VCardStringUtils.escapeNewlines("One; Two, Three\\ Four\n Five\r\n Six\r");
-		expected = "One; Two, Three\\ Four\\n Five\\n Six\\n";
-		assertEquals(expected, actual);
-
-		assertNull(VCardStringUtils.escapeNewlines(null));
-	}
-
-	@Test
-	public void containsNewlines() {
-		assertTrue(VCardStringUtils.containsNewlines("One\nTwo"));
-		assertTrue(VCardStringUtils.containsNewlines("One\rTwo"));
-		assertTrue(VCardStringUtils.containsNewlines("One\r\nTwo"));
-		assertFalse(VCardStringUtils.containsNewlines("One, Two"));
-		assertFalse(VCardStringUtils.containsNewlines(null));
-	}
-
-	@Test
 	public void ltrim() {
 		String actual, expected;
 
@@ -120,27 +75,6 @@ public class VCardStringUtilsTest {
 		assertEquals(actual, expected);
 
 		assertNull(VCardStringUtils.rtrim(null));
-	}
-
-	@Test
-	public void splitBy() {
-		List<String> actual, expected;
-
-		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', false, false);
-		expected = Arrays.asList("Doe", "John", "Joh\\,\\;nny", "", "Sr.,III");
-		assertEquals(expected, actual);
-
-		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', true, false);
-		expected = Arrays.asList("Doe", "John", "Joh\\,\\;nny", "Sr.,III");
-		assertEquals(expected, actual);
-
-		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', false, true);
-		expected = Arrays.asList("Doe", "John", "Joh,;nny", "", "Sr.,III");
-		assertEquals(expected, actual);
-
-		actual = VCardStringUtils.splitBy("Doe;John;Joh\\,\\;nny;;Sr.,III", ';', true, true);
-		expected = Arrays.asList("Doe", "John", "Joh,;nny", "Sr.,III");
-		assertEquals(expected, actual);
 	}
 
 	@Test
