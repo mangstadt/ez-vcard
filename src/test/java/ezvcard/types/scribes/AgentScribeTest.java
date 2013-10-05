@@ -9,7 +9,7 @@ import org.junit.Test;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.EmbeddedVCardExceptionNew;
+import ezvcard.io.EmbeddedVCardException;
 import ezvcard.types.AgentType;
 import ezvcard.types.scribes.Sensei.Check;
 
@@ -72,7 +72,7 @@ public class AgentScribeTest {
 			try {
 				scribe.writeText(withVCard, version);
 				fail();
-			} catch (EmbeddedVCardExceptionNew e) {
+			} catch (EmbeddedVCardException e) {
 				assertEquals(vcard, e.getVCard());
 			}
 		}
@@ -91,7 +91,7 @@ public class AgentScribeTest {
 		try {
 			sensei.assertParseText("").versions(VCardVersion.V2_1).run();
 			fail();
-		} catch (EmbeddedVCardExceptionNew e) {
+		} catch (EmbeddedVCardException e) {
 			AgentType property = (AgentType) e.getProperty();
 			assertNull(property.getUrl());
 			assertNull(property.getVCard());
@@ -107,7 +107,7 @@ public class AgentScribeTest {
 		try {
 			sensei.assertParseText("BEGIN:VCARD\\nEND:VCARD").versions(VCardVersion.V3_0).run();
 			fail();
-		} catch (EmbeddedVCardExceptionNew e) {
+		} catch (EmbeddedVCardException e) {
 			AgentType property = (AgentType) e.getProperty();
 			assertNull(property.getUrl());
 			assertNull(property.getVCard());
@@ -135,7 +135,7 @@ public class AgentScribeTest {
 			//@formatter:on
 
 			fail();
-		} catch (EmbeddedVCardExceptionNew e) {
+		} catch (EmbeddedVCardException e) {
 			AgentType property = (AgentType) e.getProperty();
 			assertNull(property.getUrl());
 			assertNull(property.getVCard());

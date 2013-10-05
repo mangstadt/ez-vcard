@@ -410,7 +410,7 @@ public class VCardWriter implements Closeable {
 				value = scribe.writeText(type, targetVersion);
 			} catch (SkipMeException e) {
 				continue;
-			} catch (EmbeddedVCardExceptionNew e) {
+			} catch (EmbeddedVCardException e) {
 				nestedVCard = e.getVCard();
 			}
 

@@ -7,7 +7,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.io.EmbeddedVCardExceptionNew;
+import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.types.AgentType;
 import ezvcard.types.VCardType;
@@ -69,7 +69,7 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 
 		VCard vcard = property.getVCard();
 		if (vcard != null) {
-			throw new EmbeddedVCardExceptionNew(vcard);
+			throw new EmbeddedVCardException(vcard);
 		}
 
 		//don't write an empty value because parsers could interpret that as there being an embedded vCard on the next line
@@ -81,7 +81,7 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 		AgentType property = new AgentType();
 
 		if (dataType == null) {
-			throw new EmbeddedVCardExceptionNew(new Injector(property));
+			throw new EmbeddedVCardException(new Injector(property));
 		}
 
 		property.setUrl(unescape(value));
@@ -94,7 +94,7 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 
 		Set<String> classes = element.classNames();
 		if (classes.contains("vcard")) {
-			throw new EmbeddedVCardExceptionNew(new Injector(property));
+			throw new EmbeddedVCardException(new Injector(property));
 		}
 
 		String url = element.absUrl("href");
@@ -106,7 +106,7 @@ public class AgentScribe extends VCardPropertyScribe<AgentType> {
 		return property;
 	}
 
-	private static class Injector implements EmbeddedVCardExceptionNew.InjectionCallback {
+	private static class Injector implements EmbeddedVCardException.InjectionCallback {
 		private final AgentType property;
 
 		public Injector(AgentType property) {

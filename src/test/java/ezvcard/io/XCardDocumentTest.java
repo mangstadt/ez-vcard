@@ -1179,7 +1179,7 @@ public class XCardDocumentTest {
 
 		@Override
 		protected void _writeXml(EmbeddedType property, XCardElement parent) {
-			throw new EmbeddedVCardExceptionNew(new VCard());
+			throw new EmbeddedVCardException(new VCard());
 		}
 	}
 }
