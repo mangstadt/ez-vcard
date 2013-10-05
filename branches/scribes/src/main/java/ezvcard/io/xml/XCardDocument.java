@@ -1,7 +1,7 @@
 package ezvcard.io.xml;
 
 import static ezvcard.util.IOUtils.utf8Writer;
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.io.File;
 import java.io.FileInputStream;

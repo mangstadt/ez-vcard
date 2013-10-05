@@ -4,7 +4,7 @@ import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertWarnings;
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;

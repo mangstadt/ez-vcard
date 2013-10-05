@@ -1,6 +1,6 @@
 package ezvcard;
 
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;

@@ -1,7 +1,7 @@
 package ezvcard.io.json;
 
 import static ezvcard.util.IOUtils.utf8Reader;
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.io.Closeable;
 import java.io.File;

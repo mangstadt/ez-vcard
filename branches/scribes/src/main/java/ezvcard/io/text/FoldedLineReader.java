@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.regex.Pattern;
 
-import ezvcard.util.VCardStringUtils;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -150,7 +150,7 @@ public class FoldedLineReader extends BufferedReader {
 			}
 
 			if (foldedQuotedPrintableLine) {
-				line = VCardStringUtils.ltrim(line);
+				line = StringUtils.ltrim(line);
 
 				boolean endsInEquals = line.endsWith("=");
 				if (endsInEquals) {

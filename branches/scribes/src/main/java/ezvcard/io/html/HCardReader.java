@@ -1,6 +1,6 @@
 package ezvcard.io.html;
 
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.io.File;
 import java.io.IOException;
