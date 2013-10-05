@@ -30,11 +30,11 @@ import ezvcard.io.html.HCardReader;
 import ezvcard.io.json.JCardParseException;
 import ezvcard.io.json.JCardReader;
 import ezvcard.io.json.JCardWriter;
+import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.VCardReader;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.io.xml.XCardDocument;
 import ezvcard.types.VCardType;
-import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.IOUtils;
 
 /*

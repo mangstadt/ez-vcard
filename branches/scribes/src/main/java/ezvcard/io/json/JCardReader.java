@@ -22,11 +22,11 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.ScribeIndex;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.json.JCardRawReader.JCardDataStreamListener;
+import ezvcard.io.scribe.RawPropertyScribe;
+import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.types.RawType;
 import ezvcard.types.VCardType;
-import ezvcard.types.scribes.RawPropertyScribe;
-import ezvcard.types.scribes.VCardPropertyScribe;
-import ezvcard.types.scribes.VCardPropertyScribe.Result;
 
 /*
  Copyright (c) 2013, Michael Angstadt

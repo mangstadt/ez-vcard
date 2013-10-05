@@ -21,13 +21,13 @@ import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.ScribeIndex;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.types.AddressType;
 import ezvcard.types.LabelType;
 import ezvcard.types.ProdIdType;
 import ezvcard.types.RawType;
 import ezvcard.types.VCardType;
-import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.IOUtils;
 import ezvcard.util.VCardStringUtils;
 

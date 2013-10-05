@@ -14,8 +14,8 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.HCardElement;
 import ezvcard.util.XmlUtils;
 

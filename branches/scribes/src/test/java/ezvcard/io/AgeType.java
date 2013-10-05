@@ -5,8 +5,8 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.types.VCardType;
-import ezvcard.types.scribes.VCardPropertyScribe;
 
 /*
  Copyright (c) 2013, Michael Angstadt
