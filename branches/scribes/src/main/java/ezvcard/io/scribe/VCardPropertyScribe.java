@@ -213,8 +213,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * property's value
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
-	 * @throws EmbeddedVCardException if the property value is an embedded
-	 * vCard (i.e. the AGENT property)
+	 * @throws EmbeddedVCardException if the property value is an embedded vCard
+	 * (i.e. the AGENT property)
 	 */
 	public final Result<T> parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters) {
 		List<String> warnings = new ArrayList<String>(0);
@@ -247,8 +247,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
-	 * @throws EmbeddedVCardException if the property value is an embedded
-	 * vCard (i.e. the AGENT property)
+	 * @throws EmbeddedVCardException if the property value is an embedded vCard
+	 * (i.e. the AGENT property)
 	 */
 	public final Result<T> parseHtml(org.jsoup.nodes.Element element) {
 		HCardElement hcardElement = new HCardElement(element);
@@ -1063,7 +1063,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 
 	/**
 	 * Creates a {@link CannotParseException}, indicating that the XML elements
-	 * that the parser expected to find are missing from property's XML element.
+	 * that the parser expected to find are missing from the property's XML
+	 * element.
 	 * @param elements the names of the expected XML elements.
 	 */
 	protected static CannotParseException missingXmlElements(String... elements) {
