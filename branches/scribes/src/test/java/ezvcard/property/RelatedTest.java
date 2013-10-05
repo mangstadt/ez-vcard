@@ -1,14 +1,12 @@
 package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertValidate;
-
-import java.util.Calendar;
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
-import ezvcard.util.PartialDate;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -42,38 +40,77 @@ import ezvcard.util.PartialDate;
 /**
  * @author Michael Angstadt
  */
-public class DateOrTimeTypeTest {
+public class RelatedTest {
+	private final String text = "Edna Smith";
+	private final String uri = "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af";
+
 	@Test
 	public void validate() {
-		DateOrTimeTypeImpl empty = new DateOrTimeTypeImpl();
-		assertValidate(empty).run(1);
+		Related empty = new Related();
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		DateOrTimeTypeImpl withDate = new DateOrTimeTypeImpl();
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		Date date = c.getTime();
-		withDate.setDate(date, false);
-		assertValidate(withDate).run(0);
-
-		DateOrTimeTypeImpl withPartialDate = new DateOrTimeTypeImpl();
-		withPartialDate.setPartialDate(PartialDate.date(null, 6, 5));
-		assertValidate(withPartialDate).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withPartialDate).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withPartialDate).versions(VCardVersion.V4_0).run(0);
-
-		DateOrTimeTypeImpl withText = new DateOrTimeTypeImpl();
-		withText.setText("text");
+		Related withText = new Related();
+		withText.setText(text);
 		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
+
+		Related withUri = new Related();
+		withUri.setUri(uri);
+		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);
 	}
 
-	private static class DateOrTimeTypeImpl extends DateOrTimeProperty {
-		public DateOrTimeTypeImpl() {
-			super((Date) null);
-		}
+	@Test
+	public void setUri() {
+		Related t = new Related();
+		t.setText(text);
+		t.setUri(uri);
+
+		assertNull(t.getText());
+		assertEquals(uri, t.getUri());
+	}
+
+	@Test
+	public void setUriEmail() {
+		Related t = new Related();
+		t.setText(text);
+		t.setUriEmail("john.doe@example.com");
+
+		assertNull(t.getText());
+		assertEquals("mailto:john.doe@example.com", t.getUri());
+	}
+
+	@Test
+	public void setUriIM() {
+		Related t = new Related();
+		t.setText(text);
+		t.setUriIM("aim", "john.doe");
+
+		assertNull(t.getText());
+		assertEquals("aim:john.doe", t.getUri());
+	}
+
+	@Test
+	public void setUriTelephone() {
+		Related t = new Related();
+		t.setText(text);
+		t.setUriTelephone("555-555-5555");
+
+		assertNull(t.getText());
+		assertEquals("tel:555-555-5555", t.getUri());
+	}
+
+	@Test
+	public void setText() {
+		Related t = new Related();
+		t.setUri(uri);
+		t.setText(text);
+
+		assertEquals(text, t.getText());
+		assertNull(t.getUri());
 	}
 }

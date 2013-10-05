@@ -41,7 +41,7 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class GenderTypeTest {
+public class GenderTest {
 	@Test
 	public void validate() {
 		Gender empty = new Gender(null);

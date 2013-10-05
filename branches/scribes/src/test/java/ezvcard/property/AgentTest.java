@@ -1,11 +1,10 @@
 package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+import ezvcard.VCard;
 import ezvcard.VCardVersion;
 
 /*
@@ -40,53 +39,20 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class BirthplaceTypeTest {
-	private final String text = "Philadelphia, PA";
-	private final String uri = "geo:39.970806,-75.174809";
-
+public class AgentTest {
 	@Test
 	public void validate() {
-		Birthplace empty = new Birthplace();
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
+		Agent property = new Agent();
+		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
+		assertValidate(property).versions(VCardVersion.V4_0).run(2);
 
-		Birthplace withText = new Birthplace();
-		withText.setText(text);
-		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
+		VCard agentVCard = new VCard();
+		property.setVCard(agentVCard);
+		assertValidate(property).versions(VCardVersion.V2_1).run(1);
+		assertValidate(property).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(2);
 
-		Birthplace withUri = new Birthplace();
-		withUri.setUri(uri);
-		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);
-	}
-
-	@Test
-	public void setUri() {
-		Birthplace property = new Birthplace();
-
-		assertNull(property.getUri());
-
-		property.setText(text);
-		property.setUri(uri);
-
-		assertEquals(uri, property.getUri());
-		assertNull(property.getText());
-	}
-
-	@Test
-	public void setText() {
-		Birthplace property = new Birthplace();
-
-		assertNull(property.getText());
-
-		property.setUri(uri);
-		property.setText(text);
-
-		assertEquals(text, property.getText());
-		assertNull(property.getUri());
+		property.setUrl("http://example.com");
+		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(0);
+		assertValidate(property).versions(VCardVersion.V4_0).run(1);
 	}
 }

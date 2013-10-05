@@ -4,6 +4,9 @@ import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
+import ezvcard.VCardVersion;
+import ezvcard.util.TelUri;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -36,14 +39,18 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class CategoriesTypeTest {
+public class TelephoneTest {
 	@Test
 	public void validate() {
-		Categories empty = new Categories();
+		Telephone empty = new Telephone((String) null);
 		assertValidate(empty).run(1);
 
-		Categories withValue = new Categories();
-		withValue.addValue("one");
-		assertValidate(withValue).run(0);
+		Telephone withText = new Telephone("(800) 555-5555");
+		assertValidate(withText).run(0);
+
+		Telephone withUri = new Telephone(new TelUri.Builder("+1-800-555-5555").extension("101").build());
+		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);
 	}
 }

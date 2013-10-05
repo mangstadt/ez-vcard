@@ -38,7 +38,7 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class KindTypeTest {
+public class KindTest {
 	@Test
 	public void isIndividual() {
 		Kind kind = new Kind("individual");

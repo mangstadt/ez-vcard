@@ -47,7 +47,7 @@ import ezvcard.util.XmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class FavColorsType extends VCardProperty {
+public class FavColors extends VCardProperty {
 	private List<String> favColors = new ArrayList<String>();
 
 	public List<String> getFavColors() {
@@ -80,9 +80,9 @@ public class FavColorsType extends VCardProperty {
 		}
 	}
 
-	public static class FavColorsScribe extends VCardPropertyScribe<FavColorsType> {
+	public static class FavColorsScribe extends VCardPropertyScribe<FavColors> {
 		public FavColorsScribe() {
-			super(FavColorsType.class, "X-FAV-COLORS", new QName("http://fav-colors.net", "fav-colors"));
+			super(FavColors.class, "X-FAV-COLORS", new QName("http://fav-colors.net", "fav-colors"));
 		}
 
 		//required
@@ -95,14 +95,14 @@ public class FavColorsType extends VCardProperty {
 		//optional
 		//determines the data type based on the property value
 		@Override
-		protected VCardDataType _dataType(FavColorsType property, VCardVersion version) {
+		protected VCardDataType _dataType(FavColors property, VCardVersion version) {
 			return _defaultDataType(version);
 		}
 
 		//optional
 		//modifies the property's parameters before the property is written
 		@Override
-		protected void _prepareParameters(FavColorsType property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+		protected void _prepareParameters(FavColors property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
 			if (copy.getLanguage() == null) {
 				copy.setLanguage("en");
 			}
@@ -111,7 +111,7 @@ public class FavColorsType extends VCardProperty {
 		//required
 		//writes the property value to a plain-text vCard
 		@Override
-		protected String _writeText(FavColorsType property, VCardVersion version) {
+		protected String _writeText(FavColors property, VCardVersion version) {
 			StringBuilder sb = new StringBuilder();
 			if (!property.getFavColors().isEmpty()) {
 				for (String color : property.getFavColors()) {
@@ -125,8 +125,8 @@ public class FavColorsType extends VCardProperty {
 		//required
 		//parses the property's value from a plain-text vCard
 		@Override
-		protected FavColorsType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
-			FavColorsType prop = new FavColorsType();
+		protected FavColors _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+			FavColors prop = new FavColors();
 			for (String color : list(value)) {
 				prop.addFavColor(color);
 			}
@@ -136,7 +136,7 @@ public class FavColorsType extends VCardProperty {
 		//optional
 		//writes the property to an XML document
 		@Override
-		protected void _writeXml(FavColorsType property, XCardElement element) {
+		protected void _writeXml(FavColors property, XCardElement element) {
 			Element theElement = element.element();
 			for (String color : property.getFavColors()) {
 				Element colorElement = theElement.getOwnerDocument().createElementNS(qname.getNamespaceURI(), "color");
@@ -148,14 +148,14 @@ public class FavColorsType extends VCardProperty {
 		//optional
 		//parses the property from an XML document
 		@Override
-		protected FavColorsType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		protected FavColors _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
 			NodeList nl = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "color");
 			List<Element> colorElements = XmlUtils.toElementList(nl);
 			if (colorElements.isEmpty()) {
 				throw new CannotParseException("No <color> elements found.");
 			}
 
-			FavColorsType property = new FavColorsType();
+			FavColors property = new FavColors();
 			for (Element colorElement : colorElements) {
 				property.addFavColor(colorElement.getTextContent());
 			}
@@ -165,8 +165,8 @@ public class FavColorsType extends VCardProperty {
 		//optional
 		//parses the property value from an HTML page
 		@Override
-		protected FavColorsType _parseHtml(HCardElement element, List<String> warnings) {
-			FavColorsType property = new FavColorsType();
+		protected FavColors _parseHtml(HCardElement element, List<String> warnings) {
+			FavColors property = new FavColors();
 
 			String lang = element.attr("lang");
 			property.setLang((lang.length() == 0) ? null : lang);
@@ -179,15 +179,15 @@ public class FavColorsType extends VCardProperty {
 		//optional
 		//writes the property to a JSON stream
 		@Override
-		protected JCardValue _writeJson(FavColorsType property) {
+		protected JCardValue _writeJson(FavColors property) {
 			return JCardValue.multi(VCardDataType.TEXT, property.getFavColors());
 		}
 
 		//optional
 		//parses the property value from a JSON stream
 		@Override
-		protected FavColorsType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
-			FavColorsType property = new FavColorsType();
+		protected FavColors _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+			FavColors property = new FavColors();
 			property.getFavColors().addAll(value.asMulti());
 			return property;
 		}

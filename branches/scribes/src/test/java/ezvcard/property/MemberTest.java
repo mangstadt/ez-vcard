@@ -4,8 +4,8 @@ import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
+import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.KeyTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -39,19 +39,27 @@ import ezvcard.parameter.KeyTypeParameter;
 /**
  * @author Michael Angstadt
  */
-public class KeyTypeTest {
+public class MemberTest {
 	@Test
 	public void validate() {
-		Key empty = new Key();
-		assertValidate(empty).run(1);
+		Member empty = new Member(null);
+		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(3);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(2);
 
-		Key withUrl = new Key("http://example.com", KeyTypeParameter.PGP);
-		assertValidate(withUrl).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withUrl).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withUrl).versions(VCardVersion.V4_0).run(0);
+		Member withUri = new Member("uri");
 
-		Key withText = new Key((String) null, KeyTypeParameter.PGP);
-		withText.setText("abc123", KeyTypeParameter.PGP);
-		assertValidate(withText).run(0);
+		VCard groupKind = new VCard();
+		groupKind.setKind(Kind.group());
+		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
+		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V4_0).run(0);
+
+		VCard nonGroupKind = new VCard();
+		nonGroupKind.setKind(Kind.application());
+		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
+		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V4_0).run(1);
+
+		VCard withoutKind = new VCard();
+		assertValidate(withUri).vcard(withoutKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
+		assertValidate(withUri).vcard(withoutKind).versions(VCardVersion.V4_0).run(1);
 	}
 }

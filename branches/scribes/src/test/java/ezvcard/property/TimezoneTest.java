@@ -45,7 +45,7 @@ import ezvcard.util.UtcOffset;
 /**
  * @author Michael Angstadt
  */
-public class TimezoneTypeTest {
+public class TimezoneTest {
 	private final TimeZone newYork = TimeZone.getTimeZone("America/New_York");
 
 	@Test

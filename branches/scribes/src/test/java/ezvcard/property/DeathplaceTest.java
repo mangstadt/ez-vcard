@@ -1,11 +1,12 @@
 package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertValidate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.AddressTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -39,16 +40,53 @@ import ezvcard.parameter.AddressTypeParameter;
 /**
  * @author Michael Angstadt
  */
-public class AddressTypeTest {
+public class DeathplaceTest {
+	private final String text = "Mount, St. Helens";
+	private final String uri = "geo:46.176502,-122.191658";
+
 	@Test
 	public void validate() {
-		Address property = new Address();
-		assertValidate(property).run(0);
+		Deathplace empty = new Deathplace();
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		property.addType(AddressTypeParameter.DOM);
-		property.addType(AddressTypeParameter.HOME);
-		property.addType(AddressTypeParameter.PREF);
-		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(0);
-		assertValidate(property).versions(VCardVersion.V4_0).run(1);
+		Deathplace withText = new Deathplace();
+		withText.setText(text);
+		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
+
+		Deathplace withUri = new Deathplace();
+		withUri.setUri(uri);
+		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);
+	}
+
+	@Test
+	public void setUri() {
+		Deathplace property = new Deathplace();
+
+		assertNull(property.getUri());
+
+		property.setText(text);
+		property.setUri(uri);
+
+		assertEquals(uri, property.getUri());
+		assertNull(property.getText());
+	}
+
+	@Test
+	public void setText() {
+		Deathplace property = new Deathplace();
+
+		assertNull(property.getText());
+
+		property.setUri(uri);
+		property.setText(text);
+
+		assertEquals(text, property.getText());
+		assertNull(property.getUri());
 	}
 }

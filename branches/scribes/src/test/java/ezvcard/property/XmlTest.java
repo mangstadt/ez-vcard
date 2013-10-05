@@ -3,8 +3,10 @@ package ezvcard.property;
 import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -38,24 +40,22 @@ import ezvcard.parameter.ImageTypeParameter;
 /**
  * @author Michael Angstadt
  */
-public class BinaryTypeTest {
+public class XmlTest {
 	@Test
-	public void validate() {
-		BinaryTypeImpl empty = new BinaryTypeImpl();
-		assertValidate(empty).run(1);
+	public void validate() throws Throwable {
+		Xml empty = new Xml((Document) null);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		BinaryTypeImpl withUrl = new BinaryTypeImpl();
-		withUrl.setUrl("http://example.com/image.jpg", ImageTypeParameter.JPEG);
-		assertValidate(withUrl).run(0);
-
-		BinaryTypeImpl withData = new BinaryTypeImpl();
-		withData.setData("data".getBytes(), ImageTypeParameter.JPEG);
-		assertValidate(withData).run(0);
+		Xml withValue = new Xml("<foo/>");
+		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
+		assertValidate(withValue).versions(VCardVersion.V3_0).run(1);
+		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
 	}
 
-	private class BinaryTypeImpl extends BinaryProperty<ImageTypeParameter> {
-		public BinaryTypeImpl() {
-			super((String) null, null);
-		}
+	@Test(expected = SAXException.class)
+	public void invalid_xml() throws Throwable {
+		new Xml("not valid XML");
 	}
 }

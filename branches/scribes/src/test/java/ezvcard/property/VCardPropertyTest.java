@@ -47,7 +47,7 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class VCardTypeTest {
+public class VCardPropertyTest {
 	@Test
 	public void validate() {
 		ValidateType property = new ValidateType();

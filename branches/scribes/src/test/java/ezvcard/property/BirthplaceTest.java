@@ -40,24 +40,24 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class RelatedTypeTest {
-	private final String text = "Edna Smith";
-	private final String uri = "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af";
+public class BirthplaceTest {
+	private final String text = "Philadelphia, PA";
+	private final String uri = "geo:39.970806,-75.174809";
 
 	@Test
 	public void validate() {
-		Related empty = new Related();
+		Birthplace empty = new Birthplace();
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
 
-		Related withText = new Related();
+		Birthplace withText = new Birthplace();
 		withText.setText(text);
 		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
 
-		Related withUri = new Related();
+		Birthplace withUri = new Birthplace();
 		withUri.setUri(uri);
 		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
@@ -66,51 +66,27 @@ public class RelatedTypeTest {
 
 	@Test
 	public void setUri() {
-		Related t = new Related();
-		t.setText(text);
-		t.setUri(uri);
+		Birthplace property = new Birthplace();
 
-		assertNull(t.getText());
-		assertEquals(uri, t.getUri());
-	}
+		assertNull(property.getUri());
 
-	@Test
-	public void setUriEmail() {
-		Related t = new Related();
-		t.setText(text);
-		t.setUriEmail("john.doe@example.com");
+		property.setText(text);
+		property.setUri(uri);
 
-		assertNull(t.getText());
-		assertEquals("mailto:john.doe@example.com", t.getUri());
-	}
-
-	@Test
-	public void setUriIM() {
-		Related t = new Related();
-		t.setText(text);
-		t.setUriIM("aim", "john.doe");
-
-		assertNull(t.getText());
-		assertEquals("aim:john.doe", t.getUri());
-	}
-
-	@Test
-	public void setUriTelephone() {
-		Related t = new Related();
-		t.setText(text);
-		t.setUriTelephone("555-555-5555");
-
-		assertNull(t.getText());
-		assertEquals("tel:555-555-5555", t.getUri());
+		assertEquals(uri, property.getUri());
+		assertNull(property.getText());
 	}
 
 	@Test
 	public void setText() {
-		Related t = new Related();
-		t.setUri(uri);
-		t.setText(text);
+		Birthplace property = new Birthplace();
 
-		assertEquals(text, t.getText());
-		assertNull(t.getUri());
+		assertNull(property.getText());
+
+		property.setUri(uri);
+		property.setText(text);
+
+		assertEquals(text, property.getText());
+		assertNull(property.getUri());
 	}
 }
