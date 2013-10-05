@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.io.scribe.SortStringScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.ImageTypeParameter;
@@ -46,7 +47,6 @@ import ezvcard.types.TimezoneType;
 import ezvcard.types.TitleType;
 import ezvcard.types.UidType;
 import ezvcard.types.UrlType;
-import ezvcard.types.scribes.SortStringScribe;
 import ezvcard.util.TelUri;
 import freemarker.template.TemplateException;
 

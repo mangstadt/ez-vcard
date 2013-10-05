@@ -6,9 +6,9 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.types.VCardType;
-import ezvcard.types.scribes.VCardPropertyScribe;
 import ezvcard.util.HCardElement;
 
 /*
