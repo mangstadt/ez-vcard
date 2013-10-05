@@ -22,7 +22,7 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.parameter.AddressTypeParameter;
 import ezvcard.property.AddressType;
 import ezvcard.property.LabelType;
 import ezvcard.property.ProdIdType;

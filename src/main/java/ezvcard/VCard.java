@@ -18,8 +18,8 @@ import javax.xml.transform.TransformerException;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.io.text.VCardWriter;
-import ezvcard.parameters.EmailTypeParameter;
-import ezvcard.parameters.TelephoneTypeParameter;
+import ezvcard.parameter.EmailTypeParameter;
+import ezvcard.parameter.TelephoneTypeParameter;
 import ezvcard.property.AddressType;
 import ezvcard.property.AgentType;
 import ezvcard.property.AnniversaryType;

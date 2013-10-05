@@ -1,8 +1,8 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.HobbyType;
+import ezvcard.property.ExpertiseType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,7 +34,7 @@ import ezvcard.property.HobbyType;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link HobbyType} property.
+ * Represents a LEVEL parameter for the {@link ExpertiseType} property.
  * 
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
@@ -42,14 +42,14 @@ import ezvcard.property.HobbyType;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class HobbyLevelParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<HobbyLevelParameter> enums = new VCardParameterCaseClasses<HobbyLevelParameter>(HobbyLevelParameter.class);
+public class ExpertiseLevelParameter extends VCardParameter {
+	private static final VCardParameterCaseClasses<ExpertiseLevelParameter> enums = new VCardParameterCaseClasses<ExpertiseLevelParameter>(ExpertiseLevelParameter.class);
 
-	public static final HobbyLevelParameter LOW = new HobbyLevelParameter("low");
-	public static final HobbyLevelParameter MEDIUM = new HobbyLevelParameter("medium");
-	public static final HobbyLevelParameter HIGH = new HobbyLevelParameter("high");
+	public static final ExpertiseLevelParameter BEGINNER = new ExpertiseLevelParameter("beginner");
+	public static final ExpertiseLevelParameter AVERAGE = new ExpertiseLevelParameter("average");
+	public static final ExpertiseLevelParameter EXPERT = new ExpertiseLevelParameter("expert");
 
-	private HobbyLevelParameter(String value) {
+	private ExpertiseLevelParameter(String value) {
 		super(value);
 	}
 
@@ -59,7 +59,7 @@ public class HobbyLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static HobbyLevelParameter find(String value) {
+	public static ExpertiseLevelParameter find(String value) {
 		return enums.find(value);
 	}
 
@@ -70,7 +70,7 @@ public class HobbyLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static HobbyLevelParameter get(String value) {
+	public static ExpertiseLevelParameter get(String value) {
 		return enums.get(value);
 	}
 
@@ -79,7 +79,7 @@ public class HobbyLevelParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<HobbyLevelParameter> all() {
+	public static Collection<ExpertiseLevelParameter> all() {
 		return enums.all();
 	}
 }

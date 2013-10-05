@@ -1,9 +1,8 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.LogoType;
-import ezvcard.property.PhotoType;
+import ezvcard.property.KeyType;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
@@ -63,38 +62,36 @@ import ezvcard.property.PhotoType;
  */
 
 /**
- * Represents an image media type used in the TYPE parameter, MEDIATYPE
- * parameter, and data URIs of the {@link PhotoType} and {@link LogoType}
- * properties.
+ * Represents the TYPE parameter of the {@link KeyType} type.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
- * @author George El-Haddadt Mar 10, 2010
- * @author Michael Angstadt
+ * @author George El-Haddad Mar 10, 2010
+ * @author Michael Angstadt Jul 06, 2012
  */
-public class ImageTypeParameter extends MediaTypeParameter {
-	private static final MediaTypeCaseClasses<ImageTypeParameter> enums = new MediaTypeCaseClasses<ImageTypeParameter>(ImageTypeParameter.class);
+public class KeyTypeParameter extends MediaTypeParameter {
+	private static final MediaTypeCaseClasses<KeyTypeParameter> enums = new MediaTypeCaseClasses<KeyTypeParameter>(KeyTypeParameter.class);
 
-	public static final ImageTypeParameter GIF = new ImageTypeParameter("GIF", "image/gif", "gif");
-	public static final ImageTypeParameter JPEG = new ImageTypeParameter("JPEG", "image/jpeg", "jpg");
-	public static final ImageTypeParameter PNG = new ImageTypeParameter("PNG", "image/png", "png");
+	public static final KeyTypeParameter PGP = new KeyTypeParameter("PGP", "application/pgp-keys", "pgp");
+	public static final KeyTypeParameter GPG = new KeyTypeParameter("GPG", "application/gpg", "gpg");
+	public static final KeyTypeParameter X509 = new KeyTypeParameter("X509", "application/x509", null);
 
-	private ImageTypeParameter(String value, String mediaType, String extension) {
+	private KeyTypeParameter(String value, String mediaType, String extension) {
 		super(value, mediaType, extension);
 	}
 
 	/**
 	 * Searches for a parameter value that is defined as a static constant in
 	 * this class.
-	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
+	 * @param type the TYPE parameter value to search for (e.g. "PGP") or null
 	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g. "image/png") or null
-	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g.
+	 * "application/pgp-keys") or null to not search by this value
 	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "jpg") or null to not search by this value
+	 * e.g. "pgp") or null to not search by this value
 	 * @return the object or null if not found
 	 */
-	public static ImageTypeParameter find(String type, String mediaType, String extension) {
+	public static KeyTypeParameter find(String type, String mediaType, String extension) {
 		return enums.find(new String[] { type, mediaType, extension });
 	}
 
@@ -102,15 +99,15 @@ public class ImageTypeParameter extends MediaTypeParameter {
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
 	 * {@code ==} equality.
-	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
+	 * @param type the TYPE parameter value to search for (e.g. "PGP") or null
 	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g. "image/png") or null
-	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g.
+	 * "application/pgp-keys") or null to not search by this value
 	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "jpg") or null to not search by this value
+	 * e.g. "pgp") or null to not search by this value
 	 * @return the object
 	 */
-	public static ImageTypeParameter get(String type, String mediaType, String extension) {
+	public static KeyTypeParameter get(String type, String mediaType, String extension) {
 		return enums.get(new String[] { type, mediaType, extension });
 	}
 
@@ -119,7 +116,7 @@ public class ImageTypeParameter extends MediaTypeParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<ImageTypeParameter> all() {
+	public static Collection<KeyTypeParameter> all() {
 		return enums.all();
 	}
 }

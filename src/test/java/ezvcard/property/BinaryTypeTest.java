@@ -4,7 +4,7 @@ import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
-import ezvcard.parameters.ImageTypeParameter;
+import ezvcard.parameter.ImageTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

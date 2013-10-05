@@ -7,7 +7,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.KeyTypeParameter;
+import ezvcard.parameter.KeyTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

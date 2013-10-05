@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ezvcard.parameters.CalscaleParameter;
-import ezvcard.parameters.EncodingParameter;
+import ezvcard.parameter.CalscaleParameter;
+import ezvcard.parameter.EncodingParameter;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
 

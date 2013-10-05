@@ -1,8 +1,8 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.RelatedType;
+import ezvcard.property.InterestType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,37 +34,22 @@ import ezvcard.property.RelatedType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link RelatedType} type.
+ * Represents a LEVEL parameter for the {@link InterestType} property.
+ * 
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class RelatedTypeParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<RelatedTypeParameter> enums = new VCardParameterCaseClasses<RelatedTypeParameter>(RelatedTypeParameter.class);
+public class InterestLevelParameter extends VCardParameter {
+	private static final VCardParameterCaseClasses<InterestLevelParameter> enums = new VCardParameterCaseClasses<InterestLevelParameter>(InterestLevelParameter.class);
 
-	public static final RelatedTypeParameter ACQUAINTANCE = new RelatedTypeParameter("acquaintance");
-	public static final RelatedTypeParameter AGENT = new RelatedTypeParameter("agent");
-	public static final RelatedTypeParameter CHILD = new RelatedTypeParameter("child");
-	public static final RelatedTypeParameter CO_RESIDENT = new RelatedTypeParameter("co-resident");
-	public static final RelatedTypeParameter CO_WORKER = new RelatedTypeParameter("co-worker");
-	public static final RelatedTypeParameter COLLEAGUE = new RelatedTypeParameter("colleague");
-	public static final RelatedTypeParameter CONTACT = new RelatedTypeParameter("contact");
-	public static final RelatedTypeParameter CRUSH = new RelatedTypeParameter("crush");
-	public static final RelatedTypeParameter DATE = new RelatedTypeParameter("date");
-	public static final RelatedTypeParameter EMERGENCY = new RelatedTypeParameter("emergency");
-	public static final RelatedTypeParameter FRIEND = new RelatedTypeParameter("friend");
-	public static final RelatedTypeParameter KIN = new RelatedTypeParameter("kin");
-	public static final RelatedTypeParameter ME = new RelatedTypeParameter("me");
-	public static final RelatedTypeParameter MET = new RelatedTypeParameter("met");
-	public static final RelatedTypeParameter MUSE = new RelatedTypeParameter("muse");
-	public static final RelatedTypeParameter NEIGHBOR = new RelatedTypeParameter("neighbor");
-	public static final RelatedTypeParameter PARENT = new RelatedTypeParameter("parent");
-	public static final RelatedTypeParameter SIBLING = new RelatedTypeParameter("sibling");
-	public static final RelatedTypeParameter SPOUSE = new RelatedTypeParameter("spouse");
-	public static final RelatedTypeParameter SWEETHEART = new RelatedTypeParameter("sweetheart");
+	public static final InterestLevelParameter LOW = new InterestLevelParameter("low");
+	public static final InterestLevelParameter MEDIUM = new InterestLevelParameter("medium");
+	public static final InterestLevelParameter HIGH = new InterestLevelParameter("high");
 
-	private RelatedTypeParameter(String value) {
+	private InterestLevelParameter(String value) {
 		super(value);
 	}
 
@@ -74,7 +59,7 @@ public class RelatedTypeParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static RelatedTypeParameter find(String value) {
+	public static InterestLevelParameter find(String value) {
 		return enums.find(value);
 	}
 
@@ -85,7 +70,7 @@ public class RelatedTypeParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static RelatedTypeParameter get(String value) {
+	public static InterestLevelParameter get(String value) {
 		return enums.get(value);
 	}
 
@@ -94,7 +79,7 @@ public class RelatedTypeParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<RelatedTypeParameter> all() {
+	public static Collection<InterestLevelParameter> all() {
 		return enums.all();
 	}
 }

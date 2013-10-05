@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.parameters.ImageTypeParameter;
+import ezvcard.parameter.ImageTypeParameter;
 import ezvcard.property.LogoType;
 
 /*

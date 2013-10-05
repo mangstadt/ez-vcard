@@ -1,10 +1,8 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.VCardVersion;
-import ezvcard.property.AddressType;
-import ezvcard.property.LabelType;
+import ezvcard.property.ImppType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -36,53 +34,24 @@ import ezvcard.property.LabelType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link AddressType} and
- * {@link LabelType} types.
+ * Represents the TYPE parameter of the {@link ImppType} type.
  * <p>
- * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
  */
-public class AddressTypeParameter extends VersionedVCardParameter {
-	private static final VCardParameterCaseClasses<AddressTypeParameter> enums = new VCardParameterCaseClasses<AddressTypeParameter>(AddressTypeParameter.class);
+public class ImppTypeParameter extends VCardParameter {
+	private static final VCardParameterCaseClasses<ImppTypeParameter> enums = new VCardParameterCaseClasses<ImppTypeParameter>(ImppTypeParameter.class);
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
-	public static final AddressTypeParameter HOME = new AddressTypeParameter("home");
+	public static final ImppTypeParameter PERSONAL = new ImppTypeParameter("personal");
+	public static final ImppTypeParameter BUSINESS = new ImppTypeParameter("business");
+	public static final ImppTypeParameter HOME = new ImppTypeParameter("home");
+	public static final ImppTypeParameter WORK = new ImppTypeParameter("work");
+	public static final ImppTypeParameter MOBILE = new ImppTypeParameter("mobile");
+	public static final ImppTypeParameter PREF = new ImppTypeParameter("pref");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
-	public static final AddressTypeParameter WORK = new AddressTypeParameter("work");
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter DOM = new AddressTypeParameter("dom", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter INTL = new AddressTypeParameter("intl", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter POSTAL = new AddressTypeParameter("postal", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter PARCEL = new AddressTypeParameter("parcel", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter PREF = new AddressTypeParameter("pref", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	private AddressTypeParameter(String value, VCardVersion... supportedVersions) {
-		super(value, supportedVersions);
+	private ImppTypeParameter(String value) {
+		super(value);
 	}
 
 	/**
@@ -91,7 +60,7 @@ public class AddressTypeParameter extends VersionedVCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static AddressTypeParameter find(String value) {
+	public static ImppTypeParameter find(String value) {
 		return enums.find(value);
 	}
 
@@ -102,7 +71,7 @@ public class AddressTypeParameter extends VersionedVCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static AddressTypeParameter get(String value) {
+	public static ImppTypeParameter get(String value) {
 		return enums.get(value);
 	}
 
@@ -111,7 +80,7 @@ public class AddressTypeParameter extends VersionedVCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<AddressTypeParameter> all() {
+	public static Collection<ImppTypeParameter> all() {
 		return enums.all();
 	}
 }

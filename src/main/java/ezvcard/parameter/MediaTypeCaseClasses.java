@@ -1,11 +1,8 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
+import java.lang.reflect.Constructor;
 
-import ezvcard.VCardVersion;
+import ezvcard.util.CaseClasses;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -30,37 +27,39 @@ import ezvcard.VCardVersion;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
- The views and conclusions contained in the software and documentation are those
- of the authors and should not be interpreted as representing official policies, 
- either expressed or implied, of the FreeBSD Project.
  */
 
 /**
- * Represents a parameter whose values are supported by a variety of different
- * vCard versions.
+ * Manages the list of pre-defined values for a media type parameter.
  * @author Michael Angstadt
+ * @param <T> the parameter class
  */
-public class VersionedVCardParameter extends VCardParameter {
-	protected final Set<VCardVersion> supportedVersions;
-
-	public VersionedVCardParameter(String value, VCardVersion... supportedVersions) {
-		super(value);
-		if (supportedVersions.length == 0) {
-			supportedVersions = VCardVersion.values();
-		}
-
-		Set<VCardVersion> set = EnumSet.copyOf(Arrays.asList(supportedVersions));
-		this.supportedVersions = Collections.unmodifiableSet(set);
+public class MediaTypeCaseClasses<T extends MediaTypeParameter> extends CaseClasses<T, String[]> {
+	public MediaTypeCaseClasses(Class<T> clazz) {
+		super(clazz);
 	}
 
-	/**
-	 * Determines if the parameter value is supported by the given vCard
-	 * version.
-	 * @param version the vCard version
-	 * @return true if it is supported, false if not
-	 */
-	public boolean isSupported(VCardVersion version) {
-		return supportedVersions.contains(version);
+	@Override
+	protected T create(String[] value) {
+		try {
+			//reflection: return new ClassName(value, mediaType, extension);
+			Constructor<T> constructor = clazz.getDeclaredConstructor(String.class, String.class, String.class);
+			constructor.setAccessible(true);
+			return constructor.newInstance(value[0], value[1], value[2]);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	protected boolean matches(T object, String[] value) {
+		String objectValues[] = new String[] { object.getValue(), object.getMediaType(), object.getExtension() };
+		for (int i = 0; i < value.length; i++) {
+			String v = value[i];
+			if (v != null && !v.equalsIgnoreCase(objectValues[i])) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

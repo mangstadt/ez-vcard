@@ -12,7 +12,7 @@ import org.junit.Test;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.text.VCardRawWriter.ProblemsListener;
-import ezvcard.parameters.EncodingParameter;
+import ezvcard.parameter.EncodingParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ezvcard.parameters.SoundTypeParameter;
+import ezvcard.parameter.SoundTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

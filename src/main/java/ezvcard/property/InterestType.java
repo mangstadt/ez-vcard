@@ -5,7 +5,7 @@ import java.util.Set;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.InterestLevelParameter;
+import ezvcard.parameter.InterestLevelParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

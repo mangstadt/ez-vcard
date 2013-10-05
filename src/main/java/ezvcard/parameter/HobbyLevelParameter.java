@@ -1,10 +1,8 @@
-package ezvcard.property;
+package ezvcard.parameter;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Collection;
 
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.property.HobbyType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -36,46 +34,52 @@ import ezvcard.parameter.ImageTypeParameter;
  */
 
 /**
- * Represents a vCard type that stores image data (for example,
- * {@link PhotoType}).
+ * Represents a LEVEL parameter for the {@link HobbyType} property.
+ * 
+ * <p>
+ * <b>Supported versions:</b> {@code 4.0}
+ * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class ImageType extends BinaryType<ImageTypeParameter> {
-	/**
-	 * Creates an image property.
-	 * @param url the URL to the image
-	 * @param type the content type (e.g. JPEG)
-	 */
-	public ImageType(String url, ImageTypeParameter type) {
-		super(url, type);
+public class HobbyLevelParameter extends VCardParameter {
+	private static final VCardParameterCaseClasses<HobbyLevelParameter> enums = new VCardParameterCaseClasses<HobbyLevelParameter>(HobbyLevelParameter.class);
+
+	public static final HobbyLevelParameter LOW = new HobbyLevelParameter("low");
+	public static final HobbyLevelParameter MEDIUM = new HobbyLevelParameter("medium");
+	public static final HobbyLevelParameter HIGH = new HobbyLevelParameter("high");
+
+	private HobbyLevelParameter(String value) {
+		super(value);
 	}
 
 	/**
-	 * Creates an image property.
-	 * @param data the binary data of the image
-	 * @param type the content type (e.g. JPEG)
+	 * Searches for a parameter value that is defined as a static constant in
+	 * this class.
+	 * @param value the parameter value
+	 * @return the object or null if not found
 	 */
-	public ImageType(byte[] data, ImageTypeParameter type) {
-		super(data, type);
+	public static HobbyLevelParameter find(String value) {
+		return enums.find(value);
 	}
 
 	/**
-	 * Creates an image property.
-	 * @param in an input stream to the binary data (will be closed)
-	 * @param type the content type (e.g. JPEG)
-	 * @throws IOException if there's a problem reading from the input stream
+	 * Searches for a parameter value and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * {@code ==} equality.
+	 * @param value the parameter value
+	 * @return the object
 	 */
-	public ImageType(InputStream in, ImageTypeParameter type) throws IOException {
-		super(in, type);
+	public static HobbyLevelParameter get(String value) {
+		return enums.get(value);
 	}
 
 	/**
-	 * Creates an image property.
-	 * @param file the image file
-	 * @param type the content type (e.g. JPEG)
-	 * @throws IOException if there's a problem reading from the file
+	 * Gets all of the parameter values that are defined as static constants in
+	 * this class.
+	 * @return the parameter values
 	 */
-	public ImageType(File file, ImageTypeParameter type) throws IOException {
-		super(file, type);
+	public static Collection<HobbyLevelParameter> all() {
+		return enums.all();
 	}
 }

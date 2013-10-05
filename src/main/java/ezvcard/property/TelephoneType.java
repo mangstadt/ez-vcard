@@ -6,7 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.TelephoneTypeParameter;
+import ezvcard.parameter.TelephoneTypeParameter;
 import ezvcard.util.TelUri;
 
 /*

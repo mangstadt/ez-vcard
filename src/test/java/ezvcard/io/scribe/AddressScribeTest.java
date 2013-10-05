@@ -10,7 +10,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.parameter.AddressTypeParameter;
 import ezvcard.property.AddressType;
 
 /*

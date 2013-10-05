@@ -10,7 +10,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.parameters.TelephoneTypeParameter;
+import ezvcard.parameter.TelephoneTypeParameter;
 import ezvcard.property.TelephoneType;
 import ezvcard.util.TelUri;
 

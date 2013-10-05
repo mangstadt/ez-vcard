@@ -1,6 +1,11 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -32,48 +37,30 @@ import java.util.Collection;
  */
 
 /**
- * Represents a CALSCALE parameter.
- * <p>
- * <b>Supported versions:</b> {@code 4.0}
- * </p>
+ * Represents a parameter whose values are supported by a variety of different
+ * vCard versions.
  * @author Michael Angstadt
  */
-public class CalscaleParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<CalscaleParameter> enums = new VCardParameterCaseClasses<CalscaleParameter>(CalscaleParameter.class);
+public class VersionedVCardParameter extends VCardParameter {
+	protected final Set<VCardVersion> supportedVersions;
 
-	public static final CalscaleParameter GREGORIAN = new CalscaleParameter("gregorian");
-
-	private CalscaleParameter(String value) {
+	public VersionedVCardParameter(String value, VCardVersion... supportedVersions) {
 		super(value);
+		if (supportedVersions.length == 0) {
+			supportedVersions = VCardVersion.values();
+		}
+
+		Set<VCardVersion> set = EnumSet.copyOf(Arrays.asList(supportedVersions));
+		this.supportedVersions = Collections.unmodifiableSet(set);
 	}
 
 	/**
-	 * Searches for a parameter value that is defined as a static constant in
-	 * this class.
-	 * @param value the parameter value
-	 * @return the object or null if not found
+	 * Determines if the parameter value is supported by the given vCard
+	 * version.
+	 * @param version the vCard version
+	 * @return true if it is supported, false if not
 	 */
-	public static CalscaleParameter find(String value) {
-		return enums.find(value);
-	}
-
-	/**
-	 * Searches for a parameter value and creates one if it cannot be found. All
-	 * objects are guaranteed to be unique, so they can be compared with
-	 * {@code ==} equality.
-	 * @param value the parameter value
-	 * @return the object
-	 */
-	public static CalscaleParameter get(String value) {
-		return enums.get(value);
-	}
-
-	/**
-	 * Gets all of the parameter values that are defined as static constants in
-	 * this class.
-	 * @return the parameter values
-	 */
-	public static Collection<CalscaleParameter> all() {
-		return enums.all();
+	public boolean isSupported(VCardVersion version) {
+		return supportedVersions.contains(version);
 	}
 }
