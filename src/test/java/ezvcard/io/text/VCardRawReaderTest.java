@@ -12,10 +12,10 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.text.VCardRawReader.StopReadingException;
 import ezvcard.io.text.VCardRawReader.VCardDataStreamListener;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt

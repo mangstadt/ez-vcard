@@ -2,7 +2,7 @@ package ezvcard.property;
 
 import java.util.List;
 
-import ezvcard.VCardSubTypes;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt

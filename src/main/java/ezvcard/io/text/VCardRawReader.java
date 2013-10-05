@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 import ezvcard.VCardException;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.util.VCardStringUtils;
 
 /*

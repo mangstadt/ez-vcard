@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCard;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.AddressTypeParameter;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt

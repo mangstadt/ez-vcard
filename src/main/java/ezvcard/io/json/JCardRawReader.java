@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt

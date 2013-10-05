@@ -15,7 +15,6 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
@@ -25,6 +24,7 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.RawType;
 import ezvcard.property.VCardType;
 

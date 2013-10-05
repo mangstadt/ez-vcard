@@ -18,13 +18,13 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.scribe.VCardPropertyScribe.SemiStructuredIterator;
 import ezvcard.io.scribe.VCardPropertyScribe.StructuredIterator;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.VCardType;
 import ezvcard.util.DefaultTimezoneRule;
 

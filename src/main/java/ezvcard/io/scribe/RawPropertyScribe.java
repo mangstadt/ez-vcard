@@ -3,8 +3,8 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
+import ezvcard.parameter.VCardSubTypes;
 import ezvcard.property.RawType;
 
 /*

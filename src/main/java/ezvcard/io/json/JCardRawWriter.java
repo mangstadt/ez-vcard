@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardSubTypes;
+import ezvcard.parameter.VCardSubTypes;
 
 /*
  Copyright (c) 2013, Michael Angstadt
