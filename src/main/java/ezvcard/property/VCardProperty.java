@@ -8,7 +8,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -54,7 +54,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * The list of attributes that are associated with this type (called
 	 * "sub types" or "parameters").
 	 */
-	protected VCardSubTypes subTypes = new VCardSubTypes();
+	protected VCardParameters subTypes = new VCardParameters();
 
 	/**
 	 * Gets the vCard versions that support this property.
@@ -125,7 +125,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * Gets all of the property's parameters.
 	 * @return the property's parameters
 	 */
-	public VCardSubTypes getSubTypes() {
+	public VCardParameters getSubTypes() {
 		return subTypes;
 	}
 
@@ -133,7 +133,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * Sets the property's parameters.
 	 * @param subTypes the parameters
 	 */
-	public void setSubTypes(VCardSubTypes subTypes) {
+	public void setSubTypes(VCardParameters subTypes) {
 		this.subTypes = subTypes;
 	}
 
@@ -226,7 +226,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the PID values or empty set if there are none
-	 * @see VCardSubTypes#getPids
+	 * @see VCardParameters#getPids
 	 */
 	List<Integer[]> getPids() {
 		return subTypes.getPids();
@@ -242,7 +242,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @param localId the local ID
 	 * @param clientPidMapRef the ID used to reference the property's globally
 	 * unique identifier in the CLIENTPIDMAP property.
-	 * @see VCardSubTypes#addPid(int, int)
+	 * @see VCardParameters#addPid(int, int)
 	 */
 	void addPid(int localId, int clientPidMapRef) {
 		subTypes.addPid(localId, clientPidMapRef);
@@ -255,7 +255,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @see VCardSubTypes#removePids
+	 * @see VCardParameters#removePids
 	 */
 	void removePids() {
 		subTypes.removePids();
@@ -272,7 +272,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the preference value or null if it doesn't exist
-	 * @see VCardSubTypes#getPref
+	 * @see VCardParameters#getPref
 	 */
 	Integer getPref() {
 		return subTypes.getPref();
@@ -289,7 +289,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param pref the preference value or null to remove
-	 * @see VCardSubTypes#setPref
+	 * @see VCardParameters#setPref
 	 */
 	void setPref(Integer pref) {
 		subTypes.setPref(pref);
@@ -298,7 +298,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
 	 * Gets the language that the property value is written in.
 	 * @return the language or null if not set
-	 * @see VCardSubTypes#getLanguage
+	 * @see VCardParameters#getLanguage
 	 */
 	String getLanguage() {
 		return subTypes.getLanguage();
@@ -307,7 +307,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
 	 * Sets the language that the property value is written in.
 	 * @param language the language or null to remove
-	 * @see VCardSubTypes#setLanguage
+	 * @see VCardParameters#setLanguage
 	 */
 	void setLanguage(String language) {
 		subTypes.setLanguage(language);
@@ -319,7 +319,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * are put at the beginning of the sorted list and properties with high
 	 * index values are put at the end of the list.
 	 * @return the index or null if not set
-	 * @see VCardSubTypes#setIndex
+	 * @see VCardParameters#setIndex
 	 */
 	Integer getIndex() {
 		return subTypes.getIndex();
@@ -331,7 +331,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * are put at the beginning of the sorted list and properties with high
 	 * index values are put at the end of the list.
 	 * @param index the index or null to remove
-	 * @see VCardSubTypes#setIndex
+	 * @see VCardParameters#setIndex
 	 */
 	void setIndex(Integer index) {
 		subTypes.setIndex(index);

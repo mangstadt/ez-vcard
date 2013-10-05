@@ -16,7 +16,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -102,7 +102,7 @@ public class FavColors extends VCardProperty {
 		//optional
 		//modifies the property's parameters before the property is written
 		@Override
-		protected void _prepareParameters(FavColors property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+		protected void _prepareParameters(FavColors property, VCardParameters copy, VCardVersion version, VCard vcard) {
 			if (copy.getLanguage() == null) {
 				copy.setLanguage("en");
 			}
@@ -125,7 +125,7 @@ public class FavColors extends VCardProperty {
 		//required
 		//parses the property's value from a plain-text vCard
 		@Override
-		protected FavColors _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		protected FavColors _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			FavColors prop = new FavColors();
 			for (String color : list(value)) {
 				prop.addFavColor(color);
@@ -148,7 +148,7 @@ public class FavColors extends VCardProperty {
 		//optional
 		//parses the property from an XML document
 		@Override
-		protected FavColors _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		protected FavColors _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 			NodeList nl = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "color");
 			List<Element> colorElements = XmlUtils.toElementList(nl);
 			if (colorElements.isEmpty()) {
@@ -186,7 +186,7 @@ public class FavColors extends VCardProperty {
 		//optional
 		//parses the property value from a JSON stream
 		@Override
-		protected FavColors _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+		protected FavColors _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 			FavColors property = new FavColors();
 			property.getFavColors().addAll(value.asMulti());
 			return property;

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.RelatedTypeParameter;
+import ezvcard.parameter.RelatedType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -50,18 +50,18 @@ import ezvcard.parameter.RelatedTypeParameter;
  * VCard vcard = new VCard();
  * 
  * Related related = new Related();
- * related.addType(RelatedTypeParameter.FRIEND);
+ * related.addType(RelatedType.FRIEND);
  * related.setUri(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
  * vcard.addRelated(related);
  * 
  * related = new Related();
- * related.addType(RelatedTypeParameter.CO_WORKER);
- * related.addType(RelatedTypeParameter.FRIEND);
+ * related.addType(RelatedType.CO_WORKER);
+ * related.addType(RelatedType.FRIEND);
  * related.setUri(&quot;http://joesmoe.name/vcard.vcf&quot;);
  * vcard.addRelated(related);
  * 
  * related = new Related();
- * related.addType(RelatedTypeParameter.SPOUSE);
+ * related.addType(RelatedType.SPOUSE);
  * related.setText(&quot;Edna Smith&quot;);
  * vcard.addRelated(related);
  * </pre>
@@ -146,11 +146,11 @@ public class Related extends VCardProperty implements HasAltId {
 	 * Gets all the TYPE parameters.
 	 * @return the TYPE parameters or empty set if there are none
 	 */
-	public Set<RelatedTypeParameter> getTypes() {
+	public Set<RelatedType> getTypes() {
 		Set<String> values = subTypes.getTypes();
-		Set<RelatedTypeParameter> types = new HashSet<RelatedTypeParameter>(values.size());
+		Set<RelatedType> types = new HashSet<RelatedType>(values.size());
 		for (String value : values) {
-			types.add(RelatedTypeParameter.get(value));
+			types.add(RelatedType.get(value));
 		}
 		return types;
 	}
@@ -159,7 +159,7 @@ public class Related extends VCardProperty implements HasAltId {
 	 * Adds a TYPE parameter.
 	 * @param type the TYPE parameter to add
 	 */
-	public void addType(RelatedTypeParameter type) {
+	public void addType(RelatedType type) {
 		subTypes.addType(type.getValue());
 	}
 
@@ -167,7 +167,7 @@ public class Related extends VCardProperty implements HasAltId {
 	 * Removes a TYPE parameter.
 	 * @param type the TYPE parameter to remove
 	 */
-	public void removeType(RelatedTypeParameter type) {
+	public void removeType(RelatedType type) {
 		subTypes.removeType(type.getValue());
 	}
 

@@ -8,7 +8,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Geo;
 import ezvcard.util.GeoUri;
 import ezvcard.util.VCardFloatFormatter;
@@ -65,7 +65,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	}
 
 	@Override
-	protected Geo _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Geo _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value, version, warnings);
 	}
@@ -76,7 +76,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	}
 
 	@Override
-	protected Geo _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Geo _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			return parse(value, element.version(), warnings);
@@ -120,7 +120,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	}
 
 	@Override
-	protected Geo _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Geo _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		return parse(value.asSingle(), VCardVersion.V4_0, warnings);
 	}
 

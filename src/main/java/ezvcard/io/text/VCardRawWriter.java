@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.EncodingParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.Encoding;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -341,7 +341,7 @@ public class VCardRawWriter implements Closeable {
 	 * @throws IOException if there's an I/O problem
 	 */
 	public void writeProperty(String propertyName, String value) throws IOException {
-		writeProperty(null, propertyName, new VCardSubTypes(), value);
+		writeProperty(null, propertyName, new VCardParameters(), value);
 	}
 
 	/**
@@ -350,13 +350,13 @@ public class VCardRawWriter implements Closeable {
 	 * @param propertyName the property name (e.g. "FN")
 	 * @param parameters the property parameters
 	 * @param value the property value (will be converted to "quoted-printable"
-	 * encoding if the {@link EncodingParameter#QUOTED_PRINTABLE} parameter is
+	 * encoding if the {@link Encoding#QUOTED_PRINTABLE} parameter is
 	 * set)
 	 * @throws IllegalArgumentException if the group or property name contains
 	 * invalid characters
 	 * @throws IOException if there's an I/O problem
 	 */
-	public void writeProperty(String group, String propertyName, VCardSubTypes parameters, String value) throws IOException {
+	public void writeProperty(String group, String propertyName, VCardParameters parameters, String value) throws IOException {
 		//validate the group name
 		if (group != null && !propertyNameRegex.matcher(group).matches()) {
 			throw new IllegalArgumentException("Group contains invalid characters.  Valid characters are letters, numbers, and hyphens: " + group);
@@ -387,7 +387,7 @@ public class VCardRawWriter implements Closeable {
 			}
 
 			if (version == VCardVersion.V2_1) {
-				boolean isTypeParameter = VCardSubTypes.TYPE.equalsIgnoreCase(parameterName);
+				boolean isTypeParameter = VCardParameters.TYPE.equalsIgnoreCase(parameterName);
 				for (String parameterValue : parameterValues) {
 					parameterValue = sanitizeParameterValue(parameterValue, parameterName, propertyName);
 
@@ -428,7 +428,7 @@ public class VCardRawWriter implements Closeable {
 		writer.append(':');
 
 		//write the property value
-		boolean quotedPrintable = (parameters.getEncoding() == EncodingParameter.QUOTED_PRINTABLE);
+		boolean quotedPrintable = (parameters.getEncoding() == Encoding.QUOTED_PRINTABLE);
 		writer.append(value, quotedPrintable);
 
 		writer.append(newline);
@@ -441,14 +441,14 @@ public class VCardRawWriter implements Closeable {
 	 * @param value the value to sanitize
 	 * @return the sanitized value
 	 */
-	private String sanitizeValue(String propertyName, VCardSubTypes parameters, String value) {
+	private String sanitizeValue(String propertyName, VCardParameters parameters, String value) {
 		if (value == null) {
 			return "";
 		}
 
 		if (version == VCardVersion.V2_1 && containsNewlines(value)) {
 			//2.1 does not support the "\n" escape sequence (see "Delimiters" sub-section in section 2 of the specs)
-			parameters.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
+			parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
 			return value;
 		}
 

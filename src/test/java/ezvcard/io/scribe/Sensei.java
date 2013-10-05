@@ -22,7 +22,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.XmlUtils;
@@ -209,7 +209,7 @@ public class Sensei<T extends VCardProperty> {
 		protected final T property;
 		private VCardVersion versions[] = VCardVersion.values();
 		private VCard vcard = new VCard();
-		private VCardSubTypes expected = new VCardSubTypes();
+		private VCardParameters expected = new VCardParameters();
 
 		public PrepareParamsTest(T property) {
 			this.property = property;
@@ -253,7 +253,7 @@ public class Sensei<T extends VCardProperty> {
 		 */
 		public void run() {
 			for (VCardVersion version : versions) {
-				VCardSubTypes actual = scribe.prepareParameters(property, version, vcard);
+				VCardParameters actual = scribe.prepareParameters(property, version, vcard);
 				assertEquals("Actual: " + actual, expected.size(), actual.size());
 
 				for (Map.Entry<String, List<String>> entry : expected) {
@@ -391,7 +391,7 @@ public class Sensei<T extends VCardProperty> {
 	 * Parent class for the parser testers.
 	 */
 	private abstract class ParseTest<U extends ParseTest<U>> {
-		protected VCardSubTypes parameters = new VCardSubTypes();
+		protected VCardParameters parameters = new VCardParameters();
 		protected int warnings = 0;
 
 		@SuppressWarnings("unchecked")
@@ -413,7 +413,7 @@ public class Sensei<T extends VCardProperty> {
 		 * @param parameters the parameters
 		 * @return this
 		 */
-		public U params(VCardSubTypes parameters) {
+		public U params(VCardParameters parameters) {
 			this.parameters = parameters;
 			return this_;
 		}
@@ -581,7 +581,7 @@ public class Sensei<T extends VCardProperty> {
 		}
 
 		@Override
-		public ParseHtmlTest params(VCardSubTypes parameters) {
+		public ParseHtmlTest params(VCardParameters parameters) {
 			throw new UnsupportedOperationException();
 		}
 

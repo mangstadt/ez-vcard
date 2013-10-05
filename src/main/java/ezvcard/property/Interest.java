@@ -4,8 +4,8 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.InterestLevelParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.InterestLevel;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -50,7 +50,7 @@ import ezvcard.parameter.VCardSubTypes;
  * //someone who attends all of his favorite hockey team's games in person.
  * VCard vcard = new VCard();
  * Interest interest = new Interest(&quot;hockey&quot;);
- * interest.setLevel(InterestLevelParameter.HIGH);
+ * interest.setLevel(InterestLevel.HIGH);
  * vcard.addInterest(interest);
  * </pre>
  * 
@@ -80,19 +80,19 @@ public class Interest extends TextProperty implements HasAltId {
 	/**
 	 * Gets the level of the person's interest.
 	 * @return the interest level (e.g. "low") or null if not set
-	 * @see VCardSubTypes#getLevel
+	 * @see VCardParameters#getLevel
 	 */
-	public InterestLevelParameter getLevel() {
+	public InterestLevel getLevel() {
 		String value = subTypes.getLevel();
-		return (value == null) ? null : InterestLevelParameter.get(value);
+		return (value == null) ? null : InterestLevel.get(value);
 	}
 
 	/**
 	 * Sets the level of the person's interest.
 	 * @param level the level (e.g. "low") or null to remove
-	 * @see VCardSubTypes#setLevel
+	 * @see VCardParameters#setLevel
 	 */
-	public void setLevel(InterestLevelParameter level) {
+	public void setLevel(InterestLevel level) {
 		subTypes.setLevel(level.getValue());
 	}
 

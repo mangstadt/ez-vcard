@@ -1,6 +1,6 @@
 package ezvcard.property;
 
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -42,7 +42,7 @@ public interface HasAltId {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the ALTID or null if it doesn't exist
-	 * @see VCardSubTypes#getAltId
+	 * @see VCardParameters#getAltId
 	 */
 	String getAltId();
 
@@ -52,7 +52,7 @@ public interface HasAltId {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param altId the ALTID or null to remove
-	 * @see VCardSubTypes#setAltId
+	 * @see VCardParameters#setAltId
 	 */
 	void setAltId(String altId);
 }

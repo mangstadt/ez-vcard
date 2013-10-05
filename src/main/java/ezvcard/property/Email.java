@@ -6,7 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.EmailTypeParameter;
+import ezvcard.parameter.EmailType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -48,11 +48,11 @@ import ezvcard.parameter.EmailTypeParameter;
  * VCard vcard = new VCard();
  * 
  * Email email = new Email(&quot;superdude55@hotmail.com&quot;);
- * email.addType(EmailTypeParameter.HOME);
+ * email.addType(EmailType.HOME);
  * vcard.addEmail(email);
  * 
  * email = new Email(&quot;doe.john@company.com&quot;);
- * email.addType(EmailTypeParameter.WORK);
+ * email.addType(EmailType.WORK);
  * email.setPref(1); //the most preferred email
  * vcard.addEmail(email);
  * </pre>
@@ -78,11 +78,11 @@ public class Email extends TextProperty implements HasAltId {
 	 * Gets all the TYPE parameters.
 	 * @return the TYPE parameters or empty set if there are none
 	 */
-	public Set<EmailTypeParameter> getTypes() {
+	public Set<EmailType> getTypes() {
 		Set<String> values = subTypes.getTypes();
-		Set<EmailTypeParameter> types = new HashSet<EmailTypeParameter>(values.size());
+		Set<EmailType> types = new HashSet<EmailType>(values.size());
 		for (String value : values) {
-			types.add(EmailTypeParameter.get(value));
+			types.add(EmailType.get(value));
 		}
 		return types;
 	}
@@ -91,7 +91,7 @@ public class Email extends TextProperty implements HasAltId {
 	 * Adds a TYPE parameter.
 	 * @param type the TYPE parameter to add
 	 */
-	public void addType(EmailTypeParameter type) {
+	public void addType(EmailType type) {
 		subTypes.addType(type.getValue());
 	}
 
@@ -99,7 +99,7 @@ public class Email extends TextProperty implements HasAltId {
 	 * Removes a TYPE parameter.
 	 * @param type the TYPE parameter to remove
 	 */
-	public void removeType(EmailTypeParameter type) {
+	public void removeType(EmailType type) {
 		subTypes.removeType(type.getValue());
 	}
 
@@ -142,8 +142,8 @@ public class Email extends TextProperty implements HasAltId {
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
 		super._validate(warnings, version, vcard);
 
-		for (EmailTypeParameter type : getTypes()) {
-			if (type == EmailTypeParameter.PREF) {
+		for (EmailType type : getTypes()) {
+			if (type == EmailType.PREF) {
 				//ignore because it is converted to a PREF parameter for 4.0 vCards
 				continue;
 			}

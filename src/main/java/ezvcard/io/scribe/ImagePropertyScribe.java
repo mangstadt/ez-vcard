@@ -4,7 +4,7 @@ import java.util.List;
 
 import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.parameter.ImageType;
 import ezvcard.property.ImageProperty;
 import ezvcard.util.DataUri;
 
@@ -38,19 +38,19 @@ import ezvcard.util.DataUri;
  * @param <T> the property class
  * @author Michael Angstadt
  */
-public abstract class ImagePropertyScribe<T extends ImageProperty> extends BinaryPropertyScribe<T, ImageTypeParameter> {
+public abstract class ImagePropertyScribe<T extends ImageProperty> extends BinaryPropertyScribe<T, ImageType> {
 	public ImagePropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}
 
 	@Override
-	protected ImageTypeParameter _buildTypeObj(String type) {
-		return ImageTypeParameter.get(type, null, null);
+	protected ImageType _buildTypeObj(String type) {
+		return ImageType.get(type, null, null);
 	}
 
 	@Override
-	protected ImageTypeParameter _buildMediaTypeObj(String mediaType) {
-		return ImageTypeParameter.get(null, mediaType, null);
+	protected ImageType _buildMediaTypeObj(String mediaType) {
+		return ImageType.get(null, mediaType, null);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 
 		try {
 			DataUri uri = new DataUri(src);
-			ImageTypeParameter mediaType = _buildMediaTypeObj(uri.getContentType());
+			ImageType mediaType = _buildMediaTypeObj(uri.getContentType());
 			return _newInstance(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
 			//not a data URI

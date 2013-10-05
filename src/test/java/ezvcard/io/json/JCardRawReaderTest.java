@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.JsonToken;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.json.JCardRawReader.JCardDataStreamListener;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -66,7 +66,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -114,7 +114,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -142,7 +142,7 @@ public class JCardRawReaderTest {
 
 		listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -187,7 +187,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -229,7 +229,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -256,7 +256,7 @@ public class JCardRawReaderTest {
 
 		listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -294,7 +294,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				fail("Should not be called.");
 			}
 		};
@@ -320,7 +320,7 @@ public class JCardRawReaderTest {
 		TestListener listener = new TestListener() {
 			@SuppressWarnings("unchecked")
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -361,7 +361,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -401,7 +401,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -448,7 +448,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -492,7 +492,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -524,7 +524,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -552,7 +552,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				//empty
 			}
 		};
@@ -574,7 +574,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				//empty
 			}
 		};
@@ -598,7 +598,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertNull(group);
@@ -633,7 +633,7 @@ public class JCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 				switch (calledReadProperty) {
 				case 1:
 					assertEquals("one", group);
@@ -657,11 +657,11 @@ public class JCardRawReaderTest {
 			calledBeginVCard++;
 		}
 
-		public final void readProperty(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+		public final void readProperty(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 			calledReadProperty++;
 			readProperty_(group, name, parameters, dataType, value);
 		}
 
-		protected abstract void readProperty_(String group, String name, VCardSubTypes parameters, VCardDataType dataType, JCardValue value);
+		protected abstract void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value);
 	}
 }

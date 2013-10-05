@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.parameter.ImageType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -46,19 +46,19 @@ import ezvcard.parameter.ImageTypeParameter;
  * VCard vcard = new VCard();
  * 
  * //URL
- * Photo photo = new Photo("http://www.mywebsite.com/mugshot.jpg", ImageTypeParameter.JPEG);
+ * Photo photo = new Photo("http://www.mywebsite.com/mugshot.jpg", ImageType.JPEG);
  * vcard.addPhoto(photo);
  * 
  * //binary data
  * byte data[] = ...
- * photo = new Photo(data, ImageTypeParameter.JPEG);
+ * photo = new Photo(data, ImageType.JPEG);
  * vcard.addPhoto(photo);
  * 
- * //if "ImageTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+ * //if "ImageType" does not have the pre-defined constant that you need, then create a new instance
  * //arg 1: the value of the 2.1/3.0 TYPE parameter
  * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
  * //arg 3: the file extension of the data type (optional)
- * ImageKeyTypeParameter param = new ImageTypeParameter("bmp", "image/x-ms-bmp", "bmp");
+ * ImageKeyTypeParameter param = new ImageType("bmp", "image/x-ms-bmp", "bmp");
  * photo = new Photo("http://www.mywebsite.com/mugshot.bmp", param);
  * vcard.addPhoto(photo);
  * </pre>
@@ -76,7 +76,7 @@ import ezvcard.parameter.ImageTypeParameter;
  *   if (photo.getData() == null){
  *     System.out.println("Photo URL: " + photo.getUrl());
  *   } else {
- *     ImageTypeParameter type = photo.getContentType();
+ *     ImageType type = photo.getContentType();
  *     
  *     if (type == null) {
  *       //the vCard may not have any content type data associated with the photo
@@ -86,7 +86,7 @@ import ezvcard.parameter.ImageTypeParameter;
  *     }
  *     
  *     String folder;
- *     if (type == ImageTypeParameter.JPEG){ //it is safe to use "==" instead of "equals()"
+ *     if (type == ImageType.JPEG){ //it is safe to use "==" instead of "equals()"
  *       folder = "photos";
  *     } else {
  *       folder = "images";
@@ -119,7 +119,7 @@ public class Photo extends ImageProperty {
 	 * @param url the URL to the photo
 	 * @param type the content type (e.g. JPEG)
 	 */
-	public Photo(String url, ImageTypeParameter type) {
+	public Photo(String url, ImageType type) {
 		super(url, type);
 	}
 
@@ -128,7 +128,7 @@ public class Photo extends ImageProperty {
 	 * @param data the binary data of the photo
 	 * @param type the content type (e.g. JPEG)
 	 */
-	public Photo(byte[] data, ImageTypeParameter type) {
+	public Photo(byte[] data, ImageType type) {
 		super(data, type);
 	}
 
@@ -138,7 +138,7 @@ public class Photo extends ImageProperty {
 	 * @param type the content type (e.g. JPEG)
 	 * @throws IOException if there's a problem reading from the input stream
 	 */
-	public Photo(InputStream in, ImageTypeParameter type) throws IOException {
+	public Photo(InputStream in, ImageType type) throws IOException {
 		super(in, type);
 	}
 
@@ -148,7 +148,7 @@ public class Photo extends ImageProperty {
 	 * @param type the content type (e.g. JPEG)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public Photo(File file, ImageTypeParameter type) throws IOException {
+	public Photo(File file, ImageType type) throws IOException {
 		super(file, type);
 	}
 }

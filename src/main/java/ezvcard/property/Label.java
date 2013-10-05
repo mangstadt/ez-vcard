@@ -6,7 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.AddressTypeParameter;
+import ezvcard.parameter.AddressType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -115,11 +115,11 @@ public class Label extends TextProperty {
 	 * Gets all the TYPE parameters.
 	 * @return the TYPE parameters or empty set if there are none
 	 */
-	public Set<AddressTypeParameter> getTypes() {
+	public Set<AddressType> getTypes() {
 		Set<String> values = subTypes.getTypes();
-		Set<AddressTypeParameter> types = new HashSet<AddressTypeParameter>(values.size());
+		Set<AddressType> types = new HashSet<AddressType>(values.size());
 		for (String value : values) {
-			types.add(AddressTypeParameter.get(value));
+			types.add(AddressType.get(value));
 		}
 		return types;
 	}
@@ -128,7 +128,7 @@ public class Label extends TextProperty {
 	 * Adds a TYPE parameter.
 	 * @param type the TYPE parameter to add
 	 */
-	public void addType(AddressTypeParameter type) {
+	public void addType(AddressType type) {
 		subTypes.addType(type.getValue());
 	}
 
@@ -136,7 +136,7 @@ public class Label extends TextProperty {
 	 * Removes a TYPE parameter.
 	 * @param type the TYPE parameter to remove
 	 */
-	public void removeType(AddressTypeParameter type) {
+	public void removeType(AddressType type) {
 		subTypes.removeType(type.getValue());
 	}
 

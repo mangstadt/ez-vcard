@@ -2,7 +2,9 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.Interest;
+import ezvcard.VCardVersion;
+import ezvcard.property.Address;
+import ezvcard.property.Label;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,23 +36,53 @@ import ezvcard.property.Interest;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link Interest} property.
- * 
+ * Represents the TYPE parameter of the {@link Address} and
+ * {@link Label} types.
  * <p>
- * <b>Supported versions:</b> {@code 4.0}
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class InterestLevelParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<InterestLevelParameter> enums = new VCardParameterCaseClasses<InterestLevelParameter>(InterestLevelParameter.class);
+public class AddressType extends VersionedVCardParameter {
+	private static final VCardParameterCaseClasses<AddressType> enums = new VCardParameterCaseClasses<AddressType>(AddressType.class);
 
-	public static final InterestLevelParameter LOW = new InterestLevelParameter("low");
-	public static final InterestLevelParameter MEDIUM = new InterestLevelParameter("medium");
-	public static final InterestLevelParameter HIGH = new InterestLevelParameter("high");
+	/**
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 */
+	public static final AddressType HOME = new AddressType("home");
 
-	private InterestLevelParameter(String value) {
-		super(value);
+	/**
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 */
+	public static final AddressType WORK = new AddressType("work");
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
+	 */
+	public static final AddressType DOM = new AddressType("dom", VCardVersion.V2_1, VCardVersion.V3_0);
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
+	 */
+	public static final AddressType INTL = new AddressType("intl", VCardVersion.V2_1, VCardVersion.V3_0);
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
+	 */
+	public static final AddressType POSTAL = new AddressType("postal", VCardVersion.V2_1, VCardVersion.V3_0);
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
+	 */
+	public static final AddressType PARCEL = new AddressType("parcel", VCardVersion.V2_1, VCardVersion.V3_0);
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1, 3.0}
+	 */
+	public static final AddressType PREF = new AddressType("pref", VCardVersion.V2_1, VCardVersion.V3_0);
+
+	private AddressType(String value, VCardVersion... supportedVersions) {
+		super(value, supportedVersions);
 	}
 
 	/**
@@ -59,7 +91,7 @@ public class InterestLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static InterestLevelParameter find(String value) {
+	public static AddressType find(String value) {
 		return enums.find(value);
 	}
 
@@ -70,7 +102,7 @@ public class InterestLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static InterestLevelParameter get(String value) {
+	public static AddressType get(String value) {
 		return enums.get(value);
 	}
 
@@ -79,7 +111,7 @@ public class InterestLevelParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<InterestLevelParameter> all() {
+	public static Collection<AddressType> all() {
 		return enums.all();
 	}
 }

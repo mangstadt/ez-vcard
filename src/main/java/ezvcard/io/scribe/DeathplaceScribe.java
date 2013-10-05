@@ -6,7 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Deathplace;
 
 /*
@@ -75,7 +75,7 @@ public class DeathplaceScribe extends VCardPropertyScribe<Deathplace> {
 	}
 
 	@Override
-	protected Deathplace _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Deathplace _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		Deathplace property = new Deathplace();
 		value = unescape(value);
 
@@ -111,7 +111,7 @@ public class DeathplaceScribe extends VCardPropertyScribe<Deathplace> {
 	}
 
 	@Override
-	protected Deathplace _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Deathplace _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		Deathplace property = new Deathplace();
 
 		String text = element.first(VCardDataType.TEXT);
@@ -145,7 +145,7 @@ public class DeathplaceScribe extends VCardPropertyScribe<Deathplace> {
 	}
 
 	@Override
-	protected Deathplace _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Deathplace _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		Deathplace property = new Deathplace();
 		String valueStr = value.asSingle();
 

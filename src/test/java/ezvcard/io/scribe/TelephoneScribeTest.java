@@ -10,7 +10,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.parameter.TelephoneTypeParameter;
+import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Telephone;
 import ezvcard.util.TelUri;
 
@@ -75,7 +75,7 @@ public class TelephoneScribeTest {
 		//TODO move test to VCardPropertyScribeTest
 
 		Telephone property = new Telephone((String) null);
-		property.addType(TelephoneTypeParameter.PREF);
+		property.addType(TelephoneType.PREF);
 
 		//2.1 and 3.0 keep it
 		sensei.assertPrepareParams(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).expected("TYPE", "pref").run();
@@ -180,7 +180,7 @@ public class TelephoneScribeTest {
 		"</div>").run(new Check<Telephone>(){
 			public void check(Telephone property) {
 				is(withText).check(property);
-				assertSetEquals(property.getTypes(), TelephoneTypeParameter.HOME, TelephoneTypeParameter.CELL, TelephoneTypeParameter.get("foo"));
+				assertSetEquals(property.getTypes(), TelephoneType.HOME, TelephoneType.CELL, TelephoneType.get("foo"));
 			}
 		});
 

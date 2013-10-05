@@ -14,7 +14,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Impp;
 
 /*
@@ -71,7 +71,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	}
 
 	@Override
-	protected Impp _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Impp _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value);
 	}
@@ -82,7 +82,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	}
 
 	@Override
-	protected Impp _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Impp _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			return parse(value);
@@ -115,7 +115,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	}
 
 	@Override
-	protected Impp _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Impp _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		return parse(value.asSingle());
 	}
 

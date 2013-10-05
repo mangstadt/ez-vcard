@@ -4,7 +4,7 @@ import java.util.List;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.RawProperty;
 
 /*
@@ -58,7 +58,7 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	}
 
 	@Override
-	protected RawProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected RawProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		RawProperty property = new RawProperty(propertyName, value);
 		property.setDataType(dataType);
 		return property;

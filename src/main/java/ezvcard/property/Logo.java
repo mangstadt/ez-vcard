@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.parameter.ImageType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -46,19 +46,19 @@ import ezvcard.parameter.ImageTypeParameter;
  * VCard vcard = new VCard();
  * 
  * //URL
- * Logo logo = new Logo("http://www.company.com/logo.png", ImageTypeParameter.PNG);
+ * Logo logo = new Logo("http://www.company.com/logo.png", ImageType.PNG);
  * vcard.addLogo(logo);
  * 
  * //binary data
  * byte data[] = ...
- * logo = new Logo(data, ImageTypeParameter.PNG);
+ * logo = new Logo(data, ImageType.PNG);
  * vcard.addLogo(logo);
  * 
- * //if "ImageTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+ * //if "ImageType" does not have the pre-defined constant that you need, then create a new instance
  * //arg 1: the value of the 2.1/3.0 TYPE parameter
  * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
  * //arg 3: the file extension of the data type (optional)
- * ImageKeyTypeParameter param = new ImageTypeParameter("bmp", "image/x-ms-bmp", "bmp");
+ * ImageKeyTypeParameter param = new ImageType("bmp", "image/x-ms-bmp", "bmp");
  * logo = new Logo("http://www.company.com/logo.bmp", param);
  * vcard.addLogo(logo);
  * </pre>
@@ -76,7 +76,7 @@ import ezvcard.parameter.ImageTypeParameter;
  *   if (logo.getData() == null){
  *     System.out.println("Logo URL: " + logo.getUrl());
  *   } else {
- *     ImageTypeParameter type = logo.getContentType();
+ *     ImageType type = logo.getContentType();
  *     
  *     if (type == null) {
  *       //the vCard may not have any content type data associated with the logo
@@ -86,7 +86,7 @@ import ezvcard.parameter.ImageTypeParameter;
  *     }
  *     
  *     String folder;
- *     if (type == ImageTypeParameter.PNG){ //it is safe to use "==" instead of "equals()"
+ *     if (type == ImageType.PNG){ //it is safe to use "==" instead of "equals()"
  *       folder = "png-files";
  *     } else {
  *       folder = "image-files";
@@ -119,7 +119,7 @@ public class Logo extends ImageProperty {
 	 * @param url the URL to the logo
 	 * @param type the content type (e.g. PNG)
 	 */
-	public Logo(String url, ImageTypeParameter type) {
+	public Logo(String url, ImageType type) {
 		super(url, type);
 	}
 
@@ -128,7 +128,7 @@ public class Logo extends ImageProperty {
 	 * @param data the binary data of the logo
 	 * @param type the content type (e.g. PNG)
 	 */
-	public Logo(byte[] data, ImageTypeParameter type) {
+	public Logo(byte[] data, ImageType type) {
 		super(data, type);
 	}
 
@@ -138,7 +138,7 @@ public class Logo extends ImageProperty {
 	 * @param type the content type (e.g. PNG)
 	 * @throws IOException if there's a problem reading from the input stream
 	 */
-	public Logo(InputStream in, ImageTypeParameter type) throws IOException {
+	public Logo(InputStream in, ImageType type) throws IOException {
 		super(in, type);
 	}
 
@@ -148,7 +148,7 @@ public class Logo extends ImageProperty {
 	 * @param type the content type (e.g. PNG)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public Logo(File file, ImageTypeParameter type) throws IOException {
+	public Logo(File file, ImageType type) throws IOException {
 		super(file, type);
 	}
 

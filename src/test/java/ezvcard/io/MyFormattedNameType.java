@@ -8,7 +8,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -66,7 +66,7 @@ public class MyFormattedNameType extends VCardProperty {
 		}
 
 		@Override
-		protected MyFormattedNameType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		protected MyFormattedNameType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			return new MyFormattedNameType(value.toUpperCase());
 		}
 
@@ -76,7 +76,7 @@ public class MyFormattedNameType extends VCardProperty {
 		}
 
 		@Override
-		protected MyFormattedNameType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		protected MyFormattedNameType _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 			return new MyFormattedNameType(element.first("name").toUpperCase());
 		}
 
@@ -91,7 +91,7 @@ public class MyFormattedNameType extends VCardProperty {
 		}
 
 		@Override
-		protected MyFormattedNameType _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+		protected MyFormattedNameType _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 			return new MyFormattedNameType(value.asSingle().toUpperCase());
 		}
 	}

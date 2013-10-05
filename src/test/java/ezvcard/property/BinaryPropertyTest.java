@@ -4,7 +4,7 @@ import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.parameter.ImageType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -45,15 +45,15 @@ public class BinaryPropertyTest {
 		assertValidate(empty).run(1);
 
 		BinaryTypeImpl withUrl = new BinaryTypeImpl();
-		withUrl.setUrl("http://example.com/image.jpg", ImageTypeParameter.JPEG);
+		withUrl.setUrl("http://example.com/image.jpg", ImageType.JPEG);
 		assertValidate(withUrl).run(0);
 
 		BinaryTypeImpl withData = new BinaryTypeImpl();
-		withData.setData("data".getBytes(), ImageTypeParameter.JPEG);
+		withData.setData("data".getBytes(), ImageType.JPEG);
 		assertValidate(withData).run(0);
 	}
 
-	private class BinaryTypeImpl extends BinaryProperty<ImageTypeParameter> {
+	private class BinaryTypeImpl extends BinaryProperty<ImageType> {
 		public BinaryTypeImpl() {
 			super((String) null, null);
 		}

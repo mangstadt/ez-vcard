@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
 import ezvcard.VCardDataType;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -130,7 +130,7 @@ public class JCardRawWriter implements Closeable {
 	 * @throws IOException if there's an I/O problem
 	 */
 	public void writeProperty(String propertyName, VCardDataType dataType, JCardValue value) throws IOException {
-		writeProperty(null, propertyName, new VCardSubTypes(), dataType, value);
+		writeProperty(null, propertyName, new VCardParameters(), dataType, value);
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class JCardRawWriter implements Closeable {
 	 * or was just closed ({@link #writeStartVCard} must be called first)
 	 * @throws IOException if there's an I/O problem
 	 */
-	public void writeProperty(String group, String propertyName, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) throws IOException {
+	public void writeProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType, JCardValue value) throws IOException {
 		if (!open) {
 			throw new IllegalStateException("Call \"writeStartVCard\" first.");
 		}

@@ -9,7 +9,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.DateOrTimeProperty;
 import ezvcard.util.PartialDate;
 
@@ -101,7 +101,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	}
 
 	@Override
-	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		value = unescape(value);
 		if (version == VCardVersion.V4_0 && dataType == VCardDataType.TEXT) {
 			return newInstance(value);
@@ -150,7 +150,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	}
 
 	@Override
-	protected T _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.DATE, VCardDataType.DATE_TIME, VCardDataType.DATE_AND_OR_TIME);
 		if (value != null) {
 			return parse(value, element.version(), warnings);
@@ -203,7 +203,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	}
 
 	@Override
-	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 		if (dataType == VCardDataType.TEXT) {
 			return newInstance(valueStr);

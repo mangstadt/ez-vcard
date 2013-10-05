@@ -15,7 +15,7 @@ import org.junit.Test;
 import ezvcard.VCardVersion;
 import ezvcard.io.text.VCardRawReader.StopReadingException;
 import ezvcard.io.text.VCardRawReader.VCardDataStreamListener;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -75,7 +75,7 @@ public class VCardRawReaderTest {
 			}
 
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 				if (line == 3) {
 					assertNull(group);
 					assertEquals("FN", name);
@@ -200,7 +200,7 @@ public class VCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 				assertEquals("iteM1", group);
 				assertEquals("NoTE", name);
 				assertEquals("This is a note.", value);
@@ -225,7 +225,7 @@ public class VCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 				assertNull(group);
 				assertEquals("NoTE", name);
 				assertEquals("This is a note.", value);
@@ -244,7 +244,7 @@ public class VCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 				assertNull(group);
 				assertEquals("ADR", name);
 				assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -276,7 +276,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -311,7 +311,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -347,7 +347,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -386,7 +386,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -423,7 +423,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -459,7 +459,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -510,7 +510,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -557,7 +557,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -604,7 +604,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -651,7 +651,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -698,7 +698,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -745,7 +745,7 @@ public class VCardRawReaderTest {
 
 			TestListener listener = new TestListener() {
 				@Override
-				protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+				protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 					assertNull(group);
 					assertEquals("ADR", name);
 					assertEquals(";;123 Main Str;Austin;TX;12345;US", value);
@@ -777,7 +777,7 @@ public class VCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 				assertNull(group);
 				assertEquals("NOTE", name);
 				assertEquals("This \\,is a\\n \\;note\\;.", value);
@@ -802,7 +802,7 @@ public class VCardRawReaderTest {
 
 		TestListener listener = new TestListener() {
 			@Override
-			protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+			protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 				assertNull(group);
 				assertEquals("NOTE", name);
 				assertEquals("", value);
@@ -861,7 +861,7 @@ public class VCardRawReaderTest {
 			}
 
 			@Override
-			public void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+			public void readProperty_(String group, String name, VCardParameters parameters, String value) {
 				if (name.equals("PROP2")) {
 					throw new StopReadingException();
 				}
@@ -888,7 +888,7 @@ public class VCardRawReaderTest {
 			}
 
 			@Override
-			public void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+			public void readProperty_(String group, String name, VCardParameters parameters, String value) {
 				assertEquals("PROP3", name);
 			}
 
@@ -940,7 +940,7 @@ public class VCardRawReaderTest {
 			beginComponent_(actual);
 		}
 
-		public final void readProperty(String group, String name, VCardSubTypes parameters, String value) {
+		public final void readProperty(String group, String name, VCardParameters parameters, String value) {
 			line++;
 			calledReadProperty++;
 			readProperty_(group, name, parameters, value);
@@ -974,7 +974,7 @@ public class VCardRawReaderTest {
 			fail("\"beginComponent\" should not have been called.");
 		}
 
-		protected void readProperty_(String group, String name, VCardSubTypes parameters, String value) {
+		protected void readProperty_(String group, String name, VCardParameters parameters, String value) {
 			fail("\"readProperty\" should not have been called.");
 		}
 

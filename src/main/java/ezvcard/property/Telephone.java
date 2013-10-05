@@ -6,7 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.TelephoneTypeParameter;
+import ezvcard.parameter.TelephoneType;
 import ezvcard.util.TelUri;
 
 /*
@@ -48,13 +48,13 @@ import ezvcard.util.TelUri;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * Telephone tel = new Telephone(&quot;(123) 555-6789&quot;);
- * tel.addType(TelephoneTypeParameter.HOME);
+ * tel.addType(TelephoneType.HOME);
  * tel.setPref(2); //the second-most preferred
  * vcard.addTelephoneNumber(tel);
  * 
  * TelUri uri = new TelUri.Builder(&quot;+1-800-555-9876&quot;).extension(&quot;111&quot;).build();
  * tel = new Telephone(uri);
- * tel.addType(TelephoneTypeParameter.WORK);
+ * tel.addType(TelephoneType.WORK);
  * tel.setPref(1); //the most preferred
  * vcard.addTelephoneNumber(tel);
  * </pre>
@@ -131,11 +131,11 @@ public class Telephone extends VCardProperty implements HasAltId {
 	 * Gets all the TYPE parameters.
 	 * @return the TYPE parameters or empty set if there are none
 	 */
-	public Set<TelephoneTypeParameter> getTypes() {
+	public Set<TelephoneType> getTypes() {
 		Set<String> values = subTypes.getTypes();
-		Set<TelephoneTypeParameter> types = new HashSet<TelephoneTypeParameter>(values.size());
+		Set<TelephoneType> types = new HashSet<TelephoneType>(values.size());
 		for (String value : values) {
-			types.add(TelephoneTypeParameter.get(value));
+			types.add(TelephoneType.get(value));
 		}
 		return types;
 	}
@@ -144,7 +144,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 	 * Adds a TYPE parameter.
 	 * @param type the TYPE parameter to add
 	 */
-	public void addType(TelephoneTypeParameter type) {
+	public void addType(TelephoneType type) {
 		subTypes.addType(type.getValue());
 	}
 
@@ -152,7 +152,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 	 * Removes a TYPE parameter.
 	 * @param type the TYPE parameter to remove
 	 */
-	public void removeType(TelephoneTypeParameter type) {
+	public void removeType(TelephoneType type) {
 		subTypes.removeType(type.getValue());
 	}
 
@@ -201,8 +201,8 @@ public class Telephone extends VCardProperty implements HasAltId {
 			warnings.add("\"tel\" URIs are not supported by vCard version " + version.getVersion() + ".  The URI will be converted to a string.  Some data may be lost.");
 		}
 
-		for (TelephoneTypeParameter type : getTypes()) {
-			if (type == TelephoneTypeParameter.PREF) {
+		for (TelephoneType type : getTypes()) {
+			if (type == TelephoneType.PREF) {
 				//ignore because it is converted to a PREF parameter for 4.0 vCards
 				continue;
 			}

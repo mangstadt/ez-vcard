@@ -9,7 +9,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Agent;
 import ezvcard.property.VCardProperty;
 
@@ -77,7 +77,7 @@ public class AgentScribe extends VCardPropertyScribe<Agent> {
 	}
 
 	@Override
-	protected Agent _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Agent _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		Agent property = new Agent();
 
 		if (dataType == null) {

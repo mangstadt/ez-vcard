@@ -6,8 +6,8 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -53,8 +53,8 @@ import ezvcard.parameter.VCardSubTypes;
  * adr.setRegion(&quot;TX&quot;);
  * adr.setPostalCode(&quot;12345&quot;);
  * adr.setCountry(&quot;USA&quot;);
- * adr.addType(AddressTypeParameter.WORK);
- * adr.addType(AddressTypeParameter.DOM);
+ * adr.addType(AddressType.WORK);
+ * adr.addType(AddressType.DOM);
  * 
  * //optionally, provide the exact text to print out on the mailing label
  * adr.setLabel(&quot;123 Main St.\nAustin, Tx 12345\nUSA&quot;);
@@ -208,11 +208,11 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets all the TYPE parameters.
 	 * @return the TYPE parameters or empty set if there are none
 	 */
-	public Set<AddressTypeParameter> getTypes() {
+	public Set<AddressType> getTypes() {
 		Set<String> values = subTypes.getTypes();
-		Set<AddressTypeParameter> types = new HashSet<AddressTypeParameter>(values.size());
+		Set<AddressType> types = new HashSet<AddressType>(values.size());
 		for (String value : values) {
-			types.add(AddressTypeParameter.get(value));
+			types.add(AddressType.get(value));
 		}
 		return types;
 	}
@@ -221,7 +221,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Adds a TYPE parameter.
 	 * @param type the TYPE parameter to add
 	 */
-	public void addType(AddressTypeParameter type) {
+	public void addType(AddressType type) {
 		subTypes.addType(type.getValue());
 	}
 
@@ -229,7 +229,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Removes a TYPE parameter.
 	 * @param type the TYPE parameter to remove
 	 */
-	public void removeType(AddressTypeParameter type) {
+	public void removeType(AddressType type) {
 		subTypes.removeType(type.getValue());
 	}
 
@@ -267,7 +267,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * </p>
 	 * @return the latitude (index 0) and longitude (index 1) or null if not set
 	 * or null if the parameter value was in an incorrect format
-	 * @see VCardSubTypes#getGeo
+	 * @see VCardParameters#getGeo
 	 */
 	public double[] getGeo() {
 		return subTypes.getGeo();
@@ -281,7 +281,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * </p>
 	 * @param latitude the latitude
 	 * @param longitude the longitude
-	 * @see VCardSubTypes#setGeo
+	 * @see VCardParameters#setGeo
 	 */
 	public void setGeo(double latitude, double longitude) {
 		subTypes.setGeo(latitude, longitude);
@@ -347,8 +347,8 @@ public class Address extends VCardProperty implements HasAltId {
 
 	@Override
 	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
-		for (AddressTypeParameter type : getTypes()) {
-			if (type == AddressTypeParameter.PREF) {
+		for (AddressType type : getTypes()) {
+			if (type == AddressType.PREF) {
 				//ignore because it is converted to a PREF parameter for 4.0 vCards
 				continue;
 			}

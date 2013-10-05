@@ -5,8 +5,8 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.CalscaleParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.Calscale;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.util.PartialDate;
 
 /*
@@ -175,9 +175,9 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the type of calendar or null if not found
-	 * @see VCardSubTypes#getCalscale
+	 * @see VCardParameters#getCalscale
 	 */
-	public CalscaleParameter getCalscale() {
+	public Calscale getCalscale() {
 		return subTypes.getCalscale();
 	}
 
@@ -190,9 +190,9 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param calscale the type of calendar or null to remove
-	 * @see VCardSubTypes#setCalscale
+	 * @see VCardParameters#setCalscale
 	 */
-	public void setCalscale(CalscaleParameter calscale) {
+	public void setCalscale(Calscale calscale) {
 		subTypes.setCalscale(calscale);
 	}
 

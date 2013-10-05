@@ -9,9 +9,9 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.EncodingParameter;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.MediaTypeParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.BinaryProperty;
 import ezvcard.util.DataUri;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
@@ -90,7 +90,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	@Override
-	protected void _prepareParameters(T property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(T property, VCardParameters copy, VCardVersion version, VCard vcard) {
 		MediaTypeParameter contentType = property.getContentType();
 		if (contentType == null) {
 			contentType = new MediaTypeParameter(null, null, null);
@@ -119,11 +119,11 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 
 			switch (version) {
 			case V2_1:
-				copy.setEncoding(EncodingParameter.BASE64);
+				copy.setEncoding(Encoding.BASE64);
 				copy.setType(contentType.getValue());
 				return;
 			case V3_0:
-				copy.setEncoding(EncodingParameter.B);
+				copy.setEncoding(Encoding.B);
 				copy.setType(contentType.getValue());
 				return;
 			case V4_0:
@@ -140,7 +140,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	@Override
-	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value, dataType, parameters, version, warnings);
 	}
@@ -151,7 +151,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	@Override
-	protected T _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			return parse(value, VCardDataType.URI, parameters, element.version(), warnings);
@@ -195,7 +195,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	@Override
-	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 		return parse(valueStr, dataType, parameters, VCardVersion.V4_0, warnings);
 	}
@@ -242,7 +242,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 
 	protected abstract T _newInstance(byte data[], U contentType);
 
-	protected U parseContentType(VCardSubTypes parameters, VCardVersion version) {
+	protected U parseContentType(VCardParameters parameters, VCardVersion version) {
 		switch (version) {
 		case V2_1:
 		case V3_0:
@@ -263,7 +263,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		return null;
 	}
 
-	private T parse(String value, VCardDataType dataType, VCardSubTypes parameters, VCardVersion version, List<String> warnings) {
+	private T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version, List<String> warnings) {
 		U contentType = parseContentType(parameters, version);
 
 		switch (version) {
@@ -275,8 +275,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			}
 
 			//parse as binary
-			EncodingParameter encodingSubType = parameters.getEncoding();
-			if (encodingSubType == EncodingParameter.BASE64 || encodingSubType == EncodingParameter.B) {
+			Encoding encodingSubType = parameters.getEncoding();
+			if (encodingSubType == Encoding.BASE64 || encodingSubType == Encoding.B) {
 				return _newInstance(Base64.decodeBase64(value), contentType);
 			}
 

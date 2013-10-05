@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.Sound;
+import ezvcard.VCardVersion;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
@@ -62,56 +62,64 @@ import ezvcard.property.Sound;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Sound} type.
+ * Represents the "ENCODING" sub type.
  * <p>
- * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+ * <b>Supported versions:</b> {@code 2.1, 3.0}
  * </p>
  * @author George El-Haddad Mar 10, 2010
  * @author Michael Angstadt
  */
-public class SoundTypeParameter extends MediaTypeParameter {
-	private static final MediaTypeCaseClasses<SoundTypeParameter> enums = new MediaTypeCaseClasses<SoundTypeParameter>(SoundTypeParameter.class);
+public class Encoding extends VersionedVCardParameter {
+	private static final VCardParameterCaseClasses<Encoding> enums = new VCardParameterCaseClasses<Encoding>(Encoding.class);
 
-	public static final SoundTypeParameter AAC = new SoundTypeParameter("AAC", "audio/aac", "aac");
-	public static final SoundTypeParameter MIDI = new SoundTypeParameter("MIDI", "audio/midi", "mid");
-	public static final SoundTypeParameter MP3 = new SoundTypeParameter("MP3", "audio/mp3", "mp3");
-	public static final SoundTypeParameter MPEG = new SoundTypeParameter("MPEG", "audio/mpeg", "mpeg");
-	public static final SoundTypeParameter OGG = new SoundTypeParameter("OGG", "audio/ogg", "ogg");
-	public static final SoundTypeParameter WAV = new SoundTypeParameter("WAV", "audio/wav", "wav");
+	/**
+	 * <b>Supported versions:</b> {@code 2.1}
+	 */
+	public static final Encoding QUOTED_PRINTABLE = new Encoding("quoted-printable", VCardVersion.V2_1);
 
-	private SoundTypeParameter(String value, String mediaType, String extension) {
-		super(value, mediaType, extension);
+	/**
+	 * <b>Supported versions:</b> {@code 2.1}
+	 */
+	public static final Encoding BASE64 = new Encoding("base64", VCardVersion.V2_1);
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1}
+	 */
+	public static final Encoding _8BIT = new Encoding("8bit", VCardVersion.V2_1);
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1}
+	 */
+	public static final Encoding _7BIT = new Encoding("7bit", VCardVersion.V2_1);
+
+	/**
+	 * <b>Supported versions:</b> {@code 3.0}
+	 */
+	public static final Encoding B = new Encoding("b", VCardVersion.V3_0);
+
+	private Encoding(String value, VCardVersion... supportedVersions) {
+		super(value, supportedVersions);
 	}
 
 	/**
 	 * Searches for a parameter value that is defined as a static constant in
 	 * this class.
-	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
-	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null
-	 * to not search by this value
-	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "mp3") or null to not search by this value
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static SoundTypeParameter find(String type, String mediaType, String extension) {
-		return enums.find(new String[] { type, mediaType, extension });
+	public static Encoding find(String value) {
+		return enums.find(value);
 	}
 
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
 	 * {@code ==} equality.
-	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
-	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null
-	 * to not search by this value
-	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "mp3") or null to not search by this value
+	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static SoundTypeParameter get(String type, String mediaType, String extension) {
-		return enums.get(new String[] { type, mediaType, extension });
+	public static Encoding get(String value) {
+		return enums.get(value);
 	}
 
 	/**
@@ -119,7 +127,7 @@ public class SoundTypeParameter extends MediaTypeParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<SoundTypeParameter> all() {
+	public static Collection<Encoding> all() {
 		return enums.all();
 	}
 }

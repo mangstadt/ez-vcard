@@ -6,7 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Related;
 
 /*
@@ -75,7 +75,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 	}
 
 	@Override
-	protected Related _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Related _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		value = unescape(value);
 
 		Related property = new Related();
@@ -105,7 +105,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 	}
 
 	@Override
-	protected Related _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Related _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String uri = element.first(VCardDataType.URI);
 		if (uri != null) {
 			Related property = new Related();
@@ -139,7 +139,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 	}
 
 	@Override
-	protected Related _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Related _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 
 		Related property = new Related();

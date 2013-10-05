@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.Hobby;
+import ezvcard.property.Impp;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,22 +34,23 @@ import ezvcard.property.Hobby;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link Hobby} property.
- * 
+ * Represents the TYPE parameter of the {@link Impp} type.
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class HobbyLevelParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<HobbyLevelParameter> enums = new VCardParameterCaseClasses<HobbyLevelParameter>(HobbyLevelParameter.class);
+public class ImppType extends VCardParameter {
+	private static final VCardParameterCaseClasses<ImppType> enums = new VCardParameterCaseClasses<ImppType>(ImppType.class);
 
-	public static final HobbyLevelParameter LOW = new HobbyLevelParameter("low");
-	public static final HobbyLevelParameter MEDIUM = new HobbyLevelParameter("medium");
-	public static final HobbyLevelParameter HIGH = new HobbyLevelParameter("high");
+	public static final ImppType PERSONAL = new ImppType("personal");
+	public static final ImppType BUSINESS = new ImppType("business");
+	public static final ImppType HOME = new ImppType("home");
+	public static final ImppType WORK = new ImppType("work");
+	public static final ImppType MOBILE = new ImppType("mobile");
+	public static final ImppType PREF = new ImppType("pref");
 
-	private HobbyLevelParameter(String value) {
+	private ImppType(String value) {
 		super(value);
 	}
 
@@ -59,7 +60,7 @@ public class HobbyLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static HobbyLevelParameter find(String value) {
+	public static ImppType find(String value) {
 		return enums.find(value);
 	}
 
@@ -70,7 +71,7 @@ public class HobbyLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static HobbyLevelParameter get(String value) {
+	public static ImppType get(String value) {
 		return enums.get(value);
 	}
 
@@ -79,7 +80,7 @@ public class HobbyLevelParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<HobbyLevelParameter> all() {
+	public static Collection<ImppType> all() {
 		return enums.all();
 	}
 }

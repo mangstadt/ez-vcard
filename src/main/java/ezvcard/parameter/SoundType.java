@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.Key;
+import ezvcard.property.Sound;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
@@ -62,36 +62,39 @@ import ezvcard.property.Key;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Key} type.
+ * Represents the TYPE parameter of the {@link Sound} type.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author George El-Haddad Mar 10, 2010
- * @author Michael Angstadt Jul 06, 2012
+ * @author Michael Angstadt
  */
-public class KeyTypeParameter extends MediaTypeParameter {
-	private static final MediaTypeCaseClasses<KeyTypeParameter> enums = new MediaTypeCaseClasses<KeyTypeParameter>(KeyTypeParameter.class);
+public class SoundType extends MediaTypeParameter {
+	private static final MediaTypeCaseClasses<SoundType> enums = new MediaTypeCaseClasses<SoundType>(SoundType.class);
 
-	public static final KeyTypeParameter PGP = new KeyTypeParameter("PGP", "application/pgp-keys", "pgp");
-	public static final KeyTypeParameter GPG = new KeyTypeParameter("GPG", "application/gpg", "gpg");
-	public static final KeyTypeParameter X509 = new KeyTypeParameter("X509", "application/x509", null);
+	public static final SoundType AAC = new SoundType("AAC", "audio/aac", "aac");
+	public static final SoundType MIDI = new SoundType("MIDI", "audio/midi", "mid");
+	public static final SoundType MP3 = new SoundType("MP3", "audio/mp3", "mp3");
+	public static final SoundType MPEG = new SoundType("MPEG", "audio/mpeg", "mpeg");
+	public static final SoundType OGG = new SoundType("OGG", "audio/ogg", "ogg");
+	public static final SoundType WAV = new SoundType("WAV", "audio/wav", "wav");
 
-	private KeyTypeParameter(String value, String mediaType, String extension) {
+	private SoundType(String value, String mediaType, String extension) {
 		super(value, mediaType, extension);
 	}
 
 	/**
 	 * Searches for a parameter value that is defined as a static constant in
 	 * this class.
-	 * @param type the TYPE parameter value to search for (e.g. "PGP") or null
+	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
 	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g.
-	 * "application/pgp-keys") or null to not search by this value
+	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null
+	 * to not search by this value
 	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "pgp") or null to not search by this value
+	 * e.g. "mp3") or null to not search by this value
 	 * @return the object or null if not found
 	 */
-	public static KeyTypeParameter find(String type, String mediaType, String extension) {
+	public static SoundType find(String type, String mediaType, String extension) {
 		return enums.find(new String[] { type, mediaType, extension });
 	}
 
@@ -99,15 +102,15 @@ public class KeyTypeParameter extends MediaTypeParameter {
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
 	 * {@code ==} equality.
-	 * @param type the TYPE parameter value to search for (e.g. "PGP") or null
+	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
 	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g.
-	 * "application/pgp-keys") or null to not search by this value
+	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null
+	 * to not search by this value
 	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "pgp") or null to not search by this value
+	 * e.g. "mp3") or null to not search by this value
 	 * @return the object
 	 */
-	public static KeyTypeParameter get(String type, String mediaType, String extension) {
+	public static SoundType get(String type, String mediaType, String extension) {
 		return enums.get(new String[] { type, mediaType, extension });
 	}
 
@@ -116,7 +119,7 @@ public class KeyTypeParameter extends MediaTypeParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<KeyTypeParameter> all() {
+	public static Collection<SoundType> all() {
 		return enums.all();
 	}
 }

@@ -26,8 +26,8 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.parameter.EncodingParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.Encoding;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.Label;
 import ezvcard.property.RawProperty;
@@ -207,17 +207,17 @@ public class VCardReader implements Closeable {
 	 * parameters to have names, but v2.1 does not.
 	 * @param parameters the parameters
 	 */
-	private void handleNamelessParameters(VCardSubTypes parameters) {
+	private void handleNamelessParameters(VCardParameters parameters) {
 		List<String> namelessParamValues = parameters.get(null);
 		for (String paramValue : namelessParamValues) {
 			String paramName;
 			if (VCardDataType.find(paramValue) != null) {
-				paramName = VCardSubTypes.VALUE;
-			} else if (EncodingParameter.find(paramValue) != null) {
-				paramName = VCardSubTypes.ENCODING;
+				paramName = VCardParameters.VALUE;
+			} else if (Encoding.find(paramValue) != null) {
+				paramName = VCardParameters.ENCODING;
 			} else {
 				//otherwise, assume it's a TYPE
-				paramName = VCardSubTypes.TYPE;
+				paramName = VCardParameters.TYPE;
 			}
 			parameters.put(paramName, paramValue);
 		}
@@ -237,7 +237,7 @@ public class VCardReader implements Closeable {
 	 * </p>
 	 * @param parameters the parameters
 	 */
-	private void handleQuotedMultivaluedTypeParams(VCardSubTypes parameters) {
+	private void handleQuotedMultivaluedTypeParams(VCardParameters parameters) {
 		//account for multi-valued TYPE parameters being enclosed entirely in double quotes
 		//e.g. ADR;TYPE="home,work"
 		for (String typeParam : parameters.getTypes()) {
@@ -260,8 +260,8 @@ public class VCardReader implements Closeable {
 	 * @param value the property value
 	 * @return the decoded property value
 	 */
-	private String decodeQuotedPrintable(String name, VCardSubTypes parameters, String value) {
-		if (parameters.getEncoding() != EncodingParameter.QUOTED_PRINTABLE) {
+	private String decodeQuotedPrintable(String name, VCardParameters parameters, String value) {
+		if (parameters.getEncoding() != Encoding.QUOTED_PRINTABLE) {
 			return value;
 		}
 
@@ -346,7 +346,7 @@ public class VCardReader implements Closeable {
 			vcardStack.getLast().setVersion(version);
 		}
 
-		public void readProperty(String group, String name, VCardSubTypes parameters, String value) {
+		public void readProperty(String group, String name, VCardParameters parameters, String value) {
 			if (vcardStack.isEmpty()) {
 				//not in a "VCARD" component
 				return;

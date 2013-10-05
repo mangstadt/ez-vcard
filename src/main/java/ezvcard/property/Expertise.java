@@ -4,8 +4,8 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.ExpertiseLevelParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.ExpertiseLevel;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -48,7 +48,7 @@ import ezvcard.parameter.VCardSubTypes;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * Expertise expertise = new Expertise(&quot;Java programming&quot;);
- * expertise.setLevel(ExpertiseLevelParameter.EXPERT);
+ * expertise.setLevel(ExpertiseLevel.EXPERT);
  * vcard.addExpertise(expertise);
  * </pre>
  * 
@@ -78,19 +78,19 @@ public class Expertise extends TextProperty implements HasAltId {
 	/**
 	 * Gets the level of knowledge the person has for this skill.
 	 * @return the skill level (e.g. "beginner") or null if not set
-	 * @see VCardSubTypes#getLevel
+	 * @see VCardParameters#getLevel
 	 */
-	public ExpertiseLevelParameter getLevel() {
+	public ExpertiseLevel getLevel() {
 		String value = subTypes.getLevel();
-		return (value == null) ? null : ExpertiseLevelParameter.get(value);
+		return (value == null) ? null : ExpertiseLevel.get(value);
 	}
 
 	/**
 	 * Sets the level of knowledge the person has for this skill.
 	 * @param level the skill level (e.g. "beginner") or null to remove
-	 * @see VCardSubTypes#setLevel
+	 * @see VCardParameters#setLevel
 	 */
-	public void setLevel(ExpertiseLevelParameter level) {
+	public void setLevel(ExpertiseLevel level) {
 		subTypes.setLevel(level.getValue());
 	}
 

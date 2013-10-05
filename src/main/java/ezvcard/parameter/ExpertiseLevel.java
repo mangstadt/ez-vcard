@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.Impp;
+import ezvcard.property.Expertise;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,23 +34,22 @@ import ezvcard.property.Impp;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Impp} type.
+ * Represents a LEVEL parameter for the {@link Expertise} property.
+ * 
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class ImppTypeParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<ImppTypeParameter> enums = new VCardParameterCaseClasses<ImppTypeParameter>(ImppTypeParameter.class);
+public class ExpertiseLevel extends VCardParameter {
+	private static final VCardParameterCaseClasses<ExpertiseLevel> enums = new VCardParameterCaseClasses<ExpertiseLevel>(ExpertiseLevel.class);
 
-	public static final ImppTypeParameter PERSONAL = new ImppTypeParameter("personal");
-	public static final ImppTypeParameter BUSINESS = new ImppTypeParameter("business");
-	public static final ImppTypeParameter HOME = new ImppTypeParameter("home");
-	public static final ImppTypeParameter WORK = new ImppTypeParameter("work");
-	public static final ImppTypeParameter MOBILE = new ImppTypeParameter("mobile");
-	public static final ImppTypeParameter PREF = new ImppTypeParameter("pref");
+	public static final ExpertiseLevel BEGINNER = new ExpertiseLevel("beginner");
+	public static final ExpertiseLevel AVERAGE = new ExpertiseLevel("average");
+	public static final ExpertiseLevel EXPERT = new ExpertiseLevel("expert");
 
-	private ImppTypeParameter(String value) {
+	private ExpertiseLevel(String value) {
 		super(value);
 	}
 
@@ -60,7 +59,7 @@ public class ImppTypeParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static ImppTypeParameter find(String value) {
+	public static ExpertiseLevel find(String value) {
 		return enums.find(value);
 	}
 
@@ -71,7 +70,7 @@ public class ImppTypeParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static ImppTypeParameter get(String value) {
+	public static ExpertiseLevel get(String value) {
 		return enums.get(value);
 	}
 
@@ -80,7 +79,7 @@ public class ImppTypeParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<ImppTypeParameter> all() {
+	public static Collection<ExpertiseLevel> all() {
 		return enums.all();
 	}
 }

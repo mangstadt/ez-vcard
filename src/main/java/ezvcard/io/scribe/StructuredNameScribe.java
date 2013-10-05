@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.StructuredName;
 
 /*
@@ -55,7 +55,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	@Override
-	protected StructuredName _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected StructuredName _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		StructuredName property = new StructuredName();
 		StructuredIterator it = structured(value);
 
@@ -78,7 +78,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	@Override
-	protected StructuredName _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected StructuredName _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		StructuredName property = new StructuredName();
 
 		property.setFamily(s(element.first("surname")));
@@ -113,7 +113,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	@Override
-	protected StructuredName _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected StructuredName _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		StructuredName property = new StructuredName();
 		StructuredIterator it = structured(value);
 

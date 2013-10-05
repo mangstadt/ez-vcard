@@ -9,7 +9,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.ImppTypeParameter;
+import ezvcard.parameter.ImppType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -327,11 +327,11 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * Gets all the TYPE parameters.
 	 * @return the TYPE parameters or empty set if there are none
 	 */
-	public Set<ImppTypeParameter> getTypes() {
+	public Set<ImppType> getTypes() {
 		Set<String> values = subTypes.getTypes();
-		Set<ImppTypeParameter> types = new HashSet<ImppTypeParameter>(values.size());
+		Set<ImppType> types = new HashSet<ImppType>(values.size());
 		for (String value : values) {
-			types.add(ImppTypeParameter.get(value));
+			types.add(ImppType.get(value));
 		}
 		return types;
 	}
@@ -340,7 +340,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * Adds a TYPE parameter.
 	 * @param type the TYPE parameter to add
 	 */
-	public void addType(ImppTypeParameter type) {
+	public void addType(ImppType type) {
 		subTypes.addType(type.getValue());
 	}
 
@@ -348,7 +348,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * Removes a TYPE parameter.
 	 * @param type the TYPE parameter to remove
 	 */
-	public void removeType(ImppTypeParameter type) {
+	public void removeType(ImppType type) {
 		subTypes.removeType(type.getValue());
 	}
 

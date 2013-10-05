@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Email;
 
 /*
@@ -45,7 +45,7 @@ public class EmailScribe extends StringPropertyScribe<Email> {
 	}
 
 	@Override
-	protected void _prepareParameters(Email property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Email property, VCardParameters copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 	}
 

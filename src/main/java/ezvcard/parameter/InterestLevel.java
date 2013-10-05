@@ -2,6 +2,8 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
+import ezvcard.property.Interest;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -32,18 +34,22 @@ import java.util.Collection;
  */
 
 /**
- * Represents a CALSCALE parameter.
+ * Represents a LEVEL parameter for the {@link Interest} property.
+ * 
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class CalscaleParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<CalscaleParameter> enums = new VCardParameterCaseClasses<CalscaleParameter>(CalscaleParameter.class);
+public class InterestLevel extends VCardParameter {
+	private static final VCardParameterCaseClasses<InterestLevel> enums = new VCardParameterCaseClasses<InterestLevel>(InterestLevel.class);
 
-	public static final CalscaleParameter GREGORIAN = new CalscaleParameter("gregorian");
+	public static final InterestLevel LOW = new InterestLevel("low");
+	public static final InterestLevel MEDIUM = new InterestLevel("medium");
+	public static final InterestLevel HIGH = new InterestLevel("high");
 
-	private CalscaleParameter(String value) {
+	private InterestLevel(String value) {
 		super(value);
 	}
 
@@ -53,7 +59,7 @@ public class CalscaleParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static CalscaleParameter find(String value) {
+	public static InterestLevel find(String value) {
 		return enums.find(value);
 	}
 
@@ -64,7 +70,7 @@ public class CalscaleParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static CalscaleParameter get(String value) {
+	public static InterestLevel get(String value) {
 		return enums.get(value);
 	}
 
@@ -73,7 +79,7 @@ public class CalscaleParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<CalscaleParameter> all() {
+	public static Collection<InterestLevel> all() {
 		return enums.all();
 	}
 }

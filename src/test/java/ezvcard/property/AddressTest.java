@@ -5,7 +5,7 @@ import static ezvcard.util.TestUtils.assertValidate;
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.AddressTypeParameter;
+import ezvcard.parameter.AddressType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -45,9 +45,9 @@ public class AddressTest {
 		Address property = new Address();
 		assertValidate(property).run(0);
 
-		property.addType(AddressTypeParameter.DOM);
-		property.addType(AddressTypeParameter.HOME);
-		property.addType(AddressTypeParameter.PREF);
+		property.addType(AddressType.DOM);
+		property.addType(AddressType.HOME);
+		property.addType(AddressType.PREF);
 		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(0);
 		assertValidate(property).versions(VCardVersion.V4_0).run(1);
 	}

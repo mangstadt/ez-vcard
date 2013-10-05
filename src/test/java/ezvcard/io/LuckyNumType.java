@@ -12,7 +12,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -76,7 +76,7 @@ public class LuckyNumType extends VCardProperty {
 		}
 
 		@Override
-		protected LuckyNumType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		protected LuckyNumType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			int luckyNum = Integer.parseInt(value);
 			if (luckyNum == 13) {
 				throw new SkipMeException("Invalid lucky number.");
@@ -95,7 +95,7 @@ public class LuckyNumType extends VCardProperty {
 		}
 
 		@Override
-		protected LuckyNumType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		protected LuckyNumType _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 			NodeList nodeList = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
 			if (nodeList.getLength() == 0) {
 				return new LuckyNumType(0);

@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.Expertise;
+import ezvcard.property.Related;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,22 +34,37 @@ import ezvcard.property.Expertise;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link Expertise} property.
- * 
+ * Represents the TYPE parameter of the {@link Related} type.
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class ExpertiseLevelParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<ExpertiseLevelParameter> enums = new VCardParameterCaseClasses<ExpertiseLevelParameter>(ExpertiseLevelParameter.class);
+public class RelatedType extends VCardParameter {
+	private static final VCardParameterCaseClasses<RelatedType> enums = new VCardParameterCaseClasses<RelatedType>(RelatedType.class);
 
-	public static final ExpertiseLevelParameter BEGINNER = new ExpertiseLevelParameter("beginner");
-	public static final ExpertiseLevelParameter AVERAGE = new ExpertiseLevelParameter("average");
-	public static final ExpertiseLevelParameter EXPERT = new ExpertiseLevelParameter("expert");
+	public static final RelatedType ACQUAINTANCE = new RelatedType("acquaintance");
+	public static final RelatedType AGENT = new RelatedType("agent");
+	public static final RelatedType CHILD = new RelatedType("child");
+	public static final RelatedType CO_RESIDENT = new RelatedType("co-resident");
+	public static final RelatedType CO_WORKER = new RelatedType("co-worker");
+	public static final RelatedType COLLEAGUE = new RelatedType("colleague");
+	public static final RelatedType CONTACT = new RelatedType("contact");
+	public static final RelatedType CRUSH = new RelatedType("crush");
+	public static final RelatedType DATE = new RelatedType("date");
+	public static final RelatedType EMERGENCY = new RelatedType("emergency");
+	public static final RelatedType FRIEND = new RelatedType("friend");
+	public static final RelatedType KIN = new RelatedType("kin");
+	public static final RelatedType ME = new RelatedType("me");
+	public static final RelatedType MET = new RelatedType("met");
+	public static final RelatedType MUSE = new RelatedType("muse");
+	public static final RelatedType NEIGHBOR = new RelatedType("neighbor");
+	public static final RelatedType PARENT = new RelatedType("parent");
+	public static final RelatedType SIBLING = new RelatedType("sibling");
+	public static final RelatedType SPOUSE = new RelatedType("spouse");
+	public static final RelatedType SWEETHEART = new RelatedType("sweetheart");
 
-	private ExpertiseLevelParameter(String value) {
+	private RelatedType(String value) {
 		super(value);
 	}
 
@@ -59,7 +74,7 @@ public class ExpertiseLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static ExpertiseLevelParameter find(String value) {
+	public static RelatedType find(String value) {
 		return enums.find(value);
 	}
 
@@ -70,7 +85,7 @@ public class ExpertiseLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static ExpertiseLevelParameter get(String value) {
+	public static RelatedType get(String value) {
 		return enums.get(value);
 	}
 
@@ -79,7 +94,7 @@ public class ExpertiseLevelParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<ExpertiseLevelParameter> all() {
+	public static Collection<RelatedType> all() {
 		return enums.all();
 	}
 }

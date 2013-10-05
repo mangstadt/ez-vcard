@@ -15,7 +15,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Xml;
 import ezvcard.util.XmlUtils;
 
@@ -70,7 +70,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 	}
 
 	@Override
-	protected Xml _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Xml _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		value = unescape(value);
 		try {
 			return new Xml(value);
@@ -86,7 +86,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 	}
 
 	@Override
-	protected Xml _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Xml _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		Xml xml = new Xml(element.element());
 
 		//remove the <parameters> element
@@ -112,7 +112,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 	}
 
 	@Override
-	protected Xml _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Xml _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		try {
 			String xml = value.asSingle();
 			return (xml == null) ? new Xml((Document) null) : new Xml(xml);

@@ -4,7 +4,7 @@ import java.util.List;
 
 import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
-import ezvcard.parameter.SoundTypeParameter;
+import ezvcard.parameter.SoundType;
 import ezvcard.property.Sound;
 import ezvcard.util.DataUri;
 
@@ -37,28 +37,28 @@ import ezvcard.util.DataUri;
  * Marshals {@link Sound} properties.
  * @author Michael Angstadt
  */
-public class SoundScribe extends BinaryPropertyScribe<Sound, SoundTypeParameter> {
+public class SoundScribe extends BinaryPropertyScribe<Sound, SoundType> {
 	public SoundScribe() {
 		super(Sound.class, "SOUND");
 	}
 
 	@Override
-	protected SoundTypeParameter _buildTypeObj(String type) {
-		return SoundTypeParameter.get(type, null, null);
+	protected SoundType _buildTypeObj(String type) {
+		return SoundType.get(type, null, null);
 	}
 
 	@Override
-	protected SoundTypeParameter _buildMediaTypeObj(String mediaType) {
-		return SoundTypeParameter.get(null, mediaType, null);
+	protected SoundType _buildMediaTypeObj(String mediaType) {
+		return SoundType.get(null, mediaType, null);
 	}
 
 	@Override
-	protected Sound _newInstance(String uri, SoundTypeParameter contentType) {
+	protected Sound _newInstance(String uri, SoundType contentType) {
 		return new Sound(uri, contentType);
 	}
 
 	@Override
-	protected Sound _newInstance(byte[] data, SoundTypeParameter contentType) {
+	protected Sound _newInstance(byte[] data, SoundType contentType) {
 		return new Sound(data, contentType);
 	}
 
@@ -85,7 +85,7 @@ public class SoundScribe extends BinaryPropertyScribe<Sound, SoundTypeParameter>
 		}
 
 		String type = element.attr("type");
-		SoundTypeParameter mediaType = (type.length() == 0) ? null : _buildMediaTypeObj(type);
+		SoundType mediaType = (type.length() == 0) ? null : _buildMediaTypeObj(type);
 
 		try {
 			DataUri uri = new DataUri(src);
