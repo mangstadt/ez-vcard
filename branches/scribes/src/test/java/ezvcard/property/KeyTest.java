@@ -5,7 +5,7 @@ import static ezvcard.util.TestUtils.assertValidate;
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.KeyTypeParameter;
+import ezvcard.parameter.KeyType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -45,13 +45,13 @@ public class KeyTest {
 		Key empty = new Key();
 		assertValidate(empty).run(1);
 
-		Key withUrl = new Key("http://example.com", KeyTypeParameter.PGP);
+		Key withUrl = new Key("http://example.com", KeyType.PGP);
 		assertValidate(withUrl).versions(VCardVersion.V2_1).run(1);
 		assertValidate(withUrl).versions(VCardVersion.V3_0).run(1);
 		assertValidate(withUrl).versions(VCardVersion.V4_0).run(0);
 
-		Key withText = new Key((String) null, KeyTypeParameter.PGP);
-		withText.setText("abc123", KeyTypeParameter.PGP);
+		Key withText = new Key((String) null, KeyType.PGP);
+		withText.setText("abc123", KeyType.PGP);
 		assertValidate(withText).run(0);
 	}
 }

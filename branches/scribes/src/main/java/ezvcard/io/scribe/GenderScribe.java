@@ -6,7 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Gender;
 
 /*
@@ -63,7 +63,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 	}
 
 	@Override
-	protected Gender _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Gender _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		SemiStructuredIterator it = semistructured(value, 2);
 
 		String sex = it.next();
@@ -88,7 +88,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 	}
 
 	@Override
-	protected Gender _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Gender _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String sex = element.first("sex");
 		if (sex != null) {
 			Gender property = new Gender(sex);
@@ -111,7 +111,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 	}
 
 	@Override
-	protected Gender _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Gender _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		StructuredIterator it = structured(value);
 
 		String sex = it.nextString();

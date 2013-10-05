@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ezvcard.parameter.SoundTypeParameter;
+import ezvcard.parameter.SoundType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -46,20 +46,20 @@ import ezvcard.parameter.SoundTypeParameter;
  * VCard vcard = new VCard();
  * 
  * //URL
- * Sound sound = new Sound("http://www.mywebsite.com/myname.ogg", SoundTypeParameter.OGG);
+ * Sound sound = new Sound("http://www.mywebsite.com/myname.ogg", SoundType.OGG);
  * vcard.addSound(sound);
  * 
  * //binary data
  * byte data[] = ...
- * sound = new Sound(data, SoundTypeParameter.OGG);
+ * sound = new Sound(data, SoundType.OGG);
  * vcard.addSound(sound);
  * 
- * //if "SoundTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+ * //if "SoundType" does not have the pre-defined constant that you need, then create a new instance
  * //arg 1: the value of the 2.1/3.0 TYPE parameter
  * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
  * //arg 3: the file extension of the data type (optional)
- * SoundTypeParameter param = new SoundTypeParameter("wav", "audio/wav", "wav");
- * sound = new Sound("http://www.mywebsite.com/myname.wav", SoundTypeParameter.WAV);
+ * SoundType param = new SoundType("wav", "audio/wav", "wav");
+ * sound = new Sound("http://www.mywebsite.com/myname.wav", SoundType.WAV);
  * vcard.addSound(sound);
  * </pre>
  * 
@@ -76,7 +76,7 @@ import ezvcard.parameter.SoundTypeParameter;
  *   if (sound.getData() == null){
  *     System.out.println("Sound URL: " + sound.getUrl());
  *   } else {
- *     SoundTypeParameter type = sound.getContentType();
+ *     SoundType type = sound.getContentType();
  *     
  *     if (type == null) {
  *       //the vCard may not have any content type data associated with the sound
@@ -86,7 +86,7 @@ import ezvcard.parameter.SoundTypeParameter;
  *     }
  *     
  *     String folder;
- *     if (type == SoundTypeParameter.OGG){ //it is safe to use "==" instead of "equals()"
+ *     if (type == SoundType.OGG){ //it is safe to use "==" instead of "equals()"
  *       folder = "ogg-files";
  *     } else {
  *       folder = "sound-files";
@@ -113,13 +113,13 @@ import ezvcard.parameter.SoundTypeParameter;
  * </p>
  * @author Michael Angstadt
  */
-public class Sound extends BinaryProperty<SoundTypeParameter> {
+public class Sound extends BinaryProperty<SoundType> {
 	/**
 	 * Creates a sound property.
 	 * @param url the URL to the sound file
 	 * @param type the content type (e.g. OGG)
 	 */
-	public Sound(String url, SoundTypeParameter type) {
+	public Sound(String url, SoundType type) {
 		super(url, type);
 	}
 
@@ -128,7 +128,7 @@ public class Sound extends BinaryProperty<SoundTypeParameter> {
 	 * @param data the binary data of the sound file
 	 * @param type the content type (e.g. OGG)
 	 */
-	public Sound(byte[] data, SoundTypeParameter type) {
+	public Sound(byte[] data, SoundType type) {
 		super(data, type);
 	}
 
@@ -138,7 +138,7 @@ public class Sound extends BinaryProperty<SoundTypeParameter> {
 	 * @param type the content type (e.g. OGG)
 	 * @throws IOException if there's a problem reading from the input stream
 	 */
-	public Sound(InputStream in, SoundTypeParameter type) throws IOException {
+	public Sound(InputStream in, SoundType type) throws IOException {
 		super(in, type);
 	}
 
@@ -148,7 +148,7 @@ public class Sound extends BinaryProperty<SoundTypeParameter> {
 	 * @param type the content type (e.g. OGG)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public Sound(File file, SoundTypeParameter type) throws IOException {
+	public Sound(File file, SoundType type) throws IOException {
 		super(file, type);
 	}
 

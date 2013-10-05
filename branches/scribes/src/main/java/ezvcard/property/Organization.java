@@ -2,7 +2,7 @@ package ezvcard.property;
 
 import java.util.List;
 
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -138,7 +138,7 @@ public class Organization extends TextListProperty implements HasAltId {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the sort string(s) or empty list if there are none
-	 * @see VCardSubTypes#getSortAs
+	 * @see VCardParameters#getSortAs
 	 */
 	public List<String> getSortAs() {
 		return subTypes.getSortAs();
@@ -155,7 +155,7 @@ public class Organization extends TextListProperty implements HasAltId {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param names the names or empty parameter list to remove
-	 * @see VCardSubTypes#setSortAs
+	 * @see VCardParameters#setSortAs
 	 */
 	public void setSortAs(String... names) {
 		subTypes.setSortAs(names);

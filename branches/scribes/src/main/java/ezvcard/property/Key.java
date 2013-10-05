@@ -7,7 +7,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.KeyTypeParameter;
+import ezvcard.parameter.KeyType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -49,24 +49,24 @@ import ezvcard.parameter.KeyTypeParameter;
  * VCard vcard = new VCard();
  * 
  * //URL (vCard 4.0 only; KEYs cannot have URLs in vCard 2.1 and 3.0)
- * Key key = new Key("http://www.mywebsite.com/pubkey.pgp", KeyTypeParameter.PGP);
+ * Key key = new Key("http://www.mywebsite.com/pubkey.pgp", KeyType.PGP);
  * vcard.addKey(key);
  * 
  * //binary data
  * byte data[] = ...
- * key = new Key(data, KeyTypeParameter.PGP);
+ * key = new Key(data, KeyType.PGP);
  * vcard.addKey(key);
  * 
  * //plain text value
  * key = new Key();
- * key.setText("...", KeyTypeParameter.PGP);
+ * key.setText("...", KeyType.PGP);
  * vcard.addKey(key);
  * 
- * //if "KeyTypeParameter" does not have the pre-defined constant that you need, then create a new instance
+ * //if "KeyType" does not have the pre-defined constant that you need, then create a new instance
  * //arg 1: the value of the 2.1/3.0 TYPE parameter
  * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
  * //arg 3: the file extension of the data type (optional)
- * KeyTypeParameter param = new KeyTypeParameter("mykey", "application/my-key", "mkey");
+ * KeyType param = new KeyType("mykey", "application/my-key", "mkey");
  * key = new Key("http://www.mywebsite.com/pubkey.enc", param);
  * vcard.addKey(key);
  * </pre>
@@ -85,7 +85,7 @@ import ezvcard.parameter.KeyTypeParameter;
  *   if (key.getData() == null){
  *     System.out.println("Key URL: " + key.getUrl());
  *   } else {
- *     KeyTypeParameter type = key.getContentType();
+ *     KeyType type = key.getContentType();
  *     
  *     if (type == null) {
  *       //the vCard may not have any content type data associated with the key
@@ -95,7 +95,7 @@ import ezvcard.parameter.KeyTypeParameter;
  *     }
  *     
  *     String folder;
- *     if (type == KeyTypeParameter.PGP){ //it is safe to use "==" instead of "equals()"
+ *     if (type == KeyType.PGP){ //it is safe to use "==" instead of "equals()"
  *       folder = "pgp-keys";
  *     } else {
  *       folder = "other-keys";
@@ -122,7 +122,7 @@ import ezvcard.parameter.KeyTypeParameter;
  * </p>
  * @author Michael Angstadt
  */
-public class Key extends BinaryProperty<KeyTypeParameter> {
+public class Key extends BinaryProperty<KeyType> {
 	private String text;
 
 	/**
@@ -137,7 +137,7 @@ public class Key extends BinaryProperty<KeyTypeParameter> {
 	 * @param data the binary data
 	 * @param type the type of key (e.g. PGP)
 	 */
-	public Key(byte data[], KeyTypeParameter type) {
+	public Key(byte data[], KeyType type) {
 		super(data, type);
 	}
 
@@ -146,7 +146,7 @@ public class Key extends BinaryProperty<KeyTypeParameter> {
 	 * @param url the URL to the key (vCard 4.0 only)
 	 * @param type the type of key (e.g. PGP)
 	 */
-	public Key(String url, KeyTypeParameter type) {
+	public Key(String url, KeyType type) {
 		super(url, type);
 	}
 
@@ -156,7 +156,7 @@ public class Key extends BinaryProperty<KeyTypeParameter> {
 	 * @param type the content type (e.g. PGP)
 	 * @throws IOException if there's a problem reading from the input stream
 	 */
-	public Key(InputStream in, KeyTypeParameter type) throws IOException {
+	public Key(InputStream in, KeyType type) throws IOException {
 		super(in, type);
 	}
 
@@ -166,7 +166,7 @@ public class Key extends BinaryProperty<KeyTypeParameter> {
 	 * @param type the content type (e.g. PGP)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public Key(File file, KeyTypeParameter type) throws IOException {
+	public Key(File file, KeyType type) throws IOException {
 		super(file, type);
 	}
 
@@ -175,7 +175,7 @@ public class Key extends BinaryProperty<KeyTypeParameter> {
 	 * @param text the key in plain text
 	 * @param type the key type
 	 */
-	public void setText(String text, KeyTypeParameter type) {
+	public void setText(String text, KeyType type) {
 		this.text = text;
 		data = null;
 		url = null;

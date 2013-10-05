@@ -41,90 +41,90 @@ import ezvcard.property.Telephone;
  * </p>
  * @author Michael Angstadt
  */
-public class TelephoneTypeParameter extends VersionedVCardParameter {
-	private static final VCardParameterCaseClasses<TelephoneTypeParameter> enums = new VCardParameterCaseClasses<TelephoneTypeParameter>(TelephoneTypeParameter.class);
+public class TelephoneType extends VersionedVCardParameter {
+	private static final VCardParameterCaseClasses<TelephoneType> enums = new VCardParameterCaseClasses<TelephoneType>(TelephoneType.class);
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
-	public static final TelephoneTypeParameter BBS = new TelephoneTypeParameter("bbs", VCardVersion.V2_1, VCardVersion.V3_0);
+	public static final TelephoneType BBS = new TelephoneType("bbs", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
-	public static final TelephoneTypeParameter CAR = new TelephoneTypeParameter("car", VCardVersion.V2_1, VCardVersion.V3_0);
+	public static final TelephoneType CAR = new TelephoneType("car", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
-	public static final TelephoneTypeParameter CELL = new TelephoneTypeParameter("cell");
+	public static final TelephoneType CELL = new TelephoneType("cell");
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
-	public static final TelephoneTypeParameter FAX = new TelephoneTypeParameter("fax");
+	public static final TelephoneType FAX = new TelephoneType("fax");
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
-	public static final TelephoneTypeParameter HOME = new TelephoneTypeParameter("home");
+	public static final TelephoneType HOME = new TelephoneType("home");
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
-	public static final TelephoneTypeParameter ISDN = new TelephoneTypeParameter("isdn", VCardVersion.V2_1, VCardVersion.V3_0);
+	public static final TelephoneType ISDN = new TelephoneType("isdn", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
-	public static final TelephoneTypeParameter MODEM = new TelephoneTypeParameter("modem", VCardVersion.V2_1, VCardVersion.V3_0);
+	public static final TelephoneType MODEM = new TelephoneType("modem", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
-	public static final TelephoneTypeParameter MSG = new TelephoneTypeParameter("msg", VCardVersion.V2_1, VCardVersion.V3_0);
+	public static final TelephoneType MSG = new TelephoneType("msg", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
-	public static final TelephoneTypeParameter PAGER = new TelephoneTypeParameter("pager");
+	public static final TelephoneType PAGER = new TelephoneType("pager");
 
 	/**
 	 * <b>Supported versions:</b> {@code 3.0}
 	 */
-	public static final TelephoneTypeParameter PCS = new TelephoneTypeParameter("pcs", VCardVersion.V3_0);
+	public static final TelephoneType PCS = new TelephoneType("pcs", VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 */
-	public static final TelephoneTypeParameter PREF = new TelephoneTypeParameter("pref", VCardVersion.V2_1, VCardVersion.V3_0);
+	public static final TelephoneType PREF = new TelephoneType("pref", VCardVersion.V2_1, VCardVersion.V3_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 4.0}
 	 */
-	public static final TelephoneTypeParameter TEXT = new TelephoneTypeParameter("text", VCardVersion.V4_0);
+	public static final TelephoneType TEXT = new TelephoneType("text", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 4.0}
 	 */
-	public static final TelephoneTypeParameter TEXTPHONE = new TelephoneTypeParameter("textphone", VCardVersion.V4_0);
+	public static final TelephoneType TEXTPHONE = new TelephoneType("textphone", VCardVersion.V4_0);
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
-	public static final TelephoneTypeParameter VIDEO = new TelephoneTypeParameter("video");
+	public static final TelephoneType VIDEO = new TelephoneType("video");
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
-	public static final TelephoneTypeParameter VOICE = new TelephoneTypeParameter("voice");
+	public static final TelephoneType VOICE = new TelephoneType("voice");
 
 	/**
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
-	public static final TelephoneTypeParameter WORK = new TelephoneTypeParameter("work");
+	public static final TelephoneType WORK = new TelephoneType("work");
 
-	private TelephoneTypeParameter(String value, VCardVersion... supportedVersions) {
+	private TelephoneType(String value, VCardVersion... supportedVersions) {
 		super(value, supportedVersions);
 	}
 
@@ -134,7 +134,7 @@ public class TelephoneTypeParameter extends VersionedVCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static TelephoneTypeParameter find(String value) {
+	public static TelephoneType find(String value) {
 		return enums.find(value);
 	}
 
@@ -145,7 +145,7 @@ public class TelephoneTypeParameter extends VersionedVCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static TelephoneTypeParameter get(String value) {
+	public static TelephoneType get(String value) {
 		return enums.get(value);
 	}
 
@@ -154,7 +154,7 @@ public class TelephoneTypeParameter extends VersionedVCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<TelephoneTypeParameter> all() {
+	public static Collection<TelephoneType> all() {
 		return enums.all();
 	}
 }

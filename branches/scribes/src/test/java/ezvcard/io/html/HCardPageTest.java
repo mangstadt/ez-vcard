@@ -18,11 +18,11 @@ import org.junit.Test;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.scribe.SortStringScribe;
-import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.parameter.EmailTypeParameter;
-import ezvcard.parameter.ImageTypeParameter;
-import ezvcard.parameter.SoundTypeParameter;
-import ezvcard.parameter.TelephoneTypeParameter;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.ImageType;
+import ezvcard.parameter.SoundType;
+import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
 import ezvcard.property.Birthday;
 import ezvcard.property.Categories;
@@ -117,23 +117,23 @@ public class HCardPageTest {
 		assertTrue(document.select(".vcard .logo").isEmpty());
 
 		vcard = new VCard();
-		Photo photo = new Photo(mockData, ImageTypeParameter.JPEG);
+		Photo photo = new Photo(mockData, ImageType.JPEG);
 		vcard.addPhoto(photo);
 		document = generate(vcard);
 		assertEquals(1, document.select(".vcard .photo").size());
 		assertTrue(document.select(".vcard .logo").isEmpty());
 
 		vcard = new VCard();
-		Logo logo = new Logo(mockData, ImageTypeParameter.PNG);
+		Logo logo = new Logo(mockData, ImageType.PNG);
 		vcard.addLogo(logo);
 		document = generate(vcard);
 		assertTrue(document.select(".vcard .photo").isEmpty());
 		assertEquals(1, document.select(".vcard .logo").size());
 
 		vcard = new VCard();
-		photo = new Photo(mockData, ImageTypeParameter.JPEG);
+		photo = new Photo(mockData, ImageType.JPEG);
 		vcard.addPhoto(photo);
-		logo = new Logo(mockData, ImageTypeParameter.PNG);
+		logo = new Logo(mockData, ImageType.PNG);
 		vcard.addLogo(logo);
 		document = generate(vcard);
 		assertEquals(1, document.select(".vcard .photo").size());
@@ -399,25 +399,25 @@ public class HCardPageTest {
 		vcard.addRole(new Role("Team Builder"));
 
 		Email email = new Email("johndoe@hotmail.com");
-		email.addType(EmailTypeParameter.HOME);
-		email.addType(EmailTypeParameter.PREF);
+		email.addType(EmailType.HOME);
+		email.addType(EmailType.PREF);
 		vcard.addEmail(email);
 
 		email = new Email("doe.john@company.com");
-		email.addType(EmailTypeParameter.WORK);
+		email.addType(EmailType.WORK);
 		vcard.addEmail(email);
 
 		Telephone tel = new Telephone(new TelUri.Builder("+1-555-222-3333").extension("101").build());
 		vcard.addTelephoneNumber(tel);
 
 		tel = new Telephone(new TelUri.Builder("+1-555-333-4444").build());
-		tel.addType(TelephoneTypeParameter.WORK);
+		tel.addType(TelephoneType.WORK);
 		vcard.addTelephoneNumber(tel);
 
 		tel = new Telephone("(555) 111-2222");
-		tel.addType(TelephoneTypeParameter.HOME);
-		tel.addType(TelephoneTypeParameter.VOICE);
-		tel.addType(TelephoneTypeParameter.PREF);
+		tel.addType(TelephoneType.HOME);
+		tel.addType(TelephoneType.VOICE);
+		tel.addType(TelephoneType.PREF);
 		vcard.addTelephoneNumber(tel);
 
 		Address adr = new Address();
@@ -428,7 +428,7 @@ public class HCardPageTest {
 		adr.setPostalCode("12345");
 		adr.setCountry("USA");
 		adr.setLabel("123 Main St.\nAustin TX, 12345\nUSA");
-		adr.addType(AddressTypeParameter.HOME);
+		adr.addType(AddressType.HOME);
 		vcard.addAddress(adr);
 
 		adr = new Address();
@@ -438,8 +438,8 @@ public class HCardPageTest {
 		adr.setRegion("NY");
 		adr.setPostalCode("11111");
 		adr.setCountry("USA");
-		adr.addType(AddressTypeParameter.PREF);
-		adr.addType(AddressTypeParameter.WORK);
+		adr.addType(AddressType.PREF);
+		adr.addType(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		Organization org = new Organization();
@@ -472,11 +472,11 @@ public class HCardPageTest {
 		vcard.setTimezone(new Timezone(-6, 0, "America/Chicago"));
 
 		InputStream in = getClass().getResourceAsStream("hcard-portrait.jpg");
-		Photo photo = new Photo(in, ImageTypeParameter.JPEG);
+		Photo photo = new Photo(in, ImageType.JPEG);
 		vcard.addPhoto(photo);
 
 		in = getClass().getResourceAsStream("hcard-sound.ogg");
-		Sound sound = new Sound(in, SoundTypeParameter.OGG);
+		Sound sound = new Sound(in, SoundType.OGG);
 		vcard.addSound(sound);
 
 		vcard.setUid(new Uid("urn:uuid:ffce1595-cbe9-4418-9d0d-b015655d45f6"));

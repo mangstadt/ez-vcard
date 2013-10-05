@@ -4,8 +4,8 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.HobbyLevelParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.HobbyLevel;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -50,7 +50,7 @@ import ezvcard.parameter.VCardSubTypes;
  * //someone who likes to wind surf during the summer, but rents a boat instead of owning one
  * VCard vcard = new VCard();
  * Hobby hobby = new Hobby(&quot;wind surfing&quot;);
- * hobby.setLevel(HobbyLevelParameter.LOW);
+ * hobby.setLevel(HobbyLevel.LOW);
  * vcard.addHobby(hobby);
  * </pre>
  * 
@@ -80,19 +80,19 @@ public class Hobby extends TextProperty implements HasAltId {
 	/**
 	 * Gets the level at which the person practices the hobby.
 	 * @return the skill level (e.g. "low") or null if not set
-	 * @see VCardSubTypes#getLevel
+	 * @see VCardParameters#getLevel
 	 */
-	public HobbyLevelParameter getLevel() {
+	public HobbyLevel getLevel() {
 		String value = subTypes.getLevel();
-		return (value == null) ? null : HobbyLevelParameter.get(value);
+		return (value == null) ? null : HobbyLevel.get(value);
 	}
 
 	/**
 	 * Sets the level at which the person practices the hobby.
 	 * @param level the level (e.g. "low") or null to remove
-	 * @see VCardSubTypes#setLevel
+	 * @see VCardParameters#setLevel
 	 */
-	public void setLevel(HobbyLevelParameter level) {
+	public void setLevel(HobbyLevel level) {
 		subTypes.setLevel(level.getValue());
 	}
 

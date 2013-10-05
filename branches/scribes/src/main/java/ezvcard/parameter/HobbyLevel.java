@@ -2,9 +2,7 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.VCardVersion;
-import ezvcard.property.Address;
-import ezvcard.property.Label;
+import ezvcard.property.Hobby;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -36,53 +34,23 @@ import ezvcard.property.Label;
  */
 
 /**
- * Represents the TYPE parameter of the {@link Address} and
- * {@link Label} types.
+ * Represents a LEVEL parameter for the {@link Hobby} property.
+ * 
  * <p>
- * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+ * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class AddressTypeParameter extends VersionedVCardParameter {
-	private static final VCardParameterCaseClasses<AddressTypeParameter> enums = new VCardParameterCaseClasses<AddressTypeParameter>(AddressTypeParameter.class);
+public class HobbyLevel extends VCardParameter {
+	private static final VCardParameterCaseClasses<HobbyLevel> enums = new VCardParameterCaseClasses<HobbyLevel>(HobbyLevel.class);
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
-	public static final AddressTypeParameter HOME = new AddressTypeParameter("home");
+	public static final HobbyLevel LOW = new HobbyLevel("low");
+	public static final HobbyLevel MEDIUM = new HobbyLevel("medium");
+	public static final HobbyLevel HIGH = new HobbyLevel("high");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
-	public static final AddressTypeParameter WORK = new AddressTypeParameter("work");
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter DOM = new AddressTypeParameter("dom", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter INTL = new AddressTypeParameter("intl", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter POSTAL = new AddressTypeParameter("postal", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter PARCEL = new AddressTypeParameter("parcel", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressTypeParameter PREF = new AddressTypeParameter("pref", VCardVersion.V2_1, VCardVersion.V3_0);
-
-	private AddressTypeParameter(String value, VCardVersion... supportedVersions) {
-		super(value, supportedVersions);
+	private HobbyLevel(String value) {
+		super(value);
 	}
 
 	/**
@@ -91,7 +59,7 @@ public class AddressTypeParameter extends VersionedVCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static AddressTypeParameter find(String value) {
+	public static HobbyLevel find(String value) {
 		return enums.find(value);
 	}
 
@@ -102,7 +70,7 @@ public class AddressTypeParameter extends VersionedVCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static AddressTypeParameter get(String value) {
+	public static HobbyLevel get(String value) {
 		return enums.get(value);
 	}
 
@@ -111,7 +79,7 @@ public class AddressTypeParameter extends VersionedVCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<AddressTypeParameter> all() {
+	public static Collection<HobbyLevel> all() {
 		return enums.all();
 	}
 }

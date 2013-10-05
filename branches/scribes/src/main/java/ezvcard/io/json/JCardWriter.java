@@ -18,7 +18,7 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.ProductId;
 import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
@@ -190,7 +190,7 @@ public class JCardWriter implements Closeable {
 			try {
 				JCardValue value = scribe.writeJson(type);
 				value = new JCardValue(value.getValues());
-				VCardSubTypes subTypes = scribe.prepareParameters(type, targetVersion, vcard);
+				VCardParameters subTypes = scribe.prepareParameters(type, targetVersion, vcard);
 				writer.writeProperty(type.getGroup(), scribe.getPropertyName().toLowerCase(), subTypes, scribe.dataType(type, targetVersion), value);
 			} catch (SkipMeException e) {
 				//property has requested not to be written

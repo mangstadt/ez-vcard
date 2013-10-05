@@ -9,7 +9,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Revision;
 
 /*
@@ -57,7 +57,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	@Override
-	protected Revision _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Revision _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		return parse(value);
 	}
 
@@ -67,7 +67,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	@Override
-	protected Revision _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Revision _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.TIMESTAMP);
 		if (value != null) {
 			return parse(value);
@@ -98,7 +98,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	@Override
-	protected Revision _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Revision _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 		return parse(valueStr);
 	}

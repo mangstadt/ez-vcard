@@ -6,7 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Birthplace;
 
 /*
@@ -75,7 +75,7 @@ public class BirthplaceScribe extends VCardPropertyScribe<Birthplace> {
 	}
 
 	@Override
-	protected Birthplace _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Birthplace _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		Birthplace property = new Birthplace();
 		value = unescape(value);
 
@@ -111,7 +111,7 @@ public class BirthplaceScribe extends VCardPropertyScribe<Birthplace> {
 	}
 
 	@Override
-	protected Birthplace _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Birthplace _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		Birthplace property = new Birthplace();
 
 		String text = element.first(VCardDataType.TEXT);
@@ -145,7 +145,7 @@ public class BirthplaceScribe extends VCardPropertyScribe<Birthplace> {
 	}
 
 	@Override
-	protected Birthplace _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Birthplace _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		Birthplace property = new Birthplace();
 		String valueStr = value.asSingle();
 

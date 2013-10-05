@@ -13,7 +13,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import ezvcard.VCardDataType;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -125,7 +125,7 @@ public class JCardRawWriterTest {
 		JCardRawWriter writer = new JCardRawWriter(sw, false);
 
 		writer.writeStartVCard();
-		VCardSubTypes parameters = new VCardSubTypes();
+		VCardParameters parameters = new VCardParameters();
 		parameters.put("a", "value1");
 		parameters.put("b", "value2");
 		parameters.put("b", "value3");
@@ -150,7 +150,7 @@ public class JCardRawWriterTest {
 		JCardRawWriter writer = new JCardRawWriter(sw, false);
 
 		writer.writeStartVCard();
-		writer.writeProperty("one", "prop", new VCardSubTypes(), VCardDataType.TEXT, JCardValue.single("value"));
+		writer.writeProperty("one", "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("value"));
 		writer.close();
 
 		String actual = sw.toString();

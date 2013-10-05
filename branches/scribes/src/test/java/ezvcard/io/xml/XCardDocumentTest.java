@@ -46,11 +46,11 @@ import ezvcard.io.SalaryType;
 import ezvcard.io.SalaryType.SalaryScribe;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.parameter.EmailTypeParameter;
-import ezvcard.parameter.ImageTypeParameter;
-import ezvcard.parameter.TelephoneTypeParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.ImageType;
+import ezvcard.parameter.TelephoneType;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.Anniversary;
 import ezvcard.property.Birthday;
@@ -318,7 +318,7 @@ public class XCardDocumentTest {
 			Telephone tel = it.next();
 			assertEquals("+1-555-555-1234", tel.getUri().getNumber());
 			assertEquals(2, tel.getSubTypes().size());
-			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
+			assertSetEquals(tel.getTypes(), TelephoneType.WORK, TelephoneType.VOICE);
 
 			assertFalse(it.hasNext());
 		}
@@ -675,7 +675,7 @@ public class XCardDocumentTest {
 		note.setLanguage("en");
 		vcard.addNote(note);
 
-		Photo photo = new Photo("http://example.com/image.jpg", ImageTypeParameter.JPEG);
+		Photo photo = new Photo("http://example.com/image.jpg", ImageType.JPEG);
 		photo.setGroup("group1");
 		vcard.addPhoto(photo);
 
@@ -1024,25 +1024,25 @@ public class XCardDocumentTest {
 		adr.setRegion("QC");
 		adr.setPostalCode("G1V 2M2");
 		adr.setCountry("Canada");
-		adr.addType(AddressTypeParameter.WORK);
+		adr.addType(AddressType.WORK);
 		adr.setLabel("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2");
 		vcard.addAddress(adr);
 
 		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		Telephone tel = new Telephone(telUri);
-		tel.addType(TelephoneTypeParameter.WORK);
-		tel.addType(TelephoneTypeParameter.VOICE);
+		tel.addType(TelephoneType.WORK);
+		tel.addType(TelephoneType.VOICE);
 		vcard.addTelephoneNumber(tel);
 
 		tel = new Telephone(new TelUri.Builder("+1-418-262-6501").build());
-		tel.addType(TelephoneTypeParameter.WORK);
-		tel.addType(TelephoneTypeParameter.TEXT);
-		tel.addType(TelephoneTypeParameter.VOICE);
-		tel.addType(TelephoneTypeParameter.CELL);
-		tel.addType(TelephoneTypeParameter.VIDEO);
+		tel.addType(TelephoneType.WORK);
+		tel.addType(TelephoneType.TEXT);
+		tel.addType(TelephoneType.VOICE);
+		tel.addType(TelephoneType.CELL);
+		tel.addType(TelephoneType.VIDEO);
 		vcard.addTelephoneNumber(tel);
 
-		vcard.addEmail("simon.perreault@viagenie.ca", EmailTypeParameter.WORK);
+		vcard.addEmail("simon.perreault@viagenie.ca", EmailType.WORK);
 
 		Geo geo = new Geo(46.766336, -71.28955);
 		geo.setType("work");
@@ -1112,21 +1112,21 @@ public class XCardDocumentTest {
 		assertEquals("G1V 2M2", adr.getPostalCode());
 		assertEquals("Canada", adr.getCountry());
 		assertEquals("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2", adr.getLabel());
-		assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
+		assertSetEquals(adr.getTypes(), AddressType.WORK);
 
 		Telephone tel = vcard.getTelephoneNumbers().get(0);
 		TelUri expectedUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		assertEquals(expectedUri, tel.getUri());
-		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE);
+		assertSetEquals(tel.getTypes(), TelephoneType.WORK, TelephoneType.VOICE);
 
 		tel = vcard.getTelephoneNumbers().get(1);
 		expectedUri = new TelUri.Builder("+1-418-262-6501").build();
 		assertEquals(expectedUri, tel.getUri());
-		assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE, TelephoneTypeParameter.CELL, TelephoneTypeParameter.VIDEO, TelephoneTypeParameter.TEXT);
+		assertSetEquals(tel.getTypes(), TelephoneType.WORK, TelephoneType.VOICE, TelephoneType.CELL, TelephoneType.VIDEO, TelephoneType.TEXT);
 
 		Email email = vcard.getEmails().get(0);
 		assertEquals("simon.perreault@viagenie.ca", email.getValue());
-		assertSetEquals(email.getTypes(), EmailTypeParameter.WORK);
+		assertSetEquals(email.getTypes(), EmailType.WORK);
 
 		Geo geo = vcard.getGeo();
 		assertEquals(Double.valueOf(46.766336), geo.getLatitude());
@@ -1178,7 +1178,7 @@ public class XCardDocumentTest {
 		}
 
 		@Override
-		protected EmbeddedType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		protected EmbeddedType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			return null;
 		}
 

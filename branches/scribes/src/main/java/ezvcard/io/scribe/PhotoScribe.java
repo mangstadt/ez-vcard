@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.parameter.ImageType;
 import ezvcard.property.Photo;
 
 /*
@@ -38,12 +38,12 @@ public class PhotoScribe extends ImagePropertyScribe<Photo> {
 	}
 
 	@Override
-	protected Photo _newInstance(String uri, ImageTypeParameter contentType) {
+	protected Photo _newInstance(String uri, ImageType contentType) {
 		return new Photo(uri, contentType);
 	}
 
 	@Override
-	protected Photo _newInstance(byte[] data, ImageTypeParameter contentType) {
+	protected Photo _newInstance(byte[] data, ImageType contentType) {
 		return new Photo(data, contentType);
 	}
 }

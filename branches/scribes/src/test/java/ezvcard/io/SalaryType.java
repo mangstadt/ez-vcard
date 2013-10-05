@@ -6,7 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -66,7 +66,7 @@ public class SalaryType extends VCardProperty {
 		}
 
 		@Override
-		protected SalaryType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		protected SalaryType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			return new SalaryType(Integer.parseInt(value));
 		}
 
@@ -76,7 +76,7 @@ public class SalaryType extends VCardProperty {
 		}
 
 		@Override
-		protected SalaryType _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+		protected SalaryType _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 			return new SalaryType(Integer.parseInt(element.first(VCardDataType.INTEGER)));
 		}
 	}

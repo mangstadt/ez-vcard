@@ -23,10 +23,10 @@ import ezvcard.VCardVersion;
 import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.parameter.EmailTypeParameter;
-import ezvcard.parameter.TelephoneTypeParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.TelephoneType;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.Anniversary;
 import ezvcard.property.Birthday;
@@ -378,25 +378,25 @@ public class JCardWriterTest {
 		adr.setRegion("QC");
 		adr.setPostalCode("G1V2M2");
 		adr.setCountry("Canada");
-		adr.addType(AddressTypeParameter.WORK);
+		adr.addType(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		Telephone tel = new Telephone(telUri);
-		tel.addType(TelephoneTypeParameter.WORK);
-		tel.addType(TelephoneTypeParameter.VOICE);
+		tel.addType(TelephoneType.WORK);
+		tel.addType(TelephoneType.VOICE);
 		tel.setPref(1);
 		vcard.addTelephoneNumber(tel);
 
 		tel = new Telephone(new TelUri.Builder("+1-418-262-6501").build());
-		tel.addType(TelephoneTypeParameter.WORK);
-		tel.addType(TelephoneTypeParameter.CELL);
-		tel.addType(TelephoneTypeParameter.VOICE);
-		tel.addType(TelephoneTypeParameter.VIDEO);
-		tel.addType(TelephoneTypeParameter.TEXT);
+		tel.addType(TelephoneType.WORK);
+		tel.addType(TelephoneType.CELL);
+		tel.addType(TelephoneType.VOICE);
+		tel.addType(TelephoneType.VIDEO);
+		tel.addType(TelephoneType.TEXT);
 		vcard.addTelephoneNumber(tel);
 
-		vcard.addEmail("simon.perreault@viagenie.ca", EmailTypeParameter.WORK);
+		vcard.addEmail("simon.perreault@viagenie.ca", EmailType.WORK);
 
 		Geo geo = new Geo(46.772673, -71.282945);
 		geo.setType("work");
@@ -469,7 +469,7 @@ public class JCardWriterTest {
 		}
 
 		@Override
-		protected TypeForTesting _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		protected TypeForTesting _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			return null;
 		}
 

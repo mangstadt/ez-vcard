@@ -24,7 +24,7 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
 
@@ -205,7 +205,7 @@ public class JCardReader implements Closeable {
 			vcard.setVersion(VCardVersion.V4_0);
 		}
 
-		public void readProperty(String group, String propertyName, VCardSubTypes parameters, VCardDataType dataType, JCardValue value) {
+		public void readProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
 			if ("version".equalsIgnoreCase(propertyName)) {
 				//don't unmarshal "version" because we don't treat it as a property
 				versionFound = true;

@@ -15,7 +15,7 @@ import java.util.Map;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.scribe.ScribeIndex;
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.parameter.ImageType;
 import ezvcard.property.Photo;
 import ezvcard.util.DataUri;
 import ezvcard.util.IOUtils;
@@ -149,8 +149,8 @@ public class HCardPage {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("vcards", vcards);
 		map.put("dataUri", new DataUriGenerator());
-		map.put("translucentBg", readImage("translucent-bg.png", ImageTypeParameter.PNG));
-		map.put("noProfile", readImage("no-profile.png", ImageTypeParameter.PNG));
+		map.put("translucentBg", readImage("translucent-bg.png", ImageType.PNG));
+		map.put("noProfile", readImage("no-profile.png", ImageType.PNG));
 		map.put("ezVCardVersion", Ezvcard.VERSION);
 		map.put("ezVCardUrl", Ezvcard.URL);
 		map.put("scribeIndex", new ScribeIndex());
@@ -170,7 +170,7 @@ public class HCardPage {
 	 * @return the image
 	 * @throws IOException
 	 */
-	private Photo readImage(String name, ImageTypeParameter mediaType) throws IOException {
+	private Photo readImage(String name, ImageType mediaType) throws IOException {
 		return new Photo(getClass().getResourceAsStream(name), mediaType);
 	}
 

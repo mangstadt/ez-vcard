@@ -25,7 +25,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.VCardRawWriter;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;
@@ -124,9 +124,9 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param vcard the vCard that the property belongs to
 	 * @return the sanitized parameters
 	 */
-	public final VCardSubTypes prepareParameters(T property, VCardVersion version, VCard vcard) {
+	public final VCardParameters prepareParameters(T property, VCardVersion version, VCard vcard) {
 		//make a copy because the property should not get modified when it is marshalled
-		VCardSubTypes copy = new VCardSubTypes(property.getSubTypes());
+		VCardParameters copy = new VCardParameters(property.getSubTypes());
 		_prepareParameters(property, copy, version, vcard);
 		return copy;
 	}
@@ -216,7 +216,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws EmbeddedVCardException if the property value is an embedded
 	 * vCard (i.e. the AGENT property)
 	 */
-	public final Result<T> parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters) {
+	public final Result<T> parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters) {
 		List<String> warnings = new ArrayList<String>(0);
 		T property = _parseText(value, dataType, version, parameters, warnings);
 		property.setSubTypes(parameters);
@@ -233,7 +233,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	public final Result<T> parseXml(Element element, VCardSubTypes parameters) {
+	public final Result<T> parseXml(Element element, VCardParameters parameters) {
 		List<String> warnings = new ArrayList<String>(0);
 		T property = _parseXml(new XCardElement(element), parameters, warnings);
 		property.setSubTypes(parameters);
@@ -268,7 +268,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	public final Result<T> parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters) {
+	public final Result<T> parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters) {
 		List<String> warnings = new ArrayList<String>(0);
 		T property = _parseJson(value, dataType, parameters, warnings);
 		property.setSubTypes(parameters);
@@ -290,7 +290,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param version the version of the vCard that is being generated
 	 * @param vcard the vCard that the property belongs to
 	 */
-	protected void _prepareParameters(T property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(T property, VCardParameters copy, VCardVersion version, VCard vcard) {
 		//do nothing
 	}
 
@@ -407,7 +407,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	protected abstract T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings);
+	protected abstract T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings);
 
 	/**
 	 * <p>
@@ -436,7 +436,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	protected T _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String value = null;
 		VCardDataType dataType = null;
 		Element rawElement = element.element();
@@ -484,7 +484,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 */
 	protected T _parseHtml(HCardElement element, List<String> warnings) {
 		String value = escape(element.value());
-		VCardSubTypes parameters = new VCardSubTypes();
+		VCardParameters parameters = new VCardParameters();
 		T property = _parseText(value, null, VCardVersion.V3_0, parameters, warnings);
 		property.setSubTypes(parameters);
 		return property;
@@ -557,7 +557,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		return _parseText(jcardValueToString(value), dataType, VCardVersion.V4_0, parameters, warnings);
 	}
 
@@ -1106,7 +1106,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param version the vCard version
 	 * @param vcard the vCard that's being marshalled
 	 */
-	protected static void handlePrefParam(VCardProperty property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected static void handlePrefParam(VCardProperty property, VCardParameters copy, VCardVersion version, VCard vcard) {
 		switch (version) {
 		case V2_1:
 		case V3_0:

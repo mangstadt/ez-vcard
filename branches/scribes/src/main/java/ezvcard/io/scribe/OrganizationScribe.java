@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Organization;
 
 /*
@@ -55,7 +55,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	}
 
 	@Override
-	protected Organization _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Organization _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		Organization property = new Organization();
 
 		SemiStructuredIterator it = semistructured(value);
@@ -72,7 +72,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	}
 
 	@Override
-	protected Organization _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Organization _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		List<String> values = element.all(VCardDataType.TEXT);
 		if (!values.isEmpty()) {
 			Organization property = new Organization();
@@ -119,7 +119,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	}
 
 	@Override
-	protected Organization _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Organization _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		Organization property = new Organization();
 
 		StructuredIterator it = structured(value);

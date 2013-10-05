@@ -21,8 +21,8 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.Label;
 import ezvcard.property.ProductId;
@@ -381,7 +381,7 @@ public class VCardWriter implements Closeable {
 				String labelStr = adr.getLabel();
 				if (labelStr != null) {
 					Label label = new Label(labelStr);
-					for (AddressTypeParameter t : adr.getTypes()) {
+					for (AddressType t : adr.getTypes()) {
 						label.addType(t);
 					}
 					typesToAdd.add(label);
@@ -418,7 +418,7 @@ public class VCardWriter implements Closeable {
 			}
 
 			//marshal the sub types
-			VCardSubTypes parameters = scribe.prepareParameters(type, targetVersion, vcard);
+			VCardParameters parameters = scribe.prepareParameters(type, targetVersion, vcard);
 
 			if (nestedVCard == null) {
 				//set the data type

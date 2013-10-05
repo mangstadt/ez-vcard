@@ -8,7 +8,7 @@ import java.io.Reader;
 
 import ezvcard.VCardException;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.util.VCardStringUtils;
 
 /*
@@ -86,7 +86,7 @@ public class VCardRawReader implements Closeable {
 	private void parseLine(String line, VCardDataStreamListener listener) {
 		String group = null;
 		String propertyName = null;
-		VCardSubTypes parameters = new VCardSubTypes();
+		VCardParameters parameters = new VCardParameters();
 		String value = null;
 
 		char escapeChar = 0; //is the next char escaped?
@@ -320,7 +320,7 @@ public class VCardRawReader implements Closeable {
 		 * @throws StopReadingException to force the reader to stop reading from
 		 * the data stream
 		 */
-		void readProperty(String group, String name, VCardSubTypes parameters, String value);
+		void readProperty(String group, String name, VCardParameters parameters, String value);
 
 		/**
 		 * Called when the vCard's VERSION property is read.

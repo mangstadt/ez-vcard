@@ -2,7 +2,8 @@ package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.VCardVersion;
+import ezvcard.property.Logo;
+import ezvcard.property.Photo;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
@@ -62,64 +63,55 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Represents the "ENCODING" sub type.
+ * Represents an image media type used in the TYPE parameter, MEDIATYPE
+ * parameter, and data URIs of the {@link Photo} and {@link Logo}
+ * properties.
  * <p>
- * <b>Supported versions:</b> {@code 2.1, 3.0}
+ * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
- * @author George El-Haddad Mar 10, 2010
+ * @author George El-Haddadt Mar 10, 2010
  * @author Michael Angstadt
  */
-public class EncodingParameter extends VersionedVCardParameter {
-	private static final VCardParameterCaseClasses<EncodingParameter> enums = new VCardParameterCaseClasses<EncodingParameter>(EncodingParameter.class);
+public class ImageType extends MediaTypeParameter {
+	private static final MediaTypeCaseClasses<ImageType> enums = new MediaTypeCaseClasses<ImageType>(ImageType.class);
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1}
-	 */
-	public static final EncodingParameter QUOTED_PRINTABLE = new EncodingParameter("quoted-printable", VCardVersion.V2_1);
+	public static final ImageType GIF = new ImageType("GIF", "image/gif", "gif");
+	public static final ImageType JPEG = new ImageType("JPEG", "image/jpeg", "jpg");
+	public static final ImageType PNG = new ImageType("PNG", "image/png", "png");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1}
-	 */
-	public static final EncodingParameter BASE64 = new EncodingParameter("base64", VCardVersion.V2_1);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1}
-	 */
-	public static final EncodingParameter _8BIT = new EncodingParameter("8bit", VCardVersion.V2_1);
-
-	/**
-	 * <b>Supported versions:</b> {@code 2.1}
-	 */
-	public static final EncodingParameter _7BIT = new EncodingParameter("7bit", VCardVersion.V2_1);
-
-	/**
-	 * <b>Supported versions:</b> {@code 3.0}
-	 */
-	public static final EncodingParameter B = new EncodingParameter("b", VCardVersion.V3_0);
-
-	private EncodingParameter(String value, VCardVersion... supportedVersions) {
-		super(value, supportedVersions);
+	private ImageType(String value, String mediaType, String extension) {
+		super(value, mediaType, extension);
 	}
 
 	/**
 	 * Searches for a parameter value that is defined as a static constant in
 	 * this class.
-	 * @param value the parameter value
+	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
+	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g. "image/png") or null
+	 * to not search by this value
+	 * @param extension the file extension to search for (excluding the ".",
+	 * e.g. "jpg") or null to not search by this value
 	 * @return the object or null if not found
 	 */
-	public static EncodingParameter find(String value) {
-		return enums.find(value);
+	public static ImageType find(String type, String mediaType, String extension) {
+		return enums.find(new String[] { type, mediaType, extension });
 	}
 
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
 	 * {@code ==} equality.
-	 * @param value the parameter value
+	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
+	 * to not search by this value
+	 * @param mediaType the media type to search for (e.g. "image/png") or null
+	 * to not search by this value
+	 * @param extension the file extension to search for (excluding the ".",
+	 * e.g. "jpg") or null to not search by this value
 	 * @return the object
 	 */
-	public static EncodingParameter get(String value) {
-		return enums.get(value);
+	public static ImageType get(String type, String mediaType, String extension) {
+		return enums.get(new String[] { type, mediaType, extension });
 	}
 
 	/**
@@ -127,7 +119,7 @@ public class EncodingParameter extends VersionedVCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<EncodingParameter> all() {
+	public static Collection<ImageType> all() {
 		return enums.all();
 	}
 }

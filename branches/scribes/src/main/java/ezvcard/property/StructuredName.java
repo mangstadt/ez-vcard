@@ -3,7 +3,7 @@ package ezvcard.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -158,7 +158,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 * @return the sort string(s) (e.g. ["Aboville", "Christine"] if the family
 	 * name is "d'Aboville" and the given name is "Christine") or empty list if
 	 * there are none
-	 * @see VCardSubTypes#getSortAs
+	 * @see VCardParameters#getSortAs
 	 */
 	public List<String> getSortAs() {
 		return subTypes.getSortAs();

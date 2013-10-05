@@ -47,7 +47,7 @@ import ezvcard.util.ListMultimap;
  * Holds the parameters (aka "sub types") of a vCard Type.
  * @author Michael Angstadt
  */
-public class VCardSubTypes extends ListMultimap<String, String> {
+public class VCardParameters extends ListMultimap<String, String> {
 	public static final String ALTID = "ALTID";
 	public static final String CALSCALE = "CALSCALE";
 	public static final String CHARSET = "CHARSET";
@@ -93,7 +93,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	/**
 	 * Creates a list of parameters.
 	 */
-	public VCardSubTypes() {
+	public VCardParameters() {
 		//empty
 	}
 
@@ -101,7 +101,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * Creates a copy of an existing parameter list.
 	 * @param orig the object to copy
 	 */
-	public VCardSubTypes(VCardSubTypes orig) {
+	public VCardParameters(VCardParameters orig) {
 		super(orig);
 	}
 
@@ -115,9 +115,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 * @return the encoding or null if not found
 	 */
-	public EncodingParameter getEncoding() {
+	public Encoding getEncoding() {
 		String value = first(ENCODING);
-		return (value == null) ? null : EncodingParameter.get(value);
+		return (value == null) ? null : Encoding.get(value);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 * @param encoding the encoding or null to remove
 	 */
-	public void setEncoding(EncodingParameter encoding) {
+	public void setEncoding(Encoding encoding) {
 		replace(ENCODING, (encoding == null) ? null : encoding.getValue());
 	}
 
@@ -603,9 +603,9 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 * @return the type of calendar or null if not found
 	 */
-	public CalscaleParameter getCalscale() {
+	public Calscale getCalscale() {
 		String value = first(CALSCALE);
-		return (value == null) ? null : CalscaleParameter.get(value);
+		return (value == null) ? null : Calscale.get(value);
 	}
 
 	/**
@@ -618,7 +618,7 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 	 * </p>
 	 * @param value the type of calendar or null to remove
 	 */
-	public void setCalscale(CalscaleParameter value) {
+	public void setCalscale(Calscale value) {
 		replace(CALSCALE, (value == null) ? null : value.getValue());
 	}
 
@@ -843,15 +843,15 @@ public class VCardSubTypes extends ListMultimap<String, String> {
 		String valueNotSupported = "%s parameter value (\"%s\") is not supported by version " + version.getVersion() + ".";
 
 		String value = first(CALSCALE);
-		if (value != null && CalscaleParameter.find(value) == null) {
-			warnings.add(String.format(nonStandard, CALSCALE, value, CalscaleParameter.all()));
+		if (value != null && Calscale.find(value) == null) {
+			warnings.add(String.format(nonStandard, CALSCALE, value, Calscale.all()));
 		}
 
 		value = first(ENCODING);
 		if (value != null) {
-			EncodingParameter encoding = EncodingParameter.find(value);
+			Encoding encoding = Encoding.find(value);
 			if (encoding == null) {
-				warnings.add(String.format(nonStandard, ENCODING, value, EncodingParameter.all()));
+				warnings.add(String.format(nonStandard, ENCODING, value, Encoding.all()));
 			} else if (!encoding.isSupported(version)) {
 				warnings.add(String.format(valueNotSupported, ENCODING, value));
 			}

@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.text.VCardRawWriter.ProblemsListener;
-import ezvcard.parameter.EncodingParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.Encoding;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -144,16 +144,16 @@ public class VCardRawWriterTest {
 			StringWriter sw = new StringWriter();
 			VCardRawWriter writer = new VCardRawWriter(sw, version);
 
-			VCardSubTypes parameters = new VCardSubTypes();
+			VCardParameters parameters = new VCardParameters();
 			parameters.addType("one");
 			writer.writeProperty(null, "PROP", parameters, "");
 
-			parameters = new VCardSubTypes();
+			parameters = new VCardParameters();
 			parameters.addType("one");
 			parameters.addType("two");
 			writer.writeProperty(null, "PROP", parameters, "");
 
-			parameters = new VCardSubTypes();
+			parameters = new VCardParameters();
 			parameters.addType("one");
 			parameters.addType("two");
 			parameters.addType("three");
@@ -198,16 +198,16 @@ public class VCardRawWriterTest {
 			StringWriter sw = new StringWriter();
 			VCardRawWriter writer = new VCardRawWriter(sw, version);
 
-			VCardSubTypes parameters = new VCardSubTypes();
+			VCardParameters parameters = new VCardParameters();
 			parameters.put("SINGLE", "one");
 			writer.writeProperty(null, "PROP", parameters, "");
 
-			parameters = new VCardSubTypes();
+			parameters = new VCardParameters();
 			parameters.put("MULTIPLE", "one");
 			parameters.put("MULTIPLE", "two");
 			writer.writeProperty(null, "PROP", parameters, "");
 
-			parameters = new VCardSubTypes();
+			parameters = new VCardParameters();
 			parameters.put("SINGLE", "one");
 			parameters.put("MULTIPLE", "one");
 			parameters.put("MULTIPLE", "two");
@@ -279,7 +279,7 @@ public class VCardRawWriterTest {
 			ProblemsListenerImpl listener = new ProblemsListenerImpl();
 			writer.setProblemsListener(listener);
 
-			VCardSubTypes parameters = new VCardSubTypes();
+			VCardParameters parameters = new VCardParameters();
 			parameters.put("X-TEST", "^�\\,;:=[]\"\t\n" + ((char) 28));
 			parameters.put("X-TEST", "normal");
 			writer.writeProperty(null, "PROP", parameters, "");
@@ -363,7 +363,7 @@ public class VCardRawWriterTest {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
 
-		writer.writeProperty("group1", "PROP", new VCardSubTypes(), "");
+		writer.writeProperty("group1", "PROP", new VCardParameters(), "");
 
 		String actual = sw.toString();
 
@@ -379,7 +379,7 @@ public class VCardRawWriterTest {
 	public void invalid_group_name() throws Exception {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
-		writer.writeProperty("invalid*name", "PROP", new VCardSubTypes(), "");
+		writer.writeProperty("invalid*name", "PROP", new VCardParameters(), "");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -425,8 +425,8 @@ public class VCardRawWriterTest {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, new FoldingScheme(40, " "));
 
-		VCardSubTypes parameters = new VCardSubTypes();
-		parameters.setEncoding(EncodingParameter.QUOTED_PRINTABLE);
+		VCardParameters parameters = new VCardParameters();
+		parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
 
 		writer.writeProperty(null, "PROP", parameters, "quoted-printable \r\nline");
 		writer.writeProperty(null, "PROP", parameters, "short");

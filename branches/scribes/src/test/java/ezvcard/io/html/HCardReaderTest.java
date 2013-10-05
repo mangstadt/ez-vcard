@@ -21,8 +21,8 @@ import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
-import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.parameter.TelephoneTypeParameter;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
 import ezvcard.property.Email;
 import ezvcard.property.Impp;
@@ -506,7 +506,7 @@ public class HCardReaderTest {
 			assertEquals("TX", adr.getRegion());
 			assertEquals("12345", adr.getPostalCode());
 			assertEquals("123 Main St. Austin, TX 12345", adr.getLabel());
-			assertSetEquals(adr.getTypes(), AddressTypeParameter.HOME);
+			assertSetEquals(adr.getTypes(), AddressType.HOME);
 
 			assertFalse(it.hasNext());
 		}
@@ -516,7 +516,7 @@ public class HCardReaderTest {
 
 			Label label = it.next();
 			assertEquals("456 Wall St., New York, NY 67890", label.getValue());
-			assertSetEquals(label.getTypes(), AddressTypeParameter.WORK);
+			assertSetEquals(label.getTypes(), AddressType.WORK);
 
 			assertFalse(it.hasNext());
 		}
@@ -679,7 +679,7 @@ public class HCardReaderTest {
 			Iterator<Address> it = vcard.getAddresses().iterator();
 
 			Address adr = it.next();
-			assertSetEquals(adr.getTypes(), AddressTypeParameter.WORK);
+			assertSetEquals(adr.getTypes(), AddressType.WORK);
 			assertNull(adr.getPoBox());
 			assertNull(adr.getExtendedAddress());
 			assertEquals("169 University Avenue", adr.getStreetAddress());
@@ -696,11 +696,11 @@ public class HCardReaderTest {
 			Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
 
 			Telephone tel = it.next();
-			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.WORK);
+			assertSetEquals(tel.getTypes(), TelephoneType.WORK);
 			assertEquals("+1-650-289-4040", tel.getText());
 
 			tel = it.next();
-			assertSetEquals(tel.getTypes(), TelephoneTypeParameter.FAX);
+			assertSetEquals(tel.getTypes(), TelephoneType.FAX);
 			assertEquals("+1-650-289-4041", tel.getText());
 
 			assertFalse(it.hasNext());

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ezvcard.parameter.ImageTypeParameter;
+import ezvcard.parameter.ImageType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -40,13 +40,13 @@ import ezvcard.parameter.ImageTypeParameter;
  * {@link Photo}).
  * @author Michael Angstadt
  */
-public class ImageProperty extends BinaryProperty<ImageTypeParameter> {
+public class ImageProperty extends BinaryProperty<ImageType> {
 	/**
 	 * Creates an image property.
 	 * @param url the URL to the image
 	 * @param type the content type (e.g. JPEG)
 	 */
-	public ImageProperty(String url, ImageTypeParameter type) {
+	public ImageProperty(String url, ImageType type) {
 		super(url, type);
 	}
 
@@ -55,7 +55,7 @@ public class ImageProperty extends BinaryProperty<ImageTypeParameter> {
 	 * @param data the binary data of the image
 	 * @param type the content type (e.g. JPEG)
 	 */
-	public ImageProperty(byte[] data, ImageTypeParameter type) {
+	public ImageProperty(byte[] data, ImageType type) {
 		super(data, type);
 	}
 
@@ -65,7 +65,7 @@ public class ImageProperty extends BinaryProperty<ImageTypeParameter> {
 	 * @param type the content type (e.g. JPEG)
 	 * @throws IOException if there's a problem reading from the input stream
 	 */
-	public ImageProperty(InputStream in, ImageTypeParameter type) throws IOException {
+	public ImageProperty(InputStream in, ImageType type) throws IOException {
 		super(in, type);
 	}
 
@@ -75,7 +75,7 @@ public class ImageProperty extends BinaryProperty<ImageTypeParameter> {
 	 * @param type the content type (e.g. JPEG)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public ImageProperty(File file, ImageTypeParameter type) throws IOException {
+	public ImageProperty(File file, ImageType type) throws IOException {
 		super(file, type);
 	}
 }

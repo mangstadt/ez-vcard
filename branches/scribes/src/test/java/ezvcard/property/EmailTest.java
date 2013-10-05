@@ -5,7 +5,7 @@ import static ezvcard.util.TestUtils.assertValidate;
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameter.EmailTypeParameter;
+import ezvcard.parameter.EmailType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -48,10 +48,10 @@ public class EmailTest {
 		property.setValue("johndoe@example.com");
 		assertValidate(property).run(0);
 
-		property.addType(EmailTypeParameter.AOL);
-		property.addType(EmailTypeParameter.INTERNET);
-		property.addType(EmailTypeParameter.HOME);
-		property.addType(EmailTypeParameter.PREF);
+		property.addType(EmailType.AOL);
+		property.addType(EmailType.INTERNET);
+		property.addType(EmailType.HOME);
+		property.addType(EmailType.PREF);
 		assertValidate(property).versions(VCardVersion.V2_1).run(1);
 		assertValidate(property).versions(VCardVersion.V3_0).run(2);
 		assertValidate(property).versions(VCardVersion.V4_0).run(2);

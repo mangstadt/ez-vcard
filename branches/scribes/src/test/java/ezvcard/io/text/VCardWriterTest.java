@@ -18,9 +18,9 @@ import ezvcard.VCardVersion;
 import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.SkipMeException;
-import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.parameter.EmailTypeParameter;
-import ezvcard.parameter.TelephoneTypeParameter;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
 import ezvcard.property.Agent;
 import ezvcard.property.Anniversary;
@@ -318,7 +318,7 @@ public class VCardWriterTest {
 		adr.setRegion("TX");
 		adr.setPostalCode("12345");
 		adr.setLabel("123 Main St.\r\nAustin, TX 12345");
-		adr.addType(AddressTypeParameter.HOME);
+		adr.addType(AddressType.HOME);
 		vcard.addAddress(adr);
 
 		//address without label
@@ -327,12 +327,12 @@ public class VCardWriterTest {
 		adr.setLocality("New York");
 		adr.setRegion("NY");
 		adr.setPostalCode("99999");
-		adr.addType(AddressTypeParameter.WORK);
+		adr.addType(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		//orphaned label
 		Label label = new Label("22 Spruce Ln.\r\nChicago, IL 11111");
-		label.addType(AddressTypeParameter.PARCEL);
+		label.addType(AddressType.PARCEL);
 		vcard.addOrphanedLabel(label);
 
 		//3.0
@@ -528,25 +528,25 @@ public class VCardWriterTest {
 		adr.setRegion("QC");
 		adr.setPostalCode("G1V 2M2");
 		adr.setCountry("Canada");
-		adr.addType(AddressTypeParameter.WORK);
+		adr.addType(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		Telephone tel = new Telephone(telUri);
 		tel.setPref(1);
-		tel.addType(TelephoneTypeParameter.WORK);
-		tel.addType(TelephoneTypeParameter.VOICE);
+		tel.addType(TelephoneType.WORK);
+		tel.addType(TelephoneType.VOICE);
 		vcard.addTelephoneNumber(tel);
 
 		tel = new Telephone(new TelUri.Builder("+1-418-262-6501").build());
-		tel.addType(TelephoneTypeParameter.WORK);
-		tel.addType(TelephoneTypeParameter.VOICE);
-		tel.addType(TelephoneTypeParameter.CELL);
-		tel.addType(TelephoneTypeParameter.VIDEO);
-		tel.addType(TelephoneTypeParameter.TEXT);
+		tel.addType(TelephoneType.WORK);
+		tel.addType(TelephoneType.VOICE);
+		tel.addType(TelephoneType.CELL);
+		tel.addType(TelephoneType.VIDEO);
+		tel.addType(TelephoneType.TEXT);
 		vcard.addTelephoneNumber(tel);
 
-		vcard.addEmail("simon.perreault@viagenie.ca", EmailTypeParameter.WORK);
+		vcard.addEmail("simon.perreault@viagenie.ca", EmailType.WORK);
 
 		Geo geo = new Geo(46.772673, -71.282945);
 		geo.setType("work");
@@ -615,16 +615,16 @@ public class VCardWriterTest {
 			adr.setRegion("NC");
 			adr.setPostalCode("27613-3502");
 			adr.setCountry("U.S.A.");
-			adr.addType(AddressTypeParameter.WORK);
-			adr.addType(AddressTypeParameter.POSTAL);
-			adr.addType(AddressTypeParameter.PARCEL);
+			adr.addType(AddressType.WORK);
+			adr.addType(AddressType.POSTAL);
+			adr.addType(AddressType.PARCEL);
 			vcard.addAddress(adr);
 
-			vcard.addTelephoneNumber("+1-919-676-9515", TelephoneTypeParameter.VOICE, TelephoneTypeParameter.MSG, TelephoneTypeParameter.WORK);
-			vcard.addTelephoneNumber("+1-919-676-9564", TelephoneTypeParameter.FAX, TelephoneTypeParameter.WORK);
+			vcard.addTelephoneNumber("+1-919-676-9515", TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK);
+			vcard.addTelephoneNumber("+1-919-676-9564", TelephoneType.FAX, TelephoneType.WORK);
 
-			vcard.addEmail("Frank_Dawson@Lotus.com", EmailTypeParameter.INTERNET, EmailTypeParameter.PREF);
-			vcard.addEmail("fdawson@earthlink.net", EmailTypeParameter.INTERNET);
+			vcard.addEmail("Frank_Dawson@Lotus.com", EmailType.INTERNET, EmailType.PREF);
+			vcard.addEmail("fdawson@earthlink.net", EmailType.INTERNET);
 
 			vcard.addUrl("http://home.earthlink.net/÷fdawson");
 
@@ -646,13 +646,13 @@ public class VCardWriterTest {
 			adr.setRegion("CA");
 			adr.setPostalCode("94043");
 			adr.setCountry("U.S.A.");
-			adr.addType(AddressTypeParameter.WORK);
+			adr.addType(AddressType.WORK);
 			vcard.addAddress(adr);
 
-			vcard.addTelephoneNumber("+1-415-937-3419", TelephoneTypeParameter.VOICE, TelephoneTypeParameter.MSG, TelephoneTypeParameter.WORK);
-			vcard.addTelephoneNumber("+1-415-528-4164", TelephoneTypeParameter.FAX, TelephoneTypeParameter.WORK);
+			vcard.addTelephoneNumber("+1-415-937-3419", TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK);
+			vcard.addTelephoneNumber("+1-415-528-4164", TelephoneType.FAX, TelephoneType.WORK);
 
-			vcard.addEmail("howes@netscape.com", EmailTypeParameter.INTERNET);
+			vcard.addEmail("howes@netscape.com", EmailType.INTERNET);
 
 			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null);
 

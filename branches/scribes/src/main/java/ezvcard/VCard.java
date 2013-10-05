@@ -18,9 +18,9 @@ import javax.xml.transform.TransformerException;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.io.text.VCardWriter;
-import ezvcard.parameter.EmailTypeParameter;
-import ezvcard.parameter.TelephoneTypeParameter;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.TelephoneType;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.Agent;
 import ezvcard.property.Anniversary;
@@ -554,7 +554,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a member property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -573,7 +573,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a member property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -724,7 +724,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a source property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -744,7 +744,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a source property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -816,7 +816,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all instances of the formatted name property. Version 4.0 vCards may
 	 * have multiple instances if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}) or if properties
+	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
@@ -851,7 +851,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the formatted name property as a group of alternative
-	 * representations (see: {@link VCardSubTypes#getAltId description of ALTID}
+	 * representations (see: {@link VCardParameters#getAltId description of ALTID}
 	 * ). An appropriate ALTID parameter value is automatically generated and
 	 * assigned to the properties.
 	 * </p>
@@ -871,7 +871,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the formatted name property as a group of alternative
-	 * representations (see: {@link VCardSubTypes#getAltId description of ALTID}
+	 * representations (see: {@link VCardParameters#getAltId description of ALTID}
 	 * ). An appropriate ALTID parameter value is automatically generated and
 	 * assigned to the properties.
 	 * </p>
@@ -891,7 +891,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a formatted name property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -911,7 +911,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a formatted name property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -998,7 +998,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all structured name properties. Version 4.0 vCards may have multiple
 	 * instances if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
 	 * <b>Property name:</b> {@code N}
@@ -1032,7 +1032,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the structured name property as a group of alternative
-	 * representations (see {@link VCardSubTypes#getAltId} for more details). An
+	 * representations (see {@link VCardParameters#getAltId} for more details). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -1052,7 +1052,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the structured name property as a group of alternative
-	 * representations (see {@link VCardSubTypes#getAltId} for more details). An
+	 * representations (see {@link VCardParameters#getAltId} for more details). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -1088,7 +1088,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all instances of the nickname property. Version 4.0 vCards may have
 	 * multiple instances if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}) or if properties
+	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
@@ -1122,7 +1122,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the nickname property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -1142,7 +1142,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the nickname property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -1162,7 +1162,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a nickname property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1182,7 +1182,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a nickname property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1378,7 +1378,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a title property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1398,7 +1398,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a title property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1464,7 +1464,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a role property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1484,7 +1484,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a role property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1533,7 +1533,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a photo property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1553,7 +1553,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a photo property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1601,7 +1601,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a logo property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1621,7 +1621,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a logo property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1670,7 +1670,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a sound property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1690,7 +1690,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a sound property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1711,7 +1711,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all birthplace property instances. There may be multiple instances
 	 * if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
 	 * <b>Property name:</b> {@code BIRTHPLACE}
@@ -1746,7 +1746,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the person's birthplace as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}. An appropriate
+	 * (see: {@link VCardParameters#getAltId description of ALTID}. An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1766,7 +1766,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the person's birthplace as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}. An appropriate
+	 * (see: {@link VCardParameters#getAltId description of ALTID}. An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1804,7 +1804,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all deathplace property instances. There may be multiple instances
 	 * if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
 	 * <b>Property name:</b> {@code DEATHPLACE}
@@ -1839,7 +1839,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the person's deathplace as a group of alternative representations
-	 * (see {@link VCardSubTypes#getAltId} for more details). An appropriate
+	 * (see {@link VCardParameters#getAltId} for more details). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1859,7 +1859,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the person's deathplace as a group of alternative representations
-	 * (see {@link VCardSubTypes#getAltId} for more details). An appropriate
+	 * (see {@link VCardParameters#getAltId} for more details). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -1897,7 +1897,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all death date property instances. There may be multiple instances
 	 * if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
 	 * <b>Property name:</b> {@code DEATHDATE}
@@ -1932,7 +1932,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the deathdate property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -1951,7 +1951,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the deathdate property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -1988,7 +1988,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all birthday property instances. Version 4.0 vCards may have
 	 * multiple instances if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
 	 * <b>Property name:</b> {@code BDAY}
@@ -2022,7 +2022,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the person's birthday as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -2042,7 +2042,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the person's birthday as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -2079,7 +2079,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all anniversary property instances. There may be multiple instances
 	 * if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * </p>
 	 * <p>
 	 * <b>Property name:</b> {@code ANNIVERSARY}
@@ -2112,7 +2112,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the person's anniversary as a group of alternative representations
-	 * (see {@link VCardSubTypes#getAltId} for more details). An appropriate
+	 * (see {@link VCardParameters#getAltId} for more details). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2131,7 +2131,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the person's anniversary as a group of alternative representations
-	 * (see {@link VCardSubTypes#getAltId} for more details). An appropriate
+	 * (see {@link VCardParameters#getAltId} for more details). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2294,7 +2294,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an address property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2314,7 +2314,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an address property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2404,9 +2404,9 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param types the type(s) to assign to the email
 	 * @return the type object that was created
 	 */
-	public Email addEmail(String email, EmailTypeParameter... types) {
+	public Email addEmail(String email, EmailType... types) {
 		Email type = new Email(email);
-		for (EmailTypeParameter t : types) {
+		for (EmailType t : types) {
 			type.addType(t);
 		}
 		addEmail(type);
@@ -2416,7 +2416,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an email property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2436,7 +2436,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an email property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2496,9 +2496,9 @@ public class VCard implements Iterable<VCardProperty> {
 	 * "work", etc)
 	 * @return the type object that was created
 	 */
-	public Telephone addTelephoneNumber(String telephoneNumber, TelephoneTypeParameter... types) {
+	public Telephone addTelephoneNumber(String telephoneNumber, TelephoneType... types) {
 		Telephone type = new Telephone(telephoneNumber);
-		for (TelephoneTypeParameter t : types) {
+		for (TelephoneType t : types) {
 			type.addType(t);
 		}
 		addTelephoneNumber(type);
@@ -2508,7 +2508,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a telephone property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2528,7 +2528,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a telephone property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2646,7 +2646,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a URL property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2666,7 +2666,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a URL property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -2687,7 +2687,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all instances of the timezone property. Version 4.0 vCards may have
 	 * multiple instances if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}) or if properties
+	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
@@ -2722,7 +2722,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the timezone the person lives/works in as a group of alternative
-	 * representations (see: {@link VCardSubTypes#getAltId description of ALTID}
+	 * representations (see: {@link VCardParameters#getAltId description of ALTID}
 	 * ). An appropriate ALTID parameter value is automatically generated and
 	 * assigned to the properties.
 	 * </p>
@@ -2742,7 +2742,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the timezone the person lives/works in as a group of alternative
-	 * representations (see: {@link VCardSubTypes#getAltId description of ALTID}
+	 * representations (see: {@link VCardParameters#getAltId description of ALTID}
 	 * ). An appropriate ALTID parameter value is automatically generated and
 	 * assigned to the properties.
 	 * </p>
@@ -2762,7 +2762,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a timezone the person lives/works in as a group of alternative
-	 * representations (see: {@link VCardSubTypes#getAltId description of ALTID}
+	 * representations (see: {@link VCardParameters#getAltId description of ALTID}
 	 * ). An appropriate ALTID parameter value is automatically generated and
 	 * assigned to the properties.
 	 * </p>
@@ -2782,7 +2782,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a timezone the person lives/works in as a group of alternative
-	 * representations (see: {@link VCardSubTypes#getAltId description of ALTID}
+	 * representations (see: {@link VCardParameters#getAltId description of ALTID}
 	 * ). An appropriate ALTID parameter value is automatically generated and
 	 * assigned to the properties.
 	 * </p>
@@ -2836,7 +2836,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all instances of the geo property. Version 4.0 vCards may have
 	 * multiple instances if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}) or if properties
+	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
@@ -2871,7 +2871,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the geographical position of where the person lives/works as a group
-	 * of alternative representations (see: {@link VCardSubTypes#getAltId
+	 * of alternative representations (see: {@link VCardParameters#getAltId
 	 * description of ALTID}). An appropriate ALTID parameter value is
 	 * automatically generated and assigned to the properties.
 	 * </p>
@@ -2891,7 +2891,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a geographical position of where the person lives/works as a group
-	 * of alternative representations (see: {@link VCardSubTypes#getAltId
+	 * of alternative representations (see: {@link VCardParameters#getAltId
 	 * description of ALTID}). An appropriate ALTID parameter value is
 	 * automatically generated and assigned to the properties.
 	 * </p>
@@ -2911,7 +2911,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a geographical position of where the person lives/works as a group
-	 * of alternative representations (see: {@link VCardSubTypes#getAltId
+	 * of alternative representations (see: {@link VCardParameters#getAltId
 	 * description of ALTID}). An appropriate ALTID parameter value is
 	 * automatically generated and assigned to the properties.
 	 * </p>
@@ -2987,7 +2987,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all instances of the organization property. Version 4.0 vCards may
 	 * have multiple instances if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}) or if properties
+	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
@@ -3022,7 +3022,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the organization property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3042,7 +3042,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the organization property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3062,7 +3062,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an organization property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3082,7 +3082,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an organization property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3165,7 +3165,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * Gets all instances of the categories property. Version 4.0 vCards may
 	 * have multiple instances if alternative representations are defined (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}) or if properties
+	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
 	 * with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
@@ -3201,7 +3201,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the categories property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3221,7 +3221,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Sets the categories property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3241,7 +3241,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a categories property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3261,7 +3261,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a categories property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3421,7 +3421,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a note property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3441,7 +3441,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a note property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3517,7 +3517,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a key property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3537,7 +3537,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a key property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3585,7 +3585,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an impp property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3605,7 +3605,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an impp property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3653,7 +3653,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a related property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3672,7 +3672,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a related property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3737,7 +3737,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a language property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3755,7 +3755,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a language property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3803,7 +3803,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a calendar request URI property as a group of alternative
-	 * representations (see: {@link VCardSubTypes#getAltId description of ALTID}
+	 * representations (see: {@link VCardParameters#getAltId description of ALTID}
 	 * ). An appropriate ALTID parameter value is automatically generated and
 	 * assigned to the properties.
 	 * </p>
@@ -3822,7 +3822,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a calendar request URI property as a group of alternative
-	 * representations (see: {@link VCardSubTypes#getAltId description of ALTID}
+	 * representations (see: {@link VCardParameters#getAltId description of ALTID}
 	 * ). An appropriate ALTID parameter value is automatically generated and
 	 * assigned to the properties.
 	 * </p>
@@ -3869,7 +3869,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a calendar URI property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3888,7 +3888,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a calendar URI property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -3937,7 +3937,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an fburl property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -3955,7 +3955,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an fburl property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -4039,7 +4039,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an XML property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -4058,7 +4058,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an XML property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -4129,7 +4129,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an expertise property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -4149,7 +4149,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an expertise property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -4218,7 +4218,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a hobby property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -4237,7 +4237,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds a hobby property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -4305,7 +4305,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an interest property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -4324,7 +4324,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an interest property as a group of alternative representations (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}). An appropriate
+	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
 	 * ALTID parameter value is automatically generated and assigned to the
 	 * properties.
 	 * </p>
@@ -4393,7 +4393,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an org directory property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -4412,7 +4412,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Adds an org directory property as a group of alternative representations
-	 * (see: {@link VCardSubTypes#getAltId description of ALTID}). An
+	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
 	 * appropriate ALTID parameter value is automatically generated and assigned
 	 * to the properties.
 	 * </p>
@@ -4465,7 +4465,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Gets all properties of a given class, grouping the alternative
 	 * representations of each property together (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID})
+	 * {@link VCardParameters#getAltId description of ALTID})
 	 * @param clazz the property class
 	 * @return the properties
 	 */
@@ -4619,7 +4619,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Adds a property in the form of a collection of alternative
 	 * representations. This method will generate a unique ALTID parameter value
 	 * and assign it to each of the property instances (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
@@ -4632,7 +4632,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Adds a property in the form of a collection of alternative
 	 * representations. This method will generate a unique ALTID parameter value
 	 * and assign it to each of the property instances (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
@@ -4649,7 +4649,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets a property in the form of a collection of alternative
 	 * representations. This method will generate a unique ALTID parameter value
 	 * and assign it to each of the property instances (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
@@ -4663,7 +4663,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets a property in the form of a collection of alternative
 	 * representations. This method will generate a unique ALTID parameter value
 	 * and assign it to each of the property instances (see:
-	 * {@link VCardSubTypes#getAltId description of ALTID}).
+	 * {@link VCardParameters#getAltId description of ALTID}).
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add

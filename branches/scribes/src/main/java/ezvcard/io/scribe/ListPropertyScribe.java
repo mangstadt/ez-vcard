@@ -6,7 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.TextListProperty;
 
 /*
@@ -55,7 +55,7 @@ public abstract class ListPropertyScribe<T extends TextListProperty> extends VCa
 	}
 
 	@Override
-	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		List<String> values = list(value);
 		return parse(values);
 	}
@@ -66,7 +66,7 @@ public abstract class ListPropertyScribe<T extends TextListProperty> extends VCa
 	}
 
 	@Override
-	protected T _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		List<String> values = element.all(VCardDataType.TEXT);
 		if (!values.isEmpty()) {
 			return parse(values);
@@ -86,7 +86,7 @@ public abstract class ListPropertyScribe<T extends TextListProperty> extends VCa
 	}
 
 	@Override
-	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		List<String> values = value.asMulti();
 		return parse(values);
 	}

@@ -24,7 +24,7 @@ import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.scribe.VCardPropertyScribe.SemiStructuredIterator;
 import ezvcard.io.scribe.VCardPropertyScribe.StructuredIterator;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.DefaultTimezoneRule;
 
@@ -286,13 +286,13 @@ public class VCardPropertyScribeTest {
 	public void prepareParameters() {
 		VCardPropertyMarshallerImpl m = new VCardPropertyMarshallerImpl() {
 			@Override
-			protected void _prepareParameters(TestProperty property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+			protected void _prepareParameters(TestProperty property, VCardParameters copy, VCardVersion version, VCard vcard) {
 				copy.put("PARAM", "value");
 			}
 		};
 
 		TestProperty property = new TestProperty("value");
-		VCardSubTypes copy = m.prepareParameters(property, VCardVersion.V4_0, new VCard());
+		VCardParameters copy = m.prepareParameters(property, VCardVersion.V4_0, new VCard());
 
 		assertFalse(property.getSubTypes() == copy);
 		assertEquals("value", copy.first("PARAM"));
@@ -306,7 +306,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseText() {
-		final VCardSubTypes params = new VCardSubTypes();
+		final VCardParameters params = new VCardParameters();
 		sensei.assertParseText("value").dataType(VCardDataType.TEXT).warnings(1).params(params).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
@@ -324,7 +324,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseXml() {
-		final VCardSubTypes params = new VCardSubTypes();
+		final VCardParameters params = new VCardParameters();
 
 		//@formatter:off
 		sensei.assertParseXml(
@@ -393,7 +393,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseJson_single() {
-		final VCardSubTypes params = new VCardSubTypes();
+		final VCardParameters params = new VCardParameters();
 		JCardValue value = JCardValue.single("value");
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).params(params).warnings(1).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
@@ -461,7 +461,7 @@ public class VCardPropertyScribeTest {
 		}
 
 		@Override
-		protected TestProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+		protected TestProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			warnings.add("parseText");
 			return new TestProperty(value, dataType);
 		}

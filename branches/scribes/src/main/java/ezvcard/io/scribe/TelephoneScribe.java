@@ -8,7 +8,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Telephone;
 import ezvcard.util.TelUri;
 
@@ -66,7 +66,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected void _prepareParameters(Telephone property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Telephone property, VCardParameters copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 	}
 
@@ -94,7 +94,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected Telephone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Telephone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value, dataType, warnings);
 	}
@@ -117,7 +117,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected Telephone _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Telephone _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
 			return new Telephone(text);
@@ -171,7 +171,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected Telephone _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Telephone _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 		return parse(valueStr, dataType, warnings);
 	}

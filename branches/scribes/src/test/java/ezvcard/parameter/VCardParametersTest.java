@@ -49,18 +49,18 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class VCardSubTypesTest {
-	private VCardSubTypes subTypes;
+public class VCardParametersTest {
+	private VCardParameters subTypes;
 
 	@Before
 	public void before() {
-		subTypes = new VCardSubTypes();
+		subTypes = new VCardParameters();
 	}
 
 	@Test
 	public void validate_non_standard_values() {
-		subTypes.setCalscale(CalscaleParameter.get("foo"));
-		subTypes.setEncoding(EncodingParameter.get("foo"));
+		subTypes.setCalscale(Calscale.get("foo"));
+		subTypes.setEncoding(Encoding.get("foo"));
 		subTypes.setValue(VCardDataType.get("foo"));
 
 		assertWarnings(4, subTypes.validate(VCardVersion.V2_1));
@@ -83,7 +83,7 @@ public class VCardSubTypesTest {
 	@Test
 	public void validate_supported_versions() {
 		subTypes.setAltId("value");
-		subTypes.setCalscale(CalscaleParameter.GREGORIAN);
+		subTypes.setCalscale(Calscale.GREGORIAN);
 		subTypes.setCharset("value");
 		subTypes.setGeo(1, 1);
 		subTypes.setIndex(1);
@@ -100,13 +100,13 @@ public class VCardSubTypesTest {
 
 	@Test
 	public void validate_value_supported_versions() {
-		subTypes.setEncoding(EncodingParameter._7BIT);
+		subTypes.setEncoding(Encoding._7BIT);
 		subTypes.setValue(VCardDataType.CONTENT_ID);
 		assertWarnings(0, subTypes.validate(VCardVersion.V2_1));
 		assertWarnings(2, subTypes.validate(VCardVersion.V3_0));
 		assertWarnings(2, subTypes.validate(VCardVersion.V4_0));
 
-		subTypes.setEncoding(EncodingParameter.B);
+		subTypes.setEncoding(Encoding.B);
 		subTypes.setValue(VCardDataType.BINARY);
 		assertWarnings(2, subTypes.validate(VCardVersion.V2_1));
 		assertWarnings(0, subTypes.validate(VCardVersion.V3_0));
@@ -248,17 +248,17 @@ public class VCardSubTypesTest {
 	public void sortAs() {
 		assertTrue(subTypes.getSortAs().isEmpty());
 
-		subTypes = new VCardSubTypes();
+		subTypes = new VCardParameters();
 		subTypes.setSortAs("one", "two");
 		assertEquals(Arrays.asList("one", "two"), subTypes.getSortAs());
 		assertEquals(Arrays.asList("one", "two"), subTypes.get("SORT-AS"));
 
-		subTypes = new VCardSubTypes();
+		subTypes = new VCardParameters();
 		subTypes.put("SORT-AS", "one");
 		subTypes.put("SORT-AS", "two");
 		assertEquals(Arrays.asList("one", "two"), subTypes.getSortAs());
 
-		subTypes = new VCardSubTypes();
+		subTypes = new VCardParameters();
 
 		subTypes.setSortAs("one", "three");
 		assertEquals(Arrays.asList("one", "three"), subTypes.getSortAs());

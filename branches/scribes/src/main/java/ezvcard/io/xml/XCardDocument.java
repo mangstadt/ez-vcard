@@ -39,7 +39,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.ProductId;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
@@ -137,17 +137,17 @@ public class XCardDocument {
 	 */
 	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>();
 	{
-		registerParameterDataType(VCardSubTypes.ALTID, VCardDataType.TEXT);
-		registerParameterDataType(VCardSubTypes.CALSCALE, VCardDataType.TEXT);
-		registerParameterDataType(VCardSubTypes.GEO, VCardDataType.URI);
-		registerParameterDataType(VCardSubTypes.LABEL, VCardDataType.TEXT);
-		registerParameterDataType(VCardSubTypes.LANGUAGE, VCardDataType.LANGUAGE_TAG);
-		registerParameterDataType(VCardSubTypes.MEDIATYPE, VCardDataType.TEXT);
-		registerParameterDataType(VCardSubTypes.PID, VCardDataType.TEXT);
-		registerParameterDataType(VCardSubTypes.PREF, VCardDataType.INTEGER);
-		registerParameterDataType(VCardSubTypes.SORT_AS, VCardDataType.TEXT);
-		registerParameterDataType(VCardSubTypes.TYPE, VCardDataType.TEXT);
-		registerParameterDataType(VCardSubTypes.TZ, VCardDataType.URI);
+		registerParameterDataType(VCardParameters.ALTID, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.CALSCALE, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.GEO, VCardDataType.URI);
+		registerParameterDataType(VCardParameters.LABEL, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.LANGUAGE, VCardDataType.LANGUAGE_TAG);
+		registerParameterDataType(VCardParameters.MEDIATYPE, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.PID, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.PREF, VCardDataType.INTEGER);
+		registerParameterDataType(VCardParameters.SORT_AS, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.TYPE, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.TZ, VCardDataType.URI);
 	}
 
 	private ScribeIndex index = new ScribeIndex();
@@ -420,7 +420,7 @@ public class XCardDocument {
 	 * @param warningsBuf the list to add the warnings to
 	 */
 	private void parseAndAddElement(Element element, String group, VCard vcard, List<String> warnings) {
-		VCardSubTypes parameters = parseSubTypes(element);
+		VCardParameters parameters = parseSubTypes(element);
 
 		VCardProperty property;
 		String propertyName = element.getLocalName();
@@ -466,8 +466,8 @@ public class XCardDocument {
 	 * @param element the property's XML element
 	 * @return the parsed parameters
 	 */
-	private VCardSubTypes parseSubTypes(Element element) {
-		VCardSubTypes subTypes = new VCardSubTypes();
+	private VCardParameters parseSubTypes(Element element) {
+		VCardParameters subTypes = new VCardParameters();
 
 		List<Element> parametersElements = XmlUtils.toElementList(element.getElementsByTagNameNS(version4.getXmlNamespace(), "parameters"));
 		for (Element parametersElement : parametersElements) { // foreach "<parameters>" element (there should only be 1 though)
@@ -658,7 +658,7 @@ public class XCardDocument {
 			throw new IllegalArgumentException("No marshaller found for property class \"" + type.getClass().getName() + "\".");
 		}
 
-		VCardSubTypes parameters = scribe.prepareParameters(type, version4, vcard);
+		VCardParameters parameters = scribe.prepareParameters(type, version4, vcard);
 
 		QName qname = scribe.getQName();
 		Element typeElement = createElement(qname.getLocalPart(), qname.getNamespaceURI());
@@ -675,7 +675,7 @@ public class XCardDocument {
 		return typeElement;
 	}
 
-	private Element marshalSubTypes(VCardSubTypes parameters) {
+	private Element marshalSubTypes(VCardParameters parameters) {
 		Element parametersElement = createElement("parameters");
 
 		for (Map.Entry<String, List<String>> param : parameters) {

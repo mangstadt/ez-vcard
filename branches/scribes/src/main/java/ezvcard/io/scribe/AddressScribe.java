@@ -8,7 +8,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 
 /*
@@ -51,7 +51,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected void _prepareParameters(Address property, VCardSubTypes copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Address property, VCardParameters copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
@@ -77,7 +77,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected Address _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Address _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		Address property = new Address();
 		StructuredIterator it = structured(value);
 
@@ -104,7 +104,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected Address _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Address _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		Address property = new Address();
 		property.setPoBox(sanitizeXml(element, "pobox"));
 		property.setExtendedAddress(sanitizeXml(element, "ext"));
@@ -156,7 +156,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected Address _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Address _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		Address property = new Address();
 		StructuredIterator it = structured(value);
 

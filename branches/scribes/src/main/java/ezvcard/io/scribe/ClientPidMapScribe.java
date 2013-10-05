@@ -7,7 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.ClientPidMap;
 
 /*
@@ -55,7 +55,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	}
 
 	@Override
-	protected ClientPidMap _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected ClientPidMap _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		SemiStructuredIterator it = semistructured(value, 2);
 		String pid = it.next();
 		String uri = it.next();
@@ -75,7 +75,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	}
 
 	@Override
-	protected ClientPidMap _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected ClientPidMap _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String sourceid = element.first("sourceid");
 		String uri = element.first(VCardDataType.URI);
 
@@ -98,7 +98,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	}
 
 	@Override
-	protected ClientPidMap _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected ClientPidMap _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		StructuredIterator it = structured(value);
 		String pid = it.nextString();
 		String uri = it.nextString();

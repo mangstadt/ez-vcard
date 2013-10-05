@@ -10,7 +10,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.parameter.AddressTypeParameter;
+import ezvcard.parameter.AddressType;
 import ezvcard.property.Address;
 
 /*
@@ -90,7 +90,7 @@ public class AddressScribeTest {
 	@Test
 	public void prepareParameters_type_pref() {
 		Address property = new Address();
-		property.addType(AddressTypeParameter.PREF);
+		property.addType(AddressType.PREF);
 
 		//2.1 and 3.0 keep it
 		sensei.assertPrepareParams(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).expected("TYPE", "pref").run();
@@ -258,7 +258,7 @@ public class AddressScribeTest {
 				assertEquals("TX", property.getRegion());
 				assertEquals("12345", property.getPostalCode());
 				assertEquals("USA", property.getCountry());
-				assertSetEquals(property.getTypes(), AddressTypeParameter.HOME, AddressTypeParameter.POSTAL, AddressTypeParameter.get("other"));
+				assertSetEquals(property.getTypes(), AddressType.HOME, AddressType.POSTAL, AddressType.get("other"));
 			}
 		});
 		//@formatter:on

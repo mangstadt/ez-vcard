@@ -6,11 +6,11 @@ import java.io.IOException;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.AddressTypeParameter;
-import ezvcard.parameter.EmailTypeParameter;
-import ezvcard.parameter.ImageTypeParameter;
-import ezvcard.parameter.SoundTypeParameter;
-import ezvcard.parameter.TelephoneTypeParameter;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.ImageType;
+import ezvcard.parameter.SoundType;
+import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
 import ezvcard.property.Gender;
 import ezvcard.property.Kind;
@@ -118,7 +118,7 @@ public class JohnDoeVCard {
 		adr.setPostalCode("12345");
 		adr.setCountry("USA");
 		adr.setLabel("123 Wall St.\nNew York, NY 12345\nUSA");
-		adr.addType(AddressTypeParameter.WORK);
+		adr.addType(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		adr = new Address();
@@ -128,14 +128,14 @@ public class JohnDoeVCard {
 		adr.setPostalCode("54321");
 		adr.setCountry("USA");
 		adr.setLabel("123 Main St.\nAlbany, NY 54321\nUSA");
-		adr.addType(AddressTypeParameter.HOME);
+		adr.addType(AddressType.HOME);
 		vcard.addAddress(adr);
 
-		vcard.addTelephoneNumber("1-555-555-1234", TelephoneTypeParameter.WORK);
-		vcard.addTelephoneNumber("1-555-555-5678", TelephoneTypeParameter.WORK, TelephoneTypeParameter.CELL);
+		vcard.addTelephoneNumber("1-555-555-1234", TelephoneType.WORK);
+		vcard.addTelephoneNumber("1-555-555-5678", TelephoneType.WORK, TelephoneType.CELL);
 
-		vcard.addEmail("johndoe@hotmail.com", EmailTypeParameter.HOME);
-		vcard.addEmail("doe.john@acme.com", EmailTypeParameter.WORK);
+		vcard.addEmail("johndoe@hotmail.com", EmailType.HOME);
+		vcard.addEmail("doe.john@acme.com", EmailType.WORK);
 
 		vcard.addUrl("http://www.acme-co.com");
 
@@ -146,11 +146,11 @@ public class JohnDoeVCard {
 		vcard.setTimezone(new Timezone(-5, 0, "America/New_York"));
 
 		File file = new File("portrait.jpg");
-		Photo photo = new Photo(file, ImageTypeParameter.JPEG);
+		Photo photo = new Photo(file, ImageType.JPEG);
 		vcard.addPhoto(photo);
 
 		file = new File("pronunciation.ogg");
-		Sound sound = new Sound(file, SoundTypeParameter.OGG);
+		Sound sound = new Sound(file, SoundType.OGG);
 		vcard.addSound(sound);
 
 		vcard.setUid(Uid.random());

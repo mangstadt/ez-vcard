@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
 import ezvcard.VCardDataType;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -131,7 +131,7 @@ public class JCardRawReader implements Closeable {
 		String propertyName = jp.getValueAsString().toLowerCase();
 
 		//get parameters
-		VCardSubTypes parameters = parseParameters();
+		VCardParameters parameters = parseParameters();
 
 		//get group
 		List<String> removed = parameters.removeAll("group");
@@ -151,12 +151,12 @@ public class JCardRawReader implements Closeable {
 		listener.readProperty(group, propertyName, parameters, dataType, value);
 	}
 
-	private VCardSubTypes parseParameters() throws IOException {
+	private VCardParameters parseParameters() throws IOException {
 		if (jp.nextToken() != JsonToken.START_OBJECT) {
 			throw new JCardParseException(JsonToken.START_OBJECT, jp.getCurrentToken());
 		}
 
-		VCardSubTypes parameters = new VCardSubTypes();
+		VCardParameters parameters = new VCardParameters();
 		while (jp.nextToken() != JsonToken.END_OBJECT) {
 			String parameterName = jp.getText();
 
@@ -266,7 +266,7 @@ public class JCardRawReader implements Closeable {
 		 * @param dataType the data type or null for "unknown"
 		 * @param value the property value
 		 */
-		void readProperty(String group, String propertyName, VCardSubTypes parameters, VCardDataType dataType, JCardValue value);
+		void readProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType, JCardValue value);
 	}
 
 	/**

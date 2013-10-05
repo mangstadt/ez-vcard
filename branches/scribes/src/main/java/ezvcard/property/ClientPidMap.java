@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -124,7 +124,7 @@ public class ClientPidMap extends VCardProperty {
 	 * Gets the value that is used to link the URI in this property to the
 	 * property that the URI belongs to.
 	 * @return the PID
-	 * @see VCardSubTypes#getPids
+	 * @see VCardParameters#getPids
 	 */
 	public Integer getPid() {
 		return pid;
@@ -134,7 +134,7 @@ public class ClientPidMap extends VCardProperty {
 	 * Gets the value that is used to link the URI in this property to the
 	 * property that the URI belongs to.
 	 * @param pid the PID
-	 * @see VCardSubTypes#getPids
+	 * @see VCardParameters#getPids
 	 */
 	public void setPid(Integer pid) {
 		this.pid = pid;

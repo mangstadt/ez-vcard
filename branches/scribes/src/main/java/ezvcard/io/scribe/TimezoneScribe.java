@@ -9,7 +9,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardSubTypes;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Timezone;
 import ezvcard.util.UtcOffset;
 
@@ -132,7 +132,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 	}
 
 	@Override
-	protected Timezone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardSubTypes parameters, List<String> warnings) {
+	protected Timezone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		value = unescape(value);
 		return parse(value, dataType, version, warnings);
 	}
@@ -155,7 +155,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 	}
 
 	@Override
-	protected Timezone _parseXml(XCardElement element, VCardSubTypes parameters, List<String> warnings) {
+	protected Timezone _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
 			return new Timezone(text);
@@ -194,7 +194,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 	}
 
 	@Override
-	protected Timezone _parseJson(JCardValue value, VCardDataType dataType, VCardSubTypes parameters, List<String> warnings) {
+	protected Timezone _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		String valueStr = value.asSingle();
 		return parse(valueStr, dataType, VCardVersion.V4_0, warnings);
 	}
