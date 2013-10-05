@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.GeoType;
+import ezvcard.property.GeoType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

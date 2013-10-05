@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.ExpertiseType;
+import ezvcard.property.ExpertiseType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

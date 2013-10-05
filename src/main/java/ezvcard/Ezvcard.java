@@ -34,7 +34,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.VCardReader;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.io.xml.XCardDocument;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 import ezvcard.util.IOUtils;
 
 /*

@@ -2,7 +2,7 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
-import ezvcard.types.HobbyType;
+import ezvcard.property.HobbyType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

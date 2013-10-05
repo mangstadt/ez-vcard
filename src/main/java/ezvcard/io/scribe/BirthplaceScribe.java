@@ -7,7 +7,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.types.BirthplaceType;
+import ezvcard.property.BirthplaceType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

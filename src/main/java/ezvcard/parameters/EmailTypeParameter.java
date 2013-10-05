@@ -3,7 +3,7 @@ package ezvcard.parameters;
 import java.util.Collection;
 
 import ezvcard.VCardVersion;
-import ezvcard.types.EmailType;
+import ezvcard.property.EmailType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

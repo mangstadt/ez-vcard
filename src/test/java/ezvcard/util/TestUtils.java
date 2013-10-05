@@ -17,7 +17,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

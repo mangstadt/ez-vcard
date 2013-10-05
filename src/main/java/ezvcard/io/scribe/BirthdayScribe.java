@@ -2,7 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.Date;
 
-import ezvcard.types.BirthdayType;
+import ezvcard.property.BirthdayType;
 import ezvcard.util.PartialDate;
 
 /*

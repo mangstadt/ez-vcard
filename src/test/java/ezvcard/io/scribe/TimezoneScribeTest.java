@@ -10,7 +10,7 @@ import org.junit.Test;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.TimezoneType;
+import ezvcard.property.TimezoneType;
 import ezvcard.util.UtcOffset;
 
 /*

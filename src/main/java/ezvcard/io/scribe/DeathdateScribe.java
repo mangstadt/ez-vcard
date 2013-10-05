@@ -2,7 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.Date;
 
-import ezvcard.types.DeathdateType;
+import ezvcard.property.DeathdateType;
 import ezvcard.util.PartialDate;
 
 /*

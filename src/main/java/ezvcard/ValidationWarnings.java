@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 import ezvcard.util.VCardStringUtils;
 import ezvcard.util.VCardStringUtils.JoinCallback;
 

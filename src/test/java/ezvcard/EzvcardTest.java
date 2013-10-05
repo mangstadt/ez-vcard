@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.xml.XCardNamespaceContext;
-import ezvcard.types.FormattedNameType;
+import ezvcard.property.FormattedNameType;
 import ezvcard.util.VCardBuilder;
 import ezvcard.util.XCardBuilder;
 import ezvcard.util.XmlUtils;

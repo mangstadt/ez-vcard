@@ -23,7 +23,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 import ezvcard.util.HtmlUtils;
 import ezvcard.util.XmlUtils;
 

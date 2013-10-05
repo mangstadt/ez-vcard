@@ -2,7 +2,7 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
-import ezvcard.types.ExpertiseType;
+import ezvcard.property.ExpertiseType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

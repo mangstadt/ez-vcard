@@ -8,7 +8,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.types.AddressType;
+import ezvcard.property.AddressType;
 import ezvcard.util.HCardElement;
 
 /*

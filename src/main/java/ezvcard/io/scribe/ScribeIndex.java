@@ -6,9 +6,9 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import ezvcard.VCardVersion;
-import ezvcard.types.RawType;
-import ezvcard.types.VCardType;
-import ezvcard.types.XmlType;
+import ezvcard.property.RawType;
+import ezvcard.property.VCardType;
+import ezvcard.property.XmlType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
 import ezvcard.VCardDataType;
-import ezvcard.types.LanguageType;
+import ezvcard.property.LanguageType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

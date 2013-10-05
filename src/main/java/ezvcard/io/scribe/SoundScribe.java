@@ -4,7 +4,7 @@ import java.util.List;
 
 import ezvcard.io.CannotParseException;
 import ezvcard.parameters.SoundTypeParameter;
-import ezvcard.types.SoundType;
+import ezvcard.property.SoundType;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 

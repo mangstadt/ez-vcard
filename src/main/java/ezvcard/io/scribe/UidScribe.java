@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.UidType;
+import ezvcard.property.UidType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

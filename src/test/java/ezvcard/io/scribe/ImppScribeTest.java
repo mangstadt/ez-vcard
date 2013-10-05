@@ -7,7 +7,7 @@ import java.net.URI;
 import org.junit.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.ImppType;
+import ezvcard.property.ImppType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

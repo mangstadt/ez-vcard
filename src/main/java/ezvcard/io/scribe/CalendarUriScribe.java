@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.CalendarUriType;
+import ezvcard.property.CalendarUriType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

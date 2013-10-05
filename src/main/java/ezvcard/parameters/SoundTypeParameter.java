@@ -2,7 +2,7 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
-import ezvcard.types.SoundType;
+import ezvcard.property.SoundType;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.

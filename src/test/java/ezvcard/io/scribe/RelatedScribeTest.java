@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.RelatedType;
+import ezvcard.property.RelatedType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -11,7 +11,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.types.BinaryType;
+import ezvcard.property.BinaryType;
 import ezvcard.util.DataUri;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
 

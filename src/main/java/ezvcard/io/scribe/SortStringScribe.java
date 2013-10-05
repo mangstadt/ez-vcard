@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.SortStringType;
+import ezvcard.property.SortStringType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

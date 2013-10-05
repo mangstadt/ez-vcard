@@ -4,7 +4,7 @@ import java.util.List;
 
 import ezvcard.io.CannotParseException;
 import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.types.ImageType;
+import ezvcard.property.ImageType;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 

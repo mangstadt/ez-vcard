@@ -5,7 +5,7 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.types.RawType;
+import ezvcard.property.RawType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

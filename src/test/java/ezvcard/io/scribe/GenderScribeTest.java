@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.GenderType;
+import ezvcard.property.GenderType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.OrgDirectoryType;
+import ezvcard.property.OrgDirectoryType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

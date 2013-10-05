@@ -2,7 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
-import ezvcard.types.LabelType;
+import ezvcard.property.LabelType;
 import ezvcard.util.HCardElement;
 
 /*

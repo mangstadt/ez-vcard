@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
 import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.types.LogoType;
+import ezvcard.property.LogoType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

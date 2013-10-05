@@ -9,7 +9,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.types.TimezoneType;
+import ezvcard.property.TimezoneType;
 import ezvcard.util.HCardElement;
 import ezvcard.util.UtcOffset;
 

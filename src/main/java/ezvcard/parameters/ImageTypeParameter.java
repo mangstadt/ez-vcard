@@ -2,8 +2,8 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
-import ezvcard.types.LogoType;
-import ezvcard.types.PhotoType;
+import ezvcard.property.LogoType;
+import ezvcard.property.PhotoType;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.

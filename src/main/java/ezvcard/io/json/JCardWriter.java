@@ -19,9 +19,9 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.types.ProdIdType;
-import ezvcard.types.RawType;
-import ezvcard.types.VCardType;
+import ezvcard.property.ProdIdType;
+import ezvcard.property.RawType;
+import ezvcard.property.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.MemberType;
+import ezvcard.property.MemberType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

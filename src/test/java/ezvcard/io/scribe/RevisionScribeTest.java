@@ -9,7 +9,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.RevisionType;
+import ezvcard.property.RevisionType;
 import ezvcard.util.DefaultTimezoneRule;
 
 /*
