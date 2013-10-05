@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.SourceType;
+import ezvcard.property.SourceType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

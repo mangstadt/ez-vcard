@@ -11,12 +11,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import ezvcard.types.HasAltId;
-import ezvcard.types.NoteType;
-import ezvcard.types.RawType;
-import ezvcard.types.RevisionType;
-import ezvcard.types.StructuredNameType;
-import ezvcard.types.VCardType;
+import ezvcard.property.HasAltId;
+import ezvcard.property.NoteType;
+import ezvcard.property.RawType;
+import ezvcard.property.RevisionType;
+import ezvcard.property.StructuredNameType;
+import ezvcard.property.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

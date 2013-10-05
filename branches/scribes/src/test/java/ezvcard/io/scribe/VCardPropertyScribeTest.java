@@ -25,7 +25,7 @@ import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.scribe.VCardPropertyScribe.SemiStructuredIterator;
 import ezvcard.io.scribe.VCardPropertyScribe.StructuredIterator;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 import ezvcard.util.DefaultTimezoneRule;
 
 /*

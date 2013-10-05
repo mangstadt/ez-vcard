@@ -25,8 +25,8 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.types.RawType;
-import ezvcard.types.VCardType;
+import ezvcard.property.RawType;
+import ezvcard.property.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

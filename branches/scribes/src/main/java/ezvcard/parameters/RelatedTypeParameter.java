@@ -2,7 +2,7 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
-import ezvcard.types.RelatedType;
+import ezvcard.property.RelatedType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

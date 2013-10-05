@@ -8,7 +8,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 import ezvcard.util.TestUtils.Tests;
 
 /*

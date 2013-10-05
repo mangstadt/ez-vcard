@@ -16,7 +16,7 @@ import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.types.PhotoType;
+import ezvcard.property.PhotoType;
 import ezvcard.util.DataUri;
 import ezvcard.util.IOUtils;
 import freemarker.template.Configuration;

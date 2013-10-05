@@ -2,7 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.Date;
 
-import ezvcard.types.AnniversaryType;
+import ezvcard.property.AnniversaryType;
 import ezvcard.util.PartialDate;
 
 /*

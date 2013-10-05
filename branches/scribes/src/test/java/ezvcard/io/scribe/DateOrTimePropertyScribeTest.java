@@ -13,7 +13,7 @@ import org.junit.Test;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.DateOrTimeType;
+import ezvcard.property.DateOrTimeType;
 import ezvcard.util.DefaultTimezoneRule;
 import ezvcard.util.PartialDate;
 

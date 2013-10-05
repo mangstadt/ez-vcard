@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.FbUrlType;
+import ezvcard.property.FbUrlType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

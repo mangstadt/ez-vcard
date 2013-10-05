@@ -2,7 +2,7 @@ package ezvcard.io;
 
 import ezvcard.VCard;
 import ezvcard.VCardException;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

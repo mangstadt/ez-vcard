@@ -9,8 +9,8 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
-import ezvcard.types.AgentType;
-import ezvcard.types.VCardType;
+import ezvcard.property.AgentType;
+import ezvcard.property.VCardType;
 import ezvcard.util.HCardElement;
 
 /*

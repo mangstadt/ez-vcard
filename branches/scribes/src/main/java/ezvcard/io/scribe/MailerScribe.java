@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.MailerType;
+import ezvcard.property.MailerType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

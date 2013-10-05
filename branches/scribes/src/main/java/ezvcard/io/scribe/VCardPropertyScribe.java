@@ -25,7 +25,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.VCardRawWriter;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 import ezvcard.util.HCardElement;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.VCardDateFormatter;

@@ -11,7 +11,7 @@ import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameters.EncodingParameter;
 import ezvcard.parameters.MediaTypeParameter;
-import ezvcard.types.BinaryType;
+import ezvcard.property.BinaryType;
 import ezvcard.util.DataUri;
 import ezvcard.util.HCardElement;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;

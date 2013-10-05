@@ -2,7 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
-import ezvcard.types.NicknameType;
+import ezvcard.property.NicknameType;
 import ezvcard.util.HCardElement;
 
 /*

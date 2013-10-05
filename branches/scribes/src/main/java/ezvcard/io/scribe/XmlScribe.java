@@ -16,7 +16,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.types.XmlType;
+import ezvcard.property.XmlType;
 import ezvcard.util.XmlUtils;
 
 /*

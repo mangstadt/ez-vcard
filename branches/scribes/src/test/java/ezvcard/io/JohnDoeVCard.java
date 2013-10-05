@@ -11,15 +11,15 @@ import ezvcard.parameters.EmailTypeParameter;
 import ezvcard.parameters.ImageTypeParameter;
 import ezvcard.parameters.SoundTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
-import ezvcard.types.AddressType;
-import ezvcard.types.GenderType;
-import ezvcard.types.KindType;
-import ezvcard.types.PhotoType;
-import ezvcard.types.RevisionType;
-import ezvcard.types.SoundType;
-import ezvcard.types.StructuredNameType;
-import ezvcard.types.TimezoneType;
-import ezvcard.types.UidType;
+import ezvcard.property.AddressType;
+import ezvcard.property.GenderType;
+import ezvcard.property.KindType;
+import ezvcard.property.PhotoType;
+import ezvcard.property.RevisionType;
+import ezvcard.property.SoundType;
+import ezvcard.property.StructuredNameType;
+import ezvcard.property.TimezoneType;
+import ezvcard.property.UidType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

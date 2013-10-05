@@ -1,7 +1,7 @@
 package ezvcard.io.scribe;
 
 import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.types.PhotoType;
+import ezvcard.property.PhotoType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

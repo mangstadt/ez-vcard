@@ -3,8 +3,8 @@ package ezvcard.parameters;
 import java.util.Collection;
 
 import ezvcard.VCardVersion;
-import ezvcard.types.AddressType;
-import ezvcard.types.LabelType;
+import ezvcard.property.AddressType;
+import ezvcard.property.LabelType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

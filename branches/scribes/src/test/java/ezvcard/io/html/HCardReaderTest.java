@@ -23,13 +23,13 @@ import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.parameters.AddressTypeParameter;
 import ezvcard.parameters.TelephoneTypeParameter;
-import ezvcard.types.AddressType;
-import ezvcard.types.EmailType;
-import ezvcard.types.ImppType;
-import ezvcard.types.LabelType;
-import ezvcard.types.RawType;
-import ezvcard.types.TelephoneType;
-import ezvcard.types.UrlType;
+import ezvcard.property.AddressType;
+import ezvcard.property.EmailType;
+import ezvcard.property.ImppType;
+import ezvcard.property.LabelType;
+import ezvcard.property.RawType;
+import ezvcard.property.TelephoneType;
+import ezvcard.property.UrlType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

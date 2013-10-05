@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.types.RoleType;
+import ezvcard.property.RoleType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -2,7 +2,7 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
-import ezvcard.types.KeyType;
+import ezvcard.property.KeyType;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.

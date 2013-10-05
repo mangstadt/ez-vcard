@@ -2,7 +2,7 @@ package ezvcard.parameters;
 
 import java.util.Collection;
 
-import ezvcard.types.ImppType;
+import ezvcard.property.ImppType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

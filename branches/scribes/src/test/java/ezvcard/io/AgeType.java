@@ -6,7 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

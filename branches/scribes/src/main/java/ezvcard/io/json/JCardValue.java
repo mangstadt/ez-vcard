@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import ezvcard.types.CategoriesType;
-import ezvcard.types.NoteType;
-import ezvcard.types.StructuredNameType;
+import ezvcard.property.CategoriesType;
+import ezvcard.property.NoteType;
+import ezvcard.property.StructuredNameType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -7,7 +7,7 @@ import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.xml.XCardElement;
-import ezvcard.types.TextListType;
+import ezvcard.property.TextListType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

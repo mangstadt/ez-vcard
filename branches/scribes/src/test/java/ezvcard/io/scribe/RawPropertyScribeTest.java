@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.RawType;
+import ezvcard.property.RawType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

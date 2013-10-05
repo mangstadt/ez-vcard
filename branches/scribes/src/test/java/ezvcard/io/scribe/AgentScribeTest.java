@@ -11,7 +11,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.types.AgentType;
+import ezvcard.property.AgentType;
 
 /*
  Copyright (c) 2013, Michael Angstadt

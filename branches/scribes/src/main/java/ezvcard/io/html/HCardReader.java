@@ -27,17 +27,17 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.types.AddressType;
-import ezvcard.types.CategoriesType;
-import ezvcard.types.EmailType;
-import ezvcard.types.ImppType;
-import ezvcard.types.LabelType;
-import ezvcard.types.NicknameType;
-import ezvcard.types.RawType;
-import ezvcard.types.SourceType;
-import ezvcard.types.TelephoneType;
-import ezvcard.types.UrlType;
-import ezvcard.types.VCardType;
+import ezvcard.property.AddressType;
+import ezvcard.property.CategoriesType;
+import ezvcard.property.EmailType;
+import ezvcard.property.ImppType;
+import ezvcard.property.LabelType;
+import ezvcard.property.NicknameType;
+import ezvcard.property.RawType;
+import ezvcard.property.SourceType;
+import ezvcard.property.TelephoneType;
+import ezvcard.property.UrlType;
+import ezvcard.property.VCardType;
 import ezvcard.util.HtmlUtils;
 
 /*
