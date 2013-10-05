@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import ezvcard.parameters.KeyTypeParameter;
+import ezvcard.parameter.KeyTypeParameter;
 import ezvcard.property.KeyType;
 
 /*

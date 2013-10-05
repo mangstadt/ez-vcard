@@ -6,7 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.EmailTypeParameter;
+import ezvcard.parameter.EmailTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

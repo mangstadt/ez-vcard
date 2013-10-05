@@ -1,11 +1,9 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import java.lang.reflect.Constructor;
 
 import ezvcard.VCardVersion;
+import ezvcard.util.CaseClasses;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -33,29 +31,38 @@ import ezvcard.VCardVersion;
  */
 
 /**
+ * Manages the list of pre-defined values for a parameter that consists of a
+ * single String value.
  * @author Michael Angstadt
+ * @param <T> the parameter class
  */
-public class VersionedVCardParameterTest {
-	@Test
-	public void isSupported() {
-		VersionedVCardParameter p = new VersionedVCardParameter("value");
-		assertTrue(p.isSupported(VCardVersion.V2_1));
-		assertTrue(p.isSupported(VCardVersion.V3_0));
-		assertTrue(p.isSupported(VCardVersion.V4_0));
+public class VCardParameterCaseClasses<T extends VCardParameter> extends CaseClasses<T, String> {
+	public VCardParameterCaseClasses(Class<T> clazz) {
+		super(clazz);
+	}
 
-		p = new VersionedVCardParameter("value", VCardVersion.V2_1);
-		assertTrue(p.isSupported(VCardVersion.V2_1));
-		assertFalse(p.isSupported(VCardVersion.V3_0));
-		assertFalse(p.isSupported(VCardVersion.V4_0));
+	@Override
+	protected T create(String value) {
+		//reflection: return new ClassName(value);
+		try {
+			//try (String) constructor
+			Constructor<T> constructor = clazz.getDeclaredConstructor(String.class);
+			constructor.setAccessible(true);
+			return constructor.newInstance(value);
+		} catch (Exception e) {
+			try {
+				//try (String, VCardVersion...) constructor
+				Constructor<T> constructor = clazz.getDeclaredConstructor(String.class, VCardVersion[].class);
+				constructor.setAccessible(true);
+				return constructor.newInstance(value, new VCardVersion[] {});
+			} catch (Exception e2) {
+				throw new RuntimeException(e2);
+			}
+		}
+	}
 
-		p = new VersionedVCardParameter("value", VCardVersion.V2_1, VCardVersion.V3_0);
-		assertTrue(p.isSupported(VCardVersion.V2_1));
-		assertTrue(p.isSupported(VCardVersion.V3_0));
-		assertFalse(p.isSupported(VCardVersion.V4_0));
-
-		p = new VersionedVCardParameter("value", VCardVersion.V2_1, VCardVersion.V3_0, VCardVersion.V4_0);
-		assertTrue(p.isSupported(VCardVersion.V2_1));
-		assertTrue(p.isSupported(VCardVersion.V3_0));
-		assertTrue(p.isSupported(VCardVersion.V4_0));
+	@Override
+	protected boolean matches(T object, String value) {
+		return object.getValue().equalsIgnoreCase(value);
 	}
 }

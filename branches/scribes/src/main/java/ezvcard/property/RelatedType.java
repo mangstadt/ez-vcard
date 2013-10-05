@@ -7,7 +7,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.RelatedTypeParameter;
+import ezvcard.parameter.RelatedTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

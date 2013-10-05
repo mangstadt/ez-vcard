@@ -27,7 +27,7 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.parameters.EncodingParameter;
+import ezvcard.parameter.EncodingParameter;
 import ezvcard.property.AddressType;
 import ezvcard.property.LabelType;
 import ezvcard.property.RawType;

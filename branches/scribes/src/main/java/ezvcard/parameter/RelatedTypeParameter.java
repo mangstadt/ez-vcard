@@ -1,8 +1,8 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.ExpertiseType;
+import ezvcard.property.RelatedType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,22 +34,37 @@ import ezvcard.property.ExpertiseType;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link ExpertiseType} property.
- * 
+ * Represents the TYPE parameter of the {@link RelatedType} type.
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class ExpertiseLevelParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<ExpertiseLevelParameter> enums = new VCardParameterCaseClasses<ExpertiseLevelParameter>(ExpertiseLevelParameter.class);
+public class RelatedTypeParameter extends VCardParameter {
+	private static final VCardParameterCaseClasses<RelatedTypeParameter> enums = new VCardParameterCaseClasses<RelatedTypeParameter>(RelatedTypeParameter.class);
 
-	public static final ExpertiseLevelParameter BEGINNER = new ExpertiseLevelParameter("beginner");
-	public static final ExpertiseLevelParameter AVERAGE = new ExpertiseLevelParameter("average");
-	public static final ExpertiseLevelParameter EXPERT = new ExpertiseLevelParameter("expert");
+	public static final RelatedTypeParameter ACQUAINTANCE = new RelatedTypeParameter("acquaintance");
+	public static final RelatedTypeParameter AGENT = new RelatedTypeParameter("agent");
+	public static final RelatedTypeParameter CHILD = new RelatedTypeParameter("child");
+	public static final RelatedTypeParameter CO_RESIDENT = new RelatedTypeParameter("co-resident");
+	public static final RelatedTypeParameter CO_WORKER = new RelatedTypeParameter("co-worker");
+	public static final RelatedTypeParameter COLLEAGUE = new RelatedTypeParameter("colleague");
+	public static final RelatedTypeParameter CONTACT = new RelatedTypeParameter("contact");
+	public static final RelatedTypeParameter CRUSH = new RelatedTypeParameter("crush");
+	public static final RelatedTypeParameter DATE = new RelatedTypeParameter("date");
+	public static final RelatedTypeParameter EMERGENCY = new RelatedTypeParameter("emergency");
+	public static final RelatedTypeParameter FRIEND = new RelatedTypeParameter("friend");
+	public static final RelatedTypeParameter KIN = new RelatedTypeParameter("kin");
+	public static final RelatedTypeParameter ME = new RelatedTypeParameter("me");
+	public static final RelatedTypeParameter MET = new RelatedTypeParameter("met");
+	public static final RelatedTypeParameter MUSE = new RelatedTypeParameter("muse");
+	public static final RelatedTypeParameter NEIGHBOR = new RelatedTypeParameter("neighbor");
+	public static final RelatedTypeParameter PARENT = new RelatedTypeParameter("parent");
+	public static final RelatedTypeParameter SIBLING = new RelatedTypeParameter("sibling");
+	public static final RelatedTypeParameter SPOUSE = new RelatedTypeParameter("spouse");
+	public static final RelatedTypeParameter SWEETHEART = new RelatedTypeParameter("sweetheart");
 
-	private ExpertiseLevelParameter(String value) {
+	private RelatedTypeParameter(String value) {
 		super(value);
 	}
 
@@ -59,7 +74,7 @@ public class ExpertiseLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static ExpertiseLevelParameter find(String value) {
+	public static RelatedTypeParameter find(String value) {
 		return enums.find(value);
 	}
 
@@ -70,7 +85,7 @@ public class ExpertiseLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static ExpertiseLevelParameter get(String value) {
+	public static RelatedTypeParameter get(String value) {
 		return enums.get(value);
 	}
 
@@ -79,7 +94,7 @@ public class ExpertiseLevelParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<ExpertiseLevelParameter> all() {
+	public static Collection<RelatedTypeParameter> all() {
 		return enums.all();
 	}
 }

@@ -1,8 +1,8 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.KeyType;
+import ezvcard.VCardVersion;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
@@ -62,53 +62,64 @@ import ezvcard.property.KeyType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link KeyType} type.
+ * Represents the "ENCODING" sub type.
  * <p>
- * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+ * <b>Supported versions:</b> {@code 2.1, 3.0}
  * </p>
  * @author George El-Haddad Mar 10, 2010
- * @author Michael Angstadt Jul 06, 2012
+ * @author Michael Angstadt
  */
-public class KeyTypeParameter extends MediaTypeParameter {
-	private static final MediaTypeCaseClasses<KeyTypeParameter> enums = new MediaTypeCaseClasses<KeyTypeParameter>(KeyTypeParameter.class);
+public class EncodingParameter extends VersionedVCardParameter {
+	private static final VCardParameterCaseClasses<EncodingParameter> enums = new VCardParameterCaseClasses<EncodingParameter>(EncodingParameter.class);
 
-	public static final KeyTypeParameter PGP = new KeyTypeParameter("PGP", "application/pgp-keys", "pgp");
-	public static final KeyTypeParameter GPG = new KeyTypeParameter("GPG", "application/gpg", "gpg");
-	public static final KeyTypeParameter X509 = new KeyTypeParameter("X509", "application/x509", null);
+	/**
+	 * <b>Supported versions:</b> {@code 2.1}
+	 */
+	public static final EncodingParameter QUOTED_PRINTABLE = new EncodingParameter("quoted-printable", VCardVersion.V2_1);
 
-	private KeyTypeParameter(String value, String mediaType, String extension) {
-		super(value, mediaType, extension);
+	/**
+	 * <b>Supported versions:</b> {@code 2.1}
+	 */
+	public static final EncodingParameter BASE64 = new EncodingParameter("base64", VCardVersion.V2_1);
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1}
+	 */
+	public static final EncodingParameter _8BIT = new EncodingParameter("8bit", VCardVersion.V2_1);
+
+	/**
+	 * <b>Supported versions:</b> {@code 2.1}
+	 */
+	public static final EncodingParameter _7BIT = new EncodingParameter("7bit", VCardVersion.V2_1);
+
+	/**
+	 * <b>Supported versions:</b> {@code 3.0}
+	 */
+	public static final EncodingParameter B = new EncodingParameter("b", VCardVersion.V3_0);
+
+	private EncodingParameter(String value, VCardVersion... supportedVersions) {
+		super(value, supportedVersions);
 	}
 
 	/**
 	 * Searches for a parameter value that is defined as a static constant in
 	 * this class.
-	 * @param type the TYPE parameter value to search for (e.g. "PGP") or null
-	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g.
-	 * "application/pgp-keys") or null to not search by this value
-	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "pgp") or null to not search by this value
+	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static KeyTypeParameter find(String type, String mediaType, String extension) {
-		return enums.find(new String[] { type, mediaType, extension });
+	public static EncodingParameter find(String value) {
+		return enums.find(value);
 	}
 
 	/**
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
 	 * {@code ==} equality.
-	 * @param type the TYPE parameter value to search for (e.g. "PGP") or null
-	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g.
-	 * "application/pgp-keys") or null to not search by this value
-	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "pgp") or null to not search by this value
+	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static KeyTypeParameter get(String type, String mediaType, String extension) {
-		return enums.get(new String[] { type, mediaType, extension });
+	public static EncodingParameter get(String value) {
+		return enums.get(value);
 	}
 
 	/**
@@ -116,7 +127,7 @@ public class KeyTypeParameter extends MediaTypeParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<KeyTypeParameter> all() {
+	public static Collection<EncodingParameter> all() {
 		return enums.all();
 	}
 }

@@ -14,8 +14,8 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
-import ezvcard.parameters.CalscaleParameter;
-import ezvcard.parameters.EncodingParameter;
+import ezvcard.parameter.CalscaleParameter;
+import ezvcard.parameter.EncodingParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

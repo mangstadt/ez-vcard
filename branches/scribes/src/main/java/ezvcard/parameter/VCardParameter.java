@@ -1,4 +1,4 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -30,48 +30,41 @@ package ezvcard.parameters;
  */
 
 /**
- * Represents a TYPE parameter that also has a media type associated with it.
- * The TYPE parameter value is used in 2.1 and 3.0 vCards, while the media type
- * value is used in 4.0 vCards.
+ * Represents a vCard parameter (aka "sub type") whose values are pre-defined.
  * @author Michael Angstadt
  */
-public class MediaTypeParameter extends VCardParameter {
-	protected final String mediaType;
-	protected final String extension;
+public class VCardParameter {
+	/**
+	 * The value (for example, "home").
+	 */
+	protected final String value;
 
 	/**
-	 * @param value the TYPE parameter value (e.g. "JPEG")
-	 * @param mediaType the media type (e.g. "image/jpeg")
-	 * @param extension the file extension (e.g. "jpg")
+	 * Creates a new parameter.
+	 * @param value the value
 	 */
-	public MediaTypeParameter(String value, String mediaType, String extension) {
-		super(value);
-		this.mediaType = mediaType;
-		this.extension = extension;
+	public VCardParameter(String value) {
+		this.value = (value == null) ? null : value.toLowerCase();
 	}
 
 	/**
-	 * Gets the media type.
-	 * @return the media type (e.g. "image/jpeg")
+	 * Gets the value of the parameter.
+	 * @return the value of the parameter (e.g. "home")
 	 */
-	public String getMediaType() {
-		return mediaType;
+	public String getValue() {
+		return value;
 	}
 
-	/**
-	 * Gets the file extension.
-	 * @return the file extension (e.g. "jpg")
-	 */
-	public String getExtension() {
-		return extension;
+	@Override
+	public String toString() {
+		return value;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((extension == null) ? 0 : extension.hashCode());
-		result = prime * result + ((mediaType == null) ? 0 : mediaType.hashCode());
+		int result = 1;
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
 
@@ -79,20 +72,15 @@ public class MediaTypeParameter extends VCardParameter {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MediaTypeParameter other = (MediaTypeParameter) obj;
-		if (extension == null) {
-			if (other.extension != null)
+		VCardParameter other = (VCardParameter) obj;
+		if (value == null) {
+			if (other.value != null)
 				return false;
-		} else if (!extension.equals(other.extension))
-			return false;
-		if (mediaType == null) {
-			if (other.mediaType != null)
-				return false;
-		} else if (!mediaType.equals(other.mediaType))
+		} else if (!value.equals(other.value))
 			return false;
 		return true;
 	}

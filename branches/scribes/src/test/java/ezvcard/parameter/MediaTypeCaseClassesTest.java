@@ -1,4 +1,4 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import static org.junit.Assert.assertTrue;
 

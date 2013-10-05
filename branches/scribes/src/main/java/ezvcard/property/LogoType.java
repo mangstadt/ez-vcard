@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ezvcard.parameters.ImageTypeParameter;
+import ezvcard.parameter.ImageTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

@@ -6,7 +6,7 @@ import java.util.List;
 import ezvcard.VCard;
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.CalscaleParameter;
+import ezvcard.parameter.CalscaleParameter;
 import ezvcard.util.PartialDate;
 
 /*

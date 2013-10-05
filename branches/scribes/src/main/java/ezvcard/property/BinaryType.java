@@ -8,7 +8,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.MediaTypeParameter;
+import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.util.IOUtils;
 
 /*

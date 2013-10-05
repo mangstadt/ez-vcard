@@ -1,8 +1,6 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import java.util.Collection;
-
-import ezvcard.property.InterestType;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -34,22 +32,18 @@ import ezvcard.property.InterestType;
  */
 
 /**
- * Represents a LEVEL parameter for the {@link InterestType} property.
- * 
+ * Represents a CALSCALE parameter.
  * <p>
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
-public class InterestLevelParameter extends VCardParameter {
-	private static final VCardParameterCaseClasses<InterestLevelParameter> enums = new VCardParameterCaseClasses<InterestLevelParameter>(InterestLevelParameter.class);
+public class CalscaleParameter extends VCardParameter {
+	private static final VCardParameterCaseClasses<CalscaleParameter> enums = new VCardParameterCaseClasses<CalscaleParameter>(CalscaleParameter.class);
 
-	public static final InterestLevelParameter LOW = new InterestLevelParameter("low");
-	public static final InterestLevelParameter MEDIUM = new InterestLevelParameter("medium");
-	public static final InterestLevelParameter HIGH = new InterestLevelParameter("high");
+	public static final CalscaleParameter GREGORIAN = new CalscaleParameter("gregorian");
 
-	private InterestLevelParameter(String value) {
+	private CalscaleParameter(String value) {
 		super(value);
 	}
 
@@ -59,7 +53,7 @@ public class InterestLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object or null if not found
 	 */
-	public static InterestLevelParameter find(String value) {
+	public static CalscaleParameter find(String value) {
 		return enums.find(value);
 	}
 
@@ -70,7 +64,7 @@ public class InterestLevelParameter extends VCardParameter {
 	 * @param value the parameter value
 	 * @return the object
 	 */
-	public static InterestLevelParameter get(String value) {
+	public static CalscaleParameter get(String value) {
 		return enums.get(value);
 	}
 
@@ -79,7 +73,7 @@ public class InterestLevelParameter extends VCardParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<InterestLevelParameter> all() {
+	public static Collection<CalscaleParameter> all() {
 		return enums.all();
 	}
 }

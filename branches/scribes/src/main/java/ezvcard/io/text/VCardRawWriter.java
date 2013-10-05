@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import ezvcard.VCardSubTypes;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.EncodingParameter;
+import ezvcard.parameter.EncodingParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

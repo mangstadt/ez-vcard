@@ -5,7 +5,7 @@ import static ezvcard.util.TestUtils.assertValidate;
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
-import ezvcard.parameters.AddressTypeParameter;
+import ezvcard.parameter.AddressTypeParameter;
 
 /*
  Copyright (c) 2013, Michael Angstadt

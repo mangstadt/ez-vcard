@@ -1,8 +1,9 @@
-package ezvcard.parameters;
+package ezvcard.parameter;
 
 import java.util.Collection;
 
-import ezvcard.property.SoundType;
+import ezvcard.property.LogoType;
+import ezvcard.property.PhotoType;
 
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
@@ -62,39 +63,38 @@ import ezvcard.property.SoundType;
  */
 
 /**
- * Represents the TYPE parameter of the {@link SoundType} type.
+ * Represents an image media type used in the TYPE parameter, MEDIATYPE
+ * parameter, and data URIs of the {@link PhotoType} and {@link LogoType}
+ * properties.
  * <p>
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
- * @author George El-Haddad Mar 10, 2010
+ * @author George El-Haddadt Mar 10, 2010
  * @author Michael Angstadt
  */
-public class SoundTypeParameter extends MediaTypeParameter {
-	private static final MediaTypeCaseClasses<SoundTypeParameter> enums = new MediaTypeCaseClasses<SoundTypeParameter>(SoundTypeParameter.class);
+public class ImageTypeParameter extends MediaTypeParameter {
+	private static final MediaTypeCaseClasses<ImageTypeParameter> enums = new MediaTypeCaseClasses<ImageTypeParameter>(ImageTypeParameter.class);
 
-	public static final SoundTypeParameter AAC = new SoundTypeParameter("AAC", "audio/aac", "aac");
-	public static final SoundTypeParameter MIDI = new SoundTypeParameter("MIDI", "audio/midi", "mid");
-	public static final SoundTypeParameter MP3 = new SoundTypeParameter("MP3", "audio/mp3", "mp3");
-	public static final SoundTypeParameter MPEG = new SoundTypeParameter("MPEG", "audio/mpeg", "mpeg");
-	public static final SoundTypeParameter OGG = new SoundTypeParameter("OGG", "audio/ogg", "ogg");
-	public static final SoundTypeParameter WAV = new SoundTypeParameter("WAV", "audio/wav", "wav");
+	public static final ImageTypeParameter GIF = new ImageTypeParameter("GIF", "image/gif", "gif");
+	public static final ImageTypeParameter JPEG = new ImageTypeParameter("JPEG", "image/jpeg", "jpg");
+	public static final ImageTypeParameter PNG = new ImageTypeParameter("PNG", "image/png", "png");
 
-	private SoundTypeParameter(String value, String mediaType, String extension) {
+	private ImageTypeParameter(String value, String mediaType, String extension) {
 		super(value, mediaType, extension);
 	}
 
 	/**
 	 * Searches for a parameter value that is defined as a static constant in
 	 * this class.
-	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
+	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
 	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null
+	 * @param mediaType the media type to search for (e.g. "image/png") or null
 	 * to not search by this value
 	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "mp3") or null to not search by this value
+	 * e.g. "jpg") or null to not search by this value
 	 * @return the object or null if not found
 	 */
-	public static SoundTypeParameter find(String type, String mediaType, String extension) {
+	public static ImageTypeParameter find(String type, String mediaType, String extension) {
 		return enums.find(new String[] { type, mediaType, extension });
 	}
 
@@ -102,15 +102,15 @@ public class SoundTypeParameter extends MediaTypeParameter {
 	 * Searches for a parameter value and creates one if it cannot be found. All
 	 * objects are guaranteed to be unique, so they can be compared with
 	 * {@code ==} equality.
-	 * @param type the TYPE parameter value to search for (e.g. "MP3") or null
+	 * @param type the TYPE parameter value to search for (e.g. "JPEG") or null
 	 * to not search by this value
-	 * @param mediaType the media type to search for (e.g. "audio/mp3") or null
+	 * @param mediaType the media type to search for (e.g. "image/png") or null
 	 * to not search by this value
 	 * @param extension the file extension to search for (excluding the ".",
-	 * e.g. "mp3") or null to not search by this value
+	 * e.g. "jpg") or null to not search by this value
 	 * @return the object
 	 */
-	public static SoundTypeParameter get(String type, String mediaType, String extension) {
+	public static ImageTypeParameter get(String type, String mediaType, String extension) {
 		return enums.get(new String[] { type, mediaType, extension });
 	}
 
@@ -119,7 +119,7 @@ public class SoundTypeParameter extends MediaTypeParameter {
 	 * this class.
 	 * @return the parameter values
 	 */
-	public static Collection<SoundTypeParameter> all() {
+	public static Collection<ImageTypeParameter> all() {
 		return enums.all();
 	}
 }
