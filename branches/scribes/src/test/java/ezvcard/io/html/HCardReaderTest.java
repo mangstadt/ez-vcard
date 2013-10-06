@@ -738,17 +738,17 @@ public class HCardReaderTest {
 		reader.registerScribe(new LuckyNumScribe());
 
 		VCard vcard = reader.readNext();
-		assertEquals(3, vcard.getAllTypes().size());
+		assertEquals(3, vcard.getProperties().size());
 
 		//read a type that has a type class
-		List<LuckyNumType> luckyNumTypes = vcard.getTypes(LuckyNumType.class);
+		List<LuckyNumType> luckyNumTypes = vcard.getProperties(LuckyNumType.class);
 		assertEquals(2, luckyNumTypes.size());
 		assertEquals(24, luckyNumTypes.get(0).luckyNum);
 		assertEquals(22, luckyNumTypes.get(1).luckyNum);
-		assertTrue(vcard.getExtendedTypes("X-LUCKY-NUM").isEmpty());
+		assertTrue(vcard.getExtendedProperties("X-LUCKY-NUM").isEmpty());
 
 		//read a type without a type class
-		List<RawProperty> genderTypes = vcard.getExtendedTypes("X-GENDER");
+		List<RawProperty> genderTypes = vcard.getExtendedProperties("X-GENDER");
 		assertEquals(1, genderTypes.size());
 		assertEquals("male", genderTypes.get(0).getValue());
 
@@ -773,10 +773,10 @@ public class HCardReaderTest {
 		reader.registerScribe(new MyFormattedNameScribe());
 
 		VCard vcard = reader.readNext();
-		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(1, vcard.getProperties().size());
 
 		//read a type that has a type class
-		MyFormattedNameType fn = vcard.getType(MyFormattedNameType.class);
+		MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);
 		assertEquals("JOHN DOE", fn.value);
 
 		assertWarnings(0, reader.getWarnings());

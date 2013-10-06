@@ -248,7 +248,7 @@ public class JCardWriterTest {
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		vcard.addExtendedType("x-type", "value");
+		vcard.addExtendedProperty("x-type", "value");
 		writer.write(vcard);
 
 		writer.close();
@@ -275,7 +275,7 @@ public class JCardWriterTest {
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		vcard.addType(new TypeForTesting(JCardValue.single("value")));
+		vcard.addProperty(new TypeForTesting(JCardValue.single("value")));
 		writer.write(vcard);
 
 		writer.close();
@@ -304,7 +304,7 @@ public class JCardWriterTest {
 		vcard.setFormattedName("John Doe");
 		LuckyNumType prop = new LuckyNumType(0);
 		prop.luckyNum = 13;
-		vcard.addType(prop);
+		vcard.addProperty(prop);
 		writer.write(vcard);
 
 		writer.close();

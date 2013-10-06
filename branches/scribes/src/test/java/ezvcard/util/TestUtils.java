@@ -149,7 +149,7 @@ public class TestUtils {
 		 * @return this
 		 */
 		public ValidateChecker vcard(VCard vcard) {
-			vcard.addType(property);
+			vcard.addProperty(property);
 			this.vcard = vcard;
 			return this;
 		}

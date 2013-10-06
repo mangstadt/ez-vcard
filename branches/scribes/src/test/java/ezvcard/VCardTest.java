@@ -64,13 +64,13 @@ public class VCardTest {
 		vcard.addNote(note);
 
 		//extended type with unique name
-		RawProperty xGender = vcard.addExtendedType("X-GENDER", "male");
+		RawProperty xGender = vcard.addExtendedProperty("X-GENDER", "male");
 
 		//extended types with same name
-		RawProperty xManager1 = vcard.addExtendedType("X-MANAGER", "Michael Scott");
-		RawProperty xManager2 = vcard.addExtendedType("X-MANAGER", "Pointy Haired Boss");
+		RawProperty xManager1 = vcard.addExtendedProperty("X-MANAGER", "Michael Scott");
+		RawProperty xManager2 = vcard.addExtendedProperty("X-MANAGER", "Pointy Haired Boss");
 
-		Collection<VCardProperty> types = vcard.getAllTypes();
+		Collection<VCardProperty> types = vcard.getProperties();
 		assertEquals(5, types.size());
 		assertTrue(types.contains(rev));
 		assertTrue(types.contains(note));
@@ -83,24 +83,24 @@ public class VCardTest {
 	public void getTypes_none() {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1); //no type class is returned for VERSION
-		assertTrue(vcard.getAllTypes().isEmpty());
+		assertTrue(vcard.getProperties().isEmpty());
 	}
 
 	@Test
 	public void addExtendedType() {
 		VCard vcard = new VCard();
-		RawProperty type = vcard.addExtendedType("NAME", "value");
+		RawProperty type = vcard.addExtendedProperty("NAME", "value");
 		assertEquals("NAME", type.getPropertyName());
 		assertEquals("value", type.getValue());
-		assertEquals(Arrays.asList(type), vcard.getExtendedTypes("NAME"));
+		assertEquals(Arrays.asList(type), vcard.getExtendedProperties("NAME"));
 	}
 
 	@Test
 	public void addType() {
 		VCard vcard = new VCard();
 		VCardTypeImpl type = new VCardTypeImpl();
-		vcard.addType(type);
-		assertEquals(Arrays.asList(type), vcard.getTypes(type.getClass()));
+		vcard.addProperty(type);
+		assertEquals(Arrays.asList(type), vcard.getProperties(type.getClass()));
 	}
 
 	@Test
@@ -108,16 +108,16 @@ public class VCardTest {
 		VCard vcard = new VCard();
 
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
-		vcard.addType(one1);
+		vcard.addProperty(one1);
 		HasAltIdImpl null1 = new HasAltIdImpl(null);
-		vcard.addType(null1);
+		vcard.addProperty(null1);
 
 		HasAltIdImpl two1 = new HasAltIdImpl("3");
 		HasAltIdImpl two2 = new HasAltIdImpl(null);
 
-		vcard.addTypeAlt(HasAltIdImpl.class, two1, two2);
+		vcard.addPropertyAlt(HasAltIdImpl.class, two1, two2);
 
-		List<HasAltIdImpl> props = vcard.getTypes(HasAltIdImpl.class);
+		List<HasAltIdImpl> props = vcard.getProperties(HasAltIdImpl.class);
 
 		Collection<HasAltIdImpl> expected = Arrays.asList(one1, null1, two1, two2);
 		assertEquals(expected, props);
@@ -163,15 +163,15 @@ public class VCardTest {
 		VCard vcard = new VCard();
 
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
-		vcard.addType(one1);
+		vcard.addProperty(one1);
 		HasAltIdImpl null1 = new HasAltIdImpl(null);
-		vcard.addType(null1);
+		vcard.addProperty(null1);
 		HasAltIdImpl two1 = new HasAltIdImpl("2");
-		vcard.addType(two1);
+		vcard.addProperty(two1);
 		HasAltIdImpl one2 = new HasAltIdImpl("1");
-		vcard.addType(one2);
+		vcard.addProperty(one2);
 		HasAltIdImpl null2 = new HasAltIdImpl(null);
-		vcard.addType(null2);
+		vcard.addProperty(null2);
 
 		//@formatter:off
 		@SuppressWarnings("unchecked")
@@ -182,7 +182,7 @@ public class VCardTest {
 			Arrays.asList(null2)
 		);
 		//@formatter:on
-		assertEquals(expected, vcard.getTypesAlt(HasAltIdImpl.class));
+		assertEquals(expected, vcard.getPropertiesAlt(HasAltIdImpl.class));
 	}
 
 	@Test
@@ -194,7 +194,7 @@ public class VCardTest {
 		List<List<HasAltIdImpl>> expected = Arrays.asList(
 		);
 		//@formatter:on
-		assertEquals(expected, vcard.getTypesAlt(HasAltIdImpl.class));
+		assertEquals(expected, vcard.getPropertiesAlt(HasAltIdImpl.class));
 	}
 
 	@Test
@@ -220,7 +220,7 @@ public class VCardTest {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		VCardTypeImpl prop = new VCardTypeImpl();
-		vcard.addType(prop);
+		vcard.addProperty(prop);
 
 		assertValidate(vcard.validate(VCardVersion.V4_0), prop);
 		assertEquals(VCardVersion.V4_0, prop.validateVersion);
