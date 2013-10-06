@@ -390,11 +390,11 @@ public class VCardWriterTest {
 		vcard.setStructuredName(n);
 
 		LuckyNumType num = new LuckyNumType(24);
-		vcard.addType(num);
+		vcard.addProperty(num);
 
 		//should be skipped
 		num = new LuckyNumType(13);
-		vcard.addType(num);
+		vcard.addProperty(num);
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);

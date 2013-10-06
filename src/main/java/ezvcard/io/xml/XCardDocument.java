@@ -460,7 +460,7 @@ public class XCardDocument {
 			return;
 		}
 
-		vcard.addType(property);
+		vcard.addProperty(property);
 	}
 
 	/**

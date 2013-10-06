@@ -364,7 +364,7 @@ public class HCardReader {
 						VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(Impp.class);
 						try {
 							Result<? extends VCardProperty> result = scribe.parseHtml(element);
-							curVCard.addType(result.getProperty());
+							curVCard.addProperty(result.getProperty());
 							for (String warning : result.getWarnings()) {
 								addWarning(warning, scribe.getPropertyName());
 							}
@@ -413,7 +413,7 @@ public class HCardReader {
 					Nickname nn = (Nickname) property;
 					if (nickname == null) {
 						nickname = nn;
-						curVCard.addType(nickname);
+						curVCard.addProperty(nickname);
 					} else {
 						nickname.getValues().addAll(nn.getValues());
 					}
@@ -425,7 +425,7 @@ public class HCardReader {
 					Categories c = (Categories) property;
 					if (categories == null) {
 						categories = c;
-						curVCard.addType(categories);
+						curVCard.addProperty(categories);
 					} else {
 						categories.getValues().addAll(c.getValues());
 					}
@@ -458,7 +458,7 @@ public class HCardReader {
 				}
 			}
 
-			curVCard.addType(property);
+			curVCard.addProperty(property);
 		}
 
 		for (Element child : element.children()) {

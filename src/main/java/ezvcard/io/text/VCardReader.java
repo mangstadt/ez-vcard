@@ -434,7 +434,7 @@ public class VCardReader implements Closeable {
 				}
 			}
 
-			curVCard.addType(property);
+			curVCard.addProperty(property);
 		}
 
 		public void endComponent(String name) {

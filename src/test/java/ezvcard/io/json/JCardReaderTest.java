@@ -99,7 +99,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(1, vcard.getProperties().size());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader.getWarnings());
 
@@ -130,13 +130,13 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(1, vcard.getProperties().size());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader.getWarnings());
 
 		vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(1, vcard.getProperties().size());
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader.getWarnings());
 
@@ -158,7 +158,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(1, vcard.getProperties().size());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(1, reader.getWarnings());
 
@@ -181,7 +181,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //should still set the version to 4.0
-		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(1, vcard.getProperties().size());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(1, reader.getWarnings());
 
@@ -202,7 +202,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals(0, vcard.getAllTypes().size());
+		assertEquals(0, vcard.getProperties().size());
 		assertWarnings(1, reader.getWarnings()); //missing VERSION property
 
 		assertNull(reader.readNext());
@@ -228,12 +228,12 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals(0, vcard.getAllTypes().size());
+		assertEquals(0, vcard.getProperties().size());
 		assertWarnings(1, reader.getWarnings()); //missing VERSION property
 
 		vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals(0, vcard.getAllTypes().size());
+		assertEquals(0, vcard.getProperties().size());
 		assertWarnings(1, reader.getWarnings()); //missing VERSION property
 
 		assertNull(reader.readNext());
@@ -255,8 +255,8 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getAllTypes().size());
-		RawProperty prop = vcard.getExtendedType("x-type");
+		assertEquals(1, vcard.getProperties().size());
+		RawProperty prop = vcard.getExtendedProperty("x-type");
 		assertEquals("value", prop.getValue());
 		assertWarnings(0, reader.getWarnings());
 	}
@@ -278,8 +278,8 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getAllTypes().size());
-		TypeForTesting prop = vcard.getType(TypeForTesting.class);
+		assertEquals(1, vcard.getProperties().size());
+		TypeForTesting prop = vcard.getProperty(TypeForTesting.class);
 		assertEquals("value", prop.value.asSingle());
 		assertWarnings(0, reader.getWarnings());
 	}
@@ -299,10 +299,10 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 		reader.registerScribe(new MyFormattedNameScribe());
 		VCard vcard = reader.readNext();
-		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(1, vcard.getProperties().size());
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 
-		MyFormattedNameType prop = vcard.getType(MyFormattedNameType.class);
+		MyFormattedNameType prop = vcard.getProperty(MyFormattedNameType.class);
 		assertEquals("JOHN DOE", prop.value);
 		assertWarnings(0, reader.getWarnings());
 	}
@@ -323,7 +323,7 @@ public class JCardReaderTest {
 		reader.registerScribe(new LuckyNumScribe());
 
 		VCard vcard = reader.readNext();
-		assertEquals(0, vcard.getAllTypes().size());
+		assertEquals(0, vcard.getProperties().size());
 		assertWarnings(1, reader.getWarnings());
 	}
 
@@ -392,7 +392,7 @@ public class JCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(16, vcard.getAllTypes().size());
+		assertEquals(16, vcard.getProperties().size());
 
 		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
 

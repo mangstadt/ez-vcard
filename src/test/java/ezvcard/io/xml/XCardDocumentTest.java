@@ -154,7 +154,7 @@ public class XCardDocumentTest {
 		{
 			VCard vcard = it.next();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
-			assertEquals(2, vcard.getAllTypes().size());
+			assertEquals(2, vcard.getProperties().size());
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Gregory House M.D.", fn.getValue());
@@ -170,7 +170,7 @@ public class XCardDocumentTest {
 		{
 			VCard vcard = it.next();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
-			assertEquals(2, vcard.getAllTypes().size());
+			assertEquals(2, vcard.getProperties().size());
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Lisa Cuddy M.D.", fn.getValue());
@@ -289,7 +289,7 @@ public class XCardDocumentTest {
 		XCardDocument xcard = new XCardDocument(xml);
 		VCard vcard = xcard.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(4, vcard.getAllTypes().size());
+		assertEquals(4, vcard.getProperties().size());
 
 		{
 			Iterator<Note> it = vcard.getNotes().iterator();
@@ -344,7 +344,7 @@ public class XCardDocumentTest {
 		XCardDocument xcard = new XCardDocument(xml);
 		VCard vcard = xcard.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(3, vcard.getAllTypes().size());
+		assertEquals(3, vcard.getProperties().size());
 
 		FormattedName fn = vcard.getFormattedName();
 		assertEquals("John Doe", fn.getValue());
@@ -416,7 +416,7 @@ public class XCardDocumentTest {
 
 		VCard vcard = xcard.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(6, vcard.getAllTypes().size());
+		assertEquals(6, vcard.getProperties().size());
 
 		{
 			Iterator<Xml> it = vcard.getXmls().iterator();
@@ -427,19 +427,19 @@ public class XCardDocumentTest {
 			assertFalse(it.hasNext());
 		}
 
-		LuckyNumType luckyNum = vcard.getType(LuckyNumType.class);
+		LuckyNumType luckyNum = vcard.getProperty(LuckyNumType.class);
 		assertEquals(21, luckyNum.luckyNum);
 
-		SalaryType salary = vcard.getType(SalaryType.class);
+		SalaryType salary = vcard.getProperty(SalaryType.class);
 		assertEquals(1000000, salary.salary);
 
-		AgeType age = vcard.getType(AgeType.class);
+		AgeType age = vcard.getProperty(AgeType.class);
 		assertEquals(24, age.age);
 
-		RawProperty gender = vcard.getExtendedType("X-GENDER");
+		RawProperty gender = vcard.getExtendedProperty("X-GENDER");
 		assertEquals("m", gender.getValue());
 
-		MyFormattedNameType fn = vcard.getType(MyFormattedNameType.class);
+		MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);
 		assertEquals("JOHN DOE", fn.value);
 
 		//warning for AgeType not supporting xCard
@@ -479,9 +479,9 @@ public class XCardDocumentTest {
 
 		VCard vcard = xcr.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getAllTypes().size());
+		assertEquals(1, vcard.getProperties().size());
 
-		LuckyNumType luckyNum = vcard.getType(LuckyNumType.class);
+		LuckyNumType luckyNum = vcard.getProperty(LuckyNumType.class);
 		assertEquals(24, luckyNum.luckyNum);
 
 		assertWarningsLists(xcr.getParseWarnings(), 1);
@@ -511,7 +511,7 @@ public class XCardDocumentTest {
 		XCardDocument xcr = new XCardDocument(xml);
 		VCard vcard = xcr.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(2, vcard.getAllTypes().size());
+		assertEquals(2, vcard.getProperties().size());
 
 		FormattedName fn = vcard.getFormattedName();
 		assertEquals("Dr. Gregory House M.D.", fn.getValue());
@@ -558,7 +558,7 @@ public class XCardDocumentTest {
 
 		VCard vcard = xcr.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(2, vcard.getAllTypes().size());
+		assertEquals(2, vcard.getProperties().size());
 
 		FormattedName fn = vcard.getFormattedName();
 		assertEquals("Dr. Gregory House M.D.", fn.getValue());
@@ -855,11 +855,11 @@ public class XCardDocumentTest {
 		vcard.setFormattedName(fn);
 
 		LuckyNumType num = new LuckyNumType(24);
-		vcard.addType(num);
+		vcard.addProperty(num);
 
 		//should be skipped
 		num = new LuckyNumType(13);
-		vcard.addType(num);
+		vcard.addProperty(num);
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
@@ -887,7 +887,7 @@ public class XCardDocumentTest {
 		VCard vcard = new VCard();
 
 		LuckyNumType num = new LuckyNumType(24);
-		vcard.addType(num);
+		vcard.addProperty(num);
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.add(vcard);
@@ -902,15 +902,15 @@ public class XCardDocumentTest {
 
 		//contains marshal methods and QName
 		LuckyNumType num = new LuckyNumType(24);
-		vcard.addType(num);
+		vcard.addProperty(num);
 
 		//contains marshal methods, but does not have a QName
 		SalaryType salary = new SalaryType(1000000);
-		vcard.addType(salary);
+		vcard.addProperty(salary);
 
 		//does not contain marshal methods nor QName
 		AgeType age = new AgeType(22);
-		vcard.addType(age);
+		vcard.addProperty(age);
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
@@ -982,14 +982,14 @@ public class XCardDocumentTest {
 	public void add_embedded_vcards_not_supported() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		vcard.addType(new EmbeddedType());
+		vcard.addProperty(new EmbeddedType());
 
 		XCardDocument doc = new XCardDocument();
 		doc.registerScribe(new EmbeddedTypeScribe());
 		doc.add(vcard);
 
 		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
-		assertTrue(parsedVCard.getExtendedTypes().isEmpty());
+		assertTrue(parsedVCard.getExtendedProperties().isEmpty());
 	}
 
 	@Test
@@ -1070,7 +1070,7 @@ public class XCardDocumentTest {
 
 		VCard vcard = vcards.get(0);
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(16, vcard.getAllTypes().size());
+		assertEquals(16, vcard.getProperties().size());
 
 		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
 

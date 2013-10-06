@@ -249,7 +249,7 @@ public class JCardReader implements Closeable {
 				return;
 			}
 
-			vcard.addType(property);
+			vcard.addProperty(property);
 		}
 	}
 }

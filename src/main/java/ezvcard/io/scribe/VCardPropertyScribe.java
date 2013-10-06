@@ -1115,7 +1115,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 
 			//find the property with the lowest PREF value in the vCard
 			VCardProperty mostPreferred = null;
-			for (VCardProperty p : vcard.getTypes(property.getClass())) {
+			for (VCardProperty p : vcard.getProperties(property.getClass())) {
 				Integer pref = p.getParameters().getPref();
 				if (pref == null) {
 					continue;
