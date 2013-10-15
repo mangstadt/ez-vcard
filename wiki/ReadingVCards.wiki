@@ -1,4 +1,10 @@
-#summary Describes how to parse a vCard.
+#summary Describes how to parse a vCard (versions 0.9.0 and above).
+
+----
+*NOTE:*
+
+This page applies to the *latest version* of ez-vcard.  Please see [ReadingVCardsOld this page] if you are running ez-vcard 0.8.5 or earlier.
+----
 
 <wiki:toc max_depth="2"/>
 
@@ -31,7 +37,7 @@ Different parsing methods can be called, depending on the format of the vCard.  
 The following chaining methods can be called to customize the parsing operation.  The methods which are available depend on the type of vCard being parsed.
 
 || *Method* || *Text* || *XML* || *HTML* || *JSON* || *Description* ||
-|| `caretDecoding(boolean)` || x || || || || Sets whether parameter values should be decoded using circumflex accent encoding (enabled by default).  See the [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/VCardReader.html#setCaretDecodingEnabled(boolean) javadocs] for a description of this encoding mechanism. ||
+|| `caretDecoding(boolean)` || x || || || || Sets whether parameter values should be decoded using circumflex accent encoding (enabled by default).  See the [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/text/VCardReader.html#setCaretDecodingEnabled(boolean) javadocs] for a description of this encoding mechanism. ||
 || `pageUrl(String)` || || || x || || Sets the URL of the webpage being parsed.  This is used to resolve relative links within the HTML page and to set the SOURCE property on the vCard.  Calling this method has no effect if a `URL` object was passed into the `Ezvcard.parseHtml()` method. ||
 || `register(Class<? extends VCardType>)` || x || x || x || x || Registers an extended type class.  See [ExtendedProperties] for more information on how to create an extended type class. ||
 || `warnings(List<List<String>>)` || x || x || x || x || Allows the user to retrieve the warnings that were generated during the parsing operation.  Warnings are generated if the vCard deviates from the standard in some way and/or ez-vcard has to make a guess as to how to parse the vCard. The warnings will be added to the `List` object that was passed into this method. This `List` object is a "list of lists" because the data stream may contain more than one vCard and each parsed vCard generates its own list of warnings. ||
@@ -47,14 +53,14 @@ The chaining operation terminates when one of the following methods is called.  
 
 For additional control over the parsing operation, the following classes can be used.  These classes are what what [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/Ezvcard.html Ezvcard] calls under the hood.  They are *not thread-safe*.
 
-|| [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/VCardReader.html VCardReader] || Parses vCards encoded in the traditional, plain text format. ||
-|| [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/XCardDocument.html XCardDocument] || Parses vCards from an XML document (xCard). ||
-|| [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/HCardReader.html HCardReader] || Parses vCards from an HTML page (hCard). ||
-|| [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/JCardReader.html JCardReader] || Parses vCards from a JSON stream (jCard). ||
+|| [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/text/VCardReader.html VCardReader] || Parses vCards encoded in the traditional, plain text format. ||
+|| [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/xml/XCardDocument.html XCardDocument] || Parses vCards from an XML document (xCard). ||
+|| [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/html/HCardReader.html HCardReader] || Parses vCards from an HTML page (hCard). ||
+|| [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/json/JCardReader.html JCardReader] || Parses vCards from a JSON stream (jCard). ||
 
 ==2.1 `VCardReader`==
 
-[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/VCardReader.html VCardReader] is used to read vCards that are encoded in the traditional, plain text format.  Use the `readNext()` method to read the next vCard from the input stream.
+[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/text/VCardReader.html VCardReader] is used to read vCards that are encoded in the traditional, plain text format.  Use the `readNext()` method to read the next vCard from the input stream.
 
 The example below reads the vCards from a file.
 
@@ -81,7 +87,7 @@ List<VCard> vcards = xcard.parseAll();
 
 ==2.3 `HCardReader`==
 
-[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/HCardReader.html HCardReader] is used to read vCards from an HTML webpage (hCard standard).  Use the `readNext()` method to read the next vCard from the HTML document.
+[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/html/HCardReader.html HCardReader] is used to read vCards from an HTML webpage (hCard standard).  Use the `readNext()` method to read the next vCard from the HTML document.
 
 The example below reads the vCards that are embedded inside a website.
 
@@ -89,7 +95,7 @@ The example below reads the vCards that are embedded inside a website.
 URL url = new URL("http://microformats.org/wiki/hcard");
 HCardReader hcr = new HCardReader(url);
 VCard vcard = null;
-while ((vcard = xcr.readNext()) != null){
+while ((vcard = hcr.readNext()) != null){
   ...
 }
 }}}
@@ -113,7 +119,7 @@ If your application does not require hCard parsing functionality, you can exclud
 
 ==2.4 `JCardReader`==
 
-[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/JCardReader.html JCardReader] is used to read vCards that are encoded in JSON (jCard standard).  Use the `readNext()` method to read the next vCard from the input stream.
+[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/json/JCardReader.html JCardReader] is used to read vCards that are encoded in JSON (jCard standard).  Use the `readNext()` method to read the next vCard from the input stream.
 
 The example below reads the vCards from a file.
 
@@ -145,24 +151,11 @@ If your application does not require jCard parsing functionality, you can exclud
 
 =3 Differences between `Ezvcard` and reader classes=
 
-Most of the functionality in the reader classes can be accessed from [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/Ezvcard.html Ezvcard].  However, there are some exceptions.
+Most of the functionality in the reader classes can be accessed from [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/Ezvcard.html Ezvcard].  However, there is one exception.
 
-==3.1 !CompatibilityMode==
+==3.1 Streaming==
 
-[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/VCardReader.html VCardReader] and [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/XCardDocument.html XCardDocument] allow a `CompatibilityMode` to be specified using the `setCompatibilityMode()` method.  The idea behind `CompatibilityMode` was to provide a way of tweaking how a vCard is parsed based on what application generated the vCard (e.g. Outlook, GMail, etc).  However, this has proven to be of little use because the differences that do exist can generally be accounted for without needing to specify a `CompatibilityMode`.  `CompatibilityMode` may be removed in a future release.
-
-{{{
-String vcardStr = ...;
-VCardReader vcr = new VCardReader(vcardStr);
-vcr.setCompatibilityMode(CompatibilityMode.KDE_ADDRESS_BOOK);
-VCard vcard = vcr.readNext();
-}}}
-
-See the [CompatibilityModes] wiki page for more information.
-
-==3.2 Streaming==
-
-[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/VCardReader.html VCardReader] and [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/JCardReader.html JCardReader] parse the vCard data as it is read off the wire.  This is useful if a large or unending data stream must be parsed and you do not want to store all of the parsed [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/VCard.html VCard] objects in memory at once or want to handle each vCard as it is read.  [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/Ezvcard.html Ezvcard], by contrast, stores all of the parsed [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/VCard.html VCard] objects in memory (inside a `List`).
+[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/text/VCardReader.html VCardReader] and [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/json/JCardReader.html JCardReader] parse the vCard data as it is read off the wire.  This is useful if a large data stream must be parsed and you do not want to store all of the parsed [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/VCard.html VCard] objects in memory at once, or want to process each vCard as it is read.  [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/Ezvcard.html Ezvcard], by contrast, stores all of the parsed [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/VCard.html VCard] objects in memory, and blocks until the data stream ends.
 
 {{{
 Reader reader = ...
@@ -174,4 +167,4 @@ for ((vcard = vcr.readNext()) != null) {
 reader.close();
 }}}
 
-[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/XCardDocument.html XCardDocument] and [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/HCardReader.html HCardReader] are NOT streaming.  These classes read the entire XML/HTML document into memory before parsing out the vCard data.
+[https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/xml/XCardDocument.html XCardDocument] and [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/html/HCardReader.html HCardReader] are NOT streaming.  These classes read the entire XML/HTML document into memory before parsing out the vCard data.

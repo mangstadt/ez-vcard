@@ -1,10 +1,10 @@
-#summary Code samples (versions 0.9.0 and above).
+#summary Code samples (versions 0.8.5 and below).
 #labels Featured
 
 ----
 *NOTE:*
 
-This page applies to the *latest version* of ez-vcard.  Please see the ExamplesOld page if you are running ez-vcard 0.8.5 or earlier.
+This page applies to ez-vcard versions *0.8.5 and earlier*.  Please see [Examples this page] if you are running ez-vcard 0.9.0 or later.
 ----
 
 <wiki:toc max_depth="2"/>
@@ -112,7 +112,7 @@ _See [WritingVCards Writing vCards] page for more info._
 {{{
 VCard vcard = new VCard();
 
-StructuredName n = new StructuredName();
+StructuredNameType n = new StructuredNameType();
 n.setFamily("House");
 n.setGiven("Gregory");
 n.addPrefix("Dr");
@@ -178,8 +178,8 @@ _See [ExtendedProperties Extended Properties] page for more info._
 
 {{{
 VCard vcard = ...
-List<RawProperty> managers = vcard.getExtendedProperty("X-MS-MANAGER");
-for (RawProperty manager : managers){
+List<RawType> managers = vcard.getExtendedType("X-MS-MANAGER");
+for (RawType manager : managers){
   System.out.println(manager.getValue());
 }
 }}}
@@ -188,7 +188,7 @@ for (RawProperty manager : managers){
 
 {{{
 VCard vcard = ...
-vcard.addExtendedProperty("X-MS-MANAGER", "Michael Scott");
+vcard.addExtendedType("X-MS-MANAGER", "Michael Scott");
 }}}
 
 =4 Extended (non-standard) parameters=
@@ -197,14 +197,14 @@ vcard.addExtendedProperty("X-MS-MANAGER", "Michael Scott");
 
 {{{
 VCard vcard = ...
-Geo geo = vcard.getGeo();
-List<String> vacation = geo.getParameters("X-VACATION");
+GeoType geo = vcard.getGeo();
+List<String> vacation = geo.getSubTypes().get("X-VACATION");
 }}}
 
 ==Example 4.2: Setting an extended parameter==
 {{{
-Geo geo = new Geo(21.306944,-157.858333);
-geo.addParameter("X-VACATION", "true");
+GeoType geo = new GeoType(21.306944,-157.858333);
+geo.getSubTypes().put("X-VACATION", "true");
 }}}
 
 =5 Misc=
@@ -225,13 +225,13 @@ Properties that support alternative representations have special methods in the 
 {{{
 VCard vcard = new VCard();
 
-Note note1 = new Note("Hello world!");
+NoteType note1 = new NoteType("Hello world!");
 note1.setLanguage("en");
 
-Note note2 = new Note("Bonjour tout le monde!");
+NoteType note2 = new NoteType("Bonjour tout le monde!");
 note2.setLanguage("fr");
 
-Note note3 = new Note("Hallo Welt!");
+NoteType note3 = new NoteType("Hallo Welt!");
 note3.setLanguage("de");
 
 vcard.addNoteAlt(note1, note2, note3);
@@ -248,8 +248,8 @@ import java.io.*;
 import java.util.*;
 
 import ezvcard.*;
-import ezvcard.parameter.*;
-import ezvcard.property.*;
+import ezvcard.parameters.*;
+import ezvcard.types.*;
 
 public class JohnDoeVCard {
   public static void main(String[] args) throws Throwable {
@@ -288,13 +288,13 @@ public class JohnDoeVCard {
   private static VCard createVCard() throws IOException {
     VCard vcard = new VCard();
 
-    vcard.setKind(Kind.individual());
+    vcard.setKind(KindType.individual());
 
-    vcard.setGender(Gender.male());
+    vcard.setGender(GenderType.male());
 
     vcard.addLanguage("en-US");
 
-    StructuredName n = new StructuredName();
+    StructuredNameType n = new StructuredNameType();
     n.setFamily("Doe");
     n.setGiven("Jonathan");
     n.addPrefix("Mr");
@@ -308,31 +308,31 @@ public class JohnDoeVCard {
 
     vcard.setOrganization("Acme Co. Ltd.", "Widget Department");
 
-    Address adr = new Address();
+    AddressType adr = new AddressType();
     adr.setStreetAddress("123 Wall St.");
     adr.setLocality("New York");
     adr.setRegion("NY");
     adr.setPostalCode("12345");
     adr.setCountry("USA");
     adr.setLabel("123 Wall St.\nNew York, NY 12345\nUSA");
-    adr.addType(AddressType.WORK);
+    adr.addType(AddressTypeParameter.WORK);
     vcard.addAddress(adr);
 
-    adr = new Address();
+    adr = new AddressType();
     adr.setStreetAddress("123 Main St.");
     adr.setLocality("Albany");
     adr.setRegion("NY");
     adr.setPostalCode("54321");
     adr.setCountry("USA");
     adr.setLabel("123 Main St.\nAlbany, NY 54321\nUSA");
-    adr.addType(AddressType.HOME);
+    adr.addType(AddressTypeParameter.HOME);
     vcard.addAddress(adr);
 
-    vcard.addTelephoneNumber("1-555-555-1234", TelephoneType.WORK);
-    vcard.addTelephoneNumber("1-555-555-5678", TelephoneType.WORK, TelephoneType.CELL);
+    vcard.addTelephoneNumber("1-555-555-1234", TelephoneTypeParameter.WORK);
+    vcard.addTelephoneNumber("1-555-555-5678", TelephoneTypeParameter.WORK, TelephoneTypeParameter.CELL);
 
-    vcard.addEmail("johndoe@hotmail.com", EmailType.HOME);
-    vcard.addEmail("doe.john@acme.com", EmailType.WORK);
+    vcard.addEmail("johndoe@hotmail.com", EmailTypeParameter.HOME);
+    vcard.addEmail("doe.john@acme.com", EmailTypeParameter.WORK);
 
     vcard.addUrl("http://www.acme-co.com");
 
@@ -344,16 +344,16 @@ public class JohnDoeVCard {
     vcard.setTimezone(new Timezone(tz));
 
     File file = new File("portrait.jpg");
-    Photo photo = new Photo(file, ImageType.JPEG);
+    PhotoType photo = new PhotoType(file, ImageTypeParameter.JPEG);
     vcard.addPhoto(photo);
 
     file = new File("pronunciation.ogg");
-    Sound sound = new Sound(file, SoundType.OGG);
+    SoundType sound = new SoundType(file, SoundTypeParameter.OGG);
     vcard.addSound(sound);
 
-    vcard.setUid(Uid.random());
+    vcard.setUid(UidType.random());
 
-    vcard.setRevision(Revision.now());
+    vcard.setRevision(RevisionType.now());
 
     return vcard;
   }
@@ -363,12 +363,12 @@ public class JohnDoeVCard {
 
 {{{
 VCard vcard = new VCard();
-vcard.setGender(Gender.male());
+vcard.setGender(GenderType.male());
 System.out.println(vcard.validate(VCardVersion.V3_0));
 
 //outputs the following:
 //A structured name property must be defined.
 //A formatted name property must be defined.
-//[Gender]: Property is not supported by version 3.0.  Supported versions are: [4.0]
+//[GenderType]: Property is not supported by version 3.0.  Supported versions are: [4.0]
 }}}
 }}}

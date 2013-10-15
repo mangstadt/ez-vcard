@@ -3,10 +3,10 @@
 = 0.9.0-SNAPSHOT =
 _under development_
 
-The "*Oh No, Everything Changed!*" update
+This update includes significant changes to the API.  Existing code that uses eariler versions may break.
 
  * Added a new marshalling framework.  This moves the marshalling code out of the property classes and into classes of their own (called "scribes"), creating a cleaner separation between the data model and the marshalling code.  Property classes are no longer required to have a default constructor.
- * Removed the "Type" suffix from the property class names (for example, renamed `AddressType` to `Address`).  Property classes that are meant to be _parent classes_ have had their "Type" suffix replaced with "Property" (for example, renamed `TextType` to `TextProperty`).
+ * Removed the "Type" suffix from the property class names (for example, renamed `AddressType` to `Address`).  Property classes that are meant to be parent classes have had their "Type" suffix replaced with "Property" (for example, renamed `TextType` to `TextProperty`).
  * Removed the "Parameter" suffix from the parameter class names (for example, renamed `AddressTypeParameter` to `AddressType`).
  * Removed the property name from the `VCardType` class (i.e. removed the `getTypeName()` method).  Each property's name now resides in its "scribe" class (located in the "`ezvcard.io.scribe`" package).
  * Grouped the I/O classes into sub-packages based on their format type (for example, `VCardReader` was moved from "`ezvcard.io`" to "`ezvcard.io.text`").

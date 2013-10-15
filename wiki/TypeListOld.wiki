@@ -1,31 +1,31 @@
-#summary Contains a listing of all vCard properties, along with code samples (versions 0.9.0 and above).
+#summary Contains a listing of all vCard properties, along with code samples (versions 0.8.5 and below).
 #labels Featured
 
 ----
 *NOTE:*
 
-This page applies to the *latest version* of ez-vcard.  Please see [ReadingVCardsOld this page] if you are running ez-vcard 0.8.5 or earlier.
+This page applies to ez-vcard versions *0.8.5 and earlier*.  Please see [ReadingVCards this page] if you are running ez-vcard 0.9.0 or later.
 ----
 
-The page contains a listing of all vCard properties, as well as information on how to use these properties with ez-vcard.
+The page contains a listing of all vCard types, as well as information on how to use these types with ez-vcard.
 
 =ADR=
 Defines a mailing address.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Address.html Address]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/AddressType.html AddressType]
 
 {{{
 VCard vcard = new VCard();
-Address adr = new Address();
+AddressType adr = new AddressType();
 adr.setStreetAddress("123 Main St.");
 adr.setLocality("Austin");
 adr.setRegion("TX");
 adr.setPostalCode("12345");
 adr.setCountry("USA");
-adr.addType(AddressType.WORK);
-adr.addType(AddressType.DOM);
+adr.addType(AddressTypeParameter.WORK);
+adr.addType(AddressTypeParameter.DOM);
 
 //optionally, provide the exact text to print out on the mailing label
 adr.setLabel("123 Main St.\nAustin, Tx 12345\nUSA");
@@ -35,7 +35,7 @@ vcard.addAddress(adr);
 
 {{{
 VCard vcard = ...
-for (Address adr : vcard.getAddresses()){
+for (AddressType adr : vcard.getAddresses()){
   ...
 }
 }}}
@@ -45,19 +45,19 @@ An embedded vCard or URL containing the information of someone who represents th
 
 *vCard versions:* 2.1, 3.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Agent.html Agent]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/AgentType.html AgentType]
 
 {{{
 //URL
 VCard vcard = new VCard();
-Agent agent = new Agent("http://mi5.gov.uk/007");
+AgentType agent = new AgentType("http://mi5.gov.uk/007");
 vcard.setAgent(agent);
 
 //vCard
 VCard vcard = new VCard();
 VCard agentVcard = new VCard();
-agentVcard.setFormattedName(new FormattedName("Agent 007"));
-Agent agent = new Agent(agentVcard);
+agentVcard.setFormattedName(new FormattedNameType("Agent 007"));
+AgentType agent = new AgentType(agentVcard);
 vcard.setAgent(agent);
 }}}
 
@@ -66,7 +66,7 @@ Defines the person's anniversary.
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Anniversary.html Anniversary]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/AnniversaryType.html AnniversaryType]
 
 {{{
 VCard vcard = new VCard();
@@ -76,24 +76,24 @@ Calendar c = Calendar.getInstance();
 c.set(Calendar.YEAR, 1986);
 c.set(Calendar.MONTH, Calendar.MARCH);
 c.set(Calendar.DAY_OF_MONTH, 21);
-Anniversary anniversary = new Anniversary();
+AnniversaryType anniversary = new AnniversaryType();
 anniversary.setDate(c.getTime(), false);
 vcard.setAnniversary(anniversary);
 
 //reduced accuracy date (see RFC 6350 p.12-14 for examples)
-anniversary = new Anniversary();
+anniversary = new AnniversaryType();
 anniversary.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
 vcard.setAnniversary(anniversary);
 
 //plain text value
-anniversary = new Anniversary();
+anniversary = new AnniversaryType();
 anniversary.setText("more than 20 years ago");
 vcard.setAnniversary(anniversary);
 }}}
 
 {{{
 VCard vcard = ...
-Anniversary anniversary = vcard.getAnniversary();
+AnniversaryType anniversary = vcard.getAnniversary();
 if (anniversary != null){
   if (anniversary.getDate() != null){
     System.out.println(anniversary.getDate());
@@ -112,7 +112,7 @@ Defines the person's birthday.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Birthday.html Birthday]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/BirthdayType.html BirthdayType]
 
 {{{
 VCard vcard = new VCard();
@@ -122,24 +122,24 @@ Calendar c = Calendar.getInstance();
 c.set(Calendar.YEAR, 1986);
 c.set(Calendar.MONTH, Calendar.MARCH);
 c.set(Calendar.DAY_OF_MONTH, 21);
-Birthday bday = new Birthday();
+BirthdayType bday = new BirthdayType();
 bday.setDate(c.getTime(), false);
 vcard.setBirthday(bday);
 
 //reduced accuracy date (vCard 4.0 only, see RFC 6350 p.12-14 for examples)
-bday = new Birthday();
+bday = new BirthdayType();
 bday.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
 vcard.setBirthday(bday);
 
 //plain text value (vCard 4.0 only)
-bday = new Birthday();
+bday = new BirthdayType();
 bday.setText("a long time ago");
 vcard.setBirthday(bday);
 }}}
 
 {{{
 VCard vcard = ...
-Birthday bday = vcard.getBirthday();
+BirthdayType bday = vcard.getBirthday();
 if (bday != null){
   if (bday.getDate() != null){
     System.out.println(bday.getDate());
@@ -158,28 +158,28 @@ Defines the location of the person's birth.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Birthplace.html Birthplace]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/BirthplaceType.html BirthplaceType]
 
 {{{
 VCard vcard = new VCard();
 
 //URI (geo)
-Birthplace birthplace = new Birthplace();
+BirthplaceType birthplace = new BirthplaceType();
 birthplace.setUri("geo:39.970806,-75.174809");
 vcard.setBirthplace(birthplace);
 
 //URI (website)
-birthplace = new Birthplace();
+birthplace = new BirthplaceType();
 birthplace.setUri("http://www.chop.edu");
 vcard.setBirthplace(birthplace);
 
 //text
-birthplace = new Birthplace();
+birthplace = new BirthplaceType();
 birthplace.setText("The Children's Hospital of Philadelphia");
 vcard.setBirthplace(birthplace);
 
 //text
-birthplace = new Birthplace();
+birthplace = new BirthplaceType();
 birthplace.setText("Philadelphia, PA");
 vcard.setBirthplace(birthplace);
 }}}
@@ -189,14 +189,14 @@ A URL to use for sending a scheduling request to the person's calendar.
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/CalendarRequestUri.html CalendarRequestUri]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/CalendarRequestUriType.html CalendarRequestUriType]
 
 {{{
 VCard vcard = new VCard();
-CalendarRequestUri caladruri = new CalendarRequestUri("mailto:janedoe@ibm.com");
+CalendarRequestUriType caladruri = new CalendarRequestUriType("mailto:janedoe@ibm.com");
 caladruri.setPref(1);
 vcard.addCalendarRequestUri(caladruri);
-caladruri = new CalendarRequestUri("http://www.ibm.com/janedoe/calendar");
+caladruri = new CalendarRequestUriType("http://www.ibm.com/janedoe/calendar");
 caladruri.setPref(2);
 vcard.addCalendarRequestUri(caladruri);
 }}}
@@ -206,11 +206,11 @@ A URL to the person's calendar.
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/CalendarUri.html CalendarUri]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/CalendarUriType.html CalendarUriType]
 
 {{{
 VCard vcard = new VCard();
-CalendarUri caluri = new CalendarUri("http://www.ibm.com/janedoe/calendar");
+CalendarUriType caluri = new CalendarUriType("http://www.ibm.com/janedoe/calendar");
 vcard.addCalendarUri(caluri);
 }}}
 
@@ -219,11 +219,11 @@ A list of keywords (aka "tags") that can be used to describe the person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Categories.html Categories]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/CategoriesType.html CategoriesType]
 
 {{{
 VCard vcard = new VCard();
-Categories categories = new Categories();
+CategoriesType categories = new CategoriesType();
 categories.addValue("programmer");
 categories.addValue("developer");
 categories.addValue("java-coder");
@@ -236,12 +236,12 @@ Describes the sensitivity of the information in the vCard.
 
 *vCard versions:* 3.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Classification.html Classification]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/ClassificationType.html ClassificationType]
 
 {{{
 VCard vcard = new VCard();
 //sample values: PUBLIC, PRIVATE, CONFIDENTIAL
-Classification classType = new Classification("PUBLIC");
+ClassificationType classType = new ClassificationType("PUBLIC");
 vcard.setClassification(classType);
 }}}
 
@@ -252,28 +252,28 @@ The CLIENTPIDMAP type and the PID parameter are used during the synchronization 
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/ClientPidMap.html ClientPidMap]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/ClientPidMapType.html ClientPidMapType]
 
 {{{
 VCard vcard = new VCard();
 
-Address adr = new Address();
+AddressType adr = new AddressType();
 adr.addPid(1, 1);
 vcard.addAddress(adr);
 
-Email email = new Email("my-email@hotmail.com");
+EmailType email = new EmailType("my-email@hotmail.com");
 emai.addPid(1, 1);
 vcard.addEmail(email);
-email = new Email("my-other-email@yahoo.com");
+email = new EmailType("my-other-email@yahoo.com");
 emai.addPid(2, 2);
 vcard.addEmail(email);
 
 //specify the URI to use
-ClientPidMap clientpidmap = new ClientPidMap(1, "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
+ClientPidMapType clientpidmap = new ClientPidMapType(1, "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
 vcard.addClientPidMap(clientpidmap);
 
 //generate a random URI
-clientpidmap = ClientPidMap.random(2);
+clientpidmap = ClientPidMapType.random(2);
 vcard.addClientPidMap(clientpidmap);
 }}}
 
@@ -282,7 +282,7 @@ Defines the person's time of death.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Deathdate.html Deathdate]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/DeathdateType.html DeathdateType]
 
 {{{
 VCard vcard = new VCard();
@@ -292,24 +292,24 @@ Calendar c = Calendar.getInstance();
 c.set(Calendar.YEAR, 1954);
 c.set(Calendar.MONTH, Calendar.JUNE);
 c.set(Calendar.DAY_OF_MONTH, 7);
-Deathdate deathdate = new Deathdate();
+DeathdateType deathdate = new DeathdateType();
 deathdate.setDate(c.getTime(), false);
 vcard.setDeathdate(deathdate);
 
 //reduced accuracy date
-deathdate = new Deathdate();
+deathdate = new DeathdateType();
 deathdate.setPartialDate(PartialDate.date(nuull, 6, 7)); //June 7
 vcard.setDeathdate(deathdate);
 
 //plain text value
-deathdate = new Deathdate();
+deathdate = new DeathdateType();
 deathdate.setText("circa 1954");
 vcard.setDeathdate(deathdate);
 }}}
 
 {{{
 VCard vcard = ...
-Deathdate deathdate = vcard.getDeathdate();
+DeathdateType deathdate = vcard.getDeathdate();
 if (deathdate != null){
   if (deathdate.getDate() != null){
     System.out.println(deathdate.getDate());
@@ -328,18 +328,18 @@ Defines the location of the person's death.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Deathplace.html Deathplace]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/DeathplaceType.html DeathplaceType]
 
 {{{
 VCard vcard = new VCard();
 
 //URI (geo)
-Deathplace deathplace = new Deathplace();
+DeathplaceType deathplace = new DeathplaceType();
 deathplace.setUri("geo:46.176502,-122.191658");
 vcard.setDeathplace(deathplace);
 
 //text
-deathplace = new Deathplace();
+deathplace = new DeathplaceType();
 deathplace.setText("Mount St. Helens");
 vcard.setDeathplace(deathplace);
 }}}
@@ -349,17 +349,17 @@ An email address associated with a person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Email.html Email]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/EmailType.html EmailType]
 
 {{{
 VCard vcard = new VCard();
 
-Email email = new Email("superdude55@hotmail.com");
-email.addType(EmailType.HOME);
+EmailType email = new EmailType("superdude55@hotmail.com");
+email.addType(EmailTypeParameter.HOME);
 vcard.addEmail(email);
 
-email = new Email("doe.john@company.com");
-email.addType(EmailType.WORK);
+email = new EmailType("doe.john@company.com");
+email.addType(EmailTypeParameter.WORK);
 email.setPref(1); //the most preferred email
 vcard.addEmail(email);
 }}}
@@ -369,12 +369,12 @@ Defines a professional subject area that the person has knowledge of. For exampl
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Expertise.html Expertise]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/ExpertiseType.html ExpertiseType]
 
 {{{
 VCard vcard = new VCard();
-Expertise expertise = new Expertise("Java programming");
-expertise.setLevel(ExpertiseLevel.EXPERT);
+ExpertiseType expertise = new ExpertiseType("Java programming");
+expertise.setLevel(ExpertiseLevelParameter.EXPERT);
 vcard.addExpertise(expertise);
 }}}
 
@@ -383,11 +383,11 @@ A URL that shows when the person is free/busy on their calendar.
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/FbUrl.html FbUrl]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/FbUrlType.html FbUrlType]
 
 {{{
 VCard vcard = new VCard();
-FbUrl fburl = new FbUrl("http://www.example.com/freebusy/janedoe");
+FbUrlType fburl = new FbUrlType("http://www.example.com/freebusy/janedoe");
 vcard.addFbUrl(fburl);
 }}}
 
@@ -396,11 +396,11 @@ Shows how the person's name should be displayed.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/FormattedName.html FormattedName]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/FormattedNameType.html FormattedNameType]
 
 {{{
 VCard vcard = new VCard();
-FormattedName fn = new FormattedName("Dr. Gregory House M.D.");
+FormattedNameType fn = new FormattedNameType("Dr. Gregory House M.D.");
 vcard.setFormattedName(fn);
 }}}
 
@@ -409,17 +409,17 @@ Defines the person's sex.
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Gender.html Gender]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/GenderType.html GenderType]
 
 {{{
 VCard vcard = new VCard();
-Gender gender = Gender.male();
+GenderType gender = GenderType.male();
 vcard.setGender(gender);
 }}}
 
 {{{
 VCard vcard = ...
-Gender gender = vcard.getGender();
+GenderType gender = vcard.getGender();
 if (gender != null){
   if (gender.isMale()){
     ...
@@ -440,11 +440,11 @@ A set of latitude/longitude coordinates. There is no rule for what these coordin
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Geo.html Geo]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/GeoType.html GeoType]
 
 {{{
 VCard vcard = new VCard();
-Geo geo = new Geo(-123.456, 12.54);
+GeoType geo = new GeoType(-123.456, 12.54);
 vcard.setGeo(geo);
 }}}
 
@@ -453,13 +453,13 @@ Defines a recreational activity that the person actively engages in. For example
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Hobby.html Hobby]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/HobbyType.html HobbyType]
 
 {{{
 //someone who likes to wind surf during the summer, but rents a boat instead of owning one
 VCard vcard = new VCard();
-Hobby hobby = new Hobby("wind surfing");
-hobby.setLevel(HobbyLevel.LOW);
+HobbyType hobby = new HobbyType("wind surfing");
+hobby.setLevel(HobbyLevelParameter.LOW);
 vcard.addHobby(hobby);
 }}}
 
@@ -468,17 +468,17 @@ An instant message handle.  The handle is represented as a URI in the format "`<
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Impp.html Impp]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/ImppType.html ImppType]
 
 {{{
 VCard vcard = new VCard();
 
 //URI
-Impp impp = new Impp("aim:johndoe@aol.com");
+ImppType impp = new ImppType("aim:johndoe@aol.com");
 vcard.addImpp(impp);
 
 //static helper constructors
-impp = Impp.msn("janedoe@msn.com");
+impp = ImppType.msn("janedoe@msn.com");
 vcard.addImpp(impp);
 }}}
 
@@ -487,13 +487,13 @@ Defines a recreational activity that the person is interested in. For example, i
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Interest.html Interest]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/InterestType.html InterestType]
 
 {{{
 //someone who attends all of his favorite hockey team's games in person.
 VCard vcard = new VCard();
-Interest interest = new Interest("hockey");
-interest.setLevel(InterestLevel.HIGH);
+InterestType interest = new InterestType("hockey");
+interest.setLevel(InterestLevelParameter.HIGH);
 vcard.addInterest(interest);
 }}}
 
@@ -502,31 +502,31 @@ A public key for encryption.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Key.html Key]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/KeyType.html KeyType]
 
 {{{
 VCard vcard = new VCard();
 
 //URL (vCard 4.0 only; KEYs cannot have URLs in vCard 2.1 and 3.0)
-Key key = new Key("http://www.mywebsite.com/pubkey.pgp", KeyType.PGP);
+KeyType key = new KeyType("http://www.mywebsite.com/pubkey.pgp", KeyTypeParameter.PGP);
 vcard.addKey(key);
 
 //binary data
 byte data[] = ...
-key = new Key(data, KeyType.PGP);
+key = new KeyType(data, KeyTypeParameter.PGP);
 vcard.addKey(key);
 
 //plain text value
-key = new Key();
-key.setText("...", KeyType.PGP);
+key = new KeyType();
+key.setText("...", KeyTypeParameter.PGP);
 vcard.addKey(key);
 
-//if "KeyType" does not have the pre-defined constant that you need, then create a new instance
+//if "KeyTypeParameter" does not have the pre-defined constant that you need, then create a new instance
 //arg 1: the value of the 2.1/3.0 TYPE parameter
 //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
 //arg 3: the file extension of the data type (optional)
-KeyType param = new KeyType("mykey", "application/my-key", "mkey");
-key = new Key("http://www.mywebsite.com/pubkey.enc", param);
+KeyTypeParameter param = new KeyTypeParameter("mykey", "application/my-key", "mkey");
+key = new KeyType("http://www.mywebsite.com/pubkey.enc", param);
 vcard.addKey(key);
 }}}
 
@@ -534,23 +534,23 @@ vcard.addKey(key);
 VCard vcard = ...
 
 int fileCount = 0;
-for (Key key : vcard.getKeys()){
+for (KeyType key : vcard.getKeys()){
   //the key will have either a URL or a binary data
   //only 4.0 vCards are allowed to use URLs for keys
   if (key.getData() == null){
     System.out.println("Key URL: " + key.getUrl());
   } else {
-    KeyType type = key.getContent();
+    KeyTypeParameter type = key.getContentType();
     
     if (type == null) {
       //the vCard may not have any content type data associated with the key
       System.out.println("Saving a key file...");
     } else {
-      System.out.println("Saving a \"" + type.getMedia() + "\" file...");
+      System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
     }
     
     String folder;
-    if (type == KeyType.PGP){ //it is safe to use "==" instead of "equals()"
+    if (type == KeyTypeParameter.PGP){ //it is safe to use "==" instead of "equals()"
       folder = "pgp-keys";
     } else {
       folder = "other-keys";
@@ -574,19 +574,19 @@ Defines the type of entity that this vCard represents, such as an individual or 
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Kind.html Kind]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/KindType.html KindType]
 
 {{{
-//use static methods to create a Kind object
+//use static methods to create a KindType object
 VCard vcard = new VCard();
-Kind kind = Kind.individual();
+KindType kind = KindType.individual();
 vcard.setKind(kind);
 }}}
 
 {{{
-//use "is*" methods to determine the Kind value
+//use "is*" methods to determine the KindType value
 VCard vcard = ...
-Kind kind = vcard.getKind();
+KindType kind = vcard.getKind();
 if (kind != null){
   if (kind.isIndividual()){
     ...
@@ -602,15 +602,15 @@ Defines the exact text to put on the mailing label when mailing a package or let
 
 *vCard versions:* 2.1, 3.0, 4.0`*`
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Label.html Label]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/LabelType.html LabelType]
 
 `*`The LABEL type is not supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When marshalling a vCard, ez-vcard will use either the LABEL type or the LABEL parameter, depending on the requested vCard version.
 
-Use the `Address.setLabel()` method to assign a label to an address.
+Use the `AddressType.setLabel()` method to assign a label to an address.
 
 {{{
 VCard vcard = new VCard();
-Address adr = new Address();
+AddressType adr = new AddressType();
 adr.setStreetAddress("123 Main St.");
 adr.setLocality("Austin");
 adr.setRegion("TX");
@@ -625,7 +625,7 @@ The `VCard.getOrphanedLabels()` method can be used after parsing a version 2.1 o
 
 {{{
 VCard vcard = ...
-for (Label label : vcard.getOrphanedLabels()){
+for (LabelType label : vcard.getOrphanedLabels()){
   System.out.println(label.getValue());
 }
 }}}
@@ -635,14 +635,14 @@ A language that the person reads/speaks.
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Language.html Language]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/LanguageType.html LanguageType]
 
 {{{
 VCard vcard = new VCard();
-Language lang = new Language("en");
+LanguageType lang = new LanguageType("en");
 lang.setPref(1); //most preferred
 vcard.addLanguage(lang);
-lang = new Language("fr");
+lang = new LanguageType("fr");
 lang.setPref(2); //second-most preferred
 vcard.addLanguage(lang);
 }}}
@@ -652,26 +652,26 @@ A company logo.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Logo.html Logo]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/LogoType.html LogoType]
 
 {{{
 VCard vcard = new VCard();
 
 //URL
-Logo logo = new Logo("http://www.company.com/logo.png", ImageType.PNG);
+LogoType logo = new LogoType("http://www.company.com/logo.png", ImageTypeParameter.PNG);
 vcard.addLogo(logo);
 
 //binary data
 byte data[] = ...
-logo = new Logo(data, ImageType.PNG);
+logo = new LogoType(data, ImageTypeParameter.PNG);
 vcard.addLogo(logo);
 
-//if "ImageType" does not have the pre-defined constant that you need, then create a new instance
+//if "ImageTypeParameter" does not have the pre-defined constant that you need, then create a new instance
 //arg 1: the value of the 2.1/3.0 TYPE parameter
 //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
 //arg 3: the file extension of the data type (optional)
-ImageKeyType param = new ImageType("bmp", "image/x-ms-bmp", "bmp");
-logo = new Logo("http://www.company.com/logo.bmp", param);
+ImageKeyTypeParameter param = new ImageTypeParameter("bmp", "image/x-ms-bmp", "bmp");
+logo = new LogoType("http://www.company.com/logo.bmp", param);
 vcard.addLogo(logo);
 }}}
 
@@ -679,22 +679,22 @@ vcard.addLogo(logo);
 VCard vcard = ...
 
 int fileCount = 0;
-for (Logo logo : vcard.getLogos()){
+for (LogoType logo : vcard.getLogos()){
   //the logo will have either a URL or a binary data
   if (logo.getData() == null){
     System.out.println("Logo URL: " + logo.getUrl());
   } else {
-    ImageType type = logo.getContent();
+    ImageTypeParameter type = logo.getContentType();
     
     if (type == null) {
       //the vCard may not have any content type data associated with the logo
       System.out.println("Saving a logo file...");
     } else {
-      System.out.println("Saving a \"" + type.getMedia() + "\" file...");
+      System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
     }
     
     String folder;
-    if (type == ImageType.PNG){ //it is safe to use "==" instead of "equals()"
+    if (type == ImageTypeParameter.PNG){ //it is safe to use "==" instead of "equals()"
       folder = "png-files";
     } else {
       folder = "image-files";
@@ -718,11 +718,11 @@ The email client that the person uses.
 
 *vCard versions:* 2.1, 3.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Mailer.html Mailer]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/MailerType.html MailerType]
 
 {{{
 VCard vcard = new VCard();
-Mailer mailer = new Mailer("Thunderbird");
+MailerType mailer = new MailerType("Thunderbird");
 vcard.setMailer(mailer);
 }}}
 
@@ -731,35 +731,35 @@ The members that make up the group.  This type can only be used if the KIND type
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Member.html Member]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/MemberType.html MemberType]
 
 {{{
 VCard vcard = new VCard();
 
 //KIND must be set to "group" in order to add MEMBERs
-vcard.setKind(Kind.group());
+vcard.setKind(KindType.group());
 
-Member member = new Member();
+MemberType member = new MemberType();
 member.setUriEmail("funkyjoe@hotmail.com");
 vcard.addMember(member);
-member = new Member();
+member = new MemberType();
 member.setUriIM("aol", "joesmoe@aol.com");
 vcard.addMember(member);
-member = new Member();
+member = new MemberType();
 member.setUriTelephone("+1-123-555-6789");
 vcard.addMember(member);
-member = new Member();
+member = new MemberType();
 member.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af"); //references the UID from another vCard
 vcard.addMember(member);
 }}}
 
 {{{
 VCard vcard = ...
-Kind kind = vcard.getKind();
+KindType kind = vcard.getKind();
 if (kind != null){
   if (kind.isGroup()){
     System.out.println("The group's members are:");
-    for (Member member : vcard.getMembers()){
+    for (MemberType member : vcard.getMembers()){
       System.out.println(member.getUri());
     }
   }
@@ -773,11 +773,11 @@ Multiple instances of this type can be added *ONLY* if each instance has an ALTI
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/StructuredName.html StructuredName]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/StructuredNameType.html StructuredNameType]
 
 {{{
 VCard vcard = new VCard();
-StructuredName n = new StructuredName();
+StructuredNameType n = new StructuredNameType();
 n.setFamily("House");
 n.setGiven("Gregory");
 n.addPrefix("Dr");
@@ -790,11 +790,11 @@ Provides a textual representation of the SOURCE type.
 
 *vCard versions:* 3.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/SourceDisplayText.html SourceDisplayText]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/SourceDisplayTextType.html SourceDisplayTextType]
 
 {{{
 VCard vcard = new VCard();
-SourceDisplayText name = new SourceDisplayText("My vCard");
+SourceDisplayTextType name = new SourceDisplayTextType("My vCard");
 vcard.setSourceDisplayText(name);
 }}}
 
@@ -803,11 +803,11 @@ A list of nicknames the person goes by.
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Nickname.html Nickname]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/NicknameType.html NicknameType]
 
 {{{
 VCard vcard = new VCard();
-Nickname nickname = new Nickname();
+NicknameType nickname = new NicknameType();
 nickname.addValue("Rick");
 nickname.addValue("Ricky");
 nickname.addValue("Bobby");
@@ -819,11 +819,11 @@ A free-form text field that contains miscellaneous information.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Note.html Note]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/NoteType.html NoteType]
 
 {{{
 VCard vcard = new VCard();
-Note note = new Note("This is a\nmiscellaneous comment."); //can contain newlines
+NoteType note = new NoteType("This is a\nmiscellaneous comment."); //can contain newlines
 note.setLanguage("en-us");
 vcard.addNote(note);
 }}}
@@ -833,11 +833,11 @@ A list of organizations the person belongs to.  The list is ordered.  It starts 
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Organization.html Organization]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/OrganizationType.html OrganizationType]
 
 {{{
 VCard vcard = new VCard();
-Organization org = new Organization();
+OrganizationType org = new OrganizationType();
 org.addValue("Google");
 org.addValue("GMail Team");
 org.addValue("Spam Detection Team");
@@ -849,11 +849,11 @@ Defines a URI representing the person's work place, which can be used to lookup 
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/OrgDirectory.html OrgDirectory]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/OrgDirectoryType.html OrgDirectoryType]
 
 {{{
 VCard vcard = new VCard();
-OrgDirectory orgDirectory = new OrgDirectory("http://www.company.com/staff");
+OrgDirectoryType orgDirectory = new OrgDirectoryType("http://www.company.com/staff");
 vcard.addOrgDirectory(orgDirectory);
 }}}
 
@@ -862,26 +862,26 @@ A photo attached to the vCard (such as a portrait of the person).
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Photo.html Photo]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/PhotoType.html PhotoType]
 
 {{{
 VCard vcard = new VCard();
 
 //URL
-Photo photo = new Photo("http://www.mywebsite.com/mugshot.jpg", ImageType.JPEG);
+PhotoType photo = new PhotoType("http://www.mywebsite.com/mugshot.jpg", ImageTypeParameter.JPEG);
 vcard.addPhoto(photo);
 
 //binary data
 byte data[] = ...
-photo = new Photo(data, ImageType.JPEG);
+photo = new PhotoType(data, ImageTypeParameter.JPEG);
 vcard.addPhoto(photo);
 
-//if "ImageType" does not have the pre-defined constant that you need, then create a new instance
+//if "ImageTypeParameter" does not have the pre-defined constant that you need, then create a new instance
 //arg 1: the value of the 2.1/3.0 TYPE parameter
 //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
 //arg 3: the file extension of the data type (optional)
-ImageKeyType param = new ImageType("bmp", "image/x-ms-bmp", "bmp");
-photo = new Photo("http://www.mywebsite.com/mugshot.bmp", param);
+ImageKeyTypeParameter param = new ImageTypeParameter("bmp", "image/x-ms-bmp", "bmp");
+photo = new PhotoType("http://www.mywebsite.com/mugshot.bmp", param);
 vcard.addPhoto(photo);
 }}}
 
@@ -889,22 +889,22 @@ vcard.addPhoto(photo);
 VCard vcard = ...
 
 int fileCount = 0;
-for (Photo photo : vcard.getPhotos()){
+for (PhotoType photo : vcard.getPhotos()){
   //the photo will have either a URL or a binary data
   if (photo.getData() == null){
     System.out.println("Photo URL: " + photo.getUrl());
   } else {
-    ImageType type = photo.getContent();
+    ImageTypeParameter type = photo.getContentType();
     
     if (type == null) {
       //the vCard may not have any content type data associated with the photo
       System.out.println("Saving a photo file...");
     } else {
-      System.out.println("Saving a \"" + type.getMedia() + "\" file...");
+      System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
     }
     
     String folder;
-    if (type == ImageType.JPEG){ //it is safe to use "==" instead of "equals()"
+    if (type == ImageTypeParameter.JPEG){ //it is safe to use "==" instead of "equals()"
       folder = "photos";
     } else {
       folder = "images";
@@ -928,11 +928,11 @@ Defines the product that created the vCard.
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/ProdId.html ProdId]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/ProdIdType.html ProdIdType]
 
 {{{
 VCard vcard = new VCard();
-ProdId prodid = new ProdId("ez-vcard 0.6.0");
+ProdIdType prodid = new ProdIdType("ez-vcard 0.6.0");
 vcard.setProdId(prodid);
 }}}
 
@@ -941,11 +941,11 @@ Marks the vCard as being a vCard (it is generally not needed).
 
 *vCard versions:* 3.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Profile.html Profile]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/ProfileType.html ProfileType]
 
 {{{
 VCard vcard = new VCard();
-Profile profile = new Profile();
+ProfileType profile = new ProfileType();
 vcard.setProfile(profile);
 }}}
 
@@ -954,24 +954,24 @@ Other people that the person is related to.  It can contain either a URI or a pl
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Related.html Related]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/RelatedType.html RelatedType]
 
 {{{
 VCard vcard = new VCard();
 
-Related related = new Related();
-related.addType(RelatedType.FRIEND);
+RelatedType related = new RelatedType();
+related.addType(RelatedTypeParameter.FRIEND);
 related.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
 vcard.addRelated(related);
 
-related = new Related();
-related.addType(RelatedType.CO_WORKER);
-related.addType(RelatedType.FRIEND);
+related = new RelatedType();
+related.addType(RelatedTypeParameter.CO_WORKER);
+related.addType(RelatedTypeParameter.FRIEND);
 related.setUri("http://joesmoe.name/vcard.vcf");
 vcard.addRelated(related);
 
-related = new Related();
-related.addType(RelatedType.SPOUSE);
+related = new RelatedType();
+related.addType(RelatedTypeParameter.SPOUSE);
 related.setText("My wife's name is Edna Smith");
 vcard.addRelated(related);
 }}}
@@ -981,11 +981,11 @@ The date that the vCard was last modified by its owner.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Revision.html Revision]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/RevisionType.html RevisionType]
 
 {{{
 VCard vcard = new VCard();
-Revision rev = new Revision(new Date());
+RevisionType rev = new RevisionType(new Date());
 vcard.setRevision(rev);
 }}}
 
@@ -994,11 +994,11 @@ The function that the person plays in his or her organization.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Role.html Role]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/RoleType.html RoleType]
 
 {{{
 VCard vcard = new VCard();
-Role role = new Role("Project Leader");
+RoleType role = new RoleType("Project Leader");
 vcard.addRole(role);
 }}}
 
@@ -1007,23 +1007,23 @@ Defines a string that should be used when an application sorts this vCard in som
 
 *vCard versions:* 2.1, 3.0, 4.0`*`
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/SortString.html SortString]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/SortStringType.html SortStringType]
 
-`*`The SORT-STRING type is not supported in 4.0.  Instead, a SORT-AS parameter can be added to the N (`StructuredName`) and/or ORG (`Organization`) types.
+`*`The SORT-STRING type is not supported in 4.0.  Instead, a SORT-AS parameter can be added to the N (`StructuredNameType`) and/or ORG (`OrganizationType`) types.
 
 {{{
 //2.1 and 3.0
 VCard vcard = new VCard();
-StructuredName n = new StructuredName();
+StructuredNameType n = new StructuredNameType();
 n.setFamily("d'Armour");
 n.setGiven("Miles");
 vcard.setStructuredName(n);
-SortString sortString = new SortString("Armour");
+SortStringType sortString = new SortStringType("Armour");
 vcard.setSortString(sortString);
 
 //4.0
 VCard vcard = new VCard();
-StructuredName n = new StructuredName();
+StructuredNameType n = new StructuredNameType();
 n.setFamily("d'Armour");
 n.setGiven("Miles");
 n.setSortAs("Armour");
@@ -1035,26 +1035,26 @@ A sound to attach to the vCard, such as a pronunciation of the person's name.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Sound.html Sound]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/SoundType.html SoundType]
 
 {{{
 VCard vcard = new VCard();
 
 //URL
-Sound sound = new Sound("http://www.mywebsite.com/myname.ogg", SoundType.OGG);
+SoundType sound = new SoundType("http://www.mywebsite.com/myname.ogg", SoundTypeParameter.OGG);
 vcard.addSound(sound);
 
 //binary data
 byte data[] = ...
-sound = new Sound(data, SoundType.OGG);
+sound = new SoundType(data, SoundTypeParameter.OGG);
 vcard.addSound(sound);
 
-//if "SoundType" does not have the pre-defined constant that you need, then create a new instance
+//if "SoundTypeParameter" does not have the pre-defined constant that you need, then create a new instance
 //arg 1: the value of the 2.1/3.0 TYPE parameter
 //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
 //arg 3: the file extension of the data type (optional)
-SoundType param = new SoundType("wav", "audio/wav", "wav");
-sound = new Sound("http://www.mywebsite.com/myname.wav", SoundType.WAV);
+SoundTypeParameter param = new SoundTypeParameter("wav", "audio/wav", "wav");
+sound = new SoundType("http://www.mywebsite.com/myname.wav", SoundTypeParameter.WAV);
 vcard.addSound(sound);
 }}}
 
@@ -1062,22 +1062,22 @@ vcard.addSound(sound);
 VCard vcard = ...
 
 int fileCount = 0;
-for (Sound sound : vcard.getSounds()){
+for (SoundType sound : vcard.getSounds()){
   //the sound will have either a URL or a binary data
   if (sound.getData() == null){
     System.out.println("Sound URL: " + sound.getUrl());
   } else {
-    SoundType type = sound.getContent();
+    SoundTypeParameter type = sound.getContentType();
     
     if (type == null) {
       //the vCard may not have any content type data associated with the sound
       System.out.println("Saving a sound file...");
     } else {
-      System.out.println("Saving a \"" + type.getMedia() + "\" file...");
+      System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
     }
     
     String folder;
-    if (type == SoundType.OGG){ //it is safe to use "==" instead of "equals()"
+    if (type == SoundTypeParameter.OGG){ //it is safe to use "==" instead of "equals()"
       folder = "ogg-files";
     } else {
       folder = "sound-files";
@@ -1101,11 +1101,11 @@ A URL that can be used to retrieve the most up-to-date version of the person's v
 
 *vCard versions:* 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Source.html Source]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/SourceType.html SourceType]
 
 {{{
 VCard vcard = new VCard();
-Source source = new Source("http://www.company.com/employees/doe_john.vcf");
+SourceType source = new SourceType("http://www.company.com/employees/doe_john.vcf");
 vcard.addSource(source);
 }}}
 
@@ -1114,19 +1114,19 @@ A telephone number that the person can be reached at.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Telephone.html Telephone]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/TelephoneType.html TelephoneType]
 
 {{{
 VCard vcard = new VCard();
-Telephone tel = new Telephone("(123) 555-6789");
-tel.addType(TelephoneType.HOME);
+TelephoneType tel = new TelephoneType("(123) 555-6789");
+tel.addType(TelephoneTypeParameter.HOME);
 tel.setPref(2); //the second-most preferred
 vcard.addTelephoneNumber(tel);
 
 TelUri uri = TelUri.global("+1-800-555-9876");
 uri.setExtension("111");
-tel = new Telephone(uri);
-tel.addType(TelephoneType.WORK);
+tel = new TelephoneType(uri);
+tel.addType(TelephoneTypeParameter.WORK);
 tel.setPref(1); //the most preferred
 vcard.addTelephoneNumber(tel);
 }}}
@@ -1136,11 +1136,11 @@ Contains the timezone that the person lives/works in.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Timezone.html Timezone]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/TimezoneType.html TimezoneType]
 
 {{{
 VCard vcard = new VCard();
-Timezone tz = new Timezone(-5, 0, "America/New_York");
+TimezoneType tz = new TimezoneType(-5, 0, "America/New_York");
 vcard.addTimezone(tz);
 }}}
 
@@ -1149,11 +1149,11 @@ The person's position or job in his or her organization.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Title.html Title]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/TitleType.html TitleType]
 
 {{{
 VCard vcard = new VCard();
-Title title = new Title("Research Scientist");
+TitleType title = new TitleType("Research Scientist");
 vcard.addTitle(title);
 }}}
 
@@ -1162,16 +1162,16 @@ A globally unique identifier of the person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Uid.html Uid]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/UidType.html UidType]
 
 {{{
 VCard vcard = new VCard();
 
-Uid uid = new Uid("urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519");
+UidType uid = new UidType("urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519");
 vcard.setUid(uid);
 
 //generate a random UID
-uid = Uid.random();
+uid = UidType.random();
 vcard.setUid(uid);
 }}}
 
@@ -1180,11 +1180,11 @@ A URL pointing to the person's homepage or business website.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Url.html Url]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/UrlType.html UrlType]
 
 {{{
 VCard vcard = new VCard();
-Url url = new Url("http://www.company.com");
+UrlType url = new UrlType("http://www.company.com");
 vcard.addUrl(url);
 }}}
 
@@ -1193,10 +1193,10 @@ Any XML data that is attached to the vCard.  This is used if the vCard was encod
 
 *vCard versions:* 4.0
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Xml.html Xml]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html?ezvcard/types/XmlType.html XmlType]
 
 {{{
 VCard vcard = new VCard();
-Xml xml = new Xml("<b>Some xml</b>");
+XmlType xml = new XmlType("<b>Some xml</b>");
 vcard.addXml(xml);
 }}}
