@@ -6,7 +6,7 @@ vCards can also be used to represent entities other than individuals, such as gr
 
 The vCard data model consists of a collection of *properties*.  Each property has (1) a *name*, (2) a list of *parameters* (key/value attributes), (3) a *value*, and (4) an optional *group* name.
 
-The text below is an example of a simple vCard.  Each line in the text is a _property_.  The property _name_ is located at the beginning of the line.  If the property belongs to a _group_, then the line begins with the group name, followed by a period character, followed by the property name.  The _parameters_ are located in between the property name and the colon character.  The _value_ is located after the colon character.  The vCard below contains the person's name (in both formatted and structured formats) as well as the person's home email address.
+The text below is an example of a simple vCard.  Each line in the text is a _property_.  The property _name_ is located at the beginning of the line.  If the property belongs to a _group_, then the line begins with the group name, followed by a dot, followed by the property name.  The _parameters_ are located in between the property name and the colon character.  The _value_ is located after the colon character.  The vCard below contains the person's name (in both formatted and structured formats) as well as the person's home email address.
 
 {{{
 BEGIN:VCARD
