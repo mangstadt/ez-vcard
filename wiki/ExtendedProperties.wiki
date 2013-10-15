@@ -105,7 +105,7 @@ The `_validate` method is optional.  It is used to verify the correctness of the
 
 ==2.2 Scribe class==
 
-The *scribe class* is responsible for reading and writing the property to a file or other data stream.  The example below shows a scribe class for our "FavoriteColors" property.
+The *scribe class* is responsible for reading and writing the property to a file or other data stream.  The example below shows a scribe class for our "!FavoriteColors" property.
 
 ----
 *NOTE:*
