@@ -4,7 +4,7 @@
 ----
 *NOTE:*
 
-This page applies to the *latest version* of ez-vcard.  Please see [ReadingVCardsOld this page] if you are running ez-vcard 0.8.5 or earlier.
+This page applies to the *latest version* of ez-vcard.  Please see [TypeListOld this page] if you are running ez-vcard 0.8.5 or earlier.
 ----
 
 The page contains a listing of all vCard properties, as well as information on how to use these properties with ez-vcard.

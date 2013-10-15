@@ -4,7 +4,7 @@
 ----
 *NOTE:*
 
-This page applies to ez-vcard versions *0.8.5 and earlier*.  Please see [ReadingVCards this page] if you are running ez-vcard 0.9.0 or later.
+This page applies to ez-vcard versions *0.8.5 and earlier*.  Please see [TypeList this page] if you are running ez-vcard 0.9.0 or later.
 ----
 
 The page contains a listing of all vCard types, as well as information on how to use these types with ez-vcard.

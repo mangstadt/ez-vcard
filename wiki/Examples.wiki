@@ -4,7 +4,7 @@
 ----
 *NOTE:*
 
-This page applies to the *latest version* of ez-vcard.  Please see the ExamplesOld page if you are running ez-vcard 0.8.5 or earlier.
+This page applies to the *latest version* of ez-vcard.  Please see [ExamplesOld this page] if you are running ez-vcard 0.8.5 or earlier.
 ----
 
 <wiki:toc max_depth="2"/>
