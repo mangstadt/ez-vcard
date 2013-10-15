@@ -1,5 +1,6 @@
 #summary Sidebar for the wiki.
 
+ * [Overview]
  * [WhatIsAVCard What is a vCard?]
  * Version 0.8.5 and below
    * [ReadingVCardsOld How to read vCards]
