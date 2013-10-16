@@ -5,6 +5,7 @@ import static ezvcard.util.IOUtils.utf8Writer;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -80,7 +81,7 @@ import ezvcard.util.IOUtils;
  * </p>
  * @author Michael Angstadt
  */
-public class VCardWriter implements Closeable {
+public class VCardWriter implements Closeable, Flushable {
 	private ScribeIndex index = new ScribeIndex();
 	private boolean addProdId = true;
 	private boolean versionStrict = true;
@@ -467,7 +468,16 @@ public class VCardWriter implements Closeable {
 	}
 
 	/**
+	 * Flushes the underlying {@link Writer} object.
+	 * @throws IOException if there's a problem flushing the writer
+	 */
+	public void flush() throws IOException {
+		writer.flush();
+	}
+
+	/**
 	 * Closes the underlying {@link Writer} object.
+	 * @throws IOException if there's a problem closing the writer
 	 */
 	public void close() throws IOException {
 		writer.close();

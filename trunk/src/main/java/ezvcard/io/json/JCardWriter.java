@@ -4,6 +4,7 @@ import static ezvcard.util.IOUtils.utf8Writer;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -73,7 +74,7 @@ import ezvcard.property.VCardProperty;
  * </p>
  * @author Michael Angstadt
  */
-public class JCardWriter implements Closeable {
+public class JCardWriter implements Closeable, Flushable {
 	private ScribeIndex index = new ScribeIndex();
 	private final JCardRawWriter writer;
 	private final VCardVersion targetVersion = VCardVersion.V4_0;
@@ -286,6 +287,14 @@ public class JCardWriter implements Closeable {
 	 */
 	public void setScribeIndex(ScribeIndex index) {
 		this.index = index;
+	}
+
+	/**
+	 * Flushes the jCard data stream.
+	 * @throws IOException if there's a problem flushing the stream
+	 */
+	public void flush() throws IOException {
+		writer.flush();
 	}
 
 	/**
