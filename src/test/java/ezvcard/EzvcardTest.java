@@ -1,7 +1,7 @@
 package ezvcard;
 
 import static ezvcard.util.TestUtils.assertWarningsLists;
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -23,9 +23,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import ezvcard.io.LuckyNumType;
-import ezvcard.io.XCardNamespaceContext;
-import ezvcard.types.FormattedNameType;
-import ezvcard.util.VCardBuilder;
+import ezvcard.io.LuckyNumType.LuckyNumScribe;
+import ezvcard.io.xml.XCardNamespaceContext;
+import ezvcard.property.FormattedName;
 import ezvcard.util.XCardBuilder;
 import ezvcard.util.XmlUtils;
 
@@ -69,11 +69,16 @@ public class EzvcardTest {
 
 	@Test
 	public void parse_first() throws Exception {
-		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
-		vb.prop("FN").value("John Doe");
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		//@formatter:off
+		String str = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
-		VCard vcard = Ezvcard.parse(vb.toString()).warnings(warnings).first();
+		List<List<String>> warnings = new ArrayList<List<String>>();
+		VCard vcard = Ezvcard.parse(str).warnings(warnings).first();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarningsLists(warnings, 0);
@@ -81,13 +86,20 @@ public class EzvcardTest {
 
 	@Test
 	public void parse_all() throws Exception {
-		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
-		vb.prop("FN").value("John Doe");
-		vb.begin(VCardVersion.V3_0);
-		vb.prop("FN").value("Jane Doe");
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		//@formatter:off
+		String str = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"FN:Jane Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
-		List<VCard> vcards = Ezvcard.parse(vb.toString()).warnings(warnings).all();
+		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<VCard> vcards = Ezvcard.parse(str).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
@@ -105,30 +117,40 @@ public class EzvcardTest {
 
 	@Test
 	public void parse_register() throws Exception {
-		VCardBuilder vb = new VCardBuilder(VCardVersion.V2_1);
-		vb.prop("X-LUCKY-NUM").value("22");
+		//@formatter:off
+		String str = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"X-LUCKY-NUM:22\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
-		VCard vcard = Ezvcard.parse(vb.toString()).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parse(str).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V2_1, vcard.getVersion());
-		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
+		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
 	}
 
 	@Test
 	public void parse_caretDecoding() throws Exception {
-		VCardBuilder vb = new VCardBuilder(VCardVersion.V4_0);
-		vb.prop("FN").param("X-TEST", "George Herman ^'Babe^' Ruth").value("John Doe");
+		//@formatter:off
+		String str = 
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"FN;X-TEST=George Herman ^'Babe^' Ruth:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
 
 		//defaults to true
-		VCard vcard = Ezvcard.parse(vb.toString()).first();
-		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+		VCard vcard = Ezvcard.parse(str).first();
+		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 
-		vcard = Ezvcard.parse(vb.toString()).caretDecoding(true).first();
-		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+		vcard = Ezvcard.parse(str).caretDecoding(true).first();
+		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 
-		vcard = Ezvcard.parse(vb.toString()).caretDecoding(false).first();
-		assertEquals("George Herman ^'Babe^' Ruth", vcard.getFormattedName().getSubTypes().get("X-TEST").iterator().next());
+		vcard = Ezvcard.parse(str).caretDecoding(false).first();
+		assertEquals("George Herman ^'Babe^' Ruth", vcard.getFormattedName().getParameters().get("X-TEST").iterator().next());
 	}
 
 	@Test
@@ -172,9 +194,9 @@ public class EzvcardTest {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("http://luckynum.com", "lucky-num", "<num>22</num>");
 
-		VCard vcard = Ezvcard.parseXml(xb.toString()).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseXml(xb.toString()).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
+		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
 	}
@@ -236,9 +258,9 @@ public class EzvcardTest {
 		"</div>";
 		//@formatter:on
 
-		VCard vcard = Ezvcard.parseHtml(html).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseHtml(html).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
-		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
+		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
 	}
@@ -337,9 +359,9 @@ public class EzvcardTest {
 		  "]";
 		//@formatter:on
 
-		VCard vcard = Ezvcard.parseJson(json).register(LuckyNumType.class).first();
+		VCard vcard = Ezvcard.parseJson(json).register(new LuckyNumScribe()).first();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		List<LuckyNumType> ext = vcard.getTypes(LuckyNumType.class);
+		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
 	}
@@ -348,7 +370,7 @@ public class EzvcardTest {
 	public void write_one() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1);
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		String actual = Ezvcard.write(vcard).go();
 		assertTrue(actual.contains("VERSION:2.1"));
@@ -359,13 +381,13 @@ public class EzvcardTest {
 	public void write_multiple() throws Exception {
 		VCard vcard1 = new VCard();
 		vcard1.setVersion(VCardVersion.V2_1);
-		vcard1.setFormattedName(new FormattedNameType("John Doe"));
+		vcard1.setFormattedName(new FormattedName("John Doe"));
 		VCard vcard2 = new VCard();
 		vcard2.setVersion(VCardVersion.V3_0);
-		vcard2.setFormattedName(new FormattedNameType("Jane Doe"));
+		vcard2.setFormattedName(new FormattedName("Jane Doe"));
 		VCard vcard3 = new VCard();
 		vcard3.setVersion(VCardVersion.V4_0);
-		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
+		vcard3.setFormattedName(new FormattedName("Janet Doe"));
 
 		String actual = Ezvcard.write(vcard1, vcard2, vcard3).go();
 		assertTrue(actual.matches("(?s)BEGIN:VCARD.*?VERSION:2\\.1.*?FN:John Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:3\\.0.*?FN:Jane Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:4\\.0.*?FN:Janet Doe.*?END:VCARD.*"));
@@ -403,8 +425,8 @@ public class EzvcardTest {
 	public void write_caretEncoding() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V4_0);
-		FormattedNameType fn = vcard.setFormattedName("test");
-		fn.getSubTypes().put("X-TEST", "George Herman \"Babe\" Ruth");
+		FormattedName fn = vcard.setFormattedName("test");
+		fn.getParameters().put("X-TEST", "George Herman \"Babe\" Ruth");
 
 		//default should be "false"
 		String actual = Ezvcard.write(vcard).go();
@@ -445,7 +467,7 @@ public class EzvcardTest {
 	@Test
 	public void writeXml_dom() throws Exception {
 		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		Document actual = Ezvcard.writeXml(vcard).prodId(false).dom();
 
@@ -527,7 +549,7 @@ public class EzvcardTest {
 	@Test
 	public void writeXml_indent() throws Exception {
 		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		String actual = Ezvcard.writeXml(vcard).indent(2).go();
 		assertTrue(actual.contains("    <fn>" + NEWLINE + "      <text>John Doe</text>" + NEWLINE + "    </fn>"));
@@ -536,7 +558,7 @@ public class EzvcardTest {
 	@Test
 	public void writeHtml_one() throws Exception {
 		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedNameType("John Doe"));
+		vcard.setFormattedName(new FormattedName("John Doe"));
 
 		String actual = Ezvcard.writeHtml(vcard).go();
 		org.jsoup.nodes.Document document = Jsoup.parse(actual);
@@ -547,11 +569,11 @@ public class EzvcardTest {
 	@Test
 	public void writeHtml_multiple() throws Exception {
 		VCard vcard1 = new VCard();
-		vcard1.setFormattedName(new FormattedNameType("John Doe"));
+		vcard1.setFormattedName(new FormattedName("John Doe"));
 		VCard vcard2 = new VCard();
-		vcard2.setFormattedName(new FormattedNameType("Jane Doe"));
+		vcard2.setFormattedName(new FormattedName("Jane Doe"));
 		VCard vcard3 = new VCard();
-		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
+		vcard3.setFormattedName(new FormattedName("Janet Doe"));
 
 		String actual = Ezvcard.writeHtml(vcard1, vcard2, vcard3).go();
 		org.jsoup.nodes.Document document = Jsoup.parse(actual);
@@ -580,11 +602,11 @@ public class EzvcardTest {
 	@Test
 	public void writeJson_multiple() {
 		VCard vcard1 = new VCard();
-		vcard1.setFormattedName(new FormattedNameType("John Doe"));
+		vcard1.setFormattedName(new FormattedName("John Doe"));
 		VCard vcard2 = new VCard();
-		vcard2.setFormattedName(new FormattedNameType("Jane Doe"));
+		vcard2.setFormattedName(new FormattedName("Jane Doe"));
 		VCard vcard3 = new VCard();
-		vcard3.setFormattedName(new FormattedNameType("Janet Doe"));
+		vcard3.setFormattedName(new FormattedName("Janet Doe"));
 
 		//@formatter:off
 		String expected =

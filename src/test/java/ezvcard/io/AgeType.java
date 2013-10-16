@@ -2,8 +2,11 @@ package ezvcard.io;
 
 import java.util.List;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.types.VCardType;
+import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.parameter.VCardParameters;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -39,24 +42,31 @@ import ezvcard.types.VCardType;
  * methods, nor a QName.
  * @author Michael Angstadt
  */
-public class AgeType extends VCardType {
+public class AgeType extends VCardProperty {
 	public int age;
 
-	public AgeType() {
-		super("X-AGE");
+	public AgeType(int age) {
+		this.age = age;
 	}
 
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(age);
-	}
+	public static class AgeScribe extends VCardPropertyScribe<AgeType> {
+		public AgeScribe() {
+			super(AgeType.class, "X-AGE");
+		}
 
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		age = Integer.parseInt(value);
-	}
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return null;
+		}
 
-	//	protected void doMarshalValue(XCardElement parent, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	protected void doUnmarshalValue(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode);
-	//	public QName getQName();
+		@Override
+		protected String _writeText(AgeType property, VCardVersion version) {
+			return property.age + "";
+		}
+
+		@Override
+		protected AgeType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			return new AgeType(Integer.parseInt(value));
+		}
+	}
 }

@@ -4,8 +4,10 @@ import java.util.List;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.types.VCardType;
-import ezvcard.util.XCardElement;
+import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.xml.XCardElement;
+import ezvcard.parameter.VCardParameters;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -41,32 +43,42 @@ import ezvcard.util.XCardElement;
  * methods, but not a QName.
  * @author Michael Angstadt
  */
-public class SalaryType extends VCardType {
+public class SalaryType extends VCardProperty {
 	public int salary;
 
-	public SalaryType() {
-		super("X-SALARY");
+	public SalaryType(int salary) {
+		this.salary = salary;
 	}
 
-	@Override
-	protected void doMarshalText(StringBuilder sb, VCardVersion version, CompatibilityMode compatibilityMode) {
-		sb.append(salary);
+	public static class SalaryScribe extends VCardPropertyScribe<SalaryType> {
+		public SalaryScribe() {
+			super(SalaryType.class, "X-SALARY");
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return VCardDataType.INTEGER;
+		}
+
+		@Override
+		protected String _writeText(SalaryType property, VCardVersion version) {
+			return property.salary + "";
+		}
+
+		@Override
+		protected SalaryType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			return new SalaryType(Integer.parseInt(value));
+		}
+
+		@Override
+		protected void _writeXml(SalaryType property, XCardElement parent) {
+			parent.element().setTextContent(property.salary + "");
+		}
+
+		@Override
+		protected SalaryType _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+			return new SalaryType(Integer.parseInt(element.first(VCardDataType.INTEGER)));
+		}
 	}
 
-	@Override
-	protected void doMarshalXml(XCardElement parent, CompatibilityMode compatibilityMode) {
-		parent.element().setTextContent(salary + "");
-	}
-
-	@Override
-	protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-		salary = Integer.parseInt(value);
-	}
-
-	@Override
-	protected void doUnmarshalXml(XCardElement element, List<String> warnings, CompatibilityMode compatibilityMode) {
-		salary = Integer.parseInt(element.first(VCardDataType.INTEGER));
-	}
-
-	//	public QName getQName();
 }
