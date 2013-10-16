@@ -21,6 +21,7 @@ This update includes significant changes to the API.  Existing code that uses ea
   * `ezvcard.util.XCardElement` --> `ezvcard.io.xml.XCardElement`
   * `ezvcard.util.JsonValue` --> `ezvcard.io.json.JsonValue`
   * `ezvcard.util.JCardValue` --> `ezvcard.io.json.JCardValue`
+ * The `Ezvcard` class now flushes the stream after every plain-text or JSON-encoded vCard is written.
 
 = 0.8.5 =
 _October 1, 2013_
