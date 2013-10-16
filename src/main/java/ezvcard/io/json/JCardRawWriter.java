@@ -3,6 +3,7 @@ package ezvcard.io.json;
 import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -47,7 +48,7 @@ import ezvcard.parameter.VCardParameters;
  * href="http://tools.ietf.org/html/draft-kewisch-vcard-in-json-04">jCard
  * draft</a>
  */
-public class JCardRawWriter implements Closeable {
+public class JCardRawWriter implements Closeable, Flushable {
 	private final Writer writer;
 	private final boolean wrapInArray;
 	private JsonGenerator jg;
@@ -254,12 +255,25 @@ public class JCardRawWriter implements Closeable {
 	 * @throws IOException
 	 */
 	private void indent(int spaces) throws IOException {
-		if (indent) {
-			jg.writeRaw(NEWLINE);
-			for (int i = 0; i < spaces; i++) {
-				jg.writeRaw(' ');
-			}
+		if (!indent) {
+			return;
 		}
+
+		jg.writeRaw(NEWLINE);
+		for (int i = 0; i < spaces; i++) {
+			jg.writeRaw(' ');
+		}
+	}
+
+	/**
+	 * Flushes the JSON stream.
+	 */
+	public void flush() throws IOException {
+		if (jg == null) {
+			return;
+		}
+
+		jg.flush();
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package ezvcard.io.text;
 
 import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.BitSet;
@@ -46,7 +47,7 @@ import ezvcard.parameter.VCardParameters;
  * Writes data to an vCard data stream.
  * @author Michael Angstadt
  */
-public class VCardRawWriter implements Closeable {
+public class VCardRawWriter implements Closeable, Flushable {
 	/**
 	 * Regular expression used to determine if a parameter value needs to be
 	 * quoted.
@@ -350,8 +351,7 @@ public class VCardRawWriter implements Closeable {
 	 * @param propertyName the property name (e.g. "FN")
 	 * @param parameters the property parameters
 	 * @param value the property value (will be converted to "quoted-printable"
-	 * encoding if the {@link Encoding#QUOTED_PRINTABLE} parameter is
-	 * set)
+	 * encoding if the {@link Encoding#QUOTED_PRINTABLE} parameter is set)
 	 * @throws IllegalArgumentException if the group or property name contains
 	 * invalid characters
 	 * @throws IOException if there's an I/O problem
@@ -604,7 +604,16 @@ public class VCardRawWriter implements Closeable {
 	}
 
 	/**
+	 * Flushes the underlying {@link Writer} object.
+	 * @throws IOException if there's a problem flushing the writer
+	 */
+	public void flush() throws IOException {
+		writer.flush();
+	}
+
+	/**
 	 * Closes the underlying {@link Writer} object.
+	 * @throws IOException if there's a problem closing the writer
 	 */
 	public void close() throws IOException {
 		writer.close();

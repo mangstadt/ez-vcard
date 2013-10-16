@@ -1520,6 +1520,7 @@ public class Ezvcard {
 					vcardWriter.setTargetVersion(vcardVersion);
 				}
 				vcardWriter.write(vcard);
+				vcardWriter.flush();
 			}
 		}
 	}
@@ -1909,6 +1910,7 @@ public class Ezvcard {
 			try {
 				for (VCard vcard : vcards) {
 					jcardWriter.write(vcard);
+					jcardWriter.flush();
 				}
 			} finally {
 				jcardWriter.closeJsonStream();
