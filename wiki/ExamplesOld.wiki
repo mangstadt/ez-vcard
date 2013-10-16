@@ -11,7 +11,7 @@ This page applies to ez-vcard versions *0.8.5 and earlier*.  Please see [Example
 
 =1 Reading=
 
-_See [ReadingVCards Reading vCards] page for more info._
+_See [ReadingVCardsOld Reading vCards] page for more info._
 
 ==Example 1.1: Reading from a plain-text vCard==
 
@@ -105,7 +105,7 @@ List<VCard> vcards = Ezvcard.parse(reader).all();
 
 =2 Writing=
 
-_See [WritingVCards Writing vCards] page for more info._
+_See [WritingVCardsOld Writing vCards] page for more info._
 
 ==Example 2.1: Writing a plain-text vCard==
 
@@ -172,7 +172,7 @@ Ezvcard.write(vcards).go(writer);
 
 =3 Extended (non-standard) properties=
 
-_See [ExtendedProperties Extended Properties] page for more info._
+_See [ExtendedPropertiesOld Extended Properties] page for more info._
 
 ==Example 3.1: Getting an extended  property==
 

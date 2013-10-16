@@ -39,7 +39,7 @@ The following chaining methods can be called to customize the parsing operation.
 || *Method* || *Text* || *XML* || *HTML* || *JSON* || *Description* ||
 || `caretDecoding(boolean)` || x || || || || Sets whether parameter values should be decoded using circumflex accent encoding (enabled by default).  See the [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/text/VCardReader.html#setCaretDecodingEnabled(boolean) javadocs] for a description of this encoding mechanism. ||
 || `pageUrl(String)` || || || x || || Sets the URL of the webpage being parsed.  This is used to resolve relative links within the HTML page and to set the SOURCE property on the vCard.  Calling this method has no effect if a `URL` object was passed into the `Ezvcard.parseHtml()` method. ||
-|| `register(Class<? extends VCardType>)` || x || x || x || x || Registers an extended type class.  See [ExtendedProperties] for more information on how to create an extended type class. ||
+|| `register(VCardPropertyScribe)` || x || x || x || x || Registers a property scribe.  See [ExtendedProperties] for more information on scribes. ||
 || `warnings(List<List<String>>)` || x || x || x || x || Allows the user to retrieve the warnings that were generated during the parsing operation.  Warnings are generated if the vCard deviates from the standard in some way and/or ez-vcard has to make a guess as to how to parse the vCard. The warnings will be added to the `List` object that was passed into this method. This `List` object is a "list of lists" because the data stream may contain more than one vCard and each parsed vCard generates its own list of warnings. ||
 
 ==1.3 Termination methods==
