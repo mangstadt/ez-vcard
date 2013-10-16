@@ -1382,6 +1382,7 @@ public class Ezvcard {
 		boolean prodId = true;
 		boolean versionStrict = true;
 		boolean caretEncoding = false;
+		final ScribeIndex index = new ScribeIndex();
 
 		WriterChainText(Collection<VCard> vcards) {
 			super(vcards);
@@ -1442,6 +1443,16 @@ public class Ezvcard {
 		 */
 		public T versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;
+			return this_;
+		}
+
+		/**
+		 * Registers a property scribe.
+		 * @param scribe the scribe to register
+		 * @return this
+		 */
+		public T register(VCardPropertyScribe<? extends VCardProperty> scribe) {
+			index.register(scribe);
 			return this_;
 		}
 
@@ -1510,6 +1521,7 @@ public class Ezvcard {
 			vcardWriter.setAddProdId(prodId);
 			vcardWriter.setCaretEncodingEnabled(caretEncoding);
 			vcardWriter.setVersionStrict(versionStrict);
+			vcardWriter.setScribeIndex(index);
 
 			for (VCard vcard : vcards) {
 				if (version == null) {
@@ -1590,6 +1602,7 @@ public class Ezvcard {
 		boolean prodId = true;
 		boolean versionStrict = true;
 		int indent = -1;
+		final ScribeIndex index = new ScribeIndex();
 
 		WriterChainXml(Collection<VCard> vcards) {
 			super(vcards);
@@ -1626,6 +1639,16 @@ public class Ezvcard {
 		 */
 		public T versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;
+			return this_;
+		}
+
+		/**
+		 * Registers a property scribe.
+		 * @param scribe the scribe to register
+		 * @return this
+		 */
+		public T register(VCardPropertyScribe<? extends VCardProperty> scribe) {
+			index.register(scribe);
 			return this_;
 		}
 
@@ -1693,6 +1716,7 @@ public class Ezvcard {
 			XCardDocument doc = new XCardDocument();
 			doc.setAddProdId(prodId);
 			doc.setVersionStrict(versionStrict);
+			doc.setScribeIndex(index);
 
 			for (VCard vcard : vcards) {
 				doc.add(vcard);
@@ -1819,6 +1843,7 @@ public class Ezvcard {
 		boolean prodId = true;
 		boolean versionStrict = true;
 		boolean indent = false;
+		final ScribeIndex index = new ScribeIndex();
 
 		WriterChainJson(Collection<VCard> vcards) {
 			super(vcards);
@@ -1855,6 +1880,16 @@ public class Ezvcard {
 		 */
 		public T versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;
+			return this_;
+		}
+
+		/**
+		 * Registers a property scribe.
+		 * @param scribe the scribe to register
+		 * @return this
+		 */
+		public T register(VCardPropertyScribe<? extends VCardProperty> scribe) {
+			index.register(scribe);
 			return this_;
 		}
 
@@ -1907,6 +1942,7 @@ public class Ezvcard {
 			jcardWriter.setAddProdId(prodId);
 			jcardWriter.setIndent(indent);
 			jcardWriter.setVersionStrict(versionStrict);
+			jcardWriter.setScribeIndex(index);
 			try {
 				for (VCard vcard : vcards) {
 					jcardWriter.write(vcard);
