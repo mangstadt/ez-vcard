@@ -1,6 +1,7 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -102,5 +103,14 @@ public class VCardDateFormatterTest {
 
 		actual = VCardDateFormatter.parse("2012-07-01T11:01:30+0300");
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void parseTimezoneId() {
+		TimeZone tz = VCardDateFormatter.parseTimeZoneId("America/New_York");
+		assertEquals("America/New_York", tz.getID());
+
+		tz = VCardDateFormatter.parseTimeZoneId("Bogus/Timezone");
+		assertNull(tz);
 	}
 }

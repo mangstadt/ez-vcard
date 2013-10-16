@@ -1,27 +1,23 @@
 package ezvcard.util;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import ezvcard.VCardDataType;
+import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -67,6 +63,16 @@ public class TestUtils {
 	}
 
 	/**
+	 * Asserts that a warnings list is a certain size.
+	 * @param message a message to print if the test fails
+	 * @param expectedSize the expected size of the warnings list
+	 * @param warnings the warnings list
+	 */
+	public static void assertWarnings(String message, int expectedSize, List<String> warnings) {
+		assertEquals(message + " " + warnings.toString(), expectedSize, warnings.size());
+	}
+
+	/**
 	 * Asserts the sizes of each warnings list within a list of warnings lists.
 	 * @param warningsLists the list of warnings lists
 	 * @param expectedSizes the expected sizes of each warnings list
@@ -90,9 +96,9 @@ public class TestUtils {
 	 * parameter, depending on how many warnings it is expected to have (e.g. 3
 	 * times for 3 warnings)
 	 */
-	public static void assertValidate(ValidationWarnings warnings, VCardType... expectedProperties) {
-		Counts<VCardType> expectedCounts = new Counts<VCardType>();
-		for (VCardType expectedProperty : expectedProperties) {
+	public static void assertValidate(ValidationWarnings warnings, VCardProperty... expectedProperties) {
+		Counts<VCardProperty> expectedCounts = new Counts<VCardProperty>();
+		for (VCardProperty expectedProperty : expectedProperties) {
 			expectedCounts.increment(expectedProperty);
 		}
 
@@ -100,12 +106,63 @@ public class TestUtils {
 		for (WarningsGroup warning : warnings) {
 			assertTrue(warning.getMessages().size() > 0);
 			for (int i = 0; i < warning.getMessages().size(); i++) {
-				VCardType property = warning.getProperty();
+				VCardProperty property = warning.getProperty();
 				actualCounts.increment(property);
 			}
 		}
 
 		assertEquals(warnings.toString(), expectedCounts, actualCounts);
+	}
+
+	/**
+	 * Asserts the validation of a property object.
+	 * @param property the property object
+	 * @return the validation checker object
+	 */
+	public static ValidateChecker assertValidate(VCardProperty property) {
+		return new ValidateChecker(property);
+	}
+
+	public static class ValidateChecker {
+		private final VCardProperty property;
+		private VCard vcard;
+		private VCardVersion versions[] = VCardVersion.values();
+
+		public ValidateChecker(VCardProperty property) {
+			this.property = property;
+			vcard(new VCard());
+		}
+
+		/**
+		 * Defines the versions to check (defaults to all versions).
+		 * @param versions the versions to check
+		 * @return this
+		 */
+		public ValidateChecker versions(VCardVersion... versions) {
+			this.versions = versions;
+			return this;
+		}
+
+		/**
+		 * Defines the vCard instance to use (defaults to an empty vCard).
+		 * @param vcard the vCard instance
+		 * @return this
+		 */
+		public ValidateChecker vcard(VCard vcard) {
+			vcard.addProperty(property);
+			this.vcard = vcard;
+			return this;
+		}
+
+		/**
+		 * Performs the validation check.
+		 * @param expected the expected number of validation warnings
+		 */
+		public void run(int expected) {
+			for (VCardVersion version : versions) {
+				assertWarnings("Version " + version, expected, property.validate(version, vcard));
+			}
+		}
 	}
 
 	/**
@@ -118,16 +175,20 @@ public class TestUtils {
 	}
 
 	/**
-	 * Asserts the value of a single-valued jCard value.
-	 * @param expectedDataType the expected data type
-	 * @param expectedValue the expected value
-	 * @param actualValue the actual jCard value
+	 * Builds a timezone object with the given offset.
+	 * @param hours the hour offset
+	 * @param minutes the minute offset
+	 * @return the timezone object
 	 */
-	public static void assertJCardValue(VCardDataType expectedDataType, String expectedValue, JCardValue actualValue) {
-		assertEquals(expectedDataType, actualValue.getDataType());
+	public static TimeZone buildTimezone(int hours, int minutes) {
+		int hourMillis = 1000 * 60 * 60 * hours;
 
-		List<JsonValue> expected = Arrays.asList(new JsonValue(expectedValue));
-		assertEquals(expected, actualValue.getValues());
+		int minuteMillis = 1000 * 60 * minutes;
+		if (hours < 0) {
+			minuteMillis *= -1;
+		}
+
+		return new SimpleTimeZone(hourMillis + minuteMillis, "");
 	}
 
 	/**
@@ -141,27 +202,6 @@ public class TestUtils {
 			expectedSet.add(expectedElement);
 		}
 		assertEquals(expectedSet, actualSet);
-	}
-
-	/**
-	 * Asserts the marshalling of an xCard property.
-	 * @param type the property to marshal
-	 * @param expectedInnerXml the expected inner XML of the property element
-	 */
-	public static void assertMarshalXml(VCardType type, String expectedInnerXml) {
-		VCardVersion version = VCardVersion.V4_0;
-		String typeName = type.getTypeName().toLowerCase();
-
-		Document expected, actual;
-		try {
-			expected = XmlUtils.toDocument("<" + typeName + " xmlns=\"" + version.getXmlNamespace() + "\">" + expectedInnerXml + "</" + typeName + ">");
-			actual = XmlUtils.toDocument("<" + typeName + " xmlns=\"" + version.getXmlNamespace() + "\" />");
-		} catch (SAXException e) {
-			throw new RuntimeException(e);
-		}
-
-		type.marshalXml(XmlUtils.getRootElement(actual), version, CompatibilityMode.RFC);
-		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
 	}
 
 	/**
@@ -222,6 +262,16 @@ public class TestUtils {
 		public String toString() {
 			return map.toString();
 		}
+	}
+
+	/**
+	 * Creates an array from the given vararg parameters (syntax is less verbose
+	 * than creating an array the normal way).
+	 * @param values the values
+	 * @return the array
+	 */
+	public static <T> T[] each(T... values) {
+		return values;
 	}
 
 	private TestUtils() {

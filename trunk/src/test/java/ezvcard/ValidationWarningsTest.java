@@ -1,6 +1,6 @@
 package ezvcard;
 
-import static ezvcard.util.VCardStringUtils.NEWLINE;
+import static ezvcard.util.StringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -12,8 +12,7 @@ import java.util.List;
 import org.junit.Test;
 
 import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.io.CompatibilityMode;
-import ezvcard.types.VCardType;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -97,35 +96,11 @@ public class ValidationWarningsTest {
 		assertEquals(expected, actual);
 	}
 
-	private class TestProperty1 extends VCardType {
-		public TestProperty1() {
-			super("TEST1");
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
+	private class TestProperty1 extends VCardProperty {
+		//empty
 	}
 
-	private class TestProperty2 extends VCardType {
-		public TestProperty2() {
-			super("TEST2");
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
+	private class TestProperty2 extends VCardProperty {
+		//empty
 	}
 }

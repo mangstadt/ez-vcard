@@ -11,13 +11,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import ezvcard.io.CompatibilityMode;
-import ezvcard.types.HasAltId;
-import ezvcard.types.NoteType;
-import ezvcard.types.RawType;
-import ezvcard.types.RevisionType;
-import ezvcard.types.StructuredNameType;
-import ezvcard.types.VCardType;
+import ezvcard.property.HasAltId;
+import ezvcard.property.Note;
+import ezvcard.property.RawProperty;
+import ezvcard.property.Revision;
+import ezvcard.property.StructuredName;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -56,22 +55,22 @@ public class VCardTest {
 	public void getAllTypes() {
 		VCard vcard = new VCard();
 
-		//type stored in VCardType variable
-		RevisionType rev = RevisionType.now();
+		//type stored in VCardProperty variable
+		Revision rev = Revision.now();
 		vcard.setRevision(rev);
 
 		//type stored in a List
-		NoteType note = new NoteType("A note.");
+		Note note = new Note("A note.");
 		vcard.addNote(note);
 
 		//extended type with unique name
-		RawType xGender = vcard.addExtendedType("X-GENDER", "male");
+		RawProperty xGender = vcard.addExtendedProperty("X-GENDER", "male");
 
 		//extended types with same name
-		RawType xManager1 = vcard.addExtendedType("X-MANAGER", "Michael Scott");
-		RawType xManager2 = vcard.addExtendedType("X-MANAGER", "Pointy Haired Boss");
+		RawProperty xManager1 = vcard.addExtendedProperty("X-MANAGER", "Michael Scott");
+		RawProperty xManager2 = vcard.addExtendedProperty("X-MANAGER", "Pointy Haired Boss");
 
-		Collection<VCardType> types = vcard.getAllTypes();
+		Collection<VCardProperty> types = vcard.getProperties();
 		assertEquals(5, types.size());
 		assertTrue(types.contains(rev));
 		assertTrue(types.contains(note));
@@ -84,24 +83,24 @@ public class VCardTest {
 	public void getTypes_none() {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1); //no type class is returned for VERSION
-		assertTrue(vcard.getAllTypes().isEmpty());
+		assertTrue(vcard.getProperties().isEmpty());
 	}
 
 	@Test
 	public void addExtendedType() {
 		VCard vcard = new VCard();
-		RawType type = vcard.addExtendedType("NAME", "value");
-		assertEquals("NAME", type.getTypeName());
+		RawProperty type = vcard.addExtendedProperty("NAME", "value");
+		assertEquals("NAME", type.getPropertyName());
 		assertEquals("value", type.getValue());
-		assertEquals(Arrays.asList(type), vcard.getExtendedTypes("NAME"));
+		assertEquals(Arrays.asList(type), vcard.getExtendedProperties("NAME"));
 	}
 
 	@Test
 	public void addType() {
 		VCard vcard = new VCard();
-		VCardTypeImpl type = new VCardTypeImpl("NAME");
-		vcard.addType(type);
-		assertEquals(Arrays.asList(type), vcard.getTypes(type.getClass()));
+		VCardTypeImpl type = new VCardTypeImpl();
+		vcard.addProperty(type);
+		assertEquals(Arrays.asList(type), vcard.getProperties(type.getClass()));
 	}
 
 	@Test
@@ -109,16 +108,16 @@ public class VCardTest {
 		VCard vcard = new VCard();
 
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
-		vcard.addType(one1);
+		vcard.addProperty(one1);
 		HasAltIdImpl null1 = new HasAltIdImpl(null);
-		vcard.addType(null1);
+		vcard.addProperty(null1);
 
 		HasAltIdImpl two1 = new HasAltIdImpl("3");
 		HasAltIdImpl two2 = new HasAltIdImpl(null);
 
-		vcard.addTypeAlt(HasAltIdImpl.class, two1, two2);
+		vcard.addPropertyAlt(HasAltIdImpl.class, two1, two2);
 
-		List<HasAltIdImpl> props = vcard.getTypes(HasAltIdImpl.class);
+		List<HasAltIdImpl> props = vcard.getProperties(HasAltIdImpl.class);
 
 		Collection<HasAltIdImpl> expected = Arrays.asList(one1, null1, two1, two2);
 		assertEquals(expected, props);
@@ -164,15 +163,15 @@ public class VCardTest {
 		VCard vcard = new VCard();
 
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
-		vcard.addType(one1);
+		vcard.addProperty(one1);
 		HasAltIdImpl null1 = new HasAltIdImpl(null);
-		vcard.addType(null1);
+		vcard.addProperty(null1);
 		HasAltIdImpl two1 = new HasAltIdImpl("2");
-		vcard.addType(two1);
+		vcard.addProperty(two1);
 		HasAltIdImpl one2 = new HasAltIdImpl("1");
-		vcard.addType(one2);
+		vcard.addProperty(one2);
 		HasAltIdImpl null2 = new HasAltIdImpl(null);
-		vcard.addType(null2);
+		vcard.addProperty(null2);
 
 		//@formatter:off
 		@SuppressWarnings("unchecked")
@@ -183,7 +182,7 @@ public class VCardTest {
 			Arrays.asList(null2)
 		);
 		//@formatter:on
-		assertEquals(expected, vcard.getTypesAlt(HasAltIdImpl.class));
+		assertEquals(expected, vcard.getPropertiesAlt(HasAltIdImpl.class));
 	}
 
 	@Test
@@ -195,22 +194,22 @@ public class VCardTest {
 		List<List<HasAltIdImpl>> expected = Arrays.asList(
 		);
 		//@formatter:on
-		assertEquals(expected, vcard.getTypesAlt(HasAltIdImpl.class));
+		assertEquals(expected, vcard.getPropertiesAlt(HasAltIdImpl.class));
 	}
 
 	@Test
 	public void validate_vcard() {
 		VCard vcard = new VCard();
-		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardType) null);
-		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null, (VCardType) null);
-		assertValidate(vcard.validate(VCardVersion.V4_0), (VCardType) null);
+		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardProperty) null);
+		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null, (VCardProperty) null);
+		assertValidate(vcard.validate(VCardVersion.V4_0), (VCardProperty) null);
 
 		vcard.setFormattedName("John Doe");
-		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardType) null);
-		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardType) null);
+		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardProperty) null);
+		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null);
 		assertValidate(vcard.validate(VCardVersion.V4_0));
 
-		vcard.setStructuredName(new StructuredNameType());
+		vcard.setStructuredName(new StructuredName());
 		assertValidate(vcard.validate(VCardVersion.V2_1));
 		assertValidate(vcard.validate(VCardVersion.V3_0));
 		assertValidate(vcard.validate(VCardVersion.V4_0));
@@ -220,19 +219,18 @@ public class VCardTest {
 	public void validate_properties() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		VCardTypeImpl prop = new VCardTypeImpl("test");
-		vcard.addType(prop);
+		VCardTypeImpl prop = new VCardTypeImpl();
+		vcard.addProperty(prop);
 
 		assertValidate(vcard.validate(VCardVersion.V4_0), prop);
 		assertEquals(VCardVersion.V4_0, prop.validateVersion);
 		assertTrue(vcard == prop.validateVCard);
 	}
 
-	private class HasAltIdImpl extends VCardType implements HasAltId {
+	private class HasAltIdImpl extends VCardProperty implements HasAltId {
 		private String altId;
 
 		public HasAltIdImpl(String altId) {
-			super("NAME");
 			this.altId = altId;
 		}
 
@@ -245,35 +243,11 @@ public class VCardTest {
 		public void setAltId(String altId) {
 			this.altId = altId;
 		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
 	}
 
-	private class VCardTypeImpl extends VCardType {
+	private class VCardTypeImpl extends VCardProperty {
 		public VCardVersion validateVersion;
 		public VCard validateVCard;
-
-		public VCardTypeImpl(String typeName) {
-			super(typeName);
-		}
-
-		@Override
-		protected void doMarshalText(StringBuilder value, VCardVersion version, CompatibilityMode compatibilityMode) {
-			//empty
-		}
-
-		@Override
-		protected void doUnmarshalText(String value, VCardVersion version, List<String> warnings, CompatibilityMode compatibilityMode) {
-			//empty
-		}
 
 		@Override
 		public void _validate(List<String> warnings, VCardVersion version, VCard vcard) {

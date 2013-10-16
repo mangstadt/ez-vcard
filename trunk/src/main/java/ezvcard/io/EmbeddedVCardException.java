@@ -2,6 +2,7 @@ package ezvcard.io;
 
 import ezvcard.VCard;
 import ezvcard.VCardException;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -33,8 +34,8 @@ import ezvcard.VCardException;
  */
 
 /**
- * Thrown during the marshalling/unmarshalling of a type to signal to the
- * marshaller that the type's value is a nested (2.1 style) or embedded (3.0
+ * Thrown during the marshalling/unmarshalling of a property to signal to the
+ * marshaller that the property's value is a nested (2.1 style) or embedded (3.0
  * style) vCard.
  * @author Michael Angstadt
  */
@@ -45,7 +46,7 @@ public class EmbeddedVCardException extends VCardException {
 
 	/**
 	 * Thrown to unmarshal a nested or embedded vCard.
-	 * @param callback injects the unmarshalled vCard into the type object
+	 * @param callback injects the unmarshalled vCard into the property object
 	 */
 	public EmbeddedVCardException(InjectionCallback callback) {
 		this.callback = callback;
@@ -70,24 +71,45 @@ public class EmbeddedVCardException extends VCardException {
 	}
 
 	/**
-	 * Injects an unmarshalled vCard into the type class that threw this
+	 * Injects the unmarshalled vCard into the property object that threw this
 	 * exception.
 	 * @param vcard the vCard to inject
 	 */
 	public void injectVCard(VCard vcard) {
-		if (callback != null) {
-			callback.injectVCard(vcard);
+		if (callback == null) {
+			return;
 		}
+
+		callback.injectVCard(vcard);
 	}
 
 	/**
-	 * Injects an unmarshalled vCard into the type object.
+	 * Gets the property object that threw the exception.
+	 * @return the property object
+	 */
+	public VCardProperty getProperty() {
+		if (callback == null) {
+			return null;
+		}
+
+		return callback.getProperty();
+	}
+
+	/**
+	 * Injects an unmarshalled vCard into the property object.
 	 */
 	public static interface InjectionCallback {
 		/**
-		 * Injects an unmarshalled vCard into the type object.
+		 * Injects an unmarshalled vCard into the property object.
 		 * @param vcard the vCard to inject
 		 */
 		void injectVCard(VCard vcard);
+
+		/**
+		 * Gets the property object that threw the
+		 * {@link EmbeddedVCardException}.
+		 * @return the property object
+		 */
+		VCardProperty getProperty();
 	}
 }
