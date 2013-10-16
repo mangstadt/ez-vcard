@@ -1,5 +1,4 @@
 #summary Code samples (versions 0.8.5 and below).
-#labels Featured
 
 ----
 *NOTE:*

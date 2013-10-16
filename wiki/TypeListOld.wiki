@@ -1,5 +1,4 @@
 #summary Contains a listing of all vCard properties, along with code samples (versions 0.8.5 and below).
-#labels Featured
 
 ----
 *NOTE:*
