@@ -367,7 +367,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 			throw new IllegalArgumentException("Property name contains invalid characters.  Valid characters are letters, numbers, and hyphens: " + propertyName);
 		}
 
-		value = sanitizeValue(propertyName, parameters, value);
+		value = sanitizeValue(parameters, value);
 
 		//write the group
 		if (group != null) {
@@ -436,12 +436,11 @@ public class VCardRawWriter implements Closeable, Flushable {
 
 	/**
 	 * Sanitizes a property value for safe inclusion in a vCard.
-	 * @param propertyName the property name
 	 * @param parameters the parameters
 	 * @param value the value to sanitize
 	 * @return the sanitized value
 	 */
-	private String sanitizeValue(String propertyName, VCardParameters parameters, String value) {
+	private String sanitizeValue(VCardParameters parameters, String value) {
 		if (value == null) {
 			return "";
 		}
