@@ -443,26 +443,8 @@ public class Ezvcard {
 
 	/**
 	 * <p>
-	 * Marshals a vCard to its traditional, plain-text representation.
-	 * </p>
-	 * 
-	 * <p>
-	 * Use {@link VCardWriter} for more control over how the vCard is written.
-	 * </p>
-	 * @param vcard the vCard to marshal
-	 * @return chainer object for completing the write operation
-	 * @see VCardWriter
-	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
-	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
-	 */
-	public static WriterChainTextSingle write(VCard vcard) {
-		return new WriterChainTextSingle(vcard);
-	}
-
-	/**
-	 * <p>
-	 * Marshals multiple vCards to their traditional, plain-text representation.
+	 * Marshals one or more vCards to their traditional, plain-text
+	 * representation.
 	 * </p>
 	 * 
 	 * <p>
@@ -475,13 +457,14 @@ public class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static WriterChainTextMulti write(VCard... vcards) {
+	public static WriterChainText write(VCard... vcards) {
 		return write(Arrays.asList(vcards));
 	}
 
 	/**
 	 * <p>
-	 * Marshals multiple vCards to their traditional, plain-text representation.
+	 * Marshals one or more vCards to their traditional, plain-text
+	 * representation.
 	 * </p>
 	 * 
 	 * <p>
@@ -494,30 +477,13 @@ public class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static WriterChainTextMulti write(Collection<VCard> vcards) {
-		return new WriterChainTextMulti(vcards);
+	public static WriterChainText write(Collection<VCard> vcards) {
+		return new WriterChainText(vcards);
 	}
 
 	/**
 	 * <p>
-	 * Marshals a vCard to its XML representation (xCard).
-	 * </p>
-	 * 
-	 * <p>
-	 * Use {@link XCardDocument} for more control over how the vCard is written.
-	 * </p>
-	 * @param vcard the vCard to marshal
-	 * @return chainer object for completing the write operation
-	 * @see XCardDocument
-	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
-	 */
-	public static WriterChainXmlSingle writeXml(VCard vcard) {
-		return new WriterChainXmlSingle(vcard);
-	}
-
-	/**
-	 * <p>
-	 * Marshals multiple vCards to their XML representation (xCard).
+	 * Marshals one or more vCards to their XML representation (xCard).
 	 * </p>
 	 * 
 	 * <p>
@@ -529,13 +495,13 @@ public class Ezvcard {
 	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static WriterChainXmlMulti writeXml(VCard... vcards) {
+	public static WriterChainXml writeXml(VCard... vcards) {
 		return writeXml(Arrays.asList(vcards));
 	}
 
 	/**
 	 * <p>
-	 * Marshals multiple vCards to their XML representation (xCard).
+	 * Marshals one or more vCards to their XML representation (xCard).
 	 * </p>
 	 * 
 	 * <p>
@@ -547,8 +513,8 @@ public class Ezvcard {
 	 * @see XCardDocument
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static WriterChainXmlMulti writeXml(Collection<VCard> vcards) {
-		return new WriterChainXmlMulti(vcards);
+	public static WriterChainXml writeXml(Collection<VCard> vcards) {
+		return new WriterChainXml(vcards);
 	}
 
 	/**
@@ -587,26 +553,7 @@ public class Ezvcard {
 
 	/**
 	 * <p>
-	 * Marshals a vCard to its JSON representation (jCard).
-	 * </p>
-	 * 
-	 * <p>
-	 * Use {@link JCardWriter} for more control over how the vCard is written.
-	 * </p>
-	 * @param vcard the vCard to marshal
-	 * @return chainer object for completing the write operation
-	 * @see JCardWriter
-	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
-	 * draft specification</a>
-	 */
-	public static WriterChainJsonSingle writeJson(VCard vcard) {
-		return new WriterChainJsonSingle(vcard);
-	}
-
-	/**
-	 * <p>
-	 * Marshals multiple vCards to their JSON representation (jCard).
+	 * Marshals one or more vCards to their JSON representation (jCard).
 	 * </p>
 	 * 
 	 * <p>
@@ -619,13 +566,13 @@ public class Ezvcard {
 	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
-	public static WriterChainJsonMulti writeJson(VCard... vcards) {
+	public static WriterChainJson writeJson(VCard... vcards) {
 		return writeJson(Arrays.asList(vcards));
 	}
 
 	/**
 	 * <p>
-	 * Marshals multiple vCards to their JSON representation (jCard).
+	 * Marshals one or more vCards to their JSON representation (jCard).
 	 * </p>
 	 * 
 	 * <p>
@@ -638,8 +585,8 @@ public class Ezvcard {
 	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
 	 * draft specification</a>
 	 */
-	public static WriterChainJsonMulti writeJson(Collection<VCard> vcards) {
-		return new WriterChainJsonMulti(vcards);
+	public static WriterChainJson writeJson(Collection<VCard> vcards) {
+		return new WriterChainJson(vcards);
 	}
 
 	static abstract class ParserChain<T> {
@@ -1377,14 +1324,19 @@ public class Ezvcard {
 		}
 	}
 
-	static abstract class WriterChainText<T> extends WriterChain<T> {
+	/**
+	 * Chainer class for writing plain text vCards
+	 * @see Ezvcard#write(Collection)
+	 * @see Ezvcard#write(VCard...)
+	 */
+	public static class WriterChainText extends WriterChain<WriterChainText> {
 		VCardVersion version;
 		boolean prodId = true;
 		boolean versionStrict = true;
 		boolean caretEncoding = false;
 		final ScribeIndex index = new ScribeIndex();
 
-		WriterChainText(Collection<VCard> vcards) {
+		private WriterChainText(Collection<VCard> vcards) {
 			super(vcards);
 		}
 
@@ -1403,7 +1355,7 @@ public class Ezvcard {
 		 * @param version the version to marshal the vCards to
 		 * @return this
 		 */
-		public T version(VCardVersion version) {
+		public WriterChainText version(VCardVersion version) {
 			this.version = version;
 			return this_;
 		}
@@ -1416,7 +1368,7 @@ public class Ezvcard {
 		 * @param include true to add PRODID (default), false not to
 		 * @return this
 		 */
-		public T prodId(boolean include) {
+		public WriterChainText prodId(boolean include) {
 			this.prodId = include;
 			return this_;
 		}
@@ -1429,7 +1381,7 @@ public class Ezvcard {
 		 * @see VCardWriter#setCaretEncodingEnabled(boolean)
 		 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
 		 */
-		public T caretEncoding(boolean enable) {
+		public WriterChainText caretEncoding(boolean enable) {
 			this.caretEncoding = enable;
 			return this_;
 		}
@@ -1441,7 +1393,7 @@ public class Ezvcard {
 		 * the target version, false to include them anyway (defaults to true)
 		 * @return this
 		 */
-		public T versionStrict(boolean versionStrict) {
+		public WriterChainText versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;
 			return this_;
 		}
@@ -1451,7 +1403,7 @@ public class Ezvcard {
 		 * @param scribe the scribe to register
 		 * @return this
 		 */
-		public T register(VCardPropertyScribe<? extends VCardProperty> scribe) {
+		public WriterChainText register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			index.register(scribe);
 			return this_;
 		}
@@ -1538,73 +1490,17 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Chainer class for writing plain text vCards
-	 * @see Ezvcard#write(Collection)
-	 * @see Ezvcard#write(VCard...)
+	 * Chainer class for writing XML vCards (xCard).
+	 * @see Ezvcard#writeXml(Collection)
+	 * @see Ezvcard#writeXml(VCard...)
 	 */
-	public static class WriterChainTextMulti extends WriterChainText<WriterChainTextMulti> {
-		private WriterChainTextMulti(Collection<VCard> vcards) {
-			super(vcards);
-		}
-
-		@Override
-		public WriterChainTextMulti version(VCardVersion version) {
-			return super.version(version);
-		}
-
-		@Override
-		public WriterChainTextMulti prodId(boolean include) {
-			return super.prodId(include);
-		}
-
-		@Override
-		public WriterChainTextMulti caretEncoding(boolean enable) {
-			return super.caretEncoding(enable);
-		}
-
-		@Override
-		public WriterChainTextMulti versionStrict(boolean versionStrict) {
-			return super.versionStrict(versionStrict);
-		}
-	}
-
-	/**
-	 * Chainer class for writing plain text vCards
-	 * @see Ezvcard#write(VCard)
-	 */
-	public static class WriterChainTextSingle extends WriterChainText<WriterChainTextSingle> {
-		private WriterChainTextSingle(VCard vcard) {
-			super(Arrays.asList(vcard));
-		}
-
-		@Override
-		public WriterChainTextSingle version(VCardVersion version) {
-			return super.version(version);
-		}
-
-		@Override
-		public WriterChainTextSingle prodId(boolean include) {
-			return super.prodId(include);
-		}
-
-		@Override
-		public WriterChainTextSingle caretEncoding(boolean enable) {
-			return super.caretEncoding(enable);
-		}
-
-		@Override
-		public WriterChainTextSingle versionStrict(boolean versionStrict) {
-			return super.versionStrict(versionStrict);
-		}
-	}
-
-	static abstract class WriterChainXml<T> extends WriterChain<T> {
+	public static class WriterChainXml extends WriterChain<WriterChainXml> {
 		boolean prodId = true;
 		boolean versionStrict = true;
 		int indent = -1;
 		final ScribeIndex index = new ScribeIndex();
 
-		WriterChainXml(Collection<VCard> vcards) {
+		private WriterChainXml(Collection<VCard> vcards) {
 			super(vcards);
 		}
 
@@ -1614,7 +1510,7 @@ public class Ezvcard {
 		 * @param include true to add PRODID (default), false not to
 		 * @return this
 		 */
-		public T prodId(boolean include) {
+		public WriterChainXml prodId(boolean include) {
 			this.prodId = include;
 			return this_;
 		}
@@ -1625,7 +1521,7 @@ public class Ezvcard {
 		 * @param indent the number of spaces in the indent string
 		 * @return this
 		 */
-		public T indent(int indent) {
+		public WriterChainXml indent(int indent) {
 			this.indent = indent;
 			return this_;
 		}
@@ -1637,7 +1533,7 @@ public class Ezvcard {
 		 * xCard, false to include them anyway (defaults to true)
 		 * @return this
 		 */
-		public T versionStrict(boolean versionStrict) {
+		public WriterChainXml versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;
 			return this_;
 		}
@@ -1647,7 +1543,7 @@ public class Ezvcard {
 		 * @param scribe the scribe to register
 		 * @return this
 		 */
-		public T register(VCardPropertyScribe<? extends VCardProperty> scribe) {
+		public WriterChainXml register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			index.register(scribe);
 			return this_;
 		}
@@ -1723,57 +1619,6 @@ public class Ezvcard {
 	}
 
 	/**
-	 * Chainer class for writing XML vCards (xCard).
-	 * @see Ezvcard#writeXml(Collection)
-	 * @see Ezvcard#writeXml(VCard...)
-	 */
-	public static class WriterChainXmlMulti extends WriterChainXml<WriterChainXmlMulti> {
-		private WriterChainXmlMulti(Collection<VCard> vcards) {
-			super(vcards);
-		}
-
-		@Override
-		public WriterChainXmlMulti prodId(boolean include) {
-			return super.prodId(include);
-		}
-
-		@Override
-		public WriterChainXmlMulti indent(int indent) {
-			return super.indent(indent);
-		}
-
-		@Override
-		public WriterChainXmlMulti versionStrict(boolean versionStrict) {
-			return super.versionStrict(versionStrict);
-		}
-	}
-
-	/**
-	 * Chainer class for writing XML vCards (xCard).
-	 * @see Ezvcard#writeXml(VCard)
-	 */
-	public static class WriterChainXmlSingle extends WriterChainXml<WriterChainXmlSingle> {
-		private WriterChainXmlSingle(VCard vcard) {
-			super(Arrays.asList(vcard));
-		}
-
-		@Override
-		public WriterChainXmlSingle prodId(boolean include) {
-			return super.prodId(include);
-		}
-
-		@Override
-		public WriterChainXmlSingle indent(int indent) {
-			return super.indent(indent);
-		}
-
-		@Override
-		public WriterChainXmlSingle versionStrict(boolean versionStrict) {
-			return super.versionStrict(versionStrict);
-		}
-	}
-
-	/**
 	 * Chainer class for writing HTML vCards (hCard).
 	 * @see Ezvcard#writeHtml(Collection)
 	 * @see Ezvcard#writeHtml(VCard...)
@@ -1835,13 +1680,18 @@ public class Ezvcard {
 		}
 	}
 
-	static abstract class WriterChainJson<T> extends WriterChain<T> {
+	/**
+	 * Chainer class for writing JSON-encoded vCards (jCard).
+	 * @see Ezvcard#writeJson(Collection)
+	 * @see Ezvcard#writeJson(VCard...)
+	 */
+	public static class WriterChainJson extends WriterChain<WriterChainJson> {
 		boolean prodId = true;
 		boolean versionStrict = true;
 		boolean indent = false;
 		final ScribeIndex index = new ScribeIndex();
 
-		WriterChainJson(Collection<VCard> vcards) {
+		private WriterChainJson(Collection<VCard> vcards) {
 			super(vcards);
 		}
 
@@ -1851,7 +1701,7 @@ public class Ezvcard {
 		 * @param include true to add PRODID (default), false not to
 		 * @return this
 		 */
-		public T prodId(boolean include) {
+		public WriterChainJson prodId(boolean include) {
 			this.prodId = include;
 			return this_;
 		}
@@ -1862,7 +1712,7 @@ public class Ezvcard {
 		 * false)
 		 * @return this
 		 */
-		public T indent(boolean indent) {
+		public WriterChainJson indent(boolean indent) {
 			this.indent = indent;
 			return this_;
 		}
@@ -1874,7 +1724,7 @@ public class Ezvcard {
 		 * jCard, false to include them anyway (defaults to true)
 		 * @return this
 		 */
-		public T versionStrict(boolean versionStrict) {
+		public WriterChainJson versionStrict(boolean versionStrict) {
 			this.versionStrict = versionStrict;
 			return this_;
 		}
@@ -1884,7 +1734,7 @@ public class Ezvcard {
 		 * @param scribe the scribe to register
 		 * @return this
 		 */
-		public T register(VCardPropertyScribe<? extends VCardProperty> scribe) {
+		public WriterChainJson register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 			index.register(scribe);
 			return this_;
 		}
@@ -1948,57 +1798,6 @@ public class Ezvcard {
 			} finally {
 				writer.closeJsonStream();
 			}
-		}
-	}
-
-	/**
-	 * Chainer class for writing JSON-encoded vCards (jCard).
-	 * @see Ezvcard#writeJson(Collection)
-	 * @see Ezvcard#writeJson(VCard...)
-	 */
-	public static class WriterChainJsonMulti extends WriterChainJson<WriterChainJsonMulti> {
-		private WriterChainJsonMulti(Collection<VCard> vcards) {
-			super(vcards);
-		}
-
-		@Override
-		public WriterChainJsonMulti prodId(boolean include) {
-			return super.prodId(include);
-		}
-
-		@Override
-		public WriterChainJsonMulti indent(boolean indent) {
-			return super.indent(indent);
-		}
-
-		@Override
-		public WriterChainJsonMulti versionStrict(boolean versionStrict) {
-			return super.versionStrict(versionStrict);
-		}
-	}
-
-	/**
-	 * Chainer class for writing JSON-encoded vCards (jCard).
-	 * @see Ezvcard#writeJson(VCard)
-	 */
-	public static class WriterChainJsonSingle extends WriterChainJson<WriterChainJsonSingle> {
-		private WriterChainJsonSingle(VCard vcard) {
-			super(Arrays.asList(vcard));
-		}
-
-		@Override
-		public WriterChainJsonSingle prodId(boolean include) {
-			return super.prodId(include);
-		}
-
-		@Override
-		public WriterChainJsonSingle indent(boolean indent) {
-			return super.indent(indent);
-		}
-
-		@Override
-		public WriterChainJsonSingle versionStrict(boolean versionStrict) {
-			return super.versionStrict(versionStrict);
 		}
 	}
 
