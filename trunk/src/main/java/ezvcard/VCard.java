@@ -355,7 +355,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the JSON string
 	 * @see Ezvcard
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
 	 * draft specification</a>
 	 */
 	public String writeJson() {
@@ -374,7 +374,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @throws IOException if there's a problem writing to the file
 	 * @see Ezvcard
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
 	 * draft specification</a>
 	 */
 	public void writeJson(File file) throws IOException {
@@ -393,7 +393,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see Ezvcard
 	 * @throws IOException if there's a problem writing to the output stream
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
 	 * draft specification</a>
 	 */
 	public void writeJson(OutputStream out) throws IOException {
@@ -412,7 +412,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @throws IOException if there's a problem writing to the writer
 	 * @see Ezvcard
 	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-03">jCard
+	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
 	 * draft specification</a>
 	 */
 	public void writeJson(Writer writer) throws IOException {
