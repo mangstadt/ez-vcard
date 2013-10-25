@@ -1,5 +1,17 @@
 #summary Archive of all past news entries.
 
+*October 25, 2013*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.9.0] released.  This release adds a revamped marshalling framework and includes a significant reorganization of the API.
+
+Existing code that uses older versions of ez-vcard will most likely break, due to the fact that many packages and classes have been renamed.  Please see the [Changelog changelog] for a list of these changes.
+
+*October 1, 2013*
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.8.5] released.  This release fixes a bug dealing with "quoted-printable" property values not being folded correctly.
+
+See the [Changelog changelog] for more details.
+
 *September 19, 2013*
 
 [http://code.google.com/p/ez-vcard/downloads/list Version 0.8.4] released.  This release adds a validation framework, better UTF-8 support, and a large number of other, relatively minor, changes.
