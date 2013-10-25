@@ -1673,7 +1673,8 @@ public class Ezvcard {
 		 * output stream
 		 */
 		public void go(OutputStream out) throws TransformerException {
-			go(new OutputStreamWriter(out));
+			XCardDocument doc = createXCardDocument();
+			doc.write(out, indent);
 		}
 
 		/**
@@ -1683,13 +1684,8 @@ public class Ezvcard {
 		 * @throws TransformerException if there's a problem writing to the file
 		 */
 		public void go(File file) throws IOException, TransformerException {
-			FileWriter writer = null;
-			try {
-				writer = new FileWriter(file);
-				go(writer);
-			} finally {
-				IOUtils.closeQuietly(writer);
-			}
+			XCardDocument doc = createXCardDocument();
+			doc.write(file, indent);
 		}
 
 		/**
@@ -1913,7 +1909,7 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the output stream
 		 */
 		public void go(OutputStream out) throws IOException {
-			go(new OutputStreamWriter(out));
+			go(new JCardWriter(out, vcards.size() > 1));
 		}
 
 		/**
@@ -1922,9 +1918,8 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the file
 		 */
 		public void go(File file) throws IOException {
-			FileWriter writer = null;
+			JCardWriter writer = new JCardWriter(file, vcards.size() > 1);
 			try {
-				writer = new FileWriter(file);
 				go(writer);
 			} finally {
 				IOUtils.closeQuietly(writer);
@@ -1937,19 +1932,21 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the writer
 		 */
 		public void go(Writer writer) throws IOException {
-			@SuppressWarnings("resource")
-			JCardWriter jcardWriter = new JCardWriter(writer, vcards.size() > 1);
-			jcardWriter.setAddProdId(prodId);
-			jcardWriter.setIndent(indent);
-			jcardWriter.setVersionStrict(versionStrict);
-			jcardWriter.setScribeIndex(index);
+			go(new JCardWriter(writer, vcards.size() > 1));
+		}
+
+		private void go(JCardWriter writer) throws IOException {
+			writer.setAddProdId(prodId);
+			writer.setIndent(indent);
+			writer.setVersionStrict(versionStrict);
+			writer.setScribeIndex(index);
 			try {
 				for (VCard vcard : vcards) {
-					jcardWriter.write(vcard);
-					jcardWriter.flush();
+					writer.write(vcard);
+					writer.flush();
 				}
 			} finally {
-				jcardWriter.closeJsonStream();
+				writer.closeJsonStream();
 			}
 		}
 	}
