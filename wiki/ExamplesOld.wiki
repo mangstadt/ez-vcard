@@ -357,6 +357,7 @@ public class JohnDoeVCard {
     return vcard;
   }
 }
+}}}
 
 ==Example 5.4: Validating a VCard object==
 
