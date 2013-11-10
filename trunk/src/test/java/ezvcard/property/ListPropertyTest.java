@@ -43,7 +43,7 @@ public class ListPropertyTest {
 	@Test
 	public void validate() {
 		ListPropertyImpl zeroItems = new ListPropertyImpl();
-		assertValidate(zeroItems).run(16);
+		assertValidate(zeroItems).run(8);
 
 		ListPropertyImpl oneItem = new ListPropertyImpl();
 		oneItem.addValue("one");

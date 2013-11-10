@@ -46,9 +46,9 @@ public class ImppTest {
 	@Test
 	public void validate() {
 		Impp empty = new Impp((String) null);
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 7);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(7);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(7);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(8);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
 
 		Impp withValue = new Impp("aim:john.doe@aol.com");
 		assertValidate(withValue).versions(VCardVersion.V2_1).run(2);

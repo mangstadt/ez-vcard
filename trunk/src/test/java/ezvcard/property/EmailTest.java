@@ -43,7 +43,7 @@ public class EmailTest {
 	@Test
 	public void validate() {
 		Email property = new Email(null);
-		assertValidate(property).run(7);
+		assertValidate(property).run(8);
 
 		property.setValue("johndoe@example.com");
 		assertValidate(property).run();

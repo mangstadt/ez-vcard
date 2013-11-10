@@ -413,7 +413,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	@Override
 	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (uri == null) {
-			warnings.add(new Warning(7));
+			warnings.add(new Warning(8));
 		}
 	}
 }

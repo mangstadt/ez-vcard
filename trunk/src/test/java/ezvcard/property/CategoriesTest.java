@@ -40,7 +40,7 @@ public class CategoriesTest {
 	@Test
 	public void validate() {
 		Categories empty = new Categories();
-		assertValidate(empty).run(16);
+		assertValidate(empty).run(8);
 
 		Categories withValue = new Categories();
 		withValue.addValue("one");

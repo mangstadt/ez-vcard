@@ -71,7 +71,7 @@ public class ListProperty<T> extends VCardProperty {
 	@Override
 	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (values.isEmpty()) {
-			warnings.add(new Warning(16));
+			warnings.add(new Warning(8));
 		}
 	}
 }
