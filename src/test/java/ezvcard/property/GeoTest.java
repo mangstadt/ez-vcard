@@ -42,10 +42,10 @@ public class GeoTest {
 	@Test
 	public void validate() {
 		Geo empty = new Geo(null);
-		assertValidate(empty).run(2);
+		assertValidate(empty).run(13, 14);
 
 		Geo withValue = new Geo(-12.34, 56.78);
-		assertValidate(withValue).run(0);
+		assertValidate(withValue).run();
 	}
 
 	@Test

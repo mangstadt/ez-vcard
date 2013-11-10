@@ -6,6 +6,7 @@ import java.util.List;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
@@ -64,13 +65,13 @@ public class FavoriteColors extends VCardProperty {
 	//validates the property's data
 	//invoked when "VCard.validate()" is called
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (colors.isEmpty()) {
-			warnings.add("No colors are defined.");
+			warnings.add(new Warning("No colors are defined."));
 		}
 
 		if (colors.contains("periwinkle") && version == VCardVersion.V4_0) {
-			warnings.add("Periwinkle is deprecated in vCard 4.0.");
+			warnings.add(new Warning("Periwinkle is deprecated in vCard 4.0."));
 		}
 	}
 

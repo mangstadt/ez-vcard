@@ -1,10 +1,10 @@
 package ezvcard.io.xml;
 
+import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertWarningsLists;
-import static ezvcard.util.StringUtils.NEWLINE;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1056,7 +1056,7 @@ public class XCardDocumentTest {
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
-		assertValidate(vcard.validate(VCardVersion.V4_0));
+		assertValidate(vcard).versions(VCardVersion.V4_0).run();
 
 		assertExample(vcard, "rfc6351-example.xml");
 	}
@@ -1143,7 +1143,7 @@ public class XCardDocumentTest {
 		assertEquals("http://nomis80.org", url.getValue());
 		assertEquals("home", url.getType());
 
-		assertValidate(vcard.validate(VCardVersion.V4_0));
+		assertValidate(vcard).versions(vcard.getVersion()).run();
 		assertWarningsLists(xcard.getParseWarnings(), 0);
 	}
 

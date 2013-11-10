@@ -1,7 +1,7 @@
 package ezvcard.parameter;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -63,9 +63,9 @@ public class VCardParametersTest {
 		parameters.setEncoding(Encoding.get("foo"));
 		parameters.setValue(VCardDataType.get("foo"));
 
-		assertWarnings(4, parameters.validate(VCardVersion.V2_1));
-		assertWarnings(4, parameters.validate(VCardVersion.V3_0));
-		assertWarnings(3, parameters.validate(VCardVersion.V4_0));
+		assertValidate(parameters.validate(VCardVersion.V2_1), 3, 6, 3, 3);
+		assertValidate(parameters.validate(VCardVersion.V3_0), 3, 3, 3, 6);
+		assertValidate(parameters.validate(VCardVersion.V4_0), 3, 3, 3);
 	}
 
 	@Test
@@ -75,9 +75,9 @@ public class VCardParametersTest {
 		parameters.put("PREF", "invalid");
 		parameters.put("PID", "invalid");
 
-		assertWarnings(7, parameters.validate(VCardVersion.V2_1));
-		assertWarnings(7, parameters.validate(VCardVersion.V3_0));
-		assertWarnings(4, parameters.validate(VCardVersion.V4_0));
+		assertValidate(parameters.validate(VCardVersion.V2_1), 5, 5, 5, 5, 6, 6, 6);
+		assertValidate(parameters.validate(VCardVersion.V3_0), 5, 5, 5, 5, 6, 6, 6);
+		assertValidate(parameters.validate(VCardVersion.V4_0), 5, 5, 5, 5);
 	}
 
 	@Test
@@ -93,30 +93,30 @@ public class VCardParametersTest {
 		parameters.setSortAs("value");
 		parameters.setTimezone("value");
 
-		assertWarnings(8, parameters.validate(VCardVersion.V2_1));
-		assertWarnings(9, parameters.validate(VCardVersion.V3_0));
-		assertWarnings(1, parameters.validate(VCardVersion.V4_0));
+		assertValidate(parameters.validate(VCardVersion.V2_1), 6, 6, 6, 6, 6, 6, 6, 6);
+		assertValidate(parameters.validate(VCardVersion.V3_0), 6, 6, 6, 6, 6, 6, 6, 6, 6);
+		assertValidate(parameters.validate(VCardVersion.V4_0), 6);
 	}
 
 	@Test
 	public void validate_value_supported_versions() {
 		parameters.setEncoding(Encoding._7BIT);
 		parameters.setValue(VCardDataType.CONTENT_ID);
-		assertWarnings(0, parameters.validate(VCardVersion.V2_1));
-		assertWarnings(2, parameters.validate(VCardVersion.V3_0));
-		assertWarnings(2, parameters.validate(VCardVersion.V4_0));
+		assertValidate(parameters.validate(VCardVersion.V2_1));
+		assertValidate(parameters.validate(VCardVersion.V3_0), 4, 4);
+		assertValidate(parameters.validate(VCardVersion.V4_0), 4, 4);
 
 		parameters.setEncoding(Encoding.B);
 		parameters.setValue(VCardDataType.BINARY);
-		assertWarnings(2, parameters.validate(VCardVersion.V2_1));
-		assertWarnings(0, parameters.validate(VCardVersion.V3_0));
-		assertWarnings(2, parameters.validate(VCardVersion.V4_0));
+		assertValidate(parameters.validate(VCardVersion.V2_1), 4, 4);
+		assertValidate(parameters.validate(VCardVersion.V3_0));
+		assertValidate(parameters.validate(VCardVersion.V4_0), 4, 4);
 
 		parameters.setEncoding(null);
 		parameters.setValue(VCardDataType.DATE_AND_OR_TIME);
-		assertWarnings(1, parameters.validate(VCardVersion.V2_1));
-		assertWarnings(1, parameters.validate(VCardVersion.V3_0));
-		assertWarnings(0, parameters.validate(VCardVersion.V4_0));
+		assertValidate(parameters.validate(VCardVersion.V2_1), 4);
+		assertValidate(parameters.validate(VCardVersion.V3_0), 4);
+		assertValidate(parameters.validate(VCardVersion.V4_0));
 	}
 
 	@Test

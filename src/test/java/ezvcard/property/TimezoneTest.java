@@ -51,17 +51,17 @@ public class TimezoneTest {
 	@Test
 	public void validate() {
 		Timezone empty = new Timezone((UtcOffset) null);
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(1);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(8, 20);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(8);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
 
 		Timezone withOffset = new Timezone(-5, 30);
-		assertValidate(withOffset).run(0);
+		assertValidate(withOffset).run();
 
 		Timezone withText = new Timezone("America/New_York");
-		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withText).versions(VCardVersion.V3_0).run(0);
-		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withText).versions(VCardVersion.V2_1).run(20);
+		assertValidate(withText).versions(VCardVersion.V3_0).run();
+		assertValidate(withText).versions(VCardVersion.V4_0).run();
 	}
 
 	@Test

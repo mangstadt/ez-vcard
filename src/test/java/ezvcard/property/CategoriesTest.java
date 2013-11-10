@@ -40,10 +40,10 @@ public class CategoriesTest {
 	@Test
 	public void validate() {
 		Categories empty = new Categories();
-		assertValidate(empty).run(1);
+		assertValidate(empty).run(16);
 
 		Categories withValue = new Categories();
 		withValue.addValue("one");
-		assertValidate(withValue).run(0);
+		assertValidate(withValue).run();
 	}
 }

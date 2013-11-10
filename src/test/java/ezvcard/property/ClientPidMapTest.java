@@ -44,14 +44,14 @@ public class ClientPidMapTest {
 	@Test
 	public void validate() {
 		ClientPidMap empty = new ClientPidMap(null, null);
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
 
 		ClientPidMap withValue = new ClientPidMap(1, "urn:uuid:1234");
-		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withValue).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withValue).versions(VCardVersion.V2_1).run(2);
+		assertValidate(withValue).versions(VCardVersion.V3_0).run(2);
+		assertValidate(withValue).versions(VCardVersion.V4_0).run();
 	}
 
 	@Test

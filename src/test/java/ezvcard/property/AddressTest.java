@@ -43,12 +43,12 @@ public class AddressTest {
 	@Test
 	public void validate() {
 		Address property = new Address();
-		assertValidate(property).run(0);
+		assertValidate(property).run();
 
 		property.addType(AddressType.DOM);
 		property.addType(AddressType.HOME);
 		property.addType(AddressType.PREF);
-		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(0);
-		assertValidate(property).versions(VCardVersion.V4_0).run(1);
+		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run();
+		assertValidate(property).versions(VCardVersion.V4_0).run(9);
 	}
 }

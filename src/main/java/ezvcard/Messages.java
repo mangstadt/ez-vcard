@@ -1,15 +1,7 @@
 package ezvcard;
 
-import static ezvcard.util.StringUtils.NEWLINE;
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-
-import org.junit.Test;
-
-import ezvcard.ValidationWarnings.WarningsGroup;
-import ezvcard.property.VCardProperty;
-import ezvcard.util.TestUtils.Tests;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -37,34 +29,34 @@ import ezvcard.util.TestUtils.Tests;
  */
 
 /**
+ * Singleton for accessing the i18n resource bundle.
  * @author Michael Angstadt
  */
-public class WarningsGroupTest {
-	@Test
-	public void toString_() {
-		//@formatter:off
-		Tests tests = new Tests();
-		tests.add(
-			"one",
-			new WarningsGroup(null, Arrays.asList("one"))
-		);
-		tests.add(
-			"[TestProperty]: one" + NEWLINE + 
-			"[TestProperty]: two",
-			new WarningsGroup(new TestProperty(), Arrays.asList("one", "two"))
-		);
-		//@formatter:on
+public enum Messages {
+	INSTANCE;
 
-		for (Object[] test : tests) {
-			String expected = (String) test[0];
-			WarningsGroup group = (WarningsGroup) test[1];
-			String actual = group.toString();
+	private final ResourceBundle messages;
 
-			assertEquals(expected, actual);
-		}
+	private Messages() {
+		messages = ResourceBundle.getBundle("ezvcard/messages");
 	}
 
-	private class TestProperty extends VCardProperty {
-		//empty
+	/**
+	 * Gets a validation warning message.
+	 * @param code the message code
+	 * @param args the message arguments
+	 * @return the message
+	 */
+	public String getValidationWarning(int code, Object... args) {
+		return getMessage("validate." + code, args);
+	}
+
+	public String getMessage(String key, Object... args) {
+		String message = messages.getString(key);
+		if (message == null) {
+			return null;
+		}
+
+		return MessageFormat.format(message, args);
 	}
 }

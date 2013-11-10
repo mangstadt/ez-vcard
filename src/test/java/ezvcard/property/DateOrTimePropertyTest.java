@@ -46,7 +46,7 @@ public class DateOrTimePropertyTest {
 	@Test
 	public void validate() {
 		DateOrTimeTypeImpl empty = new DateOrTimeTypeImpl();
-		assertValidate(empty).run(1);
+		assertValidate(empty).run(8);
 
 		DateOrTimeTypeImpl withDate = new DateOrTimeTypeImpl();
 		Calendar c = Calendar.getInstance();
@@ -56,19 +56,17 @@ public class DateOrTimePropertyTest {
 		c.set(Calendar.DAY_OF_MONTH, 5);
 		Date date = c.getTime();
 		withDate.setDate(date, false);
-		assertValidate(withDate).run(0);
+		assertValidate(withDate).run();
 
 		DateOrTimeTypeImpl withPartialDate = new DateOrTimeTypeImpl();
 		withPartialDate.setPartialDate(PartialDate.date(null, 6, 5));
-		assertValidate(withPartialDate).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withPartialDate).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withPartialDate).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withPartialDate).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(12);
+		assertValidate(withPartialDate).versions(VCardVersion.V4_0).run();
 
 		DateOrTimeTypeImpl withText = new DateOrTimeTypeImpl();
 		withText.setText("text");
-		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withText).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(11);
+		assertValidate(withText).versions(VCardVersion.V4_0).run();
 	}
 
 	private static class DateOrTimeTypeImpl extends DateOrTimeProperty {

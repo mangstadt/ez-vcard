@@ -43,15 +43,14 @@ public class KeyTest {
 	@Test
 	public void validate() {
 		Key empty = new Key();
-		assertValidate(empty).run(1);
+		assertValidate(empty).run(8);
 
 		Key withUrl = new Key("http://example.com", KeyType.PGP);
-		assertValidate(withUrl).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withUrl).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withUrl).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withUrl).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(15);
+		assertValidate(withUrl).versions(VCardVersion.V4_0).run();
 
 		Key withText = new Key((String) null, KeyType.PGP);
 		withText.setText("abc123", KeyType.PGP);
-		assertValidate(withText).run(0);
+		assertValidate(withText).run();
 	}
 }

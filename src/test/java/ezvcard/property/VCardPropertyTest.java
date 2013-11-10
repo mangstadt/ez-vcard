@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -51,9 +52,9 @@ public class VCardPropertyTest {
 	@Test
 	public void validate() {
 		ValidateType property = new ValidateType();
-		assertValidate(property).versions(VCardVersion.V2_1).run(1);
-		assertValidate(property).versions(VCardVersion.V3_0).run(0);
-		assertValidate(property).versions(VCardVersion.V4_0).run(1);
+		assertValidate(property).versions(VCardVersion.V2_1).run(2);
+		assertValidate(property).versions(VCardVersion.V3_0).run();
+		assertValidate(property).versions(VCardVersion.V4_0).run(2);
 		assertTrue(property.validateCalled);
 	}
 
@@ -107,7 +108,7 @@ public class VCardPropertyTest {
 		}
 
 		@Override
-		public void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		public void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 			validateCalled = true;
 		}
 	}

@@ -47,21 +47,21 @@ public class DeathplaceTest {
 	@Test
 	public void validate() {
 		Deathplace empty = new Deathplace();
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
 
 		Deathplace withText = new Deathplace();
 		withText.setText(text);
-		assertValidate(withText).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withText).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withText).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withText).versions(VCardVersion.V2_1).run(2);
+		assertValidate(withText).versions(VCardVersion.V3_0).run(2);
+		assertValidate(withText).versions(VCardVersion.V4_0).run();
 
 		Deathplace withUri = new Deathplace();
 		withUri.setUri(uri);
-		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withUri).versions(VCardVersion.V2_1).run(2);
+		assertValidate(withUri).versions(VCardVersion.V3_0).run(2);
+		assertValidate(withUri).versions(VCardVersion.V4_0).run();
 	}
 
 	@Test

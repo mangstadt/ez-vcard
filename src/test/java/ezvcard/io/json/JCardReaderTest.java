@@ -467,7 +467,7 @@ public class JCardReaderTest {
 		assertEquals("http://nomis80.org", url.getValue());
 		assertEquals("home", url.getType());
 
-		assertValidate(vcard.validate(VCardVersion.V4_0));
+		assertValidate(vcard).versions(vcard.getVersion()).run();
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
 	}

@@ -43,17 +43,16 @@ public class EmailTest {
 	@Test
 	public void validate() {
 		Email property = new Email(null);
-		assertValidate(property).run(1);
+		assertValidate(property).run(7);
 
 		property.setValue("johndoe@example.com");
-		assertValidate(property).run(0);
+		assertValidate(property).run();
 
 		property.addType(EmailType.AOL);
 		property.addType(EmailType.INTERNET);
 		property.addType(EmailType.HOME);
 		property.addType(EmailType.PREF);
-		assertValidate(property).versions(VCardVersion.V2_1).run(1);
-		assertValidate(property).versions(VCardVersion.V3_0).run(2);
-		assertValidate(property).versions(VCardVersion.V4_0).run(2);
+		assertValidate(property).versions(VCardVersion.V2_1).run(9);
+		assertValidate(property).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(9, 9);
 	}
 }
