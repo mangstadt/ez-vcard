@@ -105,7 +105,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 			}
 			return new Impp(uri);
 		} catch (IllegalArgumentException e) {
-			throw new CannotParseException("Could not parse instant messenger information from link: " + href);
+			throw new CannotParseException(14, href);
 		}
 	}
 
@@ -132,7 +132,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 		try {
 			return new Impp(value);
 		} catch (IllegalArgumentException e) {
-			throw new CannotParseException("Cannot parse URI \"" + value + "\": " + e.getMessage());
+			throw new CannotParseException(15, value, e.getMessage());
 		}
 	}
 

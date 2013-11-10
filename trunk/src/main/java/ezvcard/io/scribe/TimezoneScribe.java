@@ -3,6 +3,7 @@ package ezvcard.io.scribe;
 import java.util.List;
 import java.util.TimeZone;
 
+import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -166,7 +167,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 			try {
 				return new Timezone(UtcOffset.parse(utcOffset));
 			} catch (IllegalArgumentException e) {
-				throw new CannotParseException("Unable to parse UTC offset.");
+				throw new CannotParseException(19);
 			}
 		}
 
@@ -210,7 +211,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 			try {
 				return new Timezone(UtcOffset.parse(value));
 			} catch (IllegalArgumentException e) {
-				throw new CannotParseException("Unable to parse UTC offset.");
+				throw new CannotParseException(19);
 			}
 		case V3_0:
 		case V4_0:
@@ -218,7 +219,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 				return new Timezone(UtcOffset.parse(value));
 			} catch (IllegalArgumentException e) {
 				if (dataType == VCardDataType.UTC_OFFSET) {
-					warnings.add("Unable to parse UTC offset.  Treating as text: " + value);
+					warnings.add(Messages.INSTANCE.getParseMessage(20));
 				}
 				return new Timezone(value);
 			}

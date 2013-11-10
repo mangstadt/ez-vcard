@@ -19,7 +19,6 @@ import org.junit.Test;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.scribe.VCardPropertyScribe.SemiStructuredIterator;
@@ -421,24 +420,6 @@ public class VCardPropertyScribeTest {
 				assertEquals(";value1;val\\,\\;ue2;value3,value4", property.value);
 			}
 		});
-	}
-
-	@Test
-	public void missingXmlElements() {
-		CannotParseException e = VCardPropertyScribe.missingXmlElements(new String[0]);
-		assertEquals("Property value empty.", e.getMessage());
-
-		e = VCardPropertyScribe.missingXmlElements("one");
-		assertEquals("Property value empty (no <one> element found).", e.getMessage());
-
-		e = VCardPropertyScribe.missingXmlElements("one", "two");
-		assertEquals("Property value empty (no <one> or <two> elements found).", e.getMessage());
-
-		e = VCardPropertyScribe.missingXmlElements("one", "two", "THREE");
-		assertEquals("Property value empty (no <one>, <two>, or <THREE> elements found).", e.getMessage());
-
-		e = VCardPropertyScribe.missingXmlElements(VCardDataType.TEXT, null, VCardDataType.DATE);
-		assertEquals("Property value empty (no <text>, <unknown>, or <date> elements found).", e.getMessage());
 	}
 
 	private class VCardPropertyMarshallerImpl extends VCardPropertyScribe<TestProperty> {

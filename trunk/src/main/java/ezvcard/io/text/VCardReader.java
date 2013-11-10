@@ -1,7 +1,5 @@
 package ezvcard.io.text;
 
-import static ezvcard.util.StringUtils.NEWLINE;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -275,12 +274,12 @@ public class VCardReader implements Closeable {
 				try {
 					return codec.decode(value, charset);
 				} catch (UnsupportedEncodingException e) {
-					addWarning("The specified charset is not supported.  Using default charset instead: " + charset, name);
+					addWarning(name, 23, charset);
 					return codec.decode(value);
 				}
 			}
 		} catch (DecoderException e) {
-			addWarning("Property value was marked as \"quoted-printable\", but it could not be decoded.  Treating the value as plain text.", name);
+			addWarning(name, 24);
 		}
 
 		return value;
@@ -293,19 +292,17 @@ public class VCardReader implements Closeable {
 		reader.close();
 	}
 
-	private void addWarning(String message) {
-		addWarning(message, null);
+	private void addWarning(String propertyName, int code, Object... args) {
+		String message = Messages.INSTANCE.getParseMessage(code, args);
+		addWarning(propertyName, message);
 	}
 
-	private void addWarning(String message, String propertyName) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Line ").append(reader.getLineNum());
-		if (propertyName != null) {
-			sb.append(" (").append(propertyName).append(" property)");
-		}
-		sb.append(": ").append(message);
+	private void addWarning(String propertyName, String message) {
+		int code = (propertyName == null) ? 37 : 36;
+		int line = reader.getLineNum();
 
-		warnings.add(sb.toString());
+		String warning = Messages.INSTANCE.getParseMessage(code, line, propertyName, message);
+		warnings.add(warning);
 	}
 
 	private class VCardDataStreamListenerImpl implements VCardRawReader.VCardDataStreamListener {
@@ -388,7 +385,7 @@ public class VCardReader implements Closeable {
 				Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
 
 				for (String warning : result.getWarnings()) {
-					addWarning(warning, name);
+					addWarning(name, warning);
 				}
 
 				property = result.getProperty();
@@ -400,10 +397,10 @@ public class VCardReader implements Closeable {
 					return;
 				}
 			} catch (SkipMeException e) {
-				addWarning("Property has requested that it be skipped: " + e.getMessage(), name);
+				addWarning(name, 22, e.getMessage());
 				return;
 			} catch (CannotParseException e) {
-				addWarning("Property value could not be parsed.  Property will be saved as an extended property instead." + NEWLINE + "  Value: " + value + NEWLINE + "  Reason: " + e.getMessage(), name);
+				addWarning(name, 25, value, e.getMessage());
 				property = new RawProperty(name, value);
 				property.setGroup(group);
 			} catch (EmbeddedVCardException e) {
@@ -427,7 +424,7 @@ public class VCardReader implements Closeable {
 						//shouldn't be thrown because we're reading from a string
 					} finally {
 						for (String w : agentReader.getWarnings()) {
-							addWarning("Problem unmarshalling nested vCard value: " + w, name);
+							addWarning(name, 26, w);
 						}
 						IOUtils.closeQuietly(agentReader);
 					}
@@ -476,7 +473,7 @@ public class VCardReader implements Closeable {
 				return;
 			}
 
-			addWarning("Skipping malformed line: \"" + line + "\"");
+			addWarning(null, 27, line);
 		}
 
 		public void invalidVersion(String version) {
@@ -485,7 +482,7 @@ public class VCardReader implements Closeable {
 				return;
 			}
 
-			addWarning("Ignoring invalid version value: " + version, "VERSION");
+			addWarning("VERSION", 28, version);
 		}
 	}
 }

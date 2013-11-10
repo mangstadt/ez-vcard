@@ -1,5 +1,6 @@
 package ezvcard.io;
 
+import ezvcard.Messages;
 import ezvcard.VCardException;
 
 /*
@@ -48,5 +49,15 @@ public class CannotParseException extends VCardException {
 	 */
 	public CannotParseException(String reason) {
 		super(reason);
+	}
+
+	/**
+	 * Creates a new "cannot parse" exception.
+	 * @param code the code for retrieving the message text from the resource
+	 * bundle
+	 * @param args the message arguments
+	 */
+	public CannotParseException(int code, Object... args) {
+		this(Messages.INSTANCE.getParseMessage(code, args));
 	}
 }

@@ -2,6 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -128,7 +129,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 			try {
 				return new Telephone(TelUri.parse(uri));
 			} catch (IllegalArgumentException e) {
-				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
+				warnings.add(Messages.INSTANCE.getParseMessage(18));
 				return new Telephone(uri);
 			}
 		}
@@ -181,7 +182,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 			return new Telephone(TelUri.parse(value));
 		} catch (IllegalArgumentException e) {
 			if (dataType == VCardDataType.URI) {
-				warnings.add("Could not parse property value as a URI.  Assuming it's text.");
+				warnings.add(Messages.INSTANCE.getParseMessage(18));
 			}
 		}
 

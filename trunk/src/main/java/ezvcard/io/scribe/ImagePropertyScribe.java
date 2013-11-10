@@ -62,7 +62,7 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 
 		String src = element.absUrl("src");
 		if (src.length() == 0) {
-			throw new CannotParseException("<img> tag does not have a \"src\" attribute.");
+			throw new CannotParseException(13);
 		}
 
 		try {
