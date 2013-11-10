@@ -164,12 +164,12 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	protected T _parseHtml(HCardElement element, List<String> warnings) {
 		String elementName = element.tagName();
 		if (!"object".equals(elementName)) {
-			throw new CannotParseException("Cannot parse <" + elementName + "> tag (<object> tag expected).");
+			throw new CannotParseException(1, elementName);
 		}
 
 		String data = element.absUrl("data");
 		if (data.length() == 0) {
-			throw new CannotParseException("<object> tag does not have a \"data\" attribute.");
+			throw new CannotParseException(2);
 		}
 
 		try {

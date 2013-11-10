@@ -3,6 +3,7 @@ package ezvcard.io.scribe;
 import java.util.List;
 import java.util.Set;
 
+import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -73,7 +74,7 @@ public class AgentScribe extends VCardPropertyScribe<Agent> {
 		}
 
 		//don't write an empty value because parsers could interpret that as there being an embedded vCard on the next line
-		throw new SkipMeException("Property has neither a URL nor an embedded vCard.");
+		throw new SkipMeException(Messages.INSTANCE.getValidationWarning(8));
 	}
 
 	@Override

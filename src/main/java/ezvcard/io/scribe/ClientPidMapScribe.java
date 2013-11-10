@@ -60,7 +60,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 		String pid = it.next();
 		String uri = it.next();
 		if (pid == null || uri == null) {
-			throw new CannotParseException("Incorrect data format.  Value must contain a PID and a URI, separated by a semi-colon.");
+			throw new CannotParseException(3);
 		}
 
 		return parse(pid, uri);
@@ -109,7 +109,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 		try {
 			return new ClientPidMap(Integer.parseInt(pid), uri);
 		} catch (NumberFormatException e) {
-			throw new CannotParseException("Unable to parse PID component.");
+			throw new CannotParseException(4);
 		}
 	}
 }

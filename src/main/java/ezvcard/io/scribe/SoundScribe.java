@@ -73,7 +73,7 @@ public class SoundScribe extends BinaryPropertyScribe<Sound, SoundType> {
 			//parse its child "<source>" element
 			org.jsoup.nodes.Element source = element.getElement().getElementsByTag("source").first();
 			if (source == null) {
-				throw new CannotParseException("No <source> tag found beneath <audio> tag.");
+				throw new CannotParseException(16);
 			}
 
 			element = new HCardElement(source);
@@ -81,7 +81,7 @@ public class SoundScribe extends BinaryPropertyScribe<Sound, SoundType> {
 
 		String src = element.absUrl("src");
 		if (src.length() == 0) {
-			throw new CannotParseException("<source> tag does not have a \"src\" attribute.");
+			throw new CannotParseException(17);
 		}
 
 		String type = element.attr("type");

@@ -1,7 +1,6 @@
 package ezvcard.io.xml;
 
 import static ezvcard.util.IOUtils.utf8Writer;
-import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +29,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import ezvcard.Ezvcard;
+import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -435,28 +435,21 @@ public class XCardDocument {
 			property.setGroup(group);
 
 			for (String warning : result.getWarnings()) {
-				addWarning(warning, propertyName, warnings);
+				addWarning(propertyName, warning, warnings);
 			}
 		} catch (SkipMeException e) {
-			addWarning("Property has requested that it be skipped: " + e.getMessage(), propertyName, warnings);
+			addWarning(propertyName, warnings, 22, e.getMessage());
 			return;
 		} catch (CannotParseException e) {
 			String xml = XmlUtils.toString(element);
-			addWarning("Property value could not be parsed.  It will be unmarshalled as a " + Xml.class.getSimpleName() + " property instead." + NEWLINE + "  XML: " + xml + NEWLINE + "  Reason: " + e.getMessage(), propertyName, warnings);
+			addWarning(propertyName, warnings, 33, xml, e.getMessage());
 
 			scribe = index.getPropertyScribe(Xml.class);
 			Result<? extends VCardProperty> result = scribe.parseXml(element, parameters);
 			property = result.getProperty();
 			property.setGroup(group);
-		} catch (UnsupportedOperationException e) {
-			scribe = index.getPropertyScribe(Xml.class);
-			Result<? extends VCardProperty> result = scribe.parseXml(element, parameters);
-			property = result.getProperty();
-			property.setGroup(group);
-
-			addWarning("Property class \"" + property.getClass().getName() + "\" does not support xCard unmarshalling.  It will be unmarshalled as a " + Xml.class.getSimpleName() + " property instead.", propertyName, warnings);
 		} catch (EmbeddedVCardException e) {
-			addWarning("Property will not be unmarshalled because xCard does not supported embedded vCards.", propertyName, warnings);
+			addWarning(propertyName, warnings, 34);
 			return;
 		}
 
@@ -731,7 +724,13 @@ public class XCardDocument {
 		return document.createElementNS(ns, name);
 	}
 
-	private void addWarning(String message, String propertyName, List<String> warnings) {
-		warnings.add(propertyName + " property: " + message);
+	private void addWarning(String propertyName, List<String> warnings, int code, Object... args) {
+		String message = Messages.INSTANCE.getParseMessage(code, args);
+		addWarning(propertyName, message, warnings);
+	}
+
+	private void addWarning(String propertyName, String message, List<String> warnings) {
+		String warning = Messages.INSTANCE.getParseMessage(35, propertyName, message);
+		warnings.add(warning);
 	}
 }

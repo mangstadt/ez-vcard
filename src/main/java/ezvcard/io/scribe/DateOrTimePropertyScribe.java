@@ -3,6 +3,7 @@ package ezvcard.io.scribe;
 import java.util.Date;
 import java.util.List;
 
+import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -218,13 +219,13 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 			return newInstance(date(value), hasTime);
 		} catch (IllegalArgumentException e) {
 			if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
-				throw new CannotParseException("Date string could not be parsed.");
+				throw new CannotParseException(5);
 			}
 
 			try {
 				return newInstance(new PartialDate(value));
 			} catch (IllegalArgumentException e2) {
-				warnings.add("Date string could not be parsed.  Treating it as a text value.");
+				warnings.add(Messages.INSTANCE.getParseMessage(6));
 				return newInstance(value);
 			}
 		}

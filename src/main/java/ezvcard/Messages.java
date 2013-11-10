@@ -51,11 +51,28 @@ public enum Messages {
 		return getMessage("validate." + code, args);
 	}
 
+	/**
+	 * Gets a parser warning message.
+	 * @param code the message code
+	 * @param args the message arguments
+	 * @return the message
+	 */
+	public String getParseMessage(int code, Object... args) {
+		return getMessage("parse." + code, args);
+	}
+
+	/**
+	 * Gets a message.
+	 * @param key the message key
+	 * @param args the message arguments
+	 * @return the message or null if not found
+	 */
 	public String getMessage(String key, Object... args) {
 		String message = messages.getString(key);
 		if (message == null) {
 			return null;
 		}
+		//TODO handle MissingResourceException
 
 		return MessageFormat.format(message, args);
 	}

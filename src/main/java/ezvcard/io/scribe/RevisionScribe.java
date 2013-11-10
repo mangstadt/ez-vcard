@@ -120,7 +120,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 		try {
 			return new Revision(date(value));
 		} catch (IllegalArgumentException e) {
-			throw new CannotParseException("Could not parse timestamp.");
+			throw new CannotParseException(5);
 		}
 	}
 }

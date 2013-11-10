@@ -1,7 +1,5 @@
 package ezvcard.io.html;
 
-import static ezvcard.util.StringUtils.NEWLINE;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +16,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -366,7 +365,7 @@ public class HCardReader {
 							Result<? extends VCardProperty> result = scribe.parseHtml(element);
 							curVCard.addProperty(result.getProperty());
 							for (String warning : result.getWarnings()) {
-								addWarning(warning, scribe.getPropertyName());
+								addWarning(scribe.getPropertyName(), warning);
 							}
 							continue;
 						} catch (SkipMeException e) {
@@ -397,7 +396,7 @@ public class HCardReader {
 				Result<? extends VCardProperty> result = scribe.parseHtml(element);
 
 				for (String warning : result.getWarnings()) {
-					addWarning(warning, className);
+					addWarning(className, warning);
 				}
 
 				property = result.getProperty();
@@ -432,11 +431,11 @@ public class HCardReader {
 					continue;
 				}
 			} catch (SkipMeException e) {
-				addWarning("Property has requested that it be skipped: " + e.getMessage(), className);
+				addWarning(className, 22, e.getMessage());
 				continue;
 			} catch (CannotParseException e) {
 				String html = element.outerHtml();
-				addWarning("Property value could not be parsed.  Property will be saved as an extended property instead." + NEWLINE + "  HTML: " + html + NEWLINE + "  Reason: " + e.getMessage(), className);
+				addWarning(className, 32, html, e.getMessage());
 				property = new RawProperty(className, html);
 			} catch (EmbeddedVCardException e) {
 				if (HtmlUtils.isChildOf(element, embeddedVCards)) {
@@ -453,7 +452,7 @@ public class HCardReader {
 					e.injectVCard(embeddedVCard);
 				} finally {
 					for (String w : embeddedReader.getWarnings()) {
-						addWarning("Problem unmarshalling nested vCard value: " + w, className);
+						addWarning(className, 26, w);
 					}
 				}
 			}
@@ -466,7 +465,13 @@ public class HCardReader {
 		}
 	}
 
-	private void addWarning(String message, String propertyName) {
-		warnings.add(propertyName + " property: " + message);
+	private void addWarning(String propertyName, int code, Object... args) {
+		String message = Messages.INSTANCE.getParseMessage(code, args);
+		addWarning(propertyName, message);
+	}
+
+	private void addWarning(String propertyName, String message) {
+		String warning = Messages.INSTANCE.getParseMessage(35, propertyName, message);
+		warnings.add(warning);
 	}
 }

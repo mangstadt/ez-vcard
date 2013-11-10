@@ -89,26 +89,26 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	protected Geo _parseHtml(HCardElement element, List<String> warnings) {
 		String latitudeStr = element.firstValue("latitude");
 		if (latitudeStr == null) {
-			throw new CannotParseException("Latitude missing.");
+			throw new CannotParseException(7);
 		}
 
 		Double latitude;
 		try {
 			latitude = Double.parseDouble(latitudeStr);
 		} catch (NumberFormatException e) {
-			throw new CannotParseException("Could not parse latitude: " + latitudeStr);
+			throw new CannotParseException(8, latitudeStr);
 		}
 
 		String longitudeStr = element.firstValue("longitude");
 		if (longitudeStr == null) {
-			throw new CannotParseException("Longitude missing.");
+			throw new CannotParseException(9);
 		}
 
 		Double longitude;
 		try {
 			longitude = Double.parseDouble(longitudeStr);
 		} catch (NumberFormatException e) {
-			throw new CannotParseException("Could not parse longitude: " + longitudeStr);
+			throw new CannotParseException(10, longitudeStr);
 		}
 
 		return new Geo(latitude, longitude);
@@ -136,21 +136,21 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 			String latitudeStr = it.next();
 			String longitudeStr = it.next();
 			if (latitudeStr == null || longitudeStr == null) {
-				throw new CannotParseException("Incorrect data format.  Value must contain a latitude and longitude, separated by a semi-colon.");
+				throw new CannotParseException(11);
 			}
 
 			Double latitude;
 			try {
 				latitude = Double.valueOf(latitudeStr);
 			} catch (NumberFormatException e) {
-				throw new CannotParseException("Could not parse latitude: " + latitudeStr);
+				throw new CannotParseException(8, latitudeStr);
 			}
 
 			Double longitude;
 			try {
 				longitude = Double.valueOf(longitudeStr);
 			} catch (NumberFormatException e) {
-				throw new CannotParseException("Could not parse longtude: " + longitudeStr);
+				throw new CannotParseException(10, longitudeStr);
 			}
 
 			return new Geo(latitude, longitude);
@@ -158,7 +158,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 			try {
 				return new Geo(GeoUri.parse(value));
 			} catch (IllegalArgumentException e) {
-				throw new CannotParseException("Invalid geo URI.");
+				throw new CannotParseException(12);
 			}
 		}
 		return null;
