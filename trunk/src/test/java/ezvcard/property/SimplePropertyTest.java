@@ -40,10 +40,10 @@ public class SimplePropertyTest {
 	@Test
 	public void validate() {
 		SimplePropertyImpl empty = new SimplePropertyImpl(null);
-		assertValidate(empty).run(1);
+		assertValidate(empty).run(7);
 
 		SimplePropertyImpl withValue = new SimplePropertyImpl("text");
-		assertValidate(withValue).run(0);
+		assertValidate(withValue).run();
 	}
 
 	private class SimplePropertyImpl extends SimpleProperty<String> {

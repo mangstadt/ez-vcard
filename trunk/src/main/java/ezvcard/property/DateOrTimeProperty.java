@@ -5,6 +5,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.parameter.Calscale;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.PartialDate;
@@ -207,17 +208,17 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (date == null && partialDate == null && text == null) {
-			warnings.add("Property has no value associated with it.");
+			warnings.add(new Warning(8));
 		}
 
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
 			if (text != null) {
-				warnings.add("Text values are not supported in version " + version + ".");
+				warnings.add(new Warning(11));
 			}
 			if (partialDate != null) {
-				warnings.add("Reduced accuracy or truncated dates are not supported in version " + version + ".");
+				warnings.add(new Warning(12));
 			}
 		}
 	}

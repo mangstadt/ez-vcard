@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -214,9 +215,9 @@ public class Gender extends VCardProperty {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (gender == null) {
-			warnings.add("Property value is null.");
+			warnings.add(new Warning(7));
 		}
 	}
 }

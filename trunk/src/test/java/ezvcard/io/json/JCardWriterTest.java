@@ -1,7 +1,7 @@
 package ezvcard.io.json;
 
-import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -410,7 +410,7 @@ public class JCardWriterTest {
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
-		assertValidate(vcard.validate(VCardVersion.V4_0));
+		assertValidate(vcard).versions(VCardVersion.V4_0).run();
 
 		assertExample(vcard, "jcard-example.json", new Filter() {
 			public String filter(String json) {

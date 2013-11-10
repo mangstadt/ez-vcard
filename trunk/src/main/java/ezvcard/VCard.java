@@ -16,7 +16,6 @@ import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
-import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
@@ -4683,29 +4682,25 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the validation warnings
 	 */
 	public ValidationWarnings validate(VCardVersion version) {
-		List<WarningsGroup> groups = new ArrayList<WarningsGroup>();
+		ValidationWarnings warnings = new ValidationWarnings();
 
 		//validate overall vCard object
-		List<String> vcardWarnings = new ArrayList<String>();
 		if (getStructuredName() == null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
-			vcardWarnings.add("A structured name property must be defined.");
+			warnings.add(null, new Warning(0));
 		}
 		if (getFormattedName() == null && (version == VCardVersion.V3_0 || version == VCardVersion.V4_0)) {
-			vcardWarnings.add("A formatted name property must be defined.");
-		}
-		if (!vcardWarnings.isEmpty()) {
-			groups.add(new WarningsGroup(null, vcardWarnings));
+			warnings.add(null, new Warning(1));
 		}
 
 		//validate properties
 		for (VCardProperty property : this) {
-			List<String> warnings = property.validate(version, this);
-			if (!warnings.isEmpty()) {
-				groups.add(new WarningsGroup(property, warnings));
+			List<Warning> propWarnings = property.validate(version, this);
+			if (!propWarnings.isEmpty()) {
+				warnings.add(property, propWarnings);
 			}
 		}
 
-		return new ValidationWarnings(groups, version);
+		return warnings;
 	}
 
 	/**

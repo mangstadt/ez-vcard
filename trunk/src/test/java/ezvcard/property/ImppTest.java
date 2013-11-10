@@ -46,14 +46,14 @@ public class ImppTest {
 	@Test
 	public void validate() {
 		Impp empty = new Impp((String) null);
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(1);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 7);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(7);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(7);
 
 		Impp withValue = new Impp("aim:john.doe@aol.com");
-		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withValue).versions(VCardVersion.V3_0).run(0);
-		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withValue).versions(VCardVersion.V2_1).run(2);
+		assertValidate(withValue).versions(VCardVersion.V3_0).run();
+		assertValidate(withValue).versions(VCardVersion.V4_0).run();
 	}
 
 	@Test(expected = IllegalArgumentException.class)

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -140,9 +141,9 @@ public class Birthplace extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (uri == null && text == null) {
-			warnings.add("Property has neither a URI nor a text value associated with it.");
+			warnings.add(new Warning(8));
 		}
 	}
 }

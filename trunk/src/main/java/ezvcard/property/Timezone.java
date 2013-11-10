@@ -6,6 +6,7 @@ import java.util.TimeZone;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.util.UtcOffset;
 import ezvcard.util.VCardDateFormatter;
 
@@ -351,15 +352,15 @@ public class Timezone extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (offset == null && text == null) {
-			warnings.add("Property does not have text or UTC offset values associated with it.");
+			warnings.add(new Warning(8));
 		}
 		if (offset == null && version == VCardVersion.V2_1) {
-			warnings.add("Property requires a UTC offset for its value in version " + version.getVersion() + ".");
+			warnings.add(new Warning(20));
 		}
 		if (offset != null && (offset.getMinute() < 0 || offset.getMinute() > 59)) {
-			warnings.add("Minute offset must be between 0 and 59.");
+			warnings.add(new Warning(21));
 		}
 	}
 }

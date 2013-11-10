@@ -98,7 +98,7 @@ public class VCardTest {
 	@Test
 	public void addType() {
 		VCard vcard = new VCard();
-		VCardTypeImpl type = new VCardTypeImpl();
+		VCardPropertyImpl type = new VCardPropertyImpl();
 		vcard.addProperty(type);
 		assertEquals(Arrays.asList(type), vcard.getProperties(type.getClass()));
 	}
@@ -200,29 +200,27 @@ public class VCardTest {
 	@Test
 	public void validate_vcard() {
 		VCard vcard = new VCard();
-		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardProperty) null);
-		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null, (VCardProperty) null);
-		assertValidate(vcard.validate(VCardVersion.V4_0), (VCardProperty) null);
+
+		assertValidate(vcard).versions(VCardVersion.V2_1).prop(null, 0).run();
+		assertValidate(vcard).versions(VCardVersion.V3_0).prop(null, 0, 1).run();
+		assertValidate(vcard).versions(VCardVersion.V4_0).prop(null, 1).run();
 
 		vcard.setFormattedName("John Doe");
-		assertValidate(vcard.validate(VCardVersion.V2_1), (VCardProperty) null);
-		assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null);
-		assertValidate(vcard.validate(VCardVersion.V4_0));
+		assertValidate(vcard).versions(VCardVersion.V2_1, VCardVersion.V3_0).prop(null, 0).run();
+		assertValidate(vcard).versions(VCardVersion.V4_0).run();
 
 		vcard.setStructuredName(new StructuredName());
-		assertValidate(vcard.validate(VCardVersion.V2_1));
-		assertValidate(vcard.validate(VCardVersion.V3_0));
-		assertValidate(vcard.validate(VCardVersion.V4_0));
+		assertValidate(vcard).run();
 	}
 
 	@Test
 	public void validate_properties() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		VCardTypeImpl prop = new VCardTypeImpl();
+		VCardPropertyImpl prop = new VCardPropertyImpl();
 		vcard.addProperty(prop);
 
-		assertValidate(vcard.validate(VCardVersion.V4_0), prop);
+		assertValidate(vcard).versions(VCardVersion.V4_0).prop(prop, 0).run();
 		assertEquals(VCardVersion.V4_0, prop.validateVersion);
 		assertTrue(vcard == prop.validateVCard);
 	}
@@ -245,15 +243,15 @@ public class VCardTest {
 		}
 	}
 
-	private class VCardTypeImpl extends VCardProperty {
+	private class VCardPropertyImpl extends VCardProperty {
 		public VCardVersion validateVersion;
 		public VCard validateVCard;
 
 		@Override
-		public void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+		public void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 			validateVersion = version;
 			validateVCard = vcard;
-			warnings.add("Test");
+			warnings.add(new Warning(0));
 		}
 	}
 }

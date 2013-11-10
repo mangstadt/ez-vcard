@@ -45,14 +45,12 @@ public class GenderTest {
 	@Test
 	public void validate() {
 		Gender empty = new Gender(null);
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
+		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 7);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(7);
 
 		Gender male = Gender.male();
-		assertValidate(male).versions(VCardVersion.V2_1).run(1);
-		assertValidate(male).versions(VCardVersion.V3_0).run(1);
-		assertValidate(male).versions(VCardVersion.V4_0).run(0);
+		assertValidate(male).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
+		assertValidate(male).versions(VCardVersion.V4_0).run();
 	}
 
 	@Test

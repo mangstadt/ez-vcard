@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -68,10 +69,10 @@ public class Profile extends TextProperty {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (!"VCARD".equalsIgnoreCase(value)) {
 			//see RFC 2426 p.5
-			warnings.add("The only valid value for this property is \"VCARD\", but it is \"" + value + "\".");
+			warnings.add(new Warning(18, value));
 		}
 	}
 }

@@ -43,16 +43,17 @@ public class AgentTest {
 	@Test
 	public void validate() {
 		Agent property = new Agent();
-		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
-		assertValidate(property).versions(VCardVersion.V4_0).run(2);
+		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(8);
+		assertValidate(property).versions(VCardVersion.V4_0).run(8, 2);
 
 		VCard agentVCard = new VCard();
 		property.setVCard(agentVCard);
-		assertValidate(property).versions(VCardVersion.V2_1).run(1);
-		assertValidate(property).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(2);
+		assertValidate(property).versions(VCardVersion.V2_1).run(10);
+		assertValidate(property).versions(VCardVersion.V3_0).run(10, 10);
+		assertValidate(property).versions(VCardVersion.V4_0).run(10, 2);
 
 		property.setUrl("http://example.com");
-		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(0);
-		assertValidate(property).versions(VCardVersion.V4_0).run(1);
+		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run();
+		assertValidate(property).versions(VCardVersion.V4_0).run(2);
 	}
 }

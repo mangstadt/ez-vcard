@@ -1,13 +1,15 @@
 package ezvcard;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.ListMultimap;
 import ezvcard.util.StringUtils;
-import ezvcard.util.StringUtils.JoinCallback;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -48,88 +50,94 @@ import ezvcard.util.StringUtils.JoinCallback;
  * //print all warnings to a string:
  * System.out.println(warnings.toString());
  * //sample output:
- * //FormattedName is not set (it is a required property).
- * //[Gender]: Not supported by version 3.0.  Supported versions are: [4.0]
+ * //W01: A FormattedName property is required for vCard versions 3.0 and 4.0.
+ * //[Gender] | W02: Property is not supported in this vCard version.  Supported versions are: [4.0]
  * 
- * //iterate over each warnings group
- * //this gives you access to the property object that threw each warning
- * for (WarningsGroup group : warnings) {
- * 	//get the property instance
- * 	ICalProperty prop = group.getProperty();
- * 	if (prop == null) {
- * 		//it's a general warning about the vCard
+ * //iterate over the warnings
+ * for (Map.Entry&lt;VCardProperty, List&lt;Warning&gt;&gt; entry : warnings) {
+ * 	//the property that caused the warning(s)
+ * 	VCardProperty property = entry.getKey();
+ * 
+ * 	//the list of warnings that belong to this property
+ * 	List&lt;Warning&gt; propWarnings = entry.getValue();
+ * 
+ * 	if (property == null) {
+ * 		//it's a warning about the vCard as a whole
  * 	}
  * 
- * 	//get warning messages
- * 	List&lt;String&gt; messages = group.getMessages();
+ * 	//each warning message has a numeric code
+ * 	//this allows you to programmatically respond to specific warning messages
+ * 	List&lt;Warning&gt; propWarnings = entry.getValue();
+ * 	for (Warning w : propWarnings) {
+ * 		System.out.println(&quot;Code: &quot; + w.getCode());
+ * 		System.out.printkn(&quot;Message: &quot; + w.getMessage());
+ * 	}
  * }
  * 
- * //you can also get the warnings of specific properties
- * List&lt;WarningsGroup&gt; telWarnings = warnings.getByProperty(Telephone.class);
+ * //you can also get the warnings of specific property classes
+ * List&lt;Warnings&gt; telWarnings = warnings.getByProperty(Telephone.class);
  * </pre>
  * 
  * </p>
  * @author Michael Angstadt
  * @see VCard#validate
  */
-public class ValidationWarnings implements Iterable<WarningsGroup> {
-	private final List<WarningsGroup> warnings;
-	private final VCardVersion version;
+public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, List<Warning>>> {
+	private final ListMultimap<VCardProperty, Warning> warnings = new ListMultimap<VCardProperty, Warning>();
 
 	/**
-	 * Creates a new validation warnings list.
-	 * @param warnings the validation warnings
-	 * @param version the vCard version that the validation was performed
-	 * against
+	 * Adds a validation warning.
+	 * @param property the property that caused the warning
+	 * @param warning the warning
 	 */
-	public ValidationWarnings(List<WarningsGroup> warnings, VCardVersion version) {
-		this.warnings = warnings;
-		this.version = version;
+	public void add(VCardProperty property, Warning warning) {
+		warnings.put(property, warning);
 	}
 
 	/**
-	 * Gets all validation warnings of a given property.
-	 * @param propertyClass the property (e.g. {@code Telephone.class})
-	 * or null to get the generic vCard warnings
+	 * Adds a property's validation warnings.
+	 * @param property the property that caused the warnings
+	 * @param warnings the warnings
+	 */
+	public void add(VCardProperty property, List<Warning> warnings) {
+		this.warnings.putAll(property, warnings);
+	}
+
+	/**
+	 * Gets all of the validation warnings.
 	 * @return the validation warnings
 	 */
-	public List<WarningsGroup> getByProperty(Class<? extends VCardProperty> propertyClass) {
-		List<WarningsGroup> warnings = new ArrayList<WarningsGroup>();
-		for (WarningsGroup group : this.warnings) {
-			VCardProperty property = group.getProperty();
-			if (property == null) {
-				if (propertyClass == null) {
-					warnings.add(group);
-				}
-			} else if (propertyClass == property.getClass()) {
-				warnings.add(group);
-			}
-		}
+	public ListMultimap<VCardProperty, Warning> getWarnings() {
 		return warnings;
 	}
 
 	/**
-	 * Gets all the validation warnings.
-	 * @return the validation warnings
-	 */
-	public List<WarningsGroup> getWarnings() {
-		return warnings;
-	}
-
-	/**
-	 * Gets the vCard version that the validation was performed against.
-	 * @return the version
-	 */
-	public VCardVersion getVersion() {
-		return version;
-	}
-
-	/**
-	 * Determines whether there are any validation warnings.
-	 * @return true if there are none, false if there are one or more
+	 * Determines whether or not the warnings list is empty.
+	 * @return true if there are no warnings, false if there is at least one
+	 * warning
 	 */
 	public boolean isEmpty() {
 		return warnings.isEmpty();
+	}
+
+	/**
+	 * Gets all validation warnings that belong to a property of a specific
+	 * class.
+	 * @param propertyClass the property class (e.g. {@code Telephone.class}) or
+	 * null to get the warnings that apply to the vCard as a whole
+	 * @return the validation warnings
+	 */
+	public List<Warning> getByProperty(Class<? extends VCardProperty> propertyClass) {
+		List<Warning> propWarnings = new ArrayList<Warning>();
+		for (Map.Entry<VCardProperty, List<Warning>> entry : warnings) {
+			VCardProperty property = entry.getKey();
+
+			if ((property == null && propertyClass == null) || (property != null && propertyClass == property.getClass())) {
+				List<Warning> propViolations = entry.getValue();
+				propWarnings.addAll(propViolations);
+			}
+		}
+		return propWarnings;
 	}
 
 	/**
@@ -139,77 +147,43 @@ public class ValidationWarnings implements Iterable<WarningsGroup> {
 	 * </p>
 	 * 
 	 * <pre>
-	 * FormattedName is not set (it is a required property).
-	 * [Gender]: Not supported by version 3.0.  Supported versions are: [4.0]
+	 * W01: A FormattedName property is required for vCard versions 3.0 and 4.0.
+	 * [Gender] | W02: Property is not supported in this vCard version.  Supported versions are: [4.0]
 	 * </pre>
 	 */
 	@Override
 	public String toString() {
-		return StringUtils.join(warnings, StringUtils.NEWLINE);
-	}
+		NumberFormat nf = NumberFormat.getIntegerInstance();
+		nf.setMinimumIntegerDigits(2);
 
-	/**
-	 * Iterates over each warning group (same as calling
-	 * {@code getWarnings().iterator()}).
-	 * @return the iterator
-	 */
-	public Iterator<WarningsGroup> iterator() {
-		return warnings.iterator();
-	}
+		StringBuilder sb = new StringBuilder();
+		for (Map.Entry<VCardProperty, List<Warning>> entry : warnings) {
+			VCardProperty property = entry.getKey();
+			List<Warning> propViolations = entry.getValue();
 
-	/**
-	 * Holds the validation warnings of a property or component.
-	 * @author Michael Angstadt
-	 */
-	public static class WarningsGroup {
-		private final VCardProperty property;
-		private final List<String> messages;
-
-		/**
-		 * Creates a new set of validation warnings for a property.
-		 * @param property the property that caused the warnings
-		 * @param messages the warning messages
-		 */
-		public WarningsGroup(VCardProperty property, List<String> messages) {
-			this.property = property;
-			this.messages = messages;
-		}
-
-		/**
-		 * Gets the property object that caused the validation warnings.
-		 * @return the property object or null if a component caused the
-		 * warnings.
-		 */
-		public VCardProperty getProperty() {
-			return property;
-		}
-
-		/**
-		 * Gets the warning messages.
-		 * @return the warning messages
-		 */
-		public List<String> getMessages() {
-			return messages;
-		}
-
-		/**
-		 * <p>
-		 * Outputs each message in this warnings group as a newline-delimited
-		 * string. Each line includes the name of the property. For example:
-		 * </p>
-		 * 
-		 * <pre>
-		 * [Gender]: Not supported by version 3.0.  Supported versions are: [4.0]
-		 * </pre>
-		 */
-		@Override
-		public String toString() {
-			final String prefix = (property == null) ? "" : "[" + property.getClass().getSimpleName() + "]: ";
-			return StringUtils.join(messages, StringUtils.NEWLINE, new JoinCallback<String>() {
-				public void handle(StringBuilder sb, String message) {
-					sb.append(prefix).append(message);
+			for (Warning propViolation : propViolations) {
+				if (property != null) {
+					sb.append('[');
+					sb.append(property.getClass().getSimpleName());
+					sb.append("] | ");
 				}
-			});
+
+				Integer code = propViolation.getCode();
+				if (code != null) {
+					sb.append('W');
+					sb.append(nf.format(code));
+					sb.append(": ");
+				}
+
+				sb.append(propViolation.getMessage());
+				sb.append(StringUtils.NEWLINE);
+			}
 		}
+
+		return sb.toString();
+	}
+
+	public Iterator<Entry<VCardProperty, List<Warning>>> iterator() {
+		return warnings.iterator();
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.util.TelUri;
 
@@ -192,13 +193,13 @@ public class Telephone extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (uri == null && text == null) {
-			warnings.add("Property has neither a URI nor a text value associated with it.");
+			warnings.add(new Warning(8));
 		}
 
 		if (uri != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
-			warnings.add("\"tel\" URIs are not supported by vCard version " + version.getVersion() + ".  The URI will be converted to a string.  Some data may be lost.");
+			warnings.add(new Warning(19));
 		}
 
 		for (TelephoneType type : getTypes()) {
@@ -208,7 +209,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 			}
 
 			if (!type.isSupported(version)) {
-				warnings.add("Type value \"" + type.getValue() + "\" is not supported in version " + version.getVersion() + ".");
+				warnings.add(new Warning(9, type.getValue()));
 			}
 		}
 	}

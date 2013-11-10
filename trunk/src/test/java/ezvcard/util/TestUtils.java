@@ -1,9 +1,10 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,7 +17,7 @@ import java.util.TimeZone;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
-import ezvcard.ValidationWarnings.WarningsGroup;
+import ezvcard.Warning;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -88,30 +89,90 @@ public class TestUtils {
 		}
 	}
 
-	/**
-	 * Asserts that a validation warnings list is correct.
-	 * @param warnings the warnings list
-	 * @param expectedProperties the property objects that are expected to have
-	 * warnings. The object should be added multiple times to this vararg
-	 * parameter, depending on how many warnings it is expected to have (e.g. 3
-	 * times for 3 warnings)
-	 */
-	public static void assertValidate(ValidationWarnings warnings, VCardProperty... expectedProperties) {
-		Counts<VCardProperty> expectedCounts = new Counts<VCardProperty>();
-		for (VCardProperty expectedProperty : expectedProperties) {
-			expectedCounts.increment(expectedProperty);
+	private static boolean checkCodes(List<Warning> warnings, Integer... expectedCodes) {
+		if (warnings.size() != expectedCodes.length) {
+			return false;
 		}
 
-		Counts<Object> actualCounts = new Counts<Object>();
-		for (WarningsGroup warning : warnings) {
-			assertTrue(warning.getMessages().size() > 0);
-			for (int i = 0; i < warning.getMessages().size(); i++) {
-				VCardProperty property = warning.getProperty();
-				actualCounts.increment(property);
+		List<Integer> actualCodes = new ArrayList<Integer>(); //don't use a Set because there can be multiple warnings with the same code
+		for (Warning warning : warnings) {
+			actualCodes.add(warning.getCode());
+		}
+
+		for (Integer code : expectedCodes) {
+			boolean found = actualCodes.remove((Object) code);
+			if (!found) {
+				return false;
 			}
 		}
 
-		assertEquals(warnings.toString(), expectedCounts, actualCounts);
+		return true;
+	}
+
+	public static void assertValidate(List<Warning> warnings, Integer... expectedCodes) {
+		boolean passed = checkCodes(warnings, expectedCodes);
+		if (!passed) {
+			fail("Expected codes were " + Arrays.toString(expectedCodes) + " but were actually:\n" + warnings);
+		}
+	}
+
+	public static VCardValidateChecker assertValidate(VCard vcard) {
+		return new VCardValidateChecker(vcard);
+	}
+
+	public static class VCardValidateChecker {
+		private final VCard vcard;
+		private VCardVersion versions[] = VCardVersion.values();
+		private Map<VCardProperty, Integer[]> expectedPropCodes = new HashMap<VCardProperty, Integer[]>();
+
+		public VCardValidateChecker(VCard vcard) {
+			this.vcard = vcard;
+		}
+
+		/**
+		 * Defines the versions to check (defaults to all versions).
+		 * @param versions the versions to check
+		 * @return this
+		 */
+		public VCardValidateChecker versions(VCardVersion... versions) {
+			this.versions = versions;
+			return this;
+		}
+
+		/**
+		 * Assigns the warning codes that a property is expected to generate.
+		 * @param property the property or null to represent the vCard warnings
+		 * @param expectedCodes the expected warning codes
+		 * @return this
+		 */
+		public VCardValidateChecker prop(VCardProperty property, Integer... expectedCodes) {
+			expectedPropCodes.put(property, expectedCodes);
+			return this;
+		}
+
+		/**
+		 * Performs the validation check.
+		 */
+		public void run() {
+			for (VCardVersion version : versions) {
+				ValidationWarnings warnings = vcard.validate(version);
+				for (Map.Entry<VCardProperty, List<Warning>> entry : warnings) {
+					VCardProperty property = entry.getKey();
+					List<Warning> actualWarnings = entry.getValue();
+
+					Integer[] expectedCodes = expectedPropCodes.get(property);
+					if (expectedCodes == null) {
+						String className = (property == null) ? "vCard" : property.getClass().getSimpleName();
+						fail("For version " + version + ", " + className + " had " + actualWarnings.size() + " warnings, but none were expected.  Actual warnings:\n" + warnings);
+					}
+
+					boolean passed = checkCodes(actualWarnings, expectedCodes);
+					if (!passed) {
+						fail("For version " + version + ", expected validation warnings did not match actual warnings.  Actual warnings:\n" + warnings);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -119,16 +180,16 @@ public class TestUtils {
 	 * @param property the property object
 	 * @return the validation checker object
 	 */
-	public static ValidateChecker assertValidate(VCardProperty property) {
-		return new ValidateChecker(property);
+	public static PropValidateChecker assertValidate(VCardProperty property) {
+		return new PropValidateChecker(property);
 	}
 
-	public static class ValidateChecker {
+	public static class PropValidateChecker {
 		private final VCardProperty property;
 		private VCard vcard;
 		private VCardVersion versions[] = VCardVersion.values();
 
-		public ValidateChecker(VCardProperty property) {
+		public PropValidateChecker(VCardProperty property) {
 			this.property = property;
 			vcard(new VCard());
 		}
@@ -138,7 +199,7 @@ public class TestUtils {
 		 * @param versions the versions to check
 		 * @return this
 		 */
-		public ValidateChecker versions(VCardVersion... versions) {
+		public PropValidateChecker versions(VCardVersion... versions) {
 			this.versions = versions;
 			return this;
 		}
@@ -148,7 +209,7 @@ public class TestUtils {
 		 * @param vcard the vCard instance
 		 * @return this
 		 */
-		public ValidateChecker vcard(VCard vcard) {
+		public PropValidateChecker vcard(VCard vcard) {
 			vcard.addProperty(property);
 			this.vcard = vcard;
 			return this;
@@ -156,11 +217,15 @@ public class TestUtils {
 
 		/**
 		 * Performs the validation check.
-		 * @param expected the expected number of validation warnings
+		 * @param expectedCodes the expected warning codes
 		 */
-		public void run(int expected) {
+		public void run(Integer... expectedCodes) {
 			for (VCardVersion version : versions) {
-				assertWarnings("Version " + version, expected, property.validate(version, vcard));
+				List<Warning> warnings = property.validate(version, vcard);
+				boolean passed = checkCodes(warnings, expectedCodes);
+				if (!passed) {
+					fail("For version " + version + ", expected codes were " + Arrays.toString(expectedCodes) + " but were actually:\n" + warnings);
+				}
 			}
 		}
 	}
@@ -222,45 +287,6 @@ public class TestUtils {
 
 		public Iterator<Object[]> iterator() {
 			return tests.iterator();
-		}
-	}
-
-	/**
-	 * Keeps a count of how many identical instances of an object there are.
-	 */
-	private static class Counts<T> {
-		private final Map<T, Integer> map = new HashMap<T, Integer>();
-
-		public void increment(T t) {
-			Integer value = getCount(t);
-			map.put(t, value++);
-		}
-
-		public Integer getCount(T t) {
-			Integer value = map.get(t);
-			return (value == null) ? 0 : value;
-		}
-
-		@Override
-		public int hashCode() {
-			return map.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Counts<?> other = (Counts<?>) obj;
-			return map.equals(other.map);
-		}
-
-		@Override
-		public String toString() {
-			return map.toString();
 		}
 	}
 

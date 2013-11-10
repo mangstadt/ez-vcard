@@ -43,23 +43,23 @@ public class MemberTest {
 	@Test
 	public void validate() {
 		Member empty = new Member(null);
-		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(3);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(2);
+		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 7, 17);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(7, 17);
 
 		Member withUri = new Member("uri");
 
 		VCard groupKind = new VCard();
 		groupKind.setKind(Kind.group());
-		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(1);
-		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
+		assertValidate(withUri).vcard(groupKind).versions(VCardVersion.V4_0).run();
 
 		VCard nonGroupKind = new VCard();
 		nonGroupKind.setKind(Kind.application());
-		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
-		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V4_0).run(1);
+		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 17);
+		assertValidate(withUri).vcard(nonGroupKind).versions(VCardVersion.V4_0).run(17);
 
 		VCard withoutKind = new VCard();
-		assertValidate(withUri).vcard(withoutKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
-		assertValidate(withUri).vcard(withoutKind).versions(VCardVersion.V4_0).run(1);
+		assertValidate(withUri).vcard(withoutKind).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 17);
+		assertValidate(withUri).vcard(withoutKind).versions(VCardVersion.V4_0).run(17);
 	}
 }

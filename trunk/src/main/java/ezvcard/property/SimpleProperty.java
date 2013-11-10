@@ -4,6 +4,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -67,9 +68,9 @@ public class SimpleProperty<T> extends VCardProperty {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (value == null) {
-			warnings.add("Property value is null.");
+			warnings.add(new Warning(7));
 		}
 	}
 }

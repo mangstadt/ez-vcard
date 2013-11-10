@@ -9,6 +9,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.parameter.ImppType;
 
 /*
@@ -410,9 +411,9 @@ public class Impp extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (uri == null) {
-			warnings.add("Property value is null.");
+			warnings.add(new Warning(7));
 		}
 	}
 }

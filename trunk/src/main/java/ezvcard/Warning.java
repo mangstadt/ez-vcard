@@ -1,11 +1,4 @@
-package ezvcard.property;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
-import ezvcard.Warning;
+package ezvcard;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -30,48 +23,65 @@ import ezvcard.Warning;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
- The views and conclusions contained in the software and documentation are those
- of the authors and should not be interpreted as representing official policies, 
- either expressed or implied, of the FreeBSD Project.
  */
 
 /**
- * Represents a property whose value is a list of textual values.
+ * Represents a warning.
  * @author Michael Angstadt
- * @param <T> the type of values sorted in the list
  */
-public class ListProperty<T> extends VCardProperty {
-	protected List<T> values = new ArrayList<T>();
+public class Warning {
+	private final Integer code;
+	private final String message;
 
 	/**
-	 * Gest the list of values.
-	 * @return the list of values
+	 * Creates a new warning.
+	 * @param message the warning message
 	 */
-	public List<T> getValues() {
-		return values;
+	public Warning(String message) {
+		this(message, null);
 	}
 
 	/**
-	 * Adds a value to the list.
-	 * @param value the value to add
+	 * Creates a new warning whose message text is defined in the resource
+	 * bundle.
+	 * @param code the message code
+	 * @param args the message arguments
 	 */
-	public void addValue(T value) {
-		values.add(value);
+	public Warning(int code, Object... args) {
+		this(Messages.INSTANCE.getValidationWarning(code, args), code);
 	}
 
 	/**
-	 * Removes a value from the list.
-	 * @param value the value to remove
+	 * Creates a new warning.
+	 * @param message the warning message
+	 * @param code the message code
 	 */
-	public void removeValue(T value) {
-		values.remove(value);
+	public Warning(String message, Integer code) {
+		this.code = code;
+		this.message = message;
+	}
+
+	/**
+	 * Gets the warning code.
+	 * @return the warning code or null if no code was specified
+	 */
+	public Integer getCode() {
+		return code;
+	}
+
+	/**
+	 * Gets the warning message
+	 * @return the warning message
+	 */
+	public String getMessage() {
+		return message;
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
-		if (values.isEmpty()) {
-			warnings.add(new Warning(16));
+	public String toString() {
+		if (code == null) {
+			return message;
 		}
+		return "(" + code + ") " + message;
 	}
 }

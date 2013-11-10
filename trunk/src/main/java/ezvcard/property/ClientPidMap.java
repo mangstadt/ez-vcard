@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.parameter.VCardParameters;
 
 /*
@@ -157,9 +158,9 @@ public class ClientPidMap extends VCardProperty {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (pid == null && uri == null) {
-			warnings.add("Property has no value associated with it.");
+			warnings.add(new Warning(8));
 		}
 	}
 }

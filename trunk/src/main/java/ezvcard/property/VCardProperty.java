@@ -8,6 +8,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.parameter.VCardParameters;
 
 /*
@@ -91,13 +92,13 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCard#validate
 	 * @return a list of warnings or an empty list if no problems were found
 	 */
-	public final List<String> validate(VCardVersion version, VCard vcard) {
-		List<String> warnings = new ArrayList<String>(0);
+	public final List<Warning> validate(VCardVersion version, VCard vcard) {
+		List<Warning> warnings = new ArrayList<Warning>(0);
 
 		//check the supported versions
 		Set<VCardVersion> supportedVersions = getSupportedVersions();
 		if (!supportedVersions.contains(version)) {
-			warnings.add("Property is not supported by version " + version.getVersion() + ".  Supported versions are: " + supportedVersions);
+			warnings.add(new Warning(2, supportedVersions));
 		}
 
 		//check parameters
@@ -116,7 +117,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @param version the version to check the property against
 	 * @param vcard the vCard this property belongs to
 	 */
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		//empty
 	}
 

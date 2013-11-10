@@ -1,13 +1,15 @@
 package ezvcard.property;
 
+import java.text.NumberFormat;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
-import ezvcard.ValidationWarnings.WarningsGroup;
+import ezvcard.Warning;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -140,19 +142,27 @@ public class Agent extends VCardProperty {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (url == null && this.vcard == null) {
-			warnings.add("Property has neither a URL nor an embedded vCard.");
+			warnings.add(new Warning(8));
 		}
 
 		if (this.vcard != null) {
-			ValidationWarnings validationWarnings = this.vcard.validate(version);
-			for (WarningsGroup group : validationWarnings) {
-				VCardProperty property = group.getProperty();
-				String prefix = (property == null) ? "" : "[" + property.getClass().getSimpleName() + "]: ";
+			NumberFormat nf = NumberFormat.getIntegerInstance();
+			nf.setMinimumIntegerDigits(2);
 
-				for (String warning : group.getMessages()) {
-					warnings.add(prefix + warning);
+			ValidationWarnings validationWarnings = this.vcard.validate(version);
+			for (Map.Entry<VCardProperty, List<Warning>> entry : validationWarnings) {
+				VCardProperty property = entry.getKey();
+				List<Warning> propViolations = entry.getValue();
+
+				for (Warning propViolation : propViolations) {
+					String className = (property == null) ? "" : property.getClass().getSimpleName();
+
+					int code = propViolation.getCode();
+					String codeStr = (code >= 0) ? "W" + nf.format(code) : "";
+					String message = propViolation.getMessage();
+					warnings.add(new Warning(10, className, codeStr, message));
 				}
 			}
 		}

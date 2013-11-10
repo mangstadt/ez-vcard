@@ -11,6 +11,7 @@ import java.util.Set;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.property.Address;
 import ezvcard.property.Organization;
 import ezvcard.property.StructuredName;
@@ -842,74 +843,80 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @param version the vCard version to validate against
 	 * @return a list of warnings or an empty list if no problems were found
 	 */
-	public List<String> validate(VCardVersion version) {
-		List<String> warnings = new ArrayList<String>(0);
+	public List<Warning> validate(VCardVersion version) {
+		List<Warning> warnings = new ArrayList<Warning>(0);
 
-		String nonStandard = "%s parameter has a non-standard value (\"%s\").  Standard values are: %s";
-		String valueNotSupported = "%s parameter value (\"%s\") is not supported by version " + version.getVersion() + ".";
+		{
+			int nonStandardCode = 3;
+			int valueNotSupportedCode = 4;
 
-		String value = first(CALSCALE);
-		if (value != null && Calscale.find(value) == null) {
-			warnings.add(String.format(nonStandard, CALSCALE, value, Calscale.all()));
-		}
+			String value = first(CALSCALE);
+			if (value != null && Calscale.find(value) == null) {
+				warnings.add(new Warning(nonStandardCode, CALSCALE, value, Calscale.all()));
+			}
 
-		value = first(ENCODING);
-		if (value != null) {
-			Encoding encoding = Encoding.find(value);
-			if (encoding == null) {
-				warnings.add(String.format(nonStandard, ENCODING, value, Encoding.all()));
-			} else if (!encoding.isSupported(version)) {
-				warnings.add(String.format(valueNotSupported, ENCODING, value));
+			value = first(ENCODING);
+			if (value != null) {
+				Encoding encoding = Encoding.find(value);
+				if (encoding == null) {
+					warnings.add(new Warning(nonStandardCode, ENCODING, value, Encoding.all()));
+				} else if (!encoding.isSupported(version)) {
+					warnings.add(new Warning(valueNotSupportedCode, ENCODING, value));
+				}
+			}
+
+			value = first(VALUE);
+			if (value != null) {
+				VCardDataType dataType = VCardDataType.find(value);
+				if (dataType == null) {
+					warnings.add(new Warning(nonStandardCode, VALUE, value, VCardDataType.all()));
+				} else if (!dataType.isSupported(version)) {
+					warnings.add(new Warning(valueNotSupportedCode, VALUE, value));
+				}
 			}
 		}
 
-		value = first(VALUE);
-		if (value != null) {
-			VCardDataType dataType = VCardDataType.find(value);
-			if (dataType == null) {
-				warnings.add(String.format(nonStandard, VALUE, value, VCardDataType.all()));
-			} else if (!dataType.isSupported(version)) {
-				warnings.add(String.format(valueNotSupported, VALUE, value));
+		{
+			int malformedCode = 5;
+
+			try {
+				getGeo();
+			} catch (IllegalStateException e) {
+				warnings.add(new Warning(malformedCode, GEO, first(GEO)));
+			}
+
+			try {
+				getIndex();
+			} catch (IllegalStateException e) {
+				warnings.add(new Warning(malformedCode, INDEX, first(INDEX)));
+			}
+
+			try {
+				getPids();
+			} catch (IllegalStateException e) {
+				warnings.add(new Warning(malformedCode, PID, first(PID)));
+			}
+
+			try {
+				getPref();
+			} catch (IllegalStateException e) {
+				warnings.add(new Warning(malformedCode, PREF, first(PREF)));
 			}
 		}
 
-		String malformed = "%s parameter has a malformed value (\"%s\").";
+		{
+			int paramNotSupportedCode = 6;
+			for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
+				String name = entry.getKey();
+				String value = first(name);
+				if (value == null) {
+					continue;
+				}
 
-		try {
-			getGeo();
-		} catch (IllegalStateException e) {
-			warnings.add(String.format(malformed, GEO, first(GEO)));
-		}
-
-		try {
-			getIndex();
-		} catch (IllegalStateException e) {
-			warnings.add(String.format(malformed, INDEX, first(INDEX)));
-		}
-
-		try {
-			getPids();
-		} catch (IllegalStateException e) {
-			warnings.add(String.format(malformed, PID, first(PID)));
-		}
-
-		try {
-			getPref();
-		} catch (IllegalStateException e) {
-			warnings.add(String.format(malformed, PREF, first(PREF)));
-		}
-
-		String paramNotSupported = "%s parameter is not supported by version " + version.getVersion() + ".";
-		for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
-			String name = entry.getKey();
-			value = first(name);
-			if (value == null) {
-				continue;
-			}
-
-			Set<VCardVersion> versions = entry.getValue();
-			if (!versions.contains(version)) {
-				warnings.add(String.format(paramNotSupported, name));
+				Set<VCardVersion> versions = entry.getValue();
+				if (!versions.contains(version)) {
+					warnings.add(new Warning(paramNotSupportedCode, name));
+				}
 			}
 		}
 

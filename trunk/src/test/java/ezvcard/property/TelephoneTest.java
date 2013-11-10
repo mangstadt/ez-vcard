@@ -43,14 +43,14 @@ public class TelephoneTest {
 	@Test
 	public void validate() {
 		Telephone empty = new Telephone((String) null);
-		assertValidate(empty).run(1);
+		assertValidate(empty).run(8);
 
 		Telephone withText = new Telephone("(800) 555-5555");
-		assertValidate(withText).run(0);
+		assertValidate(withText).run();
 
 		Telephone withUri = new Telephone(new TelUri.Builder("+1-800-555-5555").extension("101").build());
-		assertValidate(withUri).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withUri).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withUri).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withUri).versions(VCardVersion.V2_1).run(19);
+		assertValidate(withUri).versions(VCardVersion.V3_0).run(19);
+		assertValidate(withUri).versions(VCardVersion.V4_0).run();
 	}
 }

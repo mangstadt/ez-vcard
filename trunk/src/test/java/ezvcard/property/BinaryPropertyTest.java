@@ -42,15 +42,15 @@ public class BinaryPropertyTest {
 	@Test
 	public void validate() {
 		BinaryTypeImpl empty = new BinaryTypeImpl();
-		assertValidate(empty).run(1);
+		assertValidate(empty).run(8);
 
 		BinaryTypeImpl withUrl = new BinaryTypeImpl();
 		withUrl.setUrl("http://example.com/image.jpg", ImageType.JPEG);
-		assertValidate(withUrl).run(0);
+		assertValidate(withUrl).run();
 
 		BinaryTypeImpl withData = new BinaryTypeImpl();
 		withData.setData("data".getBytes(), ImageType.JPEG);
-		assertValidate(withData).run(0);
+		assertValidate(withData).run();
 	}
 
 	private class BinaryTypeImpl extends BinaryProperty<ImageType> {

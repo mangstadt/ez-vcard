@@ -5,13 +5,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 
-import ezvcard.ValidationWarnings.WarningsGroup;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -45,52 +42,48 @@ import ezvcard.property.VCardProperty;
 public class ValidationWarningsTest {
 	@Test
 	public void isEmpty() {
-		List<WarningsGroup> groups = new ArrayList<WarningsGroup>();
-		ValidationWarnings warnings = new ValidationWarnings(groups, VCardVersion.V2_1);
+		ValidationWarnings warnings = new ValidationWarnings();
 		assertTrue(warnings.isEmpty());
 
-		groups.add(new WarningsGroup(new TestProperty1(), Arrays.asList("four")));
+		warnings.add(null, new Warning(0));
 		assertFalse(warnings.isEmpty());
 	}
 
 	@Test
 	public void getByProperty() {
-		List<WarningsGroup> groups = new ArrayList<WarningsGroup>();
-		WarningsGroup group1 = new WarningsGroup(new TestProperty1(), Arrays.asList("one", "two"));
-		groups.add(group1);
-		WarningsGroup group2 = new WarningsGroup(new TestProperty1(), Arrays.asList("three"));
-		groups.add(group2);
-		groups.add(new WarningsGroup(new TestProperty2(), Arrays.asList("four")));
-		WarningsGroup group3 = new WarningsGroup(null, Arrays.asList("five"));
-		groups.add(group3);
-		ValidationWarnings warnings = new ValidationWarnings(groups, VCardVersion.V2_1);
+		ValidationWarnings warnings = new ValidationWarnings();
 
-		assertEquals(Arrays.asList(group1, group2), warnings.getByProperty(TestProperty1.class));
-		assertEquals(Arrays.asList(group3), warnings.getByProperty(null));
-	}
+		Warning v0 = new Warning(0);
+		Warning v1 = new Warning(1);
+		Warning v2 = new Warning(2);
+		Warning v3 = new Warning(3);
 
-	@Test
-	public void getByProperty_empty() {
-		List<WarningsGroup> groups = new ArrayList<WarningsGroup>();
-		groups.add(new WarningsGroup(new TestProperty1(), Arrays.asList("one", "two")));
-		groups.add(new WarningsGroup(new TestProperty1(), Arrays.asList("three")));
-		ValidationWarnings warnings = new ValidationWarnings(groups, VCardVersion.V2_1);
-		assertEquals(Arrays.asList(), warnings.getByProperty(TestProperty2.class));
+		warnings.add(new TestProperty1(), v0);
+		warnings.add(new TestProperty1(), v1);
+		warnings.add(new TestProperty2(), v2);
+		warnings.add(null, v3);
+
+		assertEquals(Arrays.asList(v0, v1), warnings.getByProperty(TestProperty1.class));
+		assertEquals(Arrays.asList(v2), warnings.getByProperty(TestProperty2.class));
+		assertEquals(Arrays.asList(v3), warnings.getByProperty(null));
+		assertEquals(Arrays.asList(), warnings.getByProperty(TestProperty3.class));
 	}
 
 	@Test
 	public void toString_() {
-		List<WarningsGroup> groups = new ArrayList<WarningsGroup>();
-		groups.add(new WarningsGroup(null, Arrays.asList("one", "two")));
-		groups.add(new WarningsGroup(new TestProperty1(), Arrays.asList("three", "four")));
-		ValidationWarnings warnings = new ValidationWarnings(groups, VCardVersion.V2_1);
+		ValidationWarnings warnings = new ValidationWarnings();
+
+		warnings.add(null, new Warning("one"));
+		warnings.add(null, new Warning("two", 2));
+		warnings.add(new TestProperty1(), new Warning("three"));
+		warnings.add(new TestProperty1(), new Warning("four", 4));
 
 		//@formatter:off
 		String expected =
 		"one" + NEWLINE +
-		"two" + NEWLINE +
-		"[TestProperty1]: three" + NEWLINE +
-		"[TestProperty1]: four";
+		"W02: two" + NEWLINE +
+		"[TestProperty1] | three" + NEWLINE +
+		"[TestProperty1] | W04: four" + NEWLINE;
 		//@formatter:on
 		String actual = warnings.toString();
 		assertEquals(expected, actual);
@@ -101,6 +94,10 @@ public class ValidationWarningsTest {
 	}
 
 	private class TestProperty2 extends VCardProperty {
+		//empty
+	}
+
+	private class TestProperty3 extends VCardProperty {
 		//empty
 	}
 }

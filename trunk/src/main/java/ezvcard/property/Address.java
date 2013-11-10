@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.VCardParameters;
 
@@ -346,7 +347,7 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		for (AddressType type : getTypes()) {
 			if (type == AddressType.PREF) {
 				//ignore because it is converted to a PREF parameter for 4.0 vCards
@@ -354,7 +355,7 @@ public class Address extends VCardProperty implements HasAltId {
 			}
 
 			if (!type.isSupported(version)) {
-				warnings.add("Type value \"" + type.getValue() + "\" is not supported in version " + version.getVersion() + ".");
+				warnings.add(new Warning(9, type.getValue()));
 			}
 		}
 	}

@@ -8,6 +8,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.util.IOUtils;
 
@@ -221,9 +222,9 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (url == null && data == null) {
-			warnings.add("Property has neither a URL nor binary data attached to it.");
+			warnings.add(new Warning(8));
 		}
 	}
 }

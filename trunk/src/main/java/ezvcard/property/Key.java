@@ -7,6 +7,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.parameter.KeyType;
 
 /*
@@ -191,13 +192,13 @@ public class Key extends BinaryProperty<KeyType> {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (url == null && data == null && text == null) {
-			warnings.add("Property has no value attached to it.");
+			warnings.add(new Warning(8));
 		}
 
 		if (url != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
-			warnings.add("URL values are not permitted in version " + version.getVersion() + ".");
+			warnings.add(new Warning(15));
 		}
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -202,11 +203,11 @@ public class Member extends UriProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<String> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		super._validate(warnings, version, vcard);
 
 		if (vcard.getKind() == null || !vcard.getKind().isGroup()) {
-			warnings.add("The " + Kind.class.getSimpleName() + " property must be set to \"group\" if the vCard contains " + Member.class.getSimpleName() + " properties.");
+			warnings.add(new Warning(17));
 		}
 	}
 }

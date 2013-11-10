@@ -35,7 +35,6 @@ import ezvcard.property.ProductId;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
-import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -560,7 +559,7 @@ public class VCardWriterTest {
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
-		assertValidate(vcard.validate(VCardVersion.V4_0));
+		assertValidate(vcard).versions(VCardVersion.V4_0).run();
 
 		StringWriter sw = new StringWriter();
 		VCardWriter writer = new VCardWriter(sw, VCardVersion.V4_0);
@@ -626,9 +625,9 @@ public class VCardWriterTest {
 			vcard.addEmail("Frank_Dawson@Lotus.com", EmailType.INTERNET, EmailType.PREF);
 			vcard.addEmail("fdawson@earthlink.net", EmailType.INTERNET);
 
-			vcard.addUrl("http://home.earthlink.net/÷fdawson");
+			vcard.addUrl("http://home.earthlink.net/ï¿½fdawson");
 
-			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null);
+			assertValidate(vcard).versions(VCardVersion.V3_0).prop(null, 0).run();
 
 			writer.write(vcard);
 		}
@@ -654,7 +653,7 @@ public class VCardWriterTest {
 
 			vcard.addEmail("howes@netscape.com", EmailType.INTERNET);
 
-			assertValidate(vcard.validate(VCardVersion.V3_0), (VCardProperty) null);
+			assertValidate(vcard).versions(VCardVersion.V3_0).prop(null, 0).run();
 
 			writer.write(vcard);
 		}
@@ -672,7 +671,7 @@ public class VCardWriterTest {
 		"TEL;TYPE=fax,work:+1-919-676-9564\r\n" +
 		"EMAIL;TYPE=internet,pref:Frank_Dawson@Lotus.com\r\n" +
 		"EMAIL;TYPE=internet:fdawson@earthlink.net\r\n" +
-		"URL:http://home.earthlink.net/÷fdawson\r\n" +
+		"URL:http://home.earthlink.net/ï¿½fdawson\r\n" +
 		"END:VCARD\r\n" +
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +

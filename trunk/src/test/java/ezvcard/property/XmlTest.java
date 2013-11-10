@@ -44,14 +44,14 @@ public class XmlTest {
 	@Test
 	public void validate() throws Throwable {
 		Xml empty = new Xml((Document) null);
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(2);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(1);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 7);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 7);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(7);
 
 		Xml withValue = new Xml("<foo/>");
-		assertValidate(withValue).versions(VCardVersion.V2_1).run(1);
-		assertValidate(withValue).versions(VCardVersion.V3_0).run(1);
-		assertValidate(withValue).versions(VCardVersion.V4_0).run(0);
+		assertValidate(withValue).versions(VCardVersion.V2_1).run(2);
+		assertValidate(withValue).versions(VCardVersion.V3_0).run(2);
+		assertValidate(withValue).versions(VCardVersion.V4_0).run();
 	}
 
 	@Test(expected = SAXException.class)
