@@ -40,7 +40,7 @@ public class SimplePropertyTest {
 	@Test
 	public void validate() {
 		SimplePropertyImpl empty = new SimplePropertyImpl(null);
-		assertValidate(empty).run(7);
+		assertValidate(empty).run(8);
 
 		SimplePropertyImpl withValue = new SimplePropertyImpl("text");
 		assertValidate(withValue).run();

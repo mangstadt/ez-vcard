@@ -44,9 +44,9 @@ public class XmlTest {
 	@Test
 	public void validate() throws Throwable {
 		Xml empty = new Xml((Document) null);
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 7);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 7);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(7);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
 
 		Xml withValue = new Xml("<foo/>");
 		assertValidate(withValue).versions(VCardVersion.V2_1).run(2);

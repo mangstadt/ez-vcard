@@ -217,7 +217,7 @@ public class Gender extends VCardProperty {
 	@Override
 	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (gender == null) {
-			warnings.add(new Warning(7));
+			warnings.add(new Warning(8));
 		}
 	}
 }
