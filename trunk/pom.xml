@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.googlecode.ez-vcard</groupId>
 	<artifactId>ez-vcard</artifactId>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging> <!-- "bundle" used for OSGi support -->
 	<version>0.9.1-SNAPSHOT</version>
 	<name>ez-vcard</name>
 	<url>http://code.google.com/p/ez-vcard</url>
@@ -45,7 +45,7 @@
 		<developerConnection>scm:svn:https://ez-vcard.googlecode.com/svn/trunk</developerConnection>
 		<url>http://code.google.com/p/ez-vcard/source/browse/</url>
 	</scm>
-	
+
 	<properties>
 		<java.version>1.5</java.version>
 	</properties>
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
-			<version>2.3.19</version>
+			<version>2.3.20</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -91,12 +91,32 @@
 
 	<build>
 		<resources>
+			<!--
+			Note: There are two <resource> tags below because the maven-bundle-plugin tries to
+			filter the .png files and can't, since they're not text files.
+			-->
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.png</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*.png</include>
+				</includes>
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.4.0</version>
+				<extensions>true</extensions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.4.3</version>
@@ -163,7 +183,7 @@
 
 					<!-- exclude commons-codec source -->
 					<excludePackageNames>ezvcard.util.org.*</excludePackageNames>
-					
+
 					<!-- Add Javascript syntax highlighter -->
 					<top><![CDATA[
 						<script src="doc-files/shCore.js" type="text/javascript"></script>
