@@ -2,6 +2,7 @@ package ezvcard.io.text;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 import ezvcard.util.org.apache.commons.codec.EncoderException;
 import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
@@ -79,30 +80,36 @@ public class FoldedLineWriter extends Writer {
 	/**
 	 * Writes a string.
 	 * @param str the string to write
-	 * @param quotedPrintable true if the string has been encoded in
-	 * quoted-printable encoding, false if not
+	 * @param quotedPrintable true to encode the string in quoted-printable
+	 * encoding, false not to
+	 * @param charset the character set to use when encoding into
+	 * quoted-printable, or null to use UTF-8 (only applicable if
+	 * "quotedPrintable" is set to true)
 	 * @return this
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
-	public FoldedLineWriter append(CharSequence str, boolean quotedPrintable) throws IOException {
-		write(str, quotedPrintable);
+	public FoldedLineWriter append(CharSequence str, boolean quotedPrintable, Charset charset) throws IOException {
+		write(str, quotedPrintable, charset);
 		return this;
 	}
 
 	/**
 	 * Writes a string.
 	 * @param str the string to write
-	 * @param quotedPrintable true if the string has been encoded in
-	 * quoted-printable encoding, false if not
+	 * @param quotedPrintable true to encode the string in quoted-printable
+	 * encoding, false not to
+	 * @param charset the character set to use when encoding into
+	 * quoted-printable, or null to use UTF-8 (only applicable if
+	 * "quotedPrintable" is set to true)
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
-	public void write(CharSequence str, boolean quotedPrintable) throws IOException {
-		write(str.toString().toCharArray(), 0, str.length(), quotedPrintable);
+	public void write(CharSequence str, boolean quotedPrintable, Charset charset) throws IOException {
+		write(str.toString().toCharArray(), 0, str.length(), quotedPrintable, charset);
 	}
 
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
-		write(cbuf, off, len, false);
+		write(cbuf, off, len, false, null);
 	}
 
 	/**
@@ -110,20 +117,27 @@ public class FoldedLineWriter extends Writer {
 	 * @param cbuf the array of characters
 	 * @param off the offset from which to start writing characters
 	 * @param len the number of characters to write
-	 * @param quotedPrintable true to convert the string to "quoted-printable"
+	 * @param quotedPrintable true to encode the string in quoted-printable
 	 * encoding, false not to
+	 * @param charset the character set to use when encoding into
+	 * quoted-printable, or null to use UTF-8 (only applicable if
+	 * "quotedPrintable" is set to true)
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
-	public void write(char[] cbuf, int off, int len, boolean quotedPrintable) throws IOException {
+	public void write(char[] cbuf, int off, int len, boolean quotedPrintable, Charset charset) throws IOException {
 		//encode to quoted-printable
 		if (quotedPrintable) {
 			QuotedPrintableCodec codec = new QuotedPrintableCodec();
 			try {
-				cbuf = codec.encode(new String(cbuf, off, len)).toCharArray();
+				String str = new String(cbuf, off, len);
+				String encoded = (charset == null) ? codec.encode(str) : codec.encode(str, charset.name());
+
+				cbuf = encoded.toCharArray();
 				off = 0;
 				len = cbuf.length;
 			} catch (EncoderException e) {
-				//only thrown if an unsupported charset is passed into the codec
+				//thrown if an unsupported charset is passed into the codec
+				//this should never be thrown because we already know the charset is valid (Charset object is passed in)
 				throw new RuntimeException(e);
 			}
 		}
