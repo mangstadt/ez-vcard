@@ -84,7 +84,7 @@ public class VCardParametersTest {
 	public void validate_supported_versions() {
 		parameters.setAltId("value");
 		parameters.setCalscale(Calscale.GREGORIAN);
-		parameters.setCharset("value");
+		parameters.setCharset("UTF-8");
 		parameters.setGeo(1, 1);
 		parameters.setIndex(1);
 		parameters.setLanguage("value");
@@ -117,6 +117,19 @@ public class VCardParametersTest {
 		assertValidate(parameters.validate(VCardVersion.V2_1), 4);
 		assertValidate(parameters.validate(VCardVersion.V3_0), 4);
 		assertValidate(parameters.validate(VCardVersion.V4_0));
+	}
+
+	@Test
+	public void validate_charset() {
+		parameters.setCharset("invalid");
+		assertValidate(parameters.validate(VCardVersion.V2_1), 22);
+		assertValidate(parameters.validate(VCardVersion.V3_0), 6, 22);
+		assertValidate(parameters.validate(VCardVersion.V4_0), 6, 22);
+
+		parameters.setCharset("UTF-8");
+		assertValidate(parameters.validate(VCardVersion.V2_1));
+		assertValidate(parameters.validate(VCardVersion.V3_0), 6);
+		assertValidate(parameters.validate(VCardVersion.V4_0), 6);
 	}
 
 	@Test
