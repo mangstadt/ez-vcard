@@ -1,5 +1,8 @@
 package ezvcard.parameter;
 
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -916,6 +919,20 @@ public class VCardParameters extends ListMultimap<String, String> {
 				Set<VCardVersion> versions = entry.getValue();
 				if (!versions.contains(version)) {
 					warnings.add(new Warning(paramNotSupportedCode, name));
+				}
+			}
+		}
+
+		{
+			int invalidCharsetCode = 22;
+			String charsetStr = getCharset();
+			if (charsetStr != null) {
+				try {
+					Charset.forName(charsetStr);
+				} catch (IllegalCharsetNameException e) {
+					warnings.add(new Warning(invalidCharsetCode, charsetStr));
+				} catch (UnsupportedCharsetException e) {
+					warnings.add(new Warning(invalidCharsetCode, charsetStr));
 				}
 			}
 		}
