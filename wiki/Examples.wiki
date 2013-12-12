@@ -63,7 +63,7 @@ String html =
   "</body>" +
 "</html>";
 
-VCard vcard = Ezvcard.parsHtml(html).first();
+VCard vcard = Ezvcard.parseHtml(html).first();
 }}}
 
 ==Example 1.4: Reading from a JSON string (jCard)==
