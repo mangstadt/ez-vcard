@@ -3,8 +3,11 @@ package ezvcard.io.text;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
+
+import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -50,15 +53,15 @@ public class FoldedLineWriterTest {
 		writer.write("line");
 		writer.write("\r\n0123456789\r\n");
 
-		writer.write("0123456789", true);
+		writer.write("0123456789", true, null);
 		writer.write("\r\n");
-		writer.write("01234567=", true);
+		writer.write("01234567=", true, null);
 		writer.write("\r\n");
-		writer.write("01234567==", true);
+		writer.write("01234567==", true, null);
 		writer.write("\r\n");
-		writer.write("short", true);
+		writer.write("short", true, null);
 		writer.write("\r\n");
-		writer.write("quoted-printable line", true);
+		writer.write("quoted-printable line", true, null);
 
 		writer.close();
 		String actual = sw.toString();
@@ -103,5 +106,28 @@ public class FoldedLineWriterTest {
 		//@formatter:on
 
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void write_charset() throws Throwable {
+		StringWriter sw = new StringWriter();
+		FoldedLineWriter writer = new FoldedLineWriter(sw, 10, " ", "\r\n");
+
+		String str = "test\näöüß\ntest";
+		writer.write(str, true, Charset.forName("ISO-8859-1"));
+		writer.close();
+		String actual = sw.toString();
+
+		//@formatter:off
+		String expected =	
+		"test=0A=E4=\r\n" +
+		" =F6=FC=DF=\r\n" +
+		" =0Atest";
+		//@formatter:on
+
+		assertEquals(expected, actual);
+
+		QuotedPrintableCodec codec = new QuotedPrintableCodec("ISO-8859-1");
+		assertEquals("test\näöüß\ntest", codec.decode("test=0A=E4=F6=FC=DF=0Atest"));
 	}
 }
