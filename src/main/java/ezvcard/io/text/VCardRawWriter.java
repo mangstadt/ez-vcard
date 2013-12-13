@@ -372,6 +372,30 @@ public class VCardRawWriter implements Closeable, Flushable {
 
 		value = sanitizeValue(parameters, value);
 
+		//determine if the property value must be encoded in quoted printable
+		//and determine the charset to use when encoding to quoted-printable
+		boolean quotedPrintable = (parameters.getEncoding() == Encoding.QUOTED_PRINTABLE);
+		Charset charset = null;
+		if (quotedPrintable) {
+			String charsetParam = parameters.getCharset();
+			if (charsetParam != null) {
+				try {
+					charset = Charset.forName(charsetParam);
+				} catch (IllegalCharsetNameException e) {
+					charset = null;
+				} catch (UnsupportedCharsetException e) {
+					charset = null;
+				}
+			}
+			if (charset == null) {
+				charset = writer.getEncoding();
+				if (charset == null) {
+					charset = Charset.defaultCharset();
+				}
+			}
+			parameters.setCharset(charset.name());
+		}
+
 		//write the group
 		if (group != null) {
 			writer.append(group);
@@ -429,24 +453,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 		}
 
 		writer.append(':');
-
-		//write the property value
-		boolean quotedPrintable = (parameters.getEncoding() == Encoding.QUOTED_PRINTABLE);
-		Charset charset = null;
-		if (quotedPrintable) {
-			String charsetParam = parameters.getCharset();
-			if (charsetParam != null) {
-				try {
-					charset = Charset.forName(charsetParam);
-				} catch (IllegalCharsetNameException e) {
-					charset = null;
-				} catch (UnsupportedCharsetException e) {
-					charset = null;
-				}
-			}
-		}
 		writer.append(value, quotedPrintable, charset);
-
 		writer.append(newline);
 	}
 
