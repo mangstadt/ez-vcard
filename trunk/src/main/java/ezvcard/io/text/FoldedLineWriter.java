@@ -1,6 +1,7 @@
 package ezvcard.io.text;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
@@ -83,8 +84,8 @@ public class FoldedLineWriter extends Writer {
 	 * @param quotedPrintable true to encode the string in quoted-printable
 	 * encoding, false not to
 	 * @param charset the character set to use when encoding into
-	 * quoted-printable, or null to use UTF-8 (only applicable if
-	 * "quotedPrintable" is set to true)
+	 * quoted-printable, or null to use the writer's character encoding (only
+	 * applicable if "quotedPrintable" is set to true)
 	 * @return this
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
@@ -99,8 +100,8 @@ public class FoldedLineWriter extends Writer {
 	 * @param quotedPrintable true to encode the string in quoted-printable
 	 * encoding, false not to
 	 * @param charset the character set to use when encoding into
-	 * quoted-printable, or null to use UTF-8 (only applicable if
-	 * "quotedPrintable" is set to true)
+	 * quoted-printable, or null to use the writer's character encoding (only
+	 * applicable if "quotedPrintable" is set to true)
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void write(CharSequence str, boolean quotedPrintable, Charset charset) throws IOException {
@@ -120,17 +121,24 @@ public class FoldedLineWriter extends Writer {
 	 * @param quotedPrintable true to encode the string in quoted-printable
 	 * encoding, false not to
 	 * @param charset the character set to use when encoding into
-	 * quoted-printable, or null to use UTF-8 (only applicable if
-	 * "quotedPrintable" is set to true)
+	 * quoted-printable, or null to use the writer's character encoding (only
+	 * applicable if "quotedPrintable" is set to true)
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void write(char[] cbuf, int off, int len, boolean quotedPrintable, Charset charset) throws IOException {
 		//encode to quoted-printable
 		if (quotedPrintable) {
-			QuotedPrintableCodec codec = new QuotedPrintableCodec();
+			if (charset == null) {
+				charset = getEncoding();
+				if (charset == null) {
+					charset = Charset.defaultCharset();
+				}
+			}
+
+			QuotedPrintableCodec codec = new QuotedPrintableCodec(charset.name());
 			try {
 				String str = new String(cbuf, off, len);
-				String encoded = (charset == null) ? codec.encode(str) : codec.encode(str, charset.name());
+				String encoded = codec.encode(str);
 
 				cbuf = encoded.toCharArray();
 				off = 0;
@@ -313,5 +321,19 @@ public class FoldedLineWriter extends Writer {
 	 */
 	public Writer getWriter() {
 		return writer;
+	}
+
+	/**
+	 * Gets the writer's character encoding.
+	 * @return the writer's character encoding or null if undefined
+	 */
+	public Charset getEncoding() {
+		if (!(writer instanceof OutputStreamWriter)) {
+			return null;
+		}
+
+		OutputStreamWriter osw = (OutputStreamWriter) writer;
+		String charsetStr = osw.getEncoding();
+		return (charsetStr == null) ? null : Charset.forName(charsetStr);
 	}
 }

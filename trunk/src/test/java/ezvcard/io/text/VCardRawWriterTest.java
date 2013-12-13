@@ -3,6 +3,7 @@ package ezvcard.io.text;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.text.VCardRawWriter.ProblemsListener;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -398,7 +400,7 @@ public class VCardRawWriterTest {
 	@Test
 	public void newlines_in_property_values() throws Exception {
 		Tests tests = new Tests();
-		tests.add(VCardVersion.V2_1, "PROP;ENCODING=quoted-printable:one=0D=0Atwo\r\n");
+		tests.add(VCardVersion.V2_1, "PROP;ENCODING=quoted-printable;CHARSET=" + Charset.defaultCharset().name() + ":one=0D=0Atwo\r\n");
 		tests.add(VCardVersion.V3_0, "PROP:one\\ntwo\r\n");
 		tests.add(VCardVersion.V4_0, "PROP:one\\ntwo\r\n");
 
@@ -423,7 +425,7 @@ public class VCardRawWriterTest {
 	@Test
 	public void quoted_printable_line() throws Exception {
 		StringWriter sw = new StringWriter();
-		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, new FoldingScheme(40, " "));
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, new FoldingScheme(60, " "));
 
 		VCardParameters parameters = new VCardParameters();
 		parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
@@ -434,13 +436,85 @@ public class VCardRawWriterTest {
 
 		//@formatter:off
 		String expected =
-		"PROP;ENCODING=quoted-printable:quoted-p=\r\n" +
-		" rintable =0D=0Aline\r\n" +
-		"PROP;ENCODING=quoted-printable:short\r\n";
+		"PROP;ENCODING=quoted-printable;CHARSET=" + Charset.defaultCharset().name() + ":quoted-printab=\r\n" +
+		" le =0D=0Aline\r\n" +
+		"PROP;ENCODING=quoted-printable;CHARSET=" + Charset.defaultCharset().name() + ":short\r\n";
 		//@formatter:on
 
 		String actual = sw.toString();
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void quoted_printable_line_encoding() throws Exception {
+		final String propValue = "\u00e4\u00f6\u00fc\u00df";
+
+		//UTF-8
+		{
+			StringWriter sw = new StringWriter();
+			VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+
+			VCardParameters parameters = new VCardParameters();
+			parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
+			parameters.setCharset("UTF-8");
+
+			writer.writeProperty(null, "PROP", parameters, propValue);
+			writer.close();
+
+			//@formatter:off
+			String expected =
+			"PROP;ENCODING=quoted-printable;CHARSET=UTF-8:=C3=A4=C3=B6=C3=BC=C3=9F\r\n";
+			//@formatter:on
+
+			String actual = sw.toString();
+			assertEquals(expected, actual);
+		}
+
+		//ISO-8859-1
+		{
+			StringWriter sw = new StringWriter();
+			VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+
+			VCardParameters parameters = new VCardParameters();
+			parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
+			parameters.setCharset("ISO-8859-1");
+
+			writer.writeProperty(null, "PROP", parameters, propValue);
+			writer.close();
+
+			//@formatter:off
+			String expected =
+			"PROP;ENCODING=quoted-printable;CHARSET=ISO-8859-1:=E4=F6=FC=DF\r\n";
+			//@formatter:on
+
+			String actual = sw.toString();
+			assertEquals(expected, actual);
+		}
+
+		//invalid
+		{
+			StringWriter sw = new StringWriter();
+			VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+
+			VCardParameters parameters = new VCardParameters();
+			parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
+			parameters.setCharset("invalid");
+
+			writer.writeProperty(null, "PROP", parameters, propValue);
+			writer.close();
+
+			String defaultCharset = Charset.defaultCharset().name();
+			QuotedPrintableCodec codec = new QuotedPrintableCodec(defaultCharset);
+			String encoded = codec.encode(propValue);
+
+			//@formatter:off
+			String expected =
+			"PROP;ENCODING=quoted-printable;CHARSET=" + defaultCharset + ":" + encoded + "\r\n";
+			//@formatter:on
+
+			String actual = sw.toString();
+			assertEquals(expected, actual);
+		}
 	}
 
 	private class ProblemsListenerImpl implements ProblemsListener {

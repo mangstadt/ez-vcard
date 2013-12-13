@@ -5,6 +5,7 @@ import static ezvcard.util.StringUtils.NEWLINE;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.Charset;
 
 import ezvcard.VCardException;
 import ezvcard.VCardVersion;
@@ -290,6 +291,14 @@ public class VCardRawReader implements Closeable {
 	 */
 	public boolean eof() {
 		return eof;
+	}
+
+	/**
+	 * Gets the character encoding of the reader.
+	 * @return the character encoding or null if none is defined
+	 */
+	public Charset getEncoding() {
+		return reader.getEncoding();
 	}
 
 	/**

@@ -2,8 +2,10 @@ package ezvcard.io.text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import ezvcard.util.StringUtils;
@@ -49,6 +51,7 @@ public class FoldedLineReader extends BufferedReader {
 
 	private String lastLine;
 	private int lastLineNum = 0, lineCount = 0;
+	private final Charset charset;
 
 	/**
 	 * Creates a folded line reader.
@@ -56,6 +59,13 @@ public class FoldedLineReader extends BufferedReader {
 	 */
 	public FoldedLineReader(Reader reader) {
 		super(reader);
+		if (reader instanceof InputStreamReader) {
+			InputStreamReader isr = (InputStreamReader) reader;
+			String charsetStr = isr.getEncoding();
+			charset = (charsetStr == null) ? null : Charset.forName(charsetStr);
+		} else {
+			charset = null;
+		}
 	}
 
 	/**
@@ -72,6 +82,14 @@ public class FoldedLineReader extends BufferedReader {
 	 */
 	public int getLineNum() {
 		return lastLineNum;
+	}
+
+	/**
+	 * Gets the character encoding of the reader.
+	 * @return the character encoding or null if none is defined
+	 */
+	public Charset getEncoding() {
+		return charset;
 	}
 
 	/**

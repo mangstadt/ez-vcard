@@ -9,7 +9,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -263,26 +265,39 @@ public class VCardReader implements Closeable {
 			return value;
 		}
 
-		parameters.setEncoding(null); //remove encoding sub type
+		//remove encoding parameter
+		parameters.setEncoding(null);
 
-		QuotedPrintableCodec codec = new QuotedPrintableCodec();
-		String charset = parameters.getCharset();
-		try {
-			if (charset == null) {
-				return codec.decode(value);
-			} else {
-				try {
-					return codec.decode(value, charset);
-				} catch (UnsupportedEncodingException e) {
-					addWarning(name, 23, charset);
-					return codec.decode(value);
-				}
+		//determine the character set
+		Charset charset = null;
+		String charsetStr = parameters.getCharset();
+		if (charsetStr != null) {
+			try {
+				charset = Charset.forName(charsetStr);
+			} catch (IllegalCharsetNameException e) {
+				charset = null;
+			} catch (UnsupportedCharsetException e) {
+				charset = null;
 			}
-		} catch (DecoderException e) {
-			addWarning(name, 24);
+		}
+		if (charset == null) {
+			charset = reader.getEncoding();
+			if (charset == null) {
+				charset = Charset.defaultCharset();
+			}
+			if (charsetStr != null) {
+				//the given charset was invalid, so add a warning
+				addWarning(name, 23, charsetStr, charset);
+			}
 		}
 
-		return value;
+		QuotedPrintableCodec codec = new QuotedPrintableCodec(charset.name());
+		try {
+			return codec.decode(value);
+		} catch (DecoderException e) {
+			//only thrown if the charset is invalid, which we know will never happen because we're using a Charset object
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

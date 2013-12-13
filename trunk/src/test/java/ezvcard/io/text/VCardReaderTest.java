@@ -10,6 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,6 +65,7 @@ import ezvcard.property.Url;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
+import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -195,6 +197,78 @@ public class VCardReaderTest {
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void decodeQuotedPrintableCharset() throws Throwable {
+		String expectedValue = "\u00e4\u00f6\u00fc\u00df";
+
+		//UTF-8
+		{
+			//@formatter:off
+			String str =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:=C3=A4=C3=B6=C3=BC=C3=9F\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			VCardReader reader = new VCardReader(str);
+			VCard vcard = reader.readNext();
+
+			Note note = vcard.getNotes().get(0);
+			assertEquals(expectedValue, note.getValue());
+			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+
+			assertWarnings(0, reader.getWarnings());
+			assertNull(reader.readNext());
+		}
+
+		//ISO-8859-1
+		{
+			//@formatter:off
+			String str =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=ISO-8859-1:=E4=F6=FC=DF\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			VCardReader reader = new VCardReader(str);
+			VCard vcard = reader.readNext();
+
+			Note note = vcard.getNotes().get(0);
+			assertEquals(expectedValue, note.getValue());
+			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+
+			assertWarnings(0, reader.getWarnings());
+			assertNull(reader.readNext());
+		}
+
+		//invalid
+		{
+			String defaultCharset = Charset.defaultCharset().name();
+			QuotedPrintableCodec codec = new QuotedPrintableCodec(defaultCharset);
+			String encoded = codec.encode(expectedValue);
+
+			//@formatter:off
+			String str =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=invalid:" + encoded + "\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			VCardReader reader = new VCardReader(str);
+			VCard vcard = reader.readNext();
+
+			Note note = vcard.getNotes().get(0);
+			assertEquals(expectedValue, note.getValue());
+			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+
+			assertWarnings(1, reader.getWarnings());
+			assertNull(reader.readNext());
+		}
 	}
 
 	/**
