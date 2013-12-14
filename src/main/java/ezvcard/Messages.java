@@ -1,6 +1,7 @@
 package ezvcard;
 
 import java.text.MessageFormat;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /*
@@ -68,12 +69,11 @@ public enum Messages {
 	 * @return the message or null if not found
 	 */
 	public String getMessage(String key, Object... args) {
-		String message = messages.getString(key);
-		if (message == null) {
+		try {
+			String message = messages.getString(key);
+			return MessageFormat.format(message, args);
+		} catch (MissingResourceException e) {
 			return null;
 		}
-		//TODO handle MissingResourceException
-
-		return MessageFormat.format(message, args);
 	}
 }
