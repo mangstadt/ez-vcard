@@ -434,10 +434,12 @@ public class VCardRawWriterTest {
 		writer.writeProperty(null, "PROP", parameters, "short");
 		writer.close();
 
+		//must construct the first line differently, since the length of the CHARSET parameter will vary depending on the local machine
+		String firstLine = "PROP;ENCODING=quoted-printable;CHARSET=" + Charset.defaultCharset().name() + ":quoted-printable =0D=0Aline";
+		firstLine = firstLine.substring(0, 59) + "=\r\n " + firstLine.substring(59);
+
 		//@formatter:off
-		String expected =
-		"PROP;ENCODING=quoted-printable;CHARSET=" + Charset.defaultCharset().name() + ":quoted-printab=\r\n" +
-		" le =0D=0Aline\r\n" +
+		String expected = firstLine + "\r\n" +
 		"PROP;ENCODING=quoted-printable;CHARSET=" + Charset.defaultCharset().name() + ":short\r\n";
 		//@formatter:on
 
