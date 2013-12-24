@@ -1,5 +1,13 @@
 #summary Archive of all past news entries.
 
+*December 24, 2013*
+
+*Happy Holidays* from the ez-vcard team!
+
+[http://code.google.com/p/ez-vcard/downloads/list Version 0.9.1] is released.  This release adds OSGi support, internationalized warnings, and bug fixes.  See the [Changelog changelog] for more details.
+
+We are looking for people to translate ez-vcard's parser and validation warnings into other languages.  If you are interested, please contact me at mike(dot)angstadt(at)gmail(dot)com, or submit an [https://code.google.com/p/ez-vcard/issues Issue].  The message file can be found here: https://code.google.com/p/ez-vcard/source/browse/trunk/src/main/resources/ezvcard/messages.properties
+
 *October 25, 2013*
 
 [http://code.google.com/p/ez-vcard/downloads/list Version 0.9.0] released.  This release adds a revamped marshalling framework and includes a significant reorganization of the API.
