@@ -113,7 +113,7 @@ public class FoldedLineWriterTest {
 		StringWriter sw = new StringWriter();
 		FoldedLineWriter writer = new FoldedLineWriter(sw, 10, " ", "\r\n");
 
-		String str = "test\näöüß\ntest";
+		String str = "test\n\u00e4\u00f6\u00fc\u00df\ntest";
 		writer.write(str, true, Charset.forName("ISO-8859-1"));
 		writer.close();
 		String actual = sw.toString();
@@ -128,6 +128,6 @@ public class FoldedLineWriterTest {
 		assertEquals(expected, actual);
 
 		QuotedPrintableCodec codec = new QuotedPrintableCodec("ISO-8859-1");
-		assertEquals("test\näöüß\ntest", codec.decode("test=0A=E4=F6=FC=DF=0Atest"));
+		assertEquals("test\n\u00e4\u00f6\u00fc\u00df\ntest", codec.decode("test=0A=E4=F6=FC=DF=0Atest"));
 	}
 }
