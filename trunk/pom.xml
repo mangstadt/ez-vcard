@@ -3,7 +3,7 @@
 	<groupId>com.googlecode.ez-vcard</groupId>
 	<artifactId>ez-vcard</artifactId>
 	<packaging>bundle</packaging> <!-- "bundle" used for OSGi support -->
-	<version>0.9.1</version>
+	<version>0.9.2-SNAPSHOT</version>
 	<name>ez-vcard</name>
 	<url>http://code.google.com/p/ez-vcard</url>
 	<inceptionYear>2012</inceptionYear>
@@ -41,9 +41,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://ez-vcard.googlecode.com/svn/tags/0.9.1</connection>
-		<developerConnection>scm:svn:https://ez-vcard.googlecode.com/svn/tags/0.9.1</developerConnection>
-		<url>http://code.google.com/p/ez-vcard/source/browse/tags/0.9.1</url>
+		<connection>scm:svn:http://ez-vcard.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://ez-vcard.googlecode.com/svn/trunk</developerConnection>
+		<url>http://code.google.com/p/ez-vcard/source/browse/</url>
 	</scm>
 
 	<properties>
