@@ -1,7 +1,7 @@
 #summary Documents all the changes that were made to every version of the library
 
-= 0.9.1-SNAPSHOT =
-_under development_
+= 0.9.1=
+_December 24, 2013_
 
  * Added OSGi support (credit: Florian Brunner).
  * Moved the validation and parser warnings into a resource bundle for i18n.  Note that some messages were tweaked in the process.
