@@ -437,7 +437,7 @@ FavoriteColors favColors = new FavoriteColors();
 favColors.addColor("red");
 favColors.addColor("green");
 favColors.addColor("blue");
-vcard.addType(favColors);
+vcard.addProperty(favColors);
 
 Writer writer = ...
 
