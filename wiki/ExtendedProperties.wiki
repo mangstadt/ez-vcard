@@ -290,7 +290,7 @@ Generates the XML (xCard) representation of the property.
 || `FavoriteColors property` || The property object that is being written. ||
 || `XCardElement element` || Represents the property's XML element.  This class wraps xCard functionality around a raw "`org.w3c.dom.Element`" object.  The raw `Element` object can be retrieved by calling [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/xml/XCardElement.html#element() XCardElement.element()], and can be modified as needed. ||
 
-In our example, the [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/xml/XCardElement.html#append(ezvcard.VCardDataType, java.lang.String) XCardElement.append()] method is used to add child `<text>` elements to the property's XML element.  These elements will belong to the xCard XML namespace.
+In our example, the [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/xml/XCardElement.html#append(ezvcard.VCardDataType,java.lang.String) XCardElement.append()] method is used to add child `<text>` elements to the property's XML element.  These elements will belong to the xCard XML namespace.
 
 *!SkipMeException:* If it is determined that the property should NOT be included in the vCard, a [https://ez-vcard.googlecode.com/svn/javadocs/latest/ezvcard/io/SkipMeException.html SkipMeException] can be thrown.  This exception will prevent the writer from adding the property to the XML document.
 
