@@ -16,6 +16,7 @@
    * [Examples Code samples]
    * [TypeList vCard property index]
  * [Dependencies Dependencies]
+ * [Downloads]
  * Javadocs
    * [https://ez-vcard.googlecode.com/svn/javadocs/0.7.0/index.html 0.7.0]
    * [https://ez-vcard.googlecode.com/svn/javadocs/0.7.1/index.html 0.7.1]
