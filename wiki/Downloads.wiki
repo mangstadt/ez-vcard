@@ -29,3 +29,13 @@
 || || || || || || ||
 || *0.1.1* || _2012-07-28_ || - || [http://ez-vcard.googlecode.com/svn/downloads/0.1.1/ez-vcard-0.1.1-with-deps.zip ez-vcard-0.1.1-with-deps.zip] || - || - ||
 || *0.1.0* || _2012-07-23_ || - || [http://ez-vcard.googlecode.com/svn/downloads/0.1.0/ez-vcard-0.1.0-with-deps.zip ez-vcard-0.1.0-with-deps.zip] || - || - ||
+
+=Maven=
+
+{{{
+<dependency>
+   <groupId>com.googlecode.ez-vcard</groupId>
+   <artifactId>ez-vcard</artifactId>
+   <version>...</version>
+</dependency>
+}}}
