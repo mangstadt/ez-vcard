@@ -129,10 +129,7 @@ public class FoldedLineWriter extends Writer {
 		//encode to quoted-printable
 		if (quotedPrintable) {
 			if (charset == null) {
-				charset = getEncoding();
-				if (charset == null) {
-					charset = Charset.defaultCharset();
-				}
+				charset = Charset.forName("UTF-8");
 			}
 
 			QuotedPrintableCodec codec = new QuotedPrintableCodec(charset.name());

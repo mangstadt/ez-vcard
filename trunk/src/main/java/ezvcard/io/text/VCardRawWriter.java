@@ -5,8 +5,6 @@ import java.io.Flushable;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
@@ -378,19 +376,13 @@ public class VCardRawWriter implements Closeable, Flushable {
 		Charset charset = null;
 		if (quotedPrintable) {
 			String charsetParam = parameters.getCharset();
-			if (charsetParam != null) {
+			if (charsetParam == null) {
+				charset = Charset.forName("UTF-8");
+			} else {
 				try {
 					charset = Charset.forName(charsetParam);
-				} catch (IllegalCharsetNameException e) {
-					charset = null;
-				} catch (UnsupportedCharsetException e) {
-					charset = null;
-				}
-			}
-			if (charset == null) {
-				charset = writer.getEncoding();
-				if (charset == null) {
-					charset = Charset.defaultCharset();
+				} catch (Throwable e) {
+					charset = Charset.forName("UTF-8");
 				}
 			}
 			parameters.setCharset(charset.name());
