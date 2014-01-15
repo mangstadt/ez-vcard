@@ -10,8 +10,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,6 +87,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 public class VCardReader implements Closeable {
 	private final List<String> warnings = new ArrayList<String>();
 	private ScribeIndex index = new ScribeIndex();
+	private Charset defaultQuotedPrintableCharset;
 	private final VCardRawReader reader;
 
 	/**
@@ -122,6 +121,10 @@ public class VCardReader implements Closeable {
 	 */
 	public VCardReader(Reader reader) {
 		this.reader = new VCardRawReader(reader);
+		defaultQuotedPrintableCharset = this.reader.getEncoding();
+		if (defaultQuotedPrintableCharset == null) {
+			defaultQuotedPrintableCharset = Charset.defaultCharset();
+		}
 	}
 
 	/**
@@ -144,6 +147,40 @@ public class VCardReader implements Closeable {
 	 */
 	public void setCaretDecodingEnabled(boolean enable) {
 		reader.setCaretDecodingEnabled(enable);
+	}
+
+	/**
+	 * <p>
+	 * Gets the character set to use when decoding quoted-printable values if
+	 * the property has no CHARSET parameter, or if the CHARSET parameter is not
+	 * a valid character set.
+	 * </p>
+	 * <p>
+	 * By default, the Reader's character encoding will be used. If the Reader
+	 * has no character encoding, then the system's default character encoding
+	 * will be used.
+	 * </p>
+	 * @return the character set
+	 */
+	public Charset getDefaultQuotedPrintableCharset() {
+		return defaultQuotedPrintableCharset;
+	}
+
+	/**
+	 * <p>
+	 * Sets the character set to use when decoding quoted-printable values if
+	 * the property has no CHARSET parameter, or if the CHARSET parameter is not
+	 * a valid character set.
+	 * </p>
+	 * <p>
+	 * By default, the Reader's character encoding will be used. If the Reader
+	 * has no character encoding, then the system's default character encoding
+	 * will be used.
+	 * </p>
+	 * @param charset the character set
+	 */
+	public void setDefaultQuotedPrintableCharset(Charset charset) {
+		defaultQuotedPrintableCharset = charset;
 	}
 
 	/**
@@ -271,23 +308,16 @@ public class VCardReader implements Closeable {
 		//determine the character set
 		Charset charset = null;
 		String charsetStr = parameters.getCharset();
-		if (charsetStr != null) {
+		if (charsetStr == null) {
+			charset = defaultQuotedPrintableCharset;
+		} else {
 			try {
 				charset = Charset.forName(charsetStr);
-			} catch (IllegalCharsetNameException e) {
-				charset = null;
-			} catch (UnsupportedCharsetException e) {
-				charset = null;
-			}
-		}
-		if (charset == null) {
-			charset = reader.getEncoding();
-			if (charset == null) {
-				charset = Charset.defaultCharset();
-			}
-			if (charsetStr != null) {
+			} catch (Throwable t) {
+				charset = defaultQuotedPrintableCharset;
+
 				//the given charset was invalid, so add a warning
-				addWarning(name, 23, charsetStr, charset);
+				addWarning(name, 23, charsetStr, charset.name());
 			}
 		}
 
