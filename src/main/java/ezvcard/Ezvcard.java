@@ -380,9 +380,7 @@ public class Ezvcard {
 	 * @param json the JSON string
 	 * @return chainer object for completing the parse operation
 	 * @see JCardReader
-	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
-	 * draft specification</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static ParserChainJsonString parseJson(String json) {
 		return new ParserChainJsonString(json);
@@ -398,9 +396,7 @@ public class Ezvcard {
 	 * @param file the JSON file
 	 * @return chainer object for completing the parse operation
 	 * @see JCardReader
-	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
-	 * draft specification</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static ParserChainJsonReader parseJson(File file) {
 		return new ParserChainJsonReader(file);
@@ -416,9 +412,7 @@ public class Ezvcard {
 	 * @param in the input stream
 	 * @return chainer object for completing the parse operation
 	 * @see JCardReader
-	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
-	 * draft specification</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static ParserChainJsonReader parseJson(InputStream in) {
 		return new ParserChainJsonReader(in);
@@ -434,9 +428,7 @@ public class Ezvcard {
 	 * @param reader the reader
 	 * @return chainer object for completing the parse operation
 	 * @see JCardReader
-	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
-	 * draft specification</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static ParserChainJsonReader parseJson(Reader reader) {
 		return new ParserChainJsonReader(reader);
@@ -563,9 +555,7 @@ public class Ezvcard {
 	 * @param vcards the vCards to marshal
 	 * @return chainer object for completing the write operation
 	 * @see JCardWriter
-	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
-	 * draft specification</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static WriterChainJson writeJson(VCard... vcards) {
 		return writeJson(Arrays.asList(vcards));
@@ -582,9 +572,7 @@ public class Ezvcard {
 	 * @param vcards the vCards to marshal
 	 * @return chainer object for completing the write operation
 	 * @see JCardWriter
-	 * @see <a
-	 * href="http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07">jCard
-	 * draft specification</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static WriterChainJson writeJson(Collection<VCard> vcards) {
 		return new WriterChainJson(vcards);
