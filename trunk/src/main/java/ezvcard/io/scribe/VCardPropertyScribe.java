@@ -1067,35 +1067,6 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param elements the names of the expected XML elements.
 	 */
 	protected static CannotParseException missingXmlElements(String... elements) {
-		//		String message;
-		//
-		//		switch (elements.length) {
-		//		case 0:
-		//			message = "Property value empty.";
-		//			break;
-		//		case 1:
-		//			message = "Property value empty (no <" + elements[0] + "> element found).";
-		//			break;
-		//		case 2:
-		//			message = "Property value empty (no <" + elements[0] + "> or <" + elements[1] + "> elements found).";
-		//			break;
-		//		default:
-		//			StringBuilder sb = new StringBuilder();
-		//
-		//			sb.append("Property value empty (no ");
-		//			StringUtils.join(Arrays.asList(elements).subList(0, elements.length - 1), ", ", sb, new JoinCallback<String>() {
-		//				public void handle(StringBuilder sb, String value) {
-		//					sb.append('<').append(value).append('>');
-		//				}
-		//			});
-		//			sb.append(", or <").append(elements[elements.length - 1]).append("> elements found).");
-		//
-		//			message = sb.toString();
-		//			break;
-		//		}
-		//
-		//		return new CannotParseException(message);
-
 		return new CannotParseException(0, Arrays.toString(elements));
 	}
 
