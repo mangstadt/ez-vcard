@@ -37,7 +37,7 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
  * Full compliance with 2.1, 3.0, and 4.0 specifications ([http://www.imc.org/pdi/vcard-21.rtf 2.1], [http://tools.ietf.org/html/rfc2426 RFC 2426], [http://tools.ietf.org/html/rfc6350 RFC 6350])
  * Full compliance with xCard specification ([http://tools.ietf.org/html/rfc6351 RFC 6351])
  * Full compliance with hCard specification ([http://microformats.org/wiki/hcard])
- * Full compliance with jCard draft specification ([http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-07])
+ * Full compliance with jCard draft specification ([http://tools.ietf.org/html/rfc7095 RFC 7095])
  * Supports the `AGENT` property
  * Supports circumflex accent encoding for parameter values ([http://tools.ietf.org/html/rfc6868 RFC 6868])
  * Extensive unit test coverage

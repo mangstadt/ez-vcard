@@ -32,7 +32,7 @@ END:VCARD
 
 vCard files end in a ".vcf" extension.
 
-vCards can also be encoded in XML ("[http://tools.ietf.org/html/rfc6351 xCard]") and JSON ("[http://tools.ietf.org/html/draft-ietf-jcardcal-jcard-06 jCard]") formats.
+vCards can also be encoded in XML ("[http://tools.ietf.org/html/rfc6351 xCard]") and JSON ("[http://tools.ietf.org/html/rfc7095 jCard]") formats.
 
 *XML*
 {{{
