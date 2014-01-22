@@ -688,6 +688,257 @@ public class VCardReaderTest {
 	}
 
 	@Test
+	public void androidVCard() throws Throwable {
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_ANDROID.vcf"));
+
+		{
+			VCard vcard = reader.readNext();
+			assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+			Email email = vcard.getEmails().get(0);
+			assertEquals("john.doe@company.com", email.getValue());
+			assertSetEquals(email.getTypes(), EmailType.PREF);
+
+			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
+
+			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).run();
+			assertWarnings(0, reader.getWarnings());
+		}
+
+		{
+			VCard vcard = reader.readNext();
+			assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+			Email email = vcard.getEmails().get(0);
+			assertEquals("jane.doe@company.com", email.getValue());
+			assertSetEquals(email.getTypes(), EmailType.PREF);
+
+			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
+
+			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).run();
+			assertWarnings(0, reader.getWarnings());
+		}
+
+		{
+			VCard vcard = reader.readNext();
+			assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+			StructuredName n = vcard.getStructuredName();
+			assertEquals("\u00d1 \u00d1 \u00d1 \u00d1", n.getFamily());
+			assertNull(n.getGiven());
+			assertTrue(n.getAdditional().isEmpty());
+			assertTrue(n.getPrefixes().isEmpty());
+			assertTrue(n.getSuffixes().isEmpty());
+
+			assertEquals("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ", vcard.getFormattedName().getValue());
+
+			Telephone tel = vcard.getTelephoneNumbers().get(0);
+			assertSetEquals(tel.getTypes(), TelephoneType.CELL, TelephoneType.PREF);
+			assertEquals("123456789", tel.getText());
+
+			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
+
+			assertValidate(vcard).versions(vcard.getVersion()).run();
+			assertWarnings(0, reader.getWarnings());
+		}
+
+		{
+			VCard vcard = reader.readNext();
+			assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+			StructuredName n = vcard.getStructuredName();
+			assertEquals("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1", n.getFamily());
+			assertNull(n.getGiven());
+			assertTrue(n.getAdditional().isEmpty());
+			assertTrue(n.getPrefixes().isEmpty());
+			assertTrue(n.getSuffixes().isEmpty());
+
+			assertEquals("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1", vcard.getFormattedName().getValue());
+
+			{
+				Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
+
+				Telephone tel = it.next();
+				assertSetEquals(tel.getTypes(), TelephoneType.CELL, TelephoneType.PREF);
+				assertEquals("123456", tel.getText());
+
+				tel = it.next();
+				assertSetEquals(tel.getTypes(), TelephoneType.HOME);
+				assertEquals("234567", tel.getText());
+
+				tel = it.next();
+				assertSetEquals(tel.getTypes(), TelephoneType.CELL);
+				assertEquals("3456789", tel.getText());
+
+				tel = it.next();
+				assertSetEquals(tel.getTypes(), TelephoneType.HOME);
+				assertEquals("45678901", tel.getText());
+
+				assertFalse(it.hasNext());
+			}
+
+			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
+
+			{
+				Iterator<Note> it = vcard.getNotes().iterator();
+				assertEquals("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ", it.next().getValue());
+				assertEquals("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ", it.next().getValue());
+				assertFalse(it.hasNext());
+			}
+
+			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).run();
+			assertWarnings(0, reader.getWarnings());
+		}
+
+		{
+			VCard vcard = reader.readNext();
+			assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+			StructuredName n = vcard.getStructuredName();
+			assertEquals("\u00d1 \u00d1", n.getFamily());
+			assertEquals("\u00d1 \u00d1 \u00d1", n.getGiven());
+			assertTrue(n.getAdditional().isEmpty());
+			assertTrue(n.getPrefixes().isEmpty());
+			assertTrue(n.getSuffixes().isEmpty());
+
+			assertEquals("\u00d1 \u00d1 \u00d1 \u00d1 ", vcard.getFormattedName().getValue());
+
+			{
+				Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
+
+				Telephone tel = it.next();
+				assertSetEquals(tel.getTypes(), TelephoneType.CELL, TelephoneType.PREF);
+				assertEquals("123456", tel.getText());
+
+				tel = it.next();
+				assertSetEquals(tel.getTypes(), TelephoneType.WORK);
+				assertEquals("123456", tel.getText());
+
+				tel = it.next();
+				assertSetEquals(tel.getTypes(), TelephoneType.WORK, TelephoneType.FAX);
+				assertEquals("123456", tel.getText());
+
+				assertFalse(it.hasNext());
+			}
+
+			{
+				Iterator<Email> it = vcard.getEmails().iterator();
+
+				Email email = it.next();
+				assertSetEquals(email.getTypes(), EmailType.PREF, EmailType.WORK);
+				assertEquals("bob@company.com", email.getValue());
+
+				email = it.next();
+				assertEquals("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1", email.getValue());
+
+				assertFalse(it.hasNext());
+			}
+
+			{
+				Iterator<Organization> it = vcard.getOrganizations().iterator();
+
+				assertEquals(Arrays.asList("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1"), it.next().getValues());
+				assertEquals(Arrays.asList("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1"), it.next().getValues());
+				assertFalse(it.hasNext());
+			}
+
+			{
+				Iterator<Url> it = vcard.getUrls().iterator();
+
+				assertEquals("www.company.com", it.next().getValue());
+				assertEquals("http://www.company.com", it.next().getValue());
+				assertFalse(it.hasNext());
+			}
+
+			assertEquals(1, vcard.getPhotos().size());
+
+			assertValidate(vcard).versions(vcard.getVersion()).prop(vcard.getEmails().get(0), 9).run();
+			assertWarnings(0, reader.getWarnings());
+		}
+
+		{
+			VCard vcard = reader.readNext();
+			assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+			StructuredName n = vcard.getStructuredName();
+			assertEquals("\u00d1\u00d1\u00d1\u00d1", n.getFamily());
+			assertNull(n.getGiven());
+			assertTrue(n.getAdditional().isEmpty());
+			assertTrue(n.getPrefixes().isEmpty());
+			assertTrue(n.getSuffixes().isEmpty());
+
+			assertEquals("\u00d1\u00d1\u00d1\u00d1", vcard.getFormattedName().getValue());
+
+			{
+				Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
+
+				Telephone tel = it.next();
+				assertSetEquals(tel.getTypes(), TelephoneType.CELL, TelephoneType.PREF);
+				assertEquals("55556666", tel.getText());
+
+				assertFalse(it.hasNext());
+			}
+
+			{
+				Iterator<Email> it = vcard.getEmails().iterator();
+
+				Email email = it.next();
+				assertSetEquals(email.getTypes(), EmailType.PREF);
+				assertEquals("henry@company.com", email.getValue());
+
+				assertFalse(it.hasNext());
+			}
+
+			{
+				Iterator<Organization> it = vcard.getOrganizations().iterator();
+
+				assertEquals(Arrays.asList("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1"), it.next().getValues());
+				assertEquals(Arrays.asList("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1" + (char) 65533), it.next().getValues());
+				assertEquals(Arrays.asList("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1"), it.next().getValues());
+				assertFalse(it.hasNext());
+			}
+
+			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
+
+			assertValidate(vcard).versions(vcard.getVersion()).run();
+			assertWarnings(0, reader.getWarnings());
+		}
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void blackBerryVCard() throws Throwable {
+		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_BLACK_BERRY.vcf"));
+
+		VCard vcard = reader.readNext();
+		assertEquals(VCardVersion.V2_1, vcard.getVersion());
+
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
+
+		StructuredName n = vcard.getStructuredName();
+		assertEquals("Doe", n.getFamily());
+		assertEquals("john", n.getGiven());
+		assertEquals(Arrays.asList(), n.getAdditional());
+		assertEquals(Arrays.asList(), n.getPrefixes());
+		assertEquals(Arrays.asList(), n.getSuffixes());
+
+		assertEquals(Arrays.asList("Acme Solutions"), vcard.getOrganization().getValues());
+
+		Telephone tel = vcard.getTelephoneNumbers().get(0);
+		assertSetEquals(tel.getTypes(), TelephoneType.CELL);
+		assertEquals("+96123456789", tel.getText());
+
+		assertEquals(1, vcard.getPhotos().size());
+
+		assertEquals("", vcard.getNotes().get(0).getValue());
+
+		assertValidate(vcard).versions(vcard.getVersion()).run();
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
+	@Test
 	public void evolutionVCard() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("John_Doe_EVOLUTION.vcf"));
 		VCard vcard = reader.readNext();
