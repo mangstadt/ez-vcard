@@ -5,6 +5,7 @@ _under development_
 
  * If a property's value is encoded in quoted-printable encoding, then the property _should_ contain a CHARSET parameter that defines the character set that the property value was encoded in.  However, a badly-formatted vCard may not have such a parameter.  You can now define the character set to use for quoted-printable properties that do not have a CHARSET parameter (see: Issue 12).
  * Quoted-printable property values are now encoded using UTF-8 when written.
+ * Fixed a bug where the ORG property wasn't being marshalled correctly (Issue 13).
 
 = 0.9.1=
 _December 24, 2013_
