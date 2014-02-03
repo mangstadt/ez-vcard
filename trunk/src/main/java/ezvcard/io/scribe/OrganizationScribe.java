@@ -51,7 +51,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 	@Override
 	protected String _writeText(Organization property, VCardVersion version) {
-		return structured(property.getValues());
+		return structured(property.getValues().toArray());
 	}
 
 	@Override
