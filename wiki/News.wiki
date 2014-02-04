@@ -1,5 +1,9 @@
 #summary Archive of all past news entries.
 
+*February 4, 2014*
+
+[Downloads Version 0.9.2] released.  This release includes a number of bug fixes.  Please see the [Changelog changelog] for details.
+
 *December 24, 2013*
 
 *Happy Holidays* from the ez-vcard team!

@@ -1,13 +1,14 @@
 #summary Documents all the changes that were made to every version of the library
 
-= 0.9.2-SNAPSHOT=
-_under development_
+= 0.9.2 =
+_February 4, 2014_
 
- * If a property's value is encoded in quoted-printable encoding, then the property _should_ contain a CHARSET parameter that defines the character set that the property value was encoded in.  However, not all vCards may include such a parameter.  You can now define the default character set to use when parsing quoted-printable properties that do not have a CHARSET parameter (see: Issue 12).
- * Quoted-printable property values are now encoded using UTF-8 when written if no CHARSET parameter is present.
- * Fixed a bug where the ORG property wasn't being marshalled correctly (Issue 13).
+ * If a property's value is encoded in quoted-printable encoding, then the property _should_ contain a CHARSET parameter that defines the character set that the property value was encoded in.  However, not all vCards may include such a parameter.  To account for this, you can now define the default character set to use when parsing quoted-printable properties that do not have a CHARSET parameter (Issue 12).  Use the "VCardReader.setDefaultQuotedPrintableCharset()" method to define this setting.
+ * Quoted-printable property values are now encoded using UTF-8 when written (if no CHARSET parameter is present).  This improves interoperability, since virtually all systems support this character set.  Before, the character set of the Writer object would be used, which is usually the local system's default character set.
+ * Fixed a bug where ORG properties with multiple values weren't being written correctly in plain-text vCards (Issue 13).
+ * Fixed a bug where the "ez-vcard.properties" file wasn't being filtered during the build process.  This caused the PRODID property of vCards created by ez-vcard to show the wrong version number of ez-vcard (Issue 14).
 
-= 0.9.1=
+= 0.9.1 =
 _December 24, 2013_
 
  * Added OSGi support (credit: Florian Brunner).
