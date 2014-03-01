@@ -49,7 +49,7 @@ import ezvcard.parameter.VCardParameters;
 public class JCardRawWriter implements Closeable, Flushable {
 	private final Writer writer;
 	private final boolean wrapInArray;
-	private JsonGenerator jg;
+	private JsonGenerator generator;
 	private boolean indent = false;
 	private boolean open = false;
 
@@ -86,7 +86,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * @throws IOException if there's an I/O problem
 	 */
 	public void writeStartVCard() throws IOException {
-		if (jg == null) {
+		if (generator == null) {
 			init();
 		}
 
@@ -94,10 +94,10 @@ public class JCardRawWriter implements Closeable, Flushable {
 			writeEndVCard();
 		}
 
-		jg.writeStartArray();
+		generator.writeStartArray();
 		indent(0);
-		jg.writeString("vcard");
-		jg.writeStartArray(); //start properties array
+		generator.writeString("vcard");
+		generator.writeStartArray(); //start properties array
 
 		open = true;
 	}
@@ -113,8 +113,8 @@ public class JCardRawWriter implements Closeable, Flushable {
 			throw new IllegalStateException("Call \"writeStartVCard\" first.");
 		}
 
-		jg.writeEndArray(); //end the properties array
-		jg.writeEndArray(); //end the "vcard" component array
+		generator.writeEndArray(); //end the properties array
+		generator.writeEndArray(); //end the "vcard" component array
 
 		open = false;
 	}
@@ -148,14 +148,14 @@ public class JCardRawWriter implements Closeable, Flushable {
 			throw new IllegalStateException("Call \"writeStartVCard\" first.");
 		}
 
-		jg.writeStartArray();
+		generator.writeStartArray();
 		indent(2);
 
 		//write the property name
-		jg.writeString(propertyName);
+		generator.writeString(propertyName);
 
 		//write parameters
-		jg.writeStartObject();
+		generator.writeStartObject();
 		for (Map.Entry<String, List<String>> entry : parameters) {
 			String name = entry.getKey().toLowerCase();
 			List<String> values = entry.getValue();
@@ -164,84 +164,84 @@ public class JCardRawWriter implements Closeable, Flushable {
 			}
 
 			if (values.size() == 1) {
-				jg.writeStringField(name, values.get(0));
+				generator.writeStringField(name, values.get(0));
 			} else {
-				jg.writeArrayFieldStart(name);
+				generator.writeArrayFieldStart(name);
 				for (String paramValue : values) {
-					jg.writeString(paramValue);
+					generator.writeString(paramValue);
 				}
-				jg.writeEndArray();
+				generator.writeEndArray();
 			}
 		}
 
 		//write group
 		if (group != null) {
-			jg.writeStringField("group", group);
+			generator.writeStringField("group", group);
 		}
 
-		jg.writeEndObject(); //end parameters object
+		generator.writeEndObject(); //end parameters object
 
 		//write data type
-		jg.writeString((dataType == null) ? "unknown" : dataType.getName().toLowerCase());
+		generator.writeString((dataType == null) ? "unknown" : dataType.getName().toLowerCase());
 
 		//write value
 		if (value.getValues().isEmpty()) {
-			jg.writeString("");
+			generator.writeString("");
 		} else {
 			for (JsonValue jsonValue : value.getValues()) {
 				writeValue(jsonValue);
 			}
 		}
 
-		jg.writeEndArray();
+		generator.writeEndArray();
 	}
 
 	private void writeValue(JsonValue jsonValue) throws IOException {
 		if (jsonValue.isNull()) {
-			jg.writeNull();
+			generator.writeNull();
 			return;
 		}
 
 		Object val = jsonValue.getValue();
 		if (val != null) {
 			if (val instanceof Byte) {
-				jg.writeNumber((Byte) val);
+				generator.writeNumber((Byte) val);
 			} else if (val instanceof Short) {
-				jg.writeNumber((Short) val);
+				generator.writeNumber((Short) val);
 			} else if (val instanceof Integer) {
-				jg.writeNumber((Integer) val);
+				generator.writeNumber((Integer) val);
 			} else if (val instanceof Long) {
-				jg.writeNumber((Long) val);
+				generator.writeNumber((Long) val);
 			} else if (val instanceof Float) {
-				jg.writeNumber((Float) val);
+				generator.writeNumber((Float) val);
 			} else if (val instanceof Double) {
-				jg.writeNumber((Double) val);
+				generator.writeNumber((Double) val);
 			} else if (val instanceof Boolean) {
-				jg.writeBoolean((Boolean) val);
+				generator.writeBoolean((Boolean) val);
 			} else {
-				jg.writeString(val.toString());
+				generator.writeString(val.toString());
 			}
 			return;
 		}
 
 		List<JsonValue> array = jsonValue.getArray();
 		if (array != null) {
-			jg.writeStartArray();
+			generator.writeStartArray();
 			for (JsonValue element : array) {
 				writeValue(element);
 			}
-			jg.writeEndArray();
+			generator.writeEndArray();
 			return;
 		}
 
 		Map<String, JsonValue> object = jsonValue.getObject();
 		if (object != null) {
-			jg.writeStartObject();
+			generator.writeStartObject();
 			for (Map.Entry<String, JsonValue> entry : object.entrySet()) {
-				jg.writeFieldName(entry.getKey());
+				generator.writeFieldName(entry.getKey());
 				writeValue(entry.getValue());
 			}
-			jg.writeEndObject();
+			generator.writeEndObject();
 			return;
 		}
 	}
@@ -257,9 +257,9 @@ public class JCardRawWriter implements Closeable, Flushable {
 			return;
 		}
 
-		jg.writeRaw(NEWLINE);
+		generator.writeRaw(NEWLINE);
 		for (int i = 0; i < spaces; i++) {
-			jg.writeRaw(' ');
+			generator.writeRaw(' ');
 		}
 	}
 
@@ -267,11 +267,11 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * Flushes the JSON stream.
 	 */
 	public void flush() throws IOException {
-		if (jg == null) {
+		if (generator == null) {
 			return;
 		}
 
-		jg.flush();
+		generator.flush();
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * @throws IOException if there's a problem closing the stream
 	 */
 	public void closeJsonStream() throws IOException {
-		if (jg == null) {
+		if (generator == null) {
 			return;
 		}
 
@@ -290,10 +290,10 @@ public class JCardRawWriter implements Closeable, Flushable {
 
 		if (wrapInArray) {
 			indent(0);
-			jg.writeEndArray();
+			generator.writeEndArray();
 		}
 
-		jg.close();
+		generator.close();
 	}
 
 	/**
@@ -302,7 +302,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * @throws IOException if there's a problem closing the stream
 	 */
 	public void close() throws IOException {
-		if (jg == null) {
+		if (generator == null) {
 			return;
 		}
 
@@ -313,10 +313,10 @@ public class JCardRawWriter implements Closeable, Flushable {
 	private void init() throws IOException {
 		JsonFactory factory = new JsonFactory();
 		factory.configure(Feature.AUTO_CLOSE_TARGET, false);
-		jg = factory.createJsonGenerator(writer);
+		generator = factory.createJsonGenerator(writer);
 
 		if (wrapInArray) {
-			jg.writeStartArray();
+			generator.writeStartArray();
 			indent(0);
 		}
 	}
