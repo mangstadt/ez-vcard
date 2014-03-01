@@ -157,6 +157,19 @@ public class ScribeIndex {
 	}
 
 	/**
+	 * Determines if a scribe exists for a given property instance.
+	 * @param property the property
+	 * @return true if a scribe exists, false if not
+	 */
+	public boolean hasPropertyScribe(VCardProperty property) {
+		if (property instanceof RawProperty) {
+			return true;
+		}
+
+		return getPropertyScribe(property.getClass()) != null;
+	}
+
+	/**
 	 * Gets a property scribe by class.
 	 * @param clazz the property class
 	 * @return the property scribe or null if not found

@@ -600,7 +600,7 @@ public class XCardDocument {
 			}
 
 			//check for scribes before writing anything to the stream
-			if (index.getPropertyScribe(type) == null) {
+			if (!index.hasPropertyScribe(type)) {
 				throw new IllegalArgumentException("No scribe found for property class \"" + type.getClass().getName() + "\".");
 			}
 
