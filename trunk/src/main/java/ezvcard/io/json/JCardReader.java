@@ -218,26 +218,20 @@ public class JCardReader implements Closeable {
 				scribe = new RawPropertyScribe(propertyName);
 			}
 
-			VCardProperty property;
+			Result<? extends VCardProperty> result;
 			try {
-				Result<? extends VCardProperty> result = scribe.parseJson(value, dataType, parameters);
-
+				result = scribe.parseJson(value, dataType, parameters);
 				for (String warning : result.getWarnings()) {
 					addWarning(warning, propertyName);
 				}
-
-				property = result.getProperty();
-				property.setGroup(group);
 			} catch (SkipMeException e) {
 				addWarning(propertyName, 22, e.getMessage());
 				return;
 			} catch (CannotParseException e) {
 				scribe = new RawPropertyScribe(propertyName);
-				Result<? extends VCardProperty> result = scribe.parseJson(value, dataType, parameters);
+				result = scribe.parseJson(value, dataType, parameters);
 
-				property = result.getProperty();
-				property.setGroup(group);
-
+				VCardProperty property = result.getProperty();
 				String valueStr = ((RawProperty) property).getValue();
 				addWarning(propertyName, 25, valueStr, e.getMessage());
 			} catch (EmbeddedVCardException e) {
@@ -245,6 +239,8 @@ public class JCardReader implements Closeable {
 				return;
 			}
 
+			VCardProperty property = result.getProperty();
+			property.setGroup(group);
 			vcard.addProperty(property);
 		}
 	}

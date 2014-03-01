@@ -48,7 +48,7 @@ import ezvcard.parameter.VCardParameters;
  */
 public class JCardRawReader implements Closeable {
 	private final Reader reader;
-	private JsonParser jp;
+	private JsonParser parser;
 	private boolean eof = false;
 	private JCardDataStreamListener listener;
 
@@ -65,7 +65,7 @@ public class JCardRawReader implements Closeable {
 	 * @return the line number
 	 */
 	public int getLineNum() {
-		return (jp == null) ? 0 : jp.getCurrentLocation().getLineNr();
+		return (parser == null) ? 0 : parser.getCurrentLocation().getLineNr();
 	}
 
 	/**
@@ -77,10 +77,10 @@ public class JCardRawReader implements Closeable {
 	 * @throws IOException if there is a problem reading from the data stream
 	 */
 	public void readNext(JCardDataStreamListener listener) throws IOException {
-		if (jp == null) {
+		if (parser == null) {
 			JsonFactory factory = new JsonFactory();
-			jp = factory.createJsonParser(reader);
-		} else if (jp.isClosed()) {
+			parser = factory.createJsonParser(reader);
+		} else if (parser.isClosed()) {
 			return;
 		}
 
@@ -89,8 +89,8 @@ public class JCardRawReader implements Closeable {
 		//find the next vCard object
 		JsonToken prev = null;
 		JsonToken cur;
-		while ((cur = jp.nextToken()) != null) {
-			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING && "vcard".equals(jp.getValueAsString())) {
+		while ((cur = parser.nextToken()) != null) {
+			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING && "vcard".equals(parser.getValueAsString())) {
 				break;
 			}
 			prev = cur;
@@ -107,26 +107,20 @@ public class JCardRawReader implements Closeable {
 
 	private void parseProperties() throws IOException {
 		//start properties array
-		if (jp.nextToken() != JsonToken.START_ARRAY) {
-			throw new JCardParseException(JsonToken.START_ARRAY, jp.getCurrentToken());
-		}
+		checkNext(JsonToken.START_ARRAY);
 
 		//read properties
-		while (jp.nextToken() != JsonToken.END_ARRAY) { //until we reach the end properties array
-			if (jp.getCurrentToken() != JsonToken.START_ARRAY) {
-				throw new JCardParseException(JsonToken.START_ARRAY, jp.getCurrentToken());
-			}
-			jp.nextToken();
+		while (parser.nextToken() != JsonToken.END_ARRAY) { //until we reach the end properties array
+			checkCurrent(JsonToken.START_ARRAY);
+			parser.nextToken();
 			parseProperty();
 		}
 	}
 
 	private void parseProperty() throws IOException {
 		//get property name
-		if (jp.getCurrentToken() != JsonToken.VALUE_STRING) {
-			throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
-		}
-		String propertyName = jp.getValueAsString().toLowerCase();
+		checkCurrent(JsonToken.VALUE_STRING);
+		String propertyName = parser.getValueAsString().toLowerCase();
 
 		//get parameters
 		VCardParameters parameters = parseParameters();
@@ -136,10 +130,8 @@ public class JCardRawReader implements Closeable {
 		String group = removed.isEmpty() ? null : removed.get(0);
 
 		//get data type
-		if (jp.nextToken() != JsonToken.VALUE_STRING) {
-			throw new JCardParseException(JsonToken.VALUE_STRING, jp.getCurrentToken());
-		}
-		String dataTypeStr = jp.getText().toLowerCase();
+		checkNext(JsonToken.VALUE_STRING);
+		String dataTypeStr = parser.getText().toLowerCase();
 		VCardDataType dataType = "unknown".equals(dataTypeStr) ? null : VCardDataType.get(dataTypeStr);
 
 		//get property value(s)
@@ -150,21 +142,19 @@ public class JCardRawReader implements Closeable {
 	}
 
 	private VCardParameters parseParameters() throws IOException {
-		if (jp.nextToken() != JsonToken.START_OBJECT) {
-			throw new JCardParseException(JsonToken.START_OBJECT, jp.getCurrentToken());
-		}
+		checkNext(JsonToken.START_OBJECT);
 
 		VCardParameters parameters = new VCardParameters();
-		while (jp.nextToken() != JsonToken.END_OBJECT) {
-			String parameterName = jp.getText();
+		while (parser.nextToken() != JsonToken.END_OBJECT) {
+			String parameterName = parser.getText();
 
-			if (jp.nextToken() == JsonToken.START_ARRAY) {
+			if (parser.nextToken() == JsonToken.START_ARRAY) {
 				//multi-valued parameter
-				while (jp.nextToken() != JsonToken.END_ARRAY) {
-					parameters.put(parameterName, jp.getText());
+				while (parser.nextToken() != JsonToken.END_ARRAY) {
+					parameters.put(parameterName, parser.getText());
 				}
 			} else {
-				parameters.put(parameterName, jp.getValueAsString());
+				parameters.put(parameterName, parser.getValueAsString());
 			}
 		}
 
@@ -173,7 +163,7 @@ public class JCardRawReader implements Closeable {
 
 	private List<JsonValue> parseValues() throws IOException {
 		List<JsonValue> values = new ArrayList<JsonValue>();
-		while (jp.nextToken() != JsonToken.END_ARRAY) { //until we reach the end of the property array
+		while (parser.nextToken() != JsonToken.END_ARRAY) { //until we reach the end of the property array
 			JsonValue value = parseValue();
 			values.add(value);
 		}
@@ -181,25 +171,25 @@ public class JCardRawReader implements Closeable {
 	}
 
 	private Object parseValueElement() throws IOException {
-		switch (jp.getCurrentToken()) {
+		switch (parser.getCurrentToken()) {
 		case VALUE_FALSE:
 		case VALUE_TRUE:
-			return jp.getBooleanValue();
+			return parser.getBooleanValue();
 		case VALUE_NUMBER_FLOAT:
-			return jp.getDoubleValue();
+			return parser.getDoubleValue();
 		case VALUE_NUMBER_INT:
-			return jp.getLongValue();
+			return parser.getLongValue();
 		case VALUE_NULL:
 			return null;
 		default:
-			return jp.getText();
+			return parser.getText();
 		}
 	}
 
 	private List<JsonValue> parseValueArray() throws IOException {
 		List<JsonValue> array = new ArrayList<JsonValue>();
 
-		while (jp.nextToken() != JsonToken.END_ARRAY) {
+		while (parser.nextToken() != JsonToken.END_ARRAY) {
 			JsonValue value = parseValue();
 			array.add(value);
 		}
@@ -210,31 +200,42 @@ public class JCardRawReader implements Closeable {
 	private Map<String, JsonValue> parseValueObject() throws IOException {
 		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
 
-		jp.nextToken();
-		while (jp.getCurrentToken() != JsonToken.END_OBJECT) {
-			if (jp.getCurrentToken() != JsonToken.FIELD_NAME) {
-				throw new JCardParseException(JsonToken.FIELD_NAME, jp.getCurrentToken());
-			}
+		while (parser.nextToken() != JsonToken.END_OBJECT) {
+			checkCurrent(JsonToken.FIELD_NAME);
 
-			String key = jp.getText();
-			jp.nextToken();
+			String key = parser.getText();
+			parser.nextToken();
 			JsonValue value = parseValue();
 			object.put(key, value);
-
-			jp.nextToken();
 		}
 
 		return object;
 	}
 
 	private JsonValue parseValue() throws IOException {
-		switch (jp.getCurrentToken()) {
+		switch (parser.getCurrentToken()) {
 		case START_ARRAY:
 			return new JsonValue(parseValueArray());
 		case START_OBJECT:
 			return new JsonValue(parseValueObject());
 		default:
 			return new JsonValue(parseValueElement());
+		}
+	}
+
+	private void checkNext(JsonToken expected) throws JsonParseException, IOException {
+		JsonToken actual = parser.nextToken();
+		check(expected, actual);
+	}
+
+	private void checkCurrent(JsonToken expected) {
+		JsonToken actual = parser.getCurrentToken();
+		check(expected, actual);
+	}
+
+	private void check(JsonToken expected, JsonToken actual) {
+		if (actual != expected) {
+			throw new JCardParseException(expected, actual);
 		}
 	}
 
