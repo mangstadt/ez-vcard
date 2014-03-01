@@ -99,16 +99,15 @@ public class HCardElement {
 	 * Gets the hCard value of this element. The value is determined based on
 	 * the following:
 	 * <ol>
-	 * <li>If the element is {@code <abbr>} and contains a
-	 * {@code title} attribute, then the value of the {@code title}
-	 * attribute is returned.</li>
+	 * <li>If the element is {@code <abbr>} and contains a {@code title}
+	 * attribute, then the value of the {@code title} attribute is returned.</li>
 	 * <li>Else, if the element contains one or more child elements that have a
-	 * CSS class of {@code value}, then append together the text contents
-	 * of these elements.</li>
+	 * CSS class of {@code value}, then append together the text contents of
+	 * these elements.</li>
 	 * <li>Else, use the text content of the element itself.</li>
 	 * </ol>
-	 * All {@code <br>} tags are converted to newlines. All text
-	 * within {@code <del>} tags are ignored.
+	 * All {@code <br>} tags are converted to newlines. All text within
+	 * {@code <del>} tags are ignored.
 	 * @return the element's hCard value
 	 */
 	public String value() {
@@ -135,8 +134,8 @@ public class HCardElement {
 	public List<String> allValues(String cssClass) {
 		Elements elements = element.getElementsByClass(cssClass);
 		List<String> values = new ArrayList<String>(elements.size());
-		for (Element e : elements) {
-			values.add(value(e));
+		for (Element element : elements) {
+			values.add(value(element));
 		}
 		return values;
 	}
@@ -147,30 +146,31 @@ public class HCardElement {
 	 */
 	public List<String> types() {
 		List<String> types = allValues("type");
-		for (int i = 0; i < types.size(); i++) {
-			String type = types.get(i);
-			types.set(i, type.toLowerCase());
+		List<String> lowerCaseTypes = new ArrayList<String>(types.size());
+		for (String type : types) {
+			lowerCaseTypes.add(type.toLowerCase());
 		}
-		return types;
+		return lowerCaseTypes;
 	}
 
 	/**
-	 * Appends text to the element, replacing newlines with
-	 * {@code <br>} tags.
+	 * Appends text to the element, replacing newlines with {@code <br>} tags.
 	 * @param text the text to append
 	 */
 	public void append(String text) {
-		//replace newlines with "<br>" tags
-		String split[] = text.split("\\r\\n|\\n|\\r");
-		if (split[0].length() > 0) {
-			element.appendText(split[0]);
-		}
-		for (int i = 1; i < split.length; i++) {
-			String s = split[i];
-			element.appendElement("br");
-			if (s.length() > 0) {
-				element.appendText(s);
+		boolean first = true;
+		String lines[] = text.split("\\r\\n|\\n|\\r");
+		for (String line : lines) {
+			if (!first) {
+				//replace newlines with "<br>" tags
+				element.appendElement("br");
 			}
+
+			if (line.length() > 0) {
+				element.appendText(line);
+			}
+
+			first = false;
 		}
 	}
 
@@ -222,19 +222,30 @@ public class HCardElement {
 		for (Node node : element.childNodes()) {
 			if (node instanceof Element) {
 				Element e = (Element) node;
-				if (!e.classNames().contains("type")) { //ignore "type" elements
-					if ("br".equals(e.tagName())) {
-						//convert "<br>" to a newline
-						value.append(NEWLINE);
-					} else if ("del".equals(e.tagName())) {
-						//skip "<del>" tags
-					} else {
-						visitForValue(e, value);
-					}
+				if (e.classNames().contains("type")) {
+					//ignore "type" elements
+					continue;
 				}
-			} else if (node instanceof TextNode) {
+
+				if ("br".equals(e.tagName())) {
+					//convert "<br>" to a newline
+					value.append(NEWLINE);
+					continue;
+				}
+
+				if ("del".equals(e.tagName())) {
+					//skip "<del>" tags
+					continue;
+				}
+
+				visitForValue(e, value);
+				continue;
+			}
+
+			if (node instanceof TextNode) {
 				TextNode t = (TextNode) node;
 				value.append(t.text());
+				continue;
 			}
 		}
 	}
