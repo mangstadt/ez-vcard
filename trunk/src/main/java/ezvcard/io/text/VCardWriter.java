@@ -358,35 +358,35 @@ public class VCardWriter implements Closeable, Flushable {
 	private void write(VCard vcard, boolean addProdId) throws IOException {
 		VCardVersion targetVersion = writer.getVersion();
 
-		List<VCardProperty> typesToAdd = new ArrayList<VCardProperty>();
-		for (VCardProperty type : vcard) {
-			if (addProdId && type instanceof ProductId) {
+		List<VCardProperty> propertiesToAdd = new ArrayList<VCardProperty>();
+		for (VCardProperty property : vcard) {
+			if (addProdId && property instanceof ProductId) {
 				//do not add the PRODID in the vCard if "addProdId" is true
 				continue;
 			}
 
-			if (versionStrict && !type.getSupportedVersions().contains(targetVersion)) {
+			if (versionStrict && !property.getSupportedVersions().contains(targetVersion)) {
 				//do not add the property to the vCard if it is not supported by the target version
 				continue;
 			}
 
 			//check for scribes before writing anything to the stream
-			if (index.getPropertyScribe(type) == null) {
-				throw new IllegalArgumentException("No scribe found for property class \"" + type.getClass().getName() + "\".");
+			if (!index.hasPropertyScribe(property)) {
+				throw new IllegalArgumentException("No scribe found for property class \"" + property.getClass().getName() + "\".");
 			}
 
-			typesToAdd.add(type);
+			propertiesToAdd.add(property);
 
 			//add LABEL types for each ADR type if the target version is 2.1 or 3.0
-			if (type instanceof Address && (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0)) {
-				Address adr = (Address) type;
+			if (property instanceof Address && (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0)) {
+				Address adr = (Address) property;
 				String labelStr = adr.getLabel();
 				if (labelStr != null) {
 					Label label = new Label(labelStr);
-					for (AddressType t : adr.getTypes()) {
-						label.addType(t);
+					for (AddressType adrType : adr.getTypes()) {
+						label.addType(adrType);
 					}
-					typesToAdd.add(label);
+					propertiesToAdd.add(label);
 				}
 			}
 		}
@@ -399,49 +399,34 @@ public class VCardWriter implements Closeable, Flushable {
 			} else {
 				property = new ProductId("ezvcard " + Ezvcard.VERSION);
 			}
-			typesToAdd.add(property);
+			propertiesToAdd.add(property);
 		}
 
 		writer.writeBeginComponent("VCARD");
 		writer.writeVersion();
 
-		for (VCardProperty type : typesToAdd) {
-			VCardPropertyScribe scribe = index.getPropertyScribe(type);
+		for (VCardProperty property : propertiesToAdd) {
+			VCardPropertyScribe scribe = index.getPropertyScribe(property);
 
 			//marshal the value
 			String value = null;
 			VCard nestedVCard = null;
 			try {
-				value = scribe.writeText(type, targetVersion);
+				value = scribe.writeText(property, targetVersion);
 			} catch (SkipMeException e) {
 				continue;
 			} catch (EmbeddedVCardException e) {
 				nestedVCard = e.getVCard();
 			}
 
-			//marshal the sub types
-			VCardParameters parameters = scribe.prepareParameters(type, targetVersion, vcard);
+			//marshal the parameters
+			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
 
-			if (nestedVCard == null) {
-				//set the data type
-				//only add a VALUE parameter if the data type is (1) not "unknown" and (2) different from the property's default data type
-				VCardDataType dataType = scribe.dataType(type, targetVersion);
-				if (dataType != null) {
-					VCardDataType defaultDataType = scribe.defaultDataType(targetVersion);
-					if (dataType != defaultDataType) {
-						if (defaultDataType == VCardDataType.DATE_AND_OR_TIME && (dataType == VCardDataType.DATE || dataType == VCardDataType.DATE_TIME || dataType == VCardDataType.TIME)) {
-							//do not write VALUE if the default data type is "date-and-or-time" and the property's data type is time-based
-						} else {
-							parameters.setValue(dataType);
-						}
-					}
-				}
-
-				writer.writeProperty(type.getGroup(), scribe.getPropertyName(), parameters, value);
-			} else {
+			//is the value a nested vCard?
+			if (nestedVCard != null) {
 				if (targetVersion == VCardVersion.V2_1) {
 					//write a nested vCard (2.1 style)
-					writer.writeProperty(type.getGroup(), scribe.getPropertyName(), parameters, value);
+					writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, value);
 					write(nestedVCard, false);
 				} else {
 					//write an embedded vCard (3.0 style)
@@ -459,8 +444,28 @@ public class VCardWriter implements Closeable, Flushable {
 
 					String vCardStr = sw.toString();
 					vCardStr = VCardPropertyScribe.escape(vCardStr);
-					writer.writeProperty(type.getGroup(), scribe.getPropertyName(), parameters, vCardStr);
+					writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, vCardStr);
 				}
+				continue;
+			}
+
+			if (value != null) {
+				//set the data type
+				//only add a VALUE parameter if the data type is (1) not "unknown" and (2) different from the property's default data type
+				VCardDataType dataType = scribe.dataType(property, targetVersion);
+				if (dataType != null) {
+					VCardDataType defaultDataType = scribe.defaultDataType(targetVersion);
+					if (dataType != defaultDataType) {
+						if (defaultDataType == VCardDataType.DATE_AND_OR_TIME && (dataType == VCardDataType.DATE || dataType == VCardDataType.DATE_TIME || dataType == VCardDataType.TIME)) {
+							//do not write VALUE if the default data type is "date-and-or-time" and the property's data type is time-based
+						} else {
+							parameters.setValue(dataType);
+						}
+					}
+				}
+
+				writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, value);
+				continue;
 			}
 		}
 

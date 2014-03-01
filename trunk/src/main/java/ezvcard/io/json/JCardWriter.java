@@ -163,7 +163,7 @@ public class JCardWriter implements Closeable, Flushable {
 			}
 
 			//check for scribes before writing anything to the stream
-			if (index.getPropertyScribe(property) == null) {
+			if (!index.hasPropertyScribe(property)) {
 				throw new IllegalArgumentException("No scribe found for property class \"" + property.getClass().getName() + "\".");
 			}
 

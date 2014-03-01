@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * The characters that are not valid in parameter values and that should be
 	 * removed.
 	 */
-	private static final Map<VCardVersion, BitSet> invalidParamValueChars = new HashMap<VCardVersion, BitSet>();
+	private static final Map<VCardVersion, BitSet> invalidParamValueChars;
 	static {
 		BitSet controlChars = new BitSet(128);
 		controlChars.set(0, 31);
@@ -78,6 +79,8 @@ public class VCardRawWriter implements Closeable, Flushable {
 		controlChars.set('\t', false); //allow
 		controlChars.set('\n', false); //allow
 		controlChars.set('\r', false); //allow
+
+		Map<VCardVersion, BitSet> map = new HashMap<VCardVersion, BitSet>();
 
 		//2.1
 		{
@@ -91,7 +94,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 			bitSet.set('[');
 			bitSet.set(']');
 
-			invalidParamValueChars.put(VCardVersion.V2_1, bitSet);
+			map.put(VCardVersion.V2_1, bitSet);
 		}
 
 		//3.0, 4.0
@@ -99,9 +102,11 @@ public class VCardRawWriter implements Closeable, Flushable {
 			BitSet bitSet = new BitSet(128);
 			bitSet.or(controlChars);
 
-			invalidParamValueChars.put(VCardVersion.V3_0, bitSet);
-			invalidParamValueChars.put(VCardVersion.V4_0, bitSet);
+			map.put(VCardVersion.V3_0, bitSet);
+			map.put(VCardVersion.V4_0, bitSet);
 		}
+
+		invalidParamValueChars = Collections.unmodifiableMap(map);
 	}
 
 	private final String newline;
@@ -381,7 +386,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 			} else {
 				try {
 					charset = Charset.forName(charsetParam);
-				} catch (Throwable e) {
+				} catch (Throwable t) {
 					charset = Charset.forName("UTF-8");
 				}
 			}
@@ -398,9 +403,9 @@ public class VCardRawWriter implements Closeable, Flushable {
 		writer.append(propertyName);
 
 		//write the parameters
-		for (Map.Entry<String, List<String>> subType : parameters) {
-			String parameterName = subType.getKey();
-			List<String> parameterValues = subType.getValue();
+		for (Map.Entry<String, List<String>> parameter : parameters) {
+			String parameterName = parameter.getKey();
+			List<String> parameterValues = parameter.getValue();
 			if (parameterValues.isEmpty()) {
 				continue;
 			}
@@ -418,29 +423,29 @@ public class VCardRawWriter implements Closeable, Flushable {
 						writer.append(';').append(parameterName).append('=').append(parameterValue);
 					}
 				}
-			} else {
-				//e.g. ADR;TYPE=home,work,"another,value":
+				continue;
+			}
 
-				boolean first = true;
-				writer.append(';').append(parameterName).append('=');
-				for (String parameterValue : parameterValues) {
-					if (!first) {
-						writer.append(',');
-					}
-
-					parameterValue = sanitizeParameterValue(parameterValue, parameterName, propertyName);
-
-					//surround with double quotes if contains special chars
-					if (quoteMeRegex.matcher(parameterValue).matches()) {
-						writer.append('"');
-						writer.append(parameterValue);
-						writer.append('"');
-					} else {
-						writer.append(parameterValue);
-					}
-
-					first = false;
+			//e.g. ADR;TYPE=home,work,"another,value":
+			boolean first = true;
+			writer.append(';').append(parameterName).append('=');
+			for (String parameterValue : parameterValues) {
+				if (!first) {
+					writer.append(',');
 				}
+
+				parameterValue = sanitizeParameterValue(parameterValue, parameterName, propertyName);
+
+				//surround with double quotes if contains special chars
+				if (quoteMeRegex.matcher(parameterValue).matches()) {
+					writer.append('"');
+					writer.append(parameterValue);
+					writer.append('"');
+				} else {
+					writer.append(parameterValue);
+				}
+
+				first = false;
 			}
 		}
 
@@ -559,16 +564,24 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 */
 	private String removeInvalidParameterValueChars(String value) {
 		BitSet invalidChars = invalidParamValueChars.get(version);
-		StringBuilder sb = new StringBuilder(value.length());
+		StringBuilder sb = null;
 
 		for (int i = 0; i < value.length(); i++) {
 			char ch = value.charAt(i);
-			if (!invalidChars.get(ch)) {
+			if (invalidChars.get(ch)) {
+				if (sb == null) {
+					sb = new StringBuilder(value.length());
+					sb.append(value.substring(0, i));
+				}
+				continue;
+			}
+
+			if (sb != null) {
 				sb.append(ch);
 			}
 		}
 
-		return (sb.length() == value.length()) ? value : sb.toString();
+		return (sb == null) ? value : sb.toString();
 	}
 
 	/**

@@ -277,13 +277,13 @@ public class VCardReader implements Closeable {
 	private void handleQuotedMultivaluedTypeParams(VCardParameters parameters) {
 		//account for multi-valued TYPE parameters being enclosed entirely in double quotes
 		//e.g. ADR;TYPE="home,work"
-		for (String typeParam : parameters.getTypes()) {
-			if (!typeParam.contains(",")) {
+		for (String typeParameter : parameters.getTypes()) {
+			if (!typeParameter.contains(",")) {
 				continue;
 			}
 
 			parameters.removeTypes();
-			for (String splitValue : typeParam.split(",")) {
+			for (String splitValue : typeParameter.split(",")) {
 				parameters.addType(splitValue);
 			}
 		}
@@ -325,7 +325,8 @@ public class VCardReader implements Closeable {
 		try {
 			return codec.decode(value);
 		} catch (DecoderException e) {
-			//only thrown if the charset is invalid, which we know will never happen because we're using a Charset object
+			//only thrown if the charset is invalid
+			//we know this will never happen because we're using a Charset object
 			throw new RuntimeException(e);
 		}
 	}
