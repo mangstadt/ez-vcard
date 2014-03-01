@@ -4644,8 +4644,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * to add
 	 */
 	public <T extends VCardProperty & HasAltId> void setPropertyAlt(Class<T> propertyClass, T... altRepresentations) {
-		removeProperties(propertyClass);
-		addPropertyAlt(propertyClass, altRepresentations);
+		setPropertyAlt(propertyClass, Arrays.asList(altRepresentations));
 	}
 
 	/**
