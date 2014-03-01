@@ -99,6 +99,22 @@ public class IOUtils {
 	}
 
 	/**
+	 * Reads the contents of a {@link Reader} into a String.
+	 * @param reader the reader
+	 * @return the string
+	 * @throws IOException if there was a problem reading from the reader
+	 */
+	public static String toString(Reader reader) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		char buffer[] = new char[4096];
+		int read;
+		while ((read = reader.read(buffer)) != -1) {
+			sb.append(buffer, 0, read);
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * Reads the contents of a text file.
 	 * @param file the file to read
 	 * @return the file contents

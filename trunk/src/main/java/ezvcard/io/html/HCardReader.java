@@ -38,6 +38,7 @@ import ezvcard.property.Telephone;
 import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.HtmlUtils;
+import ezvcard.util.IOUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -177,19 +178,7 @@ public class HCardReader {
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
 	public HCardReader(Reader reader, String pageUrl) throws IOException {
-		this.pageUrl = pageUrl;
-
-		StringBuilder sb = new StringBuilder();
-		char buffer[] = new char[4096];
-		int read;
-		while ((read = reader.read(buffer)) != -1) {
-			sb.append(buffer, 0, read);
-		}
-		String html = sb.toString();
-
-		Document document = (pageUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, pageUrl);
-		String anchor = getAnchor(pageUrl);
-		init(document, anchor);
+		this(IOUtils.toString(reader), pageUrl);
 	}
 
 	/**
@@ -243,7 +232,7 @@ public class HCardReader {
 	 * @return the anchor (e.g. "foo" from the URL
 	 * "http://example.com/index.php#foo")
 	 */
-	private String getAnchor(String urlStr) {
+	private static String getAnchor(String urlStr) {
 		if (urlStr == null) {
 			return null;
 		}
@@ -351,7 +340,8 @@ public class HCardReader {
 		for (String className : classNames) {
 			className = className.toLowerCase();
 
-			if (urlPropertyName.equalsIgnoreCase(className)) {
+			//give special treatment to certain URLs
+			if (urlPropertyName.equals(className)) {
 				String href = element.attr("href");
 				if (href.length() > 0) {
 					if (!classNames.contains(emailName) && href.matches("(?i)mailto:.*")) {
@@ -378,7 +368,7 @@ public class HCardReader {
 			}
 
 			//hCard uses a different name for the CATEGORIES property
-			if ("category".equalsIgnoreCase(className)) {
+			if ("category".equals(className)) {
 				className = categoriesName;
 			}
 
@@ -451,8 +441,8 @@ public class HCardReader {
 					VCard embeddedVCard = embeddedReader.readNext();
 					e.injectVCard(embeddedVCard);
 				} finally {
-					for (String w : embeddedReader.getWarnings()) {
-						addWarning(className, 26, w);
+					for (String warning : embeddedReader.getWarnings()) {
+						addWarning(className, 26, warning);
 					}
 				}
 			}
