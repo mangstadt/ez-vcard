@@ -52,18 +52,6 @@ import ezvcard.util.XmlUtils;
  */
 public class XCardElementTest {
 	@Test
-	public void constructor_string() {
-		XCardElement xcardElement = new XCardElement("prop");
-		Document document = xcardElement.document();
-		Element element = xcardElement.element();
-
-		assertEquals(element, XmlUtils.getRootElement(document));
-		assertEquals("prop", element.getLocalName());
-		assertEquals(VCardVersion.V4_0.getXmlNamespace(), element.getNamespaceURI());
-		assertEquals(0, element.getChildNodes().getLength());
-	}
-
-	@Test
 	public void first() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
 		assertEquals("2", xcardElement.first("two"));

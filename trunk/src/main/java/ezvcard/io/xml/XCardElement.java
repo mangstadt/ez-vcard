@@ -52,27 +52,6 @@ public class XCardElement {
 	private final String namespace;
 
 	/**
-	 * Creates a new XML element under its own XML document.
-	 * @param propertyName the property name (e.g. "adr")
-	 */
-	public XCardElement(String propertyName) {
-		this(propertyName, VCardVersion.V4_0);
-	}
-
-	/**
-	 * Creates a new XML element under its own XML document.
-	 * @param propertyName the property name (e.g. "adr")
-	 * @param version the vCard version
-	 */
-	public XCardElement(String propertyName, VCardVersion version) {
-		this.version = version;
-		namespace = version.getXmlNamespace();
-		document = XmlUtils.createDocument();
-		element = document.createElementNS(namespace, propertyName);
-		document.appendChild(element);
-	}
-
-	/**
 	 * Wraps an existing XML element.
 	 * @param element the XML element
 	 */
