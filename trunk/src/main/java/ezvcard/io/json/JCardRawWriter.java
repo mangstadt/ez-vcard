@@ -44,9 +44,7 @@ import ezvcard.parameter.VCardParameters;
 /**
  * Writes data to an vCard JSON data stream (jCard).
  * @author Michael Angstadt
- * @see <a
- * href="http://tools.ietf.org/html/draft-kewisch-vcard-in-json-04">jCard
- * draft</a>
+ * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
  */
 public class JCardRawWriter implements Closeable, Flushable {
 	private final Writer writer;
