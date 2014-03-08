@@ -26,6 +26,9 @@ import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.VCardRawWriter;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.property.Categories;
+import ezvcard.property.Organization;
+import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.StringUtils.JoinCallback;
@@ -439,17 +442,18 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		String value = null;
 		VCardDataType dataType = null;
 		Element rawElement = element.element();
+		VCardVersion version = element.version();
 
 		//get the text content of the first child element with the xCard namespace
 		List<Element> children = XmlUtils.toElementList(rawElement.getChildNodes());
 		for (Element child : children) {
-			if (!element.version().getXmlNamespace().equals(child.getNamespaceURI())) {
-				continue;
+			String elementNamespace = version.getXmlNamespace();
+			String childNamespace = child.getNamespaceURI();
+			if (elementNamespace.equals(childNamespace)) {
+				dataType = VCardDataType.get(child.getLocalName());
+				value = child.getTextContent();
+				break;
 			}
-
-			dataType = VCardDataType.get(child.getLocalName());
-			value = child.getTextContent();
-			break;
 		}
 
 		if (dataType == null) {
@@ -458,7 +462,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		}
 
 		value = escape(value);
-		return _parseText(value, dataType, element.version(), parameters, warnings);
+		return _parseText(value, dataType, version, parameters, warnings);
 	}
 
 	/**
@@ -669,14 +673,14 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * Splits a string by a delimiter.
 	 * @param string the string to split (e.g. "one,two,three")
 	 * @param delimiter the delimiter (e.g. ",")
-	 * @return the factory object
+	 * @return a helper object that allows the split operation to be customized
 	 */
 	protected static Splitter split(String string, String delimiter) {
 		return new Splitter(string, delimiter);
 	}
 
 	/**
-	 * Factory class for splitting strings.
+	 * A helper class for splitting strings.
 	 */
 	protected static class Splitter {
 		private String string;
@@ -751,9 +755,10 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Parses a comma-separated list of values.
-	 * @param value the string to parse (e.g. "one,two,th\,ree")
-	 * @return the parsed values
+	 * Parses a "list" property value. This is used in plain-text vCards to
+	 * parse properties such as {@link Categories}.
+	 * @param value the string to parse (e.g. "one,two,three\,four")
+	 * @return the parsed list (e.g. ["one", "two", "three,four"])
 	 */
 	protected static List<String> list(String value) {
 		if (value.length() == 0) {
@@ -763,18 +768,24 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Writes a comma-separated list of values.
-	 * @param values the values to write
-	 * @return the list
+	 * Generates a "list" property value. This is used in plain-text vCards to
+	 * parse properties such as {@link Categories}.
+	 * @param values the values to write (the {@code toString()} method is
+	 * invoked on each object, null objects are ignored, e.g. ["one", "two",
+	 * "three,four"])
+	 * @return the property value (e.g. "one,two,three\,four")
 	 */
 	protected static String list(Object... values) {
 		return list(Arrays.asList(values));
 	}
 
 	/**
-	 * Writes a comma-separated list of values.
-	 * @param values the values to write
-	 * @return the list
+	 * Generates a "list" property value. This is used in plain-text vCards to
+	 * parse properties such as {@link Categories}).
+	 * @param values the values to write (the {@code toString()} method is
+	 * invoked on each object, null objects are ignored, e.g. ["one", "two",
+	 * "three,four"])
+	 * @return the property value (e.g. "one,two,three\,four")
 	 */
 	protected static <T> String list(Collection<T> values) {
 		return join(values, ",", new JoinCallback<T>() {
@@ -788,23 +799,24 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Parses a list of values that are delimited by semicolons. Unlike
-	 * structured value components, semi-structured components cannot be
-	 * multi-valued.
-	 * @param value the string to parse (e.g. "one;two;three")
-	 * @return the parsed values
+	 * Parses a "semi-structured" property value (a "structured" property value
+	 * whose items cannot be multi-valued). This is used in plain-text vCards to
+	 * parse properties such as {@link Organization}.
+	 * @param value the string to parse (e.g. "one;two;three\;four,five")
+	 * @return the parsed values (e.g. ["one", "two", "three;four,five"]
 	 */
 	protected static SemiStructuredIterator semistructured(String value) {
 		return semistructured(value, -1);
 	}
 
 	/**
-	 * Parses a list of values that are delimited by semicolons. Unlike
-	 * structured value components, semi-structured components cannot be
-	 * multi-valued.
-	 * @param value the string to parse (e.g. "one;two;three")
-	 * @param limit the max number of components to parse
-	 * @return the parsed values
+	 * Parses a "semi-structured" property value (a "structured" property value
+	 * whose items cannot be multi-valued). This is used in plain-text vCards to
+	 * parse properties such as {@link Organization}.
+	 * @param value the string to parse (e.g. "one;two;three\;four,five")
+	 * @param limit the max number of items to parse (see
+	 * {@link String#split(String, int)})
+	 * @return the parsed values (e.g. ["one", "two", "three;four,five"]
 	 */
 	protected static SemiStructuredIterator semistructured(String value, int limit) {
 		List<String> split = split(value, ";").unescape(true).limit(limit).split();
@@ -812,9 +824,11 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Parses a structured value.
-	 * @param value the string to parse (e.g. "one;two,three;four")
-	 * @return the parsed values
+	 * Parses a "structured" property value. This is used in plain-text vCards
+	 * to parse properties such as {@link StructuredName}.
+	 * @param value the string to parse (e.g. "one;two,three;four\,five\;six")
+	 * @return an iterator for accessing the parsed values (e.g. ["one", ["two",
+	 * "three"], "four,five;six"])
 	 */
 	protected static StructuredIterator structured(String value) {
 		List<String> split = split(value, ";").split();
@@ -826,9 +840,9 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Provides an iterator for a jCard structured value.
+	 * Provides a "structured" property value iterator for a jCard value.
 	 * @param value the jCard value
-	 * @return the parsed values
+	 * @return the iterator
 	 */
 	protected static StructuredIterator structured(JCardValue value) {
 		return new StructuredIterator(value.asStructured().iterator());
@@ -836,7 +850,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 
 	/**
 	 * <p>
-	 * Writes a structured value.
+	 * Writes a "structured" property value. This is used in plain-text vCards
+	 * to marshal properties such as {@link StructuredName}.
 	 * </p>
 	 * <p>
 	 * This method accepts a list of {@link Object} instances.
@@ -867,7 +882,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Iterates over the fields in a structured value.
+	 * Iterates over the items in a "structured" property value.
 	 */
 	protected static class StructuredIterator {
 		private final Iterator<List<String>> it;
@@ -923,8 +938,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Iterates over the fields in a semi-structured value (a structured value
-	 * whose components cannot be multi-valued).
+	 * Iterates over the items in a "semi-structured" property value.
 	 */
 	protected static class SemiStructuredIterator {
 		private final Iterator<String> it;
@@ -959,7 +973,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	/**
 	 * Parses a date string.
 	 * @param value the date string
-	 * @return the factory object
+	 * @return the parsed date
+	 * @throws IllegalArgumentException if the date cannot be parsed
 	 */
 	protected static Date date(String value) {
 		return VCardDateFormatter.parse(value);
@@ -968,14 +983,14 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	/**
 	 * Formats a {@link Date} object as a string.
 	 * @param date the date
-	 * @return the factory object
+	 * @return a helper object for customizing the write operation
 	 */
 	protected static DateWriter date(Date date) {
 		return new DateWriter(date);
 	}
 
 	/**
-	 * Factory class for writing dates.
+	 * A helper class for writing date values.
 	 */
 	protected static class DateWriter {
 		private Date date;
@@ -1017,7 +1032,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		 * Sets whether to format the date in UTC time, or to include a UTC
 		 * offset.
 		 * @param utc true to format in UTC time, false to include the local
-		 * timezone's UTC offset
+		 * timezone's UTC offset (defaults to "true")
 		 * @return this
 		 */
 		public DateWriter utc(boolean utc) {
@@ -1046,10 +1061,11 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Creates a {@link CannotParseException}, indicating that the XML elements
-	 * that the parser expected to find are missing from the property's XML
-	 * element.
+	 * Creates a {@link CannotParseException} to indicate that a scribe could
+	 * not find the necessary XML elements required in order to successfully
+	 * parse a property (xCards only).
 	 * @param dataTypes the expected data types (null for "unknown")
+	 * @return the exception object (note that the exception is NOT thrown!)
 	 */
 	protected static CannotParseException missingXmlElements(VCardDataType... dataTypes) {
 		String[] elements = new String[dataTypes.length];
@@ -1061,20 +1077,22 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Creates a {@link CannotParseException}, indicating that the XML elements
-	 * that the parser expected to find are missing from the property's XML
-	 * element.
+	 * Creates a {@link CannotParseException} to indicate that a scribe could
+	 * not find the necessary XML elements required in order to successfully
+	 * parse a property (xCards only).
 	 * @param elements the names of the expected XML elements.
+	 * @return the exception object (note that the exception is NOT thrown!)
 	 */
 	protected static CannotParseException missingXmlElements(String... elements) {
 		return new CannotParseException(0, Arrays.toString(elements));
 	}
 
 	/**
-	 * Utility method for switching between the "PREF" and "TYPE=PREF"
-	 * parameters, depending on the target vCard version. Meant to be called
-	 * from a scribe's {@link #_prepareParameters} method.
-	 * @param property the property that's being marshalled
+	 * A utility method for switching between the "PREF" and "TYPE=PREF"
+	 * parameters when marshalling a property (version 4.0 vCards use "PREF=1",
+	 * while version 3.0 vCards use "TYPE=PREF"). This method is meant to be
+	 * called from a scribe's {@link #_prepareParameters} method.
+	 * @param property the property that is being marshalled
 	 * @param copy the parameters that are being marshalled
 	 * @param version the vCard version
 	 * @param vcard the vCard that's being marshalled
