@@ -9,6 +9,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.RelatedType;
+import ezvcard.util.TelUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -40,8 +41,9 @@ import ezvcard.parameter.RelatedType;
  */
 
 /**
- * Someone that the person is related to. It can contain either a URI or a plain
- * text value.
+ * <p>
+ * Defines someone that the person is related to.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -50,20 +52,21 @@ import ezvcard.parameter.RelatedType;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Related related = new Related();
- * related.addType(RelatedType.FRIEND);
- * related.setUri(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
- * vcard.addRelated(related);
- * 
- * related = new Related();
+ * //static factory methods
+ * Related related = Related.email(&quot;bob.smith@example.com&quot;);
  * related.addType(RelatedType.CO_WORKER);
  * related.addType(RelatedType.FRIEND);
- * related.setUri(&quot;http://joesmoe.name/vcard.vcf&quot;);
  * vcard.addRelated(related);
  * 
+ * //free-form text
  * related = new Related();
- * related.addType(RelatedType.SPOUSE);
  * related.setText(&quot;Edna Smith&quot;);
+ * related.addType(RelatedType.SPOUSE);
+ * vcard.addRelated(related);
+ * 
+ * //reference another vCard by putting its UID property here
+ * related = new Related(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
+ * related.addType(RelatedType.SIBLING);
  * vcard.addRelated(related);
  * </pre>
  * 
@@ -79,6 +82,49 @@ public class Related extends VCardProperty implements HasAltId {
 	private String uri;
 	private String text;
 
+	/**
+	 * Creates a related property
+	 */
+	public Related() {
+		//empty
+	}
+
+	/**
+	 * Creates a related property.
+	 * @param uri the URI representing the person
+	 */
+	public Related(String uri) {
+		setUri(uri);
+	}
+
+	/**
+	 * Creates a related property whose value is an email address.
+	 * @param email the email address
+	 * @return the property
+	 */
+	public static Related email(String email) {
+		return new Related("mailto:" + email);
+	}
+
+	/**
+	 * Creates a related property whose value is an instant messenger handle.
+	 * @param protocol the instant messenger protocol (e.g. "aim")
+	 * @param handle the instant messenger handle (e.g. "johndoe")
+	 * @return the property
+	 */
+	public static Related im(String protocol, String handle) {
+		return new Related(protocol + ":" + handle);
+	}
+
+	/**
+	 * Creates a related property whose value is a telephone number.
+	 * @param telUri the telephone number
+	 * @return the property
+	 */
+	public static Related telephone(TelUri telUri) {
+		return new Related(telUri.toString());
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -90,31 +136,6 @@ public class Related extends VCardProperty implements HasAltId {
 	 */
 	public String getUri() {
 		return uri;
-	}
-
-	/**
-	 * Sets the URI to an email address.
-	 * @param email the email address
-	 */
-	public void setUriEmail(String email) {
-		setUri("mailto:" + email);
-	}
-
-	/**
-	 * Sets the URI to an instant messaging handle.
-	 * @param protocol the IM protocol (e.g. "aim")
-	 * @param handle the handle
-	 */
-	public void setUriIM(String protocol, String handle) {
-		setUri(protocol + ":" + handle);
-	}
-
-	/**
-	 * Sets the URI to a telephone number.
-	 * @param telephone the telephone number
-	 */
-	public void setUriTelephone(String telephone) {
-		setUri("tel:" + telephone);
 	}
 
 	/**

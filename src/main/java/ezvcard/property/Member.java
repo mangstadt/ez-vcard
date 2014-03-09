@@ -7,6 +7,7 @@ import java.util.Set;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
+import ezvcard.util.TelUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -38,48 +39,28 @@ import ezvcard.Warning;
  */
 
 /**
- * The members that make up the group. This property can only be used if the
- * {@link Kind} property is set to "group".
+ * <p>
+ * Defines the members that make up the group. This property can only be used if
+ * the vCard's {@link Kind} property is set to "group".
+ * </p>
  * 
  * <p>
- * <b>Adding members</b>
+ * <b>Code sample</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * //KIND must be set to &quot;group&quot; in order to add MEMBERs
+ * //kind property must be set to &quot;group&quot; in order to add members
  * vcard.setKind(Kind.group());
  * 
- * Member member = new Member();
- * member.setUriEmail(&quot;funkyjoe@hotmail.com&quot;);
+ * //static factory methods
+ * Member member = Member.email(&quot;johndoe@hotmail.com&quot;);
  * vcard.addMember(member);
- * member = new Member();
- * member.setUriIM(&quot;aol&quot;, &quot;joesmoe@aol.com&quot;);
- * vcard.addMember(member);
- * member = new Member();
- * member.setUriTelephone(&quot;+1-123-555-6789&quot;);
- * vcard.addMember(member);
- * member = new Member();
- * member.setUri(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;); //references the UID from another vCard
- * vcard.addMember(member);
- * </pre>
  * 
- * <p>
- * <b>Getting members</b>
- * </p>
- * 
- * <pre class="brush:java">
- * VCard vcard = ...
- * Kind kind = vcard.getKind();
- * if (kind != null){
- *   if (kind.isGroup()){
- *     System.out.println("The group's members are:");
- *     for (Member member : vcard.getMembers()){
- *       System.out.println(member.getUri());
- *     }
- *   }
- * }
+ * //reference another vCard by putting its UID property here
+ * member = new Member(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
+ * vcard.addMember(member);
  * </pre>
  * 
  * <p>
@@ -99,6 +80,34 @@ public class Member extends UriProperty implements HasAltId {
 		super(uri);
 	}
 
+	/**
+	 * Creates a member property whose value is an email address.
+	 * @param email the email address
+	 * @return the property
+	 */
+	public static Member email(String email) {
+		return new Member("mailto:" + email);
+	}
+
+	/**
+	 * Creates a member property whose value is an instant messenger handle.
+	 * @param protocol the instant messenger protocol (e.g. "aim")
+	 * @param handle the instant messenger handle (e.g. "johndoe")
+	 * @return the property
+	 */
+	public static Member im(String protocol, String handle) {
+		return new Member(protocol + ":" + handle);
+	}
+
+	/**
+	 * Creates a member property whose value is a telephone number.
+	 * @param telUri the telephone number
+	 * @return the property
+	 */
+	public static Member telephone(TelUri telUri) {
+		return new Member(telUri.toString());
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -110,31 +119,6 @@ public class Member extends UriProperty implements HasAltId {
 	 */
 	public String getUri() {
 		return getValue();
-	}
-
-	/**
-	 * Sets the URI to an email address.
-	 * @param email the email address
-	 */
-	public void setUriEmail(String email) {
-		setUri("mailto:" + email);
-	}
-
-	/**
-	 * Sets the URI to an instant messaging handle.
-	 * @param protocol the IM protocol (e.g. "aim")
-	 * @param handle the handle
-	 */
-	public void setUriIM(String protocol, String handle) {
-		setUri(protocol + ":" + handle);
-	}
-
-	/**
-	 * Sets the URI to a telephone number.
-	 * @param telephone the telephone number
-	 */
-	public void setUriTelephone(String telephone) {
-		setUri("tel:" + telephone);
 	}
 
 	/**
