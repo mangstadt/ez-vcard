@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
+import ezvcard.util.TelUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -75,33 +76,24 @@ public class RelatedTest {
 	}
 
 	@Test
-	public void setUriEmail() {
-		Related t = new Related();
-		t.setText(text);
-		t.setUriEmail("john.doe@example.com");
-
+	public void email() {
+		Related t = Related.email("john.doe@example.com");
 		assertNull(t.getText());
 		assertEquals("mailto:john.doe@example.com", t.getUri());
 	}
 
 	@Test
-	public void setUriIM() {
-		Related t = new Related();
-		t.setText(text);
-		t.setUriIM("aim", "john.doe");
-
+	public void im() {
+		Related t = Related.im("aim", "john.doe");
 		assertNull(t.getText());
 		assertEquals("aim:john.doe", t.getUri());
 	}
 
 	@Test
-	public void setUriTelephone() {
-		Related t = new Related();
-		t.setText(text);
-		t.setUriTelephone("555-555-5555");
-
+	public void telephone() {
+		Related t = Related.telephone(new TelUri.Builder("+1-555-555-5555").build());
 		assertNull(t.getText());
-		assertEquals("tel:555-555-5555", t.getUri());
+		assertEquals("tel:+1-555-555-5555", t.getUri());
 	}
 
 	@Test
