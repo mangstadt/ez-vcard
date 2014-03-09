@@ -36,10 +36,12 @@ import ezvcard.parameter.ImageType;
  */
 
 /**
- * Defines a company's logo.
+ * <p>
+ * Defines a company logo.
+ * </p>
  * 
  * <p>
- * <b>Adding</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -56,7 +58,7 @@ import ezvcard.parameter.ImageType;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">

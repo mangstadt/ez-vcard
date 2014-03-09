@@ -34,10 +34,12 @@ import ezvcard.util.PartialDate;
  */
 
 /**
+ * <p>
  * Defines the person's birthday.
+ * </p>
  * 
  * <p>
- * <b>Setting</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -60,6 +62,10 @@ import ezvcard.util.PartialDate;
  * bday = new Birthday(&quot;Don't even go there, dude...&quot;);
  * vcard.setBirthday(bday);
  * </pre>
+ * 
+ * <p>
+ * <b>Code sample (retrieving)</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...

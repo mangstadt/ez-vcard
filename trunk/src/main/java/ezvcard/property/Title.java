@@ -32,7 +32,9 @@ import java.util.List;
  */
 
 /**
- * The person's position or job in his or her organization.
+ * <p>
+ * Defines the person's title in his or her organization.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -40,6 +42,7 @@ import java.util.List;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Title title = new Title(&quot;Research Scientist&quot;);
  * vcard.addTitle(title);
  * </pre>

@@ -36,7 +36,9 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * A URL that shows when the person is free/busy on their calendar.
+ * <p>
+ * Defines a URL that shows when the person is free/busy on their calendar.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -44,6 +46,7 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * FreeBusyUrl fburl = new FreeBusyUrl(&quot;http://www.example.com/freebusy/janedoe&quot;);
  * vcard.addFbUrl(fburl);
  * </pre>

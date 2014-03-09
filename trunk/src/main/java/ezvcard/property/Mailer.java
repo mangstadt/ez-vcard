@@ -35,7 +35,9 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * The email client that the person uses.
+ * <p>
+ * Defines the email client that the person uses.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -43,6 +45,7 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Mailer mailer = new Mailer(&quot;Thunderbird&quot;);
  * vcard.setMailer(mailer);
  * </pre>

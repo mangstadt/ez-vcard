@@ -37,10 +37,12 @@ import ezvcard.util.PartialDate;
  */
 
 /**
+ * <p>
  * Defines the person's time of death.
+ * </p>
  * 
  * <p>
- * <b>Setting</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -55,14 +57,18 @@ import ezvcard.util.PartialDate;
  * Deathdate deathdate = new Deathdate(c.getTime());
  * vcard.setDeathdate(deathdate);
  * 
- * //partial date (e.g. just the month and date, vCard 4.0 only)
+ * //partial date (e.g. just the month and date)
  * deathdate = new Deathdate(PartialDate.date(null, 6, 7)); //June 7
  * vcard.setDeathdate(deathdate);
  * 
- * //plain text value (vCard 4.0 only)
- * deathdate = new Deathdate(&quot;In the 1950s.&quot;);
+ * //plain text value
+ * deathdate = new Deathdate(&quot;In the 1950s&quot;);
  * vcard.setDeathdate(deathdate);
  * </pre>
+ * 
+ * <p>
+ * <b>Code sample (retrieving)</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...

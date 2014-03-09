@@ -37,9 +37,12 @@ import ezvcard.parameter.VCardParameters;
  */
 
 /**
+ * <p>
  * Defines a professional subject area that the person has knowledge of. For
- * example, if the person is a Java software engineer, he or she might list
- * technologies such as "servlets", "SOAP", and "Spring".
+ * example, if the person is a software engineer, he or she might list
+ * technologies such as "Java", "Web services", and
+ * "Agile development practices".
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -47,6 +50,7 @@ import ezvcard.parameter.VCardParameters;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Expertise expertise = new Expertise(&quot;Java programming&quot;);
  * expertise.setLevel(ExpertiseLevel.EXPERT);
  * vcard.addExpertise(expertise);

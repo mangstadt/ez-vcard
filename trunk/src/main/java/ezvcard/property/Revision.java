@@ -32,7 +32,9 @@ import java.util.Date;
  */
 
 /**
- * The date that the vCard was last modified by its owner.
+ * <p>
+ * Defines the date that the vCard was last modified by its owner.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -40,6 +42,7 @@ import java.util.Date;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Revision rev = new Revision(new Date());
  * vcard.setRevision(rev);
  * </pre>
@@ -55,15 +58,15 @@ import java.util.Date;
 public class Revision extends SimpleProperty<Date> {
 	/**
 	 * Creates a revision property.
-	 * @param date the last-modified date
+	 * @param date the date the vCard was last modified
 	 */
 	public Revision(Date date) {
 		super(date);
 	}
 
 	/**
-	 * Creates a REV property whose value is the current time.
-	 * @return the REV property instance
+	 * Creates a revision property whose value is the current time.
+	 * @return the property
 	 */
 	public static Revision now() {
 		return new Revision(new Date());

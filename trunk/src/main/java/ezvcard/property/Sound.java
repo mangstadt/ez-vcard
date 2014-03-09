@@ -36,10 +36,12 @@ import ezvcard.parameter.SoundType;
  */
 
 /**
+ * <p>
  * Defines a sound, such as the correct pronunciation of the person's name.
+ * </p>
  * 
  * <p>
- * <b>Adding</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -56,7 +58,7 @@ import ezvcard.parameter.SoundType;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">

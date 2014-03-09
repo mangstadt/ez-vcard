@@ -32,7 +32,9 @@ import java.util.List;
  */
 
 /**
- * A free-form text field that contains miscellaneous information.
+ * <p>
+ * Defines a free-form text field that contains miscellaneous information.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -40,8 +42,8 @@ import java.util.List;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
- * Note note = new Note(&quot;This is a\nmiscellaneous comment.&quot;); //can contain newlines
- * note.setLanguage(&quot;en-us&quot;);
+ * 
+ * Note note = new Note(&quot;This is a\nnote property.&quot;);
  * vcard.addNote(note);
  * </pre>
  * 

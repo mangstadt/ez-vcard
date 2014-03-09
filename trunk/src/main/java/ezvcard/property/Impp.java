@@ -42,10 +42,11 @@ import ezvcard.parameter.ImppType;
  */
 
 /**
- * An instant message handle. The handle is represented as a URI in the format "
- * {@code <IM-PROTOCOL>:<IM-HANDLE>}". For example, someone with a Yahoo!
- * Messenger handle of "johndoe@yahoo.com" would have an IMPP vCard property
- * value of "ymsgr:johndoe@yahoo.com".
+ * <p>
+ * Defines an instant messenger handle. The handle is represented as a URI in the
+ * format "{@code <PROTOCOL>:<HANDLE>}". For example, a Yahoo! Messenger handle
+ * of "johndoe@yahoo.com" would look like this: "ymsgr:johndoe@yahoo.com".
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>

@@ -30,10 +30,12 @@ package ezvcard.property;
  */
 
 /**
+ * <p>
  * Defines the location of the person's death.
+ * </p>
  * 
  * <p>
- * <b>Setting</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -54,7 +56,7 @@ package ezvcard.property;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">

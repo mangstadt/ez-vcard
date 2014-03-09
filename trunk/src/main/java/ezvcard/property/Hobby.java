@@ -37,19 +37,21 @@ import ezvcard.parameter.VCardParameters;
  */
 
 /**
+ * <p>
  * Defines a recreational activity that the person actively engages in. For
- * example, if a person has a HOBBY of "hockey", it would mean that he likes to
- * play hockey. Someone who just likes to <i>watch</i> hockey would list
- * "hockey" as an {@link Interest} instead.
+ * example, if a person has a hobby of "hockey", it would mean that he likes to
+ * play hockey. Someone who just likes to <i>watch</i> hockey would list hockey
+ * as an {@link Interest} instead.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
  * </p>
  * 
  * <pre class="brush:java">
- * //someone who likes to wind surf during the summer, but rents a boat instead of owning one
  * VCard vcard = new VCard();
- * Hobby hobby = new Hobby(&quot;wind surfing&quot;);
+ * 
+ * Hobby hobby = new Hobby(&quot;hockey&quot;);
  * hobby.setLevel(HobbyLevel.LOW);
  * vcard.addHobby(hobby);
  * </pre>

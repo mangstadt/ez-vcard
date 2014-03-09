@@ -36,10 +36,12 @@ import ezvcard.parameter.ImageType;
  */
 
 /**
- * Defines a photo (such as the person's portrait).
+ * <p>
+ * Defines a photo, such as the person's portrait.
+ * </p>
  * 
  * <p>
- * <b>Adding</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -56,7 +58,7 @@ import ezvcard.parameter.ImageType;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">

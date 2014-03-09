@@ -32,7 +32,9 @@ import java.util.List;
  */
 
 /**
- * The function that the person plays in his or her organization.
+ * <p>
+ * Defines the function that the person plays within his or her organization.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -40,7 +42,8 @@ import java.util.List;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
- * Role role = new Role(&quot;Project Leader&quot;);
+ * 
+ * Role role = new Role(&quot;Project Lead&quot;);
  * vcard.addRole(role);
  * </pre>
  * 

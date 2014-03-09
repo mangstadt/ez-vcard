@@ -36,7 +36,9 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * A URL to the person's calendar.
+ * <p>
+ * Defines a URL that points to the person's calendar.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -44,6 +46,7 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * CalendarUri caluri = new CalendarUri(&quot;http://www.ibm.com/janedoe/calendar&quot;);
  * vcard.addCalendarUri(caluri);
  * </pre>

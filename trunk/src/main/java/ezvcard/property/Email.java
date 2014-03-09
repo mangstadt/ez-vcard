@@ -39,7 +39,9 @@ import ezvcard.parameter.EmailType;
  */
 
 /**
- * An email address associated with a person.
+ * <p>
+ * Defines an email address associated with the person.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -48,11 +50,11 @@ import ezvcard.parameter.EmailType;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Email email = new Email(&quot;superdude55@hotmail.com&quot;);
+ * Email email = new Email(&quot;johndoe@hotmail.com&quot;);
  * email.addType(EmailType.HOME);
  * vcard.addEmail(email);
  * 
- * email = new Email(&quot;doe.john@company.com&quot;);
+ * email = new Email(&quot;jdoe@company.com&quot;);
  * email.addType(EmailType.WORK);
  * email.setPref(1); //the most preferred email
  * vcard.addEmail(email);

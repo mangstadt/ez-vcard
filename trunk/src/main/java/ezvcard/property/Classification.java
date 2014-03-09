@@ -35,7 +35,9 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Describes the sensitivity of the information in the vCard.
+ * <p>
+ * Defines the sensitivity of the information in the vCard.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -43,9 +45,9 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
- * //sample values: PUBLIC, PRIVATE, CONFIDENTIAL
- * Classification classType = new Classification(&quot;PUBLIC&quot;);
- * vcard.setClassification(classType);
+ * 
+ * Classification classification = new Classification(&quot;PUBLIC&quot;);
+ * vcard.setClassification(classification);
  * </pre>
  * 
  * <p>

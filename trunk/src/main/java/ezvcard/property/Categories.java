@@ -32,7 +32,9 @@ import java.util.List;
  */
 
 /**
- * A list of keywords (aka "tags") that can be used to describe the person.
+ * <p>
+ * Defines a list of keywords that can be used to describe the person.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -40,11 +42,11 @@ import java.util.List;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Categories categories = new Categories();
- * categories.addValue(&quot;programmer&quot;);
- * categories.addValue(&quot;developer&quot;);
- * categories.addValue(&quot;java-coder&quot;);
- * categories.addValue(&quot;ladies-man&quot;);
+ * categories.addValue(&quot;Developer&quot;);
+ * categories.addValue(&quot;Java coder&quot;);
+ * categories.addValue(&quot;Ladies' man&quot;);
  * vcard.setCategories(categories);
  * </pre>
  * 

@@ -41,8 +41,10 @@ import ezvcard.util.XmlUtils;
  */
 
 /**
- * Any XML data attached to the vCard. This is used if the vCard was encoded in
- * XML (xCard standard) and it contained some non-standard elements.
+ * <p>
+ * Contains an XML element that was not recognized when parsing an xCard
+ * (XML-formatted vCard).
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -50,6 +52,7 @@ import ezvcard.util.XmlUtils;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Xml xml = new Xml(&quot;&lt;b&gt;Some xml&lt;/b&gt;&quot;);
  * vcard.addXml(xml);
  * </pre>

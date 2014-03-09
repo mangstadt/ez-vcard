@@ -49,7 +49,7 @@ import ezvcard.parameter.VCardParameters;
  * </p>
  * 
  * <p>
- * The CLIENTPIDMAP property and the PID parameter are used during the
+ * This property, along with the PID parameter, is used during the
  * synchronization (merging) process of two versions of the same vCard. For
  * example, if the user has a copy of her vCard on her desktop computer and her
  * smart phone, and she makes different modifications to each copy, then the two
@@ -68,18 +68,16 @@ import ezvcard.parameter.VCardParameters;
  * adr.addPid(1, 1);
  * vcard.addAddress(adr);
  * 
- * Email email = new Email(&quot;my-email@hotmail.com&quot;);
+ * Email email = vcard.addEmail(&quot;johndoe@hotmail.com&quot;);
  * emai.addPid(1, 1);
- * vcard.addEmail(email);
- * email = new Email(&quot;my-other-email@yahoo.com&quot;);
- * emai.addPid(2, 2);
- * vcard.addEmail(email);
+ * email = vcard.addEmail(&quot;jdoe@company.com&quot;);
+ * email.addPid(2, 2);
  * 
  * //specify the URI to use
  * ClientPidMap clientpidmap = new ClientPidMap(1, &quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
  * vcard.addClientPidMap(clientpidmap);
  * 
- * //generate a random URI
+ * //or, generate a random URI
  * clientpidmap = ClientPidMap.random(2);
  * vcard.addClientPidMap(clientpidmap);
  * </pre>

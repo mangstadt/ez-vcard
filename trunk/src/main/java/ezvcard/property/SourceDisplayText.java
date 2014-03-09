@@ -35,7 +35,9 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Provides a textual representation of {@link Source}.
+ * <p>
+ * Defines a textual representation of the {@link Source} property.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -43,7 +45,8 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
- * SourceDisplayText name = new SourceDisplayText(&quot;My vCard&quot;);
+ * 
+ * SourceDisplayText name = new SourceDisplayText(&quot;Download the latest version of my vCard&quot;);
  * vcard.setSourceDisplayText(name);
  * </pre>
  * 

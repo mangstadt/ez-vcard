@@ -39,55 +39,37 @@ import ezvcard.parameter.AddressType;
 
 /**
  * <p>
- * Defines the exact text to put on the mailing label when mailing a package or
- * letter to the person.
+ * Defines the exact text to put on the mailing label when sending snail mail to
+ * the person. Note that instances of this class should NEVER be added to a
+ * vCard! Instead, use the {@link Address#setLabel} method to assign a mailing
+ * label to an {@link Address} property.
  * </p>
  * 
  * <p>
- * The LABEL property is not supported in 4.0. Instead, labels are included as a
- * parameter to their corresponding {@link Address}. When marshalling a vCard,
- * ez-vcard will use either the LABEL property or the LABEL parameter, depending
- * on the requested vCard version.
+ * <b>Version interoperability</b>
  * </p>
  * 
  * <p>
- * To add a label to a vCard, the {@link Address#setLabel} method should be
- * used.
- * </p>
- * 
- * <pre class="brush:java">
- * VCard vcard = new VCard();
- * Address adr = new Address();
- * adr.setStreetAddress(&quot;123 Main St.&quot;);
- * adr.setLocality(&quot;Austin&quot;);
- * adr.setRegion(&quot;TX&quot;);
- * adr.setPostalCode(&quot;12345&quot;);
- * adr.setLabel(&quot;123 Main St.\nAustin, TX 12345&quot;); //newlines are allowed
- * vcard.addAddress(adr);
- * </pre>
- * 
- * <p>
- * The {@link VCard#addOrphanedLabel} method adds a LABEL property to the vCard.
- * However, use of this method is discouraged because it creates a LABEL
- * property that's not associated with an address. Also, orphaned LABEL
- * properties are ignored when creating version 4.0 vCards because the LABEL
- * property is not supported by vCard 4.0.
+ * The label property is not supported in vCard version 4.0. Instead, labels are
+ * included as <i>parameters</i> to their corresponding {@link Address}
+ * properties. When marshalling a vCard, ez-vcard will use either the label
+ * property or the LABEL parameter, depending on the requested vCard version.
  * </p>
  * 
  * <p>
- * The {@link VCard#getOrphanedLabels} method can be used after parsing a
- * version 2.1 or 3.0 vCard to retrieve any LABEL properties which the parser
- * could not assign to an address. A LABEL is assigned to an address if the
- * LABEL's list of TYPE parameters is identical to the address's list of TYPE
- * parameters.
+ * <b>Orphaned labels</b>
  * </p>
  * 
- * <pre class="brush:java">
- * VCard vcard = ...
- * for (Label label : vcard.getOrphanedLabels()) {
- * 	System.out.println(label.getValue());
- * }
- * </pre>
+ * <p>
+ * ez-vcard defines an "orphaned label" as a label property that could not be
+ * assigned to an address (a label is assigned to an address if its list of TYPE
+ * parameters is identical to the address's list of TYPE parameters). The
+ * {@link VCard#addOrphanedLabel} method can be used to add such labels to a
+ * vCard, but its use is strongly discouraged. The
+ * {@link VCard#getOrphanedLabels} method can be useful when parsing version 2.1
+ * or 3.0 vCards in order to retrieve any label properties that the parser could
+ * not assign to an address.
+ * </p>
  * 
  * <p>
  * <b>Property name:</b> {@code LABEL}

@@ -38,33 +38,34 @@ import ezvcard.Warning;
  */
 
 /**
+ * <p>
  * Defines the person's sex.
+ * </p>
  * 
  * <p>
- * <b>Setting the gender</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Gender gender = Gender.male();
  * vcard.setGender(gender);
  * </pre>
  * 
  * <p>
- * <b>Getting the gender</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
  * Gender gender = vcard.getGender();
- * if (gender != null){
- *   if (gender.isMale()){
- *     ...
- *   } else if (gender.isFemale()){
- *     ...
- *   }
- *   ...
+ * if (gender.isMale()){
+ *   //gender is male
+ * } else if (gender.isFemale()){
+ *   //gender is female
  * }
+ * //etc
  * </pre>
  * 
  * <p>

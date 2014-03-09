@@ -40,10 +40,12 @@ import ezvcard.parameter.KeyType;
  */
 
 /**
+ * <p>
  * Defines a public encryption key.
+ * </p>
  * 
  * <p>
- * <b>Adding</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -65,7 +67,7 @@ import ezvcard.parameter.KeyType;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -82,6 +84,12 @@ import ezvcard.parameter.KeyType;
  *   byte[] data = key.getData();
  *   if (data != null){
  *     //property value is binary data
+ *     continue;
+ *   }
+ *   
+ *   String text = key.getText();
+ *   if (text != null){
+ *     //property value is plain-text
  *     continue;
  *   }
  * }

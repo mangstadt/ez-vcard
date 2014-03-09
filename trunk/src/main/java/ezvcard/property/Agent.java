@@ -41,10 +41,12 @@ import ezvcard.Warning;
  */
 
 /**
+ * <p>
  * Defines information about the person's agent.
+ * </p>
  * 
  * <p>
- * <b>Setting</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -64,7 +66,7 @@ import ezvcard.Warning;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">

@@ -37,10 +37,12 @@ import ezvcard.util.PartialDate;
  */
 
 /**
+ * <p>
  * Defines the person's anniversary (marital or work-related).
+ * </p>
  * 
  * <p>
- * <b>Setting</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -66,7 +68,7 @@ import ezvcard.util.PartialDate;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">

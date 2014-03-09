@@ -36,7 +36,9 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * A list of nicknames the person goes by.
+ * <p>
+ * Defines the person's nicknames.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -44,10 +46,11 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Nickname nickname = new Nickname();
- * nickname.addValue(&quot;Rick&quot;);
  * nickname.addValue(&quot;Ricky&quot;);
  * nickname.addValue(&quot;Bobby&quot;);
+ * nickname.addValue(&quot;Ricky Bobby&quot;);
  * vcard.setNickname(nickname);
  * </pre>
  * 
