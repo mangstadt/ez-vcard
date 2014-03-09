@@ -36,71 +36,44 @@ import ezvcard.parameter.ImageType;
  */
 
 /**
- * A company logo.
+ * Defines a company's logo.
  * 
  * <p>
- * <b>Adding a logo</b>
+ * <b>Adding</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //URL
- * Logo logo = new Logo("http://www.company.com/logo.png", ImageType.PNG);
+ * Logo logo = new Logo("http://www.ourcompany.com/our-logo.png", ImageType.PNG);
  * vcard.addLogo(logo);
  * 
  * //binary data
  * byte data[] = ...
  * logo = new Logo(data, ImageType.PNG);
  * vcard.addLogo(logo);
- * 
- * //if "ImageType" does not have the pre-defined constant that you need, then create a new instance
- * //arg 1: the value of the 2.1/3.0 TYPE parameter
- * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
- * //arg 3: the file extension of the data type (optional)
- * ImageKeyTypeParameter param = new ImageType("bmp", "image/x-ms-bmp", "bmp");
- * logo = new Logo("http://www.company.com/logo.bmp", param);
- * vcard.addLogo(logo);
  * </pre>
  * 
  * <p>
- * <b>Getting the logos</b>
+ * <b>Retrieving</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
- * 
- * int fileCount = 0;
  * for (Logo logo : vcard.getLogos()){
- *   //the logo will have either a URL or a binary data
- *   if (logo.getData() == null){
- *     System.out.println("Logo URL: " + logo.getUrl());
- *   } else {
- *     ImageType type = logo.getContentType();
- *     
- *     if (type == null) {
- *       //the vCard may not have any content type data associated with the logo
- *       System.out.println("Saving a logo file...");
- *     } else {
- *       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
- *     }
- *     
- *     String folder;
- *     if (type == ImageType.PNG){ //it is safe to use "==" instead of "equals()"
- *       folder = "png-files";
- *     } else {
- *       folder = "image-files";
- *     }
- *     
- *     byte data[] = logo.getData();
- *     String filename = "logo" + fileCount;
- *     if (type != null && type.getExtension() != null){
- *     	filename += "." + type.getExtension();
- *     }
- *     OutputStream out = new FileOutputStream(new File(folder, filename));
- *     out.write(data);
- *     out.close();
- *     fileCount++;
+ *   ImageType contentType = logo.getContentType(); //e.g. "image/png"
+ * 
+ *   String url = logo.getUrl();
+ *   if (url != null){
+ *     //property value is a URL
+ *     continue;
+ *   }
+ *   
+ *   byte[] data = logo.getData();
+ *   if (data != null){
+ *     //property value is binary data
+ *     continue;
  *   }
  * }
  * </pre>

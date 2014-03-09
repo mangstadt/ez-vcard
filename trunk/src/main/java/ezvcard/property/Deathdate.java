@@ -40,49 +40,49 @@ import ezvcard.util.PartialDate;
  * Defines the person's time of death.
  * 
  * <p>
- * <b>Setting the time of death</b>
+ * <b>Setting</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * //complete date
+ * //date
  * Calendar c = Calendar.getInstance();
+ * c.clear();
  * c.set(Calendar.YEAR, 1954);
  * c.set(Calendar.MONTH, Calendar.JUNE);
  * c.set(Calendar.DAY_OF_MONTH, 7);
- * Deathdate deathdate = new Deathdate();
- * deathdate.setDate(c.getTime(), false);
+ * Deathdate deathdate = new Deathdate(c.getTime());
  * vcard.setDeathdate(deathdate);
  * 
- * //reduced accuracy date
- * deathdate = new Deathdate();
- * deathdate.setPartalDate(PartialDate.date(null, 6, 7)); //June 7
+ * //partial date (e.g. just the month and date, vCard 4.0 only)
+ * deathdate = new Deathdate(PartialDate.date(null, 6, 7)); //June 7
  * vcard.setDeathdate(deathdate);
  * 
- * //plain text value
- * deathdate = new Deathdate();
- * deathdate.setText(&quot;circa 1954&quot;);
+ * //plain text value (vCard 4.0 only)
+ * deathdate = new Deathdate(&quot;In the 1950s.&quot;);
  * vcard.setDeathdate(deathdate);
  * </pre>
- * 
- * <p>
- * <b>Getting the time of death</b>
- * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
  * Deathdate deathdate = vcard.getDeathdate();
- * if (deathdate != null){
- *   if (deathdate.getDate() != null){
- *     System.out.println(deathdate.getDate());
- *   } else if (deathdate.getPartalDate() != null){
- *     System.out.println("Year: " + deathdate.getPartialDate().getYear());
- *     System.out.println("Month: " + deathdate.getPartialDate().getMonth());
- *     //...
- *   } else if (deathdate.getText() != null){
- *     System.out.println(deathdate.getText());
- *   }
+ * 
+ * Date date = deathdate.getDate();
+ * if (date != null){
+ *   //property value is a date
+ * }
+ * 
+ * PartialDate partialDate = deathdate.getPartialDate();
+ * if (partialDate != null){
+ *   //property value is a partial date
+ *   int year = partialDate.getYear();
+ *   int month = partialDate.getMonth();
+ * }
+ * 
+ * String text = deathdate.getText();
+ * if (text != null){
+ *   //property value is plain text
  * }
  * </pre>
  * 

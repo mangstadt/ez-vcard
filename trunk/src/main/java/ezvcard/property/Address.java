@@ -40,14 +40,15 @@ import ezvcard.parameter.VCardParameters;
  */
 
 /**
- * A mailing address.
+ * Defines a mailing address.
  * 
  * <p>
- * <b>Adding an address</b>
+ * <b>Adding</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Address adr = new Address();
  * adr.setStreetAddress(&quot;123 Main St.&quot;);
  * adr.setLocality(&quot;Austin&quot;);
@@ -55,22 +56,23 @@ import ezvcard.parameter.VCardParameters;
  * adr.setPostalCode(&quot;12345&quot;);
  * adr.setCountry(&quot;USA&quot;);
  * adr.addType(AddressType.WORK);
- * adr.addType(AddressType.DOM);
  * 
- * //optionally, provide the exact text to print out on the mailing label
- * adr.setLabel(&quot;123 Main St.\nAustin, Tx 12345\nUSA&quot;);
+ * //optionally, set the text to print on the mailing label
+ * adr.setLabel(&quot;123 Main St.\nAustin, TX 12345\nUSA&quot;);
  * 
  * vcard.addAddress(adr);
  * </pre>
  * 
  * <p>
- * <b>Getting the addresses</b>
+ * <b>Retrieving</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
  * for (Address adr : vcard.getAddresses()){
- *   ...
+ *   String street = adr.getStreetAddress();
+ *   String city = adr.getLocality();
+ *   //etc.
  * }
  * </pre>
  * 

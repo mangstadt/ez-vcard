@@ -40,8 +40,7 @@ import ezvcard.util.PartialDate;
  */
 
 /**
- * Represents a property whose value contains a date and/or a time (for example,
- * {@link Birthday}).
+ * Represents a property with a date and/or time value.
  * @author Michael Angstadt
  */
 public class DateOrTimeProperty extends VCardProperty implements HasAltId {

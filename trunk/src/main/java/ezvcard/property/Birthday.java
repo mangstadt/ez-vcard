@@ -37,49 +37,49 @@ import ezvcard.util.PartialDate;
  * Defines the person's birthday.
  * 
  * <p>
- * <b>Setting the birthday</b>
+ * <b>Setting</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * //complete date
+ * //date
  * Calendar c = Calendar.getInstance();
- * c.set(Calendar.YEAR, 1986);
- * c.set(Calendar.MONTH, Calendar.MARCH);
- * c.set(Calendar.DAY_OF_MONTH, 21);
- * Birthday bday = new Birthday();
- * bday.setDate(c.getTime(), false);
+ * c.clear();
+ * c.set(Calendar.YEAR, 1912);
+ * c.set(Calendar.MONTH, Calendar.JUNE);
+ * c.set(Calendar.DAY_OF_MONTH, 23);
+ * Birthday bday = new Birthday(c.getTime());
  * vcard.setBirthday(bday);
  * 
- * //reduced accuracy date (vCard 4.0 only, see RFC 6350 p.12-14 for examples)
- * bday = new Birthday();
- * bday.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
+ * //partial date (e.g. just the month and date, vCard 4.0 only)
+ * bday = new Birthday(PartialDate.date(null, 6, 23)); //June 23
  * vcard.setBirthday(bday);
  * 
  * //plain text value (vCard 4.0 only)
- * bday = new Birthday();
- * bday.setText(&quot;a long time ago&quot;);
+ * bday = new Birthday(&quot;Don't even go there, dude...&quot;);
  * vcard.setBirthday(bday);
  * </pre>
- * 
- * <p>
- * <b>Getting the birthday</b>
- * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
  * Birthday bday = vcard.getBirthday();
- * if (bday != null){
- *   if (bday.getDate() != null){
- *     System.out.println(bday.getDate());
- *   } else if (bday.getPartialDate() != null){
- *     System.out.println("Year: " + bday.getPartialDate().getYear());
- *     System.out.println("Month: " + bday.getPartialDate().getMonth());
- *     //...
- *   } else if (bday.getText() != null){
- *     System.out.println(bday.getText());
- *   }
+ * 
+ * Date date = bday.getDate();
+ * if (date != null){
+ *   //property value is a date
+ * }
+ * 
+ * PartialDate partialDate = bday.getPartialDate();
+ * if (partialDate != null){
+ *   //property value is a partial date
+ *   int year = partialDate.getYear();
+ *   int month = partialDate.getMonth();
+ * }
+ * 
+ * String text = bday.getText();
+ * if (text != null){
+ *   //property value is plain text
  * }
  * </pre>
  * 
