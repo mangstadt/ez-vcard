@@ -1,13 +1,5 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
-import ezvcard.Warning;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -41,21 +33,49 @@ import ezvcard.Warning;
  * Defines the location of the person's death.
  * 
  * <p>
- * <b>Code sample</b>
+ * <b>Setting</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * //URI (geo)
- * Deathplace deathplace = new Deathplace();
- * deathplace.setUri(&quot;geo:46.176502,-122.191658&quot;);
+ * //text
+ * Deathplace deathplace = new Deathplace(&quot;Wilmslow, Cheshire, England&quot;);
  * vcard.setDeathplace(deathplace);
  * 
- * //text
- * deathplace = new Deathplace();
- * deathplace.setText(&quot;Mount St. Helens&quot;);
+ * //geo coordinates
+ * deathplace = new Deathplace(53.325, -2.239);
  * vcard.setDeathplace(deathplace);
+ * 
+ * //URI
+ * deathplace = new Deathplace();
+ * deathplace.setUri(&quot;http://en.wikipedia.org/wiki/Wilmslow&quot;);
+ * vcard.setDeathplace(deathplace);
+ * </pre>
+ * 
+ * <p>
+ * <b>Retrieving</b>
+ * </p>
+ * 
+ * <pre class="brush:java">
+ * VCard vcard = ...
+ * Deathplace deathplace = vcard.getDeathplace();
+ * 
+ * String text = deathplace.getText();
+ * if (text != null){
+ *   //property value is plain text
+ * }
+ * 
+ * Double latitude = deathplace.getLatitude();
+ * Double longitude = deathplace.getLongitude();
+ * if (latitude != null){
+ *   //property value is a set of geo coordinates
+ * }
+ * 
+ * String uri = deathplace.getUri();
+ * if (uri != null){
+ *   //property value is a URI
+ * }
  * </pre>
  * 
  * <p>
@@ -67,73 +87,28 @@ import ezvcard.Warning;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
  */
-public class Deathplace extends VCardProperty implements HasAltId {
-	private String uri;
-	private String text;
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
+public class Deathplace extends PlaceProperty {
+	/**
+	 * Creates a new deathplace property.
+	 */
+	public Deathplace() {
+		super();
 	}
 
 	/**
-	 * Gets the URI value.
-	 * @return the URI value or null if no URI value is set
+	 * Creates a new deathplace property.
+	 * @param latitude the latitude coordinate of the place
+	 * @param longitude the longitude coordinate of the place
 	 */
-	public String getUri() {
-		return uri;
+	public Deathplace(double latitude, double longitude) {
+		super(latitude, longitude);
 	}
 
 	/**
-	 * Sets the value to a URI.
-	 * @param uri the URI
+	 * Creates a new deathplace property.
+	 * @param text a text value representing the place
 	 */
-	public void setUri(String uri) {
-		this.uri = uri;
-		text = null;
-	}
-
-	/**
-	 * Gets the text value.
-	 * @return the text value or null if no text value is set
-	 */
-	public String getText() {
-		return text;
-	}
-
-	/**
-	 * Sets the value to free-form text.
-	 * @param text the text
-	 */
-	public void setText(String text) {
-		this.text = text;
-		uri = null;
-	}
-
-	//@Overrde
-	public String getAltId() {
-		return parameters.getAltId();
-	}
-
-	//@Override
-	public void setAltId(String altId) {
-		parameters.setAltId(altId);
-	}
-
-	@Override
-	public String getLanguage() {
-		return super.getLanguage();
-	}
-
-	@Override
-	public void setLanguage(String language) {
-		super.setLanguage(language);
-	}
-
-	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
-		if (text == null && uri == null) {
-			warnings.add(new Warning(8));
-		}
+	public Deathplace(String text) {
+		super(text);
 	}
 }

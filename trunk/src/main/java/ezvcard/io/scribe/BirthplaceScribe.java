@@ -1,12 +1,5 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
-import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
-import ezvcard.io.json.JCardValue;
-import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Birthplace;
 
 /*
@@ -34,131 +27,13 @@ import ezvcard.property.Birthplace;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Marshals {@link Birthplace} properties.
- * @author Michael Angstadt
- */
-public class BirthplaceScribe extends VCardPropertyScribe<Birthplace> {
+public class BirthplaceScribe extends PlacePropertyScribe<Birthplace> {
 	public BirthplaceScribe() {
 		super(Birthplace.class, "BIRTHPLACE");
 	}
 
 	@Override
-	protected VCardDataType _defaultDataType(VCardVersion version) {
-		return VCardDataType.TEXT;
-	}
-
-	@Override
-	protected VCardDataType _dataType(Birthplace property, VCardVersion version) {
-		if (property.getText() != null) {
-			return VCardDataType.TEXT;
-		}
-		if (property.getUri() != null) {
-			return VCardDataType.URI;
-		}
-		return _defaultDataType(version);
-	}
-
-	@Override
-	protected String _writeText(Birthplace property, VCardVersion version) {
-		String value = property.getText();
-		if (value != null) {
-			return escape(value);
-		}
-
-		value = property.getUri();
-		if (value != null) {
-			return value;
-		}
-
-		return "";
-	}
-
-	@Override
-	protected Birthplace _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		Birthplace property = new Birthplace();
-		value = unescape(value);
-
-		if (dataType == VCardDataType.TEXT) {
-			property.setText(value);
-			return property;
-		}
-
-		if (dataType == VCardDataType.URI) {
-			property.setUri(value);
-			return property;
-		}
-
-		property.setText(value);
-		return property;
-	}
-
-	@Override
-	protected void _writeXml(Birthplace property, XCardElement parent) {
-		String text = property.getText();
-		if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
-			return;
-		}
-
-		String uri = property.getUri();
-		if (uri != null) {
-			parent.append(VCardDataType.URI, uri);
-			return;
-		}
-
-		parent.append(VCardDataType.TEXT, "");
-	}
-
-	@Override
-	protected Birthplace _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
-		Birthplace property = new Birthplace();
-
-		String text = element.first(VCardDataType.TEXT);
-		if (text != null) {
-			property.setText(text);
-			return property;
-		}
-
-		String uri = element.first(VCardDataType.URI);
-		if (uri != null) {
-			property.setUri(uri);
-			return property;
-		}
-
-		throw missingXmlElements(VCardDataType.TEXT, VCardDataType.URI);
-	}
-
-	@Override
-	protected JCardValue _writeJson(Birthplace property) {
-		String text = property.getText();
-		if (text != null) {
-			return JCardValue.single(text);
-		}
-
-		String uri = property.getUri();
-		if (uri != null) {
-			return JCardValue.single(uri);
-		}
-
-		return JCardValue.single("");
-	}
-
-	@Override
-	protected Birthplace _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-		Birthplace property = new Birthplace();
-		String valueStr = value.asSingle();
-
-		if (dataType == VCardDataType.TEXT) {
-			property.setText(valueStr);
-			return property;
-		}
-		if (dataType == VCardDataType.URI) {
-			property.setUri(valueStr);
-			return property;
-		}
-
-		property.setText(valueStr);
-		return property;
+	protected Birthplace newInstance() {
+		return new Birthplace();
 	}
 }

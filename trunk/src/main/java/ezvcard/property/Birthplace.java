@@ -1,13 +1,5 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
-import ezvcard.Warning;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -41,31 +33,49 @@ import ezvcard.Warning;
  * Defines the location of the person's birth.
  * 
  * <p>
- * <b>Code sample</b>
+ * <b>Setting</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * //URI (geo)
- * Birthplace birthplace = new Birthplace();
- * birthplace.setUri(&quot;geo:39.970806,-75.174809&quot;);
- * vcard.setBirthplace(birthplace);
- * 
- * //URI (website)
- * birthplace = new Birthplace();
- * birthplace.setUri(&quot;http://www.chop.edu&quot;);
- * vcard.setBirthplace(birthplace);
- * 
  * //text
- * birthplace = new Birthplace();
- * birthplace.setText(&quot;The Children's Hospital of Philadelphia&quot;);
+ * Birthplace birthplace = new Birthplace(&quot;Maida_Vale, London, United Kingdom&quot;);
  * vcard.setBirthplace(birthplace);
  * 
- * //text
- * birthplace = new Birthplace();
- * birthplace.setText(&quot;Philadelphia, PA&quot;);
+ * //geo coordinates
+ * birthplace = new Birthplace(51.5274, -0.1899);
  * vcard.setBirthplace(birthplace);
+ * 
+ * //URI
+ * birthplace = new Birthplace();
+ * birthplace.setUri(&quot;http://en.wikipedia.org/wiki/Maida_Vale&quot;);
+ * vcard.setBirthplace(birthplace);
+ * </pre>
+ * 
+ * <p>
+ * <b>Retrieving</b>
+ * </p>
+ * 
+ * <pre class="brush:java">
+ * VCard vcard = ...
+ * Birthplace birthplace = vcard.getBirthplace();
+ * 
+ * String text = birthplace.getText();
+ * if (text != null){
+ *   //property value is plain text
+ * }
+ * 
+ * Double latitude = birthplace.getLatitude();
+ * Double longitude = birthplace.getLongitude();
+ * if (latitude != null){
+ *   //property value is a set of geo coordinates
+ * }
+ * 
+ * String uri = birthplace.getUri();
+ * if (uri != null){
+ *   //property value is a URI
+ * }
  * </pre>
  * 
  * <p>
@@ -77,73 +87,28 @@ import ezvcard.Warning;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
  */
-public class Birthplace extends VCardProperty implements HasAltId {
-	private String uri;
-	private String text;
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
+public class Birthplace extends PlaceProperty {
+	/**
+	 * Creates a new birthplace property.
+	 */
+	public Birthplace() {
+		super();
 	}
 
 	/**
-	 * Gets the URI value.
-	 * @return the URI value or null if no URI value is set
+	 * Creates a new birthplace property.
+	 * @param latitude the latitude coordinate of the place
+	 * @param longitude the longitude coordinate of the place
 	 */
-	public String getUri() {
-		return uri;
+	public Birthplace(double latitude, double longitude) {
+		super(latitude, longitude);
 	}
 
 	/**
-	 * Sets the value to a URI.
-	 * @param uri the URI
+	 * Creates a new birthplace property.
+	 * @param text a text value representing the place
 	 */
-	public void setUri(String uri) {
-		this.uri = uri;
-		text = null;
-	}
-
-	/**
-	 * Gets the text value.
-	 * @return the text value or null if no text value is set
-	 */
-	public String getText() {
-		return text;
-	}
-
-	/**
-	 * Sets the value to free-form text.
-	 * @param text the text
-	 */
-	public void setText(String text) {
-		this.text = text;
-		uri = null;
-	}
-
-	//@Override
-	public String getAltId() {
-		return parameters.getAltId();
-	}
-
-	//@Override
-	public void setAltId(String altId) {
-		parameters.setAltId(altId);
-	}
-
-	@Override
-	public String getLanguage() {
-		return super.getLanguage();
-	}
-
-	@Override
-	public void setLanguage(String language) {
-		super.setLanguage(language);
-	}
-
-	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
-		if (uri == null && text == null) {
-			warnings.add(new Warning(8));
-		}
+	public Birthplace(String text) {
+		super(text);
 	}
 }
