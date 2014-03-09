@@ -38,7 +38,9 @@ import ezvcard.Warning;
  */
 
 /**
- * Marks the vCard as being an vCard.
+ * <p>
+ * Simply identifies the vCard as a "vCard".
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -46,6 +48,7 @@ import ezvcard.Warning;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Profile profile = new Profile();
  * vcard.setProfile(profile);
  * </pre>

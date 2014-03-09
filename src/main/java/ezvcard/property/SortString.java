@@ -36,22 +36,23 @@ import ezvcard.VCardVersion;
 
 /**
  * <p>
- * Defines a string that should be used when an application sorts this vCard in
- * some way.
+ * Defines the string that should be used when an application sorts this vCard
+ * in some way.
  * </p>
  * 
  * <p>
- * The SORT-STRING property is not supported in 4.0. Instead, use the
+ * This property is not supported in 4.0. Instead, use the
  * {@link StructuredName#setSortAs} and/or {@link Organization#setSortAs}
- * methods.
+ * methods when creating version 4.0 vCards.
  * </p>
  * 
  * <p>
- * <b>Code sample (2.1, 3.0)</b>
+ * <b>Code sample (vCard versions 2.1, 3.0)</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * StructuredName n = new StructuredName();
  * n.setFamily(&quot;d'Armour&quot;);
  * n.setGiven(&quot;Miles&quot;);
@@ -66,6 +67,7 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * StructuredName n = new StructuredName();
  * n.setFamily(&quot;d'Armour&quot;);
  * n.setGiven(&quot;Miles&quot;);

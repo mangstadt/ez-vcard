@@ -40,10 +40,12 @@ import ezvcard.parameter.VCardParameters;
  */
 
 /**
+ * <p>
  * Defines a mailing address.
+ * </p>
  * 
  * <p>
- * <b>Adding</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -64,7 +66,7 @@ import ezvcard.parameter.VCardParameters;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">

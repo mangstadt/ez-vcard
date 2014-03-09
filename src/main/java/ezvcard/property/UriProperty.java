@@ -30,7 +30,7 @@ package ezvcard.property;
  */
 
 /**
- * Represents a property whose value is a URI (for example, {@link Url}).
+ * Represents a property whose value is a URI.
  * @author Michael Angstadt
  */
 public class UriProperty extends TextProperty {

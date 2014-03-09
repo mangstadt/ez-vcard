@@ -32,8 +32,10 @@ import java.util.List;
  */
 
 /**
- * A URL that can be used to retrieve the most up-to-date version of the
- * person's vCard.
+ * <p>
+ * Defines a URL that can be used to retrieve the most up-to-date version of the
+ * vCard.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -41,6 +43,7 @@ import java.util.List;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Source source = new Source(&quot;http://www.company.com/employees/doe_john.vcf&quot;);
  * vcard.addSource(source);
  * </pre>

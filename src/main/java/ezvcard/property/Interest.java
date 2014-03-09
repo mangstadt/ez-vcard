@@ -37,18 +37,20 @@ import ezvcard.parameter.VCardParameters;
  */
 
 /**
+ * <p>
  * Defines a recreational activity that the person is interested in. For
- * example, if a person has a INTEREST of "hockey", it would mean that he likes
+ * example, if a person has an interest in "hockey", it would mean that he likes
  * to watch hockey games. Someone who likes to actually <i>play</i> hockey would
- * list "hockey" as a {@link Hobby} instead.
+ * list hockey as a {@link Hobby} instead.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
  * </p>
  * 
  * <pre class="brush:java">
- * //someone who attends all of his favorite hockey team's games in person.
  * VCard vcard = new VCard();
+ * 
  * Interest interest = new Interest(&quot;hockey&quot;);
  * interest.setLevel(InterestLevel.HIGH);
  * vcard.addInterest(interest);

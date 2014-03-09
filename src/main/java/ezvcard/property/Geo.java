@@ -38,31 +38,32 @@ import ezvcard.util.GeoUri;
 
 /**
  * <p>
- * A set of latitude/longitude coordinates. There is no rule for what these
- * coordinates must represent, but the meaning could vary depending on the value
- * of {@link Kind}:
+ * Defines a set of latitude/longitude coordinates. There is no rule as to what
+ * these coordinates represent, but their meaning could vary depending on the
+ * value of the vCard's {@link Kind} property:
  * </p>
  * 
- * <table border="1">
+ * <style> table.t td, table.t th {border:1px solid #000;} </style>
+ * <table class="t" cellpadding="5" style="border-collapse:collapse;">
  * <tr>
  * <th>KIND value</th>
  * <th>GEO meaning</th>
  * </tr>
  * <tr>
  * <td>"individual"</td>
- * <td>the location of the person's home or workplace.</td>
+ * <td>The location of the person's home or workplace.</td>
  * </tr>
  * <tr>
  * <td>"group"</td>
- * <td>the location of the group's meeting place.</td>
+ * <td>The location of the group's meeting place.</td>
  * </tr>
  * <tr>
  * <td>"org"</td>
- * <td>the coordinates of the organization's headquarters.</td>
+ * <td>The coordinates of the organization's headquarters.</td>
  * </tr>
  * <tr>
  * <td>"location"</td>
- * <td>the coordinates of the location itself.</td>
+ * <td>The coordinates of the location itself.</td>
  * </tr>
  * </table>
  * 
@@ -72,7 +73,8 @@ import ezvcard.util.GeoUri;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
- * Geo geo = new Geo(-123.456, 12.54);
+ * 
+ * Geo geo = new Geo(40.7127, -74.0059);
  * vcard.setGeo(geo);
  * </pre>
  * 

@@ -35,8 +35,10 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Defines a URI representing the person's work place, which can be used to
- * lookup information on the person's co-workers.
+ * <p>
+ * Defines a URI that can be used to retrieve information about the person's
+ * co-workers.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -44,6 +46,7 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * OrgDirectory orgDirectory = new OrgDirectory(&quot;http://www.company.com/staff&quot;);
  * vcard.addOrgDirectory(orgDirectory);
  * </pre>

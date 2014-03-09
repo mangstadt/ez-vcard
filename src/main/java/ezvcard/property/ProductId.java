@@ -35,7 +35,9 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * Defines the product that created the vCard.
+ * <p>
+ * Identifies the software application that created the vCard.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -43,6 +45,7 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * ProductId prodid = new ProductId(&quot;ez-vcard 0.6.0&quot;);
  * vcard.setProdId(prodid);
  * </pre>

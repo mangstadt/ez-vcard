@@ -30,17 +30,19 @@ package ezvcard.property;
  */
 
 /**
+ * <p>
  * Defines the location of the person's birth.
+ * </p>
  * 
  * <p>
- * <b>Setting</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //text
- * Birthplace birthplace = new Birthplace(&quot;Maida_Vale, London, United Kingdom&quot;);
+ * Birthplace birthplace = new Birthplace(&quot;Maida Vale, London, United Kingdom&quot;);
  * vcard.setBirthplace(birthplace);
  * 
  * //geo coordinates
@@ -54,7 +56,7 @@ package ezvcard.property;
  * </pre>
  * 
  * <p>
- * <b>Retrieving</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">

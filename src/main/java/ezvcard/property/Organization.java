@@ -34,8 +34,10 @@ import ezvcard.parameter.VCardParameters;
  */
 
 /**
- * A list of organizations the person belongs to. The list is ordered. It starts
- * with the broadest organization and ends with the most specific.
+ * <p>
+ * Defines a list of organizations the person belongs to. The list is ordered.
+ * It begins with the broadest organization and ends with the most specific.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -43,6 +45,7 @@ import ezvcard.parameter.VCardParameters;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Organization org = new Organization();
  * org.addValue(&quot;Google&quot;);
  * org.addValue(&quot;GMail Team&quot;);
@@ -131,8 +134,8 @@ public class Organization extends TextListProperty implements HasAltId {
 	/**
 	 * Gets the string(s) that define how to sort the vCard.
 	 * <p>
-	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING}
-	 * property instead.
+	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING} property
+	 * instead.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -148,8 +151,8 @@ public class Organization extends TextListProperty implements HasAltId {
 	 * Sets the string(s) that define how to sort the vCard. These strings
 	 * correspond to the values that are in this property.
 	 * <p>
-	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING}
-	 * property instead.
+	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING} property
+	 * instead.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}

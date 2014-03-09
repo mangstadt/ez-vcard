@@ -41,7 +41,7 @@ import ezvcard.parameter.VCardParameters;
  */
 
 /**
- * Represents a vCard key/value pair entry (called a "type" or "property").
+ * Base class for all vCard property classes.
  * @author Michael Angstadt
  */
 public abstract class VCardProperty implements Comparable<VCardProperty> {

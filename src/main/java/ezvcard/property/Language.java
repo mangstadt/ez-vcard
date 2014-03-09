@@ -36,7 +36,9 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * A language that the person speaks.
+ * <p>
+ * Defines a language that the person speaks.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -44,9 +46,11 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Language lang = new Language(&quot;en&quot;);
  * lang.setPref(1); //most preferred
  * vcard.addLanguage(lang);
+ * 
  * lang = new Language(&quot;fr&quot;);
  * lang.setPref(2); //second-most preferred
  * vcard.addLanguage(lang);

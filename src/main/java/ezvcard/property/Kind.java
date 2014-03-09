@@ -35,36 +35,35 @@ import ezvcard.VCardVersion;
  */
 
 /**
+ * <p>
  * Defines the type of entity that this vCard represents, such as an individual
  * or an organization.
+ * </p>
  * 
  * <p>
- * <b>Setting the KIND</b>
+ * <b>Code sample (creating)</b>
  * </p>
  * 
  * <pre class="brush:java">
- * //use static methods to create a Kind object
  * VCard vcard = new VCard();
+ * 
  * Kind kind = Kind.individual();
  * vcard.setKind(kind);
  * </pre>
  * 
  * <p>
- * <b>Getting the KIND</b>
+ * <b>Code sample (retrieving)</b>
  * </p>
  * 
  * <pre class="brush:java">
- * //use "is*" methods to determine the Kind value
  * VCard vcard = ...
  * Kind kind = vcard.getKind();
- * if (kind != null){
- *   if (kind.isIndividual()){
- *     ...
- *   } else if (kind.isGroup()){
- *     ...
- *   }
- *   ...
+ * if (kind.isIndividual()){
+ *   //vCard contains information on an individual person
+ * } else if (kind.isGroup()){
+ *   //vCard contains information on a group of people
  * }
+ * //etc
  * </pre>
  * 
  * <p>

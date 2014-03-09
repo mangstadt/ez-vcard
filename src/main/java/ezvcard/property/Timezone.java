@@ -40,7 +40,9 @@ import ezvcard.util.VCardDateFormatter;
  */
 
 /**
- * Contains the timezone that the person lives/works in.
+ * <p>
+ * Defines the timezone that the person lives/works in.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -48,7 +50,13 @@ import ezvcard.util.VCardDateFormatter;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Timezone tz = new Timezone(-5, 0, &quot;America/New_York&quot;);
+ * vcard.addTimezone(tz);
+ * 
+ * //using a Java &quot;TimeZone&quot; object
+ * java.util.TimeZone javaTz = java.util.TimeZone.getTimeZone(&quot;America/New_York&quot;);
+ * tz = new Timezone(javaTz);
  * vcard.addTimezone(tz);
  * </pre>
  * 

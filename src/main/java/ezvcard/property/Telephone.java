@@ -40,7 +40,9 @@ import ezvcard.util.TelUri;
  */
 
 /**
- * A telephone number.
+ * <p>
+ * Defines a telephone number.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -48,11 +50,14 @@ import ezvcard.util.TelUri;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
+ * //text
  * Telephone tel = new Telephone(&quot;(123) 555-6789&quot;);
  * tel.addType(TelephoneType.HOME);
  * tel.setPref(2); //the second-most preferred
  * vcard.addTelephoneNumber(tel);
  * 
+ * //URI (vCard version 4.0 only)
  * TelUri uri = new TelUri.Builder(&quot;+1-800-555-9876&quot;).extension(&quot;111&quot;).build();
  * tel = new Telephone(uri);
  * tel.addType(TelephoneType.WORK);

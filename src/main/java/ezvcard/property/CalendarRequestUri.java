@@ -36,7 +36,10 @@ import ezvcard.VCardVersion;
  */
 
 /**
- * A URL to use for sending a scheduling request to the person's calendar.
+ * <p>
+ * Defines a URL to use for sending a scheduling request to the person's
+ * calendar.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -44,11 +47,8 @@ import ezvcard.VCardVersion;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * CalendarRequestUri caladruri = new CalendarRequestUri(&quot;mailto:janedoe@ibm.com&quot;);
- * caladruri.setPref(1);
- * vcard.addCalendarRequestUri(caladruri);
- * caladruri = new CalendarRequestUri(&quot;http://www.ibm.com/janedoe/calendar&quot;);
- * caladruri.setPref(2);
  * vcard.addCalendarRequestUri(caladruri);
  * </pre>
  * 

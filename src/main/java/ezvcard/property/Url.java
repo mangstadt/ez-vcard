@@ -32,7 +32,9 @@ import java.util.List;
  */
 
 /**
- * A URL pointing to the person's homepage or business website.
+ * <p>
+ * Defines a URL that points to the person's homepage or business website.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -40,6 +42,7 @@ import java.util.List;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * Url url = new Url(&quot;http://www.company.com&quot;);
  * vcard.addUrl(url);
  * </pre>

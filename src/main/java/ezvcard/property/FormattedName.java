@@ -32,7 +32,9 @@ import java.util.List;
  */
 
 /**
- * Shows how the person's name should be displayed.
+ * <p>
+ * Defines the person's full name in a human-readable format.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -40,6 +42,7 @@ import java.util.List;
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
+ * 
  * FormattedName fn = new FormattedName(&quot;Dr. Gregory House M.D.&quot;);
  * vcard.setFormattedName(fn);
  * </pre>

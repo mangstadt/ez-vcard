@@ -32,7 +32,9 @@ import java.util.UUID;
  */
 
 /**
- * A globally unique identifier of the person.
+ * <p>
+ * Defines a globally unique identifier for this vCard.
+ * </p>
  * 
  * <p>
  * <b>Code sample</b>
@@ -44,7 +46,7 @@ import java.util.UUID;
  * Uid uid = new Uid(&quot;urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519&quot;);
  * vcard.setUid(uid);
  * 
- * //generate a random UID
+ * //or, generate a random UID
  * uid = Uid.random();
  * vcard.setUid(uid);
  * </pre>
@@ -67,8 +69,8 @@ public class Uid extends UriProperty {
 	}
 
 	/**
-	 * Generates a UID property that contains a random UID URI.
-	 * @return a UID property with a random UID URI
+	 * Creates a UID property that contains a random UUID URI.
+	 * @return the property
 	 */
 	public static Uid random() {
 		String uuid = UUID.randomUUID().toString();
