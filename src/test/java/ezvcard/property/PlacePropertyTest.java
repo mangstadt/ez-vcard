@@ -3,10 +3,12 @@ package ezvcard.property;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
+import ezvcard.util.GeoUri;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -40,53 +42,79 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class BirthplaceTest {
-	private final String text = "Philadelphia, PA";
-	private final String uri = "geo:39.970806,-75.174809";
+public class PlacePropertyTest {
+	private final String text = "New York, NY";
+	private final String uri = "http://newyork.gov";
+	private final GeoUri geoUriObj = new GeoUri.Builder(40.71448, -74.00598).build();
 
 	@Test
 	public void validate() {
-		Birthplace empty = new Birthplace();
-		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
-		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 8);
+		PlaceProperty empty = new PlaceProperty();
+		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 8);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
 
-		Birthplace withText = new Birthplace();
+		PlaceProperty withText = new PlaceProperty();
 		withText.setText(text);
-		assertValidate(withText).versions(VCardVersion.V2_1).run(2);
-		assertValidate(withText).versions(VCardVersion.V3_0).run(2);
+		assertValidate(withText).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
 		assertValidate(withText).versions(VCardVersion.V4_0).run();
 
-		Birthplace withUri = new Birthplace();
+		PlaceProperty withUri = new PlaceProperty();
 		withUri.setUri(uri);
-		assertValidate(withUri).versions(VCardVersion.V2_1).run(2);
-		assertValidate(withUri).versions(VCardVersion.V3_0).run(2);
+		assertValidate(withUri).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
 		assertValidate(withUri).versions(VCardVersion.V4_0).run();
+
+		PlaceProperty withGeoUri = new PlaceProperty();
+		withGeoUri.setGeoUri(geoUriObj);
+		assertValidate(withGeoUri).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
+		assertValidate(withGeoUri).versions(VCardVersion.V4_0).run();
 	}
 
 	@Test
 	public void setUri() {
-		Birthplace property = new Birthplace();
+		PlaceProperty property = new PlaceProperty();
 
 		assertNull(property.getUri());
 
 		property.setText(text);
+		property.setGeoUri(geoUriObj);
 		property.setUri(uri);
 
 		assertEquals(uri, property.getUri());
 		assertNull(property.getText());
+		assertNull(property.getGeoUri());
+		assertNull(property.getLatitude());
+		assertNull(property.getLongitude());
 	}
 
 	@Test
 	public void setText() {
-		Birthplace property = new Birthplace();
+		PlaceProperty property = new PlaceProperty();
 
 		assertNull(property.getText());
 
 		property.setUri(uri);
+		property.setGeoUri(geoUriObj);
 		property.setText(text);
 
 		assertEquals(text, property.getText());
 		assertNull(property.getUri());
+		assertNull(property.getGeoUri());
+		assertNull(property.getLatitude());
+		assertNull(property.getLongitude());
+	}
+
+	@Test
+	public void setGeoUri() {
+		PlaceProperty property = new PlaceProperty();
+
+		assertNull(property.getGeoUri());
+
+		property.setText(text);
+		property.setUri(uri);
+		property.setGeoUri(geoUriObj);
+
+		assertTrue(property.getGeoUri() == geoUriObj);
+		assertEquals(geoUriObj.getCoordA(), property.getLatitude());
+		assertEquals(geoUriObj.getCoordB(), property.getLongitude());
 	}
 }

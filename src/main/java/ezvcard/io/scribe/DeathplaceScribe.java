@@ -1,12 +1,5 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
-import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
-import ezvcard.io.json.JCardValue;
-import ezvcard.io.xml.XCardElement;
-import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Deathplace;
 
 /*
@@ -34,131 +27,13 @@ import ezvcard.property.Deathplace;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Marshals {@link Deathplace} properties.
- * @author Michael Angstadt
- */
-public class DeathplaceScribe extends VCardPropertyScribe<Deathplace> {
+public class DeathplaceScribe extends PlacePropertyScribe<Deathplace> {
 	public DeathplaceScribe() {
 		super(Deathplace.class, "DEATHPLACE");
 	}
 
 	@Override
-	protected VCardDataType _defaultDataType(VCardVersion version) {
-		return VCardDataType.TEXT;
-	}
-
-	@Override
-	protected VCardDataType _dataType(Deathplace property, VCardVersion version) {
-		if (property.getText() != null) {
-			return VCardDataType.TEXT;
-		}
-		if (property.getUri() != null) {
-			return VCardDataType.URI;
-		}
-		return _defaultDataType(version);
-	}
-
-	@Override
-	protected String _writeText(Deathplace property, VCardVersion version) {
-		String text = property.getText();
-		if (text != null) {
-			return escape(text);
-		}
-
-		String uri = property.getUri();
-		if (uri != null) {
-			return uri;
-		}
-
-		return "";
-	}
-
-	@Override
-	protected Deathplace _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		Deathplace property = new Deathplace();
-		value = unescape(value);
-
-		if (dataType == VCardDataType.TEXT) {
-			property.setText(value);
-			return property;
-		}
-
-		if (dataType == VCardDataType.URI) {
-			property.setUri(value);
-			return property;
-		}
-
-		property.setText(value);
-		return property;
-	}
-
-	@Override
-	protected void _writeXml(Deathplace property, XCardElement parent) {
-		String text = property.getText();
-		if (text != null) {
-			parent.append(VCardDataType.TEXT, text);
-			return;
-		}
-
-		String uri = property.getUri();
-		if (uri != null) {
-			parent.append(VCardDataType.URI, uri);
-			return;
-		}
-
-		parent.append(VCardDataType.TEXT, "");
-	}
-
-	@Override
-	protected Deathplace _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
-		Deathplace property = new Deathplace();
-
-		String text = element.first(VCardDataType.TEXT);
-		if (text != null) {
-			property.setText(text);
-			return property;
-		}
-
-		String uri = element.first(VCardDataType.URI);
-		if (uri != null) {
-			property.setUri(uri);
-			return property;
-		}
-
-		throw missingXmlElements(VCardDataType.TEXT, VCardDataType.URI);
-	}
-
-	@Override
-	protected JCardValue _writeJson(Deathplace property) {
-		String text = property.getText();
-		if (text != null) {
-			return JCardValue.single(text);
-		}
-
-		String uri = property.getUri();
-		if (uri != null) {
-			return JCardValue.single(uri);
-		}
-
-		return JCardValue.single("");
-	}
-
-	@Override
-	protected Deathplace _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-		Deathplace property = new Deathplace();
-		String valueStr = value.asSingle();
-
-		if (dataType == VCardDataType.TEXT) {
-			property.setText(valueStr);
-			return property;
-		}
-		if (dataType == VCardDataType.URI) {
-			property.setUri(valueStr);
-			return property;
-		}
-
-		property.setText(valueStr);
-		return property;
+	protected Deathplace newInstance() {
+		return new Deathplace();
 	}
 }
