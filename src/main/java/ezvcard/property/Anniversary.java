@@ -37,52 +37,57 @@ import ezvcard.util.PartialDate;
  */
 
 /**
- * Defines the person's anniversary.
+ * Defines the person's anniversary (marital or work-related).
  * 
  * <p>
- * <b>Setting the anniversary</b>
+ * <b>Setting</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * //complete date
+ * //date
  * Calendar c = Calendar.getInstance();
- * c.set(Calendar.YEAR, 1986);
+ * c.clear();
+ * c.set(Calendar.YEAR, 1970);
  * c.set(Calendar.MONTH, Calendar.MARCH);
  * c.set(Calendar.DAY_OF_MONTH, 21);
- * Anniversary anniversary = new Anniversary();
- * anniversary.setDate(c.getTime(), false);
+ * Anniversary anniversary = new Anniversary(c.getTime());
  * vcard.setAnniversary(anniversary);
  * 
- * //reduced accuracy date (see RFC 6350 p.12-14 for examples)
- * anniversary = new Anniversary();
- * anniversary.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
+ * //partial date (e.g. just the month and date)
+ * PartialDate date = PartialDate.date(null, 3, 21);
+ * anniversary = new Anniversary(date); //March 21
  * vcard.setAnniversary(anniversary);
  * 
  * //plain text value
- * anniversary = new Anniversary();
- * anniversary.setText(&quot;more than 20 years ago&quot;);
+ * anniversary = new Anniversary(&quot;Over 20 years ago!&quot;);
  * vcard.setAnniversary(anniversary);
  * </pre>
  * 
  * <p>
- * <b>Getting the anniversary</b>
+ * <b>Retrieving</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
  * Anniversary anniversary = vcard.getAnniversary();
- * if (anniversary != null){
- *   if (anniversary.getDate() != null){
- *     System.out.println(anniversary.getDate());
- *   } else if (anniversary.getPartialDate() != null){
- *     System.out.println("Year: " + anniversary.getPartialDate().getYear());
- *     System.out.println("Month: " + anniversary.getPartialDate().getMonth());
- *     //...
- *   } else if (anniversary.getText() != null){
- *     System.out.println(anniversary.getText());
- *   }
+ * 
+ * Date date = anniversary.getDate();
+ * if (date != null){
+ *   //property value is a date
+ * }
+ * 
+ * PartialDate partialDate = anniversary.getPartialDate();
+ * if (partialDate != null){
+ *   //property value is a partial date
+ *   int year = partialDate.getYear();
+ *   int month = partialDate.getMonth();
+ * }
+ * 
+ * String text = anniversary.getText();
+ * if (text != null){
+ *   //property value is plain text
  * }
  * </pre>
  * 

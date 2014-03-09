@@ -41,29 +41,45 @@ import ezvcard.Warning;
  */
 
 /**
- * An embedded vCard or URL containing the information of someone who represents
- * the person.
+ * Defines information about the person's agent.
  * 
  * <p>
- * <b>URL</b>
+ * <b>Setting</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
- * Agent agent = new Agent(&quot;http://mi5.gov.uk/007&quot;);
+ * 
+ * //URL
+ * Agent agent = new Agent(&quot;http://www.linkedin.com/BobSmith&quot;);
+ * vcard.setAgent(agent);
+ * 
+ * //vCard
+ * VCard agentVCard = new VCard();
+ * agentVCard.setFormattedName(&quot;Bob Smith&quot;);
+ * agentVCard.addTelephoneNumber(&quot;(555) 123-4566&quot;);
+ * agentVCard.addUrl(&quot;http://www.linkedin.com/BobSmith&quot;);
+ * agent = new Agent(agentVCard);
  * vcard.setAgent(agent);
  * </pre>
  * 
  * <p>
- * <b>vCard</b>
+ * <b>Retrieving</b>
  * </p>
  * 
  * <pre class="brush:java">
- * VCard vcard = new VCard();
- * VCard agentVcard = new VCard();
- * agentVcard.setFormattedName(&quot;Agent 007&quot;);
- * Agent agent = new Agent(agentVcard);
- * vcard.setAgent(agent);
+ * VCard vcard = ...
+ * Agent agent = vcard.getAgent();
+ * 
+ * String url = agent.getUrl();
+ * if (url != null){
+ *   //property value is a URL
+ * }
+ * 
+ * VCard agentVCard = agent.getVCard();
+ * if (agentVCard != null){
+ *   //property value is a vCard
+ * }
  * </pre>
  * 
  * <p>

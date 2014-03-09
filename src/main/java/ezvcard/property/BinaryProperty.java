@@ -42,10 +42,8 @@ import ezvcard.util.IOUtils;
  */
 
 /**
- * Represents a property whose value contains binary data (for example,
- * {@link Photo}).
+ * Represents a property whose value contains binary data.
  * @author Michael Angstadt
- * 
  * @param <T> the class used for representing the content type of the resource
  */
 public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCardProperty implements HasAltId {

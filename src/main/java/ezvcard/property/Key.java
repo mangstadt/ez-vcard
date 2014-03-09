@@ -40,17 +40,17 @@ import ezvcard.parameter.KeyType;
  */
 
 /**
- * A public key for encryption.
+ * Defines a public encryption key.
  * 
  * <p>
- * <b>Adding a key</b>
+ * <b>Adding</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * //URL (vCard 4.0 only; KEYs cannot have URLs in vCard 2.1 and 3.0)
- * Key key = new Key("http://www.mywebsite.com/pubkey.pgp", KeyType.PGP);
+ * //URL
+ * Key key = new Key("http://www.mywebsite.com/my-public-key.pgp", KeyType.PGP);
  * vcard.addKey(key);
  * 
  * //binary data
@@ -62,55 +62,27 @@ import ezvcard.parameter.KeyType;
  * key = new Key();
  * key.setText("...", KeyType.PGP);
  * vcard.addKey(key);
- * 
- * //if "KeyType" does not have the pre-defined constant that you need, then create a new instance
- * //arg 1: the value of the 2.1/3.0 TYPE parameter
- * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
- * //arg 3: the file extension of the data type (optional)
- * KeyType param = new KeyType("mykey", "application/my-key", "mkey");
- * key = new Key("http://www.mywebsite.com/pubkey.enc", param);
- * vcard.addKey(key);
  * </pre>
  * 
  * <p>
- * <b>Getting the keys</b>
+ * <b>Retrieving</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
- * 
- * int fileCount = 0;
  * for (Key key : vcard.getKeys()){
- *   //the key will have either a URL or a binary data
- *   //only 4.0 vCards are allowed to use URLs for keys
- *   if (key.getData() == null){
- *     System.out.println("Key URL: " + key.getUrl());
- *   } else {
- *     KeyType type = key.getContentType();
- *     
- *     if (type == null) {
- *       //the vCard may not have any content type data associated with the key
- *       System.out.println("Saving a key file...");
- *     } else {
- *       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
- *     }
- *     
- *     String folder;
- *     if (type == KeyType.PGP){ //it is safe to use "==" instead of "equals()"
- *       folder = "pgp-keys";
- *     } else {
- *       folder = "other-keys";
- *     }
- *     
- *     byte data[] = key.getData();
- *     String filename = "key" + fileCount;
- *     if (type != null && type.getExtension() != null){
- *     	filename += "." + type.getExtension();
- *     }
- *     OutputStream out = new FileOutputStream(new File(folder, filename));
- *     out.write(data);
- *     out.close();
- *     fileCount++;
+ *   KeyType contentType = key.getContentType(); //e.g. "application/pgp-keys"
+ * 
+ *   String url = key.getUrl();
+ *   if (url != null){
+ *     //property value is a URL
+ *     continue;
+ *   }
+ *   
+ *   byte[] data = key.getData();
+ *   if (data != null){
+ *     //property value is binary data
+ *     continue;
  *   }
  * }
  * </pre>

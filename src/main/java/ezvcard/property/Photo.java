@@ -36,71 +36,44 @@ import ezvcard.parameter.ImageType;
  */
 
 /**
- * A photo attached to the vCard (such as a portrait of the person).
+ * Defines a photo (such as the person's portrait).
  * 
  * <p>
- * <b>Adding a photo</b>
+ * <b>Adding</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
  * //URL
- * Photo photo = new Photo("http://www.mywebsite.com/mugshot.jpg", ImageType.JPEG);
+ * Photo photo = new Photo("http://www.mywebsite.com/my-photo.jpg", ImageType.JPEG);
  * vcard.addPhoto(photo);
  * 
  * //binary data
  * byte data[] = ...
  * photo = new Photo(data, ImageType.JPEG);
  * vcard.addPhoto(photo);
- * 
- * //if "ImageType" does not have the pre-defined constant that you need, then create a new instance
- * //arg 1: the value of the 2.1/3.0 TYPE parameter
- * //arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
- * //arg 3: the file extension of the data type (optional)
- * ImageKeyTypeParameter param = new ImageType("bmp", "image/x-ms-bmp", "bmp");
- * photo = new Photo("http://www.mywebsite.com/mugshot.bmp", param);
- * vcard.addPhoto(photo);
  * </pre>
  * 
  * <p>
- * <b>Getting the photos</b>
+ * <b>Retrieving</b>
  * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
- * 
- * int fileCount = 0;
  * for (Photo photo : vcard.getPhotos()){
- *   //the photo will have either a URL or a binary data
- *   if (photo.getData() == null){
- *     System.out.println("Photo URL: " + photo.getUrl());
- *   } else {
- *     ImageType type = photo.getContentType();
- *     
- *     if (type == null) {
- *       //the vCard may not have any content type data associated with the photo
- *       System.out.println("Saving a photo file...");
- *     } else {
- *       System.out.println("Saving a \"" + type.getMediaType() + "\" file...");
- *     }
- *     
- *     String folder;
- *     if (type == ImageType.JPEG){ //it is safe to use "==" instead of "equals()"
- *       folder = "photos";
- *     } else {
- *       folder = "images";
- *     }
- *     
- *     byte data[] = photo.getData();
- *     String filename = "photo" + fileCount;
- *     if (type != null && type.getExtension() != null){
- *     	filename += "." + type.getExtension();
- *     }
- *     OutputStream out = new FileOutputStream(new File(folder, filename));
- *     out.write(data);
- *     out.close();
- *     fileCount++;
+ *   PhotoType contentType = photo.getContentType(); //e.g. "image/jpeg"
+ * 
+ *   String url = photo.getUrl();
+ *   if (url != null){
+ *     //property value is a URL
+ *     continue;
+ *   }
+ *   
+ *   byte[] data = photo.getData();
+ *   if (data != null){
+ *     //property value is binary data
+ *     continue;
  *   }
  * }
  * </pre>
