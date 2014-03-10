@@ -4,7 +4,7 @@
 _February 4, 2014_
 
  * If a property's value is encoded in quoted-printable encoding, then the property _should_ contain a CHARSET parameter that defines the character set that the property value was encoded in.  However, not all vCards may include such a parameter.  To account for this, you can now define the default character set to use when parsing quoted-printable properties that do not have a CHARSET parameter (Issue 12).  Use the "VCardReader.setDefaultQuotedPrintableCharset()" method to define this setting.
- * Quoted-printable property values are now encoded using UTF-8 when written (if no CHARSET parameter is present).  This improves interoperability, since virtually all systems support this character set.  Before, the character set of the Writer object would be used, which is usually the local system's default character set.
+ * Quoted-printable property values are now encoded using UTF-8 when written if no CHARSET parameter is present.  This improves interoperability, since virtually all systems support this character set.  Before, the character set of the "Writer" object would be used, which could be a non-standard character set or a character set specific to the local operating system.
  * Fixed a bug where ORG properties with multiple values weren't being written correctly in plain-text vCards (Issue 13).
  * Fixed a bug where the "ez-vcard.properties" file wasn't being filtered during the build process.  This caused the PRODID property of vCards created by ez-vcard to show the wrong version number of ez-vcard (Issue 14).
 
