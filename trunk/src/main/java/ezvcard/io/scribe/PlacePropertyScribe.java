@@ -35,6 +35,10 @@ import ezvcard.util.GeoUri;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Marshals {@link PlaceProperty} properties.
+ * @author Michael Angstadt
+ */
 public abstract class PlacePropertyScribe<T extends PlaceProperty> extends VCardPropertyScribe<T> {
 	public PlacePropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);

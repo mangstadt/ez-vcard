@@ -61,7 +61,7 @@ import ezvcard.util.XmlUtils;
  */
 
 /**
- * Base class for vCard property marshallers.
+ * Base class for vCard property scribes (marshallers).
  * @param <T> the property class
  * @author Michael Angstadt
  */
