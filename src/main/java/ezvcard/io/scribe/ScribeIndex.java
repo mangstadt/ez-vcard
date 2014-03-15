@@ -37,10 +37,11 @@ import ezvcard.property.Xml;
 
 /**
  * <p>
- * Manages a listing of property scribes (marshallers). This is useful for
- * injecting the scribes of any extended properties you have defined into a
- * reader or writer object. The same object instance can be reused and injected
- * into multiple reader/writer classes.
+ * Manages a collection of property scribes (marshallers) to use when reading or
+ * writing a vCard. The same instance of this object can be re-used across
+ * multiple vCard reader/writer objects. This is useful if you have custom
+ * scribe classes defined, as it allows you to only define them once instead of
+ * each time a vCard reader/writer object is created.
  * </p>
  * <p>
  * <b>Example:</b>
@@ -51,16 +52,17 @@ import ezvcard.property.Xml;
  * index.register(new CustomPropertyScribe());
  * index.register(new AnotherCustomPropertyScribe());
  * 
- * //inject into a reader class
+ * //inject the ScribeIndex into a plain-text vCard reader class and read the vCard data stream
  * VCardReader vcardReader = new VCardReader(...);
  * vcardReader.setScribeIndex(index);
  * List&lt;VCard&gt; vcards = new ArrayList&lt;VCard&gt;();
- * VCard vcards;
+ * VCard vcard;
  * while ((vcards = vcardReader.readNext()) != null){
  *   vcards.add(vcard);
  * }
+ * vcardReader.close();
  * 
- * //inject the same instance in another reader/writer class
+ * //inject the same ScribeIndex instance into a jCard writer and write the vCards
  * JCardWriter jcardWriter = new JCardWriter(...);
  * jcardWriter.setScribeIndex(index);
  * for (VCard vcard : vcards){

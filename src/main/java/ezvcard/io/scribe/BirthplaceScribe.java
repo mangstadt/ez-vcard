@@ -27,6 +27,10 @@ import ezvcard.property.Birthplace;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Marshals {@link Birthplace} properties.
+ * @author Michael Angstadt
+ */
 public class BirthplaceScribe extends PlacePropertyScribe<Birthplace> {
 	public BirthplaceScribe() {
 		super(Birthplace.class, "BIRTHPLACE");

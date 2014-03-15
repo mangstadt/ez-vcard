@@ -27,6 +27,10 @@ import ezvcard.property.Deathplace;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Marshals {@link Deathplace} properties.
+ * @author Michael Angstadt
+ */
 public class DeathplaceScribe extends PlacePropertyScribe<Deathplace> {
 	public DeathplaceScribe() {
 		super(Deathplace.class, "DEATHPLACE");
