@@ -43,8 +43,7 @@ import ezvcard.util.GeoUri;
  * value of the vCard's {@link Kind} property:
  * </p>
  * 
- * <style> table.t td, table.t th {border:1px solid #000;} </style>
- * <table class="t" cellpadding="5" style="border-collapse:collapse;">
+ * <table class="simpleTable">
  * <tr>
  * <th>KIND value</th>
  * <th>GEO meaning</th>

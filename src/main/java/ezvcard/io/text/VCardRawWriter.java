@@ -167,7 +167,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * quotes with single quotes.
 	 * </p>
 	 * 
-	 * <table border="1">
+	 * <table class="simpleTable">
 	 * <tr>
 	 * <th>Character</th>
 	 * <th>Replacement<br>
@@ -221,7 +221,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * quotes with single quotes.
 	 * </p>
 	 * 
-	 * <table border="1">
+	 * <table class="simpleTable">
 	 * <tr>
 	 * <th>Character</th>
 	 * <th>Replacement<br>

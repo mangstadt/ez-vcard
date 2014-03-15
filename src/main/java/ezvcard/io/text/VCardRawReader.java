@@ -208,7 +208,7 @@ public class VCardRawReader implements Closeable {
 	 * newlines and double quotes to be included in parameter values.
 	 * </p>
 	 * 
-	 * <table border="1">
+	 * <table class="simpleTable">
 	 * <tr>
 	 * <th>Raw Character</th>
 	 * <th>Encoded Character</th>
@@ -250,7 +250,7 @@ public class VCardRawReader implements Closeable {
 	 * newlines and double quotes to be included in parameter values.
 	 * </p>
 	 * 
-	 * <table border="1">
+	 * <table class="simpleTable">
 	 * <tr>
 	 * <th>Raw Character</th>
 	 * <th>Encoded Character</th>
