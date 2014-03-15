@@ -74,7 +74,7 @@ import ezvcard.util.IOUtils;
  * </p>
  * 
  * 
- * <table border="1">
+ * <table class="simpleTable">
  * <tr>
  * <th></th>
  * <th>Reading</th>
