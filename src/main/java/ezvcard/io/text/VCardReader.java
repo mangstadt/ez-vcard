@@ -296,8 +296,9 @@ public class VCardReader implements Closeable {
 	 * @param parameters the parameters
 	 * @param value the property value
 	 * @return the decoded property value
+	 * @throws DecoderException if the value couldn't be decoded
 	 */
-	private String decodeQuotedPrintable(String name, VCardParameters parameters, String value) {
+	private String decodeQuotedPrintable(String name, VCardParameters parameters, String value) throws DecoderException {
 		if (parameters.getEncoding() != Encoding.QUOTED_PRINTABLE) {
 			return value;
 		}
@@ -322,13 +323,7 @@ public class VCardReader implements Closeable {
 		}
 
 		QuotedPrintableCodec codec = new QuotedPrintableCodec(charset.name());
-		try {
-			return codec.decode(value);
-		} catch (DecoderException e) {
-			//only thrown if the charset is invalid
-			//we know this will never happen because we're using a Charset object
-			throw new RuntimeException(e);
-		}
+		return codec.decode(value);
 	}
 
 	/**
@@ -408,7 +403,11 @@ public class VCardReader implements Closeable {
 			handleQuotedMultivaluedTypeParams(parameters);
 
 			//decode property value from quoted-printable
-			value = decodeQuotedPrintable(name, parameters, value);
+			try {
+				value = decodeQuotedPrintable(name, parameters, value);
+			} catch (DecoderException e) {
+				addWarning(name, 38, e.getMessage());
+			}
 
 			//get the scribe
 			VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(name);
