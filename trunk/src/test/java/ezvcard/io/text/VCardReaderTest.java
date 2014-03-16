@@ -173,9 +173,6 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/**
-	 * All "quoted-printable" values should be decoded by the VCardReader.
-	 */
 	@Test
 	public void decodeQuotedPrintable() throws Throwable {
 		//@formatter:off
@@ -196,6 +193,27 @@ public class VCardReaderTest {
 		assertNull(label.getParameters().getEncoding()); //ENCODING sub type should be removed
 
 		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void decodeQuotedPrintable_invalidValue() throws Throwable {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:test=nnnn\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		VCard vcard = reader.readNext();
+
+		Label label = vcard.getOrphanedLabels().get(0);
+		assertEquals("test=nnnn", label.getValue());
+		assertNull(label.getParameters().getEncoding()); //ENCODING sub type should be removed
+
+		assertWarnings(1, reader.getWarnings());
 		assertNull(reader.readNext());
 	}
 
