@@ -1,5 +1,11 @@
 #summary Documents all the changes that were made to every version of the library
 
+= 0.9.3-SNAPSHOT =
+_under development_
+
+ * Fixed a bug where incorrectly encoded quoted-printable values were preventing the vCard from being parsed (Issue 15).
+ * Javadoc improvements.
+
 = 0.9.2 =
 _February 4, 2014_
 
