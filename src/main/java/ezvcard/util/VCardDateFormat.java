@@ -38,11 +38,12 @@ import java.util.regex.Pattern;
  */
 
 /**
- * Represents the various ISO8601 date/time formats that vCard dates can be
- * represented as.
+ * Defines all of the date formats that are used in vCards, and also
+ * parses/formats vCard dates. These date formats are defined in the ISO8601
+ * specification.
  * @author Michael Angstadt
  */
-public enum ISOFormat {
+public enum VCardDateFormat {
 	//@formatter:off
 	/**
 	 * Example: 20120701
@@ -176,7 +177,7 @@ public enum ISOFormat {
 	 * @param formatStr the {@link SimpleDateFormat} format string used for
 	 * parsing dates.
 	 */
-	private ISOFormat(String regex, String formatStr) {
+	private VCardDateFormat(String regex, String formatStr) {
 		pattern = Pattern.compile(regex);
 		this.formatStr = formatStr;
 	}
@@ -192,7 +193,7 @@ public enum ISOFormat {
 
 	/**
 	 * Builds a {@link DateFormat} object for parsing and formating dates in
-	 * this ISO format.
+	 * this format.
 	 * @return the {@link DateFormat} object
 	 */
 	public DateFormat getDateFormat() {
@@ -201,7 +202,7 @@ public enum ISOFormat {
 
 	/**
 	 * Builds a {@link DateFormat} object for parsing and formating dates in
-	 * this ISO format.
+	 * this format.
 	 * @param timezone the timezone the date is in or null for the default
 	 * timezone
 	 * @return the {@link DateFormat} object
@@ -215,7 +216,7 @@ public enum ISOFormat {
 	}
 
 	/**
-	 * Formats a date in this ISO format.
+	 * Formats a date in this vCard date format.
 	 * @param date the date to format
 	 * @return the date string
 	 */
@@ -224,7 +225,7 @@ public enum ISOFormat {
 	}
 
 	/**
-	 * Formats a date in this ISO format.
+	 * Formats a date in this vCard date format.
 	 * @param date the date to format
 	 * @param timezone the timezone to format the date in or null for the
 	 * default timezone
@@ -240,8 +241,8 @@ public enum ISOFormat {
 	 * @param dateStr the date string (e.g. "20140322T120000Z")
 	 * @return the ISO format (e.g. DATETIME_BASIC) or null if not found
 	 */
-	public static ISOFormat find(String dateStr) {
-		for (ISOFormat format : values()) {
+	public static VCardDateFormat find(String dateStr) {
+		for (VCardDateFormat format : values()) {
 			if (format.matches(dateStr)) {
 				return format;
 			}
@@ -258,7 +259,7 @@ public enum ISOFormat {
 	 */
 	public static Date parse(String dateStr) {
 		//determine which ISOFormat the date is in
-		ISOFormat format = find(dateStr);
+		VCardDateFormat format = find(dateStr);
 		if (format == null) {
 			throw parseException(dateStr);
 		}
