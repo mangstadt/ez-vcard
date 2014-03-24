@@ -7,8 +7,8 @@ import java.util.TimeZone;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
+import ezvcard.util.ISOFormat;
 import ezvcard.util.UtcOffset;
-import ezvcard.util.VCardDateFormatter;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -256,7 +256,7 @@ public class Timezone extends VCardProperty implements HasAltId {
 	 */
 	public TimeZone toTimeZone() {
 		if (text != null) {
-			TimeZone timezone = VCardDateFormatter.parseTimeZoneId(text);
+			TimeZone timezone = ISOFormat.parseTimeZoneId(text);
 			if (timezone != null) {
 				return timezone;
 			}

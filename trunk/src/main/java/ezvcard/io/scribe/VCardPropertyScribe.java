@@ -32,7 +32,6 @@ import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.ISOFormat;
 import ezvcard.util.StringUtils.JoinCallback;
-import ezvcard.util.VCardDateFormatter;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -977,7 +976,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws IllegalArgumentException if the date cannot be parsed
 	 */
 	protected static Date date(String value) {
-		return VCardDateFormatter.parse(value);
+		return ISOFormat.parse(value);
 	}
 
 	/**
@@ -1048,15 +1047,15 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 			ISOFormat format;
 			if (hasTime) {
 				if (utc) {
-					format = extended ? ISOFormat.UTC_TIME_EXTENDED : ISOFormat.UTC_TIME_BASIC;
+					format = extended ? ISOFormat.UTC_DATE_TIME_EXTENDED : ISOFormat.UTC_DATE_TIME_BASIC;
 				} else {
-					format = extended ? ISOFormat.TIME_EXTENDED : ISOFormat.TIME_BASIC;
+					format = extended ? ISOFormat.DATE_TIME_EXTENDED : ISOFormat.DATE_TIME_BASIC;
 				}
 			} else {
 				format = extended ? ISOFormat.DATE_EXTENDED : ISOFormat.DATE_BASIC;
 			}
 
-			return VCardDateFormatter.format(date, format);
+			return format.format(date);
 		}
 	}
 
