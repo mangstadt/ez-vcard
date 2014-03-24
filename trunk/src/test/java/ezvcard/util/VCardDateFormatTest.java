@@ -41,7 +41,7 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class ISOFormatTest {
+public class VCardDateFormatTest {
 	@ClassRule
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
@@ -60,13 +60,13 @@ public class ISOFormatTest {
 			date = cal.getTime();
 		}
 
-		assertEquals("20060102", ISOFormat.DATE_BASIC.format(date));
-		assertEquals("2006-01-02", ISOFormat.DATE_EXTENDED.format(date));
-		assertEquals("20060102T102030+0100", ISOFormat.DATE_TIME_BASIC.format(date));
-		assertEquals("2006-01-02T10:20:30+01:00", ISOFormat.DATE_TIME_EXTENDED.format(date));
-		assertEquals("2006-01-02T10:20:30+0100", ISOFormat.HCARD_DATE_TIME.format(date));
-		assertEquals("20060102T092030Z", ISOFormat.UTC_DATE_TIME_BASIC.format(date));
-		assertEquals("2006-01-02T09:20:30Z", ISOFormat.UTC_DATE_TIME_EXTENDED.format(date));
+		assertEquals("20060102", VCardDateFormat.DATE_BASIC.format(date));
+		assertEquals("2006-01-02", VCardDateFormat.DATE_EXTENDED.format(date));
+		assertEquals("20060102T102030+0100", VCardDateFormat.DATE_TIME_BASIC.format(date));
+		assertEquals("2006-01-02T10:20:30+01:00", VCardDateFormat.DATE_TIME_EXTENDED.format(date));
+		assertEquals("2006-01-02T10:20:30+0100", VCardDateFormat.HCARD_DATE_TIME.format(date));
+		assertEquals("20060102T092030Z", VCardDateFormat.UTC_DATE_TIME_BASIC.format(date));
+		assertEquals("2006-01-02T09:20:30Z", VCardDateFormat.UTC_DATE_TIME_EXTENDED.format(date));
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class ISOFormatTest {
 			datetime = cal.getTime();
 		}
 
-		assertEquals("20060102T072030-0200", ISOFormat.DATE_TIME_BASIC.format(datetime, timezone));
+		assertEquals("20060102T072030-0200", VCardDateFormat.DATE_TIME_BASIC.format(datetime, timezone));
 	}
 
 	@Test
@@ -115,54 +115,54 @@ public class ISOFormatTest {
 		}
 
 		//basic, date
-		assertEquals(date, ISOFormat.parse("20120701"));
+		assertEquals(date, VCardDateFormat.parse("20120701"));
 
 		//extended, date
-		assertEquals(date, ISOFormat.parse("2012-07-01"));
+		assertEquals(date, VCardDateFormat.parse("2012-07-01"));
 
 		//basic, datetime, GMT
-		assertEquals(datetime, ISOFormat.parse("20120701T070130Z"));
+		assertEquals(datetime, VCardDateFormat.parse("20120701T070130Z"));
 
 		//extended, datetime, GMT
-		assertEquals(datetime, ISOFormat.parse("2012-07-01T07:01:30Z"));
+		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T07:01:30Z"));
 
 		//basic, datetime, timezone
-		assertEquals(datetime, ISOFormat.parse("20120701T100130+0300"));
+		assertEquals(datetime, VCardDateFormat.parse("20120701T100130+0300"));
 
 		//extended, datetime, timezone
-		assertEquals(datetime, ISOFormat.parse("2012-07-01T10:01:30+03:00"));
+		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T10:01:30+03:00"));
 
 		//hCard, datetime, timezone
-		assertEquals(datetime, ISOFormat.parse("2012-07-01T10:01:30+0300"));
+		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T10:01:30+0300"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid() {
-		ISOFormat.parse("invalid");
+		VCardDateFormat.parse("invalid");
 	}
 
 	@Test
 	public void dateHasTime() {
-		assertFalse(ISOFormat.dateHasTime("20130601"));
-		assertTrue(ISOFormat.dateHasTime("20130601T120000"));
+		assertFalse(VCardDateFormat.dateHasTime("20130601"));
+		assertTrue(VCardDateFormat.dateHasTime("20130601T120000"));
 	}
 
 	@Test
 	public void dateHasTimezone() {
-		assertFalse(ISOFormat.dateHasTimezone("20130601T120000"));
-		assertTrue(ISOFormat.dateHasTimezone("20130601T120000Z"));
-		assertTrue(ISOFormat.dateHasTimezone("20130601T120000+0100"));
-		assertTrue(ISOFormat.dateHasTimezone("20130601T120000-0100"));
-		assertTrue(ISOFormat.dateHasTimezone("2013-06-01T12:00:00+01:00"));
-		assertTrue(ISOFormat.dateHasTimezone("2013-06-01T12:00:00-01:00"));
+		assertFalse(VCardDateFormat.dateHasTimezone("20130601T120000"));
+		assertTrue(VCardDateFormat.dateHasTimezone("20130601T120000Z"));
+		assertTrue(VCardDateFormat.dateHasTimezone("20130601T120000+0100"));
+		assertTrue(VCardDateFormat.dateHasTimezone("20130601T120000-0100"));
+		assertTrue(VCardDateFormat.dateHasTimezone("2013-06-01T12:00:00+01:00"));
+		assertTrue(VCardDateFormat.dateHasTimezone("2013-06-01T12:00:00-01:00"));
 	}
 
 	@Test
 	public void parseTimezoneId() {
-		TimeZone tz = ISOFormat.parseTimeZoneId("America/New_York");
+		TimeZone tz = VCardDateFormat.parseTimeZoneId("America/New_York");
 		assertEquals("America/New_York", tz.getID());
 
-		tz = ISOFormat.parseTimeZoneId("Bogus/Timezone");
+		tz = VCardDateFormat.parseTimeZoneId("Bogus/Timezone");
 		assertNull(tz);
 	}
 }
