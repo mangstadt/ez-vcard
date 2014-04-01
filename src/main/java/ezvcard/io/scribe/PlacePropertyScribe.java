@@ -37,6 +37,7 @@ import ezvcard.util.GeoUri;
 
 /**
  * Marshals {@link PlaceProperty} properties.
+ * @param <T> the property class
  * @author Michael Angstadt
  */
 public abstract class PlacePropertyScribe<T extends PlaceProperty> extends VCardPropertyScribe<T> {
