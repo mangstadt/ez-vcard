@@ -1,0 +1,126 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package ezvcard.io.xml;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import java.util.Arrays;<a name="line.3"></a>
+<FONT color="green">004</FONT>    import java.util.Iterator;<a name="line.4"></a>
+<FONT color="green">005</FONT>    <a name="line.5"></a>
+<FONT color="green">006</FONT>    import javax.xml.namespace.NamespaceContext;<a name="line.6"></a>
+<FONT color="green">007</FONT>    import javax.xml.xpath.XPath;<a name="line.7"></a>
+<FONT color="green">008</FONT>    <a name="line.8"></a>
+<FONT color="green">009</FONT>    import ezvcard.VCardVersion;<a name="line.9"></a>
+<FONT color="green">010</FONT>    <a name="line.10"></a>
+<FONT color="green">011</FONT>    /**<a name="line.11"></a>
+<FONT color="green">012</FONT>     * Used for xCard XPath expressions.<a name="line.12"></a>
+<FONT color="green">013</FONT>     * @see XPath#setNamespaceContext(NamespaceContext)<a name="line.13"></a>
+<FONT color="green">014</FONT>     * @author Michael Angstadt<a name="line.14"></a>
+<FONT color="green">015</FONT>     */<a name="line.15"></a>
+<FONT color="green">016</FONT>    public class XCardNamespaceContext implements NamespaceContext {<a name="line.16"></a>
+<FONT color="green">017</FONT>            private final String ns;<a name="line.17"></a>
+<FONT color="green">018</FONT>            private final String prefix;<a name="line.18"></a>
+<FONT color="green">019</FONT>    <a name="line.19"></a>
+<FONT color="green">020</FONT>            /**<a name="line.20"></a>
+<FONT color="green">021</FONT>             * @param version the vCard version to use<a name="line.21"></a>
+<FONT color="green">022</FONT>             * @param prefix the prefix to use<a name="line.22"></a>
+<FONT color="green">023</FONT>             */<a name="line.23"></a>
+<FONT color="green">024</FONT>            public XCardNamespaceContext(VCardVersion version, String prefix) {<a name="line.24"></a>
+<FONT color="green">025</FONT>                    this.ns = version.getXmlNamespace();<a name="line.25"></a>
+<FONT color="green">026</FONT>                    this.prefix = prefix;<a name="line.26"></a>
+<FONT color="green">027</FONT>            }<a name="line.27"></a>
+<FONT color="green">028</FONT>    <a name="line.28"></a>
+<FONT color="green">029</FONT>            /**<a name="line.29"></a>
+<FONT color="green">030</FONT>             * Gets the prefix to use in xpath expressions.<a name="line.30"></a>
+<FONT color="green">031</FONT>             * @return the xpath prefix<a name="line.31"></a>
+<FONT color="green">032</FONT>             */<a name="line.32"></a>
+<FONT color="green">033</FONT>            public String getPrefix() {<a name="line.33"></a>
+<FONT color="green">034</FONT>                    return prefix;<a name="line.34"></a>
+<FONT color="green">035</FONT>            }<a name="line.35"></a>
+<FONT color="green">036</FONT>    <a name="line.36"></a>
+<FONT color="green">037</FONT>            //@Override<a name="line.37"></a>
+<FONT color="green">038</FONT>            public String getNamespaceURI(String prefix) {<a name="line.38"></a>
+<FONT color="green">039</FONT>                    if (this.prefix.equals(prefix)) {<a name="line.39"></a>
+<FONT color="green">040</FONT>                            return ns;<a name="line.40"></a>
+<FONT color="green">041</FONT>                    }<a name="line.41"></a>
+<FONT color="green">042</FONT>                    return null;<a name="line.42"></a>
+<FONT color="green">043</FONT>            }<a name="line.43"></a>
+<FONT color="green">044</FONT>    <a name="line.44"></a>
+<FONT color="green">045</FONT>            //@Override<a name="line.45"></a>
+<FONT color="green">046</FONT>            public String getPrefix(String ns) {<a name="line.46"></a>
+<FONT color="green">047</FONT>                    if (this.ns.equals(ns)) {<a name="line.47"></a>
+<FONT color="green">048</FONT>                            return prefix;<a name="line.48"></a>
+<FONT color="green">049</FONT>                    }<a name="line.49"></a>
+<FONT color="green">050</FONT>                    return null;<a name="line.50"></a>
+<FONT color="green">051</FONT>            }<a name="line.51"></a>
+<FONT color="green">052</FONT>    <a name="line.52"></a>
+<FONT color="green">053</FONT>            //@Override<a name="line.53"></a>
+<FONT color="green">054</FONT>            public Iterator&lt;String&gt; getPrefixes(String ns) {<a name="line.54"></a>
+<FONT color="green">055</FONT>                    if (this.ns.equals(ns)) {<a name="line.55"></a>
+<FONT color="green">056</FONT>                            return Arrays.asList(prefix).iterator();<a name="line.56"></a>
+<FONT color="green">057</FONT>                    }<a name="line.57"></a>
+<FONT color="green">058</FONT>                    return null;<a name="line.58"></a>
+<FONT color="green">059</FONT>            }<a name="line.59"></a>
+<FONT color="green">060</FONT>    }<a name="line.60"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>
