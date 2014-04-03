@@ -95,7 +95,8 @@ public class Interest extends TextProperty implements HasAltId {
 	 * @see VCardParameters#setLevel
 	 */
 	public void setLevel(InterestLevel level) {
-		parameters.setLevel(level.getValue());
+		String value = (level == null) ? null : level.getValue();
+		parameters.setLevel(value);
 	}
 
 	@Override
