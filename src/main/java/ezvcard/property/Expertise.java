@@ -95,7 +95,8 @@ public class Expertise extends TextProperty implements HasAltId {
 	 * @see VCardParameters#setLevel
 	 */
 	public void setLevel(ExpertiseLevel level) {
-		parameters.setLevel(level.getValue());
+		String value = (level == null) ? null : level.getValue();
+		parameters.setLevel(value);
 	}
 
 	@Override
