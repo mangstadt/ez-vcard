@@ -17,6 +17,7 @@ Defines a mailing address.
 
 {{{
 VCard vcard = new VCard();
+
 Address adr = new Address();
 adr.setStreetAddress("123 Main St.");
 adr.setLocality("Austin");
@@ -24,10 +25,9 @@ adr.setRegion("TX");
 adr.setPostalCode("12345");
 adr.setCountry("USA");
 adr.addType(AddressType.WORK);
-adr.addType(AddressType.DOM);
 
-//optionally, provide the exact text to print out on the mailing label
-adr.setLabel("123 Main St.\nAustin, Tx 12345\nUSA");
+//optionally, set the text to print on the mailing label
+adr.setLabel("123 Main St.\nAustin, TX 12345\nUSA");
 
 vcard.addAddress(adr);
 }}}
@@ -35,29 +35,48 @@ vcard.addAddress(adr);
 {{{
 VCard vcard = ...
 for (Address adr : vcard.getAddresses()){
-  ...
+  String street = adr.getStreetAddress();
+  String city = adr.getLocality();
+  //etc.
 }
 }}}
 
 =AGENT=
-An embedded vCard or URL containing the information of someone who represents the person.
+Defines information about the person's agent.
 
 *vCard versions:* 2.1, 3.0
 
 *Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Agent.html Agent]
 
 {{{
-//URL
 VCard vcard = new VCard();
-Agent agent = new Agent("http://mi5.gov.uk/007");
+
+//URL
+Agent agent = new Agent("http://www.linkedin.com/BobSmith");
 vcard.setAgent(agent);
 
 //vCard
-VCard vcard = new VCard();
-VCard agentVcard = new VCard();
-agentVcard.setFormattedName(new FormattedName("Agent 007"));
-Agent agent = new Agent(agentVcard);
+VCard agentVCard = new VCard();
+agentVCard.setFormattedName("Bob Smith");
+agentVCard.addTelephoneNumber("(555) 123-4566");
+agentVCard.addUrl("http://www.linkedin.com/BobSmith");
+agent = new Agent(agentVCard);
 vcard.setAgent(agent);
+}}}
+
+{{{
+VCard vcard = ...
+Agent agent = vcard.getAgent();
+
+String url = agent.getUrl();
+if (url != null){
+  //property value is a URL
+}
+
+VCard agentVCard = agent.getVCard();
+if (agentVCard != null){
+  //property value is a vCard
+}
 }}}
 
 =ANNIVERSARY=
@@ -70,39 +89,44 @@ Defines the person's anniversary.
 {{{
 VCard vcard = new VCard();
 
-//complete date
+//date
 Calendar c = Calendar.getInstance();
-c.set(Calendar.YEAR, 1986);
+c.clear();
+c.set(Calendar.YEAR, 1970);
 c.set(Calendar.MONTH, Calendar.MARCH);
 c.set(Calendar.DAY_OF_MONTH, 21);
-Anniversary anniversary = new Anniversary();
-anniversary.setDate(c.getTime(), false);
+Anniversary anniversary = new Anniversary(c.getTime());
 vcard.setAnniversary(anniversary);
 
-//reduced accuracy date (see RFC 6350 p.12-14 for examples)
-anniversary = new Anniversary();
-anniversary.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
+//partial date (e.g. just the month and date)
+PartialDate date = PartialDate.date(null, 3, 21);
+anniversary = new Anniversary(date); //March 21
 vcard.setAnniversary(anniversary);
 
 //plain text value
-anniversary = new Anniversary();
-anniversary.setText("more than 20 years ago");
+anniversary = new Anniversary("Over 20 years ago!");
 vcard.setAnniversary(anniversary);
 }}}
 
 {{{
 VCard vcard = ...
 Anniversary anniversary = vcard.getAnniversary();
-if (anniversary != null){
-  if (anniversary.getDate() != null){
-    System.out.println(anniversary.getDate());
-  } else if (anniversary.getPartialDate() != null){
-    System.out.println("Year: " + anniversary.getPartialDate().getYear());
-    System.out.println("Month: " + anniversary.getPartialDate().getMonth());
-    //...
-  } else if (anniversary.getText() != null){
-    System.out.println(anniversary.getText());
-  }
+
+Date date = anniversary.getDate();
+if (date != null){
+  //property value is a date
+}
+
+PartialDate partialDate = anniversary.getPartialDate();
+if (partialDate != null){
+  //property value is a partial date
+  int year = partialDate.getYear();
+  int month = partialDate.getMonth();
+}
+
+String text = anniversary.getText();
+if (text != null){
+  //property value is plain text
 }
 }}}
 
@@ -116,39 +140,43 @@ Defines the person's birthday.
 {{{
 VCard vcard = new VCard();
 
-//complete date
+//date
 Calendar c = Calendar.getInstance();
-c.set(Calendar.YEAR, 1986);
-c.set(Calendar.MONTH, Calendar.MARCH);
-c.set(Calendar.DAY_OF_MONTH, 21);
-Birthday bday = new Birthday();
-bday.setDate(c.getTime(), false);
+c.clear();
+c.set(Calendar.YEAR, 1912);
+c.set(Calendar.MONTH, Calendar.JUNE);
+c.set(Calendar.DAY_OF_MONTH, 23);
+Birthday bday = new Birthday(c.getTime());
 vcard.setBirthday(bday);
 
-//reduced accuracy date (vCard 4.0 only, see RFC 6350 p.12-14 for examples)
-bday = new Birthday();
-bday.setPartialDate(PartialDate.date(null, 3, 21)); //March 21
+//partial date (e.g. just the month and date, vCard 4.0 only)
+bday = new Birthday(PartialDate.date(null, 6, 23)); //June 23
 vcard.setBirthday(bday);
 
 //plain text value (vCard 4.0 only)
-bday = new Birthday();
-bday.setText("a long time ago");
+bday = new Birthday("Don't even go there, dude...");
 vcard.setBirthday(bday);
 }}}
 
 {{{
 VCard vcard = ...
 Birthday bday = vcard.getBirthday();
-if (bday != null){
-  if (bday.getDate() != null){
-    System.out.println(bday.getDate());
-  } else if (bday.getPartialDate() != null){
-    System.out.println("Year: " + bday.getPartialDate().getYear());
-    System.out.println("Month: " + bday.getPartialDate().getMonth());
-    //...
-  } else if (bday.getText() != null){
-    System.out.println(bday.getText());
-  }
+
+Date date = bday.getDate();
+if (date != null){
+  //property value is a date
+}
+
+PartialDate partialDate = bday.getPartialDate();
+if (partialDate != null){
+  //property value is a partial date
+  int year = partialDate.getYear();
+  int month = partialDate.getMonth();
+}
+
+String text = bday.getText();
+if (text != null){
+  //property value is plain text
 }
 }}}
 
@@ -162,29 +190,43 @@ Defines the location of the person's birth.
 {{{
 VCard vcard = new VCard();
 
-//URI (geo)
-Birthplace birthplace = new Birthplace();
-birthplace.setUri("geo:39.970806,-75.174809");
-vcard.setBirthplace(birthplace);
-
-//URI (website)
-birthplace = new Birthplace();
-birthplace.setUri("http://www.chop.edu");
-vcard.setBirthplace(birthplace);
-
 //text
-birthplace = new Birthplace();
-birthplace.setText("The Children's Hospital of Philadelphia");
+Birthplace birthplace = new Birthplace("Maida Vale, London, United Kingdom");
 vcard.setBirthplace(birthplace);
 
-//text
+//geo coordinates
+birthplace = new Birthplace(51.5274, -0.1899);
+vcard.setBirthplace(birthplace);
+
+//URI
 birthplace = new Birthplace();
-birthplace.setText("Philadelphia, PA");
+birthplace.setUri("http://en.wikipedia.org/wiki/Maida_Vale");
 vcard.setBirthplace(birthplace);
 }}}
 
+{{{
+VCard vcard = ...
+Birthplace birthplace = vcard.getBirthplace();
+
+String text = birthplace.getText();
+if (text != null){
+  //property value is plain text
+}
+
+Double latitude = birthplace.getLatitude();
+Double longitude = birthplace.getLongitude();
+if (latitude != null){
+  //property value is a set of geo coordinates
+}
+
+String uri = birthplace.getUri();
+if (uri != null){
+  //property value is a URI
+}
+}}}
+
 =CALADRURI=
-A URL to use for sending a scheduling request to the person's calendar.
+Defines a URL to use for sending a scheduling request to the person's calendar.
 
 *vCard versions:* 4.0
 
@@ -192,16 +234,11 @@ A URL to use for sending a scheduling request to the person's calendar.
 
 {{{
 VCard vcard = new VCard();
-CalendarRequestUri caladruri = new CalendarRequestUri("mailto:janedoe@ibm.com");
-caladruri.setPref(1);
-vcard.addCalendarRequestUri(caladruri);
-caladruri = new CalendarRequestUri("http://www.ibm.com/janedoe/calendar");
-caladruri.setPref(2);
-vcard.addCalendarRequestUri(caladruri);
+vcard.addCalendarRequestUri("mailto:janedoe@ibm.com");
 }}}
 
 =CALURI=
-A URL to the person's calendar.
+Defines a URL that points to the person's calendar.
 
 *vCard versions:* 4.0
 
@@ -209,12 +246,11 @@ A URL to the person's calendar.
 
 {{{
 VCard vcard = new VCard();
-CalendarUri caluri = new CalendarUri("http://www.ibm.com/janedoe/calendar");
-vcard.addCalendarUri(caluri);
+vcard.addCalendarUri("http://www.ibm.com/janedoe/calendar");
 }}}
 
 =CATEGORIES=
-A list of keywords (aka "tags") that can be used to describe the person.
+Defines a list of keywords that can be used to describe the person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -222,12 +258,7 @@ A list of keywords (aka "tags") that can be used to describe the person.
 
 {{{
 VCard vcard = new VCard();
-Categories categories = new Categories();
-categories.addValue("programmer");
-categories.addValue("developer");
-categories.addValue("java-coder");
-categories.addValue("ladies-man");
-vcard.setCategories(categories);
+vcard.setCategories("Developer", Java coder", "Ladies' man");
 }}}
 
 =CLASS=
@@ -240,8 +271,7 @@ Describes the sensitivity of the information in the vCard.
 {{{
 VCard vcard = new VCard();
 //sample values: PUBLIC, PRIVATE, CONFIDENTIAL
-Classification classType = new Classification("PUBLIC");
-vcard.setClassification(classType);
+vcard.setClassification("PUBLIC");
 }}}
 
 =CLIENTPIDMAP=
@@ -260,18 +290,16 @@ Address adr = new Address();
 adr.addPid(1, 1);
 vcard.addAddress(adr);
 
-Email email = new Email("my-email@hotmail.com");
+Email email = vcard.addEmail("johndoe@hotmail.com");
 emai.addPid(1, 1);
-vcard.addEmail(email);
-email = new Email("my-other-email@yahoo.com");
-emai.addPid(2, 2);
-vcard.addEmail(email);
+email = vcard.addEmail("jdoe@company.com");
+email.addPid(2, 2);
 
 //specify the URI to use
 ClientPidMap clientpidmap = new ClientPidMap(1, "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
 vcard.addClientPidMap(clientpidmap);
 
-//generate a random URI
+//or, generate a random URI
 clientpidmap = ClientPidMap.random(2);
 vcard.addClientPidMap(clientpidmap);
 }}}
@@ -286,39 +314,43 @@ Defines the person's time of death.
 {{{
 VCard vcard = new VCard();
 
-//complete date
+//date
 Calendar c = Calendar.getInstance();
+c.clear();
 c.set(Calendar.YEAR, 1954);
 c.set(Calendar.MONTH, Calendar.JUNE);
 c.set(Calendar.DAY_OF_MONTH, 7);
-Deathdate deathdate = new Deathdate();
-deathdate.setDate(c.getTime(), false);
+Deathdate deathdate = new Deathdate(c.getTime());
 vcard.setDeathdate(deathdate);
 
-//reduced accuracy date
-deathdate = new Deathdate();
-deathdate.setPartialDate(PartialDate.date(nuull, 6, 7)); //June 7
+//partial date (e.g. just the month and date)
+deathdate = new Deathdate(PartialDate.date(null, 6, 7)); //June 7
 vcard.setDeathdate(deathdate);
 
 //plain text value
-deathdate = new Deathdate();
-deathdate.setText("circa 1954");
+deathdate = new Deathdate("In the 1950s");
 vcard.setDeathdate(deathdate);
 }}}
 
 {{{
 VCard vcard = ...
 Deathdate deathdate = vcard.getDeathdate();
-if (deathdate != null){
-  if (deathdate.getDate() != null){
-    System.out.println(deathdate.getDate());
-  } else if (deathdate.getPartialDate() != null){
-    System.out.println("Year: " + deathdate.getPartialDate().getYear());
-    System.out.println("Month: " + deathdate.getPartialDate().getMonth());
-    //...
-  } else if (deathdate.getText() != null){
-    System.out.println(deathdate.getText());
-  }
+
+Date date = deathdate.getDate();
+if (date != null){
+  //property value is a date
+}
+
+PartialDate partialDate = deathdate.getPartialDate();
+if (partialDate != null){
+  //property value is a partial date
+  int year = partialDate.getYear();
+  int month = partialDate.getMonth();
+}
+
+String text = deathdate.getText();
+if (text != null){
+  //property value is plain text
 }
 }}}
 
@@ -332,19 +364,43 @@ Defines the location of the person's death.
 {{{
 VCard vcard = new VCard();
 
-//URI (geo)
-Deathplace deathplace = new Deathplace();
-deathplace.setUri("geo:46.176502,-122.191658");
+//text
+Deathplace deathplace = new Deathplace("Wilmslow, Cheshire, England");
 vcard.setDeathplace(deathplace);
 
-//text
+//geo coordinates
+deathplace = new Deathplace(53.325, -2.239);
+vcard.setDeathplace(deathplace);
+
+//URI
 deathplace = new Deathplace();
-deathplace.setText("Mount St. Helens");
+deathplace.setUri("http://en.wikipedia.org/wiki/Wilmslow");
 vcard.setDeathplace(deathplace);
 }}}
 
+{{{
+VCard vcard = ...
+Deathplace deathplace = vcard.getDeathplace();
+
+String text = deathplace.getText();
+if (text != null){
+  //property value is plain text
+}
+
+Double latitude = deathplace.getLatitude();
+Double longitude = deathplace.getLongitude();
+if (latitude != null){
+  //property value is a set of geo coordinates
+}
+
+String uri = deathplace.getUri();
+if (uri != null){
+  //property value is a URI
+}
+}}}
+
 =EMAIL=
-An email address associated with a person.
+Defines an email address associated with the person.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -353,18 +409,13 @@ An email address associated with a person.
 {{{
 VCard vcard = new VCard();
 
-Email email = new Email("superdude55@hotmail.com");
-email.addType(EmailType.HOME);
-vcard.addEmail(email);
-
-email = new Email("doe.john@company.com");
-email.addType(EmailType.WORK);
-email.setPref(1); //the most preferred email
-vcard.addEmail(email);
+vcard.addEmail("johndoe@hotmail.com", EmailType.HOME);
+Email workEmail = vcard.addEmail("jdoe@company.com", EmailType.WORK);
+workEmail.setPref(1); //the most preferred email
 }}}
 
 =EXPERTISE=
-Defines a professional subject area that the person has knowledge of. For example, if the person is a Java software engineer, he or she might list technologies such as "servlets", "SOAP", and "Spring".
+Defines a professional subject area that the person has knowledge of. For example, if the person is a software engineer, he or she might list technologies such as "Java", "Web services", and "Agile development practices".
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
@@ -372,13 +423,14 @@ Defines a professional subject area that the person has knowledge of. For exampl
 
 {{{
 VCard vcard = new VCard();
+
 Expertise expertise = new Expertise("Java programming");
 expertise.setLevel(ExpertiseLevel.EXPERT);
 vcard.addExpertise(expertise);
 }}}
 
 =FBURL=
-A URL that shows when the person is free/busy on their calendar.
+Defines a URL that shows when the person is free/busy on their calendar.
 
 *vCard versions:* 4.0
 
@@ -386,12 +438,11 @@ A URL that shows when the person is free/busy on their calendar.
 
 {{{
 VCard vcard = new VCard();
-FbUrl fburl = new FbUrl("http://www.example.com/freebusy/janedoe");
-vcard.addFbUrl(fburl);
+vcard.addFbUrl("http://www.example.com/freebusy/janedoe");
 }}}
 
 =FN=
-Shows how the person's name should be displayed.
+Defines the person's full name in a human-readable format.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -399,8 +450,7 @@ Shows how the person's name should be displayed.
 
 {{{
 VCard vcard = new VCard();
-FormattedName fn = new FormattedName("Dr. Gregory House M.D.");
-vcard.setFormattedName(fn);
+vcard.setFormattedName("Dr. Gregory House M.D.");
 }}}
 
 =GENDER=
@@ -419,23 +469,21 @@ vcard.setGender(gender);
 {{{
 VCard vcard = ...
 Gender gender = vcard.getGender();
-if (gender != null){
-  if (gender.isMale()){
-    ...
-  } else if (gender.isFemale()){
-    ...
-  }
-  ...
+if (gender.isMale()){
+  //gender is male
+} else if (gender.isFemale()){
+  //gender is female
 }
+//etc
 }}}
 
 =GEO=
-A set of latitude/longitude coordinates. There is no rule for what these coordinates must represent, but the meaning could vary depending on the value of the vCard KIND type.
+A set of latitude/longitude coordinates. There is no rule for what these coordinates must represent, but the meaning could vary depending on the value of the vCard KIND property.
  
- * "individual": the location of the person's home or workplace.
- * "group": the location of the group's meeting place.
- * "org": the coordinates of the organization's headquarters.
- * "location": the coordinates of the location itself.
+"individual": the location of the person's home or workplace.
+"group": the location of the group's meeting place.
+"org": the coordinates of the organization's headquarters.
+"location": the coordinates of the location itself.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -443,21 +491,20 @@ A set of latitude/longitude coordinates. There is no rule for what these coordin
 
 {{{
 VCard vcard = new VCard();
-Geo geo = new Geo(-123.456, 12.54);
-vcard.setGeo(geo);
+vcard.setGeo(40.7127, -74.0059);
 }}}
 
 =HOBBY=
-Defines a recreational activity that the person actively engages in. For example, if a person has a HOBBY of "hockey", it would mean that he likes to play hockey. Someone who just likes to _watch_ hockey would list "hockey" as an INTEREST instead.
+Defines a recreational activity that the person actively engages in. For example, if a person has a hobby of "hockey", it would mean that he likes to play hockey. Someone who just likes to <i>watch</i> hockey would list hockey as an INTEREST instead.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
 *Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Hobby.html Hobby]
 
 {{{
-//someone who likes to wind surf during the summer, but rents a boat instead of owning one
 VCard vcard = new VCard();
-Hobby hobby = new Hobby("wind surfing");
+
+Hobby hobby = new Hobby("hockey");
 hobby.setLevel(HobbyLevel.LOW);
 vcard.addHobby(hobby);
 }}}
@@ -476,28 +523,28 @@ VCard vcard = new VCard();
 Impp impp = new Impp("aim:johndoe@aol.com");
 vcard.addImpp(impp);
 
-//static helper constructors
+//static factory methods
 impp = Impp.msn("janedoe@msn.com");
 vcard.addImpp(impp);
 }}}
 
 =INTEREST=
-Defines a recreational activity that the person is interested in. For example, if a person has a INTEREST of "hockey", it would mean that he likes to watch hockey games. Someone who likes to actually _play_ hockey would list "hockey" as a HOBBY instead.
+Defines a recreational activity that the person is interested in. For example, if a person has an interest in "hockey", it would mean that he likes to watch hockey games. Someone who likes to actually <i>play</i> hockey would list hockey as a HOBBY instead.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
 *Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Interest.html Interest]
 
 {{{
-//someone who attends all of his favorite hockey team's games in person.
 VCard vcard = new VCard();
+
 Interest interest = new Interest("hockey");
 interest.setLevel(InterestLevel.HIGH);
 vcard.addInterest(interest);
 }}}
 
 =KEY=
-A public key for encryption.
+Defines a public encryption key.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -506,8 +553,8 @@ A public key for encryption.
 {{{
 VCard vcard = new VCard();
 
-//URL (vCard 4.0 only; KEYs cannot have URLs in vCard 2.1 and 3.0)
-Key key = new Key("http://www.mywebsite.com/pubkey.pgp", KeyType.PGP);
+//URL
+Key key = new Key("http://www.mywebsite.com/my-public-key.pgp", KeyType.PGP);
 vcard.addKey(key);
 
 //binary data
@@ -519,51 +566,29 @@ vcard.addKey(key);
 key = new Key();
 key.setText("...", KeyType.PGP);
 vcard.addKey(key);
-
-//if "KeyType" does not have the pre-defined constant that you need, then create a new instance
-//arg 1: the value of the 2.1/3.0 TYPE parameter
-//arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
-//arg 3: the file extension of the data type (optional)
-KeyType param = new KeyType("mykey", "application/my-key", "mkey");
-key = new Key("http://www.mywebsite.com/pubkey.enc", param);
-vcard.addKey(key);
 }}}
 
 {{{
 VCard vcard = ...
-
-int fileCount = 0;
 for (Key key : vcard.getKeys()){
-  //the key will have either a URL or a binary data
-  //only 4.0 vCards are allowed to use URLs for keys
-  if (key.getData() == null){
-    System.out.println("Key URL: " + key.getUrl());
-  } else {
-    KeyType type = key.getContent();
-    
-    if (type == null) {
-      //the vCard may not have any content type data associated with the key
-      System.out.println("Saving a key file...");
-    } else {
-      System.out.println("Saving a \"" + type.getMedia() + "\" file...");
-    }
-    
-    String folder;
-    if (type == KeyType.PGP){ //it is safe to use "==" instead of "equals()"
-      folder = "pgp-keys";
-    } else {
-      folder = "other-keys";
-    }
-    
-    byte data[] = key.getData();
-    String filename = "key" + fileCount;
-    if (type != null && type.getExtension() != null){
-    	filename += "." + type.getExtension();
-    }
-    OutputStream out = new FileOutputStream(new File(folder, filename));
-    out.write(data);
-    out.close();
-    fileCount++;
+  KeyType contentType = key.getContentType(); //e.g. "application/pgp-keys"
+
+  String url = key.getUrl();
+  if (url != null){
+    //property value is a URL
+    continue;
+  }
+  
+  byte[] data = key.getData();
+  if (data != null){
+    //property value is binary data
+    continue;
+  }
+  
+  String text = key.getText();
+  if (text != null){
+    //property value is plain-text
+    continue;
   }
 }
 }}}
@@ -576,61 +601,38 @@ Defines the type of entity that this vCard represents, such as an individual or 
 *Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Kind.html Kind]
 
 {{{
-//use static methods to create a Kind object
 VCard vcard = new VCard();
+
 Kind kind = Kind.individual();
 vcard.setKind(kind);
 }}}
 
 {{{
-//use "is*" methods to determine the Kind value
 VCard vcard = ...
 Kind kind = vcard.getKind();
-if (kind != null){
-  if (kind.isIndividual()){
-    ...
-  } else if (kind.isGroup()){
-    ...
-  }
-  ...
+if (kind.isIndividual()){
+  //vCard contains information on an individual person
+} else if (kind.isGroup()){
+  //vCard contains information on a group of people
 }
+//etc
 }}}
 
 =LABEL=
-Defines the exact text to put on the mailing label when mailing a package or letter to the person.
+Defines the exact text to put on the mailing label when sending snail mail to the person. Note that instances of this class should NEVER be added to a vCard! Instead, use the `Address.setLabel()` method to assign a mailing label to an ADR property.
 
 *vCard versions:* 2.1, 3.0, 4.0`*`
 
 *Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Label.html Label]
 
-`*`The LABEL type is not supported in 4.0.  Instead, labels are included as a parameter to their corresponding ADR.  When marshalling a vCard, ez-vcard will use either the LABEL type or the LABEL parameter, depending on the requested vCard version.
+`*`The label property is not supported in vCard version 4.0. Instead, labels are included as <i>parameters</i> to their corresponding ADR properties. When marshalling a vCard, ez-vcard will use either the label property or the LABEL parameter, depending on the requested vCard version.
 
-Use the `Address.setLabel()` method to assign a label to an address.
+*Orphaned labels*
 
-{{{
-VCard vcard = new VCard();
-Address adr = new Address();
-adr.setStreetAddress("123 Main St.");
-adr.setLocality("Austin");
-adr.setRegion("TX");
-adr.setPostalCode("12345");
-adr.setLabel("123 Main St.\nAustin, TX 12345"); //newlines are allowed
-vcard.addAddress(adr);
-}}}
-
-The `VCard.addOrphanedLabel()` method adds a LABEL type to the vCard. However, use of this method is discouraged because it creates a LABEL type that's not associated with an address.  Also, orphaned LABELs are ignored when creating version 4.0 vCards because the LABEL type is not supported by vCard 4.0.
-
-The `VCard.getOrphanedLabels()` method can be used after parsing a version 2.1 or 3.0 vCard to retrieve any LABEL types which the parser could not assign to an address (ADR type).  A LABEL is assigned to an ADR if the LABEL's list of TYPE parameters is identical to the ADR's list of TYPE parameters.
-
-{{{
-VCard vcard = ...
-for (Label label : vcard.getOrphanedLabels()){
-  System.out.println(label.getValue());
-}
-}}}
+ez-vcard defines an "orphaned label" as a label property that could not be assigned to an address (a label is assigned to an address if its list of TYPE parameters is identical to the address's list of TYPE parameters). The `VCard.addOrphanedLabel()` method can be used to add such labels to a vCard, but its use is strongly discouraged. The `VCard.getOrphanedLabels()` method can be useful when parsing version 2.1 or 3.0 vCards in order to retrieve any label properties that the parser could not assign to an address.
 
 =LANG=
-A language that the person reads/speaks.
+Defines a language that the person speaks.
 
 *vCard versions:* 4.0
 
@@ -638,16 +640,16 @@ A language that the person reads/speaks.
 
 {{{
 VCard vcard = new VCard();
-Language lang = new Language("en");
+
+Language lang = vcard.addLanguage("en");
 lang.setPref(1); //most preferred
-vcard.addLanguage(lang);
-lang = new Language("fr");
+
+lang = vcard.addLanguage("fr");
 lang.setPref(2); //second-most preferred
-vcard.addLanguage(lang);
 }}}
 
 =LOGO=
-A company logo.
+Defines a company logo.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -657,63 +659,36 @@ A company logo.
 VCard vcard = new VCard();
 
 //URL
-Logo logo = new Logo("http://www.company.com/logo.png", ImageType.PNG);
+Logo logo = new Logo("http://www.ourcompany.com/our-logo.png", ImageType.PNG);
 vcard.addLogo(logo);
 
 //binary data
 byte data[] = ...
 logo = new Logo(data, ImageType.PNG);
 vcard.addLogo(logo);
-
-//if "ImageType" does not have the pre-defined constant that you need, then create a new instance
-//arg 1: the value of the 2.1/3.0 TYPE parameter
-//arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
-//arg 3: the file extension of the data type (optional)
-ImageKeyType param = new ImageType("bmp", "image/x-ms-bmp", "bmp");
-logo = new Logo("http://www.company.com/logo.bmp", param);
-vcard.addLogo(logo);
 }}}
 
 {{{
 VCard vcard = ...
-
-int fileCount = 0;
 for (Logo logo : vcard.getLogos()){
-  //the logo will have either a URL or a binary data
-  if (logo.getData() == null){
-    System.out.println("Logo URL: " + logo.getUrl());
-  } else {
-    ImageType type = logo.getContent();
-    
-    if (type == null) {
-      //the vCard may not have any content type data associated with the logo
-      System.out.println("Saving a logo file...");
-    } else {
-      System.out.println("Saving a \"" + type.getMedia() + "\" file...");
-    }
-    
-    String folder;
-    if (type == ImageType.PNG){ //it is safe to use "==" instead of "equals()"
-      folder = "png-files";
-    } else {
-      folder = "image-files";
-    }
-    
-    byte data[] = logo.getData();
-    String filename = "logo" + fileCount;
-    if (type != null && type.getExtension() != null){
-    	filename += "." + type.getExtension();
-    }
-    OutputStream out = new FileOutputStream(new File(folder, filename));
-    out.write(data);
-    out.close();
-    fileCount++;
+  ImageType contentType = logo.getContentType(); //e.g. "image/png"
+
+  String url = logo.getUrl();
+  if (url != null){
+    //property value is a URL
+    continue;
+  }
+  
+  byte[] data = logo.getData();
+  if (data != null){
+    //property value is binary data
+    continue;
   }
 }
 }}}
 
 =MAILER=
-The email client that the person uses.
+Defines the email client that the person uses.
 
 *vCard versions:* 2.1, 3.0
 
@@ -721,12 +696,11 @@ The email client that the person uses.
 
 {{{
 VCard vcard = new VCard();
-Mailer mailer = new Mailer("Thunderbird");
-vcard.setMailer(mailer);
+vcard.setMailer("Thunderbird");
 }}}
 
 =MEMBER=
-The members that make up the group.  This type can only be used if the KIND type is set to "group".
+Defines the members that make up the group. This property can only be used if the vCard's KIND property is set to "group".
 
 *vCard versions:* 4.0
 
@@ -735,40 +709,20 @@ The members that make up the group.  This type can only be used if the KIND type
 {{{
 VCard vcard = new VCard();
 
-//KIND must be set to "group" in order to add MEMBERs
+//kind property must be set to "group" in order to add members
 vcard.setKind(Kind.group());
 
-Member member = new Member();
-member.setUriEmail("funkyjoe@hotmail.com");
+//static factory methods
+Member member = Member.email("johndoe@hotmail.com");
 vcard.addMember(member);
-member = new Member();
-member.setUriIM("aol", "joesmoe@aol.com");
-vcard.addMember(member);
-member = new Member();
-member.setUriTelephone("+1-123-555-6789");
-vcard.addMember(member);
-member = new Member();
-member.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af"); //references the UID from another vCard
-vcard.addMember(member);
-}}}
 
-{{{
-VCard vcard = ...
-Kind kind = vcard.getKind();
-if (kind != null){
-  if (kind.isGroup()){
-    System.out.println("The group's members are:");
-    for (Member member : vcard.getMembers()){
-      System.out.println(member.getUri());
-    }
-  }
-}
+//reference another vCard by putting its UID property here
+member = new Member("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
+vcard.addMember(member);
 }}}
   
 =N=
-Contains the separated components of the person's name.
-
-Multiple instances of this type can be added *ONLY* if each instance has an ALTID parameter and the value of the ALTID parameter is the same across all instances.  However, this is a border-case; under most circumstances, you will only need to add one instance.
+Defines the individual components of the person's name.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -776,6 +730,7 @@ Multiple instances of this type can be added *ONLY* if each instance has an ALTI
 
 {{{
 VCard vcard = new VCard();
+
 StructuredName n = new StructuredName();
 n.setFamily("House");
 n.setGiven("Gregory");
@@ -785,7 +740,7 @@ vcard.setStructuredName(n);
 }}}
 
 =NAME=
-Provides a textual representation of the SOURCE type.
+Defines a textual representation of the SOURCE property.
 
 *vCard versions:* 3.0
 
@@ -793,12 +748,11 @@ Provides a textual representation of the SOURCE type.
 
 {{{
 VCard vcard = new VCard();
-SourceDisplayText name = new SourceDisplayText("My vCard");
-vcard.setSourceDisplayText(name);
+vcard.setSourceDisplayText("My vCard");
 }}}
 
 =NICKNAME=
-A list of nicknames the person goes by.
+Defines the person's nicknames.
 
 *vCard versions:* 3.0, 4.0
 
@@ -806,15 +760,11 @@ A list of nicknames the person goes by.
 
 {{{
 VCard vcard = new VCard();
-Nickname nickname = new Nickname();
-nickname.addValue("Rick");
-nickname.addValue("Ricky");
-nickname.addValue("Bobby");
-vcard.setNickname(nickname);
+vcard.setNickname("Rick", "Ricky", "Bobby");
 }}}
 
 =NOTE=
-A free-form text field that contains miscellaneous information.
+Defines a free-form text field that contains miscellaneous information.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -822,13 +772,12 @@ A free-form text field that contains miscellaneous information.
 
 {{{
 VCard vcard = new VCard();
-Note note = new Note("This is a\nmiscellaneous comment."); //can contain newlines
+Note note = vcard.addNote("This is a\nmiscellaneous comment."); //can contain newlines
 note.setLanguage("en-us");
-vcard.addNote(note);
 }}}
 
 =ORG=
-A list of organizations the person belongs to.  The list is ordered.  It starts with the broadest organization and ends with the most specific.
+Defines a list of organizations the person belongs to. The list is ordered. It begins with the broadest organization and ends with the most specific.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -836,15 +785,11 @@ A list of organizations the person belongs to.  The list is ordered.  It starts 
 
 {{{
 VCard vcard = new VCard();
-Organization org = new Organization();
-org.addValue("Google");
-org.addValue("GMail Team");
-org.addValue("Spam Detection Team");
-vcard.setOrganizations(org);
+vcard.setOrganization("Google", "GMail Team", "Spam Detection Team");
 }}}
 
 =ORG-DIRECTORY=
-Defines a URI representing the person's work place, which can be used to lookup information on the person's co-workers.
+Defines a URI that can be used to retrieve information about the person's co-workers.
 
 *vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
 
@@ -852,12 +797,11 @@ Defines a URI representing the person's work place, which can be used to lookup 
 
 {{{
 VCard vcard = new VCard();
-OrgDirectory orgDirectory = new OrgDirectory("http://www.company.com/staff");
-vcard.addOrgDirectory(orgDirectory);
+vcard.addOrgDirectory("http://www.company.com/staff");
 }}}
 
 =PHOTO=
-A photo attached to the vCard (such as a portrait of the person).
+Defines a photo, such as the person's portrait.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -867,63 +811,36 @@ A photo attached to the vCard (such as a portrait of the person).
 VCard vcard = new VCard();
 
 //URL
-Photo photo = new Photo("http://www.mywebsite.com/mugshot.jpg", ImageType.JPEG);
+Photo photo = new Photo("http://www.mywebsite.com/my-photo.jpg", ImageType.JPEG);
 vcard.addPhoto(photo);
 
 //binary data
 byte data[] = ...
 photo = new Photo(data, ImageType.JPEG);
 vcard.addPhoto(photo);
-
-//if "ImageType" does not have the pre-defined constant that you need, then create a new instance
-//arg 1: the value of the 2.1/3.0 TYPE parameter
-//arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
-//arg 3: the file extension of the data type (optional)
-ImageKeyType param = new ImageType("bmp", "image/x-ms-bmp", "bmp");
-photo = new Photo("http://www.mywebsite.com/mugshot.bmp", param);
-vcard.addPhoto(photo);
 }}}
 
 {{{
 VCard vcard = ...
-
-int fileCount = 0;
 for (Photo photo : vcard.getPhotos()){
-  //the photo will have either a URL or a binary data
-  if (photo.getData() == null){
-    System.out.println("Photo URL: " + photo.getUrl());
-  } else {
-    ImageType type = photo.getContent();
-    
-    if (type == null) {
-      //the vCard may not have any content type data associated with the photo
-      System.out.println("Saving a photo file...");
-    } else {
-      System.out.println("Saving a \"" + type.getMedia() + "\" file...");
-    }
-    
-    String folder;
-    if (type == ImageType.JPEG){ //it is safe to use "==" instead of "equals()"
-      folder = "photos";
-    } else {
-      folder = "images";
-    }
-    
-    byte data[] = photo.getData();
-    String filename = "photo" + fileCount;
-    if (type != null && type.getExtension() != null){
-    	filename += "." + type.getExtension();
-    }
-    OutputStream out = new FileOutputStream(new File(folder, filename));
-    out.write(data);
-    out.close();
-    fileCount++;
+  PhotoType contentType = photo.getContentType(); //e.g. "image/jpeg"
+
+  String url = photo.getUrl();
+  if (url != null){
+    //property value is a URL
+    continue;
+  }
+  
+  byte[] data = photo.getData();
+  if (data != null){
+    //property value is binary data
+    continue;
   }
 }
 }}}
 
 =PRODID=
-Defines the product that created the vCard.
+Identifies the software application that created the vCard.
 
 *vCard versions:* 3.0, 4.0
 
@@ -931,12 +848,11 @@ Defines the product that created the vCard.
 
 {{{
 VCard vcard = new VCard();
-ProdId prodid = new ProdId("ez-vcard 0.6.0");
-vcard.setProdId(prodid);
+vcard.setProdId("ez-vcard 0.6.0");
 }}}
 
 =PROFILE=
-Marks the vCard as being a vCard (it is generally not needed).
+Simply identifies the vCard as a "vCard".
 
 *vCard versions:* 3.0
 
@@ -949,7 +865,7 @@ vcard.setProfile(profile);
 }}}
 
 =RELATED=
-Other people that the person is related to.  It can contain either a URI or a plain text value.
+Defines someone that the person is related to.
 
 *vCard versions:* 4.0
 
@@ -958,25 +874,26 @@ Other people that the person is related to.  It can contain either a URI or a pl
 {{{
 VCard vcard = new VCard();
 
-Related related = new Related();
-related.addType(RelatedType.FRIEND);
-related.setUri("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
-vcard.addRelated(related);
-
-related = new Related();
+//static factory methods
+Related related = Related.email("bob.smith@example.com");
 related.addType(RelatedType.CO_WORKER);
 related.addType(RelatedType.FRIEND);
-related.setUri("http://joesmoe.name/vcard.vcf");
 vcard.addRelated(related);
 
+//free-form text
 related = new Related();
+related.setText("Edna Smith");
 related.addType(RelatedType.SPOUSE);
-related.setText("My wife's name is Edna Smith");
+vcard.addRelated(related);
+
+//reference another vCard by putting its UID property here
+related = new Related("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
+related.addType(RelatedType.SIBLING);
 vcard.addRelated(related);
 }}}
 
 =REV=
-The date that the vCard was last modified by its owner.
+Defines the date that the vCard was last modified by its owner.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -984,12 +901,11 @@ The date that the vCard was last modified by its owner.
 
 {{{
 VCard vcard = new VCard();
-Revision rev = new Revision(new Date());
-vcard.setRevision(rev);
+vcard.setRevision(new Date());
 }}}
 
 =ROLE=
-The function that the person plays in his or her organization.
+Defines the function that the person plays within his or her organization.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -997,8 +913,7 @@ The function that the person plays in his or her organization.
 
 {{{
 VCard vcard = new VCard();
-Role role = new Role("Project Leader");
-vcard.addRole(role);
+vcard.addRole("Project Leader");
 }}}
 
 =SORT-STRING=
@@ -1013,15 +928,18 @@ Defines a string that should be used when an application sorts this vCard in som
 {{{
 //2.1 and 3.0
 VCard vcard = new VCard();
+
 StructuredName n = new StructuredName();
 n.setFamily("d'Armour");
 n.setGiven("Miles");
 vcard.setStructuredName(n);
-SortString sortString = new SortString("Armour");
-vcard.setSortString(sortString);
+vcard.setSortString("Armour");
+}}}
 
+{{{
 //4.0
 VCard vcard = new VCard();
+
 StructuredName n = new StructuredName();
 n.setFamily("d'Armour");
 n.setGiven("Miles");
@@ -1030,7 +948,7 @@ vcard.setStructuredName(n);
 }}}
 
 =SOUND=
-A sound to attach to the vCard, such as a pronunciation of the person's name.
+Defines a sound, such as the correct pronunciation of the person's name.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -1040,63 +958,36 @@ A sound to attach to the vCard, such as a pronunciation of the person's name.
 VCard vcard = new VCard();
 
 //URL
-Sound sound = new Sound("http://www.mywebsite.com/myname.ogg", SoundType.OGG);
+Sound sound = new Sound("http://www.mywebsite.com/my-name.ogg", SoundType.OGG);
 vcard.addSound(sound);
 
 //binary data
 byte data[] = ...
 sound = new Sound(data, SoundType.OGG);
 vcard.addSound(sound);
-
-//if "SoundType" does not have the pre-defined constant that you need, then create a new instance
-//arg 1: the value of the 2.1/3.0 TYPE parameter
-//arg 2: the value to use for the 4.0 MEDIATYPE parameter and for 4.0 data URIs
-//arg 3: the file extension of the data type (optional)
-SoundType param = new SoundType("wav", "audio/wav", "wav");
-sound = new Sound("http://www.mywebsite.com/myname.wav", SoundType.WAV);
-vcard.addSound(sound);
 }}}
 
 {{{
 VCard vcard = ...
-
-int fileCount = 0;
 for (Sound sound : vcard.getSounds()){
-  //the sound will have either a URL or a binary data
-  if (sound.getData() == null){
-    System.out.println("Sound URL: " + sound.getUrl());
-  } else {
-    SoundType type = sound.getContent();
-    
-    if (type == null) {
-      //the vCard may not have any content type data associated with the sound
-      System.out.println("Saving a sound file...");
-    } else {
-      System.out.println("Saving a \"" + type.getMedia() + "\" file...");
-    }
-    
-    String folder;
-    if (type == SoundType.OGG){ //it is safe to use "==" instead of "equals()"
-      folder = "ogg-files";
-    } else {
-      folder = "sound-files";
-    }
-    
-    byte data[] = sound.getData();
-    String filename = "sound" + fileCount;
-    if (type != null && type.getExtension() != null){
-    	filename += "." + type.getExtension();
-    }
-    OutputStream out = new FileOutputStream(new File(folder, filename));
-    out.write(data);
-    out.close();
-    fileCount++;
+  SoundType contentType = sound.getContentType(); //e.g. "audio/ogg"
+
+  String url = sound.getUrl();
+  if (url != null){
+    //property value is a URL
+    continue;
+  }
+  
+  byte[] data = sound.getData();
+  if (data != null){
+    //property value is binary data
+    continue;
   }
 }
 }}}
 
 =SOURCE=
-A URL that can be used to retrieve the most up-to-date version of the person's vCard.
+Defines a URL that can be used to retrieve the most up-to-date version of the vCard.
 
 *vCard versions:* 3.0, 4.0
 
@@ -1104,12 +995,11 @@ A URL that can be used to retrieve the most up-to-date version of the person's v
 
 {{{
 VCard vcard = new VCard();
-Source source = new Source("http://www.company.com/employees/doe_john.vcf");
-vcard.addSource(source);
+vcard.addSource("http://www.company.com/employees/doe_john.vcf");
 }}}
 
 =TEL=
-A telephone number that the person can be reached at.
+Defines a telephone number.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -1117,13 +1007,15 @@ A telephone number that the person can be reached at.
 
 {{{
 VCard vcard = new VCard();
+
+//text
 Telephone tel = new Telephone("(123) 555-6789");
 tel.addType(TelephoneType.HOME);
 tel.setPref(2); //the second-most preferred
 vcard.addTelephoneNumber(tel);
 
-TelUri uri = TelUri.global("+1-800-555-9876");
-uri.setExtension("111");
+//URI (vCard version 4.0 only)
+TelUri uri = new TelUri.Builder("+1-800-555-9876").extension("111").build();
 tel = new Telephone(uri);
 tel.addType(TelephoneType.WORK);
 tel.setPref(1); //the most preferred
@@ -1131,7 +1023,7 @@ vcard.addTelephoneNumber(tel);
 }}}
 
 =TZ=
-Contains the timezone that the person lives/works in.
+Defines the timezone that the person lives/works in.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -1139,12 +1031,18 @@ Contains the timezone that the person lives/works in.
 
 {{{
 VCard vcard = new VCard();
+
 Timezone tz = new Timezone(-5, 0, "America/New_York");
+vcard.addTimezone(tz);
+
+//using a Java "TimeZone" object
+java.util.TimeZone javaTz = java.util.TimeZone.getTimeZone("America/New_York");
+tz = new Timezone(javaTz);
 vcard.addTimezone(tz);
 }}}
 
 =TITLE=
-The person's position or job in his or her organization.
+Defines the person's title in his or her organization.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -1152,12 +1050,11 @@ The person's position or job in his or her organization.
 
 {{{
 VCard vcard = new VCard();
-Title title = new Title("Research Scientist");
-vcard.addTitle(title);
+vcard.addTitle("Research Scientist");
 }}}
 
 =UID=
-A globally unique identifier of the person.
+Defines a globally unique identifier for this vCard.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -1165,17 +1062,15 @@ A globally unique identifier of the person.
 
 {{{
 VCard vcard = new VCard();
-
-Uid uid = new Uid("urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519");
-vcard.setUid(uid);
+vcard.setUid("urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519");
 
 //generate a random UID
-uid = Uid.random();
+Uid uid = Uid.random();
 vcard.setUid(uid);
 }}}
 
 =URL=
-A URL pointing to the person's homepage or business website.
+Defines a URL that points to the person's homepage or business website.
 
 *vCard versions:* 2.1, 3.0, 4.0
 
@@ -1183,12 +1078,11 @@ A URL pointing to the person's homepage or business website.
 
 {{{
 VCard vcard = new VCard();
-Url url = new Url("http://www.company.com");
-vcard.addUrl(url);
+vcard.addUrl("http://www.company.com");
 }}}
 
 =XML=
-Any XML data that is attached to the vCard.  This is used if the vCard was encoded in XML (xCard standard) and the XML document contained elements which are not part of the xCard standard.
+Contains an XML element that was not recognized when parsing an xCard (XML-formatted vCard).
 
 *vCard versions:* 4.0
 
