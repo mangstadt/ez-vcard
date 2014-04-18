@@ -258,7 +258,7 @@ Defines a list of keywords that can be used to describe the person.
 
 {{{
 VCard vcard = new VCard();
-vcard.setCategories("Developer", Java coder", "Ladies' man");
+vcard.setCategories("Developer", "Java coder", "Ladies' man");
 }}}
 
 =CLASS=
