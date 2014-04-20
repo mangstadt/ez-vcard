@@ -44,7 +44,6 @@ import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.io.SalaryType;
 import ezvcard.io.SalaryType.SalaryScribe;
-import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
@@ -593,9 +592,6 @@ public class XCardDocumentTest {
 		assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
 	}
 
-	/**
-	 * A basic test with one type.
-	 */
 	@Test
 	public void add_basicType() throws Throwable {
 		VCard vcard = new VCard();
@@ -660,9 +656,6 @@ public class XCardDocumentTest {
 		assertXMLEqual(expected, actual);
 	}
 
-	/**
-	 * Makes sure it can marshal groups.
-	 */
 	@Test
 	public void add_group() throws Throwable {
 		VCard vcard = new VCard();
@@ -719,9 +712,6 @@ public class XCardDocumentTest {
 		assertXMLEqual(expected, actual);
 	}
 
-	/**
-	 * Makes sure it can add multiple vCards to the same document.
-	 */
 	@Test
 	public void add_multiple() throws Throwable {
 		VCard vcard1 = new VCard();
@@ -841,10 +831,10 @@ public class XCardDocumentTest {
 		assertXMLEqual(expected, actual);
 	}
 
-	/**
-	 * If the type's marshal method throws a {@link SkipMeException}, then a
-	 * warning should be added to the warnings list and the type object should
-	 * NOT be marshalled.
+	/*
+	 * If the type's marshal method throws a SkipMeException, then a warning
+	 * should be added to the warnings list and the type object should NOT be
+	 * marshalled.
 	 */
 	@Test
 	public void add_skipMeException() throws Throwable {
@@ -893,9 +883,6 @@ public class XCardDocumentTest {
 		xcm.add(vcard);
 	}
 
-	/**
-	 * Tests how extended types are marshalled.
-	 */
 	@Test
 	public void add_extendedTypes() throws Throwable {
 		VCard vcard = new VCard();

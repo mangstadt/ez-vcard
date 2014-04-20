@@ -17,7 +17,6 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
@@ -77,9 +76,6 @@ public class VCardWriterTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	/**
-	 * Tests to make sure it contains the BEGIN, VERSION, and END types.
-	 */
 	@Test
 	public void generalStructure() throws Throwable {
 		VCard vcard = new VCard();
@@ -193,9 +189,6 @@ public class VCardWriterTest {
 		assertFalse(sw.toString().contains("\r\nPRODID:Acme Co."));
 	}
 
-	/**
-	 * Tests types with nested vCards (i.e AGENT type) in version 2.1.
-	 */
 	@Test
 	public void nestedVCard() throws Throwable {
 		VCard vcard = new VCard();
@@ -247,9 +240,6 @@ public class VCardWriterTest {
 		assertEquals(expected, actual);
 	}
 
-	/**
-	 * Tests types with embedded vCards (i.e AGENT type) in version 3.0.
-	 */
 	@Test
 	public void embeddedVCard() throws Throwable {
 		VCard vcard = new VCard();
@@ -303,9 +293,6 @@ public class VCardWriterTest {
 		assertEquals(expected, actual);
 	}
 
-	/**
-	 * Test to make sure it marshals LABELs correctly.
-	 */
 	@Test
 	public void labels() throws Throwable {
 		VCard vcard = new VCard();
@@ -375,10 +362,10 @@ public class VCardWriterTest {
 		assertEquals(expected, actual);
 	}
 
-	/**
-	 * If the type's marshal method throws a {@link SkipMeException}, then a
-	 * warning should be added to the warnings list and the type object should
-	 * NOT be marshalled.
+	/*
+	 * If the type's marshal method throws a SkipMeException, then a warning
+	 * should be added to the warnings list and the type object should NOT be
+	 * marshalled.
 	 */
 	@Test
 	public void skipMeException() throws Throwable {

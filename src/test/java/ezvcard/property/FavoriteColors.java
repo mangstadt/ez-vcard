@@ -53,11 +53,11 @@ public class FavoriteColors extends VCardProperty {
 		colors.add(color);
 	}
 
-	public String getLanguage() {
+	public String getLang() {
 		return parameters.getLanguage();
 	}
 
-	public void setLanguage(String lang) {
+	public void setLang(String lang) {
 		parameters.setLanguage(lang);
 	}
 
