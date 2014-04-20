@@ -50,7 +50,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 @SuppressWarnings("resource")
 public class VCardRawWriterTest {
 	@Test
-	public void writeBeginComponent() throws Exception {
+	public void writeBeginComponent() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
 
@@ -67,7 +67,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void writeEndComponent() throws Exception {
+	public void writeEndComponent() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
 
@@ -84,7 +84,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void writeVersion() throws Exception {
+	public void writeVersion() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
 
@@ -100,19 +100,17 @@ public class VCardRawWriterTest {
 		assertEquals(expected, actual);
 	}
 
-	/**
+	/*
 	 * The TYPE sub types for 2.1 vCards should look like this:
-	 * <p>
-	 * <code>ADR;WORK;DOM:</code>
-	 * </p>
+	 * 
+	 * ADR;WORK;DOM:
 	 * 
 	 * The TYPE sub types for 3.0 vCards should look like this:
-	 * <p>
-	 * <code>ADR;TYPE=work,dom:</code>
-	 * </p>
+	 * 
+	 * ADR;TYPE=work,dom:
 	 */
 	@Test
-	public void type_parameter() throws Exception {
+	public void type_parameter() throws Throwable {
 		Tests tests = new Tests();
 
 		//@formatter:off
@@ -166,7 +164,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void parameters() throws Exception {
+	public void parameters() throws Throwable {
 		Tests tests = new Tests();
 
 		//@formatter:off
@@ -220,7 +218,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void parameters_special_chars() throws Exception {
+	public void parameters_special_chars() throws Throwable {
 		Tests tests = new Tests();
 
 		//2.1 without caret escaping
@@ -293,7 +291,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void foldingScheme() throws Exception {
+	public void foldingScheme() throws Throwable {
 		StringWriter sw = new StringWriter();
 		FoldingScheme fs = new FoldingScheme(50, "  ");
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, fs);
@@ -324,7 +322,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void no_foldingScheme() throws Exception {
+	public void no_foldingScheme() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, null);
 
@@ -341,7 +339,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void newline() throws Exception {
+	public void newline() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, FoldingScheme.MIME_DIR, "*");
 
@@ -360,7 +358,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void groups() throws Exception {
+	public void groups() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
 
@@ -377,27 +375,27 @@ public class VCardRawWriterTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void invalid_group_name() throws Exception {
+	public void invalid_group_name() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
 		writer.writeProperty("invalid*name", "PROP", new VCardParameters(), "");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void invalid_property_name() throws Exception {
+	public void invalid_property_name() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
 		writer.writeProperty("invalid*name", "");
 	}
 
-	/**
+	/*
 	 * If newline characters exist in a property value in 2.1, then that
 	 * property value should be "quoted-printable" encoded. The escape sequence
 	 * "\n" should ONLY be used for 3.0 and 4.0. See the "Delimiters" subsection
 	 * in section 2 of the 2.1 specs.
 	 */
 	@Test
-	public void newlines_in_property_values() throws Exception {
+	public void newlines_in_property_values() throws Throwable {
 		Tests tests = new Tests();
 		tests.add(VCardVersion.V2_1, "PROP;ENCODING=quoted-printable;CHARSET=UTF-8:one=0D=0Atwo\r\n");
 		tests.add(VCardVersion.V3_0, "PROP:one\\ntwo\r\n");
@@ -417,12 +415,12 @@ public class VCardRawWriterTest {
 		}
 	}
 
-	/**
+	/*
 	 * Property values that use "quoted-printable" encoding must include a "="
 	 * at the end of the line if the next line is folded.
 	 */
 	@Test
-	public void quoted_printable_line() throws Exception {
+	public void quoted_printable_line() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, new FoldingScheme(60, " "));
 
@@ -447,7 +445,7 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void quoted_printable_line_encoding() throws Exception {
+	public void quoted_printable_line_encoding() throws Throwable {
 		final String propValue = "\u00e4\u00f6\u00fc\u00df";
 
 		//UTF-8

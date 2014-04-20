@@ -44,7 +44,6 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-@SuppressWarnings("resource")
 public class VCardRawReaderTest {
 	@Test
 	public void basic() throws Throwable {

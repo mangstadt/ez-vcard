@@ -26,7 +26,6 @@ import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
-import ezvcard.io.SkipMeException;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.ImageType;
@@ -101,9 +100,6 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  */
 @SuppressWarnings("resource")
 public class VCardReaderTest {
-	/**
-	 * Tests to make sure it can read sub types properly
-	 */
 	@Test
 	public void getParameters() throws Throwable {
 		//@formatter:off
@@ -362,9 +358,6 @@ public class VCardReaderTest {
 		}
 	}
 
-	/**
-	 * Tests to make sure it can unfold folded lines.
-	 */
 	@Test
 	public void unfold() throws Throwable {
 		//@formatter:off
@@ -394,9 +387,6 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/**
-	 * Tests to make sure it can read extended types.
-	 */
 	@Test
 	public void readExtendedType() throws Throwable {
 		//@formatter:off
@@ -452,9 +442,6 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/**
-	 * Tests to make sure it can read multiple vCards from the same stream.
-	 */
 	@Test
 	public void readMultiple() throws Throwable {
 		//@formatter:off
@@ -485,9 +472,6 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/**
-	 * Tests types with nested vCards (i.e AGENT type) in version 2.1.
-	 */
 	@Test
 	public void nestedVCard() throws Throwable {
 		//@formatter:off
@@ -542,9 +526,6 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/**
-	 * Tests types with embedded vCards (i.e. AGENT type) in version 3.0.
-	 */
 	@Test
 	public void embeddedVCard() throws Throwable {
 		//@formatter:off
@@ -578,7 +559,7 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/**
+	/*
 	 * LABEL types should be assigned to an ADR and stored in the
 	 * "Address.getLabel()" field. LABELs that could not be assigned to an ADR
 	 * should go in "VCard.getOrphanedLabels()".
@@ -618,10 +599,10 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/**
-	 * If the type's unmarshal method throws a {@link SkipMeException}, then a
-	 * warning should be added to the warnings list and the type object should
-	 * NOT be added to the {@link VCard} object.
+	/*
+	 * If the type's unmarshal method throws a SkipMeException, then a warning
+	 * should be added to the warnings list and the type object should NOT be
+	 * added to the {@link VCard} object.
 	 */
 	@Test
 	public void skipMeException() throws Throwable {
@@ -1316,10 +1297,6 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/**
-	 * This vCard was generated when selecting a list of contacts and exporting
-	 * them as a vCard.
-	 */
 	@Test
 	public void gmailList() throws Throwable {
 		VCardReader reader = new VCardReader(getClass().getResourceAsStream("gmail-list.vcf"));
