@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
-import ezvcard.VCardException;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.StringUtils;
@@ -48,8 +47,7 @@ import ezvcard.util.StringUtils;
 public class VCardRawReader implements Closeable {
 	private final FoldedLineReader reader;
 	private boolean caretDecodingEnabled = true;
-	private boolean eof = false;
-	private VCardVersion version = VCardVersion.V2_1;
+	private VCardVersion version = VCardVersion.V2_1; //initialize to 2.1, since the VERSION property can exist anywhere in the file in this version
 
 	/**
 	 * Creates a new reader.
@@ -68,23 +66,27 @@ public class VCardRawReader implements Closeable {
 	}
 
 	/**
-	 * Starts or continues reading from the vCard data stream.
-	 * @param listener handles the vCard data as it is read off the wire
-	 * @throws IOException if there is an I/O problem
+	 * Gets the vCard version that the reader is currently parsing with.
+	 * @return the vCard version
 	 */
-	public void start(VCardDataStreamListener listener) throws IOException {
-		String line;
-		while ((line = reader.readLine()) != null) {
-			try {
-				parseLine(line, listener);
-			} catch (StopReadingException e) {
-				return;
-			}
-		}
-		eof = true;
+	public VCardVersion getVersion() {
+		return version;
 	}
 
-	private void parseLine(String line, VCardDataStreamListener listener) {
+	/**
+	 * Parses the next line of the vCard file.
+	 * @return the next line or null if there are no more lines
+	 * @throws InvalidVersionException if a VERSION property with an invalid
+	 * value is encountered
+	 * @throws VCardParseException if a line cannot be parsed
+	 * @throws IOException if there's a problem reading from the input stream
+	 */
+	public VCardRawLine readLine() throws IOException {
+		String line = reader.readLine();
+		if (line == null) {
+			return null;
+		}
+
 		String group = null;
 		String propertyName = null;
 		VCardParameters parameters = new VCardParameters();
@@ -96,7 +98,9 @@ public class VCardRawReader implements Closeable {
 		String curParamName = null;
 		for (int i = 0; i < line.length(); i++) {
 			char ch = line.charAt(i);
+
 			if (escapeChar != 0) {
+				//this character was escaped
 				if (escapeChar == '\\') {
 					if (ch == '\\') {
 						buffer.append(ch);
@@ -127,13 +131,25 @@ public class VCardRawReader implements Closeable {
 					}
 				}
 				escapeChar = 0;
-			} else if (ch == '\\' || (ch == '^' && version != VCardVersion.V2_1 && caretDecodingEnabled)) {
+				continue;
+			}
+
+			if (ch == '\\' || (ch == '^' && version != VCardVersion.V2_1 && caretDecodingEnabled)) {
+				//an escape character was read
 				escapeChar = ch;
-			} else if (ch == '.' && group == null && propertyName == null) {
+				continue;
+			}
+
+			if (ch == '.' && group == null && propertyName == null) {
+				//set the group
 				group = buffer.toString();
 				buffer.setLength(0);
-			} else if ((ch == ';' || ch == ':') && !inQuotes) {
+				continue;
+			}
+
+			if ((ch == ';' || ch == ':') && !inQuotes) {
 				if (propertyName == null) {
+					//property name
 					propertyName = buffer.toString();
 				} else {
 					//parameter value
@@ -148,6 +164,7 @@ public class VCardRawReader implements Closeable {
 				buffer.setLength(0);
 
 				if (ch == ':') {
+					//the rest of the line is the property value
 					if (i < line.length() - 1) {
 						value = line.substring(i + 1);
 					} else {
@@ -155,11 +172,17 @@ public class VCardRawReader implements Closeable {
 					}
 					break;
 				}
-			} else if (ch == ',' && !inQuotes && version != VCardVersion.V2_1) {
+				continue;
+			}
+
+			if (ch == ',' && !inQuotes && version != VCardVersion.V2_1) {
 				//multi-valued parameter
 				parameters.put(curParamName, buffer.toString());
 				buffer.setLength(0);
-			} else if (ch == '=' && curParamName == null) {
+				continue;
+			}
+
+			if (ch == '=' && curParamName == null) {
 				//parameter name
 				String paramName = buffer.toString();
 				if (version == VCardVersion.V2_1) {
@@ -168,37 +191,32 @@ public class VCardRawReader implements Closeable {
 				}
 				curParamName = paramName;
 				buffer.setLength(0);
-			} else if (ch == '"' && version != VCardVersion.V2_1) {
+				continue;
+			}
+
+			if (ch == '"' && version != VCardVersion.V2_1) {
 				//2.1 doesn't use the quoting mechanism
 				inQuotes = !inQuotes;
-			} else {
-				buffer.append(ch);
+				continue;
 			}
+
+			buffer.append(ch);
 		}
 
 		if (propertyName == null || value == null) {
-			listener.invalidLine(line);
-			return;
+			throw new VCardParseException(line);
 		}
-		if ("VERSION".equalsIgnoreCase(propertyName)) {
-			VCardVersion version = VCardVersion.valueOfByStr(value.trim());
+
+		value = value.trim();
+		VCardRawLine vcardLine = new VCardRawLine(group, parameters, propertyName, value);
+		if (vcardLine.isVersion()) {
+			VCardVersion version = VCardVersion.valueOfByStr(value);
 			if (version == null) {
-				listener.invalidVersion(value);
-			} else {
-				this.version = version;
-				listener.readVersion(version);
+				throw new InvalidVersionException(value, line);
 			}
-			return;
+			this.version = version;
 		}
-		if ("BEGIN".equalsIgnoreCase(propertyName)) {
-			listener.beginComponent(value.trim());
-			return;
-		}
-		if ("END".equalsIgnoreCase(propertyName)) {
-			listener.endComponent(value.trim());
-			return;
-		}
-		listener.readProperty(group, propertyName, parameters, value);
+		return vcardLine;
 	}
 
 	/**
@@ -286,88 +304,11 @@ public class VCardRawReader implements Closeable {
 	}
 
 	/**
-	 * Determines whether the end of the data stream has been reached.
-	 * @return true if the end has been reached, false if not
-	 */
-	public boolean eof() {
-		return eof;
-	}
-
-	/**
 	 * Gets the character encoding of the reader.
 	 * @return the character encoding or null if none is defined
 	 */
 	public Charset getEncoding() {
 		return reader.getEncoding();
-	}
-
-	/**
-	 * Handles the vCard data as it is read off the data stream. Each one of
-	 * this interface's methods may throw a {@link StopReadingException} at any
-	 * time to force the parser to stop reading from the data stream. This will
-	 * cause the reader to return from the {@link VCardRawReader#start} method.
-	 * To continue reading from the data stream, simply call the
-	 * {@link VCardRawReader#start} method again.
-	 * @author Michael Angstadt
-	 */
-	public static interface VCardDataStreamListener {
-		/**
-		 * Called when a component begins (when a "BEGIN:NAME" property is
-		 * reached).
-		 * @param name the component name (e.g. "VCARD")
-		 * @throws StopReadingException to force the reader to stop reading from
-		 * the data stream
-		 */
-		void beginComponent(String name);
-
-		/**
-		 * Called when a property is read.
-		 * @param group the group name or null if no group was defined
-		 * @param name the property name (e.g. "VERSION")
-		 * @param parameters the parameters
-		 * @param value the property value
-		 * @throws StopReadingException to force the reader to stop reading from
-		 * the data stream
-		 */
-		void readProperty(String group, String name, VCardParameters parameters, String value);
-
-		/**
-		 * Called when the vCard's VERSION property is read.
-		 * @param version the version that was read
-		 */
-		void readVersion(VCardVersion version);
-
-		/**
-		 * Called when a component ends (when a "END:NAME" property is reached).
-		 * @param name the component name (e.g. "VCARD")
-		 * @throws StopReadingException to force the reader to stop reading from
-		 * the data stream
-		 */
-		void endComponent(String name);
-
-		/**
-		 * Called when a line cannot be parsed.
-		 * @param line the unparseable line
-		 * @throws StopReadingException to force the reader to stop reading from
-		 * the data stream
-		 */
-		void invalidLine(String line);
-
-		/**
-		 * Called when an invalid VERSION property is encountered.
-		 * @param version the invalid version
-		 */
-		void invalidVersion(String version);
-	}
-
-	/**
-	 * Instructs a {@link VCardRawReader} to stop reading from the data stream
-	 * when thrown from a {@link VCardDataStreamListener} implementation.
-	 * @author Michael Angstadt
-	 */
-	@SuppressWarnings("serial")
-	public static class StopReadingException extends VCardException {
-		//empty
 	}
 
 	/**

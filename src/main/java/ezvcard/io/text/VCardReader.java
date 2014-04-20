@@ -227,16 +227,184 @@ public class VCardReader implements Closeable {
 	 * @throws IOException if there's a problem reading from the stream
 	 */
 	public VCard readNext() throws IOException {
-		if (reader.eof()) {
-			return null;
-		}
-
 		warnings.clear();
 
-		VCardDataStreamListenerImpl listener = new VCardDataStreamListenerImpl();
-		reader.start(listener);
+		VCard root = null;
+		List<Label> labels = new ArrayList<Label>();
+		LinkedList<VCard> vcardStack = new LinkedList<VCard>();
+		EmbeddedVCardException embeddedVCardException = null;
+		while (true) {
+			//read next line
+			VCardRawLine line;
+			try {
+				line = reader.readLine();
+			} catch (VCardParseException e) {
+				if (!vcardStack.isEmpty()) {
+					addWarning(null, 27, e.getLine());
+				}
+				continue;
+			}
 
-		return listener.root;
+			//EOF
+			if (line == null) {
+				break;
+			}
+
+			//handle BEGIN:VCARD
+			if (line.isBegin() && "VCARD".equalsIgnoreCase(line.getValue())) {
+				VCard vcard = new VCard();
+				vcard.setVersion(reader.getVersion());
+				vcardStack.add(vcard);
+
+				if (root == null) {
+					root = vcard;
+				}
+
+				if (embeddedVCardException != null) {
+					embeddedVCardException.injectVCard(vcard);
+					embeddedVCardException = null;
+				}
+
+				continue;
+			}
+
+			if (vcardStack.isEmpty()) {
+				//BEGIN component hasn't been encountered yet, so skip this line
+				continue;
+			}
+
+			//handle VERSION
+			if (line.isVersion()) {
+				vcardStack.getLast().setVersion(reader.getVersion());
+				continue;
+			}
+
+			//handle END:VCARD
+			if (line.isEnd() && "VCARD".equalsIgnoreCase(line.getValue())) {
+				VCard curVCard = vcardStack.removeLast();
+
+				//assign labels to their addresses
+				for (Label label : labels) {
+					boolean orphaned = true;
+					for (Address adr : curVCard.getAddresses()) {
+						if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
+							adr.setLabel(label.getValue());
+							orphaned = false;
+							break;
+						}
+					}
+					if (orphaned) {
+						curVCard.addOrphanedLabel(label);
+					}
+				}
+
+				if (vcardStack.isEmpty()) {
+					//done reading the vCard
+					break;
+				}
+				continue;
+			}
+
+			//handle property
+			{
+				String group = line.getGroup();
+				VCardParameters parameters = line.getParameters();
+				String name = line.getName();
+				String value = line.getValue();
+
+				if (embeddedVCardException != null) {
+					//the next property was supposed to be the start of a nested vCard, but it wasn't
+					embeddedVCardException.injectVCard(null);
+					embeddedVCardException = null;
+				}
+
+				VCard curVCard = vcardStack.getLast();
+				VCardVersion version = curVCard.getVersion();
+
+				//tweak the parameters
+				processNamelessParameters(parameters);
+				processQuotedMultivaluedTypeParams(parameters);
+
+				//decode property value from quoted-printable
+				try {
+					value = decodeQuotedPrintable(name, parameters, value);
+				} catch (DecoderException e) {
+					addWarning(name, 38, e.getMessage());
+				}
+
+				//get the scribe
+				VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(name);
+				if (scribe == null) {
+					scribe = new RawPropertyScribe(name);
+				}
+
+				//get the data type
+				VCardDataType dataType = parameters.getValue();
+				if (dataType == null) {
+					//use the default data type if there is no VALUE parameter
+					dataType = scribe.defaultDataType(version);
+				} else {
+					//remove VALUE parameter if it is set
+					parameters.setValue(null);
+				}
+
+				VCardProperty property;
+				try {
+					Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
+
+					for (String warning : result.getWarnings()) {
+						addWarning(name, warning);
+					}
+
+					property = result.getProperty();
+					property.setGroup(group);
+
+					if (property instanceof Label) {
+						//LABELs must be treated specially so they can be matched up with their ADRs
+						labels.add((Label) property);
+					} else {
+						curVCard.addProperty(property);
+					}
+				} catch (SkipMeException e) {
+					addWarning(name, 22, e.getMessage());
+				} catch (CannotParseException e) {
+					addWarning(name, 25, value, e.getMessage());
+					property = new RawProperty(name, value);
+					property.setGroup(group);
+					curVCard.addProperty(property);
+				} catch (EmbeddedVCardException e) {
+					//parse an embedded vCard (i.e. the AGENT type)
+					property = e.getProperty();
+
+					if (value.length() == 0 || version == VCardVersion.V2_1) {
+						//a nested vCard is expected to be next (2.1 style)
+						embeddedVCardException = e;
+					} else {
+						//the property value should be an embedded vCard (3.0 style)
+						value = VCardPropertyScribe.unescape(value);
+
+						VCardReader agentReader = new VCardReader(value);
+						try {
+							VCard nestedVCard = agentReader.readNext();
+							if (nestedVCard != null) {
+								e.injectVCard(nestedVCard);
+							}
+						} catch (IOException e2) {
+							//shouldn't be thrown because we're reading from a string
+						} finally {
+							for (String w : agentReader.getWarnings()) {
+								addWarning(name, 26, w);
+							}
+							IOUtils.closeQuietly(agentReader);
+						}
+					}
+
+					curVCard.addProperty(property);
+				}
+			}
+		}
+
+		return root;
 	}
 
 	/**
@@ -244,7 +412,7 @@ public class VCardReader implements Closeable {
 	 * parameters to have names, but v2.1 does not.
 	 * @param parameters the parameters
 	 */
-	private void handleNamelessParameters(VCardParameters parameters) {
+	private void processNamelessParameters(VCardParameters parameters) {
 		List<String> namelessParamValues = parameters.get(null);
 		for (String paramValue : namelessParamValues) {
 			String paramName;
@@ -274,7 +442,7 @@ public class VCardReader implements Closeable {
 	 * </p>
 	 * @param parameters the parameters
 	 */
-	private void handleQuotedMultivaluedTypeParams(VCardParameters parameters) {
+	private void processQuotedMultivaluedTypeParams(VCardParameters parameters) {
 		//account for multi-valued TYPE parameters being enclosed entirely in double quotes
 		//e.g. ADR;TYPE="home,work"
 		for (String typeParameter : parameters.getTypes()) {
@@ -344,190 +512,5 @@ public class VCardReader implements Closeable {
 
 		String warning = Messages.INSTANCE.getParseMessage(code, line, propertyName, message);
 		warnings.add(warning);
-	}
-
-	private class VCardDataStreamListenerImpl implements VCardRawReader.VCardDataStreamListener {
-		private VCard root;
-		private final List<Label> labels = new ArrayList<Label>();
-		private final LinkedList<VCard> vcardStack = new LinkedList<VCard>();
-		private EmbeddedVCardException embeddedVCardException;
-
-		public void beginComponent(String name) {
-			if (!"VCARD".equalsIgnoreCase(name)) {
-				return;
-			}
-
-			VCard vcard = new VCard();
-
-			//initialize version to 2.1, since the VERSION property can exist anywhere in a 2.1 vCard
-			vcard.setVersion(VCardVersion.V2_1);
-
-			vcardStack.add(vcard);
-
-			if (root == null) {
-				root = vcard;
-			}
-
-			if (embeddedVCardException != null) {
-				embeddedVCardException.injectVCard(vcard);
-				embeddedVCardException = null;
-			}
-		}
-
-		public void readVersion(VCardVersion version) {
-			if (vcardStack.isEmpty()) {
-				//not in a "VCARD" component
-				return;
-			}
-
-			vcardStack.getLast().setVersion(version);
-		}
-
-		public void readProperty(String group, String name, VCardParameters parameters, String value) {
-			if (vcardStack.isEmpty()) {
-				//not in a "VCARD" component
-				return;
-			}
-
-			if (embeddedVCardException != null) {
-				//the next property was supposed to be the start of a nested vCard, but it wasn't
-				embeddedVCardException.injectVCard(null);
-				embeddedVCardException = null;
-			}
-
-			VCard curVCard = vcardStack.getLast();
-			VCardVersion version = curVCard.getVersion();
-
-			//massage the parameters
-			handleNamelessParameters(parameters);
-			handleQuotedMultivaluedTypeParams(parameters);
-
-			//decode property value from quoted-printable
-			try {
-				value = decodeQuotedPrintable(name, parameters, value);
-			} catch (DecoderException e) {
-				addWarning(name, 38, e.getMessage());
-			}
-
-			//get the scribe
-			VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(name);
-			if (scribe == null) {
-				scribe = new RawPropertyScribe(name);
-			}
-
-			//get the data type
-			VCardDataType dataType = parameters.getValue();
-			if (dataType == null) {
-				//use the default data type if there is no VALUE parameter
-				dataType = scribe.defaultDataType(version);
-			} else {
-				//remove VALUE parameter if it is set
-				parameters.setValue(null);
-			}
-
-			VCardProperty property;
-			try {
-				Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
-
-				for (String warning : result.getWarnings()) {
-					addWarning(name, warning);
-				}
-
-				property = result.getProperty();
-				property.setGroup(group);
-
-				if (property instanceof Label) {
-					//LABELs must be treated specially so they can be matched up with their ADRs
-					labels.add((Label) property);
-					return;
-				}
-			} catch (SkipMeException e) {
-				addWarning(name, 22, e.getMessage());
-				return;
-			} catch (CannotParseException e) {
-				addWarning(name, 25, value, e.getMessage());
-				property = new RawProperty(name, value);
-				property.setGroup(group);
-			} catch (EmbeddedVCardException e) {
-				//parse an embedded vCard (i.e. the AGENT type)
-				property = e.getProperty();
-
-				if (value.length() == 0 || version == VCardVersion.V2_1) {
-					//a nested vCard is expected to be next (2.1 style)
-					embeddedVCardException = e;
-				} else {
-					//the property value should be an embedded vCard (3.0 style)
-					value = VCardPropertyScribe.unescape(value);
-
-					VCardReader agentReader = new VCardReader(value);
-					try {
-						VCard nestedVCard = agentReader.readNext();
-						if (nestedVCard != null) {
-							e.injectVCard(nestedVCard);
-						}
-					} catch (IOException e2) {
-						//shouldn't be thrown because we're reading from a string
-					} finally {
-						for (String w : agentReader.getWarnings()) {
-							addWarning(name, 26, w);
-						}
-						IOUtils.closeQuietly(agentReader);
-					}
-				}
-			}
-
-			curVCard.addProperty(property);
-		}
-
-		public void endComponent(String name) {
-			if (vcardStack.isEmpty()) {
-				//not in a "VCARD" component
-				return;
-			}
-
-			if (!"VCARD".equalsIgnoreCase(name)) {
-				//not a "VCARD" component
-				return;
-			}
-
-			VCard curVCard = vcardStack.removeLast();
-
-			//assign labels to their addresses
-			for (Label label : labels) {
-				boolean orphaned = true;
-				for (Address adr : curVCard.getAddresses()) {
-					if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
-						adr.setLabel(label.getValue());
-						orphaned = false;
-						break;
-					}
-				}
-				if (orphaned) {
-					curVCard.addOrphanedLabel(label);
-				}
-			}
-
-			if (vcardStack.isEmpty()) {
-				throw new VCardRawReader.StopReadingException();
-			}
-		}
-
-		public void invalidLine(String line) {
-			if (vcardStack.isEmpty()) {
-				//not in a "VCARD" component
-				return;
-			}
-
-			addWarning(null, 27, line);
-		}
-
-		public void invalidVersion(String version) {
-			if (vcardStack.isEmpty()) {
-				//not in a "VCARD" component
-				return;
-			}
-
-			addWarning("VERSION", 28, version);
-		}
 	}
 }
