@@ -50,7 +50,7 @@ import ezvcard.parameter.VCardParameters;
  * org.addValue(&quot;Google&quot;);
  * org.addValue(&quot;GMail Team&quot;);
  * org.addValue(&quot;Spam Detection Team&quot;);
- * vcard.setOrganizations(org);
+ * vcard.setOrganization(org);
  * </pre>
  * 
  * <p>
