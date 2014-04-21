@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -57,19 +55,12 @@ public class VCardRawReaderTest {
 		//@formatter:on
 		VCardRawReader reader = create(vcard);
 
-		List<VCardRawLine> expected = new ArrayList<VCardRawLine>();
-		expected.add(line("BEGIN").value("VCARD").build());
-		expected.add(line("VERSION").value("4.0").build());
-		expected.add(line("FN").value("John Doe").build());
-		expected.add(line("NOTE").param("LANGUAGE", "en-us").value("My vCard").build());
-		expected.add(line("END").value("VCARD").build());
-
-		List<VCardRawLine> actual = new ArrayList<VCardRawLine>();
-		VCardRawLine line;
-		while ((line = reader.readLine()) != null) {
-			actual.add(line);
-		}
-		assertEquals(expected, actual);
+		assertEquals(line("BEGIN").value("VCARD").build(), reader.readLine());
+		assertEquals(line("VERSION").value("4.0").build(), reader.readLine());
+		assertEquals(line("FN").value("John Doe").build(), reader.readLine());
+		assertEquals(line("NOTE").param("LANGUAGE", "en-us").value("My vCard").build(), reader.readLine());
+		assertEquals(line("END").value("VCARD").build(), reader.readLine());
+		assertNull(reader.readLine());
 	}
 
 	@Test
