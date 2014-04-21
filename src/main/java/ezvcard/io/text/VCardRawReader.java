@@ -209,7 +209,7 @@ public class VCardRawReader implements Closeable {
 
 		value = value.trim();
 		VCardRawLine vcardLine = new VCardRawLine(group, parameters, propertyName, value);
-		if (vcardLine.isVersion()) {
+		if ("VERSION".equalsIgnoreCase(propertyName)) {
 			VCardVersion version = VCardVersion.valueOfByStr(value);
 			if (version == null) {
 				throw new InvalidVersionException(value, line);
