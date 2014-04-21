@@ -49,30 +49,6 @@ public class VCardRawLine {
 	}
 
 	/**
-	 * Determines if this line is a "BEGIN" property.
-	 * @return true if it is, false if not
-	 */
-	public boolean isBegin() {
-		return "BEGIN".equalsIgnoreCase(name);
-	}
-
-	/**
-	 * Determines if this line is an "END" property.
-	 * @return true if it is, false if not
-	 */
-	public boolean isEnd() {
-		return "END".equalsIgnoreCase(name);
-	}
-
-	/**
-	 * Determines if this line is a "VERSION" property.
-	 * @return true if it is, false if not
-	 */
-	public boolean isVersion() {
-		return "VERSION".equalsIgnoreCase(name);
-	}
-
-	/**
 	 * Gets the property's group.
 	 * @return the group or null if there is no group
 	 */

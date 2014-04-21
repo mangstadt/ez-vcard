@@ -251,7 +251,7 @@ public class VCardReader implements Closeable {
 			}
 
 			//handle BEGIN:VCARD
-			if (line.isBegin() && "VCARD".equalsIgnoreCase(line.getValue())) {
+			if ("BEGIN".equalsIgnoreCase(line.getName()) && "VCARD".equalsIgnoreCase(line.getValue())) {
 				VCard vcard = new VCard();
 				vcard.setVersion(reader.getVersion());
 				vcardStack.add(vcard);
@@ -273,14 +273,14 @@ public class VCardReader implements Closeable {
 				continue;
 			}
 
-			//handle VERSION
-			if (line.isVersion()) {
+			//handle VERSION property
+			if ("VERSION".equalsIgnoreCase(line.getName())) {
 				vcardStack.getLast().setVersion(reader.getVersion());
 				continue;
 			}
 
 			//handle END:VCARD
-			if (line.isEnd() && "VCARD".equalsIgnoreCase(line.getValue())) {
+			if ("END".equalsIgnoreCase(line.getName()) && "VCARD".equalsIgnoreCase(line.getValue())) {
 				VCard curVCard = vcardStack.removeLast();
 
 				//assign labels to their addresses
