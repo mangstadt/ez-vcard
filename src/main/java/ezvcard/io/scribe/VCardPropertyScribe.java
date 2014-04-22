@@ -30,8 +30,8 @@ import ezvcard.property.Categories;
 import ezvcard.property.Organization;
 import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.VCardDateFormat;
 import ezvcard.util.StringUtils.JoinCallback;
+import ezvcard.util.VCardDateFormat;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -952,16 +952,10 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 
 		/**
 		 * Gets the next value.
-		 * @return the next value, null if the value is an empty string, or null
-		 * if there are no more values
+		 * @return the next value or null if there are no more values
 		 */
 		public String next() {
-			if (!hasNext()) {
-				return null;
-			}
-
-			String value = it.next();
-			return (value.length() == 0) ? null : value;
+			return hasNext() ? it.next() : null;
 		}
 
 		public boolean hasNext() {

@@ -192,8 +192,8 @@ public class VCardPropertyScribeTest {
 		SemiStructuredIterator it = VCardPropertyScribe.semistructured(input);
 		assertEquals("one", it.next());
 		assertEquals("two,three,four", it.next());
-		assertEquals(null, it.next());
-		assertEquals(null, it.next());
+		assertEquals("", it.next());
+		assertEquals("", it.next());
 		assertEquals("five;six", it.next());
 		assertEquals(null, it.next());
 	}
