@@ -68,7 +68,11 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 
 		String sex = it.next();
 		if (sex != null) {
-			sex = sex.toUpperCase();
+			if (sex.length() == 0) {
+				sex = null;
+			} else {
+				sex = sex.toUpperCase();
+			}
 		}
 		String text = it.next();
 
