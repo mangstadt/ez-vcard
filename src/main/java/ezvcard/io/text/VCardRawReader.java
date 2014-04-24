@@ -207,8 +207,6 @@ public class VCardRawReader implements Closeable {
 			throw new VCardParseException(line);
 		}
 
-		value = value.trim();
-		VCardRawLine vcardLine = new VCardRawLine(group, parameters, propertyName, value);
 		if ("VERSION".equalsIgnoreCase(propertyName)) {
 			VCardVersion version = VCardVersion.valueOfByStr(value);
 			if (version == null) {
@@ -216,7 +214,9 @@ public class VCardRawReader implements Closeable {
 			}
 			this.version = version;
 		}
-		return vcardLine;
+
+		value = value.trim();
+		return new VCardRawLine(group, propertyName, parameters, value);
 	}
 
 	/**
