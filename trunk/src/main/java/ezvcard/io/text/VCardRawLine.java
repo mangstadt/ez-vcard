@@ -41,7 +41,13 @@ public class VCardRawLine {
 	private final String group, name, value;
 	private final VCardParameters parameters;
 
-	public VCardRawLine(String group, VCardParameters parameters, String name, String value) {
+	/**
+	 * @param group the group
+	 * @param name the property name
+	 * @param parameters the parameters
+	 * @param value the property value
+	 */
+	public VCardRawLine(String group, String name, VCardParameters parameters, String value) {
 		this.group = group;
 		this.name = name;
 		this.value = value;
@@ -151,7 +157,7 @@ public class VCardRawLine {
 			if (name == null) {
 				throw new IllegalArgumentException("Property name required.");
 			}
-			return new VCardRawLine(group, parameters, name, value);
+			return new VCardRawLine(group, name, parameters, value);
 		}
 	}
 }
