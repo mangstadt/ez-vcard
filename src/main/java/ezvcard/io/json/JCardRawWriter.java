@@ -313,7 +313,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	private void init() throws IOException {
 		JsonFactory factory = new JsonFactory();
 		factory.configure(Feature.AUTO_CLOSE_TARGET, false);
-		generator = factory.createJsonGenerator(writer);
+		generator = factory.createGenerator(writer);
 
 		if (wrapInArray) {
 			generator.writeStartArray();

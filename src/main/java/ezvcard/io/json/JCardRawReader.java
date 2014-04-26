@@ -79,7 +79,7 @@ public class JCardRawReader implements Closeable {
 	public void readNext(JCardDataStreamListener listener) throws IOException {
 		if (parser == null) {
 			JsonFactory factory = new JsonFactory();
-			parser = factory.createJsonParser(reader);
+			parser = factory.createParser(reader);
 		} else if (parser.isClosed()) {
 			return;
 		}
