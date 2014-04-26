@@ -1,8 +1,8 @@
 package ezvcard.io.json;
 
-import com.fasterxml.jackson.core.JsonToken;
+import java.io.IOException;
 
-import ezvcard.VCardException;
+import com.fasterxml.jackson.core.JsonToken;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -40,7 +40,7 @@ import ezvcard.VCardException;
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
-public class JCardParseException extends VCardException {
+public class JCardParseException extends IOException {
 	private final JsonToken expected, actual;
 
 	/**
