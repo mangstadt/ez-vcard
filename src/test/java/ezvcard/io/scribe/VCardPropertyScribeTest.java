@@ -138,6 +138,20 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
+	public void splitter_nullEmpties() {
+		String str = ",one,,two,";
+		List<String> actual, expected;
+
+		actual = VCardPropertyScribe.splitter(',').split(str);
+		expected = Arrays.asList("", "one", "", "two", "");
+		assertEquals(expected, actual);
+
+		actual = VCardPropertyScribe.splitter(',').nullEmpties(true).split(str);
+		expected = Arrays.asList(null, "one", null, "two", null);
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void splitter_trim() {
 		List<String> actual = VCardPropertyScribe.splitter(',').split("one , two");
 		List<String> expected = Arrays.asList("one", "two");
@@ -160,8 +174,8 @@ public class VCardPropertyScribeTest {
 		expected = Arrays.asList("one", "two\\,three", "", "four", "five");
 		assertEquals(expected, actual);
 
-		actual = VCardPropertyScribe.splitter(',').unescape(true).limit(4).split(str);
-		expected = Arrays.asList("one", "two,three", "", "four,five");
+		actual = VCardPropertyScribe.splitter(',').unescape(true).limit(4).nullEmpties(true).split(str);
+		expected = Arrays.asList("one", "two,three", null, "four,five");
 		assertEquals(expected, actual);
 	}
 
