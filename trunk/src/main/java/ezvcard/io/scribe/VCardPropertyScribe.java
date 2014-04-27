@@ -682,6 +682,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	protected static class Splitter {
 		private char delimiter;
 		private boolean unescape = false;
+		private boolean nullEmpties = false;
 		private int limit = -1;
 
 		/**
@@ -699,6 +700,17 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		 */
 		public Splitter unescape(boolean unescape) {
 			this.unescape = unescape;
+			return this;
+		}
+
+		/**
+		 * Sets whether to treat empty elements as null elements.
+		 * @param nullEmpties true to treat them as null elements, false to
+		 * treat them as empty strings (default is false)
+		 * @return this
+		 */
+		public Splitter nullEmpties(boolean nullEmpties) {
+			this.nullEmpties = nullEmpties;
 			return this;
 		}
 
@@ -755,7 +767,9 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		private void add(String str, List<String> list) {
 			str = str.trim();
 
-			if (unescape) {
+			if (nullEmpties && str.length() == 0) {
+				str = null;
+			} else if (unescape) {
 				str = VCardPropertyScribe.unescape(str);
 			}
 
