@@ -102,23 +102,66 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void split() {
+	public void splitter_limit() {
+		String str = "one,two,three,four";
 		List<String> actual, expected;
 
-		actual = VCardPropertyScribe.split("Doe;John;Joh\\,\\;nny;;Sr.,III", ";").split();
-		expected = Arrays.asList("Doe", "John", "Joh\\,\\;nny", "", "Sr.,III");
+		actual = VCardPropertyScribe.splitter(',').split(str);
+		expected = Arrays.asList("one", "two", "three", "four");
 		assertEquals(expected, actual);
 
-		actual = VCardPropertyScribe.split("Doe;John;Joh\\,\\;nny;;Sr.,III", ";").removeEmpties(true).split();
-		expected = Arrays.asList("Doe", "John", "Joh\\,\\;nny", "Sr.,III");
+		actual = VCardPropertyScribe.splitter(',').limit(2).split(str);
+		expected = Arrays.asList("one", "two,three,four");
 		assertEquals(expected, actual);
 
-		actual = VCardPropertyScribe.split("Doe;John;Joh\\,\\;nny;;Sr.,III", ";").unescape(true).split();
-		expected = Arrays.asList("Doe", "John", "Joh,;nny", "", "Sr.,III");
+		actual = VCardPropertyScribe.splitter(',').limit(4).split(str);
+		expected = Arrays.asList("one", "two", "three", "four");
 		assertEquals(expected, actual);
 
-		actual = VCardPropertyScribe.split("Doe;John;Joh\\,\\;nny;;Sr.,III", ";").removeEmpties(true).unescape(true).split();
-		expected = Arrays.asList("Doe", "John", "Joh,;nny", "Sr.,III");
+		actual = VCardPropertyScribe.splitter(',').limit(10).split(str);
+		expected = Arrays.asList("one", "two", "three", "four");
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void splitter_unescape() {
+		String str = "one,two\\,\\;three";
+		List<String> actual, expected;
+
+		actual = VCardPropertyScribe.splitter(',').split(str);
+		expected = Arrays.asList("one", "two\\,\\;three");
+		assertEquals(expected, actual);
+
+		actual = VCardPropertyScribe.splitter(',').unescape(true).split(str);
+		expected = Arrays.asList("one", "two,;three");
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void splitter_trim() {
+		List<String> actual = VCardPropertyScribe.splitter(',').split("one , two");
+		List<String> expected = Arrays.asList("one", "two");
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void splitter_empty() {
+		List<String> actual = VCardPropertyScribe.splitter(',').split("");
+		List<String> expected = Arrays.asList("");
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void splitter_all_settings() {
+		String str = "one ,two\\,three,,four,five";
+		List<String> actual, expected;
+
+		actual = VCardPropertyScribe.splitter(',').split(str);
+		expected = Arrays.asList("one", "two\\,three", "", "four", "five");
+		assertEquals(expected, actual);
+
+		actual = VCardPropertyScribe.splitter(',').unescape(true).limit(4).split(str);
+		expected = Arrays.asList("one", "two,three", "", "four,five");
 		assertEquals(expected, actual);
 	}
 
