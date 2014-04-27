@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -669,44 +668,28 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Splits a string by a delimiter.
-	 * @param string the string to split (e.g. "one,two,three")
-	 * @param delimiter the delimiter (e.g. ",")
-	 * @return a helper object that allows the split operation to be customized
+	 * Creates a string splitter (takes escaped characters into account).
+	 * @param delimiter the delimiter character (e.g. ',')
+	 * @return the splitter object
 	 */
-	protected static Splitter split(String string, String delimiter) {
-		return new Splitter(string, delimiter);
+	protected static Splitter splitter(char delimiter) {
+		return new Splitter(delimiter);
 	}
 
 	/**
 	 * A helper class for splitting strings.
 	 */
 	protected static class Splitter {
-		private String string;
-		private String delimiter;
-		private boolean removeEmpties = false;
+		private char delimiter;
 		private boolean unescape = false;
 		private int limit = -1;
 
 		/**
 		 * Creates a new splitter object.
-		 * @param string the string to split (e.g. "one,two,three")
-		 * @param delimiter the delimiter (e.g. ",")
+		 * @param delimiter the delimiter character (e.g. ',')
 		 */
-		public Splitter(String string, String delimiter) {
-			this.string = string;
+		public Splitter(char delimiter) {
 			this.delimiter = delimiter;
-		}
-
-		/**
-		 * Sets whether to remove empty elements.
-		 * @param removeEmpties true to remove empty elements, false not to
-		 * (default is false)
-		 * @return this
-		 */
-		public Splitter removeEmpties(boolean removeEmpties) {
-			this.removeEmpties = removeEmpties;
-			return this;
 		}
 
 		/**
@@ -731,25 +714,52 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 
 		/**
 		 * Performs the split operation.
+		 * @param string the string to split (e.g. "one,two,three")
 		 * @return the split string
 		 */
-		public List<String> split() {
-			//from: http://stackoverflow.com/q/820172">http://stackoverflow.com/q/820172
-			String split[] = string.split("\\s*(?<!\\\\)" + Pattern.quote(delimiter) + "\\s*", limit);
+		public List<String> split(String string) {
+			//doing it this way is 10x faster than a regex
 
-			List<String> list = new ArrayList<String>(split.length);
-			for (String s : split) {
-				if (s.length() == 0 && removeEmpties) {
+			List<String> list = new ArrayList<String>();
+			boolean escaped = false;
+			int start = 0;
+			for (int i = 0; i < string.length(); i++) {
+				char ch = string.charAt(i);
+
+				if (escaped) {
+					escaped = false;
 					continue;
 				}
 
-				if (unescape) {
-					s = VCardPropertyScribe.unescape(s);
+				if (ch == delimiter) {
+					add(string.substring(start, i), list);
+					start = i + 1;
+					if (limit > 0 && list.size() == limit - 1) {
+						break;
+					}
+
+					continue;
 				}
 
-				list.add(s);
+				if (ch == '\\') {
+					escaped = true;
+					continue;
+				}
 			}
+
+			add(string.substring(start), list);
+
 			return list;
+		}
+
+		private void add(String str, List<String> list) {
+			str = str.trim();
+
+			if (unescape) {
+				str = VCardPropertyScribe.unescape(str);
+			}
+
+			list.add(str);
 		}
 	}
 
@@ -763,7 +773,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		if (value.length() == 0) {
 			return new ArrayList<String>(0);
 		}
-		return split(value, ",").unescape(true).split();
+		return splitter(',').unescape(true).split(value);
 	}
 
 	/**
@@ -818,7 +828,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @return the parsed values (e.g. ["one", "two", "three;four,five"]
 	 */
 	protected static SemiStructuredIterator semistructured(String value, int limit) {
-		List<String> split = split(value, ";").unescape(true).limit(limit).split();
+		List<String> split = splitter(';').unescape(true).limit(limit).split(value);
 		return new SemiStructuredIterator(split.iterator());
 	}
 
@@ -830,7 +840,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * "three"], "four,five;six"])
 	 */
 	protected static StructuredIterator structured(String value) {
-		List<String> split = split(value, ";").split();
+		List<String> split = splitter(';').split(value);
 		List<List<String>> components = new ArrayList<List<String>>(split.size());
 		for (String s : split) {
 			components.add(list(s));
