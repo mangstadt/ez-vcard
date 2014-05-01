@@ -264,70 +264,71 @@ public class VcardContactUtil {
     }
 
     public static ContentValues structuredNameToContentValues(VCard vCard) {
+    	if (vCard == null){
+    		return null;
+    	}
 
         ContentValues contentValues = new ContentValues();
-        if (vCard != null) {
-            String firstName = (vCard.getStructuredName()) != null ? vCard.getStructuredName().getGiven() : null;
-            String lastName = vCard.getStructuredName() != null ? vCard.getStructuredName().getFamily() : null;
-            String formattedName = (vCard.getFormattedName() != null) ? vCard.getFormattedName().getValue() : null;
-            String namePrefix = null;
-            String nameSuffix = null;
-            String firstPhoneticName = null;
-            String lastPhoneticName = null;
-            String displayName;
+        String firstName = (vCard.getStructuredName()) != null ? vCard.getStructuredName().getGiven() : null;
+        String lastName = vCard.getStructuredName() != null ? vCard.getStructuredName().getFamily() : null;
+        String formattedName = (vCard.getFormattedName() != null) ? vCard.getFormattedName().getValue() : null;
+        String namePrefix = null;
+        String nameSuffix = null;
+        String firstPhoneticName = null;
+        String lastPhoneticName = null;
+        String displayName;
 
-            RawProperty firstphoneticNameprop = vCard.getExtendedProperty("X-PHONETIC-FIRST-NAME");
-            if (firstphoneticNameprop != null) {
-                firstPhoneticName = firstphoneticNameprop.getValue();
+        RawProperty firstphoneticNameprop = vCard.getExtendedProperty("X-PHONETIC-FIRST-NAME");
+        if (firstphoneticNameprop != null) {
+            firstPhoneticName = firstphoneticNameprop.getValue();
+        }
+        RawProperty lastPhoneticNameProp = vCard.getExtendedProperty("X-PHONETIC-LAST-NAME");
+        if (lastPhoneticNameProp != null) {
+            lastPhoneticName = lastPhoneticNameProp.getValue();
+        }
+        //For now always get the first prefix
+        if (vCard.getStructuredName() != null) {
+            List<String> prefixes = vCard.getStructuredName().getPrefixes();
+            List<String> suffixes = vCard.getStructuredName().getSuffixes();
+            if (prefixes != null && prefixes.size() > 0) {
+                namePrefix = vCard.getStructuredName().getPrefixes().get(0);
             }
-            RawProperty lastPhoneticNameProp = vCard.getExtendedProperty("X-PHONETIC-LAST-NAME");
-            if (lastPhoneticNameProp != null) {
-                lastPhoneticName = lastPhoneticNameProp.getValue();
+            if (suffixes != null && suffixes.size() > 0) {
+                nameSuffix = vCard.getStructuredName().getSuffixes().get(0);
             }
-            //For now always get the first prefix
-            if (vCard.getStructuredName() != null) {
-                List<String> prefixes = vCard.getStructuredName().getPrefixes();
-                List<String> suffixes = vCard.getStructuredName().getSuffixes();
-                if (prefixes != null && prefixes.size() > 0) {
-                    namePrefix = vCard.getStructuredName().getPrefixes().get(0);
-                }
-                if (suffixes != null && suffixes.size() > 0) {
-                    nameSuffix = vCard.getStructuredName().getSuffixes().get(0);
-                }
-            }
+        }
 
-            if (TextUtils.isEmpty(formattedName)) {
-                displayName = VcardContactUtil.join(namePrefix, firstName, null, lastName, nameSuffix, true, false, true);
-            } else {
-                displayName = formattedName;
-            }
-            // Setting MIMETYPE
-            contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-            // Setting GIVEN_NAME
-            if (!TextUtils.isEmpty(firstName)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, firstName);
-            }
-            // Setting etting FAMILY_NAME
-            if (!TextUtils.isEmpty(lastName)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, lastName);
-            }
-            // Setting PREFIX
-            if (!TextUtils.isEmpty(namePrefix)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PREFIX, namePrefix);
-            }
-            // Setting SUFFIX
-            if (!TextUtils.isEmpty(nameSuffix)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredName.SUFFIX, nameSuffix);
-            }
-            if (!TextUtils.isEmpty(firstPhoneticName)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_GIVEN_NAME, firstPhoneticName);
-            }
-            if (!TextUtils.isEmpty(lastPhoneticName)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_FAMILY_NAME, lastPhoneticName);
-            }
-            if (!TextUtils.isEmpty(displayName)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, displayName);
-            }
+        if (TextUtils.isEmpty(formattedName)) {
+            displayName = VcardContactUtil.join(namePrefix, firstName, null, lastName, nameSuffix, true, false, true);
+        } else {
+            displayName = formattedName;
+        }
+        // Setting MIMETYPE
+        contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
+        // Setting GIVEN_NAME
+        if (!TextUtils.isEmpty(firstName)) {
+            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, firstName);
+        }
+        // Setting etting FAMILY_NAME
+        if (!TextUtils.isEmpty(lastName)) {
+            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, lastName);
+        }
+        // Setting PREFIX
+        if (!TextUtils.isEmpty(namePrefix)) {
+            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PREFIX, namePrefix);
+        }
+        // Setting SUFFIX
+        if (!TextUtils.isEmpty(nameSuffix)) {
+            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.SUFFIX, nameSuffix);
+        }
+        if (!TextUtils.isEmpty(firstPhoneticName)) {
+            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_GIVEN_NAME, firstPhoneticName);
+        }
+        if (!TextUtils.isEmpty(lastPhoneticName)) {
+            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_FAMILY_NAME, lastPhoneticName);
+        }
+        if (!TextUtils.isEmpty(displayName)) {
+            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, displayName);
         }
         return contentValues.size() > 1 ? contentValues : null;
     }
@@ -513,28 +514,30 @@ public class VcardContactUtil {
     }
 
     public static String getDisplayName(VCard vCard) {
+    	if (vCard == null){
+    		return null;
+    	}
+
         String displayName = null;
-        if (vCard != null) {
-            String namePrefix = null;
-            String nameSuffix = null;
-            String formattedName = (vCard.getFormattedName() != null) ? vCard.getFormattedName().getValue() : null;
-            if (vCard.getStructuredName() != null) {
-                String firstName = vCard.getStructuredName().getGiven();
-                String lastName = vCard.getStructuredName().getFamily();
-                //For now always get the first prefix
-                List<String> prefixes = vCard.getStructuredName().getPrefixes();
-                List<String> suffixes = vCard.getStructuredName().getSuffixes();
-                if (prefixes != null && prefixes.size() > 0) {
-                    namePrefix = vCard.getStructuredName().getPrefixes().get(0);
-                }
-                if (suffixes != null && suffixes.size() > 0) {
-                    nameSuffix = vCard.getStructuredName().getSuffixes().get(0);
-                }
-                if (TextUtils.isEmpty(formattedName)) {
-                    displayName = join(namePrefix, firstName, null, lastName, nameSuffix, true, false, true);
-                } else {
-                    displayName = formattedName;
-                }
+        String namePrefix = null;
+        String nameSuffix = null;
+        String formattedName = (vCard.getFormattedName() != null) ? vCard.getFormattedName().getValue() : null;
+        if (vCard.getStructuredName() != null) {
+            String firstName = vCard.getStructuredName().getGiven();
+            String lastName = vCard.getStructuredName().getFamily();
+            //For now always get the first prefix
+            List<String> prefixes = vCard.getStructuredName().getPrefixes();
+            List<String> suffixes = vCard.getStructuredName().getSuffixes();
+            if (prefixes != null && prefixes.size() > 0) {
+                namePrefix = vCard.getStructuredName().getPrefixes().get(0);
+            }
+            if (suffixes != null && suffixes.size() > 0) {
+                nameSuffix = vCard.getStructuredName().getSuffixes().get(0);
+            }
+            if (TextUtils.isEmpty(formattedName)) {
+                displayName = join(namePrefix, firstName, null, lastName, nameSuffix, true, false, true);
+            } else {
+                displayName = formattedName;
             }
         }
         return displayName;
