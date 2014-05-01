@@ -32,5 +32,6 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.googlecode.ez-vcard:ez-vcard:0.9.3'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
