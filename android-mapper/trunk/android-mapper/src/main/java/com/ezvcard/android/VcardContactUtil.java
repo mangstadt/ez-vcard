@@ -42,7 +42,7 @@ import java.util.*;
  * VcardContactUtil.. This class does a lot of mapping between the vcard contact
  * data types to Android ContactsContract datatypes.
  *
- * @author Pratyush
+ * @author Pratyush,Julien Garrigou
  */
 
 public class VcardContactUtil {
