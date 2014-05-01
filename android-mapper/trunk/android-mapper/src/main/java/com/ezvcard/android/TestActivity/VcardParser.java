@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.ezvcard.android.AndroidCustomFieldScribe;
 import com.ezvcard.android.ContactOperations;
 import com.ezvcard.android.R;
+
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.text.VCardReader;
@@ -101,7 +104,7 @@ public class VcardParser extends ActionBarActivity {
 
     private void parseVcardList() throws IOException {
         File file = new File(cacheFolderLocation);
-        List<VCard> vCards = Ezvcard.parse(file).all();
+        List<VCard> vCards = Ezvcard.parse(file).register(new AndroidCustomFieldScribe()).all();
         ContactOperations opeartions = new ContactOperations(getApplicationContext(), "Phone", "com.motorola.android.buacontactadapter");
         for (VCard card : vCards) {
             opeartions.insertContact(card, new ContactOperations.ContactsRestoreCallback() {
@@ -126,6 +129,7 @@ public class VcardParser extends ActionBarActivity {
     private void parseVcardStream() throws IOException {
         Reader reader = new FileReader(new File(cacheFolderLocation));
         final VCardReader vCardReader = new VCardReader(reader);
+        vCardReader.registerScribe(new AndroidCustomFieldScribe());
         final ContactOperations opeartions = new ContactOperations(getApplicationContext());
         try {
             VCard vCard = null;

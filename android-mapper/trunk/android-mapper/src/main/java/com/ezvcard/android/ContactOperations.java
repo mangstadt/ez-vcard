@@ -5,7 +5,6 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
-import android.net.Uri;
 import android.os.Build;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
@@ -203,48 +202,44 @@ public class ContactOperations {
 
             // handle Android Custom fields..This is only valid for Android generated Vcards. As the Android would
             // generate NickName, ContactEvents other than Birthday and RelationShip with this "X-ANDROID-CUSTOM" name
+            
+            List<AndroidCustomField> customFields = vCard.getProperties(AndroidCustomField.class);
+            for (AndroidCustomField customField : customFields) {
+    			List<String> values = customField.getValues();
+    			if (values.isEmpty()) {
+    				continue;
+    			}
 
-            if (rawPropertyNames.contains("X-ANDROID-CUSTOM")) {
-                List<String> valuesForCustomFields = VcardContactUtil.getValuesForCustomFields(rawProperties);
-                for (String value : valuesForCustomFields) {
-                    List<String> valueList = new ArrayList<String>(Arrays.asList(value.split(";")));
-                    if (valueList.size() > 0) {
-                        if (valueList.get(0).contains("vnd.android.cursor")) {
-                            //Determine the Contact Data type from the URI for custom fields
-                            Uri uri = Uri.parse(valueList.get(0));
-                            String type = VcardContactUtil.getTypeForCustomVcardField(uri);
+    			//@formatter:off
+    			ContentProviderOperation op = null;
+    			if (customField.isNickname()){
+    				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+    				.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+    				.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
+    				.withValue(ContactsContract.CommonDataKinds.Nickname.NAME, values.get(0))
+    				.build();
+    			} else if (customField.isContactEvent()){
+    				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+    				.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+    				.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
+    				.withValue(ContactsContract.CommonDataKinds.Event.START_DATE, values.get(0))
+    				.withValue(ContactsContract.CommonDataKinds.Event.TYPE, values.get(1))
+    				.build();
+    			} else if (customField.isRelation()){
+    				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+    				.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+    				.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE)
+    				.withValue(ContactsContract.CommonDataKinds.Relation.NAME, values.get(0))
+    				.withValue(ContactsContract.CommonDataKinds.Relation.TYPE, values.get(1))
+    				.build();
+    			}
+    			//@formatter:on
 
-                            if (type != null) {
+    			if (op != null) {
+    				ops.add(op);
+    			}
+    		}
 
-                                if (type.equals(VcardContactUtil.CUSTOM_TYPE_NICKNAME)) {
-                                    ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
-                                            .withValue(ContactsContract.CommonDataKinds.Nickname.NAME, valueList.get(1))
-                                            .build());
-
-                                } else if (type.equals(VcardContactUtil.CUSTOM_TYPE_CONTACT_EVENT)) {
-                                    // all other Contact events fall under custom except Birthday
-                                    ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
-                                            .withValue(ContactsContract.CommonDataKinds.Event.START_DATE, valueList.get(1))
-                                            .withValue(ContactsContract.CommonDataKinds.Event.TYPE, valueList.get(2))
-                                            .build());
-                                } else if (type.equals(VcardContactUtil.CUSTOM_TYPE_RELATION)) {
-                                    // Relation ship ..
-                                    ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE)
-                                            .withValue(ContactsContract.CommonDataKinds.Relation.NAME, valueList.get(1))
-                                            .withValue(ContactsContract.CommonDataKinds.Relation.TYPE, valueList.get(2))
-                                            .build());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             // handle Iphone kinda of group properties. which are grouped togethar.
 
             Map<String, List<VcardItemGroupProperties>> orderedByGroupMap = orderVcardByGroup(rawProperties);
