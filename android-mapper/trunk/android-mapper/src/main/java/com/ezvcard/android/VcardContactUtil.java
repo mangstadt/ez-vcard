@@ -111,11 +111,6 @@ public class VcardContactUtil {
     public static final int ABDATE = 1;
     public static final int ABRELATEDNAMES = 2;
 
-    public static List<String> supportedIMList = new ArrayList<String>(Arrays.asList("X-AIM", "X-ICQ",
-            "X-GOOGLE-TALK", "X-JABBER", "X-MSN", "X-YAHOO", "X-TWITTER"
-            , "X-SKYPE", "X-SKYPE-USERNAME", "X-MS-IMADDRESS", "X-QQ"));
-
-
     public static <T> List<T> union(List<T> list1, List<T> list2) {
         Set<T> set = new HashSet<T>();
         set.addAll(list1);

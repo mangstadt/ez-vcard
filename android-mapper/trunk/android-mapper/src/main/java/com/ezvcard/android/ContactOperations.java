@@ -1,6 +1,7 @@
 package com.ezvcard.android;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,6 +112,8 @@ public class ContactOperations {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         rawContactID = ops.size();
         contactsRestoreCallback.processing();
+        
+        // TODO handle Raw properties - Raw properties include various extension which start with "X-" like X-ASSISTANT, X-AIM, X-SPOUSE
 
         insertAccountInfo(ops);
         insertName(vCard, ops);
@@ -118,103 +121,14 @@ public class ContactOperations {
         insertPhones(vCard, ops);
         insertEmails(vCard, ops);
         insertAddresses(vCard, ops);
-
-        // handle Raw properties - Raw properties include various extension which start with X-
-        // like X-ASSISTANT, X-AIM, X-SPOUSE
-
-        // get all the extended properties from the vcard parser
-        List<RawProperty> rawProperties = vCard.getExtendedProperties();
-        //Get just the propertynames from the rawproperties
-        List<String> rawPropertyNames = VcardContactUtil.getPropertyNamesFromRawProperties(rawProperties);
-        // Intersect the Instant Messaging properties set from the all of the RawProperties
-        List<String> Ims = VcardContactUtil.intersection(rawPropertyNames, VcardContactUtil.supportedIMList);
-        //Handle Im insertions here
-
-        for (String Im : Ims) {
-        	if (Im == null){
-        		continue;
-        	}
-
-            // now get the actual raw property
-            RawProperty rawProperty = vCard.getExtendedProperty(Im);
-            if (rawProperty == null){
-            	continue;
-            }
-
-            String imAddress = rawProperty.getValue();
-            int protocolType = VcardContactUtil.getIMTypeFromName(Im);
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)
-                    .withValue(ContactsContract.CommonDataKinds.Im.DATA, imAddress)
-                    .withValue(ContactsContract.CommonDataKinds.Im.PROTOCOL, protocolType)
-                    .build());
-        }
-
-        //Lets handle IMS for different kind of vcards other than ANdroid - Here probably the source could be IPhone or any other device
         insertIms(vCard, ops);
 
         // handle Android Custom fields..This is only valid for Android generated Vcards. As the Android would
         // generate NickName, ContactEvents other than Birthday and RelationShip with this "X-ANDROID-CUSTOM" name
         insertCustomFields(vCard, ops);
 
-        // handle Iphone kinda of group properties. which are grouped togethar.
-        Map<String, List<VcardItemGroupProperties>> orderedByGroupMap = orderVcardByGroup(rawProperties);
-
-        for (Map.Entry<String, List<VcardItemGroupProperties>> property : orderedByGroupMap.entrySet()) {
-            List<VcardItemGroupProperties> itemGroupProperties = property.getValue();
-            if (itemGroupProperties == null || itemGroupProperties.size() < 2) {
-            	continue;
-            }
-
-            String label = null;
-            String val = null;
-            int mime = 0;
-            for (VcardItemGroupProperties vcardproperty : itemGroupProperties) {
-                String dataType = vcardproperty.getPropname();
-                if (dataType.equals("X-ABDATE")) {         //label
-                    label = vcardproperty.getProperty_value(); //date
-                    mime = VcardContactUtil.ABDATE;
-                } else if (dataType.equals("X-ABRELATEDNAMES")) {
-                    label = vcardproperty.getProperty_value(); //name
-                    mime = VcardContactUtil.ABRELATEDNAMES;
-                } else if (dataType.equals("X-ABLabel")) {
-                    val = vcardproperty.getProperty_value(); // type of value ..Birthday,anniversary
-                }
-            }
-            switch (mime) {
-                case VcardContactUtil.ABDATE:
-                    if (!TextUtils.isEmpty(label) && !TextUtils.isEmpty(val)) {
-                        int type = VcardContactUtil.getDateType(val);
-                        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
-                                .withValue(ContactsContract.CommonDataKinds.Event.START_DATE, label)
-                                .withValue(ContactsContract.CommonDataKinds.Event.TYPE, type)
-                                .build());
-                    }
-                    break;
-                case VcardContactUtil.ABRELATEDNAMES:
-                    if (val != null) {
-                        if (val.equals("Nickname")) {
-                            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
-                                    .withValue(ContactsContract.CommonDataKinds.Nickname.NAME, label)
-                                    .build());
-                        } else {
-                            int type = VcardContactUtil.getNameType(val);
-                            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE)
-                                    .withValue(ContactsContract.CommonDataKinds.Relation.NAME, label)
-                                    .withValue(ContactsContract.CommonDataKinds.Relation.TYPE, type)
-                                    .build());
-                        }
-                    }
-                    break;
-            }
-        }
+        // handle Iphone kinda of group properties. which are grouped together.
+        insertGroupedProperties(vCard, ops);
         
         //TODO Vcard 4.0 may have more than 1 birthday so lets get the list and always use the very first one ..
         //TODO Should we handle date formats ...???
@@ -449,6 +363,23 @@ public class ContactOperations {
     }
     
     private void insertIms(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    	//handle extended properties
+		String[] supportedIMList = { "X-AIM", "X-ICQ", "X-GOOGLE-TALK", "X-JABBER", "X-MSN", "X-YAHOO", "X-TWITTER", "X-SKYPE", "X-SKYPE-USERNAME", "X-MS-IMADDRESS", "X-QQ" };
+        for (String propertyName : supportedIMList) {
+            List<RawProperty> rawProperties = vCard.getExtendedProperties(propertyName);
+            for (RawProperty rawProperty : rawProperties){
+	            String imAddress = rawProperty.getValue();
+	            int protocolType = VcardContactUtil.getIMTypeFromName(propertyName);
+	            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Im.DATA, imAddress)
+                    .withValue(ContactsContract.CommonDataKinds.Im.PROTOCOL, protocolType)
+                    .build());
+	        }
+        }
+
+        //handle IMPP properties
         List<Impp> imppList = vCard.getImpps();
         for (Impp impp : imppList) {
         	if (impp == null){
@@ -501,6 +432,66 @@ public class ContactOperations {
 				ops.add(op);
 			}
 		}
+    }
+    
+    private void insertGroupedProperties(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    	List<RawProperty> extendedProperties = vCard.getExtendedProperties();
+        Map<String, List<RawProperty>> orderedByGroupMap = orderVcardByGroup(extendedProperties);
+
+        for (Map.Entry<String, List<RawProperty>> property : orderedByGroupMap.entrySet()) {
+            List<RawProperty> itemGroupProperties = property.getValue();
+            if (itemGroupProperties.size() < 2) {
+            	continue;
+            }
+
+            String label = null;
+            String val = null;
+            int mime = 0;
+            for (RawProperty vcardproperty : itemGroupProperties) {
+                String dataType = vcardproperty.getPropertyName();
+                if (dataType.equals("X-ABDATE")) {         //label
+                    label = vcardproperty.getValue(); //date
+                    mime = VcardContactUtil.ABDATE;
+                } else if (dataType.equals("X-ABRELATEDNAMES")) {
+                    label = vcardproperty.getValue(); //name
+                    mime = VcardContactUtil.ABRELATEDNAMES;
+                } else if (dataType.equals("X-ABLabel")) {
+                    val = vcardproperty.getValue(); // type of value ..Birthday,anniversary
+                }
+            }
+            switch (mime) {
+                case VcardContactUtil.ABDATE:
+                    if (!TextUtils.isEmpty(label) && !TextUtils.isEmpty(val)) {
+                        int type = VcardContactUtil.getDateType(val);
+                        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+                                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
+                                .withValue(ContactsContract.CommonDataKinds.Event.START_DATE, label)
+                                .withValue(ContactsContract.CommonDataKinds.Event.TYPE, type)
+                                .build());
+                    }
+                    break;
+                case VcardContactUtil.ABRELATEDNAMES:
+                    if (val != null) {
+                        if (val.equals("Nickname")) {
+                            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+                                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
+                                    .withValue(ContactsContract.CommonDataKinds.Nickname.NAME, label)
+                                    .build());
+                        } else {
+                            int type = VcardContactUtil.getNameType(val);
+                            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+                                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE)
+                                    .withValue(ContactsContract.CommonDataKinds.Relation.NAME, label)
+                                    .withValue(ContactsContract.CommonDataKinds.Relation.TYPE, type)
+                                    .build());
+                        }
+                    }
+                    break;
+            }
+        }
     }
     
     private void insertBirthdays(VCard vCard, ArrayList<ContentProviderOperation> ops){
@@ -607,8 +598,8 @@ public class ContactOperations {
     }
 
 
-    private Map<String, List<VcardItemGroupProperties>> orderVcardByGroup(List<RawProperty> rawProperties) {
-        Map<String, List<VcardItemGroupProperties>> groupPropertiesMap = new HashMap<String, List<VcardItemGroupProperties>>();
+    private Map<String, List<RawProperty>> orderVcardByGroup(List<RawProperty> rawProperties) {
+        Map<String, List<RawProperty>> groupPropertiesMap = new HashMap<String, List<RawProperty>>();
 
         for (RawProperty rawProperty : rawProperties) {
             String group = rawProperty.getGroup();
@@ -616,17 +607,14 @@ public class ContactOperations {
             	continue;
             }
 
-            List<VcardItemGroupProperties> groupPropertiesList = groupPropertiesMap.get(group);
+            List<RawProperty> groupPropertiesList = groupPropertiesMap.get(group);
             if (groupPropertiesList == null) {
-                groupPropertiesList = new ArrayList<VcardItemGroupProperties>();
+                groupPropertiesList = new ArrayList<RawProperty>();
                 groupPropertiesMap.put(group, groupPropertiesList);
             }
-
-            VcardItemGroupProperties groupProperties = new VcardItemGroupProperties();
-            groupProperties.setPropname(rawProperty.getPropertyName());
-            groupProperties.setProperty_value(rawProperty.getValue());
-            groupPropertiesList.add(groupProperties);
+            groupPropertiesList.add(rawProperty);
         }
+
         return groupPropertiesMap;
     }
 }
