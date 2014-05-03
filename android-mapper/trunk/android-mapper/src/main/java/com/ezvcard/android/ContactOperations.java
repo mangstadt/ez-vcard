@@ -438,8 +438,7 @@ public class ContactOperations {
     	List<RawProperty> extendedProperties = vCard.getExtendedProperties();
         Map<String, List<RawProperty>> orderedByGroupMap = orderVcardByGroup(extendedProperties);
 
-        for (Map.Entry<String, List<RawProperty>> property : orderedByGroupMap.entrySet()) {
-            List<RawProperty> itemGroupProperties = property.getValue();
+        for (List<RawProperty> itemGroupProperties : orderedByGroupMap.values()) {
             if (itemGroupProperties.size() < 2) {
             	continue;
             }
