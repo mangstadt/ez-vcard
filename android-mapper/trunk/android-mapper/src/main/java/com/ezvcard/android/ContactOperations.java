@@ -1,5 +1,11 @@
 package com.ezvcard.android;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import android.annotation.TargetApi;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
@@ -11,9 +17,22 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import ezvcard.VCard;
-import ezvcard.property.*;
-
-import java.util.*;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.TelephoneType;
+import ezvcard.property.Address;
+import ezvcard.property.Birthday;
+import ezvcard.property.Email;
+import ezvcard.property.FormattedName;
+import ezvcard.property.Impp;
+import ezvcard.property.Nickname;
+import ezvcard.property.Note;
+import ezvcard.property.Organization;
+import ezvcard.property.Photo;
+import ezvcard.property.RawProperty;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Telephone;
+import ezvcard.property.Title;
+import ezvcard.property.Url;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -333,12 +352,13 @@ public class ContactOperations {
         		continue;
         	}
 
-            String type = telephone.getParameters().getType();
+        	Set<TelephoneType> types = telephone.getTypes();
+            TelephoneType type = types.isEmpty() ? null : types.iterator().next();
             int phoneKind = VcardContactUtil.getPhoneType(type);
             ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, telephone.getText())
+                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, telephone.getText()) //TODO could be a URI
                 .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, phoneKind)
                 .build());
         }
@@ -351,8 +371,9 @@ public class ContactOperations {
         		continue;
         	}
 
-            String emailType = email.getParameters().getType();
-            int emailKind = VcardContactUtil.getEmailType(emailType);
+        	Set<EmailType> types = email.getTypes();
+            EmailType type = types.isEmpty() ? null : types.iterator().next();
+            int emailKind = VcardContactUtil.getEmailType(type);
             ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)

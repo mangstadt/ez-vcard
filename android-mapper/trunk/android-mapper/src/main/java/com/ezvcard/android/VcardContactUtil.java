@@ -3,15 +3,19 @@ package com.ezvcard.android;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import android.net.Uri;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import ezvcard.VCard;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Birthday;
 import ezvcard.property.RawProperty;
 
@@ -52,6 +56,44 @@ import ezvcard.property.RawProperty;
  */
 
 public class VcardContactUtil {
+    private static final Map<TelephoneType, Integer> phoneTypeMappings;
+    static {
+    	Map<TelephoneType, Integer> m = new HashMap<TelephoneType, Integer>();
+    	m.put(TelephoneType.BBS, ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM);
+        m.put(TelephoneType.CAR, ContactsContract.CommonDataKinds.Phone.TYPE_CAR);
+        m.put(TelephoneType.CELL, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
+        m.put(TelephoneType.FAX, ContactsContract.CommonDataKinds.Phone.TYPE_FAX_HOME);
+        m.put(TelephoneType.HOME, ContactsContract.CommonDataKinds.Phone.TYPE_HOME);
+        m.put(TelephoneType.ISDN, ContactsContract.CommonDataKinds.Phone.TYPE_ISDN);
+        m.put(TelephoneType.MODEM, ContactsContract.CommonDataKinds.Phone.TYPE_OTHER);
+        m.put(TelephoneType.PAGER, ContactsContract.CommonDataKinds.Phone.TYPE_PAGER);
+        m.put(TelephoneType.MSG, ContactsContract.CommonDataKinds.Phone.TYPE_MMS);
+        m.put(TelephoneType.PCS, ContactsContract.CommonDataKinds.Phone.TYPE_OTHER);
+        m.put(TelephoneType.TEXT, ContactsContract.CommonDataKinds.Phone.TYPE_MMS);
+        m.put(TelephoneType.TEXTPHONE, ContactsContract.CommonDataKinds.Phone.TYPE_MMS);
+        m.put(TelephoneType.VIDEO, ContactsContract.CommonDataKinds.Phone.TYPE_OTHER);
+        m.put(TelephoneType.WORK, ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
+        m.put(TelephoneType.VOICE, ContactsContract.CommonDataKinds.Phone.TYPE_OTHER);
+    	phoneTypeMappings = Collections.unmodifiableMap(m);
+    }
+    
+    private static final Map<String, Integer> websiteTypeMappings;
+    static {
+    	Map<String, Integer> m = new HashMap<String, Integer>();
+    	m.put("home", ContactsContract.CommonDataKinds.Website.TYPE_HOME);
+    	m.put("work", ContactsContract.CommonDataKinds.Website.TYPE_WORK);
+    	m.put("homepage", ContactsContract.CommonDataKinds.Website.TYPE_HOMEPAGE);
+    	m.put("profile", ContactsContract.CommonDataKinds.Website.TYPE_PROFILE);
+    	websiteTypeMappings = Collections.unmodifiableMap(m);
+    }
+    
+    private static final Map<EmailType, Integer> emailTypeMappings;
+    static {
+    	Map<EmailType, Integer> m = new HashMap<EmailType, Integer>();
+        m.put(EmailType.HOME, ContactsContract.CommonDataKinds.Email.TYPE_HOME);
+        m.put(EmailType.WORK, ContactsContract.CommonDataKinds.Email.TYPE_WORK);
+        emailTypeMappings = Collections.unmodifiableMap(m);
+    }
 
     public static final String CUSTOM_TYPE_NICKNAME = "nickname";
     public static final String CUSTOM_TYPE_CONTACT_EVENT = "contact_event";
@@ -103,46 +145,14 @@ public class VcardContactUtil {
         return propertynames;
     }
 
-    public static List<String> getValuesForCustomFields(List<RawProperty> rawProperties) {
-        List<String> values = new ArrayList<String>();
-        for (RawProperty rawProperty : rawProperties) {
-            if (rawProperty.getPropertyName().equals("X-ANDROID-CUSTOM")) {
-                values.add(rawProperty.getValue());
-            }
-        }
-        return values;
-    }
-
-
-    public static String getTypeForCustomVcardField(Uri uri) {
-        List<String> pathSegments = uri.getPathSegments();
-        if (pathSegments != null && pathSegments.size() >= 2) {
-            if (pathSegments.get(1).equals("nickname")) {
-                return CUSTOM_TYPE_NICKNAME;
-            } else if (pathSegments.get(1).equals("contact_event")) {
-                return CUSTOM_TYPE_CONTACT_EVENT;
-            } else if (pathSegments.get(1).equals("relation")) {
-                return CUSTOM_TYPE_RELATION;
-            }
-        }
-        return null;
-    }
-
     public static int getWebSiteType(String type) {
-        if (type == null) {
-            return ContactsContract.CommonDataKinds.Website.TYPE_CUSTOM;
-        }
-        if (type.equalsIgnoreCase("HOME")) {
-            return ContactsContract.CommonDataKinds.Website.TYPE_HOME;
-        } else if (type.equalsIgnoreCase("WORK")) {
-            return ContactsContract.CommonDataKinds.Website.TYPE_WORK;
-        } else if (type.equalsIgnoreCase("HOMEPAGE")) {
-            return ContactsContract.CommonDataKinds.Website.TYPE_HOMEPAGE;
-        } else if (type.equalsIgnoreCase("PROFILE")) {
-            return ContactsContract.CommonDataKinds.Website.TYPE_PROFILE;
-        } else {
-            return ContactsContract.CommonDataKinds.Website.TYPE_CUSTOM;
-        }
+    	if (type == null){
+    		return ContactsContract.CommonDataKinds.Website.TYPE_CUSTOM;
+    	}
+
+    	type = type.toLowerCase();
+    	Integer value = websiteTypeMappings.get(type);
+    	return (value == null) ? ContactsContract.CommonDataKinds.Website.TYPE_CUSTOM : value;
     }
 
     public static int getDateType(String type) {
@@ -150,7 +160,7 @@ public class VcardContactUtil {
             return ContactsContract.CommonDataKinds.Event.TYPE_OTHER;
         }
         if (type.contains("Anniversary")) {
-            return ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY;
+            return ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY; //TODO parse "ANNIVERSARY" vCard property
         } else if (type.contains("Other")) {
             return ContactsContract.CommonDataKinds.Event.TYPE_OTHER;
         } else {
@@ -187,12 +197,9 @@ public class VcardContactUtil {
         } else {
             return ContactsContract.CommonDataKinds.Relation.TYPE_CUSTOM;
         }
-
-
     }
 
     public static int getIMTypeFromName(String IMName) {
-
         if (IMName.equals("X-AIM") || IMName.equals(AIM)) {
             return ContactsContract.CommonDataKinds.Im.PROTOCOL_AIM;
         } else if (IMName.equals("X-ICQ") || IMName.equals(ICQ)) {
@@ -214,59 +221,22 @@ public class VcardContactUtil {
         }
     }
 
-    public static int getPhoneType(String type) {
-
+    public static int getPhoneType(TelephoneType type) {
         if (type == null) {
             return ContactsContract.CommonDataKinds.Phone.TYPE_OTHER;
         }
-
-        if (type.equals("BBS")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM;
-        } else if (type.equals("CAR")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_CAR;
-        } else if (type.equals("CELL")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
-        } else if (type.equals("FAX")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_FAX_HOME;
-        } else if (type.equals("HOME")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_HOME;
-        } else if (type.equals("ISDN")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_ISDN;
-        } else if (type.equals("MODEM")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_OTHER;
-        } else if (type.equals("PAGER")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_PAGER;
-        } else if (type.equals("MSG")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_MMS;
-        } else if (type.equals("PCS")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_OTHER;
-        } else if (type.equals("TEXT")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_MMS;
-        } else if (type.equals("TEXTPHONE")) { //Supported only in vcard4.0
-            return ContactsContract.CommonDataKinds.Phone.TYPE_MMS;
-        } else if (type.equals("VIDEO")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_OTHER;
-        } else if (type.equals("WORK")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_WORK;
-        } else if (type.equals("VOICE")) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_OTHER;
-        } else {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_OTHER;
-        }
-
+        
+        Integer value = phoneTypeMappings.get(type);
+    	return (value == null) ? ContactsContract.CommonDataKinds.Phone.TYPE_OTHER : value;
     }
 
-    public static int getEmailType(String type) {
+    public static int getEmailType(EmailType type) {
         if (type == null) {
             return ContactsContract.CommonDataKinds.Email.TYPE_OTHER;
         }
-        if (type.equals("WORK")) {
-            return ContactsContract.CommonDataKinds.Email.TYPE_WORK;
-        } else if (type.equals("HOME")) {
-            return ContactsContract.CommonDataKinds.Email.TYPE_HOME;
-        } else {
-            return ContactsContract.CommonDataKinds.Email.TYPE_OTHER;
-        }
+
+        Integer value = emailTypeMappings.get(type);
+    	return (value == null) ? ContactsContract.CommonDataKinds.Email.TYPE_OTHER : value;
     }
 
     /**
