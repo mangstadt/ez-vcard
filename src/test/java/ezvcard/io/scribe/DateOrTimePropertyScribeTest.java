@@ -1,6 +1,5 @@
 package ezvcard.io.scribe;
 
-import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -157,7 +156,8 @@ public class DateOrTimePropertyScribeTest {
 
 	@Test
 	public void parseXml() {
-		for (String tag : each("date", "date-time", "date-and-or-time")) {
+		String tags[] = { "date", "date-time", "date-and-or-time" };
+		for (String tag : tags) {
 			sensei.assertParseXml("<" + tag + ">" + dateStr + "</" + tag + ">").run(is(withDate));
 			sensei.assertParseXml("<" + tag + ">" + dateTimeStr + "</" + tag + ">").run(is(withDateTime));
 			sensei.assertParseXml("<" + tag + ">" + partialDate.toDateAndOrTime(false) + "</" + tag + ">").run(is(withPartialDate));

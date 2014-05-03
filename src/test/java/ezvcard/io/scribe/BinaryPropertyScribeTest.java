@@ -1,6 +1,5 @@
 package ezvcard.io.scribe;
 
-import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -167,7 +166,7 @@ public class BinaryPropertyScribeTest {
 	public void parseText_binary() {
 		//2.1, 3.0
 		{
-			VCardVersion versions[] = each(VCardVersion.V2_1, VCardVersion.V3_0);
+			VCardVersion versions[] = { VCardVersion.V2_1, VCardVersion.V3_0 };
 
 			//with TYPE
 			{
