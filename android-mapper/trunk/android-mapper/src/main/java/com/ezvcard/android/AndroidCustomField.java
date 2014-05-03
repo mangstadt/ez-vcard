@@ -1,7 +1,11 @@
 package com.ezvcard.android;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import ezvcard.VCard;
+import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.property.VCardProperty;
 
 /**
@@ -10,11 +14,37 @@ import ezvcard.property.VCardProperty;
  */
 public class AndroidCustomField extends VCardProperty {
 	private String type;
-	private List<String> values;
+	private boolean dir;
+	private List<String> values = new ArrayList<String>();
 
-	public AndroidCustomField(String type, List<String> values) {
-		this.type = type;
-		this.values = values;
+	/**
+	 * Creates an "item" field.
+	 * @param type the type
+	 * @param value the value
+	 * @return the property
+	 */
+	public static AndroidCustomField item(String type, String value) {
+		AndroidCustomField property = new AndroidCustomField();
+		property.dir = false;
+		property.type = type;
+		property.values.add(value);
+		return property;
+	}
+
+	/**
+	 * Creates a "dir" field.
+	 * @param type the type
+	 * @param values the values
+	 * @return the property
+	 */
+	public static AndroidCustomField dir(String type, String... values) {
+		AndroidCustomField property = new AndroidCustomField();
+		property.dir = true;
+		property.type = type;
+		for (String value : values) {
+			property.values.add(value);
+		}
+		return property;
 	}
 
 	public String getType() {
@@ -29,19 +59,41 @@ public class AndroidCustomField extends VCardProperty {
 		return values;
 	}
 
-	public void setValues(List<String> values) {
-		this.values = values;
+	public boolean isDir() {
+		return dir;
+	}
+
+	public void setDir(boolean dir) {
+		this.dir = dir;
+	}
+
+	public boolean isItem() {
+		return !isDir();
+	}
+
+	public void setItem(boolean item) {
+		setDir(!item);
 	}
 
 	public boolean isNickname() {
-		return (type == null) ? false : "nickname".equals(type);
+		return "nickname".equals(type);
 	}
 
 	public boolean isContactEvent() {
-		return (type == null) ? false : "contact_event".equals(type);
+		return "contact_event".equals(type);
 	}
 
 	public boolean isRelation() {
-		return (type == null) ? false : "relation".equals(type);
+		return "relation".equals(type);
+	}
+	
+	@Override
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard){
+		if (type == null){
+			warnings.add(new Warning("No type specified."));
+		}
+		if (isItem() && values.size() != 1){
+			warnings.add(new Warning("Items must contain exactly one value."));
+		}
 	}
 }

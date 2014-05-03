@@ -2,8 +2,9 @@ package com.ezvcard.android;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import android.net.Uri;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.SkipMeException;
@@ -15,6 +16,8 @@ import ezvcard.parameter.VCardParameters;
  * @author Michael Angstadt
  */
 public class AndroidCustomFieldScribe extends VCardPropertyScribe<AndroidCustomField> {
+	private final Pattern uriRegex = Pattern.compile("^vnd\\.android\\.cursor\\.(dir|item)/(.*)");
+	
 	public AndroidCustomFieldScribe() {
 		super(AndroidCustomField.class, "X-ANDROID-CUSTOM");
 	}
@@ -29,10 +32,14 @@ public class AndroidCustomFieldScribe extends VCardPropertyScribe<AndroidCustomF
 		String type = property.getType();
 		List<String> values = property.getValues();
 
-		List<Object> out = new ArrayList<Object>(values.size() + 1);
-		out.add("vnd.android.cursor/" + type); //TODO what's the full URI?
-		out.addAll(values);
-
+		List<Object> out = new ArrayList<Object>();
+		String uri = "vnd.android.cursor." + (property.isDir() ? "dir" : "item") + "/" + (type == null ? "" : type);
+		out.add(uri);
+		if (property.isItem()) {
+			out.add(values.isEmpty() ? "" : values.get(0));
+		} else {
+			out.addAll(values);
+		}
 		return structured(out.toArray());
 	}
 
@@ -40,23 +47,22 @@ public class AndroidCustomFieldScribe extends VCardPropertyScribe<AndroidCustomF
 	protected AndroidCustomField _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		VCardPropertyScribe.SemiStructuredIterator it = semistructured(value);
 
-		String uriStr = it.next();
-		if (uriStr == null || !uriStr.contains("vnd.android.cursor")) {
-			throw new SkipMeException("Property URI is invalid: " + uriStr);
+		String uri = it.next();
+		if (uri == null){
+			throw new SkipMeException("Property value is blank.");
 		}
-
-		Uri uri = Uri.parse(uriStr);
-		List<String> pathSegments = uri.getPathSegments();
-		String type = null;
-		if (pathSegments != null && pathSegments.size() >= 2) {
-			type = pathSegments.get(1);
+		
+		Matcher matcher = uriRegex.matcher(uri);
+		if (!matcher.find()){
+			throw new SkipMeException("Property URI is invalid: " + uri);
 		}
-
-		List<String> values = new ArrayList<String>();
+		
+		AndroidCustomField property = new AndroidCustomField();
+		property.setDir(matcher.group(1).equals("dir"));
+		property.setType(matcher.group(2));
 		while (it.hasNext()) {
-			values.add(it.next());
+			property.getValues().add(it.next());
 		}
-
-		return new AndroidCustomField(type, values);
+		return property;
 	}
 }
