@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -267,37 +266,6 @@ public class TestUtils {
 			expectedSet.add(expectedElement);
 		}
 		assertEquals(expectedSet, actualSet);
-	}
-
-	/**
-	 * Holds a list of test runs for a unit test.
-	 */
-	public static class Tests implements Iterable<Object[]> {
-		private List<Object[]> tests = new ArrayList<Object[]>();
-
-		/**
-		 * Adds a test run.
-		 * @param test the test data
-		 * @return this
-		 */
-		public Tests add(Object... test) {
-			tests.add(test);
-			return this;
-		}
-
-		public Iterator<Object[]> iterator() {
-			return tests.iterator();
-		}
-	}
-
-	/**
-	 * Creates an array from the given vararg parameters (syntax is less verbose
-	 * than creating an array the normal way).
-	 * @param values the values
-	 * @return the array
-	 */
-	public static <T> T[] each(T... values) {
-		return values;
 	}
 
 	private TestUtils() {

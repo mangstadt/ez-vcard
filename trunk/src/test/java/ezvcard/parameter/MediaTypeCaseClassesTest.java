@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import ezvcard.util.TestUtils.Tests;
-
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -59,33 +57,25 @@ public class MediaTypeCaseClassesTest {
 		//find() does not include runtime-created objects
 		caseClasses.get(new String[] { "rtf", "text/rtf", "rtf" });
 
-		Tests tests = new Tests();
-		tests.add("XmL", null, null, TextMediaType.XML);
-		tests.add("rtf", null, null, null); //not public
-		tests.add(null, "TEXT/xml", null, TextMediaType.XML);
-		tests.add(null, "foo/bar", null, null);
-		tests.add(null, null, "xML", TextMediaType.XML);
-		tests.add(null, null, "foo", null);
-		tests.add("xml", "TEXT/xml", null, TextMediaType.XML);
-		tests.add("xml", "foo/bar", null, null);
-		tests.add("xml", null, "xML", TextMediaType.XML);
-		tests.add("xml", null, "foo", null);
-		tests.add(null, "text/xml", "xML", TextMediaType.XML);
-		tests.add(null, "text/xml", "foo", null);
-		tests.add("xml", "text/xml", "xML", TextMediaType.XML);
-		tests.add("xml", "text/xml", "foo", null);
+		assertFind("XmL", null, null, TextMediaType.XML);
+		assertFind("rtf", null, null, null); //not public
+		assertFind(null, "TEXT/xml", null, TextMediaType.XML);
+		assertFind(null, "foo/bar", null, null);
+		assertFind(null, null, "xML", TextMediaType.XML);
+		assertFind(null, null, "foo", null);
+		assertFind("xml", "TEXT/xml", null, TextMediaType.XML);
+		assertFind("xml", "foo/bar", null, null);
+		assertFind("xml", null, "xML", TextMediaType.XML);
+		assertFind("xml", null, "foo", null);
+		assertFind(null, "text/xml", "xML", TextMediaType.XML);
+		assertFind(null, "text/xml", "foo", null);
+		assertFind("xml", "text/xml", "xML", TextMediaType.XML);
+		assertFind("xml", "text/xml", "foo", null);
+	}
 
-		int i = 0;
-		for (Object[] test : tests) {
-			String type = (String) test[0];
-			String mediaType = (String) test[1];
-			String extension = (String) test[2];
-			TextMediaType expected = (TextMediaType) test[3];
-
-			TextMediaType actual = caseClasses.find(new String[] { type, mediaType, extension });
-			assertTrue("Test " + i + ": Expected = " + expected + ", Actual = " + actual, expected == actual);
-			i++;
-		}
+	private void assertFind(String type, String mediaType, String extension, TextMediaType expected) {
+		TextMediaType actual = caseClasses.find(new String[] { type, mediaType, extension });
+		assertTrue("Expected = " + expected + ", Actual = " + actual, expected == actual);
 	}
 
 	public static class TextMediaType extends MediaTypeParameter {
