@@ -1,13 +1,19 @@
 package com.ezvcard.android;
 
-import android.content.ContentValues;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import ezvcard.VCard;
-import ezvcard.property.*;
-
-import java.util.*;
+import ezvcard.property.Birthday;
+import ezvcard.property.RawProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -261,158 +267,6 @@ public class VcardContactUtil {
         } else {
             return ContactsContract.CommonDataKinds.Email.TYPE_OTHER;
         }
-    }
-
-    public static ContentValues structuredNameToContentValues(VCard vCard) {
-    	if (vCard == null){
-    		return null;
-    	}
-
-        ContentValues contentValues = new ContentValues();
-        String firstName = (vCard.getStructuredName()) != null ? vCard.getStructuredName().getGiven() : null;
-        String lastName = vCard.getStructuredName() != null ? vCard.getStructuredName().getFamily() : null;
-        String formattedName = (vCard.getFormattedName() != null) ? vCard.getFormattedName().getValue() : null;
-        String namePrefix = null;
-        String nameSuffix = null;
-        String firstPhoneticName = null;
-        String lastPhoneticName = null;
-        String displayName;
-
-        RawProperty firstphoneticNameprop = vCard.getExtendedProperty("X-PHONETIC-FIRST-NAME");
-        if (firstphoneticNameprop != null) {
-            firstPhoneticName = firstphoneticNameprop.getValue();
-        }
-        RawProperty lastPhoneticNameProp = vCard.getExtendedProperty("X-PHONETIC-LAST-NAME");
-        if (lastPhoneticNameProp != null) {
-            lastPhoneticName = lastPhoneticNameProp.getValue();
-        }
-        //For now always get the first prefix
-        if (vCard.getStructuredName() != null) {
-            List<String> prefixes = vCard.getStructuredName().getPrefixes();
-            List<String> suffixes = vCard.getStructuredName().getSuffixes();
-            if (prefixes != null && prefixes.size() > 0) {
-                namePrefix = vCard.getStructuredName().getPrefixes().get(0);
-            }
-            if (suffixes != null && suffixes.size() > 0) {
-                nameSuffix = vCard.getStructuredName().getSuffixes().get(0);
-            }
-        }
-
-        if (TextUtils.isEmpty(formattedName)) {
-            displayName = VcardContactUtil.join(namePrefix, firstName, null, lastName, nameSuffix, true, false, true);
-        } else {
-            displayName = formattedName;
-        }
-        // Setting MIMETYPE
-        contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-        // Setting GIVEN_NAME
-        if (!TextUtils.isEmpty(firstName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, firstName);
-        }
-        // Setting etting FAMILY_NAME
-        if (!TextUtils.isEmpty(lastName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, lastName);
-        }
-        // Setting PREFIX
-        if (!TextUtils.isEmpty(namePrefix)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PREFIX, namePrefix);
-        }
-        // Setting SUFFIX
-        if (!TextUtils.isEmpty(nameSuffix)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.SUFFIX, nameSuffix);
-        }
-        if (!TextUtils.isEmpty(firstPhoneticName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_GIVEN_NAME, firstPhoneticName);
-        }
-        if (!TextUtils.isEmpty(lastPhoneticName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_FAMILY_NAME, lastPhoneticName);
-        }
-        if (!TextUtils.isEmpty(displayName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, displayName);
-        }
-        return contentValues.size() > 1 ? contentValues : null;
-    }
-
-
-    public static ContentValues addressToContentValues(Address address) {
-
-        ContentValues contentValues = new ContentValues();
-        String street = address.getStreetAddress();
-        String poBox = address.getPoBox();
-        String city = address.getLocality();
-        String state = address.getRegion();
-        String zipCode = address.getPostalCode();
-        String country = address.getCountry();
-
-        String type = address.getParameters().getType();
-        // Setting MIMETYPE
-        contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE);
-
-        if (AddressTypeEnum.HOME.toString().equals(type)) {
-            AddressTypeEnum.HOME.setContentValuesType(contentValues, type);
-        } else if (AddressTypeEnum.WORK.toString().equals(type)) {
-            AddressTypeEnum.WORK.setContentValuesType(contentValues, type);
-        } else if (AddressTypeEnum.BUSINESS.toString().equals(type)) {
-            AddressTypeEnum.BUSINESS.setContentValuesType(contentValues, type);
-        } else if (AddressTypeEnum.OTHER.toString().equals(type)) {
-            AddressTypeEnum.OTHER.setContentValuesType(contentValues, type);
-        } else if (AddressTypeEnum.PRIMARY.toString().equals(type)) {
-            AddressTypeEnum.PRIMARY.setContentValuesType(contentValues, type);
-        } else if (AddressTypeEnum.PERSONAL.toString().equals(type)) {
-            AddressTypeEnum.PERSONAL.setContentValuesType(contentValues, type);
-        } else {
-            AddressTypeEnum.UNKNOWN.setContentValuesType(contentValues, type);
-        }
-        // Setting STREET
-        if (!TextUtils.isEmpty(street)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.STREET, street);
-        }
-        // Setting POBOX
-        if (!TextUtils.isEmpty(poBox)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.POBOX, poBox);
-        }
-        // No NEIGHBORHOOD info ...
-        // Setting CITY
-        if (!TextUtils.isEmpty(city)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.CITY, city);
-        }
-        // No REGION info --> Setting STATE
-        if (!TextUtils.isEmpty(state)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.REGION, state);
-        }
-        // Setting POSTCODE
-        if (!TextUtils.isEmpty(zipCode)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE, zipCode);
-        }
-        // Setting COUNTRY
-        if (!TextUtils.isEmpty(country)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY, country);
-        }
-        return contentValues.size() > 1 ? contentValues : null;
-    }
-
-
-    public static ContentValues organizationToContentValues(Organization organization, Title title) {
-        ContentValues contentValues = new ContentValues();
-        String orgName = null;
-        String jobTitle = null;
-        if (organization != null) {
-            orgName = organization.getValues().get(0);
-        }
-        if (title != null) {
-            jobTitle = title.getValue();
-        }
-        // Setting MIMETYPE
-        contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
-        // Setting COMPANY
-        if (!TextUtils.isEmpty(orgName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.Organization.COMPANY, orgName);
-        }
-        // Setting TITLE
-        if (!TextUtils.isEmpty(jobTitle)) {
-            contentValues.put(ContactsContract.CommonDataKinds.Organization.TITLE, jobTitle);
-        }
-        return contentValues.size() > 1 ? contentValues : null;
     }
 
     /**
