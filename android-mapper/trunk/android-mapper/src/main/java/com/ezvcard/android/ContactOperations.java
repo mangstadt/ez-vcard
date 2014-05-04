@@ -427,57 +427,63 @@ public class ContactOperations {
     
     private void insertGroupedProperties(VCard vCard, ArrayList<ContentProviderOperation> ops){
     	List<RawProperty> extendedProperties = vCard.getExtendedProperties();
-        Map<String, List<RawProperty>> orderedByGroupMap = orderVcardByGroup(extendedProperties);
+        Map<String, List<RawProperty>> orderedByGroup = orderPropertiesByGroup(extendedProperties);
+        final int ABDATE = 1, ABRELATEDNAMES = 2;
 
-        for (List<RawProperty> itemGroupProperties : orderedByGroupMap.values()) {
-            if (itemGroupProperties.size() < 2) {
+        for (List<RawProperty> properties : orderedByGroup.values()) {
+            if (properties.size() < 2) {
             	continue;
             }
 
             String label = null;
             String val = null;
             int mime = 0;
-            for (RawProperty vcardproperty : itemGroupProperties) {
-                String dataType = vcardproperty.getPropertyName();
-                if (dataType.equals("X-ABDATE")) {         //label
-                    label = vcardproperty.getValue(); //date
-                    mime = VcardContactUtil.ABDATE;
-                } else if (dataType.equals("X-ABRELATEDNAMES")) {
-                    label = vcardproperty.getValue(); //name
-                    mime = VcardContactUtil.ABRELATEDNAMES;
-                } else if (dataType.equals("X-ABLabel")) {
-                    val = vcardproperty.getValue(); // type of value ..Birthday,anniversary
+            for (RawProperty property : properties) {
+                String name = property.getPropertyName();
+                
+                if (name.equalsIgnoreCase("X-ABDATE")) {
+                    label = property.getValue(); //date
+                    mime = ABDATE;
+                    continue;
+                }
+                
+                if (name.equalsIgnoreCase("X-ABRELATEDNAMES")) {
+                    label = property.getValue(); //name
+                    mime = ABRELATEDNAMES;
+                    continue;
+                }
+                
+                if (name.equalsIgnoreCase("X-ABLABEL")) {
+                    val = property.getValue(); // type of value ..Birthday,anniversary
+                    continue;
                 }
             }
+
             switch (mime) {
-                case VcardContactUtil.ABDATE:
+                case ABDATE:
                     if (!TextUtils.isEmpty(label) && !TextUtils.isEmpty(val)) {
                         int type = VcardContactUtil.getDateType(val);
                         ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
-                                .withValue(ContactsContract.CommonDataKinds.Event.START_DATE, label)
-                                .withValue(ContactsContract.CommonDataKinds.Event.TYPE, type)
-                                .build());
+                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+                            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
+                            .withValue(ContactsContract.CommonDataKinds.Event.START_DATE, label)
+                            .withValue(ContactsContract.CommonDataKinds.Event.TYPE, type)
+                            .build());
                     }
                     break;
-                case VcardContactUtil.ABRELATEDNAMES:
+                case ABRELATEDNAMES:
                     if (val != null) {
-                        if (val.equals("Nickname")) {
-                            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
-                                    .withValue(ContactsContract.CommonDataKinds.Nickname.NAME, label)
-                                    .build());
-                        } else {
+                    	ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+	                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
+	                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
+	                        .withValue(ContactsContract.CommonDataKinds.Nickname.NAME, label);
+                    	
+                        if (!val.equals("Nickname")) {
                             int type = VcardContactUtil.getNameType(val);
-                            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE)
-                                    .withValue(ContactsContract.CommonDataKinds.Relation.NAME, label)
-                                    .withValue(ContactsContract.CommonDataKinds.Relation.TYPE, type)
-                                    .build());
+                            builder.withValue(ContactsContract.CommonDataKinds.Relation.TYPE, type);
                         }
+                        
+                        ops.add(builder.build());
                     }
                     break;
             }
@@ -588,8 +594,8 @@ public class ContactOperations {
     }
 
 
-    private Map<String, List<RawProperty>> orderVcardByGroup(List<RawProperty> rawProperties) {
-        Map<String, List<RawProperty>> groupPropertiesMap = new HashMap<String, List<RawProperty>>();
+    private Map<String, List<RawProperty>> orderPropertiesByGroup(List<RawProperty> rawProperties) {
+        Map<String, List<RawProperty>> groupedProperties = new HashMap<String, List<RawProperty>>();
 
         for (RawProperty rawProperty : rawProperties) {
             String group = rawProperty.getGroup();
@@ -597,14 +603,14 @@ public class ContactOperations {
             	continue;
             }
 
-            List<RawProperty> groupPropertiesList = groupPropertiesMap.get(group);
+            List<RawProperty> groupPropertiesList = groupedProperties.get(group);
             if (groupPropertiesList == null) {
                 groupPropertiesList = new ArrayList<RawProperty>();
-                groupPropertiesMap.put(group, groupPropertiesList);
+                groupedProperties.put(group, groupPropertiesList);
             }
             groupPropertiesList.add(rawProperty);
         }
 
-        return groupPropertiesMap;
+        return groupedProperties;
     }
 }

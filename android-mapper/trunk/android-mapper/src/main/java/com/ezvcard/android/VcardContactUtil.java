@@ -104,6 +104,30 @@ public class VcardContactUtil {
         m.put(AddressType.get("other"), ContactsContract.CommonDataKinds.StructuredPostal.TYPE_OTHER);
         addressTypeMappings = Collections.unmodifiableMap(m);
     }
+    
+    private static final Map<String, Integer> abRelatedNamesMappings;
+    static {
+    	Map<String, Integer> m = new HashMap<String, Integer>();
+    	m.put("father", ContactsContract.CommonDataKinds.Relation.TYPE_FATHER);
+		m.put("spouse", ContactsContract.CommonDataKinds.Relation.TYPE_SPOUSE);
+		m.put("mother", ContactsContract.CommonDataKinds.Relation.TYPE_MOTHER);
+		m.put("brother", ContactsContract.CommonDataKinds.Relation.TYPE_BROTHER);
+		m.put("parent", ContactsContract.CommonDataKinds.Relation.TYPE_PARENT);
+		m.put("sister", ContactsContract.CommonDataKinds.Relation.TYPE_SISTER);
+		m.put("child", ContactsContract.CommonDataKinds.Relation.TYPE_CHILD);
+		m.put("assistant", ContactsContract.CommonDataKinds.Relation.TYPE_ASSISTANT);
+		m.put("partner", ContactsContract.CommonDataKinds.Relation.TYPE_PARTNER);
+		m.put("manager", ContactsContract.CommonDataKinds.Relation.TYPE_MANAGER);
+    	abRelatedNamesMappings = Collections.unmodifiableMap(m);
+    }
+    
+    private static final Map<String, Integer> abDateMappings;
+    static {
+    	Map<String, Integer> m = new HashMap<String, Integer>();
+    	m.put("anniversary", ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY);
+		m.put("other", ContactsContract.CommonDataKinds.Event.TYPE_OTHER);
+		abDateMappings = Collections.unmodifiableMap(m);
+    }
 
     public static final String CUSTOM_TYPE_NICKNAME = "nickname";
     public static final String CUSTOM_TYPE_CONTACT_EVENT = "contact_event";
@@ -117,9 +141,6 @@ public class VcardContactUtil {
     private static final String SKYPE = "skype";
     private static final String XMPP = "xmpp";
     private static final String YAHOO = "ymsgr";
-
-    public static final int ABDATE = 1;
-    public static final int ABRELATEDNAMES = 2;
 
     public static <T> List<T> union(List<T> list1, List<T> list2) {
         Set<T> set = new HashSet<T>();
@@ -170,44 +191,28 @@ public class VcardContactUtil {
         if (type == null) {
             return ContactsContract.CommonDataKinds.Event.TYPE_OTHER;
         }
-        if (type.contains("Anniversary")) {
-            return ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY; //TODO parse "ANNIVERSARY" vCard property
-        } else if (type.contains("Other")) {
-            return ContactsContract.CommonDataKinds.Event.TYPE_OTHER;
-        } else {
-            return ContactsContract.CommonDataKinds.Event.TYPE_OTHER;
+        
+        type = type.toLowerCase();
+        for (Map.Entry<String, Integer> entry : abDateMappings.entrySet()){
+        	if (type.contains(entry.getKey())){
+        		return entry.getValue();
+        	}
         }
+        return ContactsContract.CommonDataKinds.Event.TYPE_OTHER;
     }
 
     public static int getNameType(String type) {
         if (type == null) {
             return ContactsContract.CommonDataKinds.Relation.TYPE_CUSTOM;
         }
-        if (type.contains("Friend")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_FRIEND;
-        } else if (type.contains("Father")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_FATHER;
-        } else if (type.contains("Spouse")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_SPOUSE;
-        } else if (type.contains("Mother")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_MOTHER;
-        } else if (type.contains("Brother")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_BROTHER;
-        } else if (type.contains("Parent")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_PARENT;
-        } else if (type.contains("Sister")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_SISTER;
-        } else if (type.contains("Child")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_CHILD;
-        } else if (type.contains("Assistant")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_ASSISTANT;
-        } else if (type.contains("Partner")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_PARTNER;
-        } else if (type.contains("Manager")) {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_MANAGER;
-        } else {
-            return ContactsContract.CommonDataKinds.Relation.TYPE_CUSTOM;
+        
+        type = type.toLowerCase();
+        for (Map.Entry<String, Integer> entry : abRelatedNamesMappings.entrySet()){
+        	if (type.contains(entry.getKey())){
+        		return entry.getValue();
+        	}
         }
+        return ContactsContract.CommonDataKinds.Relation.TYPE_CUSTOM;
     }
 
     public static int getIMTypeFromName(String IMName) {
