@@ -355,12 +355,12 @@ public class ContactOperations {
     
     private void insertIms(VCard vCard, ArrayList<ContentProviderOperation> ops){
     	//handle extended properties
-		String[] supportedIMList = { "X-AIM", "X-ICQ", "X-GOOGLE-TALK", "X-JABBER", "X-MSN", "X-YAHOO", "X-TWITTER", "X-SKYPE", "X-SKYPE-USERNAME", "X-MS-IMADDRESS", "X-QQ" };
-        for (String propertyName : supportedIMList) {
+        for (Map.Entry<String, Integer> entry : VcardContactUtil.getImPropertyNameMappings().entrySet()) {
+        	String propertyName = entry.getKey();
+        	Integer protocolType = entry.getValue();
             List<RawProperty> rawProperties = vCard.getExtendedProperties(propertyName);
             for (RawProperty rawProperty : rawProperties){
 	            String imAddress = rawProperty.getValue();
-	            int protocolType = VcardContactUtil.getIMTypeFromName(propertyName);
 	            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                     .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)
@@ -378,7 +378,7 @@ public class ContactOperations {
         	}
 
             String immpAddress = impp.getHandle();
-            int immpProtocolType = VcardContactUtil.getIMTypeFromName(impp.getProtocol());
+            int immpProtocolType = VcardContactUtil.getIMTypeFromProtocol(impp.getProtocol());
             ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)

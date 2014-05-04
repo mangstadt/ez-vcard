@@ -17,7 +17,6 @@ import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Birthday;
-import ezvcard.property.RawProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -49,12 +48,13 @@ import ezvcard.property.RawProperty;
  */
 
 /**
- * VcardContactUtil.. This class does a lot of mapping between the vcard contact
- * data types to Android ContactsContract datatypes.
- *
- * @author Pratyush,Julien Garrigou
+ * Maps between vCard contact data types and Android {@link ContactsContract}
+ * data types.
+ * 
+ * @author Pratyush
+ * @author Julien Garrigou
+ * @author Michael Angstadt
  */
-
 public class VcardContactUtil {
     private static final Map<TelephoneType, Integer> phoneTypeMappings;
     static {
@@ -128,19 +128,34 @@ public class VcardContactUtil {
 		m.put("other", ContactsContract.CommonDataKinds.Event.TYPE_OTHER);
 		abDateMappings = Collections.unmodifiableMap(m);
     }
-
-    public static final String CUSTOM_TYPE_NICKNAME = "nickname";
-    public static final String CUSTOM_TYPE_CONTACT_EVENT = "contact_event";
-    public static final String CUSTOM_TYPE_RELATION = "relation";
-
-    private static final String AIM = "aim";
-    private static final String ICQ = "icq";
-    private static final String IRC = "irc";
-    private static final String MSN = "msnim";
-    private static final String SIP = "sip";
-    private static final String SKYPE = "skype";
-    private static final String XMPP = "xmpp";
-    private static final String YAHOO = "ymsgr";
+    
+    private static final Map<String, Integer> imPropertyNameMappings;
+    static{
+    	Map<String, Integer> m = new HashMap<String, Integer>();
+    	m.put("X-AIM", ContactsContract.CommonDataKinds.Im.PROTOCOL_AIM);
+    	m.put("X-ICQ", ContactsContract.CommonDataKinds.Im.PROTOCOL_ICQ);
+    	m.put("X-QQ", ContactsContract.CommonDataKinds.Im.PROTOCOL_ICQ);
+    	m.put("X-GOOGLE-TALK", ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM);
+        m.put("X-JABBER", ContactsContract.CommonDataKinds.Im.PROTOCOL_JABBER);
+        m.put("X-MSN", ContactsContract.CommonDataKinds.Im.PROTOCOL_MSN);
+        m.put("X-MS-IMADDRESS", ContactsContract.CommonDataKinds.Im.PROTOCOL_MSN);
+        m.put("X-YAHOO", ContactsContract.CommonDataKinds.Im.PROTOCOL_YAHOO);
+        m.put("X-SKYPE", ContactsContract.CommonDataKinds.Im.PROTOCOL_SKYPE);
+        m.put("X-SKYPE-USERNAME", ContactsContract.CommonDataKinds.Im.PROTOCOL_SKYPE);
+        m.put("X-TWITTER", ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM);
+        imPropertyNameMappings = Collections.unmodifiableMap(m);
+    }
+    
+    private static final Map<String, Integer> imProtocolMappings;
+    static{
+    	Map<String, Integer> m = new HashMap<String, Integer>();
+    	m.put("aim", ContactsContract.CommonDataKinds.Im.PROTOCOL_AIM);
+    	m.put("icq", ContactsContract.CommonDataKinds.Im.PROTOCOL_ICQ);
+        m.put("msn", ContactsContract.CommonDataKinds.Im.PROTOCOL_MSN);
+        m.put("ymsgr", ContactsContract.CommonDataKinds.Im.PROTOCOL_YAHOO);
+        m.put("skype", ContactsContract.CommonDataKinds.Im.PROTOCOL_SKYPE);
+        imProtocolMappings = Collections.unmodifiableMap(m);
+    }
 
     public static <T> List<T> union(List<T> list1, List<T> list2) {
         Set<T> set = new HashSet<T>();
@@ -157,18 +172,6 @@ public class VcardContactUtil {
             }
         }
         return list;
-    }
-
-    public static List<String> getPropertyNamesFromRawProperties(List<RawProperty> rawProperties) {
-        List<String> propertynames = new ArrayList<String>();
-        if (rawProperties != null && rawProperties.size() > 0) {
-            for (RawProperty rawProperty : rawProperties) {
-                if (rawProperty != null && rawProperty.getPropertyName() != null) {
-                    propertynames.add(rawProperty.getPropertyName());
-                }
-            }
-        }
-        return propertynames;
     }
 
 	/**
@@ -214,34 +217,38 @@ public class VcardContactUtil {
         }
         return ContactsContract.CommonDataKinds.Relation.TYPE_CUSTOM;
     }
-
-    public static int getIMTypeFromName(String IMName) {
-        if (IMName.equals("X-AIM") || IMName.equals(AIM)) {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_AIM;
-        } else if (IMName.equals("X-ICQ") || IMName.equals(ICQ)) {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_ICQ;
-        } else if (IMName.equals("X-GOOGLE-TALK")) {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM;
-        } else if (IMName.equals("X-JABBER")) {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_JABBER;
-        } else if (IMName.equals("X-MSN") || IMName.equals(MSN)) {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_MSN;
-        } else if (IMName.equals("X-YAHOO") || IMName.equals(YAHOO)) {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_YAHOO;
-        } else if (IMName.equals("X-SKYPE-USERNAME") || IMName.equals(SKYPE) || IMName.equals("X-SKYPE")) {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_SKYPE;
-        } else if (IMName.equals("X-QQ")) {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_ICQ;
-        } else {
-            return ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM;
-        }
+    
+	/**
+	 * Gets the mappings that associate an extended property name (e.g. "X-AIM")
+	 * with its appropriate Android {@link ContactsContract.CommonDataKinds.Im}
+	 * value.
+	 * @return the mappings
+	 */
+    public static Map<String, Integer> getImPropertyNameMappings(){
+    	return imPropertyNameMappings;
     }
 
-    /**
-	 * Maps an ez-vcard {@link TelephoneType} to an Android
-	 * {@link ContactsContract.CommonDataKinds.Phone#TYPE}.
-	 * @param type the ez-vcard type (can be null)
-	 * @return the Android type
+	/**
+	 * Converts an IM protocol from a {@link Impp} property (e.g. "aim") to the
+	 * appropriate Android {@link ContactsContract.CommonDataKinds.Im} value.
+	 * @param protocol the IM protocol (e.g. "aim", can be null)
+	 * @return the Android value
+	 */
+    public static int getIMTypeFromProtocol(String protocol) {
+    	if (protocol == null){
+    		return ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM;
+    	}
+
+    	protocol = protocol.toLowerCase();
+    	Integer value = imProtocolMappings.get(protocol);
+    	return (value == null) ? ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM : value;
+    }
+
+	/**
+	 * Maps an ez-vcard {@link TelephoneType} value to its appropriate Android
+	 * {@link ContactsContract.CommonDataKinds.Phone} value.
+	 * @param type the ez-vcard type value (can be null)
+	 * @return the Android type value
 	 */
     public static int getPhoneType(TelephoneType type) {
         if (type == null) {
@@ -253,10 +260,10 @@ public class VcardContactUtil {
     }
 
 	/**
-	 * Maps an ez-vcard {@link EmailType} to an Android
-	 * {@link ContactsContract.CommonDataKinds.Email#TYPE}.
-	 * @param type the ez-vcard type (can be null)
-	 * @return the Android type
+	 * Maps an ez-vcard {@link EmailType} value to its appropriate Android
+	 * {@link ContactsContract.CommonDataKinds.Email} value.
+	 * @param type the ez-vcard type value (can be null)
+	 * @return the Android type value
 	 */
     public static int getEmailType(EmailType type) {
         if (type == null) {
@@ -268,10 +275,10 @@ public class VcardContactUtil {
     }
     
 	/**
-	 * Maps an ez-vcard {@link AddressType} to an Android
-	 * {@link ContactsContract.CommonDataKinds.StructuredPostal#TYPE}.
-	 * @param type the ez-vcard type (can be null)
-	 * @return the Android type
+	 * Maps an ez-vcard {@link AddressType} value to its appropriate Android
+	 * {@link ContactsContract.CommonDataKinds.StructuredPostal} value.
+	 * @param type the ez-vcard type value (can be null)
+	 * @return the Android type value
 	 */
     public static int getAddressType(AddressType type) {
         if (type == null) {
