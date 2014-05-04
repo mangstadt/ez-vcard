@@ -18,8 +18,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import ezvcard.VCard;
 import ezvcard.parameter.AddressType;
-import ezvcard.parameter.EmailType;
-import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
 import ezvcard.property.Birthday;
 import ezvcard.property.Email;
@@ -265,9 +263,7 @@ public class ContactOperations {
         		continue;
         	}
 
-        	Set<TelephoneType> types = telephone.getTypes();
-            TelephoneType type = types.isEmpty() ? null : types.iterator().next();
-            int phoneKind = VcardContactUtil.getPhoneType(type);
+            int phoneKind = VcardContactUtil.getPhoneType(telephone);
             ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
@@ -284,9 +280,7 @@ public class ContactOperations {
         		continue;
         	}
 
-        	Set<EmailType> types = email.getTypes();
-            EmailType type = types.isEmpty() ? null : types.iterator().next();
-            int emailKind = VcardContactUtil.getEmailType(type);
+            int emailKind = VcardContactUtil.getEmailType(email);
             ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
@@ -310,14 +304,12 @@ public class ContactOperations {
             String state = address.getRegion();
             String zipCode = address.getPostalCode();
             String country = address.getCountry();
-            
-            Set<AddressType> types = address.getTypes();
-            AddressType type = types.isEmpty() ? null : types.iterator().next();
-            int addressKind = VcardContactUtil.getAddressType(type);
+            int addressKind = VcardContactUtil.getAddressType(address);
             
             contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.TYPE, addressKind);
             if (addressKind == ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM){
-            	String label = (type == null) ? "unknown" : type.getValue();
+            	Set<AddressType> types = address.getTypes();
+            	String label = types.isEmpty() ? "unknown" : types.iterator().next().getValue();
             	contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.LABEL, label);
             }
 

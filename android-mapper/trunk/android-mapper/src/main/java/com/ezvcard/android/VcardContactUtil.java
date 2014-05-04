@@ -16,7 +16,11 @@ import ezvcard.VCard;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
+import ezvcard.property.Address;
 import ezvcard.property.Birthday;
+import ezvcard.property.Email;
+import ezvcard.property.Impp;
+import ezvcard.property.Telephone;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -245,48 +249,54 @@ public class VcardContactUtil {
     }
 
 	/**
-	 * Maps an ez-vcard {@link TelephoneType} value to its appropriate Android
-	 * {@link ContactsContract.CommonDataKinds.Phone} value.
-	 * @param type the ez-vcard type value (can be null)
+	 * Determines the appropriate Android
+	 * {@link ContactsContract.CommonDataKinds.Phone} value for a
+	 * {@link Telephone} property.
+	 * @param property the property
 	 * @return the Android type value
 	 */
-    public static int getPhoneType(TelephoneType type) {
-        if (type == null) {
-            return ContactsContract.CommonDataKinds.Phone.TYPE_OTHER;
-        }
-        
-        Integer value = phoneTypeMappings.get(type);
-    	return (value == null) ? ContactsContract.CommonDataKinds.Phone.TYPE_OTHER : value;
-    }
-
-	/**
-	 * Maps an ez-vcard {@link EmailType} value to its appropriate Android
-	 * {@link ContactsContract.CommonDataKinds.Email} value.
-	 * @param type the ez-vcard type value (can be null)
-	 * @return the Android type value
-	 */
-    public static int getEmailType(EmailType type) {
-        if (type == null) {
-            return ContactsContract.CommonDataKinds.Email.TYPE_OTHER;
-        }
-
-        Integer value = emailTypeMappings.get(type);
-    	return (value == null) ? ContactsContract.CommonDataKinds.Email.TYPE_OTHER : value;
+    public static int getPhoneType(Telephone property) {
+    	for (TelephoneType type : property.getTypes()){
+    		Integer androidType = phoneTypeMappings.get(type);
+    		if (androidType != null){
+    			return androidType;
+    		}
+    	}
+    	return ContactsContract.CommonDataKinds.Phone.TYPE_OTHER;
     }
     
 	/**
-	 * Maps an ez-vcard {@link AddressType} value to its appropriate Android
-	 * {@link ContactsContract.CommonDataKinds.StructuredPostal} value.
-	 * @param type the ez-vcard type value (can be null)
+	 * Determines the appropriate Android
+	 * {@link ContactsContract.CommonDataKinds.Email} value for an {@link Email}
+	 * property.
+	 * @param property the property
 	 * @return the Android type value
 	 */
-    public static int getAddressType(AddressType type) {
-        if (type == null) {
-            return ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM;
-        }
-
-        Integer value = addressTypeMappings.get(type);
-    	return (value == null) ? ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM : value;
+    public static int getEmailType(Email property) {
+    	for (EmailType type : property.getTypes()){
+    		Integer androidType = emailTypeMappings.get(type);
+    		if (androidType != null){
+    			return androidType;
+    		}
+    	}
+    	return ContactsContract.CommonDataKinds.Email.TYPE_OTHER;
+    }
+    
+	/**
+	 * Determines the appropriate Android
+	 * {@link ContactsContract.CommonDataKinds.StructuredPostal} value for an
+	 * {@link Address} property.
+	 * @param property the property
+	 * @return the Android type value
+	 */
+    public static int getAddressType(Address property) {
+    	for (AddressType type : property.getTypes()){
+    		Integer androidType = addressTypeMappings.get(type);
+    		if (androidType != null){
+    			return androidType;
+    		}
+    	}
+    	return ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM;
     }
 
     /**
