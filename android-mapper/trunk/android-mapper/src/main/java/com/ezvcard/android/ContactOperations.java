@@ -1,7 +1,6 @@
 package com.ezvcard.android;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,7 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import ezvcard.VCard;
+import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
@@ -70,7 +70,6 @@ import ezvcard.property.Url;
  * @author Pratyush
  * @author Michael Angstadt
  */
-
 public class ContactOperations {
     private static final String TAG = ContactOperations.class.getSimpleName();
 
@@ -311,23 +310,15 @@ public class ContactOperations {
             String state = address.getRegion();
             String zipCode = address.getPostalCode();
             String country = address.getCountry();
-
-            String type = address.getParameters().getType();
-
-            if (AddressTypeEnum.HOME.toString().equals(type)) {
-                AddressTypeEnum.HOME.setContentValuesType(contentValues, type);
-            } else if (AddressTypeEnum.WORK.toString().equals(type)) {
-                AddressTypeEnum.WORK.setContentValuesType(contentValues, type);
-            } else if (AddressTypeEnum.BUSINESS.toString().equals(type)) {
-                AddressTypeEnum.BUSINESS.setContentValuesType(contentValues, type);
-            } else if (AddressTypeEnum.OTHER.toString().equals(type)) {
-                AddressTypeEnum.OTHER.setContentValuesType(contentValues, type);
-            } else if (AddressTypeEnum.PRIMARY.toString().equals(type)) {
-                AddressTypeEnum.PRIMARY.setContentValuesType(contentValues, type);
-            } else if (AddressTypeEnum.PERSONAL.toString().equals(type)) {
-                AddressTypeEnum.PERSONAL.setContentValuesType(contentValues, type);
-            } else {
-                AddressTypeEnum.UNKNOWN.setContentValuesType(contentValues, type);
+            
+            Set<AddressType> types = address.getTypes();
+            AddressType type = types.isEmpty() ? null : types.iterator().next();
+            int addressKind = VcardContactUtil.getAddressType(type);
+            
+            contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.TYPE, addressKind);
+            if (addressKind == ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM){
+            	String label = (type == null) ? "unknown" : type.getValue();
+            	contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.LABEL, label);
             }
 
             if (!TextUtils.isEmpty(street)) {
