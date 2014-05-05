@@ -179,8 +179,8 @@ public class VcardContactUtil {
     }
 
 	/**
-	 * Maps the value of a URL property's TYPE parameter to an Android
-	 * {@link ContactsContract.CommonDataKinds.Website#TYPE}.
+	 * Maps the value of a URL property's TYPE parameter to the appropriate
+	 * Android {@link ContactsContract.CommonDataKinds.Website} value.
 	 * @param type the TYPE parameter value (can be null)
 	 * @return the Android type
 	 */
