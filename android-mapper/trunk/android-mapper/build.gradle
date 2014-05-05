@@ -30,8 +30,16 @@ android {
     }
 }
 
+task jar(type: Jar) {
+    from android.sourceSets.main.java
+}
+
 dependencies {
     compile 'com.android.support:appcompat-v7:19.+'
-    compile 'com.googlecode.ez-vcard:ez-vcard:0.9.3'
+    compile ('com.googlecode.ez-vcard:ez-vcard:0.9.3'){
+        exclude group: 'org.jsoup'
+        exclude group: 'org.freemarker'
+        exclude group: 'com.fasterxml.jackson.core'
+    }
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

@@ -1,12 +1,13 @@
 package com.ezvcard.android;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.property.VCardProperty;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents an "X-ANDROID-CUSTOM" property.
@@ -41,9 +42,7 @@ public class AndroidCustomField extends VCardProperty {
 		AndroidCustomField property = new AndroidCustomField();
 		property.dir = true;
 		property.type = type;
-		for (String value : values) {
-			property.values.add(value);
-		}
+        Collections.addAll(property.values, values);
 		return property;
 	}
 

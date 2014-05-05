@@ -1,11 +1,5 @@
 package com.ezvcard.android;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.annotation.TargetApi;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
@@ -18,20 +12,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import ezvcard.VCard;
 import ezvcard.parameter.AddressType;
-import ezvcard.property.Address;
-import ezvcard.property.Birthday;
-import ezvcard.property.Email;
-import ezvcard.property.FormattedName;
-import ezvcard.property.Impp;
-import ezvcard.property.Nickname;
-import ezvcard.property.Note;
-import ezvcard.property.Organization;
-import ezvcard.property.Photo;
-import ezvcard.property.RawProperty;
-import ezvcard.property.StructuredName;
-import ezvcard.property.Telephone;
-import ezvcard.property.Title;
-import ezvcard.property.Url;
+import ezvcard.property.*;
+
+import java.util.*;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -273,6 +256,7 @@ public class ContactOperations {
         }
     }
     
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void insertEmails(VCard vCard, ArrayList<ContentProviderOperation> ops){
         List<Email> emailList = vCard.getEmails();
         for (Email email : emailList) {

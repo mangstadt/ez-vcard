@@ -1,16 +1,14 @@
 package com.ezvcard.android.TestActivity;
 
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.ezvcard.android.AndroidCustomFieldScribe;
 import com.ezvcard.android.ContactOperations;
 import com.ezvcard.android.R;
-
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.text.VCardReader;
