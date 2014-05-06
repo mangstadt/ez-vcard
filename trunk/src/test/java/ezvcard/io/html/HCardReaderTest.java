@@ -73,7 +73,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		assertNull(reader.readNext());
 	}
 
@@ -88,7 +88,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		assertNotNull(reader.readNext());
 		assertNull(reader.readNext());
 	}
@@ -104,7 +104,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
@@ -125,7 +125,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
@@ -145,7 +145,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
@@ -165,7 +165,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals(1, vcard.getUrls().size());
@@ -197,7 +197,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals("http://johndoe.com", vcard.getUrls().get(0).getValue());
@@ -221,7 +221,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		VCard vcard = reader.readNext();
 		assertEquals("Smith", vcard.getStructuredName().getFamily());
 		assertEquals("Smith", vcard.getOrganization().getValues().get(0));
@@ -245,7 +245,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -275,7 +275,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -298,7 +298,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html");
+		HCardReader reader = new HCardReader(html, "http://johndoe.com/vcard.html");
 
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -321,7 +321,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertTrue(vcard.getUrls().isEmpty());
@@ -351,7 +351,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertTrue(vcard.getUrls().isEmpty());
@@ -381,7 +381,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertTrue(vcard.getUrls().isEmpty());
@@ -411,7 +411,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 
@@ -449,7 +449,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 
@@ -493,7 +493,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 
@@ -542,7 +542,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html#anchor");
+		HCardReader reader = new HCardReader(html, "http://johndoe.com/vcard.html#anchor");
 
 		VCard vcard = reader.readNext();
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
@@ -568,7 +568,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString(), "http://johndoe.com/vcard.html#non-existant");
+		HCardReader reader = new HCardReader(html, "http://johndoe.com/vcard.html#non-existant");
 
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -595,7 +595,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -621,7 +621,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -661,7 +661,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 
 		VCard vcard = reader.readNext();
 		assertEquals("CommerceNet", vcard.getFormattedName().getValue());
@@ -734,7 +734,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		reader.registerScribe(new LuckyNumScribe());
 
 		VCard vcard = reader.readNext();
@@ -769,7 +769,7 @@ public class HCardReaderTest {
 		"</html>";
 		//@formatter:on
 
-		HCardReader reader = new HCardReader(html.toString());
+		HCardReader reader = new HCardReader(html);
 		reader.registerScribe(new MyFormattedNameScribe());
 
 		VCard vcard = reader.readNext();
