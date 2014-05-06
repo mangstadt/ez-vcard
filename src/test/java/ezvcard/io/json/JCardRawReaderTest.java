@@ -1,24 +1,16 @@
 package ezvcard.io.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-
 import com.fasterxml.jackson.core.JsonToken;
-
 import ezvcard.VCardDataType;
 import ezvcard.io.json.JCardRawReader.JCardDataStreamListener;
 import ezvcard.parameter.VCardParameters;
+import org.junit.Test;
+
+import java.io.StringReader;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -64,30 +56,13 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop1", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals("one", value.asSingle());
-					break;
-				case 2:
-					assertNull(group);
-					assertEquals("prop2", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.INTEGER, dataType);
-					assertEquals("2", value.asSingle());
-					break;
-				}
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(2, listener.calledReadProperty);
+
+		verify(listener).beginVCard();
+		verify(listener, times(2)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop1", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("one"));
+		verify(listener).readProperty(null, "prop2", new VCardParameters(), VCardDataType.INTEGER, JCardValue.single(2L));
 	}
 
 	@Test
@@ -112,58 +87,16 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop1", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals("one", value.asSingle());
-					break;
-				case 2:
-					assertNull(group);
-					assertEquals("prop2", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.INTEGER, dataType);
-					assertEquals("2", value.asSingle());
-					break;
-				}
-			}
-		};
-
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(2, listener.calledReadProperty);
-
-		//it should continue to read the rest of the vCards
-
-		listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop1", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals("three", value.asSingle());
-					break;
-				case 2:
-					assertNull(group);
-					assertEquals("prop2", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.INTEGER, dataType);
-					assertEquals("4", value.asSingle());
-					break;
-				}
-			}
-		};
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(2, listener.calledReadProperty);
+
+		verify(listener, times(2)).beginVCard();
+		verify(listener, times(4)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop1", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("one"));
+		verify(listener).readProperty(null, "prop2", new VCardParameters(), VCardDataType.INTEGER, JCardValue.single(2L));
+		verify(listener).readProperty(null, "prop1", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("three"));
+		verify(listener).readProperty(null, "prop2", new VCardParameters(), VCardDataType.INTEGER, JCardValue.single(4L));
 	}
 
 	@Test
@@ -185,24 +118,12 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals("value", value.asSingle());
-					break;
-				}
-			}
-		};
-
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(1, listener.calledReadProperty);
+
+		verify(listener).beginVCard();
+		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("value"));
 	}
 
 	@Test
@@ -227,57 +148,21 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop1", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals("one", value.asSingle());
-					break;
-				}
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		try {
 			reader.readNext(listener);
+			fail("JCardParseException expected.");
 		} catch (JCardParseException e) {
 			assertEquals(JsonToken.VALUE_STRING, e.getExpectedToken());
 			assertEquals(JsonToken.START_ARRAY, e.getActualToken());
 		}
-
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(1, listener.calledReadProperty);
-
-		//it should continue to read the rest of the vCards
-
-		listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop1", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals("one", value.asSingle());
-					break;
-				case 2:
-					assertNull(group);
-					assertEquals("prop2", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.INTEGER, dataType);
-					assertEquals("2", value.asSingle());
-					break;
-				}
-			}
-		};
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(2, listener.calledReadProperty);
+
+		verify(listener, times(2)).beginVCard();
+		verify(listener, times(3)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener, times(2)).readProperty(null, "prop1", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("one"));
+		verify(listener).readProperty(null, "prop2", new VCardParameters(), VCardDataType.INTEGER, JCardValue.single(2L));
 	}
 
 	@Test
@@ -292,15 +177,12 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				fail("Should not be called.");
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(0, listener.calledReadProperty);
+
+		verify(listener).beginVCard();
+		verify(listener, never()).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 	}
 
 	@Test
@@ -317,32 +199,14 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@SuppressWarnings("unchecked")
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals(Arrays.asList(Arrays.asList("one"), Arrays.asList("two", "three"), Arrays.asList("four")), value.asStructured());
-					break;
-				case 2:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals(Arrays.asList(), value.asStructured());
-					break;
-				}
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
 
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(2, listener.calledReadProperty);
+		verify(listener).beginVCard();
+		verify(listener, times(2)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.structured("one", Arrays.asList("two", "three"), "four"));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.structured());
 	}
 
 	@Test
@@ -359,31 +223,14 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals(Arrays.asList("one", "two", "three"), value.asMulti());
-					break;
-				case 2:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals(Arrays.asList("one"), value.asMulti());
-					break;
-				}
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
 
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(2, listener.calledReadProperty);
+		verify(listener).beginVCard();
+		verify(listener, times(2)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.multi("one", "two", "three"));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.multi("one"));
 	}
 
 	@Test
@@ -399,32 +246,13 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
-					List<JsonValue> expected = new ArrayList<JsonValue>();
-					expected.add(new JsonValue(false));
-					expected.add(new JsonValue(true));
-					expected.add(new JsonValue(1.1));
-					expected.add(new JsonValue(1L));
-					expected.add(new JsonValue((Object) null));
-					expected.add(new JsonValue("text"));
-					assertEquals(expected, value.getValues());
-					break;
-				}
-			}
-		};
 		reader.readNext(listener);
 
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(1, listener.calledReadProperty);
+		verify(listener).beginVCard();
+		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.multi(false, true, 1.1, 1L, null, "text"));
 	}
 
 	@Test
@@ -446,35 +274,24 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
-					List<JsonValue> expected = new ArrayList<JsonValue>();
-					Map<String, JsonValue> m = new HashMap<String, JsonValue>();
-					m.put("a", new JsonValue(Arrays.asList(new JsonValue("one"), new JsonValue("two"))));
-					Map<String, JsonValue> m2 = new HashMap<String, JsonValue>();
-					m2.put("c", new JsonValue(Arrays.asList(new JsonValue("three"))));
-					m2.put("d", new JsonValue(new HashMap<String, JsonValue>()));
-					m.put("b", new JsonValue(m2));
-					expected.add(new JsonValue(m));
-					expected.add(new JsonValue("four"));
-
-					assertEquals(expected, value.getValues());
-					break;
-				}
-			}
-		};
 		reader.readNext(listener);
 
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(1, listener.calledReadProperty);
+		List<JsonValue> expectedValues = new ArrayList<JsonValue>();
+		Map<String, JsonValue> m = new HashMap<String, JsonValue>();
+		m.put("a", new JsonValue(Arrays.asList(new JsonValue("one"), new JsonValue("two"))));
+		Map<String, JsonValue> m2 = new HashMap<String, JsonValue>();
+		m2.put("c", new JsonValue(Arrays.asList(new JsonValue("three"))));
+		m2.put("d", new JsonValue(new HashMap<String, JsonValue>()));
+		m.put("b", new JsonValue(m2));
+		expectedValues.add(new JsonValue(m));
+		expectedValues.add(new JsonValue("four"));
+		JCardValue expected = new JCardValue(expectedValues);
+
+		verify(listener).beginVCard();
+		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, expected);
 	}
 
 	@Test
@@ -490,23 +307,13 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertNull(dataType);
-					assertEquals("value", value.asSingle());
-					break;
-				}
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(1, listener.calledReadProperty);
+
+		verify(listener).beginVCard();
+		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), null, JCardValue.single("value"));
 	}
 
 	@Test
@@ -522,23 +329,13 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertTrue(VCardDataType.get("foo") == dataType);
-					assertEquals("value", value.asSingle());
-					break;
-				}
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(1, listener.calledReadProperty);
+
+		verify(listener).beginVCard();
+		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.get("foo"), JCardValue.single("value"));
 	}
 
 	@Test
@@ -550,15 +347,12 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				//empty
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
-		assertEquals(0, listener.calledBeginVCard);
-		assertEquals(0, listener.calledReadProperty);
+
+		verify(listener, never()).beginVCard();
+		verify(listener, never()).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 	}
 
 	@Test
@@ -572,15 +366,12 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				//empty
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
-		assertEquals(0, listener.calledBeginVCard);
-		assertEquals(0, listener.calledReadProperty);
+
+		verify(listener, never()).beginVCard();
+		verify(listener, never()).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 	}
 
 	@Test
@@ -596,26 +387,19 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertNull(group);
-					assertEquals("prop", name);
-					assertEquals(4, parameters.size());
-					assertEquals(Arrays.asList("one"), parameters.get("a"));
-					assertEquals(Arrays.asList("two"), parameters.get("b"));
-					assertEquals(Arrays.asList("three", "four"), parameters.get("c"));
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals("value", value.asSingle());
-					break;
-				}
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(1, listener.calledReadProperty);
+
+		VCardParameters expected = new VCardParameters();
+		expected.put("a", "one");
+		expected.put("b", "two");
+		expected.put("c", "three");
+		expected.put("c", "four");
+
+		verify(listener).beginVCard();
+		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty(null, "prop", expected , VCardDataType.TEXT, JCardValue.single("value"));
 	}
 
 	@Test
@@ -631,37 +415,12 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = new JCardRawReader(new StringReader(json));
 
-		TestListener listener = new TestListener() {
-			@Override
-			protected void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-				switch (calledReadProperty) {
-				case 1:
-					assertEquals("one", group);
-					assertEquals("prop", name);
-					assertTrue(parameters.isEmpty());
-					assertEquals(VCardDataType.TEXT, dataType);
-					assertEquals("value", value.asSingle());
-					break;
-				}
-			}
-		};
+		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
-		assertEquals(1, listener.calledBeginVCard);
-		assertEquals(1, listener.calledReadProperty);
-	}
 
-	private abstract class TestListener implements JCardDataStreamListener {
-		protected int calledReadProperty = 0, calledBeginVCard = 0;
-
-		public final void beginVCard() {
-			calledBeginVCard++;
-		}
-
-		public final void readProperty(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
-			calledReadProperty++;
-			readProperty_(group, name, parameters, dataType, value);
-		}
-
-		protected abstract void readProperty_(String group, String name, VCardParameters parameters, VCardDataType dataType, JCardValue value);
+		verify(listener).beginVCard();
+		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verify(listener).readProperty("one", "prop", new VCardParameters() , VCardDataType.TEXT, JCardValue.single("value"));
 	}
 }

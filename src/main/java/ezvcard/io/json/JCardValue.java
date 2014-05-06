@@ -281,4 +281,27 @@ public class JCardValue {
 		}
 		return multi;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		JCardValue that = (JCardValue) o;
+
+		if (values != null ? !values.equals(that.values) : that.values != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return values != null ? values.hashCode() : 0;
+	}
 }

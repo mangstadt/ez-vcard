@@ -100,17 +100,18 @@ public class HCardElementTest {
 	@Test
 	public void value_multiple_value_tags_not_direct_child() {
 		//@formatter:off
-		String html = "";
-		html += "<div>";
-			html += "<div>Some text</div>";
-			html += "<div>";
-				html += "<span class=\"value\">This is</span>";
-				html += "<div>";
-					html += "<div class=\"value\">the value</div>";
-				html += "</div>";
-				html += "<div class=\"value\">of the element.</div>";
-			html += "</div>";
-		html += "</div>";
+		String html =
+		"<div>" +
+			"<div>Some text</div>" +
+			"<div>" +
+				"<span class=\"value\">This is</span>" +
+				"<div>" +
+					"<div class=\"value\">the value</div>" +
+				"</div>" +
+				"<div class=\"value\">of the element.</div>" +
+			"</div>" +
+		"</div>";
+		//@formatter:on
 		
 		HCardElement element = build(html);
 		assertEquals("This isthe valueof the element.", element.value());
@@ -119,10 +120,10 @@ public class HCardElementTest {
 	@Test
 	public void value_nested_value_tags() {
 		//@formatter:off
-		String html = "";
-		html += "<div>";
-			html += "<div class=\"value\">the value<span class=\"value\">nested</span></div>";
-		html += "</div>";
+		String html =
+		"<div>" +
+			"<div class=\"value\">the value<span class=\"value\">nested</span></div>" +
+		"</div>";
 		//@formatter:on
 
 		HCardElement element = build(html);
