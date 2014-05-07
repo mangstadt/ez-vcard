@@ -1,9 +1,7 @@
 package com.ezvcard.android;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +15,6 @@ import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
-import ezvcard.property.Birthday;
 import ezvcard.property.Email;
 import ezvcard.property.Impp;
 import ezvcard.property.Telephone;
@@ -426,31 +423,4 @@ public class VcardContactUtil {
         }
         return displayName;
     }
-
-
-    public static String getFormattedBirthday(Birthday birthday) {
-
-        Date birthdate = birthday.getDate();
-        String monthValue;
-        String dayvalue;
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(birthdate);
-
-        String year = String.valueOf(calendar.get(Calendar.YEAR));
-        int month = calendar.get(Calendar.MONTH) + 1;
-        if (month < 10) {
-            monthValue = "0" + String.valueOf(month);
-        } else {
-            monthValue = String.valueOf(month);
-        }
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        if (day < 10) {
-            dayvalue = "0" + String.valueOf(day);
-        } else {
-            dayvalue = String.valueOf(day);
-        }
-        return year + "-" + monthValue + "-" + dayvalue;
-    }
-
 }

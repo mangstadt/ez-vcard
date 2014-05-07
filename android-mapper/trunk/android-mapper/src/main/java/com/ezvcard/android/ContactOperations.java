@@ -14,6 +14,7 @@ import ezvcard.VCard;
 import ezvcard.parameter.AddressType;
 import ezvcard.property.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /*
@@ -473,7 +474,12 @@ public class ContactOperations {
         		continue;
         	}
 
-            String formattedBday = VcardContactUtil.getFormattedBirthday(birthday);
+        	Date date = birthday.getDate();
+        	if (date == null){
+        		continue;
+        	}
+
+        	String formattedBday = new SimpleDateFormat("yyyy-MM-dd").format(date);
             ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
