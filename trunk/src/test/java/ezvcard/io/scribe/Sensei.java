@@ -20,6 +20,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.VCardParameters;
@@ -589,7 +590,7 @@ public class Sensei<T extends VCardProperty> {
 		protected void run(Check<T> check, Class<? extends RuntimeException> exception) {
 			try {
 				org.jsoup.nodes.Element element = HtmlUtils.toElement(html);
-				Result<T> result = scribe.parseHtml(element);
+				Result<T> result = scribe.parseHtml(new HCardElement(element));
 
 				if (exception != null) {
 					fail("Expected " + exception.getSimpleName() + " to be thrown.");

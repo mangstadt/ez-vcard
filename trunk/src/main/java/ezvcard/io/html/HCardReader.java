@@ -352,7 +352,7 @@ public class HCardReader {
 						//try parsing as IMPP
 						VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(Impp.class);
 						try {
-							Result<? extends VCardProperty> result = scribe.parseHtml(element);
+							Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
 							curVCard.addProperty(result.getProperty());
 							for (String warning : result.getWarnings()) {
 								addWarning(scribe.getPropertyName(), warning);
@@ -383,7 +383,7 @@ public class HCardReader {
 
 			VCardProperty property;
 			try {
-				Result<? extends VCardProperty> result = scribe.parseHtml(element);
+				Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
 
 				for (String warning : result.getWarnings()) {
 					addWarning(className, warning);
