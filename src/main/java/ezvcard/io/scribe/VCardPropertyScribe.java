@@ -250,10 +250,9 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws EmbeddedVCardException if the property value is an embedded vCard
 	 * (i.e. the AGENT property)
 	 */
-	public final Result<T> parseHtml(org.jsoup.nodes.Element element) {
-		HCardElement hcardElement = new HCardElement(element);
+	public final Result<T> parseHtml(HCardElement element) {
 		List<String> warnings = new ArrayList<String>(0);
-		T property = _parseHtml(hcardElement, warnings);
+		T property = _parseHtml(element, warnings);
 		return new Result<T>(property, warnings);
 	}
 

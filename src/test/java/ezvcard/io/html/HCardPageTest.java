@@ -157,7 +157,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortString ss = scribe.parseHtml(elements.first()).getProperty();
+			SortString ss = scribe.parseHtml(new HCardElement(elements.first())).getProperty();
 			assertEquals("Doe", ss.getValue());
 		}
 
@@ -173,7 +173,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortString ss = scribe.parseHtml(elements.first()).getProperty();
+			SortString ss = scribe.parseHtml(new HCardElement(elements.first())).getProperty();
 			assertEquals("Smith", ss.getValue());
 		}
 
@@ -186,7 +186,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortString ss = scribe.parseHtml(elements.first()).getProperty();
+			SortString ss = scribe.parseHtml(new HCardElement(elements.first())).getProperty();
 			assertEquals("Jones", ss.getValue());
 		}
 	}
