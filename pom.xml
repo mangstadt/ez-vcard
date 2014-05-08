@@ -250,6 +250,28 @@
 					<targetJdk>${java.version}</targetJdk>
 				</configuration>
 			</plugin>
+
+			<!-- 
+			Mutation Testing
+			To run: mvn pitest:mutationCoverage
+			-->
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>0.33</version>
+				<configuration>
+					<targetClasses>
+						<param>ezvcard.*</param>
+					</targetClasses>
+					<excludedClasses>
+						<!-- exclude commons-codec -->
+						<param>ezvcard.util.org.*</param>
+					</excludedClasses>
+					<targetTests>
+						<param>ezvcard.*</param>
+					</targetTests>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
