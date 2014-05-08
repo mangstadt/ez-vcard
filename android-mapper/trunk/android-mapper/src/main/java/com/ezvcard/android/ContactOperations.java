@@ -54,11 +54,11 @@ import java.util.*;
  */
 public class ContactOperations {
     private static final String TAG = ContactOperations.class.getSimpleName();
+    private static final int rawContactID = 0;
 
     private final Context context;
     private final String accountName;
     private final String accountType;
-    private int rawContactID = 0;
 
     public ContactOperations(Context context) {
         this(context, null, null);
@@ -78,7 +78,6 @@ public class ContactOperations {
     	}
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-        rawContactID = ops.size();
         
         // TODO handle Raw properties - Raw properties include various extension which start with "X-" like X-ASSISTANT, X-AIM, X-SPOUSE
 
