@@ -71,10 +71,10 @@ public class ContactOperations {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public int insertContact(VCard vCard) throws RemoteException, OperationApplicationException {
+    public void insertContact(VCard vCard) throws RemoteException, OperationApplicationException {
     	if (vCard == null){
     		Log.d(TAG, "The vcard is null or It must be a duplicate Contact hence we could not insert the contact");
-            return 0;
+            return;
     	}
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
@@ -108,7 +108,6 @@ public class ContactOperations {
 
         // Executing all the insert operations as a single database transaction
         context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-        return 0;
     }
     
     private void insertAccountInfo(ArrayList<ContentProviderOperation> ops){
