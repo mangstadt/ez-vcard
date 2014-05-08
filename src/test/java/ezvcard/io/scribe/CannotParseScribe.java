@@ -1,9 +1,15 @@
-package ezvcard;
+package ezvcard.io.scribe;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import java.util.List;
 
-import org.junit.Test;
+import ezvcard.VCardDataType;
+import ezvcard.VCardVersion;
+import ezvcard.io.CannotParseException;
+import ezvcard.io.html.HCardElement;
+import ezvcard.io.json.JCardValue;
+import ezvcard.io.xml.XCardElement;
+import ezvcard.parameter.VCardParameters;
+import ezvcard.property.CannotParseProperty;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,27 +41,41 @@ import org.junit.Test;
  */
 
 /**
+ * A scribe that always throws a {@link CannotParseException}.
  * @author Michael Angstadt
  */
-public class VCardVersionTest {
-	@Test
-	public void valueOfByStr() {
-		for (VCardVersion version : VCardVersion.values()) {
-			assertEquals(version + " failed.", version, VCardVersion.valueOfByStr(version.getVersion()));
-		}
-		assertNull(VCardVersion.valueOfByStr("5.0"));
+public class CannotParseScribe extends VCardPropertyScribe<CannotParseProperty> {
+	public CannotParseScribe() {
+		super(CannotParseProperty.class, "CANNOTPARSE");
 	}
 
-	@Test
-	public void valueOfByXmlNamespace() {
-		assertEquals(VCardVersion.V4_0, VCardVersion.valueOfByXmlNamespace(VCardVersion.V4_0.getXmlNamespace()));
-		assertNull(VCardVersion.valueOfByXmlNamespace("urn:ietf:params:xml:ns:vcard-5.0"));
+	@Override
+	protected VCardDataType _defaultDataType(VCardVersion version) {
+		return null;
 	}
 
-	@Test
-	public void toString_() {
-		for (VCardVersion version : VCardVersion.values()) {
-			assertEquals(version + " failed.", version.getVersion(), version.toString());
-		}
+	@Override
+	protected String _writeText(CannotParseProperty property, VCardVersion version) {
+		return "value";
+	}
+
+	@Override
+	protected CannotParseProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		throw new CannotParseException();
+	}
+
+	@Override
+	protected CannotParseProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+		throw new CannotParseException();
+	}
+
+	@Override
+	protected CannotParseProperty _parseHtml(HCardElement element, List<String> warnings) {
+		throw new CannotParseException();
+	}
+
+	@Override
+	protected CannotParseProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+		throw new CannotParseException();
 	}
 }

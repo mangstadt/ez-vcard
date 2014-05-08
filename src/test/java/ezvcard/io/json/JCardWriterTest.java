@@ -20,8 +20,7 @@ import org.junit.rules.TemporaryFolder;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.LuckyNumType;
-import ezvcard.io.LuckyNumType.LuckyNumScribe;
+import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
@@ -33,6 +32,7 @@ import ezvcard.property.Birthday;
 import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
+import ezvcard.property.SkipMeProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
@@ -297,14 +297,12 @@ public class JCardWriterTest {
 	public void skipMeException() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
-		writer.registerScribe(new LuckyNumScribe());
+		writer.registerScribe(new SkipMeScribe());
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		LuckyNumType prop = new LuckyNumType(0);
-		prop.luckyNum = 13;
-		vcard.addProperty(prop);
+		vcard.addProperty(new SkipMeProperty());
 		writer.write(vcard);
 
 		writer.close();

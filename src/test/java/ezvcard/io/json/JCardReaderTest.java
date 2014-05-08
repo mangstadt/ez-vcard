@@ -22,9 +22,10 @@ import org.junit.rules.TemporaryFolder;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
+import ezvcard.io.scribe.CannotParseScribe;
+import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
@@ -314,16 +315,44 @@ public class JCardReaderTest {
 		  "[\"vcard\"," +
 		    "[" +
 		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"x-lucky-num\", {}, \"text\", \"13\"]" +
+		      "[\"skipme\", {}, \"text\", \"value\"]" +
 		    "]" +
 		  "]";
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
-		reader.registerScribe(new LuckyNumScribe());
+		reader.registerScribe(new SkipMeScribe());
 
 		VCard vcard = reader.readNext();
 		assertEquals(0, vcard.getProperties().size());
+		assertWarnings(1, reader.getWarnings());
+	}
+
+	@Test
+	public void cannotParseException() throws Throwable {
+		//@formatter:off
+		String json =
+		  "[\"vcard\"," +
+		    "[" +
+		      "[\"version\", {}, \"text\", \"4.0\"]," +
+		      "[\"cannotparse\", {}, \"text\", \"value\"]," +
+		      "[\"x-foo\", {}, \"text\", \"value\"]" +
+		    "]" +
+		  "]";
+		//@formatter:on
+
+		JCardReader reader = new JCardReader(json);
+		reader.registerScribe(new CannotParseScribe());
+		VCard vcard = reader.readNext();
+
+		assertEquals(2, vcard.getProperties().size());
+		RawProperty property = vcard.getExtendedProperty("x-foo");
+		assertEquals("x-foo", property.getPropertyName());
+		assertEquals("value", property.getValue());
+		property = vcard.getExtendedProperty("cannotparse");
+		assertEquals("cannotparse", property.getPropertyName());
+		assertEquals("value", property.getValue());
+
 		assertWarnings(1, reader.getWarnings());
 	}
 

@@ -1,9 +1,6 @@
-package ezvcard;
+package ezvcard.property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import org.junit.Test;
+import ezvcard.io.scribe.SkipMeScribe;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -28,34 +25,12 @@ import org.junit.Test;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
- The views and conclusions contained in the software and documentation are those
- of the authors and should not be interpreted as representing official policies, 
- either expressed or implied, of the FreeBSD Project.
  */
 
 /**
+ * Used with the {@link SkipMeScribe} scribe.
  * @author Michael Angstadt
  */
-public class VCardVersionTest {
-	@Test
-	public void valueOfByStr() {
-		for (VCardVersion version : VCardVersion.values()) {
-			assertEquals(version + " failed.", version, VCardVersion.valueOfByStr(version.getVersion()));
-		}
-		assertNull(VCardVersion.valueOfByStr("5.0"));
-	}
-
-	@Test
-	public void valueOfByXmlNamespace() {
-		assertEquals(VCardVersion.V4_0, VCardVersion.valueOfByXmlNamespace(VCardVersion.V4_0.getXmlNamespace()));
-		assertNull(VCardVersion.valueOfByXmlNamespace("urn:ietf:params:xml:ns:vcard-5.0"));
-	}
-
-	@Test
-	public void toString_() {
-		for (VCardVersion version : VCardVersion.values()) {
-			assertEquals(version + " failed.", version.getVersion(), version.toString());
-		}
-	}
+public class SkipMeProperty extends VCardProperty {
+	//empty
 }

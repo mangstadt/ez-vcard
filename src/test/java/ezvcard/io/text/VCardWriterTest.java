@@ -8,18 +8,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.LuckyNumType;
-import ezvcard.io.LuckyNumType.LuckyNumScribe;
+import ezvcard.io.scribe.SkipMeScribe;
+import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.Agent;
 import ezvcard.property.Anniversary;
@@ -31,9 +34,11 @@ import ezvcard.property.Key;
 import ezvcard.property.Label;
 import ezvcard.property.Note;
 import ezvcard.property.ProductId;
+import ezvcard.property.SkipMeProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -362,30 +367,16 @@ public class VCardWriterTest {
 		assertEquals(expected, actual);
 	}
 
-	/*
-	 * If the type's marshal method throws a SkipMeException, then a warning
-	 * should be added to the warnings list and the type object should NOT be
-	 * marshalled.
-	 */
 	@Test
 	public void skipMeException() throws Throwable {
 		VCard vcard = new VCard();
-
-		//add N property so a warning isn't generated (2.1 requires N to be present)
-		StructuredName n = new StructuredName();
-		vcard.setStructuredName(n);
-
-		LuckyNumType num = new LuckyNumType(24);
-		vcard.addProperty(num);
-
-		//should be skipped
-		num = new LuckyNumType(13);
-		vcard.addProperty(num);
+		vcard.addProperty(new SkipMeProperty());
+		vcard.addExtendedProperty("X-FOO", "value");
 
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
 		vcw.setAddProdId(false);
-		vcw.registerScribe(new LuckyNumScribe());
+		vcw.registerScribe(new SkipMeScribe());
 		vcw.write(vcard);
 
 		String actual = sw.toString();
@@ -393,9 +384,8 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"N:;;;;\r\n" +
-		"X-LUCKY-NUM:24\r\n" +
+		"VERSION:3.0\r\n" +
+		"X-FOO:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -429,6 +419,66 @@ public class VCardWriterTest {
 		"END:VCARD\r\n" + 
 		"BEGIN:VCARD\r\n" +
 		"VERSION:4.0\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void setVersionStrict_nested() throws Throwable {
+		VCard vcard = new VCard();
+
+		VCard agentVCard = new VCard();
+		agentVCard.setGender(Gender.male()); //only supported by 4.0
+		Agent agent = new Agent(agentVCard);
+		vcard.setAgent(agent);
+
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+		vcw.setAddProdId(false);
+		vcw.setVersionStrict(false);
+		vcw.write(vcard);
+
+		String actual = sw.toString();
+
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"AGENT:\r\n" +
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"GENDER:M\r\n" +
+		"END:VCARD\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void setVersionStrict_embedded() throws Throwable {
+		VCard vcard = new VCard();
+
+		VCard agentVCard = new VCard();
+		agentVCard.setGender(Gender.male()); //only supported by 4.0
+		Agent agent = new Agent(agentVCard);
+		vcard.setAgent(agent);
+
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
+		vcw.setAddProdId(false);
+		vcw.setVersionStrict(false);
+		vcw.write(vcard);
+
+		String actual = sw.toString();
+
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"AGENT:BEGIN:VCARD\\nVERSION:3.0\\nGENDER:M\\nEND:VCARD\\n\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -479,6 +529,81 @@ public class VCardWriterTest {
 			String actual = IOUtils.getFileContents(file, "UTF-8");
 			assertEquals(expected, actual);
 		}
+	}
+
+	@Test
+	public void date_time_properties_should_have_no_VALUE_parameter() throws Throwable {
+		class DateTestScribe<T extends VCardProperty> extends VCardPropertyScribe<T> {
+			private final VCardDataType dataType;
+
+			public DateTestScribe(Class<T> clazz, String name, VCardDataType dataType) {
+				super(clazz, name);
+				this.dataType = dataType;
+			}
+
+			@Override
+			protected VCardDataType _defaultDataType(VCardVersion version) {
+				return VCardDataType.DATE_AND_OR_TIME;
+			}
+
+			@Override
+			protected VCardDataType _dataType(T property, VCardVersion version) {
+				return dataType;
+			}
+
+			@Override
+			protected String _writeText(T property, VCardVersion version) {
+				return "value";
+			}
+
+			@Override
+			protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+				return null;
+			}
+		}
+
+		class DateProperty extends VCardProperty {
+			//empty
+		}
+		class DateTimeProperty extends VCardProperty {
+			//empty
+		}
+		class TimeProperty extends VCardProperty {
+			//empty
+		}
+		class DateAndOrTimeProperty extends VCardProperty {
+			//empty
+		}
+
+		VCard vcard = new VCard();
+		vcard.addProperty(new DateProperty());
+		vcard.addProperty(new DateTimeProperty());
+		vcard.addProperty(new TimeProperty());
+		vcard.addProperty(new DateAndOrTimeProperty());
+
+		StringWriter sw = new StringWriter();
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
+		vcw.registerScribe(new DateTestScribe<DateProperty>(DateProperty.class, "DATE", VCardDataType.DATE));
+		vcw.registerScribe(new DateTestScribe<DateTimeProperty>(DateTimeProperty.class, "DATETIME", VCardDataType.DATE_TIME));
+		vcw.registerScribe(new DateTestScribe<TimeProperty>(TimeProperty.class, "TIME", VCardDataType.TIME));
+		vcw.registerScribe(new DateTestScribe<DateAndOrTimeProperty>(DateAndOrTimeProperty.class, "DATEANDORTIME", VCardDataType.DATE_AND_OR_TIME));
+		vcw.setAddProdId(false);
+		vcw.write(vcard);
+
+		String actual = sw.toString();
+
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"DATE:value\r\n" +
+		"DATETIME:value\r\n" +
+		"TIME:value\r\n" +
+		"DATEANDORTIME:value\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		assertEquals(actual, expected);
 	}
 
 	@Test

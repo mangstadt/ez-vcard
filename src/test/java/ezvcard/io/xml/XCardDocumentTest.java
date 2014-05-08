@@ -44,6 +44,8 @@ import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.io.SalaryType;
 import ezvcard.io.SalaryType.SalaryScribe;
+import ezvcard.io.scribe.CannotParseScribe;
+import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
@@ -64,6 +66,7 @@ import ezvcard.property.Organization;
 import ezvcard.property.Photo;
 import ezvcard.property.ProductId;
 import ezvcard.property.RawProperty;
+import ezvcard.property.SkipMeProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
@@ -465,23 +468,54 @@ public class XCardDocumentTest {
 	public void parse_skipMeException() throws Throwable {
 		//@formatter:off
 		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">" +
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
-				"<a:lucky-num><a:num>24</a:num></a:lucky-num>" +
-				"<a:lucky-num><a:num>13</a:num></a:lucky-num>" +
+				"<skipme><text>value</text></skipme>" +
+				"<x-foo><text>value</text></x-foo>" +
 			"</vcard>" +
 		"</vcards>";
 		//@formatter:on
 
 		XCardDocument xcr = new XCardDocument(xml);
-		xcr.registerScribe(new LuckyNumScribe());
+		xcr.registerScribe(new SkipMeScribe());
 
 		VCard vcard = xcr.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(1, vcard.getProperties().size());
 
-		LuckyNumType luckyNum = vcard.getProperty(LuckyNumType.class);
-		assertEquals(24, luckyNum.luckyNum);
+		RawProperty property = vcard.getExtendedProperty("x-foo");
+		assertEquals("X-FOO", property.getPropertyName());
+		assertEquals("value", property.getValue());
+
+		assertWarningsLists(xcr.getParseWarnings(), 1);
+	}
+
+	@Test
+	public void parse_cannotParseException() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<cannotparse><text>value</text></cannotparse>" +
+				"<x-foo><text>value</text></x-foo>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcr = new XCardDocument(xml);
+		xcr.registerScribe(new CannotParseScribe());
+
+		VCard vcard = xcr.parseFirst();
+		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+
+		assertEquals(2, vcard.getProperties().size());
+
+		RawProperty property = vcard.getExtendedProperty("x-foo");
+		assertEquals("X-FOO", property.getPropertyName());
+		assertEquals("value", property.getValue());
+
+		Xml xmlProperty = vcard.getXmls().get(0);
+		assertXMLEqual(XmlUtils.toDocument("<cannotparse xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><text>value</text></cannotparse>"), xmlProperty.getValue());
 
 		assertWarningsLists(xcr.getParseWarnings(), 1);
 	}
@@ -590,6 +624,27 @@ public class XCardDocumentTest {
 		XCardDocument xcard = new XCardDocument(file);
 		VCard vcard = xcard.parseFirst();
 		assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
+	}
+
+	@Test
+	public void parse_clear_warnings() throws Throwable {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<skipme />" +
+			"</vcard>" +
+			"<vcard>" +
+				"<x-foo />" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcr = new XCardDocument(xml);
+		xcr.registerScribe(new SkipMeScribe());
+
+		xcr.parseAll();
+		assertWarningsLists(xcr.getParseWarnings(), 1, 0);
 	}
 
 	@Test
@@ -831,39 +886,24 @@ public class XCardDocumentTest {
 		assertXMLEqual(expected, actual);
 	}
 
-	/*
-	 * If the type's marshal method throws a SkipMeException, then a warning
-	 * should be added to the warnings list and the type object should NOT be
-	 * marshalled.
-	 */
 	@Test
 	public void add_skipMeException() throws Throwable {
 		VCard vcard = new VCard();
-
-		//add FN property so a warning isn't generated (4.0 requires FN to be present)
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
-
-		LuckyNumType num = new LuckyNumType(24);
-		vcard.addProperty(num);
-
-		//should be skipped
-		num = new LuckyNumType(13);
-		vcard.addProperty(num);
+		vcard.addProperty(new SkipMeProperty());
+		vcard.addExtendedProperty("x-foo", "value");
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.setAddProdId(false);
-		xcm.registerScribe(new LuckyNumScribe());
+		xcm.registerScribe(new SkipMeScribe());
 		xcm.add(vcard);
 
 		Document actual = xcm.getDocument();
 
 		//@formatter:off
 		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" xmlns:a=\"http://luckynum.com\">" +
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
-				"<fn><text>John Doe</text></fn>" +
-				"<a:lucky-num>24</a:lucky-num>" +
+				"<x-foo><unknown>value</unknown></x-foo>" +
 			"</vcard>" +
 		"</vcards>";
 		Document expected = XmlUtils.toDocument(xml);
@@ -876,8 +916,8 @@ public class XCardDocumentTest {
 	public void add_no_scribe_registered() throws Throwable {
 		VCard vcard = new VCard();
 
-		LuckyNumType num = new LuckyNumType(24);
-		vcard.addProperty(num);
+		SkipMeProperty property = new SkipMeProperty();
+		vcard.addProperty(property);
 
 		XCardDocument xcm = new XCardDocument();
 		xcm.add(vcard);
