@@ -105,22 +105,7 @@ public class VcardParser extends ActionBarActivity {
         List<VCard> vCards = Ezvcard.parse(file).register(new AndroidCustomFieldScribe()).all();
         ContactOperations opeartions = new ContactOperations(getApplicationContext(), "Phone", "com.motorola.android.buacontactadapter");
         for (VCard card : vCards) {
-            opeartions.insertContact(card, new ContactOperations.ContactsRestoreCallback() {
-                @Override
-                public void error(Exception e) {
-
-                }
-
-                @Override
-                public void processing() {
-
-                }
-
-                @Override
-                public void processed() {
-
-                }
-            });
+            opeartions.insertContact(card);
         }
     }
 
@@ -132,22 +117,7 @@ public class VcardParser extends ActionBarActivity {
         try {
             VCard vCard = null;
             while ((vCard = vCardReader.readNext()) != null) {
-                opeartions.insertContact(vCard, new ContactOperations.ContactsRestoreCallback() {
-                    @Override
-                    public void error(Exception e) {
-
-                    }
-
-                    @Override
-                    public void processing() {
-
-                    }
-
-                    @Override
-                    public void processed() {
-
-                    }
-                });
+                opeartions.insertContact(vCard);
             }
 
           /*  new Thread(new Runnable() {

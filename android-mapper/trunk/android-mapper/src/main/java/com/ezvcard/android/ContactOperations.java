@@ -70,29 +70,15 @@ public class ContactOperations {
         this.accountType = accountType;
     }
 
-    public interface ContactsRestoreCallback {
-
-        void error(Exception e);
-
-        void processing();
-
-        void processed();
-    }
-
-
-    //Gross shit follows .This is huge method but a contact field it self is so huge.
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public int insertContact(VCard vCard, ContactsRestoreCallback contactsRestoreCallback) {
+    public int insertContact(VCard vCard) throws RemoteException, OperationApplicationException {
     	if (vCard == null){
     		Log.d(TAG, "The vcard is null or It must be a duplicate Contact hence we could not insert the contact");
-            contactsRestoreCallback.processed();
             return 0;
     	}
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         rawContactID = ops.size();
-        contactsRestoreCallback.processing();
         
         // TODO handle Raw properties - Raw properties include various extension which start with "X-" like X-ASSISTANT, X-AIM, X-SPOUSE
 
@@ -120,20 +106,8 @@ public class ContactOperations {
         insertPhotos(vCard, ops);
         insertOrganization(vCard, ops);
 
-        try {
-            // Executing all the insert operations as a single database transaction
-            context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-            contactsRestoreCallback.processed();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            contactsRestoreCallback.error(e);
-        } catch (OperationApplicationException e) {
-            e.printStackTrace();
-            contactsRestoreCallback.error(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            contactsRestoreCallback.error(e);
-        }
+        // Executing all the insert operations as a single database transaction
+        context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
         return 0;
     }
     
