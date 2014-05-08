@@ -26,6 +26,8 @@ import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
+import ezvcard.io.scribe.CannotParseScribe;
+import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.ImageType;
@@ -599,29 +601,52 @@ public class VCardReaderTest {
 		assertNull(reader.readNext());
 	}
 
-	/*
-	 * If the type's unmarshal method throws a SkipMeException, then a warning
-	 * should be added to the warnings list and the type object should NOT be
-	 * added to the {@link VCard} object.
-	 */
 	@Test
 	public void skipMeException() throws Throwable {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +
-		"X-LUCKY-NUM:24\r\n" +
-		"X-LUCKY-NUM:13\r\n" +
+		"SKIPME:value\r\n" +
+		"X-FOO:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
-		reader.registerScribe(new LuckyNumScribe());
+		reader.registerScribe(new SkipMeScribe());
 		VCard vcard = reader.readNext();
 
-		List<LuckyNumType> luckyNumTypes = vcard.getProperties(LuckyNumType.class);
-		assertEquals(1, luckyNumTypes.size());
-		assertEquals(24, luckyNumTypes.get(0).luckyNum);
+		assertEquals(1, vcard.getProperties().size());
+		RawProperty property = vcard.getExtendedProperty("X-FOO");
+		assertEquals("X-FOO", property.getPropertyName());
+		assertEquals("value", property.getValue());
+
+		assertWarnings(1, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void cannotParseException() throws Throwable {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"CANNOTPARSE:value\r\n" +
+		"X-FOO:value\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		reader.registerScribe(new CannotParseScribe());
+		VCard vcard = reader.readNext();
+
+		assertEquals(2, vcard.getProperties().size());
+		RawProperty property = vcard.getExtendedProperty("X-FOO");
+		assertEquals("X-FOO", property.getPropertyName());
+		assertEquals("value", property.getValue());
+		property = vcard.getExtendedProperty("CANNOTPARSE");
+		assertEquals("CANNOTPARSE", property.getPropertyName());
+		assertEquals("value", property.getValue());
 
 		assertWarnings(1, reader.getWarnings());
 		assertNull(reader.readNext());
@@ -641,6 +666,30 @@ public class VCardReaderTest {
 		reader.readNext();
 
 		assertWarnings(1, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void warnings_list_cleared() throws Throwable {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"bad-line\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+
+		reader.readNext();
+		assertWarnings(1, reader.getWarnings());
+
+		reader.readNext();
+		assertWarnings(0, reader.getWarnings());
+
 		assertNull(reader.readNext());
 	}
 

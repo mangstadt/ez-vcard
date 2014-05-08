@@ -68,29 +68,18 @@ public class LuckyNumType extends VCardProperty {
 
 		@Override
 		protected String _writeText(LuckyNumType property, VCardVersion version) {
-			int luckyNum = property.luckyNum;
-			if (luckyNum == 13) {
-				throw new SkipMeException("Invalid lucky number.");
-			}
-			return luckyNum + "";
+			return property.luckyNum + "";
 		}
 
 		@Override
 		protected LuckyNumType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			int luckyNum = Integer.parseInt(value);
-			if (luckyNum == 13) {
-				throw new SkipMeException("Invalid lucky number.");
-			}
-
 			return new LuckyNumType(luckyNum);
 		}
 
 		@Override
 		protected void _writeXml(LuckyNumType property, XCardElement parent) {
 			int luckyNum = property.luckyNum;
-			if (luckyNum == 13) {
-				throw new SkipMeException("Invalid lucky number.");
-			}
 			parent.element().setTextContent(luckyNum + "");
 		}
 
@@ -103,9 +92,6 @@ public class LuckyNumType extends VCardProperty {
 
 			Element num = (Element) nodeList.item(0);
 			int luckyNum = Integer.parseInt(num.getTextContent());
-			if (luckyNum == 13) {
-				throw new SkipMeException("Invalid lucky number.");
-			}
 
 			return new LuckyNumType(luckyNum);
 		}

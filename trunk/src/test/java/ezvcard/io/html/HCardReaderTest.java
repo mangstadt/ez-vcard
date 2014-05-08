@@ -21,6 +21,8 @@ import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
+import ezvcard.io.scribe.CannotParseScribe;
+import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
@@ -780,6 +782,61 @@ public class HCardReaderTest {
 		assertEquals("JOHN DOE", fn.value);
 
 		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void skipMeException() {
+		//@formatter:off
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"skipme\">value</span>" +
+					"<span class=\"x-foo\">value</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html);
+		reader.registerScribe(new SkipMeScribe());
+		VCard vcard = reader.readNext();
+
+		assertEquals(1, vcard.getProperties().size());
+		RawProperty property = vcard.getExtendedProperty("x-foo");
+		assertEquals("x-foo", property.getPropertyName());
+		assertEquals("value", property.getValue());
+
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void cannotParseException() {
+		//@formatter:off
+		String html =
+		"<html>" +
+			"<body>" +
+				"<div class=\"vcard\">" +
+					"<span class=\"cannotparse\">value</span>" +
+					"<span class=\"x-foo\">value</span>" +
+				"</div>" +
+			"</body>" +
+		"</html>";
+		//@formatter:on
+
+		HCardReader reader = new HCardReader(html);
+		reader.registerScribe(new CannotParseScribe());
+		VCard vcard = reader.readNext();
+
+		assertEquals(2, vcard.getProperties().size());
+		RawProperty property = vcard.getExtendedProperty("x-foo");
+		assertEquals("x-foo", property.getPropertyName());
+		assertEquals("value", property.getValue());
+		property = vcard.getExtendedProperty("cannotparse");
+		assertEquals("cannotparse", property.getPropertyName());
+		assertEquals("<span class=\"cannotparse\">value</span>", property.getValue());
+
 		assertNull(reader.readNext());
 	}
 }
