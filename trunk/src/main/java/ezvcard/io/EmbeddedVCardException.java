@@ -1,7 +1,6 @@
 package ezvcard.io;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -40,7 +39,7 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
-public class EmbeddedVCardException extends VCardException {
+public class EmbeddedVCardException extends RuntimeException {
 	private final VCard vcard;
 	private final InjectionCallback callback;
 

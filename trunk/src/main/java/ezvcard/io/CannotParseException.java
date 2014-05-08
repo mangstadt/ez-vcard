@@ -1,7 +1,6 @@
 package ezvcard.io;
 
 import ezvcard.Messages;
-import ezvcard.VCardException;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -35,7 +34,7 @@ import ezvcard.VCardException;
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
-public class CannotParseException extends VCardException {
+public class CannotParseException extends RuntimeException {
 	/**
 	 * Creates a new "cannot parse" exception.
 	 */

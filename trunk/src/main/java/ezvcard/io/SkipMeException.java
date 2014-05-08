@@ -1,7 +1,6 @@
 package ezvcard.io;
 
 import ezvcard.VCard;
-import ezvcard.VCardException;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -39,7 +38,7 @@ import ezvcard.VCardException;
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
-public class SkipMeException extends VCardException {
+public class SkipMeException extends RuntimeException {
 	/**
 	 * Creates a skip-me exception.
 	 */
