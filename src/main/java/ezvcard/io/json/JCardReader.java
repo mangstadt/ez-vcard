@@ -9,15 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
-import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarnings;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.json.JCardRawReader.JCardDataStreamListener;
 import ezvcard.io.scribe.RawPropertyScribe;
@@ -80,7 +79,7 @@ import ezvcard.property.VCardProperty;
  */
 public class JCardReader implements Closeable {
 	private ScribeIndex index = new ScribeIndex();
-	private final List<String> warnings = new ArrayList<String>();
+	private final ParseWarnings warnings = new ParseWarnings();
 	private final JCardRawReader reader;
 
 	/**
@@ -132,7 +131,7 @@ public class JCardReader implements Closeable {
 		reader.readNext(listener);
 		VCard vcard = listener.vcard;
 		if (vcard != null && !listener.versionFound) {
-			addWarning(null, 29);
+			warnings.add(reader.getLineNum(), null, 29);
 		}
 		return vcard;
 	}
@@ -172,20 +171,7 @@ public class JCardReader implements Closeable {
 	 * @return the warnings or empty list if there were no warnings
 	 */
 	public List<String> getWarnings() {
-		return new ArrayList<String>(warnings);
-	}
-
-	private void addWarning(String propertyName, int code, Object... args) {
-		String message = Messages.INSTANCE.getParseMessage(code, args);
-		addWarning(propertyName, message);
-	}
-
-	private void addWarning(String propertyName, String message) {
-		int code = (propertyName == null) ? 37 : 36;
-		int line = reader.getLineNum();
-
-		String warning = Messages.INSTANCE.getParseMessage(code, line, propertyName, message);
-		warnings.add(warning);
+		return warnings.copy();
 	}
 
 	public void close() throws IOException {
@@ -208,7 +194,7 @@ public class JCardReader implements Closeable {
 
 				VCardVersion version = VCardVersion.valueOfByStr(value.asSingle());
 				if (version != VCardVersion.V4_0) {
-					addWarning(propertyName, 30);
+					warnings.add(reader.getLineNum(), propertyName, 30);
 				}
 				return;
 			}
@@ -222,10 +208,10 @@ public class JCardReader implements Closeable {
 			try {
 				result = scribe.parseJson(value, dataType, parameters);
 				for (String warning : result.getWarnings()) {
-					addWarning(warning, propertyName);
+					warnings.add(reader.getLineNum(), warning, propertyName);
 				}
 			} catch (SkipMeException e) {
-				addWarning(propertyName, 22, e.getMessage());
+				warnings.add(reader.getLineNum(), propertyName, 22, e.getMessage());
 				return;
 			} catch (CannotParseException e) {
 				scribe = new RawPropertyScribe(propertyName);
@@ -233,9 +219,9 @@ public class JCardReader implements Closeable {
 
 				VCardProperty property = result.getProperty();
 				String valueStr = ((RawProperty) property).getValue();
-				addWarning(propertyName, 25, valueStr, e.getMessage());
+				warnings.add(reader.getLineNum(), propertyName, 25, valueStr, e.getMessage());
 			} catch (EmbeddedVCardException e) {
-				addWarning(propertyName, 31);
+				warnings.add(reader.getLineNum(), propertyName, 31);
 				return;
 			}
 

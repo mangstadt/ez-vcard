@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarnings;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
@@ -85,7 +85,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * @author Michael Angstadt
  */
 public class VCardReader implements Closeable {
-	private final List<String> warnings = new ArrayList<String>();
+	private final ParseWarnings warnings = new ParseWarnings();
 	private ScribeIndex index = new ScribeIndex();
 	private Charset defaultQuotedPrintableCharset;
 	private final VCardRawReader reader;
@@ -218,7 +218,7 @@ public class VCardReader implements Closeable {
 	 * @return the warnings or empty list if there were no warnings
 	 */
 	public List<String> getWarnings() {
-		return new ArrayList<String>(warnings);
+		return warnings.copy();
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class VCardReader implements Closeable {
 				line = reader.readLine();
 			} catch (VCardParseException e) {
 				if (!vcardStack.isEmpty()) {
-					addWarning(null, 27, e.getLine());
+					warnings.add(reader.getLineNum(), null, 27, e.getLine());
 				}
 				continue;
 			}
@@ -329,7 +329,7 @@ public class VCardReader implements Closeable {
 				try {
 					value = decodeQuotedPrintable(name, parameters, value);
 				} catch (DecoderException e) {
-					addWarning(name, 38, e.getMessage());
+					warnings.add(reader.getLineNum(), name, 38, e.getMessage());
 				}
 
 				//get the scribe
@@ -353,7 +353,7 @@ public class VCardReader implements Closeable {
 					Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
 
 					for (String warning : result.getWarnings()) {
-						addWarning(name, warning);
+						warnings.add(reader.getLineNum(), name, warning);
 					}
 
 					property = result.getProperty();
@@ -366,9 +366,9 @@ public class VCardReader implements Closeable {
 						curVCard.addProperty(property);
 					}
 				} catch (SkipMeException e) {
-					addWarning(name, 22, e.getMessage());
+					warnings.add(reader.getLineNum(), name, 22, e.getMessage());
 				} catch (CannotParseException e) {
-					addWarning(name, 25, value, e.getMessage());
+					warnings.add(reader.getLineNum(), name, 25, value, e.getMessage());
 					property = new RawProperty(name, value);
 					property.setGroup(group);
 					curVCard.addProperty(property);
@@ -393,7 +393,7 @@ public class VCardReader implements Closeable {
 							//shouldn't be thrown because we're reading from a string
 						} finally {
 							for (String w : agentReader.getWarnings()) {
-								addWarning(name, 26, w);
+								warnings.add(reader.getLineNum(), name, 26, w);
 							}
 							IOUtils.closeQuietly(agentReader);
 						}
@@ -486,7 +486,7 @@ public class VCardReader implements Closeable {
 				charset = defaultQuotedPrintableCharset;
 
 				//the given charset was invalid, so add a warning
-				addWarning(name, 23, charsetStr, charset.name());
+				warnings.add(reader.getLineNum(), name, 23, charsetStr, charset.name());
 			}
 		}
 
@@ -499,18 +499,5 @@ public class VCardReader implements Closeable {
 	 */
 	public void close() throws IOException {
 		reader.close();
-	}
-
-	private void addWarning(String propertyName, int code, Object... args) {
-		String message = Messages.INSTANCE.getParseMessage(code, args);
-		addWarning(propertyName, message);
-	}
-
-	private void addWarning(String propertyName, String message) {
-		int code = (propertyName == null) ? 37 : 36;
-		int line = reader.getLineNum();
-
-		String warning = Messages.INSTANCE.getParseMessage(code, line, propertyName, message);
-		warnings.add(warning);
 	}
 }
