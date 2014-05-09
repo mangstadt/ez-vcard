@@ -16,11 +16,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarnings;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.ScribeIndex;
@@ -93,7 +93,7 @@ import ezvcard.util.IOUtils;
 public class HCardReader {
 	private ScribeIndex index = new ScribeIndex();
 	private String pageUrl;
-	private final List<String> warnings = new ArrayList<String>();
+	private final ParseWarnings warnings = new ParseWarnings();
 	private Elements vcardElements;
 	private Iterator<Element> it;
 	private final List<Label> labels = new ArrayList<Label>();
@@ -280,7 +280,7 @@ public class HCardReader {
 	 * @return the warnings or empty list if there were no warnings
 	 */
 	public List<String> getWarnings() {
-		return new ArrayList<String>(warnings);
+		return warnings.copy();
 	}
 
 	/**
@@ -355,7 +355,7 @@ public class HCardReader {
 							Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
 							curVCard.addProperty(result.getProperty());
 							for (String warning : result.getWarnings()) {
-								addWarning(scribe.getPropertyName(), warning);
+								warnings.add(null, scribe.getPropertyName(), warning);
 							}
 							continue;
 						} catch (SkipMeException e) {
@@ -386,7 +386,7 @@ public class HCardReader {
 				Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
 
 				for (String warning : result.getWarnings()) {
-					addWarning(className, warning);
+					warnings.add(null, className, warning);
 				}
 
 				property = result.getProperty();
@@ -421,11 +421,11 @@ public class HCardReader {
 					continue;
 				}
 			} catch (SkipMeException e) {
-				addWarning(className, 22, e.getMessage());
+				warnings.add(null, className, 22, e.getMessage());
 				continue;
 			} catch (CannotParseException e) {
 				String html = element.outerHtml();
-				addWarning(className, 32, html, e.getMessage());
+				warnings.add(null, className, 32, html, e.getMessage());
 				property = new RawProperty(className, html);
 			} catch (EmbeddedVCardException e) {
 				if (HtmlUtils.isChildOf(element, embeddedVCards)) {
@@ -442,7 +442,7 @@ public class HCardReader {
 					e.injectVCard(embeddedVCard);
 				} finally {
 					for (String warning : embeddedReader.getWarnings()) {
-						addWarning(className, 26, warning);
+						warnings.add(null, className, 26, warning);
 					}
 				}
 			}
@@ -453,15 +453,5 @@ public class HCardReader {
 		for (Element child : element.children()) {
 			visit(child);
 		}
-	}
-
-	private void addWarning(String propertyName, int code, Object... args) {
-		String message = Messages.INSTANCE.getParseMessage(code, args);
-		addWarning(propertyName, message);
-	}
-
-	private void addWarning(String propertyName, String message) {
-		String warning = Messages.INSTANCE.getParseMessage(35, propertyName, message);
-		warnings.add(warning);
 	}
 }

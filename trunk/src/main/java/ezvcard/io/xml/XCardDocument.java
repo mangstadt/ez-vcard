@@ -29,12 +29,12 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import ezvcard.Ezvcard;
-import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarnings;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -153,7 +153,7 @@ public class XCardDocument {
 	private ScribeIndex index = new ScribeIndex();
 	private boolean addProdId = true;
 	private boolean versionStrict = true;
-	private final List<List<String>> parseWarnings = new ArrayList<List<String>>();
+	private final List<ParseWarnings> parseWarnings = new ArrayList<ParseWarnings>();
 	private Document document;
 	private Element root;
 
@@ -290,7 +290,11 @@ public class XCardDocument {
 	 * @see #parseFirst
 	 */
 	public List<List<String>> getParseWarnings() {
-		return parseWarnings;
+		List<List<String>> warnings = new ArrayList<List<String>>(parseWarnings.size());
+		for (ParseWarnings parseWarning : parseWarnings) {
+			warnings.add(parseWarning.copy());
+		}
+		return warnings;
 	}
 
 	/**
@@ -358,7 +362,7 @@ public class XCardDocument {
 
 		List<VCard> vcards = new ArrayList<VCard>();
 		for (Element vcardElement : getVCardElements()) {
-			List<String> warnings = new ArrayList<String>();
+			ParseWarnings warnings = new ParseWarnings();
 			parseWarnings.add(warnings);
 			VCard vcard = parseVCardElement(vcardElement, warnings);
 			vcards.add(vcard);
@@ -383,12 +387,12 @@ public class XCardDocument {
 			return null;
 		}
 
-		List<String> warnings = new ArrayList<String>();
+		ParseWarnings warnings = new ParseWarnings();
 		parseWarnings.add(warnings);
 		return parseVCardElement(vcardElements.get(0), warnings);
 	}
 
-	private VCard parseVCardElement(Element vcardElement, List<String> warnings) {
+	private VCard parseVCardElement(Element vcardElement, ParseWarnings warnings) {
 		VCard vcard = new VCard();
 		vcard.setVersion(version4);
 
@@ -421,7 +425,7 @@ public class XCardDocument {
 	 * @param vcard the vCard object
 	 * @param warningsBuf the list to add the warnings to
 	 */
-	private void parseAndAddElement(Element element, String group, VCard vcard, List<String> warnings) {
+	private void parseAndAddElement(Element element, String group, VCard vcard, ParseWarnings warnings) {
 		VCardParameters parameters = parseParameters(element);
 
 		VCardProperty property;
@@ -436,21 +440,21 @@ public class XCardDocument {
 			property.setGroup(group);
 
 			for (String warning : result.getWarnings()) {
-				addWarning(propertyName, warning, warnings);
+				warnings.add(null, propertyName, warning);
 			}
 		} catch (SkipMeException e) {
-			addWarning(propertyName, warnings, 22, e.getMessage());
+			warnings.add(null, propertyName, 22, e.getMessage());
 			return;
 		} catch (CannotParseException e) {
 			String xml = XmlUtils.toString(element);
-			addWarning(propertyName, warnings, 33, xml, e.getMessage());
+			warnings.add(null, propertyName, 33, xml, e.getMessage());
 
 			scribe = index.getPropertyScribe(Xml.class);
 			Result<? extends VCardProperty> result = scribe.parseXml(element, parameters);
 			property = result.getProperty();
 			property.setGroup(group);
 		} catch (EmbeddedVCardException e) {
-			addWarning(propertyName, warnings, 34);
+			warnings.add(null, propertyName, 34);
 			return;
 		}
 
@@ -719,15 +723,5 @@ public class XCardDocument {
 	 */
 	private Element createElement(String name, String ns) {
 		return document.createElementNS(ns, name);
-	}
-
-	private void addWarning(String propertyName, List<String> warnings, int code, Object... args) {
-		String message = Messages.INSTANCE.getParseMessage(code, args);
-		addWarning(propertyName, message, warnings);
-	}
-
-	private void addWarning(String propertyName, String message, List<String> warnings) {
-		String warning = Messages.INSTANCE.getParseMessage(35, propertyName, message);
-		warnings.add(warning);
 	}
 }
