@@ -86,6 +86,9 @@ public class ParseWarnings {
 		return new ArrayList<String>(warnings);
 	}
 
+	/**
+	 * Clears the warnings list.
+	 */
 	public void clear() {
 		warnings.clear();
 	}
