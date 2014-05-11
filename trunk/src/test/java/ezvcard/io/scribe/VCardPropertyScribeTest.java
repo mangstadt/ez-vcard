@@ -417,6 +417,21 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
+	public void parseXml_unknown() {
+		final VCardParameters params = new VCardParameters();
+
+		//@formatter:off
+		sensei.assertParseXml("<unknown>value</unknown>").warnings(1).params(params).run(new Check<TestProperty>(){
+			public void check(TestProperty property){
+				assertEquals("value", property.value);
+				assertEquals(null, property.parsedDataType);
+				assertTrue(params == property.getParameters());
+			}
+		});
+		//@formatter:on
+	}
+
+	@Test
 	public void getQName_default() {
 		QName expected = new QName(VCardVersion.V4_0.getXmlNamespace(), "test");
 		QName actual = scribe.getQName();

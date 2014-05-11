@@ -439,6 +439,7 @@ public class XCardDocumentTest {
 		assertEquals(24, age.age);
 
 		RawProperty gender = vcard.getExtendedProperty("X-GENDER");
+		assertEquals(VCardDataType.TEXT, gender.getDataType());
 		assertEquals("m", gender.getValue());
 
 		MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);

@@ -447,7 +447,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 			String elementNamespace = version.getXmlNamespace();
 			String childNamespace = child.getNamespaceURI();
 			if (elementNamespace.equals(childNamespace)) {
-				dataType = VCardDataType.get(child.getLocalName());
+				String dataTypeStr = child.getLocalName();
+				dataType = "unknown".equals(dataTypeStr) ? null : VCardDataType.get(dataTypeStr);
 				value = child.getTextContent();
 				break;
 			}
