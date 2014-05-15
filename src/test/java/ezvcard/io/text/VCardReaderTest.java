@@ -151,21 +151,10 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
 
-		Address adr = vcard.getAddresses().get(0);
-		assertEquals(3, adr.getParameters().size());
-		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
-
-		adr = vcard.getAddresses().get(1);
-		assertEquals(3, adr.getParameters().size());
-		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
-
-		adr = vcard.getAddresses().get(2);
-		assertEquals(3, adr.getParameters().size());
-		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
-
-		adr = vcard.getAddresses().get(3);
-		assertEquals(3, adr.getParameters().size());
-		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
+		for (Address adr : vcard.getAddresses()) {
+			assertEquals(3, adr.getParameters().size());
+			assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
+		}
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
