@@ -2,8 +2,6 @@ package ezvcard.io.text;
 
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -31,9 +29,7 @@ import ezvcard.property.FormattedName;
 import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
-import ezvcard.property.Label;
 import ezvcard.property.Note;
-import ezvcard.property.ProductId;
 import ezvcard.property.SkipMeProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
@@ -102,96 +98,6 @@ public class VCardWriterTest {
 		//@formatter:on
 
 		assertEquals(actual, expected);
-	}
-
-	@Test
-	public void setAddProdId() throws Throwable {
-		VCard vcard = new VCard();
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
-
-		//with X-PRODID (2.1)
-		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.write(vcard);
-		assertTrue(sw.toString().contains("\r\nX-PRODID:"));
-
-		//with PRODID (3.0)
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V3_0);
-		vcw.write(vcard);
-		assertTrue(sw.toString().contains("\r\nPRODID:"));
-
-		//with PRODID (4.0)
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V4_0);
-		vcw.write(vcard);
-		assertTrue(sw.toString().contains("\r\nPRODID:"));
-
-		//with X-PRODID (2.1)
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.setAddProdId(true);
-		vcw.write(vcard);
-		assertTrue(sw.toString().contains("\r\nX-PRODID:"));
-
-		//with PRODID (3.0)
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V3_0);
-		vcw.setAddProdId(true);
-		vcw.write(vcard);
-		assertTrue(sw.toString().contains("\r\nPRODID:"));
-
-		//with PRODID (4.0)
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V4_0);
-		vcw.setAddProdId(true);
-		vcw.write(vcard);
-		assertTrue(sw.toString().contains("\r\nPRODID:"));
-
-		//without X-PRODID (2.1)
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V2_1);
-		vcw.setAddProdId(false);
-		vcw.write(vcard);
-		assertFalse(sw.toString().contains("\r\nX-PRODID:"));
-
-		//without PRODID (3.0)
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V3_0);
-		vcw.setAddProdId(false);
-		vcw.write(vcard);
-		assertFalse(sw.toString().contains("\r\nPRODID:"));
-
-		//without PRODID (4.0)
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V4_0);
-		vcw.setAddProdId(false);
-		vcw.write(vcard);
-		assertFalse(sw.toString().contains("\r\nPRODID:"));
-	}
-
-	@Test
-	public void setAddProdId_overwrites_existing_prodId() throws Throwable {
-		VCard vcard = new VCard();
-
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
-
-		ProductId prodId = new ProductId("Acme Co.");
-		vcard.setProductId(prodId);
-
-		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
-		vcw.setAddProdId(false);
-		vcw.write(vcard);
-		assertTrue(sw.toString().contains("\r\nPRODID:Acme Co."));
-
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V3_0);
-		vcw.setAddProdId(true);
-		vcw.write(vcard);
-		assertFalse(sw.toString().contains("\r\nPRODID:Acme Co."));
 	}
 
 	@Test
@@ -299,75 +205,6 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void labels() throws Throwable {
-		VCard vcard = new VCard();
-
-		//address with label
-		Address adr = new Address();
-		adr.setStreetAddress("123 Main St.");
-		adr.setLocality("Austin");
-		adr.setRegion("TX");
-		adr.setPostalCode("12345");
-		adr.setLabel("123 Main St.\r\nAustin, TX 12345");
-		adr.addType(AddressType.HOME);
-		vcard.addAddress(adr);
-
-		//address without label
-		adr = new Address();
-		adr.setStreetAddress("222 Broadway");
-		adr.setLocality("New York");
-		adr.setRegion("NY");
-		adr.setPostalCode("99999");
-		adr.addType(AddressType.WORK);
-		vcard.addAddress(adr);
-
-		//orphaned label
-		Label label = new Label("22 Spruce Ln.\r\nChicago, IL 11111");
-		label.addType(AddressType.PARCEL);
-		vcard.addOrphanedLabel(label);
-
-		//3.0
-		//LABEL types should be used
-		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
-		vcw.setAddProdId(false);
-		vcw.write(vcard);
-		String actual = sw.toString();
-
-		//@formatter:off
-		String expected =
-		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"ADR;TYPE=home:;;123 Main St.;Austin;TX;12345;\r\n" +
-		"LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 12345\r\n" +
-		"ADR;TYPE=work:;;222 Broadway;New York;NY;99999;\r\n" +
-		"LABEL;TYPE=parcel:22 Spruce Ln.\\nChicago\\, IL 11111\r\n" +
-		"END:VCARD\r\n";
-		//@formatter:on
-
-		assertEquals(expected, actual);
-
-		//4.0
-		//LABEL parameters should be used
-		sw = new StringWriter();
-		vcw = new VCardWriter(sw, VCardVersion.V4_0, null, "\r\n");
-		vcw.setAddProdId(false);
-		vcw.write(vcard);
-		actual = sw.toString();
-
-		//@formatter:off
-		expected =
-		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
-		"ADR;LABEL=\"123 Main St.\\nAustin, TX 12345\";TYPE=home:;;123 Main St.;Austin;TX;12345;\r\n" +
-		"ADR;TYPE=work:;;222 Broadway;New York;NY;99999;\r\n" +
-		"END:VCARD\r\n";
-		//@formatter:on
-
-		assertEquals(expected, actual);
-	}
-
-	@Test
 	public void skipMeException() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.addProperty(new SkipMeProperty());
@@ -386,39 +223,6 @@ public class VCardWriterTest {
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +
 		"X-FOO:value\r\n" +
-		"END:VCARD\r\n";
-		//@formatter:on
-
-		assertEquals(actual, expected);
-	}
-
-	@Test
-	public void setVersionStrict() throws Throwable {
-		VCard vcard = new VCard();
-		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
-
-		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
-		vcw.setAddProdId(false);
-		vcw.write(vcard);
-		vcw.setVersionStrict(false);
-		vcw.write(vcard);
-		vcw.setVersionStrict(true);
-		vcw.write(vcard);
-
-		String actual = sw.toString();
-
-		//@formatter:off
-		String expected =
-		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
-		"END:VCARD\r\n" +
-		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
-		"MAILER:mailer\r\n" +
-		"END:VCARD\r\n" + 
-		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -532,7 +336,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void date_time_properties_should_have_no_VALUE_parameter() throws Throwable {
+	public void date_time_properties_should_not_have_a_VALUE_parameter() throws Throwable {
 		class DateTestScribe<T extends VCardProperty> extends VCardPropertyScribe<T> {
 			private final VCardDataType dataType;
 
