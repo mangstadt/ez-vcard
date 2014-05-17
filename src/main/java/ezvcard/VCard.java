@@ -2213,7 +2213,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @return the product ID
 	 */
-	public ProductId getProdId() {
+	public ProductId getProductId() {
 		return getProperty(ProductId.class);
 	}
 
@@ -2226,30 +2226,30 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param prodId the product ID
+	 * @param productId the product ID
 	 */
-	public void setProdId(ProductId prodId) {
-		setProperty(ProductId.class, prodId);
+	public void setProductId(ProductId productId) {
+		setProperty(ProductId.class, productId);
 	}
 
 	/**
 	 * Sets the product ID, which identifies the software that created the
-	 * vCard. This is a convenience method for {@link #setProdId(ProductId)}.
+	 * vCard. This is a convenience method for {@link #setProductId(ProductId)}.
 	 * <p>
 	 * <b>Property name:</b> {@code PRODID}
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param prodId the product ID (e.g. "ez-vcard 1.0") or null to remove
+	 * @param productId the product ID (e.g. "ez-vcard 1.0") or null to remove
 	 * @return the property object that was created
 	 */
-	public ProductId setProdId(String prodId) {
+	public ProductId setProductId(String productId) {
 		ProductId type = null;
-		if (prodId != null) {
-			type = new ProductId(prodId);
+		if (productId != null) {
+			type = new ProductId(productId);
 		}
-		setProdId(type);
+		setProductId(type);
 		return type;
 	}
 

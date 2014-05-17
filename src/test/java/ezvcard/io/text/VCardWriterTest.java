@@ -179,7 +179,7 @@ public class VCardWriterTest {
 		vcard.setFormattedName(fn);
 
 		ProductId prodId = new ProductId("Acme Co.");
-		vcard.setProdId(prodId);
+		vcard.setProductId(prodId);
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);

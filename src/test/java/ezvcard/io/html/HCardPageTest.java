@@ -364,7 +364,7 @@ public class HCardPageTest {
 			assertArrayEquals(e.getData(), a.getData());
 		}
 
-		assertEquals("ez-vcard " + Ezvcard.VERSION, actual.getProdId().getValue());
+		assertEquals("ez-vcard " + Ezvcard.VERSION, actual.getProductId().getValue());
 
 		assertNull(reader.readNext());
 	}

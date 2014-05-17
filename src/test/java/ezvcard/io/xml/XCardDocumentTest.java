@@ -836,7 +836,7 @@ public class XCardDocumentTest {
 		vcard.setFormattedName(fn);
 
 		ProductId prodId = new ProductId("Acme Co.");
-		vcard.setProdId(prodId);
+		vcard.setProductId(prodId);
 
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
