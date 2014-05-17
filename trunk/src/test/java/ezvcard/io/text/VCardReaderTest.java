@@ -718,7 +718,7 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V3_0, vcard.getVersion());
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertNull(vcard.getProdId());
+		assertNull(vcard.getProductId());
 
 		assertWarnings(0, reader.getWarnings());
 		assertNull(reader.readNext());
@@ -1646,7 +1646,7 @@ public class VCardReaderTest {
 
 		//PRODID
 		{
-			ProductId f = vcard.getProdId();
+			ProductId f = vcard.getProductId();
 			assertEquals("-//Apple Inc.//iOS 5.0.1//EN", f.getValue());
 		}
 
@@ -1838,7 +1838,7 @@ public class VCardReaderTest {
 
 		//PRODID
 		{
-			ProductId f = vcard.getProdId();
+			ProductId f = vcard.getProductId();
 			assertEquals("-//Apple Inc.//Address Book 6.1//EN", f.getValue());
 		}
 
