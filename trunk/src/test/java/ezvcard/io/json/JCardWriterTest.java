@@ -3,15 +3,11 @@ package ezvcard.io.json;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -139,68 +135,6 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void setAddProdid() throws Throwable {
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(true);
-
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
-
-		writer.close();
-
-		String regex = Pattern.quote("[\"prodid\",{},\"text\",") + "\".*?\"" + Pattern.quote("]");
-		Pattern p = Pattern.compile(regex);
-		Matcher m = p.matcher(sw.toString());
-		assertTrue(m.find());
-		assertFalse(m.find());
-	}
-
-	@Test
-	public void setVersionStrict() throws Throwable {
-		VCard vcard = new VCard();
-		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
-
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw, true);
-		writer.setAddProdId(false);
-
-		writer.write(vcard);
-
-		writer.setVersionStrict(false);
-		writer.write(vcard);
-
-		writer.setVersionStrict(true);
-		writer.write(vcard);
-
-		writer.close();
-
-		//@formatter:off
-		String expected =
-		"[" +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]" +
-		    "]" +
-		  "]," +
-	  	  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"mailer\",{},\"text\",\"mailer\"]" +
-		    "]" +
-		  "]," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]" +
-		    "]" +
-		  "]" +
-		"]";
-		//@formatter:on
-		assertEquals(expected, sw.toString());
-	}
-
-	@Test
 	public void setIndent() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw, true);
@@ -270,12 +204,12 @@ public class JCardWriterTest {
 	public void write_extended_property() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw);
-		writer.registerScribe(new TypeForTestingScribe());
+		writer.registerScribe(new TestScribe());
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		vcard.addProperty(new TypeForTesting(JCardValue.single("value")));
+		vcard.addProperty(new TestProperty(JCardValue.single("value")));
 		writer.write(vcard);
 
 		writer.close();
@@ -443,17 +377,17 @@ public class JCardWriterTest {
 		String filter(String json);
 	}
 
-	private static class TypeForTesting extends VCardProperty {
+	private static class TestProperty extends VCardProperty {
 		public JCardValue value;
 
-		public TypeForTesting(JCardValue value) {
+		public TestProperty(JCardValue value) {
 			this.value = value;
 		}
 	}
 
-	private static class TypeForTestingScribe extends VCardPropertyScribe<TypeForTesting> {
-		public TypeForTestingScribe() {
-			super(TypeForTesting.class, "X-TYPE");
+	private static class TestScribe extends VCardPropertyScribe<TestProperty> {
+		public TestScribe() {
+			super(TestProperty.class, "X-TYPE");
 		}
 
 		@Override
@@ -462,17 +396,17 @@ public class JCardWriterTest {
 		}
 
 		@Override
-		protected String _writeText(TypeForTesting property, VCardVersion version) {
+		protected String _writeText(TestProperty property, VCardVersion version) {
 			return null;
 		}
 
 		@Override
-		protected TypeForTesting _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		protected TestProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			return null;
 		}
 
 		@Override
-		protected JCardValue _writeJson(TypeForTesting property) {
+		protected JCardValue _writeJson(TestProperty property) {
 			return property.value;
 		}
 	}

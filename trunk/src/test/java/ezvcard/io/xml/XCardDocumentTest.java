@@ -19,10 +19,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -64,7 +60,6 @@ import ezvcard.property.Language;
 import ezvcard.property.Note;
 import ezvcard.property.Organization;
 import ezvcard.property.Photo;
-import ezvcard.property.ProductId;
 import ezvcard.property.RawProperty;
 import ezvcard.property.SkipMeProperty;
 import ezvcard.property.StructuredName;
@@ -802,92 +797,6 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void setAddProdId() throws Throwable {
-		VCard vcard = new VCard();
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
-
-		XPath xpath = XPathFactory.newInstance().newXPath();
-		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
-
-		XCardDocument xcm = new XCardDocument();
-		xcm.add(vcard);
-		Double actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
-		assertEquals(Double.valueOf(1), actual);
-
-		xcm = new XCardDocument();
-		xcm.setAddProdId(true);
-		xcm.add(vcard);
-		actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
-		assertEquals(Double.valueOf(1), actual);
-
-		xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.add(vcard);
-		actual = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:prodid)", xcm.getDocument(), XPathConstants.NUMBER);
-		assertEquals(Double.valueOf(0), actual);
-	}
-
-	@Test
-	public void setAddProdId_overwrites_existing_prodId() throws Throwable {
-		VCard vcard = new VCard();
-
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
-
-		ProductId prodId = new ProductId("Acme Co.");
-		vcard.setProductId(prodId);
-
-		XPath xpath = XPathFactory.newInstance().newXPath();
-		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
-
-		XCardDocument xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.add(vcard);
-		String actual = (String) xpath.evaluate("/v:vcards/v:vcard/v:prodid/v:text", xcm.getDocument(), XPathConstants.STRING);
-		assertEquals(prodId.getValue(), actual);
-
-		xcm = new XCardDocument();
-		xcm.setAddProdId(true);
-		xcm.add(vcard);
-		actual = (String) xpath.evaluate("/v:vcards/v:vcard/v:prodid/v:text", xcm.getDocument(), XPathConstants.STRING);
-		assertTrue("Actual: " + actual, actual.startsWith("ez-vcard"));
-	}
-
-	@Test
-	public void setVersionStrict() throws Throwable {
-		VCard vcard = new VCard();
-		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
-
-		XCardDocument xcard = new XCardDocument();
-		xcard.setAddProdId(false);
-
-		xcard.add(vcard);
-
-		xcard.setVersionStrict(false);
-		xcard.add(vcard);
-
-		xcard.setVersionStrict(true);
-		xcard.add(vcard);
-
-		Document actual = xcard.getDocument();
-
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard/>" +
-			"<vcard>" +
-				"<mailer><text>mailer</text></mailer>" +
-			"</vcard>" +
-			"<vcard/>" +
-		"</vcards>";
-		Document expected = XmlUtils.toDocument(xml);
-		//@formatter:on
-
-		assertXMLEqual(expected, actual);
-	}
-
-	@Test
 	public void add_skipMeException() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.addProperty(new SkipMeProperty());
@@ -1091,7 +1000,7 @@ public class XCardDocumentTest {
 
 	@Test
 	public void read_rfc6351_example() throws Throwable {
-		XCardDocument xcard = new XCardDocument(getClass().getResourceAsStream("rfc6351-example.xml"));
+		XCardDocument xcard = read("rfc6351-example.xml");
 
 		List<VCard> vcards = xcard.parseAll();
 		assertEquals(1, vcards.size());
@@ -1184,6 +1093,10 @@ public class XCardDocumentTest {
 		Document actual = xcard.getDocument();
 
 		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
+	}
+
+	private XCardDocument read(String file) throws SAXException, IOException {
+		return new XCardDocument(getClass().getResourceAsStream(file));
 	}
 
 	private static class EmbeddedType extends VCardProperty {
