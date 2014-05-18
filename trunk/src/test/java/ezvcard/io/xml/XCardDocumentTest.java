@@ -788,7 +788,7 @@ public class XCardDocumentTest {
 			"</vcard>" +
 			"<vcard>" +
 				"<note><text>Hello world!</text></note>" +
-				"</vcard>" +
+			"</vcard>" +
 		"</vcards>";
 		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
