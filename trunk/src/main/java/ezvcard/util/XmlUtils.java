@@ -129,16 +129,19 @@ public class XmlUtils {
 	}
 
 	private static Document toDocument(InputSource in) throws SAXException, IOException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		factory.setIgnoringComments(true);
+
+		DocumentBuilder builder;
 		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setNamespaceAware(true);
-			dbf.setIgnoringComments(true);
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			return db.parse(in);
+			builder = factory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
 			//will probably never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);
 		}
+
+		return builder.parse(in);
 	}
 
 	/**
@@ -185,24 +188,28 @@ public class XmlUtils {
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public static void toWriter(Node node, Writer writer, Map<String, String> outputProperties) throws TransformerException {
+		Transformer transformer;
 		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			for (Map.Entry<String, String> property : outputProperties.entrySet()) {
-				try {
-					transformer.setOutputProperty(property.getKey(), property.getValue());
-				} catch (IllegalArgumentException e) {
-					//ignore invalid output properties
-				}
-			}
-
-			DOMSource source = new DOMSource(node);
-			StreamResult result = new StreamResult(writer);
-			transformer.transform(source, result);
+			transformer = TransformerFactory.newInstance().newTransformer();
 		} catch (TransformerConfigurationException e) {
 			//no complex configurations
+			throw new RuntimeException(e);
 		} catch (TransformerFactoryConfigurationError e) {
 			//no complex configurations
+			throw new RuntimeException(e);
 		}
+
+		for (Map.Entry<String, String> property : outputProperties.entrySet()) {
+			try {
+				transformer.setOutputProperty(property.getKey(), property.getValue());
+			} catch (IllegalArgumentException e) {
+				//ignore invalid output properties
+			}
+		}
+
+		DOMSource source = new DOMSource(node);
+		StreamResult result = new StreamResult(writer);
+		transformer.transform(source, result);
 	}
 
 	/**
