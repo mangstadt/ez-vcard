@@ -15,6 +15,7 @@ import ezvcard.parameter.AddressType;
 import ezvcard.property.*;
 import ezvcard.util.TelUri;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -455,6 +456,7 @@ public class ContactOperations {
     
     private void insertBirthdays(){
     	List<Birthday> birthdayList = vCard.getBirthdays();
+    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         for (Birthday birthday : birthdayList) {
         	if (birthday == null){
         		continue;
@@ -465,7 +467,7 @@ public class ContactOperations {
         		continue;
         	}
 
-        	String formattedBday = new SimpleDateFormat("yyyy-MM-dd").format(date);
+        	String formattedBday = df.format(date);
             operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
@@ -515,28 +517,32 @@ public class ContactOperations {
         	if (photo == null){
         		continue;
         	}
+        	
+        	byte[] data = photo.getData();
+        	if (data == null){
+        		continue;
+        	}
 
             operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, photo.getData())
+                .withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, data)
                 .build());
         }
     }
     
     private void insertOrganization(){
-    	List<Organization> organizationList = vCard.getOrganizations();
-        List<Title> titleList = vCard.getTitles();
-        if (organizationList.isEmpty() && titleList.isEmpty()) {
-        	return;
-        }
-
-        String orgName = null;
-        if (!organizationList.isEmpty()) {
-        	orgName = organizationList.get(0).getValues().get(0);
+    	String orgName = null;
+        Organization organization = vCard.getOrganization();
+        if (organization != null) {
+        	List<String> values = organization.getValues();
+        	if (!values.isEmpty()){
+        		orgName = values.get(0);
+        	}
         }
         
         String jobTitle = null;
+        List<Title> titleList = vCard.getTitles();
         if (!titleList.isEmpty()) {
         	jobTitle = titleList.get(0).getValue();
         }
