@@ -297,130 +297,55 @@ public class VcardContactUtil {
     }
 
     /**
-     * Concatenates parts of a full name inserting spaces and commas as specified.
+     * Generates a full name string from the name's components.  Any parameter may be null.
+     * @param prefix the prefix (e.g. "Mr.")
+     * @param given the first name
+     * @param middle the middle name
+     * @param family the last name
+     * @param suffix the suffix (e.g. "Ph.D")
+     * @return the full name string
      */
-    public static String join(String prefix, String part1, String part2,
-                              String part3, String suffix,
-                              boolean useSpace,
-                              boolean useCommaAfterPart1,
-                              boolean useCommaAfterPart3) {
+    public static String joinNameComponents(String prefix, String given, String middle,
+                              String family, String suffix) {
 
-        prefix = prefix == null ? null : prefix.trim();
-        part1 = part1 == null ? null : part1.trim();
-        part2 = part2 == null ? null : part2.trim();
-        part3 = part3 == null ? null : part3.trim();
-        suffix = suffix == null ? null : suffix.trim();
+        prefix = (prefix == null) ? null : prefix.trim();
+        given = (given == null) ? null : given.trim();
+        middle = (middle == null) ? null : middle.trim();
+        family = (family == null) ? null : family.trim();
+        suffix = (suffix == null) ? null : suffix.trim();
+        
         boolean hasPrefix = !TextUtils.isEmpty(prefix);
-        boolean hasPart1 = !TextUtils.isEmpty(part1);
-        boolean hasPart2 = !TextUtils.isEmpty(part2);
-        boolean hasPart3 = !TextUtils.isEmpty(part3);
+        boolean hasGiven = !TextUtils.isEmpty(given);
+        boolean hasMiddle = !TextUtils.isEmpty(middle);
+        boolean hasFamily = !TextUtils.isEmpty(family);
         boolean hasSuffix = !TextUtils.isEmpty(suffix);
-        boolean isSingleWord = true;
-        String singleWord = null;
-        if (hasPrefix) {
-            singleWord = prefix;
-        }
-        if (hasPart1) {
-            if (singleWord != null) {
-                isSingleWord = false;
-            } else {
-                singleWord = part1;
-            }
-        }
-        if (hasPart2) {
-            if (singleWord != null) {
-                isSingleWord = false;
-            } else {
-                singleWord = part2;
-            }
-        }
-        if (hasPart3) {
-            if (singleWord != null) {
-                isSingleWord = false;
-            } else {
-                singleWord = part3;
-            }
-        }
-        if (hasSuffix) {
-            if (singleWord != null) {
-                isSingleWord = false;
-            } else {
-                singleWord = suffix;
-            }
-        }
-        if (isSingleWord) {
-            return singleWord;
-        }
+        
         StringBuilder sb = new StringBuilder();
-        if (hasPrefix) {
-            sb.append(prefix);
+        
+        if (hasPrefix){
+        	sb.append(prefix).append(' ');
         }
-        if (hasPart1) {
-            if (hasPrefix) {
-                sb.append(' ');
-            }
-            sb.append(part1);
+        
+        if (hasGiven){
+        	sb.append(given).append(' ');
         }
-        if (hasPart2) {
-            if (hasPrefix || hasPart1) {
-                if (useCommaAfterPart1) {
-                    sb.append(',');
-                }
-                if (useSpace) {
-                    sb.append(' ');
-                }
-            }
-            sb.append(part2);
+        
+        if (hasMiddle){
+        	sb.append(middle).append(' ');
         }
-        if (hasPart3) {
-            if (hasPrefix || hasPart1 || hasPart2) {
-                if (useSpace) {
-                    sb.append(' ');
-                }
-            }
-            sb.append(part3);
+        
+        if (hasFamily){
+        	sb.append(family).append(' ');
         }
-        if (hasSuffix) {
-            if (hasPrefix || hasPart1 || hasPart2 || hasPart3) {
-                if (useCommaAfterPart3) {
-                    sb.append(',');
-                }
-                if (useSpace) {
-                    sb.append(' ');
-                }
-            }
-            sb.append(suffix);
+        
+        if (hasSuffix){
+        	if (sb.length() > 0){
+        		sb.deleteCharAt(sb.length()-1); //delete space character
+        		sb.append(", ");
+        	}
+        	sb.append(suffix);
         }
+        
         return sb.toString();
-    }
-
-    public static String getDisplayName(VCard vCard) {
-    	if (vCard == null){
-    		return null;
-    	}
-
-        String displayName = null;
-        String namePrefix = null;
-        String nameSuffix = null;
-        String formattedName = (vCard.getFormattedName() != null) ? vCard.getFormattedName().getValue() : null;
-        if (vCard.getStructuredName() != null) {
-            String firstName = vCard.getStructuredName().getGiven();
-            String lastName = vCard.getStructuredName().getFamily();
-            //For now always get the first prefix
-            List<String> prefixes = vCard.getStructuredName().getPrefixes();
-            List<String> suffixes = vCard.getStructuredName().getSuffixes();
-            if (prefixes != null && prefixes.size() > 0) {
-                namePrefix = vCard.getStructuredName().getPrefixes().get(0);
-            }
-            if (suffixes != null && suffixes.size() > 0) {
-                nameSuffix = vCard.getStructuredName().getSuffixes().get(0);
-            }
-            if (TextUtils.isEmpty(formattedName)) {
-                displayName = join(namePrefix, firstName, null, lastName, nameSuffix, true, false, true);
-            } else {
-                displayName = formattedName;
-            }
-        }
-        return displayName;
     }
 }

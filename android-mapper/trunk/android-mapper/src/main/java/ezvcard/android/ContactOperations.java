@@ -133,7 +133,7 @@ public class ContactOperations {
         String lastName = (n == null) ? null : n.getFamily();
         
         FormattedName fn = vCard.getFormattedName();
-        String formattedName = (fn == null) ? null : vCard.getFormattedName().getValue();
+        String formattedName = (fn == null) ? null : fn.getValue();
 
         String firstPhoneticName = null;
         RawProperty firstphoneticNameprop = vCard.getExtendedProperty("X-PHONETIC-FIRST-NAME");
@@ -164,7 +164,7 @@ public class ContactOperations {
 
         String displayName;
         if (TextUtils.isEmpty(formattedName)) {
-            displayName = VcardContactUtil.join(namePrefix, firstName, null, lastName, nameSuffix, true, false, true);
+            displayName = VcardContactUtil.joinNameComponents(namePrefix, firstName, null, lastName, nameSuffix);
         } else {
             displayName = formattedName;
         }
