@@ -13,6 +13,7 @@ import android.util.Log;
 import ezvcard.VCard;
 import ezvcard.parameter.AddressType;
 import ezvcard.property.*;
+import ezvcard.util.TelUri;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -224,10 +225,19 @@ public class ContactOperations {
         	}
 
             int phoneKind = VcardContactUtil.getPhoneType(telephone);
+            
+            String value = telephone.getText();
+            if (value == null){
+            	TelUri uri = telephone.getUri();
+            	if (uri != null){
+            		value = uri.toString();
+            	}
+            }
+            
             operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, telephone.getText()) //TODO could be a URI
+                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, value)
                 .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, phoneKind)
                 .build());
         }
