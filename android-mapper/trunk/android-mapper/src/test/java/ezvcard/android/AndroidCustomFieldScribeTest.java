@@ -1,4 +1,4 @@
-package com.ezvcard.android;
+package ezvcard.android;
 
 import static org.junit.Assert.assertEquals;
 

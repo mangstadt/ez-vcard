@@ -1,6 +1,6 @@
-package com.ezvcard.android;
+package ezvcard.android;
 
-import static com.ezvcard.android.TestUtils.assertValidate;
+import static ezvcard.android.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

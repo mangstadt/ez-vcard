@@ -1,4 +1,4 @@
-package com.ezvcard.android;
+package ezvcard.android;
 
 import java.util.ArrayList;
 import java.util.Collections;

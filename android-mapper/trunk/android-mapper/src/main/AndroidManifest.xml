@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ezvcard.android" >
+    package="ezvcard.android" >
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:name="com.ezvcard.android.TestActivity.VcardParser"
+            android:name="ezvcard.android.TestActivity.VcardParser"
             android:label="@string/title_activity_vcard_parser" >
         </activity>
     </application>

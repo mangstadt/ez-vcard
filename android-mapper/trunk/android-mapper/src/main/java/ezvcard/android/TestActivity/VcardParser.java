@@ -1,4 +1,4 @@
-package com.ezvcard.android.TestActivity;
+package ezvcard.android.TestActivity;
 
 import android.os.Bundle;
 import android.os.Environment;

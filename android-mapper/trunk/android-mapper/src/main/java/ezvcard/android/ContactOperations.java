@@ -1,4 +1,4 @@
-package com.ezvcard.android;
+package ezvcard.android;
 
 import android.annotation.TargetApi;
 import android.content.ContentProviderOperation;
