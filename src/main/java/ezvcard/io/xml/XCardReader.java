@@ -6,10 +6,9 @@ import static ezvcard.io.xml.XCardQNames.VCARD;
 import static ezvcard.io.xml.XCardQNames.VCARDS;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -120,7 +119,7 @@ public class XCardReader {
 	 * @param in the input stream to read the xCards from
 	 */
 	public XCardReader(InputStream in) {
-		this(new InputStreamReader(in));
+		this(new StreamSource(in));
 	}
 
 	/**
@@ -129,7 +128,7 @@ public class XCardReader {
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public XCardReader(File file) throws FileNotFoundException {
-		this(new FileReader(file));
+		this(new FileInputStream(file));
 	}
 
 	/**
@@ -154,6 +153,19 @@ public class XCardReader {
 	 */
 	public XCardReader(Source source) {
 		this.source = source;
+	}
+
+	/**
+	 * <p>
+	 * Registers a property scribe. This is the same as calling:
+	 * </p>
+	 * <p>
+	 * {@code getScribeIndex().register(scribe)}
+	 * </p>
+	 * @param scribe the scribe to register
+	 */
+	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
+		index.register(scribe);
 	}
 
 	/**
@@ -228,7 +240,7 @@ public class XCardReader {
 	private class ContentHandlerImpl extends DefaultHandler {
 		private final Document DOC = XmlUtils.createDocument();
 
-		private boolean inVCards, inVCard, inParameters;
+		private boolean inVCards, inParameters;
 		private String group, paramName, paramDataType;
 		private StringBuilder characterBuffer = new StringBuilder();
 		private Element propertyElement, parent;
@@ -303,10 +315,9 @@ public class XCardReader {
 				return;
 			}
 
-			if (inVCard && VCARD.equals(qname)) {
+			if (vcard != null && VCARD.equals(qname)) {
 				listener.vcardRead(vcard, warnings.copy());
 				warnings.clear();
-				inVCard = false;
 				vcard = null;
 				return;
 			}
@@ -339,9 +350,8 @@ public class XCardReader {
 				return;
 			}
 
-			if (!inVCard) {
+			if (vcard == null) {
 				if (VCARD.equals(qname)) {
-					inVCard = true;
 					vcard = new VCard();
 					vcard.setVersion(targetVersion);
 				}

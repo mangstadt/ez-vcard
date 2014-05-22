@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -36,11 +35,8 @@ import ezvcard.io.AgeType.AgeScribe;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
-import ezvcard.io.MyFormattedNameType;
-import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.io.SalaryType;
 import ezvcard.io.SalaryType.SalaryScribe;
-import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
@@ -60,14 +56,12 @@ import ezvcard.property.Language;
 import ezvcard.property.Note;
 import ezvcard.property.Organization;
 import ezvcard.property.Photo;
-import ezvcard.property.RawProperty;
 import ezvcard.property.SkipMeProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
-import ezvcard.property.Xml;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -122,25 +116,9 @@ public class XCardDocumentTest {
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
-				"<n>" +
-					"<surname>House</surname>" +
-					"<given>Gregory</given>" +
-					"<additional />" +
-					"<prefix>Dr</prefix>" +
-					"<prefix>Mr</prefix>" +
-					"<suffix>MD</suffix>" +
-				"</n>" +
 			"</vcard>" +
 			"<vcard>" +
 				"<fn><text>Dr. Lisa Cuddy M.D.</text></fn>" +
-				"<n>" +
-					"<surname>Cuddy</surname>" +
-					"<given>Lisa</given>" +
-					"<additional />" +
-					"<prefix>Dr</prefix>" +
-					"<prefix>Ms</prefix>" +
-					"<suffix>MD</suffix>" +
-				"</n>" +
 			"</vcard>" +
 		"</vcards>";
 		//@formatter:on
@@ -151,475 +129,49 @@ public class XCardDocumentTest {
 		{
 			VCard vcard = it.next();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertEquals(1, vcard.getProperties().size());
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Gregory House M.D.", fn.getValue());
-
-			StructuredName n = vcard.getStructuredName();
-			assertEquals("House", n.getFamily());
-			assertEquals("Gregory", n.getGiven());
-			assertTrue(n.getAdditional().isEmpty());
-			assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
-			assertEquals(Arrays.asList("MD"), n.getSuffixes());
 		}
 
 		{
 			VCard vcard = it.next();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertEquals(1, vcard.getProperties().size());
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Lisa Cuddy M.D.", fn.getValue());
-
-			StructuredName n = vcard.getStructuredName();
-			assertEquals("Cuddy", n.getFamily());
-			assertEquals("Lisa", n.getGiven());
-			assertTrue(n.getAdditional().isEmpty());
-			assertEquals(Arrays.asList("Dr", "Ms"), n.getPrefixes());
-			assertEquals(Arrays.asList("MD"), n.getSuffixes());
 		}
 
 		assertFalse(it.hasNext());
-
 		assertWarningsLists(xcard.getParseWarnings(), 0, 0);
 	}
 
 	@Test
-	public void parse_default_namespace() throws Exception {
-		//no namespace
+	public void parseFirst() throws Throwable {
 		//@formatter:off
 		String xml =
-		"<vcards>" +
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
 			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcard = new XCardDocument(xml);
-		assertNull(xcard.parseFirst());
-		assertWarningsLists(xcard.getParseWarnings());
-	}
-
-	@Test
-	public void parse_wrong_namespace() throws Exception {
-		//wrong namespace
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"wrong\">" +
 			"<vcard>" +
-				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+				"<fn><text>Dr. Lisa Cuddy M.D.</text></fn>" +
 			"</vcard>" +
 		"</vcards>";
 		//@formatter:on
 
 		XCardDocument xcard = new XCardDocument(xml);
-		assertNull(xcard.parseFirst());
-		assertWarningsLists(xcard.getParseWarnings());
-	}
-
-	@Test
-	public void parse_preserve_whitespace() throws Exception {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard>" +
-				"<note><text>  This \t  is \n   a   note </text></note>" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcard = new XCardDocument(xml);
-		VCard vcard = xcard.parseFirst();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-
-		assertEquals(1, vcard.getNotes().size());
-
-		Note note = vcard.getNotes().get(0);
-		assertEquals("  This \t  is \n   a   note ", note.getValue());
-
-		assertWarningsLists(xcard.getParseWarnings(), 0);
-	}
-
-	public void parse_parameters() throws Throwable {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard>" +
-				//zero params
-				"<note>" +
-					"<text>Note 1</text>" +
-				"</note>" +
-				
-				//one param
-				"<note>" +
-					"<parameters>" +
-						"<altid><text>1</text></altid>" +
-					"</parameters>" +
-					"<text>Hello world!</text>" +
-				"</note>" +
-				
-				//two params
-				"<note>" +
-					"<parameters>" +
-						"<altid><text>1</text></altid>" +
-						"<language><language-tag>fr</language-tag></language>" +
-					"</parameters>" +
-					"<text>Bonjour tout le monde!</text>" +
-				"</note>" +
-				
-				//a param with multiple values
-				"<tel>" +
-					"<parameters>" +
-						"<type>" +
-							"<text>work</text>" +
-							"<text>voice</text>" +
-						"</type>" +
-					"</parameters>" +
-					"<uri>tel:+1-555-555-1234</uri>" +
-				"</tel>" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcard = new XCardDocument(xml);
-		VCard vcard = xcard.parseFirst();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(4, vcard.getProperties().size());
-
-		{
-			Iterator<Note> it = vcard.getNotes().iterator();
-
-			Note note = it.next();
-			assertEquals("Note 1", note.getValue());
-			assertTrue(note.getParameters().isEmpty());
-
-			note = it.next();
-			assertEquals("Hello world!", note.getValue());
-			assertEquals(1, note.getParameters().size());
-			assertEquals("1", note.getAltId());
-
-			note = it.next();
-			assertEquals("Bonjour tout le monde!", note.getValue());
-			assertEquals(2, note.getParameters().size());
-			assertEquals("1", note.getAltId());
-			assertEquals("fr", note.getLanguage());
-
-			assertFalse(it.hasNext());
-		}
-
-		{
-			Iterator<Telephone> it = vcard.getTelephoneNumbers().iterator();
-
-			Telephone tel = it.next();
-			assertEquals("+1-555-555-1234", tel.getUri().getNumber());
-			assertEquals(2, tel.getParameters().size());
-			assertSetEquals(tel.getTypes(), TelephoneType.WORK, TelephoneType.VOICE);
-
-			assertFalse(it.hasNext());
-		}
-
-		assertWarningsLists(xcard.getParseWarnings(), 0);
-	}
-
-	@Test
-	public void parse_group() throws Throwable {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard>" +
-				"<group name=\"item1\">" +
-					"<fn><text>John Doe</text></fn>" +
-					"<note><text>Hello world!</text></note>" +
-				"</group>" +
-				"<note><text>A property without a group</text></note>" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcard = new XCardDocument(xml);
-		VCard vcard = xcard.parseFirst();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(3, vcard.getProperties().size());
-
-		FormattedName fn = vcard.getFormattedName();
-		assertEquals("John Doe", fn.getValue());
-		assertEquals("item1", fn.getGroup());
-
-		{
-			Iterator<Note> it = vcard.getNotes().iterator();
-
-			Note note = it.next();
-			assertEquals("Hello world!", note.getValue());
-			assertEquals("item1", note.getGroup());
-
-			note = it.next();
-			assertEquals("A property without a group", note.getValue());
-			assertNull(note.getGroup());
-
-			assertFalse(it.hasNext());
-		}
-
-		assertWarningsLists(xcard.getParseWarnings(), 0);
-	}
-
-	@Test
-	public void parse_non_standard_elements() throws Throwable {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard>" +
-				//xCard namespace:  no
-				//scribe:           no
-				//expected:         XML property
-				"<foo xmlns=\"http://example.com\">bar</foo>" +
-				
-				//xCard namespace:  no
-				//scribe:           yes
-				//parseXml impl:    yes
-				//expected:         LuckyNumType
-				"<a:lucky-num xmlns:a=\"http://luckynum.com\"><a:num>21</a:num></a:lucky-num>" +
-				
-				//xCard namespace:  yes
-				//scribe:           yes
-				//parseXml impl:    yes
-				//expected:         SalaryType
-				"<x-salary><integer>1000000</integer></x-salary>" +
-				
-				//xCard namespace:  yes
-				//parseXml impl:    no
-				//expected:         AgeType (should be unmarshalled using the default parseXml implementation)
-				"<x-age><integer>24</integer></x-age>" +
-				
-				//xCard namespace:  yes
-				//scribe:           no
-				//expected:         RawProperty
-				"<x-gender><text>m</text></x-gender>" +
-				
-				//xCard namespace:  yes
-				//scribe:           yes (standard scribe overridden)
-				//expected:         MyFormattedNameType
-				"<fn><name>John Doe</name></fn>" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcard = new XCardDocument(xml);
-		xcard.registerScribe(new LuckyNumScribe());
-		xcard.registerScribe(new SalaryScribe());
-		xcard.registerScribe(new AgeScribe());
-		xcard.registerScribe(new MyFormattedNameScribe());
 
 		VCard vcard = xcard.parseFirst();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(6, vcard.getProperties().size());
-
-		{
-			Iterator<Xml> it = vcard.getXmls().iterator();
-
-			Xml xmlType = it.next();
-			assertXMLEqual(XmlUtils.toDocument("<foo xmlns=\"http://example.com\">bar</foo>"), xmlType.getValue());
-
-			assertFalse(it.hasNext());
-		}
-
-		LuckyNumType luckyNum = vcard.getProperty(LuckyNumType.class);
-		assertEquals(21, luckyNum.luckyNum);
-
-		SalaryType salary = vcard.getProperty(SalaryType.class);
-		assertEquals(1000000, salary.salary);
-
-		AgeType age = vcard.getProperty(AgeType.class);
-		assertEquals(24, age.age);
-
-		RawProperty gender = vcard.getExtendedProperty("X-GENDER");
-		assertEquals(VCardDataType.TEXT, gender.getDataType());
-		assertEquals("m", gender.getValue());
-
-		MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);
-		assertEquals("JOHN DOE", fn.value);
-
-		//warning for AgeType not supporting xCard
-		assertWarningsLists(xcard.getParseWarnings(), 0);
-	}
-
-	@Test
-	public void parse_skip_vcard_without_namespace() throws Exception {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard xmlns=\"http://example.com\">" +
-				"<fn><text>John Doe</text></fn>" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcard = new XCardDocument(xml);
-		assertNull(xcard.parseFirst());
-		assertWarningsLists(xcard.getParseWarnings());
-	}
-
-	@Test
-	public void parse_skipMeException() throws Throwable {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard>" +
-				"<skipme><text>value</text></skipme>" +
-				"<x-foo><text>value</text></x-foo>" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcr = new XCardDocument(xml);
-		xcr.registerScribe(new SkipMeScribe());
-
-		VCard vcard = xcr.parseFirst();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(1, vcard.getProperties().size());
 
-		RawProperty property = vcard.getExtendedProperty("x-foo");
-		assertEquals("X-FOO", property.getPropertyName());
-		assertEquals("value", property.getValue());
-
-		assertWarningsLists(xcr.getParseWarnings(), 1);
-	}
-
-	@Test
-	public void parse_cannotParseException() throws Throwable {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard>" +
-				"<cannotparse><text>value</text></cannotparse>" +
-				"<x-foo><text>value</text></x-foo>" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcr = new XCardDocument(xml);
-		xcr.registerScribe(new CannotParseScribe());
-
-		VCard vcard = xcr.parseFirst();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-
-		assertEquals(2, vcard.getProperties().size());
-
-		RawProperty property = vcard.getExtendedProperty("x-foo");
-		assertEquals("X-FOO", property.getPropertyName());
-		assertEquals("value", property.getValue());
-
-		Xml xmlProperty = vcard.getXmls().get(0);
-		assertXMLEqual(XmlUtils.toDocument("<cannotparse xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><text>value</text></cannotparse>"), xmlProperty.getValue());
-
-		assertWarningsLists(xcr.getParseWarnings(), 1);
-	}
-
-	@Test
-	public void parse_not_root() throws Throwable {
-		//@formatter:off
-		String xml =
-		"<foo xmlns=\"http://foobar.com\">" +
-			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-				"<vcard>" +
-					"<fn><text>Dr. Gregory House M.D.</text></fn>" +
-					"<n>" +
-						"<surname>House</surname>" +
-						"<given>Gregory</given>" +
-						"<additional />" +
-						"<prefix>Dr</prefix>" +
-						"<prefix>Mr</prefix>" +
-						"<suffix>MD</suffix>" +
-					"</n>" +
-				"</vcard>" +
-			"</vcards>" +
-		"</foo>";
-		//@formatter:on
-
-		XCardDocument xcr = new XCardDocument(xml);
-		VCard vcard = xcr.parseFirst();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(2, vcard.getProperties().size());
-
 		FormattedName fn = vcard.getFormattedName();
 		assertEquals("Dr. Gregory House M.D.", fn.getValue());
 
-		StructuredName n = vcard.getStructuredName();
-		assertEquals("House", n.getFamily());
-		assertEquals("Gregory", n.getGiven());
-		assertTrue(n.getAdditional().isEmpty());
-		assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
-		assertEquals(Arrays.asList("MD"), n.getSuffixes());
-
-		assertWarningsLists(xcr.getParseWarnings(), 0);
-	}
-
-	@Test
-	public void parse_empty() throws Throwable {
-		XCardDocument xcard = new XCardDocument();
-
-		Document actual = xcard.getDocument();
-		Document expected = XmlUtils.toDocument("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"/>");
-		assertXMLEqual(expected, actual);
-	}
-
-	@Test
-	public void parse_with_namespace_prefix() throws Throwable {
-		//@formatter:off
-		String xml =
-		"<v:vcards xmlns:v=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<v:vcard>" +
-				"<v:fn><v:text>Dr. Gregory House M.D.</v:text></v:fn>" +
-				"<v:n>" +
-					"<v:surname>House</v:surname>" +
-					"<v:given>Gregory</v:given>" +
-					"<v:additional />" +
-					"<v:prefix>Dr</v:prefix>" +
-					"<v:prefix>Mr</v:prefix>" +
-					"<v:suffix>MD</v:suffix>" +
-				"</v:n>" +
-			"</v:vcard>" +
-		"</v:vcards>";
-		//@formatter:on
-
-		XCardDocument xcr = new XCardDocument(xml);
-
-		VCard vcard = xcr.parseFirst();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(2, vcard.getProperties().size());
-
-		FormattedName fn = vcard.getFormattedName();
-		assertEquals("Dr. Gregory House M.D.", fn.getValue());
-
-		StructuredName n = vcard.getStructuredName();
-		assertEquals("House", n.getFamily());
-		assertEquals("Gregory", n.getGiven());
-		assertTrue(n.getAdditional().isEmpty());
-		assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
-		assertEquals(Arrays.asList("MD"), n.getSuffixes());
-
-		assertWarningsLists(xcr.getParseWarnings(), 0);
-	}
-
-	@Test
-	public void parse_utf8() throws Exception {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard>" +
-					"<note><text>\u019dote</text></note>" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-		File file = tempFolder.newFile();
-		Writer writer = IOUtils.utf8Writer(file);
-		writer.write(xml);
-		writer.close();
-
-		XCardDocument xcard = new XCardDocument(file);
-		VCard vcard = xcard.parseFirst();
-		assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
+		assertWarningsLists(xcard.getParseWarnings(), 0);
 	}
 
 	@Test
@@ -638,6 +190,9 @@ public class XCardDocumentTest {
 
 		XCardDocument xcr = new XCardDocument(xml);
 		xcr.registerScribe(new SkipMeScribe());
+
+		xcr.parseAll();
+		assertWarningsLists(xcr.getParseWarnings(), 1, 0);
 
 		xcr.parseAll();
 		assertWarningsLists(xcr.getParseWarnings(), 1, 0);
