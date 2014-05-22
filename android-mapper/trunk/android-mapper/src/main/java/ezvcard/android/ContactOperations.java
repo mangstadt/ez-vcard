@@ -59,6 +59,9 @@ public class ContactOperations {
     private final Context context;
     private final String accountName;
     private final String accountType;
+    
+    private VCard vCard;
+    private ArrayList<ContentProviderOperation> operations;
 
     public ContactOperations(Context context) {
         this(context, null, null);
@@ -76,50 +79,51 @@ public class ContactOperations {
     		Log.d(TAG, "The vcard is null or It must be a duplicate Contact hence we could not insert the contact");
             return;
     	}
-
-        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+    	
+    	this.vCard = vCard;
+    	this.operations = new ArrayList<ContentProviderOperation>();
         
         // TODO handle Raw properties - Raw properties include various extension which start with "X-" like X-ASSISTANT, X-AIM, X-SPOUSE
 
-        insertAccountInfo(ops);
-        insertName(vCard, ops);
-        insertNickname(vCard, ops);
-        insertPhones(vCard, ops);
-        insertEmails(vCard, ops);
-        insertAddresses(vCard, ops);
-        insertIms(vCard, ops);
+        insertAccountInfo();
+        insertName();
+        insertNickname();
+        insertPhones();
+        insertEmails();
+        insertAddresses();
+        insertIms();
 
         // handle Android Custom fields..This is only valid for Android generated Vcards. As the Android would
         // generate NickName, ContactEvents other than Birthday and RelationShip with this "X-ANDROID-CUSTOM" name
-        insertCustomFields(vCard, ops);
+        insertCustomFields();
 
         // handle Iphone kinda of group properties. which are grouped together.
-        insertGroupedProperties(vCard, ops);
+        insertGroupedProperties();
         
         //TODO Vcard 4.0 may have more than 1 birthday so lets get the list and always use the very first one ..
         //TODO Should we handle date formats ...???
-        insertBirthdays(vCard, ops);
+        insertBirthdays();
         
-        insertWebsites(vCard, ops);
-        insertNotes(vCard, ops);
-        insertPhotos(vCard, ops);
-        insertOrganization(vCard, ops);
+        insertWebsites();
+        insertNotes();
+        insertPhotos();
+        insertOrganization();
 
         // Executing all the insert operations as a single database transaction
-        context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+        context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, operations);
     }
     
-    private void insertAccountInfo(ArrayList<ContentProviderOperation> ops){
+    private void insertAccountInfo(){
     	String accountName = TextUtils.isEmpty(this.accountName) ? null : this.accountName;
         String accountType = TextUtils.isEmpty(this.accountType) ? null : this.accountType;
 
-        ops.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+        operations.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
             .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
             .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
             .build());
     }
     
-    private void insertName(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertName(){
         ContentValues contentValues = new ContentValues();
         
         StructuredName n = vCard.getStructuredName();
@@ -190,21 +194,21 @@ public class ContactOperations {
         }
 
         contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-	    ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+	    operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
             .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
             .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
             .withValues(contentValues)
             .build());
     }
     
-    private void insertNickname(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertNickname(){
         List<Nickname> nicknameList = vCard.getNicknames();
         for (Nickname nickname : nicknameList) {
             if (nickname == null || nickname.getValues().isEmpty()) {
             	continue;
             }
             
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
                 .withValue(ContactsContract.CommonDataKinds.Nickname.NAME, nickname.getValues().get(0))
@@ -212,7 +216,7 @@ public class ContactOperations {
         }
     }
     
-    private void insertPhones(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertPhones(){
         List<Telephone> telephoneList = vCard.getTelephoneNumbers();
         for (Telephone telephone : telephoneList) {
         	if (telephone == null){
@@ -220,7 +224,7 @@ public class ContactOperations {
         	}
 
             int phoneKind = VcardContactUtil.getPhoneType(telephone);
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
                 .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, telephone.getText()) //TODO could be a URI
@@ -230,7 +234,7 @@ public class ContactOperations {
     }
     
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void insertEmails(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertEmails(){
         List<Email> emailList = vCard.getEmails();
         for (Email email : emailList) {
         	if (email == null){
@@ -238,7 +242,7 @@ public class ContactOperations {
         	}
 
             int emailKind = VcardContactUtil.getEmailType(email);
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
                 .withValue(ContactsContract.CommonDataKinds.Email.ADDRESS, email.getValue())
@@ -247,7 +251,7 @@ public class ContactOperations {
         }
     }
     
-    private void insertAddresses(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertAddresses(){
     	 List<Address> addressList = vCard.getAddresses();
          for (Address address : addressList) {
          	if (address == null){
@@ -295,14 +299,14 @@ public class ContactOperations {
             }
 
             contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE);
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValues(contentValues)
                 .build());
          }
     }
     
-    private void insertIms(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertIms(){
     	//handle extended properties
         for (Map.Entry<String, Integer> entry : VcardContactUtil.getImPropertyNameMappings().entrySet()) {
         	String propertyName = entry.getKey();
@@ -310,7 +314,7 @@ public class ContactOperations {
             List<RawProperty> rawProperties = vCard.getExtendedProperties(propertyName);
             for (RawProperty rawProperty : rawProperties){
 	            String imAddress = rawProperty.getValue();
-	            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+	            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                     .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)
                     .withValue(ContactsContract.CommonDataKinds.Im.DATA, imAddress)
@@ -328,7 +332,7 @@ public class ContactOperations {
 
             String immpAddress = impp.getHandle();
             int immpProtocolType = VcardContactUtil.getIMTypeFromProtocol(impp.getProtocol());
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)
                 .withValue(ContactsContract.CommonDataKinds.Im.DATA, immpAddress)
@@ -337,7 +341,7 @@ public class ContactOperations {
         }
     }
     
-    private void insertCustomFields(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertCustomFields(){
     	List<AndroidCustomField> customFields = vCard.getProperties(AndroidCustomField.class);
         for (AndroidCustomField customField : customFields) {
 			List<String> values = customField.getValues();
@@ -369,12 +373,12 @@ public class ContactOperations {
 			}
 
 			if (op != null) {
-				ops.add(op);
+				operations.add(op);
 			}
 		}
     }
     
-    private void insertGroupedProperties(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertGroupedProperties(){
     	List<RawProperty> extendedProperties = vCard.getExtendedProperties();
         Map<String, List<RawProperty>> orderedByGroup = orderPropertiesByGroup(extendedProperties);
         final int ABDATE = 1, ABRELATEDNAMES = 2;
@@ -412,7 +416,7 @@ public class ContactOperations {
                 case ABDATE:
                     if (!TextUtils.isEmpty(label) && !TextUtils.isEmpty(val)) {
                         int type = VcardContactUtil.getDateType(val);
-                        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                        operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                             .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                             .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
                             .withValue(ContactsContract.CommonDataKinds.Event.START_DATE, label)
@@ -432,14 +436,14 @@ public class ContactOperations {
                             builder.withValue(ContactsContract.CommonDataKinds.Relation.TYPE, type);
                         }
                         
-                        ops.add(builder.build());
+                        operations.add(builder.build());
                     }
                     break;
             }
         }
     }
     
-    private void insertBirthdays(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertBirthdays(){
     	List<Birthday> birthdayList = vCard.getBirthdays();
         for (Birthday birthday : birthdayList) {
         	if (birthday == null){
@@ -452,7 +456,7 @@ public class ContactOperations {
         	}
 
         	String formattedBday = new SimpleDateFormat("yyyy-MM-dd").format(date);
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
                 .withValue(ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY)
@@ -461,7 +465,7 @@ public class ContactOperations {
         }
     }
     
-    private void insertWebsites(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertWebsites(){
     	 List<Url> urls = vCard.getUrls();
          for (Url url : urls) {
          	if (url == null){
@@ -470,7 +474,7 @@ public class ContactOperations {
 
             String urlValue = url.getValue();
             int type = VcardContactUtil.getWebSiteType(url.getType());
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                  .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                  .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE)
                  .withValue(ContactsContract.CommonDataKinds.Website.URL, urlValue)
@@ -479,7 +483,7 @@ public class ContactOperations {
          }
     }
     
-    private void insertNotes(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertNotes(){
     	List<Note> notes = vCard.getNotes();
         for (Note note : notes) {
         	if (note == null){
@@ -487,7 +491,7 @@ public class ContactOperations {
         	}
 
             String noteValue = note.getValue();
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE)
                 .withValue(ContactsContract.CommonDataKinds.Note.NOTE, noteValue)
@@ -495,14 +499,14 @@ public class ContactOperations {
         }
     }
     
-    private void insertPhotos(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertPhotos(){
     	List<Photo> photoList = vCard.getPhotos();
         for (Photo photo : photoList) {
         	if (photo == null){
         		continue;
         	}
 
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
                 .withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, photo.getData())
@@ -510,7 +514,7 @@ public class ContactOperations {
         }
     }
     
-    private void insertOrganization(VCard vCard, ArrayList<ContentProviderOperation> ops){
+    private void insertOrganization(){
     	List<Organization> organizationList = vCard.getOrganizations();
         List<Title> titleList = vCard.getTitles();
         if (organizationList.isEmpty() && titleList.isEmpty()) {
@@ -540,7 +544,7 @@ public class ContactOperations {
         }
 
         contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
-        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+        operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
             .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
             .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)
             .withValues(contentValues)
