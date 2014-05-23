@@ -200,13 +200,7 @@ public class XCardDocument extends AbstractVCardWriter {
 			throw new RuntimeException(e);
 		}
 
-		Node parent;
-		if (vcardsElement == null) {
-			parent = document.hasChildNodes() ? document.getFirstChild() : document;
-		} else {
-			parent = vcardsElement;
-		}
-
+		Node parent = (vcardsElement == null) ? document : vcardsElement;
 		writer = new XCardWriter(parent);
 	}
 

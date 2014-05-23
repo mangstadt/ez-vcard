@@ -191,6 +191,13 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	private XCardWriter(Writer writer, String indent, Node parent) {
 		this.writer = writer;
 		this.indent = indent;
+
+		if (parent instanceof Document) {
+			Node root = parent.getFirstChild();
+			if (root != null) {
+				parent = root;
+			}
+		}
 		this.vcardsElementExists = isVCardsElement(parent);
 
 		try {
