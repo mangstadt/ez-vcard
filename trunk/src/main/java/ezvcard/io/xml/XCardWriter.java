@@ -284,7 +284,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	}
 
 	/**
-	 * Property terminates the XML and closes the output stream.
+	 * Terminates the XML document and closes the output stream.
 	 */
 	public void close() throws IOException {
 		try {

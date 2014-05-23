@@ -355,6 +355,84 @@ public class XCardReaderTest {
 	}
 
 	@Test
+	public void read_identical_element_names() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<vcard>" +
+					"<parameters>" +
+						"<parameters><text>paramValue</text></parameters>" +
+					"</parameters>" +
+					"<text>propValue</text>" +
+				"</vcard>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardReader reader = new XCardReader(xml);
+		XCardListenerImpl listener = new XCardListenerImpl();
+		reader.read(listener);
+		Iterator<VCard> it = listener.vcards.iterator();
+
+		{
+			VCard vcard = it.next();
+			assertEquals(VCardVersion.V4_0, vcard.getVersion());
+			assertEquals(1, vcard.getProperties().size());
+
+			RawProperty property = vcard.getExtendedProperty("VCARD");
+			assertEquals("propValue", property.getValue());
+			assertEquals("paramValue", property.getParameter("PARAMETERS"));
+		}
+
+		assertFalse(it.hasNext());
+		assertWarningsLists(listener.warnings, 0);
+	}
+
+	@Test
+	public void read_multiple_vcards_elements() throws Exception {
+		//@formatter:off
+		String xml =
+		"<root>" +
+			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcard>" +
+					"<fn><text>Dr. Gregory House M.D.</text></fn>" +
+				"</vcard>" +
+			"</vcards>" +
+			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcard>" +
+					"<fn><text>Dr. Lisa Cuddy M.D.</text></fn>" +
+				"</vcard>" +
+			"</vcards>" +
+		"</root>";
+		//@formatter:on
+
+		XCardReader reader = new XCardReader(xml);
+		XCardListenerImpl listener = new XCardListenerImpl();
+		reader.read(listener);
+		Iterator<VCard> it = listener.vcards.iterator();
+
+		{
+			VCard vcard = it.next();
+			assertEquals(VCardVersion.V4_0, vcard.getVersion());
+			assertEquals(1, vcard.getProperties().size());
+
+			assertEquals("Dr. Gregory House M.D.", vcard.getFormattedName().getValue());
+		}
+
+		{
+			VCard vcard = it.next();
+			assertEquals(VCardVersion.V4_0, vcard.getVersion());
+			assertEquals(1, vcard.getProperties().size());
+
+			assertEquals("Dr. Lisa Cuddy M.D.", vcard.getFormattedName().getValue());
+		}
+
+		assertFalse(it.hasNext());
+		assertWarningsLists(listener.warnings, 0, 0);
+	}
+
+	@Test
 	public void read_parameters() throws Exception {
 		//@formatter:off
 		String xml =
