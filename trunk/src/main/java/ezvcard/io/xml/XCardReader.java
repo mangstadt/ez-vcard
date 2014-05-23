@@ -376,10 +376,12 @@ public class XCardReader {
 			}
 
 			if (inParameters) {
-				if (paramName == null) {
-					paramName = localName;
-				} else if (paramDataType == null) {
-					paramDataType = localName;
+				if (NS.equals(namespace)) {
+					if (paramName == null) {
+						paramName = localName;
+					} else if (paramDataType == null) {
+						paramDataType = localName;
+					}
 				}
 				return;
 			}

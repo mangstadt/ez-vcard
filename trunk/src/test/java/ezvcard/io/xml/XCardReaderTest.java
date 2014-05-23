@@ -323,9 +323,8 @@ public class XCardReaderTest {
 				"<vcard>" +
 					"<fn>" +
 						"<parameters>" +
-							//"<ignore xmlns=\"three\"><foo>bar</foo></ignore>" + //TODO
-							//"<pref><ignore xmlns=\"four\">bar</ignore><integer>1</integer></pref>" +
-							"<pref><integer>1</integer></pref>" +
+							"<ignore xmlns=\"three\"><foo>bar</foo></ignore>" +
+							"<pref><ignore xmlns=\"four\">bar</ignore><integer>1</integer></pref>" +
 							"<pref><integer>2</integer></pref>" +
 						"</parameters>" +
 						"<text>Dr. Gregory House M.D.</text>" +
