@@ -272,6 +272,62 @@ public class XCardWriterTest {
 	}
 
 	@Test
+	public void write_existing_vcards_document() throws Exception {
+		Document document = XmlUtils.toDocument("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
+		XCardWriter writer = new XCardWriter(document);
+		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>John Doe</text></fn>" +
+			"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		assertXMLEqual(expected, document);
+	}
+
+	@Test
+	public void write_existing_vcards_element() throws Exception {
+		Document document = XmlUtils.toDocument("<root><a><vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" /></a><b /></root>");
+		Node element = document.getFirstChild().getFirstChild().getFirstChild();
+		XCardWriter writer = new XCardWriter(element);
+		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String xml =
+		"<root>" +
+			"<a>" +
+				"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+					"<vcard>" +
+						"<fn><text>John Doe</text></fn>" +
+					"</vcard>" +
+				"</vcards>" +
+			"</a>" +
+			"<b />" +
+		"</root>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		assertXMLEqual(expected, document);
+	}
+
+	@Test
 	public void write_parameters() throws Exception {
 		writer.registerParameterDataType("X-INT", VCardDataType.INTEGER);
 
