@@ -21,6 +21,8 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
@@ -54,10 +56,12 @@ import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
+import ezvcard.property.Xml;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -155,6 +159,116 @@ public class XCardWriterTest {
 		//@formatter:on
 
 		assertOutput(expected);
+	}
+
+	@Test
+	public void write_empty() throws Exception {
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />";
+		//@formatter:on
+
+		assertOutput(expected);
+	}
+
+	@Test
+	public void write_xml_property() throws Exception {
+		VCard vcard = new VCard();
+		vcard.addXml(new Xml("<foo xmlns=\"http://example.com\" a=\"b\">bar<car/></foo>"));
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<foo xmlns=\"http://example.com\" a=\"b\">bar<car/></foo>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		assertOutput(expected);
+	}
+
+	@Test
+	public void write_xml_property_null_value() throws Exception {
+		VCard vcard = new VCard();
+		vcard.addXml(new Xml((Document) null));
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard />" +
+		"</vcards>";
+		//@formatter:on
+
+		assertOutput(expected);
+	}
+
+	@Test
+	public void write_existing_dom_document() throws Exception {
+		Document document = XmlUtils.toDocument("<root><a /><b /></root>");
+		XCardWriter writer = new XCardWriter(document);
+		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String xml =
+		"<root>" +
+			"<a />" +
+			"<b />" +
+			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcard>" +
+					"<fn><text>John Doe</text></fn>" +
+				"</vcard>" +
+			"</vcards>" +
+		"</root>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		assertXMLEqual(expected, document);
+	}
+
+	@Test
+	public void write_existing_dom_element() throws Exception {
+		Document document = XmlUtils.toDocument("<root><a /><b /></root>");
+		Node element = document.getFirstChild().getFirstChild();
+		XCardWriter writer = new XCardWriter(element);
+		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String xml =
+		"<root>" +
+			"<a>" +
+				"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+					"<vcard>" +
+						"<fn><text>John Doe</text></fn>" +
+					"</vcard>" +
+				"</vcards>" +
+			"</a>" +
+			"<b />" +
+		"</root>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		assertXMLEqual(expected, document);
 	}
 
 	@Test
