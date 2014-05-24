@@ -75,7 +75,7 @@ public class JohnDoeVCard {
 		//write xCard
 		file = new File("john-doe.xml");
 		System.out.println("Writing " + file.getName() + "...");
-		Ezvcard.writeXml(vcard).indent(2).go(file);
+		Ezvcard.writeXml(vcard).indent("  ").go(file);
 
 		//write hCard
 		file = new File("john-doe.html");

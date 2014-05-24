@@ -34,7 +34,11 @@ import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.VCardReader;
 import ezvcard.io.text.VCardWriter;
+import ezvcard.io.xml.StopReadingException;
 import ezvcard.io.xml.XCardDocument;
+import ezvcard.io.xml.XCardListener;
+import ezvcard.io.xml.XCardReader;
+import ezvcard.io.xml.XCardWriter;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 
@@ -87,8 +91,8 @@ import ezvcard.util.IOUtils;
  * </tr>
  * <tr>
  * <th>XML</th>
- * <td>{@link XCardDocument}</td>
- * <td>{@link XCardDocument}</td>
+ * <td>{@link XCardDocument}, {@link XCardReader}</td>
+ * <td>{@link XCardDocument}, {@link XCardWriter}</td>
  * </tr>
  * <tr>
  * <th>HTML</th>
@@ -614,17 +618,17 @@ public class Ezvcard {
 		 * Reads the first vCard from the stream.
 		 * @return the vCard or null if there are no vCards
 		 * @throws IOException if there's an I/O problem
-		 * @throws SAXException if there's a problem parsing the XML
+		 * @throws TransformerException if there's a problem parsing the XML
 		 */
-		public abstract VCard first() throws IOException, SAXException;
+		public abstract VCard first() throws IOException, TransformerException;
 
 		/**
 		 * Reads all vCards from the stream.
 		 * @return the parsed vCards
 		 * @throws IOException if there's an I/O problem
-		 * @throws SAXException if there's a problem parsing the XML
+		 * @throws TransformerException if there's a problem parsing the XML
 		 */
-		public abstract List<VCard> all() throws IOException, SAXException;
+		public abstract List<VCard> all() throws IOException, TransformerException;
 	}
 
 	static abstract class ParserChainText<T> extends ParserChain<T> {
@@ -819,32 +823,47 @@ public class Ezvcard {
 
 	static abstract class ParserChainXml<T> extends ParserChain<T> {
 		@Override
-		public VCard first() throws IOException, SAXException {
-			XCardDocument document = constructDocument();
-			VCard vcard = document.parseFirst();
-			if (warnings != null) {
-				warnings.addAll(document.getParseWarnings());
-			}
-			return vcard;
+		public VCard first() throws IOException, TransformerException {
+			List<VCard> vcards = parse(true);
+			return vcards.isEmpty() ? null : vcards.get(0);
 		}
 
 		@Override
-		public List<VCard> all() throws IOException, SAXException {
-			XCardDocument document = constructDocument();
-			List<VCard> icals = document.parseAll();
-			if (warnings != null) {
-				warnings.addAll(document.getParseWarnings());
-			}
-			return icals;
+		public List<VCard> all() throws IOException, TransformerException {
+			return parse(false);
 		}
 
-		private XCardDocument constructDocument() throws SAXException, IOException {
-			XCardDocument parser = _constructDocument();
+		private List<VCard> parse(final boolean first) throws IOException, TransformerException {
+			XCardReader reader = constructReader();
+			try {
+				final List<VCard> vcards = new ArrayList<VCard>();
+
+				reader.read(new XCardListener() {
+					public void vcardRead(VCard vcard, List<String> warnings) throws StopReadingException {
+						vcards.add(vcard);
+						if (ParserChainXml.this.warnings != null) {
+							ParserChainXml.this.warnings.add(warnings);
+						}
+
+						if (first) {
+							throw new StopReadingException();
+						}
+					}
+				});
+
+				return vcards;
+			} finally {
+				IOUtils.closeQuietly(reader);
+			}
+		}
+
+		private XCardReader constructReader() throws IOException, TransformerException {
+			XCardReader parser = _constructReader();
 			parser.setScribeIndex(index);
 			return parser;
 		}
 
-		abstract XCardDocument _constructDocument() throws IOException, SAXException;
+		abstract XCardReader _constructReader() throws IOException, TransformerException;
 	}
 
 	/**
@@ -887,14 +906,14 @@ public class Ezvcard {
 		}
 
 		@Override
-		XCardDocument _constructDocument() throws IOException, SAXException {
+		XCardReader _constructReader() throws IOException, TransformerException {
 			if (in != null) {
-				return new XCardDocument(in);
+				return new XCardReader(in);
 			}
 			if (file != null) {
-				return new XCardDocument(file);
+				return new XCardReader(file);
 			}
-			return new XCardDocument(reader);
+			return new XCardReader(reader);
 		}
 	}
 
@@ -920,12 +939,12 @@ public class Ezvcard {
 		}
 
 		@Override
-		XCardDocument _constructDocument() throws SAXException {
-			return new XCardDocument(xml);
+		XCardReader _constructReader() {
+			return new XCardReader(xml);
 		}
 
 		@Override
-		public VCard first() throws SAXException {
+		public VCard first() throws TransformerException {
 			try {
 				return super.first();
 			} catch (IOException e) {
@@ -935,7 +954,7 @@ public class Ezvcard {
 		}
 
 		@Override
-		public List<VCard> all() throws SAXException {
+		public List<VCard> all() throws TransformerException {
 			try {
 				return super.all();
 			} catch (IOException e) {
@@ -967,8 +986,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		XCardDocument _constructDocument() {
-			return new XCardDocument(document);
+		XCardReader _constructReader() {
+			return new XCardReader(document);
 		}
 
 		@Override
@@ -978,7 +997,7 @@ public class Ezvcard {
 			} catch (IOException e) {
 				//should never be thrown because we're reading from a DOM
 				throw new RuntimeException(e);
-			} catch (SAXException e) {
+			} catch (TransformerException e) {
 				//should never be thrown because we're reading from a DOM
 				throw new RuntimeException(e);
 			}
@@ -991,7 +1010,7 @@ public class Ezvcard {
 			} catch (IOException e) {
 				//should never be thrown because we're reading from a DOM
 				throw new RuntimeException(e);
-			} catch (SAXException e) {
+			} catch (TransformerException e) {
 				//should never be thrown because we're reading from a DOM
 				throw new RuntimeException(e);
 			}
@@ -1509,7 +1528,7 @@ public class Ezvcard {
 	public static class WriterChainXml extends WriterChain<WriterChainXml> {
 		boolean prodId = true;
 		boolean versionStrict = true;
-		int indent = -1;
+		String indent;
 		final ScribeIndex index = new ScribeIndex();
 
 		private WriterChainXml(Collection<VCard> vcards) {
@@ -1528,12 +1547,11 @@ public class Ezvcard {
 		}
 
 		/**
-		 * Sets the number of indent spaces to use for pretty-printing. If not
-		 * set, then the XML will not be pretty-printed.
-		 * @param indent the number of spaces in the indent string
+		 * Sets the indentation string to use for pretty printing (e.g. "\t").
+		 * @param indent the indent string
 		 * @return this
 		 */
-		public WriterChainXml indent(int indent) {
+		public WriterChainXml indent(String indent) {
 			this.indent = indent;
 			return this_;
 		}
@@ -1568,8 +1586,12 @@ public class Ezvcard {
 			StringWriter sw = new StringWriter();
 			try {
 				go(sw);
-			} catch (TransformerException e) {
+			} catch (SAXException e) {
 				//writing to a string
+				throw new RuntimeException(e);
+			} catch (IOException e) {
+				//writing to a string
+				throw new RuntimeException(e);
 			}
 			return sw.toString();
 		}
@@ -1580,9 +1602,8 @@ public class Ezvcard {
 		 * @throws TransformerException if there's a problem writing to the
 		 * output stream
 		 */
-		public void go(OutputStream out) throws TransformerException {
-			XCardDocument doc = createXCardDocument();
-			doc.write(out, indent);
+		public void go(OutputStream out) throws SAXException, IOException {
+			go(new XCardWriter(out, indent));
 		}
 
 		/**
@@ -1591,9 +1612,8 @@ public class Ezvcard {
 		 * @throws IOException if the file can't be opened
 		 * @throws TransformerException if there's a problem writing to the file
 		 */
-		public void go(File file) throws IOException, TransformerException {
-			XCardDocument doc = createXCardDocument();
-			doc.write(file, indent);
+		public void go(File file) throws SAXException, IOException {
+			go(new XCardWriter(file, indent));
 		}
 
 		/**
@@ -1601,10 +1621,10 @@ public class Ezvcard {
 		 * @param writer the writer to write to
 		 * @throws TransformerException if there's a problem writing to the
 		 * writer
+		 * @throws SAXException
 		 */
-		public void go(Writer writer) throws TransformerException {
-			XCardDocument doc = createXCardDocument();
-			doc.write(writer, indent);
+		public void go(Writer writer) throws SAXException, IOException {
+			go(new XCardWriter(writer, indent));
 		}
 
 		/**
@@ -1612,11 +1632,6 @@ public class Ezvcard {
 		 * @return the DOM
 		 */
 		public Document dom() {
-			XCardDocument doc = createXCardDocument();
-			return doc.getDocument();
-		}
-
-		private XCardDocument createXCardDocument() {
 			XCardDocument doc = new XCardDocument();
 			doc.setAddProdId(prodId);
 			doc.setVersionStrict(versionStrict);
@@ -1626,7 +1641,21 @@ public class Ezvcard {
 				doc.add(vcard);
 			}
 
-			return doc;
+			return doc.getDocument();
+		}
+
+		private void go(XCardWriter writer) throws SAXException, IOException {
+			writer.setAddProdId(prodId);
+			writer.setVersionStrict(versionStrict);
+			writer.setScribeIndex(index);
+
+			try {
+				for (VCard vcard : vcards) {
+					writer.write(vcard);
+				}
+			} finally {
+				IOUtils.closeQuietly(writer);
+			}
 		}
 	}
 
