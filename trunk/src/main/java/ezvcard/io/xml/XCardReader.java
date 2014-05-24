@@ -395,6 +395,11 @@ public class XCardReader implements Closeable {
 		private Element createElement(String namespace, String localName, Attributes attributes) {
 			Element element = DOC.createElementNS(namespace, localName);
 			for (int i = 0; i < attributes.getLength(); i++) {
+				String qname = attributes.getQName(i);
+				if (qname.startsWith("xmlns:")) {
+					continue;
+				}
+
 				String name = attributes.getLocalName(i);
 				String value = attributes.getValue(i);
 				element.setAttribute(name, value);
