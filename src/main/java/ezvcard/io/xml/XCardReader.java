@@ -5,9 +5,11 @@ import static ezvcard.io.xml.XCardQNames.PARAMETERS;
 import static ezvcard.io.xml.XCardQNames.VCARD;
 import static ezvcard.io.xml.XCardQNames.VCARDS;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -97,11 +99,12 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
-public class XCardReader {
-	private final VCardVersion targetVersion = VCardVersion.V4_0;
-	private final String NS = targetVersion.getXmlNamespace();
+public class XCardReader implements Closeable {
+	private final VCardVersion version = VCardVersion.V4_0;
+	private final String NS = version.getXmlNamespace();
 
 	private final Source source;
+	private final Closeable stream;
 	private final ParseWarnings warnings = new ParseWarnings();
 	private ScribeIndex index = new ScribeIndex();
 	private XCardListener listener;
@@ -119,7 +122,8 @@ public class XCardReader {
 	 * @param in the input stream to read the xCards from
 	 */
 	public XCardReader(InputStream in) {
-		this(new StreamSource(in));
+		source = new StreamSource(in);
+		stream = in;
 	}
 
 	/**
@@ -136,7 +140,8 @@ public class XCardReader {
 	 * @param reader the reader to read from
 	 */
 	public XCardReader(Reader reader) {
-		this(new StreamSource(reader));
+		source = new StreamSource(reader);
+		stream = reader;
 	}
 
 	/**
@@ -144,15 +149,8 @@ public class XCardReader {
 	 * @param node the DOM node to read from
 	 */
 	public XCardReader(Node node) {
-		this(new DOMSource(node));
-	}
-
-	/**
-	 * Creates an xCard reader.
-	 * @param source the source to read from
-	 */
-	public XCardReader(Source source) {
-		this.source = source;
+		source = new DOMSource(node);
+		stream = null;
 	}
 
 	/**
@@ -230,7 +228,7 @@ public class XCardReader {
 		} catch (TransformerException e) {
 			Throwable cause = e.getCause();
 			if (cause != null && cause instanceof StopReadingException) {
-				//ignore this exception because it signals that the user canceled the parsing operation
+				//ignore StopReadingException because it signals that the user canceled the parsing operation
 			} else {
 				throw e;
 			}
@@ -353,7 +351,7 @@ public class XCardReader {
 			if (vcard == null) {
 				if (VCARD.equals(qname)) {
 					vcard = new VCard();
-					vcard.setVersion(targetVersion);
+					vcard.setVersion(version);
 				}
 				return;
 			}
@@ -402,6 +400,15 @@ public class XCardReader {
 				element.setAttribute(name, value);
 			}
 			return element;
+		}
+	}
+
+	/**
+	 * Closes the underlying input stream.
+	 */
+	public void close() throws IOException {
+		if (stream != null) {
+			stream.close();
 		}
 	}
 }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.transform.TransformerException;
+import org.xml.sax.SAXException;
 
 import ezvcard.io.text.VCardWriter;
 import ezvcard.parameter.EmailType;
@@ -220,7 +220,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public String writeXml() {
-		return Ezvcard.writeXml(this).indent(2).go();
+		return Ezvcard.writeXml(this).indent("  ").go();
 	}
 
 	/**
@@ -233,12 +233,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
-	 * @throws TransformerException if there's a problem writing the vCard
+	 * @throws SAXException if there's a problem writing the vCard
 	 * @see Ezvcard
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public void writeXml(File file) throws IOException, TransformerException {
-		Ezvcard.writeXml(this).indent(2).go(file);
+	public void writeXml(File file) throws IOException, SAXException {
+		Ezvcard.writeXml(this).indent("  ").go(file);
 	}
 
 	/**
@@ -250,13 +250,13 @@ public class VCard implements Iterable<VCardProperty> {
 	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param out the output stream to write the vCard to
-	 * @throws TransformerException if there's a problem writing to the output
-	 * stream
+	 * @throws IOException if there's a problem writing to the file
+	 * @throws SAXException if there's a problem writing the vCard
 	 * @see Ezvcard
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public void writeXml(OutputStream out) throws TransformerException {
-		Ezvcard.writeXml(this).indent(2).go(out);
+	public void writeXml(OutputStream out) throws IOException, SAXException {
+		Ezvcard.writeXml(this).indent("  ").go(out);
 	}
 
 	/**
@@ -268,12 +268,13 @@ public class VCard implements Iterable<VCardProperty> {
 	 * write multiple vCards to the same stream.
 	 * </p>
 	 * @param writer the writer to write the vCard to
-	 * @throws TransformerException if there's a problem writing to the writer
+	 * @throws IOException if there's a problem writing to the writer
+	 * @throws SAXException if there's a problem writing the vCard
 	 * @see Ezvcard
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public void writeXml(Writer writer) throws TransformerException {
-		Ezvcard.writeXml(this).indent(2).go(writer);
+	public void writeXml(Writer writer) throws IOException, SAXException {
+		Ezvcard.writeXml(this).indent("  ").go(writer);
 	}
 
 	/**
