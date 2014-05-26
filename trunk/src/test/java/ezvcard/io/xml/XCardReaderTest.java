@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.xml.transform.TransformerException;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
@@ -363,7 +366,7 @@ public class XCardReaderTest {
 					"<parameters>" +
 						"<parameters><text>paramValue</text></parameters>" +
 					"</parameters>" +
-					"<text>propValue</text>" +
+					"<vcard>propValue</vcard>" +
 				"</vcard>" +
 			"</vcard>" +
 		"</vcards>";
@@ -386,6 +389,32 @@ public class XCardReaderTest {
 
 		assertFalse(it.hasNext());
 		assertWarningsLists(listener.warnings, 0);
+	}
+
+	@Test
+	public void read_bad_xml() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>John Doe</fn>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardReader reader = new XCardReader(xml);
+		XCardListenerImpl listener = new XCardListenerImpl();
+		try {
+			reader.read(listener);
+			fail();
+		} catch (TransformerException e) {
+			assertTrue(e.getCause() instanceof SAXException);
+		}
+
+		Iterator<VCard> it = listener.vcards.iterator();
+
+		assertFalse(it.hasNext());
+		assertWarningsLists(listener.warnings);
 	}
 
 	@Test
