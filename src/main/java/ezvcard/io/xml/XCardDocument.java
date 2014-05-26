@@ -253,15 +253,14 @@ public class XCardDocument extends AbstractVCardWriter {
 	private List<VCard> parse(boolean parseFirstOnly) {
 		XCardReader reader = new XCardReader(document);
 		reader.setScribeIndex(index);
-		XCardReadListenerImpl listener = new XCardReadListenerImpl(parseFirstOnly);
+		XCardListenerImpl listener = new XCardListenerImpl(parseFirstOnly);
+		parseWarnings = listener.warnings;
 
 		try {
 			reader.read(listener);
 		} catch (TransformerException e) {
 			throw new RuntimeException(e);
 		}
-
-		parseWarnings = listener.warnings;
 
 		return listener.vcards;
 	}
@@ -395,12 +394,12 @@ public class XCardDocument extends AbstractVCardWriter {
 		}
 	}
 
-	private static class XCardReadListenerImpl implements XCardListener {
+	private static class XCardListenerImpl implements XCardListener {
 		private final List<VCard> vcards = new ArrayList<VCard>();
 		private final List<List<String>> warnings = new ArrayList<List<String>>();
 		private final boolean parseFirstOnly;
 
-		public XCardReadListenerImpl(boolean parseFirstOnly) {
+		public XCardListenerImpl(boolean parseFirstOnly) {
 			this.parseFirstOnly = parseFirstOnly;
 		}
 
