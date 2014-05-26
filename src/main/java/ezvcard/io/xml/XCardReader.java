@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.ErrorListener;
@@ -237,11 +240,12 @@ public class XCardReader implements Closeable {
 
 	private class ContentHandlerImpl extends DefaultHandler {
 		private final Document DOC = XmlUtils.createDocument();
+		private final List<QName> hierarchy = new ArrayList<QName>();
 
-		private boolean inVCards, inParameters;
-		private String group, paramName, paramDataType;
+		private String group;
 		private StringBuilder characterBuffer = new StringBuilder();
 		private Element propertyElement, parent;
+		private QName propertyQName, paramName, paramDataType;
 
 		private VCard vcard;
 		private VCardParameters parameters;
@@ -253,29 +257,44 @@ public class XCardReader implements Closeable {
 
 		@Override
 		public void endElement(String namespace, String localName, String qName) throws SAXException {
-			QName qname = new QName(namespace, localName);
 			String textContent = characterBuffer.toString();
 			characterBuffer.setLength(0);
 
-			if (paramDataType != null && NS.equals(namespace) && localName.equals(paramDataType)) {
-				parameters.put(paramName, textContent);
-				paramDataType = null;
+			if (eq()) {
+				//no <vcards> elements were read yet
 				return;
 			}
 
-			if (paramName != null && NS.equals(namespace) && localName.equals(paramName)) {
-				paramName = null;
+			if (eq(VCARDS) && (!namespace.equals(VCARDS.getNamespaceURI()) || !localName.equals(VCARDS.getLocalPart()))) {
+				//ignore any non-<vcard> elements under <vcards>
 				return;
 			}
 
-			if (inParameters) {
-				if (PARAMETERS.equals(qname)) {
-					inParameters = false;
+			QName qname = hierarchy.remove(hierarchy.size() - 1);
+
+			//if inside of <parameters>
+			if (((group == null && startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS)))) {
+				if (qname.equals(paramDataType)) {
+					parameters.put(paramName.getLocalPart(), textContent);
+					paramDataType = null;
+					return;
 				}
+
+				if (qname.equals(paramName)) {
+					paramName = null;
+					return;
+				}
+
 				return;
 			}
 
-			if (propertyElement != null && namespace.equals(propertyElement.getNamespaceURI()) && localName.equals(propertyElement.getLocalName())) {
+			//</parameters>
+			if (((group == null && eq(VCARDS, VCARD, propertyQName)) || (group != null && eq(VCARDS, VCARD, GROUP, propertyQName))) && qname.equals(PARAMETERS)) {
+				return;
+			}
+
+			//if the property element has ended
+			if (((group == null && eq(VCARDS, VCARD)) || (group != null && eq(VCARDS, VCARD, GROUP))) && qname.equals(propertyQName)) {
 				propertyElement.appendChild(DOC.createTextNode(textContent));
 
 				String propertyName = localName;
@@ -308,31 +327,28 @@ public class XCardReader implements Closeable {
 				return;
 			}
 
-			if (group != null && GROUP.equals(qname)) {
+			//if inside of the property element
+			if (propertyElement != null) {
+				if (textContent.length() > 0) {
+					parent.appendChild(DOC.createTextNode(textContent));
+				}
+				parent = (Element) parent.getParentNode();
+				return;
+			}
+
+			//</group>
+			if (eq(VCARDS, VCARD) && qname.equals(GROUP)) {
 				group = null;
 				return;
 			}
 
-			if (vcard != null && VCARD.equals(qname)) {
+			//</vcard>
+			if (eq(VCARDS) && qname.equals(VCARD)) {
 				listener.vcardRead(vcard, warnings.copy());
 				warnings.clear();
 				vcard = null;
 				return;
 			}
-
-			if (inVCards && VCARDS.equals(qname)) {
-				inVCards = false;
-				return;
-			}
-
-			if (parent == null) {
-				return;
-			}
-
-			if (textContent.length() > 0) {
-				parent.appendChild(DOC.createTextNode(textContent));
-			}
-			parent = (Element) parent.getParentNode();
 		}
 
 		@Override
@@ -341,49 +357,60 @@ public class XCardReader implements Closeable {
 			String textContent = characterBuffer.toString();
 			characterBuffer.setLength(0);
 
-			if (!inVCards) {
+			if (eq()) {
+				//<vcards>
 				if (VCARDS.equals(qname)) {
-					inVCards = true;
+					hierarchy.add(qname);
 				}
 				return;
 			}
 
-			if (vcard == null) {
+			if (eq(VCARDS)) {
+				//<vcard>
 				if (VCARD.equals(qname)) {
 					vcard = new VCard();
 					vcard.setVersion(version);
+					hierarchy.add(qname);
 				}
 				return;
 			}
 
-			if (group == null && GROUP.equals(qname)) {
+			hierarchy.add(qname);
+
+			//<group>
+			if (eq(VCARDS, VCARD, GROUP)) {
 				group = attributes.getValue("name");
 				return;
 			}
 
+			//start property element
 			if (propertyElement == null) {
 				propertyElement = createElement(namespace, localName, attributes);
+				propertyQName = qname;
 				parameters = new VCardParameters();
 				parent = propertyElement;
 				return;
 			}
 
-			if (!inParameters && PARAMETERS.equals(qname)) {
-				inParameters = true;
+			//<parameters>
+			if ((group == null && eq(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && eq(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
 				return;
 			}
 
-			if (inParameters) {
+			//inside of <parameters>
+			if ((group == null && startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
 				if (NS.equals(namespace)) {
-					if (paramName == null) {
-						paramName = localName;
-					} else if (paramDataType == null) {
-						paramDataType = localName;
+					if (endsWith(paramName, qname)) {
+						paramDataType = qname;
+					} else {
+						paramName = qname;
 					}
 				}
+
 				return;
 			}
 
+			//append to property element
 			if (textContent.length() > 0) {
 				parent.appendChild(DOC.createTextNode(textContent));
 			}
@@ -405,6 +432,26 @@ public class XCardReader implements Closeable {
 				element.setAttribute(name, value);
 			}
 			return element;
+		}
+
+		private boolean eq(QName... elements) {
+			return hierarchy.equals(Arrays.asList(elements));
+		}
+
+		private boolean startsWith(QName... elements) {
+			if (elements.length > hierarchy.size()) {
+				return false;
+			}
+
+			return hierarchy.subList(0, elements.length).equals(Arrays.asList(elements));
+		}
+
+		private boolean endsWith(QName... elements) {
+			if (elements.length > hierarchy.size()) {
+				return false;
+			}
+
+			return hierarchy.subList(hierarchy.size() - elements.length, hierarchy.size()).equals(Arrays.asList(elements));
 		}
 	}
 
