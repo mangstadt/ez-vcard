@@ -142,6 +142,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -213,6 +214,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -229,6 +231,7 @@ public class XCardReaderTest {
 		XCardReader reader = new XCardReader(xml);
 
 		assertNull(reader.readNext());
+		reader.close();
 
 	}
 
@@ -246,6 +249,7 @@ public class XCardReaderTest {
 		XCardReader reader = new XCardReader(xml);
 
 		assertNull(reader.readNext());
+		reader.close();
 
 	}
 
@@ -273,6 +277,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -300,6 +305,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -339,6 +345,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -372,6 +379,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -395,6 +403,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -438,6 +447,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -525,6 +535,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -571,6 +582,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -654,6 +666,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -701,6 +714,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -731,6 +745,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -764,6 +779,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -796,7 +812,6 @@ public class XCardReaderTest {
 		reader.close();
 
 		assertNull(reader.readNext());
-
 	}
 
 	@Test
@@ -827,6 +842,7 @@ public class XCardReaderTest {
 		}
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
@@ -836,6 +852,7 @@ public class XCardReaderTest {
 		XCardReader reader = new XCardReader(xml);
 
 		assertNull(reader.readNext());
+		reader.close();
 	}
 
 	@Test
