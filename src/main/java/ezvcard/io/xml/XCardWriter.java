@@ -1,5 +1,9 @@
 package ezvcard.io.xml;
 
+import static ezvcard.io.xml.XCardQNames.GROUP;
+import static ezvcard.io.xml.XCardQNames.PARAMETERS;
+import static ezvcard.io.xml.XCardQNames.VCARD;
+import static ezvcard.io.xml.XCardQNames.VCARDS;
 import static ezvcard.util.IOUtils.utf8Writer;
 import static ezvcard.util.StringUtils.NEWLINE;
 
@@ -235,7 +239,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 
 			if (!vcardsElementExists) {
 				//don't output a <vcards> element if the parent is a <vcards> element
-				start("vcards");
+				start(VCARDS);
 				level++;
 			}
 
@@ -248,7 +252,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 			propertiesByGroup.put(property.getGroup(), property);
 		}
 
-		start(XCardQNames.VCARD);
+		start(VCARD);
 		level++;
 
 		for (Map.Entry<String, List<VCardProperty>> entry : propertiesByGroup) {
@@ -257,7 +261,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 				AttributesImpl attr = new AttributesImpl();
 				attr.addAttribute(XCardQNames.NAMESPACE, "", "name", "", groupName);
 
-				start(XCardQNames.GROUP, attr);
+				start(GROUP, attr);
 				level++;
 			}
 
@@ -267,12 +271,12 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 
 			if (groupName != null) {
 				level--;
-				end(XCardQNames.GROUP);
+				end(GROUP);
 			}
 		}
 
 		level--;
-		end(XCardQNames.VCARD);
+		end(VCARD);
 	}
 
 	/**
@@ -300,14 +304,14 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 
 				if (!vcardsElementExists) {
 					//don't output a <vcards> element if the parent is a <vcards> element
-					start(XCardQNames.VCARDS);
+					start(VCARDS);
 					level++;
 				}
 			}
 
 			if (!vcardsElementExists) {
 				level--;
-				end(XCardQNames.VCARDS);
+				end(VCARDS);
 			}
 			handler.endDocument();
 		} catch (SAXException e) {
@@ -392,7 +396,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 			return;
 		}
 
-		start(XCardQNames.PARAMETERS);
+		start(PARAMETERS);
 		level++;
 
 		for (Map.Entry<String, List<String>> parameter : parameters) {
@@ -414,7 +418,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 		}
 
 		level--;
-		end(XCardQNames.PARAMETERS);
+		end(PARAMETERS);
 	}
 
 	private void indent() throws SAXException {
@@ -456,7 +460,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	}
 
 	private void start(String element, Attributes attributes) throws SAXException {
-		start(XCardQNames.NAMESPACE, element, attributes);
+		start(targetVersion.getXmlNamespace(), element, attributes);
 	}
 
 	private void start(String namespace, String element, Attributes attributes) throws SAXException {
@@ -469,7 +473,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	}
 
 	private void end(String element) throws SAXException {
-		end(XCardQNames.NAMESPACE, element);
+		end(targetVersion.getXmlNamespace(), element);
 	}
 
 	private void end(QName qname) throws SAXException {
