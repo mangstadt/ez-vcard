@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -240,7 +239,7 @@ public class XCardReader implements Closeable {
 
 	private class ContentHandlerImpl extends DefaultHandler {
 		private final Document DOC = XmlUtils.createDocument();
-		private final List<QName> hierarchy = new ArrayList<QName>();
+		private final Hierarchy hierarchy = new Hierarchy();
 
 		private String group;
 		private StringBuilder characterBuffer = new StringBuilder();
@@ -252,6 +251,10 @@ public class XCardReader implements Closeable {
 
 		@Override
 		public void characters(char[] buffer, int start, int length) throws SAXException {
+			if (propertyElement == null) {
+				return;
+			}
+
 			characterBuffer.append(buffer, start, length);
 		}
 
@@ -260,20 +263,20 @@ public class XCardReader implements Closeable {
 			String textContent = characterBuffer.toString();
 			characterBuffer.setLength(0);
 
-			if (eq()) {
+			if (hierarchy.eq()) {
 				//no <vcards> elements were read yet
 				return;
 			}
 
-			if (eq(VCARDS) && (!namespace.equals(VCARDS.getNamespaceURI()) || !localName.equals(VCARDS.getLocalPart()))) {
+			if (hierarchy.eq(VCARDS) && (!namespace.equals(VCARD.getNamespaceURI()) || !localName.equals(VCARD.getLocalPart()))) {
 				//ignore any non-<vcard> elements under <vcards>
 				return;
 			}
 
-			QName qname = hierarchy.remove(hierarchy.size() - 1);
+			QName qname = hierarchy.pop();
 
 			//if inside of <parameters>
-			if (((group == null && startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS)))) {
+			if (((group == null && hierarchy.startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS)))) {
 				if (qname.equals(paramDataType)) {
 					parameters.put(paramName.getLocalPart(), textContent);
 					paramDataType = null;
@@ -289,12 +292,12 @@ public class XCardReader implements Closeable {
 			}
 
 			//</parameters>
-			if (((group == null && eq(VCARDS, VCARD, propertyQName)) || (group != null && eq(VCARDS, VCARD, GROUP, propertyQName))) && qname.equals(PARAMETERS)) {
+			if (((group == null && hierarchy.eq(VCARDS, VCARD, propertyQName)) || (group != null && hierarchy.eq(VCARDS, VCARD, GROUP, propertyQName))) && qname.equals(PARAMETERS)) {
 				return;
 			}
 
 			//if the property element has ended
-			if (((group == null && eq(VCARDS, VCARD)) || (group != null && eq(VCARDS, VCARD, GROUP))) && qname.equals(propertyQName)) {
+			if (((group == null && hierarchy.eq(VCARDS, VCARD)) || (group != null && hierarchy.eq(VCARDS, VCARD, GROUP))) && qname.equals(propertyQName)) {
 				propertyElement.appendChild(DOC.createTextNode(textContent));
 
 				String propertyName = localName;
@@ -337,13 +340,13 @@ public class XCardReader implements Closeable {
 			}
 
 			//</group>
-			if (eq(VCARDS, VCARD) && qname.equals(GROUP)) {
+			if (hierarchy.eq(VCARDS, VCARD) && qname.equals(GROUP)) {
 				group = null;
 				return;
 			}
 
 			//</vcard>
-			if (eq(VCARDS) && qname.equals(VCARD)) {
+			if (hierarchy.eq(VCARDS) && qname.equals(VCARD)) {
 				listener.vcardRead(vcard, warnings.copy());
 				warnings.clear();
 				vcard = null;
@@ -357,28 +360,28 @@ public class XCardReader implements Closeable {
 			String textContent = characterBuffer.toString();
 			characterBuffer.setLength(0);
 
-			if (eq()) {
+			if (hierarchy.eq()) {
 				//<vcards>
 				if (VCARDS.equals(qname)) {
-					hierarchy.add(qname);
+					hierarchy.push(qname);
 				}
 				return;
 			}
 
-			if (eq(VCARDS)) {
+			if (hierarchy.eq(VCARDS)) {
 				//<vcard>
 				if (VCARD.equals(qname)) {
 					vcard = new VCard();
 					vcard.setVersion(version);
-					hierarchy.add(qname);
+					hierarchy.push(qname);
 				}
 				return;
 			}
 
-			hierarchy.add(qname);
+			hierarchy.push(qname);
 
 			//<group>
-			if (eq(VCARDS, VCARD, GROUP)) {
+			if (hierarchy.eq(VCARDS, VCARD, GROUP)) {
 				group = attributes.getValue("name");
 				return;
 			}
@@ -393,14 +396,14 @@ public class XCardReader implements Closeable {
 			}
 
 			//<parameters>
-			if ((group == null && eq(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && eq(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
+			if ((group == null && hierarchy.eq(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.eq(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
 				return;
 			}
 
 			//inside of <parameters>
-			if ((group == null && startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
+			if ((group == null && hierarchy.startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
 				if (NS.equals(namespace)) {
-					if (endsWith(paramName, qname)) {
+					if (hierarchy.endsWith(paramName, qname)) {
 						paramDataType = qname;
 					} else {
 						paramName = qname;
@@ -419,6 +422,64 @@ public class XCardReader implements Closeable {
 			parent = element;
 		}
 
+		private class Hierarchy {
+			private final List<QName> stack = new ArrayList<QName>();
+
+			public boolean eq(QName... elements) {
+				if (elements.length != stack.size()) {
+					return false;
+				}
+
+				for (int i = elements.length - 1; i >= 0; i--) {
+					//iterate backwards because it will result in less comparisons
+					QName hier = stack.get(i);
+					QName element = elements[i];
+					if (!hier.equals(element)) {
+						return false;
+					}
+				}
+				return true;
+			}
+
+			public boolean startsWith(QName... elements) {
+				if (elements.length > stack.size()) {
+					return false;
+				}
+
+				for (int i = elements.length - 1; i >= 0; i--) {
+					QName element = elements[i];
+					QName hier = stack.get(i);
+					if (!hier.equals(element)) {
+						return false;
+					}
+				}
+				return true;
+			}
+
+			public boolean endsWith(QName... elements) {
+				if (elements.length > stack.size()) {
+					return false;
+				}
+
+				for (int i = elements.length - 1; i >= 0; i--) {
+					QName element = elements[i];
+					QName hier = stack.get(stack.size() - (elements.length - i));
+					if (!hier.equals(element)) {
+						return false;
+					}
+				}
+				return true;
+			}
+
+			public QName pop() {
+				return stack.isEmpty() ? null : stack.remove(stack.size() - 1);
+			}
+
+			public void push(QName qname) {
+				stack.add(qname);
+			}
+		}
+
 		private Element createElement(String namespace, String localName, Attributes attributes) {
 			Element element = DOC.createElementNS(namespace, localName);
 			for (int i = 0; i < attributes.getLength(); i++) {
@@ -432,26 +493,6 @@ public class XCardReader implements Closeable {
 				element.setAttribute(name, value);
 			}
 			return element;
-		}
-
-		private boolean eq(QName... elements) {
-			return hierarchy.equals(Arrays.asList(elements));
-		}
-
-		private boolean startsWith(QName... elements) {
-			if (elements.length > hierarchy.size()) {
-				return false;
-			}
-
-			return hierarchy.subList(0, elements.length).equals(Arrays.asList(elements));
-		}
-
-		private boolean endsWith(QName... elements) {
-			if (elements.length > hierarchy.size()) {
-				return false;
-			}
-
-			return hierarchy.subList(hierarchy.size() - elements.length, hierarchy.size()).equals(Arrays.asList(elements));
 		}
 	}
 
