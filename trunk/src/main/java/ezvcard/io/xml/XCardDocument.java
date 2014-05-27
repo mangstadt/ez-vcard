@@ -1,5 +1,9 @@
 package ezvcard.io.xml;
 
+import static ezvcard.io.xml.XCardQNames.GROUP;
+import static ezvcard.io.xml.XCardQNames.PARAMETERS;
+import static ezvcard.io.xml.XCardQNames.VCARD;
+import static ezvcard.io.xml.XCardQNames.VCARDS;
 import static ezvcard.util.IOUtils.utf8Writer;
 
 import java.io.File;
@@ -11,6 +15,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +30,23 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.AbstractVCardWriter;
+import ezvcard.io.CannotParseException;
+import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarnings;
+import ezvcard.io.SkipMeException;
+import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.scribe.VCardPropertyScribe.Result;
+import ezvcard.parameter.VCardParameters;
+import ezvcard.property.VCardProperty;
+import ezvcard.property.Xml;
 import ezvcard.util.IOUtils;
+import ezvcard.util.ListMultimap;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -116,17 +130,43 @@ import ezvcard.util.XmlUtils;
 */
 //@formatter:on
 public class XCardDocument extends AbstractVCardWriter {
-	private static final VCardVersion targetVersion = VCardVersion.V4_0; //xCard only supports 4.0
-
-	private List<List<String>> parseWarnings;
-	private Document document;
-	private XCardWriter writer;
+	private static final VCardVersion version4 = VCardVersion.V4_0; //xCard only supports 4.0
 
 	/**
-	 * Creates an empty xCard document.
+	 * Defines the names of the XML elements that are used to hold each
+	 * parameter's value.
+	 */
+	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>();
+	{
+		registerParameterDataType(VCardParameters.ALTID, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.CALSCALE, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.GEO, VCardDataType.URI);
+		registerParameterDataType(VCardParameters.LABEL, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.LANGUAGE, VCardDataType.LANGUAGE_TAG);
+		registerParameterDataType(VCardParameters.MEDIATYPE, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.PID, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.PREF, VCardDataType.INTEGER);
+		registerParameterDataType(VCardParameters.SORT_AS, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.TYPE, VCardDataType.TEXT);
+		registerParameterDataType(VCardParameters.TZ, VCardDataType.URI);
+	}
+
+	private final List<ParseWarnings> parseWarnings = new ArrayList<ParseWarnings>();
+	private final Document document;
+	private final Element root;
+
+	/**
+	 * Creates an xCard document.
 	 */
 	public XCardDocument() {
-		this(defaultRootElement());
+		this(createXCardsRoot());
+	}
+
+	private static Document createXCardsRoot() {
+		Document document = XmlUtils.createDocument();
+		Element root = document.createElementNS(VCARDS.getNamespaceURI(), VCARDS.getLocalPart());
+		document.appendChild(root);
+		return document;
 	}
 
 	/**
@@ -158,6 +198,15 @@ public class XCardDocument extends AbstractVCardWriter {
 		this(readFile(file));
 	}
 
+	private static Document readFile(File file) throws SAXException, IOException {
+		InputStream in = new FileInputStream(file);
+		try {
+			return XmlUtils.toDocument(in);
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
+	}
+
 	/**
 	 * <p>
 	 * Parses an xCard document from a reader.
@@ -186,22 +235,17 @@ public class XCardDocument extends AbstractVCardWriter {
 	public XCardDocument(Document document) {
 		this.document = document;
 
-		XCardNamespaceContext nsContext = new XCardNamespaceContext(targetVersion, "v");
+		XCardNamespaceContext nsContext = new XCardNamespaceContext(version4, "v");
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		xpath.setNamespaceContext(nsContext);
 
-		//find the <vcards> element
-		Element vcardsElement;
 		try {
-			String prefix = nsContext.getPrefix();
-			vcardsElement = (Element) xpath.evaluate("//" + prefix + ":" + XCardQNames.VCARDS.getLocalPart(), document, XPathConstants.NODE);
+			//find the <vcards> element
+			root = (Element) xpath.evaluate("//" + nsContext.getPrefix() + ":" + VCARDS.getLocalPart(), document, XPathConstants.NODE);
 		} catch (XPathExpressionException e) {
 			//never thrown because xpath expression is hard coded
 			throw new RuntimeException(e);
 		}
-
-		Node parent = (vcardsElement == null) ? document : vcardsElement;
-		writer = new XCardWriter(parent);
 	}
 
 	/**
@@ -212,7 +256,11 @@ public class XCardDocument extends AbstractVCardWriter {
 	 * @see #parseFirst
 	 */
 	public List<List<String>> getParseWarnings() {
-		return parseWarnings;
+		List<List<String>> warnings = new ArrayList<List<String>>(parseWarnings.size());
+		for (ParseWarnings parseWarning : parseWarnings) {
+			warnings.add(parseWarning.copy());
+		}
+		return warnings;
 	}
 
 	/**
@@ -222,7 +270,12 @@ public class XCardDocument extends AbstractVCardWriter {
 	 * @param dataType the data type or null to remove
 	 */
 	public void registerParameterDataType(String parameterName, VCardDataType dataType) {
-		writer.registerParameterDataType(parameterName, dataType);
+		parameterName = parameterName.toLowerCase();
+		if (dataType == null) {
+			parameterDataTypes.remove(parameterName);
+		} else {
+			parameterDataTypes.put(parameterName, dataType);
+		}
 	}
 
 	/**
@@ -238,7 +291,21 @@ public class XCardDocument extends AbstractVCardWriter {
 	 * @return the vCard objects
 	 */
 	public List<VCard> parseAll() {
-		return parse(false);
+		parseWarnings.clear();
+
+		if (root == null) {
+			return Collections.emptyList();
+		}
+
+		List<VCard> vcards = new ArrayList<VCard>();
+		for (Element vcardElement : getVCardElements()) {
+			ParseWarnings warnings = new ParseWarnings();
+			parseWarnings.add(warnings);
+			VCard vcard = parseVCardElement(vcardElement, warnings);
+			vcards.add(vcard);
+		}
+
+		return vcards;
 	}
 
 	/**
@@ -246,45 +313,123 @@ public class XCardDocument extends AbstractVCardWriter {
 	 * @return the vCard object
 	 */
 	public VCard parseFirst() {
-		List<VCard> vcards = parse(true);
-		return vcards.isEmpty() ? null : vcards.get(0);
-	}
+		parseWarnings.clear();
 
-	private List<VCard> parse(boolean parseFirstOnly) {
-		XCardReader reader = new XCardReader(document);
-		reader.setScribeIndex(index);
-		XCardListenerImpl listener = new XCardListenerImpl(parseFirstOnly);
-		parseWarnings = listener.warnings;
-
-		try {
-			reader.read(listener);
-		} catch (TransformerException e) {
-			throw new RuntimeException(e);
+		if (root == null) {
+			return null;
 		}
 
-		return listener.vcards;
+		List<Element> vcardElements = getVCardElements();
+		if (vcardElements.isEmpty()) {
+			return null;
+		}
+
+		ParseWarnings warnings = new ParseWarnings();
+		parseWarnings.add(warnings);
+		return parseVCardElement(vcardElements.get(0), warnings);
+	}
+
+	private VCard parseVCardElement(Element vcardElement, ParseWarnings warnings) {
+		VCard vcard = new VCard();
+		vcard.setVersion(version4);
+
+		List<Element> children = XmlUtils.toElementList(vcardElement.getChildNodes());
+		for (Element child : children) {
+			if (GROUP.getNamespaceURI().equals(child.getNamespaceURI()) && GROUP.getLocalPart().equals(child.getLocalName())) {
+				String group = child.getAttribute("name");
+				if (group.length() == 0) {
+					group = null;
+				}
+				List<Element> grandChildren = XmlUtils.toElementList(child.getChildNodes());
+				for (Element grandChild : grandChildren) {
+					parseAndAddElement(grandChild, group, vcard, warnings);
+				}
+				continue;
+			}
+
+			parseAndAddElement(child, null, vcard, warnings);
+		}
+
+		return vcard;
 	}
 
 	/**
-	 * Adds a vCard to the XML document.
-	 * @param vcard the vCard to add
-	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
-	 * custom property class (see: {@link #registerScribe})
+	 * Parses a property element from the XML document and adds the property to
+	 * the vCard.
+	 * @param element the element to parse
+	 * @param group the group name or null if the property does not belong to a
+	 * group
+	 * @param vcard the vCard object
+	 * @param warningsBuf the list to add the warnings to
 	 */
-	public void add(VCard vcard) {
-		writer.setVersionStrict(versionStrict);
-		writer.setAddProdId(addProdId);
-		writer.setScribeIndex(index);
+	private void parseAndAddElement(Element element, String group, VCard vcard, ParseWarnings warnings) {
+		VCardParameters parameters = parseParameters(element);
 
+		VCardProperty property;
+		String propertyName = element.getLocalName();
+		String ns = element.getNamespaceURI();
+		QName qname = new QName(ns, propertyName);
+		VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(qname);
 		try {
-			writer.write(vcard);
-		} catch (SAXException e) {
-			throw new RuntimeException(e);
+			Result<? extends VCardProperty> result = scribe.parseXml(element, parameters);
+
+			property = result.getProperty();
+			property.setGroup(group);
+
+			for (String warning : result.getWarnings()) {
+				warnings.add(null, propertyName, warning);
+			}
+		} catch (SkipMeException e) {
+			warnings.add(null, propertyName, 22, e.getMessage());
+			return;
+		} catch (CannotParseException e) {
+			String xml = XmlUtils.toString(element);
+			warnings.add(null, propertyName, 33, xml, e.getMessage());
+
+			scribe = index.getPropertyScribe(Xml.class);
+			Result<? extends VCardProperty> result = scribe.parseXml(element, parameters);
+			property = result.getProperty();
+			property.setGroup(group);
+		} catch (EmbeddedVCardException e) {
+			warnings.add(null, propertyName, 34);
+			return;
 		}
+
+		vcard.addProperty(property);
 	}
 
 	/**
-	 * Writes the XML document to a string without pretty-printing.
+	 * Parses the property parameters (aka "sub types").
+	 * @param element the property's XML element
+	 * @return the parsed parameters
+	 */
+	private VCardParameters parseParameters(Element element) {
+		VCardParameters parameters = new VCardParameters();
+
+		List<Element> roots = XmlUtils.toElementList(element.getElementsByTagNameNS(PARAMETERS.getNamespaceURI(), PARAMETERS.getLocalPart()));
+		for (Element root : roots) { // foreach "<parameters>" element (there should only be 1 though)
+			List<Element> parameterElements = XmlUtils.toElementList(root.getChildNodes());
+			for (Element parameterElement : parameterElements) {
+				String name = parameterElement.getLocalName().toUpperCase();
+				List<Element> valueElements = XmlUtils.toElementList(parameterElement.getChildNodes());
+				if (valueElements.isEmpty()) {
+					String value = parameterElement.getTextContent();
+					parameters.put(name, value);
+					continue;
+				}
+
+				for (Element valueElement : valueElements) {
+					String value = valueElement.getTextContent();
+					parameters.put(name, value);
+				}
+			}
+		}
+
+		return parameters;
+	}
+
+	/**
+	 * Writes the XML document to a string without pretty-printing it.
 	 * @return the XML string
 	 */
 	public String write() {
@@ -292,8 +437,8 @@ public class XCardDocument extends AbstractVCardWriter {
 	}
 
 	/**
-	 * Writes the XML document to a string with pretty-printing.
-	 * @param indent the number of spaces to use for indentation
+	 * Writes the XML document to a string and pretty-prints it.
+	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @return the XML string
 	 */
 	public String write(int indent) {
@@ -307,7 +452,7 @@ public class XCardDocument extends AbstractVCardWriter {
 	}
 
 	/**
-	 * Writes the XML document to an output stream without pretty-printing.
+	 * Writes the XML document to an output stream without pretty-printing it.
 	 * @param out the output stream
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
@@ -317,9 +462,9 @@ public class XCardDocument extends AbstractVCardWriter {
 	}
 
 	/**
-	 * Writes the XML document to an output stream with pretty-printing.
+	 * Writes the XML document to an output stream and pretty-prints it.
 	 * @param out the output stream
-	 * @param indent the number of spaces to use for indentation
+	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
 	 */
@@ -328,7 +473,7 @@ public class XCardDocument extends AbstractVCardWriter {
 	}
 
 	/**
-	 * Writes the XML document to a file without pretty-printing.
+	 * Writes the XML document to a file without pretty-printing it.
 	 * @param file the file
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
@@ -338,9 +483,9 @@ public class XCardDocument extends AbstractVCardWriter {
 	}
 
 	/**
-	 * Writes the XML document to a file with pretty-printing.
+	 * Writes the XML document to a file and pretty-prints it.
 	 * @param file the file stream
-	 * @param indent the number of spaces to use for indentation
+	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
@@ -354,7 +499,7 @@ public class XCardDocument extends AbstractVCardWriter {
 	}
 
 	/**
-	 * Writes the XML document to a writer without pretty-printing.
+	 * Writes the XML document to a writer without pretty-printing it.
 	 * @param writer the writer
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
@@ -363,9 +508,9 @@ public class XCardDocument extends AbstractVCardWriter {
 	}
 
 	/**
-	 * Writes the XML document to a writer with pretty-printing.
+	 * Writes the XML document to a writer and pretty-prints it.
 	 * @param writer the writer
-	 * @param indent the number of spaces to use for indentation
+	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer, int indent) throws TransformerException {
@@ -377,39 +522,133 @@ public class XCardDocument extends AbstractVCardWriter {
 		XmlUtils.toWriter(document, writer, properties);
 	}
 
-	private static Document defaultRootElement() {
-		Document document = XmlUtils.createDocument();
-		QName vcards = XCardQNames.VCARDS;
-		Element root = document.createElementNS(vcards.getNamespaceURI(), vcards.getLocalPart());
-		document.appendChild(root);
-		return document;
-	}
-
-	private static Document readFile(File file) throws SAXException, IOException {
-		InputStream in = new FileInputStream(file);
-		try {
-			return XmlUtils.toDocument(in);
-		} finally {
-			IOUtils.closeQuietly(in);
-		}
-	}
-
-	private static class XCardListenerImpl implements XCardListener {
-		private final List<VCard> vcards = new ArrayList<VCard>();
-		private final List<List<String>> warnings = new ArrayList<List<String>>();
-		private final boolean parseFirstOnly;
-
-		public XCardListenerImpl(boolean parseFirstOnly) {
-			this.parseFirstOnly = parseFirstOnly;
+	/**
+	 * Adds a vCard to the XML document.
+	 * @param vcard the vCard to add
+	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
+	 * custom property class (see: {@link #registerScribe})
+	 */
+	public void add(VCard vcard) {
+		List<VCardProperty> propertiesToAdd = prepare(vcard, version4);
+		ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<String, VCardProperty>(); //group the types by group name (null = no group name)
+		for (VCardProperty property : propertiesToAdd) {
+			propertiesByGroup.put(property.getGroup(), property);
 		}
 
-		public void vcardRead(VCard vcard, List<String> warnings) throws StopReadingException {
-			this.vcards.add(vcard);
-			this.warnings.add(warnings);
+		//marshal each type object
+		Element vcardElement = createElement(VCARD);
+		for (Map.Entry<String, List<VCardProperty>> entry : propertiesByGroup) {
+			String groupName = entry.getKey();
+			Element parent;
+			if (groupName != null) {
+				Element groupElement = createElement(GROUP);
+				groupElement.setAttribute("name", groupName);
+				vcardElement.appendChild(groupElement);
+				parent = groupElement;
+			} else {
+				parent = vcardElement;
+			}
 
-			if (parseFirstOnly) {
-				throw new StopReadingException();
+			for (VCardProperty property : entry.getValue()) {
+				try {
+					Element propertyElement = marshalProperty(property, vcard);
+					parent.appendChild(propertyElement);
+				} catch (SkipMeException e) {
+					//skip property
+				} catch (EmbeddedVCardException e) {
+					//skip property
+				}
 			}
 		}
+		root.appendChild(vcardElement);
+	}
+
+	/**
+	 * Marshals a type object to an XML element.
+	 * @param type the type object to marshal
+	 * @param vcard the vcard the type belongs to
+	 * @return the XML element
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Element marshalProperty(VCardProperty type, VCard vcard) {
+		VCardPropertyScribe scribe = index.getPropertyScribe(type);
+		VCardParameters parameters = scribe.prepareParameters(type, version4, vcard);
+
+		QName qname = scribe.getQName();
+		Element propertyElement = createElement(qname);
+
+		//marshal the parameters
+		if (!parameters.isEmpty()) {
+			Element parametersElement = marshalParameters(parameters);
+			propertyElement.appendChild(parametersElement);
+		}
+
+		//marshal the value
+		scribe.writeXml(type, propertyElement);
+
+		return propertyElement;
+	}
+
+	private Element marshalParameters(VCardParameters parameters) {
+		Element parametersElement = createElement(PARAMETERS);
+
+		for (Map.Entry<String, List<String>> parameter : parameters) {
+			String parameterName = parameter.getKey().toLowerCase();
+			Element parameterElement = createElement(parameterName);
+
+			for (String parameterValue : parameter.getValue()) {
+				VCardDataType dataType = parameterDataTypes.get(parameterName);
+				String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
+				Element dataTypeElement = createElement(dataTypeElementName);
+				dataTypeElement.setTextContent(parameterValue);
+				parameterElement.appendChild(dataTypeElement);
+			}
+
+			parametersElement.appendChild(parameterElement);
+		}
+
+		return parametersElement;
+	}
+
+	private List<Element> getVCardElements() {
+		return getChildElements(root, VCARD);
+	}
+
+	private List<Element> getChildElements(Element parent, QName qname) {
+		List<Element> elements = new ArrayList<Element>();
+		for (Element child : XmlUtils.toElementList(parent.getChildNodes())) {
+			if (qname.getLocalPart().equals(child.getLocalName()) && qname.getNamespaceURI().equals(child.getNamespaceURI())) {
+				elements.add(child);
+			}
+		}
+		return elements;
+	}
+
+	/**
+	 * Creates a new XML element.
+	 * @param name the name of the XML element
+	 * @return the new XML element
+	 */
+	private Element createElement(String name) {
+		return createElement(name, version4.getXmlNamespace());
+	}
+
+	/**
+	 * Creates a new XML element.
+	 * @param name the name of the XML element
+	 * @param ns the namespace of the XML element
+	 * @return the new XML element
+	 */
+	private Element createElement(String name, String ns) {
+		return document.createElementNS(ns, name);
+	}
+
+	/**
+	 * Creates a new XML element.
+	 * @param qname the element name
+	 * @return the new XML element
+	 */
+	private Element createElement(QName qname) {
+		return createElement(qname.getLocalPart(), qname.getNamespaceURI());
 	}
 }
