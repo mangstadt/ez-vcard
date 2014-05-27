@@ -582,7 +582,7 @@ public class EzvcardTest {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedName("John Doe"));
 
-		String actual = Ezvcard.writeXml(vcard).indent("  ").go();
+		String actual = Ezvcard.writeXml(vcard).indent(2).go();
 		assertTrue(actual.contains("    <fn>" + NEWLINE + "      <text>John Doe</text>" + NEWLINE + "    </fn>"));
 	}
 
