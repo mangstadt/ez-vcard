@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
@@ -681,6 +682,56 @@ public class XCardReaderTest {
 
 		assertWarningsLists(listener.warnings, 0);
 		assertFalse(it.hasNext());
+	}
+
+	@Test
+	public void read_xml_property() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<x:foo xmlns:x=\"http://example.com\">" +
+					"<parameters>" +
+						"<pref><integer>1</integer></pref>" +
+					"</parameters>" +
+					"<!-- comment -->" +
+					"<x:a />" +
+					"<x:b attr=\"value\">text</x:b>" +
+					"<x:c>text<x:child>child</x:child></x:c>" +
+				"</x:foo>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardReader reader = new XCardReader(xml);
+		XCardListenerImpl listener = new XCardListenerImpl();
+		reader.read(listener);
+		Iterator<VCard> it = listener.vcards.iterator();
+
+		{
+			VCard vcard = it.next();
+			assertEquals(VCardVersion.V4_0, vcard.getVersion());
+			assertEquals(1, vcard.getProperties().size());
+
+			Xml property = vcard.getXmls().get(0);
+			assertIntEquals(1, property.getParameters().getPref());
+			Document actual = property.getValue();
+
+			//@formatter:off
+			String propertyXml =
+			"<foo xmlns=\"http://example.com\">" +
+				"<a />" +
+				"<b attr=\"value\">text</b>" +
+				"<c>text<child>child</child></c>" +
+			"</foo>";
+			Document expected = XmlUtils.toDocument(propertyXml);
+			//@formatter:on
+
+			assertXMLEqual(expected, actual);
+		}
+
+		assertFalse(it.hasNext());
+		assertWarningsLists(listener.warnings, 0);
 	}
 
 	@Test
