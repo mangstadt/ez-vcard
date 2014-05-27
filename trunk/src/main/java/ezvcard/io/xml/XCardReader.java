@@ -15,6 +15,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.ErrorListener;
@@ -86,15 +88,14 @@ import ezvcard.util.XmlUtils;
  * <b>Example:</b>
  * 
  * <pre class="brush:java">
- * File file = new File("vcards.xml");
- * final List&lt;VCard&gt; vcards = new ArrayList&lt;VCard&gt;();
+ * File file = new File(&quot;vcards.xml&quot;);
+ * List&lt;VCard&gt; vcards = new ArrayList&lt;VCard&gt;();
  * XCardReader xcardReader = new XCardReader(file);
- * xcardReader.read(new XCardReadListener(){
- *   public void vcardRead(VCard vcard, List&lt;String&gt; warnings) throws StopReadingException{
- *     vcards.add(vcard);
- *     //throw a "StopReadingException" to stop parsing early
- *   }
+ * VCard vcard;
+ * while ((vcard = xcardReader.readNext()) != null) {
+ * 	vcards.add(vcard);
  * }
+ * xcardReader.close();
  * </pre>
  * 
  * </p>
@@ -107,9 +108,16 @@ public class XCardReader implements Closeable {
 
 	private final Source source;
 	private final Closeable stream;
-	private final ParseWarnings warnings = new ParseWarnings();
 	private ScribeIndex index = new ScribeIndex();
-	private XCardListener listener;
+
+	private VCard readVCard;
+	private final ParseWarnings warnings = new ParseWarnings();
+	private TransformerException thrown;
+
+	private final ReadThread thread = new ReadThread();
+	private final Object lock = new Object();
+	private final BlockingQueue<Object> readerBlock = new ArrayBlockingQueue<Object>(1);
+	private final BlockingQueue<Object> threadBlock = new ArrayBlockingQueue<Object>(1);
 
 	/**
 	 * Creates an xCard reader.
@@ -184,55 +192,98 @@ public class XCardReader implements Closeable {
 		this.index = index;
 	}
 
-	/**
-	 * Starts parsing the XML document. This method blocks until the entire
-	 * input stream or DOM is consumed, or until a {@link StopReadingException}
-	 * is thrown from the given {@link XCardListener}.
-	 * @param listener used for retrieving the parsed vCards
-	 * @throws TransformerException if there's a problem reading from the input
-	 * stream or a problem parsing the XML
-	 */
-	public void read(XCardListener listener) throws TransformerException {
-		this.listener = listener;
+	public List<String> getWarnings() {
+		return warnings.copy();
+	}
 
-		//create the transformer
-		Transformer transformer;
-		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
-		} catch (TransformerConfigurationException e) {
-			//no complex configurations
-			throw new RuntimeException(e);
-		} catch (TransformerFactoryConfigurationError e) {
-			//no complex configurations
-			throw new RuntimeException(e);
+	public VCard readNext() throws TransformerException {
+		readVCard = null;
+		warnings.clear();
+		thrown = null;
+
+		if (!thread.started) {
+			thread.start();
+		} else {
+			if (thread.finished || thread.closed) {
+				return null;
+			}
+
+			try {
+				threadBlock.put(lock);
+			} catch (InterruptedException e) {
+				return null;
+			}
 		}
 
-		//prevent error messages from being printed to stderr
-		transformer.setErrorListener(new ErrorListener() {
-			public void error(TransformerException e) {
-				//empty
-			}
-
-			public void fatalError(TransformerException e) {
-				//empty
-			}
-
-			public void warning(TransformerException e) {
-				//empty
-			}
-		});
-
-		//start parsing
-		ContentHandlerImpl handler = new ContentHandlerImpl();
-		SAXResult result = new SAXResult(handler);
+		//wait until thread reads xCard
 		try {
-			transformer.transform(source, result);
-		} catch (TransformerException e) {
-			Throwable cause = e.getCause();
-			if (cause != null && cause instanceof StopReadingException) {
-				//ignore StopReadingException because it signals that the user canceled the parsing operation
-			} else {
-				throw e;
+			readerBlock.take();
+		} catch (InterruptedException e) {
+			return null;
+		}
+
+		//throw exception if one was thrown
+		if (thrown != null) {
+			throw thrown;
+		}
+
+		return readVCard;
+	}
+
+	private class ReadThread extends Thread {
+		private final SAXResult result;
+		private final Transformer transformer;
+		private boolean finished = false, started = false, closed = false;
+
+		public ReadThread() {
+			setName(getClass().getSimpleName());
+
+			//create the transformer
+			try {
+				transformer = TransformerFactory.newInstance().newTransformer();
+			} catch (TransformerConfigurationException e) {
+				//no complex configurations
+				throw new RuntimeException(e);
+			} catch (TransformerFactoryConfigurationError e) {
+				//no complex configurations
+				throw new RuntimeException(e);
+			}
+
+			//prevent error messages from being printed to stderr
+			transformer.setErrorListener(new ErrorListener() {
+				public void error(TransformerException e) {
+					//empty
+				}
+
+				public void fatalError(TransformerException e) {
+					//empty
+				}
+
+				public void warning(TransformerException e) {
+					//empty
+				}
+			});
+
+			result = new SAXResult(new ContentHandlerImpl());
+		}
+
+		@Override
+		public void run() {
+			started = true;
+
+			try {
+				transformer.transform(source, result);
+			} catch (TransformerException e) {
+				if (!thread.closed) {
+					thrown = e;
+				}
+			} finally {
+				finished = true;
+				try {
+					readerBlock.put(lock);
+				} catch (InterruptedException e) {
+					//ignore
+				}
 			}
 		}
 	}
@@ -246,7 +297,6 @@ public class XCardReader implements Closeable {
 		private Element propertyElement, parent;
 		private QName propertyQName, paramName, paramDataType;
 
-		private VCard vcard;
 		private VCardParameters parameters;
 
 		@Override
@@ -256,6 +306,74 @@ public class XCardReader implements Closeable {
 			}
 
 			characterBuffer.append(buffer, start, length);
+		}
+
+		@Override
+		public void startElement(String namespace, String localName, String qName, Attributes attributes) throws SAXException {
+			QName qname = new QName(namespace, localName);
+			String textContent = characterBuffer.toString();
+			characterBuffer.setLength(0);
+
+			if (hierarchy.eq()) {
+				//<vcards>
+				if (VCARDS.equals(qname)) {
+					hierarchy.push(qname);
+				}
+				return;
+			}
+
+			if (hierarchy.eq(VCARDS)) {
+				//<vcard>
+				if (VCARD.equals(qname)) {
+					readVCard = new VCard();
+					readVCard.setVersion(version);
+					hierarchy.push(qname);
+				}
+				return;
+			}
+
+			hierarchy.push(qname);
+
+			//<group>
+			if (hierarchy.eq(VCARDS, VCARD, GROUP)) {
+				group = attributes.getValue("name");
+				return;
+			}
+
+			//start property element
+			if (propertyElement == null) {
+				propertyElement = createElement(namespace, localName, attributes);
+				propertyQName = qname;
+				parameters = new VCardParameters();
+				parent = propertyElement;
+				return;
+			}
+
+			//<parameters>
+			if ((group == null && hierarchy.eq(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.eq(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
+				return;
+			}
+
+			//inside of <parameters>
+			if ((group == null && hierarchy.startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
+				if (NS.equals(namespace)) {
+					if (hierarchy.endsWith(paramName, qname)) {
+						paramDataType = qname;
+					} else {
+						paramName = qname;
+					}
+				}
+
+				return;
+			}
+
+			//append to property element
+			if (textContent.length() > 0) {
+				parent.appendChild(DOC.createTextNode(textContent));
+			}
+			Element element = createElement(namespace, localName, attributes);
+			parent.appendChild(element);
+			parent = element;
 		}
 
 		@Override
@@ -307,7 +425,7 @@ public class XCardReader implements Closeable {
 					Result<? extends VCardProperty> result = scribe.parseXml(propertyElement, parameters);
 					property = result.getProperty();
 					property.setGroup(group);
-					vcard.addProperty(property);
+					readVCard.addProperty(property);
 					for (String warning : result.getWarnings()) {
 						warnings.add(null, propertyName, warning);
 					}
@@ -321,7 +439,7 @@ public class XCardReader implements Closeable {
 					Result<? extends VCardProperty> result = scribe.parseXml(propertyElement, parameters);
 					property = result.getProperty();
 					property.setGroup(group);
-					vcard.addProperty(property);
+					readVCard.addProperty(property);
 				} catch (EmbeddedVCardException e) {
 					warnings.add(null, propertyName, 34);
 				}
@@ -347,136 +465,15 @@ public class XCardReader implements Closeable {
 
 			//</vcard>
 			if (hierarchy.eq(VCARDS) && qname.equals(VCARD)) {
-				listener.vcardRead(vcard, warnings.copy());
-				warnings.clear();
-				vcard = null;
-				return;
-			}
-		}
-
-		@Override
-		public void startElement(String namespace, String localName, String qName, Attributes attributes) throws SAXException {
-			QName qname = new QName(namespace, localName);
-			String textContent = characterBuffer.toString();
-			characterBuffer.setLength(0);
-
-			if (hierarchy.eq()) {
-				//<vcards>
-				if (VCARDS.equals(qname)) {
-					hierarchy.push(qname);
-				}
-				return;
-			}
-
-			if (hierarchy.eq(VCARDS)) {
-				//<vcard>
-				if (VCARD.equals(qname)) {
-					vcard = new VCard();
-					vcard.setVersion(version);
-					hierarchy.push(qname);
-				}
-				return;
-			}
-
-			hierarchy.push(qname);
-
-			//<group>
-			if (hierarchy.eq(VCARDS, VCARD, GROUP)) {
-				group = attributes.getValue("name");
-				return;
-			}
-
-			//start property element
-			if (propertyElement == null) {
-				propertyElement = createElement(namespace, localName, attributes);
-				propertyQName = qname;
-				parameters = new VCardParameters();
-				parent = propertyElement;
-				return;
-			}
-
-			//<parameters>
-			if ((group == null && hierarchy.eq(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.eq(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
-				return;
-			}
-
-			//inside of <parameters>
-			if ((group == null && hierarchy.startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
-				if (NS.equals(namespace)) {
-					if (hierarchy.endsWith(paramName, qname)) {
-						paramDataType = qname;
-					} else {
-						paramName = qname;
-					}
+				//wait for readNext() to be called again
+				try {
+					readerBlock.put(lock);
+					threadBlock.take();
+				} catch (InterruptedException e) {
+					throw new SAXException(e);
 				}
 
 				return;
-			}
-
-			//append to property element
-			if (textContent.length() > 0) {
-				parent.appendChild(DOC.createTextNode(textContent));
-			}
-			Element element = createElement(namespace, localName, attributes);
-			parent.appendChild(element);
-			parent = element;
-		}
-
-		private class Hierarchy {
-			private final List<QName> stack = new ArrayList<QName>();
-
-			public boolean eq(QName... elements) {
-				if (elements.length != stack.size()) {
-					return false;
-				}
-
-				for (int i = elements.length - 1; i >= 0; i--) {
-					//iterate backwards because it will result in less comparisons
-					QName hier = stack.get(i);
-					QName element = elements[i];
-					if (!hier.equals(element)) {
-						return false;
-					}
-				}
-				return true;
-			}
-
-			public boolean startsWith(QName... elements) {
-				if (elements.length > stack.size()) {
-					return false;
-				}
-
-				for (int i = elements.length - 1; i >= 0; i--) {
-					QName element = elements[i];
-					QName hier = stack.get(i);
-					if (!hier.equals(element)) {
-						return false;
-					}
-				}
-				return true;
-			}
-
-			public boolean endsWith(QName... elements) {
-				if (elements.length > stack.size()) {
-					return false;
-				}
-
-				for (int i = elements.length - 1; i >= 0; i--) {
-					QName element = elements[i];
-					QName hier = stack.get(stack.size() - (elements.length - i));
-					if (!hier.equals(element)) {
-						return false;
-					}
-				}
-				return true;
-			}
-
-			public QName pop() {
-				return stack.isEmpty() ? null : stack.remove(stack.size() - 1);
-			}
-
-			public void push(QName qname) {
-				stack.add(qname);
 			}
 		}
 
@@ -496,10 +493,73 @@ public class XCardReader implements Closeable {
 		}
 	}
 
+	private class Hierarchy {
+		private final List<QName> stack = new ArrayList<QName>();
+
+		public boolean eq(QName... elements) {
+			if (elements.length != stack.size()) {
+				return false;
+			}
+
+			for (int i = elements.length - 1; i >= 0; i--) {
+				//iterate backwards because it will result in less comparisons
+				QName hier = stack.get(i);
+				QName element = elements[i];
+				if (!hier.equals(element)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public boolean startsWith(QName... elements) {
+			if (elements.length > stack.size()) {
+				return false;
+			}
+
+			for (int i = elements.length - 1; i >= 0; i--) {
+				QName element = elements[i];
+				QName hier = stack.get(i);
+				if (!hier.equals(element)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public boolean endsWith(QName... elements) {
+			if (elements.length > stack.size()) {
+				return false;
+			}
+
+			for (int i = elements.length - 1; i >= 0; i--) {
+				QName element = elements[i];
+				QName hier = stack.get(stack.size() - (elements.length - i));
+				if (!hier.equals(element)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public QName pop() {
+			return stack.isEmpty() ? null : stack.remove(stack.size() - 1);
+		}
+
+		public void push(QName qname) {
+			stack.add(qname);
+		}
+	}
+
 	/**
 	 * Closes the underlying input stream.
 	 */
 	public void close() throws IOException {
+		if (thread.isAlive()) {
+			thread.closed = true;
+			thread.interrupt();
+		}
+
 		if (stream != null) {
 			stream.close();
 		}

@@ -3,7 +3,7 @@ package ezvcard.io.xml;
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
-import static ezvcard.util.TestUtils.assertWarningsLists;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -14,10 +14,8 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -125,12 +123,8 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
-
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
@@ -143,10 +137,11 @@ public class XCardReaderTest {
 			assertTrue(n.getAdditional().isEmpty());
 			assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
 			assertEquals(Arrays.asList("MD"), n.getSuffixes());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -180,12 +175,9 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
@@ -198,10 +190,12 @@ public class XCardReaderTest {
 			assertTrue(n.getAdditional().isEmpty());
 			assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
 			assertEquals(Arrays.asList("MD"), n.getSuffixes());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
@@ -214,10 +208,11 @@ public class XCardReaderTest {
 			assertTrue(n.getAdditional().isEmpty());
 			assertEquals(Arrays.asList("Dr", "Ms"), n.getPrefixes());
 			assertEquals(Arrays.asList("MD"), n.getSuffixes());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0, 0);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -232,12 +227,9 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings);
+		assertNull(reader.readNext());
+
 	}
 
 	@Test
@@ -252,12 +244,9 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings);
+		assertNull(reader.readNext());
+
 	}
 
 	@Test
@@ -272,19 +261,18 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
+
 			assertEquals("Dr. Gregory House M.D.", vcard.getFormattedName().getValue());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -299,21 +287,19 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals("  This \t  is \n   a   note ", note.getValue());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -339,22 +325,20 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Gregory House M.D.", fn.getValue());
 			assertEquals(fn.getParameters().toString(), Arrays.asList("1", "2"), fn.getParameters("PREF"));
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertWarningsLists(listener.warnings, 0);
-		assertFalse(it.hasNext());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -374,22 +358,20 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			RawProperty property = vcard.getExtendedProperty("VCARD");
 			assertEquals("propValue", property.getValue());
 			assertEquals("paramValue", property.getParameter("PARAMETERS"));
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -404,18 +386,15 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
+
 		try {
-			reader.read(listener);
+			reader.readNext();
 			fail();
 		} catch (TransformerException e) {
 			assertTrue(e.getCause() instanceof SAXException);
 		}
 
-		Iterator<VCard> it = listener.vcards.iterator();
-
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -437,28 +416,28 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals("Dr. Gregory House M.D.", vcard.getFormattedName().getValue());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals("Dr. Lisa Cuddy M.D.", vcard.getFormattedName().getValue());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0, 0);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -504,12 +483,9 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(4, vcard.getProperties().size());
 
@@ -544,10 +520,11 @@ public class XCardReaderTest {
 
 				assertFalse(telIt.hasNext());
 			}
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertWarningsLists(listener.warnings, 0);
-		assertFalse(it.hasNext());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -566,12 +543,9 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(3, vcard.getProperties().size());
 
@@ -592,10 +566,11 @@ public class XCardReaderTest {
 
 				assertFalse(notesIt.hasNext());
 			}
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertWarningsLists(listener.warnings, 0);
-		assertFalse(it.hasNext());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -645,12 +620,8 @@ public class XCardReaderTest {
 		reader.registerScribe(new AgeScribe());
 		reader.registerScribe(new MyFormattedNameScribe());
 
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
-
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(6, vcard.getProperties().size());
 
@@ -678,10 +649,11 @@ public class XCardReaderTest {
 
 			MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);
 			assertEquals("JOHN DOE", fn.value);
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertWarningsLists(listener.warnings, 0);
-		assertFalse(it.hasNext());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -704,12 +676,9 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
@@ -728,10 +697,10 @@ public class XCardReaderTest {
 			//@formatter:on
 
 			assertXMLEqual(expected, actual);
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -749,22 +718,19 @@ public class XCardReaderTest {
 		XCardReader reader = new XCardReader(xml);
 		reader.registerScribe(new SkipMeScribe());
 
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
-
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			RawProperty property = vcard.getExtendedProperty("x-foo");
 			assertEquals("X-FOO", property.getPropertyName());
 			assertEquals("value", property.getValue());
+
+			assertWarnings(1, reader.getWarnings());
 		}
 
-		assertWarningsLists(listener.warnings, 1);
-		assertFalse(it.hasNext());
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -782,12 +748,8 @@ public class XCardReaderTest {
 		XCardReader reader = new XCardReader(xml);
 		reader.registerScribe(new CannotParseScribe());
 
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
-
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
@@ -797,14 +759,15 @@ public class XCardReaderTest {
 
 			Xml xmlProperty = vcard.getXmls().get(0);
 			assertXMLEqual(XmlUtils.toString(xmlProperty.getValue()), XmlUtils.toDocument("<cannotparse xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><text>value</text></cannotparse>"), xmlProperty.getValue());
+
+			assertWarnings(1, reader.getWarnings());
 		}
 
-		assertWarningsLists(listener.warnings, 1);
-		assertFalse(it.hasNext());
+		assertNull(reader.readNext());
 	}
 
 	@Test
-	public void stopParsingException() throws Exception {
+	public void close_before_stream_ends() throws Exception {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -818,27 +781,22 @@ public class XCardReaderTest {
 		//@formatter:on
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl() {
-			@Override
-			public void vcardRead(VCard vcard, List<String> warnings) throws StopReadingException {
-				super.vcardRead(vcard, warnings);
-				throw new StopReadingException();
-			}
-		};
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Gregory House M.D.", fn.getValue());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0);
+		reader.close();
+
+		assertNull(reader.readNext());
+
 	}
 
 	@Test
@@ -858,19 +816,17 @@ public class XCardReaderTest {
 		writer.close();
 
 		XCardReader reader = new XCardReader(file);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 			assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
+
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0);
+		assertNull(reader.readNext());
 	}
 
 	@Test
@@ -878,23 +834,16 @@ public class XCardReaderTest {
 		String xml = "<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />";
 
 		XCardReader reader = new XCardReader(xml);
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings);
+		assertNull(reader.readNext());
 	}
 
 	@Test
 	public void read_rfc6351_example() throws Throwable {
 		XCardReader reader = read("rfc6351-example.xml");
-		XCardListenerImpl listener = new XCardListenerImpl();
-		reader.read(listener);
-		Iterator<VCard> it = listener.vcards.iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = reader.readNext();
 
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
 			assertEquals(16, vcard.getProperties().size());
@@ -971,23 +920,13 @@ public class XCardReaderTest {
 			assertEquals("home", url.getType());
 
 			assertValidate(vcard).versions(vcard.getVersion()).run();
+			assertWarnings(0, reader.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(listener.warnings, 0);
+		assertNull(reader.readNext());
 	}
 
 	private XCardReader read(String file) throws SAXException, IOException {
 		return new XCardReader(getClass().getResourceAsStream(file));
-	}
-
-	private class XCardListenerImpl implements XCardListener {
-		private final List<VCard> vcards = new ArrayList<VCard>();
-		private final List<List<String>> warnings = new ArrayList<List<String>>();
-
-		public void vcardRead(VCard vcard, List<String> warnings) throws StopReadingException {
-			this.vcards.add(vcard);
-			this.warnings.add(warnings);
-		}
 	}
 }
