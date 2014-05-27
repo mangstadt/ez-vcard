@@ -192,10 +192,20 @@ public class XCardReader implements Closeable {
 		this.index = index;
 	}
 
+	/**
+	 * Gets the warnings from the last vCard that was unmarshalled. This list is
+	 * reset every time a new vCard is read.
+	 * @return the warnings or empty list if there were no warnings
+	 */
 	public List<String> getWarnings() {
 		return warnings.copy();
 	}
 
+	/**
+	 * Reads the next vCard from the xCard stream.
+	 * @return the next vCard or null if there are no more
+	 * @throws TransformerException if there's a problem reading from the stream
+	 */
 	public VCard readNext() throws TransformerException {
 		readVCard = null;
 		warnings.clear();
@@ -222,7 +232,6 @@ public class XCardReader implements Closeable {
 			return null;
 		}
 
-		//throw exception if one was thrown
 		if (thrown != null) {
 			throw thrown;
 		}
