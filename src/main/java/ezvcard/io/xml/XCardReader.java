@@ -25,7 +25,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
@@ -108,11 +107,11 @@ public class XCardReader implements Closeable {
 
 	private final Source source;
 	private final Closeable stream;
-	private ScribeIndex index = new ScribeIndex();
+	private volatile ScribeIndex index = new ScribeIndex();
 
-	private VCard readVCard;
+	private volatile VCard readVCard;
 	private final ParseWarnings warnings = new ParseWarnings();
-	private TransformerException thrown;
+	private volatile TransformerException thrown;
 
 	private final ReadThread thread = new ReadThread();
 	private final Object lock = new Object();
@@ -242,7 +241,7 @@ public class XCardReader implements Closeable {
 	private class ReadThread extends Thread {
 		private final SAXResult result;
 		private final Transformer transformer;
-		private boolean finished = false, started = false, closed = false;
+		private volatile boolean finished = false, started = false, closed = false;
 
 		public ReadThread() {
 			setName(getClass().getSimpleName());
@@ -251,9 +250,6 @@ public class XCardReader implements Closeable {
 			try {
 				transformer = TransformerFactory.newInstance().newTransformer();
 			} catch (TransformerConfigurationException e) {
-				//no complex configurations
-				throw new RuntimeException(e);
-			} catch (TransformerFactoryConfigurationError e) {
 				//no complex configurations
 				throw new RuntimeException(e);
 			}
