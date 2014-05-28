@@ -51,6 +51,7 @@ import ezvcard.property.Key;
 import ezvcard.property.Language;
 import ezvcard.property.Note;
 import ezvcard.property.Organization;
+import ezvcard.property.ProductId;
 import ezvcard.property.RawProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
@@ -356,10 +357,16 @@ public class XCardReaderTest {
 			"<vcard>" +
 				"<vcard>" +
 					"<parameters>" +
-						"<parameters><text>paramValue</text></parameters>" +
+						"<parameters><text>paramValue1</text></parameters>" +
+						"<group><text>paramValue2</text></group>" +
 					"</parameters>" +
 					"<vcard>propValue</vcard>" +
 				"</vcard>" +
+				"<group name=\"grp\">" +
+					"<group>" +
+						"<text>value</text>" +
+					"</group>" +
+				"</group>" +
 			"</vcard>" +
 		"</vcards>";
 		//@formatter:on
@@ -369,11 +376,17 @@ public class XCardReaderTest {
 		{
 			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertEquals(2, vcard.getProperties().size());
 
 			RawProperty property = vcard.getExtendedProperty("VCARD");
+			assertNull(property.getGroup());
 			assertEquals("propValue", property.getValue());
-			assertEquals("paramValue", property.getParameter("PARAMETERS"));
+			assertEquals("paramValue1", property.getParameter("PARAMETERS"));
+			assertEquals("paramValue2", property.getParameter("GROUP"));
+
+			property = vcard.getExtendedProperty("GROUP");
+			assertEquals("grp", property.getGroup());
+			assertEquals("value", property.getValue());
 
 			assertWarnings(0, reader.getWarnings());
 		}
@@ -548,6 +561,9 @@ public class XCardReaderTest {
 					"<fn><text>John Doe</text></fn>" +
 					"<note><text>Hello world!</text></note>" +
 				"</group>" +
+				"<group>" +
+					"<prodid><text>no name attribute</text></prodid>" +
+				"</group>" +
 				"<note><text>A property without a group</text></note>" +
 			"</vcard>" +
 		"</vcards>";
@@ -558,7 +574,7 @@ public class XCardReaderTest {
 		{
 			VCard vcard = reader.readNext();
 			assertEquals(VCardVersion.V4_0, vcard.getVersion());
-			assertEquals(3, vcard.getProperties().size());
+			assertEquals(4, vcard.getProperties().size());
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("John Doe", fn.getValue());
@@ -577,6 +593,10 @@ public class XCardReaderTest {
 
 				assertFalse(notesIt.hasNext());
 			}
+
+			ProductId prodid = vcard.getProductId();
+			assertNull(prodid.getGroup());
+			assertEquals("no name attribute", prodid.getValue());
 
 			assertWarnings(0, reader.getWarnings());
 		}
