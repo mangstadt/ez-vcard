@@ -295,13 +295,12 @@ public class XCardReader implements Closeable {
 
 	private class ContentHandlerImpl extends DefaultHandler {
 		private final Document DOC = XmlUtils.createDocument();
-		private final Hierarchy hierarchy = new Hierarchy();
+		private final XCardStructure structure = new XCardStructure();
+		private final StringBuilder characterBuffer = new StringBuilder();
 
 		private String group;
-		private StringBuilder characterBuffer = new StringBuilder();
 		private Element propertyElement, parent;
-		private QName propertyQName, paramName, paramDataType;
-
+		private QName paramName;
 		private VCardParameters parameters;
 
 		@Override
@@ -319,66 +318,86 @@ public class XCardReader implements Closeable {
 			String textContent = characterBuffer.toString();
 			characterBuffer.setLength(0);
 
-			if (hierarchy.eq()) {
+			if (structure.isEmpty()) {
 				//<vcards>
 				if (VCARDS.equals(qname)) {
-					hierarchy.push(qname);
+					structure.push(ElementType.vcards);
 				}
 				return;
 			}
 
-			if (hierarchy.eq(VCARDS)) {
-				//<vcard>
-				if (VCARD.equals(qname)) {
-					readVCard = new VCard();
-					readVCard.setVersion(version);
-					hierarchy.push(qname);
-				}
-				return;
-			}
+			ElementType parentType = structure.peek();
+			ElementType typeToPush = null;
 
-			hierarchy.push(qname);
-
-			//<group>
-			if (hierarchy.eq(VCARDS, VCARD, GROUP)) {
-				group = attributes.getValue("name");
-				return;
-			}
-
-			//start property element
-			if (propertyElement == null) {
-				propertyElement = createElement(namespace, localName, attributes);
-				propertyQName = qname;
-				parameters = new VCardParameters();
-				parent = propertyElement;
-				return;
-			}
-
-			//<parameters>
-			if ((group == null && hierarchy.eq(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.eq(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
-				return;
-			}
-
-			//inside of <parameters>
-			if ((group == null && hierarchy.startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS))) {
-				if (NS.equals(namespace)) {
-					if (hierarchy.endsWith(paramName, qname)) {
-						paramDataType = qname;
-					} else {
-						paramName = qname;
+			if (parentType != null) {
+				switch (parentType) {
+				case vcards:
+					//<vcard>
+					if (VCARD.equals(qname)) {
+						readVCard = new VCard();
+						readVCard.setVersion(version);
+						typeToPush = ElementType.vcard;
 					}
-				}
+					break;
 
-				return;
+				case vcard:
+					//<group>
+					if (GROUP.equals(qname)) {
+						group = attributes.getValue("name");
+						typeToPush = ElementType.group;
+					} else {
+						propertyElement = createElement(namespace, localName, attributes);
+						parameters = new VCardParameters();
+						parent = propertyElement;
+						typeToPush = ElementType.property;
+					}
+					break;
+
+				case group:
+					propertyElement = createElement(namespace, localName, attributes);
+					parameters = new VCardParameters();
+					parent = propertyElement;
+					typeToPush = ElementType.property;
+					break;
+
+				case property:
+					//<parameters>
+					if (PARAMETERS.equals(qname)) {
+						typeToPush = ElementType.parameters;
+					}
+					break;
+
+				case parameters:
+					//inside of <parameters>
+					if (NS.equals(namespace)) {
+						paramName = qname;
+						typeToPush = ElementType.parameter;
+					}
+					break;
+
+				case parameter:
+					if (NS.equals(namespace)) {
+						typeToPush = ElementType.parameterValue;
+					}
+					break;
+
+				case parameterValue:
+					//should never have child elements
+					break;
+				}
 			}
 
 			//append to property element
-			if (textContent.length() > 0) {
-				parent.appendChild(DOC.createTextNode(textContent));
+			if (propertyElement != null && typeToPush != ElementType.property && typeToPush != ElementType.parameters && !structure.isUnderParameters()) {
+				if (textContent.length() > 0) {
+					parent.appendChild(DOC.createTextNode(textContent));
+				}
+				Element element = createElement(namespace, localName, attributes);
+				parent.appendChild(element);
+				parent = element;
 			}
-			Element element = createElement(namespace, localName, attributes);
-			parent.appendChild(element);
-			parent = element;
+
+			structure.push(typeToPush);
 		}
 
 		@Override
@@ -386,104 +405,97 @@ public class XCardReader implements Closeable {
 			String textContent = characterBuffer.toString();
 			characterBuffer.setLength(0);
 
-			if (hierarchy.eq()) {
+			if (structure.isEmpty()) {
 				//no <vcards> elements were read yet
 				return;
 			}
 
-			if (hierarchy.eq(VCARDS) && (!namespace.equals(VCARD.getNamespaceURI()) || !localName.equals(VCARD.getLocalPart()))) {
-				//ignore any non-<vcard> elements under <vcards>
+			ElementType type = structure.pop();
+			if (type == null && (propertyElement == null || structure.isUnderParameters())) {
+				//it's a non-xCard element
 				return;
 			}
 
-			QName qname = hierarchy.pop();
-
-			//if inside of <parameters>
-			if (((group == null && hierarchy.startsWith(VCARDS, VCARD, propertyQName, PARAMETERS)) || (group != null && hierarchy.startsWith(VCARDS, VCARD, GROUP, propertyQName, PARAMETERS)))) {
-				if (qname.equals(paramDataType)) {
+			if (type != null) {
+				switch (type) {
+				case parameterValue:
 					parameters.put(paramName.getLocalPart(), textContent);
-					paramDataType = null;
-					return;
-				}
+					break;
 
-				if (qname.equals(paramName)) {
-					paramName = null;
-					return;
-				}
+				case parameter:
+					//do nothing
+					break;
 
-				return;
-			}
+				case parameters:
+					//do nothing
+					break;
 
-			//</parameters>
-			if (((group == null && hierarchy.eq(VCARDS, VCARD, propertyQName)) || (group != null && hierarchy.eq(VCARDS, VCARD, GROUP, propertyQName))) && qname.equals(PARAMETERS)) {
-				return;
-			}
+				case property:
+					propertyElement.appendChild(DOC.createTextNode(textContent));
 
-			//if the property element has ended
-			if (((group == null && hierarchy.eq(VCARDS, VCARD)) || (group != null && hierarchy.eq(VCARDS, VCARD, GROUP))) && qname.equals(propertyQName)) {
-				propertyElement.appendChild(DOC.createTextNode(textContent));
+					String propertyName = localName;
+					VCardProperty property;
+					QName propertyQName = new QName(propertyElement.getNamespaceURI(), propertyElement.getLocalName());
+					VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(propertyQName);
+					try {
+						Result<? extends VCardProperty> result = scribe.parseXml(propertyElement, parameters);
+						property = result.getProperty();
+						property.setGroup(group);
+						readVCard.addProperty(property);
+						for (String warning : result.getWarnings()) {
+							warnings.add(null, propertyName, warning);
+						}
+					} catch (SkipMeException e) {
+						warnings.add(null, propertyName, 22, e.getMessage());
+					} catch (CannotParseException e) {
+						String xml = XmlUtils.toString(propertyElement);
+						warnings.add(null, propertyName, 33, xml, e.getMessage());
 
-				String propertyName = localName;
-				VCardProperty property;
-				VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(qname);
-				try {
-					Result<? extends VCardProperty> result = scribe.parseXml(propertyElement, parameters);
-					property = result.getProperty();
-					property.setGroup(group);
-					readVCard.addProperty(property);
-					for (String warning : result.getWarnings()) {
-						warnings.add(null, propertyName, warning);
+						scribe = index.getPropertyScribe(Xml.class);
+						Result<? extends VCardProperty> result = scribe.parseXml(propertyElement, parameters);
+						property = result.getProperty();
+						property.setGroup(group);
+						readVCard.addProperty(property);
+					} catch (EmbeddedVCardException e) {
+						warnings.add(null, propertyName, 34);
 					}
-				} catch (SkipMeException e) {
-					warnings.add(null, propertyName, 22, e.getMessage());
-				} catch (CannotParseException e) {
-					String xml = XmlUtils.toString(propertyElement);
-					warnings.add(null, propertyName, 33, xml, e.getMessage());
 
-					scribe = index.getPropertyScribe(Xml.class);
-					Result<? extends VCardProperty> result = scribe.parseXml(propertyElement, parameters);
-					property = result.getProperty();
-					property.setGroup(group);
-					readVCard.addProperty(property);
-				} catch (EmbeddedVCardException e) {
-					warnings.add(null, propertyName, 34);
+					propertyElement = null;
+					break;
+
+				case group:
+					group = null;
+					break;
+
+				case vcard:
+					//wait for readNext() to be called again
+					try {
+						readerBlock.put(lock);
+						threadBlock.take();
+					} catch (InterruptedException e) {
+						throw new SAXException(e);
+					}
+					break;
+
+				case vcards:
+					//do nothing
+					break;
 				}
-
-				propertyElement = null;
-				return;
 			}
 
-			//if inside of the property element
-			if (propertyElement != null) {
+			//append element to property element
+			if (propertyElement != null && type != ElementType.property && type != ElementType.parameters && !structure.isUnderParameters()) {
 				if (textContent.length() > 0) {
 					parent.appendChild(DOC.createTextNode(textContent));
 				}
 				parent = (Element) parent.getParentNode();
-				return;
-			}
-
-			//</group>
-			if (hierarchy.eq(VCARDS, VCARD) && qname.equals(GROUP)) {
-				group = null;
-				return;
-			}
-
-			//</vcard>
-			if (hierarchy.eq(VCARDS) && qname.equals(VCARD)) {
-				//wait for readNext() to be called again
-				try {
-					readerBlock.put(lock);
-					threadBlock.take();
-				} catch (InterruptedException e) {
-					throw new SAXException(e);
-				}
-
-				return;
 			}
 		}
 
 		private Element createElement(String namespace, String localName, Attributes attributes) {
 			Element element = DOC.createElementNS(namespace, localName);
+
+			//copy the attributes
 			for (int i = 0; i < attributes.getLength(); i++) {
 				String qname = attributes.getQName(i);
 				if (qname.startsWith("xmlns:")) {
@@ -494,65 +506,81 @@ public class XCardReader implements Closeable {
 				String value = attributes.getValue(i);
 				element.setAttribute(name, value);
 			}
+
 			return element;
 		}
 	}
 
-	private class Hierarchy {
-		private final List<QName> stack = new ArrayList<QName>();
+	private enum ElementType {
+		//enum values are lower-case so they won't get confused with the "XCardQNames" variable names
+		vcards, vcard, group, property, parameters, parameter, parameterValue;
+	}
 
-		public boolean eq(QName... elements) {
-			if (elements.length != stack.size()) {
-				return false;
-			}
+	/**
+	 * <p>
+	 * Keeps track of the structure of an xCard XML document.
+	 * </p>
+	 * 
+	 * <p>
+	 * Note that this class is here because you can't just do QName comparisons
+	 * on a one-by-one basis. The location of an XML element within the XML
+	 * document is important too. It's possible for two elements to have the
+	 * same QName, but be treated differently depending on their location (e.g.
+	 * a parameter named "parameters")
+	 * </p>
+	 */
+	private class XCardStructure {
+		private final List<ElementType> stack = new ArrayList<ElementType>();
 
-			for (int i = elements.length - 1; i >= 0; i--) {
-				//iterate backwards because it will result in less comparisons
-				QName hier = stack.get(i);
-				QName element = elements[i];
-				if (!hier.equals(element)) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-		public boolean startsWith(QName... elements) {
-			if (elements.length > stack.size()) {
-				return false;
-			}
-
-			for (int i = elements.length - 1; i >= 0; i--) {
-				QName element = elements[i];
-				QName hier = stack.get(i);
-				if (!hier.equals(element)) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-		public boolean endsWith(QName... elements) {
-			if (elements.length > stack.size()) {
-				return false;
-			}
-
-			for (int i = elements.length - 1; i >= 0; i--) {
-				QName element = elements[i];
-				QName hier = stack.get(stack.size() - (elements.length - i));
-				if (!hier.equals(element)) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-		public QName pop() {
+		/**
+		 * Pops the top element type off the stack.
+		 * @return the element type or null if the stack is empty
+		 */
+		public ElementType pop() {
 			return stack.isEmpty() ? null : stack.remove(stack.size() - 1);
 		}
 
-		public void push(QName qname) {
-			stack.add(qname);
+		/**
+		 * Looks at the top element type.
+		 * @return the top element type or null if the stack is empty
+		 */
+		public ElementType peek() {
+			return stack.isEmpty() ? null : stack.get(stack.size() - 1);
+		}
+
+		/**
+		 * Adds an element type to the stack.
+		 * @param type the type to add or null if the XML element is not an
+		 * xCard element
+		 */
+		public void push(ElementType type) {
+			stack.add(type);
+		}
+
+		/**
+		 * Determines if the leaf node is under a {@code <parameters>} element.
+		 * @return true if it is, false if not
+		 */
+		public boolean isUnderParameters() {
+			//get the first non-null type
+			ElementType nonNull = null;
+			for (int i = stack.size() - 1; i >= 0; i--) {
+				ElementType type = stack.get(i);
+				if (type != null) {
+					nonNull = type;
+					break;
+				}
+			}
+
+			return nonNull == ElementType.parameters || nonNull == ElementType.parameter || nonNull == ElementType.parameterValue;
+		}
+
+		/**
+		 * Determines if the stack is empty
+		 * @return true if the stack is empty, false if not
+		 */
+		public boolean isEmpty() {
+			return stack.isEmpty();
 		}
 	}
 
