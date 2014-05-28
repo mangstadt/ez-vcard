@@ -176,7 +176,9 @@ public class XCardWriterTest {
 	@Test
 	public void write_xml_property() throws Exception {
 		VCard vcard = new VCard();
-		vcard.addXml(new Xml("<foo xmlns=\"http://example.com\" a=\"b\">bar<car/></foo>"));
+		Xml xml = new Xml("<foo xmlns=\"http://example.com\" a=\"b\">bar<car/></foo>");
+		xml.setParameter("x-foo", "bar");
+		vcard.addXml(xml);
 		writer.write(vcard);
 
 		writer.close();
@@ -185,7 +187,12 @@ public class XCardWriterTest {
 		String expected =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
-				"<foo xmlns=\"http://example.com\" a=\"b\">bar<car/></foo>" +
+				"<foo xmlns=\"http://example.com\" a=\"b\">" +
+					"<parameters xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+						"<x-foo><unknown>bar</unknown></x-foo>" +
+					"</parameters>" +
+					"bar<car/>" +
+				"</foo>" +
 			"</vcard>" +
 		"</vcards>";
 		//@formatter:on
@@ -336,8 +343,8 @@ public class XCardWriterTest {
 		note.setLanguage("en");
 		note.addPid(1, 1);
 		note.addPid(2, 2);
-		note.getParameters().put("X-CUSTOM", "xxx");
-		note.getParameters().put("X-INT", "11");
+		note.setParameter("X-CUSTOM", "xxx");
+		note.setParameter("X-INT", "11");
 		vcard.addNote(note);
 		writer.write(vcard);
 
