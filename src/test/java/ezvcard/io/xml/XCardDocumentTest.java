@@ -485,6 +485,62 @@ public class XCardDocumentTest {
 	}
 
 	@Test
+	public void add_no_existing_vcards_element() throws Throwable {
+		VCard vcard = new VCard();
+		FormattedName fn = new FormattedName("John Doe");
+		vcard.setFormattedName(fn);
+
+		XCardDocument xcm = new XCardDocument("<root><a /></root>");
+		xcm.setAddProdId(false);
+		xcm.add(vcard);
+
+		Document actual = xcm.getDocument();
+
+		//@formatter:off
+		String xml =
+		"<root>" +
+			"<a />" +
+			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcard>" +
+					"<fn><text>John Doe</text></fn>" +
+				"</vcard>" +
+			"</vcards>" + 
+		"</root>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void add_existing_vcards_element() throws Throwable {
+		VCard vcard = new VCard();
+		FormattedName fn = new FormattedName("John Doe");
+		vcard.setFormattedName(fn);
+
+		XCardDocument xcm = new XCardDocument("<root><vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><a /></vcards></root>");
+		xcm.setAddProdId(false);
+		xcm.add(vcard);
+
+		Document actual = xcm.getDocument();
+
+		//@formatter:off
+		String xml =
+		"<root>" +
+			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<a />" +
+				"<vcard>" +
+					"<fn><text>John Doe</text></fn>" +
+				"</vcard>" +
+			"</vcards>" + 
+		"</root>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
 	public void write_rfc6351_example() throws Throwable {
 		VCard vcard = new VCard();
 

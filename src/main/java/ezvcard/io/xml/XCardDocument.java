@@ -130,7 +130,7 @@ import ezvcard.util.XmlUtils;
 */
 //@formatter:on
 public class XCardDocument extends AbstractVCardWriter {
-	private static final VCardVersion version4 = VCardVersion.V4_0; //xCard only supports 4.0
+	private final VCardVersion version4 = VCardVersion.V4_0; //xCard only supports 4.0
 
 	/**
 	 * Defines the names of the XML elements that are used to hold each
@@ -153,7 +153,7 @@ public class XCardDocument extends AbstractVCardWriter {
 
 	private final List<ParseWarnings> parseWarnings = new ArrayList<ParseWarnings>();
 	private final Document document;
-	private final Element root;
+	private Element root;
 
 	/**
 	 * Creates an xCard document.
@@ -298,7 +298,7 @@ public class XCardDocument extends AbstractVCardWriter {
 		}
 
 		List<VCard> vcards = new ArrayList<VCard>();
-		for (Element vcardElement : getVCardElements()) {
+		for (Element vcardElement : getChildElements(root, VCARD)) {
 			ParseWarnings warnings = new ParseWarnings();
 			parseWarnings.add(warnings);
 			VCard vcard = parseVCardElement(vcardElement, warnings);
@@ -319,7 +319,7 @@ public class XCardDocument extends AbstractVCardWriter {
 			return null;
 		}
 
-		List<Element> vcardElements = getVCardElements();
+		List<Element> vcardElements = getChildElements(root, VCARD);
 		if (vcardElements.isEmpty()) {
 			return null;
 		}
@@ -560,6 +560,16 @@ public class XCardDocument extends AbstractVCardWriter {
 				}
 			}
 		}
+
+		if (root == null) {
+			root = createElement(VCARDS);
+			Element documentRoot = XmlUtils.getRootElement(document);
+			if (documentRoot == null) {
+				document.appendChild(root);
+			} else {
+				documentRoot.appendChild(root);
+			}
+		}
 		root.appendChild(vcardElement);
 	}
 
@@ -608,10 +618,6 @@ public class XCardDocument extends AbstractVCardWriter {
 		}
 
 		return parametersElement;
-	}
-
-	private List<Element> getVCardElements() {
-		return getChildElements(root, VCARD);
 	}
 
 	private List<Element> getChildElements(Element parent, QName qname) {
