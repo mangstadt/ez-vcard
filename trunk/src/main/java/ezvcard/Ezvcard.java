@@ -35,6 +35,8 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.VCardReader;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.io.xml.XCardDocument;
+import ezvcard.io.xml.XCardReader;
+import ezvcard.io.xml.XCardWriter;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 
@@ -87,8 +89,8 @@ import ezvcard.util.IOUtils;
  * </tr>
  * <tr>
  * <th>XML</th>
- * <td>{@link XCardDocument}</td>
- * <td>{@link XCardDocument}</td>
+ * <td>{@link XCardDocument}, {@link XCardReader}</td>
+ * <td>{@link XCardDocument}, {@link XCardWriter}</td>
  * </tr>
  * <tr>
  * <th>HTML</th>
@@ -207,11 +209,13 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard) from a string.
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over the parsing.
+	 * Use {@link XCardDocument} or {@link XCardReader} for more control over
+	 * the parsing.
 	 * </p>
 	 * @param xml the XML document
 	 * @return chainer object for completing the parse operation
 	 * @see XCardDocument
+	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlString parseXml(String xml) {
@@ -223,11 +227,13 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard) from a file.
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over the parsing.
+	 * Use {@link XCardDocument} or {@link XCardReader} for more control over
+	 * the parsing.
 	 * </p>
 	 * @param file the XML file
 	 * @return chainer object for completing the parse operation
 	 * @see XCardDocument
+	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlReader parseXml(File file) {
@@ -239,11 +245,13 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard) from an input stream.
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over the parsing.
+	 * Use {@link XCardDocument} or {@link XCardReader} for more control over
+	 * the parsing.
 	 * </p>
 	 * @param in the input stream to the XML document
 	 * @return chainer object for completing the parse operation
 	 * @see XCardDocument
+	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlReader parseXml(InputStream in) {
@@ -263,11 +271,13 @@ public class Ezvcard {
 	 * encoding into account when parsing.
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over the parsing.
+	 * Use {@link XCardDocument} or {@link XCardReader} for more control over
+	 * the parsing.
 	 * </p>
 	 * @param reader the reader to the XML document
 	 * @return chainer object for completing the parse operation
 	 * @see XCardDocument
+	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlReader parseXml(Reader reader) {
@@ -279,11 +289,13 @@ public class Ezvcard {
 	 * Parses XML-encoded vCards (xCard).
 	 * </p>
 	 * <p>
-	 * Use {@link XCardDocument} for more control over the parsing.
+	 * Use {@link XCardDocument} or {@link XCardReader} for more control over
+	 * the parsing.
 	 * </p>
 	 * @param document the XML document
 	 * @return chainer object for completing the parse operation
 	 * @see XCardDocument
+	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ParserChainXmlDom parseXml(Document document) {
@@ -480,12 +492,13 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link XCardDocument} for more control over how the vCards are
-	 * written.
+	 * Use {@link XCardDocument} or {@link XCardWriter} for more control over
+	 * how the vCards are written.
 	 * </p>
 	 * @param vcards the vCards to marshal
 	 * @return chainer object for completing the write operation
 	 * @see XCardDocument
+	 * @see XCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static WriterChainXml writeXml(VCard... vcards) {
@@ -498,12 +511,13 @@ public class Ezvcard {
 	 * </p>
 	 * 
 	 * <p>
-	 * Use {@link XCardDocument} for more control over how the vCards are
-	 * written.
+	 * Use {@link XCardDocument} or {@link XCardWriter} for more control over
+	 * how the vCards are written.
 	 * </p>
 	 * @param vcards the vCard to marshal
 	 * @return chainer object for completing the write operation
 	 * @see XCardDocument
+	 * @see XCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static WriterChainXml writeXml(Collection<VCard> vcards) {
