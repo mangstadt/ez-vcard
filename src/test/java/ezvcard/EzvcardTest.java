@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +28,6 @@ import ezvcard.io.xml.XCardNamespaceContext;
 import ezvcard.property.FormattedName;
 import ezvcard.util.XCardBuilder;
 import ezvcard.util.XmlUtils;
-import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -153,35 +151,6 @@ public class EzvcardTest {
 
 		vcard = Ezvcard.parse(str).caretDecoding(false).first();
 		assertEquals("George Herman ^'Babe^' Ruth", vcard.getFormattedName().getParameter("X-TEST"));
-	}
-
-	@Test
-	public void parse_defaultQuotedPrintableCharset() throws Exception {
-		//@formatter:off
-		String str =
-		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"NOTE;ENCODING=QUOTED-PRINTABLE:=E4=F6=FC=DF\r\n" +
-		"END:VCARD\r\n";
-		//@formatter:on
-
-		//without default charset
-		{
-			String defaultCharset = Charset.defaultCharset().name();
-			QuotedPrintableCodec codec = new QuotedPrintableCodec(defaultCharset);
-			String expected = codec.decode("=E4=F6=FC=DF");
-
-			VCard vcard = Ezvcard.parse(str).first();
-			assertEquals(expected, vcard.getNotes().get(0).getValue());
-		}
-
-		//with default charset
-		{
-			String expected = "\u00e4\u00f6\u00fc\u00df";
-
-			VCard vcard = Ezvcard.parse(str).defaultQuotedPrintableCharset(Charset.forName("ISO-8859-1")).first();
-			assertEquals(expected, vcard.getNotes().get(0).getValue());
-		}
 	}
 
 	@Test
