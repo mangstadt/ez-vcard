@@ -1,5 +1,9 @@
 #summary Archive of all past news entries.
 
+*May 31, 2014*
+
+[Downloads Version 0.9.4] released.  This released adds xCard streaming support, and fixes a handful of bugs.  Please see the [Changelog changelog] for details.
+
 *April 1, 2014*
 
 [Downloads Version 0.9.3] released.  This release fixes a bug related to the decoding of invalid quoted-printable values.  Please see the [Changelog changelog] for details.

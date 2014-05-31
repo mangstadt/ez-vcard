@@ -1,10 +1,4 @@
-#summary Code samples (versions 0.9.0 and above).
-
-----
-*NOTE:*
-
-This page applies to the *latest version* of ez-vcard.  Please see [ExamplesOld this page] if you are running ez-vcard 0.8.5 or earlier.
-----
+#summary Code samples.
 
 <wiki:toc max_depth="2"/>
 

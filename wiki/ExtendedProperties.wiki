@@ -1,10 +1,4 @@
-#summary Describes how to work with extended properties (versions 0.9.0 and above).
-
-----
-*NOTE:*
-
-This page applies to the *latest version* of ez-vcard.  Please see [ExtendedPropertiesOld this page] if you are running ez-vcard 0.8.5 or earlier.
-----
+#summary Describes how to work with extended properties.
 
 <wiki:toc max_depth="3"/>
 

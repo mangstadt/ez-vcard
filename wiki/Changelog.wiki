@@ -1,17 +1,18 @@
-#summary Documents all the changes that were made to every version of the library
+#summary Documents the changes that were made in every stable release.
 
-= 0.9.4-SNAPSHOT =
-_under development_
+= 0.9.4 =
+_May 31, 2014_
 
  * Added a streaming API for xCards (`XCardReader`, `XCardWriter`).
  * Fixed a bug where `<unknown>` property values in xCard documents weren't being parsed correctly.
  * Fixed a bug that caused a NPE to be thrown when removing the LEVEL parameter from a EXPERTISE or INTEREST property.
  * Fixed a bug that prevented ORG properties with empty values from being written to an hCard (Issue 16).
+ * Fixed an hCard bug where a vCard with an embedded vCard would treat the embedded vCard's properties as its own.
+ * Renamed `HCardReader` to `HCardParser`.
  * Upgraded jsoup dependency from version 1.7.1 to 1.7.3.
  * Upgraded jackson dependency from version 2.1.3 to 2.3.3.
  * Improved the performance of plain-text vCard parsing by removing a regular expression.
  * Removed a reference to a jsoup class in "VCardPropertyScribe".  This allows users to create custom scribe classes without having to add the optional jsoup dependency to their project.
-
 
 = 0.9.3 =
 _April 1, 2014_
