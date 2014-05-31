@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 import com.fasterxml.jackson.core.JsonParseException;
 
 import ezvcard.io.html.HCardPage;
-import ezvcard.io.html.HCardReader;
+import ezvcard.io.html.HCardParser;
 import ezvcard.io.json.JCardParseException;
 import ezvcard.io.json.JCardReader;
 import ezvcard.io.json.JCardWriter;
@@ -93,7 +93,7 @@ import ezvcard.util.IOUtils;
  * </tr>
  * <tr>
  * <th>HTML</th>
- * <td>{@link HCardReader}</td>
+ * <td>{@link HCardParser}</td>
  * <td>{@link HCardPage}</td>
  * </tr>
  * <tr>
@@ -306,11 +306,11 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for more control over the parsing.
+	 * Use {@link HCardParser} for more control over the parsing.
 	 * </p>
 	 * @param html the HTML page
 	 * @return chainer object for completing the parse operation
-	 * @see HCardReader
+	 * @see HCardParser
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ParserChainHtmlString parseHtml(String html) {
@@ -322,11 +322,11 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for more control over the parsing.
+	 * Use {@link HCardParser} for more control over the parsing.
 	 * </p>
 	 * @param file the HTML file
 	 * @return chainer object for completing the parse operation
-	 * @see HCardReader
+	 * @see HCardParser
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ParserChainHtmlReader parseHtml(File file) {
@@ -338,11 +338,11 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for more control over the parsing.
+	 * Use {@link HCardParser} for more control over the parsing.
 	 * </p>
 	 * @param in the input stream to the HTML page
 	 * @return chainer object for completing the parse operation
-	 * @see HCardReader
+	 * @see HCardParser
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ParserChainHtmlReader parseHtml(InputStream in) {
@@ -354,11 +354,11 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for more control over the parsing.
+	 * Use {@link HCardParser} for more control over the parsing.
 	 * </p>
 	 * @param reader the reader to the HTML page
 	 * @return chainer object for completing the parse operation
-	 * @see HCardReader
+	 * @see HCardParser
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ParserChainHtmlReader parseHtml(Reader reader) {
@@ -370,11 +370,11 @@ public class Ezvcard {
 	 * Parses HTML-encoded vCards (hCard).
 	 * </p>
 	 * <p>
-	 * Use {@link HCardReader} for more control over the parsing.
+	 * Use {@link HCardParser} for more control over the parsing.
 	 * </p>
 	 * @param url the URL of the webpage
 	 * @return chainer object for completing the parse operation
-	 * @see HCardReader
+	 * @see HCardParser
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ParserChainHtmlReader parseHtml(URL url) {
@@ -1005,37 +1005,33 @@ public class Ezvcard {
 
 		@Override
 		public VCard first() throws IOException {
-			HCardReader parser = constructReader();
+			HCardParser parser = constructReader();
 
-			VCard vcard = parser.readNext();
+			VCard vcard = parser.parseFirst();
 			if (warnings != null) {
-				warnings.add(parser.getWarnings());
+				warnings.addAll(parser.getWarnings());
 			}
 			return vcard;
 		}
 
 		@Override
 		public List<VCard> all() throws IOException {
-			HCardReader parser = constructReader();
+			HCardParser parser = constructReader();
 
-			List<VCard> vcards = new ArrayList<VCard>();
-			VCard vcard;
-			while ((vcard = parser.readNext()) != null) {
-				if (warnings != null) {
-					warnings.add(parser.getWarnings());
-				}
-				vcards.add(vcard);
+			List<VCard> vcards = parser.parseAll();
+			if (warnings != null) {
+				warnings.addAll(parser.getWarnings());
 			}
 			return vcards;
 		}
 
-		private HCardReader constructReader() throws IOException {
-			HCardReader parser = _constructReader();
+		private HCardParser constructReader() throws IOException {
+			HCardParser parser = _constructReader();
 			parser.setScribeIndex(index);
 			return parser;
 		}
 
-		abstract HCardReader _constructReader() throws IOException;
+		abstract HCardParser _constructReader() throws IOException;
 	}
 
 	/**
@@ -1083,17 +1079,17 @@ public class Ezvcard {
 		}
 
 		@Override
-		HCardReader _constructReader() throws IOException {
+		HCardParser _constructReader() throws IOException {
 			if (reader != null) {
-				return new HCardReader(reader, pageUrl);
+				return new HCardParser(reader, pageUrl);
 			}
 
 			if (file != null) {
 				//Jsoup (presumably) closes the FileReader it creates
-				return new HCardReader(file, pageUrl);
+				return new HCardParser(file, pageUrl);
 			}
 
-			return new HCardReader(url);
+			return new HCardParser(url);
 		}
 	}
 
@@ -1124,8 +1120,8 @@ public class Ezvcard {
 		}
 
 		@Override
-		HCardReader _constructReader() {
-			return new HCardReader(html, pageUrl);
+		HCardParser _constructReader() {
+			return new HCardParser(html, pageUrl);
 		}
 
 		@Override
