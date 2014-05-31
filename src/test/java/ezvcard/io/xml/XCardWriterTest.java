@@ -3,7 +3,6 @@ package ezvcard.io.xml;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import org.custommonkey.xmlunit.XMLUnit;
@@ -578,11 +576,9 @@ public class XCardWriterTest {
 
 		String actual = sw.toString();
 
-		String charset = Charset.defaultCharset().name();
-
 		//@formatter:off
-		String expected =
-		"<?xml version=\"1.0\" encoding=\"" + charset + "\"?>" + NEWLINE +
+		String expectedRegex =
+		"<\\?xml version=\"1.0\" encoding=\".*?\"\\?>" + NEWLINE +
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" + NEWLINE +
 		"  <vcard>" + NEWLINE +
 		"    <fn>" + NEWLINE +
@@ -602,7 +598,7 @@ public class XCardWriterTest {
 		"</vcards>";
 		//@formatter:on
 
-		assertEquals(expected, actual);
+		assertTrue(actual.matches(expectedRegex));
 	}
 
 	@Test
