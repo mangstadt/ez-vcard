@@ -258,9 +258,6 @@ table.simpleTable td, table.simpleTable th {
  */
 .syntaxhighlighter {
   background-color: white !important;
-  
-  /* ADDED */
-  font-size: 0.9em !important;
   padding-left: 20px;
 }
 .syntaxhighlighter .line.alt1 {
@@ -372,7 +369,7 @@ body {
     background-color:#ffffff;
     color:#353833;
     font-family:Arial, Helvetica, sans-serif;
-    font-size:76%;
+    /*font-size:76%;*/ /* REMOVED */
     margin:0;
 }
 a:link, a:visited {
