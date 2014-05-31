@@ -11,7 +11,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -643,7 +642,6 @@ public class Ezvcard {
 
 	static abstract class ParserChainText<T> extends ParserChain<T> {
 		boolean caretDecoding = true;
-		Charset defaultQuotedPrintableCharset;
 		final boolean closeWhenDone;
 
 		private ParserChainText(boolean closeWhenDone) {
@@ -661,25 +659,6 @@ public class Ezvcard {
 		 */
 		public T caretDecoding(boolean enable) {
 			caretDecoding = enable;
-			return this_;
-		}
-
-		/**
-		 * <p>
-		 * Sets the character set to use when decoding quoted-printable values
-		 * if the property has no CHARSET parameter, or if the CHARSET parameter
-		 * is not a valid character set.
-		 * </p>
-		 * <p>
-		 * By default, the Reader's character encoding will be used. If the
-		 * Reader has no character encoding, then the system's default character
-		 * encoding will be used.
-		 * </p>
-		 * @param charset the character set
-		 * @return this
-		 */
-		public T defaultQuotedPrintableCharset(Charset charset) {
-			defaultQuotedPrintableCharset = charset;
 			return this_;
 		}
 
@@ -725,9 +704,6 @@ public class Ezvcard {
 			VCardReader parser = _constructReader();
 			parser.setScribeIndex(index);
 			parser.setCaretDecodingEnabled(caretDecoding);
-			if (defaultQuotedPrintableCharset != null) {
-				parser.setDefaultQuotedPrintableCharset(defaultQuotedPrintableCharset);
-			}
 			return parser;
 		}
 
