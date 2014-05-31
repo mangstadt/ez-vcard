@@ -2,7 +2,6 @@ package ezvcard.io.html;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileWriter;
@@ -233,8 +232,8 @@ public class HCardPageTest {
 		writer.close();
 
 		//parse template
-		HCardReader reader = new HCardReader(html);
-		VCard actual = reader.readNext();
+		HCardParser reader = new HCardParser(html);
+		VCard actual = reader.parseFirst();
 
 		assertEquals("Claus", actual.getSortString().getValue());
 
@@ -365,8 +364,6 @@ public class HCardPageTest {
 		}
 
 		assertEquals("ez-vcard " + Ezvcard.VERSION, actual.getProductId().getValue());
-
-		assertNull(reader.readNext());
 	}
 
 	private VCard createFullVCard() throws IOException {

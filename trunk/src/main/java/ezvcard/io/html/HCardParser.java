@@ -1,5 +1,7 @@
 package ezvcard.io.html;
 
+import static ezvcard.util.HtmlUtils.isChildOf;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +9,6 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -33,11 +34,9 @@ import ezvcard.property.Impp;
 import ezvcard.property.Label;
 import ezvcard.property.Nickname;
 import ezvcard.property.RawProperty;
-import ezvcard.property.Source;
 import ezvcard.property.Telephone;
 import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.HtmlUtils;
 import ezvcard.util.IOUtils;
 
 /*
@@ -90,14 +89,17 @@ import ezvcard.util.IOUtils;
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
-public class HCardReader {
-	private ScribeIndex index = new ScribeIndex();
-	private String pageUrl;
-	private final ParseWarnings warnings = new ParseWarnings();
-	private Elements vcardElements;
-	private Iterator<Element> it;
+public class HCardParser {
+	private final Document document;
+	private final String pageUrl;
+	private final Elements vcardElements;
+	private final List<ParseWarnings> warnings = new ArrayList<ParseWarnings>();
 	private final List<Label> labels = new ArrayList<Label>();
+
+	private ScribeIndex index = new ScribeIndex();
+
 	private VCard curVCard;
+	private final ParseWarnings curWarnings = new ParseWarnings();
 	private Elements embeddedVCards = new Elements();
 	private Nickname nickname;
 	private Categories categories;
@@ -108,98 +110,128 @@ public class HCardReader {
 	private final String telName = index.getPropertyScribe(Telephone.class).getPropertyName().toLowerCase();
 
 	/**
-	 * Creates a reader that parses hCards from a URL.
+	 * Creates an hCard document.
 	 * @param url the URL of the webpage
 	 * @throws IOException if there's a problem loading the webpage
 	 */
-	public HCardReader(URL url) throws IOException {
-		pageUrl = url.toString();
-		Document document = Jsoup.parse(url, 30000);
-		init(document, url.getRef());
+	public HCardParser(URL url) throws IOException {
+		this(Jsoup.parse(url, 30000), url.toString());
 	}
 
 	/**
-	 * Creates a reader that parses hCards from an input stream.
+	 * Creates an hCard document.
 	 * @param in the input stream to the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
-	public HCardReader(InputStream in) throws IOException {
+	public HCardParser(InputStream in) throws IOException {
 		this(in, null);
 	}
 
 	/**
-	 * Creates a reader that parses hCards from an input stream.
+	 * Creates an hCard document.
 	 * @param in the input stream to the HTML page
-	 * @param pageUrl the original URL of the HTML page
+	 * @param pageUrl the original URL of the HTML page (used to resolve
+	 * relative links)
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
-	public HCardReader(InputStream in, String pageUrl) throws IOException {
-		this.pageUrl = pageUrl;
-		Document document = (pageUrl == null) ? Jsoup.parse(in, null, "") : Jsoup.parse(in, null, pageUrl);
-		String anchor = getAnchor(pageUrl);
-		init(document, anchor);
+	public HCardParser(InputStream in, String pageUrl) throws IOException {
+		this((pageUrl == null) ? Jsoup.parse(in, null, "") : Jsoup.parse(in, null, pageUrl), pageUrl);
 	}
 
 	/**
-	 * Creates a reader that parses hCards from a file.
+	 * Creates an hCard document.
 	 * @param file the HTML file
 	 * @throws IOException if there's a problem reading the HTML file
 	 */
-	public HCardReader(File file) throws IOException {
+	public HCardParser(File file) throws IOException {
 		this(file, null);
 	}
 
 	/**
-	 * Creates a reader that parses hCards from a file.
+	 * Creates an hCard document.
 	 * @param file the HTML file
-	 * @param pageUrl the original URL of the HTML page
+	 * @param pageUrl the original URL of the HTML page (used to resolve
+	 * relative links)
 	 * @throws IOException if there's a problem reading the HTML file
 	 */
-	public HCardReader(File file, String pageUrl) throws IOException {
-		this.pageUrl = pageUrl;
-		Document document = (pageUrl == null) ? Jsoup.parse(file, null, "") : Jsoup.parse(file, null, pageUrl);
-		String anchor = getAnchor(pageUrl);
-		init(document, anchor);
+	public HCardParser(File file, String pageUrl) throws IOException {
+		this((pageUrl == null) ? Jsoup.parse(file, null, "") : Jsoup.parse(file, null, pageUrl), pageUrl);
 	}
 
 	/**
-	 * Creates a reader that parses hCards from a reader.
+	 * Creates an hCard document.
 	 * @param reader the input stream to the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
-	public HCardReader(Reader reader) throws IOException {
+	public HCardParser(Reader reader) throws IOException {
 		this(reader, null);
 	}
 
 	/**
-	 * Creates a reader that parses hCards from a reader.
+	 * Creates an hCard document.
 	 * @param reader the input stream to the HTML page
-	 * @param pageUrl the original URL of the HTML page
+	 * @param pageUrl the original URL of the HTML page (used to resolve
+	 * relative links)
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
-	public HCardReader(Reader reader, String pageUrl) throws IOException {
+	public HCardParser(Reader reader, String pageUrl) throws IOException {
 		this(IOUtils.toString(reader), pageUrl);
 	}
 
 	/**
-	 * Creates a reader that parses hCards from a string.
+	 * Creates an hCard document.
 	 * @param html the HTML page
 	 */
-	public HCardReader(String html) {
+	public HCardParser(String html) {
 		this(html, null);
 	}
 
 	/**
-	 * Creates a reader that parses hCards from a string.
+	 * Creates an hCard document.
 	 * @param html the HTML page
-	 * @param pageUrl the original URL of the HTML page
+	 * @param pageUrl the original URL of the HTML page (used to resolve
+	 * relative links)
 	 */
-	public HCardReader(String html, String pageUrl) {
+	public HCardParser(String html, String pageUrl) {
+		this((pageUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, pageUrl), pageUrl);
+	}
+
+	/**
+	 * Creates an hCard document.
+	 * @param document the HTML page
+	 */
+	public HCardParser(Document document) {
+		this(document, null);
+	}
+
+	/**
+	 * Creates an hCard document.
+	 * @param document the HTML page
+	 * @param pageUrl the original URL of the HTML page (used to resolve
+	 * relative links)
+	 */
+	public HCardParser(Document document, String pageUrl) {
+		this.document = document;
 		this.pageUrl = pageUrl;
 
-		Document document = (pageUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, pageUrl);
-		String anchor = getAnchor(pageUrl);
-		init(document, anchor);
+		String anchor = null;
+		if (pageUrl != null) {
+			try {
+				URL url = new URL(pageUrl);
+				anchor = url.getRef();
+			} catch (MalformedURLException e) {
+				anchor = null;
+			}
+		}
+
+		Element searchUnder = null;
+		if (anchor != null) {
+			searchUnder = document.getElementById(anchor);
+		}
+		if (searchUnder == null) {
+			searchUnder = document;
+		}
+		vcardElements = searchUnder.getElementsByClass("vcard");
 	}
 
 	/**
@@ -207,42 +239,74 @@ public class HCardReader {
 	 * @param embeddedVCard the HTML element of the embedded vCard
 	 * @param pageUrl the original URL of the HTML page
 	 */
-	private HCardReader(Element embeddedVCard, String pageUrl) {
+	private HCardParser(Element embeddedVCard, String pageUrl) {
+		this.document = embeddedVCard.ownerDocument();
 		this.pageUrl = pageUrl;
-		vcardElements = new Elements(embeddedVCard);
-		it = vcardElements.iterator();
+		this.vcardElements = new Elements(embeddedVCard);
 	}
 
-	private void init(Document document, String anchor) {
-		Element searchIn = null;
-		if (anchor != null) {
-			searchIn = document.getElementById(anchor);
-		}
-		if (searchIn == null) {
-			searchIn = document;
-		}
+	public VCard parseFirst() {
+		warnings.clear();
 
-		vcardElements = searchIn.getElementsByClass("vcard");
-		it = vcardElements.iterator();
-	}
-
-	/**
-	 * Gets the anchor part of a URL.
-	 * @param urlStr the URL
-	 * @return the anchor (e.g. "foo" from the URL
-	 * "http://example.com/index.php#foo")
-	 */
-	private static String getAnchor(String urlStr) {
-		if (urlStr == null) {
+		if (vcardElements.isEmpty()) {
 			return null;
 		}
 
-		try {
-			URL url = new URL(urlStr);
-			return url.getRef();
-		} catch (MalformedURLException e) {
-			return null;
+		parseVCardElement(vcardElements.first());
+		return curVCard;
+	}
+
+	public List<VCard> parseAll() {
+		warnings.clear();
+
+		List<VCard> vcards = new ArrayList<VCard>();
+
+		for (Element vcardElement : vcardElements) {
+			//if this element is a child of another "vcard" element, then ignore it because it's an embedded vcard
+			if (isChildOf(vcardElement, vcardElements)) {
+				continue;
+			}
+
+			parseVCardElement(vcardElement);
+			vcards.add(curVCard);
 		}
+
+		return vcards;
+	}
+
+	private void parseVCardElement(Element vcardElement) {
+		curWarnings.clear();
+		labels.clear();
+		nickname = null;
+		categories = null;
+
+		curVCard = new VCard();
+		curVCard.setVersion(VCardVersion.V3_0);
+		if (pageUrl != null) {
+			curVCard.addSource(pageUrl);
+		}
+
+		//visit all descendant nodes, depth-first
+		for (Element child : vcardElement.children()) {
+			visit(child);
+		}
+
+		//assign labels to their addresses
+		for (Label label : labels) {
+			boolean orphaned = true;
+			for (Address adr : curVCard.getAddresses()) {
+				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
+					adr.setLabel(label.getValue());
+					orphaned = false;
+					break;
+				}
+			}
+			if (orphaned) {
+				curVCard.addOrphanedLabel(label);
+			}
+		}
+
+		warnings.add(curWarnings);
 	}
 
 	/**
@@ -275,67 +339,30 @@ public class HCardReader {
 	}
 
 	/**
-	 * Gets the warnings from the last vCard that was unmarshalled. This list is
-	 * reset every time a new vCard is read.
-	 * @return the warnings or empty list if there were no warnings
+	 * Gets the warnings from the last parse operation.
+	 * @return the warnings (it is a "list of lists"--each parsed {@link VCard}
+	 * object has its own warnings list)
+	 * @see #parseAll
+	 * @see #parseFirst
 	 */
-	public List<String> getWarnings() {
-		return warnings.copy();
+	public List<List<String>> getWarnings() {
+		List<List<String>> warnings = new ArrayList<List<String>>(this.warnings.size());
+		for (ParseWarnings parseWarnings : this.warnings) {
+			warnings.add(parseWarnings.copy());
+		}
+		return warnings;
 	}
 
 	/**
-	 * Reads the next vCard from the data stream.
-	 * @return the next vCard or null if there are no more
+	 * Gets the HTML DOM.
+	 * @return the HTML DOM
 	 */
-	public VCard readNext() {
-		Element vcardElement = null;
-		while (it.hasNext() && vcardElement == null) {
-			vcardElement = it.next();
-
-			//if this element is a child of another "vcard" element, then ignore it because it's an embedded vcard
-			if (HtmlUtils.isChildOf(vcardElement, vcardElements)) {
-				vcardElement = null;
-			}
-		}
-		if (vcardElement == null) {
-			return null;
-		}
-
-		warnings.clear();
-		labels.clear();
-		nickname = null;
-		categories = null;
-
-		curVCard = new VCard();
-		curVCard.setVersion(VCardVersion.V3_0);
-		if (pageUrl != null) {
-			curVCard.addSource(new Source(pageUrl));
-		}
-
-		//visit all descendant nodes, depth-first
-		for (Element child : vcardElement.children()) {
-			visit(child);
-		}
-
-		//assign labels to their addresses
-		for (Label label : labels) {
-			boolean orphaned = true;
-			for (Address adr : curVCard.getAddresses()) {
-				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
-					adr.setLabel(label.getValue());
-					orphaned = false;
-					break;
-				}
-			}
-			if (orphaned) {
-				curVCard.addOrphanedLabel(label);
-			}
-		}
-
-		return curVCard;
+	public Document getDocument() {
+		return document;
 	}
 
 	private void visit(Element element) {
+		boolean visitChildren = true;
 		Set<String> classNames = element.classNames();
 		for (String className : classNames) {
 			className = className.toLowerCase();
@@ -355,7 +382,7 @@ public class HCardReader {
 							Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
 							curVCard.addProperty(result.getProperty());
 							for (String warning : result.getWarnings()) {
-								warnings.add(null, scribe.getPropertyName(), warning);
+								curWarnings.add(null, scribe.getPropertyName(), warning);
 							}
 							continue;
 						} catch (SkipMeException e) {
@@ -386,7 +413,7 @@ public class HCardReader {
 				Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
 
 				for (String warning : result.getWarnings()) {
-					warnings.add(null, className, warning);
+					curWarnings.add(null, className, warning);
 				}
 
 				property = result.getProperty();
@@ -421,14 +448,14 @@ public class HCardReader {
 					continue;
 				}
 			} catch (SkipMeException e) {
-				warnings.add(null, className, 22, e.getMessage());
+				curWarnings.add(null, className, 22, e.getMessage());
 				continue;
 			} catch (CannotParseException e) {
 				String html = element.outerHtml();
-				warnings.add(null, className, 32, html, e.getMessage());
+				curWarnings.add(null, className, 32, html, e.getMessage());
 				property = new RawProperty(className, html);
 			} catch (EmbeddedVCardException e) {
-				if (HtmlUtils.isChildOf(element, embeddedVCards)) {
+				if (isChildOf(element, embeddedVCards)) {
 					//prevents multiple-nested embedded elements from overwriting each other
 					continue;
 				}
@@ -436,22 +463,25 @@ public class HCardReader {
 				property = e.getProperty();
 
 				embeddedVCards.add(element);
-				HCardReader embeddedReader = new HCardReader(element, pageUrl);
+				HCardParser embeddedReader = new HCardParser(element, pageUrl);
 				try {
-					VCard embeddedVCard = embeddedReader.readNext();
+					VCard embeddedVCard = embeddedReader.parseFirst();
 					e.injectVCard(embeddedVCard);
 				} finally {
-					for (String warning : embeddedReader.getWarnings()) {
-						warnings.add(null, className, 26, warning);
+					for (String warning : embeddedReader.getWarnings().get(0)) {
+						curWarnings.add(null, className, 26, warning);
 					}
 				}
+				visitChildren = false;
 			}
 
 			curVCard.addProperty(property);
 		}
 
-		for (Element child : element.children()) {
-			visit(child);
+		if (visitChildren) {
+			for (Element child : element.children()) {
+				visit(child);
+			}
 		}
 	}
 }
