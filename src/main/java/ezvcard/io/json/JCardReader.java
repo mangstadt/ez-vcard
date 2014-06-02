@@ -83,7 +83,7 @@ public class JCardReader implements Closeable {
 	private final JCardRawReader reader;
 
 	/**
-	 * Creates a reader that parses jCards from a JSON string.
+	 * Creates a jCard reader.
 	 * @param json the JSON string
 	 */
 	public JCardReader(String json) {
@@ -91,7 +91,7 @@ public class JCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a reader that parses jCards from an input stream.
+	 * Creates a jCard reader.
 	 * @param in the input stream to read the vCards from
 	 */
 	public JCardReader(InputStream in) {
@@ -99,7 +99,7 @@ public class JCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a reader that parses jCards from a file.
+	 * Creates a jCard reader.
 	 * @param file the file to read the vCards from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
@@ -108,7 +108,7 @@ public class JCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a reader that parses jCards from a reader.
+	 * Creates a jCard reader.
 	 * @param reader the reader to read the vCards from
 	 */
 	public JCardReader(Reader reader) {

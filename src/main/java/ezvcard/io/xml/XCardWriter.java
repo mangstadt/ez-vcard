@@ -129,7 +129,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	private boolean textNodeJustPrinted = false, started = false;
 
 	/**
-	 * Creates an xCard writer (UTF-8 encoding will be used).
+	 * Creates an xCard writer.
 	 * @param out the output stream to write the xCards to
 	 */
 	public XCardWriter(OutputStream out) {
@@ -137,7 +137,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates an xCard writer (UTF-8 encoding will be used).
+	 * Creates an xCard writer.
 	 * @param out the output stream to write the xCards to
 	 * @param indent the indentation string to use for pretty printing (e.g.
 	 * "\t") or null not to pretty print
@@ -147,7 +147,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates an xCard writer (UTF-8 encoding will be used).
+	 * Creates an xCard writer.
 	 * @param file the file to write the xCards to
 	 * @throws IOException if there's a problem opening the file
 	 */
@@ -156,7 +156,7 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	}
 
 	/**
-	 * Creates an xCard writer (UTF-8 encoding will be used).
+	 * Creates an xCard writer.
 	 * @param file the file to write the xCards to
 	 * @param indent the indentation string to use for pretty printing (e.g.
 	 * "\t") or null not to pretty print
@@ -232,6 +232,8 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 	 * Writes a vCard.
 	 * @param vcard the vcard to write
 	 * @throws SAXException if there's a problem writing the vCard
+	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
+	 * custom property class (see: {@link #registerScribe registerScribe})
 	 */
 	public void write(VCard vcard) throws SAXException {
 		if (!started) {
