@@ -120,10 +120,10 @@ public class XCardReader implements Closeable {
 
 	/**
 	 * Creates an xCard reader.
-	 * @param str the string to read the xCards from
+	 * @param xml the XML to read the xCards from
 	 */
-	public XCardReader(String str) {
-		this(new StringReader(str));
+	public XCardReader(String xml) {
+		this(new StringReader(xml));
 	}
 
 	/**

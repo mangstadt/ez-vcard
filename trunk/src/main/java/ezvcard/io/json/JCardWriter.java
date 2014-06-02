@@ -64,7 +64,7 @@ import ezvcard.property.VCardProperty;
  * JCardWriter jcardWriter = new JCardWriter(file);
  * jcardWriter.write(vcard1);
  * jcardWriter.write(vcard2);
- * jcardWriter.close(); //"close()" must be called in order to terminate the JSON object
+ * jcardWriter.close();
  * </pre>
  * 
  * </p>
@@ -76,8 +76,7 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 	private final VCardVersion targetVersion = VCardVersion.V4_0;
 
 	/**
-	 * Creates a writer that writes jCards to an output stream (UTF-8 encoding
-	 * will be used).
+	 * Creates a jCard writer.
 	 * @param out the output stream to write the vCard to
 	 */
 	public JCardWriter(OutputStream out) {
@@ -85,8 +84,7 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 	}
 
 	/**
-	 * Creates a writer that writes jCards to an output stream (UTF-8 encoding
-	 * will be used).
+	 * Creates a jCard writer.
 	 * @param out the output stream to write the vCard to
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
@@ -96,8 +94,7 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 	}
 
 	/**
-	 * Creates a writer that writes jCards to a file (UTF-8 encoding will be
-	 * used).
+	 * Creates a jCard writer.
 	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem opening the file
 	 */
@@ -106,8 +103,7 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 	}
 
 	/**
-	 * Creates a writer that writes jCards to a file (UTF-8 encoding will be
-	 * used).
+	 * Creates a jCard writer.
 	 * @param file the file to write the vCard to
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
@@ -118,7 +114,7 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 	}
 
 	/**
-	 * Creates a writer that writes jCards to a writer.
+	 * Creates a jCard writer.
 	 * @param writer the writer to write the vCard to
 	 */
 	public JCardWriter(Writer writer) {
@@ -126,7 +122,7 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 	}
 
 	/**
-	 * Creates a writer that writes jCards to a writer.
+	 * Creates a jCard writer.
 	 * @param writer the writer to write the vCard to
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
@@ -140,7 +136,7 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 	 * @param vcard the vCard to write
 	 * @throws IOException if there's a problem writing to the output stream
 	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
-	 * custom property class (see: {@link #registerScribe})
+	 * custom property class (see: {@link #registerScribe registerScribe})
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void write(VCard vcard) throws IOException {

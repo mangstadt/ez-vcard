@@ -76,12 +76,9 @@ import ezvcard.util.IOUtils;
  * <b>Example:</b>
  * 
  * <pre class="brush:java">
- * URL url = new URL("http://example.com");
- * HCardReader hcardReader = new HCardReader(url);
- * VCard vcard;
- * while ((vcard = hcardReader.readNext()) != null){
- *   ...
- * }
+ * URL url = new URL(&quot;http://example.com&quot;);
+ * HCardParser parser = new HCardParser(url);
+ * List&lt;VCard&gt; vcards = parser.parseAll();
  * </pre>
  * 
  * </p>
@@ -245,6 +242,10 @@ public class HCardParser {
 		this.vcardElements = new Elements(embeddedVCard);
 	}
 
+	/**
+	 * Parses the first vCard from the HTML page.
+	 * @return the first vCard or null if there are none
+	 */
 	public VCard parseFirst() {
 		warnings.clear();
 
@@ -256,6 +257,10 @@ public class HCardParser {
 		return curVCard;
 	}
 
+	/**
+	 * Parses all of the vCards from the HTML page.
+	 * @return the parsed vCards
+	 */
 	public List<VCard> parseAll() {
 		warnings.clear();
 

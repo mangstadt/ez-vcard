@@ -91,7 +91,7 @@ public class VCardReader implements Closeable {
 	private final VCardRawReader reader;
 
 	/**
-	 * Creates a reader that parses vCards from a string.
+	 * Creates a vCard reader.
 	 * @param str the string to read the vCards from
 	 */
 	public VCardReader(String str) {
@@ -99,7 +99,7 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a reader that parses vCards from an input stream.
+	 * Creates a vCard reader.
 	 * @param in the input stream to read the vCards from
 	 */
 	public VCardReader(InputStream in) {
@@ -107,7 +107,7 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a reader that parses vCards from a file.
+	 * Creates a vCard reader.
 	 * @param file the file to read the vCards from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
@@ -116,7 +116,7 @@ public class VCardReader implements Closeable {
 	}
 
 	/**
-	 * Creates a reader that parses vCards from a reader.
+	 * Creates a vCard reader.
 	 * @param reader the reader to read the vCards from
 	 */
 	public VCardReader(Reader reader) {
