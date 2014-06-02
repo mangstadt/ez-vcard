@@ -48,9 +48,9 @@ public class SkipMeException extends RuntimeException {
 
 	/**
 	 * Creates a skip-me exception.
-	 * @param msg the reason why this property cannot be marshalled/unmarshalled
+	 * @param reason the reason why this property should be skipped
 	 */
-	public SkipMeException(String msg) {
-		super(msg);
+	public SkipMeException(String reason) {
+		super(reason);
 	}
 }

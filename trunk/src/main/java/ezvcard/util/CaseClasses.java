@@ -44,8 +44,8 @@ import java.util.Collections;
  */
 public abstract class CaseClasses<T, V> {
 	protected final Class<T> clazz;
-	protected volatile Collection<T> preDefined = null;
-	protected Collection<T> runtimeDefined = null;
+	private volatile Collection<T> preDefined = null;
+	private Collection<T> runtimeDefined = null;
 
 	/**
 	 * Creates a new case class collection.
@@ -64,7 +64,7 @@ public abstract class CaseClasses<T, V> {
 
 	/**
 	 * Determines if a value is associated with a case object.
-	 * @param object the object
+	 * @param object the case object
 	 * @param value the value
 	 * @return true if it matches, false if not
 	 */
@@ -72,7 +72,7 @@ public abstract class CaseClasses<T, V> {
 
 	/**
 	 * Searches for a case object by value, only looking at the case class'
-	 * static constants (does not include runtime-defined objects).
+	 * static constants (i.e. does not search over runtime-defined objects).
 	 * @param value the value
 	 * @return the object or null if one wasn't found
 	 */
