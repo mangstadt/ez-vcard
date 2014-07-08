@@ -24,19 +24,12 @@ import ezvcard.parameter.SoundType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
 import ezvcard.property.Birthday;
-import ezvcard.property.Categories;
-import ezvcard.property.Classification;
 import ezvcard.property.Email;
-import ezvcard.property.FormattedName;
-import ezvcard.property.Geo;
 import ezvcard.property.Impp;
 import ezvcard.property.Logo;
-import ezvcard.property.Mailer;
-import ezvcard.property.Nickname;
 import ezvcard.property.Note;
 import ezvcard.property.Organization;
 import ezvcard.property.Photo;
-import ezvcard.property.Revision;
 import ezvcard.property.Role;
 import ezvcard.property.SortString;
 import ezvcard.property.Sound;
@@ -380,29 +373,22 @@ public class HCardPageTest {
 		n.setSortAs("Claus");
 		vcard.setStructuredName(n);
 
-		vcard.setClassification(new Classification("public"));
+		vcard.setClassification("public");
 
-		vcard.setMailer(new Mailer("Thunderbird"));
+		vcard.setMailer("Thunderbird");
 
-		vcard.setFormattedName(new FormattedName("Santa Claus"));
+		vcard.setFormattedName("Santa Claus");
 
-		Nickname nickname = new Nickname();
-		nickname.addValue("Kris Kringle");
-		vcard.setNickname(nickname);
+		vcard.setNickname("Kris Kringle");
 
-		vcard.addTitle(new Title("Manager"));
+		vcard.addTitle("Manager");
 
-		vcard.addRole(new Role("Executive"));
-		vcard.addRole(new Role("Team Builder"));
+		vcard.addRole("Executive");
+		vcard.addRole("Team Builder");
 
-		Email email = new Email("johndoe@hotmail.com");
-		email.addType(EmailType.HOME);
-		email.addType(EmailType.PREF);
-		vcard.addEmail(email);
+		vcard.addEmail("johndoe@hotmail.com", EmailType.HOME, EmailType.WORK);
 
-		email = new Email("doe.john@company.com");
-		email.addType(EmailType.WORK);
-		vcard.addEmail(email);
+		vcard.addEmail("doe.john@company.com", EmailType.WORK);
 
 		Telephone tel = new Telephone(new TelUri.Builder("+1-555-222-3333").extension("101").build());
 		vcard.addTelephoneNumber(tel);
@@ -411,11 +397,7 @@ public class HCardPageTest {
 		tel.addType(TelephoneType.WORK);
 		vcard.addTelephoneNumber(tel);
 
-		tel = new Telephone("(555) 111-2222");
-		tel.addType(TelephoneType.HOME);
-		tel.addType(TelephoneType.VOICE);
-		tel.addType(TelephoneType.PREF);
-		vcard.addTelephoneNumber(tel);
+		vcard.addTelephoneNumber("(555) 111-2222", TelephoneType.HOME, TelephoneType.VOICE, TelephoneType.PREF);
 
 		Address adr = new Address();
 		adr.setStreetAddress("123 Main St");
@@ -439,10 +421,7 @@ public class HCardPageTest {
 		adr.addType(AddressType.WORK);
 		vcard.addAddress(adr);
 
-		Organization org = new Organization();
-		org.addValue("Google");
-		org.addValue("GMail");
-		vcard.setOrganization(org);
+		vcard.setOrganization("Google", "GMail");
 
 		Calendar c = Calendar.getInstance();
 		c.clear();
@@ -452,19 +431,16 @@ public class HCardPageTest {
 		Birthday bday = new Birthday(c.getTime(), false);
 		vcard.setBirthday(bday);
 
-		vcard.addUrl(new Url("http://company.com"));
+		vcard.addUrl("http://company.com");
 
-		Categories categories = new Categories();
-		categories.addValue("business owner");
-		categories.addValue("jolly");
-		vcard.setCategories(categories);
+		vcard.setCategories("business owner", "jolly");
 
 		vcard.addImpp(Impp.aim("myhandle"));
 		vcard.addImpp(Impp.yahoo("myhandle@yahoo.com"));
 
-		vcard.addNote(new Note("I am proficient in Tiger-Crane Style,\nand I am more than proficient in the exquisite art of the Samurai sword."));
+		vcard.addNote("I am proficient in Tiger-Crane Style,\nand I am more than proficient in the exquisite art of the Samurai sword.");
 
-		vcard.setGeo(new Geo(123.456, -98.123));
+		vcard.setGeo(123.456, -98.123);
 
 		vcard.setTimezone(new Timezone(-6, 0, "America/Chicago"));
 
@@ -486,7 +462,7 @@ public class HCardPageTest {
 		c.set(Calendar.HOUR_OF_DAY, 13);
 		c.set(Calendar.MINUTE, 22);
 		c.set(Calendar.SECOND, 44);
-		vcard.setRevision(new Revision(c.getTime()));
+		vcard.setRevision(c.getTime());
 
 		return vcard;
 	}
