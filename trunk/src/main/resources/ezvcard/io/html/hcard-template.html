@@ -438,7 +438,7 @@
 			<span class="l">Notes:</span>
 			<#list v.notes as note>
 				<div class="note" style="font-family:monospace">
-					${note.value?html?replace("\n", "<br />")}
+					${note.value?html?replace("\r\n", "<br />")?replace("\n", "<br />")?replace("\r", "<br />")}
 				</div>
 				<br />
 			</#list>

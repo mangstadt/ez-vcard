@@ -1,5 +1,6 @@
 package ezvcard.io.html;
 
+import static ezvcard.util.StringUtils.NEWLINE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -209,6 +210,20 @@ public class HCardPageTest {
 			assertEquals(1, document.select(".vcard .org .organization-name").size());
 			assertEquals(1, document.select(".vcard .org .organization-unit").size());
 		}
+	}
+
+	@Test
+	public void note() throws Exception {
+		VCard vcard = new VCard();
+		vcard.addNote("one\rtwo\nthree\r\nfour");
+
+		HCardPage template = new HCardPage();
+		template.add(vcard);
+		String html = template.write();
+
+		HCardParser reader = new HCardParser(html);
+		vcard = reader.parseFirst();
+		assertEquals("one" + NEWLINE + "two" + NEWLINE + "three" + NEWLINE + "four", vcard.getNotes().get(0).getValue());
 	}
 
 	@Test
@@ -438,7 +453,7 @@ public class HCardPageTest {
 		vcard.addImpp(Impp.aim("myhandle"));
 		vcard.addImpp(Impp.yahoo("myhandle@yahoo.com"));
 
-		vcard.addNote("I am proficient in Tiger-Crane Style,\nand I am more than proficient in the exquisite art of the Samurai sword.");
+		vcard.addNote("I am proficient in Tiger-Crane Style," + NEWLINE + "and I am more than proficient in the exquisite art of the Samurai sword.");
 
 		vcard.setGeo(123.456, -98.123);
 
