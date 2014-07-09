@@ -5,7 +5,6 @@ import static ezvcard.io.xml.XCardQNames.PARAMETERS;
 import static ezvcard.io.xml.XCardQNames.VCARD;
 import static ezvcard.io.xml.XCardQNames.VCARDS;
 import static ezvcard.util.IOUtils.utf8Writer;
-import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.io.Closeable;
 import java.io.File;
@@ -428,7 +427,8 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 			return;
 		}
 
-		StringBuilder sb = new StringBuilder(NEWLINE);
+		//"\n" is hard-coded here because if the Windows "\r\n" is used, it will encode the "\r" character for XML ("&#13;")
+		StringBuilder sb = new StringBuilder("\n");
 		for (int i = 0; i < level; i++) {
 			sb.append(indent);
 		}
