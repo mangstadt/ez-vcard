@@ -26,7 +26,7 @@
 				height: 100%;
 				width: 100%;
 				cursor: pointer;
-				background-image: url('${dataUri.generate(translucentBg.contentType.mediaType, translucentBg.data)}');
+				background-image: url('${utils.base64(translucentBg.contentType.mediaType, translucentBg.data)}');
 			}
 		</style>
 		
@@ -111,7 +111,7 @@
 						<#if photo.url??>
 							<#assign imgSrc=photo.url>
 						<#elseif photo.data??>
-							<#assign imgSrc=dataUri.generate(photo.contentType.mediaType, photo.data)>
+							<#assign imgSrc=utils.base64(photo.contentType.mediaType, photo.data)>
 						</#if>
 						<#assign imgClass="photo">
 					<#elseif v.logos?has_content>
@@ -119,11 +119,11 @@
 						<#if logo.url??>
 							<#assign imgSrc=logo.url>
 						<#elseif logo.data??>
-							<#assign imgSrc=dataUri.generate(logo.contentType.mediaType, logo.data)>
+							<#assign imgSrc=utils.base64(logo.contentType.mediaType, logo.data)>
 						</#if>
 						<#assign imgClass="logo">
 					<#else>
-						<#assign imgSrc=dataUri.generate(noProfile.contentType.mediaType, noProfile.data)>
+						<#assign imgSrc=utils.base64(noProfile.contentType.mediaType, noProfile.data)>
 						<#assign makeLink=false>
 					</#if>
 					<#if makeLink><a href="#" onclick="showImage(this); return false;"></#if>
@@ -170,7 +170,7 @@
 				<#if sound.url??>
 					<#assign sourceSrc=sound.url>
 				<#else>
-					<#assign sourceSrc=dataUri.generate(sound.contentType.mediaType, sound.data)>
+					<#assign sourceSrc=utils.base64(sound.contentType.mediaType, sound.data)>
 				</#if>
 				<audio controls="controls">
 					<source id="audioClip" class="sound" src="${sourceSrc}" type="${sound.contentType.mediaType}" />
@@ -209,7 +209,7 @@
 						<#list v.addresses as adr>
 							<div class="adr">
 								<#if adr.label??>
-									<span class="label"><span class="value" style="display:none">${adr.label?html?replace("\n", "<br />")}</span>
+									<span class="label"><span class="value" style="display:none">${utils.lineBreaks(adr.label?html)}</span>
 								</#if>
 
 								<#if adr.types?has_content>
@@ -228,10 +228,10 @@
 									P.O. Box <span class="post-office-box">${adr.poBox}</span><br />
 								</#if>
 								<#if adr.streetAddress??>
-									<span class="street-address">${adr.streetAddress?html?replace("\n", "<br />")}</span><br />
+									<span class="street-address">${utils.lineBreaks(adr.streetAddress?html)}</span><br />
 								</#if>
 								<#if adr.extendedAddress??>
-									<span class="extended-address">${adr.extendedAddress?html?replace("\n", "<br />")}</span><br />
+									<span class="extended-address">${utils.lineBreaks(adr.extendedAddress?html)}</span><br />
 								</#if>
 								<#if adr.locality??>
 									<span class="locality">${adr.locality}</span><#if adr.region??>, </#if>
@@ -438,7 +438,7 @@
 			<span class="l">Notes:</span>
 			<#list v.notes as note>
 				<div class="note" style="font-family:monospace">
-					${note.value?html?replace("\r\n", "<br />")?replace("\n", "<br />")?replace("\r", "<br />")}
+					${utils.lineBreaks(note.value?html)}
 				</div>
 				<br />
 			</#list>

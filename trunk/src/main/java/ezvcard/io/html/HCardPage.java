@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -148,7 +149,7 @@ public class HCardPage {
 	public void write(Writer writer) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("vcards", vcards);
-		map.put("dataUri", new DataUriGenerator());
+		map.put("utils", new TemplateUtils());
 		map.put("translucentBg", readImage("translucent-bg.png", ImageType.PNG));
 		map.put("noProfile", readImage("no-profile.png", ImageType.PNG));
 		map.put("ezVCardVersion", Ezvcard.VERSION);
@@ -175,11 +176,17 @@ public class HCardPage {
 	}
 
 	/**
-	 * Generates data URIs for the freemarker template.
+	 * Utility functions for the freemarker template.
 	 */
-	public static class DataUriGenerator {
-		public String generate(String contentType, byte[] data) {
+	public static class TemplateUtils {
+		private final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
+
+		public String base64(String contentType, byte[] data) {
 			return new DataUri(contentType, data).toString();
+		}
+
+		public String lineBreaks(String value) {
+			return newlineRegex.matcher(value).replaceAll("<br />");
 		}
 	}
 }
