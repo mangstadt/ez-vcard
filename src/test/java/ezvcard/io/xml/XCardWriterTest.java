@@ -1,6 +1,5 @@
 package ezvcard.io.xml;
 
-import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertFalse;
@@ -576,25 +575,26 @@ public class XCardWriterTest {
 
 		String actual = sw.toString();
 
+		String nl = "\n";
 		//@formatter:off
 		String expectedRegex =
-		"<\\?xml version=\"1.0\" encoding=\".*?\"\\?>" + NEWLINE +
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" + NEWLINE +
-		"  <vcard>" + NEWLINE +
-		"    <fn>" + NEWLINE +
-		"      <parameters>" + NEWLINE +
-		"        <x-foo>" + NEWLINE +
-		"          <unknown>bar</unknown>" + NEWLINE +
-		"        </x-foo>" + NEWLINE +
-		"      </parameters>" + NEWLINE +
-		"      <text>John Doe</text>" + NEWLINE +
-		"    </fn>" + NEWLINE +
-		"    <group name=\"group\">" + NEWLINE +
-		"      <note>" + NEWLINE +
-		"        <text>note</text>" + NEWLINE +
-		"      </note>" + NEWLINE +
-		"    </group>" + NEWLINE +
-		"  </vcard>" + NEWLINE +
+		"<\\?xml version=\"1.0\" encoding=\"(utf|UTF)-8\"\\?>" + nl +
+		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" + nl +
+		"  <vcard>" + nl +
+		"    <fn>" + nl +
+		"      <parameters>" + nl +
+		"        <x-foo>" + nl +
+		"          <unknown>bar</unknown>" + nl +
+		"        </x-foo>" + nl +
+		"      </parameters>" + nl +
+		"      <text>John Doe</text>" + nl +
+		"    </fn>" + nl +
+		"    <group name=\"group\">" + nl +
+		"      <note>" + nl +
+		"        <text>note</text>" + nl +
+		"      </note>" + nl +
+		"    </group>" + nl +
+		"  </vcard>" + nl +
 		"</vcards>";
 		//@formatter:on
 
