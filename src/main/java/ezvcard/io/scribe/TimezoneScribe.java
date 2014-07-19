@@ -43,6 +43,56 @@ import ezvcard.util.UtcOffset;
  * Marshals {@link Timezone} properties.
  * @author Michael Angstadt
  */
+//@formatter:off
+/* 
+ * Parsing===================
+ * 
+ * vCard 2.1:
+ * Parse as UTC offset.  If invalid, throw CannotParseException.
+ * 
+ * vCard 3.0, hCard:
+ * VALUE=text:			Treat as text
+ * No VALUE param:		Parse as UTC offset.  If invalid, add warning and treat as text.
+ * 
+ * vCard 4.0, jCard:
+ * VALUE=text:			Treat as text
+ * VALUE=utc-offset:	Parse as UTC offset.  If invalid, throw CannotParseException
+ * VALUE=uri:			Not going to support this, as there is no description of what a timezone URI looks like
+ * No VALUE param:		Parse as UTC offset.  If invalid, treat as text
+ * 
+ * xCard:
+ * text	| utc-offset	| result
+ * no	| no			| throw CannotParseException
+ * yes	| no			| OK
+ * no	| yes			| OK
+ * no	| invalid		| throw CannotParseException
+ * yes	| yes			| Parse text
+ * yes	| invalid		| Parse text
+ * 
+ * Writing===================
+ * 
+ * vCard 2.1:
+ * text	| utc-offset	| result
+ * no	| no			| empty string (validation warning)
+ * no	| yes			| Write UTC offset
+ * yes	| no			| empty string (validation warning)
+ * yes	| yes			| Write UTC offset
+ * 
+ * vCard 3.0:
+ * text	| utc-offset	| result
+ * no	| no			| empty string (validation warning)
+ * no	| yes			| Write UTC offset
+ * yes	| no			| Write text, add "VALUE=text" parameter
+ * yes	| yes			| Write UTC offset
+ * 
+ * vCard 4.0, xCard, jCard:
+ * text	| utc-offset	| result
+ * no	| no			| empty string (validation warning)
+ * no	| yes			| Write UTC offset, add "VALUE=utc-offset" parameter
+ * yes	| no			| Write text
+ * yes	| yes			| Write text
+ */
+//@formatter:on
 public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 	public TimezoneScribe() {
 		super(Timezone.class, "TZ");
