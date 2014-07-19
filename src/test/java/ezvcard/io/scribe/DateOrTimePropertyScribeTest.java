@@ -1,9 +1,9 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.ClassRule;
@@ -55,27 +55,11 @@ public class DateOrTimePropertyScribeTest {
 	private final DateOrTimeMarshallerImpl scribe = new DateOrTimeMarshallerImpl();
 	private final Sensei<DateOrTimeTypeImpl> sensei = new Sensei<DateOrTimeTypeImpl>(scribe);
 
-	private final Date date;
-	{
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		date = c.getTime();
-	}
+	private final Date date = date("1980-06-05");
 	private final String dateStr = "19800605";
 	private final String dateExtendedStr = "1980-06-05";
 
-	private final Date dateTime;
-	{
-		Calendar c = Calendar.getInstance();
-		c.setTime(date);
-		c.set(Calendar.HOUR_OF_DAY, 13);
-		c.set(Calendar.MINUTE, 10);
-		c.set(Calendar.SECOND, 20);
-		dateTime = c.getTime();
-	}
+	private final Date dateTime = date("1980-06-05 13:10:20");
 	private final String dateTimeStr = dateStr + "T131020+0100";
 	private final String dateTimeExtendedStr = dateExtendedStr + "T13:10:20+01:00";
 

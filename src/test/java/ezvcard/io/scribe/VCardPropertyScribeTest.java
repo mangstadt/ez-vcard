@@ -1,13 +1,13 @@
 package ezvcard.io.scribe;
 
 import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -62,18 +62,7 @@ public class VCardPropertyScribeTest {
 	private final VCardPropertyMarshallerImpl scribe = new VCardPropertyMarshallerImpl();
 	private final Sensei<TestProperty> sensei = new Sensei<TestProperty>(scribe);
 
-	private final Date datetime;
-	{
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 2013);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DATE, 11);
-		c.set(Calendar.HOUR_OF_DAY, 14);
-		c.set(Calendar.MINUTE, 43);
-		c.set(Calendar.SECOND, 2);
-		datetime = c.getTime();
-	}
+	private final Date datetime = date("2013-06-11 14:43:02");
 
 	@Test
 	public void unescape() {

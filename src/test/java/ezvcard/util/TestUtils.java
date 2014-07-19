@@ -3,8 +3,12 @@ package ezvcard.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -266,6 +270,57 @@ public class TestUtils {
 			expectedSet.add(expectedElement);
 		}
 		assertEquals(expectedSet, actualSet);
+	}
+
+	//@formatter:off
+	private static DateFormat dfs[] = new DateFormat[]{
+		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"),
+		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+		new SimpleDateFormat("yyyy-MM-dd")
+	};
+	//@formatter:on
+
+	/**
+	 * Creates a {@link Date} object.
+	 * @param text the date string (e.g. "2000-01-30", see code for acceptable
+	 * formats)
+	 * @return the parsed date or null if it couldn't be parsed
+	 * @throws IllegalArgumentExcpetion if it couldn't be parsed
+	 */
+	public static Date date(String text) {
+		return date(text, TimeZone.getDefault());
+	}
+
+	/**
+	 * Creates a {@link Date} object.
+	 * @param text the date string (e.g. "2000-01-30", see code for acceptable
+	 * formats)
+	 * @param timezone the timezone the date string is in
+	 * @return the parsed date
+	 * @throws IllegalArgumentExcpetion if it couldn't be parsed
+	 */
+	public static Date date(String text, TimeZone timezone) {
+		for (DateFormat df : dfs) {
+			try {
+				df.setTimeZone(timezone);
+				return df.parse(text);
+			} catch (ParseException e) {
+				//try the next date formatter
+			}
+		}
+		throw new IllegalArgumentException("Invalid date string: " + text);
+	}
+
+	/**
+	 * Creates a {@link Date} object.
+	 * @param text the date string (e.g. "2000-01-30 02:21:00", see code for
+	 * acceptable formats)
+	 * @return the parsed date in the UTC timezone or null if it couldn't be
+	 * parsed
+	 * @throws IllegalArgumentExcpetion if it couldn't be parsed
+	 */
+	public static Date utc(String text) {
+		return date(text + " +0000");
 	}
 
 	private TestUtils() {

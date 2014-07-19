@@ -1,6 +1,7 @@
 package ezvcard.io.html;
 
 import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -8,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -438,12 +438,7 @@ public class HCardPageTest {
 
 		vcard.setOrganization("Google", "GMail");
 
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1970);
-		c.set(Calendar.MONTH, Calendar.MARCH);
-		c.set(Calendar.DATE, 8);
-		Birthday bday = new Birthday(c.getTime(), false);
+		Birthday bday = new Birthday(date("1970-03-08"), false);
 		vcard.setBirthday(bday);
 
 		vcard.addUrl("http://company.com");
@@ -469,15 +464,7 @@ public class HCardPageTest {
 
 		vcard.setUid(new Uid("urn:uuid:ffce1595-cbe9-4418-9d0d-b015655d45f6"));
 
-		c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 2000);
-		c.set(Calendar.MONTH, Calendar.MARCH);
-		c.set(Calendar.DATE, 10);
-		c.set(Calendar.HOUR_OF_DAY, 13);
-		c.set(Calendar.MINUTE, 22);
-		c.set(Calendar.SECOND, 44);
-		vcard.setRevision(c.getTime());
+		vcard.setRevision(date("2000-03-10 13:22:44"));
 
 		return vcard;
 	}
