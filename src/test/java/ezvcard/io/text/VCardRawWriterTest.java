@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -112,110 +109,94 @@ public class VCardRawWriterTest {
 	 */
 	@Test
 	public void type_parameter() throws Throwable {
-		Tests tests = new Tests();
-
 		//@formatter:off
-		tests.add(
-		VCardVersion.V2_1,
+		assertTypeParameter(VCardVersion.V2_1,
 		"PROP;ONE:\r\n" +
 		"PROP;ONE;TWO:\r\n" +
 		"PROP;ONE;TWO;THREE:\r\n"
 		);
 		
-		tests.add(
-		VCardVersion.V3_0,
+		assertTypeParameter(VCardVersion.V3_0,
 		"PROP;TYPE=one:\r\n" +
 		"PROP;TYPE=one,two:\r\n" +
 		"PROP;TYPE=one,two,three:\r\n"
 		);
 		
-		tests.add(
-		VCardVersion.V4_0,
+		assertTypeParameter(VCardVersion.V4_0,
 		"PROP;TYPE=one:\r\n" +
 		"PROP;TYPE=one,two:\r\n" +
 		"PROP;TYPE=one,two,three:\r\n"
 		);
 		//@formatter:on
+	}
 
-		for (Object[] test : tests) {
-			VCardVersion version = (VCardVersion) test[0];
-			String expected = (String) test[1];
+	private void assertTypeParameter(VCardVersion version, String expected) throws IOException {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, version);
 
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
+		VCardParameters parameters = new VCardParameters();
+		parameters.addType("one");
+		writer.writeProperty(null, "PROP", parameters, "");
 
-			VCardParameters parameters = new VCardParameters();
-			parameters.addType("one");
-			writer.writeProperty(null, "PROP", parameters, "");
+		parameters = new VCardParameters();
+		parameters.addType("one");
+		parameters.addType("two");
+		writer.writeProperty(null, "PROP", parameters, "");
 
-			parameters = new VCardParameters();
-			parameters.addType("one");
-			parameters.addType("two");
-			writer.writeProperty(null, "PROP", parameters, "");
+		parameters = new VCardParameters();
+		parameters.addType("one");
+		parameters.addType("two");
+		parameters.addType("three");
+		writer.writeProperty(null, "PROP", parameters, "");
 
-			parameters = new VCardParameters();
-			parameters.addType("one");
-			parameters.addType("two");
-			parameters.addType("three");
-			writer.writeProperty(null, "PROP", parameters, "");
-
-			String actual = sw.toString();
-			assertEquals(expected, actual);
-		}
+		String actual = sw.toString();
+		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void parameters() throws Throwable {
-		Tests tests = new Tests();
-
 		//@formatter:off
-		tests.add(
-		VCardVersion.V2_1,
+		assertParameters(VCardVersion.V2_1,
 		"PROP;SINGLE=one:\r\n" +
 		"PROP;MULTIPLE=one;MULTIPLE=two:\r\n" +
 		"PROP;SINGLE=one;MULTIPLE=one;MULTIPLE=two:\r\n"
 		);
 		
-		tests.add(
-		VCardVersion.V3_0,
+		assertParameters(VCardVersion.V3_0,
 		"PROP;SINGLE=one:\r\n" +
 		"PROP;MULTIPLE=one,two:\r\n" +
 		"PROP;SINGLE=one;MULTIPLE=one,two:\r\n"
 		);
 		
-		tests.add(
-		VCardVersion.V4_0,
+		assertParameters(VCardVersion.V4_0,
 		"PROP;SINGLE=one:\r\n" +
 		"PROP;MULTIPLE=one,two:\r\n" +
 		"PROP;SINGLE=one;MULTIPLE=one,two:\r\n"
 		);
 		//@formatter:on
+	}
 
-		for (Object[] test : tests) {
-			VCardVersion version = (VCardVersion) test[0];
-			String expected = (String) test[1];
+	private void assertParameters(VCardVersion version, String expected) throws IOException {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, version);
 
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
+		VCardParameters parameters = new VCardParameters();
+		parameters.put("SINGLE", "one");
+		writer.writeProperty(null, "PROP", parameters, "");
 
-			VCardParameters parameters = new VCardParameters();
-			parameters.put("SINGLE", "one");
-			writer.writeProperty(null, "PROP", parameters, "");
+		parameters = new VCardParameters();
+		parameters.put("MULTIPLE", "one");
+		parameters.put("MULTIPLE", "two");
+		writer.writeProperty(null, "PROP", parameters, "");
 
-			parameters = new VCardParameters();
-			parameters.put("MULTIPLE", "one");
-			parameters.put("MULTIPLE", "two");
-			writer.writeProperty(null, "PROP", parameters, "");
+		parameters = new VCardParameters();
+		parameters.put("SINGLE", "one");
+		parameters.put("MULTIPLE", "one");
+		parameters.put("MULTIPLE", "two");
+		writer.writeProperty(null, "PROP", parameters, "");
 
-			parameters = new VCardParameters();
-			parameters.put("SINGLE", "one");
-			parameters.put("MULTIPLE", "one");
-			parameters.put("MULTIPLE", "two");
-			writer.writeProperty(null, "PROP", parameters, "");
-
-			String actual = sw.toString();
-			assertEquals(expected, actual);
-		}
+		String actual = sw.toString();
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -511,19 +492,6 @@ public class VCardRawWriterTest {
 
 		public final void onParameterValueChanged(String propertyName, String parameterName, String originalValue, String modifiedValue) {
 			onParameterValueChanged++;
-		}
-	}
-
-	private class Tests implements Iterable<Object[]> {
-		private List<Object[]> tests = new ArrayList<Object[]>();
-
-		public Tests add(Object... test) {
-			tests.add(test);
-			return this;
-		}
-
-		public Iterator<Object[]> iterator() {
-			return tests.iterator();
 		}
 	}
 }
