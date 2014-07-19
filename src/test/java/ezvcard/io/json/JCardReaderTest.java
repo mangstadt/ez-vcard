@@ -4,13 +4,13 @@ import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.utc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -436,7 +436,7 @@ public class JCardReaderTest {
 		PartialDate actualBday = vcard.getBirthday().getPartialDate();
 		assertEquals(expectedBday, actualBday);
 
-		Date expectedAnniversary = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").parse("2009-08-08 14:30:00-0500");
+		Date expectedAnniversary = utc("2009-08-08 19:30:00");
 		Date actualAnniversary = vcard.getAnniversary().getDate();
 		assertEquals(expectedAnniversary, actualAnniversary);
 
