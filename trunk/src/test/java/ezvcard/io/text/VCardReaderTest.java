@@ -5,6 +5,8 @@ import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.date;
+import static ezvcard.util.TestUtils.utc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -12,11 +14,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.junit.Test;
 
@@ -1105,27 +1105,14 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday t = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1980);
-			c.set(Calendar.MONTH, Calendar.MARCH);
-			c.set(Calendar.DAY_OF_MONTH, 22);
-			Date expected = c.getTime();
+			Date expected = date("1980-03-22");
 			assertEquals(expected, t.getDate());
 		}
 
 		//REV
 		{
 			Revision t = vcard.getRevision();
-			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			c.clear();
-			c.set(Calendar.YEAR, 2012);
-			c.set(Calendar.MONTH, Calendar.MARCH);
-			c.set(Calendar.DAY_OF_MONTH, 5);
-			c.set(Calendar.HOUR_OF_DAY, 13);
-			c.set(Calendar.MINUTE, 32);
-			c.set(Calendar.SECOND, 54);
-			assertEquals(c.getTime(), t.getValue());
+			assertEquals(utc("2012-03-05 13:32:54"), t.getValue());
 		}
 
 		//extended types
@@ -1268,12 +1255,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1980);
-			c.set(Calendar.MONTH, Calendar.MARCH);
-			c.set(Calendar.DAY_OF_MONTH, 22);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("1980-03-22"), f.getDate());
 		}
 
 		//URL
@@ -1541,12 +1523,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1960);
-			c.set(Calendar.MONTH, Calendar.SEPTEMBER);
-			c.set(Calendar.DAY_OF_MONTH, 10);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("1960-09-10"), f.getDate());
 		}
 
 		//URL
@@ -1781,12 +1758,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 2012);
-			c.set(Calendar.MONTH, Calendar.JUNE);
-			c.set(Calendar.DAY_OF_MONTH, 6);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("2012-06-06"), f.getDate());
 		}
 
 		//PHOTO
@@ -1953,12 +1925,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1980);
-			c.set(Calendar.MONTH, Calendar.MAY);
-			c.set(Calendar.DAY_OF_MONTH, 21);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("1980-05-21"), f.getDate());
 		}
 
 		//PHOTO
@@ -2210,12 +2177,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1980);
-			c.set(Calendar.MONTH, Calendar.MARCH);
-			c.set(Calendar.DAY_OF_MONTH, 22);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("1980-03-22"), f.getDate());
 		}
 
 		//EMAIL
@@ -2243,15 +2205,7 @@ public class VCardReaderTest {
 		//REV
 		{
 			Revision f = vcard.getRevision();
-			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			c.clear();
-			c.set(Calendar.YEAR, 2012);
-			c.set(Calendar.MONTH, Calendar.MARCH);
-			c.set(Calendar.DAY_OF_MONTH, 5);
-			c.set(Calendar.HOUR_OF_DAY, 13);
-			c.set(Calendar.MINUTE, 19);
-			c.set(Calendar.SECOND, 33);
-			assertEquals(c.getTime(), f.getValue());
+			assertEquals(utc("2012-03-05 13:19:33"), f.getValue());
 		}
 
 		//extended types
@@ -2421,12 +2375,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1922);
-			c.set(Calendar.MONTH, Calendar.MARCH);
-			c.set(Calendar.DAY_OF_MONTH, 10);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("1922-03-10"), f.getDate());
 		}
 
 		//KEY
@@ -2476,15 +2425,7 @@ public class VCardReaderTest {
 		//REV
 		{
 			Revision f = vcard.getRevision();
-			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			c.clear();
-			c.set(Calendar.YEAR, 2012);
-			c.set(Calendar.MONTH, Calendar.AUGUST);
-			c.set(Calendar.DAY_OF_MONTH, 1);
-			c.set(Calendar.HOUR_OF_DAY, 18);
-			c.set(Calendar.MINUTE, 46);
-			c.set(Calendar.SECOND, 31);
-			assertEquals(c.getTime(), f.getValue());
+			assertEquals(utc("2012-08-01 18:46:31"), f.getValue());
 		}
 
 		//extended types
@@ -2678,12 +2619,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 2012);
-			c.set(Calendar.MONTH, Calendar.JUNE);
-			c.set(Calendar.DAY_OF_MONTH, 6);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("2012-06-06"), f.getDate());
 		}
 
 		//PHOTO
@@ -2876,12 +2812,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1980);
-			c.set(Calendar.MONTH, Calendar.MARCH);
-			c.set(Calendar.DAY_OF_MONTH, 21);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("1980-03-21"), f.getDate());
 		}
 
 		//KEY
@@ -2921,15 +2852,7 @@ public class VCardReaderTest {
 		//REV
 		{
 			Revision f = vcard.getRevision();
-			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			c.clear();
-			c.set(Calendar.YEAR, 2012);
-			c.set(Calendar.MONTH, Calendar.OCTOBER);
-			c.set(Calendar.DAY_OF_MONTH, 12);
-			c.set(Calendar.HOUR_OF_DAY, 21);
-			c.set(Calendar.MINUTE, 5);
-			c.set(Calendar.SECOND, 25);
-			assertEquals(c.getTime(), f.getValue());
+			assertEquals(utc("2012-10-12 21:05:25"), f.getValue());
 		}
 
 		assertValidate(vcard).versions(vcard.getVersion()).prop(vcard.getNickname(), 2).prop(vcard.getFbUrls().get(0), 2).run();
@@ -3089,12 +3012,7 @@ public class VCardReaderTest {
 		//BDAY
 		{
 			Birthday f = vcard.getBirthday();
-			Calendar c = Calendar.getInstance();
-			c.clear();
-			c.set(Calendar.YEAR, 1970);
-			c.set(Calendar.MONTH, Calendar.SEPTEMBER);
-			c.set(Calendar.DAY_OF_MONTH, 21);
-			assertEquals(c.getTime(), f.getDate());
+			assertEquals(date("1970-09-21"), f.getDate());
 		}
 
 		//NOTE

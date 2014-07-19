@@ -1,8 +1,8 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.ClassRule;
@@ -51,18 +51,7 @@ public class RevisionScribeTest {
 	private final RevisionScribe scribe = new RevisionScribe();
 	private final Sensei<Revision> sensei = new Sensei<Revision>(scribe);
 
-	private final Date datetime;
-	{
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		c.set(Calendar.HOUR_OF_DAY, 13);
-		c.set(Calendar.MINUTE, 10);
-		c.set(Calendar.SECOND, 20);
-		datetime = c.getTime();
-	}
+	private final Date datetime = date("1980-06-05 13:10:20");
 	private final String datetimeStr = "19800605T121020Z";
 	private final String datetimeStrExt = "1980-06-05T12:10:20Z";
 

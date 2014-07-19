@@ -1,8 +1,8 @@
 package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.util.TestUtils.date;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
@@ -49,12 +49,7 @@ public class DateOrTimePropertyTest {
 		assertValidate(empty).run(8);
 
 		DateOrTimeTypeImpl withDate = new DateOrTimeTypeImpl();
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(Calendar.YEAR, 1980);
-		c.set(Calendar.MONTH, Calendar.JUNE);
-		c.set(Calendar.DAY_OF_MONTH, 5);
-		Date date = c.getTime();
+		Date date = date("1980-06-05");
 		withDate.setDate(date, false);
 		assertValidate(withDate).run();
 
