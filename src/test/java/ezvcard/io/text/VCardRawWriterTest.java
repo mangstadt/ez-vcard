@@ -2,6 +2,7 @@ package ezvcard.io.text;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -219,21 +220,19 @@ public class VCardRawWriterTest {
 
 	@Test
 	public void parameters_special_chars() throws Throwable {
-		Tests tests = new Tests();
-
 		//2.1 without caret escaping
 		//removes , : = [ ] FS
 		//replaces \ with \\
 		//replaces ; with \;
 		//replaces newline with space
-		tests.add(VCardVersion.V2_1, false, "PROP;X-TEST=^�\\\\\\;\"\t ;X-TEST=normal:\r\n");
+		assertParametersSpecialChars(VCardVersion.V2_1, false, "PROP;X-TEST=^�\\\\\\;\"\t ;X-TEST=normal:\r\n");
 
 		//2.1 with caret escaping (ignored)
 		//removes , : = [ ] FS
 		//replaces \ with \\
 		//replaces ; with \;
 		//replaces newline with space
-		tests.add(VCardVersion.V2_1, true, "PROP;X-TEST=^�\\\\\\;\"\t ;X-TEST=normal:\r\n");
+		assertParametersSpecialChars(VCardVersion.V2_1, true, "PROP;X-TEST=^�\\\\\\;\"\t ;X-TEST=normal:\r\n");
 
 		//3.0 without caret escaping
 		//removes FS
@@ -241,7 +240,7 @@ public class VCardRawWriterTest {
 		//replaces newline with space
 		//replaces " with '
 		//surrounds in double quotes, since it contains , ; or :
-		tests.add(VCardVersion.V3_0, false, "PROP;X-TEST=\"^�\\,;:=[]'\t \",normal:\r\n");
+		assertParametersSpecialChars(VCardVersion.V3_0, false, "PROP;X-TEST=\"^�\\,;:=[]'\t \",normal:\r\n");
 
 		//3.0 with caret escaping (same as 4.0)
 		//removes FS
@@ -249,7 +248,7 @@ public class VCardRawWriterTest {
 		//replaces newline with ^n
 		//replaces " with ^'
 		//surrounds in double quotes, since it contains , ; or :
-		tests.add(VCardVersion.V3_0, true, "PROP;X-TEST=\"^^�\\,;:=[]^'\t^n\",normal:\r\n");
+		assertParametersSpecialChars(VCardVersion.V3_0, true, "PROP;X-TEST=\"^^�\\,;:=[]^'\t^n\",normal:\r\n");
 
 		//4.0 without caret escaping
 		//removes FS
@@ -257,7 +256,7 @@ public class VCardRawWriterTest {
 		//replaces newline with \n
 		//replaces " with '
 		//surrounds in double quotes, since it contains , ; or :
-		tests.add(VCardVersion.V4_0, false, "PROP;X-TEST=\"^�\\,;:=[]'\t\\n\",normal:\r\n");
+		assertParametersSpecialChars(VCardVersion.V4_0, false, "PROP;X-TEST=\"^�\\,;:=[]'\t\\n\",normal:\r\n");
 
 		//4.0 with caret escaping
 		//removes FS
@@ -265,29 +264,25 @@ public class VCardRawWriterTest {
 		//replaces newline with ^n
 		//replaces " with ^'
 		//surrounds in double quotes, since it contains , ; or :
-		tests.add(VCardVersion.V4_0, true, "PROP;X-TEST=\"^^�\\,;:=[]^'\t^n\",normal:\r\n");
+		assertParametersSpecialChars(VCardVersion.V4_0, true, "PROP;X-TEST=\"^^�\\,;:=[]^'\t^n\",normal:\r\n");
+	}
 
-		for (Object[] test : tests) {
-			VCardVersion version = (VCardVersion) test[0];
-			boolean caretEncodingEnabled = (Boolean) test[1];
-			String expected = (String) test[2];
+	private void assertParametersSpecialChars(VCardVersion version, boolean caretEncodingEnabled, String expected) throws IOException {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, version);
+		writer.setCaretEncodingEnabled(caretEncodingEnabled);
+		ProblemsListenerImpl listener = new ProblemsListenerImpl();
+		writer.setProblemsListener(listener);
 
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
-			writer.setCaretEncodingEnabled(caretEncodingEnabled);
-			ProblemsListenerImpl listener = new ProblemsListenerImpl();
-			writer.setProblemsListener(listener);
+		VCardParameters parameters = new VCardParameters();
+		parameters.put("X-TEST", "^�\\,;:=[]\"\t\n" + ((char) 28));
+		parameters.put("X-TEST", "normal");
+		writer.writeProperty(null, "PROP", parameters, "");
 
-			VCardParameters parameters = new VCardParameters();
-			parameters.put("X-TEST", "^�\\,;:=[]\"\t\n" + ((char) 28));
-			parameters.put("X-TEST", "normal");
-			writer.writeProperty(null, "PROP", parameters, "");
+		assertEquals(1, listener.onParameterValueChanged);
 
-			assertEquals(1, listener.onParameterValueChanged);
-
-			String actual = sw.toString();
-			assertEquals(expected, actual);
-		}
+		String actual = sw.toString();
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -396,23 +391,19 @@ public class VCardRawWriterTest {
 	 */
 	@Test
 	public void newlines_in_property_values() throws Throwable {
-		Tests tests = new Tests();
-		tests.add(VCardVersion.V2_1, "PROP;ENCODING=quoted-printable;CHARSET=UTF-8:one=0D=0Atwo\r\n");
-		tests.add(VCardVersion.V3_0, "PROP:one\\ntwo\r\n");
-		tests.add(VCardVersion.V4_0, "PROP:one\\ntwo\r\n");
+		assertNewlinesInPropertyValues(VCardVersion.V2_1, "PROP;ENCODING=quoted-printable;CHARSET=UTF-8:one=0D=0Atwo\r\n");
+		assertNewlinesInPropertyValues(VCardVersion.V3_0, "PROP:one\\ntwo\r\n");
+		assertNewlinesInPropertyValues(VCardVersion.V4_0, "PROP:one\\ntwo\r\n");
+	}
 
-		for (Object test[] : tests) {
-			VCardVersion version = (VCardVersion) test[0];
-			String expected = (String) test[1];
+	private void assertNewlinesInPropertyValues(VCardVersion version, String expected) throws IOException {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, version);
 
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
+		writer.writeProperty("PROP", "one\r\ntwo");
 
-			writer.writeProperty("PROP", "one\r\ntwo");
-
-			String actual = sw.toString();
-			assertEquals(expected, actual);
-		}
+		String actual = sw.toString();
+		assertEquals(expected, actual);
 	}
 
 	/*
