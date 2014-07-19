@@ -109,8 +109,10 @@ public class DateOrTimePropertyScribeTest {
 
 	@Test
 	public void writeText() {
-		sensei.assertWriteText(withDate).run(dateStr);
-		sensei.assertWriteText(withDateTime).run(dateTimeStr);
+		sensei.assertWriteText(withDate).versions(VCardVersion.V2_1, VCardVersion.V4_0).run(dateStr);
+		sensei.assertWriteText(withDate).versions(VCardVersion.V3_0).run(dateExtendedStr);
+		sensei.assertWriteText(withDateTime).versions(VCardVersion.V2_1, VCardVersion.V4_0).run(dateTimeStr);
+		sensei.assertWriteText(withDateTime).versions(VCardVersion.V3_0).run(dateTimeExtendedStr);
 		sensei.assertWriteText(withPartialDate).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("");
 		sensei.assertWriteText(withPartialDate).versions(VCardVersion.V4_0).run(partialDate.toDateAndOrTime(false));
 		sensei.assertWriteText(withPartialDateTime).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("");

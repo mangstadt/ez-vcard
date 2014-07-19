@@ -83,7 +83,8 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	protected String _writeText(T property, VCardVersion version) {
 		Date date = property.getDate();
 		if (date != null) {
-			return date(date).time(property.hasTime()).extended(false).utc(false).write();
+			boolean extended = (version == VCardVersion.V3_0);
+			return date(date).time(property.hasTime()).extended(extended).utc(false).write();
 		}
 
 		if (version == VCardVersion.V4_0) {
