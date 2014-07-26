@@ -9,6 +9,7 @@
  * [Dependencies]
  * [Downloads]
  * Javadocs
+   * [https://ez-vcard.googlecode.com/svn/javadocs/0.9.5/index.html 0.9.5]
    * [https://ez-vcard.googlecode.com/svn/javadocs/0.9.4/index.html 0.9.4]
    * [https://ez-vcard.googlecode.com/svn/javadocs/0.9.3/index.html 0.9.3]
    * [https://ez-vcard.googlecode.com/svn/javadocs/0.9.2/index.html 0.9.2]
