@@ -5,7 +5,7 @@ _July 26, 2014_
 
 We've reached *1,000 commits!* :D
 
- * Fixed a bug where not all newline sequences were being written as "<br />" in hCards (credit: aliteralmind).
+ * Fixed a bug where not all newline sequences were being written as `<br />` in hCards (credit: aliteralmind).
  * Fixed a bug where XCardWriter was incorrectly encoding "\r" characters in Windows newline sequences (credit: aliteralmind).
  * Date property values are now encoded correctly in version 3.0 vCards (credit: 沈健).  Before, they were encoded in "basic" format (e.g. "20140726").  Now, they are encoded in "extended" format (e.g. "2014-07-26").
 
