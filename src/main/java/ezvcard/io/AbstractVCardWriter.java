@@ -147,7 +147,8 @@ public abstract class AbstractVCardWriter {
 	 * @param addProdId whether or not to add a PRODID property
 	 * @return the properties to write
 	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
-	 * custom property class (see: {@link #registerScribe, registerScribe})
+	 * custom property class (see: {@link #registerScribe(VCardPropertyScribe)
+	 * registerScribe})
 	 */
 	protected List<VCardProperty> prepare(VCard vcard, VCardVersion targetVersion, boolean addProdId) {
 		List<VCardProperty> propertiesToAdd = new ArrayList<VCardProperty>();
