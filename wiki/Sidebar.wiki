@@ -1,21 +1,17 @@
 #summary Sidebar for the wiki.
 
  * [Overview]
- * [WhatIsAVCard What is a vCard?]
-
+ * [WhatIsAVCard What is a vCard?]<br><br>
  * [Downloads]
- * [Examples]
- 
+ * [Examples]<br><br>
  * [ReadingVCards Reading vCards]
  * [WritingVCards Writing vCards]
- * [ExtendedProperties Working with extended properties]
-
+ * [ExtendedProperties Working with extended properties]<br><br>
  * Javadocs
    * [https://ez-vcard.googlecode.com/svn/javadocs/0.9.5/index.html 0.9.5]
    * [https://ez-vcard.googlecode.com/svn/javadocs/0.8.5/index.html 0.8.5]
    * [https://ez-vcard.googlecode.com/svn/javadocs/0.7.3/index.html 0.7.3]
  * [Changelog]
  * [Dependencies]
- * [News News archive]
-
+ * [News News archive]<br><br>
  * [TypeList vCard Property Index]
