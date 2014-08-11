@@ -6,6 +6,7 @@ ez-vcard uses the following dependencies.  They can be excluded, depending on th
 || [http://jsoup.org jsoup] || org.jsoup || jsoup || 1.7.3 || for hCard parsing || HTML-parsing library used for parsing hCards. ||
 || [http://freemarker.org FreeMarker] || org.freemarker || freemarker || 2.3.19 || for hCard writing || Templating library used for creating HTML pages that contain hCards. ||
 || [http://jackson.codehaus.org Jackson] || com.fasterxml.jackson.core || jackson-core || 2.3.3 || for jCard reading/writing || JSON processor for jCards. ||
+|| [http://commons.apache.org/codec/ Apache Commons Codec] || commons-codec || commons-codec || 1.6 || _embedded_ || Selected portions of this library's source code have been inserted directly into the ez-vcard code base in order to resolve an Android compatibility issue (see [https://groups.google.com/forum/?fromgroups=#!topic/ez-vcard-discuss/w2TK7yetwr8 this discussion]). ||
 
 Maven-enabled projects can exclude dependencies like so:
 
@@ -35,5 +36,3 @@ Maven-enabled projects can exclude dependencies like so:
   </exclusions>
 </dependency>
 }}}
-
-ez-vcard also uses [http://commons.apache.org/codec/ Apache Commons Codec] version 1.6.  Selected portions of the library's source code have been inserted directly into the ez-vcard code base in order to resolve an Android compatibility issue (see [https://groups.google.com/forum/?fromgroups=#!topic/ez-vcard-discuss/w2TK7yetwr8 this discussion]).
