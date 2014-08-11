@@ -738,7 +738,7 @@ public class VCardReaderTest {
 
 			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
 
-			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).run();
+			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).prop(vcard.getCategories(), 2).run();
 			assertWarnings(0, reader.getWarnings());
 		}
 
@@ -752,7 +752,7 @@ public class VCardReaderTest {
 
 			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
 
-			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).run();
+			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).prop(vcard.getCategories(), 2).run();
 			assertWarnings(0, reader.getWarnings());
 		}
 
@@ -775,7 +775,7 @@ public class VCardReaderTest {
 
 			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
 
-			assertValidate(vcard).versions(vcard.getVersion()).run();
+			assertValidate(vcard).versions(vcard.getVersion()).prop(vcard.getCategories(), 2).run();
 			assertWarnings(0, reader.getWarnings());
 		}
 
@@ -823,7 +823,7 @@ public class VCardReaderTest {
 				assertFalse(it.hasNext());
 			}
 
-			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).run();
+			assertValidate(vcard).versions(vcard.getVersion()).prop(null, 0).prop(vcard.getCategories(), 2).run();
 			assertWarnings(0, reader.getWarnings());
 		}
 
@@ -937,7 +937,7 @@ public class VCardReaderTest {
 
 			assertEquals(Arrays.asList("My Contacts"), vcard.getCategories().getValues());
 
-			assertValidate(vcard).versions(vcard.getVersion()).run();
+			assertValidate(vcard).versions(vcard.getVersion()).prop(vcard.getCategories(), 2).run();
 			assertWarnings(0, reader.getWarnings());
 		}
 

@@ -4,6 +4,8 @@ import static ezvcard.util.TestUtils.assertValidate;
 
 import org.junit.Test;
 
+import ezvcard.VCardVersion;
+
 /*
  Copyright (c) 2013, Michael Angstadt
  All rights reserved.
@@ -40,10 +42,12 @@ public class CategoriesTest {
 	@Test
 	public void validate() {
 		Categories empty = new Categories();
-		assertValidate(empty).run(8);
+		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(8);
 
 		Categories withValue = new Categories();
 		withValue.addValue("one");
-		assertValidate(withValue).run();
+		assertValidate(withValue).versions(VCardVersion.V2_1).run(2);
+		assertValidate(withValue).versions(VCardVersion.V3_0, VCardVersion.V4_0).run();
 	}
 }

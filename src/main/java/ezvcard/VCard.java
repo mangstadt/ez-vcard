@@ -1263,7 +1263,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SORT-STRING}
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
+	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
 	 * @return the sort string
 	 */
@@ -1283,7 +1283,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SORT-STRING}
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
+	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
 	 * @param sortString the sort string
 	 */
@@ -1304,7 +1304,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SORT-STRING}
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
+	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
 	 * @param sortString the sort string (e.g. "Armour" if the person's last
 	 * name is "d'Armour") or null to remove
@@ -3179,7 +3179,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CATEGORIES}
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @return the categories
 	 */
@@ -3276,7 +3276,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CATEGORIES}
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @param categories the categories or null to remove (note: multiple
 	 * categories may be added to this object)
@@ -3315,7 +3315,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CATEGORIES}
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @param categories the category or categories (e.g. "swimmer", "biker",
 	 * "knitter")
