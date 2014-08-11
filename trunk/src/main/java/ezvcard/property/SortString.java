@@ -47,7 +47,7 @@ import ezvcard.VCardVersion;
  * </p>
  * 
  * <p>
- * <b>Code sample (vCard versions 2.1, 3.0)</b>
+ * <b>Code sample (3.0)</b>
  * </p>
  * 
  * <pre class="brush:java">
@@ -79,7 +79,7 @@ import ezvcard.VCardVersion;
  * <b>Property name:</b> {@code SORT-STRING}
  * </p>
  * <p>
- * <b>Supported versions:</b> {@code 2.1, 3.0}
+ * <b>Supported versions:</b> {@code 3.0}
  * </p>
  * @author Michael Angstadt
  */
@@ -94,6 +94,6 @@ public class SortString extends TextProperty {
 
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
+		return EnumSet.of(VCardVersion.V3_0);
 	}
 }

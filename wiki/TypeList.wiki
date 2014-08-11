@@ -249,7 +249,7 @@ vcard.addCalendarUri("http://www.ibm.com/janedoe/calendar");
 =CATEGORIES=
 Defines a list of keywords that can be used to describe the person.
 
-|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.11] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-20 RFC 2426 p.20] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-43 RFC 6350 p.43] ||
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-20 RFC 2426 p.20] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-43 RFC 6350 p.43] ||
 
 *Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Categories.html ezvcard.property.Categories]
 
@@ -930,14 +930,14 @@ vcard.addRole("Project Leader");
 =SORT-STRING=
 Defines a string that should be used when an application sorts this vCard in some way.
 
-|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.11] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-22 RFC 2426 p.22] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0*`*` ||
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-22 RFC 2426 p.22] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0*`*` ||
 
 *Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/SortString.html ezvcard.property.SortString]
 
 `*`The SORT-STRING property is not supported in 4.0.  Instead, a SORT-AS parameter can be added to the N (`StructuredName`) and/or ORG (`Organization`) types.
 
 {{{
-//2.1 and 3.0
+//3.0
 VCard vcard = new VCard();
 
 StructuredName n = new StructuredName();
