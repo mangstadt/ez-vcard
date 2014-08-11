@@ -1,6 +1,6 @@
 #summary Contains a listing of all vCard properties, along with code samples.
 
-The page contains a listing of all vCard properties, as well as information on how to use these properties with ez-vcard.
+The page contains a listing of all the vCard properties ez-vcard supports, and also includes code samples.
 
 =ADR=
 
