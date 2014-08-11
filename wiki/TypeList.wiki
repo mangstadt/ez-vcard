@@ -3,11 +3,12 @@
 The page contains a listing of all vCard properties, as well as information on how to use these properties with ez-vcard.
 
 =ADR=
+
 Defines a mailing address.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.11] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-11 RFC 2426 p.11] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-32 RFC 6350 p.32] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Address.html Address]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Address.html ezvcard.property.Address]
 
 {{{
 VCard vcard = new VCard();
@@ -20,7 +21,7 @@ adr.setPostalCode("12345");
 adr.setCountry("USA");
 adr.addType(AddressType.WORK);
 
-//optionally, set the text to print on the mailing label
+//optionally, set the mailing label text
 adr.setLabel("123 Main St.\nAustin, TX 12345\nUSA");
 
 vcard.addAddress(adr);
@@ -38,9 +39,9 @@ for (Address adr : vcard.getAddresses()){
 =AGENT=
 Defines information about the person's agent.
 
-*vCard versions:* 2.1, 3.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.18] ||https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-11 RFC 2426 p.19] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0* ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Agent.html Agent]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Agent.html ezvcard.property.Agent]
 
 {{{
 VCard vcard = new VCard();
@@ -76,9 +77,9 @@ if (agentVCard != null){
 =ANNIVERSARY=
 Defines the person's anniversary.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* ||https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-31 RFC 6350 p.31] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Anniversary.html Anniversary]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Anniversary.html ezvcard.property.Anniversary]
 
 {{{
 VCard vcard = new VCard();
@@ -127,9 +128,9 @@ if (text != null){
 =BDAY=
 Defines the person's birthday.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.11] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-11 RFC 2426 p.11] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-30 RFC 6350 p.30] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Birthday.html Birthday]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Birthday.html ezvcard.property.Birthday]
 
 {{{
 VCard vcard = new VCard();
@@ -177,9 +178,11 @@ if (text != null){
 =BIRTHPLACE=
 Defines the location of the person's birth.
 
-*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/question.png *4.0*{{{*}}} [http://tools.ietf.org/html/rfc6474#page-2 RFC 6474 p.2] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Birthplace.html Birthplace]
+{{{*}}} Defined in separate specification.
+
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Birthplace.html ezvcard.property.Birthplace]
 
 {{{
 VCard vcard = new VCard();
@@ -222,9 +225,9 @@ if (uri != null){
 =CALADRURI=
 Defines a URL to use for sending a scheduling request to the person's calendar.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-50 RFC 6350 p.50] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/CalendarRequestUri.html CalendarRequestUri]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/CalendarRequestUri.html ezvcard.property.CalendarRequestUri]
 
 {{{
 VCard vcard = new VCard();
@@ -234,9 +237,9 @@ vcard.addCalendarRequestUri("mailto:janedoe@ibm.com");
 =CALURI=
 Defines a URL that points to the person's calendar.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-50 RFC 6350 p.50] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/CalendarUri.html CalendarUri]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/CalendarUri.html ezvcard.property.CalendarUri]
 
 {{{
 VCard vcard = new VCard();
@@ -246,9 +249,9 @@ vcard.addCalendarUri("http://www.ibm.com/janedoe/calendar");
 =CATEGORIES=
 Defines a list of keywords that can be used to describe the person.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.11] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-20 RFC 2426 p.20] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-43 RFC 6350 p.43] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Categories.html Categories]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Categories.html ezvcard.property.Categories]
 
 {{{
 VCard vcard = new VCard();
@@ -258,9 +261,9 @@ vcard.setCategories("Developer", "Java coder", "Ladies' man");
 =CLASS=
 Describes the sensitivity of the information in the vCard.
 
-*vCard versions:* 3.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-26 RFC 2426 p.26] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0* ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Classification.html Classification]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Classification.html ezvcard.property.Classification]
 
 {{{
 VCard vcard = new VCard();
@@ -269,13 +272,13 @@ vcard.setClassification("PUBLIC");
 }}}
 
 =CLIENTPIDMAP=
-Maps a globally-unique URI to a PID parameter value.  The PID parameter can be set on any type where multiple instances are allowed (such as EMAIL or ADR, but not N because only 1 instance of N is allowed).  It allows an individual type instance to be uniquely identifiable.
+Maps a globally-unique URI to a PID parameter value.  The PID parameter can be set on any property where multiple instances are allowed (such as EMAIL or ADR, but not N because only 1 instance of N is allowed).  It allows an individual property instance to be uniquely identifiable.
 
-The CLIENTPIDMAP type and the PID parameter are used during the synchronization (merging) process of two versions of the same vCard.  For example, if the user has a copy of her vCard on her desktop computer and her smart phone, and she makes different modifications to each copy, then the two copies could be synchronized in order to merge all the changes into a single, new vCard.
+The CLIENTPIDMAP property and the PID parameter are used during the synchronization (merging) process of two versions of the same vCard.  For example, if the user has a copy of her vCard on her desktop computer and her smart phone, and she makes different modifications to each copy, then the two copies could be synchronized in order to merge all the changes into a single, new vCard.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-47 RFC 6350 p.47] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/ClientPidMap.html ClientPidMap]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/ClientPidMap.html ezvcard.property.ClientPidMap]
 
 {{{
 VCard vcard = new VCard();
@@ -301,9 +304,11 @@ vcard.addClientPidMap(clientpidmap);
 =DEATHDATE=
 Defines the person's time of death.
 
-*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/question.png *4.0*{{{*}}} [http://tools.ietf.org/html/rfc6474#page-4 RFC 6474 p.4] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Deathdate.html Deathdate]
+{{{*}}} Defined in separate specification.
+
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Deathdate.html ezvcard.property.Deathdate]
 
 {{{
 VCard vcard = new VCard();
@@ -351,9 +356,11 @@ if (text != null){
 =DEATHPLACE=
 Defines the location of the person's death.
 
-*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6474 RFC 6474]) 
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/question.png *4.0*{{{*}}} [http://tools.ietf.org/html/rfc6474#page-3 RFC 6474 p.3] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Deathplace.html Deathplace]
+{{{*}}} Defined in separate specification.
+
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Deathplace.html ezvcard.property.Deathplace]
 
 {{{
 VCard vcard = new VCard();
@@ -396,9 +403,9 @@ if (uri != null){
 =EMAIL=
 Defines an email address associated with the person.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.15] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-15 RFC 2426 p.15] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-36 RFC 6350 p.36] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Email.html Email]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Email.html ezvcard.property.Email]
 
 {{{
 VCard vcard = new VCard();
@@ -411,9 +418,11 @@ workEmail.setPref(1); //the most preferred email
 =EXPERTISE=
 Defines a professional subject area that the person has knowledge of. For example, if the person is a software engineer, he or she might list technologies such as "Java", "Web services", and "Agile development practices".
 
-*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/question.png *4.0*{{{*}}} [http://tools.ietf.org/html/rfc6715#page-3 RFC 6715 p.3] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Expertise.html Expertise]
+{{{*}}} Defined in separate specification.
+
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Expertise.html ezvcard.property.Expertise]
 
 {{{
 VCard vcard = new VCard();
@@ -426,9 +435,9 @@ vcard.addExpertise(expertise);
 =FBURL=
 Defines a URL that shows when the person is free/busy on their calendar.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-49 RFC 6350 p.49] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/FbUrl.html FbUrl]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/FbUrl.html ezvcard.property.FbUrl]
 
 {{{
 VCard vcard = new VCard();
@@ -438,9 +447,9 @@ vcard.addFbUrl("http://www.example.com/freebusy/janedoe");
 =FN=
 Defines the person's full name in a human-readable format.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.9] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-8 RFC 2426 p.8] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-28 RFC 6350 p.28] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/FormattedName.html FormattedName]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/FormattedName.html ezvcard.property.FormattedName]
 
 {{{
 VCard vcard = new VCard();
@@ -450,9 +459,9 @@ vcard.setFormattedName("Dr. Gregory House M.D.");
 =GENDER=
 Defines the person's sex.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-32 RFC 6350 p.32] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Gender.html Gender]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Gender.html ezvcard.property.Gender]
 
 {{{
 VCard vcard = new VCard();
@@ -479,9 +488,9 @@ A set of latitude/longitude coordinates. There is no rule for what these coordin
 "org": the coordinates of the organization's headquarters.
 "location": the coordinates of the location itself.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.16] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-16 RFC 2426 p.16] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-38 RFC 6350 p.38] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Geo.html Geo]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Geo.html ezvcard.property.Geo]
 
 {{{
 VCard vcard = new VCard();
@@ -491,9 +500,11 @@ vcard.setGeo(40.7127, -74.0059);
 =HOBBY=
 Defines a recreational activity that the person actively engages in. For example, if a person has a hobby of "hockey", it would mean that he likes to play hockey. Someone who just likes to <i>watch</i> hockey would list hockey as an INTEREST instead.
 
-*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/question.png *4.0*{{{*}}} [http://tools.ietf.org/html/rfc6715#page-4 RFC 6715 p.4] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Hobby.html Hobby]
+{{{*}}} Defined in separate specification.
+
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Hobby.html ezvcard.property.Hobby]
 
 {{{
 VCard vcard = new VCard();
@@ -506,9 +517,11 @@ vcard.addHobby(hobby);
 =IMPP=
 An instant message handle.  The handle is represented as a URI in the format "`<IM-PROTOCOL>:<IM-HANDLE>`".  For example, someone with a Yahoo! Messenger handle of "johndoe@yahoo.com" would have an IMPP vCard property value of "ymsgr:johndoe@yahoo.com".
 
-*vCard versions:* 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/question.png *3.0*{{{*}}} [http://tools.ietf.org/html/rfc4770 RFC 4770] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-36 RFC 6350 p.36] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Impp.html Impp]
+{{{*}}} Defined in separate specification.
+
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Impp.html ezvcard.property.Impp]
 
 {{{
 VCard vcard = new VCard();
@@ -525,9 +538,11 @@ vcard.addImpp(impp);
 =INTEREST=
 Defines a recreational activity that the person is interested in. For example, if a person has an interest in "hockey", it would mean that he likes to watch hockey games. Someone who likes to actually <i>play</i> hockey would list hockey as a HOBBY instead.
 
-*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/question.png *4.0*{{{*}}} [http://tools.ietf.org/html/rfc6715#page-5 RFC 6715 p.5] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Interest.html Interest]
+{{{*}}} Defined in separate specification.
+
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Interest.html ezvcard.property.Interest]
 
 {{{
 VCard vcard = new VCard();
@@ -540,9 +555,9 @@ vcard.addInterest(interest);
 =KEY=
 Defines a public encryption key.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.22] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-26 RFC 2426 p.26] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-48 RFC 6350 p.48] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Key.html Key]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Key.html ezvcard.property.Key]
 
 {{{
 VCard vcard = new VCard();
@@ -590,9 +605,9 @@ for (Key key : vcard.getKeys()){
 =KIND=
 Defines the type of entity that this vCard represents, such as an individual or an organization.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-25 RFC 6350 p.25] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Kind.html Kind]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Kind.html ezvcard.property.Kind]
 
 {{{
 VCard vcard = new VCard();
@@ -615,9 +630,9 @@ if (kind.isIndividual()){
 =LABEL=
 Defines the exact text to put on the mailing label when sending snail mail to the person. Note that instances of this class should NEVER be added to a vCard! Instead, use the `Address.setLabel()` method to assign a mailing label to an ADR property.
 
-*vCard versions:* 2.1, 3.0, 4.0`*`
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.12] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-13 RFC 2426 p.13] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0*`*` ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Label.html Label]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Label.html ezvcard.property.Label]
 
 `*`The label property is not supported in vCard version 4.0. Instead, labels are included as <i>parameters</i> to their corresponding ADR properties. When marshalling a vCard, ez-vcard will use either the label property or the LABEL parameter, depending on the requested vCard version.
 
@@ -628,9 +643,9 @@ ez-vcard defines an "orphaned label" as a label property that could not be assig
 =LANG=
 Defines a language that the person speaks.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-37 RFC 6350 p.37] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Language.html Language]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Language.html ezvcard.property.Language]
 
 {{{
 VCard vcard = new VCard();
@@ -645,9 +660,9 @@ lang.setPref(2); //second-most preferred
 =LOGO=
 Defines a company logo.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.17] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-18 RFC 2426 p.18] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-40 RFC 6350 p.40] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Logo.html Logo]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Logo.html ezvcard.property.Logo]
 
 {{{
 VCard vcard = new VCard();
@@ -684,9 +699,9 @@ for (Logo logo : vcard.getLogos()){
 =MAILER=
 Defines the email client that the person uses.
 
-*vCard versions:* 2.1, 3.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.15] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-15 RFC 2426 p.15] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0* ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Mailer.html Mailer]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Mailer.html ezvcard.property.Mailer]
 
 {{{
 VCard vcard = new VCard();
@@ -696,9 +711,9 @@ vcard.setMailer("Thunderbird");
 =MEMBER=
 Defines the members that make up the group. This property can only be used if the vCard's KIND property is set to "group".
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-41 RFC 6350 p.41] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Member.html Member]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Member.html ezvcard.property.Member]
 
 {{{
 VCard vcard = new VCard();
@@ -718,9 +733,9 @@ vcard.addMember(member);
 =N=
 Defines the individual components of the person's name.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.9] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-9 RFC 2426 p.9] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-29 RFC 6350 p.29] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/StructuredName.html StructuredName]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/StructuredName.html ezvcard.property.StructuredName]
 
 {{{
 VCard vcard = new VCard();
@@ -736,9 +751,9 @@ vcard.setStructuredName(n);
 =NAME=
 Defines a textual representation of the SOURCE property.
 
-*vCard versions:* 3.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-5 RFC 2426 p.5] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0* ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/SourceDisplayText.html SourceDisplayText]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/SourceDisplayText.html ezvcard.property.SourceDisplayText]
 
 {{{
 VCard vcard = new VCard();
@@ -748,9 +763,9 @@ vcard.setSourceDisplayText("My vCard");
 =NICKNAME=
 Defines the person's nicknames.
 
-*vCard versions:* 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-9 RFC 2426 p.9] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-29 RFC 6350 p.29] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Nickname.html Nickname]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Nickname.html ezvcard.property.Nickname]
 
 {{{
 VCard vcard = new VCard();
@@ -760,9 +775,9 @@ vcard.setNickname("Rick", "Ricky", "Bobby");
 =NOTE=
 Defines a free-form text field that contains miscellaneous information.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.19] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-21 RFC 2426 p.21] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-44 RFC 6350 p.44] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Note.html Note]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Note.html ezvcard.property.Note]
 
 {{{
 VCard vcard = new VCard();
@@ -773,9 +788,9 @@ note.setLanguage("en-us");
 =ORG=
 Defines a list of organizations the person belongs to. The list is ordered. It begins with the broadest organization and ends with the most specific.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.19] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-20 RFC 2426 p.20] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-40 RFC 6350 p.40] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Organization.html Organization]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Organization.html ezvcard.property.Organization]
 
 {{{
 VCard vcard = new VCard();
@@ -785,9 +800,11 @@ vcard.setOrganization("Google", "GMail Team", "Spam Detection Team");
 =ORG-DIRECTORY=
 Defines a URI that can be used to retrieve information about the person's co-workers.
 
-*vCard versions:* 4.0 (from [http://tools.ietf.org/html/rfc6715 RFC 6715])
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/question.png *4.0*{{{*}}} [http://tools.ietf.org/html/rfc6715#page-6 RFC 6715 p.6] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/OrgDirectory.html OrgDirectory]
+{{{*}}} Defined in separate specification.
+
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/OrgDirectory.html ezvcard.property.OrgDirectory]
 
 {{{
 VCard vcard = new VCard();
@@ -797,9 +814,9 @@ vcard.addOrgDirectory("http://www.company.com/staff");
 =PHOTO=
 Defines a photo, such as the person's portrait.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.10] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-10 RFC 2426 p.10] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-30 RFC 6350 p.30] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Photo.html Photo]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Photo.html ezvcard.property.Photo]
 
 {{{
 VCard vcard = new VCard();
@@ -836,9 +853,9 @@ for (Photo photo : vcard.getPhotos()){
 =PRODID=
 Identifies the software application that created the vCard.
 
-*vCard versions:* 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-21 RFC 2426 p.21] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-44 RFC 6350 p.44] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/ProdId.html ProdId]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/ProdId.html ezvcard.property.ProdId]
 
 {{{
 VCard vcard = new VCard();
@@ -848,9 +865,9 @@ vcard.setProdId("ez-vcard 0.6.0");
 =PROFILE=
 Simply identifies the vCard as a "vCard".
 
-*vCard versions:* 3.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-5 RFC 2426 p.5] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0* ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Profile.html Profile]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Profile.html ezvcard.property.Profile]
 
 {{{
 VCard vcard = new VCard();
@@ -861,9 +878,9 @@ vcard.setProfile(profile);
 =RELATED=
 Defines someone that the person is related to.
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-42 RFC 6350 p.42] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Related.html Related]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Related.html ezvcard.property.Related]
 
 {{{
 VCard vcard = new VCard();
@@ -889,9 +906,9 @@ vcard.addRelated(related);
 =REV=
 Defines the date that the vCard was last modified by its owner.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.19] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-22 RFC 2426 p.22] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-45 RFC 6350 p.45] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Revision.html Revision]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Revision.html ezvcard.property.Revision]
 
 {{{
 VCard vcard = new VCard();
@@ -901,9 +918,9 @@ vcard.setRevision(new Date());
 =ROLE=
 Defines the function that the person plays within his or her organization.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.17] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-18 RFC 2426 p.18] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-39 RFC 6350 p.39] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Role.html Role]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Role.html ezvcard.property.Role]
 
 {{{
 VCard vcard = new VCard();
@@ -913,11 +930,11 @@ vcard.addRole("Project Leader");
 =SORT-STRING=
 Defines a string that should be used when an application sorts this vCard in some way.
 
-*vCard versions:* 2.1, 3.0, 4.0`*`
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.11] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-22 RFC 2426 p.22] || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *4.0*`*` ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/SortString.html SortString]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/SortString.html ezvcard.property.SortString]
 
-`*`The SORT-STRING type is not supported in 4.0.  Instead, a SORT-AS parameter can be added to the N (`StructuredName`) and/or ORG (`Organization`) types.
+`*`The SORT-STRING property is not supported in 4.0.  Instead, a SORT-AS parameter can be added to the N (`StructuredName`) and/or ORG (`Organization`) types.
 
 {{{
 //2.1 and 3.0
@@ -944,9 +961,9 @@ vcard.setStructuredName(n);
 =SOUND=
 Defines a sound, such as the correct pronunciation of the person's name.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.20] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-23 RFC 2426 p.23] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-45 RFC 6350 p.45] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Sound.html Sound]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Sound.html ezvcard.property.Sound]
 
 {{{
 VCard vcard = new VCard();
@@ -983,9 +1000,9 @@ for (Sound sound : vcard.getSounds()){
 =SOURCE=
 Defines a URL that can be used to retrieve the most up-to-date version of the vCard.
 
-*vCard versions:* 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-5 RFC 2426 p.5] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-24 RFC 6350 p.24] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Source.html Source]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Source.html ezvcard.property.Source]
 
 {{{
 VCard vcard = new VCard();
@@ -995,9 +1012,9 @@ vcard.addSource("http://www.company.com/employees/doe_john.vcf");
 =TEL=
 Defines a telephone number.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.13] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-14 RFC 2426 p.14] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-34 RFC 6350 p.34] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Telephone.html Telephone]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Telephone.html ezvcard.property.Telephone]
 
 {{{
 VCard vcard = new VCard();
@@ -1019,9 +1036,9 @@ vcard.addTelephoneNumber(tel);
 =TZ=
 Defines the timezone that the person lives/works in.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.16] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-16 RFC 2426 p.16] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-22 RFC 6350 p.22] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Timezone.html Timezone]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Timezone.html ezvcard.property.Timezone]
 
 {{{
 VCard vcard = new VCard();
@@ -1038,9 +1055,9 @@ vcard.addTimezone(tz);
 =TITLE=
 Defines the person's title in his or her organization.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.17] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-17 RFC 2426 p.17] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-39 RFC 6350 p.39] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Title.html Title]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Title.html ezvcard.property.Title]
 
 {{{
 VCard vcard = new VCard();
@@ -1050,9 +1067,9 @@ vcard.addTitle("Research Scientist");
 =UID=
 Defines a globally unique identifier for this vCard.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.21] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-24 RFC 2426 p.24] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-46 RFC 6350 p.46] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Uid.html Uid]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Uid.html ezvcard.property.Uid]
 
 {{{
 VCard vcard = new VCard();
@@ -1066,9 +1083,9 @@ vcard.setUid(uid);
 =URL=
 Defines a URL that points to the person's homepage or business website.
 
-*vCard versions:* 2.1, 3.0, 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/check.png *2.1* [http://www.imc.org/pdi/vcard-21.doc vCard 2.1 p.21] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-25 RFC 2426 p.25] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-47 RFC 6350 p.47] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Url.html Url]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Url.html ezvcard.property.Url]
 
 {{{
 VCard vcard = new VCard();
@@ -1078,9 +1095,9 @@ vcard.addUrl("http://www.company.com");
 =XML=
 Contains an XML element that was not recognized when parsing an xCard (XML-formatted vCard).
 
-*vCard versions:* 4.0
+|| https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-27 RFC 6350 p.27] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Xml.html Xml]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/Xml.html ezvcard.property.Xml]
 
 {{{
 VCard vcard = new VCard();
