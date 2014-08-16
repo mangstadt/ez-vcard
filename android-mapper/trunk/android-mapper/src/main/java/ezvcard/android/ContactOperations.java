@@ -1,5 +1,14 @@
 package ezvcard.android;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import android.annotation.TargetApi;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
@@ -9,15 +18,25 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import ezvcard.VCard;
+import ezvcard.android.AndroidCustomField;
+import ezvcard.android.VcardContactUtil;
 import ezvcard.parameter.AddressType;
-import ezvcard.property.*;
+import ezvcard.property.Address;
+import ezvcard.property.Birthday;
+import ezvcard.property.Email;
+import ezvcard.property.FormattedName;
+import ezvcard.property.Impp;
+import ezvcard.property.Nickname;
+import ezvcard.property.Note;
+import ezvcard.property.Organization;
+import ezvcard.property.Photo;
+import ezvcard.property.RawProperty;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Telephone;
+import ezvcard.property.Title;
+import ezvcard.property.Url;
 import ezvcard.util.TelUri;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /*
  Copyright (c) 2013, Michael Angstadt
@@ -55,536 +74,452 @@ import java.util.*;
  * @author Michael Angstadt
  */
 public class ContactOperations {
-    private static final String TAG = ContactOperations.class.getSimpleName();
-    private static final int rawContactID = 0;
+	private static final String TAG = ContactOperations.class.getSimpleName();
+	private static final int rawContactID = 0;
 
-    private final Context context;
-    private final String accountName;
-    private final String accountType;
-    
-    private VCard vCard;
-    private ArrayList<ContentProviderOperation> operations;
+	private final Context context;
+	private final String accountName;
+	private final String accountType;
 
-    public ContactOperations(Context context) {
-        this(context, null, null);
-    }
+	private VCard vcard;
+	private ArrayList<ContentProviderOperation> operations;
 
-    public ContactOperations(Context context, String accountName, String accountType) {
-        this.context = context;
-        this.accountName = accountName;
-        this.accountType = accountType;
-    }
+	public ContactOperations(Context context) {
+		this(context, null, null);
+	}
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void insertContact(VCard vCard) throws RemoteException, OperationApplicationException {
-    	if (vCard == null){
-    		Log.d(TAG, "The vcard is null or It must be a duplicate Contact hence we could not insert the contact");
-            return;
-    	}
-    	
-    	this.vCard = vCard;
-    	this.operations = new ArrayList<ContentProviderOperation>();
-        
-        // TODO handle Raw properties - Raw properties include various extension which start with "X-" like X-ASSISTANT, X-AIM, X-SPOUSE
+	public ContactOperations(Context context, String accountName, String accountType) {
+		this.context = context;
+		this.accountName = accountName;
+		this.accountType = accountType;
+	}
 
-        insertAccountInfo();
-        insertName();
-        insertNickname();
-        insertPhones();
-        insertEmails();
-        insertAddresses();
-        insertIms();
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void insertContact(VCard vcard) throws RemoteException, OperationApplicationException {
+		this.vcard = vcard;
+		this.operations = new ArrayList<ContentProviderOperation>();
 
-        // handle Android Custom fields..This is only valid for Android generated Vcards. As the Android would
-        // generate NickName, ContactEvents other than Birthday and RelationShip with this "X-ANDROID-CUSTOM" name
-        insertCustomFields();
+		// TODO handle Raw properties - Raw properties include various extension which start with "X-" like X-ASSISTANT, X-AIM, X-SPOUSE
 
-        // handle Iphone kinda of group properties. which are grouped together.
-        insertGroupedProperties();
-        
-        //TODO Vcard 4.0 may have more than 1 birthday so lets get the list and always use the very first one ..
-        //TODO Should we handle date formats ...???
-        insertBirthdays();
-        
-        insertWebsites();
-        insertNotes();
-        insertPhotos();
-        insertOrganization();
+		insertAccountInfo();
+		insertName();
+		insertNickname();
+		insertPhones();
+		insertEmails();
+		insertAddresses();
+		insertIms();
 
-        // Executing all the insert operations as a single database transaction
-        context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, operations);
-    }
-    
-    private void insertAccountInfo(){
-    	String accountName = TextUtils.isEmpty(this.accountName) ? null : this.accountName;
-        String accountType = TextUtils.isEmpty(this.accountType) ? null : this.accountType;
+		// handle Android Custom fields..This is only valid for Android generated Vcards. As the Android would
+		// generate NickName, ContactEvents other than Birthday and RelationShip with this "X-ANDROID-CUSTOM" name
+		insertCustomFields();
 
-        operations.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
-            .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
-            .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
-            .build());
-    }
-    
-    private void insertName(){
-        ContentValues contentValues = new ContentValues();
-        
-        StructuredName n = vCard.getStructuredName();
-        String firstName = (n == null) ? null : n.getGiven();
-        String lastName = (n == null) ? null : n.getFamily();
-        
-        FormattedName fn = vCard.getFormattedName();
-        String formattedName = (fn == null) ? null : fn.getValue();
+		// handle Iphone kinda of group properties. which are grouped together.
+		insertGroupedProperties();
 
-        String firstPhoneticName = null;
-        RawProperty firstphoneticNameprop = vCard.getExtendedProperty("X-PHONETIC-FIRST-NAME");
-        if (firstphoneticNameprop != null) {
-            firstPhoneticName = firstphoneticNameprop.getValue();
-        }
-        
-        String lastPhoneticName = null;
-        RawProperty lastPhoneticNameProp = vCard.getExtendedProperty("X-PHONETIC-LAST-NAME");
-        if (lastPhoneticNameProp != null) {
-            lastPhoneticName = lastPhoneticNameProp.getValue();
-        }
-        
-        //TODO for now always get the first prefix
-        String namePrefix = null;
-        String nameSuffix = null;
-        if (n != null) {
-            List<String> prefixes = n.getPrefixes();
-            if (prefixes != null && !prefixes.isEmpty()) {
-                namePrefix = prefixes.get(0);
-            }
-            
-            List<String> suffixes = n.getSuffixes();
-            if (suffixes != null && !suffixes.isEmpty()) {
-                nameSuffix = suffixes.get(0);
-            }
-        }
+		//TODO Vcard 4.0 may have more than 1 birthday so lets get the list and always use the very first one ..
+		//TODO Should we handle date formats ...???
+		insertBirthdays();
 
-        String displayName;
-        if (TextUtils.isEmpty(formattedName)) {
-            displayName = VcardContactUtil.joinNameComponents(namePrefix, firstName, null, lastName, nameSuffix);
-        } else {
-            displayName = formattedName;
-        }
+		insertWebsites();
+		insertNotes();
+		insertPhotos();
+		insertOrganization();
 
-        if (!TextUtils.isEmpty(firstName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, firstName);
-        }
-        if (!TextUtils.isEmpty(lastName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, lastName);
-        }
-        if (!TextUtils.isEmpty(namePrefix)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PREFIX, namePrefix);
-        }
-        if (!TextUtils.isEmpty(nameSuffix)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.SUFFIX, nameSuffix);
-        }
-        if (!TextUtils.isEmpty(firstPhoneticName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_GIVEN_NAME, firstPhoneticName);
-        }
-        if (!TextUtils.isEmpty(lastPhoneticName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_FAMILY_NAME, lastPhoneticName);
-        }
-        if (!TextUtils.isEmpty(displayName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, displayName);
-        }
+		// Executing all the insert operations as a single database transaction
+		context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, operations);
+	}
 
-        if (contentValues.size() == 0){
-        	return;
-        }
+	private void insertAccountInfo() {
+		String accountName = TextUtils.isEmpty(this.accountName) ? null : this.accountName;
+		String accountType = TextUtils.isEmpty(this.accountType) ? null : this.accountType;
 
-        contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-	    operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
-            .withValues(contentValues)
-            .build());
-    }
-    
-    private void insertNickname(){
-        List<Nickname> nicknameList = vCard.getNicknames();
-        for (Nickname nickname : nicknameList) {
-            if (nickname == null || nickname.getValues().isEmpty()) {
-            	continue;
-            }
-            
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Nickname.NAME, nickname.getValues().get(0))
-                .build());
-        }
-    }
-    
-    private void insertPhones(){
-        List<Telephone> telephoneList = vCard.getTelephoneNumbers();
-        for (Telephone telephone : telephoneList) {
-        	if (telephone == null){
-        		continue;
-        	}
+		operations.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI).withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType).withValue(ContactsContract.RawContacts.ACCOUNT_NAME, accountName).build());
+	}
 
-            int phoneKind = VcardContactUtil.getPhoneType(telephone);
-            
-            String value = telephone.getText();
-            if (value == null){
-            	TelUri uri = telephone.getUri();
-            	if (uri != null){
-            		value = uri.toString();
-            	}
-            }
-            
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, value)
-                .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, phoneKind)
-                .build());
-        }
-    }
-    
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void insertEmails(){
-        List<Email> emailList = vCard.getEmails();
-        for (Email email : emailList) {
-        	if (email == null){
-        		continue;
-        	}
+	private void insertName() {
+		ContentValues contentValues = new ContentValues();
 
-            int emailKind = VcardContactUtil.getEmailType(email);
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Email.ADDRESS, email.getValue())
-                .withValue(ContactsContract.CommonDataKinds.Email.TYPE, emailKind)
-                .build());
-        }
-    }
-    
-    private void insertAddresses(){
-    	 List<Address> addressList = vCard.getAddresses();
-         for (Address address : addressList) {
-         	if (address == null){
-         		continue;
-         	}
-         	
-         	ContentValues contentValues = new ContentValues();
-            String street = address.getStreetAddress();
-            String poBox = address.getPoBox();
-            String city = address.getLocality();
-            String state = address.getRegion();
-            String zipCode = address.getPostalCode();
-            String country = address.getCountry();
-            int addressKind = VcardContactUtil.getAddressType(address);
-            
-            contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.TYPE, addressKind);
-            if (addressKind == ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM){
-            	Set<AddressType> types = address.getTypes();
-            	String label = types.isEmpty() ? "unknown" : types.iterator().next().getValue();
-            	contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.LABEL, label);
-            }
+		StructuredName n = vcard.getStructuredName();
+		String firstName = (n == null) ? null : n.getGiven();
+		String lastName = (n == null) ? null : n.getFamily();
 
-            if (!TextUtils.isEmpty(street)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.STREET, street);
-            }
-            if (!TextUtils.isEmpty(poBox)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.POBOX, poBox);
-            }
-            // TODO No NEIGHBORHOOD info ...
-            if (!TextUtils.isEmpty(city)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.CITY, city);
-            }
-            if (!TextUtils.isEmpty(state)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.REGION, state);
-            }
-            if (!TextUtils.isEmpty(zipCode)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE, zipCode);
-            }
-            if (!TextUtils.isEmpty(country)) {
-                contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY, country);
-            }
+		FormattedName fn = vcard.getFormattedName();
+		String formattedName = (fn == null) ? null : fn.getValue();
 
-            if (contentValues.size() == 0){
-            	continue;
-            }
+		String firstPhoneticName = null;
+		RawProperty firstphoneticNameprop = vcard.getExtendedProperty("X-PHONETIC-FIRST-NAME");
+		if (firstphoneticNameprop != null) {
+			firstPhoneticName = firstphoneticNameprop.getValue();
+		}
 
-            contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE);
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                .withValues(contentValues)
-                .build());
-         }
-    }
-    
-    private void insertIms(){
-    	//handle extended properties
-        for (Map.Entry<String, Integer> entry : VcardContactUtil.getImPropertyNameMappings().entrySet()) {
-        	String propertyName = entry.getKey();
-        	Integer protocolType = entry.getValue();
-            List<RawProperty> rawProperties = vCard.getExtendedProperties(propertyName);
-            for (RawProperty rawProperty : rawProperties){
-	            String imAddress = rawProperty.getValue();
-	            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)
-                    .withValue(ContactsContract.CommonDataKinds.Im.DATA, imAddress)
-                    .withValue(ContactsContract.CommonDataKinds.Im.PROTOCOL, protocolType)
-                    .build());
-	        }
-        }
+		String lastPhoneticName = null;
+		RawProperty lastPhoneticNameProp = vcard.getExtendedProperty("X-PHONETIC-LAST-NAME");
+		if (lastPhoneticNameProp != null) {
+			lastPhoneticName = lastPhoneticNameProp.getValue();
+		}
 
-        //handle IMPP properties
-        List<Impp> imppList = vCard.getImpps();
-        for (Impp impp : imppList) {
-        	if (impp == null){
-        		continue;
-        	}
+		//TODO for now always get the first prefix
+		String namePrefix = null;
+		String nameSuffix = null;
+		if (n != null) {
+			List<String> prefixes = n.getPrefixes();
+			if (prefixes != null && !prefixes.isEmpty()) {
+				namePrefix = prefixes.get(0);
+			}
 
-            String immpAddress = impp.getHandle();
-            int immpProtocolType = VcardContactUtil.getIMTypeFromProtocol(impp.getProtocol());
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Im.DATA, immpAddress)
-                .withValue(ContactsContract.CommonDataKinds.Im.PROTOCOL, immpProtocolType)
-                .build());
-        }
-    }
-    
-    private void insertCustomFields(){
-    	List<AndroidCustomField> customFields = vCard.getProperties(AndroidCustomField.class);
-        for (AndroidCustomField customField : customFields) {
+			List<String> suffixes = n.getSuffixes();
+			if (suffixes != null && !suffixes.isEmpty()) {
+				nameSuffix = suffixes.get(0);
+			}
+		}
+
+		String displayName;
+		if (TextUtils.isEmpty(formattedName)) {
+			displayName = VcardContactUtil.joinNameComponents(namePrefix, firstName, null, lastName, nameSuffix);
+		} else {
+			displayName = formattedName;
+		}
+
+		if (!TextUtils.isEmpty(firstName)) {
+			contentValues.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, firstName);
+		}
+		if (!TextUtils.isEmpty(lastName)) {
+			contentValues.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, lastName);
+		}
+		if (!TextUtils.isEmpty(namePrefix)) {
+			contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PREFIX, namePrefix);
+		}
+		if (!TextUtils.isEmpty(nameSuffix)) {
+			contentValues.put(ContactsContract.CommonDataKinds.StructuredName.SUFFIX, nameSuffix);
+		}
+		if (!TextUtils.isEmpty(firstPhoneticName)) {
+			contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_GIVEN_NAME, firstPhoneticName);
+		}
+		if (!TextUtils.isEmpty(lastPhoneticName)) {
+			contentValues.put(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_FAMILY_NAME, lastPhoneticName);
+		}
+		if (!TextUtils.isEmpty(displayName)) {
+			contentValues.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, displayName);
+		}
+
+		if (contentValues.size() == 0) {
+			return;
+		}
+
+		contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
+		operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE).withValues(contentValues).build());
+	}
+
+	private void insertNickname() {
+		List<Nickname> nicknameList = vcard.getNicknames();
+		for (Nickname nickname : nicknameList) {
+			if (nickname == null || nickname.getValues().isEmpty()) {
+				continue;
+			}
+
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Nickname.NAME, nickname.getValues().get(0)).build());
+		}
+	}
+
+	private void insertPhones() {
+		List<Telephone> telephoneList = vcard.getTelephoneNumbers();
+		for (Telephone telephone : telephoneList) {
+			if (telephone == null) {
+				continue;
+			}
+
+			int phoneKind = VcardContactUtil.getPhoneType(telephone);
+
+			String value = telephone.getText();
+			if (value == null) {
+				TelUri uri = telephone.getUri();
+				if (uri != null) {
+					value = uri.toString();
+				}
+			}
+
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, value).withValue(ContactsContract.CommonDataKinds.Phone.TYPE, phoneKind).build());
+		}
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void insertEmails() {
+		List<Email> emailList = vcard.getEmails();
+		for (Email email : emailList) {
+			if (email == null) {
+				continue;
+			}
+
+			int emailKind = VcardContactUtil.getEmailType(email);
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Email.ADDRESS, email.getValue()).withValue(ContactsContract.CommonDataKinds.Email.TYPE, emailKind).build());
+		}
+	}
+
+	private void insertAddresses() {
+		List<Address> addressList = vcard.getAddresses();
+		for (Address address : addressList) {
+			if (address == null) {
+				continue;
+			}
+
+			ContentValues contentValues = new ContentValues();
+			String street = address.getStreetAddress();
+			String poBox = address.getPoBox();
+			String city = address.getLocality();
+			String state = address.getRegion();
+			String zipCode = address.getPostalCode();
+			String country = address.getCountry();
+			int addressKind = VcardContactUtil.getAddressType(address);
+
+			contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.TYPE, addressKind);
+			if (addressKind == ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM) {
+				Set<AddressType> types = address.getTypes();
+				String label = types.isEmpty() ? "unknown" : types.iterator().next().getValue();
+				contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.LABEL, label);
+			}
+
+			if (!TextUtils.isEmpty(street)) {
+				contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.STREET, street);
+			}
+			if (!TextUtils.isEmpty(poBox)) {
+				contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.POBOX, poBox);
+			}
+			// TODO No NEIGHBORHOOD info ...
+			if (!TextUtils.isEmpty(city)) {
+				contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.CITY, city);
+			}
+			if (!TextUtils.isEmpty(state)) {
+				contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.REGION, state);
+			}
+			if (!TextUtils.isEmpty(zipCode)) {
+				contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE, zipCode);
+			}
+			if (!TextUtils.isEmpty(country)) {
+				contentValues.put(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY, country);
+			}
+
+			if (contentValues.size() == 0) {
+				continue;
+			}
+
+			contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE);
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValues(contentValues).build());
+		}
+	}
+
+	private void insertIms() {
+		//handle extended properties
+		for (Map.Entry<String, Integer> entry : VcardContactUtil.getImPropertyNameMappings().entrySet()) {
+			String propertyName = entry.getKey();
+			Integer protocolType = entry.getValue();
+			List<RawProperty> rawProperties = vcard.getExtendedProperties(propertyName);
+			for (RawProperty rawProperty : rawProperties) {
+				String imAddress = rawProperty.getValue();
+				operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Im.DATA, imAddress).withValue(ContactsContract.CommonDataKinds.Im.PROTOCOL, protocolType).build());
+			}
+		}
+
+		//handle IMPP properties
+		List<Impp> imppList = vcard.getImpps();
+		for (Impp impp : imppList) {
+			if (impp == null) {
+				continue;
+			}
+
+			String immpAddress = impp.getHandle();
+			int immpProtocolType = VcardContactUtil.getIMTypeFromProtocol(impp.getProtocol());
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Im.DATA, immpAddress).withValue(ContactsContract.CommonDataKinds.Im.PROTOCOL, immpProtocolType).build());
+		}
+	}
+
+	private void insertCustomFields() {
+		List<AndroidCustomField> customFields = vcard.getProperties(AndroidCustomField.class);
+		for (AndroidCustomField customField : customFields) {
 			List<String> values = customField.getValues();
 			if (values.isEmpty()) {
 				continue;
 			}
 
 			ContentProviderOperation op = null;
-			if (customField.isNickname()){
-				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-					.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-					.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
-					.withValue(ContactsContract.CommonDataKinds.Nickname.NAME, values.get(0))
-					.build();
-			} else if (customField.isContactEvent()){
-				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-					.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-					.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
-					.withValue(ContactsContract.CommonDataKinds.Event.START_DATE, values.get(0))
-					.withValue(ContactsContract.CommonDataKinds.Event.TYPE, values.get(1))
-					.build();
-			} else if (customField.isRelation()){
-				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-					.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-					.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE)
-					.withValue(ContactsContract.CommonDataKinds.Relation.NAME, values.get(0))
-					.withValue(ContactsContract.CommonDataKinds.Relation.TYPE, values.get(1))
-					.build();
+			if (customField.isNickname()) {
+				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Nickname.NAME, values.get(0)).build();
+			} else if (customField.isContactEvent()) {
+				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Event.START_DATE, values.get(0)).withValue(ContactsContract.CommonDataKinds.Event.TYPE, values.get(1)).build();
+			} else if (customField.isRelation()) {
+				op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Relation.NAME, values.get(0)).withValue(ContactsContract.CommonDataKinds.Relation.TYPE, values.get(1)).build();
 			}
 
 			if (op != null) {
 				operations.add(op);
 			}
 		}
-    }
-    
-    private void insertGroupedProperties(){
-    	List<RawProperty> extendedProperties = vCard.getExtendedProperties();
-        Map<String, List<RawProperty>> orderedByGroup = orderPropertiesByGroup(extendedProperties);
-        final int ABDATE = 1, ABRELATEDNAMES = 2;
+	}
 
-        for (List<RawProperty> properties : orderedByGroup.values()) {
-            if (properties.size() < 2) {
-            	continue;
-            }
+	private void insertGroupedProperties() {
+		List<RawProperty> extendedProperties = vcard.getExtendedProperties();
+		Map<String, List<RawProperty>> orderedByGroup = orderPropertiesByGroup(extendedProperties);
+		final int ABDATE = 1, ABRELATEDNAMES = 2;
 
-            String label = null;
-            String val = null;
-            int mime = 0;
-            for (RawProperty property : properties) {
-                String name = property.getPropertyName();
-                
-                if (name.equalsIgnoreCase("X-ABDATE")) {
-                    label = property.getValue(); //date
-                    mime = ABDATE;
-                    continue;
-                }
-                
-                if (name.equalsIgnoreCase("X-ABRELATEDNAMES")) {
-                    label = property.getValue(); //name
-                    mime = ABRELATEDNAMES;
-                    continue;
-                }
-                
-                if (name.equalsIgnoreCase("X-ABLABEL")) {
-                    val = property.getValue(); // type of value ..Birthday,anniversary
-                    continue;
-                }
-            }
+		for (List<RawProperty> properties : orderedByGroup.values()) {
+			if (properties.size() < 2) {
+				continue;
+			}
 
-            switch (mime) {
-                case ABDATE:
-                    if (!TextUtils.isEmpty(label) && !TextUtils.isEmpty(val)) {
-                        int type = VcardContactUtil.getDateType(val);
-                        operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
-                            .withValue(ContactsContract.CommonDataKinds.Event.START_DATE, label)
-                            .withValue(ContactsContract.CommonDataKinds.Event.TYPE, type)
-                            .build());
-                    }
-                    break;
-                case ABRELATEDNAMES:
-                    if (val != null) {
-                    	ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-	                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-	                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
-	                        .withValue(ContactsContract.CommonDataKinds.Nickname.NAME, label);
-                    	
-                        if (!val.equals("Nickname")) {
-                            int type = VcardContactUtil.getNameType(val);
-                            builder.withValue(ContactsContract.CommonDataKinds.Relation.TYPE, type);
-                        }
-                        
-                        operations.add(builder.build());
-                    }
-                    break;
-            }
-        }
-    }
-    
-    private void insertBirthdays(){
-    	List<Birthday> birthdayList = vCard.getBirthdays();
-    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        for (Birthday birthday : birthdayList) {
-        	if (birthday == null){
-        		continue;
-        	}
+			String label = null;
+			String val = null;
+			int mime = 0;
+			for (RawProperty property : properties) {
+				String name = property.getPropertyName();
 
-        	Date date = birthday.getDate();
-        	if (date == null){
-        		continue;
-        	}
+				if (name.equalsIgnoreCase("X-ABDATE")) {
+					label = property.getValue(); //date
+					mime = ABDATE;
+					continue;
+				}
 
-        	String formattedBday = df.format(date);
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY)
-                .withValue(ContactsContract.CommonDataKinds.Event.START_DATE, formattedBday)
-                .build());
-        }
-    }
-    
-    private void insertWebsites(){
-    	 List<Url> urls = vCard.getUrls();
-         for (Url url : urls) {
-         	if (url == null){
-         		continue;
-         	}
+				if (name.equalsIgnoreCase("X-ABRELATEDNAMES")) {
+					label = property.getValue(); //name
+					mime = ABRELATEDNAMES;
+					continue;
+				}
 
-            String urlValue = url.getValue();
-            int type = VcardContactUtil.getWebSiteType(url.getType());
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                 .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE)
-                 .withValue(ContactsContract.CommonDataKinds.Website.URL, urlValue)
-                 .withValue(ContactsContract.CommonDataKinds.Website.TYPE, type)
-                 .build());
-         }
-    }
-    
-    private void insertNotes(){
-    	List<Note> notes = vCard.getNotes();
-        for (Note note : notes) {
-        	if (note == null){
-        		continue;
-        	}
+				if (name.equalsIgnoreCase("X-ABLABEL")) {
+					val = property.getValue(); // type of value ..Birthday,anniversary
+					continue;
+				}
+			}
 
-            String noteValue = note.getValue();
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Note.NOTE, noteValue)
-                .build());
-        }
-    }
-    
-    private void insertPhotos(){
-    	List<Photo> photoList = vCard.getPhotos();
-        for (Photo photo : photoList) {
-        	if (photo == null){
-        		continue;
-        	}
-        	
-        	byte[] data = photo.getData();
-        	if (data == null){
-        		continue;
-        	}
+			switch (mime) {
+			case ABDATE:
+				if (!TextUtils.isEmpty(label) && !TextUtils.isEmpty(val)) {
+					int type = VcardContactUtil.getDateType(val);
+					operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Event.START_DATE, label).withValue(ContactsContract.CommonDataKinds.Event.TYPE, type).build());
+				}
+				break;
+			case ABRELATEDNAMES:
+				if (val != null) {
+					ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Nickname.NAME, label);
 
-            operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, data)
-                .build());
-        }
-    }
-    
-    private void insertOrganization(){
-    	String orgName = null;
-        Organization organization = vCard.getOrganization();
-        if (organization != null) {
-        	List<String> values = organization.getValues();
-        	if (!values.isEmpty()){
-        		orgName = values.get(0);
-        	}
-        }
-        
-        String jobTitle = null;
-        List<Title> titleList = vCard.getTitles();
-        if (!titleList.isEmpty()) {
-        	jobTitle = titleList.get(0).getValue();
-        }
-        
-        ContentValues contentValues = new ContentValues();
-        if (!TextUtils.isEmpty(orgName)) {
-            contentValues.put(ContactsContract.CommonDataKinds.Organization.COMPANY, orgName);
-        }
-        if (!TextUtils.isEmpty(jobTitle)) {
-            contentValues.put(ContactsContract.CommonDataKinds.Organization.TITLE, jobTitle);
-        }
+					if (!val.equals("Nickname")) {
+						int type = VcardContactUtil.getNameType(val);
+						builder.withValue(ContactsContract.CommonDataKinds.Relation.TYPE, type);
+					}
 
-        if (contentValues.size() == 0){
-        	return;
-        }
+					operations.add(builder.build());
+				}
+				break;
+			}
+		}
+	}
 
-        contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
-        operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID)
-            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)
-            .withValues(contentValues)
-            .build());
-    }
+	private void insertBirthdays() {
+		List<Birthday> birthdayList = vcard.getBirthdays();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		for (Birthday birthday : birthdayList) {
+			if (birthday == null) {
+				continue;
+			}
 
+			Date date = birthday.getDate();
+			if (date == null) {
+				continue;
+			}
 
-    private Map<String, List<RawProperty>> orderPropertiesByGroup(List<RawProperty> rawProperties) {
-        Map<String, List<RawProperty>> groupedProperties = new HashMap<String, List<RawProperty>>();
+			String formattedBday = df.format(date);
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY).withValue(ContactsContract.CommonDataKinds.Event.START_DATE, formattedBday).build());
+		}
+	}
 
-        for (RawProperty rawProperty : rawProperties) {
-            String group = rawProperty.getGroup();
-            if (TextUtils.isEmpty(group)) {
-            	continue;
-            }
+	private void insertWebsites() {
+		List<Url> urls = vcard.getUrls();
+		for (Url url : urls) {
+			if (url == null) {
+				continue;
+			}
 
-            List<RawProperty> groupPropertiesList = groupedProperties.get(group);
-            if (groupPropertiesList == null) {
-                groupPropertiesList = new ArrayList<RawProperty>();
-                groupedProperties.put(group, groupPropertiesList);
-            }
-            groupPropertiesList.add(rawProperty);
-        }
+			String urlValue = url.getValue();
+			int type = VcardContactUtil.getWebSiteType(url.getType());
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Website.URL, urlValue).withValue(ContactsContract.CommonDataKinds.Website.TYPE, type).build());
+		}
+	}
 
-        return groupedProperties;
-    }
+	private void insertNotes() {
+		List<Note> notes = vcard.getNotes();
+		for (Note note : notes) {
+			if (note == null) {
+				continue;
+			}
+
+			String noteValue = note.getValue();
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Note.NOTE, noteValue).build());
+		}
+	}
+
+	private void insertPhotos() {
+		List<Photo> photoList = vcard.getPhotos();
+		for (Photo photo : photoList) {
+			if (photo == null) {
+				continue;
+			}
+
+			byte[] data = photo.getData();
+			if (data == null) {
+				continue;
+			}
+
+			operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, data).build());
+		}
+	}
+
+	private void insertOrganization() {
+		String orgName = null;
+		Organization organization = vcard.getOrganization();
+		if (organization != null) {
+			List<String> values = organization.getValues();
+			if (!values.isEmpty()) {
+				orgName = values.get(0);
+			}
+		}
+
+		String jobTitle = null;
+		List<Title> titleList = vcard.getTitles();
+		if (!titleList.isEmpty()) {
+			jobTitle = titleList.get(0).getValue();
+		}
+
+		ContentValues contentValues = new ContentValues();
+		if (!TextUtils.isEmpty(orgName)) {
+			contentValues.put(ContactsContract.CommonDataKinds.Organization.COMPANY, orgName);
+		}
+		if (!TextUtils.isEmpty(jobTitle)) {
+			contentValues.put(ContactsContract.CommonDataKinds.Organization.TITLE, jobTitle);
+		}
+
+		if (contentValues.size() == 0) {
+			return;
+		}
+
+		contentValues.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
+		operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactID).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE).withValues(contentValues).build());
+	}
+
+	private Map<String, List<RawProperty>> orderPropertiesByGroup(List<RawProperty> rawProperties) {
+		Map<String, List<RawProperty>> groupedProperties = new HashMap<String, List<RawProperty>>();
+
+		for (RawProperty rawProperty : rawProperties) {
+			String group = rawProperty.getGroup();
+			if (TextUtils.isEmpty(group)) {
+				continue;
+			}
+
+			List<RawProperty> groupPropertiesList = groupedProperties.get(group);
+			if (groupPropertiesList == null) {
+				groupPropertiesList = new ArrayList<RawProperty>();
+				groupedProperties.put(group, groupPropertiesList);
+			}
+			groupPropertiesList.add(rawProperty);
+		}
+
+		return groupedProperties;
+	}
 }
