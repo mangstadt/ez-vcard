@@ -105,7 +105,11 @@ public class VcardParser extends ActionBarActivity {
         List<VCard> vCards = Ezvcard.parse(file).register(new AndroidCustomFieldScribe()).all();
         ContactOperations opeartions = new ContactOperations(getApplicationContext(), "Phone", "com.motorola.android.buacontactadapter");
         for (VCard card : vCards) {
-            opeartions.insertContact(card);
+        	try {
+        		opeartions.insertContact(card);
+        	} catch (Exception e){
+        		throw new RuntimeException(e);
+        	}
         }
     }
 
