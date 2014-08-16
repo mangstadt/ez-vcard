@@ -36,7 +36,7 @@ task jar(type: Jar) {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.+'
-    compile ('com.googlecode.ez-vcard:ez-vcard:0.9.3'){
+    compile ('com.googlecode.ez-vcard:ez-vcard:0.9.5'){
         exclude group: 'org.jsoup'
         exclude group: 'org.freemarker'
         exclude group: 'com.fasterxml.jackson.core'
