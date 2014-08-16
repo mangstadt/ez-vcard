@@ -158,23 +158,6 @@ public class VcardContactUtil {
         imProtocolMappings = Collections.unmodifiableMap(m);
     }
 
-    public static <T> List<T> union(List<T> list1, List<T> list2) {
-        Set<T> set = new HashSet<T>();
-        set.addAll(list1);
-        set.addAll(list2);
-        return new ArrayList<T>(set);
-    }
-
-    public static <T> List<T> intersection(List<T> list1, List<T> list2) {
-        List<T> list = new ArrayList<T>();
-        for (T t : list1) {
-            if (list2.contains(t)) {
-                list.add(t);
-            }
-        }
-        return list;
-    }
-
 	/**
 	 * Maps the value of a URL property's TYPE parameter to the appropriate
 	 * Android {@link ContactsContract.CommonDataKinds.Website} value.
