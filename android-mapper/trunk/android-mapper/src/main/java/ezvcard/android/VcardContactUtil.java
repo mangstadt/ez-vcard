@@ -1,16 +1,11 @@
 package ezvcard.android;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import ezvcard.VCard;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
@@ -330,5 +325,9 @@ public class VcardContactUtil {
         }
         
         return sb.toString();
+    }
+    
+    private VcardContactUtil(){
+    	//hide constructor
     }
 }
