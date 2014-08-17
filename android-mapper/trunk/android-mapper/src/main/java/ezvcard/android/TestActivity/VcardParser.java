@@ -13,6 +13,7 @@ import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.text.VCardReader;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.io.Reader;
 import java.util.List;
 
 /*
- Copyright (c) 2013, Michael Angstadt
+ Copyright (c) 2014, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,104 +50,49 @@ import java.util.List;
  */
 
 /**
- * A sample Android activity which demonstrates on how to use this Vcard Android mapping library
- * There are two ways to parse and insert the vcard
- * <p/>
- * If the vcf file is small then take a look at
- * parseVcardList() which takes a list of vcards and inserts them
- * <p/>
- * If the VCF file is huge then stream the vcf file using
- * VCardReader and each vcard can be inserted.
- * <p/>
- * For this take a look at parseVcardStream()
- * <p/>
- * ContactOperations.ContactsRestoreCallback() can be used to get the call back
- * after each contact getting inserted into android native addressbook
- * <p/>
- * This callback can be used to calculate the number of contacts successfully inserted vs
- * the contacts failed and also to show the progress bar kind of stuff.
- *
+ * A sample Android activity which demonstrates on how to use this library.
  * @author Pratyush
+ * @author Michael Angstadt
  */
-
-
 public class VcardParser extends ActionBarActivity {
-
-
     private static final String TAG = VcardParser.class.getSimpleName();
-    private static String cacheFolderLocation = getExternalVCFFile();
+    private static final File vcardFile;
+    static {
+    	 String state = Environment.getExternalStorageState();
+    	 if (!Environment.MEDIA_MOUNTED.equals(state)) {
+    		 throw new RuntimeException("No external storage mounted.");
+    	 }
 
-
-    private static String getExternalVCFFile() {
-        String state = Environment.getExternalStorageState();
-        String filelocationvalue = null;
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            filelocationvalue = Environment.getExternalStorageDirectory().toString() + "/" + "1517814042cards.vcf";
-            Log.i("VCardparseActivity", "The location of the vcf file is " + filelocationvalue);
-        }
-        return filelocationvalue;
+    	 String path = Environment.getExternalStorageDirectory().toString() + "/" + "1517814042cards.vcf";
+    	 vcardFile = new File(path);
+    	 if (!vcardFile.exists()){
+    		 throw new RuntimeException("vCard file does not exist: " + path);
+    	 }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vcard_parser);
+        VCardReader reader = null;
         try {
-            // parseVcardStream();
-            parseVcardList();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void parseVcardList() throws IOException {
-        File file = new File(cacheFolderLocation);
-        List<VCard> vCards = Ezvcard.parse(file).register(new AndroidCustomFieldScribe()).all();
-        ContactOperations opeartions = new ContactOperations(getApplicationContext(), "Phone", "com.motorola.android.buacontactadapter");
-        for (VCard card : vCards) {
-        	try {
-        		opeartions.insertContact(card);
-        	} catch (Exception e){
-        		throw new RuntimeException(e);
-        	}
-        }
-    }
-
-    private void parseVcardStream() throws IOException {
-        Reader reader = new FileReader(new File(cacheFolderLocation));
-        final VCardReader vCardReader = new VCardReader(reader);
-        vCardReader.registerScribe(new AndroidCustomFieldScribe());
-        final ContactOperations opeartions = new ContactOperations(getApplicationContext());
-        try {
-            VCard vCard = null;
-            while ((vCard = vCardReader.readNext()) != null) {
-                opeartions.insertContact(vCard);
+        	reader = new VCardReader(vcardFile);
+            reader.registerScribe(new AndroidCustomFieldScribe());
+            
+            ContactOperations operations = new ContactOperations(getApplicationContext(), "Phone", "com.motorola.android.buacontactadapter");
+            VCard vcard = null;
+            while ((vcard = reader.readNext()) != null) {
+                operations.insertContact(vcard);
             }
-
-          /*  new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    VCard vCard = null;
-                    try {
-                        while ((vCard = vCardReader.readNext()) != null) {
-                            opeartions.addContact(vCard);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });*/
-
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+        	closeQuietly(reader);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.vcard_parser, menu);
         return true;
@@ -163,5 +109,16 @@ public class VcardParser extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
+    private static void closeQuietly(Closeable closeable){
+    	if (closeable == null){
+    		return;
+    	}
+    	
+    	try {
+			closeable.close();
+		} catch (IOException e){
+			//ignore
+		}
+    }
 }
