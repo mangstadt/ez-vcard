@@ -50,7 +50,7 @@ import ezvcard.property.Telephone;
  * @author Julien Garrigou
  * @author Michael Angstadt
  */
-public class VcardContactUtil {
+public class DataMappings {
     private static final Map<TelephoneType, Integer> phoneTypeMappings;
     static {
     	Map<TelephoneType, Integer> m = new HashMap<TelephoneType, Integer>();
@@ -168,6 +168,12 @@ public class VcardContactUtil {
     	return (value == null) ? ContactsContract.CommonDataKinds.Website.TYPE_CUSTOM : value;
     }
 
+    /**
+	 * Maps the value of a X-ABLABEL property to the appropriate
+	 * Android {@link ContactsContract.CommonDataKinds.Event} value.
+	 * @param type the property value
+	 * @return the Android type
+	 */
     public static int getDateType(String type) {
         if (type == null) {
             return ContactsContract.CommonDataKinds.Event.TYPE_OTHER;
@@ -182,6 +188,12 @@ public class VcardContactUtil {
         return ContactsContract.CommonDataKinds.Event.TYPE_OTHER;
     }
 
+    /**
+	 * Maps the value of a X-ABLABEL property to the appropriate
+	 * Android {@link ContactsContract.CommonDataKinds.Relation} value.
+	 * @param type the property value
+	 * @return the Android type
+	 */
     public static int getNameType(String type) {
         if (type == null) {
             return ContactsContract.CommonDataKinds.Relation.TYPE_CUSTOM;
@@ -200,7 +212,7 @@ public class VcardContactUtil {
 	 * Gets the mappings that associate an extended property name (e.g. "X-AIM")
 	 * with its appropriate Android {@link ContactsContract.CommonDataKinds.Im}
 	 * value.
-	 * @return the mappings
+	 * @return the mappings (the key is the property name, the value is the Android value)
 	 */
     public static Map<String, Integer> getImPropertyNameMappings(){
     	return imPropertyNameMappings;
@@ -273,7 +285,7 @@ public class VcardContactUtil {
     	return ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM;
     }
     
-    private VcardContactUtil(){
+    private DataMappings(){
     	//hide constructor
     }
 }

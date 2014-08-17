@@ -229,7 +229,7 @@ public class ContactOperations {
 				value = uri.toString();
 			}
 
-			int phoneKind = VcardContactUtil.getPhoneType(telephone);
+			int phoneKind = DataMappings.getPhoneType(telephone);
 
 			NonEmptyContentValues cv = new NonEmptyContentValues(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
 			cv.put(ContactsContract.CommonDataKinds.Phone.NUMBER, value);
@@ -245,7 +245,7 @@ public class ContactOperations {
 				continue;
 			}
 
-			int emailKind = VcardContactUtil.getEmailType(email);
+			int emailKind = DataMappings.getEmailType(email);
 
 			NonEmptyContentValues cv = new NonEmptyContentValues(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
 			cv.put(ContactsContract.CommonDataKinds.Email.ADDRESS, value);
@@ -279,7 +279,7 @@ public class ContactOperations {
 			String label = address.getLabel();
 			cv.put(ContactsContract.CommonDataKinds.StructuredPostal.LABEL, label);
 
-			int addressKind = VcardContactUtil.getAddressType(address);
+			int addressKind = DataMappings.getAddressType(address);
 			cv.put(ContactsContract.CommonDataKinds.StructuredPostal.TYPE, addressKind);
 
 			contentValues.add(cv);
@@ -288,7 +288,7 @@ public class ContactOperations {
 
 	private void convertIms(List<NonEmptyContentValues> contentValues, VCard vcard) {
 		//handle extended properties
-		for (Map.Entry<String, Integer> entry : VcardContactUtil.getImPropertyNameMappings().entrySet()) {
+		for (Map.Entry<String, Integer> entry : DataMappings.getImPropertyNameMappings().entrySet()) {
 			String propertyName = entry.getKey();
 			Integer protocolType = entry.getValue();
 			List<RawProperty> rawProperties = vcard.getExtendedProperties(propertyName);
@@ -311,7 +311,7 @@ public class ContactOperations {
 			String immpAddress = impp.getHandle();
 			cv.put(ContactsContract.CommonDataKinds.Im.DATA, immpAddress);
 
-			int immpProtocolType = VcardContactUtil.getIMTypeFromProtocol(impp.getProtocol());
+			int immpProtocolType = DataMappings.getIMTypeFromProtocol(impp.getProtocol());
 			cv.put(ContactsContract.CommonDataKinds.Im.PROTOCOL, immpProtocolType);
 
 			contentValues.add(cv);
@@ -386,7 +386,7 @@ public class ContactOperations {
 
 				cv.put(ContactsContract.CommonDataKinds.Event.START_DATE, label);
 
-				int type = VcardContactUtil.getDateType(val);
+				int type = DataMappings.getDateType(val);
 				cv.put(ContactsContract.CommonDataKinds.Event.TYPE, type);
 
 				break;
@@ -397,7 +397,7 @@ public class ContactOperations {
 					cv.put(ContactsContract.CommonDataKinds.Nickname.NAME, label);
 
 					if (!val.equals("Nickname")) {
-						type = VcardContactUtil.getNameType(val);
+						type = DataMappings.getNameType(val);
 						cv.put(ContactsContract.CommonDataKinds.Relation.TYPE, type);
 					}
 				}
@@ -434,7 +434,7 @@ public class ContactOperations {
 				continue;
 			}
 
-			int type = VcardContactUtil.getWebSiteType(url.getType());
+			int type = DataMappings.getWebSiteType(url.getType());
 
 			NonEmptyContentValues cv = new NonEmptyContentValues(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE);
 			cv.put(ContactsContract.CommonDataKinds.Website.URL, urlValue);
