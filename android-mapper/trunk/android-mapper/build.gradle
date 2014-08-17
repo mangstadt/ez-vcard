@@ -8,6 +8,8 @@ buildscript {
 }
 apply plugin: 'android-library'
 
+version '1.0'
+
 repositories {
         mavenCentral()
 }
