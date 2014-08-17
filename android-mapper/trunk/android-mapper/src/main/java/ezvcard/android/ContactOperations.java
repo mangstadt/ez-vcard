@@ -168,7 +168,25 @@ public class ContactOperations {
 
 		String displayName;
 		if (isEmpty(formattedName)) {
-			displayName = VcardContactUtil.joinNameComponents(namePrefix, firstName, null, lastName, nameSuffix);
+			StringBuilder sb = new StringBuilder();
+			if (!isEmpty(namePrefix)){
+				sb.append(namePrefix).append(' ');
+			}
+			if (!isEmpty(firstName)){
+				sb.append(firstName).append(' ');
+			}
+			if (!isEmpty(lastName)){
+				sb.append(lastName).append(' ');
+			}
+			if (!isEmpty(nameSuffix)){
+				if (sb.length() > 0){
+	        		sb.deleteCharAt(sb.length()-1); //delete space character
+	        		sb.append(", ");
+	        	}
+				sb.append(nameSuffix);
+			}
+			
+			displayName = sb.toString().trim();
 		} else {
 			displayName = formattedName;
 		}

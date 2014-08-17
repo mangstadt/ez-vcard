@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.provider.ContactsContract;
-import android.text.TextUtils;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
@@ -272,59 +271,6 @@ public class VcardContactUtil {
     		}
     	}
     	return ContactsContract.CommonDataKinds.StructuredPostal.TYPE_CUSTOM;
-    }
-
-    /**
-     * Generates a full name string from the name's components.  Any parameter may be null.
-     * @param prefix the prefix (e.g. "Mr.")
-     * @param given the first name
-     * @param middle the middle name
-     * @param family the last name
-     * @param suffix the suffix (e.g. "Ph.D")
-     * @return the full name string
-     */
-    public static String joinNameComponents(String prefix, String given, String middle,
-                              String family, String suffix) {
-
-        prefix = (prefix == null) ? null : prefix.trim();
-        given = (given == null) ? null : given.trim();
-        middle = (middle == null) ? null : middle.trim();
-        family = (family == null) ? null : family.trim();
-        suffix = (suffix == null) ? null : suffix.trim();
-        
-        boolean hasPrefix = !TextUtils.isEmpty(prefix);
-        boolean hasGiven = !TextUtils.isEmpty(given);
-        boolean hasMiddle = !TextUtils.isEmpty(middle);
-        boolean hasFamily = !TextUtils.isEmpty(family);
-        boolean hasSuffix = !TextUtils.isEmpty(suffix);
-        
-        StringBuilder sb = new StringBuilder();
-        
-        if (hasPrefix){
-        	sb.append(prefix).append(' ');
-        }
-        
-        if (hasGiven){
-        	sb.append(given).append(' ');
-        }
-        
-        if (hasMiddle){
-        	sb.append(middle).append(' ');
-        }
-        
-        if (hasFamily){
-        	sb.append(family).append(' ');
-        }
-        
-        if (hasSuffix){
-        	if (sb.length() > 0){
-        		sb.deleteCharAt(sb.length()-1); //delete space character
-        		sb.append(", ");
-        	}
-        	sb.append(suffix);
-        }
-        
-        return sb.toString();
     }
     
     private VcardContactUtil(){
