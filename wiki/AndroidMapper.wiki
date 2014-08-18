@@ -2,7 +2,7 @@
 
 <wiki:toc max_depth="2"/>
 
-The Android Mapper project converts an ez-vcard `VCard` object into the appropriate Android data fields, so it can be added to an Android users's contact list.
+The Android Mapper project converts an ez-vcard `VCard` object into the appropriate Android data fields, so it can be added to an Android user's contact list.
 
 =1 Code Sample=
 
@@ -55,4 +55,3 @@ If you are not using an Android-enabled IDE, follow these instructions so you ca
   * Extras -> Android Support Repository (latest version)
  # Open the "local.properties" file in the root of the Android Mapper project, change the "sdk.dir" property to point to where you unzipped/installed the SDK Tools. 
  # Run `./gradlew build` to build the application.
-
