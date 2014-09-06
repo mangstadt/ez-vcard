@@ -108,7 +108,7 @@ import ezvcard.util.XmlUtils;
 *     
 * //parsing an existing xCard document
 * XCardDocument xcard = new XCardDocument(xml);
-* List&lt;VCard&gt; vcards = xcard.parseAll();
+* List&lt;VCard&gt; vcards = xcard.getVCards();
 * 
 * //creating an empty xCard document
 * XCardDocument xcard = new XCardDocument();
