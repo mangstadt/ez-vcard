@@ -2,7 +2,6 @@ package ezvcard.io.json;
 
 import static ezvcard.util.IOUtils.utf8Writer;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.Flushable;
 import java.io.IOException;
@@ -13,9 +12,9 @@ import java.util.List;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.AbstractVCardWriter;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
@@ -71,7 +70,7 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
  */
-public class JCardWriter extends AbstractVCardWriter implements Closeable, Flushable {
+public class JCardWriter extends StreamWriter implements Flushable {
 	private final JCardRawWriter writer;
 	private final VCardVersion targetVersion = VCardVersion.V4_0;
 
@@ -133,19 +132,19 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 
 	/**
 	 * Writes a vCard to the stream.
-	 * @param vcard the vCard to write
+	 * @param vcard the vCard that is being written
+	 * @param properties the properties to write
 	 * @throws IOException if there's a problem writing to the output stream
 	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
 	 * custom property class (see: {@link #registerScribe registerScribe})
 	 */
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void write(VCard vcard) throws IOException {
-		List<VCardProperty> propertiesToAdd = prepare(vcard, targetVersion);
-
+	protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
 		writer.writeStartVCard();
 		writer.writeProperty("version", VCardDataType.TEXT, JCardValue.single(targetVersion.getVersion()));
 
-		for (VCardProperty property : propertiesToAdd) {
+		for (VCardProperty property : properties) {
 			VCardPropertyScribe scribe = index.getPropertyScribe(property);
 
 			//marshal the value
@@ -169,6 +168,11 @@ public class JCardWriter extends AbstractVCardWriter implements Closeable, Flush
 		}
 
 		writer.writeEndVCard();
+	}
+
+	@Override
+	protected VCardVersion getTargetVersion() {
+		return targetVersion;
 	}
 
 	/**

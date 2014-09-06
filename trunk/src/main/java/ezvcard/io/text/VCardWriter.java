@@ -2,7 +2,6 @@ package ezvcard.io.text;
 
 import static ezvcard.util.IOUtils.utf8Writer;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Flushable;
@@ -11,14 +10,15 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.LinkedList;
 import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.AbstractVCardWriter;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
@@ -74,8 +74,9 @@ import ezvcard.util.IOUtils;
  * </p>
  * @author Michael Angstadt
  */
-public class VCardWriter extends AbstractVCardWriter implements Closeable, Flushable {
+public class VCardWriter extends StreamWriter implements Flushable {
 	private final VCardRawWriter writer;
+	private final LinkedList<Boolean> prodIdStack = new LinkedList<Boolean>();
 
 	/**
 	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
@@ -194,6 +195,7 @@ public class VCardWriter extends AbstractVCardWriter implements Closeable, Flush
 	 * Gets the version that the vCards should adhere to.
 	 * @return the vCard version
 	 */
+	@Override
 	public VCardVersion getTargetVersion() {
 		return writer.getVersion();
 	}
@@ -260,22 +262,10 @@ public class VCardWriter extends AbstractVCardWriter implements Closeable, Flush
 		return writer.getFoldingScheme();
 	}
 
-	/**
-	 * Writes a vCard to the stream.
-	 * @param vcard the vCard to write
-	 * @throws IOException if there's a problem writing to the output stream
-	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
-	 * custom property class (see: {@link #registerScribe registerScribe})
-	 */
-	public void write(VCard vcard) throws IOException {
-		write(vcard, addProdId);
-	}
-
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void write(VCard vcard, boolean addProdId) throws IOException {
-		VCardVersion targetVersion = writer.getVersion();
-		List<VCardProperty> propertiesToAdd = prepare(vcard, targetVersion, addProdId);
-
+	protected void _write(VCard vcard, List<VCardProperty> propertiesToAdd) throws IOException {
+		VCardVersion targetVersion = getTargetVersion();
 		writer.writeBeginComponent("VCARD");
 		writer.writeVersion();
 
@@ -301,7 +291,10 @@ public class VCardWriter extends AbstractVCardWriter implements Closeable, Flush
 				if (targetVersion == VCardVersion.V2_1) {
 					//write a nested vCard (2.1 style)
 					writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, value);
-					write(nestedVCard, false);
+					prodIdStack.add(addProdId);
+					addProdId = false;
+					write(nestedVCard);
+					addProdId = prodIdStack.removeLast();
 				} else {
 					//write an embedded vCard (3.0 style)
 					StringWriter sw = new StringWriter();

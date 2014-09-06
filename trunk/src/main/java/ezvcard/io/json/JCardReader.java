@@ -2,25 +2,22 @@ package ezvcard.io.json;
 
 import static ezvcard.util.IOUtils.utf8Reader;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.ParseWarnings;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.StreamReader;
 import ezvcard.io.json.JCardRawReader.JCardDataStreamListener;
 import ezvcard.io.scribe.RawPropertyScribe;
-import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.VCardParameters;
@@ -77,9 +74,7 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
  */
-public class JCardReader implements Closeable {
-	private ScribeIndex index = new ScribeIndex();
-	private final ParseWarnings warnings = new ParseWarnings();
+public class JCardReader extends StreamReader {
 	private final JCardRawReader reader;
 
 	/**
@@ -115,12 +110,8 @@ public class JCardReader implements Closeable {
 		this.reader = new JCardRawReader(reader);
 	}
 
-	/**
-	 * Reads the next vCard from the data stream.
-	 * @return the next vCard or null if there are no more
-	 * @throws IOException if there's a problem reading from the stream
-	 */
-	public VCard readNext() throws IOException {
+	@Override
+	protected VCard _readNext() throws IOException {
 		if (reader.eof()) {
 			return null;
 		}
@@ -134,44 +125,6 @@ public class JCardReader implements Closeable {
 			warnings.add(reader.getLineNum(), null, 29);
 		}
 		return vcard;
-	}
-
-	/**
-	 * <p>
-	 * Registers a property scribe. This is the same as calling:
-	 * </p>
-	 * <p>
-	 * {@code getScribeIndex().register(scribe)}
-	 * </p>
-	 * @param scribe the scribe to register
-	 */
-	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		index.register(scribe);
-	}
-
-	/**
-	 * Gets the scribe index.
-	 * @return the scribe index
-	 */
-	public ScribeIndex getScribeIndex() {
-		return index;
-	}
-
-	/**
-	 * Sets the scribe index.
-	 * @param index the scribe index
-	 */
-	public void setScribeIndex(ScribeIndex index) {
-		this.index = index;
-	}
-
-	/**
-	 * Gets the warnings from the last vCard that was unmarshalled. This list is
-	 * reset every time a new vCard is read.
-	 * @return the warnings or empty list if there were no warnings
-	 */
-	public List<String> getWarnings() {
-		return warnings.copy();
 	}
 
 	public void close() throws IOException {

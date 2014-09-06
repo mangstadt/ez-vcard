@@ -1,5 +1,7 @@
 package ezvcard.io;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,13 +49,39 @@ import ezvcard.property.VCardProperty;
  */
 
 /**
- * Parent class for all vCard writer classes.
+ * Writes vCards to a data stream.
  * @author Michael Angstadt
  */
-public abstract class AbstractVCardWriter {
+public abstract class StreamWriter implements Closeable {
 	protected ScribeIndex index = new ScribeIndex();
 	protected boolean addProdId = true;
 	protected boolean versionStrict = true;
+
+	/**
+	 * Writes a vCard to the stream.
+	 * @param vcard the vCard that is being written
+	 * @throws IOException if there's a problem writing to the output stream
+	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
+	 * custom property class (see: {@link #registerScribe registerScribe})
+	 */
+	public void write(VCard vcard) throws IOException {
+		List<VCardProperty> properties = prepare(vcard);
+		_write(vcard, properties);
+	}
+
+	/**
+	 * Writes a vCard to the stream.
+	 * @param vcard the vCard that is being written
+	 * @param properties the properties to write
+	 * @throws IOException if there's a problem writing to the output stream
+	 */
+	protected abstract void _write(VCard vcard, List<VCardProperty> properties) throws IOException;
+
+	/**
+	 * Gets the version that the next vCard will be written as.
+	 * @return the version
+	 */
+	protected abstract VCardVersion getTargetVersion();
 
 	/**
 	 * Gets whether or not a "PRODID" property will be added to each vCard,
@@ -131,26 +159,13 @@ public abstract class AbstractVCardWriter {
 	/**
 	 * Determines which properties need to be written.
 	 * @param vcard the vCard to write
-	 * @param targetVersion the target vCard version
-	 * @return the properties to write
-	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
-	 * custom property class (see: {@link #registerScribe registerScribe})
-	 */
-	protected List<VCardProperty> prepare(VCard vcard, VCardVersion targetVersion) {
-		return prepare(vcard, targetVersion, addProdId);
-	}
-
-	/**
-	 * Determines which properties need to be written.
-	 * @param vcard the vCard to write
-	 * @param targetVersion the target vCard version
-	 * @param addProdId whether or not to add a PRODID property
 	 * @return the properties to write
 	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
 	 * custom property class (see: {@link #registerScribe(VCardPropertyScribe)
 	 * registerScribe})
 	 */
-	protected List<VCardProperty> prepare(VCard vcard, VCardVersion targetVersion, boolean addProdId) {
+	private List<VCardProperty> prepare(VCard vcard) {
+		VCardVersion targetVersion = getTargetVersion();
 		List<VCardProperty> propertiesToAdd = new ArrayList<VCardProperty>();
 		Set<Class<? extends VCardProperty>> unregistered = new HashSet<Class<? extends VCardProperty>>();
 		for (VCardProperty property : vcard) {

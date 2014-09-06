@@ -1,10 +1,13 @@
 package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertSetEquals;
+import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,56 +58,60 @@ import ezvcard.util.ListMultimap;
 /**
  * @author Michael Angstadt
  */
-public class AbstractVCardWriterTest {
+public class StreamWriterTest {
+	private StreamWriterStub writer;
 	private VCard vcard;
-	private AbstractVCardWriter writer;
 
 	@Before
 	public void before() {
+		writer = new StreamWriterStub();
 		vcard = new VCard();
-		writer = new AbstractVCardWriter() {
-			//empty
-		};
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void property_without_scribe() {
-		vcard.addProperty(new VCardProperty() {
-			//empty
-		});
-		writer.prepare(vcard, VCardVersion.V2_1);
 	}
 
 	@Test
-	public void productId() {
+	public void unregistered_property() throws Exception {
+		vcard.addProperty(new TestProperty());
+
+		try {
+			writer.write(vcard);
+			fail("Expected IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			//expected
+		}
+
+		assertNull(writer.properties); //vCard was not written
+	}
+
+	@Test
+	public void productId() throws IOException {
 		assertNull(vcard.getProductId());
 
 		//default value
 		{
 			vcard.setProductId((String) null);
 			{
-				Prepared properties = new Prepared(VCardVersion.V2_1);
-				assertEquals(1, properties.count());
-				assertEquals(1, properties.count(RawProperty.class));
+				writer.write(vcard, VCardVersion.V2_1);
+				assertEquals(1, writer.count());
+				assertEquals(1, writer.count(RawProperty.class));
 
 				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-					properties = new Prepared(version);
-					assertEquals(1, properties.count());
-					assertEquals(1, properties.count(ProductId.class));
+					writer.write(vcard, version);
+					assertEquals(1, writer.count());
+					assertEquals(1, writer.count(ProductId.class));
 				}
 			}
 
 			vcard.setProductId("value"); //should be ignored
 			{
-				Prepared properties = new Prepared(VCardVersion.V2_1);
-				assertEquals(1, properties.count());
-				assertEquals(1, properties.count(RawProperty.class));
+				writer.write(vcard, VCardVersion.V2_1);
+				assertEquals(1, writer.count());
+				assertEquals(1, writer.count(RawProperty.class));
 
 				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-					properties = new Prepared(version);
-					assertEquals(1, properties.count());
-					ProductId prodId = properties.first(ProductId.class);
-					assertNotEquals("value", prodId.getValue());
+					writer.write(vcard, version);
+					assertEquals(1, writer.count());
+					ProductId prodid = writer.first(ProductId.class);
+					assertNotEquals("value", prodid.getValue());
 				}
 			}
 		}
@@ -114,20 +121,19 @@ public class AbstractVCardWriterTest {
 			vcard.setProductId((String) null);
 			{
 				for (VCardVersion version : VCardVersion.values()) {
-					Prepared properties = new Prepared(version);
-					assertEquals(0, properties.count());
+					writer.write(vcard, version);
+					assertEquals(0, writer.count());
 				}
 			}
 
 			vcard.setProductId("value");
 			{
-				Prepared properties = new Prepared(VCardVersion.V2_1);
-				assertEquals(0, properties.count());
+				writer.write(vcard, VCardVersion.V2_1);
+				assertEquals(0, writer.count());
 
 				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-					properties = new Prepared(version);
-					assertEquals(1, properties.count());
-					ProductId prodId = properties.first(ProductId.class);
+					writer.write(vcard, version);
+					ProductId prodId = writer.first(ProductId.class);
 					assertEquals("value", prodId.getValue());
 				}
 			}
@@ -137,35 +143,35 @@ public class AbstractVCardWriterTest {
 		{
 			vcard.setProductId((String) null);
 			{
-				Prepared properties = new Prepared(VCardVersion.V2_1);
-				assertEquals(1, properties.count());
-				assertEquals(1, properties.count(RawProperty.class));
+				writer.write(vcard, VCardVersion.V2_1);
+				assertEquals(1, writer.count());
+				assertEquals(1, writer.count(RawProperty.class));
 
 				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-					properties = new Prepared(version);
-					assertEquals(1, properties.count());
-					assertEquals(1, properties.count(ProductId.class));
+					writer.write(vcard, version);
+					assertEquals(1, writer.count());
+					assertEquals(1, writer.count(ProductId.class));
 				}
 			}
 
 			vcard.setProductId("value"); //should be ignored
 			{
-				Prepared properties = new Prepared(VCardVersion.V2_1);
-				assertEquals(1, properties.count());
-				assertEquals(1, properties.count(RawProperty.class));
+				writer.write(vcard, VCardVersion.V2_1);
+				assertEquals(1, writer.count());
+				assertEquals(1, writer.count(RawProperty.class));
 
 				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-					properties = new Prepared(version);
-					assertEquals(1, properties.count());
-					ProductId prodId = properties.first(ProductId.class);
-					assertNotEquals("value", prodId.getValue());
+					writer.write(vcard, version);
+					assertEquals(1, writer.count());
+					ProductId prodid = writer.first(ProductId.class);
+					assertNotEquals("value", prodid.getValue());
 				}
 			}
 		}
 	}
 
 	@Test
-	public void versionStrict() {
+	public void versionStrict() throws Exception {
 		writer.setAddProdId(false);
 		vcard.setGender(Gender.male());
 		vcard.setMailer("value");
@@ -173,37 +179,37 @@ public class AbstractVCardWriterTest {
 		//default value
 		{
 			for (VCardVersion version : each(VCardVersion.V2_1, VCardVersion.V3_0)) {
-				Prepared properties = new Prepared(version);
-				assertEquals(1, properties.count());
-				assertEquals(1, properties.count(Mailer.class));
+				writer.write(vcard, version);
+				assertEquals(1, writer.count());
+				assertEquals(1, writer.count(Mailer.class));
 			}
 
-			Prepared properties = new Prepared(VCardVersion.V4_0);
-			assertEquals(1, properties.count());
-			assertEquals(1, properties.count(Gender.class));
+			writer.write(vcard, VCardVersion.V4_0);
+			assertEquals(1, writer.count());
+			assertEquals(1, writer.count(Gender.class));
 		}
 
 		writer.setVersionStrict(false);
 		{
 			for (VCardVersion version : VCardVersion.values()) {
-				Prepared properties = new Prepared(version);
-				assertEquals(2, properties.count());
-				assertEquals(1, properties.count(Mailer.class));
-				assertEquals(1, properties.count(Gender.class));
+				writer.write(vcard, version);
+				assertEquals(2, writer.count());
+				assertEquals(1, writer.count(Mailer.class));
+				assertEquals(1, writer.count(Gender.class));
 			}
 		}
 
 		writer.setVersionStrict(true);
 		{
 			for (VCardVersion version : each(VCardVersion.V2_1, VCardVersion.V3_0)) {
-				Prepared properties = new Prepared(version);
-				assertEquals(1, properties.count());
-				assertEquals(1, properties.count(Mailer.class));
+				writer.write(vcard, version);
+				assertEquals(1, writer.count());
+				assertEquals(1, writer.count(Mailer.class));
 			}
 
-			Prepared properties = new Prepared(VCardVersion.V4_0);
-			assertEquals(1, properties.count());
-			assertEquals(1, properties.count(Gender.class));
+			writer.write(vcard, VCardVersion.V4_0);
+			assertEquals(1, writer.count());
+			assertEquals(1, writer.count(Gender.class));
 		}
 	}
 
@@ -227,33 +233,50 @@ public class AbstractVCardWriterTest {
 		vcard.addAddress(adr);
 
 		for (VCardVersion version : each(VCardVersion.V2_1, VCardVersion.V3_0)) {
-			Prepared properties = new Prepared(version);
-			assertEquals(5, properties.count());
-			assertEquals(3, properties.count(Address.class));
+			writer.write(vcard, version);
+			assertEquals(5, writer.count());
+			assertEquals(3, writer.count(Address.class));
+			assertEquals(2, writer.count(Label.class));
 
-			Label label = properties.get(Label.class).get(0);
+			Label label = writer.get(Label.class).get(0);
 			assertEquals("value1", label.getValue());
 			assertSetEquals(label.getTypes(), AddressType.HOME);
 
-			label = properties.get(Label.class).get(1);
+			label = writer.get(Label.class).get(1);
 			assertEquals("value2", label.getValue());
 			assertSetEquals(label.getTypes());
 		}
 
-		Prepared properties = new Prepared(VCardVersion.V4_0);
-		assertEquals(3, properties.count());
-		assertEquals(3, properties.count(Address.class));
+		writer.write(vcard, VCardVersion.V4_0);
+		assertEquals(3, writer.count());
+		assertEquals(3, writer.count(Address.class));
 	}
 
-	private <T> T[] each(T... t) {
-		return t;
-	}
+	private class StreamWriterStub extends StreamWriter {
+		private VCardVersion targetVersion;
+		private ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = null;
 
-	private class Prepared {
-		private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
+		public StreamWriterStub() {
+			this(VCardVersion.V4_0);
+		}
 
-		public Prepared(VCardVersion version) {
-			List<VCardProperty> properties = writer.prepare(vcard, version);
+		public StreamWriterStub(VCardVersion targetVersion) {
+			this.targetVersion = targetVersion;
+		}
+
+		@Override
+		protected VCardVersion getTargetVersion() {
+			return targetVersion;
+		}
+
+		public void write(VCard vcard, VCardVersion targetVersion) throws IOException {
+			this.targetVersion = targetVersion;
+			super.write(vcard);
+		}
+
+		@Override
+		protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
+			this.properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
 			for (VCardProperty property : properties) {
 				this.properties.put(property.getClass(), property);
 			}
@@ -280,5 +303,13 @@ public class AbstractVCardWriterTest {
 			List<VCardProperty> props = properties.get(clazz);
 			return props.isEmpty() ? null : clazz.cast(props.get(0));
 		}
+
+		public void close() throws IOException {
+			//empty
+		}
+	}
+
+	private class TestProperty extends VCardProperty {
+		//empty
 	}
 }

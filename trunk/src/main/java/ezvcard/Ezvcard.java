@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
+import ezvcard.io.StreamReader;
 import ezvcard.io.html.HCardPage;
 import ezvcard.io.html.HCardParser;
 import ezvcard.io.json.JCardParseException;
@@ -34,6 +35,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.VCardReader;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.io.xml.XCardDocument;
+import ezvcard.io.xml.XCardDocument.XCardDocumentStreamWriter;
 import ezvcard.io.xml.XCardReader;
 import ezvcard.io.xml.XCardWriter;
 import ezvcard.property.VCardProperty;
@@ -810,28 +812,33 @@ public class Ezvcard {
 	static abstract class ParserChainXml<T> extends ParserChain<T> {
 		@Override
 		public VCard first() throws IOException, SAXException {
-			XCardDocument document = constructDocument();
-			VCard vcard = document.parseFirst();
+			StreamReader reader = constructStreamReader();
+			VCard vcard = reader.readNext();
 			if (warnings != null) {
-				warnings.addAll(document.getParseWarnings());
+				warnings.add(reader.getWarnings());
 			}
 			return vcard;
 		}
 
 		@Override
 		public List<VCard> all() throws IOException, SAXException {
-			XCardDocument document = constructDocument();
-			List<VCard> icals = document.parseAll();
-			if (warnings != null) {
-				warnings.addAll(document.getParseWarnings());
+			List<VCard> vcards = new ArrayList<VCard>();
+			StreamReader reader = constructStreamReader();
+			VCard vcard = null;
+			while ((vcard = reader.readNext()) != null) {
+				vcards.add(vcard);
+				if (warnings != null) {
+					warnings.add(reader.getWarnings());
+				}
 			}
-			return icals;
+			return vcards;
 		}
 
-		private XCardDocument constructDocument() throws SAXException, IOException {
+		private StreamReader constructStreamReader() throws SAXException, IOException {
 			XCardDocument parser = _constructDocument();
-			parser.setScribeIndex(index);
-			return parser;
+			StreamReader reader = parser.reader();
+			reader.setScribeIndex(index);
+			return reader;
 		}
 
 		abstract XCardDocument _constructDocument() throws IOException, SAXException;
@@ -1604,12 +1611,13 @@ public class Ezvcard {
 
 		private XCardDocument createXCardDocument() {
 			XCardDocument doc = new XCardDocument();
-			doc.setAddProdId(prodId);
-			doc.setVersionStrict(versionStrict);
-			doc.setScribeIndex(index);
+			XCardDocumentStreamWriter writer = doc.writer();
+			writer.setAddProdId(prodId);
+			writer.setVersionStrict(versionStrict);
+			writer.setScribeIndex(index);
 
 			for (VCard vcard : vcards) {
-				doc.add(vcard);
+				writer.write(vcard);
 			}
 
 			return doc;
