@@ -411,8 +411,9 @@ public class XCardReaderTest {
 		try {
 			reader.readNext();
 			fail();
-		} catch (TransformerException e) {
-			assertTrue(e.getCause() instanceof SAXException);
+		} catch (IOException e) {
+			assertTrue(e.getCause() instanceof TransformerException);
+			assertTrue(e.getCause().getCause() instanceof SAXException);
 		}
 
 		assertNull(reader.readNext());

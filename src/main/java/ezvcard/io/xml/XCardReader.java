@@ -40,9 +40,8 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.ParseWarnings;
 import ezvcard.io.SkipMeException;
-import ezvcard.io.scribe.ScribeIndex;
+import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.VCardParameters;
@@ -101,16 +100,14 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
-public class XCardReader implements Closeable {
+public class XCardReader extends StreamReader {
 	private final VCardVersion version = VCardVersion.V4_0;
 	private final String NS = version.getXmlNamespace();
 
 	private final Source source;
 	private final Closeable stream;
-	private volatile ScribeIndex index = new ScribeIndex();
 
 	private volatile VCard readVCard;
-	private final ParseWarnings warnings = new ParseWarnings();
 	private volatile TransformerException thrown;
 
 	private final ReadThread thread = new ReadThread();
@@ -162,52 +159,9 @@ public class XCardReader implements Closeable {
 		stream = null;
 	}
 
-	/**
-	 * <p>
-	 * Registers a property scribe. This is the same as calling:
-	 * </p>
-	 * <p>
-	 * {@code getScribeIndex().register(scribe)}
-	 * </p>
-	 * @param scribe the scribe to register
-	 */
-	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		index.register(scribe);
-	}
-
-	/**
-	 * Gets the scribe index.
-	 * @return the scribe index
-	 */
-	public ScribeIndex getScribeIndex() {
-		return index;
-	}
-
-	/**
-	 * Sets the scribe index.
-	 * @param index the scribe index
-	 */
-	public void setScribeIndex(ScribeIndex index) {
-		this.index = index;
-	}
-
-	/**
-	 * Gets the warnings from the last vCard that was unmarshalled. This list is
-	 * reset every time a new vCard is read.
-	 * @return the warnings or empty list if there were no warnings
-	 */
-	public List<String> getWarnings() {
-		return warnings.copy();
-	}
-
-	/**
-	 * Reads the next vCard from the xCard stream.
-	 * @return the next vCard or null if there are no more
-	 * @throws TransformerException if there's a problem reading from the stream
-	 */
-	public VCard readNext() throws TransformerException {
+	@Override
+	protected VCard _readNext() throws IOException {
 		readVCard = null;
-		warnings.clear();
 		thrown = null;
 
 		if (!thread.started) {
@@ -232,7 +186,7 @@ public class XCardReader implements Closeable {
 		}
 
 		if (thrown != null) {
-			throw thrown;
+			throw new IOException(thrown);
 		}
 
 		return readVCard;

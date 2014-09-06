@@ -323,6 +323,10 @@ public class TestUtils {
 		return date(text + " +0000");
 	}
 
+	public static <T> T[] each(T... t) {
+		return t;
+	}
+
 	private TestUtils() {
 		//hide
 	}

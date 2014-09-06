@@ -4,7 +4,7 @@ import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
-import static ezvcard.util.TestUtils.assertWarningsLists;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,8 +37,10 @@ import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.SalaryType;
 import ezvcard.io.SalaryType.SalaryScribe;
+import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.xml.XCardDocument.XCardDocumentStreamWriter;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.ImageType;
@@ -110,7 +112,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void parseAll() throws Throwable {
+	public void getVCards_multiple() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
@@ -124,7 +126,7 @@ public class XCardDocumentTest {
 		//@formatter:on
 
 		XCardDocument xcard = new XCardDocument(xml);
-		Iterator<VCard> it = xcard.parseAll().iterator();
+		Iterator<VCard> it = xcard.getVCards().iterator();
 
 		{
 			VCard vcard = it.next();
@@ -145,57 +147,30 @@ public class XCardDocumentTest {
 		}
 
 		assertFalse(it.hasNext());
-		assertWarningsLists(xcard.getParseWarnings(), 0, 0);
 	}
 
 	@Test
-	public void parseFirst() throws Throwable {
+	public void getVCards_single() throws Throwable {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
 			"</vcard>" +
-			"<vcard>" +
-				"<fn><text>Dr. Lisa Cuddy M.D.</text></fn>" +
-			"</vcard>" +
 		"</vcards>";
 		//@formatter:on
 
 		XCardDocument xcard = new XCardDocument(xml);
+		Iterator<VCard> it = xcard.getVCards().iterator();
 
-		VCard vcard = xcard.parseFirst();
+		VCard vcard = it.next();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(1, vcard.getProperties().size());
 
 		FormattedName fn = vcard.getFormattedName();
 		assertEquals("Dr. Gregory House M.D.", fn.getValue());
 
-		assertWarningsLists(xcard.getParseWarnings(), 0);
-	}
-
-	@Test
-	public void parse_clear_warnings() throws Throwable {
-		//@formatter:off
-		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
-			"<vcard>" +
-				"<skipme />" +
-			"</vcard>" +
-			"<vcard>" +
-				"<x-foo />" +
-			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
-
-		XCardDocument xcr = new XCardDocument(xml);
-		xcr.registerScribe(new SkipMeScribe());
-
-		xcr.parseAll();
-		assertWarningsLists(xcr.getParseWarnings(), 1, 0);
-
-		xcr.parseAll();
-		assertWarningsLists(xcr.getParseWarnings(), 1, 0);
+		assertFalse(it.hasNext());
 	}
 
 	@Test
@@ -204,11 +179,12 @@ public class XCardDocumentTest {
 		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
-		XCardDocument xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
 
-		Document actual = xcm.getDocument();
+		Document actual = xcard.getDocument();
 
 		//@formatter:off
 		String xml =
@@ -234,12 +210,13 @@ public class XCardDocumentTest {
 		note.getParameters().put("X-INT", "11");
 		vcard.addNote(note);
 
-		XCardDocument xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.registerParameterDataType("X-INT", VCardDataType.INTEGER);
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.registerParameterDataType("X-INT", VCardDataType.INTEGER);
+		writer.write(vcard);
 
-		Document actual = xcm.getDocument();
+		Document actual = xcard.getDocument();
 
 		//@formatter:off
 		String xml =
@@ -282,11 +259,12 @@ public class XCardDocumentTest {
 		note.setGroup("group2");
 		vcard.addNote(note);
 
-		XCardDocument xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
 
-		Document actual = xcm.getDocument();
+		Document actual = xcard.getDocument();
 
 		//@formatter:off
 		String xml =
@@ -328,12 +306,13 @@ public class XCardDocumentTest {
 		Note note = new Note("Hello world!");
 		vcard2.addNote(note);
 
-		XCardDocument xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.add(vcard1);
-		xcm.add(vcard2);
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard1);
+		writer.write(vcard2);
 
-		Document actual = xcm.getDocument();
+		Document actual = xcard.getDocument();
 
 		//@formatter:off
 		String xml =
@@ -357,12 +336,13 @@ public class XCardDocumentTest {
 		vcard.addProperty(new SkipMeProperty());
 		vcard.addExtendedProperty("x-foo", "value");
 
-		XCardDocument xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.registerScribe(new SkipMeScribe());
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.registerScribe(new SkipMeScribe());
+		writer.write(vcard);
 
-		Document actual = xcm.getDocument();
+		Document actual = xcard.getDocument();
 
 		//@formatter:off
 		String xml =
@@ -384,8 +364,8 @@ public class XCardDocumentTest {
 		SkipMeProperty property = new SkipMeProperty();
 		vcard.addProperty(property);
 
-		XCardDocument xcm = new XCardDocument();
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument();
+		xcard.add(vcard);
 	}
 
 	@Test
@@ -404,14 +384,15 @@ public class XCardDocumentTest {
 		AgeType age = new AgeType(22);
 		vcard.addProperty(age);
 
-		XCardDocument xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.registerScribe(new LuckyNumScribe());
-		xcm.registerScribe(new SalaryScribe());
-		xcm.registerScribe(new AgeScribe());
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.registerScribe(new LuckyNumScribe());
+		writer.registerScribe(new SalaryScribe());
+		writer.registerScribe(new AgeScribe());
+		writer.write(vcard);
 
-		Document actual = xcm.getDocument();
+		Document actual = xcard.getDocument();
 
 		//@formatter:off
 		String xml =
@@ -433,11 +414,12 @@ public class XCardDocumentTest {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedName("John Doe"));
 
-		XCardDocument xcm = new XCardDocument();
-		xcm.setAddProdId(false);
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
 
-		String actual = xcm.write(2);
+		String actual = xcard.write(2);
 
 		//@formatter:off
 		String expected =
@@ -476,11 +458,12 @@ public class XCardDocumentTest {
 		vcard.setFormattedName("John Doe");
 		vcard.addProperty(new EmbeddedProperty());
 
-		XCardDocument doc = new XCardDocument();
-		doc.registerScribe(new EmbeddedScribe());
-		doc.add(vcard);
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.registerScribe(new EmbeddedScribe());
+		writer.write(vcard);
 
-		VCard parsedVCard = Ezvcard.parseXml(doc.write()).first();
+		VCard parsedVCard = Ezvcard.parseXml(xcard.write()).first();
 		assertTrue(parsedVCard.getExtendedProperties().isEmpty());
 	}
 
@@ -490,11 +473,12 @@ public class XCardDocumentTest {
 		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
-		XCardDocument xcm = new XCardDocument("<root><a /></root>");
-		xcm.setAddProdId(false);
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument("<root><a /></root>");
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
 
-		Document actual = xcm.getDocument();
+		Document actual = xcard.getDocument();
 
 		//@formatter:off
 		String xml =
@@ -518,11 +502,12 @@ public class XCardDocumentTest {
 		FormattedName fn = new FormattedName("John Doe");
 		vcard.setFormattedName(fn);
 
-		XCardDocument xcm = new XCardDocument("<root><vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><a /></vcards></root>");
-		xcm.setAddProdId(false);
-		xcm.add(vcard);
+		XCardDocument xcard = new XCardDocument("<root><vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><a /></vcards></root>");
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
 
-		Document actual = xcm.getDocument();
+		Document actual = xcard.getDocument();
 
 		//@formatter:off
 		String xml =
@@ -612,11 +597,9 @@ public class XCardDocumentTest {
 	@Test
 	public void read_rfc6351_example() throws Throwable {
 		XCardDocument xcard = read("rfc6351-example.xml");
+		StreamReader reader = xcard.reader();
 
-		List<VCard> vcards = xcard.parseAll();
-		assertEquals(1, vcards.size());
-
-		VCard vcard = vcards.get(0);
+		VCard vcard = reader.readNext();
 		assertEquals(VCardVersion.V4_0, vcard.getVersion());
 		assertEquals(16, vcard.getProperties().size());
 
@@ -692,13 +675,15 @@ public class XCardDocumentTest {
 		assertEquals("home", url.getType());
 
 		assertValidate(vcard).versions(vcard.getVersion()).run();
-		assertWarningsLists(xcard.getParseWarnings(), 0);
+		assertWarnings(0, reader.getWarnings());
+		assertNull(reader.readNext());
 	}
 
 	private void assertExample(VCard vcard, String exampleFileName) throws IOException, SAXException {
 		XCardDocument xcard = new XCardDocument();
-		xcard.setAddProdId(false);
-		xcard.add(vcard);
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
 
 		Document expected = XmlUtils.toDocument(new InputStreamReader(getClass().getResourceAsStream(exampleFileName)));
 		Document actual = xcard.getDocument();

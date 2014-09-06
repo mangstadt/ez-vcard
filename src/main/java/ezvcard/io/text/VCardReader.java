@@ -1,6 +1,5 @@
 package ezvcard.io.text;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -19,10 +18,9 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.ParseWarnings;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.RawPropertyScribe;
-import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.Encoding;
@@ -84,9 +82,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * </p>
  * @author Michael Angstadt
  */
-public class VCardReader implements Closeable {
-	private final ParseWarnings warnings = new ParseWarnings();
-	private ScribeIndex index = new ScribeIndex();
+public class VCardReader extends StreamReader {
 	private Charset defaultQuotedPrintableCharset;
 	private final VCardRawReader reader;
 
@@ -183,52 +179,8 @@ public class VCardReader implements Closeable {
 		defaultQuotedPrintableCharset = charset;
 	}
 
-	/**
-	 * <p>
-	 * Registers a property scribe. This is the same as calling:
-	 * </p>
-	 * <p>
-	 * {@code getScribeIndex().register(scribe)}
-	 * </p>
-	 * @param scribe the scribe to register
-	 */
-	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		index.register(scribe);
-	}
-
-	/**
-	 * Gets the scribe index.
-	 * @return the scribe index
-	 */
-	public ScribeIndex getScribeIndex() {
-		return index;
-	}
-
-	/**
-	 * Sets the scribe index.
-	 * @param index the scribe index
-	 */
-	public void setScribeIndex(ScribeIndex index) {
-		this.index = index;
-	}
-
-	/**
-	 * Gets the warnings from the last vCard that was unmarshalled. This list is
-	 * reset every time a new vCard is read.
-	 * @return the warnings or empty list if there were no warnings
-	 */
-	public List<String> getWarnings() {
-		return warnings.copy();
-	}
-
-	/**
-	 * Reads the next vCard from the data stream.
-	 * @return the next vCard or null if there are no more
-	 * @throws IOException if there's a problem reading from the stream
-	 */
-	public VCard readNext() throws IOException {
-		warnings.clear();
-
+	@Override
+	protected VCard _readNext() throws IOException {
 		VCard root = null;
 		List<Label> labels = new ArrayList<Label>();
 		LinkedList<VCard> vcardStack = new LinkedList<VCard>();

@@ -6,7 +6,6 @@ import static ezvcard.io.xml.XCardQNames.VCARD;
 import static ezvcard.io.xml.XCardQNames.VCARDS;
 import static ezvcard.util.IOUtils.utf8Writer;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,9 +36,9 @@ import org.xml.sax.helpers.AttributesImpl;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.AbstractVCardWriter;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
@@ -96,7 +95,7 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
-public class XCardWriter extends AbstractVCardWriter implements Closeable {
+public class XCardWriter extends StreamWriter {
 	//how to use SAX to write XML: http://stackoverflow.com/questions/4898590/generating-xml-using-sax-and-java
 	private final VCardVersion targetVersion = VCardVersion.V4_0;
 	private final Document DOC = XmlUtils.createDocument();
@@ -227,57 +226,59 @@ public class XCardWriter extends AbstractVCardWriter implements Closeable {
 		return vcards.getNamespaceURI().equals(node.getNamespaceURI()) && vcards.getLocalPart().equals(node.getLocalName());
 	}
 
-	/**
-	 * Writes a vCard.
-	 * @param vcard the vcard to write
-	 * @throws SAXException if there's a problem writing the vCard
-	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
-	 * custom property class (see: {@link #registerScribe registerScribe})
-	 */
-	public void write(VCard vcard) throws SAXException {
-		if (!started) {
-			handler.startDocument();
+	@Override
+	protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
+		try {
+			if (!started) {
+				handler.startDocument();
 
-			if (!vcardsElementExists) {
-				//don't output a <vcards> element if the parent is a <vcards> element
-				start(VCARDS);
-				level++;
+				if (!vcardsElementExists) {
+					//don't output a <vcards> element if the parent is a <vcards> element
+					start(VCARDS);
+					level++;
+				}
+
+				started = true;
 			}
 
-			started = true;
+			ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<String, VCardProperty>(); //group the types by group name (null = no group name)
+			for (VCardProperty property : properties) {
+				propertiesByGroup.put(property.getGroup(), property);
+			}
+
+			start(VCARD);
+			level++;
+
+			for (Map.Entry<String, List<VCardProperty>> entry : propertiesByGroup) {
+				String groupName = entry.getKey();
+				if (groupName != null) {
+					AttributesImpl attr = new AttributesImpl();
+					attr.addAttribute(XCardQNames.NAMESPACE, "", "name", "", groupName);
+
+					start(GROUP, attr);
+					level++;
+				}
+
+				for (VCardProperty property : entry.getValue()) {
+					write(property, vcard);
+				}
+
+				if (groupName != null) {
+					level--;
+					end(GROUP);
+				}
+			}
+
+			level--;
+			end(VCARD);
+		} catch (SAXException e) {
+			throw new IOException(e);
 		}
+	}
 
-		List<VCardProperty> propertiesToAdd = prepare(vcard, targetVersion);
-		ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<String, VCardProperty>(); //group the types by group name (null = no group name)
-		for (VCardProperty property : propertiesToAdd) {
-			propertiesByGroup.put(property.getGroup(), property);
-		}
-
-		start(VCARD);
-		level++;
-
-		for (Map.Entry<String, List<VCardProperty>> entry : propertiesByGroup) {
-			String groupName = entry.getKey();
-			if (groupName != null) {
-				AttributesImpl attr = new AttributesImpl();
-				attr.addAttribute(XCardQNames.NAMESPACE, "", "name", "", groupName);
-
-				start(GROUP, attr);
-				level++;
-			}
-
-			for (VCardProperty property : entry.getValue()) {
-				write(property, vcard);
-			}
-
-			if (groupName != null) {
-				level--;
-				end(GROUP);
-			}
-		}
-
-		level--;
-		end(VCARD);
+	@Override
+	protected VCardVersion getTargetVersion() {
+		return targetVersion;
 	}
 
 	/**
