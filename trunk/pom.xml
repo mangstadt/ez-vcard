@@ -129,6 +129,14 @@
 						Otherwise, it will copy the unfiltered versions in "src/main/resources" to the JAR.
 						-->
 						<Include-Resource>{maven-resources}, {ez-vcard.properties=target/classes/ez-vcard.properties}</Include-Resource>
+						
+						<!-- Define optional dependencies -->
+						<Import-Package>
+							com.fasterxml.jackson.*;resolution:=optional,
+							org.joup.*;resolution:=optional,
+							org.freemarker.*;resolution:=optional,
+							*
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
