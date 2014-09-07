@@ -27,7 +27,6 @@ import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
-import ezvcard.property.Address;
 import ezvcard.property.Categories;
 import ezvcard.property.Email;
 import ezvcard.property.Impp;
@@ -284,19 +283,7 @@ public class HCardParser extends StreamReader {
 		}
 
 		//assign labels to their addresses
-		for (Label label : labels) {
-			boolean orphaned = true;
-			for (Address adr : vcard.getAddresses()) {
-				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
-					adr.setLabel(label.getValue());
-					orphaned = false;
-					break;
-				}
-			}
-			if (orphaned) {
-				vcard.addOrphanedLabel(label);
-			}
-		}
+		assignLabels(vcard, labels);
 	}
 
 	private void visit(Element element) {

@@ -4,10 +4,14 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.parameter.AddressType;
+import ezvcard.property.Address;
+import ezvcard.property.Label;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -77,6 +81,36 @@ public abstract class StreamReader implements Closeable {
 	 * @throws IOException if there's a problem reading from the stream
 	 */
 	protected abstract VCard _readNext() throws IOException;
+
+	/**
+	 * Matches up a list of {@link Label} properties with their corresponding
+	 * {@link Address} properties. If no match can be found, then the LABEL
+	 * property itself is assigned to the vCard.
+	 * @param vcard the vCard that the properties belong to
+	 * @param labels the LABEL properties
+	 */
+	protected void assignLabels(VCard vcard, List<Label> labels) {
+		List<Address> adrs = vcard.getAddresses();
+		for (Label label : labels) {
+			boolean orphaned = true;
+			Set<AddressType> labelTypes = label.getTypes();
+			for (Address adr : adrs) {
+				if (adr.getLabel() != null) {
+					//a label has already been assigned to it
+					continue;
+				}
+
+				if (adr.getTypes().equals(labelTypes)) {
+					adr.setLabel(label.getValue());
+					orphaned = false;
+					break;
+				}
+			}
+			if (orphaned) {
+				vcard.addOrphanedLabel(label);
+			}
+		}
+	}
 
 	/**
 	 * <p>

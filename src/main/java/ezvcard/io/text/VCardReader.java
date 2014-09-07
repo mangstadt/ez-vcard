@@ -25,7 +25,6 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.property.Address;
 import ezvcard.property.Label;
 import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
@@ -234,21 +233,8 @@ public class VCardReader extends StreamReader {
 			//handle END:VCARD
 			if ("END".equalsIgnoreCase(line.getName()) && "VCARD".equalsIgnoreCase(line.getValue())) {
 				VCard curVCard = vcardStack.removeLast();
-
-				//assign labels to their addresses
-				for (Label label : labels) {
-					boolean orphaned = true;
-					for (Address adr : curVCard.getAddresses()) {
-						if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
-							adr.setLabel(label.getValue());
-							orphaned = false;
-							break;
-						}
-					}
-					if (orphaned) {
-						curVCard.addOrphanedLabel(label);
-					}
-				}
+				assignLabels(curVCard, labels);
+				labels.clear();
 
 				if (vcardStack.isEmpty()) {
 					//done reading the vCard
