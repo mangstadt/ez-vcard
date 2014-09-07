@@ -675,7 +675,7 @@ public class XCardDocumentTest {
 		assertEquals("home", url.getType());
 
 		assertValidate(vcard).versions(vcard.getVersion()).run();
-		assertWarnings(0, reader.getWarnings());
+		assertWarnings(0, reader);
 		assertNull(reader.readNext());
 	}
 
