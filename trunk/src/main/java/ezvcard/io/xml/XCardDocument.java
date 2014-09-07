@@ -261,19 +261,12 @@ public class XCardDocument {
 	 * @return the parsed vCards
 	 */
 	public List<VCard> getVCards() {
-		List<VCard> vcards = new ArrayList<VCard>();
-
 		try {
-			StreamReader reader = reader();
-			VCard vcard = null;
-			while ((vcard = reader.readNext()) != null) {
-				vcards.add(vcard);
-			}
+			return reader().readAll();
 		} catch (IOException e) {
-			//won't be thrown
+			//not thrown because reading from DOM
+			throw new RuntimeException(e);
 		}
-
-		return vcards;
 	}
 
 	/**
@@ -411,7 +404,7 @@ public class XCardDocument {
 			return vcard;
 		}
 
-		public void close() throws IOException {
+		public void close() {
 			//empty
 		}
 
@@ -614,7 +607,7 @@ public class XCardDocument {
 			}
 		}
 
-		public void close() throws IOException {
+		public void close() {
 			//empty
 		}
 
