@@ -21,6 +21,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.Warning;
+import ezvcard.io.StreamReader;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -64,6 +65,15 @@ public class TestUtils {
 	 */
 	public static void assertWarnings(int expectedSize, List<String> warnings) {
 		assertEquals(warnings.toString(), expectedSize, warnings.size());
+	}
+
+	/**
+	 * Asserts that a StreamReader's warnings list is a certain size.
+	 * @param expectedSize the expected size of the warnings list
+	 * @param reader the reader
+	 */
+	public static void assertWarnings(int expectedSize, StreamReader reader) {
+		assertWarnings(expectedSize, reader.getWarnings());
 	}
 
 	/**

@@ -139,7 +139,7 @@ public class XCardReaderTest {
 			assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
 			assertEquals(Arrays.asList("MD"), n.getSuffixes());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -193,7 +193,7 @@ public class XCardReaderTest {
 			assertEquals(Arrays.asList("Dr", "Mr"), n.getPrefixes());
 			assertEquals(Arrays.asList("MD"), n.getSuffixes());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		{
@@ -211,7 +211,7 @@ public class XCardReaderTest {
 			assertEquals(Arrays.asList("Dr", "Ms"), n.getPrefixes());
 			assertEquals(Arrays.asList("MD"), n.getSuffixes());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -274,7 +274,7 @@ public class XCardReaderTest {
 
 			assertEquals("Dr. Gregory House M.D.", vcard.getFormattedName().getValue());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -302,7 +302,7 @@ public class XCardReaderTest {
 			Note note = vcard.getNotes().get(0);
 			assertEquals("  This \t  is \n   a   note ", note.getValue());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -342,7 +342,7 @@ public class XCardReaderTest {
 			assertEquals("Dr. Gregory House M.D.", fn.getValue());
 			assertEquals(fn.getParameters().toString(), Arrays.asList("1", "2"), fn.getParameters("PREF"));
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -388,7 +388,7 @@ public class XCardReaderTest {
 			assertEquals("grp", property.getGroup());
 			assertEquals("value", property.getValue());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -447,7 +447,7 @@ public class XCardReaderTest {
 
 			assertEquals("Dr. Gregory House M.D.", vcard.getFormattedName().getValue());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		{
@@ -457,7 +457,7 @@ public class XCardReaderTest {
 
 			assertEquals("Dr. Lisa Cuddy M.D.", vcard.getFormattedName().getValue());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -545,7 +545,7 @@ public class XCardReaderTest {
 				assertFalse(telIt.hasNext());
 			}
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -599,7 +599,7 @@ public class XCardReaderTest {
 			assertNull(prodid.getGroup());
 			assertEquals("no name attribute", prodid.getValue());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -683,7 +683,7 @@ public class XCardReaderTest {
 			MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);
 			assertEquals("JOHN DOE", fn.value);
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -731,7 +731,7 @@ public class XCardReaderTest {
 			//@formatter:on
 
 			assertXMLEqual(expected, actual);
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -762,7 +762,7 @@ public class XCardReaderTest {
 			assertEquals("X-FOO", property.getPropertyName());
 			assertEquals("value", property.getValue());
 
-			assertWarnings(1, reader.getWarnings());
+			assertWarnings(1, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -796,7 +796,7 @@ public class XCardReaderTest {
 			Xml xmlProperty = vcard.getXmls().get(0);
 			assertXMLEqual(XmlUtils.toString(xmlProperty.getValue()), XmlUtils.toDocument("<cannotparse xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\"><text>value</text></cannotparse>"), xmlProperty.getValue());
 
-			assertWarnings(1, reader.getWarnings());
+			assertWarnings(1, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -827,7 +827,7 @@ public class XCardReaderTest {
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Gregory House M.D.", fn.getValue());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		reader.close();
@@ -859,7 +859,7 @@ public class XCardReaderTest {
 			assertEquals(1, vcard.getProperties().size());
 			assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
 
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
@@ -958,7 +958,7 @@ public class XCardReaderTest {
 			assertEquals("home", url.getType());
 
 			assertValidate(vcard).versions(vcard.getVersion()).run();
-			assertWarnings(0, reader.getWarnings());
+			assertWarnings(0, reader);
 		}
 
 		assertNull(reader.readNext());
