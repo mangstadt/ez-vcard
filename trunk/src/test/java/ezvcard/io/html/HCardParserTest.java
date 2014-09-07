@@ -1,14 +1,12 @@
 package ezvcard.io.html;
 
 import static ezvcard.util.TestUtils.assertSetEquals;
-import static ezvcard.util.TestUtils.assertWarningsLists;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
@@ -71,10 +69,7 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
-
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings());
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -89,16 +84,15 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(0, vcard.getProperties().size());
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertEquals(1, parser.parseAll().size());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -115,18 +109,18 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -143,18 +137,18 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -171,20 +165,20 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals(1, vcard.getUrls().size());
 			assertEquals("http://johndoe.com", vcard.getUrls().get(0).getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -211,20 +205,20 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(3, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals("http://johndoe.com", vcard.getUrls().get(0).getValue());
 			assertEquals("(555) 555-1234", vcard.getTelephoneNumbers().get(0).getText());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -243,19 +237,19 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("Smith", vcard.getStructuredName().getFamily());
 			assertEquals("Smith", vcard.getOrganization().getValues().get(0));
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -275,26 +269,26 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
+			assertWarnings(0, parser.getWarnings());
 		}
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0, 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -317,10 +311,9 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
@@ -341,10 +334,11 @@ public class HCardParserTest {
 					assertEquals("Joseph Doe", embedded2.getFormattedName().getValue());
 				}
 			}
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -361,20 +355,20 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html, "http://johndoe.com/vcard.html");
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(3, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals("http://johndoe.com/index.html", vcard.getUrls().get(0).getValue());
 			assertEquals("http://johndoe.com/vcard.html", vcard.getSources().get(0).getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -391,18 +385,18 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals(URI.create("aim:ShoppingBuddy"), vcard.getImpps().get(0).getUri());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -419,18 +413,18 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals("jdoe@hotmail.com", vcard.getEmails().get(0).getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -447,18 +441,18 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			assertEquals("+15555551234", vcard.getTelephoneNumbers().get(0).getUri().getNumber());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -475,19 +469,19 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("mailto:jdoe@hotmail.com", vcard.getUrls().get(0).getValue());
 			assertEquals("jdoe@hotmail.com", vcard.getEmails().get(0).getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -503,19 +497,19 @@ public class HCardParserTest {
 		"</html>";
 		//@formatter:on
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("tel:+15555551234", vcard.getUrls().get(0).getValue());
 			assertEquals("+15555551234", vcard.getTelephoneNumbers().get(0).getUri().getNumber());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -538,10 +532,9 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
@@ -556,10 +549,11 @@ public class HCardParserTest {
 			Label label = vcard.getOrphanedLabels().get(0);
 			assertEquals("456 Wall St., New York, NY 67890", label.getValue());
 			assertSetEquals(label.getTypes(), AddressType.WORK);
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -581,19 +575,19 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html, "http://johndoe.com/vcard.html#anchor");
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("http://johndoe.com/vcard.html#anchor", vcard.getSources().get(0).getValue());
 			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -615,27 +609,27 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html, "http://johndoe.com/vcard.html#non-existant");
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals("http://johndoe.com/vcard.html#non-existant", vcard.getSources().get(0).getValue());
+			assertWarnings(0, parser.getWarnings());
 		}
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 			assertEquals("http://johndoe.com/vcard.html#non-existant", vcard.getSources().get(0).getValue());
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0, 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -655,19 +649,19 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals(Arrays.asList("Johnny", "Johnny 5", "Johnster"), vcard.getNickname().getValues());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -687,19 +681,19 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals(Arrays.asList("programmer", "swimmer", "singer"), vcard.getCategories().getValues());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -733,10 +727,9 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(7, vcard.getProperties().size());
 
@@ -763,14 +756,15 @@ public class HCardParserTest {
 			assertEquals("+1-650-289-4041", tel.getText());
 
 			assertEquals("info@commerce.net", vcard.getEmails().get(0).getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
-	public void registerExtendedType() {
+	public void registerExtendedProperty() {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -786,10 +780,9 @@ public class HCardParserTest {
 
 		HCardParser parser = new HCardParser(html);
 		parser.registerScribe(new LuckyNumScribe());
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(3, vcard.getProperties().size());
 
@@ -803,14 +796,15 @@ public class HCardParserTest {
 			List<RawProperty> genderTypes = vcard.getExtendedProperties("X-GENDER");
 			assertEquals(1, genderTypes.size());
 			assertEquals("male", genderTypes.get(0).getValue());
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
-	public void registerExtendedType_overrides_standard_type_classes() {
+	public void registerExtendedProperty_overrides_standard_type_classes() {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -824,19 +818,19 @@ public class HCardParserTest {
 
 		HCardParser parser = new HCardParser(html);
 		parser.registerScribe(new MyFormattedNameScribe());
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			//read a type that has a type class
 			assertEquals("JOHN DOE", vcard.getProperty(MyFormattedNameType.class).value);
+
+			assertWarnings(0, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 0);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -855,20 +849,20 @@ public class HCardParserTest {
 
 		HCardParser parser = new HCardParser(html);
 		parser.registerScribe(new SkipMeScribe());
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(1, vcard.getProperties().size());
 
 			RawProperty property = vcard.getExtendedProperty("x-foo");
 			assertEquals("x-foo", property.getPropertyName());
 			assertEquals("value", property.getValue());
+
+			assertWarnings(1, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 1);
+		assertNull(parser.readNext());
 	}
 
 	@Test
@@ -887,10 +881,9 @@ public class HCardParserTest {
 
 		HCardParser parser = new HCardParser(html);
 		parser.registerScribe(new CannotParseScribe());
-		Iterator<VCard> it = parser.parseAll().iterator();
 
 		{
-			VCard vcard = it.next();
+			VCard vcard = parser.readNext();
 			assertEquals(VCardVersion.V3_0, vcard.getVersion());
 			assertEquals(2, vcard.getProperties().size());
 
@@ -901,9 +894,11 @@ public class HCardParserTest {
 			property = vcard.getExtendedProperty("cannotparse");
 			assertEquals("cannotparse", property.getPropertyName());
 			assertEquals("<span class=\"cannotparse\">value</span>", property.getValue());
+
+			assertWarnings(1, parser.getWarnings());
 		}
 
-		assertFalse(it.hasNext());
-		assertWarningsLists(parser.getWarnings(), 1);
+		assertNull(parser.readNext());
+
 	}
 }

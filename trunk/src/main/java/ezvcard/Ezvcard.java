@@ -1014,9 +1014,9 @@ public class Ezvcard {
 		public VCard first() throws IOException {
 			HCardParser parser = constructReader();
 
-			VCard vcard = parser.parseFirst();
+			VCard vcard = parser.readNext();
 			if (warnings != null) {
-				warnings.addAll(parser.getWarnings());
+				warnings.add(parser.getWarnings());
 			}
 			return vcard;
 		}
@@ -1024,10 +1024,13 @@ public class Ezvcard {
 		@Override
 		public List<VCard> all() throws IOException {
 			HCardParser parser = constructReader();
-
-			List<VCard> vcards = parser.parseAll();
-			if (warnings != null) {
-				warnings.addAll(parser.getWarnings());
+			List<VCard> vcards = new ArrayList<VCard>();
+			VCard vcard = null;
+			while ((vcard = parser.readNext()) != null) {
+				vcards.add(vcard);
+				if (warnings != null) {
+					warnings.add(parser.getWarnings());
+				}
 			}
 			return vcards;
 		}
