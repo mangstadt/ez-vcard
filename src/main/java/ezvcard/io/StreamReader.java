@@ -2,6 +2,7 @@ package ezvcard.io;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ezvcard.VCard;
@@ -45,6 +46,20 @@ import ezvcard.property.VCardProperty;
 public abstract class StreamReader implements Closeable {
 	protected final ParseWarnings warnings = new ParseWarnings();
 	protected ScribeIndex index = new ScribeIndex();
+
+	/**
+	 * Reads all vCards from the data stream.
+	 * @return the vCards
+	 * @throws IOException if there's a problem reading from the stream
+	 */
+	public List<VCard> readAll() throws IOException {
+		List<VCard> vcards = new ArrayList<VCard>();
+		VCard vcard = null;
+		while ((vcard = readNext()) != null) {
+			vcards.add(vcard);
+		}
+		return vcards;
+	}
 
 	/**
 	 * Reads the next vCard from the data stream.
