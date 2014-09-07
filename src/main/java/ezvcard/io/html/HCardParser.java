@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -21,10 +22,9 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.ParseWarnings;
 import ezvcard.io.SkipMeException;
+import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.RawPropertyScribe;
-import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.property.Address;
@@ -86,17 +86,13 @@ import ezvcard.util.IOUtils;
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
-public class HCardParser {
-	private final Document document;
+public class HCardParser extends StreamReader {
 	private final String pageUrl;
 	private final Elements vcardElements;
-	private final List<ParseWarnings> warnings = new ArrayList<ParseWarnings>();
+	private final Iterator<Element> vcardElementsIt;
 	private final List<Label> labels = new ArrayList<Label>();
 
-	private ScribeIndex index = new ScribeIndex();
-
-	private VCard curVCard;
-	private final ParseWarnings curWarnings = new ParseWarnings();
+	private VCard vcard;
 	private Elements embeddedVCards = new Elements();
 	private Nickname nickname;
 	private Categories categories;
@@ -208,7 +204,6 @@ public class HCardParser {
 	 * relative links)
 	 */
 	public HCardParser(Document document, String pageUrl) {
-		this.document = document;
 		this.pageUrl = pageUrl;
 
 		String anchor = null;
@@ -229,6 +224,7 @@ public class HCardParser {
 			searchUnder = document;
 		}
 		vcardElements = searchUnder.getElementsByClass("vcard");
+		vcardElementsIt = vcardElements.iterator();
 	}
 
 	/**
@@ -237,58 +233,49 @@ public class HCardParser {
 	 * @param pageUrl the original URL of the HTML page
 	 */
 	private HCardParser(Element embeddedVCard, String pageUrl) {
-		this.document = embeddedVCard.ownerDocument();
 		this.pageUrl = pageUrl;
 		this.vcardElements = new Elements(embeddedVCard);
+		this.vcardElementsIt = this.vcardElements.iterator();
 	}
 
-	/**
-	 * Parses the first vCard from the HTML page.
-	 * @return the first vCard or null if there are none
-	 */
-	public VCard parseFirst() {
-		warnings.clear();
+	@Override
+	public VCard readNext() {
+		try {
+			return super.readNext();
+		} catch (IOException e) {
+			//will not be thrown because reading from DOM
+			throw new RuntimeException(e);
+		}
+	}
 
-		if (vcardElements.isEmpty()) {
+	@Override
+	protected VCard _readNext() {
+		if (!vcardElementsIt.hasNext()) {
 			return null;
 		}
 
-		parseVCardElement(vcardElements.first());
-		return curVCard;
-	}
-
-	/**
-	 * Parses all of the vCards from the HTML page.
-	 * @return the parsed vCards
-	 */
-	public List<VCard> parseAll() {
-		warnings.clear();
-
-		List<VCard> vcards = new ArrayList<VCard>();
-
-		for (Element vcardElement : vcardElements) {
-			//if this element is a child of another "vcard" element, then ignore it because it's an embedded vcard
-			if (isChildOf(vcardElement, vcardElements)) {
-				continue;
+		//if this element is a child of another "vcard" element, then ignore it because it's an embedded vcard
+		Element vcardElement = vcardElementsIt.next();
+		while (isChildOf(vcardElement, vcardElements)) {
+			if (!vcardElementsIt.hasNext()) {
+				return null;
 			}
-
-			parseVCardElement(vcardElement);
-			vcards.add(curVCard);
+			vcardElement = vcardElementsIt.next();
 		}
 
-		return vcards;
+		parseVCardElement(vcardElement);
+		return vcard;
 	}
 
 	private void parseVCardElement(Element vcardElement) {
-		curWarnings.clear();
 		labels.clear();
 		nickname = null;
 		categories = null;
 
-		curVCard = new VCard();
-		curVCard.setVersion(VCardVersion.V3_0);
+		vcard = new VCard();
+		vcard.setVersion(VCardVersion.V3_0);
 		if (pageUrl != null) {
-			curVCard.addSource(pageUrl);
+			vcard.addSource(pageUrl);
 		}
 
 		//visit all descendant nodes, depth-first
@@ -299,7 +286,7 @@ public class HCardParser {
 		//assign labels to their addresses
 		for (Label label : labels) {
 			boolean orphaned = true;
-			for (Address adr : curVCard.getAddresses()) {
+			for (Address adr : vcard.getAddresses()) {
 				if (adr.getLabel() == null && adr.getTypes().equals(label.getTypes())) {
 					adr.setLabel(label.getValue());
 					orphaned = false;
@@ -307,63 +294,9 @@ public class HCardParser {
 				}
 			}
 			if (orphaned) {
-				curVCard.addOrphanedLabel(label);
+				vcard.addOrphanedLabel(label);
 			}
 		}
-
-		warnings.add(curWarnings);
-	}
-
-	/**
-	 * <p>
-	 * Registers a property scribe. This is the same as calling:
-	 * </p>
-	 * <p>
-	 * {@code getScribeIndex().register(scribe)}
-	 * </p>
-	 * @param scribe the scribe to register
-	 */
-	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		index.register(scribe);
-	}
-
-	/**
-	 * Gets the scribe index.
-	 * @return the scribe index
-	 */
-	public ScribeIndex getScribeIndex() {
-		return index;
-	}
-
-	/**
-	 * Sets the scribe index.
-	 * @param index the scribe index
-	 */
-	public void setScribeIndex(ScribeIndex index) {
-		this.index = index;
-	}
-
-	/**
-	 * Gets the warnings from the last parse operation.
-	 * @return the warnings (it is a "list of lists"--each parsed {@link VCard}
-	 * object has its own warnings list)
-	 * @see #parseAll
-	 * @see #parseFirst
-	 */
-	public List<List<String>> getWarnings() {
-		List<List<String>> warnings = new ArrayList<List<String>>(this.warnings.size());
-		for (ParseWarnings parseWarnings : this.warnings) {
-			warnings.add(parseWarnings.copy());
-		}
-		return warnings;
-	}
-
-	/**
-	 * Gets the HTML DOM.
-	 * @return the HTML DOM
-	 */
-	public Document getDocument() {
-		return document;
 	}
 
 	private void visit(Element element) {
@@ -385,9 +318,9 @@ public class HCardParser {
 						VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(Impp.class);
 						try {
 							Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
-							curVCard.addProperty(result.getProperty());
+							vcard.addProperty(result.getProperty());
 							for (String warning : result.getWarnings()) {
-								curWarnings.add(null, scribe.getPropertyName(), warning);
+								warnings.add(null, scribe.getPropertyName(), warning);
 							}
 							continue;
 						} catch (SkipMeException e) {
@@ -418,7 +351,7 @@ public class HCardParser {
 				Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
 
 				for (String warning : result.getWarnings()) {
-					curWarnings.add(null, className, warning);
+					warnings.add(null, className, warning);
 				}
 
 				property = result.getProperty();
@@ -434,7 +367,7 @@ public class HCardParser {
 					Nickname nn = (Nickname) property;
 					if (nickname == null) {
 						nickname = nn;
-						curVCard.addProperty(nickname);
+						vcard.addProperty(nickname);
 					} else {
 						nickname.getValues().addAll(nn.getValues());
 					}
@@ -446,18 +379,18 @@ public class HCardParser {
 					Categories c = (Categories) property;
 					if (categories == null) {
 						categories = c;
-						curVCard.addProperty(categories);
+						vcard.addProperty(categories);
 					} else {
 						categories.getValues().addAll(c.getValues());
 					}
 					continue;
 				}
 			} catch (SkipMeException e) {
-				curWarnings.add(null, className, 22, e.getMessage());
+				warnings.add(null, className, 22, e.getMessage());
 				continue;
 			} catch (CannotParseException e) {
 				String html = element.outerHtml();
-				curWarnings.add(null, className, 32, html, e.getMessage());
+				warnings.add(null, className, 32, html, e.getMessage());
 				property = new RawProperty(className, html);
 			} catch (EmbeddedVCardException e) {
 				if (isChildOf(element, embeddedVCards)) {
@@ -470,17 +403,18 @@ public class HCardParser {
 				embeddedVCards.add(element);
 				HCardParser embeddedReader = new HCardParser(element, pageUrl);
 				try {
-					VCard embeddedVCard = embeddedReader.parseFirst();
+					VCard embeddedVCard = embeddedReader.readNext();
 					e.injectVCard(embeddedVCard);
 				} finally {
-					for (String warning : embeddedReader.getWarnings().get(0)) {
-						curWarnings.add(null, className, 26, warning);
+					for (String warning : embeddedReader.getWarnings()) {
+						warnings.add(null, className, 26, warning);
 					}
+					IOUtils.closeQuietly(embeddedReader);
 				}
 				visitChildren = false;
 			}
 
-			curVCard.addProperty(property);
+			vcard.addProperty(property);
 		}
 
 		if (visitChildren) {
@@ -488,5 +422,9 @@ public class HCardParser {
 				visit(child);
 			}
 		}
+	}
+
+	public void close() {
+		//empty
 	}
 }
