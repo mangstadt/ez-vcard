@@ -181,8 +181,8 @@ public class VCardReader extends StreamReader {
 	@Override
 	protected VCard _readNext() throws IOException {
 		VCard root = null;
-		List<Label> labels = new ArrayList<Label>();
 		LinkedList<VCard> vcardStack = new LinkedList<VCard>();
+		LinkedList<List<Label>> labelStack = new LinkedList<List<Label>>();
 		EmbeddedVCardException embeddedVCardException = null;
 		while (true) {
 			//read next line
@@ -206,6 +206,7 @@ public class VCardReader extends StreamReader {
 				VCard vcard = new VCard();
 				vcard.setVersion(reader.getVersion());
 				vcardStack.add(vcard);
+				labelStack.add(new ArrayList<Label>());
 
 				if (root == null) {
 					root = vcard;
@@ -233,8 +234,8 @@ public class VCardReader extends StreamReader {
 			//handle END:VCARD
 			if ("END".equalsIgnoreCase(line.getName()) && "VCARD".equalsIgnoreCase(line.getValue())) {
 				VCard curVCard = vcardStack.removeLast();
+				List<Label> labels = labelStack.removeLast();
 				assignLabels(curVCard, labels);
-				labels.clear();
 
 				if (vcardStack.isEmpty()) {
 					//done reading the vCard
@@ -299,7 +300,7 @@ public class VCardReader extends StreamReader {
 
 					if (property instanceof Label) {
 						//LABELs must be treated specially so they can be matched up with their ADRs
-						labels.add((Label) property);
+						labelStack.getLast().add((Label) property);
 					} else {
 						curVCard.addProperty(property);
 					}

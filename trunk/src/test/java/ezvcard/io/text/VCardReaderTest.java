@@ -518,6 +518,72 @@ public class VCardReaderTest {
 	}
 
 	@Test
+	public void nestedVCard_labels() throws Throwable {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"ADR;TYPE=home:;;;;;\r\n" +
+			"ADR;TYPE=work:;;;;;\r\n" +
+			"AGENT:\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"LABEL;TYPE=home:home label\r\n" +
+				"AGENT:\r\n" +
+				"BEGIN:VCARD\r\n" +
+					"VERSION:2.1\r\n" +
+					"ADR;TYPE=dom:;;;;;\r\n" +
+					"LABEL;TYPE=dom:dom label\r\n" +
+				"END:VCARD\r\n" +
+				"ADR;TYPE=dom:;;;;;\r\n" +
+			"END:VCARD\r\n" +
+			"LABEL;TYPE=work:work label\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		VCard vcard = reader.readNext();
+
+		{
+			assertEquals(3, vcard.getProperties().size());
+
+			Iterator<Address> adrs = vcard.getAddresses().iterator();
+
+			Address adr = adrs.next();
+			assertSetEquals(adr.getTypes(), AddressType.HOME);
+			assertNull(adr.getLabel());
+
+			adr = adrs.next();
+			assertSetEquals(adr.getTypes(), AddressType.WORK);
+			assertEquals("work label", adr.getLabel());
+		}
+
+		vcard = vcard.getAgent().getVCard();
+		{
+			assertEquals(3, vcard.getProperties().size());
+
+			Address adr = vcard.getAddresses().get(0);
+			assertSetEquals(adr.getTypes(), AddressType.DOM);
+			assertNull(adr.getLabel());
+
+			Label label = vcard.getOrphanedLabels().get(0);
+			assertSetEquals(label.getTypes(), AddressType.HOME);
+		}
+
+		vcard = vcard.getAgent().getVCard();
+		{
+			assertEquals(1, vcard.getProperties().size());
+
+			Address adr = vcard.getAddresses().get(0);
+			assertSetEquals(adr.getTypes(), AddressType.DOM);
+			assertEquals("dom label", adr.getLabel());
+		}
+
+		assertWarnings(0, reader);
+		assertNull(reader.readNext());
+	}
+
+	@Test
 	public void embeddedVCard() throws Throwable {
 		//@formatter:off
 		String str =
