@@ -1,5 +1,14 @@
 #summary Documents the changes that were made in every stable release.
 
+= 0.9.6-SNAPSHOT =
+_under development_
+
+ * Added a "readAll()" method to all reader classes.
+ * Added optional dependency definitions to OSGi bundle settings.
+ * Fixed a bug where variables in the hCard template were being removed during the build process (credit: David Spieler; see Issue 19).
+ * Fixed a bug where LABEL properties in nested 2.1 vCards weren't being assigned to their ADR properties correctly.
+ * Fixed a validation bug where the CATEGORIES and SORT-STRING properties were considered to be part of the 2.1 spec (they are not).
+
 = 0.9.5 =
 _July 26, 2014_
 
