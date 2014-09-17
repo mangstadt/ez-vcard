@@ -98,22 +98,21 @@
 	<build>
 		<resources>
 			<!--
-			Note: There are two <resource> tags below because the maven-bundle-plugin tries to
-			filter the .png files and can't, since they're not text files.
+			Copy all resources into the JAR, but only filter "ez-vcard.properties"
 			-->
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
-				<excludes>
-					<exclude>**/*.png</exclude>
-				</excludes>
+				<includes>
+					<include>ez-vcard.properties</include>
+				</includes>
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>false</filtering>
-				<includes>
-					<include>**/*.png</include>
-				</includes>
+				<excludes>
+					<exclude>ez-vcard.properties</exclude>
+				</excludes>
 			</resource>
 		</resources>
 		<plugins>
