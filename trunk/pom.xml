@@ -132,8 +132,8 @@
 						<!-- Define optional dependencies -->
 						<Import-Package>
 							com.fasterxml.jackson.*;resolution:=optional,
-							org.joup.*;resolution:=optional,
-							org.freemarker.*;resolution:=optional,
+							org.jsoup.*;resolution:=optional,
+							freemarker.*;resolution:=optional,
 							*
 						</Import-Package>
 					</instructions>
