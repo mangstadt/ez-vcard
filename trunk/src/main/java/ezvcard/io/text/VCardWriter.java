@@ -65,10 +65,31 @@ import ezvcard.util.IOUtils;
  * VCard vcard2 = ...
  * 
  * File file = new File("vcard.vcf");
- * VCardWriter vcardWriter = new VCardWriter(file);
+ * VCardWriter vcardWriter = new VCardWriter(file, VCardVersion.V3_0);
  * vcardWriter.write(vcard1);
  * vcardWriter.write(vcard2);
  * vcardWriter.close();
+ * </pre>
+ * 
+ * </p>
+ * 
+ * <p>
+ * <b>Changing the line folding settings:</b>
+ * 
+ * <pre class="brush:java">
+ * VCardWriter writer = new VCardWriter(...);
+ * 
+ * //disable line folding
+ * writer.getRawWriter().getFoldedLineWriter().setLineLength(null);
+ * 
+ * //change line length
+ * writer.getRawWriter().getFoldedLineWriter().setLineLength(50);
+ * 
+ * //change folded line indent string
+ * writer.getRawWriter().getFoldedLineWriter().setIndent("\t");
+ * 
+ * //change newline character
+ * writer.getRawWriter().getFoldedLineWriter().setNewline("**");
  * </pre>
  * 
  * </p>
@@ -79,17 +100,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	private final LinkedList<Boolean> prodIdStack = new LinkedList<Boolean>();
 
 	/**
-	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
-	 * scheme and newline sequence).
-	 * @param out the output stream to write the vCard to
-	 */
-	public VCardWriter(OutputStream out) {
-		this(new OutputStreamWriter(out));
-	}
-
-	/**
-	 * Creates a vCard writer (uses the standard folding scheme and newline
-	 * sequence).
+	 * Creates a vCard writer.
 	 * @param out the output stream to write the vCard to
 	 * @param targetVersion the version that the vCards should conform to (if
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
@@ -100,41 +111,17 @@ public class VCardWriter extends StreamWriter implements Flushable {
 
 	/**
 	 * Creates a vCard writer.
-	 * @param out the output stream to write the vCard to
+	 * @param file the file to write the vCard to
 	 * @param targetVersion the version that the vCards should conform to (if
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
-	 * @param foldingScheme the folding scheme to use or null not to fold at all
-	 * @param newline the newline sequence to use
-	 */
-	public VCardWriter(OutputStream out, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) {
-		this((targetVersion == VCardVersion.V4_0) ? utf8Writer(out) : new OutputStreamWriter(out), targetVersion, foldingScheme, newline);
-	}
-
-	/**
-	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
-	 * scheme and newline sequence).
-	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem opening the file
 	 */
-	public VCardWriter(File file) throws IOException {
-		this(new FileWriter(file, false));
+	public VCardWriter(File file, VCardVersion targetVersion) throws IOException {
+		this(file, false, targetVersion);
 	}
 
 	/**
-	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
-	 * scheme and newline sequence).
-	 * @param file the file to write the vCard to
-	 * @param append true to append to the end of the file, false to overwrite
-	 * it
-	 * @throws IOException if there's a problem opening the file
-	 */
-	public VCardWriter(File file, boolean append) throws IOException {
-		this(new FileWriter(file, append));
-	}
-
-	/**
-	 * Creates a vCard writer (uses the standard folding scheme and newline
-	 * sequence).
+	 * Creates a vCard writer.
 	 * @param file the file to write the vCard to
 	 * @param append true to append to the end of the file, false to overwrite
 	 * it
@@ -148,47 +135,19 @@ public class VCardWriter extends StreamWriter implements Flushable {
 
 	/**
 	 * Creates a vCard writer.
-	 * @param file the file to write the vCard to
-	 * @param append true to append to the end of the file, false to overwrite
-	 * it
-	 * @param targetVersion the version that the vCards should conform to (if
-	 * set to "4.0", vCards will be written in UTF-8 encoding)
-	 * @param foldingScheme the folding scheme to use or null not to fold at all
-	 * @param newline the newline sequence to use
-	 * @throws IOException if there's a problem opening the file
-	 */
-	public VCardWriter(File file, boolean append, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) throws IOException {
-		this((targetVersion == VCardVersion.V4_0) ? utf8Writer(file, append) : new FileWriter(file, append), targetVersion, foldingScheme, newline);
-	}
-
-	/**
-	 * Creates a vCard writer (writes v3.0 vCards and uses the standard folding
-	 * scheme and newline sequence).
-	 * @param writer the writer to write the vCard to
-	 */
-	public VCardWriter(Writer writer) {
-		this(writer, VCardVersion.V3_0);
-	}
-
-	/**
-	 * Creates a vCard writer (uses the standard folding scheme and newline
-	 * sequence).
 	 * @param writer the writer to write the vCard to
 	 * @param targetVersion the version that the vCards should conform to
 	 */
 	public VCardWriter(Writer writer, VCardVersion targetVersion) {
-		this(writer, targetVersion, FoldingScheme.MIME_DIR, "\r\n");
+		this.writer = new VCardRawWriter(writer, targetVersion);
 	}
 
 	/**
-	 * Creates a vCard writer.
-	 * @param writer the writer to write the vCard to
-	 * @param targetVersion the version that the vCards should conform to
-	 * @param foldingScheme the folding scheme to use or null not to fold at all
-	 * @param newline the newline sequence to use
+	 * Gets the writer that this object wraps.
+	 * @return the raw writer
 	 */
-	public VCardWriter(Writer writer, VCardVersion targetVersion, FoldingScheme foldingScheme, String newline) {
-		this.writer = new VCardRawWriter(writer, targetVersion, foldingScheme, newline);
+	public VCardRawWriter getRawWriter() {
+		return writer;
 	}
 
 	/**
@@ -246,22 +205,6 @@ public class VCardWriter extends StreamWriter implements Flushable {
 		writer.setCaretEncodingEnabled(enable);
 	}
 
-	/**
-	 * Gets the newline sequence that is used to separate lines.
-	 * @return the newline sequence
-	 */
-	public String getNewline() {
-		return writer.getNewline();
-	}
-
-	/**
-	 * Gets the rules for how each line is folded.
-	 * @return the folding scheme or null if the lines are not folded
-	 */
-	public FoldingScheme getFoldingScheme() {
-		return writer.getFoldingScheme();
-	}
-
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void _write(VCard vcard, List<VCardProperty> propertiesToAdd) throws IOException {
@@ -298,7 +241,9 @@ public class VCardWriter extends StreamWriter implements Flushable {
 				} else {
 					//write an embedded vCard (3.0 style)
 					StringWriter sw = new StringWriter();
-					VCardWriter agentWriter = new VCardWriter(sw, targetVersion, null, "\n");
+					VCardWriter agentWriter = new VCardWriter(sw, targetVersion);
+					agentWriter.getRawWriter().getFoldedLineWriter().setLineLength(null);
+					agentWriter.getRawWriter().getFoldedLineWriter().setNewline("\n");
 					agentWriter.setAddProdId(false);
 					agentWriter.setVersionStrict(versionStrict);
 					try {

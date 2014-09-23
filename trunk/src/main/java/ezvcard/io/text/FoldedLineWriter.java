@@ -44,28 +44,16 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 public class FoldedLineWriter extends Writer {
 	private final Writer writer;
 	private int curLineLength = 0;
-	private Integer lineLength;
-	private String indent;
-	private String newline;
+	private Integer lineLength = 75;
+	private String indent = " ";
+	private String newline = "\r\n";
 
 	/**
 	 * Creates a folded line writer.
 	 * @param writer the writer object to wrap
-	 * @param lineLength the maximum length a line can be before it is folded
-	 * (excluding the newline), or null disable folding
-	 * @param indent the string to prepend to each folded line (e.g. a single
-	 * space character)
-	 * @param newline the newline sequence to use (e.g. "\r\n")
-	 * @throws IllegalArgumentException if the line length is less than or equal
-	 * to zero
-	 * @throws IllegalArgumentException if the length of the indent string is
-	 * greater than the max line length
 	 */
-	public FoldedLineWriter(Writer writer, Integer lineLength, String indent, String newline) {
+	public FoldedLineWriter(Writer writer) {
 		this.writer = writer;
-		setLineLength(lineLength);
-		setIndent(indent);
-		this.newline = newline;
 	}
 
 	/**
@@ -254,7 +242,7 @@ public class FoldedLineWriter extends Writer {
 
 	/**
 	 * Gets the maximum length a line can be before it is folded (excluding the
-	 * newline).
+	 * newline, defaults to 75).
 	 * @return the line length or null if folding is disabled
 	 */
 	public Integer getLineLength() {
@@ -263,7 +251,7 @@ public class FoldedLineWriter extends Writer {
 
 	/**
 	 * Sets the maximum length a line can be before it is folded (excluding the
-	 * newline).
+	 * newline, defaults to 75).
 	 * @param lineLength the line length or null to disable folding
 	 * @throws IllegalArgumentException if the line length is less than or equal
 	 * to zero
@@ -276,7 +264,8 @@ public class FoldedLineWriter extends Writer {
 	}
 
 	/**
-	 * Gets the string that is prepended to each folded line.
+	 * Gets the string that is prepended to each folded line (defaults to a
+	 * single space character).
 	 * @return the indent string
 	 */
 	public String getIndent() {
@@ -284,8 +273,9 @@ public class FoldedLineWriter extends Writer {
 	}
 
 	/**
-	 * Sets the string that is prepended to each folded line.
-	 * @param indent the indent string (e.g. a single space character)
+	 * Sets the string that is prepended to each folded line (defaults to a
+	 * single space character).
+	 * @param indent the indent string
 	 * @throws IllegalArgumentException if the length of the indent string is
 	 * greater than the max line length
 	 */
@@ -297,7 +287,8 @@ public class FoldedLineWriter extends Writer {
 	}
 
 	/**
-	 * Gets the newline sequence that is used to separate lines.
+	 * Gets the newline sequence that is used to separate lines (defaults to
+	 * CRLF).
 	 * @return the newline sequence
 	 */
 	public String getNewline() {
@@ -305,7 +296,8 @@ public class FoldedLineWriter extends Writer {
 	}
 
 	/**
-	 * Sets the newline sequence that is used to separate lines
+	 * Sets the newline sequence that is used to separate lines (defaults to
+	 * CRLF).
 	 * @param newline the newline sequence
 	 */
 	public void setNewline(String newline) {
