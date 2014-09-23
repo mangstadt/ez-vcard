@@ -1436,7 +1436,7 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the output stream
 		 */
 		public void go(OutputStream out) throws IOException {
-			VCardWriter vcardWriter = (version == null) ? new VCardWriter(out) : new VCardWriter(out, version);
+			VCardWriter vcardWriter = new VCardWriter(out, version);
 			go(vcardWriter);
 		}
 
@@ -1458,7 +1458,7 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the file
 		 */
 		public void go(File file, boolean append) throws IOException {
-			VCardWriter vcardWriter = (version == null) ? new VCardWriter(file, append) : new VCardWriter(file, append, version);
+			VCardWriter vcardWriter = new VCardWriter(file, append, version);
 			try {
 				go(vcardWriter);
 			} finally {
@@ -1472,8 +1472,7 @@ public class Ezvcard {
 		 * @throws IOException if there's a problem writing to the writer
 		 */
 		public void go(Writer writer) throws IOException {
-			VCardWriter vcardWriter = new VCardWriter(writer);
-			vcardWriter.setTargetVersion(version);
+			VCardWriter vcardWriter = new VCardWriter(writer, version);
 			go(vcardWriter);
 		}
 

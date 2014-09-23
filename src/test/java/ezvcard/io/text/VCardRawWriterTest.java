@@ -269,8 +269,9 @@ public class VCardRawWriterTest {
 	@Test
 	public void foldingScheme() throws Throwable {
 		StringWriter sw = new StringWriter();
-		FoldingScheme fs = new FoldingScheme(50, "  ");
-		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, fs);
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+		writer.getFoldedLineWriter().setLineLength(50);
+		writer.getFoldedLineWriter().setIndent("  ");
 
 		writer.writeProperty("PROP", "The vCard MIME Directory Profile also provides support for representing other important information about the person associated with the directory entry. For instance, the date of birth of the person; an audio clip describing the pronunciation of the name associated with the directory entry, or some other application of the digital sound; longitude and latitude geo-positioning information related to the person associated with the directory entry; date and time that the directory information was last updated; annotations often written on a business card; Uniform Resource Locators (URL) for a website; public key information.");
 
@@ -300,7 +301,8 @@ public class VCardRawWriterTest {
 	@Test
 	public void no_foldingScheme() throws Throwable {
 		StringWriter sw = new StringWriter();
-		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, null);
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+		writer.getFoldedLineWriter().setLineLength(null);
 
 		writer.writeProperty("PROP", "The vCard MIME Directory Profile also provides support for representing other important information about the person associated with the directory entry. For instance, the date of birth of the person; an audio clip describing the pronunciation of the name associated with the directory entry, or some other application of the digital sound; longitude and latitude geo-positioning information related to the person associated with the directory entry; date and time that the directory information was last updated; annotations often written on a business card; Uniform Resource Locators (URL) for a website; public key information.");
 
@@ -317,7 +319,8 @@ public class VCardRawWriterTest {
 	@Test
 	public void newline() throws Throwable {
 		StringWriter sw = new StringWriter();
-		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, FoldingScheme.MIME_DIR, "*");
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+		writer.getFoldedLineWriter().setNewline("*");
 
 		writer.writeProperty("PROP", "one");
 		writer.writeProperty("PROP", "two");
@@ -394,7 +397,8 @@ public class VCardRawWriterTest {
 	@Test
 	public void quoted_printable_line() throws Throwable {
 		StringWriter sw = new StringWriter();
-		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1, new FoldingScheme(60, " "));
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+		writer.getFoldedLineWriter().setLineLength(60);
 
 		VCardParameters parameters = new VCardParameters();
 		parameters.setEncoding(Encoding.QUOTED_PRINTABLE);

@@ -176,7 +176,8 @@ public class VCardWriterTest {
 		agentVcard.setAgent(secondAgent);
 
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
+		vcw.getRawWriter().getFoldedLineWriter().setLineLength(null);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -317,7 +318,7 @@ public class VCardWriterTest {
 
 		//should be written using default encoding
 		if (!Charset.defaultCharset().name().equalsIgnoreCase("UTF-8")) { //don't test if the local machine's default encoding is UTF-8
-			VCardWriter writer = new VCardWriter(file);
+			VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0);
 			writer.setAddProdId(false);
 			writer.write(vcard);
 			writer.close();
@@ -514,7 +515,8 @@ public class VCardWriterTest {
 	@Test
 	public void rfc2426_example() throws Throwable {
 		StringWriter sw = new StringWriter();
-		VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0, null, "\r\n");
+		VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0);
+		writer.getRawWriter().getFoldedLineWriter().setLineLength(null);
 		writer.setAddProdId(false);
 
 		{

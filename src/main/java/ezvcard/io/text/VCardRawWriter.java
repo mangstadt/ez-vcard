@@ -109,49 +109,27 @@ public class VCardRawWriter implements Closeable, Flushable {
 		invalidParamValueChars = Collections.unmodifiableMap(map);
 	}
 
-	private final String newline;
-	private boolean caretEncodingEnabled = false;
-	private final FoldingScheme foldingScheme;
 	private final FoldedLineWriter writer;
+	private boolean caretEncodingEnabled = false;
 	private ProblemsListener problemsListener;
 	private VCardVersion version;
-
-	/**
-	 * Creates a vCard raw writer using the standard folding scheme and newline
-	 * sequence.
-	 * @param writer the writer to the data stream
-	 * @param version the vCard version to adhere to
-	 */
-	public VCardRawWriter(Writer writer, VCardVersion version) {
-		this(writer, version, FoldingScheme.MIME_DIR);
-	}
-
-	/**
-	 * Creates a vCard raw writer using the standard newline sequence.
-	 * @param writer the writer to the data stream
-	 * @param version the vCard version to adhere to
-	 * @param foldingScheme the folding scheme to use or null not to fold at all
-	 */
-	public VCardRawWriter(Writer writer, VCardVersion version, FoldingScheme foldingScheme) {
-		this(writer, version, foldingScheme, "\r\n");
-	}
 
 	/**
 	 * Creates a vCard raw writer.
 	 * @param writer the writer to the data stream
 	 * @param version the vCard version to adhere to
-	 * @param foldingScheme the folding scheme to use or null not to fold at all
-	 * @param newline the newline sequence to use
 	 */
-	public VCardRawWriter(Writer writer, VCardVersion version, FoldingScheme foldingScheme, String newline) {
-		if (foldingScheme == null) {
-			this.writer = new FoldedLineWriter(writer, null, "", newline);
-		} else {
-			this.writer = new FoldedLineWriter(writer, foldingScheme.getLineLength(), foldingScheme.getIndent(), newline);
-		}
+	public VCardRawWriter(Writer writer, VCardVersion version) {
+		this.writer = new FoldedLineWriter(writer);
 		this.version = version;
-		this.foldingScheme = foldingScheme;
-		this.newline = newline;
+	}
+
+	/**
+	 * Gets the writer object that this object wraps.
+	 * @return the folded line writer
+	 */
+	public FoldedLineWriter getFoldedLineWriter() {
+		return writer;
 	}
 
 	/**
@@ -279,14 +257,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 	}
 
 	/**
-	 * Gets the newline sequence that is used to separate lines.
-	 * @return the newline sequence
-	 */
-	public String getNewline() {
-		return newline;
-	}
-
-	/**
 	 * Gets the problems listener.
 	 * @return the listener or null if not set
 	 */
@@ -300,14 +270,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 */
 	public void setProblemsListener(ProblemsListener problemsListener) {
 		this.problemsListener = problemsListener;
-	}
-
-	/**
-	 * Gets the rules for how each line is folded.
-	 * @return the folding scheme or null if the lines are not folded
-	 */
-	public FoldingScheme getFoldingScheme() {
-		return foldingScheme;
 	}
 
 	/**
@@ -451,7 +413,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 
 		writer.append(':');
 		writer.append(value, quotedPrintable, charset);
-		writer.append(newline);
+		writer.append(writer.getNewline());
 	}
 
 	/**
