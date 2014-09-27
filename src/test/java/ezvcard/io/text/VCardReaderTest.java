@@ -250,29 +250,26 @@ public class VCardReaderTest {
 			assertNull(reader.readNext());
 		}
 
-		//invalid CHARSET parameter
-		//without default charset
+		//no CHARSET parameter
+		//with default charset
 		{
-			String defaultCharset = Charset.defaultCharset().name();
-			QuotedPrintableCodec codec = new QuotedPrintableCodec(defaultCharset);
-			String encoded = codec.encode(expectedValue);
-
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
 			"VERSION:2.1\r\n" +
-			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=invalid:" + encoded + "\r\n" +
+			"NOTE;ENCODING=QUOTED-PRINTABLE:=E4=F6=FC=DF\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
 			VCardReader reader = new VCardReader(str);
+			reader.setDefaultQuotedPrintableCharset(Charset.forName("ISO-8859-1"));
 			VCard vcard = reader.readNext();
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
 			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
 
-			assertWarnings(1, reader);
+			assertWarnings(0, reader);
 			assertNull(reader.readNext());
 		}
 
@@ -299,13 +296,17 @@ public class VCardReaderTest {
 			assertNull(reader.readNext());
 		}
 
+		String defaultCharset = Charset.defaultCharset().name();
+		QuotedPrintableCodec codec = new QuotedPrintableCodec(defaultCharset);
+		String encoded = codec.encode(expectedValue);
+		if ("????".equals(encoded)) {
+			//default charset is US-ASCII, can't run test
+			return;
+		}
+
 		//no CHARSET parameter specified
 		//without default charset
 		{
-			String defaultCharset = Charset.defaultCharset().name();
-			QuotedPrintableCodec codec = new QuotedPrintableCodec(defaultCharset);
-			String encoded = codec.encode(expectedValue);
-
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
@@ -325,26 +326,25 @@ public class VCardReaderTest {
 			assertNull(reader.readNext());
 		}
 
-		//no CHARSET parameter
+		//invalid CHARSET parameter
 		//with default charset
 		{
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
 			"VERSION:2.1\r\n" +
-			"NOTE;ENCODING=QUOTED-PRINTABLE:=E4=F6=FC=DF\r\n" +
+			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=invalid:" + encoded + "\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
 			VCardReader reader = new VCardReader(str);
-			reader.setDefaultQuotedPrintableCharset(Charset.forName("ISO-8859-1"));
 			VCard vcard = reader.readNext();
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
 			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
 
-			assertWarnings(0, reader);
+			assertWarnings(1, reader);
 			assertNull(reader.readNext());
 		}
 	}
