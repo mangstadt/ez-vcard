@@ -5,6 +5,7 @@ _under development_
 
  * Added a "readAll()" method to all reader classes.
  * Added optional dependency definitions to OSGi bundle settings.
+ * Removed the constructors from `VCardWriter` that allow you to customize the line folding settings.  See the [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/io/text/VCardWriter.html VCardWriter] Javadocs for new instructions on how to modify these settings.
  * Fixed a bug where variables in the hCard template were being removed during the build process (credit: David Spieler; see Issue 19).
  * Fixed a bug where LABEL properties in nested 2.1 vCards weren't being assigned to their ADR properties correctly.
  * Fixed a validation bug where the CATEGORIES and SORT-STRING properties were considered to be part of the 2.1 spec (they are not).
