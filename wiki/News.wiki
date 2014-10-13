@@ -1,5 +1,9 @@
 #summary Archive of all past news entries.
 
+*October 13, 2014*
+
+[Downloads Version 0.9.6] released.  This released fixes a few miscellaneous bugs.  Please see the [Changelog changelog] for details.
+
 *August 17, 2014*
 
 Do you use ez-vcard with Android?  The [AndroidMapper Android Mapper] project makes it easier to use ez-vcard with Android!

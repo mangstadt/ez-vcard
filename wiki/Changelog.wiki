@@ -1,7 +1,7 @@
 #summary Documents the changes that were made in every stable release.
 
-= 0.9.6-SNAPSHOT =
-_under development_
+= 0.9.6 =
+_October 13, 2014_
 
  * Added a "readAll()" method to all reader classes.
  * Added optional dependency definitions to OSGi bundle settings.
