@@ -1,0 +1,10 @@
+The following sample vCards in this folder come from the Card Me project: https://sourceforge.net/projects/cardme/
+
+John_Doe_ANDROID.vcf
+John_Doe_BLACK_BERRY.vcf
+John_Doe_EVOLUTION.vcf
+John_Doe_GMAIL.vcf
+John_Doe_IPHONE.vcf
+John_Doe_LOTUS_NOTES.vcf
+John_Doe_MAC_ADDRESS_BOOK.vcf
+John_Doe_MS_OUTLOOK.vcf
