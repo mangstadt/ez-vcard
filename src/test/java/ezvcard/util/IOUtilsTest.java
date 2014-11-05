@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /*
- Copyright (c) 2013, Michael Angstadt
+ Copyright (c) 2012-2014, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -51,11 +51,11 @@ public class IOUtilsTest {
 	public void utf8Writer() throws Throwable {
 		File file = temp.newFile();
 		Writer writer = IOUtils.utf8Writer(file);
-		writer.write("ƒ");
+		writer.write("ï¿½");
 		writer.close();
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
-		assertEquals("ƒ", reader.readLine());
+		assertEquals("ï¿½", reader.readLine());
 		reader.close();
 	}
 
@@ -63,11 +63,11 @@ public class IOUtilsTest {
 	public void utf8Reader() throws Throwable {
 		File file = temp.newFile();
 		Writer writer = new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8"));
-		writer.write("ƒ");
+		writer.write("ï¿½");
 		writer.close();
 
 		BufferedReader reader = new BufferedReader(IOUtils.utf8Reader(file));
-		assertEquals("ƒ", reader.readLine());
+		assertEquals("ï¿½", reader.readLine());
 		reader.close();
 	}
 
@@ -75,11 +75,11 @@ public class IOUtilsTest {
 	public void utf8ReaderWriter() throws Throwable {
 		File file = temp.newFile();
 		Writer writer = IOUtils.utf8Writer(file);
-		writer.write("ƒ");
+		writer.write("ï¿½");
 		writer.close();
 
 		BufferedReader reader = new BufferedReader(IOUtils.utf8Reader(file));
-		assertEquals("ƒ", reader.readLine());
+		assertEquals("ï¿½", reader.readLine());
 		reader.close();
 	}
 }

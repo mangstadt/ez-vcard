@@ -14,7 +14,7 @@ import ezvcard.util.GeoUri;
 import ezvcard.util.VCardFloatFormatter;
 
 /*
- Copyright (c) 2013, Michael Angstadt
+ Copyright (c) 2012-2014, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
