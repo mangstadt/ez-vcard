@@ -6,6 +6,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -235,7 +236,7 @@ public class HCardPageTest {
 		String html = template.write();
 
 		//write to file for manual inspection
-		FileWriter writer = new FileWriter("target/vcard.html");
+		FileWriter writer = new FileWriter(new File("target", "vcard.html"));
 		writer.write(html);
 		writer.close();
 
@@ -421,7 +422,7 @@ public class HCardPageTest {
 		adr.setRegion("Tx");
 		adr.setPostalCode("12345");
 		adr.setCountry("USA");
-		adr.setLabel("123 Main St.\nAustin TX, 12345\nUSA");
+		adr.setLabel("123 Main St." + NEWLINE + "Austin TX, 1234" + NEWLINE + "USA");
 		adr.addType(AddressType.HOME);
 		vcard.addAddress(adr);
 

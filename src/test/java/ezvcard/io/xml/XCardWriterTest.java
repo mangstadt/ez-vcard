@@ -575,7 +575,7 @@ public class XCardWriterTest {
 
 		String actual = sw.toString();
 
-		String nl = "\n";
+		String nl = "(\r\n|\n|\r)";
 		//@formatter:off
 		String expectedRegex =
 		"<\\?xml version=\"1.0\" encoding=\"(utf|UTF)-8\"\\?>" + nl +
