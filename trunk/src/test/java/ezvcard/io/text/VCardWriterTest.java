@@ -19,6 +19,8 @@ import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
+import ezvcard.parameter.ImageType;
+import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
@@ -30,6 +32,7 @@ import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
 import ezvcard.property.Note;
+import ezvcard.property.Photo;
 import ezvcard.property.SkipMeProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
@@ -409,6 +412,76 @@ public class VCardWriterTest {
 		//@formatter:on
 
 		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void newline_after_key() throws Throwable {
+		VCard vcard = new VCard();
+		byte data[] = "foobar".getBytes();
+		vcard.addKey(new Key(data, KeyType.X509));
+		vcard.addPhoto(new Photo(data, ImageType.JPEG));
+
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+			vcw.setAddProdId(false);
+			vcw.write(vcard);
+
+			String actual = sw.toString();
+
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"KEY;ENCODING=base64;X509:Zm9vYmFy\r\n" +
+			"\r\n" +
+			"PHOTO;ENCODING=base64;JPEG:Zm9vYmFy\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(actual, expected);
+		}
+
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
+			vcw.setAddProdId(false);
+			vcw.write(vcard);
+
+			String actual = sw.toString();
+
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:3.0\r\n" +
+			"KEY;ENCODING=b;TYPE=x509:Zm9vYmFy\r\n" +
+			"\r\n" +
+			"PHOTO;ENCODING=b;TYPE=jpeg:Zm9vYmFy\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(actual, expected);
+		}
+
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
+			vcw.setAddProdId(false);
+			vcw.write(vcard);
+
+			String actual = sw.toString();
+
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+			"VERSION:4.0\r\n" +
+			"KEY:data:application/x509;base64,Zm9vYmFy\r\n" +
+			"PHOTO:data:image/jpeg;base64,Zm9vYmFy\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(actual, expected);
+		}
 	}
 
 	@Test
