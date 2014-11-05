@@ -422,7 +422,7 @@ public class HCardPageTest {
 		adr.setRegion("Tx");
 		adr.setPostalCode("12345");
 		adr.setCountry("USA");
-		adr.setLabel("123 Main St." + NEWLINE + "Austin TX, 1234" + NEWLINE + "USA");
+		adr.setLabel("123 Main St." + NEWLINE + "Austin TX, 12345" + NEWLINE + "USA");
 		adr.addType(AddressType.HOME);
 		vcard.addAddress(adr);
 
