@@ -415,7 +415,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void newline_after_key() throws Throwable {
+	public void newline_after_base64() throws Throwable {
 		VCard vcard = new VCard();
 		byte data[] = "foobar".getBytes();
 		vcard.addKey(new Key(data, KeyType.X509));
@@ -436,6 +436,7 @@ public class VCardWriterTest {
 			"KEY;ENCODING=base64;X509:Zm9vYmFy\r\n" +
 			"\r\n" +
 			"PHOTO;ENCODING=base64;JPEG:Zm9vYmFy\r\n" +
+			"\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
@@ -457,6 +458,7 @@ public class VCardWriterTest {
 			"KEY;ENCODING=b;TYPE=x509:Zm9vYmFy\r\n" +
 			"\r\n" +
 			"PHOTO;ENCODING=b;TYPE=jpeg:Zm9vYmFy\r\n" +
+			"\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 

@@ -21,7 +21,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.property.Key;
+import ezvcard.property.BinaryProperty;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 
@@ -279,11 +279,11 @@ public class VCardWriter extends StreamWriter implements Flushable {
 
 				writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, value);
 
-				//Outlook 2010 requires an empty line after base64-encoded public keys
+				//Outlook 2010 requires an empty line after base64 values (at least, some of the time)
 				//https://code.google.com/p/ez-vcard/issues/detail?id=21
-				if (getTargetVersion() != VCardVersion.V4_0 && property instanceof Key) {
-					Key key = (Key) property;
-					if (key.getData() != null) {
+				if (getTargetVersion() != VCardVersion.V4_0 && property instanceof BinaryProperty) {
+					BinaryProperty binaryProperty = (BinaryProperty) property;
+					if (binaryProperty.getData() != null) {
 						writer.getFoldedLineWriter().writeln("");
 					}
 				}
