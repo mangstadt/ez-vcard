@@ -1,6 +1,11 @@
 package ezvcard.io.text;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -8,7 +13,7 @@ import java.io.StringWriter;
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
-import ezvcard.io.text.VCardRawWriter.ProblemsListener;
+import ezvcard.io.text.VCardRawWriter.ParameterValueChangedListener;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
@@ -252,15 +257,17 @@ public class VCardRawWriterTest {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, version);
 		writer.setCaretEncodingEnabled(caretEncodingEnabled);
-		ProblemsListenerImpl listener = new ProblemsListenerImpl();
-		writer.setProblemsListener(listener);
+		ParameterValueChangedListener listener = mock(ParameterValueChangedListener.class);
+		writer.setParameterValueChangedListener(listener);
 
+		String paramValue = "^�\\,;:=[]\"\t\n" + ((char) 28);
 		VCardParameters parameters = new VCardParameters();
-		parameters.put("X-TEST", "^�\\,;:=[]\"\t\n" + ((char) 28));
+		parameters.put("X-TEST", paramValue);
 		parameters.put("X-TEST", "normal");
 		writer.writeProperty(null, "PROP", parameters, "");
 
-		assertEquals(1, listener.onParameterValueChanged);
+		verify(listener).onParameterValueChanged(eq("PROP"), eq("X-TEST"), eq(paramValue), anyString());
+		verifyNoMoreInteractions(listener);
 
 		String actual = sw.toString();
 		assertEquals(expected, actual);
@@ -488,14 +495,6 @@ public class VCardRawWriterTest {
 
 			String actual = sw.toString();
 			assertEquals(expected, actual);
-		}
-	}
-
-	private class ProblemsListenerImpl implements ProblemsListener {
-		private int onParameterValueChanged = 0;
-
-		public final void onParameterValueChanged(String propertyName, String parameterName, String originalValue, String modifiedValue) {
-			onParameterValueChanged++;
 		}
 	}
 }
