@@ -255,9 +255,9 @@ public class VCardWriter extends StreamWriter implements Flushable {
 						IOUtils.closeQuietly(agentWriter);
 					}
 
-					String vCardStr = sw.toString();
-					vCardStr = VCardPropertyScribe.escape(vCardStr);
-					writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, vCardStr);
+					String vcardStr = sw.toString();
+					vcardStr = VCardPropertyScribe.escape(vcardStr);
+					writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, vcardStr);
 				}
 				continue;
 			}

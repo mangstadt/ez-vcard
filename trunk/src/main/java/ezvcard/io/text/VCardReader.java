@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -376,14 +378,12 @@ public class VCardReader extends StreamReader {
 	 * <p>
 	 * Many examples throughout the 4.0 specs show TYPE parameters being encoded
 	 * in this way. This conflicts with the ABNF and is noted in the errata.
-	 * This method will split the value by comma incase the vendor implemented
-	 * it this way.
+	 * This method will parse these incorrectly-formatted TYPE parameters as if
+	 * they were multi-valued, even though, technically, they are not.
 	 * </p>
 	 * @param parameters the parameters
 	 */
 	private void processQuotedMultivaluedTypeParams(VCardParameters parameters) {
-		//account for multi-valued TYPE parameters being enclosed entirely in double quotes
-		//e.g. ADR;TYPE="home,work"
 		for (String typeParameter : parameters.getTypes()) {
 			if (!typeParameter.contains(",")) {
 				continue;
@@ -397,20 +397,22 @@ public class VCardReader extends StreamReader {
 	}
 
 	/**
-	 * Decodes the property value if it's encoded in quoted-printable encoding.
-	 * Quoted-printable encoding is only supported in v2.1.
+	 * Checks to see if a property's value is encoded in quoted-printable
+	 * encoding and decodes it if it is.
 	 * @param name the property name
-	 * @param parameters the parameters
+	 * @param parameters the property parameters
 	 * @param value the property value
-	 * @return the decoded property value
+	 * @return the decoded property value or the untouched property value if it
+	 * is not encoded in quoted-printable encoding
 	 * @throws DecoderException if the value couldn't be decoded
 	 */
 	private String decodeQuotedPrintable(String name, VCardParameters parameters, String value) throws DecoderException {
 		if (parameters.getEncoding() != Encoding.QUOTED_PRINTABLE) {
+			//the property value is not encoded in quoted-printable encoding
 			return value;
 		}
 
-		//remove encoding parameter
+		//remove the encoding parameter
 		parameters.setEncoding(null);
 
 		//determine the character set
@@ -421,7 +423,13 @@ public class VCardReader extends StreamReader {
 		} else {
 			try {
 				charset = Charset.forName(charsetStr);
-			} catch (Throwable t) {
+			} catch (IllegalCharsetNameException e) {
+				//bad charset name
+			} catch (UnsupportedCharsetException e) {
+				//bad charset name
+			}
+
+			if (charset == null) {
 				charset = defaultQuotedPrintableCharset;
 
 				//the given charset was invalid, so add a warning
