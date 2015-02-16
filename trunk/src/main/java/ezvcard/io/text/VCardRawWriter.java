@@ -7,7 +7,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.BitSet;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -80,7 +80,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 		controlChars.set('\n', false); //allow
 		controlChars.set('\r', false); //allow
 
-		Map<VCardVersion, BitSet> map = new HashMap<VCardVersion, BitSet>();
+		Map<VCardVersion, BitSet> map = new EnumMap<VCardVersion, BitSet>(VCardVersion.class);
 
 		//2.1
 		{
@@ -429,6 +429,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 
 		if (version == VCardVersion.V2_1 && containsNewlines(value)) {
 			//2.1 does not support the "\n" escape sequence (see "Delimiters" sub-section in section 2 of the specs)
+			//so, encode the value in quoted-printable if any newline characters exist
 			parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
 			return value;
 		}
