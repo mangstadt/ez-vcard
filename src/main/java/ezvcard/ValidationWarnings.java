@@ -12,7 +12,7 @@ import ezvcard.util.ListMultimap;
 import ezvcard.util.StringUtils;
 
 /*
- Copyright (c) 2012-2014, Michael Angstadt
+ Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
