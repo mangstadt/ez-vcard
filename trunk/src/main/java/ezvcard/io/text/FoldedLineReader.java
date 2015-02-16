@@ -1,5 +1,7 @@
 package ezvcard.io.text;
 
+import static ezvcard.util.StringUtils.ltrim;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,8 +9,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
-
-import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2014, Michael Angstadt
@@ -45,7 +45,8 @@ import ezvcard.util.StringUtils;
  */
 public class FoldedLineReader extends BufferedReader {
 	/**
-	 * Regular expression used to detect "quoted-printable" property values.
+	 * Regular expression used to detect the first line of folded,
+	 * "quoted-printable" property values.
 	 */
 	private static final Pattern foldedQuotedPrintableValueRegex = Pattern.compile("[^:]*?QUOTED-PRINTABLE.*?:.*?=", Pattern.CASE_INSENSITIVE);
 
@@ -59,6 +60,7 @@ public class FoldedLineReader extends BufferedReader {
 	 */
 	public FoldedLineReader(Reader reader) {
 		super(reader);
+
 		if (reader instanceof InputStreamReader) {
 			InputStreamReader isr = (InputStreamReader) reader;
 			String charsetStr = isr.getEncoding();
@@ -113,7 +115,8 @@ public class FoldedLineReader extends BufferedReader {
 
 	/**
 	 * Reads the next unfolded line.
-	 * @return the next unfolded line or null if EOF
+	 * @return the next unfolded line or null if the end of the stream has been
+	 * reached
 	 * @throws IOException if there's a problem reading from the reader
 	 */
 	@Override
@@ -129,7 +132,8 @@ public class FoldedLineReader extends BufferedReader {
 		/*
 		 * Lines that are QUOTED-PRINTABLE are folded in a strange way. A "=" is
 		 * appended to the end of a line to signal that the next line is folded.
-		 * Also, each folded line is not prepend with whitespace.
+		 * Also, each folded line is *not* prepend with whitespace (which it should
+		 * be, according to the 2.1 specs).
 		 * 
 		 * For example:
 		 * 
@@ -150,12 +154,10 @@ public class FoldedLineReader extends BufferedReader {
 		 */
 		//@formatter:on
 
-		boolean foldedQuotedPrintableLine = false;
-		if (foldedQuotedPrintableValueRegex.matcher(wholeLine).matches()) {
-			foldedQuotedPrintableLine = true;
-
+		boolean foldedQuotedPrintableLine = foldedQuotedPrintableValueRegex.matcher(wholeLine).matches();
+		if (foldedQuotedPrintableLine) {
 			//chop off the trailing "="
-			wholeLine = wholeLine.substring(0, wholeLine.length() - 1);
+			wholeLine = chop(wholeLine);
 		}
 
 		lastLineNum = lineCount;
@@ -168,12 +170,13 @@ public class FoldedLineReader extends BufferedReader {
 			}
 
 			if (foldedQuotedPrintableLine) {
-				line = StringUtils.ltrim(line);
+				//remove any folding whitespace
+				line = ltrim(line);
 
 				boolean endsInEquals = line.endsWith("=");
 				if (endsInEquals) {
 					//chop off the trailing "="
-					line = line.substring(0, line.length() - 1);
+					line = chop(line);
 				}
 
 				unfoldedLine.append(line);
@@ -181,22 +184,16 @@ public class FoldedLineReader extends BufferedReader {
 				if (endsInEquals) {
 					//there are more folded lines
 					continue;
-				} else {
-					//end of the folded line
-					break;
 				}
+
+				//end of the folded line
+				break;
 			}
 
 			if (line.length() > 0 && Character.isWhitespace(line.charAt(0))) {
 				//the line is folded
-
-				int lastWhitespace = 1;
-				//Note: Evolution will include real whitespace chars alongside the folding char
-				while (lastWhitespace < line.length() && Character.isWhitespace(line.charAt(lastWhitespace))) {
-					lastWhitespace++;
-				}
-				unfoldedLine.append(line.substring(lastWhitespace));
-
+				line = ltrim(line);
+				unfoldedLine.append(line);
 				continue;
 			}
 
@@ -205,5 +202,14 @@ public class FoldedLineReader extends BufferedReader {
 		}
 
 		return unfoldedLine.toString();
+	}
+
+	/**
+	 * Removes the last character from a string.
+	 * @param string the string
+	 * @return the modified string
+	 */
+	private static String chop(String string) {
+		return string.substring(0, string.length() - 1);
 	}
 }
