@@ -111,7 +111,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 
 	private final FoldedLineWriter writer;
 	private boolean caretEncodingEnabled = false;
-	private ProblemsListener problemsListener;
+	private ParameterValueChangedListener parameterValueChangedListener;
 	private VCardVersion version;
 
 	/**
@@ -257,19 +257,19 @@ public class VCardRawWriter implements Closeable, Flushable {
 	}
 
 	/**
-	 * Gets the problems listener.
+	 * Gets the parameter values changed listener.
 	 * @return the listener or null if not set
 	 */
-	public ProblemsListener getProblemsListener() {
-		return problemsListener;
+	public ParameterValueChangedListener getParameterValueChangedListener() {
+		return parameterValueChangedListener;
 	}
 
 	/**
-	 * Sets the problems listener.
-	 * @param problemsListener the listener or null to remove
+	 * Sets the parameter values changed listener.
+	 * @param listener the listener or null to remove
 	 */
-	public void setProblemsListener(ProblemsListener problemsListener) {
-		this.problemsListener = problemsListener;
+	public void setParameterValueChangedListener(ParameterValueChangedListener listener) {
+		parameterValueChangedListener = listener;
 	}
 
 	/**
@@ -513,8 +513,8 @@ public class VCardRawWriter implements Closeable, Flushable {
 			break;
 		}
 
-		if (valueChanged && problemsListener != null) {
-			problemsListener.onParameterValueChanged(propertyName, parameterName, parameterValue, modifiedValue);
+		if (valueChanged && parameterValueChangedListener != null) {
+			parameterValueChangedListener.onParameterValueChanged(propertyName, parameterName, parameterValue, modifiedValue);
 		}
 
 		return modifiedValue;
@@ -610,19 +610,19 @@ public class VCardRawWriter implements Closeable, Flushable {
 	}
 
 	/**
-	 * A listener whose methods are invoked when non-critical issues occur
-	 * during the writing process.
+	 * Invoked when a parameter value is changed in a lossy way, due to it
+	 * containing invalid characters. If a character can be escaped (such as the
+	 * "^" character when caret encoding is enabled), then this does not count
+	 * as the parameter being modified because it can be decoded without losing
+	 * any information.
+	 * @see VCardRawWriter#setParameterValueChangedListener
 	 * @author Michael Angstadt
 	 */
-	public static interface ProblemsListener {
+	public static interface ParameterValueChangedListener {
 		/**
-		 * Called when a parameter value is changed in a lossy way, due to it
-		 * containing invalid characters. If a character can be escaped (such as
-		 * the "^" character when caret encoding is enabled), then this does not
-		 * count as the parameter being modified because it can be decoded
-		 * without losing any information.
-		 * @param propertyName the name of the property to which the parameter
-		 * belongs
+		 * Called when a parameter value is changed in a lossy way.
+		 * @param propertyName the name of the property that the parameter
+		 * belongs to
 		 * @param parameterName the parameter name
 		 * @param originalValue the original parameter value
 		 * @param modifiedValue the modified parameter value
