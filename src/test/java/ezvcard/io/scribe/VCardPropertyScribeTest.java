@@ -3,9 +3,9 @@ package ezvcard.io.scribe;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -339,7 +339,7 @@ public class VCardPropertyScribeTest {
 		TestProperty property = new TestProperty("value");
 		VCardParameters copy = m.prepareParameters(property, VCardVersion.V4_0, new VCard());
 
-		assertFalse(property.getParameters() == copy);
+		assertNotSame(property.getParameters(), copy);
 		assertEquals("value", copy.first("PARAM"));
 	}
 
@@ -356,7 +356,7 @@ public class VCardPropertyScribeTest {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
 				assertEquals(VCardDataType.TEXT, property.parsedDataType);
-				assertTrue(params == property.getParameters());
+				assertSame(params, property.getParameters());
 			}
 		});
 	}
@@ -379,7 +379,7 @@ public class VCardPropertyScribeTest {
 			public void check(TestProperty property){
 				assertEquals("value", property.value);
 				assertEquals(VCardDataType.INTEGER, property.parsedDataType);
-				assertTrue(params == property.getParameters());
+				assertSame(params,property.getParameters());
 			}
 		});
 		//@formatter:on
@@ -453,7 +453,7 @@ public class VCardPropertyScribeTest {
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).params(params).warnings(1).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
-				assertTrue(params == property.getParameters());
+				assertSame(params, property.getParameters());
 			}
 		});
 	}

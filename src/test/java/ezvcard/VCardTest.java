@@ -2,6 +2,7 @@ package ezvcard;
 
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -222,7 +223,7 @@ public class VCardTest {
 
 		assertValidate(vcard).versions(VCardVersion.V4_0).prop(prop, 0).run();
 		assertEquals(VCardVersion.V4_0, prop.validateVersion);
-		assertTrue(vcard == prop.validateVCard);
+		assertSame(vcard, prop.validateVCard);
 	}
 
 	private class HasAltIdImpl extends VCardProperty implements HasAltId {

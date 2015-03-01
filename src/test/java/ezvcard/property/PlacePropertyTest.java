@@ -3,7 +3,7 @@ package ezvcard.property;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
@@ -113,7 +113,7 @@ public class PlacePropertyTest {
 		property.setUri(uri);
 		property.setGeoUri(geoUriObj);
 
-		assertTrue(property.getGeoUri() == geoUriObj);
+		assertSame(property.getGeoUri(), geoUriObj);
 		assertEquals(geoUriObj.getCoordA(), property.getLatitude());
 		assertEquals(geoUriObj.getCoordB(), property.getLongitude());
 	}

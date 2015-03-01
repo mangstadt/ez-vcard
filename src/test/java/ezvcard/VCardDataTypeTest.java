@@ -2,6 +2,7 @@ package ezvcard;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
@@ -11,17 +12,17 @@ import org.junit.Test;
 public class VCardDataTypeTest {
 	@Test
 	public void get() {
-		assertTrue(VCardDataType.TEXT == VCardDataType.get("tExT"));
+		assertSame(VCardDataType.TEXT, VCardDataType.get("tExT"));
 
 		VCardDataType test = VCardDataType.get("test");
 		VCardDataType test2 = VCardDataType.get("tEsT");
 		assertEquals("test", test2.getName());
-		assertTrue(test == test2);
+		assertSame(test, test2);
 	}
 
 	@Test
 	public void find() {
-		assertTrue(VCardDataType.TEXT == VCardDataType.find("tExT"));
+		assertSame(VCardDataType.TEXT, VCardDataType.find("tExT"));
 
 		//find() ignores runtime-defined objects
 		VCardDataType.get("test");
