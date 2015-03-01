@@ -89,10 +89,10 @@ public class JCardWriterTest {
 		//@formatter:off
 		String expected =
 		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{},\"text\",\"John Doe\"]" +
-		  "]" +
+			"[" +
+				"[\"version\",{},\"text\",\"4.0\"]," +
+				"[\"fn\",{},\"text\",\"John Doe\"]" +
+			"]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
@@ -117,18 +117,18 @@ public class JCardWriterTest {
 		//@formatter:off
 		String expected =
 		"[" +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"fn\",{},\"text\",\"John Doe\"]" +
-		    "]" +
-		  "]," +
-	  	  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\",{},\"text\",\"4.0\"]," +
-		      "[\"fn\",{},\"text\",\"Jane Doe\"]" +
-		    "]" +
-		  "]" +
+			"[\"vcard\"," +
+				"[" +
+					"[\"version\",{},\"text\",\"4.0\"]," +
+					"[\"fn\",{},\"text\",\"John Doe\"]" +
+				"]" +
+			"]," +
+			"[\"vcard\"," +
+				"[" +
+					"[\"version\",{},\"text\",\"4.0\"]," +
+					"[\"fn\",{},\"text\",\"Jane Doe\"]" +
+				"]" +
+			"]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
@@ -190,11 +190,11 @@ public class JCardWriterTest {
 		//@formatter:off
 		String expected =
 		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{},\"text\",\"John Doe\"]," +
-		    "[\"x-type\",{},\"unknown\",\"value\"]" +
-		  "]" +
+			"[" +
+				"[\"version\",{},\"text\",\"4.0\"]," +
+				"[\"fn\",{},\"text\",\"John Doe\"]," +
+				"[\"x-type\",{},\"unknown\",\"value\"]" +
+			"]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
@@ -217,11 +217,11 @@ public class JCardWriterTest {
 		//@formatter:off
 		String expected =
 		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{},\"text\",\"John Doe\"]," +
-		    "[\"x-type\",{},\"text\",\"value\"]" +
-		  "]" +
+			"[" +
+				"[\"version\",{},\"text\",\"4.0\"]," +
+				"[\"fn\",{},\"text\",\"John Doe\"]," +
+				"[\"x-type\",{},\"text\",\"value\"]" +
+			"]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
@@ -244,10 +244,10 @@ public class JCardWriterTest {
 		//@formatter:off
 		String expected =
 		"[\"vcard\"," +
-		  "[" +
-		    "[\"version\",{},\"text\",\"4.0\"]," +
-		    "[\"fn\",{},\"text\",\"John Doe\"]" +
-		  "]" +
+			"[" +
+				"[\"version\",{},\"text\",\"4.0\"]," +
+				"[\"fn\",{},\"text\",\"John Doe\"]" +
+			"]" +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());

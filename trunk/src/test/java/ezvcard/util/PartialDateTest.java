@@ -1,14 +1,14 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertArrayEquals;
+import static ezvcard.util.TestUtils.assertIntEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -43,142 +43,88 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class PartialDateTest {
-	@Test
-	public void toDateAndOrTime_date() {
-		//@formatter:off
-		ToDateAndOrTimeTestCase testCases[] = new ToDateAndOrTimeTestCase[]{
-			ToDateAndOrTimeTestCase.test(		new Integer[]{1980, null, null}, "1980", "1980"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 4, null}, "--04", "--04"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, null, 20}, "---20", "---20"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{1980, 4, null}, "1980-04", "1980-04"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 4, 20}, "--0420", "--04-20"),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{1980, null, 20}),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{1980, 4, 20}, "19800420", "1980-04-20"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, null, null}, "", ""),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, -1, null}),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, null, -1}),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, 13, null}),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, null, 32}),
-		};
-		//@formatter:on
+	@Rule
+	public final ExpectedException expectedException = ExpectedException.none();
 
-		for (ToDateAndOrTimeTestCase testCase : testCases) {
-			try {
-				PartialDate d = PartialDate.date(testCase.params[0], testCase.params[1], testCase.params[2]);
-				if (testCase.exception) {
-					fail("IllegalArgumentException expected for parameters: " + Arrays.toString(testCase.params));
-				}
-				assertEquals("Failed basic for parameters: " + Arrays.toString(testCase.params), testCase.expectedBasic, d.toDateAndOrTime(false));
-				assertEquals("Failed extended for parameters: " + Arrays.toString(testCase.params), testCase.expectedExtended, d.toDateAndOrTime(true));
-			} catch (IllegalArgumentException e) {
-				if (!testCase.exception) {
-					throw e;
-				}
-			}
-		}
+	@Test
+	public void toDateAndOrTime() {
+		//date
+		assertToDateAndOrTime().year(1980).run("1980", "1980");
+		assertToDateAndOrTime().month(4).run("--04", "--04");
+		assertToDateAndOrTime().date(20).run("---20", "---20");
+		assertToDateAndOrTime().year(1980).month(4).run("1980-04", "1980-04");
+		assertToDateAndOrTime().month(4).date(20).run("--0420", "--04-20");
+		assertToDateAndOrTime().year(1980).date(20).exception();
+		assertToDateAndOrTime().year(1980).month(4).date(20).run("19800420", "1980-04-20");
+		assertToDateAndOrTime().run("", "");
+		assertToDateAndOrTime().month(-1).exception();
+		assertToDateAndOrTime().date(-1).exception();
+		assertToDateAndOrTime().month(13).exception();
+		assertToDateAndOrTime().date(32).exception();
+
+		//time
+		assertToDateAndOrTime().hour(5).run("T05", "T05");
+		assertToDateAndOrTime().minute(20).run("T-20", "T-20");
+		assertToDateAndOrTime().second(32).run("T--32", "T--32");
+		assertToDateAndOrTime().hour(5).minute(20).run("T0520", "T05:20");
+		assertToDateAndOrTime().minute(20).second(32).run("T-2032", "T-20:32");
+		assertToDateAndOrTime().hour(5).second(32).exception();
+		assertToDateAndOrTime().hour(5).minute(20).second(32).run("T052032", "T05:20:32");
+		assertToDateAndOrTime().run("", "");
+		assertToDateAndOrTime().hour(-1).exception();
+		assertToDateAndOrTime().hour(24).exception();
+		assertToDateAndOrTime().minute(-1).exception();
+		assertToDateAndOrTime().minute(60).exception();
+		assertToDateAndOrTime().second(-1).exception();
+		assertToDateAndOrTime().second(60).exception();
+		assertToDateAndOrTime().minute(20).second(32).offset(-5, 30).run("T-2032-0530", "T-20:32-05:30");
+		assertToDateAndOrTime().minute(20).second(32).offset(-5, 0).run("T-2032-0500", "T-20:32-05:00");
+		assertToDateAndOrTime().minute(20).second(32).offset(5, 30).run("T-2032+0530", "T-20:32+05:30");
+
+		//date and time
+		assertToDateAndOrTime().month(4).date(20).hour(5).offset(-5, 0).run("--0420T05-0500", "--04-20T05-05:00");
 	}
 
-	@Test
-	public void toDateAndOrTime_time() {
-		//@formatter:off
-		ToDateAndOrTimeTestCase testCases[] = new ToDateAndOrTimeTestCase[]{
-			ToDateAndOrTimeTestCase.test(		new Integer[]{5, null, null}, "T05", "T05"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, null}, "T-20", "T-20"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, null, 32}, "T--32", "T--32"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{5, 20, null}, "T0520", "T05:20"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, 32}, "T-2032", "T-20:32"),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{5, null, 32}),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{5, 20, 32}, "T052032", "T05:20:32"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, null, null}, "", ""),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{-1, null, null}),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{24, null, null}),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, -1, null}),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, 60, null}),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, null, -1}),
-			ToDateAndOrTimeTestCase.exception(	new Integer[]{null, null, 60}),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, 32, -5, 30}, "T-2032-0530", "T-20:32-05:30"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, 32, -5, 0}, "T-2032-0500", "T-20:32-05:00"),
-			ToDateAndOrTimeTestCase.test(		new Integer[]{null, 20, 32, 5, 30}, "T-2032+0530","T-20:32+05:30"),
-		};
-		//@formatter:on
-
-		for (ToDateAndOrTimeTestCase testCase : testCases) {
-			try {
-				PartialDate d;
-				if (testCase.params.length == 3) {
-					d = PartialDate.time(testCase.params[0], testCase.params[1], testCase.params[2]);
-				} else {
-					d = PartialDate.time(testCase.params[0], testCase.params[1], testCase.params[2], new UtcOffset(testCase.params[3], testCase.params[4]));
-				}
-
-				if (testCase.exception) {
-					fail("IllegalArgumentException expected for parameters: " + Arrays.toString(testCase.params));
-				}
-				assertEquals("Failed basic for parameters: " + Arrays.toString(testCase.params), testCase.expectedBasic, d.toDateAndOrTime(false));
-				assertEquals("Failed extended for parameters: " + Arrays.toString(testCase.params), testCase.expectedExtended, d.toDateAndOrTime(true));
-			} catch (IllegalArgumentException e) {
-				if (!testCase.exception) {
-					fail("IllegalArgumentException was not expected for parameters: " + Arrays.toString(testCase.params));
-				}
-			}
-		}
-	}
-
-	@Test
-	public void toDateAndOrTime_date_and_time() {
-		PartialDate d = PartialDate.dateTime(null, 4, 20, 5, null, null, new UtcOffset(-5, 0));
-		assertEquals("--0420T05-0500", d.toDateAndOrTime(false));
-		assertEquals("--04-20T05-05:00", d.toDateAndOrTime(true));
+	private TestCase assertToDateAndOrTime() {
+		return new TestCase();
 	}
 
 	@Test
 	public void parse() {
-		//@formatter:off
-		ParseTestCase testCases[] = new ParseTestCase[]{
-			ParseTestCase.exception(	""),
-			ParseTestCase.exception(	"invalid"),
-			ParseTestCase.test(			"1980", 1980, null, null, null, null, null, null, null),
-			ParseTestCase.test(			"--04", null, 4, null, null, null, null, null, null),
-			ParseTestCase.test(			"---20", null, null, 20, null, null, null, null, null),
-			ParseTestCase.test(			"1980-04", 1980, 4, null, null, null, null, null, null),
-			ParseTestCase.test(			"--0420", null, 4, 20, null, null, null, null, null),
-			ParseTestCase.test(			"--04-20", null, 4, 20, null, null, null, null, null),
-			ParseTestCase.test(			"19800420", 1980, 4, 20, null, null, null, null, null),
-			ParseTestCase.test(			"1980-04-20", 1980, 4, 20, null, null, null, null, null),
-			ParseTestCase.test(			"T05", null, null, null, 5, null, null, null, null),
-			ParseTestCase.test(			"T-20", null, null, null, null, 20, null, null, null),
-			ParseTestCase.test(			"T--32", null, null, null, null, null, 32, null, null),
-			ParseTestCase.test(			"T0520", null, null, null, 5, 20, null, null, null),
-			ParseTestCase.test(			"T05:20", null, null, null, 5, 20, null, null, null),
-			ParseTestCase.test(			"T-2032", null, null, null, null, 20, 32, null, null),
-			ParseTestCase.test(			"T-20:32", null, null, null, null, 20, 32, null, null),
-			ParseTestCase.test(			"T052032", null, null, null, 5, 20, 32, null, null),
-			ParseTestCase.test(			"T05:20:32", null, null, null, 5, 20, 32, null, null),
-			ParseTestCase.test(			"T-2032-0530", null, null, null, null, 20, 32, -5, 30),
-			ParseTestCase.test(			"T-20:32-05:30", null, null, null, null, 20, 32, -5, 30),
-			ParseTestCase.test(			"T-2032-0500", null, null, null, null, 20, 32, -5, 0),
-			ParseTestCase.test(			"T-20:32-05:00", null, null, null, null, 20, 32, -5, 0),
-			ParseTestCase.test(			"T-2032-05", null, null, null, null, 20, 32, -5, null),
-			ParseTestCase.test(			"T-20:32-05", null, null, null, null, 20, 32, -5, null),
-			ParseTestCase.test(			"T-20:32+05:30", null, null, null, null, 20, 32, 5, 30),
-			ParseTestCase.test(			"--0420T05-0500", null, 4, 20, 5, null, null, -5, 0),
-			ParseTestCase.test(			"--04-20T05-05:00", null, 4, 20, 5, null, null, -5, 0)
-		};
-		//@formatter:on
+		assertParse().exception("");
+		assertParse().exception("invalid");
+		assertParse().year(1980).run("1980");
+		assertParse().month(4).run("--04");
+		assertParse().date(20).run("--20");
+		assertParse().year(1980).month(4).run("1980-04");
 
-		for (ParseTestCase testCase : testCases) {
-			try {
-				PartialDate d = new PartialDate(testCase.string);
-				if (testCase.exception) {
-					fail("IllegalArgumentException expected for string: " + testCase.string);
-				}
-				assertArrayEquals("Failed for string: " + testCase.string, testCase.expectedComponents, d.components);
-			} catch (IllegalArgumentException e) {
-				if (!testCase.exception) {
-					fail("IllegalArgumentException was not expected for string: " + testCase.string);
-				}
-			}
-		}
+		assertParse().month(4).date(20).run("--0420");
+		assertParse().month(4).date(20).run("--04-20");
+		assertParse().year(1980).month(4).date(20).run("19800420");
+		assertParse().year(1980).month(4).date(20).run("1980-04-20");
+
+		assertParse().hour(5).run("T05");
+		assertParse().minute(20).run("T-20");
+		assertParse().second(32).run("T--32");
+		assertParse().hour(5).minute(20).run("T0520");
+		assertParse().hour(5).minute(20).run("T05:20");
+		assertParse().minute(20).second(32).run("T-2032");
+		assertParse().minute(20).second(32).run("T-20:32");
+		assertParse().hour(5).minute(20).second(32).run("T052032");
+		assertParse().hour(5).minute(20).second(32).run("T05:20:32");
+		assertParse().minute(20).second(32).offset(-5, 30).run("T-2032-0530");
+		assertParse().minute(20).second(32).offset(-5, 30).run("T-20:32-05:30");
+		assertParse().minute(20).second(32).offset(-5, 0).run("T-2032-0500");
+		assertParse().minute(20).second(32).offset(-5, 0).run("T-20:32-05:00");
+		assertParse().minute(20).second(32).offset(-5, 0).run("T-2032-05");
+		assertParse().minute(20).second(32).offset(-5, 0).run("T-20:32-05");
+		assertParse().minute(20).second(32).offset(5, 30).run("T-20:32+05:30");
+		assertParse().hour(5).offset(-5, 0).run("--0420T05-0500");
+		assertParse().hour(5).offset(-5, 0).run("--04-20T05-05:00");
+	}
+
+	public TestCase assertParse() {
+		return new TestCase();
 	}
 
 	@Test
@@ -204,46 +150,76 @@ public class PartialDateTest {
 		assertFalse(d1.equals(d3));
 	}
 
-	private static class ToDateAndOrTimeTestCase {
-		Integer[] params;
-		String expectedBasic, expectedExtended;
-		boolean exception;
+	private class TestCase {
+		private Integer year, month, date, hour, minute, second;
+		private UtcOffset offset;
 
-		static ToDateAndOrTimeTestCase test(Integer[] params, String expectedBasic, String expectedExtended) {
-			ToDateAndOrTimeTestCase testCase = new ToDateAndOrTimeTestCase();
-			testCase.params = params;
-			testCase.expectedBasic = expectedBasic;
-			testCase.expectedExtended = expectedExtended;
-			testCase.exception = false;
-			return testCase;
+		public TestCase year(Integer year) {
+			this.year = year;
+			return this;
 		}
 
-		static ToDateAndOrTimeTestCase exception(Integer[] params) {
-			ToDateAndOrTimeTestCase testCase = new ToDateAndOrTimeTestCase();
-			testCase.params = params;
-			testCase.exception = true;
-			return testCase;
-		}
-	}
-
-	private static class ParseTestCase {
-		String string;
-		Integer[] expectedComponents;
-		boolean exception;
-
-		static ParseTestCase test(String string, Integer... expectedComponents) {
-			ParseTestCase testCase = new ParseTestCase();
-			testCase.string = string;
-			testCase.expectedComponents = expectedComponents;
-			testCase.exception = false;
-			return testCase;
+		public TestCase month(Integer month) {
+			this.month = month;
+			return this;
 		}
 
-		static ParseTestCase exception(String string) {
-			ParseTestCase testCase = new ParseTestCase();
-			testCase.string = string;
-			testCase.exception = true;
-			return testCase;
+		public TestCase date(Integer date) {
+			this.date = date;
+			return this;
+		}
+
+		public TestCase hour(Integer hour) {
+			this.hour = hour;
+			return this;
+		}
+
+		public TestCase minute(Integer minute) {
+			this.minute = minute;
+			return this;
+		}
+
+		public TestCase second(Integer second) {
+			this.second = second;
+			return this;
+		}
+
+		public TestCase offset(Integer hour, Integer minute) {
+			this.offset = new UtcOffset(hour, minute);
+			return this;
+		}
+
+		public void run(String expectedBasic, String expectedExtended) {
+			PartialDate d = new PartialDate(year, month, date, hour, minute, second, offset);
+			assertEquals(expectedBasic, d.toDateAndOrTime(false));
+			assertEquals(expectedExtended, d.toDateAndOrTime(true));
+		}
+
+		public void exception() {
+			expectedException.expect(IllegalArgumentException.class);
+			new PartialDate(year, month, date, hour, minute, second, offset);
+		}
+
+		public void run(String input) {
+			PartialDate date = new PartialDate(input);
+			assertEquals(year, date.getYear());
+			assertEquals(month, date.getMinute());
+			assertEquals(this.date, date.getDate());
+			assertEquals(hour, date.getHour());
+			assertEquals(minute, date.getMinute());
+			assertEquals(second, date.getSecond());
+			if (offset == null) {
+				assertNull(date.getTimezone());
+			} else {
+				Integer[] tz = date.getTimezone();
+				assertIntEquals(offset.getHour(), tz[0]);
+				assertIntEquals(offset.getMinute(), tz[1]);
+			}
+		}
+
+		public void exception(String input) {
+			expectedException.expect(IllegalArgumentException.class);
+			new PartialDate(input);
 		}
 	}
 }

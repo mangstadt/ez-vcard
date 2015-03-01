@@ -52,55 +52,109 @@ import ezvcard.util.HtmlUtils;
 public class HCardElementTest {
 	@Test
 	public void value_text_content() {
-		HCardElement element = build("<div>The text</div>");
-		assertEquals("The text", element.value());
+		assertValue("<div>The text</div>", "The text");
 	}
 
 	@Test
 	public void value_line_breaks() {
-		HCardElement element = build("<div>The<br>text</div>");
-		assertEquals("The" + NEWLINE + "text", element.value());
+		//@formatter:off
+		assertValue(
+		"<div>" +
+			"The<br>text" +
+		"</div>",
+		"The" + NEWLINE + "text");
 
 		//"value" element
-		element = build("<div>The <span class=\"value\">real<br>text</span></div>");
-		assertEquals("real" + NEWLINE + "text", element.value());
+		assertValue(
+		"<div>" +
+			"The "+
+			"<span class=\"value\">"+
+				"real<br>text" +
+			"</span>" +
+		"</div>", "real" + NEWLINE + "text");
 
 		//nested "value" element
-		element = build("<div>The <span class=\"value\">real<br>text <span class=\"value\">goes<br>here</span></span></div>");
-		assertEquals("real" + NEWLINE + "text goes" + NEWLINE + "here", element.value());
+		assertValue(
+		"<div>" +
+			"The " +
+			"<span class=\"value\">" +
+				"real<br>text " +
+				"<span class=\"value\">" +
+					"goes<br>here" +
+				"</span>" +
+			"</span>" +
+		"</div>", 
+		"real" + NEWLINE + "text goes" + NEWLINE + "here");
+		//@formatter:on
 	}
 
 	@Test
 	public void value_ignore_child_tags() {
-		HCardElement element = build("<div>The<b>text</b></div>");
-		assertEquals("Thetext", element.value());
+		//@formatter:off
+		assertValue(
+		"<div>" +
+			"The<b>text</b>" +
+		"</div>", 
+		"Thetext");
+		//@formatter:on
 	}
 
 	@Test
 	public void value_ignore_type_text() {
-		HCardElement element = build("<div><span class=\"type\">Work</span> is boring.</div>");
-		assertEquals("is boring.", element.value());
-
-		element = build("<div><b>All <span class=\"type\">work</span> is boring.</b></div>");
-		assertEquals("All  is boring.", element.value());
+		//@formatter:off
+		assertValue(
+		"<div>" +
+			"<span class=\"type\">Work</span>" +
+			" is boring." +
+		"</div>", 
+		"is boring.");
+		
+		assertValue(
+		"<div>" +
+			"<b>" +
+				"All " +
+				"<span class=\"type\">work</span>" +
+				" is boring." +
+			"</b>" +
+		"</div>", 
+		"All  is boring.");
+		//@formatter:on
 	}
 
 	@Test
 	public void value_value_tag() {
-		HCardElement element = build("<div>This is <span class=\"value\">the text</span>.</div>");
-		assertEquals("the text", element.value());
+		//@formatter:off
+		assertValue(
+		"<div>" +
+			"This is " +
+			"<span class=\"value\">the text</span>" +
+			"." +
+		"</div>", 
+		"the text");
+		//@formatter:on
 	}
 
 	@Test
 	public void value_multiple_value_tags() {
-		HCardElement element = build("<div><span class=\"value\">+1</span>.<span class=\"value\">415</span>.<span class=\"value\">555</span>.<span class=\"value\">1212</span></div>");
-		assertEquals("+14155551212", element.value());
+		//@formatter:off
+		assertValue(
+		"<div>" +
+			"<span class=\"value\">+1</span>" +
+			"." +
+			"<span class=\"value\">415</span>" +
+			"." +
+			"<span class=\"value\">555</span>" +
+			"." +
+			"<span class=\"value\">1212</span>" +
+		"</div>", 
+		"+14155551212");
+		//@formatter:on
 	}
 
 	@Test
 	public void value_multiple_value_tags_not_direct_child() {
 		//@formatter:off
-		String html =
+		assertValue(
 		"<div>" +
 			"<div>Some text</div>" +
 			"<div>" +
@@ -110,54 +164,75 @@ public class HCardElementTest {
 				"</div>" +
 				"<div class=\"value\">of the element.</div>" +
 			"</div>" +
-		"</div>";
+		"</div>",		
+		"This isthe valueof the element.");
 		//@formatter:on
-		
-		HCardElement element = build(html);
-		assertEquals("This isthe valueof the element.", element.value());
 	}
-	
+
 	@Test
 	public void value_nested_value_tags() {
 		//@formatter:off
-		String html =
+		assertValue(
 		"<div>" +
-			"<div class=\"value\">the value<span class=\"value\">nested</span></div>" +
-		"</div>";
+			"<div class=\"value\">" +
+				"the value" +
+				"<span class=\"value\">nested</span>" +
+			"</div>" +
+		"</div>",		
+		"the valuenested");
 		//@formatter:on
-
-		HCardElement element = build(html);
-		assertEquals("the valuenested", element.value());
 	}
 
 	@Test
 	public void value_abbr_value() {
-		HCardElement element = build("<div>This is <abbr class=\"value\" title=\"1234\">the text</abbr>.</div>");
-		assertEquals("1234", element.value());
+		//@formatter:off
+		assertValue(
+		"<div>" +
+			"This is " +
+			"<abbr class=\"value\" title=\"1234\">the text</abbr>" +
+			"." +
+		"</div>",
+		"1234");
+		//@formatter:on
 	}
 
 	@Test
 	public void value_abbr_tag_with_title() {
-		HCardElement element = build("<abbr class=\"latitude\" title=\"48.816667\">N 48� 81.6667</abbr>");
-		assertEquals("48.816667", element.value());
+		assertValue("<abbr class=\"latitude\" title=\"48.816667\">N 48� 81.6667</abbr>", "48.816667");
 	}
 
 	@Test
 	public void value_abbr_tag_without_title() {
-		HCardElement element = build("<abbr class=\"latitude\">N 48� 81.6667</abbr>");
-		assertEquals("N 48� 81.6667", element.value());
+		assertValue("<abbr class=\"latitude\">N 48� 81.6667</abbr>", "N 48� 81.6667");
 	}
 
 	@Test
 	public void value_skip_del_tags() {
-		HCardElement element = build("<div>This element contains <del>a lot of</del> text</div>");
-		assertEquals("This element contains  text", element.value());
+		//@formatter:off
+		assertValue(
+		"<div>" +
+			"This element contains " +
+			"<del>a lot of</del>" +
+			" text" +
+		"</div>",
+		"This element contains  text");
+		//@formatter:on
 	}
 
 	@Test
 	public void value_skip_del_tags_in_value() {
-		HCardElement element = build("<div>This element <span class=\"value\">contains <del>a lot of</del> text</span></div>");
-		assertEquals("contains  text", element.value());
+		//@formatter:off
+		assertValue(
+		"<div>" +
+			"This element " +
+			"<span class=\"value\">" +
+				"contains " +
+				"<del>a lot of</del>" +
+				" text" +
+			"</span>" +
+		"</div>",
+		"contains  text");
+		//@formatter:on
 	}
 
 	@Test
@@ -187,7 +262,11 @@ public class HCardElementTest {
 					"<span class=\"additional-name\">Smith</span>" +
 				"</div>" +
 			"</div>" +
-			"<span class=\"additional-name\">(<span class=\"value\">Barney</span>)</span>" +
+			"<span class=\"additional-name\">" +
+				"(" +
+				"<span class=\"value\">Barney</span>" +
+				")" +
+			"</span>" +
 		"</div>";
 		//@formatter:on
 
@@ -199,55 +278,45 @@ public class HCardElementTest {
 
 	@Test
 	public void types_none() {
-		String html = "<div class=\"adr\"></div>";
-
-		HCardElement element = build(html);
-		List<String> actual = element.types();
-		assertTrue(actual.isEmpty());
+		assertTypes("<div class=\"adr\"></div>");
 	}
 
 	@Test
 	public void types_multiple() {
 		//@formatter:off
-		String html =
+		assertTypes(
 		"<div class=\"adr\">" +
 			"<span class=\"type\">work</span>" +
 			"<span class=\"type\">pref</span>" +
-		"</div>";
+		"</div>",
+		"work", "pref");
 		//@formatter:on
-
-		HCardElement element = build(html);
-		assertEquals(Arrays.asList("work", "pref"), element.types());
 	}
 
 	@Test
 	public void types_convert_to_lower_case() {
 		//@formatter:off
-		String html =
+		assertTypes(
 		"<div class=\"adr\">" +
 			"<span class=\"type\">wOrk</span>" +
 			"<span class=\"type\">prEf</span>" +
-		"</div>";
+		"</div>",
+		"work", "pref");
 		//@formatter:on
-
-		HCardElement element = build(html);
-		assertEquals(Arrays.asList("work", "pref"), element.types());
 	}
 
 	@Test
 	public void types_not_direct_descendant() {
 		//@formatter:off
-		String html =
+		assertTypes(
 		"<div class=\"adr\">" +
 			"<span class=\"type\">work</span>" +
 			"<div>" +
 				"<span class=\"type\">pref</span>" +
 			"<div>" +
-		"</div>";
+		"</div>",
+		"work", "pref");
 		//@formatter:on
-
-		HCardElement element = build(html);
-		assertEquals(Arrays.asList("work", "pref"), element.types());
 	}
 
 	@Test
@@ -272,14 +341,14 @@ public class HCardElementTest {
 		element.append("Append\rthis\n\ntext\r\nplease.");
 
 		Iterator<Node> it = element.getElement().childNodes().iterator();
-		assertEquals("Append", ((TextNode) it.next()).text());
-		assertEquals("br", ((Element) it.next()).tagName());
-		assertEquals("this", ((TextNode) it.next()).text());
-		assertEquals("br", ((Element) it.next()).tagName());
-		assertEquals("br", ((Element) it.next()).tagName());
-		assertEquals("text", ((TextNode) it.next()).text());
-		assertEquals("br", ((Element) it.next()).tagName());
-		assertEquals("please.", ((TextNode) it.next()).text());
+		assertTextNodeValue(it.next(), "Append");
+		assertTagName(it.next(), "br");
+		assertTextNodeValue(it.next(), "this");
+		assertTagName(it.next(), "br");
+		assertTagName(it.next(), "br");
+		assertTextNodeValue(it.next(), "text");
+		assertTagName(it.next(), "br");
+		assertTextNodeValue(it.next(), "please.");
 		assertFalse(it.hasNext());
 	}
 
@@ -289,15 +358,39 @@ public class HCardElementTest {
 		element.append("Without newlines.");
 
 		Iterator<Node> it = element.getElement().childNodes().iterator();
-		assertEquals("Without newlines.", ((TextNode) it.next()).text());
+		assertTextNodeValue(it.next(), "Without newlines.");
 		assertFalse(it.hasNext());
 	}
 
-	private HCardElement build(String html) {
+	private static void assertValue(String html, String expected) {
+		HCardElement element = build(html);
+		String actual = element.value();
+		assertEquals(expected, actual);
+	}
+
+	private static void assertTypes(String html, String... expected) {
+		HCardElement element = build(html);
+		List<String> actual = element.types();
+		assertEquals(Arrays.asList(expected), actual);
+	}
+
+	private static void assertTagName(Node node, String expected) {
+		Element element = (Element) node;
+		String actual = element.tagName();
+		assertEquals(expected, actual);
+	}
+
+	private static void assertTextNodeValue(Node node, String expected) {
+		TextNode textNode = (TextNode) node;
+		String actual = textNode.text();
+		assertEquals(expected, actual);
+	}
+
+	private static HCardElement build(String html) {
 		return build(html, null);
 	}
 
-	private HCardElement build(String html, String baseUrl) {
+	private static HCardElement build(String html, String baseUrl) {
 		return new HCardElement(HtmlUtils.toElement(html, baseUrl));
 	}
 }

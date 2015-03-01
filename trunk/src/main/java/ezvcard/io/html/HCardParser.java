@@ -222,7 +222,18 @@ public class HCardParser extends StreamReader {
 		if (searchUnder == null) {
 			searchUnder = document;
 		}
+
 		vcardElements = searchUnder.getElementsByClass("vcard");
+
+		//remove nested vcard elements
+		Iterator<Element> it = vcardElements.iterator();
+		while (it.hasNext()) {
+			Element element = it.next();
+			if (isChildOf(element, vcardElements)) {
+				it.remove();
+			}
+		}
+
 		vcardElementsIt = vcardElements.iterator();
 	}
 
@@ -233,8 +244,8 @@ public class HCardParser extends StreamReader {
 	 */
 	private HCardParser(Element embeddedVCard, String pageUrl) {
 		this.pageUrl = pageUrl;
-		this.vcardElements = new Elements(embeddedVCard);
-		this.vcardElementsIt = this.vcardElements.iterator();
+		vcardElements = new Elements(embeddedVCard);
+		vcardElementsIt = vcardElements.iterator();
 	}
 
 	@Override
@@ -253,16 +264,7 @@ public class HCardParser extends StreamReader {
 			return null;
 		}
 
-		//if this element is a child of another "vcard" element, then ignore it because it's an embedded vcard
-		Element vcardElement = vcardElementsIt.next();
-		while (isChildOf(vcardElement, vcardElements)) {
-			if (!vcardElementsIt.hasNext()) {
-				return null;
-			}
-			vcardElement = vcardElementsIt.next();
-		}
-
-		parseVCardElement(vcardElement);
+		parseVCardElement(vcardElementsIt.next());
 		return vcard;
 	}
 

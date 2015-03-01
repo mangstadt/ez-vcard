@@ -251,10 +251,7 @@ public class JCardRawWriterTest {
 		writer.close();
 
 		String actual = sw.toString();
-		//@formatter:off
-		String expected =
-		"";
-		//@formatter:on
+		String expected = "";
 		assertEquals(expected, actual);
 	}
 
@@ -320,7 +317,7 @@ public class JCardRawWriterTest {
 				"[" +
 				"]" +
 			"]," + 
-				"[\"vcard\"," +
+			"[\"vcard\"," +
 				"[" +
 				"]" +
 			"]" +

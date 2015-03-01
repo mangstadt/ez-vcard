@@ -100,7 +100,6 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 /**
  * @author Michael Angstadt
  */
-@SuppressWarnings("resource")
 public class VCardReaderTest {
 	@Test
 	public void getParameters() throws Throwable {

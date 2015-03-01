@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.After;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 /*
@@ -45,12 +45,9 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class GeoUriTest {
-	private final Locale defaultLocale = Locale.getDefault();
-
-	@After
-	public void after() {
-		Locale.setDefault(defaultLocale);
-	}
+	//Germany uses "," as the decimal separator, but "." should still be used in a geo URI
+	@ClassRule
+	public static final DefaultLocaleRule tzRule = new DefaultLocaleRule(Locale.GERMANY);
 
 	@Test
 	public void parse_all() {
@@ -276,14 +273,5 @@ public class GeoUriTest {
 		assertEquals("geo:12.3489,45.6711", uri.toString(4));
 		assertEquals("geo:12,46", uri.toString(0));
 		assertEquals("geo:12,46", uri.toString(-1));
-	}
-
-	@Test
-	public void toString_other_locale() {
-		//Germany uses "," as the decimal separator, but "." should still be used in a geo URI
-		Locale.setDefault(Locale.GERMANY);
-
-		GeoUri uri = new GeoUri.Builder(12.34, 45.67).coordC(-21.43).uncertainty(12.0).build();
-		assertEquals("geo:12.34,45.67,-21.43;u=12.0", uri.toString());
 	}
 }
