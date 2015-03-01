@@ -54,7 +54,7 @@ public class DateOrTimePropertyTest {
 		assertValidate(withDate).run();
 
 		DateOrTimeTypeImpl withPartialDate = new DateOrTimeTypeImpl();
-		withPartialDate.setPartialDate(PartialDate.date(null, 6, 5));
+		withPartialDate.setPartialDate(PartialDate.builder().month(6).date(5).build());
 		assertValidate(withPartialDate).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(12);
 		assertValidate(withPartialDate).versions(VCardVersion.V4_0).run();
 
