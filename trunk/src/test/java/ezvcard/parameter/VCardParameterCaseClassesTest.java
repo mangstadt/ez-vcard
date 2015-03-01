@@ -2,7 +2,7 @@ package ezvcard.parameter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,17 +45,17 @@ public class VCardParameterCaseClassesTest {
 
 	@Test
 	public void get() {
-		assertTrue(Pet.CAT == caseClasses.get("cAt"));
+		assertSame(Pet.CAT, caseClasses.get("cAt"));
 
 		Pet gerbil = caseClasses.get("gerbil");
 		Pet gerbil2 = caseClasses.get("gERbil");
 		assertEquals("gerbil", gerbil2.getValue());
-		assertTrue(gerbil == gerbil2);
+		assertSame(gerbil, gerbil2);
 	}
 
 	@Test
 	public void find() {
-		assertTrue(Pet.CAT == caseClasses.find("cAt"));
+		assertSame(Pet.CAT, caseClasses.find("cAt"));
 		assertNull(caseClasses.find("gerbil"));
 	}
 

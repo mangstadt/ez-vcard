@@ -1,6 +1,6 @@
 package ezvcard.parameter;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,13 +43,13 @@ public class MediaTypeCaseClassesTest {
 
 	@Test
 	public void get() {
-		assertTrue(TextMediaType.XML == caseClasses.get(new String[] { "xml", null, null }));
+		assertSame(TextMediaType.XML, caseClasses.get(new String[] { "xml", null, null }));
 
 		TextMediaType rtf = caseClasses.get(new String[] { "rtf", "text/rtf", "rtf" });
-		assertTrue(rtf == caseClasses.get(new String[] { "rtf", "text/rtf", "rtf" }));
-		assertTrue(rtf == caseClasses.get(new String[] { "rtf", null, null }));
-		assertTrue(rtf == caseClasses.get(new String[] { null, "text/rtf", null }));
-		assertTrue(rtf == caseClasses.get(new String[] { null, null, "rtf" }));
+		assertSame(rtf, caseClasses.get(new String[] { "rtf", "text/rtf", "rtf" }));
+		assertSame(rtf, caseClasses.get(new String[] { "rtf", null, null }));
+		assertSame(rtf, caseClasses.get(new String[] { null, "text/rtf", null }));
+		assertSame(rtf, caseClasses.get(new String[] { null, null, "rtf" }));
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class MediaTypeCaseClassesTest {
 
 	private void assertFind(String type, String mediaType, String extension, TextMediaType expected) {
 		TextMediaType actual = caseClasses.find(new String[] { type, mediaType, extension });
-		assertTrue("Expected = " + expected + ", Actual = " + actual, expected == actual);
+		assertSame("Expected = " + expected + ", Actual = " + actual, expected, actual);
 	}
 
 	public static class TextMediaType extends MediaTypeParameter {
