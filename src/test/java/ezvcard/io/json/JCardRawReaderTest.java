@@ -1,16 +1,27 @@
 package ezvcard.io.json;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+
 import com.fasterxml.jackson.core.JsonToken;
+
 import ezvcard.VCardDataType;
 import ezvcard.io.json.JCardRawReader.JCardDataStreamListener;
 import ezvcard.parameter.VCardParameters;
-import org.junit.Test;
-
-import java.io.StringReader;
-import java.util.*;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -40,7 +51,6 @@ import static org.mockito.Mockito.*;
 /**
  * @author Michael Angstadt
  */
-@SuppressWarnings("resource")
 public class JCardRawReaderTest {
 	@Test
 	public void basic() throws Throwable {
@@ -54,15 +64,15 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, times(2)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop1", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("one"));
 		verify(listener).readProperty(null, "prop2", new VCardParameters(), VCardDataType.INTEGER, JCardValue.single(2L));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -85,18 +95,18 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
 		reader.readNext(listener);
 
 		verify(listener, times(2)).beginVCard();
-		verify(listener, times(4)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop1", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("one"));
 		verify(listener).readProperty(null, "prop2", new VCardParameters(), VCardDataType.INTEGER, JCardValue.single(2L));
 		verify(listener).readProperty(null, "prop1", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("three"));
 		verify(listener).readProperty(null, "prop2", new VCardParameters(), VCardDataType.INTEGER, JCardValue.single(4L));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -116,14 +126,14 @@ public class JCardRawReaderTest {
 		"}";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("value"));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -146,8 +156,7 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		try {
@@ -160,9 +169,9 @@ public class JCardRawReaderTest {
 		reader.readNext(listener);
 
 		verify(listener, times(2)).beginVCard();
-		verify(listener, times(3)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener, times(2)).readProperty(null, "prop1", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("one"));
 		verify(listener).readProperty(null, "prop2", new VCardParameters(), VCardDataType.INTEGER, JCardValue.single(2L));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -175,14 +184,13 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, never()).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -197,16 +205,15 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, times(2)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.structured("one", Arrays.asList("two", "three"), "four"));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.structured());
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -221,16 +228,15 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, times(2)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.multi("one", "two", "three"));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.multi("one"));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -244,15 +250,14 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.multi(false, true, 1.1, 1L, null, "text"));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -272,26 +277,39 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		List<JsonValue> expectedValues = new ArrayList<JsonValue>();
 		Map<String, JsonValue> m = new HashMap<String, JsonValue>();
-		m.put("a", new JsonValue(Arrays.asList(new JsonValue("one"), new JsonValue("two"))));
-		Map<String, JsonValue> m2 = new HashMap<String, JsonValue>();
-		m2.put("c", new JsonValue(Arrays.asList(new JsonValue("three"))));
-		m2.put("d", new JsonValue(new HashMap<String, JsonValue>()));
-		m.put("b", new JsonValue(m2));
+		{
+			//@formatter:off
+			m.put("a", new JsonValue(Arrays.asList(
+				new JsonValue("one"),
+				new JsonValue("two")
+			)));
+			
+			Map<String, JsonValue> m2 = new HashMap<String, JsonValue>();
+			{
+				m2.put("c", new JsonValue(Arrays.asList(
+					new JsonValue("three")
+				)));
+				m2.put("d", new JsonValue(new HashMap<String, JsonValue>()));
+			}
+			m.put("b", new JsonValue(m2));
+			//@formatter:on
+		}
 		expectedValues.add(new JsonValue(m));
+
 		expectedValues.add(new JsonValue("four"));
+
 		JCardValue expected = new JCardValue(expectedValues);
 
 		verify(listener).beginVCard();
-		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.TEXT, expected);
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -305,15 +323,14 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), null, JCardValue.single("value"));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -327,15 +344,14 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
 		verify(listener).readProperty(null, "prop", new VCardParameters(), VCardDataType.get("foo"), JCardValue.single("value"));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -345,14 +361,13 @@ public class JCardRawReaderTest {
 		"";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener, never()).beginVCard();
-		verify(listener, never()).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -364,14 +379,13 @@ public class JCardRawReaderTest {
 		"}";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener, never()).beginVCard();
-		verify(listener, never()).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -385,8 +399,7 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
@@ -398,8 +411,8 @@ public class JCardRawReaderTest {
 		expected.put("c", "four");
 
 		verify(listener).beginVCard();
-		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
-		verify(listener).readProperty(null, "prop", expected , VCardDataType.TEXT, JCardValue.single("value"));
+		verify(listener).readProperty(null, "prop", expected, VCardDataType.TEXT, JCardValue.single("value"));
+		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
@@ -413,14 +426,17 @@ public class JCardRawReaderTest {
 		"]";
 		//@formatter:on
 
-		JCardRawReader reader = new JCardRawReader(new StringReader(json));
-
+		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
 
 		reader.readNext(listener);
 
 		verify(listener).beginVCard();
-		verify(listener, times(1)).readProperty(anyString(), anyString(), any(VCardParameters.class), any(VCardDataType.class), any(JCardValue.class));
-		verify(listener).readProperty("one", "prop", new VCardParameters() , VCardDataType.TEXT, JCardValue.single("value"));
+		verify(listener).readProperty("one", "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("value"));
+		verifyNoMoreInteractions(listener);
+	}
+
+	private static JCardRawReader createReader(String json) {
+		return new JCardRawReader(new StringReader(json));
 	}
 }

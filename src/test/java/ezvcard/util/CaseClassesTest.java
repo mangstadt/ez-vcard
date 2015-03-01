@@ -3,6 +3,7 @@ package ezvcard.util;
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
@@ -49,7 +50,7 @@ public class CaseClassesTest {
 	@Test
 	public void find() {
 		PrimeNumber found = cc.find(1);
-		assertTrue(PrimeNumber.ONE == found);
+		assertSame(PrimeNumber.ONE, found);
 
 		assertNull(cc.find(4));
 	}
@@ -57,13 +58,13 @@ public class CaseClassesTest {
 	@Test
 	public void get() {
 		PrimeNumber found = cc.get(3);
-		assertTrue(PrimeNumber.THREE == found);
+		assertSame(PrimeNumber.THREE, found);
 
 		PrimeNumber eleven1 = cc.get(11);
 		assertIntEquals(11, eleven1.value);
 
 		PrimeNumber eleven2 = cc.get(11);
-		assertTrue(eleven1 == eleven2);
+		assertSame(eleven1, eleven2);
 	}
 
 	@Test

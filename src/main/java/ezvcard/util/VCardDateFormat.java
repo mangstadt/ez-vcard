@@ -114,8 +114,8 @@ public enum VCardDateFormat {
 		@Override
 		public DateFormat getDateFormat(TimeZone timezone) {
 			//always use the UTC timezone
-			timezone = TimeZone.getTimeZone("UTC");
-			return super.getDateFormat(timezone);
+			TimeZone utc = TimeZone.getTimeZone("UTC");
+			return super.getDateFormat(utc);
 		}
 	},
 	
@@ -128,8 +128,8 @@ public enum VCardDateFormat {
 		@Override
 		public DateFormat getDateFormat(TimeZone timezone) {
 			//always use the UTC timezone
-			timezone = TimeZone.getTimeZone("UTC");
-			return super.getDateFormat(timezone);
+			TimeZone utc = TimeZone.getTimeZone("UTC");
+			return super.getDateFormat(utc);
 		}
 	},
 	

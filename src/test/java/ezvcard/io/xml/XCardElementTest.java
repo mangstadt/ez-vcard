@@ -171,11 +171,11 @@ public class XCardElementTest {
 		assertEquals(XmlUtils.toElementList(xcardElement.element().getChildNodes()), elements);
 	}
 
-	private XCardElement build(String innerXml) {
+	private static XCardElement build(String innerXml) {
 		return build(innerXml, null);
 	}
 
-	private XCardElement build(String innerXml, String prefix) {
+	private static XCardElement build(String innerXml, String prefix) {
 		//@formatter:off
 		String xml =
 		"<%sroot xmlns%s=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +

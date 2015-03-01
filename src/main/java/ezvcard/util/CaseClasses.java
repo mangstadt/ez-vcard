@@ -32,11 +32,15 @@ import java.util.Collections;
  */
 
 /**
+ * <p>
  * Manages objects that are like enums in that they are constant, but unlike
  * enums in that new instances can be created during runtime. This class ensures
  * that all instances of a class are unique, so they can be safely compared
- * using "==" (provided their constructors are private). It mimics the
- * "case class" feature in Scala.
+ * using "==" (provided their constructors are private).
+ * </p>
+ * <p>
+ * This class awkwardly mimics the "case class" feature in Scala.
+ * </p>
  * @author Michael Angstadt
  * 
  * @param <T> the class
@@ -148,10 +152,10 @@ public abstract class CaseClasses<T, V> {
 						T c = clazz.cast(obj);
 						preDefined.add(c);
 					}
-				} catch (Exception ex) {
+				} catch (Exception e) {
 					//reflection error
 					//should never be thrown because we check for "public static" and the correct type
-					throw new RuntimeException(ex);
+					throw new RuntimeException(e);
 				}
 			}
 		}

@@ -79,7 +79,6 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
-@SuppressWarnings("resource")
 public class JCardReaderTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();

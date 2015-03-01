@@ -224,6 +224,7 @@ public class HCardPageTest {
 
 		HCardParser reader = new HCardParser(html);
 		vcard = reader.readNext();
+		reader.close();
 		assertEquals("one" + NEWLINE + "two" + NEWLINE + "three" + NEWLINE + "four", vcard.getNotes().get(0).getValue());
 	}
 
@@ -243,6 +244,7 @@ public class HCardPageTest {
 		//parse template
 		HCardParser reader = new HCardParser(html);
 		VCard actual = reader.readNext();
+		reader.close();
 
 		assertEquals("Claus", actual.getSortString().getValue());
 

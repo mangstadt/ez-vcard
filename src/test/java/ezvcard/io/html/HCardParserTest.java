@@ -70,6 +70,7 @@ public class HCardParserTest {
 
 		HCardParser parser = new HCardParser(html);
 		assertNull(parser.readNext());
+		parser.close();
 	}
 
 	@Test
