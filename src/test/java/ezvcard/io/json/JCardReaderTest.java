@@ -431,7 +431,7 @@ public class JCardReaderTest {
 		assertEquals(Arrays.asList(), n.getPrefixes());
 		assertEquals(Arrays.asList("ing. jr", "M.Sc."), n.getSuffixes());
 
-		PartialDate expectedBday = PartialDate.date(null, 2, 3);
+		PartialDate expectedBday = PartialDate.builder().month(2).date(3).build();
 		PartialDate actualBday = vcard.getBirthday().getPartialDate();
 		assertEquals(expectedBday, actualBday);
 

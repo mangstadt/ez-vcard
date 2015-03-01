@@ -57,7 +57,6 @@ import ezvcard.property.Xml;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.UtcOffset;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -651,10 +650,10 @@ public class XCardWriterTest {
 		n.addSuffix("M.Sc.");
 		vcard.setStructuredName(n);
 
-		Birthday bday = new Birthday(PartialDate.date(null, 2, 3));
+		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());
 		vcard.setBirthday(bday);
 
-		Anniversary anniversary = new Anniversary(PartialDate.dateTime(2009, 8, 8, 14, 30, null, new UtcOffset(-5, 0)));
+		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5, 0).build());
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(Gender.male());

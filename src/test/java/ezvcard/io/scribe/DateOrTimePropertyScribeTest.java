@@ -63,8 +63,8 @@ public class DateOrTimePropertyScribeTest {
 	private final String dateTimeStr = dateStr + "T131020+0100";
 	private final String dateTimeExtendedStr = dateExtendedStr + "T13:10:20+01:00";
 
-	private final PartialDate partialDate = PartialDate.date(null, 6, 5);
-	private final PartialDate partialDateTime = PartialDate.dateTime(null, 6, 5, 13, 10, 20);
+	private final PartialDate partialDate = PartialDate.builder().month(6).date(5).build();
+	private final PartialDate partialDateTime = PartialDate.builder().month(6).date(5).hour(13).minute(10).second(20).build();
 
 	private final String text = "Sometime in, ;1980;";
 	private final String textEscaped = "Sometime in\\, \\;1980\\;";

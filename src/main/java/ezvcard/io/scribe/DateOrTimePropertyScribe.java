@@ -224,7 +224,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 			}
 
 			try {
-				return newInstance(new PartialDate(value));
+				return newInstance(PartialDate.parse(value));
 			} catch (IllegalArgumentException e2) {
 				warnings.add(Messages.INSTANCE.getParseMessage(6));
 				return newInstance(value);
