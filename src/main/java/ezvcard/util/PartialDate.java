@@ -96,8 +96,7 @@ public final class PartialDate {
 	};
 	//@formatter:on
 
-	//package-private for unit testing
-	final Integer[] components = new Integer[8];
+	private final Integer[] components = new Integer[8];
 
 	/**
 	 * <p>
@@ -506,15 +505,11 @@ public final class PartialDate {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 		PartialDate other = (PartialDate) obj;
-		if (!Arrays.equals(components, other.components))
-			return false;
+		if (!Arrays.equals(components, other.components)) return false;
 		return true;
 	}
 
