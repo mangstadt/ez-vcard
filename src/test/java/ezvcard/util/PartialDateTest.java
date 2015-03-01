@@ -4,6 +4,7 @@ import static ezvcard.util.PartialDate.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,81 +49,121 @@ public class PartialDateTest {
 	@Test
 	public void builder_month() {
 		PartialDate.Builder builder = builder();
-		final int end = 13;
+		final int start = 0, end = 13;
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.month(-1);
+		try {
+			builder.month(start);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 
-		for (int i = 0; i < end; i++) {
+		for (int i = start + 1; i < end; i++) {
 			builder.month(i);
 		}
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.month(end);
+		try {
+			builder.month(end);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 	}
 
 	@Test
 	public void builder_date() {
 		PartialDate.Builder builder = builder();
-		final int end = 32;
+		final int start = 0, end = 32;
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.date(-1);
+		try {
+			builder.date(start);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 
-		for (int i = 0; i < end; i++) {
+		for (int i = start + 1; i < end; i++) {
 			builder.date(i);
 		}
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.date(end);
+		try {
+			builder.date(end);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 	}
 
 	@Test
 	public void builder_hour() {
 		PartialDate.Builder builder = builder();
-		final int end = 24;
+		final int start = -1, end = 24;
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.hour(-1);
+		try {
+			builder.hour(start);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 
-		for (int i = 0; i < end; i++) {
+		for (int i = start + 1; i < end; i++) {
 			builder.hour(i);
 		}
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.hour(end);
+		try {
+			builder.hour(end);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 	}
 
 	@Test
 	public void builder_minute() {
 		PartialDate.Builder builder = builder();
-		final int end = 60;
+		final int start = -1, end = 60;
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.minute(-1);
+		try {
+			builder.minute(start);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 
-		for (int i = 0; i < end; i++) {
+		for (int i = start + 1; i < end; i++) {
 			builder.minute(i);
 		}
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.minute(end);
+		try {
+			builder.minute(end);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 	}
 
 	@Test
 	public void builder_second() {
 		PartialDate.Builder builder = builder();
-		final int end = 60;
+		final int start = -1, end = 60;
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.second(-1);
+		try {
+			builder.second(start);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 
-		for (int i = 0; i < end; i++) {
+		for (int i = start + 1; i < end; i++) {
 			builder.second(i);
 		}
 
-		expectedException.expect(IllegalArgumentException.class);
-		builder.second(end);
+		try {
+			builder.second(end);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//should be thrown
+		}
 	}
 
 	@Test
@@ -137,30 +178,30 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void toDateAndOrTime() {
+	public void toISO8601() {
 		//date
-		assertToDateAndOrTime(builder().year(1980), "1980", "1980");
-		assertToDateAndOrTime(builder().month(4), "--04", "--04");
-		assertToDateAndOrTime(builder().date(20), "---20", "---20");
-		assertToDateAndOrTime(builder().year(1980).month(4), "1980-04", "1980-04");
-		assertToDateAndOrTime(builder().month(4).date(20), "--0420", "--04-20");
-		assertToDateAndOrTime(builder().year(1980).month(4).date(20), "19800420", "1980-04-20");
-		assertToDateAndOrTime(builder(), "", "");
+		assertToISO8601(builder().year(1980), "1980", "1980");
+		assertToISO8601(builder().month(4), "--04", "--04");
+		assertToISO8601(builder().date(20), "---20", "---20");
+		assertToISO8601(builder().year(1980).month(4), "1980-04", "1980-04");
+		assertToISO8601(builder().month(4).date(20), "--0420", "--04-20");
+		assertToISO8601(builder().year(1980).month(4).date(20), "19800420", "1980-04-20");
+		assertToISO8601(builder(), "", "");
 
 		//time
-		assertToDateAndOrTime(builder().hour(5), "T05", "T05");
-		assertToDateAndOrTime(builder().minute(20), "T-20", "T-20");
-		assertToDateAndOrTime(builder().second(32), "T--32", "T--32");
-		assertToDateAndOrTime(builder().hour(5).minute(20), "T0520", "T05:20");
-		assertToDateAndOrTime(builder().minute(20).second(32), "T-2032", "T-20:32");
-		assertToDateAndOrTime(builder().hour(5).minute(20).second(32), "T052032", "T05:20:32");
-		assertToDateAndOrTime(builder(), "", "");
-		assertToDateAndOrTime(builder().minute(20).second(32).offset(-5, 30), "T-2032-0530", "T-20:32-05:30");
-		assertToDateAndOrTime(builder().minute(20).second(32).offset(-5, 0), "T-2032-0500", "T-20:32-05:00");
-		assertToDateAndOrTime(builder().minute(20).second(32).offset(5, 30), "T-2032+0530", "T-20:32+05:30");
+		assertToISO8601(builder().hour(5), "T05", "T05");
+		assertToISO8601(builder().minute(20), "T-20", "T-20");
+		assertToISO8601(builder().second(32), "T--32", "T--32");
+		assertToISO8601(builder().hour(5).minute(20), "T0520", "T05:20");
+		assertToISO8601(builder().minute(20).second(32), "T-2032", "T-20:32");
+		assertToISO8601(builder().hour(5).minute(20).second(32), "T052032", "T05:20:32");
+		assertToISO8601(builder(), "", "");
+		assertToISO8601(builder().minute(20).second(32).offset(-5, 30), "T-2032-0530", "T-20:32-05:30");
+		assertToISO8601(builder().minute(20).second(32).offset(-5, 0), "T-2032-0500", "T-20:32-05:00");
+		assertToISO8601(builder().minute(20).second(32).offset(5, 30), "T-2032+0530", "T-20:32+05:30");
 
 		//date and time
-		assertToDateAndOrTime(builder().month(4).date(20).hour(5).offset(-5, 0), "--0420T05-0500", "--04-20T05-05:00");
+		assertToISO8601(builder().month(4).date(20).hour(5).offset(-5, 0), "--0420T05-0500", "--04-20T05-05:00");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -228,10 +269,10 @@ public class PartialDateTest {
 		assertFalse(d1.equals(d3));
 	}
 
-	private static void assertToDateAndOrTime(PartialDate.Builder dateBuilder, String expectedBasic, String expectedExtended) {
+	private static void assertToISO8601(PartialDate.Builder dateBuilder, String expectedBasic, String expectedExtended) {
 		PartialDate date = dateBuilder.build();
-		assertEquals(expectedBasic, date.toDateAndOrTime(false));
-		assertEquals(expectedExtended, date.toDateAndOrTime(true));
+		assertEquals(expectedBasic, date.toISO8601(false));
+		assertEquals(expectedExtended, date.toISO8601(true));
 	}
 
 	private static void assertParse(String input, PartialDate.Builder expectedBuilder) {

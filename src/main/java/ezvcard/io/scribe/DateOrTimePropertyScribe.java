@@ -95,7 +95,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 
 			PartialDate partialDate = property.getPartialDate();
 			if (partialDate != null) {
-				return partialDate.toDateAndOrTime(false);
+				return partialDate.toISO8601(false);
 			}
 		}
 
@@ -138,7 +138,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 				dataType = VCardDataType.DATE_AND_OR_TIME;
 			}
 
-			parent.append(dataType, partialDate.toDateAndOrTime(false));
+			parent.append(dataType, partialDate.toISO8601(false));
 			return;
 		}
 
@@ -192,7 +192,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 
 		PartialDate partialDate = property.getPartialDate();
 		if (partialDate != null) {
-			String value = partialDate.toDateAndOrTime(true);
+			String value = partialDate.toISO8601(true);
 			return JCardValue.single(value);
 		}
 
