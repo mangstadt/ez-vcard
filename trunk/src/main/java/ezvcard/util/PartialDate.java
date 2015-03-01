@@ -293,9 +293,13 @@ public final class PartialDate {
 	/**
 	 * Converts this partial date to its ISO 8601 representation.
 	 * @param extended true to use extended format, false to use basic
-	 * @return the ISO 8601 representation
+	 * @return the ISO 8601 representation (e.g. "--0416")
+	 * @throws IllegalStateException if an ISO 8601 representation of the date
+	 * cannot be created because the date's components are invalid. This will
+	 * not happen if the partial date is constructed using the
+	 * {@link #builder()} method
 	 */
-	public String toDateAndOrTime(boolean extended) { //TODO rename to "toISO8601()"
+	public String toISO8601(boolean extended) {
 		StringBuilder sb = new StringBuilder();
 		NumberFormat nf = new DecimalFormat("00");
 
@@ -376,7 +380,7 @@ public final class PartialDate {
 
 	@Override
 	public String toString() {
-		return toDateAndOrTime(true);
+		return toISO8601(true);
 	}
 
 	/**
@@ -428,6 +432,10 @@ public final class PartialDate {
 		}
 	}
 
+	/**
+	 * Constructs instances of the {@link PartialDate} class.
+	 * @author Michael Angstadt
+	 */
 	public static class Builder {
 		private final Integer[] components;
 
@@ -435,6 +443,9 @@ public final class PartialDate {
 			components = new Integer[8];
 		}
 
+		/**
+		 * @param original the partial date to copy
+		 */
 		public Builder(PartialDate original) {
 			components = Arrays.copyOf(original.components, original.components.length);
 		}
@@ -444,6 +455,10 @@ public final class PartialDate {
 			return this;
 		}
 
+		/**
+		 * @throws IllegalArgumentException if the month is not between 1 and 12
+		 * inclusive
+		 */
 		public Builder month(Integer month) {
 			if (month != null && (month < 1 || month > 12)) {
 				throw new IllegalArgumentException("Month must be between 1 and 12 inclusive.");
@@ -453,6 +468,10 @@ public final class PartialDate {
 			return this;
 		}
 
+		/**
+		 * @throws IllegalArgumentException if the date is not between 1 and 31
+		 * inclusive
+		 */
 		public Builder date(Integer date) {
 			if (date != null && (date < 1 || date > 31)) {
 				throw new IllegalArgumentException("Date must be between 1 and 31 inclusive.");
@@ -462,6 +481,10 @@ public final class PartialDate {
 			return this;
 		}
 
+		/**
+		 * @throws IllegalArgumentException if the hour is not between 1 and 23
+		 * inclusive
+		 */
 		public Builder hour(Integer hour) {
 			if (hour != null && (hour < 0 || hour > 23)) {
 				throw new IllegalArgumentException("Hour must be between 0 and 23 inclusive.");
@@ -471,6 +494,10 @@ public final class PartialDate {
 			return this;
 		}
 
+		/**
+		 * @throws IllegalArgumentException if the minute is not between 0 and
+		 * 59 inclusive
+		 */
 		public Builder minute(Integer minute) {
 			if (minute != null && (minute < 0 || minute > 59)) {
 				throw new IllegalArgumentException("Minute must be between 0 and 59 inclusive.");
@@ -480,6 +507,10 @@ public final class PartialDate {
 			return this;
 		}
 
+		/**
+		 * @throws IllegalArgumentException if the second is not between 0 and
+		 * 59 inclusive
+		 */
 		public Builder second(Integer second) {
 			if (second != null && (second < 0 || second > 59)) {
 				throw new IllegalArgumentException("Second must be between 0 and 59 inclusive.");
@@ -489,6 +520,10 @@ public final class PartialDate {
 			return this;
 		}
 
+		/**
+		 * @throws IllegalArgumentException if the minute is not between 0 and
+		 * 59 inclusive
+		 */
 		public Builder offset(Integer hour, Integer minute) {
 			if (minute != null && (minute < 0 || minute > 59)) {
 				throw new IllegalArgumentException("Timezone minute must be between 0 and 59 inclusive.");
