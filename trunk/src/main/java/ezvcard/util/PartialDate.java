@@ -96,12 +96,15 @@ public final class PartialDate {
 	//@formatter:on
 
 	private final Integer[] components;
+	private final UtcOffset offset;
 
 	/**
 	 * @param components the date/time components array
+	 * @param offset the UTC offset or null if not set
 	 */
-	private PartialDate(Integer[] components) {
+	private PartialDate(Integer[] components, UtcOffset offset) {
 		this.components = components;
+		this.offset = offset;
 	}
 
 	/**
@@ -117,41 +120,37 @@ public final class PartialDate {
 	 * @param string the string (e.g. "--0420T15")
 	 */
 	public static PartialDate parse(String string) {
-		Integer components[] = new Integer[8];
+		Builder builder = new Builder();
 		String split[] = string.split("T");
 		boolean success;
 		if (split.length == 1) {
 			//date or time
-			success = parseDate(string, components) || parseTime(string, components);
+			success = parseDate(string, builder) || parseTime(string, builder);
 		} else if (split[0].length() == 0) {
 			//time
-			success = parseTime(split[1], components);
+			success = parseTime(split[1], builder);
 		} else {
 			//date and time
-			success = parseDate(split[0], components) && parseTime(split[1], components);
+			success = parseDate(split[0], builder) && parseTime(split[1], builder);
 		}
 
 		if (!success) {
 			throw new IllegalArgumentException("Could not parse date: " + string);
 		}
-
-		if (components[TIMEZONE_HOUR] != null && components[TIMEZONE_MINUTE] == null) {
-			components[TIMEZONE_MINUTE] = 0;
-		}
-		return new PartialDate(components);
+		return builder.build();
 	}
 
-	private static boolean parseDate(String value, Integer components[]) {
-		return parseFormats(value, components, dateFormats);
+	private static boolean parseDate(String value, Builder builder) {
+		return parseFormats(value, builder, dateFormats);
 	}
 
-	private static boolean parseTime(String value, Integer components[]) {
-		return parseFormats(value, components, timeFormats);
+	private static boolean parseTime(String value, Builder builder) {
+		return parseFormats(value, builder, timeFormats);
 	}
 
-	private static boolean parseFormats(String value, Integer components[], Format formats[]) {
+	private static boolean parseFormats(String value, Builder builder, Format formats[]) {
 		for (Format regex : formats) {
-			if (regex.parse(components, value)) {
+			if (regex.parse(builder, value)) {
 				return true;
 			}
 		}
@@ -255,23 +254,19 @@ public final class PartialDate {
 	}
 
 	/**
-	 * Gets the timezone component.
-	 * @return the timezone component (index 0 = hour, index 1 = minute) or null
-	 * if not set
+	 * Gets the UTC offset.
+	 * @return the UTC offset or null if not set
 	 */
-	public Integer[] getTimezone() {
-		if (!hasTimezone()) {
-			return null;
-		}
-		return new Integer[] { components[TIMEZONE_HOUR], components[TIMEZONE_MINUTE] };
+	public UtcOffset getUtcOffset() {
+		return offset;
 	}
 
 	/**
 	 * Determines if this date has a timezone component.
 	 * @return true if the component is set, false if not
 	 */
-	private boolean hasTimezone() {
-		return components[TIMEZONE_HOUR] != null; //minute component is optional
+	private boolean hasUtcOffset() {
+		return offset != null;
 	}
 
 	/**
@@ -348,12 +343,8 @@ public final class PartialDate {
 				sb.append(hourStr).append(dash).append(minuteStr).append(dash).append(secondStr);
 			}
 
-			if (hasTimezone()) {
-				Integer[] timezone = getTimezone();
-				if (timezone[1] == null) {
-					timezone[1] = 0;
-				}
-				sb.append(new UtcOffset(timezone[0], timezone[1]).toString(extended));
+			if (hasUtcOffset()) {
+				sb.append(offset.toString(extended));
 			}
 		}
 
@@ -365,6 +356,7 @@ public final class PartialDate {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Arrays.hashCode(components);
+		result = prime * result + ((offset == null) ? 0 : offset.hashCode());
 		return result;
 	}
 
@@ -375,6 +367,9 @@ public final class PartialDate {
 		if (getClass() != obj.getClass()) return false;
 		PartialDate other = (PartialDate) obj;
 		if (!Arrays.equals(components, other.components)) return false;
+		if (offset == null) {
+			if (other.offset != null) return false;
+		} else if (!offset.equals(other.offset)) return false;
 		return true;
 	}
 
@@ -397,7 +392,7 @@ public final class PartialDate {
 		 * regex group to, or -1 to ignore the group
 		 */
 		public Format(String regex, Integer... componentIndexes) {
-			this.regex = Pattern.compile("^" + regex + "$");
+			this.regex = Pattern.compile('^' + regex + '$');
 			this.componentIndexes = componentIndexes;
 		}
 
@@ -407,12 +402,13 @@ public final class PartialDate {
 		 * @param value the string
 		 * @return true if the string was successfully parsed, false if not
 		 */
-		public boolean parse(Integer components[], String value) {
+		public boolean parse(Builder builder, String value) {
 			Matcher m = regex.matcher(value);
 			if (!m.find()) {
 				return false;
 			}
 
+			Integer offsetHour = null, offsetMinute = null;
 			for (int i = 0; i < componentIndexes.length; i++) {
 				Integer index = componentIndexes[i];
 				if (index == null) {
@@ -425,8 +421,25 @@ public final class PartialDate {
 					if (groupStr.startsWith("+")) {
 						groupStr = groupStr.substring(1);
 					}
-					components[index] = Integer.valueOf(groupStr);
+
+					int component = Integer.valueOf(groupStr);
+					if (index == TIMEZONE_HOUR) {
+						offsetHour = component;
+						continue;
+					}
+					if (index == TIMEZONE_MINUTE) {
+						offsetMinute = component;
+						continue;
+					}
+					builder.components[index] = component;
 				}
+			}
+
+			if (offsetHour != null) {
+				if (offsetMinute == null) {
+					offsetMinute = 0;
+				}
+				builder.offset = new UtcOffset(offsetHour >= 0, offsetHour, offsetMinute);
 			}
 			return true;
 		}
@@ -438,9 +451,10 @@ public final class PartialDate {
 	 */
 	public static class Builder {
 		private final Integer[] components;
+		private UtcOffset offset;
 
 		public Builder() {
-			components = new Integer[8];
+			components = new Integer[6];
 		}
 
 		/**
@@ -448,6 +462,7 @@ public final class PartialDate {
 		 */
 		public Builder(PartialDate original) {
 			components = Arrays.copyOf(original.components, original.components.length);
+			offset = original.offset;
 		}
 
 		public Builder year(Integer year) {
@@ -520,22 +535,9 @@ public final class PartialDate {
 			return this;
 		}
 
-		/**
-		 * @throws IllegalArgumentException if the minute is not between 0 and
-		 * 59 inclusive
-		 */
-		public Builder offset(Integer hour, Integer minute) {
-			if (minute != null && (minute < 0 || minute > 59)) {
-				throw new IllegalArgumentException("Timezone minute must be between 0 and 59 inclusive.");
-			}
-
-			components[TIMEZONE_HOUR] = hour;
-			components[TIMEZONE_MINUTE] = minute;
-			return this;
-		}
-
 		public Builder offset(UtcOffset offset) {
-			return (offset == null) ? offset(null, null) : offset(offset.getHour(), offset.getMinute());
+			this.offset = offset;
+			return this;
 		}
 
 		public PartialDate build() {
@@ -546,7 +548,7 @@ public final class PartialDate {
 				throw new IllegalArgumentException("Invalid time component combination: hour, second");
 			}
 
-			return new PartialDate(components);
+			return new PartialDate(components, offset);
 		}
 	}
 }

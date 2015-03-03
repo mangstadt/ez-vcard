@@ -65,6 +65,7 @@ import ezvcard.property.Uid;
 import ezvcard.property.Url;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
+import ezvcard.util.UtcOffset;
 import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
@@ -2031,8 +2032,7 @@ public class VCardReaderTest {
 		//TZ
 		{
 			Timezone f = vcard.getTimezone();
-			assertIntEquals(1, f.getHourOffset());
-			assertIntEquals(0, f.getMinuteOffset());
+			assertEquals(new UtcOffset(true, 1, 0), f.getOffset());
 		}
 
 		//LABEL
@@ -3151,7 +3151,7 @@ public class VCardReaderTest {
 		PartialDate actualBday = vcard.getBirthday().getPartialDate();
 		assertEquals(expectedBday, actualBday);
 
-		PartialDate expectedAnniversary = PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5, 0).build();
+		PartialDate expectedAnniversary = PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(new UtcOffset(false, -5, 0)).build();
 		PartialDate actualAnniversary = vcard.getAnniversary().getPartialDate();
 		assertEquals(expectedAnniversary, actualAnniversary);
 
@@ -3204,8 +3204,7 @@ public class VCardReaderTest {
 		assertEquals("work", key.getType());
 
 		Timezone tz = vcard.getTimezone();
-		assertIntEquals(-5, tz.getHourOffset());
-		assertIntEquals(0, tz.getMinuteOffset());
+		assertEquals(new UtcOffset(false, -5, 0), tz.getOffset());
 
 		Url url = vcard.getUrls().get(0);
 		assertEquals("http://nomis80.org", url.getValue());

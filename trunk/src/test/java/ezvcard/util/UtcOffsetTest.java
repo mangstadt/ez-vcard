@@ -35,6 +35,21 @@ import org.junit.Test;
  */
 public class UtcOffsetTest {
 	@Test
+	public void constructor() {
+		final int HOURS = 60 * 60 * 1000;
+		final int MINUTES = 60 * 1000;
+
+		UtcOffset offset = new UtcOffset(true, -5, -30);
+		assertEquals(5 * HOURS + 30 * MINUTES, offset.getMillis());
+
+		offset = new UtcOffset(false, 5, 30);
+		assertEquals(-(5 * HOURS + 30 * MINUTES), offset.getMillis());
+
+		offset = new UtcOffset(false, 5, 70);
+		assertEquals(-(5 * HOURS + 70 * MINUTES), offset.getMillis());
+	}
+
+	@Test
 	public void parse() {
 		assertParse("5", 5, 0);
 		assertParse("10", 10, 0);
@@ -89,15 +104,9 @@ public class UtcOffsetTest {
 		assertParse("-10:30", -10, 30);
 	}
 
-	private void assertParse(String input, int expectedHour, int expectedMinute) {
-		UtcOffset expected = new UtcOffset(expectedHour, expectedMinute);
-		UtcOffset actual = UtcOffset.parse(input);
-		assertEquals(expected, actual);
-	}
-
 	@Test
 	public void parse_timezone() {
-		UtcOffset expected = new UtcOffset(1, 0);
+		UtcOffset expected = new UtcOffset(true, 1, 0);
 		UtcOffset actual = UtcOffset.parse(buildTimezone(1, 0));
 		assertEquals(expected, actual);
 	}
@@ -134,8 +143,14 @@ public class UtcOffsetTest {
 		assertToString(-10, 30, true, "-10:30");
 	}
 
-	private void assertToString(int hour, int minute, boolean extended, String expected) {
-		UtcOffset offset = new UtcOffset(hour, minute);
+	private static void assertParse(String input, int expectedHour, int expectedMinute) {
+		UtcOffset expected = new UtcOffset(expectedHour >= 0, expectedHour, expectedMinute);
+		UtcOffset actual = UtcOffset.parse(input);
+		assertEquals(expected, actual);
+	}
+
+	private static void assertToString(int hour, int minute, boolean extended, String expected) {
+		UtcOffset offset = new UtcOffset(hour >= 0, hour, minute);
 		String actual = offset.toString(extended);
 		assertEquals(expected, actual);
 	}

@@ -46,6 +46,7 @@ import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
+import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -488,8 +489,7 @@ public class JCardReaderTest {
 		assertEquals("work", key.getType());
 
 		Timezone tz = vcard.getTimezone();
-		assertIntEquals(-5, tz.getHourOffset());
-		assertIntEquals(0, tz.getMinuteOffset());
+		assertEquals(new UtcOffset(false, -5, 0), tz.getOffset());
 
 		Url url = vcard.getUrls().get(0);
 		assertEquals("http://nomis80.org", url.getValue());

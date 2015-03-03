@@ -49,7 +49,7 @@ public class TimezoneScribeTest {
 	private final TimezoneScribe scribe = new TimezoneScribe();
 	private final Sensei<Timezone> sensei = new Sensei<Timezone>(scribe);
 
-	private final UtcOffset offset = new UtcOffset(-5, 0);
+	private final UtcOffset offset = new UtcOffset(false, -5, 0);
 	private final String offsetStrExtended = "-05:00";
 	private final String offsetStrBasic = "-0500";
 	private final String timezoneIdStr = "America/New_York";

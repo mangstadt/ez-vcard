@@ -280,12 +280,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 
 	private UtcOffset offsetFromTimezone(TimeZone timezone) {
 		long offsetMs = timezone.getOffset(System.currentTimeMillis());
-		int hours = (int) (offsetMs / 1000 / 60 / 60);
-		int minutes = (int) ((offsetMs / 1000 / 60) % 60);
-		if (minutes < 0) {
-			minutes *= -1;
-		}
-		return new UtcOffset(hours, minutes);
+		return new UtcOffset(offsetMs);
 	}
 
 	private TimeZone timezoneFromId(String id) {

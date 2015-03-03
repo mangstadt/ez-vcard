@@ -20,6 +20,7 @@ import ezvcard.property.Sound;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Timezone;
 import ezvcard.property.Uid;
+import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -143,7 +144,7 @@ public class JohnDoeVCard {
 
 		vcard.setGeo(37.6, -95.67);
 
-		vcard.setTimezone(new Timezone(-5, 0, "America/New_York"));
+		vcard.setTimezone(new Timezone(new UtcOffset(false, -5, 0), "America/New_York"));
 
 		File file = new File("portrait.jpg");
 		Photo photo = new Photo(file, ImageType.JPEG);

@@ -36,6 +36,7 @@ import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
+import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -292,7 +293,7 @@ public class JCardWriterTest {
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());
 		vcard.setBirthday(bday);
 
-		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).second(0).offset(-5, 0).build());
+		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).second(0).offset(new UtcOffset(false, -5, 0)).build());
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(Gender.male());
@@ -337,7 +338,7 @@ public class JCardWriterTest {
 		key.setType("work");
 		vcard.addKey(key);
 
-		vcard.setTimezone(new Timezone(-5, 0));
+		vcard.setTimezone(new Timezone(new UtcOffset(false, -5, 0)));
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
