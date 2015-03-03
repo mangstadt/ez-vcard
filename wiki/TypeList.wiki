@@ -437,7 +437,7 @@ Defines a URL that shows when the person is free/busy on their calendar.
 
 || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *3.0* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-49 RFC 6350 p.49] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/FbUrl.html ezvcard.property.FbUrl]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/FreeBusyUrl.html ezvcard.property.FreeBusyUrl]
 
 {{{
 VCard vcard = new VCard();
@@ -855,7 +855,7 @@ Identifies the software application that created the vCard.
 
 || https://ez-vcard.googlecode.com/svn/wiki/images/x.png *2.1* || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *3.0* [http://tools.ietf.org/html/rfc2426#page-21 RFC 2426 p.21] || https://ez-vcard.googlecode.com/svn/wiki/images/check.png *4.0* [http://tools.ietf.org/html/rfc6350#page-44 RFC 6350 p.44] ||
 
-*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/ProdId.html ezvcard.property.ProdId]
+*Java class:* [https://ez-vcard.googlecode.com/svn/javadocs/latest/index.html?ezvcard/property/ProductId.html ezvcard.property.ProductId]
 
 {{{
 VCard vcard = new VCard();
