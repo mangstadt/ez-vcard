@@ -391,10 +391,10 @@
 						<br />
 					</#if>
 					
-					<#if v.timezone?? && v.timezone.hourOffset??>
+					<#if v.timezone?? && v.timezone.offset??>
 						<span class="l">Timezone: </span>
 						<span class="tz">
-							<#if v.timezone.hourOffset &gt;= 0>+</#if>${v.timezone.hourOffset?string("00")}${v.timezone.minuteOffset?string("00")}
+							${v.timezone.offset.toString(false)}
 						</span>
 						<br />
 					</#if>

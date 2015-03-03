@@ -60,6 +60,7 @@ import ezvcard.property.Xml;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
+import ezvcard.util.UtcOffset;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -898,7 +899,7 @@ public class XCardReaderTest {
 			PartialDate actualBday = vcard.getBirthday().getPartialDate();
 			assertEquals(expectedBday, actualBday);
 
-			PartialDate expectedAnniversary = PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5, 0).build();
+			PartialDate expectedAnniversary = PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(new UtcOffset(false, -5, 0)).build();
 			PartialDate actualAnniversary = vcard.getAnniversary().getPartialDate();
 			assertEquals(expectedAnniversary, actualAnniversary);
 

@@ -4,6 +4,7 @@ import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -42,6 +43,7 @@ import ezvcard.property.Title;
 import ezvcard.property.Uid;
 import ezvcard.property.Url;
 import ezvcard.util.TelUri;
+import ezvcard.util.UtcOffset;
 import freemarker.template.TemplateException;
 
 /*
@@ -269,8 +271,8 @@ public class HCardPageTest {
 		assertEquals(expected.getGeo().getLatitude(), actual.getGeo().getLatitude());
 		assertEquals(expected.getGeo().getLongitude(), actual.getGeo().getLongitude());
 
-		assertEquals(expected.getTimezone().getHourOffset(), actual.getTimezone().getHourOffset());
-		assertEquals(expected.getTimezone().getMinuteOffset(), actual.getTimezone().getMinuteOffset());
+		assertEquals(expected.getTimezone().getOffset(), actual.getTimezone().getOffset());
+		assertNull(actual.getTimezone().getText()); //text value is not written
 
 		{
 			StructuredName e = expected.getStructuredName();
@@ -455,7 +457,7 @@ public class HCardPageTest {
 
 		vcard.setGeo(123.456, -98.123);
 
-		vcard.setTimezone(new Timezone(-6, 0, "America/Chicago"));
+		vcard.setTimezone(new Timezone(new UtcOffset(false, -6, 0), "America/Chicago"));
 
 		InputStream in = getClass().getResourceAsStream("hcard-portrait.jpg");
 		Photo photo = new Photo(in, ImageType.JPEG);

@@ -1,6 +1,5 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -55,7 +54,7 @@ public class TimezoneTest {
 		assertValidate(empty).versions(VCardVersion.V3_0).run(8);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
 
-		Timezone withOffset = new Timezone(-5, 30);
+		Timezone withOffset = new Timezone(new UtcOffset(false, -5, 30));
 		assertValidate(withOffset).run();
 
 		Timezone withText = new Timezone("America/New_York");
@@ -69,17 +68,13 @@ public class TimezoneTest {
 		Timezone tz = new Timezone(newYork);
 
 		assertEquals(newYork.getID(), tz.getText());
-		if (newYork.inDaylightTime(new Date())) {
-			assertIntEquals(-4, tz.getHourOffset());
-		} else {
-			assertIntEquals(-5, tz.getHourOffset());
-		}
-		assertIntEquals(0, tz.getMinuteOffset());
+		int hour = newYork.inDaylightTime(new Date()) ? -4 : -5;
+		assertEquals(new UtcOffset(false, hour, 0), tz.getOffset());
 	}
 
 	@Test
 	public void toTimeZone_offset() {
-		Timezone t = new Timezone(-5, 30);
+		Timezone t = new Timezone(new UtcOffset(false, -5, 30));
 		TimeZone actual = t.toTimeZone();
 		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), actual.getRawOffset());
 	}
@@ -100,7 +95,7 @@ public class TimezoneTest {
 
 	@Test
 	public void toTimeZone_text_and_offset() {
-		Timezone t = new Timezone(-5, 30, "text");
+		Timezone t = new Timezone(new UtcOffset(false, -5, 30), "text");
 		TimeZone actual = t.toTimeZone();
 		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), actual.getRawOffset());
 		assertEquals("text", actual.getID());

@@ -196,12 +196,12 @@ public class PartialDateTest {
 		assertToISO8601(builder().minute(20).second(32), "T-2032", "T-20:32");
 		assertToISO8601(builder().hour(5).minute(20).second(32), "T052032", "T05:20:32");
 		assertToISO8601(builder(), "", "");
-		assertToISO8601(builder().minute(20).second(32).offset(-5, 30), "T-2032-0530", "T-20:32-05:30");
-		assertToISO8601(builder().minute(20).second(32).offset(-5, 0), "T-2032-0500", "T-20:32-05:00");
-		assertToISO8601(builder().minute(20).second(32).offset(5, 30), "T-2032+0530", "T-20:32+05:30");
+		assertToISO8601(builder().minute(20).second(32).offset(new UtcOffset(false, -5, 30)), "T-2032-0530", "T-20:32-05:30");
+		assertToISO8601(builder().minute(20).second(32).offset(new UtcOffset(false, -5, 0)), "T-2032-0500", "T-20:32-05:00");
+		assertToISO8601(builder().minute(20).second(32).offset(new UtcOffset(true, 5, 30)), "T-2032+0530", "T-20:32+05:30");
 
 		//date and time
-		assertToISO8601(builder().month(4).date(20).hour(5).offset(-5, 0), "--0420T05-0500", "--04-20T05-05:00");
+		assertToISO8601(builder().month(4).date(20).hour(5).offset(new UtcOffset(false, -5, 0)), "--0420T05-0500", "--04-20T05-05:00");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -235,15 +235,15 @@ public class PartialDateTest {
 		assertParse("T-20:32", builder().minute(20).second(32));
 		assertParse("T052032", builder().hour(5).minute(20).second(32));
 		assertParse("T05:20:32", builder().hour(5).minute(20).second(32));
-		assertParse("T-2032-0530", builder().minute(20).second(32).offset(-5, 30));
-		assertParse("T-20:32-05:30", builder().minute(20).second(32).offset(-5, 30));
-		assertParse("T-2032-0500", builder().minute(20).second(32).offset(-5, 0));
-		assertParse("T-20:32-05:00", builder().minute(20).second(32).offset(-5, 0));
-		assertParse("T-2032-05", builder().minute(20).second(32).offset(-5, 0));
-		assertParse("T-20:32-05", builder().minute(20).second(32).offset(-5, 0));
-		assertParse("T-20:32+05:30", builder().minute(20).second(32).offset(5, 30));
-		assertParse("--0420T05-0500", builder().month(4).date(20).hour(5).offset(-5, 0));
-		assertParse("--04-20T05-05:00", builder().month(4).date(20).hour(5).offset(-5, 0));
+		assertParse("T-2032-0530", builder().minute(20).second(32).offset(new UtcOffset(false, -5, 30)));
+		assertParse("T-20:32-05:30", builder().minute(20).second(32).offset(new UtcOffset(false, -5, 30)));
+		assertParse("T-2032-0500", builder().minute(20).second(32).offset(new UtcOffset(false, -5, 0)));
+		assertParse("T-20:32-05:00", builder().minute(20).second(32).offset(new UtcOffset(false, -5, 0)));
+		assertParse("T-2032-05", builder().minute(20).second(32).offset(new UtcOffset(false, -5, 0)));
+		assertParse("T-20:32-05", builder().minute(20).second(32).offset(new UtcOffset(false, -5, 0)));
+		assertParse("T-20:32+05:30", builder().minute(20).second(32).offset(new UtcOffset(true, 5, 30)));
+		assertParse("--0420T05-0500", builder().month(4).date(20).hour(5).offset(new UtcOffset(false, -5, 0)));
+		assertParse("--04-20T05-05:00", builder().month(4).date(20).hour(5).offset(new UtcOffset(false, -5, 0)));
 	}
 
 	@Test

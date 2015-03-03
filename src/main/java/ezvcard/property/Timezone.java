@@ -86,32 +86,10 @@ public class Timezone extends VCardProperty implements HasAltId {
 
 	/**
 	 * Creates a timezone property.
-	 * @param hourOffset the hour component of the UTC offset (e.g. -5)
-	 * @param minuteOffset the minute component of the UTC offset (e.g. 0)
-	 */
-	public Timezone(Integer hourOffset, Integer minuteOffset) {
-		this(new UtcOffset(hourOffset, minuteOffset));
-	}
-
-	/**
-	 * Creates a timezone property.
 	 * @param offset the UTC offset
 	 */
 	public Timezone(UtcOffset offset) {
 		this(offset, null);
-	}
-
-	/**
-	 * Creates a timezone property.
-	 * @param hourOffset the hour component of the UTC offset (e.g. -5)
-	 * @param minuteOffset the minute component of the UTC offset (e.g. 0)
-	 * @param text a free-form string representing the timezone, preferably a
-	 * timezone ID from the <a
-	 * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Olson
-	 * Database</a> (e.g. "America/New_York")
-	 */
-	public Timezone(Integer hourOffset, Integer minuteOffset, String text) {
-		this(new UtcOffset(hourOffset, minuteOffset), text);
 	}
 
 	/**
@@ -136,36 +114,11 @@ public class Timezone extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets the hour component of the UTC offset.
-	 * @return the hour component of the UTC offset or null if not set
-	 */
-	public Integer getHourOffset() {
-		return (offset == null) ? null : offset.getHour();
-	}
-
-	/**
-	 * Gets the minute component of the UTC offset.
-	 * @return the minute component of the UTC offset or null if not set
-	 */
-	public Integer getMinuteOffset() {
-		return (offset == null) ? null : offset.getMinute();
-	}
-
-	/**
 	 * Gets the UTC offset.
 	 * @return the UTC offset or null if not set
 	 */
 	public UtcOffset getOffset() {
 		return offset;
-	}
-
-	/**
-	 * Sets the UTC offset.
-	 * @param hourOffset the hour offset (e.g. -5)
-	 * @param minuteOffset the minute offset (e.g. 0)
-	 */
-	public void setOffset(int hourOffset, int minuteOffset) {
-		setOffset(new UtcOffset(hourOffset, minuteOffset));
 	}
 
 	/**
@@ -212,16 +165,8 @@ public class Timezone extends VCardProperty implements HasAltId {
 		}
 
 		if (offset != null) {
-			int rawHourOffset = offset.getHour() * 60 * 60 * 1000;
-			int rawMinuteOffset = offset.getMinute() * 60 * 1000;
-			if (rawHourOffset < 0) {
-				rawMinuteOffset *= -1;
-			}
-			int rawOffset = rawHourOffset + rawMinuteOffset;
-
 			String id = (text == null) ? "" : text;
-
-			return new SimpleTimeZone(rawOffset, id);
+			return new SimpleTimeZone((int) offset.getMillis(), id);
 		}
 
 		return null;
@@ -315,9 +260,6 @@ public class Timezone extends VCardProperty implements HasAltId {
 		}
 		if (offset == null && version == VCardVersion.V2_1) {
 			warnings.add(new Warning(20));
-		}
-		if (offset != null && (offset.getMinute() < 0 || offset.getMinute() > 59)) {
-			warnings.add(new Warning(21));
 		}
 	}
 }
