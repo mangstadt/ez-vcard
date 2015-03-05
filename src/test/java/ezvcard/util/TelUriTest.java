@@ -208,7 +208,7 @@ public class TelUriTest {
 
 	@Test
 	public void toString_special_chars_in_param_value() {
-		TelUri uri = new TelUri.Builder("+1-212-555-0101").parameter("param", "with = special & chars").build();
-		assertEquals("tel:+1-212-555-0101;param=with%20%3d%20special%20&%20chars", uri.toString());
+		TelUri uri = new TelUri.Builder("+1-212-555-0101").parameter("param", "with = special & chars " + (char) 128).build();
+		assertEquals("tel:+1-212-555-0101;param=with%20%3d%20special%20&%20chars%20%80", uri.toString());
 	}
 }
