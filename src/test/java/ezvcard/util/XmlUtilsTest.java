@@ -66,6 +66,8 @@ public class XmlUtilsTest {
 			"<child1 />" +
 			"some text" +
 			"<n:child2 xmlns:n=\"http://example.com\" />" +
+			"<!-- comment -->" +
+			"More text" +
 		"</root>";
 	//@formatter:on
 
@@ -84,7 +86,7 @@ public class XmlUtilsTest {
 		assertNull(root.getNamespaceURI());
 
 		NodeList nodes = root.getChildNodes();
-		assertEquals(3, nodes.getLength());
+		assertEquals(4, nodes.getLength());
 
 		Element element = (Element) nodes.item(0);
 		assertEquals("child1", element.getLocalName());
@@ -96,6 +98,9 @@ public class XmlUtilsTest {
 		element = (Element) nodes.item(2);
 		assertEquals("child2", element.getLocalName());
 		assertEquals("http://example.com", element.getNamespaceURI());
+
+		text = (Text) nodes.item(3);
+		assertEquals("More text", text.getTextContent());
 	}
 
 	@Test
@@ -145,11 +150,15 @@ public class XmlUtilsTest {
 	@Test
 	public void toElementList() throws Exception {
 		Document document = XmlUtils.toDocument(xml);
-
 		List<Element> elements = XmlUtils.toElementList(document.getFirstChild().getChildNodes());
 		assertEquals(2, elements.size());
 		assertEquals("child1", elements.get(0).getLocalName());
 		assertEquals("child2", elements.get(1).getLocalName());
+		document = XmlUtils.toDocument(xml);
+
+		document = XmlUtils.toDocument("<root />");
+		elements = XmlUtils.toElementList(document.getFirstChild().getChildNodes());
+		assertTrue(elements.isEmpty());
 	}
 
 	@Test

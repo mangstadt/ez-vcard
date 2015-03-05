@@ -180,6 +180,13 @@ public class TelUriTest {
 		new TelUri.Builder("+1-212-555-0101").parameter("!not-valid!", "the value");
 	}
 
+	@Test
+	public void builder_copy_constructor() {
+		TelUri orig = new TelUri.Builder("+1-212-555-0101").extension("111").isdnSubaddress("isdn").parameter("name", "value").build();
+		TelUri copy = new TelUri.Builder(orig).build();
+		assertEquals(orig, copy);
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void getParameters_unmodifiable() {
 		TelUri uri = new TelUri.Builder("+1-212-555-0101").build();
@@ -195,8 +202,8 @@ public class TelUriTest {
 	//see RFC 3966, bottom of p.5
 	@Test
 	public void toString_parameter_order() {
-		TelUri uri = new TelUri.Builder("1010", "example.com").extension("101").parameter("zebra", "z-value").parameter("apple", "a-value").build();
-		assertEquals("tel:1010;ext=101;phone-context=example.com;apple=a-value;zebra=z-value", uri.toString());
+		TelUri uri = new TelUri.Builder("1010", "example.com").extension("101").isdnSubaddress("isdn").parameter("zebra", "z-value").parameter("apple", "a-value").build();
+		assertEquals("tel:1010;ext=101;isub=isdn;phone-context=example.com;apple=a-value;zebra=z-value", uri.toString());
 	}
 
 	@Test

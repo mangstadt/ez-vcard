@@ -6,9 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -43,9 +41,6 @@ import org.junit.rules.ExpectedException;
  * @author Michael Angstadt
  */
 public class PartialDateTest {
-	@Rule
-	public final ExpectedException expectedException = ExpectedException.none();
-
 	@Test
 	public void builder_month() {
 		PartialDate.Builder builder = builder();
@@ -168,13 +163,26 @@ public class PartialDateTest {
 
 	@Test
 	public void builder_build() {
-		PartialDate.Builder builder = builder();
-		expectedException.expect(IllegalArgumentException.class);
-		builder.year(2015).date(1).build();
+		try {
+			builder().year(2015).date(1).build();
+			fail();
+		} catch (IllegalArgumentException e) {
+			//expected
+		}
 
-		builder = builder();
-		expectedException.expect(IllegalArgumentException.class);
-		builder.hour(16).second(1).build();
+		try {
+			builder().hour(16).second(1).build();
+			fail();
+		} catch (IllegalArgumentException e) {
+			//expected
+		}
+	}
+
+	@Test
+	public void builder_copy() {
+		PartialDate orig = builder().year(2015).month(3).date(5).hour(12).minute(1).second(20).offset(new UtcOffset(false, -5, 0)).build();
+		PartialDate copy = builder(orig).build();
+		assertEquals(orig, copy);
 	}
 
 	@Test
@@ -242,6 +250,8 @@ public class PartialDateTest {
 		assertParse("T-2032-05", builder().minute(20).second(32).offset(new UtcOffset(false, -5, 0)));
 		assertParse("T-20:32-05", builder().minute(20).second(32).offset(new UtcOffset(false, -5, 0)));
 		assertParse("T-20:32+05:30", builder().minute(20).second(32).offset(new UtcOffset(true, 5, 30)));
+		assertParse("T-20:32+00:30", builder().minute(20).second(32).offset(new UtcOffset(true, 0, 30)));
+		assertParse("T-20:32-00:30", builder().minute(20).second(32).offset(new UtcOffset(false, 0, 30)));
 		assertParse("--0420T05-0500", builder().month(4).date(20).hour(5).offset(new UtcOffset(false, -5, 0)));
 		assertParse("--04-20T05-05:00", builder().month(4).date(20).hour(5).offset(new UtcOffset(false, -5, 0)));
 	}

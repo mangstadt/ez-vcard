@@ -69,7 +69,18 @@ public class CaseClassesTest {
 
 	@Test
 	public void all() {
-		cc.get(13); //all() does not include runtime-created objects
+		Collection<PrimeNumber> dataTypes = cc.all();
+
+		assertEquals(4, dataTypes.size());
+		assertTrue(dataTypes.contains(PrimeNumber.ONE));
+		assertTrue(dataTypes.contains(PrimeNumber.THREE));
+		assertTrue(dataTypes.contains(PrimeNumber.FIVE));
+		assertTrue(dataTypes.contains(PrimeNumber.SEVEN));
+	}
+
+	@Test
+	public void all_does_not_include_runtime_objects() {
+		cc.get(13);
 
 		Collection<PrimeNumber> dataTypes = cc.all();
 
@@ -80,7 +91,7 @@ public class CaseClassesTest {
 		assertTrue(dataTypes.contains(PrimeNumber.SEVEN));
 	}
 
-	class CaseClassesImpl extends CaseClasses<PrimeNumber, Integer> {
+	private class CaseClassesImpl extends CaseClasses<PrimeNumber, Integer> {
 		public CaseClassesImpl() {
 			super(PrimeNumber.class);
 		}
@@ -97,7 +108,7 @@ public class CaseClassesTest {
 	}
 
 	@SuppressWarnings("unused")
-	static class PrimeNumber {
+	private static class PrimeNumber {
 		public static final PrimeNumber ONE = new PrimeNumber(1);
 		public static final PrimeNumber THREE = new PrimeNumber(3);
 		public static final PrimeNumber FIVE = new PrimeNumber(5);

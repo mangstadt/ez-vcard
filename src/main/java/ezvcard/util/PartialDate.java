@@ -116,6 +116,15 @@ public final class PartialDate {
 	}
 
 	/**
+	 * Creates a builder object.
+	 * @param orig the object to copy
+	 * @return the builder
+	 */
+	public static Builder builder(PartialDate orig) {
+		return new Builder(orig);
+	}
+
+	/**
 	 * Parses a partial date from a string.
 	 * @param string the string (e.g. "--0420T15")
 	 */
@@ -408,6 +417,7 @@ public final class PartialDate {
 				return false;
 			}
 
+			boolean offsetPositive = false;
 			Integer offsetHour = null, offsetMinute = null;
 			for (int i = 0; i < componentIndexes.length; i++) {
 				Integer index = componentIndexes[i];
@@ -418,13 +428,15 @@ public final class PartialDate {
 				int group = i + 1;
 				String groupStr = m.group(group);
 				if (groupStr != null) {
-					if (groupStr.startsWith("+")) {
+					boolean startsWithPlus = groupStr.startsWith("+");
+					if (startsWithPlus) {
 						groupStr = groupStr.substring(1);
 					}
 
 					int component = Integer.valueOf(groupStr);
 					if (index == TIMEZONE_HOUR) {
 						offsetHour = component;
+						offsetPositive = startsWithPlus;
 						continue;
 					}
 					if (index == TIMEZONE_MINUTE) {
@@ -439,7 +451,7 @@ public final class PartialDate {
 				if (offsetMinute == null) {
 					offsetMinute = 0;
 				}
-				builder.offset = new UtcOffset(offsetHour >= 0, offsetHour, offsetMinute);
+				builder.offset = new UtcOffset(offsetPositive, offsetHour, offsetMinute);
 			}
 			return true;
 		}

@@ -65,6 +65,8 @@ public class VCardDateFormatTest {
 		Date datetime = date("2006-01-02 10:20:30");
 
 		assertEquals("20060102T072030-0200", VCardDateFormat.DATE_TIME_BASIC.format(datetime, timezone));
+		assertEquals("2006-01-02T07:20:30-02:00", VCardDateFormat.DATE_TIME_EXTENDED.format(datetime, timezone));
+		assertEquals("2006-01-02T07:20:30-0200", VCardDateFormat.HCARD_DATE_TIME.format(datetime, timezone));
 	}
 
 	@Test

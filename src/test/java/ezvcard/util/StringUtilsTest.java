@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,10 +47,14 @@ import ezvcard.util.StringUtils.JoinMapCallback;
 /**
  * @author Michael Angstadt
  */
-public class VCardStringUtilsTest {
+public class StringUtilsTest {
 	@Test
 	public void ltrim() {
 		String actual, expected;
+
+		actual = StringUtils.ltrim("One two three");
+		expected = "One two three";
+		assertSame(actual, expected); //a new string instance shouldn't be created
 
 		actual = StringUtils.ltrim("\n \t One two three \t \n ");
 		expected = "One two three \t \n ";
@@ -59,12 +64,20 @@ public class VCardStringUtilsTest {
 		expected = "";
 		assertEquals(actual, expected);
 
+		actual = StringUtils.ltrim("");
+		expected = "";
+		assertSame(actual, expected);
+
 		assertNull(StringUtils.ltrim(null));
 	}
 
 	@Test
 	public void rtrim() {
 		String actual, expected;
+
+		actual = StringUtils.rtrim("One two three");
+		expected = "One two three";
+		assertSame(actual, expected); //a new string instance shouldn't be created
 
 		actual = StringUtils.rtrim("\n \t One two three \t \n ");
 		expected = "\n \t One two three";
@@ -73,6 +86,10 @@ public class VCardStringUtilsTest {
 		actual = StringUtils.rtrim("\n \t \t \n ");
 		expected = "";
 		assertEquals(actual, expected);
+
+		actual = StringUtils.rtrim("");
+		expected = "";
+		assertSame(actual, expected);
 
 		assertNull(StringUtils.rtrim(null));
 	}

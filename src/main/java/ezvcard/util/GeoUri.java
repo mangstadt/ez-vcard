@@ -1,7 +1,6 @@
 package ezvcard.util;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -69,13 +68,23 @@ public final class GeoUri {
 	public static final String CRS_WGS84 = "wgs84";
 
 	/**
-	 * The non-alphanumeric characters which are allowed to exist inside of a
+	 * The characters which are allowed to exist un-encoded inside of a
 	 * parameter value.
 	 */
-	private static final char validParamValueChars[] = "!$&'()*+-.:[]_~".toCharArray();
+	private static final boolean validParamValueChars[] = new boolean[128];
 	static {
-		//make sure the array is sorted for binary search
-		Arrays.sort(validParamValueChars);
+		for (int i = '0'; i <= '9'; i++) {
+			validParamValueChars[i] = true;
+		}
+		for (int i = 'A'; i <= 'Z'; i++) {
+			validParamValueChars[i] = true;
+		}
+		for (int i = 'a'; i <= 'z'; i++) {
+			validParamValueChars[i] = true;
+		}
+		for (char c : "!$&'()*+-.:[]_~".toCharArray()) {
+			validParamValueChars[c] = true;
+		}
 	}
 
 	/**
@@ -124,9 +133,7 @@ public final class GeoUri {
 			throw new IllegalArgumentException("Invalid geo URI: " + uri);
 		}
 
-		Builder builder = new Builder();
-		builder.coordA = Double.parseDouble(m.group(1));
-		builder.coordB = Double.parseDouble(m.group(3));
+		Builder builder = new Builder(Double.parseDouble(m.group(1)), Double.parseDouble(m.group(3)));
 
 		String coordCStr = m.group(6);
 		if (coordCStr != null) {
@@ -290,17 +297,22 @@ public final class GeoUri {
 	}
 
 	private static String encodeParamValue(String value) {
-		StringBuilder sb = new StringBuilder(value.length());
-		for (char c : value.toCharArray()) {
-			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || Arrays.binarySearch(validParamValueChars, c) >= 0) {
-				sb.append(c);
+		StringBuilder sb = null;
+		for (int i = 0; i < value.length(); i++) {
+			char c = value.charAt(i);
+			if (validParamValueChars[c]) {
+				if (sb != null) {
+					sb.append(c);
+				}
 			} else {
-				int i = (int) c;
-				sb.append('%');
-				sb.append(Integer.toString(i, 16));
+				if (sb == null) {
+					sb = new StringBuilder(value.substring(0, i));
+				}
+				String hex = Integer.toString(c, 16);
+				sb.append('%').append(hex);
 			}
 		}
-		return sb.toString();
+		return (sb == null) ? value : sb.toString();
 	}
 
 	private static String decodeParamValue(String value) {
@@ -326,18 +338,13 @@ public final class GeoUri {
 		private Double uncertainty;
 		private Map<String, String> parameters;
 
-		private Builder() {
-			//for internal use
-			parameters = new LinkedHashMap<String, String>(0); //set initial size to 0 because parameters are rarely used
-		}
-
 		/**
 		 * Creates a new {@link GeoUri} builder.
 		 * @param coordA the first coordinate (i.e. latitude)
 		 * @param coordB the second coordinate (i.e. longitude)
 		 */
 		public Builder(Double coordA, Double coordB) {
-			this();
+			parameters = new LinkedHashMap<String, String>(0); //set initial size to 0 because parameters are rarely used
 			coordA(coordA);
 			coordB(coordB);
 		}

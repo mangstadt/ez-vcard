@@ -70,7 +70,6 @@ public class XmlUtils {
 	public static Document createDocument() {
 		try {
 			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-			fact.setNamespaceAware(true);
 			DocumentBuilder db = fact.newDocumentBuilder();
 			return db.newDocument();
 		} catch (ParserConfigurationException e) {
