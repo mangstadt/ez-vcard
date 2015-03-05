@@ -300,7 +300,7 @@ public final class GeoUri {
 		StringBuilder sb = null;
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
-			if (validParamValueChars[c]) {
+			if (c < validParamValueChars.length && validParamValueChars[c]) {
 				if (sb != null) {
 					sb.append(c);
 				}
