@@ -52,20 +52,6 @@ public class IOUtils {
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 
 	/**
-	 * Gets the extension off a file's name.
-	 * @param file the file
-	 * @return its extension (e.g. "jpg") or null if it doesn't have one
-	 */
-	public static String getFileExtension(File file) {
-		String fileName = file.getName();
-		int dot = fileName.lastIndexOf('.');
-		if (dot >= 0 && dot < fileName.length() - 1) {
-			return fileName.substring(dot + 1);
-		}
-		return null;
-	}
-
-	/**
 	 * Reads all the bytes from an input stream.
 	 * @param in the input stream
 	 * @return the bytes

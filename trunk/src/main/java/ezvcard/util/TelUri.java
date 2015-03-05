@@ -1,6 +1,5 @@
 package ezvcard.util;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -61,19 +60,34 @@ import java.util.regex.Pattern;
  */
 public final class TelUri {
 	/**
-	 * The non-alphanumeric characters which are allowed to exist inside of a
+	 * The characters which are allowed to exist un-encoded inside of a
 	 * parameter value.
 	 */
-	private static final char validParamValueChars[] = "!$&'()*+-.:[]_~/".toCharArray();
+	private static final boolean validParamValueChars[] = new boolean[128];
 	static {
-		//make sure the array is sorted for binary search
-		Arrays.sort(validParamValueChars);
+		for (int i = '0'; i <= '9'; i++) {
+			validParamValueChars[i] = true;
+		}
+		for (int i = 'A'; i <= 'Z'; i++) {
+			validParamValueChars[i] = true;
+		}
+		for (int i = 'a'; i <= 'z'; i++) {
+			validParamValueChars[i] = true;
+		}
+		for (char c : "!$&'()*+-.:[]_~/".toCharArray()) {
+			validParamValueChars[c] = true;
+		}
 	}
 
 	/**
 	 * Finds hex values in an encoded parameter value.
 	 */
-	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
+	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-fA-F]{2})");
+
+	/**
+	 * Validates parameter names.
+	 */
+	private static final Pattern labelTextPattern = Pattern.compile("(?i)^[-a-z0-9]+$");
 
 	/**
 	 * Regular expression for parsing tel URIs.
@@ -228,7 +242,7 @@ public final class TelUri {
 	 * @param value the parameter value
 	 * @param sb the string to write to
 	 */
-	private void writeParameter(String name, String value, StringBuilder sb) {
+	private static void writeParameter(String name, String value, StringBuilder sb) {
 		sb.append(';').append(name).append('=').append(encodeParamValue(value));
 	}
 
@@ -246,38 +260,25 @@ public final class TelUri {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 		TelUri other = (TelUri) obj;
 		if (extension == null) {
-			if (other.extension != null)
-				return false;
-		} else if (!extension.equals(other.extension))
-			return false;
+			if (other.extension != null) return false;
+		} else if (!extension.equals(other.extension)) return false;
 		if (isdnSubaddress == null) {
-			if (other.isdnSubaddress != null)
-				return false;
-		} else if (!isdnSubaddress.equals(other.isdnSubaddress))
-			return false;
+			if (other.isdnSubaddress != null) return false;
+		} else if (!isdnSubaddress.equals(other.isdnSubaddress)) return false;
 		if (number == null) {
-			if (other.number != null)
-				return false;
-		} else if (!number.equals(other.number))
-			return false;
+			if (other.number != null) return false;
+		} else if (!number.equals(other.number)) return false;
 		if (parameters == null) {
-			if (other.parameters != null)
-				return false;
-		} else if (!parameters.equals(other.parameters))
-			return false;
+			if (other.parameters != null) return false;
+		} else if (!parameters.equals(other.parameters)) return false;
 		if (phoneContext == null) {
-			if (other.phoneContext != null)
-				return false;
-		} else if (!phoneContext.equals(other.phoneContext))
-			return false;
+			if (other.phoneContext != null) return false;
+		} else if (!phoneContext.equals(other.phoneContext)) return false;
 		return true;
 	}
 
@@ -287,8 +288,8 @@ public final class TelUri {
 	 * @return true if it contains all valid characters, false if not
 	 * @see "RFC 3966 p.5 ('pname' definition)"
 	 */
-	private static boolean isParametername(String text) {
-		return text.matches("(?i)[-a-z0-9]+");
+	private static boolean isParameterName(String text) {
+		return labelTextPattern.matcher(text).matches();
 	}
 
 	/**
@@ -307,18 +308,22 @@ public final class TelUri {
 	 * @return the encoded value
 	 */
 	private static String encodeParamValue(String value) {
-		StringBuilder sb = new StringBuilder(value.length());
+		StringBuilder sb = null;
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
-			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || Arrays.binarySearch(validParamValueChars, c) >= 0) {
-				sb.append(c);
+			if (validParamValueChars[c]) {
+				if (sb != null) {
+					sb.append(c);
+				}
 			} else {
-				int cInt = (int) c;
-				sb.append('%');
-				sb.append(Integer.toString(cInt, 16));
+				if (sb == null) {
+					sb = new StringBuilder(value.substring(0, i));
+				}
+				String hex = Integer.toString(c, 16);
+				sb.append('%').append(hex);
 			}
 		}
-		return sb.toString();
+		return (sb == null) ? value : sb.toString();
 	}
 
 	/**
@@ -342,12 +347,10 @@ public final class TelUri {
 		private String extension;
 		private String isdnSubaddress;
 		private String phoneContext;
-
-		//Note: TreeMap is used because parameters should appear in lexicographical order (see RFC 3966 p.5)
 		private Map<String, String> parameters;
 
 		private Builder() {
-			//for internal use
+			//TreeMap is used because parameters should appear in lexicographical (alphabetical) order (see RFC 3966 p.5)
 			parameters = new TreeMap<String, String>();
 		}
 
@@ -553,7 +556,7 @@ public final class TelUri {
 		 * invalid characters
 		 */
 		public Builder parameter(String name, String value) {
-			if (!isParametername(name)) {
+			if (!isParameterName(name)) {
 				throw new IllegalArgumentException("Parameter names can only contain letters, numbers, and hyphens.");
 			}
 

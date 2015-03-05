@@ -1,11 +1,21 @@
 package ezvcard.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -14,6 +24,7 @@ import java.nio.charset.Charset;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -81,5 +92,48 @@ public class IOUtilsTest {
 		BufferedReader reader = new BufferedReader(IOUtils.utf8Reader(file));
 		assertEquals("�", reader.readLine());
 		reader.close();
+	}
+
+	@Test
+	public void closeQuietly() throws Exception {
+		IOUtils.closeQuietly(null);
+
+		Closeable closeable = mock(Closeable.class);
+		IOUtils.closeQuietly(closeable);
+		verify(closeable).close();
+
+		closeable = mock(Closeable.class);
+		doThrow(new IOException()).when(closeable).close();
+		IOUtils.closeQuietly(closeable);
+		verify(closeable).close();
+	}
+
+	@Test
+	public void toByteArray() throws Exception {
+		byte[] data = { 'a', 'b', 'c' };
+
+		InputStream in = Mockito.spy(new ByteArrayInputStream(data));
+		assertArrayEquals(data, IOUtils.toByteArray(in));
+		verify(in, never()).close();
+
+		in = Mockito.spy(new ByteArrayInputStream(data));
+		assertArrayEquals(data, IOUtils.toByteArray(in, false));
+		verify(in, never()).close();
+
+		in = Mockito.spy(new ByteArrayInputStream(data));
+		assertArrayEquals(data, IOUtils.toByteArray(in, true));
+		verify(in).close();
+	}
+
+	@Test
+	public void getFileContents() throws Exception {
+		String contents = "abc";
+		File file = temp.newFile();
+		Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+		writer.write(contents);
+		writer.close();
+
+		assertEquals(contents, IOUtils.getFileContents(file));
+		assertTrue(file.delete()); //make sure the input stream is closed
 	}
 }

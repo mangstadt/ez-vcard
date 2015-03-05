@@ -47,7 +47,7 @@ import org.junit.Test;
 public class GeoUriTest {
 	//Germany uses "," as the decimal separator, but "." should still be used in a geo URI
 	@ClassRule
-	public static final DefaultLocaleRule tzRule = new DefaultLocaleRule(Locale.GERMANY);
+	public static final DefaultLocaleRule localeRule = new DefaultLocaleRule(Locale.GERMANY);
 
 	@Test
 	public void parse_all() {
@@ -221,6 +221,19 @@ public class GeoUriTest {
 		}
 
 		assertEquals("geo:12.34,56.78;9p=9v;8p=8v;7p=7v;6p=6v;5p=5v;4p=4v;3p=3v;2p=2v;1p=1v;0p=0v", uri.toString());
+	}
+
+	@Test
+	public void builder_copy_constructor() {
+		GeoUri orig = new GeoUri.Builder(12.34, 56.78).coordC(90.12).crs("crs").parameter("param", "value").uncertainty(0.01).build();
+		GeoUri copy = new GeoUri.Builder(orig).build();
+
+		assertEquals(orig.getCoordA(), copy.getCoordA());
+		assertEquals(orig.getCoordB(), copy.getCoordB());
+		assertEquals(orig.getCoordC(), copy.getCoordC());
+		assertEquals(orig.getCrs(), copy.getCrs());
+		assertEquals(orig.getParameters(), copy.getParameters());
+		assertEquals(orig.getUncertainty(), copy.getUncertainty());
 	}
 
 	@Test
