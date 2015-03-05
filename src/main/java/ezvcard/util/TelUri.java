@@ -82,7 +82,7 @@ public final class TelUri {
 	/**
 	 * Finds hex values in an encoded parameter value.
 	 */
-	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-fA-F]{2})");
+	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
 
 	/**
 	 * Validates parameter names.
