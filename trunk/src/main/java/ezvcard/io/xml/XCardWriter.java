@@ -44,6 +44,7 @@ import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.util.ListMultimap;
+import ezvcard.util.StringUtils;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -429,12 +430,7 @@ public class XCardWriter extends StreamWriter {
 		}
 
 		//"\n" is hard-coded here because if the Windows "\r\n" is used, it will encode the "\r" character for XML ("&#13;")
-		StringBuilder sb = new StringBuilder("\n");
-		for (int i = 0; i < level; i++) {
-			sb.append(indent);
-		}
-
-		String str = sb.toString();
+		String str = '\n' + StringUtils.repeat(indent, level);
 		handler.ignorableWhitespace(str.toCharArray(), 0, str.length());
 	}
 

@@ -77,6 +77,42 @@ public class StringUtils {
 	}
 
 	/**
+	 * Creates a string consisting of "count" occurrences of char "c".
+	 * @param c the character to repeat
+	 * @param count the number of times to repeat the character
+	 * @return the resulting string
+	 */
+	public static String repeat(char c, int count) {
+		if (count <= 0) {
+			return "";
+		}
+
+		StringBuilder sb = new StringBuilder(count);
+		for (int i = 0; i < count; i++) {
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Creates a string consisting of "count" occurrences of string "str".
+	 * @param str the string to repeat
+	 * @param count the number of times to repeat the string
+	 * @return the resulting string
+	 */
+	public static String repeat(String str, int count) {
+		if (count <= 0) {
+			return "";
+		}
+
+		StringBuilder sb = new StringBuilder(count * str.length());
+		for (int i = 0; i < count; i++) {
+			sb.append(str);
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * Joins a collection of values into a delimited list.
 	 * @param collection the collection of values
 	 * @param delimiter the delimiter (e.g. ",")
