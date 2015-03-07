@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
 import ezvcard.VCardDataType;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -258,9 +259,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		generator.writeRaw(NEWLINE);
-		for (int i = 0; i < spaces; i++) {
-			generator.writeRaw(' ');
-		}
+		generator.writeRaw(StringUtils.repeat(' ', spaces));
 	}
 
 	/**

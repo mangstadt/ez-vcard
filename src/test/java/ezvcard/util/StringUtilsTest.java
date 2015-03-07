@@ -95,6 +95,26 @@ public class StringUtilsTest {
 	}
 
 	@Test
+	public void repeat() {
+		assertRepeat('*', -1, "");
+		assertRepeat("abc", -1, "");
+		assertRepeat('*', 0, "");
+		assertRepeat("abc", 0, "");
+		assertRepeat('*', 5, "*****");
+		assertRepeat("abc", 5, "abcabcabcabcabc");
+	}
+
+	private static void assertRepeat(char c, int times, String expected) {
+		String actual = StringUtils.repeat(c, times);
+		assertEquals(expected, actual);
+	}
+
+	private static void assertRepeat(String str, int times, String expected) {
+		String actual = StringUtils.repeat(str, times);
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void join_multiple() {
 		Collection<String> values = Arrays.asList("one", "two", "three");
 		assertEquals("ONE,TWO,THREE", StringUtils.join(values, ",", new JoinCallback<String>() {
