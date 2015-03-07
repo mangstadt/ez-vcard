@@ -325,6 +325,7 @@ public class VCardReader extends StreamReader {
 						value = VCardPropertyScribe.unescape(value);
 
 						VCardReader agentReader = new VCardReader(value);
+						agentReader.setScribeIndex(index);
 						try {
 							VCard nestedVCard = agentReader.readNext();
 							if (nestedVCard != null) {
