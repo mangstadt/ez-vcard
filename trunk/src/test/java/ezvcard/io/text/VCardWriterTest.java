@@ -303,6 +303,7 @@ public class VCardWriterTest {
 		//should be written as UTF-8
 		{
 			VCardWriter writer = new VCardWriter(file, false, VCardVersion.V4_0);
+			assertEquals(Charset.forName("UTF-8"), writer.getRawWriter().getFoldedLineWriter().getEncoding());
 			writer.setAddProdId(false);
 			writer.write(vcard);
 			writer.close();
@@ -322,6 +323,7 @@ public class VCardWriterTest {
 		//should be written using default encoding
 		if (!Charset.defaultCharset().name().equalsIgnoreCase("UTF-8")) { //don't test if the local machine's default encoding is UTF-8
 			VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0);
+			assertEquals(Charset.defaultCharset(), writer.getRawWriter().getFoldedLineWriter().getEncoding());
 			writer.setAddProdId(false);
 			writer.write(vcard);
 			writer.close();

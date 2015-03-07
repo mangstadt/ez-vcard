@@ -21,18 +21,23 @@ import java.util.List;
 import org.junit.Test;
 
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.MyFormattedNameType;
 import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
 import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
+import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.ImageType;
 import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
+import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.Birthday;
 import ezvcard.property.Categories;
@@ -63,6 +68,7 @@ import ezvcard.property.Timezone;
 import ezvcard.property.Title;
 import ezvcard.property.Uid;
 import ezvcard.property.Url;
+import ezvcard.property.VCardProperty;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
@@ -160,6 +166,30 @@ public class VCardReaderTest {
 	}
 
 	@Test
+	public void nameless_parameters() throws Exception {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"VAL;TEXT;8BIT;FOO:value\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		reader.registerScribe(new ValueScribe());
+		VCard vcard = reader.readNext();
+
+		ValueProp property = vcard.getProperty(ValueProp.class);
+		assertEquals(VCardDataType.TEXT, property.dataType);
+		assertEquals(2, property.getParameters().size());
+		assertEquals(Encoding._8BIT, property.getParameters().getEncoding());
+		assertEquals("FOO", property.getParameters().getType());
+
+		assertWarnings(0, reader);
+		assertNull(reader.readNext());
+	}
+
+	@Test
 	public void decodeQuotedPrintable() throws Throwable {
 		//@formatter:off
 		String str =
@@ -176,7 +206,7 @@ public class VCardReaderTest {
 
 		Label label = vcard.getOrphanedLabels().get(0);
 		assertEquals("123 Main St.\r\nAustin, TX 91827\r\nUSA", label.getValue());
-		assertNull(label.getParameters().getEncoding()); //ENCODING sub type should be removed
+		assertNull(label.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 		assertWarnings(0, reader);
 		assertNull(reader.readNext());
@@ -197,7 +227,7 @@ public class VCardReaderTest {
 
 		Label label = vcard.getOrphanedLabels().get(0);
 		assertEquals("test=nnnn", label.getValue());
-		assertNull(label.getParameters().getEncoding()); //ENCODING sub type should be removed
+		assertNull(label.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 		assertWarnings(1, reader);
 		assertNull(reader.readNext());
@@ -222,7 +252,7 @@ public class VCardReaderTest {
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
-			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(0, reader);
 			assertNull(reader.readNext());
@@ -243,7 +273,7 @@ public class VCardReaderTest {
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
-			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(0, reader);
 			assertNull(reader.readNext());
@@ -266,7 +296,7 @@ public class VCardReaderTest {
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
-			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(0, reader);
 			assertNull(reader.readNext());
@@ -289,7 +319,7 @@ public class VCardReaderTest {
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
-			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(1, reader);
 			assertNull(reader.readNext());
@@ -319,7 +349,7 @@ public class VCardReaderTest {
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
-			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(0, reader);
 			assertNull(reader.readNext());
@@ -341,7 +371,7 @@ public class VCardReaderTest {
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
-			assertNull(note.getParameters().getEncoding()); //ENCODING sub type should be removed
+			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(1, reader);
 			assertNull(reader.readNext());
@@ -501,19 +531,55 @@ public class VCardReaderTest {
 		String str =
 		"BEGIN:VCARD\r\n" +
 		"VERSION:2.1\r\n" +
-		"AGENT:\r\n" +
+		"NESTED:\r\n" +
 		"FN:John Doe\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
+		reader.registerScribe(new NestedScribe());
 
 		VCard vcard = reader.readNext();
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertNull(vcard.getAgent().getVCard());
+		assertNull(vcard.getProperty(Nested.class).vcard);
 
 		assertWarnings(0, reader);
 		assertNull(reader.readNext());
+	}
+
+	private static class Nested extends VCardProperty {
+		private VCard vcard = new VCard(); //init this to a new VCard instance to test for the fact that this should be set to null
+	}
+
+	private static class NestedScribe extends VCardPropertyScribe<Nested> {
+		public NestedScribe() {
+			super(Nested.class, "NESTED");
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return null;
+		}
+
+		@Override
+		protected String _writeText(Nested property, VCardVersion version) {
+			return "";
+		}
+
+		@Override
+		protected Nested _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			throw new EmbeddedVCardException(new EmbeddedVCardException.InjectionCallback() {
+				private final Nested property = new Nested();
+
+				public void injectVCard(VCard vcard) {
+					property.vcard = vcard;
+				}
+
+				public VCardProperty getProperty() {
+					return property;
+				}
+			});
+		}
 	}
 
 	@Test
@@ -686,23 +752,34 @@ public class VCardReaderTest {
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +
 		"CANNOTPARSE:value\r\n" +
+		"group.CANNOTPARSE:value\r\n" +
 		"X-FOO:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new CannotParseScribe());
-		VCard vcard = reader.readNext();
 
-		assertEquals(2, vcard.getProperties().size());
+		VCard vcard = reader.readNext();
+		assertEquals(3, vcard.getProperties().size());
+
 		RawProperty property = vcard.getExtendedProperty("X-FOO");
 		assertEquals("X-FOO", property.getPropertyName());
 		assertEquals("value", property.getValue());
-		property = vcard.getExtendedProperty("CANNOTPARSE");
+
+		Iterator<RawProperty> it = vcard.getExtendedProperties("CANNOTPARSE").iterator();
+
+		property = it.next();
+		assertNull(property.getGroup());
 		assertEquals("CANNOTPARSE", property.getPropertyName());
 		assertEquals("value", property.getValue());
 
-		assertWarnings(1, reader);
+		property = it.next();
+		assertEquals("group", property.getGroup());
+		assertEquals("CANNOTPARSE", property.getPropertyName());
+		assertEquals("value", property.getValue());
+
+		assertWarnings(2, reader);
 		assertNull(reader.readNext());
 	}
 
@@ -721,6 +798,52 @@ public class VCardReaderTest {
 
 		assertWarnings(1, reader);
 		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void property_warning() throws Exception {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"WARNINGS:foo\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		reader.registerScribe(new WarningsScribe());
+		reader.readNext();
+
+		assertEquals(Arrays.asList("Line 3 (WARNINGS property): one"), reader.getWarnings());
+
+		assertWarnings(1, reader);
+		assertNull(reader.readNext());
+	}
+
+	private static class WarningsProperty extends VCardProperty {
+		//empty
+	}
+
+	private static class WarningsScribe extends VCardPropertyScribe<WarningsProperty> {
+		public WarningsScribe() {
+			super(WarningsProperty.class, "WARNINGS");
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return null;
+		}
+
+		@Override
+		protected String _writeText(WarningsProperty property, VCardVersion version) {
+			return null;
+		}
+
+		@Override
+		protected WarningsProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			warnings.add("one");
+			return new WarningsProperty();
+		}
 	}
 
 	@Test
@@ -745,6 +868,126 @@ public class VCardReaderTest {
 		assertWarnings(0, reader);
 
 		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void warnings_in_nested_vcard() throws Exception {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"AGENT:\r\n" +
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"WARNINGS:value\r\n" +
+			"END:VCARD\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		reader.registerScribe(new WarningsScribe());
+		reader.readNext();
+
+		assertEquals(Arrays.asList("Line 6 (WARNINGS property): one"), reader.getWarnings());
+
+		assertWarnings(1, reader);
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void warnings_in_embedded_vcard() throws Exception {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"AGENT:BEGIN:VCARD\\nVERSION:3.0\\nWARNINGS:value\\nEND:VCARD\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		reader.registerScribe(new WarningsScribe());
+		reader.readNext();
+
+		assertEquals(Arrays.asList("Line 3 (AGENT property): Problem parsing property in nested vCard: Line 3 (WARNINGS property): one"), reader.getWarnings());
+
+		assertWarnings(1, reader);
+		assertNull(reader.readNext());
+	}
+
+	@Test
+	public void value_parameter() throws Exception {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:4.0\r\n" +
+		"VAL;VALUE=text;LANGUAGE=en:value\r\n" +
+		"VAL;LANGUAGE=en:value\r\n" +
+		"VAL;VALUE=text:value\r\n" +
+		"VAL:value\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		reader.registerScribe(new ValueScribe());
+		VCard vcard = reader.readNext();
+
+		Iterator<ValueProp> it = vcard.getProperties(ValueProp.class).iterator();
+
+		ValueProp prop = it.next();
+		assertEquals(VCardDataType.TEXT, prop.dataType);
+		assertEquals(1, prop.getParameters().size());
+		assertNull(prop.getParameters().getValue());
+		assertEquals("en", prop.getParameters().getLanguage());
+
+		prop = it.next();
+		assertEquals(VCardDataType.INTEGER, prop.dataType);
+		assertEquals(1, prop.getParameters().size());
+		assertNull(prop.getParameters().getValue());
+		assertEquals("en", prop.getParameters().getLanguage());
+
+		prop = it.next();
+		assertEquals(VCardDataType.TEXT, prop.dataType);
+		assertEquals(0, prop.getParameters().size());
+		assertNull(prop.getParameters().getValue());
+		assertNull(prop.getParameters().getLanguage());
+
+		prop = it.next();
+		assertEquals(VCardDataType.INTEGER, prop.dataType);
+		assertEquals(0, prop.getParameters().size());
+		assertNull(prop.getParameters().getValue());
+		assertNull(prop.getParameters().getLanguage());
+
+		assertWarnings(0, reader);
+		assertNull(reader.readNext());
+	}
+
+	private static class ValueProp extends VCardProperty {
+		private final VCardDataType dataType;
+
+		public ValueProp(VCardDataType dataType) {
+			this.dataType = dataType;
+		}
+	}
+
+	private static class ValueScribe extends VCardPropertyScribe<ValueProp> {
+		public ValueScribe() {
+			super(ValueProp.class, "VAL");
+		}
+
+		@Override
+		protected VCardDataType _defaultDataType(VCardVersion version) {
+			return VCardDataType.INTEGER;
+		}
+
+		@Override
+		protected String _writeText(ValueProp property, VCardVersion version) {
+			return null;
+		}
+
+		@Override
+		protected ValueProp _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			return new ValueProp(dataType);
+		}
 	}
 
 	@Test
