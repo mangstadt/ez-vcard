@@ -1,5 +1,11 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardDataType.DATE;
+import static ezvcard.VCardDataType.DATE_TIME;
+import static ezvcard.VCardDataType.TEXT;
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -9,8 +15,6 @@ import java.util.Date;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.DateOrTimeProperty;
 import ezvcard.util.DefaultTimezoneRule;
@@ -64,6 +68,7 @@ public class DateOrTimePropertyScribeTest {
 	private final String dateTimeExtendedStr = dateExtendedStr + "T13:10:20+01:00";
 
 	private final PartialDate partialDate = PartialDate.builder().month(6).date(5).build();
+	private final PartialDate partialTime = PartialDate.builder().hour(12).build();
 	private final PartialDate partialDateTime = PartialDate.builder().month(6).date(5).hour(13).minute(10).second(20).build();
 
 	private final String text = "Sometime in, ;1980;";
@@ -81,6 +86,10 @@ public class DateOrTimePropertyScribeTest {
 	{
 		withPartialDate.setPartialDate(partialDate);
 	}
+	private final DateOrTimeTypeImpl withPartialTime = new DateOrTimeTypeImpl();
+	{
+		withPartialTime.setPartialDate(partialTime);
+	}
 	private final DateOrTimeTypeImpl withPartialDateTime = new DateOrTimeTypeImpl();
 	{
 		withPartialDateTime.setPartialDate(partialDateTime);
@@ -92,17 +101,35 @@ public class DateOrTimePropertyScribeTest {
 	private final DateOrTimeTypeImpl empty = new DateOrTimeTypeImpl();
 
 	@Test
+	public void dataType() {
+		sensei.assertDataType(withDate).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(withDate).versions(V4_0).run(DATE);
+		sensei.assertDataType(withDateTime).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(withDateTime).versions(V4_0).run(DATE_TIME);
+		sensei.assertDataType(withPartialDate).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(withPartialDate).versions(V4_0).run(DATE);
+		sensei.assertDataType(withPartialTime).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(withPartialTime).versions(V4_0).run(DATE_TIME);
+		sensei.assertDataType(withPartialDateTime).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(withPartialDateTime).versions(V4_0).run(DATE_TIME);
+		sensei.assertDataType(withText).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(withText).versions(V4_0).run(TEXT);
+	}
+
+	@Test
 	public void writeText() {
-		sensei.assertWriteText(withDate).versions(VCardVersion.V2_1, VCardVersion.V4_0).run(dateStr);
-		sensei.assertWriteText(withDate).versions(VCardVersion.V3_0).run(dateExtendedStr);
-		sensei.assertWriteText(withDateTime).versions(VCardVersion.V2_1, VCardVersion.V4_0).run(dateTimeStr);
-		sensei.assertWriteText(withDateTime).versions(VCardVersion.V3_0).run(dateTimeExtendedStr);
-		sensei.assertWriteText(withPartialDate).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("");
-		sensei.assertWriteText(withPartialDate).versions(VCardVersion.V4_0).run(partialDate.toISO8601(false));
-		sensei.assertWriteText(withPartialDateTime).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("");
-		sensei.assertWriteText(withPartialDateTime).versions(VCardVersion.V4_0).run(partialDateTime.toISO8601(false));
-		sensei.assertWriteText(withText).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("");
-		sensei.assertWriteText(withText).versions(VCardVersion.V4_0).run(textEscaped);
+		sensei.assertWriteText(withDate).versions(V2_1, V4_0).run(dateStr);
+		sensei.assertWriteText(withDate).versions(V3_0).run(dateExtendedStr);
+		sensei.assertWriteText(withDateTime).versions(V2_1, V4_0).run(dateTimeStr);
+		sensei.assertWriteText(withDateTime).versions(V3_0).run(dateTimeExtendedStr);
+		sensei.assertWriteText(withPartialDate).versions(V2_1, V3_0).run("");
+		sensei.assertWriteText(withPartialDate).versions(V4_0).run(partialDate.toISO8601(false));
+		sensei.assertWriteText(withPartialTime).versions(V2_1, V3_0).run("");
+		sensei.assertWriteText(withPartialTime).versions(V4_0).run(partialTime.toISO8601(false));
+		sensei.assertWriteText(withPartialDateTime).versions(V2_1, V3_0).run("");
+		sensei.assertWriteText(withPartialDateTime).versions(V4_0).run(partialDateTime.toISO8601(false));
+		sensei.assertWriteText(withText).versions(V2_1, V3_0).run("");
+		sensei.assertWriteText(withText).versions(V4_0).run(textEscaped);
 		sensei.assertWriteText(empty).run("");
 	}
 
@@ -111,6 +138,7 @@ public class DateOrTimePropertyScribeTest {
 		sensei.assertWriteXml(withDate).run("<date>" + dateStr + "</date>");
 		sensei.assertWriteXml(withDateTime).run("<date-time>" + dateTimeStr + "</date-time>");
 		sensei.assertWriteXml(withPartialDate).run("<date>" + partialDate.toISO8601(false) + "</date>");
+		sensei.assertWriteXml(withPartialTime).run("<time>" + partialTime.toISO8601(false) + "</time>");
 		sensei.assertWriteXml(withPartialDateTime).run("<date-time>" + partialDateTime.toISO8601(false) + "</date-time>");
 		sensei.assertWriteXml(withText).run("<text>" + text + "</text>");
 		sensei.assertWriteXml(empty).run("<date-and-or-time/>");
@@ -121,6 +149,7 @@ public class DateOrTimePropertyScribeTest {
 		sensei.assertWriteJson(withDate).run(dateExtendedStr);
 		sensei.assertWriteJson(withDateTime).run(dateTimeExtendedStr);
 		sensei.assertWriteJson(withPartialDate).run(partialDate.toISO8601(true));
+		sensei.assertWriteJson(withPartialTime).run(partialTime.toISO8601(true));
 		sensei.assertWriteJson(withPartialDateTime).run(partialDateTime.toISO8601(true));
 		sensei.assertWriteJson(withText).run(text);
 		sensei.assertWriteJson(empty).run("");
@@ -130,25 +159,29 @@ public class DateOrTimePropertyScribeTest {
 	public void parseText() {
 		sensei.assertParseText(dateExtendedStr).run(is(withDate));
 		sensei.assertParseText(dateTimeExtendedStr).run(is(withDateTime));
-		sensei.assertParseText(partialDate.toISO8601(false)).versions(VCardVersion.V2_1, VCardVersion.V3_0).cannotParse();
-		sensei.assertParseText(partialDate.toISO8601(false)).versions(VCardVersion.V4_0).run(is(withPartialDate));
-		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(VCardVersion.V2_1, VCardVersion.V3_0).cannotParse();
-		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(VCardVersion.V4_0).run(is(withPartialDateTime));
-		sensei.assertParseText(text).versions(VCardVersion.V2_1, VCardVersion.V3_0).cannotParse();
-		sensei.assertParseText(text).versions(VCardVersion.V4_0).warnings(1).run(hasText(text));
-		sensei.assertParseText(text).versions(VCardVersion.V2_1, VCardVersion.V3_0).dataType(VCardDataType.TEXT).cannotParse();
-		sensei.assertParseText(text).versions(VCardVersion.V4_0).dataType(VCardDataType.TEXT).run(is(withText));
+		sensei.assertParseText(partialDate.toISO8601(false)).versions(V2_1, V3_0).cannotParse();
+		sensei.assertParseText(partialDate.toISO8601(false)).versions(V4_0).run(is(withPartialDate));
+		sensei.assertParseText(partialTime.toISO8601(false)).versions(V2_1, V3_0).cannotParse();
+		sensei.assertParseText(partialTime.toISO8601(false)).versions(V4_0).run(is(withPartialTime));
+		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(V2_1, V3_0).cannotParse();
+		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(V4_0).run(is(withPartialDateTime));
+		sensei.assertParseText(text).versions(V2_1, V3_0).cannotParse();
+		sensei.assertParseText(text).versions(V4_0).warnings(1).run(hasText(text));
+		sensei.assertParseText(text).versions(V2_1, V3_0).dataType(TEXT).cannotParse();
+		sensei.assertParseText(text).versions(V4_0).dataType(TEXT).run(is(withText));
 	}
 
 	@Test
 	public void parseXml() {
 		String tags[] = { "date", "date-time", "date-and-or-time" };
 		for (String tag : tags) {
-			sensei.assertParseXml("<" + tag + ">" + dateStr + "</" + tag + ">").run(is(withDate));
-			sensei.assertParseXml("<" + tag + ">" + dateTimeStr + "</" + tag + ">").run(is(withDateTime));
-			sensei.assertParseXml("<" + tag + ">" + partialDate.toISO8601(false) + "</" + tag + ">").run(is(withPartialDate));
-			sensei.assertParseXml("<" + tag + ">" + partialDateTime.toISO8601(false) + "</" + tag + ">").run(is(withPartialDateTime));
-			sensei.assertParseXml("<" + tag + ">invalid</" + tag + ">").warnings(1).run(hasText("invalid"));
+			String format = "<" + tag + ">%s</" + tag + ">";
+			sensei.assertParseXml(String.format(format, dateStr)).run(is(withDate));
+			sensei.assertParseXml(String.format(format, dateTimeStr)).run(is(withDateTime));
+			sensei.assertParseXml(String.format(format, partialDate.toISO8601(false))).run(is(withPartialDate));
+			sensei.assertParseXml(String.format(format, partialTime.toISO8601(false))).run(is(withPartialTime));
+			sensei.assertParseXml(String.format(format, partialDateTime.toISO8601(false))).run(is(withPartialDateTime));
+			sensei.assertParseXml(String.format(format, "invalid")).warnings(1).run(hasText("invalid"));
 		}
 
 		sensei.assertParseXml("<text>" + text + "</text>").run(is(withText));
@@ -162,9 +195,10 @@ public class DateOrTimePropertyScribeTest {
 		sensei.assertParseJson(dateExtendedStr).run(is(withDate));
 		sensei.assertParseJson(dateTimeExtendedStr).run(is(withDateTime));
 		sensei.assertParseJson(partialDate.toISO8601(true)).run(is(withPartialDate));
+		sensei.assertParseJson(partialTime.toISO8601(true)).run(is(withPartialTime));
 		sensei.assertParseJson(partialDateTime.toISO8601(true)).run(is(withPartialDateTime));
 		sensei.assertParseJson(text).warnings(1).run(is(withText));
-		sensei.assertParseJson(text).dataType(VCardDataType.TEXT).run(is(withText));
+		sensei.assertParseJson(text).dataType(TEXT).run(is(withText));
 	}
 
 	@Test

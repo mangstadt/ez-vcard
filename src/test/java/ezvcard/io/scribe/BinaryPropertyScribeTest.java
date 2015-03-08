@@ -1,14 +1,19 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardDataType.URI;
+import static ezvcard.VCardDataType.URL;
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.ImageType;
 import ezvcard.property.BinaryProperty;
 import ezvcard.util.DataUri;
@@ -59,6 +64,7 @@ public class BinaryPropertyScribeTest {
 	private final BinaryTypeImpl withUrl = new BinaryTypeImpl();
 	{
 		withUrl.setUrl(url, ImageType.JPEG);
+		withUrl.getParameters().setEncoding(Encoding._8BIT); //ENCODING parameter (if one exists) should be removed when written
 	}
 	private final BinaryTypeImpl withDataNoContentType = new BinaryTypeImpl();
 	{
@@ -68,47 +74,49 @@ public class BinaryPropertyScribeTest {
 	{
 		withData.setData(data, ImageType.JPEG);
 		withData.setType("work");
+		withData.getParameters().setEncoding(Encoding._8BIT); //ENCODING parameter (if one exists) should be removed/overwritten when written
+		withData.getParameters().setMediaType("foo"); //MEDIATYPE parameter (if one exists) should be removed when written
 	}
 	private final BinaryTypeImpl empty = new BinaryTypeImpl();
 
 	@Test
 	public void dataType() {
-		sensei.assertDataType(withUrl).versions(VCardVersion.V2_1).run(VCardDataType.URL);
-		sensei.assertDataType(withUrl).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(VCardDataType.URI);
+		sensei.assertDataType(withUrl).versions(V2_1).run(URL);
+		sensei.assertDataType(withUrl).versions(V3_0, V4_0).run(URI);
 
-		sensei.assertDataType(withData).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(null);
-		sensei.assertDataType(withData).versions(VCardVersion.V4_0).run(VCardDataType.URI);
+		sensei.assertDataType(withData).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(withData).versions(V4_0).run(URI);
 
-		sensei.assertDataType(withDataNoContentType).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(null);
-		sensei.assertDataType(withDataNoContentType).versions(VCardVersion.V4_0).run(VCardDataType.URI);
+		sensei.assertDataType(withDataNoContentType).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(withDataNoContentType).versions(V4_0).run(URI);
 
-		sensei.assertDataType(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(null);
-		sensei.assertDataType(empty).versions(VCardVersion.V4_0).run(VCardDataType.URI);
+		sensei.assertDataType(empty).versions(V2_1, V3_0).run(null);
+		sensei.assertDataType(empty).versions(V4_0).run(URI);
 	}
 
 	@Test
 	public void prepareParameters() {
-		sensei.assertPrepareParams(withUrl).versions(VCardVersion.V2_1, VCardVersion.V3_0).expected("TYPE", "jpeg").run();
-		sensei.assertPrepareParams(withUrl).versions(VCardVersion.V4_0).expected("MEDIATYPE", "image/jpeg").run();
+		sensei.assertPrepareParams(withUrl).versions(V2_1, V3_0).expected("TYPE", "jpeg").run();
+		sensei.assertPrepareParams(withUrl).versions(V4_0).expected("MEDIATYPE", "image/jpeg").run();
 
-		sensei.assertPrepareParams(withData).versions(VCardVersion.V2_1).expected("TYPE", "jpeg").expected("ENCODING", "base64").run();
-		sensei.assertPrepareParams(withData).versions(VCardVersion.V3_0).expected("TYPE", "jpeg").expected("ENCODING", "b").run();
-		sensei.assertPrepareParams(withData).versions(VCardVersion.V4_0).expected("TYPE", "work").run();
+		sensei.assertPrepareParams(withData).versions(V2_1).expected("TYPE", "jpeg").expected("ENCODING", "base64").run();
+		sensei.assertPrepareParams(withData).versions(V3_0).expected("TYPE", "jpeg").expected("ENCODING", "b").run();
+		sensei.assertPrepareParams(withData).versions(V4_0).expected("TYPE", "work").run();
 
-		sensei.assertPrepareParams(withDataNoContentType).versions(VCardVersion.V2_1).expected("ENCODING", "base64").run();
-		sensei.assertPrepareParams(withDataNoContentType).versions(VCardVersion.V3_0).expected("ENCODING", "b").run();
-		sensei.assertPrepareParams(withDataNoContentType).versions(VCardVersion.V4_0).run();
+		sensei.assertPrepareParams(withDataNoContentType).versions(V2_1).expected("ENCODING", "base64").run();
+		sensei.assertPrepareParams(withDataNoContentType).versions(V3_0).expected("ENCODING", "b").run();
+		sensei.assertPrepareParams(withDataNoContentType).versions(V4_0).run();
 	}
 
 	@Test
 	public void writeText() {
 		sensei.assertWriteText(withUrl).run(url);
 
-		sensei.assertWriteText(withData).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(base64Data);
-		sensei.assertWriteText(withData).versions(VCardVersion.V4_0).run(dataUri);
+		sensei.assertWriteText(withData).versions(V2_1, V3_0).run(base64Data);
+		sensei.assertWriteText(withData).versions(V4_0).run(dataUri);
 
-		sensei.assertWriteText(withDataNoContentType).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(base64Data);
-		sensei.assertWriteText(withDataNoContentType).versions(VCardVersion.V4_0).run(dataUriNoContentType);
+		sensei.assertWriteText(withDataNoContentType).versions(V2_1, V3_0).run(base64Data);
+		sensei.assertWriteText(withDataNoContentType).versions(V4_0).run(dataUriNoContentType);
 
 		sensei.assertWriteText(empty).run("");
 	}
@@ -132,33 +140,27 @@ public class BinaryPropertyScribeTest {
 	@Test
 	public void parseText_url() {
 		{
-			VCardVersion version = VCardVersion.V2_1;
+			VCardVersion versions[] = { V2_1, V3_0 };
 
 			//without TYPE parameter
-			sensei.assertParseText(url).dataType(VCardDataType.URL).versions(version).run(hasUrl(url, null));
+			sensei.assertParseText(url).dataType(URL).versions(versions).run(hasUrl(url, null));
+			sensei.assertParseText(url).versions(versions).run(hasUrl(url, null));
 
 			//with TYPE parameter
-			sensei.assertParseText(url).dataType(VCardDataType.URL).versions(version).param("TYPE", "JPEG").run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(url).dataType(URL).versions(versions).param("TYPE", "JPEG").run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(url).versions(versions).param("TYPE", "JPEG").run(hasUrl(url, ImageType.JPEG));
 		}
 
 		{
-			VCardVersion version = VCardVersion.V3_0;
-
-			//without TYPE parameter
-			sensei.assertParseText(url).dataType(VCardDataType.URI).versions(version).run(hasUrl(url, null));
-
-			//with TYPE parameter
-			sensei.assertParseText(url).dataType(VCardDataType.URI).versions(version).param("TYPE", "JPEG").run(hasUrl(url, ImageType.JPEG));
-		}
-
-		{
-			VCardVersion version = VCardVersion.V4_0;
+			VCardVersion version = V4_0;
 
 			//without MEDIATYPE parameter
-			sensei.assertParseText(url).dataType(VCardDataType.URI).versions(version).run(hasUrl(url, null));
+			sensei.assertParseText(url).dataType(URI).versions(version).run(hasUrl(url, null));
+			sensei.assertParseText(url).versions(version).run(hasUrl(url, null));
 
 			//with MEDIATYPE parameter
-			sensei.assertParseText(url).dataType(VCardDataType.URI).versions(version).param("MEDIATYPE", "image/jpeg").run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(url).dataType(URI).versions(version).param("MEDIATYPE", "image/jpeg").run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(url).versions(version).param("MEDIATYPE", "image/jpeg").run(hasUrl(url, ImageType.JPEG));
 		}
 	}
 
@@ -166,7 +168,7 @@ public class BinaryPropertyScribeTest {
 	public void parseText_binary() {
 		//2.1, 3.0
 		{
-			VCardVersion versions[] = { VCardVersion.V2_1, VCardVersion.V3_0 };
+			VCardVersion versions[] = { V2_1, V3_0 };
 
 			//with TYPE
 			{
@@ -195,7 +197,7 @@ public class BinaryPropertyScribeTest {
 
 		//4.0
 		{
-			VCardVersion version = VCardVersion.V4_0;
+			VCardVersion version = V4_0;
 
 			//without MEDIATYPE
 			sensei.assertParseText(dataUri).versions(version).run(hasData(data, ImageType.JPEG));
