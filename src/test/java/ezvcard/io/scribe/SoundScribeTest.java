@@ -7,8 +7,8 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.parameter.ImageType;
-import ezvcard.property.ImageProperty;
+import ezvcard.parameter.SoundType;
+import ezvcard.property.Sound;
 import ezvcard.util.DataUri;
 
 /*
@@ -43,56 +43,36 @@ import ezvcard.util.DataUri;
 /**
  * @author Michael Angstadt
  */
-public class ImagePropertyScribeTest {
-	private final ImagePropertyScribeImpl scribe = new ImagePropertyScribeImpl();
-	private final Sensei<ImagePropertyImpl> sensei = new Sensei<ImagePropertyImpl>(scribe);
+public class SoundScribeTest {
+	private final SoundScribe scribe = new SoundScribe();
+	private final Sensei<Sound> sensei = new Sensei<Sound>(scribe);
 
-	private final String url = "http://example.com/image.jpg";
-	private final String urlWithoutExtension = "http://example.com/image";
+	private final String url = "http://example.com/song.mp3";
+	private final String urlWithoutExtension = "http://example.com/song";
 	private final byte[] data = "data".getBytes();
-	private final String dataUri = new DataUri("image/jpeg", data).toString();
+	private final String dataUri = new DataUri("audio/mp3", data).toString();
 
 	@Test
 	public void parseHtml() {
-		sensei.assertParseHtml("<img />").cannotParse();
-		sensei.assertParseHtml("<img src=\"\" />").cannotParse();
-		sensei.assertParseHtml("<img src=\"" + url + "\" />").run(hasUrl(url, ImageType.JPEG));
-		sensei.assertParseHtml("<img src=\"" + urlWithoutExtension + "\" />").run(hasUrl(urlWithoutExtension, null));
-		sensei.assertParseHtml("<img src=\"" + dataUri + "\" />").run(hasData(data, ImageType.JPEG));
+		sensei.assertParseHtml("<audio />").cannotParse();
+		sensei.assertParseHtml("<audio><source /></audio>").cannotParse();
+		sensei.assertParseHtml("<audio><source src=\"" + url + "\" /></audio>").run(hasUrl(url, SoundType.MP3));
+		sensei.assertParseHtml("<audio><source src=\"" + urlWithoutExtension + "\" /></audio>").run(hasUrl(urlWithoutExtension, null));
+		sensei.assertParseHtml("<audio><source src=\"" + dataUri + "\" /></audio>").run(hasData(data, SoundType.MP3));
+
+		//without <audio> parent tag
+		sensei.assertParseHtml("<source src=\"" + url + "\" />").run(hasUrl(url, SoundType.MP3));
+
+		//"type" attribute overrides file extension
+		sensei.assertParseHtml("<source type=\"audio/wav\" src=\"" + url + "\" />").run(hasUrl(url, SoundType.WAV));
 
 		//call super.parseHtml() if it's not an <img> tag
-		sensei.assertParseHtml("<object type=\"image/gif\" data=\"" + url + "\" />").run(hasUrl(url, ImageType.GIF));
+		sensei.assertParseHtml("<object type=\"audio/wav\" data=\"" + url + "\" />").run(hasUrl(url, SoundType.WAV));
 	}
 
-	private static class ImagePropertyScribeImpl extends ImagePropertyScribe<ImagePropertyImpl> {
-		public ImagePropertyScribeImpl() {
-			super(ImagePropertyImpl.class, "IMAGE");
-		}
-
-		@Override
-		protected ImagePropertyImpl _newInstance(String uri, ImageType contentType) {
-			return new ImagePropertyImpl(uri, contentType);
-		}
-
-		@Override
-		protected ImagePropertyImpl _newInstance(byte[] data, ImageType contentType) {
-			return new ImagePropertyImpl(data, contentType);
-		}
-	}
-
-	private static class ImagePropertyImpl extends ImageProperty {
-		public ImagePropertyImpl(byte[] data, ImageType type) {
-			super(data, type);
-		}
-
-		public ImagePropertyImpl(String uri, ImageType type) {
-			super(uri, type);
-		}
-	}
-
-	private Check<ImagePropertyImpl> hasUrl(final String url, final ImageType contentType) {
-		return new Check<ImagePropertyImpl>() {
-			public void check(ImagePropertyImpl actual) {
+	private Check<Sound> hasUrl(final String url, final SoundType contentType) {
+		return new Check<Sound>() {
+			public void check(Sound actual) {
 				assertEquals(url, actual.getUrl());
 				assertNull(actual.getData());
 				assertEquals(contentType, actual.getContentType());
@@ -100,9 +80,9 @@ public class ImagePropertyScribeTest {
 		};
 	}
 
-	private Check<ImagePropertyImpl> hasData(final byte[] data, final ImageType contentType) {
-		return new Check<ImagePropertyImpl>() {
-			public void check(ImagePropertyImpl actual) {
+	private Check<Sound> hasData(final byte[] data, final SoundType contentType) {
+		return new Check<Sound>() {
+			public void check(Sound actual) {
 				assertNull(actual.getUrl());
 				assertArrayEquals(data, actual.getData());
 				assertEquals(contentType, actual.getContentType());

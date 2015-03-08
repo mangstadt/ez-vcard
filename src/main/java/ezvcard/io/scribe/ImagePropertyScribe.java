@@ -44,13 +44,18 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 	}
 
 	@Override
-	protected ImageType _buildTypeObj(String type) {
+	protected ImageType _mediaTypeFromTypeParameter(String type) {
 		return ImageType.get(type, null, null);
 	}
 
 	@Override
-	protected ImageType _buildMediaTypeObj(String mediaType) {
+	protected ImageType _mediaTypeFromMediaTypeParameter(String mediaType) {
 		return ImageType.get(null, mediaType, null);
+	}
+
+	@Override
+	protected ImageType _mediaTypeFromFileExtension(String extension) {
+		return ImageType.get(null, null, extension);
 	}
 
 	@Override
@@ -67,12 +72,13 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 
 		try {
 			DataUri uri = new DataUri(src);
-			ImageType mediaType = _buildMediaTypeObj(uri.getContentType());
+			ImageType mediaType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 			return _newInstance(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
 			//not a data URI
-			//TODO create buildTypeObjFromExtension() method
-			return _newInstance(src, null);
+			String extension = getFileExtension(src);
+			ImageType mediaType = (extension == null) ? null : _mediaTypeFromFileExtension(extension);
+			return _newInstance(src, mediaType);
 		}
 	}
 }

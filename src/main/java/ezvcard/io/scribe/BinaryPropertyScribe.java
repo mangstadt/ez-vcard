@@ -103,15 +103,17 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			case V2_1:
 				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
-				return;
+				break;
 			case V3_0:
 				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
-				return;
+				break;
 			case V4_0:
 				copy.setMediaType(contentType.getMediaType());
-				return;
+				break;
 			}
+
+			return;
 		}
 
 		if (property.getData() != null) {
@@ -121,16 +123,18 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			case V2_1:
 				copy.setEncoding(Encoding.BASE64);
 				copy.setType(contentType.getValue());
-				return;
+				break;
 			case V3_0:
 				copy.setEncoding(Encoding.B);
 				copy.setType(contentType.getValue());
-				return;
+				break;
 			case V4_0:
 				copy.setEncoding(null);
 				//don't null out TYPE, it could be set to "home", "work", etc
-				return;
+				break;
 			}
+
+			return;
 		}
 	}
 
@@ -174,7 +178,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 
 		try {
 			DataUri uri = new DataUri(data);
-			U mediaType = _buildMediaTypeObj(uri.getContentType());
+			U mediaType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 
 			return _newInstance(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
@@ -182,7 +186,10 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			U mediaType = null;
 			String type = element.attr("type");
 			if (type.length() > 0) {
-				mediaType = _buildMediaTypeObj(type);
+				mediaType = _mediaTypeFromMediaTypeParameter(type);
+			} else {
+				String extension = getFileExtension(data);
+				mediaType = (extension == null) ? null : _mediaTypeFromFileExtension(extension);
 			}
 
 			return _newInstance(data, mediaType);
@@ -226,45 +233,55 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 * Builds a {@link MediaTypeParameter} object based on the information in
 	 * the MEDIATYPE parameter or data URI of 4.0 vCards.
 	 * @param mediaType the media type string (e.g. "image/jpeg")
-	 * @return the parameter object
+	 * @return the media type object
 	 */
-	protected abstract U _buildMediaTypeObj(String mediaType);
+	protected abstract U _mediaTypeFromMediaTypeParameter(String mediaType);
 
 	/**
 	 * Builds a {@link MediaTypeParameter} object based on the value of the TYPE
 	 * parameter in 2.1/3.0 vCards.
-	 * @param type the TYPE value
-	 * @return the parameter object
+	 * @param type the TYPE value (e.g. "JPEG")
+	 * @return the media type object
 	 */
-	protected abstract U _buildTypeObj(String type);
+	protected abstract U _mediaTypeFromTypeParameter(String type);
+
+	/**
+	 * Builds a {@link MediaTypeParameter} object from a file extension
+	 * @param extension the file extension (e.g. "jpg")
+	 * @return the media type object
+	 */
+	protected abstract U _mediaTypeFromFileExtension(String extension);
 
 	protected abstract T _newInstance(String uri, U contentType);
 
 	protected abstract T _newInstance(byte data[], U contentType);
 
-	protected U parseContentType(VCardParameters parameters, VCardVersion version) {
+	private U parseContentType(String value, VCardParameters parameters, VCardVersion version) {
 		switch (version) {
 		case V2_1:
 		case V3_0:
 			//get the TYPE parameter
 			String type = parameters.getType();
 			if (type != null) {
-				return _buildTypeObj(type);
+				return _mediaTypeFromTypeParameter(type);
 			}
 			break;
 		case V4_0:
 			//get the MEDIATYPE parameter
 			String mediaType = parameters.getMediaType();
 			if (mediaType != null) {
-				return _buildMediaTypeObj(mediaType);
+				return _mediaTypeFromMediaTypeParameter(mediaType);
 			}
 			break;
 		}
-		return null;
+
+		//look for a file extension in the property value
+		String extension = getFileExtension(value);
+		return (extension == null) ? null : _mediaTypeFromFileExtension(extension);
 	}
 
 	private T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version, List<String> warnings) {
-		U contentType = parseContentType(parameters, version);
+		U contentType = parseContentType(value, parameters, version);
 
 		switch (version) {
 		case V2_1:
@@ -285,7 +302,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			try {
 				//parse as data URI
 				DataUri uri = new DataUri(value);
-				contentType = _buildMediaTypeObj(uri.getContentType());
+				contentType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 				return _newInstance(uri.getData(), contentType);
 			} catch (IllegalArgumentException e) {
 				//not a data URI
@@ -316,5 +333,24 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		}
 
 		return "";
+	}
+
+	/**
+	 * Gets the file extension from a URL.
+	 * @param url the URL
+	 * @return the file extension (e.g. "jpg") or null if not found
+	 */
+	protected static String getFileExtension(String url) {
+		int dotPos = url.lastIndexOf('.');
+		if (dotPos < 0 || dotPos == url.length() - 1) {
+			return null;
+		}
+
+		int slashPos = url.lastIndexOf('/');
+		if (slashPos > dotPos) {
+			return null;
+		}
+
+		return url.substring(dotPos + 1);
 	}
 }

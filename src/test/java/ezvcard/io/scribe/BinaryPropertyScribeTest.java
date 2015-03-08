@@ -56,6 +56,7 @@ public class BinaryPropertyScribeTest {
 	private final Sensei<BinaryTypeImpl> sensei = new Sensei<BinaryTypeImpl>(scribe);
 
 	private final String url = "http://example.com/image.jpg";
+	private final String urlWithoutExtension = "http://example.com/image";
 	private final byte[] data = "data".getBytes();
 	private final String base64Data = Base64.encodeBase64String(data);
 	private final String dataUri = new DataUri("image/jpeg", data).toString();
@@ -143,8 +144,10 @@ public class BinaryPropertyScribeTest {
 			VCardVersion versions[] = { V2_1, V3_0 };
 
 			//without TYPE parameter
-			sensei.assertParseText(url).dataType(URL).versions(versions).run(hasUrl(url, null));
-			sensei.assertParseText(url).versions(versions).run(hasUrl(url, null));
+			sensei.assertParseText(url).dataType(URL).versions(versions).run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(url).versions(versions).run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(urlWithoutExtension).dataType(URL).versions(versions).run(hasUrl(urlWithoutExtension, null));
+			sensei.assertParseText(urlWithoutExtension).versions(versions).run(hasUrl(urlWithoutExtension, null));
 
 			//with TYPE parameter
 			sensei.assertParseText(url).dataType(URL).versions(versions).param("TYPE", "JPEG").run(hasUrl(url, ImageType.JPEG));
@@ -155,8 +158,10 @@ public class BinaryPropertyScribeTest {
 			VCardVersion version = V4_0;
 
 			//without MEDIATYPE parameter
-			sensei.assertParseText(url).dataType(URI).versions(version).run(hasUrl(url, null));
-			sensei.assertParseText(url).versions(version).run(hasUrl(url, null));
+			sensei.assertParseText(url).dataType(URI).versions(version).run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(url).versions(version).run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(urlWithoutExtension).dataType(URI).versions(version).run(hasUrl(urlWithoutExtension, null));
+			sensei.assertParseText(urlWithoutExtension).versions(version).run(hasUrl(urlWithoutExtension, null));
 
 			//with MEDIATYPE parameter
 			sensei.assertParseText(url).dataType(URI).versions(version).param("MEDIATYPE", "image/jpeg").run(hasUrl(url, ImageType.JPEG));
@@ -213,7 +218,8 @@ public class BinaryPropertyScribeTest {
 		sensei.assertParseXml("<uri>" + url + "</uri>").param("MEDIATYPE", "image/jpeg").run(hasUrl(url, ImageType.JPEG));
 
 		//without MEDIATYPE
-		sensei.assertParseXml("<uri>" + url + "</uri>").run(hasUrl(url, null));
+		sensei.assertParseXml("<uri>" + url + "</uri>").run(hasUrl(url, ImageType.JPEG));
+		sensei.assertParseXml("<uri>" + urlWithoutExtension + "</uri>").run(hasUrl(urlWithoutExtension, null));
 	}
 
 	@Test
@@ -223,7 +229,6 @@ public class BinaryPropertyScribeTest {
 
 		//without MEDIATYPE
 		sensei.assertParseXml("<uri>" + dataUri + "</uri>").run(hasData(data, ImageType.JPEG));
-
 	}
 
 	@Test
@@ -237,7 +242,8 @@ public class BinaryPropertyScribeTest {
 		sensei.assertParseHtml("<object type=\"image/gif\" data=\"" + url + "\" />").run(hasUrl(url, ImageType.GIF));
 
 		//without type
-		sensei.assertParseHtml("<object data=\"" + url + "\" />").run(hasUrl(url, null));
+		sensei.assertParseHtml("<object data=\"" + url + "\" />").run(hasUrl(url, ImageType.JPEG));
+		sensei.assertParseHtml("<object data=\"" + urlWithoutExtension + "\" />").run(hasUrl(urlWithoutExtension, null));
 	}
 
 	@Test
@@ -261,7 +267,8 @@ public class BinaryPropertyScribeTest {
 		sensei.assertParseJson(url).param("MEDIATYPE", "image/jpeg").run(hasUrl(url, ImageType.JPEG));
 
 		//without MEDIATYPE
-		sensei.assertParseJson(url).run(hasUrl(url, null));
+		sensei.assertParseJson(url).run(hasUrl(url, ImageType.JPEG));
+		sensei.assertParseJson(urlWithoutExtension).run(hasUrl(urlWithoutExtension, null));
 
 		sensei.assertParseJson("").run(hasUrl("", null));
 	}
@@ -281,13 +288,18 @@ public class BinaryPropertyScribeTest {
 		}
 
 		@Override
-		protected ImageType _buildTypeObj(String type) {
+		protected ImageType _mediaTypeFromTypeParameter(String type) {
 			return ImageType.get(type, null, null);
 		}
 
 		@Override
-		protected ImageType _buildMediaTypeObj(String mediaType) {
+		protected ImageType _mediaTypeFromMediaTypeParameter(String mediaType) {
 			return ImageType.get(null, mediaType, null);
+		}
+
+		@Override
+		protected ImageType _mediaTypeFromFileExtension(String extension) {
+			return ImageType.get(null, null, extension);
 		}
 
 		@Override
@@ -303,6 +315,7 @@ public class BinaryPropertyScribeTest {
 			property.setData(data, contentType);
 			return property;
 		}
+
 	}
 
 	private static class BinaryTypeImpl extends BinaryProperty<ImageType> {
