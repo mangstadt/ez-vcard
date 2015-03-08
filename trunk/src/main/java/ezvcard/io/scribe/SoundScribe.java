@@ -43,13 +43,18 @@ public class SoundScribe extends BinaryPropertyScribe<Sound, SoundType> {
 	}
 
 	@Override
-	protected SoundType _buildTypeObj(String type) {
+	protected SoundType _mediaTypeFromTypeParameter(String type) {
 		return SoundType.get(type, null, null);
 	}
 
 	@Override
-	protected SoundType _buildMediaTypeObj(String mediaType) {
+	protected SoundType _mediaTypeFromMediaTypeParameter(String mediaType) {
 		return SoundType.get(null, mediaType, null);
+	}
+
+	@Override
+	protected SoundType _mediaTypeFromFileExtension(String extension) {
+		return SoundType.get(null, null, extension);
 	}
 
 	@Override
@@ -85,16 +90,19 @@ public class SoundScribe extends BinaryPropertyScribe<Sound, SoundType> {
 		}
 
 		String type = element.attr("type");
-		SoundType mediaType = (type.length() == 0) ? null : _buildMediaTypeObj(type);
+		SoundType mediaType = (type.length() == 0) ? null : _mediaTypeFromMediaTypeParameter(type);
 
 		try {
 			DataUri uri = new DataUri(src);
-			mediaType = _buildMediaTypeObj(uri.getContentType());
+			mediaType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 			return new Sound(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
 			//not a data URI
-			//TODO create buildTypeObjFromExtension() method
-			return new Sound(src, null);
+			if (mediaType == null) {
+				String extension = getFileExtension(src);
+				mediaType = (extension == null) ? null : _mediaTypeFromFileExtension(extension);
+			}
+			return new Sound(src, mediaType);
 		}
 	}
 }

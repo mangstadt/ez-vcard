@@ -38,13 +38,18 @@ public class KeyScribe extends BinaryPropertyScribe<Key, KeyType> {
 	}
 
 	@Override
-	protected KeyType _buildTypeObj(String type) {
+	protected KeyType _mediaTypeFromTypeParameter(String type) {
 		return KeyType.get(type, null, null);
 	}
 
 	@Override
-	protected KeyType _buildMediaTypeObj(String mediaType) {
+	protected KeyType _mediaTypeFromMediaTypeParameter(String mediaType) {
 		return KeyType.get(null, mediaType, null);
+	}
+
+	@Override
+	protected KeyType _mediaTypeFromFileExtension(String extension) {
+		return KeyType.get(null, null, extension);
 	}
 
 	@Override
