@@ -139,6 +139,10 @@ public abstract class PropertyAsserter<T, P extends VCardProperty> {
 		return new EmailAsserter(vcard.getEmails());
 	}
 
+	public static ImppAsserter assertImpp(VCard vcard) {
+		return new ImppAsserter(vcard.getImpps());
+	}
+
 	public static AddressAsserter assertAddress(VCard vcard) {
 		return new AddressAsserter(vcard.getAddresses());
 	}

@@ -1,15 +1,19 @@
 package ezvcard.io.html;
 
+import static ezvcard.property.asserter.PropertyAsserter.assertAddress;
+import static ezvcard.property.asserter.PropertyAsserter.assertEmail;
+import static ezvcard.property.asserter.PropertyAsserter.assertImpp;
+import static ezvcard.property.asserter.PropertyAsserter.assertListProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertRawProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertSimpleProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertStructuredName;
+import static ezvcard.property.asserter.PropertyAsserter.assertTelephone;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertPropertyCount;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
-import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -24,10 +28,7 @@ import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.TelephoneType;
-import ezvcard.property.Address;
-import ezvcard.property.Label;
-import ezvcard.property.RawProperty;
-import ezvcard.property.Telephone;
+import ezvcard.util.TelUri;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -119,7 +120,11 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(1, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -147,7 +152,11 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(1, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			//@formatter:on);
 
 			assertWarnings(0, parser);
 		}
@@ -175,9 +184,15 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
-			assertEquals(1, vcard.getUrls().size());
-			assertEquals("http://johndoe.com", vcard.getUrls().get(0).getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			
+			assertSimpleProperty(vcard.getUrls())
+				.value("http://johndoe.com")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -215,9 +230,19 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(3, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
-			assertEquals("http://johndoe.com", vcard.getUrls().get(0).getValue());
-			assertEquals("(555) 555-1234", vcard.getTelephoneNumbers().get(0).getText());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			
+			assertSimpleProperty(vcard.getUrls())
+				.value("http://johndoe.com")
+			.noMore();
+			
+			assertTelephone(vcard)
+				.text("(555) 555-1234")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -247,8 +272,15 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("Smith", vcard.getStructuredName().getFamily());
-			assertEquals("Smith", vcard.getOrganization().getValues().get(0));
+			//@formatter:off
+			assertStructuredName(vcard)
+				.family("Smith")
+			.noMore();
+			
+			assertListProperty(vcard.getOrganizations())
+				.values("Smith")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -279,7 +311,12 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(1, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			//@formatter:on
+
 			assertWarnings(0, parser);
 		}
 
@@ -288,7 +325,12 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(1, vcard);
 
-			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("Jane Doe")
+			.noMore();
+			//@formatter:on
+
 			assertWarnings(0, parser);
 		}
 
@@ -321,21 +363,33 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			//@formatter:on
 
 			{
 				VCard embedded = vcard.getAgent().getVCard();
 				assertVersion(VCardVersion.V3_0, vcard);
 				assertPropertyCount(2, embedded);
 
-				assertEquals("Jane Doe", embedded.getFormattedName().getValue());
+				//@formatter:off
+				assertSimpleProperty(embedded.getFormattedNames())
+					.value("Jane Doe")
+				.noMore();
+				//@formatter:on
 
 				{
 					VCard embedded2 = embedded.getAgent().getVCard();
 					assertVersion(VCardVersion.V3_0, vcard);
 					assertPropertyCount(1, embedded2);
 
-					assertEquals("Joseph Doe", embedded2.getFormattedName().getValue());
+					//@formatter:off
+					assertSimpleProperty(embedded2.getFormattedNames())
+						.value("Joseph Doe")
+					.noMore();
+					//@formatter:on
 				}
 			}
 
@@ -365,9 +419,19 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(3, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
-			assertEquals("http://johndoe.com/index.html", vcard.getUrls().get(0).getValue());
-			assertEquals("http://johndoe.com/vcard.html", vcard.getSources().get(0).getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			
+			assertSimpleProperty(vcard.getUrls())
+				.value("http://johndoe.com/index.html")
+			.noMore();
+			
+			assertSimpleProperty(vcard.getSources())
+				.value("http://johndoe.com/vcard.html")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -395,7 +459,11 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(1, vcard);
 
-			assertEquals(URI.create("aim:ShoppingBuddy"), vcard.getImpps().get(0).getUri());
+			//@formatter:off
+			assertImpp(vcard)
+				.uri("aim:ShoppingBuddy")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -423,7 +491,11 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(1, vcard);
 
-			assertEquals("jdoe@hotmail.com", vcard.getEmails().get(0).getValue());
+			//@formatter:off
+			assertEmail(vcard)
+				.value("jdoe@hotmail.com")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -451,7 +523,11 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(1, vcard);
 
-			assertEquals("+15555551234", vcard.getTelephoneNumbers().get(0).getUri().getNumber());
+			//@formatter:off
+			assertTelephone(vcard)
+				.uri(new TelUri.Builder("+15555551234").build())
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -479,8 +555,15 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("mailto:jdoe@hotmail.com", vcard.getUrls().get(0).getValue());
-			assertEquals("jdoe@hotmail.com", vcard.getEmails().get(0).getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getUrls())
+				.value("mailto:jdoe@hotmail.com")
+			.noMore();
+			
+			assertEmail(vcard)
+				.value("jdoe@hotmail.com")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -506,6 +589,16 @@ public class HCardParserTest {
 			VCard vcard = parser.readNext();
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
+
+			//@formatter:off
+			assertSimpleProperty(vcard.getUrls())
+				.value("tel:+15555551234")
+			.noMore();
+			
+			assertTelephone(vcard)
+				.uri(new TelUri.Builder("+15555551234").build())
+			.noMore();
+			//@formatter:on
 
 			assertEquals("tel:+15555551234", vcard.getUrls().get(0).getValue());
 			assertEquals("+15555551234", vcard.getTelephoneNumbers().get(0).getUri().getNumber());
@@ -542,17 +635,21 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			Address adr = vcard.getAddresses().get(0);
-			assertEquals("123 Main St.", adr.getStreetAddress());
-			assertEquals("Austin", adr.getLocality());
-			assertEquals("TX", adr.getRegion());
-			assertEquals("12345", adr.getPostalCode());
-			assertEquals("123 Main St. Austin, TX 12345", adr.getLabel());
-			assertSetEquals(adr.getTypes(), AddressType.HOME);
-
-			Label label = vcard.getOrphanedLabels().get(0);
-			assertEquals("456 Wall St., New York, NY 67890", label.getValue());
-			assertSetEquals(label.getTypes(), AddressType.WORK);
+			//@formatter:off
+			assertAddress(vcard)
+				.streetAddress("123 Main St.")
+				.locality("Austin")
+				.region("TX")
+				.postalCode("12345")
+				.label("123 Main St. Austin, TX 12345")
+				.types(AddressType.HOME)
+			.noMore();
+			
+			assertSimpleProperty(vcard.getOrphanedLabels())
+				.value("456 Wall St., New York, NY 67890")
+				.param("TYPE", "work")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -585,8 +682,15 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("http://johndoe.com/vcard.html#anchor", vcard.getSources().get(0).getValue());
-			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("Jane Doe")
+			.noMore();
+
+			assertSimpleProperty(vcard.getSources())
+				.value("http://johndoe.com/vcard.html#anchor")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -619,18 +723,30 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
-			assertEquals("http://johndoe.com/vcard.html#non-existant", vcard.getSources().get(0).getValue());
-			assertWarnings(0, parser);
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+
+			assertSimpleProperty(vcard.getSources())
+				.value("http://johndoe.com/vcard.html#non-existant")
+			.noMore();
+			//@formatter:on
 		}
 		{
 			VCard vcard = parser.readNext();
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
-			assertEquals("http://johndoe.com/vcard.html#non-existant", vcard.getSources().get(0).getValue());
-			assertWarnings(0, parser);
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("Jane Doe")
+			.noMore();
+
+			assertSimpleProperty(vcard.getSources())
+				.value("http://johndoe.com/vcard.html#non-existant")
+			.noMore();
+			//@formatter:on
 		}
 
 		assertNoMoreVCards(parser);
@@ -659,8 +775,15 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
-			assertEquals(Arrays.asList("Johnny", "Johnny 5", "Johnster"), vcard.getNickname().getValues());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			
+			assertListProperty(vcard.getNicknames())
+				.values("Johnny", "Johnny 5", "Johnster")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -691,8 +814,15 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
-			assertEquals(Arrays.asList("programmer", "swimmer", "singer"), vcard.getCategories().getValues());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("John Doe")
+			.noMore();
+			
+			assertListProperty(vcard.getCategoriesList())
+				.values("programmer", "swimmer", "singer")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -737,29 +867,40 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(7, vcard);
 
-			assertEquals("CommerceNet", vcard.getFormattedName().getValue());
-			assertEquals(Arrays.asList("CommerceNet"), vcard.getOrganization().getValues());
-			assertEquals("http://www.commerce.net/", vcard.getUrls().get(0).getValue());
-
-			Address adr = vcard.getAddresses().get(0);
-			assertSetEquals(adr.getTypes(), AddressType.WORK);
-			assertNull(adr.getPoBox());
-			assertNull(adr.getExtendedAddress());
-			assertEquals("169 University Avenue", adr.getStreetAddress());
-			assertEquals("Palo Alto", adr.getLocality());
-			assertEquals("California", adr.getRegion());
-			assertEquals("94301", adr.getPostalCode());
-			assertEquals("USA", adr.getCountry());
-
-			Telephone tel = vcard.getTelephoneNumbers().get(0);
-			assertSetEquals(tel.getTypes(), TelephoneType.WORK);
-			assertEquals("+1-650-289-4040", tel.getText());
-
-			tel = vcard.getTelephoneNumbers().get(1);
-			assertSetEquals(tel.getTypes(), TelephoneType.FAX);
-			assertEquals("+1-650-289-4041", tel.getText());
-
-			assertEquals("info@commerce.net", vcard.getEmails().get(0).getValue());
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.value("CommerceNet")
+			.noMore();
+			
+			assertListProperty(vcard.getOrganizations())
+				.values("CommerceNet")
+			.noMore();
+			
+			assertSimpleProperty(vcard.getUrls())
+				.value("http://www.commerce.net/")
+			.noMore();
+			
+			assertAddress(vcard)
+				.types(AddressType.WORK)
+				.streetAddress("169 University Avenue")
+				.locality("Palo Alto")
+				.region("California")
+				.postalCode("94301")
+				.country("USA")
+			.noMore();
+			
+			assertTelephone(vcard)
+				.types(TelephoneType.WORK)
+				.text("+1-650-289-4040")
+			.next()
+				.types(TelephoneType.FAX)
+				.text("+1-650-289-4041")
+			.noMore();
+			
+			assertEmail(vcard)
+				.value("info@commerce.net")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -797,9 +938,11 @@ public class HCardParserTest {
 			assertEquals(22, luckyNumTypes.get(1).luckyNum);
 
 			//read a type without a type class
-			List<RawProperty> genderTypes = vcard.getExtendedProperties("X-GENDER");
-			assertEquals(1, genderTypes.size());
-			assertEquals("male", genderTypes.get(0).getValue());
+			//@formatter:off
+			assertRawProperty("X-GENDER", vcard)
+				.value("male")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(0, parser);
 		}
@@ -859,9 +1002,11 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(1, vcard);
 
-			RawProperty property = vcard.getExtendedProperty("x-foo");
-			assertEquals("x-foo", property.getPropertyName());
-			assertEquals("value", property.getValue());
+			//@formatter:off
+			assertRawProperty("x-foo", vcard)
+				.value("value")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(1, parser);
 		}
@@ -891,13 +1036,15 @@ public class HCardParserTest {
 			assertVersion(VCardVersion.V3_0, vcard);
 			assertPropertyCount(2, vcard);
 
-			RawProperty property = vcard.getExtendedProperty("x-foo");
-			assertEquals("x-foo", property.getPropertyName());
-			assertEquals("value", property.getValue());
-
-			property = vcard.getExtendedProperty("cannotparse");
-			assertEquals("cannotparse", property.getPropertyName());
-			assertEquals("<span class=\"cannotparse\">value</span>", property.getValue());
+			//@formatter:off
+			assertRawProperty("x-foo", vcard)
+				.value("value")
+			.noMore();
+			
+			assertRawProperty("cannotparse", vcard)
+				.value("<span class=\"cannotparse\">value</span>")
+			.noMore();
+			//@formatter:on
 
 			assertWarnings(1, parser);
 		}
