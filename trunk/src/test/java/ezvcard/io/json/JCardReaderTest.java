@@ -1,8 +1,11 @@
 package ezvcard.io.json;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.TestUtils.utc;
 import static org.junit.Assert.assertEquals;
@@ -99,12 +102,12 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard);
+		assertPropertyCount(1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader);
 
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -130,18 +133,18 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard);
+		assertPropertyCount(1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader);
 
 		vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard);
+		assertPropertyCount(1, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader);
 
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -158,12 +161,12 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals(1, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard); //default to 4.0
+		assertPropertyCount(1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(1, reader);
 
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -181,12 +184,12 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //should still set the version to 4.0
-		assertEquals(1, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard); //should still set the version to 4.0
+		assertPropertyCount(1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(1, reader);
 
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -202,11 +205,11 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals(0, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard); //default to 4.0
+		assertPropertyCount(0, vcard);
 		assertWarnings(1, reader); //missing VERSION property
 
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -228,16 +231,16 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals(0, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard); //default to 4.0
+		assertPropertyCount(0, vcard);
 		assertWarnings(1, reader); //missing VERSION property
 
 		vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion()); //default to 4.0
-		assertEquals(0, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard); //default to 4.0
+		assertPropertyCount(0, vcard);
 		assertWarnings(1, reader); //missing VERSION property
 
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -255,8 +258,8 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard);
+		assertPropertyCount(1, vcard);
 		RawProperty prop = vcard.getExtendedProperty("x-type");
 		assertEquals("value", prop.getValue());
 		assertWarnings(0, reader);
@@ -278,8 +281,8 @@ public class JCardReaderTest {
 		reader.registerScribe(new TypeForTestingScribe());
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard);
+		assertPropertyCount(1, vcard);
 		TypeForTesting prop = vcard.getProperty(TypeForTesting.class);
 		assertEquals("value", prop.value.asSingle());
 		assertWarnings(0, reader);
@@ -300,8 +303,8 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 		reader.registerScribe(new MyFormattedNameScribe());
 		VCard vcard = reader.readNext();
-		assertEquals(1, vcard.getProperties().size());
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertPropertyCount(1, vcard);
+		assertVersion(VCardVersion.V4_0, vcard);
 
 		MyFormattedNameType prop = vcard.getProperty(MyFormattedNameType.class);
 		assertEquals("JOHN DOE", prop.value);
@@ -324,7 +327,7 @@ public class JCardReaderTest {
 		reader.registerScribe(new SkipMeScribe());
 
 		VCard vcard = reader.readNext();
-		assertEquals(0, vcard.getProperties().size());
+		assertPropertyCount(0, vcard);
 		assertWarnings(1, reader);
 	}
 
@@ -345,7 +348,7 @@ public class JCardReaderTest {
 		reader.registerScribe(new CannotParseScribe());
 		VCard vcard = reader.readNext();
 
-		assertEquals(2, vcard.getProperties().size());
+		assertPropertyCount(2, vcard);
 		RawProperty property = vcard.getExtendedProperty("x-foo");
 		assertEquals("x-foo", property.getPropertyName());
 		assertEquals("value", property.getValue());
@@ -377,7 +380,7 @@ public class JCardReaderTest {
 		assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	private static class TypeForTesting extends VCardProperty {
@@ -420,8 +423,8 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(getClass().getResourceAsStream("jcard-example.json"));
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(16, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard);
+		assertPropertyCount(16, vcard);
 
 		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
 
@@ -497,6 +500,6 @@ public class JCardReaderTest {
 
 		assertValidate(vcard).versions(vcard.getVersion()).run();
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 }

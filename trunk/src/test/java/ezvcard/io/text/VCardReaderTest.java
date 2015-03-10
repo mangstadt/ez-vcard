@@ -5,7 +5,10 @@ import static ezvcard.VCardDataType.TEXT;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertSetEquals;
+import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -102,7 +105,7 @@ public class VCardReaderTest {
 		assertSetEquals(label.getTypes(), AddressType.DOM, AddressType.PARCEL);
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -127,7 +130,7 @@ public class VCardReaderTest {
 		}
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -151,7 +154,7 @@ public class VCardReaderTest {
 		assertEquals("FOO", property.getParameters().getType());
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -174,7 +177,7 @@ public class VCardReaderTest {
 		assertNull(label.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -195,7 +198,7 @@ public class VCardReaderTest {
 		assertNull(label.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 		assertWarnings(1, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -220,7 +223,7 @@ public class VCardReaderTest {
 			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(0, reader);
-			assertNull(reader.readNext());
+			assertNoMoreVCards(reader);
 		}
 
 		//ISO-8859-1
@@ -241,7 +244,7 @@ public class VCardReaderTest {
 			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(0, reader);
-			assertNull(reader.readNext());
+			assertNoMoreVCards(reader);
 		}
 
 		//no CHARSET parameter
@@ -264,7 +267,7 @@ public class VCardReaderTest {
 			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(0, reader);
-			assertNull(reader.readNext());
+			assertNoMoreVCards(reader);
 		}
 
 		//invalid CHARSET parameter
@@ -287,7 +290,7 @@ public class VCardReaderTest {
 			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(1, reader);
-			assertNull(reader.readNext());
+			assertNoMoreVCards(reader);
 		}
 
 		String defaultCharset = Charset.defaultCharset().name();
@@ -317,7 +320,7 @@ public class VCardReaderTest {
 			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(0, reader);
-			assertNull(reader.readNext());
+			assertNoMoreVCards(reader);
 		}
 
 		//invalid CHARSET parameter
@@ -339,7 +342,7 @@ public class VCardReaderTest {
 			assertNull(note.getParameters().getEncoding()); //ENCODING parameter should be removed
 
 			assertWarnings(1, reader);
-			assertNull(reader.readNext());
+			assertNoMoreVCards(reader);
 		}
 	}
 
@@ -369,7 +372,7 @@ public class VCardReaderTest {
 		assertEquals(expected, actual);
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -401,7 +404,7 @@ public class VCardReaderTest {
 		assertEquals("ma\\,le", genderTypes.get(0).getValue()); //raw type values are not unescaped
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -417,14 +420,14 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new MyFormattedNameScribe());
 		VCard vcard = reader.readNext();
-		assertEquals(1, vcard.getProperties().size());
+		assertPropertyCount(1, vcard);
 
 		//read a type that has a type class
 		MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);
 		assertEquals("JOHN DOE", fn.value);
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -445,16 +448,16 @@ public class VCardReaderTest {
 		VCard vcard;
 
 		vcard = reader.readNext();
-		assertEquals(V2_1, vcard.getVersion());
+		assertVersion(V2_1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader);
 
 		vcard = reader.readNext();
-		assertEquals(V3_0, vcard.getVersion());
+		assertVersion(V3_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader);
 
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -487,7 +490,7 @@ public class VCardReaderTest {
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -509,7 +512,7 @@ public class VCardReaderTest {
 		assertNull(vcard.getProperty(Nested.class).vcard);
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	private static class Nested extends VCardProperty {
@@ -575,7 +578,7 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 
 		{
-			assertEquals(3, vcard.getProperties().size());
+			assertPropertyCount(3, vcard);
 
 			Iterator<Address> adrs = vcard.getAddresses().iterator();
 
@@ -590,7 +593,7 @@ public class VCardReaderTest {
 
 		vcard = vcard.getAgent().getVCard();
 		{
-			assertEquals(3, vcard.getProperties().size());
+			assertPropertyCount(3, vcard);
 
 			Address adr = vcard.getAddresses().get(0);
 			assertSetEquals(adr.getTypes(), AddressType.DOM);
@@ -602,7 +605,7 @@ public class VCardReaderTest {
 
 		vcard = vcard.getAgent().getVCard();
 		{
-			assertEquals(1, vcard.getProperties().size());
+			assertPropertyCount(1, vcard);
 
 			Address adr = vcard.getAddresses().get(0);
 			assertSetEquals(adr.getTypes(), AddressType.DOM);
@@ -610,7 +613,7 @@ public class VCardReaderTest {
 		}
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -643,7 +646,7 @@ public class VCardReaderTest {
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	/*
@@ -683,7 +686,7 @@ public class VCardReaderTest {
 		assertSetEquals(label.getTypes(), AddressType.WORK);
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -701,13 +704,13 @@ public class VCardReaderTest {
 		reader.registerScribe(new SkipMeScribe());
 		VCard vcard = reader.readNext();
 
-		assertEquals(1, vcard.getProperties().size());
+		assertPropertyCount(1, vcard);
 		RawProperty property = vcard.getExtendedProperty("X-FOO");
 		assertEquals("X-FOO", property.getPropertyName());
 		assertEquals("value", property.getValue());
 
 		assertWarnings(1, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -726,7 +729,7 @@ public class VCardReaderTest {
 		reader.registerScribe(new CannotParseScribe());
 
 		VCard vcard = reader.readNext();
-		assertEquals(3, vcard.getProperties().size());
+		assertPropertyCount(3, vcard);
 
 		RawProperty property = vcard.getExtendedProperty("X-FOO");
 		assertEquals("X-FOO", property.getPropertyName());
@@ -745,7 +748,7 @@ public class VCardReaderTest {
 		assertEquals("value", property.getValue());
 
 		assertWarnings(2, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -762,7 +765,7 @@ public class VCardReaderTest {
 		reader.readNext();
 
 		assertWarnings(1, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -782,7 +785,7 @@ public class VCardReaderTest {
 		assertEquals(Arrays.asList("Line 3 (WARNINGS property): one"), reader.getWarnings());
 
 		assertWarnings(1, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	private static class WarningsProperty extends VCardProperty {
@@ -832,7 +835,7 @@ public class VCardReaderTest {
 		reader.readNext();
 		assertWarnings(0, reader);
 
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -856,7 +859,7 @@ public class VCardReaderTest {
 		assertEquals(Arrays.asList("Line 6 (WARNINGS property): one"), reader.getWarnings());
 
 		assertWarnings(1, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -876,7 +879,7 @@ public class VCardReaderTest {
 		assertEquals(Arrays.asList("Line 3 (AGENT property): Problem parsing property in nested vCard: Line 3 (WARNINGS property): one"), reader.getWarnings());
 
 		assertWarnings(1, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -923,7 +926,7 @@ public class VCardReaderTest {
 		assertNull(prop.getParameters().getLanguage());
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	private static class ValueProp extends VCardProperty {
@@ -966,10 +969,10 @@ public class VCardReaderTest {
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
-		assertEquals(V2_1, vcard.getVersion()); //default to 2.1
+		assertVersion(V2_1, vcard); //default to 2.1
 
 		assertWarnings(1, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -989,11 +992,11 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(str);
 
 		VCard vcard = reader.readNext();
-		assertEquals(V3_0, vcard.getVersion());
+		assertVersion(V3_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertNull(vcard.getProductId());
 
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 }

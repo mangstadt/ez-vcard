@@ -1,8 +1,10 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,6 +60,38 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  */
 public class TestUtils {
+	/**
+	 * Tests the version assigned to a {@link VCard} object.
+	 * @param expected the expected version
+	 * @param vcard the vCard object
+	 */
+	public static void assertVersion(VCardVersion expected, VCard vcard) {
+		VCardVersion actual = vcard.getVersion();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Tests how many properties are in a vCard.
+	 * @param expected the expected number of properties
+	 * @param vcard the vCard
+	 */
+	public static void assertPropertyCount(int expected, VCard vcard) {
+		int actual = vcard.getProperties().size();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Tests to make sure there are no more vCards on a data stream.
+	 * @param reader the data stream
+	 */
+	public static void assertNoMoreVCards(StreamReader reader) {
+		try {
+			assertNull(reader.readNext());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * Asserts that a warnings list is a certain size.
 	 * @param expectedSize the expected size of the warnings list

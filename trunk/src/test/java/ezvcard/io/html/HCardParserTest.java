@@ -1,6 +1,9 @@
 package ezvcard.io.html;
 
+import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertSetEquals;
+import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -69,7 +72,7 @@ public class HCardParserTest {
 		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 		parser.close();
 	}
 
@@ -88,12 +91,12 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(0, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(0, vcard);
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -113,15 +116,15 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -141,15 +144,15 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -169,8 +172,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals(1, vcard.getUrls().size());
@@ -179,7 +182,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -209,8 +212,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(3, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(3, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals("http://johndoe.com", vcard.getUrls().get(0).getValue());
@@ -219,7 +222,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -241,8 +244,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("Smith", vcard.getStructuredName().getFamily());
 			assertEquals("Smith", vcard.getOrganization().getValues().get(0));
@@ -250,7 +253,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -273,8 +276,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertWarnings(0, parser);
@@ -282,14 +285,14 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -315,22 +318,22 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 			{
 				VCard embedded = vcard.getAgent().getVCard();
-				assertEquals(VCardVersion.V3_0, vcard.getVersion());
-				assertEquals(2, embedded.getProperties().size());
+				assertVersion(VCardVersion.V3_0, vcard);
+				assertPropertyCount(2, embedded);
 
 				assertEquals("Jane Doe", embedded.getFormattedName().getValue());
 
 				{
 					VCard embedded2 = embedded.getAgent().getVCard();
-					assertEquals(VCardVersion.V3_0, vcard.getVersion());
-					assertEquals(1, embedded2.getProperties().size());
+					assertVersion(VCardVersion.V3_0, vcard);
+					assertPropertyCount(1, embedded2);
 
 					assertEquals("Joseph Doe", embedded2.getFormattedName().getValue());
 				}
@@ -339,7 +342,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -359,8 +362,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(3, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(3, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals("http://johndoe.com/index.html", vcard.getUrls().get(0).getValue());
@@ -369,7 +372,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -389,15 +392,15 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			assertEquals(URI.create("aim:ShoppingBuddy"), vcard.getImpps().get(0).getUri());
 
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -417,15 +420,15 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			assertEquals("jdoe@hotmail.com", vcard.getEmails().get(0).getValue());
 
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -445,15 +448,15 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			assertEquals("+15555551234", vcard.getTelephoneNumbers().get(0).getUri().getNumber());
 
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -473,8 +476,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("mailto:jdoe@hotmail.com", vcard.getUrls().get(0).getValue());
 			assertEquals("jdoe@hotmail.com", vcard.getEmails().get(0).getValue());
@@ -482,7 +485,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -501,8 +504,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("tel:+15555551234", vcard.getUrls().get(0).getValue());
 			assertEquals("+15555551234", vcard.getTelephoneNumbers().get(0).getUri().getNumber());
@@ -510,7 +513,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -536,8 +539,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			Address adr = vcard.getAddresses().get(0);
 			assertEquals("123 Main St.", adr.getStreetAddress());
@@ -554,7 +557,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -579,8 +582,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("http://johndoe.com/vcard.html#anchor", vcard.getSources().get(0).getValue());
 			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
@@ -588,7 +591,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -613,8 +616,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals("http://johndoe.com/vcard.html#non-existant", vcard.getSources().get(0).getValue());
@@ -622,15 +625,15 @@ public class HCardParserTest {
 		}
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 			assertEquals("http://johndoe.com/vcard.html#non-existant", vcard.getSources().get(0).getValue());
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -653,8 +656,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals(Arrays.asList("Johnny", "Johnny 5", "Johnster"), vcard.getNickname().getValues());
@@ -662,7 +665,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -685,8 +688,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertEquals(Arrays.asList("programmer", "swimmer", "singer"), vcard.getCategories().getValues());
@@ -694,7 +697,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -731,8 +734,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(7, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(7, vcard);
 
 			assertEquals("CommerceNet", vcard.getFormattedName().getValue());
 			assertEquals(Arrays.asList("CommerceNet"), vcard.getOrganization().getValues());
@@ -761,7 +764,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -784,8 +787,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(3, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(3, vcard);
 
 			//read a type that has a type class
 			List<LuckyNumType> luckyNumTypes = vcard.getProperties(LuckyNumType.class);
@@ -801,7 +804,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -822,8 +825,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			//read a type that has a type class
 			assertEquals("JOHN DOE", vcard.getProperty(MyFormattedNameType.class).value);
@@ -831,7 +834,7 @@ public class HCardParserTest {
 			assertWarnings(0, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -853,8 +856,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			RawProperty property = vcard.getExtendedProperty("x-foo");
 			assertEquals("x-foo", property.getPropertyName());
@@ -863,7 +866,7 @@ public class HCardParserTest {
 			assertWarnings(1, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -885,8 +888,8 @@ public class HCardParserTest {
 
 		{
 			VCard vcard = parser.readNext();
-			assertEquals(VCardVersion.V3_0, vcard.getVersion());
-			assertEquals(2, vcard.getProperties().size());
+			assertVersion(VCardVersion.V3_0, vcard);
+			assertPropertyCount(2, vcard);
 
 			RawProperty property = vcard.getExtendedProperty("x-foo");
 			assertEquals("x-foo", property.getPropertyName());
@@ -899,7 +902,7 @@ public class HCardParserTest {
 			assertWarnings(1, parser);
 		}
 
-		assertNull(parser.readNext());
+		assertNoMoreVCards(parser);
 
 	}
 }

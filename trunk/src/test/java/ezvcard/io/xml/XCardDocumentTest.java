@@ -2,8 +2,11 @@ package ezvcard.io.xml;
 
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertIntEquals;
+import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
@@ -130,8 +133,8 @@ public class XCardDocumentTest {
 
 		{
 			VCard vcard = it.next();
-			assertEquals(VCardVersion.V4_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V4_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Gregory House M.D.", fn.getValue());
@@ -139,8 +142,8 @@ public class XCardDocumentTest {
 
 		{
 			VCard vcard = it.next();
-			assertEquals(VCardVersion.V4_0, vcard.getVersion());
-			assertEquals(1, vcard.getProperties().size());
+			assertVersion(VCardVersion.V4_0, vcard);
+			assertPropertyCount(1, vcard);
 
 			FormattedName fn = vcard.getFormattedName();
 			assertEquals("Dr. Lisa Cuddy M.D.", fn.getValue());
@@ -164,8 +167,8 @@ public class XCardDocumentTest {
 		Iterator<VCard> it = xcard.getVCards().iterator();
 
 		VCard vcard = it.next();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(1, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard);
+		assertPropertyCount(1, vcard);
 
 		FormattedName fn = vcard.getFormattedName();
 		assertEquals("Dr. Gregory House M.D.", fn.getValue());
@@ -600,8 +603,8 @@ public class XCardDocumentTest {
 		StreamReader reader = xcard.reader();
 
 		VCard vcard = reader.readNext();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
-		assertEquals(16, vcard.getProperties().size());
+		assertVersion(VCardVersion.V4_0, vcard);
+		assertPropertyCount(16, vcard);
 
 		assertEquals("Simon Perreault", vcard.getFormattedName().getValue());
 
@@ -676,7 +679,7 @@ public class XCardDocumentTest {
 
 		assertValidate(vcard).versions(vcard.getVersion()).run();
 		assertWarnings(0, reader);
-		assertNull(reader.readNext());
+		assertNoMoreVCards(reader);
 	}
 
 	private void assertExample(VCard vcard, String exampleFileName) throws IOException, SAXException {
