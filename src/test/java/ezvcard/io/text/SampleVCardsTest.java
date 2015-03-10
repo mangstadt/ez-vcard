@@ -3,24 +3,25 @@ package ezvcard.io.text;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
+import static ezvcard.property.asserter.PropertyAsserter.assertAddress;
+import static ezvcard.property.asserter.PropertyAsserter.assertBinaryProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertDateProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertEmail;
+import static ezvcard.property.asserter.PropertyAsserter.assertGeo;
+import static ezvcard.property.asserter.PropertyAsserter.assertListProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertRawProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertSimpleProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertStructuredName;
+import static ezvcard.property.asserter.PropertyAsserter.assertTelephone;
+import static ezvcard.property.asserter.PropertyAsserter.assertTimezone;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertPropertyCount;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.TestUtils.utc;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -31,30 +32,16 @@ import ezvcard.parameter.ImageType;
 import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.property.Address;
 import ezvcard.property.Classification;
-import ezvcard.property.DateOrTimeProperty;
-import ezvcard.property.Email;
-import ezvcard.property.Geo;
-import ezvcard.property.Key;
-import ezvcard.property.ListProperty;
 import ezvcard.property.Mailer;
-import ezvcard.property.Photo;
 import ezvcard.property.ProductId;
 import ezvcard.property.Profile;
-import ezvcard.property.RawProperty;
 import ezvcard.property.Revision;
 import ezvcard.property.SortString;
 import ezvcard.property.SourceDisplayText;
-import ezvcard.property.StructuredName;
-import ezvcard.property.Telephone;
-import ezvcard.property.TextProperty;
-import ezvcard.property.Timezone;
 import ezvcard.property.Uid;
-import ezvcard.property.VCardProperty;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.TestUtils;
 import ezvcard.util.UtcOffset;
 
 /*
@@ -144,7 +131,7 @@ public class SampleVCardsTest {
 				.family("\u00d1 \u00d1 \u00d1 \u00d1")
 			.noMore();
 
-			assertTextProperty(vcard.getFormattedNames())
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ")
 			.noMore();
 			
@@ -172,7 +159,7 @@ public class SampleVCardsTest {
 				.family("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1")
 			.noMore();
 
-			assertTextProperty(vcard.getFormattedNames())
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1")
 			.noMore();
 			
@@ -194,7 +181,7 @@ public class SampleVCardsTest {
 				.values("My Contacts")
 			.noMore();
 
-			assertTextProperty(vcard.getNotes())
+			assertSimpleProperty(vcard.getNotes())
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ")
 			.next()
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ")
@@ -216,7 +203,7 @@ public class SampleVCardsTest {
 				.given("\u00d1 \u00d1 \u00d1")
 			.noMore();
 
-			assertTextProperty(vcard.getFormattedNames())
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 ")
 			.noMore();
 			
@@ -245,14 +232,17 @@ public class SampleVCardsTest {
 				.values("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1")
 			.noMore();
 
-			assertTextProperty(vcard.getUrls())
+			assertSimpleProperty(vcard.getUrls())
 				.value("www.company.com")
 			.next()
 				.value("http://www.company.com")
 			.noMore();
+			
+			assertBinaryProperty(vcard.getPhotos())
+				.contentType(ImageType.JPEG)
+				.dataLength(876)
+			.noMore();
 			//@formatter:on
-
-			assertEquals(1, vcard.getPhotos().size());
 
 			assertValidate(vcard).versions(vcard.getVersion()).prop(vcard.getEmails().get(0), 9).run();
 			assertWarnings(0, reader);
@@ -268,7 +258,7 @@ public class SampleVCardsTest {
 				.family("\u00d1\u00d1\u00d1\u00d1")
 			.noMore();
 
-			assertTextProperty(vcard.getFormattedNames())
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("\u00d1\u00d1\u00d1\u00d1")
 			.noMore();
 			
@@ -311,7 +301,7 @@ public class SampleVCardsTest {
 		assertPropertyCount(6, vcard);
 
 		//@formatter:off
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("John Doe")
 		.noMore();
 
@@ -329,12 +319,14 @@ public class SampleVCardsTest {
 			.values("Acme Solutions")
 		.noMore();
 
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("")
 		.noMore();
+		
+		assertBinaryProperty(vcard.getPhotos())
+			.dataLength(1674)
+		.noMore();
 		//@formatter:on
-
-		assertEquals(1, vcard.getPhotos().size());
 
 		assertValidate(vcard).versions(vcard.getVersion()).run();
 		assertWarnings(0, reader);
@@ -351,7 +343,7 @@ public class SampleVCardsTest {
 
 		//@formatter:off
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.value("http://www.ibm.com")
 			.param("X-COUCHDB-UUID", "0abc9b8d-0845-47d0-9a91-3db5bb74620d")
 		.noMore();
@@ -368,7 +360,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//UID
-		assertTextProperty(vcard.getProperties(Uid.class))
+		assertSimpleProperty(vcard.getProperties(Uid.class))
 			.value("477343c8e6bf375a9bac1f96a5000837")
 		.noMore();
 
@@ -382,7 +374,7 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Mr. John Richter, James Doe Sr.")
 		.noMore();
 		
@@ -397,7 +389,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("Money Counter")
 		.noMore();
 
@@ -407,7 +399,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.")
 		.noMore();
 
@@ -433,13 +425,12 @@ public class SampleVCardsTest {
 		assertDateProperty(vcard.getBirthdays())
 			.date("1980-03-22")
 		.noMore();
-		//@formatter:on
-
+		
 		//REV
-		{
-			Revision t = vcard.getRevision();
-			assertEquals(utc("2012-03-05 13:32:54"), t.getValue());
-		}
+		assertSimpleProperty(vcard.getProperties(Revision.class))
+			.value(utc("2012-03-05 13:32:54"))
+		.noMore();
+		//@formatter:on
 
 		//extended properties
 		{
@@ -491,7 +482,7 @@ public class SampleVCardsTest {
 
 		//@formatter:off
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Mr. John Richter, James Doe Sr.")
 		.noMore();
 
@@ -531,7 +522,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("Money Counter")
 		.noMore();
 		
@@ -541,13 +532,13 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.value("http://www.ibm.com")
 			.param("TYPE", "WORK")
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE." + NEWLINE + "Favotire Color: Blue")
 		.noMore();
 		//@formatter:on
@@ -597,9 +588,9 @@ public class SampleVCardsTest {
 			assertVersion(V3_0, vcard);
 			assertPropertyCount(3, vcard);
 
-			//FN
 			//@formatter:off
-			assertTextProperty(vcard.getFormattedNames())
+			//FN
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("Arnold Smith")
 			.noMore();
 
@@ -625,9 +616,9 @@ public class SampleVCardsTest {
 			assertVersion(V3_0, vcard);
 			assertPropertyCount(3, vcard);
 
-			//FN
 			//@formatter:off
-			assertTextProperty(vcard.getFormattedNames())
+			//FN
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("Chris Beatle")
 			.noMore();
 
@@ -653,9 +644,9 @@ public class SampleVCardsTest {
 			assertVersion(V3_0, vcard);
 			assertPropertyCount(3, vcard);
 
-			//FN
 			//@formatter:off
-			assertTextProperty(vcard.getFormattedNames())
+			//FN
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("Doug White")
 			.noMore();
 
@@ -687,9 +678,9 @@ public class SampleVCardsTest {
 		assertVersion(V3_0, vcard);
 		assertPropertyCount(25, vcard);
 
-		//FN
 		//@formatter:off
-		assertTextProperty(vcard.getFormattedNames())
+		//FN
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Greg Dartmouth")
 		.noMore();
 
@@ -738,7 +729,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("TheJobTitle")
 		.noMore();
 
@@ -748,13 +739,13 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.group("item3")
 			.value("http://TheProfile.com")
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("This is GMail's note field." + NEWLINE + "It should be added as a NOTE type." + NEWLINE + "ACustomField: CustomField")
 		.noMore();
 		//@formatter:on
@@ -822,9 +813,9 @@ public class SampleVCardsTest {
 		assertVersion(V3_0, vcard);
 		assertPropertyCount(23, vcard);
 
-		//PRODID
 		//@formatter:off
-		assertTextProperty(vcard.getProperties(ProductId.class))
+		//PRODID
+		assertSimpleProperty(vcard.getProperties(ProductId.class))
 			.value("-//Apple Inc.//iOS 5.0.1//EN")
 		.noMore();
 
@@ -838,7 +829,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Mr. John Richter James Doe Sr.")
 		.noMore();
 
@@ -853,7 +844,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("Money Counter")
 		.noMore();
 
@@ -907,7 +898,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.group("item5")
 			.value("http://www.ibm.com")
 			.param("TYPE", "pref")
@@ -917,16 +908,13 @@ public class SampleVCardsTest {
 		assertDateProperty(vcard.getBirthdays())
 			.date("2012-06-06")
 		.noMore();
-		//@formatter:on
-
+		
 		//PHOTO
-		{
-			Iterator<Photo> it = vcard.getPhotos().iterator();
-
-			Photo f = it.next();
-			assertEquals(ImageType.JPEG, f.getContentType());
-			assertEquals(32531, f.getData().length);
-		}
+		assertBinaryProperty(vcard.getPhotos())
+			.contentType(ImageType.JPEG)
+			.dataLength(32531)
+		.noMore();
+		//@formatter:on
 
 		//extended properties
 		{
@@ -962,9 +950,9 @@ public class SampleVCardsTest {
 		assertVersion(V3_0, vcard);
 		assertPropertyCount(30, vcard);
 
-		//PRODID
 		//@formatter:off
-		assertTextProperty(vcard.getProperties(ProductId.class))
+		//PRODID
+		assertSimpleProperty(vcard.getProperties(ProductId.class))
 			.value("-//Apple Inc.//Address Book 6.1//EN")
 		.noMore();
 
@@ -978,7 +966,7 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Mr. Doe John I Johny")
 		.noMore();
 
@@ -993,7 +981,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("Generic Accountant")
 		.noMore();
 
@@ -1027,12 +1015,12 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"" + NEWLINE + "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO , THE" + NEWLINE + "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR P URPOSE" + NEWLINE + "ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTOR S BE" + NEWLINE + "LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR" + NEWLINE + "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF" + NEWLINE + " SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS " + NEWLINE + "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN" + NEWLINE + " CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)" + NEWLINE + "A RISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE" + NEWLINE + " POSSIBILITY OF SUCH DAMAGE.")
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.group("item2")
 			.value("http://www.sun.com")
 			.param("TYPE", "pref")
@@ -1042,54 +1030,41 @@ public class SampleVCardsTest {
 		assertDateProperty(vcard.getBirthdays())
 			.date("1980-05-21")
 		.noMore();
-		//@formatter:on
-
+		
 		//PHOTO
-		{
-			Iterator<Photo> it = vcard.getPhotos().iterator();
-
-			Photo f = it.next();
-			assertEquals(ImageType.JPEG, f.getContentType());
-			assertEquals(7957, f.getData().length);
-
-			assertFalse(it.hasNext());
-		}
+		assertBinaryProperty(vcard.getPhotos())
+			.contentType(ImageType.JPEG)
+			.dataLength(7957)
+		.noMore();
 
 		//UID
-		//@formatter:off
-		assertTextProperty(vcard.getProperties(Uid.class))
+		assertSimpleProperty(vcard.getProperties(Uid.class))
 			.value("0e7602cc-443e-4b82-b4b1-90f62f99a199")
 		.noMore();
-		//@formatter:on
-
+		
 		//GEO
-		{
-			Geo f = vcard.getGeo();
-			assertEquals(-2.6, f.getLatitude(), .01);
-			assertEquals(3.4, f.getLongitude(), .01);
-		}
+		assertGeo(vcard)
+			.latitude(-2.6)
+			.longitude(3.4)
+		.noMore();
 
 		//CLASS
-		//@formatter:off
-		assertTextProperty(vcard.getProperties(Classification.class))
+		assertSimpleProperty(vcard.getProperties(Classification.class))
 			.value("Public")
 		.noMore();
 
 		//PROFILE
-		assertTextProperty(vcard.getProperties(Profile.class))
+		assertSimpleProperty(vcard.getProperties(Profile.class))
 			.value("VCard")
 		.noMore();
-		//@formatter:on
 
 		//TZ
-		{
-			Timezone f = vcard.getTimezone();
-			assertEquals(new UtcOffset(true, 1, 0), f.getOffset());
-		}
+		assertTimezone(vcard)
+			.offset(new UtcOffset(true, 1, 0))
+		.noMore();
 
 		//LABEL
-		//@formatter:off
-		assertTextProperty(vcard.getOrphanedLabels())
+		assertSimpleProperty(vcard.getOrphanedLabels())
 			.value("John Doe" + NEWLINE + "New York, NewYork," + NEWLINE + "South Crecent Drive," + NEWLINE + "Building 5, floor 3," + NEWLINE + "USA")
 			.param("TYPE", "HOME")
 			.param("TYPE", "PARCEL")
@@ -1097,27 +1072,27 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//SORT-STRING
-		assertTextProperty(vcard.getProperties(SortString.class))
+		assertSimpleProperty(vcard.getProperties(SortString.class))
 			.value("JOHN")
 		.noMore();
 
 		//ROLE
-		assertTextProperty(vcard.getRoles())
+		assertSimpleProperty(vcard.getRoles())
 			.value("Counting Money")
 		.noMore();
 
 		//SOURCE
-		assertTextProperty(vcard.getSources())
+		assertSimpleProperty(vcard.getSources())
 			.value("Whatever")
 		.noMore();
 
 		//MAILER
-		assertTextProperty(vcard.getProperties(Mailer.class))
+		assertSimpleProperty(vcard.getProperties(Mailer.class))
 			.value("Mozilla Thunderbird")
 		.noMore();
 
 		//NAME
-		assertTextProperty(vcard.getProperties(SourceDisplayText.class))
+		assertSimpleProperty(vcard.getProperties(SourceDisplayText.class))
 			.value("VCard for John Doe")
 		.noMore();
 		//@formatter:on
@@ -1157,8 +1132,8 @@ public class SampleVCardsTest {
 		assertVersion(V2_1, vcard);
 		assertPropertyCount(22, vcard);
 
-		//N
 		//@formatter:off
+		//N
 		assertStructuredName(vcard)
 			.family("Doe")
 			.given("John")
@@ -1169,7 +1144,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Mr. John Richter James Doe Sr.")
 		.noMore();
 
@@ -1184,12 +1159,12 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("Money Counter")
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("THIS SOFTWARE IS PROVIDED BY GEORGE EL-HADDAD ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GEORGE EL-HADDAD OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.")
 		.noMore();
 		
@@ -1222,13 +1197,13 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.value("http://www.ibm.com")
 			.param("TYPE", "WORK")
 		.noMore();
 
 		//ROLE
-		assertTextProperty(vcard.getRoles())
+		assertSimpleProperty(vcard.getRoles())
 			.value("Counting Money")
 		.noMore();
 
@@ -1242,24 +1217,18 @@ public class SampleVCardsTest {
 			.types(EmailType.INTERNET, EmailType.PREF)
 			.value("john.doe@ibm.cm")
 		.noMore();
-		//@formatter:on
-
+		
 		//PHOTO
-		{
-			Iterator<Photo> it = vcard.getPhotos().iterator();
-
-			Photo f = it.next();
-			assertEquals(ImageType.JPEG, f.getContentType());
-			assertEquals(860, f.getData().length);
-
-			assertFalse(it.hasNext());
-		}
-
+		assertBinaryProperty(vcard.getPhotos())
+			.contentType(ImageType.JPEG)
+			.dataLength(860)
+		.noMore();
+		
 		//REV
-		{
-			Revision f = vcard.getRevision();
-			assertEquals(utc("2012-03-05 13:19:33"), f.getValue());
-		}
+		assertSimpleProperty(vcard.getProperties(Revision.class))
+			.value(utc("2012-03-05 13:19:33"))
+		.noMore();
+		//@formatter:on
 
 		//extended properties
 		{
@@ -1304,8 +1273,8 @@ public class SampleVCardsTest {
 		assertVersion(V2_1, vcard);
 		assertPropertyCount(28, vcard);
 
-		//N
 		//@formatter:off
+		//N
 		assertStructuredName(vcard)
 			.family("Angstadt")
 			.given("Michael")
@@ -1315,7 +1284,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Mr. Michael Angstadt Jr.")
 		.noMore();
 
@@ -1330,12 +1299,12 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("TheJobTitle")
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("This is the NOTE field	\r\nI assume it encodes this text inside a NOTE vCard type.\r\nBut I'm not sure because there's text formatting going on here.\r\nIt does not preserve the formatting")
 			.param("CHARSET", "us-ascii")
 		.noMore();
@@ -1368,7 +1337,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.value("http://mikeangstadt.name")
 			.param("TYPE", "HOME")
 		.next()
@@ -1377,7 +1346,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//ROLE
-		assertTextProperty(vcard.getRoles())
+		assertSimpleProperty(vcard.getRoles())
 			.value("TheProfession")
 		.noMore();
 
@@ -1385,50 +1354,35 @@ public class SampleVCardsTest {
 		assertDateProperty(vcard.getBirthdays())
 			.date("1922-03-10")
 		.noMore();
-		//@formatter:on
-
+		
 		//KEY
-		{
-			Iterator<Key> it = vcard.getKeys().iterator();
-
-			Key f = it.next();
-			assertEquals(KeyType.X509, f.getContentType());
-			assertEquals(514, f.getData().length);
-
-			assertFalse(it.hasNext());
-		}
+		assertBinaryProperty(vcard.getKeys())
+			.contentType(KeyType.X509)
+			.dataLength(514)
+		.noMore();
 
 		//EMAIL
-		//@formatter:off
-			assertEmail(vcard)
+		assertEmail(vcard)
 			.types(EmailType.INTERNET, EmailType.PREF)
 			.value("mike.angstadt@gmail.com")
 		.noMore();
-		//@formatter:on
-
+			
 		//PHOTO
-		{
-			Iterator<Photo> it = vcard.getPhotos().iterator();
-
-			Photo f = it.next();
-			assertEquals(ImageType.JPEG, f.getContentType());
-			assertEquals(2324, f.getData().length);
-
-			assertFalse(it.hasNext());
-		}
+		assertBinaryProperty(vcard.getPhotos())
+			.contentType(ImageType.JPEG)
+			.dataLength(2324)
+		.noMore();
 
 		//FBURL
-		//@formatter:off
-		assertTextProperty(vcard.getFbUrls())
+		assertSimpleProperty(vcard.getFbUrls())
 			.value("http://website.com/mycal") //a 4.0 property in a 2.1 vCard...
 		.noMore();
-		//@formatter:on
-
+		
 		//REV
-		{
-			Revision f = vcard.getRevision();
-			assertEquals(utc("2012-08-01 18:46:31"), f.getValue());
-		}
+		assertSimpleProperty(vcard.getProperties(Revision.class))
+			.value(utc("2012-08-01 18:46:31"))
+		.noMore();
+		//@formatter:on
 
 		//extended properties
 		{
@@ -1483,8 +1437,8 @@ public class SampleVCardsTest {
 		assertVersion(V3_0, vcard);
 		assertPropertyCount(28, vcard);
 
-		//N
 		//@formatter:off
+		//N
 		assertStructuredName(vcard)
 			.family("Doe")
 			.given("John")
@@ -1494,7 +1448,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Mr. John Richter,James Doe Sr.")
 		.noMore();
 
@@ -1509,7 +1463,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("Money Counter")
 		.noMore();
 
@@ -1562,12 +1516,12 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE." + NEWLINE + "Favotire Color: Blue")
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.group("item4")
 			.value("http://www.ibm.com")
 			.param("TYPE", "pref")
@@ -1577,18 +1531,12 @@ public class SampleVCardsTest {
 		assertDateProperty(vcard.getBirthdays())
 			.date("2012-06-06")
 		.noMore();
-		//@formatter:on
-
+		
 		//PHOTO
-		{
-			Iterator<Photo> it = vcard.getPhotos().iterator();
-
-			Photo f = it.next();
-			assertEquals(null, f.getContentType());
-			assertEquals(18242, f.getData().length);
-
-			assertFalse(it.hasNext());
-		}
+		assertBinaryProperty(vcard.getPhotos())
+			.dataLength(18242)
+		.noMore();
+		//@formatter:on
 
 		//extended properties
 		{
@@ -1645,8 +1593,8 @@ public class SampleVCardsTest {
 		assertVersion(V2_1, vcard);
 		assertPropertyCount(18, vcard);
 
-		//N
 		//@formatter:off
+		//N
 		assertStructuredName(vcard)
 			.family("Doe")
 			.given("John")
@@ -1655,7 +1603,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("John Doe III")
 		.noMore();
 
@@ -1670,12 +1618,12 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("The Job Title")
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("This is the note field!!\r\nSecond line\r\n\r\nThird line is empty\r\n")
 		.noMore();
 		
@@ -1707,13 +1655,13 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.value("http://web-page-address.com")
 			.param("TYPE", "WORK")
 		.noMore();
 
 		//ROLE
-		assertTextProperty(vcard.getRoles())
+		assertSimpleProperty(vcard.getRoles())
 			.value("TheProfession")
 		.noMore();
 
@@ -1721,21 +1669,14 @@ public class SampleVCardsTest {
 		assertDateProperty(vcard.getBirthdays())
 			.date("1980-03-21")
 		.noMore();
-		//@formatter:on
-
+		
 		//KEY
-		{
-			Iterator<Key> it = vcard.getKeys().iterator();
-
-			Key f = it.next();
-			assertEquals(KeyType.X509, f.getContentType());
-			assertEquals(805, f.getData().length);
-
-			assertFalse(it.hasNext());
-		}
+		assertBinaryProperty(vcard.getKeys())
+			.contentType(KeyType.X509)
+			.dataLength(805)
+		.noMore();
 
 		//EMAIL
-		//@formatter:off
 		assertEmail(vcard)
 			.types(EmailType.INTERNET, EmailType.PREF)
 			.value("jdoe@hotmail.com")
@@ -1744,16 +1685,15 @@ public class SampleVCardsTest {
 		//FBURL
 		//Outlook 2003 apparently doesn't output FBURL correctly:
 		//http://help.lockergnome.com/office/BUG-Outlook-2003-exports-FBURL-vCard-incorrectly--ftopict423660.html
-		assertTextProperty(vcard.getFbUrls())
+		assertSimpleProperty(vcard.getFbUrls())
 			.value("????????????????s????????????" + (char) 12)
 		.noMore();
-		//@formatter:on
-
+		
 		//REV
-		{
-			Revision f = vcard.getRevision();
-			assertEquals(utc("2012-10-12 21:05:25"), f.getValue());
-		}
+		assertSimpleProperty(vcard.getProperties(Revision.class))
+			.value(utc("2012-10-12 21:05:25"))
+		.noMore();
+		//@formatter:on
 
 		assertValidate(vcard).versions(vcard.getVersion()).prop(vcard.getNickname(), 2).prop(vcard.getFbUrls().get(0), 2).run();
 		assertWarnings(0, reader);
@@ -1767,15 +1707,15 @@ public class SampleVCardsTest {
 		assertVersion(V3_0, vcard);
 		assertPropertyCount(25, vcard);
 
-		//N
 		//@formatter:off
+		//N
 		assertStructuredName(vcard)
 			.family("Doe")
 			.given("John")
 		.noMore();
 
 		//FN
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("John Doe")
 		.noMore();
 		
@@ -1845,7 +1785,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//URL
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.value("http://www.private-webpage.com")
 			.param("TYPE", "HOME")
 		.next()
@@ -1854,7 +1794,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//TITLE
-		assertTextProperty(vcard.getTitles())
+		assertSimpleProperty(vcard.getTitles())
 			.value("TheTitle")
 		.noMore();
 
@@ -1869,21 +1809,16 @@ public class SampleVCardsTest {
 		.noMore();
 
 		//NOTE
-		assertTextProperty(vcard.getNotes())
+		assertSimpleProperty(vcard.getNotes())
 			.value("This is the notes field." + NEWLINE + "Second Line" + NEWLINE + NEWLINE + "Fourth Line" + NEWLINE + "You can put anything in the \"note\" field; even curse words.")
 		.noMore();
-		//@formatter:on
-
+		
 		//PHOTO
-		{
-			Iterator<Photo> it = vcard.getPhotos().iterator();
-
-			Photo f = it.next();
-			assertEquals(ImageType.JPEG, f.getContentType());
-			assertEquals(8940, f.getData().length);
-
-			assertFalse(it.hasNext());
-		}
+		assertBinaryProperty(vcard.getPhotos())
+			.contentType(ImageType.JPEG)
+			.dataLength(8940)
+		.noMore();
+		//@formatter:on
 
 		//extended properties
 		{
@@ -1925,7 +1860,7 @@ public class SampleVCardsTest {
 		assertPropertyCount(16, vcard);
 
 		//@formatter:off
-		assertTextProperty(vcard.getFormattedNames())
+		assertSimpleProperty(vcard.getFormattedNames())
 			.value("Simon Perreault")
 		.noMore();
 		
@@ -1945,7 +1880,7 @@ public class SampleVCardsTest {
 
 		assertTrue(vcard.getGender().isMale());
 
-		assertTextProperty(vcard.getLanguages())
+		assertSimpleProperty(vcard.getLanguages())
 			.value("fr")
 			.param("PREF", "1")
 		.next()
@@ -1976,22 +1911,24 @@ public class SampleVCardsTest {
 			.types(EmailType.WORK)
 			.value("simon.perreault@viagenie.ca")
 		.noMore();
-		//@formatter:on
+		
+		assertGeo(vcard)
+			.latitude(46.772673)
+			.longitude(-71.282945)
+			.param("TYPE", "work")
+		.noMore();
+		
+		assertBinaryProperty(vcard.getKeys())
+			.contentType(KeyType.get(null, null, "asc"))
+			.url("http://www.viagenie.ca/simon.perreault/simon.asc")
+			.param("TYPE", "work")
+		.noMore();
+		
+		assertTimezone(vcard)
+			.offset(new UtcOffset(false, -5, 0))
+		.noMore();
 
-		Geo geo = vcard.getGeo();
-		assertEquals(Double.valueOf(46.772673), geo.getLatitude());
-		assertEquals(Double.valueOf(-71.282945), geo.getLongitude());
-		assertEquals("work", geo.getType());
-
-		Key key = vcard.getKeys().get(0);
-		assertEquals("http://www.viagenie.ca/simon.perreault/simon.asc", key.getUrl());
-		assertEquals("work", key.getType());
-
-		Timezone tz = vcard.getTimezone();
-		assertEquals(new UtcOffset(false, -5, 0), tz.getOffset());
-
-		//@formatter:off
-		assertTextProperty(vcard.getUrls())
+		assertSimpleProperty(vcard.getUrls())
 			.value("http://nomis80.org")
 			.param("TYPE", "home")
 		.noMore();
@@ -2012,7 +1949,7 @@ public class SampleVCardsTest {
 			assertPropertyCount(8, vcard);
 
 			//@formatter:off
-			assertTextProperty(vcard.getFormattedNames())
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("Frank Dawson")
 			.noMore();
 			
@@ -2045,7 +1982,7 @@ public class SampleVCardsTest {
 				.value("fdawson@earthlink.net")
 			.noMore();
 
-			assertTextProperty(vcard.getUrls())
+			assertSimpleProperty(vcard.getUrls())
 				.value("http://home.earthlink.net/~fdawson")
 			.noMore();
 			//@formatter:on
@@ -2060,7 +1997,7 @@ public class SampleVCardsTest {
 			assertPropertyCount(6, vcard);
 
 			//@formatter:off
-			assertTextProperty(vcard.getFormattedNames())
+			assertSimpleProperty(vcard.getFormattedNames())
 				.value("Tim Howes")
 			.noMore();
 			
@@ -2100,390 +2037,5 @@ public class SampleVCardsTest {
 
 	private static VCardReader read(String filename) {
 		return new VCardReader(SampleVCardsTest.class.getResourceAsStream(filename));
-	}
-
-	private static RawPropertyAsserter assertRawProperty(String name, VCard vcard) {
-		return new RawPropertyAsserter(vcard.getExtendedProperties(name), name);
-	}
-
-	private static <T extends TextProperty> TextPropertyAsserter<T> assertTextProperty(List<T> list) {
-		return new TextPropertyAsserter<T>(list);
-	}
-
-	private static <T extends ListProperty<String>> ListPropertyAsserter<T> assertListProperty(List<T> list) {
-		return new ListPropertyAsserter<T>(list);
-	}
-
-	private static <T extends DateOrTimeProperty> DateOrTimePropertyAsserter<T> assertDateProperty(List<T> list) {
-		return new DateOrTimePropertyAsserter<T>(list);
-	}
-
-	private static EmailAsserter assertEmail(VCard vcard) {
-		return new EmailAsserter(vcard.getEmails());
-	}
-
-	private static AddressAsserter assertAddress(VCard vcard) {
-		return new AddressAsserter(vcard.getAddresses());
-	}
-
-	private static TelephoneAsserter assertTelephone(VCard vcard) {
-		return new TelephoneAsserter(vcard.getTelephoneNumbers());
-	}
-
-	private static StructuredNameAsserter assertStructuredName(VCard vcard) {
-		return new StructuredNameAsserter(vcard.getStructuredNames());
-	}
-
-	private static abstract class PropertyAsserter<T, P extends VCardProperty> {
-		@SuppressWarnings("unchecked")
-		protected final T this_ = (T) this;
-		private final Iterator<P> it;
-
-		private String group;
-		private VCardParameters parameters;
-
-		public PropertyAsserter(List<P> list) {
-			it = list.iterator();
-			reset();
-		}
-
-		public T group(String group) {
-			this.group = group;
-			return this_;
-		}
-
-		public T param(String name, String value) {
-			parameters.put(name, value);
-			return this_;
-		}
-
-		public T next() {
-			P property = it.next();
-
-			assertEquals(group, property.getGroup());
-			for (Map.Entry<String, List<String>> entry : parameters) {
-				assertEquals(entry.getValue(), property.getParameters(entry.getKey()));
-			}
-
-			_run(property);
-
-			reset();
-			return this_;
-		}
-
-		public void noMore() {
-			next();
-			assertFalse(it.hasNext());
-		}
-
-		private void reset() {
-			group = null;
-			parameters = new VCardParameters();
-			_reset();
-		}
-
-		protected abstract void _run(P property);
-
-		protected abstract void _reset();
-
-		protected static <T> List<T> arrayToList(T[] array) {
-			return (array == null) ? Collections.<T> emptyList() : Arrays.asList(array);
-		}
-	}
-
-	private static class RawPropertyAsserter extends PropertyAsserter<RawPropertyAsserter, RawProperty> {
-		private final String name;
-		private String value;
-
-		public RawPropertyAsserter(List<RawProperty> properties, String name) {
-			super(properties);
-			this.name = name;
-		}
-
-		public RawPropertyAsserter value(String value) {
-			this.value = value;
-			return this_;
-		}
-
-		@Override
-		protected void _run(RawProperty property) {
-			assertTrue(name.equalsIgnoreCase(property.getPropertyName()));
-			assertEquals(value, property.getValue());
-		}
-
-		@Override
-		protected void _reset() {
-			value = null;
-		}
-	}
-
-	private static class TextPropertyAsserter<T extends TextProperty> extends PropertyAsserter<TextPropertyAsserter<T>, T> {
-		private String value;
-
-		public TextPropertyAsserter(List<T> properties) {
-			super(properties);
-		}
-
-		public TextPropertyAsserter<T> value(String value) {
-			this.value = value;
-			return this_;
-		}
-
-		@Override
-		protected void _run(TextProperty property) {
-			assertEquals(value, property.getValue());
-		}
-
-		@Override
-		protected void _reset() {
-			value = null;
-		}
-	}
-
-	private static class EmailAsserter extends PropertyAsserter<EmailAsserter, Email> {
-		private EmailType[] types;
-		private String value;
-
-		public EmailAsserter(List<Email> emails) {
-			super(emails);
-		}
-
-		public EmailAsserter types(EmailType... types) {
-			this.types = types;
-			return this_;
-		}
-
-		public EmailAsserter value(String value) {
-			this.value = value;
-			return this_;
-		}
-
-		@Override
-		protected void _run(Email property) {
-			assertEquals(value, property.getValue());
-			assertSetEquals(property.getTypes(), types);
-		}
-
-		@Override
-		protected void _reset() {
-			types = new EmailType[0];
-			value = null;
-		}
-	}
-
-	private static class ListPropertyAsserter<T extends ListProperty<String>> extends PropertyAsserter<ListPropertyAsserter<T>, T> {
-		private String[] values;
-
-		public ListPropertyAsserter(List<T> properties) {
-			super(properties);
-		}
-
-		public ListPropertyAsserter<T> values(String... values) {
-			this.values = values;
-			return this_;
-		}
-
-		@Override
-		protected void _run(T property) {
-			List<String> expected = (values == null) ? Collections.<String> emptyList() : Arrays.asList(values);
-			assertEquals(expected, property.getValues());
-		}
-
-		@Override
-		protected void _reset() {
-			values = null;
-		}
-	}
-
-	private static class DateOrTimePropertyAsserter<T extends DateOrTimeProperty> extends PropertyAsserter<DateOrTimePropertyAsserter<T>, T> {
-		private Date date;
-		private PartialDate partialDate;
-
-		public DateOrTimePropertyAsserter(List<T> properties) {
-			super(properties);
-		}
-
-		public DateOrTimePropertyAsserter<T> date(String dateStr) {
-			this.date = TestUtils.date(dateStr);
-			return this_;
-		}
-
-		public DateOrTimePropertyAsserter<T> partialDate(PartialDate partialDate) {
-			this.partialDate = partialDate;
-			return this_;
-		}
-
-		@Override
-		protected void _run(T property) {
-			assertEquals(date, property.getDate());
-			assertEquals(partialDate, property.getPartialDate());
-		}
-
-		@Override
-		protected void _reset() {
-			date = null;
-			partialDate = null;
-		}
-	}
-
-	private static class StructuredNameAsserter extends PropertyAsserter<StructuredNameAsserter, StructuredName> {
-		private String family, given;
-		private String[] prefixes, suffixes, additional;
-
-		public StructuredNameAsserter(List<StructuredName> properties) {
-			super(properties);
-		}
-
-		public StructuredNameAsserter family(String family) {
-			this.family = family;
-			return this_;
-		}
-
-		public StructuredNameAsserter given(String given) {
-			this.given = given;
-			return this_;
-		}
-
-		public StructuredNameAsserter prefixes(String... prefixes) {
-			this.prefixes = prefixes;
-			return this_;
-		}
-
-		public StructuredNameAsserter suffixes(String... suffixes) {
-			this.suffixes = suffixes;
-			return this_;
-		}
-
-		public StructuredNameAsserter additional(String... additional) {
-			this.additional = additional;
-			return this_;
-		}
-
-		@Override
-		protected void _run(StructuredName property) {
-			assertEquals(family, property.getFamily());
-			assertEquals(given, property.getGiven());
-			assertEquals(arrayToList(prefixes), property.getPrefixes());
-			assertEquals(arrayToList(suffixes), property.getSuffixes());
-			assertEquals(arrayToList(additional), property.getAdditional());
-		}
-
-		@Override
-		protected void _reset() {
-			family = given = null;
-			prefixes = suffixes = additional = null;
-		}
-	}
-
-	private static class TelephoneAsserter extends PropertyAsserter<TelephoneAsserter, Telephone> {
-		private String text;
-		private TelUri uri;
-		private TelephoneType[] types;
-
-		public TelephoneAsserter(List<Telephone> properties) {
-			super(properties);
-		}
-
-		public TelephoneAsserter text(String text) {
-			this.text = text;
-			return this_;
-		}
-
-		public TelephoneAsserter uri(TelUri uri) {
-			this.uri = uri;
-			return this_;
-		}
-
-		public TelephoneAsserter types(TelephoneType... types) {
-			this.types = types;
-			return this_;
-		}
-
-		@Override
-		protected void _run(Telephone property) {
-			assertEquals(text, property.getText());
-			assertEquals(uri, property.getUri());
-			assertSetEquals(property.getTypes(), types);
-		}
-
-		@Override
-		protected void _reset() {
-			text = null;
-			uri = null;
-			types = new TelephoneType[0];
-		}
-	}
-
-	private static class AddressAsserter extends PropertyAsserter<AddressAsserter, Address> {
-		private String poBox, extendedAddress, streetAddress, locality, region, postalCode, country, label;
-		private AddressType[] types;
-
-		public AddressAsserter(List<Address> properties) {
-			super(properties);
-		}
-
-		public AddressAsserter poBox(String poBox) {
-			this.poBox = poBox;
-			return this_;
-		}
-
-		public AddressAsserter extendedAddress(String extendedAddress) {
-			this.extendedAddress = extendedAddress;
-			return this_;
-		}
-
-		public AddressAsserter streetAddress(String streetAddress) {
-			this.streetAddress = streetAddress;
-			return this_;
-		}
-
-		public AddressAsserter locality(String locality) {
-			this.locality = locality;
-			return this_;
-		}
-
-		public AddressAsserter region(String region) {
-			this.region = region;
-			return this_;
-		}
-
-		public AddressAsserter postalCode(String postalCode) {
-			this.postalCode = postalCode;
-			return this_;
-		}
-
-		public AddressAsserter country(String country) {
-			this.country = country;
-			return this_;
-		}
-
-		public AddressAsserter label(String label) {
-			this.label = label;
-			return this_;
-		}
-
-		public AddressAsserter types(AddressType... types) {
-			this.types = types;
-			return this_;
-		}
-
-		@Override
-		protected void _run(Address property) {
-			assertEquals(poBox, property.getPoBox());
-			assertEquals(extendedAddress, property.getExtendedAddress());
-			assertEquals(streetAddress, property.getStreetAddress());
-			assertEquals(locality, property.getLocality());
-			assertEquals(region, property.getRegion());
-			assertEquals(postalCode, property.getPostalCode());
-			assertEquals(country, property.getCountry());
-			assertEquals(label, property.getLabel());
-			assertSetEquals(property.getTypes(), types);
-		}
-
-		@Override
-		protected void _reset() {
-			poBox = extendedAddress = streetAddress = locality = region = postalCode = country = label = null;
-			types = new AddressType[0];
-		}
 	}
 }
