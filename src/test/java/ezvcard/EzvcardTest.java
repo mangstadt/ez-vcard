@@ -1,6 +1,7 @@
 package ezvcard;
 
 import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarningsLists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
@@ -79,7 +80,7 @@ public class EzvcardTest {
 
 		List<List<String>> warnings = new ArrayList<List<String>>();
 		VCard vcard = Ezvcard.parse(str).warnings(warnings).first();
-		assertEquals(VCardVersion.V2_1, vcard.getVersion());
+		assertVersion(VCardVersion.V2_1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarningsLists(warnings, 0);
 	}
@@ -103,11 +104,11 @@ public class EzvcardTest {
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
-		assertEquals(VCardVersion.V2_1, vcard.getVersion());
+		assertVersion(VCardVersion.V2_1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 		vcard = it.next();
-		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
 		assertWarningsLists(warnings, 0, 0);
@@ -126,7 +127,7 @@ public class EzvcardTest {
 		//@formatter:on
 
 		VCard vcard = Ezvcard.parse(str).register(new LuckyNumScribe()).first();
-		assertEquals(VCardVersion.V2_1, vcard.getVersion());
+		assertVersion(VCardVersion.V2_1, vcard);
 		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
@@ -160,7 +161,7 @@ public class EzvcardTest {
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
 		VCard vcard = Ezvcard.parseXml(xb.toString()).warnings(warnings).first();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarningsLists(warnings, 0);
 	}
@@ -177,11 +178,11 @@ public class EzvcardTest {
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 		vcard = it.next();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
 		assertWarningsLists(warnings, 0, 0);
@@ -195,7 +196,7 @@ public class EzvcardTest {
 		xb.prop("http://luckynum.com", "lucky-num", "<num>22</num>");
 
 		VCard vcard = Ezvcard.parseXml(xb.toString()).register(new LuckyNumScribe()).first();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertVersion(VCardVersion.V4_0, vcard);
 		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
@@ -213,7 +214,7 @@ public class EzvcardTest {
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
 		VCard vcard = Ezvcard.parseHtml(html).warnings(warnings).first();
-		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarningsLists(warnings, 0);
 	}
@@ -237,11 +238,11 @@ public class EzvcardTest {
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
-		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 		vcard = it.next();
-		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
 		assertWarningsLists(warnings, 0, 0);
@@ -259,7 +260,7 @@ public class EzvcardTest {
 		//@formatter:on
 
 		VCard vcard = Ezvcard.parseHtml(html).register(new LuckyNumScribe()).first();
-		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+		assertVersion(VCardVersion.V3_0, vcard);
 		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
@@ -276,14 +277,14 @@ public class EzvcardTest {
 
 		//without
 		VCard vcard = Ezvcard.parseHtml(html).first();
-		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertTrue(vcard.getSources().isEmpty());
 		assertEquals("profile.html", vcard.getUrls().get(0).getValue());
 
 		//with
 		vcard = Ezvcard.parseHtml(html).pageUrl("http://www.example.com/index.html").first();
-		assertEquals(VCardVersion.V3_0, vcard.getVersion());
+		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertEquals("http://www.example.com/index.html", vcard.getSources().get(0).getValue());
 		assertEquals("http://www.example.com/profile.html", vcard.getUrls().get(0).getValue());
@@ -304,7 +305,7 @@ public class EzvcardTest {
 		List<List<String>> warnings = new ArrayList<List<String>>();
 
 		VCard vcard = Ezvcard.parseJson(json).warnings(warnings).first();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarningsLists(warnings, 0);
 	}
@@ -335,11 +336,11 @@ public class EzvcardTest {
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
 		vcard = it.next();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
 		assertWarningsLists(warnings, 0, 0);
@@ -360,7 +361,7 @@ public class EzvcardTest {
 		//@formatter:on
 
 		VCard vcard = Ezvcard.parseJson(json).register(new LuckyNumScribe()).first();
-		assertEquals(VCardVersion.V4_0, vcard.getVersion());
+		assertVersion(VCardVersion.V4_0, vcard);
 		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);

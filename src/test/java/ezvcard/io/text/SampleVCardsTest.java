@@ -4,16 +4,17 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.TestUtils.utc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -24,8 +25,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import ezvcard.VCard;
-import ezvcard.VCardVersion;
-import ezvcard.io.StreamReader;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.ImageType;
@@ -91,7 +90,6 @@ import ezvcard.util.UtcOffset;
  * @author Michael Angstadt
  */
 public class SampleVCardsTest {
-
 	@Test
 	public void androidVCard() throws Throwable {
 		VCardReader reader = read("John_Doe_ANDROID.vcf");
@@ -2102,20 +2100,6 @@ public class SampleVCardsTest {
 
 	private static VCardReader read(String filename) {
 		return new VCardReader(SampleVCardsTest.class.getResourceAsStream(filename));
-	}
-
-	private static void assertVersion(VCardVersion expected, VCard vcard) {
-		VCardVersion actual = vcard.getVersion();
-		assertEquals(expected, actual);
-	}
-
-	private static void assertPropertyCount(int expected, VCard vcard) {
-		int actual = vcard.getProperties().size();
-		assertEquals(expected, actual);
-	}
-
-	private static void assertNoMoreVCards(StreamReader reader) throws IOException {
-		assertNull(reader.readNext());
 	}
 
 	private static RawPropertyAsserter assertRawProperty(String name, VCard vcard) {
