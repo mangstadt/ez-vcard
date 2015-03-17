@@ -48,6 +48,7 @@ public class SoundScribeTest {
 	private final Sensei<Sound> sensei = new Sensei<Sound>(scribe);
 
 	private final String url = "http://example.com/song.mp3";
+	private final String urlUnknownExtension = "http://example.com/song.abc";
 	private final String urlWithoutExtension = "http://example.com/song";
 	private final byte[] data = "data".getBytes();
 	private final String dataUri = new DataUri("audio/mp3", data).toString();
@@ -57,6 +58,7 @@ public class SoundScribeTest {
 		sensei.assertParseHtml("<audio />").cannotParse();
 		sensei.assertParseHtml("<audio><source /></audio>").cannotParse();
 		sensei.assertParseHtml("<audio><source src=\"" + url + "\" /></audio>").run(hasUrl(url, SoundType.MP3));
+		sensei.assertParseHtml("<audio><source src=\"" + urlUnknownExtension + "\" /></audio>").run(hasUrl(urlUnknownExtension, null));
 		sensei.assertParseHtml("<audio><source src=\"" + urlWithoutExtension + "\" /></audio>").run(hasUrl(urlWithoutExtension, null));
 		sensei.assertParseHtml("<audio><source src=\"" + dataUri + "\" /></audio>").run(hasData(data, SoundType.MP3));
 

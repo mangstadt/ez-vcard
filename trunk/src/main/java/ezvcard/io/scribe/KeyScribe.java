@@ -49,7 +49,7 @@ public class KeyScribe extends BinaryPropertyScribe<Key, KeyType> {
 
 	@Override
 	protected KeyType _mediaTypeFromFileExtension(String extension) {
-		return KeyType.get(null, null, extension);
+		return KeyType.find(null, null, extension);
 	}
 
 	@Override

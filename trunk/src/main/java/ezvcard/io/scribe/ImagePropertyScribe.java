@@ -55,7 +55,7 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 
 	@Override
 	protected ImageType _mediaTypeFromFileExtension(String extension) {
-		return ImageType.get(null, null, extension);
+		return ImageType.find(null, null, extension);
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class SoundScribe extends BinaryPropertyScribe<Sound, SoundType> {
 
 	@Override
 	protected SoundType _mediaTypeFromFileExtension(String extension) {
-		return SoundType.get(null, null, extension);
+		return SoundType.find(null, null, extension);
 	}
 
 	@Override

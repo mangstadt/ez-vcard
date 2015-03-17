@@ -1919,7 +1919,6 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		assertBinaryProperty(vcard.getKeys())
-			.contentType(KeyType.get(null, null, "asc"))
 			.url("http://www.viagenie.ca/simon.perreault/simon.asc")
 			.param("TYPE", "work")
 		.noMore();

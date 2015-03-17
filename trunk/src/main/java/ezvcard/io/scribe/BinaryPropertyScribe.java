@@ -246,9 +246,9 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	protected abstract U _mediaTypeFromTypeParameter(String type);
 
 	/**
-	 * Builds a {@link MediaTypeParameter} object from a file extension
+	 * Searches for a {@link MediaTypeParameter} object, given a file extension.
 	 * @param extension the file extension (e.g. "jpg")
-	 * @return the media type object
+	 * @return the media type object or null if not found
 	 */
 	protected abstract U _mediaTypeFromFileExtension(String extension);
 
