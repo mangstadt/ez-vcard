@@ -4,6 +4,9 @@ import static ezvcard.VCardDataType.INTEGER;
 import static ezvcard.VCardDataType.TEXT;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.property.asserter.PropertyAsserter.assertAddress;
+import static ezvcard.property.asserter.PropertyAsserter.assertRawProperty;
+import static ezvcard.property.asserter.PropertyAsserter.assertSimpleProperty;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertPropertyCount;
@@ -80,15 +83,16 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"NOTE;x-size=8:The note\r\n" +
-		"ADR;HOME;WORK:;;;;\r\n" + //nameless parameters
-		"LABEL;type=dOm;TyPE=parcel:\r\n" + //repeated parameter name
+			"VERSION:2.1\r\n" +
+			"NOTE;x-size=8:The note\r\n" +
+			"ADR;HOME;WORK:;;;;\r\n" + //nameless parameters
+			"LABEL;type=dOm;TyPE=parcel:\r\n" + //repeated parameter name
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
+		assertPropertyCount(3, vcard);
 
 		Note note = vcard.getNotes().get(0);
 		assertEquals(1, note.getParameters().size());
@@ -113,16 +117,17 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
-		"ADR;TYPE=\"dom,home,work\":;;;;\r\n" +
-		"ADR;TYPE=\"dom\",\"home\",\"work\":;;;;\r\n" +
-		"ADR;TYPE=\"dom\",home,work:;;;;\r\n" +
-		"ADR;TYPE=dom,home,work:;;;;\r\n" +
+			"VERSION:4.0\r\n" +
+			"ADR;TYPE=\"dom,home,work\":;;;;\r\n" +
+			"ADR;TYPE=\"dom\",\"home\",\"work\":;;;;\r\n" +
+			"ADR;TYPE=\"dom\",home,work:;;;;\r\n" +
+			"ADR;TYPE=dom,home,work:;;;;\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
+		assertPropertyCount(4, vcard);
 
 		for (Address adr : vcard.getAddresses()) {
 			assertEquals(3, adr.getParameters().size());
@@ -138,14 +143,15 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"VAL;TEXT;8BIT;FOO:value\r\n" +
+			"VERSION:2.1\r\n" +
+			"VAL;TEXT;8BIT;FOO:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new ValueScribe());
 		VCard vcard = reader.readNext();
+		assertPropertyCount(1, vcard);
 
 		ValueProp property = vcard.getProperty(ValueProp.class);
 		assertEquals(TEXT, property.dataType);
@@ -162,15 +168,16 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:123 Main St.=0D=0A\r\n" +
-		" Austin, TX 91827=0D=0A\r\n" +
-		" USA\r\n" +
+			"VERSION:2.1\r\n" +
+			"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:123 Main St.=0D=0A\r\n" +
+			" Austin, TX 91827=0D=0A\r\n" +
+			" USA\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
+		assertPropertyCount(1, vcard);
 
 		Label label = vcard.getOrphanedLabels().get(0);
 		assertEquals("123 Main St.\r\nAustin, TX 91827\r\nUSA", label.getValue());
@@ -185,13 +192,14 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:test=nnnn\r\n" +
+			"VERSION:2.1\r\n" +
+			"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:test=nnnn\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
+		assertPropertyCount(1, vcard);
 
 		Label label = vcard.getOrphanedLabels().get(0);
 		assertEquals("test=nnnn", label.getValue());
@@ -210,13 +218,14 @@ public class VCardReaderTest {
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:=C3=A4=C3=B6=C3=BC=C3=9F\r\n" +
+				"VERSION:2.1\r\n" +
+				"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:=C3=A4=C3=B6=C3=BC=C3=9F\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
 			VCardReader reader = new VCardReader(str);
 			VCard vcard = reader.readNext();
+			assertPropertyCount(1, vcard);
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
@@ -231,13 +240,14 @@ public class VCardReaderTest {
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=ISO-8859-1:=E4=F6=FC=DF\r\n" +
+				"VERSION:2.1\r\n" +
+				"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=ISO-8859-1:=E4=F6=FC=DF\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
 			VCardReader reader = new VCardReader(str);
 			VCard vcard = reader.readNext();
+			assertPropertyCount(1, vcard);
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
@@ -253,14 +263,15 @@ public class VCardReaderTest {
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"NOTE;ENCODING=QUOTED-PRINTABLE:=E4=F6=FC=DF\r\n" +
+				"VERSION:2.1\r\n" +
+				"NOTE;ENCODING=QUOTED-PRINTABLE:=E4=F6=FC=DF\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
 			VCardReader reader = new VCardReader(str);
 			reader.setDefaultQuotedPrintableCharset(Charset.forName("ISO-8859-1"));
 			VCard vcard = reader.readNext();
+			assertPropertyCount(1, vcard);
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
@@ -276,14 +287,15 @@ public class VCardReaderTest {
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=invalid:=E4=F6=FC=DF\r\n" +
+				"VERSION:2.1\r\n" +
+				"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=invalid:=E4=F6=FC=DF\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
 			VCardReader reader = new VCardReader(str);
 			reader.setDefaultQuotedPrintableCharset(Charset.forName("ISO-8859-1"));
 			VCard vcard = reader.readNext();
+			assertPropertyCount(1, vcard);
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
@@ -307,13 +319,14 @@ public class VCardReaderTest {
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"NOTE;ENCODING=QUOTED-PRINTABLE:" + encoded + "\r\n" +
+				"VERSION:2.1\r\n" +
+				"NOTE;ENCODING=QUOTED-PRINTABLE:" + encoded + "\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
 			VCardReader reader = new VCardReader(str);
 			VCard vcard = reader.readNext();
+			assertPropertyCount(1, vcard);
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
@@ -329,13 +342,14 @@ public class VCardReaderTest {
 			//@formatter:off
 			String str =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=invalid:" + encoded + "\r\n" +
+				"VERSION:2.1\r\n" +
+				"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=invalid:" + encoded + "\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
 			VCardReader reader = new VCardReader(str);
 			VCard vcard = reader.readNext();
+			assertPropertyCount(1, vcard);
 
 			Note note = vcard.getNotes().get(0);
 			assertEquals(expectedValue, note.getValue());
@@ -351,21 +365,22 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"NOTE:The vCard MIME Directory Profile also provides support for represent\r\n" +
-		" ing other important information about the person associated with the dire\r\n" +
-		" ctory entry. For instance, the date of birth of the person\\; an audio clip \r\n" +
-		" describing the pronunciation of the name associated with the directory en\r\n" +
-		" try, or some other application of the digital sound\\; longitude and latitu\r\n" +
-		" de geo-positioning information related to the person associated with the \r\n" +
-		" directory entry\\; date and time that the directory information was last up\r\n" +
-		" dated\\; annotations often written on a business card\\; Uniform Resource Loc\r\n" +
-		" ators (URL) for a website\\; public key information.\r\n" +
+			"VERSION:2.1\r\n" +
+			"NOTE:The vCard MIME Directory Profile also provides support for represent\r\n" +
+			" ing other important information about the person associated with the dire\r\n" +
+			" ctory entry. For instance, the date of birth of the person\\; an audio clip \r\n" +
+			" describing the pronunciation of the name associated with the directory en\r\n" +
+			" try, or some other application of the digital sound\\; longitude and latitu\r\n" +
+			" de geo-positioning information related to the person associated with the \r\n" +
+			" directory entry\\; date and time that the directory information was last up\r\n" +
+			" dated\\; annotations often written on a business card\\; Uniform Resource Loc\r\n" +
+			" ators (URL) for a website\\; public key information.\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
+		assertPropertyCount(1, vcard);
 
 		String expected = "The vCard MIME Directory Profile also provides support for representing other important information about the person associated with the directory entry. For instance, the date of birth of the person; an audio clip describing the pronunciation of the name associated with the directory entry, or some other application of the digital sound; longitude and latitude geo-positioning information related to the person associated with the directory entry; date and time that the directory information was last updated; annotations often written on a business card; Uniform Resource Locators (URL) for a website; public key information.";
 		String actual = vcard.getNotes().get(0).getValue();
@@ -380,16 +395,17 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"X-LUCKY-NUM:24\r\n" +
-		"X-GENDER:ma\\,le\r\n" +
-		"X-LUCKY-NUM:22\r\n" +
+			"VERSION:2.1\r\n" +
+			"X-LUCKY-NUM:24\r\n" +
+			"X-GENDER:ma\\,le\r\n" +
+			"X-LUCKY-NUM:22\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new LuckyNumScribe());
 		VCard vcard = reader.readNext();
+		assertPropertyCount(3, vcard);
 
 		//read a type that has a type class
 		List<LuckyNumType> luckyNumTypes = vcard.getProperties(LuckyNumType.class);
@@ -412,8 +428,8 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"FN:John Doe\r\n" +
+			"VERSION:2.1\r\n" +
+			"FN:John Doe\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -435,12 +451,12 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"FN:John Doe\r\n" +
+			"VERSION:2.1\r\n" +
+			"FN:John Doe\r\n" +
 		"END:VCARD\r\n" +
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"FN:Jane Doe\r\n" +
+			"VERSION:3.0\r\n" +
+			"FN:Jane Doe\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -448,11 +464,13 @@ public class VCardReaderTest {
 		VCard vcard;
 
 		vcard = reader.readNext();
+		assertPropertyCount(1, vcard);
 		assertVersion(V2_1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader);
 
 		vcard = reader.readNext();
+		assertPropertyCount(1, vcard);
 		assertVersion(V3_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 		assertWarnings(0, reader);
@@ -483,10 +501,13 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(str);
 
 		VCard vcard = reader.readNext();
+		assertPropertyCount(2, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		VCard agent1 = vcard.getAgent().getVCard();
+		assertPropertyCount(2, agent1);
 		assertEquals("Agent 007", agent1.getFormattedName().getValue());
 		VCard agent2 = agent1.getAgent().getVCard();
+		assertPropertyCount(2, vcard);
 		assertEquals("Agent 009", agent2.getFormattedName().getValue());
 
 		assertWarnings(0, reader);
@@ -498,16 +519,17 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"NESTED:\r\n" +
-		"FN:John Doe\r\n" +
+			"VERSION:2.1\r\n" +
+			"NESTED:\r\n" +
+			"FN:John Doe\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new NestedScribe());
-
 		VCard vcard = reader.readNext();
+		assertPropertyCount(2, vcard);
+
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertNull(vcard.getProperty(Nested.class).vcard);
 
@@ -639,11 +661,28 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
 
-		assertEquals("John Doe", vcard.getFormattedName().getValue());
+		//@formatter:off
+		assertPropertyCount(2, vcard);
+		assertSimpleProperty(vcard.getFormattedNames())
+			.value("John Doe")
+		.noMore();
+		
 		VCard agent1 = vcard.getAgent().getVCard();
-		assertEquals("Agent 007", agent1.getFormattedName().getValue());
-		VCard agent2 = agent1.getAgent().getVCard();
-		assertEquals("Agent 009", agent2.getFormattedName().getValue());
+		{
+			assertPropertyCount(2, agent1);
+			assertSimpleProperty(agent1.getFormattedNames())
+				.value("Agent 007")
+			.noMore();
+			
+			VCard agent2 = agent1.getAgent().getVCard();
+			{
+				assertPropertyCount(1, agent2);
+				assertSimpleProperty(agent2.getFormattedNames())
+					.value("Agent 009")
+				.noMore();
+			}
+		}
+		//@formatter:on
 
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
@@ -659,31 +698,41 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"ADR;TYPE=home:;;123 Main St.;Austin;TX;91827;USA\r\n" +
-		"LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 91827\\nUSA\r\n" +
-		"ADR;TYPE=work,parcel:;;200 Broadway;New York;NY;12345;USA\r\n" +
-		"LABEL;TYPE=work:200 Broadway\\nNew York\\, NY 12345\\nUSA\r\n" +
+			"VERSION:3.0\r\n" +
+			"ADR;TYPE=home:;;123 Main St.;Austin;TX;91827;USA\r\n" +
+			"LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 91827\\nUSA\r\n" +
+			"ADR;TYPE=work,parcel:;;200 Broadway;New York;NY;12345;USA\r\n" +
+			"LABEL;TYPE=work:200 Broadway\\nNew York\\, NY 12345\\nUSA\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
+		assertPropertyCount(3, vcard);
 
-		assertEquals(2, vcard.getAddresses().size());
-
-		Address adr = vcard.getAddresses().get(0);
-		assertSetEquals(adr.getTypes(), AddressType.HOME);
-		assertEquals("123 Main St." + NEWLINE + "Austin, TX 91827" + NEWLINE + "USA", adr.getLabel());
-
-		adr = vcard.getAddresses().get(1);
-		assertSetEquals(adr.getTypes(), AddressType.WORK, AddressType.PARCEL);
-		assertNull(adr.getLabel());
-
-		assertEquals(1, vcard.getOrphanedLabels().size());
-		Label label = vcard.getOrphanedLabels().get(0);
-		assertEquals("200 Broadway" + NEWLINE + "New York, NY 12345" + NEWLINE + "USA", label.getValue());
-		assertSetEquals(label.getTypes(), AddressType.WORK);
+		//@formatter:off
+		assertAddress(vcard)
+			.streetAddress("123 Main St.")
+			.locality("Austin")
+			.region("TX")
+			.postalCode("91827")
+			.country("USA")
+			.label("123 Main St." + NEWLINE + "Austin, TX 91827" + NEWLINE + "USA")
+			.types(AddressType.HOME)
+		.next()
+			.streetAddress("200 Broadway")
+			.locality("New York")
+			.region("NY")
+			.postalCode("12345")
+			.country("USA")
+			.types(AddressType.WORK, AddressType.PARCEL)
+		.noMore();
+		
+		assertSimpleProperty(vcard.getOrphanedLabels())
+			.value("200 Broadway" + NEWLINE + "New York, NY 12345" + NEWLINE + "USA")
+			.param("TYPE", "work")
+		.noMore();
+		//@formatter:on
 
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
@@ -694,20 +743,22 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"SKIPME:value\r\n" +
-		"X-FOO:value\r\n" +
+			"VERSION:3.0\r\n" +
+			"SKIPME:value\r\n" +
+			"X-FOO:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new SkipMeScribe());
 		VCard vcard = reader.readNext();
-
 		assertPropertyCount(1, vcard);
-		RawProperty property = vcard.getExtendedProperty("X-FOO");
-		assertEquals("X-FOO", property.getPropertyName());
-		assertEquals("value", property.getValue());
+
+		//@formatter:off
+		assertRawProperty("X-FOO", vcard)
+			.value("value")
+		.noMore();
+		//@formatter:on
 
 		assertWarnings(1, reader);
 		assertNoMoreVCards(reader);
@@ -718,10 +769,10 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"CANNOTPARSE:value\r\n" +
-		"group.CANNOTPARSE:value\r\n" +
-		"X-FOO:value\r\n" +
+			"VERSION:3.0\r\n" +
+			"CANNOTPARSE:value\r\n" +
+			"group.CANNOTPARSE:value\r\n" +
+			"X-FOO:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -731,21 +782,18 @@ public class VCardReaderTest {
 		VCard vcard = reader.readNext();
 		assertPropertyCount(3, vcard);
 
-		RawProperty property = vcard.getExtendedProperty("X-FOO");
-		assertEquals("X-FOO", property.getPropertyName());
-		assertEquals("value", property.getValue());
-
-		Iterator<RawProperty> it = vcard.getExtendedProperties("CANNOTPARSE").iterator();
-
-		property = it.next();
-		assertNull(property.getGroup());
-		assertEquals("CANNOTPARSE", property.getPropertyName());
-		assertEquals("value", property.getValue());
-
-		property = it.next();
-		assertEquals("group", property.getGroup());
-		assertEquals("CANNOTPARSE", property.getPropertyName());
-		assertEquals("value", property.getValue());
+		//@formatter:off
+		assertRawProperty("X-FOO", vcard)
+			.value("value")
+		.noMore();
+		
+		assertRawProperty("CANNOTPARSE", vcard)
+			.value("value")
+		.next()
+			.group("group")
+			.value("value")
+		.noMore();
+		//@formatter:on
 
 		assertWarnings(2, reader);
 		assertNoMoreVCards(reader);
@@ -756,8 +804,8 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"bad-line\r\n" +
+			"VERSION:2.1\r\n" +
+			"bad-line\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -773,8 +821,8 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"WARNINGS:foo\r\n" +
+			"VERSION:2.1\r\n" +
+			"WARNINGS:foo\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -819,11 +867,11 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"bad-line\r\n" +
+			"VERSION:2.1\r\n" +
+			"bad-line\r\n" +
 		"END:VCARD\r\n" +
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
+			"VERSION:2.1\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -843,11 +891,11 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"AGENT:\r\n" +
-			"BEGIN:VCARD\r\n" +
 			"VERSION:2.1\r\n" +
-			"WARNINGS:value\r\n" +
+			"AGENT:\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"WARNINGS:value\r\n" +
 			"END:VCARD\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
@@ -867,8 +915,8 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"AGENT:BEGIN:VCARD\\nVERSION:3.0\\nWARNINGS:value\\nEND:VCARD\r\n" +
+			"VERSION:3.0\r\n" +
+			"AGENT:BEGIN:VCARD\\nVERSION:3.0\\nWARNINGS:value\\nEND:VCARD\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -887,17 +935,18 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
-		"VAL;VALUE=text;LANGUAGE=en:value\r\n" +
-		"VAL;LANGUAGE=en:value\r\n" +
-		"VAL;VALUE=text:value\r\n" +
-		"VAL:value\r\n" +
+			"VERSION:4.0\r\n" +
+			"VAL;VALUE=text;LANGUAGE=en:value\r\n" +
+			"VAL;LANGUAGE=en:value\r\n" +
+			"VAL;VALUE=text:value\r\n" +
+			"VAL:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new ValueScribe());
 		VCard vcard = reader.readNext();
+		assertPropertyCount(4, vcard);
 
 		Iterator<ValueProp> it = vcard.getProperties(ValueProp.class).iterator();
 
@@ -963,7 +1012,7 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:invalid\r\n" +
+			"VERSION:invalid\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -980,12 +1029,12 @@ public class VCardReaderTest {
 		//@formatter:off
 		String str =
 		"BEGIN:VCALENDAR\r\n" +
-		"VERSION:2.0\r\n" +
-		"PRODID:-//Company//Application//EN" +
+			"VERSION:2.0\r\n" +
+			"PRODID:-//Company//Application//EN" +
 		"END:VCALENDAR\r\n" +
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"FN:John Doe\r\n" +
+			"VERSION:3.0\r\n" +
+			"FN:John Doe\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -993,8 +1042,13 @@ public class VCardReaderTest {
 
 		VCard vcard = reader.readNext();
 		assertVersion(V3_0, vcard);
-		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertNull(vcard.getProductId());
+		assertPropertyCount(1, vcard);
+
+		//@formatter:off
+		assertSimpleProperty(vcard.getFormattedNames())
+			.value("John Doe")
+		.noMore();
+		//@formatter:on
 
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
