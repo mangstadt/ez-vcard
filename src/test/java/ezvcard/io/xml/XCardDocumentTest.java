@@ -53,7 +53,6 @@ import ezvcard.io.xml.XCardDocument.XCardDocumentStreamWriter;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.ImageType;
-import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
@@ -692,7 +691,6 @@ public class XCardDocumentTest {
 			.noMore();
 			
 			assertBinaryProperty(vcard.getKeys())
-				.contentType(KeyType.get(null, null, "asc"))
 				.url("http://www.viagenie.ca/simon.perreault/simon.asc")
 				.param("TYPE", "work")
 			.noMore();

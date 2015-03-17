@@ -56,6 +56,7 @@ public class BinaryPropertyScribeTest {
 	private final Sensei<BinaryTypeImpl> sensei = new Sensei<BinaryTypeImpl>(scribe);
 
 	private final String url = "http://example.com/image.jpg";
+	private final String urlUnknownExtension = "http://example.com/image.aaa";
 	private final String urlWithoutExtension = "http://example.com/image";
 	private final byte[] data = "data".getBytes();
 	private final String base64Data = Base64.encodeBase64String(data);
@@ -146,6 +147,8 @@ public class BinaryPropertyScribeTest {
 			//without TYPE parameter
 			sensei.assertParseText(url).dataType(URL).versions(versions).run(hasUrl(url, ImageType.JPEG));
 			sensei.assertParseText(url).versions(versions).run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(urlUnknownExtension).dataType(URL).versions(versions).run(hasUrl(urlUnknownExtension, null));
+			sensei.assertParseText(urlUnknownExtension).versions(versions).run(hasUrl(urlUnknownExtension, null));
 			sensei.assertParseText(urlWithoutExtension).dataType(URL).versions(versions).run(hasUrl(urlWithoutExtension, null));
 			sensei.assertParseText(urlWithoutExtension).versions(versions).run(hasUrl(urlWithoutExtension, null));
 
@@ -160,6 +163,8 @@ public class BinaryPropertyScribeTest {
 			//without MEDIATYPE parameter
 			sensei.assertParseText(url).dataType(URI).versions(version).run(hasUrl(url, ImageType.JPEG));
 			sensei.assertParseText(url).versions(version).run(hasUrl(url, ImageType.JPEG));
+			sensei.assertParseText(urlUnknownExtension).dataType(URL).versions(version).run(hasUrl(urlUnknownExtension, null));
+			sensei.assertParseText(urlUnknownExtension).versions(version).run(hasUrl(urlUnknownExtension, null));
 			sensei.assertParseText(urlWithoutExtension).dataType(URI).versions(version).run(hasUrl(urlWithoutExtension, null));
 			sensei.assertParseText(urlWithoutExtension).versions(version).run(hasUrl(urlWithoutExtension, null));
 
@@ -219,7 +224,9 @@ public class BinaryPropertyScribeTest {
 
 		//without MEDIATYPE
 		sensei.assertParseXml("<uri>" + url + "</uri>").run(hasUrl(url, ImageType.JPEG));
+		sensei.assertParseXml("<uri>" + urlUnknownExtension + "</uri>").run(hasUrl(urlUnknownExtension, null));
 		sensei.assertParseXml("<uri>" + urlWithoutExtension + "</uri>").run(hasUrl(urlWithoutExtension, null));
+
 	}
 
 	@Test
@@ -243,6 +250,7 @@ public class BinaryPropertyScribeTest {
 
 		//without type
 		sensei.assertParseHtml("<object data=\"" + url + "\" />").run(hasUrl(url, ImageType.JPEG));
+		sensei.assertParseHtml("<object data=\"" + urlUnknownExtension + "\" />").run(hasUrl(urlUnknownExtension, null));
 		sensei.assertParseHtml("<object data=\"" + urlWithoutExtension + "\" />").run(hasUrl(urlWithoutExtension, null));
 	}
 
@@ -268,6 +276,7 @@ public class BinaryPropertyScribeTest {
 
 		//without MEDIATYPE
 		sensei.assertParseJson(url).run(hasUrl(url, ImageType.JPEG));
+		sensei.assertParseJson(urlUnknownExtension).run(hasUrl(urlUnknownExtension, null));
 		sensei.assertParseJson(urlWithoutExtension).run(hasUrl(urlWithoutExtension, null));
 
 		sensei.assertParseJson("").run(hasUrl("", null));
@@ -299,7 +308,7 @@ public class BinaryPropertyScribeTest {
 
 		@Override
 		protected ImageType _mediaTypeFromFileExtension(String extension) {
-			return ImageType.get(null, null, extension);
+			return ImageType.find(null, null, extension);
 		}
 
 		@Override

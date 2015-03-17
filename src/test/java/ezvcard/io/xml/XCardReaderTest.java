@@ -53,7 +53,6 @@ import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
-import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.ProductId;
 import ezvcard.property.RawProperty;
@@ -963,7 +962,6 @@ public class XCardReaderTest {
 			.noMore();
 			
 			assertBinaryProperty(vcard.getKeys())
-				.contentType(KeyType.get(null, null, "asc"))
 				.url("http://www.viagenie.ca/simon.perreault/simon.asc")
 				.param("TYPE", "work")
 			.noMore();
