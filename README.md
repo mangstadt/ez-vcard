@@ -32,7 +32,7 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 # Features
 
  * Simple, intuitive API (see code examples).
- * [Android compatibility library](http://github.com/mangstadt/ez-vcard-android)
+ * Android compatibility
  * Full compliance with 2.1, 3.0, and 4.0 specifications ([2.1](http://www.imc.org/pdi/vcard-21.rtf), [RFC 2426](http://tools.ietf.org/html/rfc2426), [RFC 6350](http://tools.ietf.org/html/rfc6350))
  * Full compliance with xCard specification ([RFC 6351](http://tools.ietf.org/html/rfc6351))
  * Full compliance with hCard specification (http://microformats.org/wiki/hcard)
@@ -91,36 +91,47 @@ Please submit bug reports and feature requests to the [issue tracker](https://gi
 
 # Credits
 
-<table border="0">
-<tr><th align="left" valign="top">Lead Developer:</th><td>Michael Angstadt</td></tr>
-<tr><th align="left" valign="top">Documentation:</th><td>Michael Angstadt</td></tr>
-<tr><th align="left" valign="top">Contributors:</th><td>David Nault (x2)</td></tr>
-<tr><th></th><td>knutolav (x2)</td></tr>
-<tr><th></th><td>Kiran Kumar Bhushan</td></tr>
-<tr><th></th><td>Moritz Bechler</td></tr>
-<tr><th></th><td>JulianeDombrowski</td></tr>
-<tr><th></th><td>Florian Brunner</td></tr>
-<tr><th></th><td>Tom Vogel</td></tr>
-<tr><th></th><td>F. Gaffron</td></tr>
-<tr><th></th><td>Pratyush Chandra (<a href="http://github.com/mangstadt/ez-vcard-android">Android compatibility</a>)</td></tr>
-<tr><th></th><td><a href="http://stackoverflow.com/users/2736496/aliteralmind">aliteralmind</a></td></tr>
-<tr><th></th><td>沈健</td></tr>
-<tr><th></th><td>David Spieler</td></tr>
-<tr><th></th><td>Matt Siegel</td></tr>
-<tr><th></th><td>Eike Weyl (wiki fix)</td></tr>
-<tr><th align="left" valign="top">Architecture Ideas:</th><td>George El-Haddad (<a href="https://sourceforge.net/projects/cardme/">CardMe Project</a>)</td></tr>
-<tr><th align="left" valign="top">Maven Central Reviewer:</th><td>Joel Orlina</td></tr>
-<tr><th align="left" valign="top">Project Hosting:</th><td>Google Code</td></tr>
-<tr><th></th><td>Github</td></tr>
-<tr><th align="left" valign="top">Caffeine Suppliers:</th><td>Starbucks</td></tr>
-<tr><th></th><td>Volo Coffeehouse</td></tr>
-<tr><th></th><td>'feine</td></tr>
-</table>
+**Lead Developer**  
+Michael Angstadt
 
-_No animals were harmed in the making of this library. ;-)_
+**Documentation**  
+Michael Angstadt
+
+**Architecture Ideas**  
+George El-Haddad ([CardMe Project](https://sourceforge.net/projects/cardme/))
+
+**Maven Central Reviewer**  
+Joel Orlina
+
+**Project Hosting**  
+[Github](https://github.com)  
+[Google Code](https://code.google.com)
+
+**Contributors**  
+amarnathr ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/16))  
+Moritz Bechler (Geo URI bug fix)  
+Kiran Kumar Bhushan (quoted-printable bug)  
+Florian Brunner ([OSGi metadata](https://github.com/mangstadt/ez-vcard/issues/11))  
+Pratyush Chandra ([ez-vcard-android](http://github.com/mangstadt/ez-vcard-android))  
+Juliane Dombrowski ([quoted-printable line folding](https://github.com/mangstadt/ez-vcard/issues/9))  
+F. Gaffron ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/12))  
+knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](https://github.com/mangstadt/ez-vcard/issues/2))  
+David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7](https://github.com/mangstadt/ez-vcard/issues/7))  
+Matt Siegel ([base64 property value bug](https://github.com/mangstadt/ez-vcard/issues/21), [unit test bug](https://github.com/mangstadt/ez-vcard/issues/22))  
+David Spieler ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/19))  
+Tom Vogel ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/10))  
+Eike Weyl (Wiki fix)  
+沈健 (plain-text vCard formatting issue)
+
+**Caffeine Suppliers**  
+'feine  
+Starbucks  
+Volo Coffeehouse
+
+_No animals were harmed in the making of this library._
 
 # Donate
 
-Please consider donating a dollar or two to help pay for my coffee! :)  Thank you.
+Tips are greatly appreciated.  Thank you. :)
 
-[Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+![https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)
