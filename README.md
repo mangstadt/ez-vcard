@@ -31,15 +31,12 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # Features
 
- * Simple, intuitive API (see code examples).
- * Android compatibility
- * Full compliance with 2.1, 3.0, and 4.0 specifications ([2.1](http://www.imc.org/pdi/vcard-21.rtf), [RFC 2426](http://tools.ietf.org/html/rfc2426), [RFC 6350](http://tools.ietf.org/html/rfc6350))
- * Full compliance with xCard specification ([RFC 6351](http://tools.ietf.org/html/rfc6351))
- * Full compliance with hCard specification (http://microformats.org/wiki/hcard)
- * Full compliance with jCard specification ([RFC 7095](http://tools.ietf.org/html/rfc7095))
- * Supports circumflex accent encoding for parameter values ([RFC 6868](http://tools.ietf.org/html/rfc6868))
- * Extensive unit test coverage
- * Few dependencies on external libraries.  Dependencies can be selectively excluded based on the functionality that is needed (see Dependencies).
+ * Simple, intuitive API (see [Examples](https://github.com/mangstadt/ez-vcard/wiki/Examples)).
+ * Android compatibility (see [ez-vcard-android](https://github.com/mangstadt/ez-vcard-android) project).
+ * Full compliance with 2.1, 3.0, and 4.0 specifications (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
+ * Supports XML, HTML, and JSON encoded vCards (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
+ * Extensive unit test coverage.
+ * Few dependencies on external libraries.  Dependencies can be selectively excluded based on the functionality that is needed (see [Dependencies](https://github.com/mangstadt/ez-vcard/wiki/Dependencies)).
 
 # News
 
