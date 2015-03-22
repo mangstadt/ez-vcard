@@ -1,6 +1,6 @@
 # ez-vcard
 
-ez-vcard is a vCard library written in Java (*requires 1.5 or above*).  It can read and write vCards in many different formats.  The "ez" stands for "easy" because the goal is to create a library that's easy to use.
+ez-vcard is a vCard library written in Java.  It can read and write vCards in many different formats.  The "ez" stands for "easy" because the goal is to create a library that's easy to use.
 
 ```java
 String str =
@@ -36,6 +36,7 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
  * Full compliance with 2.1, 3.0, and 4.0 specifications (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Supports XML, HTML, and JSON encoded vCards (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Extensive unit test coverage.
+ * Low Java version requirement (1.5 or above).
  * Few dependencies on external libraries.  Dependencies can be selectively excluded based on the functionality that is needed (see [Dependencies](https://github.com/mangstadt/ez-vcard/wiki/Dependencies)).
 
 # News
