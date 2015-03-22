@@ -69,20 +69,6 @@ Version 0.9.5 released.  This released fixes a few miscellaneous bugs.  Please s
 </dependency>
 ```
 
-# Supported specifications
-
-  * [vCard 2.1](http://www.imc.org/pdi/vcard-21.rtf)
-  * [RFC 2426](http://tools.ietf.org/html/rfc2426) (vCard 3.0)
-  * [RFC 6350](http://tools.ietf.org/html/rfc6350) (vCard 4.0)
-  * [RFC 6351](http://tools.ietf.org/html/rfc6351) (xCard)
-  * [hCard 1.0](http://microformats.org/wiki/hcard)
-  * [RFC 7095](http://tools.ietf.org/html/rfc7095) (jCard)
-  * [RFC 6473](http://tools.ietf.org/html/rfc6473) (KIND:application)
-  * [RFC 6869](http://tools.ietf.org/html/rfc6869) (KIND:device)
-  * [RFC 6474](http://tools.ietf.org/html/rfc6474) (BIRTHPLACE, DEATHPLACE, DEATHDATE)
-  * [RFC 6715](http://tools.ietf.org/html/rfc6715) (Open Mobile Alliance Converged Address Book extensions)
-  * [RFC 6868](http://tools.ietf.org/html/rfc6868) (circumflex accent encoding)
-
 # Questions / Feedback
 
 Questions and feedback can be posted to the [discussion forum](http://groups.google.com/group/ez-vcard-discuss).  You can also email me directly: mike(dot)angstadt(at)gmail(dot)com
