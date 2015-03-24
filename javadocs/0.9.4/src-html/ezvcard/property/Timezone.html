@@ -1,0 +1,446 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../syntaxhighlighter.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package ezvcard.property;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.util.List;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.util.SimpleTimeZone;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.TimeZone;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>import ezvcard.VCard;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import ezvcard.VCardVersion;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import ezvcard.Warning;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import ezvcard.util.VCardDateFormat;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import ezvcard.util.UtcOffset;<a name="line.11"></a>
+<span class="sourceLineNo">012</span><a name="line.12"></a>
+<span class="sourceLineNo">013</span>/*<a name="line.13"></a>
+<span class="sourceLineNo">014</span> Copyright (c) 2013, Michael Angstadt<a name="line.14"></a>
+<span class="sourceLineNo">015</span> All rights reserved.<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span> Redistribution and use in source and binary forms, with or without<a name="line.17"></a>
+<span class="sourceLineNo">018</span> modification, are permitted provided that the following conditions are met: <a name="line.18"></a>
+<span class="sourceLineNo">019</span><a name="line.19"></a>
+<span class="sourceLineNo">020</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.20"></a>
+<span class="sourceLineNo">021</span> list of conditions and the following disclaimer. <a name="line.21"></a>
+<span class="sourceLineNo">022</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.22"></a>
+<span class="sourceLineNo">023</span> this list of conditions and the following disclaimer in the documentation<a name="line.23"></a>
+<span class="sourceLineNo">024</span> and/or other materials provided with the distribution. <a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.26"></a>
+<span class="sourceLineNo">027</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.27"></a>
+<span class="sourceLineNo">028</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.28"></a>
+<span class="sourceLineNo">029</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.29"></a>
+<span class="sourceLineNo">030</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.30"></a>
+<span class="sourceLineNo">031</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.31"></a>
+<span class="sourceLineNo">032</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.32"></a>
+<span class="sourceLineNo">033</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.33"></a>
+<span class="sourceLineNo">034</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.34"></a>
+<span class="sourceLineNo">035</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.35"></a>
+<span class="sourceLineNo">036</span><a name="line.36"></a>
+<span class="sourceLineNo">037</span> The views and conclusions contained in the software and documentation are those<a name="line.37"></a>
+<span class="sourceLineNo">038</span> of the authors and should not be interpreted as representing official policies, <a name="line.38"></a>
+<span class="sourceLineNo">039</span> either expressed or implied, of the FreeBSD Project.<a name="line.39"></a>
+<span class="sourceLineNo">040</span> */<a name="line.40"></a>
+<span class="sourceLineNo">041</span><a name="line.41"></a>
+<span class="sourceLineNo">042</span>/**<a name="line.42"></a>
+<span class="sourceLineNo">043</span> * &lt;p&gt;<a name="line.43"></a>
+<span class="sourceLineNo">044</span> * Defines the timezone that the person lives/works in.<a name="line.44"></a>
+<span class="sourceLineNo">045</span> * &lt;/p&gt;<a name="line.45"></a>
+<span class="sourceLineNo">046</span> * <a name="line.46"></a>
+<span class="sourceLineNo">047</span> * &lt;p&gt;<a name="line.47"></a>
+<span class="sourceLineNo">048</span> * &lt;b&gt;Code sample&lt;/b&gt;<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * &lt;/p&gt;<a name="line.49"></a>
+<span class="sourceLineNo">050</span> * <a name="line.50"></a>
+<span class="sourceLineNo">051</span> * &lt;pre class="brush:java"&gt;<a name="line.51"></a>
+<span class="sourceLineNo">052</span> * VCard vcard = new VCard();<a name="line.52"></a>
+<span class="sourceLineNo">053</span> * <a name="line.53"></a>
+<span class="sourceLineNo">054</span> * Timezone tz = new Timezone(-5, 0, &amp;quot;America/New_York&amp;quot;);<a name="line.54"></a>
+<span class="sourceLineNo">055</span> * vcard.addTimezone(tz);<a name="line.55"></a>
+<span class="sourceLineNo">056</span> * <a name="line.56"></a>
+<span class="sourceLineNo">057</span> * //using a Java &amp;quot;TimeZone&amp;quot; object<a name="line.57"></a>
+<span class="sourceLineNo">058</span> * java.util.TimeZone javaTz = java.util.TimeZone.getTimeZone(&amp;quot;America/New_York&amp;quot;);<a name="line.58"></a>
+<span class="sourceLineNo">059</span> * tz = new Timezone(javaTz);<a name="line.59"></a>
+<span class="sourceLineNo">060</span> * vcard.addTimezone(tz);<a name="line.60"></a>
+<span class="sourceLineNo">061</span> * &lt;/pre&gt;<a name="line.61"></a>
+<span class="sourceLineNo">062</span> * <a name="line.62"></a>
+<span class="sourceLineNo">063</span> * &lt;p&gt;<a name="line.63"></a>
+<span class="sourceLineNo">064</span> * &lt;b&gt;Property name:&lt;/b&gt; {@code TZ}<a name="line.64"></a>
+<span class="sourceLineNo">065</span> * &lt;/p&gt;<a name="line.65"></a>
+<span class="sourceLineNo">066</span> * &lt;p&gt;<a name="line.66"></a>
+<span class="sourceLineNo">067</span> * &lt;b&gt;Supported versions:&lt;/b&gt; {@code 2.1, 3.0, 4.0}<a name="line.67"></a>
+<span class="sourceLineNo">068</span> * &lt;/p&gt;<a name="line.68"></a>
+<span class="sourceLineNo">069</span> * <a name="line.69"></a>
+<span class="sourceLineNo">070</span> * @author Michael Angstadt<a name="line.70"></a>
+<span class="sourceLineNo">071</span> */<a name="line.71"></a>
+<span class="sourceLineNo">072</span><a name="line.72"></a>
+<span class="sourceLineNo">073</span>//@formatter:off<a name="line.73"></a>
+<span class="sourceLineNo">074</span>/* <a name="line.74"></a>
+<span class="sourceLineNo">075</span> * Parsing===================<a name="line.75"></a>
+<span class="sourceLineNo">076</span> * <a name="line.76"></a>
+<span class="sourceLineNo">077</span> * vCard 2.1:<a name="line.77"></a>
+<span class="sourceLineNo">078</span> * Parse as UTC offset.  If invalid, throw CannotParseException.<a name="line.78"></a>
+<span class="sourceLineNo">079</span> * <a name="line.79"></a>
+<span class="sourceLineNo">080</span> * vCard 3.0, hCard:<a name="line.80"></a>
+<span class="sourceLineNo">081</span> * VALUE=text:                  Treat as text<a name="line.81"></a>
+<span class="sourceLineNo">082</span> * No VALUE param:              Parse as UTC offset.  If invalid, add warning and treat as text.<a name="line.82"></a>
+<span class="sourceLineNo">083</span> * <a name="line.83"></a>
+<span class="sourceLineNo">084</span> * vCard 4.0, jCard:<a name="line.84"></a>
+<span class="sourceLineNo">085</span> * VALUE=text:                  Treat as text<a name="line.85"></a>
+<span class="sourceLineNo">086</span> * VALUE=utc-offset:    Parse as UTC offset.  If invalid, throw CannotParseException<a name="line.86"></a>
+<span class="sourceLineNo">087</span> * VALUE=uri:                   Not going to support this, as there is no description of what a timezone URI looks like<a name="line.87"></a>
+<span class="sourceLineNo">088</span> * No VALUE param:              Parse as UTC offset.  If invalid, treat as text<a name="line.88"></a>
+<span class="sourceLineNo">089</span> * <a name="line.89"></a>
+<span class="sourceLineNo">090</span> * xCard:<a name="line.90"></a>
+<span class="sourceLineNo">091</span> * text | utc-offset    | result<a name="line.91"></a>
+<span class="sourceLineNo">092</span> * no   | no                    | throw CannotParseException<a name="line.92"></a>
+<span class="sourceLineNo">093</span> * yes  | no                    | OK<a name="line.93"></a>
+<span class="sourceLineNo">094</span> * no   | yes                   | OK<a name="line.94"></a>
+<span class="sourceLineNo">095</span> * no   | invalid               | throw CannotParseException<a name="line.95"></a>
+<span class="sourceLineNo">096</span> * yes  | yes                   | Parse text<a name="line.96"></a>
+<span class="sourceLineNo">097</span> * yes  | invalid               | Parse text<a name="line.97"></a>
+<span class="sourceLineNo">098</span> * <a name="line.98"></a>
+<span class="sourceLineNo">099</span> * Writing===================<a name="line.99"></a>
+<span class="sourceLineNo">100</span> * <a name="line.100"></a>
+<span class="sourceLineNo">101</span> * vCard 2.1:<a name="line.101"></a>
+<span class="sourceLineNo">102</span> * text | utc-offset    | result<a name="line.102"></a>
+<span class="sourceLineNo">103</span> * no   | no                    | empty string (validation warning)<a name="line.103"></a>
+<span class="sourceLineNo">104</span> * no   | yes                   | Write UTC offset<a name="line.104"></a>
+<span class="sourceLineNo">105</span> * yes  | no                    | empty string (validation warning)<a name="line.105"></a>
+<span class="sourceLineNo">106</span> * yes  | yes                   | Write UTC offset<a name="line.106"></a>
+<span class="sourceLineNo">107</span> * <a name="line.107"></a>
+<span class="sourceLineNo">108</span> * vCard 3.0:<a name="line.108"></a>
+<span class="sourceLineNo">109</span> * text | utc-offset    | result<a name="line.109"></a>
+<span class="sourceLineNo">110</span> * no   | no                    | empty string (validation warning)<a name="line.110"></a>
+<span class="sourceLineNo">111</span> * no   | yes                   | Write UTC offset<a name="line.111"></a>
+<span class="sourceLineNo">112</span> * yes  | no                    | Write text, add "VALUE=text" parameter<a name="line.112"></a>
+<span class="sourceLineNo">113</span> * yes  | yes                   | Write UTC offset<a name="line.113"></a>
+<span class="sourceLineNo">114</span> * <a name="line.114"></a>
+<span class="sourceLineNo">115</span> * vCard 4.0, xCard, jCard:<a name="line.115"></a>
+<span class="sourceLineNo">116</span> * text | utc-offset    | result<a name="line.116"></a>
+<span class="sourceLineNo">117</span> * no   | no                    | empty string (validation warning)<a name="line.117"></a>
+<span class="sourceLineNo">118</span> * no   | yes                   | Write UTC offset, add "VALUE=utc-offset" parameter<a name="line.118"></a>
+<span class="sourceLineNo">119</span> * yes  | no                    | Write text<a name="line.119"></a>
+<span class="sourceLineNo">120</span> * yes  | yes                   | Write text<a name="line.120"></a>
+<span class="sourceLineNo">121</span> */<a name="line.121"></a>
+<span class="sourceLineNo">122</span>//@formatter:on<a name="line.122"></a>
+<span class="sourceLineNo">123</span>public class Timezone extends VCardProperty implements HasAltId {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        private UtcOffset offset;<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        private String text;<a name="line.125"></a>
+<span class="sourceLineNo">126</span><a name="line.126"></a>
+<span class="sourceLineNo">127</span>        /**<a name="line.127"></a>
+<span class="sourceLineNo">128</span>         * Creates a timezone property.<a name="line.128"></a>
+<span class="sourceLineNo">129</span>         * @param text a free-form string representing the timezone, preferably a<a name="line.129"></a>
+<span class="sourceLineNo">130</span>         * timezone ID from the &lt;a<a name="line.130"></a>
+<span class="sourceLineNo">131</span>         * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones"&gt;Olson<a name="line.131"></a>
+<span class="sourceLineNo">132</span>         * Database&lt;/a&gt; (e.g. "America/New_York")<a name="line.132"></a>
+<span class="sourceLineNo">133</span>         */<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        public Timezone(String text) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                this(null, text);<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        }<a name="line.136"></a>
+<span class="sourceLineNo">137</span><a name="line.137"></a>
+<span class="sourceLineNo">138</span>        /**<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         * Creates a timezone property.<a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * @param hourOffset the hour component of the UTC offset (e.g. -5)<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * @param minuteOffset the minute component of the UTC offset (e.g. 0)<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         */<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        public Timezone(Integer hourOffset, Integer minuteOffset) {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                this(new UtcOffset(hourOffset, minuteOffset));<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        }<a name="line.145"></a>
+<span class="sourceLineNo">146</span><a name="line.146"></a>
+<span class="sourceLineNo">147</span>        /**<a name="line.147"></a>
+<span class="sourceLineNo">148</span>         * Creates a timezone property.<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         * @param offset the UTC offset<a name="line.149"></a>
+<span class="sourceLineNo">150</span>         */<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        public Timezone(UtcOffset offset) {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                this(offset, null);<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        }<a name="line.153"></a>
+<span class="sourceLineNo">154</span><a name="line.154"></a>
+<span class="sourceLineNo">155</span>        /**<a name="line.155"></a>
+<span class="sourceLineNo">156</span>         * Creates a timezone property.<a name="line.156"></a>
+<span class="sourceLineNo">157</span>         * @param hourOffset the hour component of the UTC offset (e.g. -5)<a name="line.157"></a>
+<span class="sourceLineNo">158</span>         * @param minuteOffset the minute component of the UTC offset (e.g. 0)<a name="line.158"></a>
+<span class="sourceLineNo">159</span>         * @param text a free-form string representing the timezone, preferably a<a name="line.159"></a>
+<span class="sourceLineNo">160</span>         * timezone ID from the &lt;a<a name="line.160"></a>
+<span class="sourceLineNo">161</span>         * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones"&gt;Olson<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         * Database&lt;/a&gt; (e.g. "America/New_York")<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         */<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        public Timezone(Integer hourOffset, Integer minuteOffset, String text) {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                this(new UtcOffset(hourOffset, minuteOffset), text);<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        }<a name="line.166"></a>
+<span class="sourceLineNo">167</span><a name="line.167"></a>
+<span class="sourceLineNo">168</span>        /**<a name="line.168"></a>
+<span class="sourceLineNo">169</span>         * Creates a timezone property.<a name="line.169"></a>
+<span class="sourceLineNo">170</span>         * @param offset the UTC offset<a name="line.170"></a>
+<span class="sourceLineNo">171</span>         * @param text a free-form string representing the timezone, preferably a<a name="line.171"></a>
+<span class="sourceLineNo">172</span>         * timezone ID from the &lt;a<a name="line.172"></a>
+<span class="sourceLineNo">173</span>         * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones"&gt;Olson<a name="line.173"></a>
+<span class="sourceLineNo">174</span>         * Database&lt;/a&gt; (e.g. "America/New_York")<a name="line.174"></a>
+<span class="sourceLineNo">175</span>         */<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        public Timezone(UtcOffset offset, String text) {<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                setOffset(offset);<a name="line.177"></a>
+<span class="sourceLineNo">178</span>                setText(text);<a name="line.178"></a>
+<span class="sourceLineNo">179</span>        }<a name="line.179"></a>
+<span class="sourceLineNo">180</span><a name="line.180"></a>
+<span class="sourceLineNo">181</span>        /**<a name="line.181"></a>
+<span class="sourceLineNo">182</span>         * Creates a timezone property.<a name="line.182"></a>
+<span class="sourceLineNo">183</span>         * @param timezone the timezone<a name="line.183"></a>
+<span class="sourceLineNo">184</span>         */<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        public Timezone(TimeZone timezone) {<a name="line.185"></a>
+<span class="sourceLineNo">186</span>                this(UtcOffset.parse(timezone), timezone.getID());<a name="line.186"></a>
+<span class="sourceLineNo">187</span>        }<a name="line.187"></a>
+<span class="sourceLineNo">188</span><a name="line.188"></a>
+<span class="sourceLineNo">189</span>        /**<a name="line.189"></a>
+<span class="sourceLineNo">190</span>         * Gets the hour component of the UTC offset.<a name="line.190"></a>
+<span class="sourceLineNo">191</span>         * @return the hour component of the UTC offset or null if not set<a name="line.191"></a>
+<span class="sourceLineNo">192</span>         */<a name="line.192"></a>
+<span class="sourceLineNo">193</span>        public Integer getHourOffset() {<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                return (offset == null) ? null : offset.getHour();<a name="line.194"></a>
+<span class="sourceLineNo">195</span>        }<a name="line.195"></a>
+<span class="sourceLineNo">196</span><a name="line.196"></a>
+<span class="sourceLineNo">197</span>        /**<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * Gets the minute component of the UTC offset.<a name="line.198"></a>
+<span class="sourceLineNo">199</span>         * @return the minute component of the UTC offset or null if not set<a name="line.199"></a>
+<span class="sourceLineNo">200</span>         */<a name="line.200"></a>
+<span class="sourceLineNo">201</span>        public Integer getMinuteOffset() {<a name="line.201"></a>
+<span class="sourceLineNo">202</span>                return (offset == null) ? null : offset.getMinute();<a name="line.202"></a>
+<span class="sourceLineNo">203</span>        }<a name="line.203"></a>
+<span class="sourceLineNo">204</span><a name="line.204"></a>
+<span class="sourceLineNo">205</span>        /**<a name="line.205"></a>
+<span class="sourceLineNo">206</span>         * Gets the UTC offset.<a name="line.206"></a>
+<span class="sourceLineNo">207</span>         * @return the UTC offset or null if not set<a name="line.207"></a>
+<span class="sourceLineNo">208</span>         */<a name="line.208"></a>
+<span class="sourceLineNo">209</span>        public UtcOffset getOffset() {<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                return offset;<a name="line.210"></a>
+<span class="sourceLineNo">211</span>        }<a name="line.211"></a>
+<span class="sourceLineNo">212</span><a name="line.212"></a>
+<span class="sourceLineNo">213</span>        /**<a name="line.213"></a>
+<span class="sourceLineNo">214</span>         * Sets the UTC offset.<a name="line.214"></a>
+<span class="sourceLineNo">215</span>         * @param hourOffset the hour offset (e.g. -5)<a name="line.215"></a>
+<span class="sourceLineNo">216</span>         * @param minuteOffset the minute offset (e.g. 0)<a name="line.216"></a>
+<span class="sourceLineNo">217</span>         */<a name="line.217"></a>
+<span class="sourceLineNo">218</span>        public void setOffset(int hourOffset, int minuteOffset) {<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                setOffset(new UtcOffset(hourOffset, minuteOffset));<a name="line.219"></a>
+<span class="sourceLineNo">220</span>        }<a name="line.220"></a>
+<span class="sourceLineNo">221</span><a name="line.221"></a>
+<span class="sourceLineNo">222</span>        /**<a name="line.222"></a>
+<span class="sourceLineNo">223</span>         * Sets the UTC offset.<a name="line.223"></a>
+<span class="sourceLineNo">224</span>         * @param offset the UTC offset<a name="line.224"></a>
+<span class="sourceLineNo">225</span>         */<a name="line.225"></a>
+<span class="sourceLineNo">226</span>        public void setOffset(UtcOffset offset) {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>                this.offset = offset;<a name="line.227"></a>
+<span class="sourceLineNo">228</span>        }<a name="line.228"></a>
+<span class="sourceLineNo">229</span><a name="line.229"></a>
+<span class="sourceLineNo">230</span>        /**<a name="line.230"></a>
+<span class="sourceLineNo">231</span>         * Gets the text portion of the timezone.<a name="line.231"></a>
+<span class="sourceLineNo">232</span>         * @return the free-form string representing the timezone, such as a<a name="line.232"></a>
+<span class="sourceLineNo">233</span>         * timezone ID from the &lt;a<a name="line.233"></a>
+<span class="sourceLineNo">234</span>         * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones"&gt;Olson<a name="line.234"></a>
+<span class="sourceLineNo">235</span>         * Database&lt;/a&gt; (e.g. "America/New_York")<a name="line.235"></a>
+<span class="sourceLineNo">236</span>         */<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        public String getText() {<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                return text;<a name="line.238"></a>
+<span class="sourceLineNo">239</span>        }<a name="line.239"></a>
+<span class="sourceLineNo">240</span><a name="line.240"></a>
+<span class="sourceLineNo">241</span>        /**<a name="line.241"></a>
+<span class="sourceLineNo">242</span>         * Sets the text portion of the timezone.<a name="line.242"></a>
+<span class="sourceLineNo">243</span>         * @param text a free-form string representing the timezone, preferably a<a name="line.243"></a>
+<span class="sourceLineNo">244</span>         * timezone ID from the &lt;a<a name="line.244"></a>
+<span class="sourceLineNo">245</span>         * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones"&gt;Olson<a name="line.245"></a>
+<span class="sourceLineNo">246</span>         * Database&lt;/a&gt; (e.g. "America/New_York")<a name="line.246"></a>
+<span class="sourceLineNo">247</span>         */<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        public void setText(String text) {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>                this.text = text;<a name="line.249"></a>
+<span class="sourceLineNo">250</span>        }<a name="line.250"></a>
+<span class="sourceLineNo">251</span><a name="line.251"></a>
+<span class="sourceLineNo">252</span>        /**<a name="line.252"></a>
+<span class="sourceLineNo">253</span>         * Creates a {@link java.util.TimeZone} representation of this class.<a name="line.253"></a>
+<span class="sourceLineNo">254</span>         * @return a {@link TimeZone} object or null if this object contains no<a name="line.254"></a>
+<span class="sourceLineNo">255</span>         * offset data<a name="line.255"></a>
+<span class="sourceLineNo">256</span>         */<a name="line.256"></a>
+<span class="sourceLineNo">257</span>        public TimeZone toTimeZone() {<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                if (text != null) {<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                        TimeZone timezone = VCardDateFormat.parseTimeZoneId(text);<a name="line.259"></a>
+<span class="sourceLineNo">260</span>                        if (timezone != null) {<a name="line.260"></a>
+<span class="sourceLineNo">261</span>                                return timezone;<a name="line.261"></a>
+<span class="sourceLineNo">262</span>                        }<a name="line.262"></a>
+<span class="sourceLineNo">263</span>                }<a name="line.263"></a>
+<span class="sourceLineNo">264</span><a name="line.264"></a>
+<span class="sourceLineNo">265</span>                if (offset != null) {<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                        int rawHourOffset = offset.getHour() * 60 * 60 * 1000;<a name="line.266"></a>
+<span class="sourceLineNo">267</span>                        int rawMinuteOffset = offset.getMinute() * 60 * 1000;<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                        if (rawHourOffset &lt; 0) {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                                rawMinuteOffset *= -1;<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                        }<a name="line.270"></a>
+<span class="sourceLineNo">271</span>                        int rawOffset = rawHourOffset + rawMinuteOffset;<a name="line.271"></a>
+<span class="sourceLineNo">272</span><a name="line.272"></a>
+<span class="sourceLineNo">273</span>                        String id = (text == null) ? "" : text;<a name="line.273"></a>
+<span class="sourceLineNo">274</span><a name="line.274"></a>
+<span class="sourceLineNo">275</span>                        return new SimpleTimeZone(rawOffset, id);<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                }<a name="line.276"></a>
+<span class="sourceLineNo">277</span><a name="line.277"></a>
+<span class="sourceLineNo">278</span>                return null;<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        }<a name="line.279"></a>
+<span class="sourceLineNo">280</span><a name="line.280"></a>
+<span class="sourceLineNo">281</span>        /**<a name="line.281"></a>
+<span class="sourceLineNo">282</span>         * Gets the TYPE parameter.<a name="line.282"></a>
+<span class="sourceLineNo">283</span>         * &lt;p&gt;<a name="line.283"></a>
+<span class="sourceLineNo">284</span>         * &lt;b&gt;Supported versions:&lt;/b&gt; {@code 4.0}<a name="line.284"></a>
+<span class="sourceLineNo">285</span>         * &lt;/p&gt;<a name="line.285"></a>
+<span class="sourceLineNo">286</span>         * @return the TYPE value (typically, this will be either "work" or "home")<a name="line.286"></a>
+<span class="sourceLineNo">287</span>         * or null if it doesn't exist<a name="line.287"></a>
+<span class="sourceLineNo">288</span>         */<a name="line.288"></a>
+<span class="sourceLineNo">289</span>        public String getType() {<a name="line.289"></a>
+<span class="sourceLineNo">290</span>                return parameters.getType();<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        }<a name="line.291"></a>
+<span class="sourceLineNo">292</span><a name="line.292"></a>
+<span class="sourceLineNo">293</span>        /**<a name="line.293"></a>
+<span class="sourceLineNo">294</span>         * Sets the TYPE parameter.<a name="line.294"></a>
+<span class="sourceLineNo">295</span>         * &lt;p&gt;<a name="line.295"></a>
+<span class="sourceLineNo">296</span>         * &lt;b&gt;Supported versions:&lt;/b&gt; {@code 4.0}<a name="line.296"></a>
+<span class="sourceLineNo">297</span>         * &lt;/p&gt;<a name="line.297"></a>
+<span class="sourceLineNo">298</span>         * @param type the TYPE value (this should be either "work" or "home") or<a name="line.298"></a>
+<span class="sourceLineNo">299</span>         * null to remove<a name="line.299"></a>
+<span class="sourceLineNo">300</span>         */<a name="line.300"></a>
+<span class="sourceLineNo">301</span>        public void setType(String type) {<a name="line.301"></a>
+<span class="sourceLineNo">302</span>                parameters.setType(type);<a name="line.302"></a>
+<span class="sourceLineNo">303</span>        }<a name="line.303"></a>
+<span class="sourceLineNo">304</span><a name="line.304"></a>
+<span class="sourceLineNo">305</span>        /**<a name="line.305"></a>
+<span class="sourceLineNo">306</span>         * Gets the MEDIATYPE parameter.<a name="line.306"></a>
+<span class="sourceLineNo">307</span>         * &lt;p&gt;<a name="line.307"></a>
+<span class="sourceLineNo">308</span>         * &lt;b&gt;Supported versions:&lt;/b&gt; {@code 4.0}<a name="line.308"></a>
+<span class="sourceLineNo">309</span>         * &lt;/p&gt;<a name="line.309"></a>
+<span class="sourceLineNo">310</span>         * @return the media type or null if not set<a name="line.310"></a>
+<span class="sourceLineNo">311</span>         */<a name="line.311"></a>
+<span class="sourceLineNo">312</span>        public String getMediaType() {<a name="line.312"></a>
+<span class="sourceLineNo">313</span>                return parameters.getMediaType();<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        }<a name="line.314"></a>
+<span class="sourceLineNo">315</span><a name="line.315"></a>
+<span class="sourceLineNo">316</span>        /**<a name="line.316"></a>
+<span class="sourceLineNo">317</span>         * Sets the MEDIATYPE parameter.<a name="line.317"></a>
+<span class="sourceLineNo">318</span>         * &lt;p&gt;<a name="line.318"></a>
+<span class="sourceLineNo">319</span>         * &lt;b&gt;Supported versions:&lt;/b&gt; {@code 4.0}<a name="line.319"></a>
+<span class="sourceLineNo">320</span>         * &lt;/p&gt;<a name="line.320"></a>
+<span class="sourceLineNo">321</span>         * @param mediaType the media type or null to remove<a name="line.321"></a>
+<span class="sourceLineNo">322</span>         */<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        public void setMediaType(String mediaType) {<a name="line.323"></a>
+<span class="sourceLineNo">324</span>                parameters.setMediaType(mediaType);<a name="line.324"></a>
+<span class="sourceLineNo">325</span>        }<a name="line.325"></a>
+<span class="sourceLineNo">326</span><a name="line.326"></a>
+<span class="sourceLineNo">327</span>        @Override<a name="line.327"></a>
+<span class="sourceLineNo">328</span>        public List&lt;Integer[]&gt; getPids() {<a name="line.328"></a>
+<span class="sourceLineNo">329</span>                return super.getPids();<a name="line.329"></a>
+<span class="sourceLineNo">330</span>        }<a name="line.330"></a>
+<span class="sourceLineNo">331</span><a name="line.331"></a>
+<span class="sourceLineNo">332</span>        @Override<a name="line.332"></a>
+<span class="sourceLineNo">333</span>        public void addPid(int localId, int clientPidMapRef) {<a name="line.333"></a>
+<span class="sourceLineNo">334</span>                super.addPid(localId, clientPidMapRef);<a name="line.334"></a>
+<span class="sourceLineNo">335</span>        }<a name="line.335"></a>
+<span class="sourceLineNo">336</span><a name="line.336"></a>
+<span class="sourceLineNo">337</span>        @Override<a name="line.337"></a>
+<span class="sourceLineNo">338</span>        public void removePids() {<a name="line.338"></a>
+<span class="sourceLineNo">339</span>                super.removePids();<a name="line.339"></a>
+<span class="sourceLineNo">340</span>        }<a name="line.340"></a>
+<span class="sourceLineNo">341</span><a name="line.341"></a>
+<span class="sourceLineNo">342</span>        @Override<a name="line.342"></a>
+<span class="sourceLineNo">343</span>        public Integer getPref() {<a name="line.343"></a>
+<span class="sourceLineNo">344</span>                return super.getPref();<a name="line.344"></a>
+<span class="sourceLineNo">345</span>        }<a name="line.345"></a>
+<span class="sourceLineNo">346</span><a name="line.346"></a>
+<span class="sourceLineNo">347</span>        @Override<a name="line.347"></a>
+<span class="sourceLineNo">348</span>        public void setPref(Integer pref) {<a name="line.348"></a>
+<span class="sourceLineNo">349</span>                super.setPref(pref);<a name="line.349"></a>
+<span class="sourceLineNo">350</span>        }<a name="line.350"></a>
+<span class="sourceLineNo">351</span><a name="line.351"></a>
+<span class="sourceLineNo">352</span>        //@Override<a name="line.352"></a>
+<span class="sourceLineNo">353</span>        public String getAltId() {<a name="line.353"></a>
+<span class="sourceLineNo">354</span>                return parameters.getAltId();<a name="line.354"></a>
+<span class="sourceLineNo">355</span>        }<a name="line.355"></a>
+<span class="sourceLineNo">356</span><a name="line.356"></a>
+<span class="sourceLineNo">357</span>        //@Override<a name="line.357"></a>
+<span class="sourceLineNo">358</span>        public void setAltId(String altId) {<a name="line.358"></a>
+<span class="sourceLineNo">359</span>                parameters.setAltId(altId);<a name="line.359"></a>
+<span class="sourceLineNo">360</span>        }<a name="line.360"></a>
+<span class="sourceLineNo">361</span><a name="line.361"></a>
+<span class="sourceLineNo">362</span>        @Override<a name="line.362"></a>
+<span class="sourceLineNo">363</span>        protected void _validate(List&lt;Warning&gt; warnings, VCardVersion version, VCard vcard) {<a name="line.363"></a>
+<span class="sourceLineNo">364</span>                if (offset == null &amp;&amp; text == null) {<a name="line.364"></a>
+<span class="sourceLineNo">365</span>                        warnings.add(new Warning(8));<a name="line.365"></a>
+<span class="sourceLineNo">366</span>                }<a name="line.366"></a>
+<span class="sourceLineNo">367</span>                if (offset == null &amp;&amp; version == VCardVersion.V2_1) {<a name="line.367"></a>
+<span class="sourceLineNo">368</span>                        warnings.add(new Warning(20));<a name="line.368"></a>
+<span class="sourceLineNo">369</span>                }<a name="line.369"></a>
+<span class="sourceLineNo">370</span>                if (offset != null &amp;&amp; (offset.getMinute() &lt; 0 || offset.getMinute() &gt; 59)) {<a name="line.370"></a>
+<span class="sourceLineNo">371</span>                        warnings.add(new Warning(21));<a name="line.371"></a>
+<span class="sourceLineNo">372</span>                }<a name="line.372"></a>
+<span class="sourceLineNo">373</span>        }<a name="line.373"></a>
+<span class="sourceLineNo">374</span>}<a name="line.374"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

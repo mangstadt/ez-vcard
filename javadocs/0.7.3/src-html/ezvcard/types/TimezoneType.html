@@ -1,0 +1,460 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package ezvcard.types;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import java.util.List;<a name="line.3"></a>
+<FONT color="green">004</FONT>    import java.util.SimpleTimeZone;<a name="line.4"></a>
+<FONT color="green">005</FONT>    import java.util.TimeZone;<a name="line.5"></a>
+<FONT color="green">006</FONT>    import java.util.regex.Matcher;<a name="line.6"></a>
+<FONT color="green">007</FONT>    import java.util.regex.Pattern;<a name="line.7"></a>
+<FONT color="green">008</FONT>    <a name="line.8"></a>
+<FONT color="green">009</FONT>    import ezvcard.VCard;<a name="line.9"></a>
+<FONT color="green">010</FONT>    import ezvcard.VCardSubTypes;<a name="line.10"></a>
+<FONT color="green">011</FONT>    import ezvcard.VCardVersion;<a name="line.11"></a>
+<FONT color="green">012</FONT>    import ezvcard.io.CompatibilityMode;<a name="line.12"></a>
+<FONT color="green">013</FONT>    import ezvcard.io.SkipMeException;<a name="line.13"></a>
+<FONT color="green">014</FONT>    import ezvcard.parameters.ValueParameter;<a name="line.14"></a>
+<FONT color="green">015</FONT>    import ezvcard.util.HCardElement;<a name="line.15"></a>
+<FONT color="green">016</FONT>    import ezvcard.util.VCardDateFormatter;<a name="line.16"></a>
+<FONT color="green">017</FONT>    import ezvcard.util.VCardStringUtils;<a name="line.17"></a>
+<FONT color="green">018</FONT>    import ezvcard.util.XCardElement;<a name="line.18"></a>
+<FONT color="green">019</FONT>    <a name="line.19"></a>
+<FONT color="green">020</FONT>    /*<a name="line.20"></a>
+<FONT color="green">021</FONT>     Copyright (c) 2012, Michael Angstadt<a name="line.21"></a>
+<FONT color="green">022</FONT>     All rights reserved.<a name="line.22"></a>
+<FONT color="green">023</FONT>    <a name="line.23"></a>
+<FONT color="green">024</FONT>     Redistribution and use in source and binary forms, with or without<a name="line.24"></a>
+<FONT color="green">025</FONT>     modification, are permitted provided that the following conditions are met: <a name="line.25"></a>
+<FONT color="green">026</FONT>    <a name="line.26"></a>
+<FONT color="green">027</FONT>     1. Redistributions of source code must retain the above copyright notice, this<a name="line.27"></a>
+<FONT color="green">028</FONT>     list of conditions and the following disclaimer. <a name="line.28"></a>
+<FONT color="green">029</FONT>     2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.29"></a>
+<FONT color="green">030</FONT>     this list of conditions and the following disclaimer in the documentation<a name="line.30"></a>
+<FONT color="green">031</FONT>     and/or other materials provided with the distribution. <a name="line.31"></a>
+<FONT color="green">032</FONT>    <a name="line.32"></a>
+<FONT color="green">033</FONT>     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.33"></a>
+<FONT color="green">034</FONT>     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.34"></a>
+<FONT color="green">035</FONT>     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.35"></a>
+<FONT color="green">036</FONT>     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.36"></a>
+<FONT color="green">037</FONT>     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.37"></a>
+<FONT color="green">038</FONT>     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.38"></a>
+<FONT color="green">039</FONT>     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.39"></a>
+<FONT color="green">040</FONT>     ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.40"></a>
+<FONT color="green">041</FONT>     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.41"></a>
+<FONT color="green">042</FONT>     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.42"></a>
+<FONT color="green">043</FONT>    <a name="line.43"></a>
+<FONT color="green">044</FONT>     The views and conclusions contained in the software and documentation are those<a name="line.44"></a>
+<FONT color="green">045</FONT>     of the authors and should not be interpreted as representing official policies, <a name="line.45"></a>
+<FONT color="green">046</FONT>     either expressed or implied, of the FreeBSD Project.<a name="line.46"></a>
+<FONT color="green">047</FONT>     */<a name="line.47"></a>
+<FONT color="green">048</FONT>    <a name="line.48"></a>
+<FONT color="green">049</FONT>    /**<a name="line.49"></a>
+<FONT color="green">050</FONT>     * Contains the timezone that the person lives/works in.<a name="line.50"></a>
+<FONT color="green">051</FONT>     * <a name="line.51"></a>
+<FONT color="green">052</FONT>     * &lt;pre&gt;<a name="line.52"></a>
+<FONT color="green">053</FONT>     * VCard vcard = new VCard();<a name="line.53"></a>
+<FONT color="green">054</FONT>     * TimezoneType tz = new TimezoneType(-5, 0, &amp;quot;America/New_York&amp;quot;);<a name="line.54"></a>
+<FONT color="green">055</FONT>     * vcard.addTimezone(tz);<a name="line.55"></a>
+<FONT color="green">056</FONT>     * &lt;/pre&gt;<a name="line.56"></a>
+<FONT color="green">057</FONT>     * <a name="line.57"></a>
+<FONT color="green">058</FONT>     * &lt;p&gt;<a name="line.58"></a>
+<FONT color="green">059</FONT>     * vCard property name: TZ<a name="line.59"></a>
+<FONT color="green">060</FONT>     * &lt;/p&gt;<a name="line.60"></a>
+<FONT color="green">061</FONT>     * &lt;p&gt;<a name="line.61"></a>
+<FONT color="green">062</FONT>     * vCard versions: 2.1, 3.0, 4.0<a name="line.62"></a>
+<FONT color="green">063</FONT>     * &lt;/p&gt;<a name="line.63"></a>
+<FONT color="green">064</FONT>     * <a name="line.64"></a>
+<FONT color="green">065</FONT>     * @author Michael Angstadt<a name="line.65"></a>
+<FONT color="green">066</FONT>     */<a name="line.66"></a>
+<FONT color="green">067</FONT>    public class TimezoneType extends VCardType {<a name="line.67"></a>
+<FONT color="green">068</FONT>            public static final String NAME = "TZ";<a name="line.68"></a>
+<FONT color="green">069</FONT>    <a name="line.69"></a>
+<FONT color="green">070</FONT>            private Integer hourOffset;<a name="line.70"></a>
+<FONT color="green">071</FONT>            private Integer minuteOffset;<a name="line.71"></a>
+<FONT color="green">072</FONT>            private String text;<a name="line.72"></a>
+<FONT color="green">073</FONT>    <a name="line.73"></a>
+<FONT color="green">074</FONT>            public TimezoneType() {<a name="line.74"></a>
+<FONT color="green">075</FONT>                    super(NAME);<a name="line.75"></a>
+<FONT color="green">076</FONT>            }<a name="line.76"></a>
+<FONT color="green">077</FONT>    <a name="line.77"></a>
+<FONT color="green">078</FONT>            /**<a name="line.78"></a>
+<FONT color="green">079</FONT>             * This is the recommended constructor for version 4.0 vCards.<a name="line.79"></a>
+<FONT color="green">080</FONT>             * @param text string representing the timezone from the &lt;a<a name="line.80"></a>
+<FONT color="green">081</FONT>             * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones"&gt;Olson<a name="line.81"></a>
+<FONT color="green">082</FONT>             * Database&lt;/a&gt; (e.g. "America/New_York")<a name="line.82"></a>
+<FONT color="green">083</FONT>             */<a name="line.83"></a>
+<FONT color="green">084</FONT>            public TimezoneType(String text) {<a name="line.84"></a>
+<FONT color="green">085</FONT>                    this(null, null, text);<a name="line.85"></a>
+<FONT color="green">086</FONT>            }<a name="line.86"></a>
+<FONT color="green">087</FONT>    <a name="line.87"></a>
+<FONT color="green">088</FONT>            /**<a name="line.88"></a>
+<FONT color="green">089</FONT>             * This is the recommended constructor for version 2.1 and 3.0 vCards.<a name="line.89"></a>
+<FONT color="green">090</FONT>             * @param hourOffset the hour offset<a name="line.90"></a>
+<FONT color="green">091</FONT>             * @param minuteOffset the minute offset<a name="line.91"></a>
+<FONT color="green">092</FONT>             */<a name="line.92"></a>
+<FONT color="green">093</FONT>            public TimezoneType(Integer hourOffset, Integer minuteOffset) {<a name="line.93"></a>
+<FONT color="green">094</FONT>                    this(hourOffset, minuteOffset, null);<a name="line.94"></a>
+<FONT color="green">095</FONT>            }<a name="line.95"></a>
+<FONT color="green">096</FONT>    <a name="line.96"></a>
+<FONT color="green">097</FONT>            /**<a name="line.97"></a>
+<FONT color="green">098</FONT>             * This constructor can be used for all vCard versions.<a name="line.98"></a>
+<FONT color="green">099</FONT>             * @param hourOffset the hour offset<a name="line.99"></a>
+<FONT color="green">100</FONT>             * @param minuteOffset the minute offset<a name="line.100"></a>
+<FONT color="green">101</FONT>             * @param text can be anything, but should be a string representing the<a name="line.101"></a>
+<FONT color="green">102</FONT>             * timezone from the &lt;a<a name="line.102"></a>
+<FONT color="green">103</FONT>             * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones"&gt;Olson<a name="line.103"></a>
+<FONT color="green">104</FONT>             * Database&lt;/a&gt; (e.g. "America/New_York")<a name="line.104"></a>
+<FONT color="green">105</FONT>             */<a name="line.105"></a>
+<FONT color="green">106</FONT>            public TimezoneType(Integer hourOffset, Integer minuteOffset, String text) {<a name="line.106"></a>
+<FONT color="green">107</FONT>                    super(NAME);<a name="line.107"></a>
+<FONT color="green">108</FONT>                    setHourOffset(hourOffset);<a name="line.108"></a>
+<FONT color="green">109</FONT>                    setMinuteOffset(minuteOffset);<a name="line.109"></a>
+<FONT color="green">110</FONT>                    setText(text);<a name="line.110"></a>
+<FONT color="green">111</FONT>            }<a name="line.111"></a>
+<FONT color="green">112</FONT>    <a name="line.112"></a>
+<FONT color="green">113</FONT>            /**<a name="line.113"></a>
+<FONT color="green">114</FONT>             * Gets the hour offset.<a name="line.114"></a>
+<FONT color="green">115</FONT>             * @return the hour offset or null if not set<a name="line.115"></a>
+<FONT color="green">116</FONT>             */<a name="line.116"></a>
+<FONT color="green">117</FONT>            public Integer getHourOffset() {<a name="line.117"></a>
+<FONT color="green">118</FONT>                    return hourOffset;<a name="line.118"></a>
+<FONT color="green">119</FONT>            }<a name="line.119"></a>
+<FONT color="green">120</FONT>    <a name="line.120"></a>
+<FONT color="green">121</FONT>            /**<a name="line.121"></a>
+<FONT color="green">122</FONT>             * Sets the hour offset.<a name="line.122"></a>
+<FONT color="green">123</FONT>             * @param hourOffset the hour offset or null to remove<a name="line.123"></a>
+<FONT color="green">124</FONT>             */<a name="line.124"></a>
+<FONT color="green">125</FONT>            public void setHourOffset(Integer hourOffset) {<a name="line.125"></a>
+<FONT color="green">126</FONT>                    this.hourOffset = hourOffset;<a name="line.126"></a>
+<FONT color="green">127</FONT>            }<a name="line.127"></a>
+<FONT color="green">128</FONT>    <a name="line.128"></a>
+<FONT color="green">129</FONT>            /**<a name="line.129"></a>
+<FONT color="green">130</FONT>             * Gets the minute offset.<a name="line.130"></a>
+<FONT color="green">131</FONT>             * @return the minute offset or null if not set<a name="line.131"></a>
+<FONT color="green">132</FONT>             */<a name="line.132"></a>
+<FONT color="green">133</FONT>            public Integer getMinuteOffset() {<a name="line.133"></a>
+<FONT color="green">134</FONT>                    return minuteOffset;<a name="line.134"></a>
+<FONT color="green">135</FONT>            }<a name="line.135"></a>
+<FONT color="green">136</FONT>    <a name="line.136"></a>
+<FONT color="green">137</FONT>            /**<a name="line.137"></a>
+<FONT color="green">138</FONT>             * Sets the minute offset.<a name="line.138"></a>
+<FONT color="green">139</FONT>             * @param minuteOffset the minute offset or null to remove<a name="line.139"></a>
+<FONT color="green">140</FONT>             * @throws IllegalArgumentException if the minute offset is not between 0<a name="line.140"></a>
+<FONT color="green">141</FONT>             * and 59<a name="line.141"></a>
+<FONT color="green">142</FONT>             */<a name="line.142"></a>
+<FONT color="green">143</FONT>            public void setMinuteOffset(Integer minuteOffset) {<a name="line.143"></a>
+<FONT color="green">144</FONT>                    if (minuteOffset != null &amp;&amp; (minuteOffset &lt; 0 || minuteOffset &gt; 59)) {<a name="line.144"></a>
+<FONT color="green">145</FONT>                            throw new IllegalArgumentException("Minute offset must be between 0 and 59.");<a name="line.145"></a>
+<FONT color="green">146</FONT>                    }<a name="line.146"></a>
+<FONT color="green">147</FONT>                    this.minuteOffset = minuteOffset;<a name="line.147"></a>
+<FONT color="green">148</FONT>            }<a name="line.148"></a>
+<FONT color="green">149</FONT>    <a name="line.149"></a>
+<FONT color="green">150</FONT>            /**<a name="line.150"></a>
+<FONT color="green">151</FONT>             * Gets the text portion of the timezone.<a name="line.151"></a>
+<FONT color="green">152</FONT>             * @return the text portion (e.g. "America/New_York")<a name="line.152"></a>
+<FONT color="green">153</FONT>             */<a name="line.153"></a>
+<FONT color="green">154</FONT>            public String getText() {<a name="line.154"></a>
+<FONT color="green">155</FONT>                    return text;<a name="line.155"></a>
+<FONT color="green">156</FONT>            }<a name="line.156"></a>
+<FONT color="green">157</FONT>    <a name="line.157"></a>
+<FONT color="green">158</FONT>            /**<a name="line.158"></a>
+<FONT color="green">159</FONT>             * Sets the text portion of the timezone.<a name="line.159"></a>
+<FONT color="green">160</FONT>             * @param text the text portion (e.g. "America/New_York")<a name="line.160"></a>
+<FONT color="green">161</FONT>             */<a name="line.161"></a>
+<FONT color="green">162</FONT>            public void setText(String text) {<a name="line.162"></a>
+<FONT color="green">163</FONT>                    this.text = text;<a name="line.163"></a>
+<FONT color="green">164</FONT>            }<a name="line.164"></a>
+<FONT color="green">165</FONT>    <a name="line.165"></a>
+<FONT color="green">166</FONT>            /**<a name="line.166"></a>
+<FONT color="green">167</FONT>             * Creates a {@link java.util.TimeZone} representation of this class.<a name="line.167"></a>
+<FONT color="green">168</FONT>             * @return a {@link TimeZone} object or null if this object contains no<a name="line.168"></a>
+<FONT color="green">169</FONT>             * offset data<a name="line.169"></a>
+<FONT color="green">170</FONT>             */<a name="line.170"></a>
+<FONT color="green">171</FONT>            public TimeZone toTimeZone() {<a name="line.171"></a>
+<FONT color="green">172</FONT>                    if (hourOffset == null || minuteOffset == null) {<a name="line.172"></a>
+<FONT color="green">173</FONT>                            return null;<a name="line.173"></a>
+<FONT color="green">174</FONT>                    }<a name="line.174"></a>
+<FONT color="green">175</FONT>    <a name="line.175"></a>
+<FONT color="green">176</FONT>                    int rawHourOffset = hourOffset * 60 * 60 * 1000;<a name="line.176"></a>
+<FONT color="green">177</FONT>                    int rawMinuteOffset = minuteOffset * 60 * 1000;<a name="line.177"></a>
+<FONT color="green">178</FONT>                    if (rawHourOffset &lt; 0) {<a name="line.178"></a>
+<FONT color="green">179</FONT>                            rawMinuteOffset *= -1;<a name="line.179"></a>
+<FONT color="green">180</FONT>                    }<a name="line.180"></a>
+<FONT color="green">181</FONT>                    int rawOffset = rawHourOffset + rawMinuteOffset;<a name="line.181"></a>
+<FONT color="green">182</FONT>                    return new SimpleTimeZone(rawOffset, "");<a name="line.182"></a>
+<FONT color="green">183</FONT>            }<a name="line.183"></a>
+<FONT color="green">184</FONT>    <a name="line.184"></a>
+<FONT color="green">185</FONT>            /**<a name="line.185"></a>
+<FONT color="green">186</FONT>             * Gets the TYPE parameter.<a name="line.186"></a>
+<FONT color="green">187</FONT>             * &lt;p&gt;<a name="line.187"></a>
+<FONT color="green">188</FONT>             * vCard versions: 4.0<a name="line.188"></a>
+<FONT color="green">189</FONT>             * &lt;/p&gt;<a name="line.189"></a>
+<FONT color="green">190</FONT>             * @return the TYPE value (typically, this will be either "work" or "home")<a name="line.190"></a>
+<FONT color="green">191</FONT>             * or null if it doesn't exist<a name="line.191"></a>
+<FONT color="green">192</FONT>             */<a name="line.192"></a>
+<FONT color="green">193</FONT>            public String getType() {<a name="line.193"></a>
+<FONT color="green">194</FONT>                    return subTypes.getType();<a name="line.194"></a>
+<FONT color="green">195</FONT>            }<a name="line.195"></a>
+<FONT color="green">196</FONT>    <a name="line.196"></a>
+<FONT color="green">197</FONT>            /**<a name="line.197"></a>
+<FONT color="green">198</FONT>             * Sets the TYPE parameter.<a name="line.198"></a>
+<FONT color="green">199</FONT>             * &lt;p&gt;<a name="line.199"></a>
+<FONT color="green">200</FONT>             * vCard versions: 4.0<a name="line.200"></a>
+<FONT color="green">201</FONT>             * &lt;/p&gt;<a name="line.201"></a>
+<FONT color="green">202</FONT>             * @param type the TYPE value (this should be either "work" or "home") or<a name="line.202"></a>
+<FONT color="green">203</FONT>             * null to remove<a name="line.203"></a>
+<FONT color="green">204</FONT>             */<a name="line.204"></a>
+<FONT color="green">205</FONT>            public void setType(String type) {<a name="line.205"></a>
+<FONT color="green">206</FONT>                    subTypes.setType(type);<a name="line.206"></a>
+<FONT color="green">207</FONT>            }<a name="line.207"></a>
+<FONT color="green">208</FONT>    <a name="line.208"></a>
+<FONT color="green">209</FONT>            /**<a name="line.209"></a>
+<FONT color="green">210</FONT>             * Gets the MEDIATYPE parameter.<a name="line.210"></a>
+<FONT color="green">211</FONT>             * &lt;p&gt;<a name="line.211"></a>
+<FONT color="green">212</FONT>             * vCard versions: 4.0<a name="line.212"></a>
+<FONT color="green">213</FONT>             * &lt;/p&gt;<a name="line.213"></a>
+<FONT color="green">214</FONT>             * @return the media type or null if not set<a name="line.214"></a>
+<FONT color="green">215</FONT>             */<a name="line.215"></a>
+<FONT color="green">216</FONT>            public String getMediaType() {<a name="line.216"></a>
+<FONT color="green">217</FONT>                    return subTypes.getMediaType();<a name="line.217"></a>
+<FONT color="green">218</FONT>            }<a name="line.218"></a>
+<FONT color="green">219</FONT>    <a name="line.219"></a>
+<FONT color="green">220</FONT>            /**<a name="line.220"></a>
+<FONT color="green">221</FONT>             * Sets the MEDIATYPE parameter.<a name="line.221"></a>
+<FONT color="green">222</FONT>             * &lt;p&gt;<a name="line.222"></a>
+<FONT color="green">223</FONT>             * vCard versions: 4.0<a name="line.223"></a>
+<FONT color="green">224</FONT>             * &lt;/p&gt;<a name="line.224"></a>
+<FONT color="green">225</FONT>             * @param mediaType the media type or null to remove<a name="line.225"></a>
+<FONT color="green">226</FONT>             */<a name="line.226"></a>
+<FONT color="green">227</FONT>            public void setMediaType(String mediaType) {<a name="line.227"></a>
+<FONT color="green">228</FONT>                    subTypes.setMediaType(mediaType);<a name="line.228"></a>
+<FONT color="green">229</FONT>            }<a name="line.229"></a>
+<FONT color="green">230</FONT>    <a name="line.230"></a>
+<FONT color="green">231</FONT>            /**<a name="line.231"></a>
+<FONT color="green">232</FONT>             * Gets all PID parameter values.<a name="line.232"></a>
+<FONT color="green">233</FONT>             * &lt;p&gt;<a name="line.233"></a>
+<FONT color="green">234</FONT>             * vCard versions: 4.0<a name="line.234"></a>
+<FONT color="green">235</FONT>             * &lt;/p&gt;<a name="line.235"></a>
+<FONT color="green">236</FONT>             * @return the PID values or empty set if there are none<a name="line.236"></a>
+<FONT color="green">237</FONT>             * @see VCardSubTypes#getPids<a name="line.237"></a>
+<FONT color="green">238</FONT>             */<a name="line.238"></a>
+<FONT color="green">239</FONT>            public List&lt;Integer[]&gt; getPids() {<a name="line.239"></a>
+<FONT color="green">240</FONT>                    return subTypes.getPids();<a name="line.240"></a>
+<FONT color="green">241</FONT>            }<a name="line.241"></a>
+<FONT color="green">242</FONT>    <a name="line.242"></a>
+<FONT color="green">243</FONT>            /**<a name="line.243"></a>
+<FONT color="green">244</FONT>             * Adds a PID value.<a name="line.244"></a>
+<FONT color="green">245</FONT>             * &lt;p&gt;<a name="line.245"></a>
+<FONT color="green">246</FONT>             * vCard versions: 4.0<a name="line.246"></a>
+<FONT color="green">247</FONT>             * &lt;/p&gt;<a name="line.247"></a>
+<FONT color="green">248</FONT>             * @param localId the local ID<a name="line.248"></a>
+<FONT color="green">249</FONT>             * @param clientPidMapRef the ID used to reference the property's globally<a name="line.249"></a>
+<FONT color="green">250</FONT>             * unique identifier in the CLIENTPIDMAP property.<a name="line.250"></a>
+<FONT color="green">251</FONT>             * @see VCardSubTypes#addPid(int, int)<a name="line.251"></a>
+<FONT color="green">252</FONT>             */<a name="line.252"></a>
+<FONT color="green">253</FONT>            public void addPid(int localId, int clientPidMapRef) {<a name="line.253"></a>
+<FONT color="green">254</FONT>                    subTypes.addPid(localId, clientPidMapRef);<a name="line.254"></a>
+<FONT color="green">255</FONT>            }<a name="line.255"></a>
+<FONT color="green">256</FONT>    <a name="line.256"></a>
+<FONT color="green">257</FONT>            /**<a name="line.257"></a>
+<FONT color="green">258</FONT>             * Removes all PID values.<a name="line.258"></a>
+<FONT color="green">259</FONT>             * &lt;p&gt;<a name="line.259"></a>
+<FONT color="green">260</FONT>             * vCard versions: 4.0<a name="line.260"></a>
+<FONT color="green">261</FONT>             * &lt;/p&gt;<a name="line.261"></a>
+<FONT color="green">262</FONT>             * @see VCardSubTypes#removePids<a name="line.262"></a>
+<FONT color="green">263</FONT>             */<a name="line.263"></a>
+<FONT color="green">264</FONT>            public void removePids() {<a name="line.264"></a>
+<FONT color="green">265</FONT>                    subTypes.removePids();<a name="line.265"></a>
+<FONT color="green">266</FONT>            }<a name="line.266"></a>
+<FONT color="green">267</FONT>    <a name="line.267"></a>
+<FONT color="green">268</FONT>            /**<a name="line.268"></a>
+<FONT color="green">269</FONT>             * Gets the preference value.<a name="line.269"></a>
+<FONT color="green">270</FONT>             * &lt;p&gt;<a name="line.270"></a>
+<FONT color="green">271</FONT>             * vCard versions: 4.0<a name="line.271"></a>
+<FONT color="green">272</FONT>             * &lt;/p&gt;<a name="line.272"></a>
+<FONT color="green">273</FONT>             * @return the preference value or null if it doesn't exist<a name="line.273"></a>
+<FONT color="green">274</FONT>             * @see VCardSubTypes#getPref<a name="line.274"></a>
+<FONT color="green">275</FONT>             */<a name="line.275"></a>
+<FONT color="green">276</FONT>            public Integer getPref() {<a name="line.276"></a>
+<FONT color="green">277</FONT>                    return subTypes.getPref();<a name="line.277"></a>
+<FONT color="green">278</FONT>            }<a name="line.278"></a>
+<FONT color="green">279</FONT>    <a name="line.279"></a>
+<FONT color="green">280</FONT>            /**<a name="line.280"></a>
+<FONT color="green">281</FONT>             * Sets the preference value.<a name="line.281"></a>
+<FONT color="green">282</FONT>             * &lt;p&gt;<a name="line.282"></a>
+<FONT color="green">283</FONT>             * vCard versions: 4.0<a name="line.283"></a>
+<FONT color="green">284</FONT>             * &lt;/p&gt;<a name="line.284"></a>
+<FONT color="green">285</FONT>             * @param pref the preference value or null to remove<a name="line.285"></a>
+<FONT color="green">286</FONT>             * @see VCardSubTypes#setPref<a name="line.286"></a>
+<FONT color="green">287</FONT>             */<a name="line.287"></a>
+<FONT color="green">288</FONT>            public void setPref(Integer pref) {<a name="line.288"></a>
+<FONT color="green">289</FONT>                    subTypes.setPref(pref);<a name="line.289"></a>
+<FONT color="green">290</FONT>            }<a name="line.290"></a>
+<FONT color="green">291</FONT>    <a name="line.291"></a>
+<FONT color="green">292</FONT>            /**<a name="line.292"></a>
+<FONT color="green">293</FONT>             * Gets the ALTID.<a name="line.293"></a>
+<FONT color="green">294</FONT>             * &lt;p&gt;<a name="line.294"></a>
+<FONT color="green">295</FONT>             * vCard versions: 4.0<a name="line.295"></a>
+<FONT color="green">296</FONT>             * &lt;/p&gt;<a name="line.296"></a>
+<FONT color="green">297</FONT>             * @return the ALTID or null if it doesn't exist<a name="line.297"></a>
+<FONT color="green">298</FONT>             * @see VCardSubTypes#getAltId<a name="line.298"></a>
+<FONT color="green">299</FONT>             */<a name="line.299"></a>
+<FONT color="green">300</FONT>            public String getAltId() {<a name="line.300"></a>
+<FONT color="green">301</FONT>                    return subTypes.getAltId();<a name="line.301"></a>
+<FONT color="green">302</FONT>            }<a name="line.302"></a>
+<FONT color="green">303</FONT>    <a name="line.303"></a>
+<FONT color="green">304</FONT>            /**<a name="line.304"></a>
+<FONT color="green">305</FONT>             * Sets the ALTID.<a name="line.305"></a>
+<FONT color="green">306</FONT>             * &lt;p&gt;<a name="line.306"></a>
+<FONT color="green">307</FONT>             * vCard versions: 4.0<a name="line.307"></a>
+<FONT color="green">308</FONT>             * &lt;/p&gt;<a name="line.308"></a>
+<FONT color="green">309</FONT>             * @param altId the ALTID or null to remove<a name="line.309"></a>
+<FONT color="green">310</FONT>             * @see VCardSubTypes#setAltId<a name="line.310"></a>
+<FONT color="green">311</FONT>             */<a name="line.311"></a>
+<FONT color="green">312</FONT>            public void setAltId(String altId) {<a name="line.312"></a>
+<FONT color="green">313</FONT>                    subTypes.setAltId(altId);<a name="line.313"></a>
+<FONT color="green">314</FONT>            }<a name="line.314"></a>
+<FONT color="green">315</FONT>    <a name="line.315"></a>
+<FONT color="green">316</FONT>            @Override<a name="line.316"></a>
+<FONT color="green">317</FONT>            protected void doMarshalSubTypes(VCardSubTypes copy, VCardVersion version, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode, VCard vcard) {<a name="line.317"></a>
+<FONT color="green">318</FONT>                    if (text != null) {<a name="line.318"></a>
+<FONT color="green">319</FONT>                            copy.setValue(ValueParameter.TEXT);<a name="line.319"></a>
+<FONT color="green">320</FONT>                    } else if (hourOffset != null &amp;&amp; minuteOffset != null &amp;&amp; version == VCardVersion.V4_0) {<a name="line.320"></a>
+<FONT color="green">321</FONT>                            copy.setValue(ValueParameter.UTC_OFFSET);<a name="line.321"></a>
+<FONT color="green">322</FONT>                    }<a name="line.322"></a>
+<FONT color="green">323</FONT>            }<a name="line.323"></a>
+<FONT color="green">324</FONT>    <a name="line.324"></a>
+<FONT color="green">325</FONT>            @Override<a name="line.325"></a>
+<FONT color="green">326</FONT>            protected void doMarshalText(StringBuilder sb, VCardVersion version, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode) {<a name="line.326"></a>
+<FONT color="green">327</FONT>                    if (text != null) {<a name="line.327"></a>
+<FONT color="green">328</FONT>                            if ((version == VCardVersion.V2_1 || version == VCardVersion.V3_0) &amp;&amp; hourOffset != null &amp;&amp; minuteOffset != null) {<a name="line.328"></a>
+<FONT color="green">329</FONT>                                    sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));<a name="line.329"></a>
+<FONT color="green">330</FONT>                                    sb.append(';');<a name="line.330"></a>
+<FONT color="green">331</FONT>                            }<a name="line.331"></a>
+<FONT color="green">332</FONT>                            sb.append(VCardStringUtils.escape(text));<a name="line.332"></a>
+<FONT color="green">333</FONT>                    } else if (hourOffset != null &amp;&amp; minuteOffset != null) {<a name="line.333"></a>
+<FONT color="green">334</FONT>                            sb.append(VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true));<a name="line.334"></a>
+<FONT color="green">335</FONT>                    } else {<a name="line.335"></a>
+<FONT color="green">336</FONT>                            throw new SkipMeException("Property does not have text or a UTC offset associated with it.");<a name="line.336"></a>
+<FONT color="green">337</FONT>                    }<a name="line.337"></a>
+<FONT color="green">338</FONT>            }<a name="line.338"></a>
+<FONT color="green">339</FONT>    <a name="line.339"></a>
+<FONT color="green">340</FONT>            @Override<a name="line.340"></a>
+<FONT color="green">341</FONT>            protected void doUnmarshalText(String value, VCardVersion version, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode) {<a name="line.341"></a>
+<FONT color="green">342</FONT>                    parseValue(value);<a name="line.342"></a>
+<FONT color="green">343</FONT>                    if (text != null) {<a name="line.343"></a>
+<FONT color="green">344</FONT>                            text = VCardStringUtils.unescape(text);<a name="line.344"></a>
+<FONT color="green">345</FONT>                    }<a name="line.345"></a>
+<FONT color="green">346</FONT>            }<a name="line.346"></a>
+<FONT color="green">347</FONT>    <a name="line.347"></a>
+<FONT color="green">348</FONT>            @Override<a name="line.348"></a>
+<FONT color="green">349</FONT>            protected void doMarshalXml(XCardElement parent, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode) {<a name="line.349"></a>
+<FONT color="green">350</FONT>                    if (text != null) {<a name="line.350"></a>
+<FONT color="green">351</FONT>                            parent.text(text);<a name="line.351"></a>
+<FONT color="green">352</FONT>                    } else if (hourOffset != null &amp;&amp; minuteOffset != null) {<a name="line.352"></a>
+<FONT color="green">353</FONT>                            String offset = VCardDateFormatter.formatTimeZone(hourOffset, minuteOffset, true);<a name="line.353"></a>
+<FONT color="green">354</FONT>                            parent.append("utc-offset", offset);<a name="line.354"></a>
+<FONT color="green">355</FONT>                    } else {<a name="line.355"></a>
+<FONT color="green">356</FONT>                            throw new SkipMeException("Property does not have text or a UTC offset associated with it.");<a name="line.356"></a>
+<FONT color="green">357</FONT>                    }<a name="line.357"></a>
+<FONT color="green">358</FONT>            }<a name="line.358"></a>
+<FONT color="green">359</FONT>    <a name="line.359"></a>
+<FONT color="green">360</FONT>            @Override<a name="line.360"></a>
+<FONT color="green">361</FONT>            protected void doUnmarshalXml(XCardElement element, List&lt;String&gt; warnings, CompatibilityMode compatibilityMode) {<a name="line.361"></a>
+<FONT color="green">362</FONT>                    String value = element.get("text", "uri", "utc-offset");<a name="line.362"></a>
+<FONT color="green">363</FONT>                    if (value != null) {<a name="line.363"></a>
+<FONT color="green">364</FONT>                            parseValue(value);<a name="line.364"></a>
+<FONT color="green">365</FONT>                    }<a name="line.365"></a>
+<FONT color="green">366</FONT>            }<a name="line.366"></a>
+<FONT color="green">367</FONT>    <a name="line.367"></a>
+<FONT color="green">368</FONT>            private void parseValue(String value) {<a name="line.368"></a>
+<FONT color="green">369</FONT>                    Pattern p = Pattern.compile("^([-\\+]?\\d{1,2}(:?\\d{2})?)(.*)");<a name="line.369"></a>
+<FONT color="green">370</FONT>                    Matcher m = p.matcher(value);<a name="line.370"></a>
+<FONT color="green">371</FONT>                    if (m.find()) {<a name="line.371"></a>
+<FONT color="green">372</FONT>                            //do some smart parsing--if the value starts with a timezone, then parse it<a name="line.372"></a>
+<FONT color="green">373</FONT>                            int offsets[] = VCardDateFormatter.parseTimeZone(m.group(1));<a name="line.373"></a>
+<FONT color="green">374</FONT>                            hourOffset = offsets[0];<a name="line.374"></a>
+<FONT color="green">375</FONT>                            minuteOffset = offsets[1];<a name="line.375"></a>
+<FONT color="green">376</FONT>    <a name="line.376"></a>
+<FONT color="green">377</FONT>                            String text = m.group(3);<a name="line.377"></a>
+<FONT color="green">378</FONT>                            if (text != null &amp;&amp; text.length() == 0) {<a name="line.378"></a>
+<FONT color="green">379</FONT>                                    text = null;<a name="line.379"></a>
+<FONT color="green">380</FONT>                            }<a name="line.380"></a>
+<FONT color="green">381</FONT>                            this.text = text;<a name="line.381"></a>
+<FONT color="green">382</FONT>                    } else {<a name="line.382"></a>
+<FONT color="green">383</FONT>                            hourOffset = null;<a name="line.383"></a>
+<FONT color="green">384</FONT>                            minuteOffset = null;<a name="line.384"></a>
+<FONT color="green">385</FONT>                            text = value;<a name="line.385"></a>
+<FONT color="green">386</FONT>                    }<a name="line.386"></a>
+<FONT color="green">387</FONT>            }<a name="line.387"></a>
+<FONT color="green">388</FONT>    <a name="line.388"></a>
+<FONT color="green">389</FONT>            @Override<a name="line.389"></a>
+<FONT color="green">390</FONT>            protected void doUnmarshalHtml(HCardElement element, List&lt;String&gt; warnings) {<a name="line.390"></a>
+<FONT color="green">391</FONT>                    String value = element.value();<a name="line.391"></a>
+<FONT color="green">392</FONT>                    doUnmarshalText(value, VCardVersion.V3_0, warnings, CompatibilityMode.RFC);<a name="line.392"></a>
+<FONT color="green">393</FONT>            }<a name="line.393"></a>
+<FONT color="green">394</FONT>    }<a name="line.394"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>
