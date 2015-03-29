@@ -27,7 +27,6 @@ import ezvcard.property.Address;
 import ezvcard.property.Agent;
 import ezvcard.property.Anniversary;
 import ezvcard.property.Birthday;
-import ezvcard.property.FormattedName;
 import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
@@ -83,8 +82,7 @@ public class VCardWriterTest {
 	@Test
 	public void generalStructure() throws Throwable {
 		VCard vcard = new VCard();
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
+		vcard.setFormattedName("John Doe");
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
@@ -95,8 +93,8 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"FN:John Doe\r\n" +
+			"VERSION:2.1\r\n" +
+			"FN:John Doe\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -107,19 +105,18 @@ public class VCardWriterTest {
 	public void nestedVCard() throws Throwable {
 		VCard vcard = new VCard();
 
-		FormattedName fn = new FormattedName("Michael Angstadt");
-		vcard.setFormattedName(fn);
+		vcard.setFormattedName("Michael Angstadt");
 
 		VCard agentVcard = new VCard();
-		agentVcard.setFormattedName(new FormattedName("Agent 007"));
-		agentVcard.addNote(new Note("Make sure that it properly folds long lines which are part of a nested AGENT type in a version 2.1 vCard."));
+		agentVcard.setFormattedName("Agent 007");
+		agentVcard.addNote("Make sure that it properly folds long lines which are part of a nested AGENT type in a version 2.1 vCard.");
 		Agent agent = new Agent(agentVcard);
 		vcard.setAgent(agent);
 
 		//i herd u liek AGENTs...
 		VCard secondAgentVCard = new VCard();
-		secondAgentVCard.setFormattedName(new FormattedName("Agent 009"));
-		secondAgentVCard.addNote(new Note("Make sure that it ALSO properly folds THIS long line because it's part of an AGENT that's inside of an AGENT."));
+		secondAgentVCard.setFormattedName("Agent 009");
+		secondAgentVCard.addNote("Make sure that it ALSO properly folds THIS long line because it's part of an AGENT that's inside of an AGENT.");
 		Agent secondAgent = new Agent(secondAgentVCard);
 		agentVcard.setAgent(secondAgent);
 
@@ -158,23 +155,20 @@ public class VCardWriterTest {
 	public void embeddedVCard() throws Throwable {
 		VCard vcard = new VCard();
 
-		FormattedName fn = new FormattedName("Michael Angstadt");
-		vcard.setFormattedName(fn);
+		vcard.setFormattedName("Michael Angstadt");
 
 		VCard agentVcard = new VCard();
-		agentVcard.setFormattedName(new FormattedName("Agent 007"));
-		Note note = new Note("Bonne soir�e, 007.");
+		agentVcard.setFormattedName("Agent 007");
+		Note note = agentVcard.addNote("Bonne soir�e, 007.");
 		note.setLanguage("fr");
-		agentVcard.addNote(note);
 		Agent agent = new Agent(agentVcard);
 		vcard.setAgent(agent);
 
 		//i herd u liek AGENTs...
 		VCard secondAgentVCard = new VCard();
-		secondAgentVCard.setFormattedName(new FormattedName("Agent 009"));
-		note = new Note("Good evening, 009.");
+		secondAgentVCard.setFormattedName("Agent 009");
+		note = secondAgentVCard.addNote("Good evening, 009.");
 		note.setLanguage("en");
-		secondAgentVCard.addNote(note);
 		Agent secondAgent = new Agent(secondAgentVCard);
 		agentVcard.setAgent(secondAgent);
 
@@ -225,8 +219,8 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"X-FOO:value\r\n" +
+			"VERSION:3.0\r\n" +
+			"X-FOO:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -253,12 +247,12 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"AGENT:\r\n" +
-		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"GENDER:M\r\n" +
-		"END:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"AGENT:\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"GENDER:M\r\n" +
+			"END:VCARD\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -285,8 +279,8 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"AGENT:BEGIN:VCARD\\nVERSION:3.0\\nGENDER:M\\nEND:VCARD\\n\r\n" +
+			"VERSION:3.0\r\n" +
+			"AGENT:BEGIN:VCARD\\nVERSION:3.0\\nGENDER:M\\nEND:VCARD\\n\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -405,11 +399,11 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
-		"DATE:value\r\n" +
-		"DATETIME:value\r\n" +
-		"TIME:value\r\n" +
-		"DATEANDORTIME:value\r\n" +
+			"VERSION:4.0\r\n" +
+			"DATE:value\r\n" +
+			"DATETIME:value\r\n" +
+			"TIME:value\r\n" +
+			"DATEANDORTIME:value\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -434,11 +428,11 @@ public class VCardWriterTest {
 			//@formatter:off
 			String expected =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"KEY;ENCODING=base64;X509:Zm9vYmFy\r\n" +
-			"\r\n" +
-			"PHOTO;ENCODING=base64;JPEG:Zm9vYmFy\r\n" +
-			"\r\n" +
+				"VERSION:2.1\r\n" +
+				"KEY;ENCODING=base64;X509:Zm9vYmFy\r\n" +
+				"\r\n" +
+				"PHOTO;ENCODING=base64;JPEG:Zm9vYmFy\r\n" +
+				"\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
@@ -456,11 +450,11 @@ public class VCardWriterTest {
 			//@formatter:off
 			String expected =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:3.0\r\n" +
-			"KEY;ENCODING=b;TYPE=x509:Zm9vYmFy\r\n" +
-			"\r\n" +
-			"PHOTO;ENCODING=b;TYPE=jpeg:Zm9vYmFy\r\n" +
-			"\r\n" +
+				"VERSION:3.0\r\n" +
+				"KEY;ENCODING=b;TYPE=x509:Zm9vYmFy\r\n" +
+				"\r\n" +
+				"PHOTO;ENCODING=b;TYPE=jpeg:Zm9vYmFy\r\n" +
+				"\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
@@ -478,9 +472,9 @@ public class VCardWriterTest {
 			//@formatter:off
 			String expected =
 			"BEGIN:VCARD\r\n" +
-			"VERSION:4.0\r\n" +
-			"KEY:data:application/x509;base64,Zm9vYmFy\r\n" +
-			"PHOTO:data:image/jpeg;base64,Zm9vYmFy\r\n" +
+				"VERSION:4.0\r\n" +
+				"KEY:data:application/x509;base64,Zm9vYmFy\r\n" +
+				"PHOTO:data:image/jpeg;base64,Zm9vYmFy\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
@@ -564,23 +558,23 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected = 
 		"BEGIN:VCARD\r\n" +
-		"VERSION:4.0\r\n" +
-		"FN:Simon Perreault\r\n" +
-		"N:Perreault;Simon;;;ing. jr,M.Sc.\r\n" +
-		"BDAY:--0203\r\n" +
-		"ANNIVERSARY:20090808T1430-0500\r\n" +
-		"GENDER:M\r\n" +
-		"LANG;PREF=1:fr\r\n" +
-		"LANG;PREF=2:en\r\n" +
-		"ORG;TYPE=work:Viagenie\r\n" +
-		"ADR;TYPE=work:;Suite D2-630;2875 Laurier;Quebec;QC;G1V 2M2;Canada\r\n" +
-		"TEL;PREF=1;TYPE=work,voice;VALUE=uri:tel:+1-418-656-9254;ext=102\r\n" +
-		"TEL;TYPE=work,voice,cell,video,text;VALUE=uri:tel:+1-418-262-6501\r\n" +
-		"EMAIL;TYPE=work:simon.perreault@viagenie.ca\r\n" +
-		"GEO;TYPE=work:geo:46.772673,-71.282945\r\n" +
-		"KEY;TYPE=work:http://www.viagenie.ca/simon.perreault/simon.asc\r\n" +
-		"TZ;VALUE=utc-offset:-0500\r\n" +
-		"URL;TYPE=home:http://nomis80.org\r\n" +
+			"VERSION:4.0\r\n" +
+			"FN:Simon Perreault\r\n" +
+			"N:Perreault;Simon;;;ing. jr,M.Sc.\r\n" +
+			"BDAY:--0203\r\n" +
+			"ANNIVERSARY:20090808T1430-0500\r\n" +
+			"GENDER:M\r\n" +
+			"LANG;PREF=1:fr\r\n" +
+			"LANG;PREF=2:en\r\n" +
+			"ORG;TYPE=work:Viagenie\r\n" +
+			"ADR;TYPE=work:;Suite D2-630;2875 Laurier;Quebec;QC;G1V 2M2;Canada\r\n" +
+			"TEL;PREF=1;TYPE=work,voice;VALUE=uri:tel:+1-418-656-9254;ext=102\r\n" +
+			"TEL;TYPE=work,voice,cell,video,text;VALUE=uri:tel:+1-418-262-6501\r\n" +
+			"EMAIL;TYPE=work:simon.perreault@viagenie.ca\r\n" +
+			"GEO;TYPE=work:geo:46.772673,-71.282945\r\n" +
+			"KEY;TYPE=work:http://www.viagenie.ca/simon.perreault/simon.asc\r\n" +
+			"TZ;VALUE=utc-offset:-0500\r\n" +
+			"URL;TYPE=home:http://nomis80.org\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
@@ -658,24 +652,24 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected = 
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"FN:Frank Dawson\r\n" +
-		"ORG:Lotus Development Corporation\r\n" +
-		"ADR;TYPE=work,postal,parcel:;;6544 Battleford Drive;Raleigh;NC;27613-3502;U.S.A.\r\n" +
-		"TEL;TYPE=voice,msg,work:+1-919-676-9515\r\n" +
-		"TEL;TYPE=fax,work:+1-919-676-9564\r\n" +
-		"EMAIL;TYPE=internet,pref:Frank_Dawson@Lotus.com\r\n" +
-		"EMAIL;TYPE=internet:fdawson@earthlink.net\r\n" +
-		"URL:http://home.earthlink.net/�fdawson\r\n" +
+			"VERSION:3.0\r\n" +
+			"FN:Frank Dawson\r\n" +
+			"ORG:Lotus Development Corporation\r\n" +
+			"ADR;TYPE=work,postal,parcel:;;6544 Battleford Drive;Raleigh;NC;27613-3502;U.S.A.\r\n" +
+			"TEL;TYPE=voice,msg,work:+1-919-676-9515\r\n" +
+			"TEL;TYPE=fax,work:+1-919-676-9564\r\n" +
+			"EMAIL;TYPE=internet,pref:Frank_Dawson@Lotus.com\r\n" +
+			"EMAIL;TYPE=internet:fdawson@earthlink.net\r\n" +
+			"URL:http://home.earthlink.net/�fdawson\r\n" +
 		"END:VCARD\r\n" +
 		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"FN:Tim Howes\r\n" +
-		"ORG:Netscape Communications Corp.\r\n" +
-		"ADR;TYPE=work:;;501 E. Middlefield Rd.;Mountain View;CA;94043;U.S.A.\r\n" +
-		"TEL;TYPE=voice,msg,work:+1-415-937-3419\r\n" +
-		"TEL;TYPE=fax,work:+1-415-528-4164\r\n" +
-		"EMAIL;TYPE=internet:howes@netscape.com\r\n" +
+			"VERSION:3.0\r\n" +
+			"FN:Tim Howes\r\n" +
+			"ORG:Netscape Communications Corp.\r\n" +
+			"ADR;TYPE=work:;;501 E. Middlefield Rd.;Mountain View;CA;94043;U.S.A.\r\n" +
+			"TEL;TYPE=voice,msg,work:+1-415-937-3419\r\n" +
+			"TEL;TYPE=fax,work:+1-415-528-4164\r\n" +
+			"EMAIL;TYPE=internet:howes@netscape.com\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
