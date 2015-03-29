@@ -486,12 +486,6 @@ public class XCardDocument {
 				for (Element parameterElement : parameterElements) {
 					String name = parameterElement.getLocalName().toUpperCase();
 					List<Element> valueElements = XmlUtils.toElementList(parameterElement.getChildNodes());
-					if (valueElements.isEmpty()) {
-						String value = parameterElement.getTextContent();
-						parameters.put(name, value);
-						continue;
-					}
-
 					for (Element valueElement : valueElements) {
 						String value = valueElement.getTextContent();
 						parameters.put(name, value);

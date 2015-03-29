@@ -21,6 +21,7 @@ import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -108,12 +109,14 @@ public class XCardReaderTest {
 	public void read_single() throws Exception {
 		//@formatter:off
 		String xml =
+		"<!-- ignore -->" +
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
 				"<n>" +
 					"<surname>House</surname>" +
 					"<given>Gregory</given>" +
+					"<!-- ignore -->" +
 					"<additional />" +
 					"<prefix>Dr</prefix>" +
 					"<prefix>Mr</prefix>" +
@@ -500,6 +503,14 @@ public class XCardReaderTest {
 					"</parameters>" +
 					"<text>Hello world!</text>" +
 				"</note>" +
+					
+				//one param, but doesn't have a value element, so it should be ignored
+				"<note>" +
+					"<parameters>" +
+						"<altid>1</altid>" +
+					"</parameters>" +
+					"<text>Hallo Welt!</text>" +
+				"</note>" +
 				
 				//two params
 				"<note>" +
@@ -529,7 +540,7 @@ public class XCardReaderTest {
 		{
 			VCard vcard = reader.readNext();
 			assertVersion(V4_0, vcard);
-			assertPropertyCount(4, vcard);
+			assertPropertyCount(5, vcard);
 
 			//@formatter:off
 			assertSimpleProperty(vcard.getNotes())
@@ -538,10 +549,14 @@ public class XCardReaderTest {
 				.value("Hello world!")
 				.param("ALTID", "1")
 			.next()
+				.value("Hallo Welt!")
+			.next()
 				.value("Bonjour tout le monde!")
 				.param("ALTID", "1")
 				.param("LANGUAGE", "fr")
 			.noMore();
+			
+			assertTrue(vcard.getNotes().get(2).getParameters().isEmpty());
 			
 			assertTelephone(vcard)
 				.uri(new TelUri.Builder("+1-555-555-1234").build())
@@ -773,7 +788,10 @@ public class XCardReaderTest {
 		String xml =
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
-				"<cannotparse><text>value</text></cannotparse>" +
+				"<group name=\"grp\">" +
+					"<cannotparse><text>value1</text></cannotparse>" +
+				"</group>" +
+				"<cannotparse><text>value2</text></cannotparse>" +
 				"<x-foo><text>value</text></x-foo>" +
 			"</vcard>" +
 		"</vcards>";
@@ -785,7 +803,7 @@ public class XCardReaderTest {
 		{
 			VCard vcard = reader.readNext();
 			assertVersion(V4_0, vcard);
-			assertPropertyCount(2, vcard);
+			assertPropertyCount(3, vcard);
 
 			//@formatter:off
 			assertRawProperty("x-foo", vcard)
@@ -794,9 +812,14 @@ public class XCardReaderTest {
 			//@formatter:on
 
 			Xml xmlProperty = vcard.getXmls().get(0);
-			assertXMLEqual(XmlUtils.toString(xmlProperty.getValue()), XmlUtils.toDocument("<cannotparse xmlns=\"" + V4_0.getXmlNamespace() + "\"><text>value</text></cannotparse>"), xmlProperty.getValue());
+			assertXMLEqual(XmlUtils.toString(xmlProperty.getValue()), XmlUtils.toDocument("<cannotparse xmlns=\"" + V4_0.getXmlNamespace() + "\"><text>value1</text></cannotparse>"), xmlProperty.getValue());
+			assertEquals("grp", xmlProperty.getGroup());
 
-			assertWarnings(1, reader);
+			xmlProperty = vcard.getXmls().get(1);
+			assertXMLEqual(XmlUtils.toString(xmlProperty.getValue()), XmlUtils.toDocument("<cannotparse xmlns=\"" + V4_0.getXmlNamespace() + "\"><text>value2</text></cannotparse>"), xmlProperty.getValue());
+			assertNull(xmlProperty.getGroup());
+
+			assertWarnings(2, reader);
 		}
 
 		assertNoMoreVCards(reader);

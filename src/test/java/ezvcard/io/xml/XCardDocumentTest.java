@@ -58,12 +58,12 @@ import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.Anniversary;
 import ezvcard.property.Birthday;
-import ezvcard.property.FormattedName;
 import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
 import ezvcard.property.Note;
 import ezvcard.property.Photo;
+import ezvcard.property.ProductId;
 import ezvcard.property.SkipMeProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
@@ -190,8 +190,7 @@ public class XCardDocumentTest {
 	@Test
 	public void add_basicType() throws Throwable {
 		VCard vcard = new VCard();
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
+		vcard.setFormattedName("John Doe");
 
 		XCardDocument xcard = new XCardDocument();
 		XCardDocumentStreamWriter writer = xcard.writer();
@@ -217,17 +216,27 @@ public class XCardDocumentTest {
 	public void add_parameters() throws Throwable {
 		VCard vcard = new VCard();
 		Note note = new Note("This is a\nnote.");
-		note.setLanguage("en");
+		note.setParameter(VCardParameters.ALTID, "value");
+		note.setParameter(VCardParameters.CALSCALE, "value");
+		note.setParameter(VCardParameters.GEO, "geo:123.456,234.567");
+		note.setParameter(VCardParameters.LABEL, "value");
+		note.setParameter(VCardParameters.LANGUAGE, "en");
+		note.setParameter(VCardParameters.MEDIATYPE, "text/plain");
 		note.addPid(1, 1);
-		note.addPid(2, 2);
-		note.getParameters().put("X-CUSTOM", "xxx");
-		note.getParameters().put("X-INT", "11");
+		note.setParameter(VCardParameters.PREF, "1");
+		note.setParameter(VCardParameters.SORT_AS, "value");
+		note.setParameter(VCardParameters.TYPE, "home");
+		note.setParameter(VCardParameters.TZ, "America/New_York");
+		note.setParameter("X-CUSTOM", "xxx");
+		note.setParameter("X-INT", "11");
 		vcard.addNote(note);
 
 		XCardDocument xcard = new XCardDocument();
 		XCardDocumentStreamWriter writer = xcard.writer();
 		writer.setAddProdId(false);
 		writer.registerParameterDataType("X-INT", VCardDataType.INTEGER);
+		writer.registerParameterDataType("X-CUSTOM", VCardDataType.BOOLEAN);
+		writer.registerParameterDataType("X-CUSTOM", null);
 		writer.write(vcard);
 
 		Document actual = xcard.getDocument();
@@ -238,8 +247,17 @@ public class XCardDocumentTest {
 			"<vcard>" +
 				"<note>" +
 					"<parameters>" +
+						"<altid><text>value</text></altid>" +
+						"<calscale><text>value</text></calscale>" +
+						"<geo><uri>geo:123.456,234.567</uri></geo>" +
+						"<label><text>value</text></label>" +
 						"<language><language-tag>en</language-tag></language>" +
-						"<pid><text>1.1</text><text>2.2</text></pid>" +
+						"<mediatype><text>text/plain</text></mediatype>" +
+						"<pid><text>1.1</text></pid>" +
+						"<pref><integer>1</integer></pref>" +
+						"<sort-as><text>value</text></sort-as>" +
+						"<type><text>home</text></type>" +
+						"<tz><uri>America/New_York</uri></tz>" +
 						"<x-custom><unknown>xxx</unknown></x-custom>" +
 						"<x-int><integer>11</integer></x-int>" +
 					"</parameters>" +
@@ -254,24 +272,108 @@ public class XCardDocumentTest {
 	}
 
 	@Test
+	public void read_parameters() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				//zero params
+				"<note>" +
+					"<text>Note 1</text>" +
+				"</note>" +
+				
+				//one param
+				"<note>" +
+					"<parameters>" +
+						"<altid><text>1</text></altid>" +
+					"</parameters>" +
+					"<text>Hello world!</text>" +
+				"</note>" +
+					
+				//one param, but doesn't have a value element, so it should be ignored
+				"<note>" +
+					"<parameters>" +
+						"<altid>1</altid>" +
+					"</parameters>" +
+					"<text>Hallo Welt!</text>" +
+				"</note>" +
+				
+				//two params
+				"<note>" +
+					"<parameters>" +
+						"<altid><text>1</text></altid>" +
+						"<language><language-tag>fr</language-tag></language>" +
+					"</parameters>" +
+					"<text>Bonjour tout le monde!</text>" +
+				"</note>" +
+				
+				//a param with multiple values
+				"<tel>" +
+					"<parameters>" +
+						"<type>" +
+							"<text>work</text>" +
+							"<text>voice</text>" +
+						"</type>" +
+					"</parameters>" +
+					"<uri>tel:+1-555-555-1234</uri>" +
+				"</tel>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		StreamReader reader = xcard.reader();
+
+		{
+			VCard vcard = reader.readNext();
+			assertVersion(V4_0, vcard);
+			assertPropertyCount(5, vcard);
+
+			//@formatter:off
+			assertSimpleProperty(vcard.getNotes())
+				.value("Note 1")
+			.next()
+				.value("Hello world!")
+				.param("ALTID", "1")
+			.next()
+				.value("Hallo Welt!")
+			.next()
+				.value("Bonjour tout le monde!")
+				.param("ALTID", "1")
+				.param("LANGUAGE", "fr")
+			.noMore();
+			
+			assertTrue(vcard.getNotes().get(2).getParameters().isEmpty());
+			
+			assertTelephone(vcard)
+				.uri(new TelUri.Builder("+1-555-555-1234").build())
+				.types(TelephoneType.WORK, TelephoneType.VOICE)
+			.noMore();
+			//@formatter:on
+
+			assertWarnings(0, reader);
+		}
+
+		assertNoMoreVCards(reader);
+		reader.close();
+	}
+
+	@Test
 	public void add_group() throws Throwable {
 		VCard vcard = new VCard();
 
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
+		vcard.setFormattedName("John Doe");
 
-		Note note = new Note("This is a\nnote.");
+		Note note = vcard.addNote("This is a\nnote.");
 		note.setGroup("group1");
 		note.setLanguage("en");
-		vcard.addNote(note);
 
 		Photo photo = new Photo("http://example.com/image.jpg", ImageType.JPEG);
 		photo.setGroup("group1");
 		vcard.addPhoto(photo);
 
-		note = new Note("Bonjour.");
+		note = vcard.addNote("Bonjour.");
 		note.setGroup("group2");
-		vcard.addNote(note);
 
 		XCardDocument xcard = new XCardDocument();
 		XCardDocumentStreamWriter writer = xcard.writer();
@@ -311,14 +413,62 @@ public class XCardDocumentTest {
 	}
 
 	@Test
+	public void read_groups() throws Exception {
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<group name=\"item1\">" +
+					"<fn><text>John Doe</text></fn>" +
+					"<note><text>Hello world!</text></note>" +
+				"</group>" +
+				"<group>" +
+					"<prodid><text>no name attribute</text></prodid>" +
+				"</group>" +
+				"<note><text>A property without a group</text></note>" +
+			"</vcard>" +
+		"</vcards>";
+		//@formatter:on
+
+		XCardDocument xcard = new XCardDocument(xml);
+		StreamReader reader = xcard.reader();
+
+		{
+			VCard vcard = reader.readNext();
+			assertVersion(V4_0, vcard);
+			assertPropertyCount(4, vcard);
+
+			//@formatter:off
+			assertSimpleProperty(vcard.getFormattedNames())
+				.group("item1")
+				.value("John Doe")
+			.noMore();
+			
+			assertSimpleProperty(vcard.getNotes())
+				.group("item1")
+				.value("Hello world!")
+			.next()
+				.value("A property without a group")
+			.noMore();
+			
+			assertSimpleProperty(vcard.getProperties(ProductId.class))
+				.value("no name attribute")
+			.noMore();
+			//@formatter:on
+
+			assertWarnings(0, reader);
+		}
+
+		assertNoMoreVCards(reader);
+	}
+
+	@Test
 	public void add_multiple() throws Throwable {
 		VCard vcard1 = new VCard();
-		FormattedName fn = new FormattedName("John Doe");
-		vcard1.setFormattedName(fn);
+		vcard1.setFormattedName("John Doe");
 
 		VCard vcard2 = new VCard();
-		Note note = new Note("Hello world!");
-		vcard2.addNote(note);
+		vcard2.addNote("Hello world!");
 
 		XCardDocument xcard = new XCardDocument();
 		XCardDocumentStreamWriter writer = xcard.writer();
@@ -426,7 +576,7 @@ public class XCardDocumentTest {
 	@Test
 	public void write_prettyPrint() throws Throwable {
 		VCard vcard = new VCard();
-		vcard.setFormattedName(new FormattedName("John Doe"));
+		vcard.setFormattedName("John Doe");
 
 		XCardDocument xcard = new XCardDocument();
 		XCardDocumentStreamWriter writer = xcard.writer();
@@ -445,6 +595,24 @@ public class XCardDocumentTest {
 		"  </vcard>" + NEWLINE +
 		"</vcards>";
 		//@formatter:on
+
+		//use "String.contains()" to ignore the XML declaration at the top
+		assertTrue("Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual, actual.contains(expected));
+	}
+
+	@Test
+	public void write_prettyPrint_invalid_value() throws Throwable {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
+
+		String actual = xcard.write(-1);
+
+		String expected = "<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\"><vcard><fn><text>John Doe</text></fn></vcard></vcards>";
 
 		//use "String.contains()" to ignore the XML declaration at the top
 		assertTrue("Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual, actual.contains(expected));
@@ -484,8 +652,7 @@ public class XCardDocumentTest {
 	@Test
 	public void add_no_existing_vcards_element() throws Throwable {
 		VCard vcard = new VCard();
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
+		vcard.setFormattedName("John Doe");
 
 		XCardDocument xcard = new XCardDocument("<root><a /></root>");
 		XCardDocumentStreamWriter writer = xcard.writer();
@@ -513,8 +680,7 @@ public class XCardDocumentTest {
 	@Test
 	public void add_existing_vcards_element() throws Throwable {
 		VCard vcard = new VCard();
-		FormattedName fn = new FormattedName("John Doe");
-		vcard.setFormattedName(fn);
+		vcard.setFormattedName("John Doe");
 
 		XCardDocument xcard = new XCardDocument("<root><vcards xmlns=\"" + V4_0.getXmlNamespace() + "\"><a /></vcards></root>");
 		XCardDocumentStreamWriter writer = xcard.writer();

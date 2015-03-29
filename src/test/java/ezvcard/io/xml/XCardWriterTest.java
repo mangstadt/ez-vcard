@@ -1,5 +1,6 @@
 package ezvcard.io.xml;
 
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertFalse;
@@ -121,7 +122,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>John Doe</text></fn>" +
 			"</vcard>" +
@@ -145,7 +146,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>John Doe</text></fn>" +
 			"</vcard>" +
@@ -164,7 +165,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />";
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\" />";
 		//@formatter:on
 
 		assertOutput(expected);
@@ -182,10 +183,10 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<foo xmlns=\"http://example.com\" a=\"b\">" +
-					"<parameters xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+					"<parameters xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 						"<x-foo><unknown>bar</unknown></x-foo>" +
 					"</parameters>" +
 					"bar<car/>" +
@@ -207,7 +208,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard />" +
 		"</vcards>";
 		//@formatter:on
@@ -232,7 +233,7 @@ public class XCardWriterTest {
 		"<root>" +
 			"<a />" +
 			"<b />" +
-			"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+			"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 				"<vcard>" +
 					"<fn><text>John Doe</text></fn>" +
 				"</vcard>" +
@@ -261,7 +262,7 @@ public class XCardWriterTest {
 		String xml =
 		"<root>" +
 			"<a>" +
-				"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 					"<vcard>" +
 						"<fn><text>John Doe</text></fn>" +
 					"</vcard>" +
@@ -277,7 +278,7 @@ public class XCardWriterTest {
 
 	@Test
 	public void write_existing_vcards_document() throws Exception {
-		Document document = XmlUtils.toDocument("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" />");
+		Document document = XmlUtils.toDocument("<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\" />");
 		XCardWriter writer = new XCardWriter(document);
 		writer.setAddProdId(false);
 
@@ -289,7 +290,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String xml =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>John Doe</text></fn>" +
 			"</vcard>" +
@@ -302,7 +303,7 @@ public class XCardWriterTest {
 
 	@Test
 	public void write_existing_vcards_element() throws Exception {
-		Document document = XmlUtils.toDocument("<root><a><vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\" /></a><b /></root>");
+		Document document = XmlUtils.toDocument("<root><a><vcards xmlns=\"" + V4_0.getXmlNamespace() + "\" /></a><b /></root>");
 		Node element = document.getFirstChild().getFirstChild().getFirstChild();
 		XCardWriter writer = new XCardWriter(element);
 		writer.setAddProdId(false);
@@ -317,7 +318,7 @@ public class XCardWriterTest {
 		String xml =
 		"<root>" +
 			"<a>" +
-				"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+				"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 					"<vcard>" +
 						"<fn><text>John Doe</text></fn>" +
 					"</vcard>" +
@@ -337,9 +338,17 @@ public class XCardWriterTest {
 
 		VCard vcard = new VCard();
 		Note note = new Note("This is a\nnote.");
-		note.setLanguage("en");
+		note.setParameter(VCardParameters.ALTID, "value");
+		note.setParameter(VCardParameters.CALSCALE, "value");
+		note.setParameter(VCardParameters.GEO, "geo:123.456,234.567");
+		note.setParameter(VCardParameters.LABEL, "value");
+		note.setParameter(VCardParameters.LANGUAGE, "en");
+		note.setParameter(VCardParameters.MEDIATYPE, "text/plain");
 		note.addPid(1, 1);
-		note.addPid(2, 2);
+		note.setParameter(VCardParameters.PREF, "1");
+		note.setParameter(VCardParameters.SORT_AS, "value");
+		note.setParameter(VCardParameters.TYPE, "home");
+		note.setParameter(VCardParameters.TZ, "America/New_York");
 		note.setParameter("X-CUSTOM", "xxx");
 		note.setParameter("X-INT", "11");
 		vcard.addNote(note);
@@ -349,12 +358,21 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<note>" +
 					"<parameters>" +
+						"<altid><text>value</text></altid>" +
+						"<calscale><text>value</text></calscale>" +
+						"<geo><uri>geo:123.456,234.567</uri></geo>" +
+						"<label><text>value</text></label>" +
 						"<language><language-tag>en</language-tag></language>" +
-						"<pid><text>1.1</text><text>2.2</text></pid>" +
+						"<mediatype><text>text/plain</text></mediatype>" +
+						"<pid><text>1.1</text></pid>" +
+						"<pref><integer>1</integer></pref>" +
+						"<sort-as><text>value</text></sort-as>" +
+						"<type><text>home</text></type>" +
+						"<tz><uri>America/New_York</uri></tz>" +
 						"<x-custom><unknown>xxx</unknown></x-custom>" +
 						"<x-int><integer>11</integer></x-int>" +
 					"</parameters>" +
@@ -390,7 +408,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>John Doe</text></fn>" +
 				"<group name=\"group1\">" +
@@ -479,7 +497,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<x-foo><unknown>value</unknown></x-foo>" +
 			"</vcard>" +
@@ -511,7 +529,7 @@ public class XCardWriterTest {
 		//the writer should check for scribes before writing anything to the stream
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>John Doe</text></fn>" +
 			"</vcard>" +
@@ -546,7 +564,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<a:lucky-num xmlns:a=\"http://luckynum.com\">24</a:lucky-num>" +
 				"<x-salary>1000000</x-salary>" +
@@ -579,7 +597,7 @@ public class XCardWriterTest {
 		//@formatter:off
 		String expectedRegex =
 		"<\\?xml version=\"1.0\" encoding=\"(utf|UTF)-8\"\\?>" + nl +
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" + nl +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" + nl +
 		"  <vcard>" + nl +
 		"    <fn>" + nl +
 		"      <parameters>" + nl +
@@ -630,7 +648,7 @@ public class XCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">" +
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard />" +
 		"</vcards>";
 		//@formatter:on
@@ -702,7 +720,7 @@ public class XCardWriterTest {
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 
-		assertValidate(vcard).versions(VCardVersion.V4_0).run();
+		assertValidate(vcard).versions(V4_0).run();
 
 		assertExample(vcard, "rfc6351-example.xml");
 	}
