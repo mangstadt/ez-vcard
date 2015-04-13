@@ -3,7 +3,7 @@
 ez-vcard is a vCard library written in Java.  It can read and write vCards in many different formats.  The "ez" stands for "easy" because the goal is to create a library that's easy to use.
 
 <p align="center"><strong><a href="https://github.com/mangstadt/ez-vcard/wiki/Downloads">Downloads</a> |
-<a href="http://mangstadt.github.io/ez-vcard/javadocs/latest/index.htm">Javadocs</a> |
+<a href="http://mangstadt.github.io/ez-vcard/javadocs/latest/index.html">Javadocs</a> |
 <a href="#maven">Maven</a></strong></p>
 
 ```java
