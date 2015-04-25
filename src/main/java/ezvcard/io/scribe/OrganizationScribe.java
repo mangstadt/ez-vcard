@@ -115,7 +115,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 			return JCardValue.single(values.get(0));
 		}
 
-		return JCardValue.structured(values);
+		return JCardValue.structured(values.toArray(new Object[0]));
 	}
 
 	@Override
