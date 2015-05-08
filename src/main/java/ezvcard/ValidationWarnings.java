@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.IdentityHashMap;
 
 import ezvcard.property.VCardProperty;
 import ezvcard.util.ListMultimap;
@@ -83,7 +84,9 @@ import ezvcard.util.StringUtils;
  * @see VCard#validate
  */
 public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, List<Warning>>> {
-	private final ListMultimap<VCardProperty, Warning> warnings = new ListMultimap<VCardProperty, Warning>();
+	private final ListMultimap<VCardProperty, Warning> warnings =
+		new ListMultimap<VCardProperty, Warning>(
+			new IdentityHashMap<VCardProperty, List<Warning>>());
 
 	/**
 	 * Adds a validation warning.

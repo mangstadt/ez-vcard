@@ -1,5 +1,8 @@
 package ezvcard.property;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.UUID;
 
 /*
@@ -59,6 +62,8 @@ import java.util.UUID;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Uid extends UriProperty {
 	/**
 	 * Creates a UID property.

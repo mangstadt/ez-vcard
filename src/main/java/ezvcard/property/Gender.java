@@ -7,6 +7,8 @@ import java.util.Set;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -76,6 +78,8 @@ import ezvcard.Warning;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Gender extends VCardProperty {
 	public static final String MALE = "M";
 	public static final String FEMALE = "F";

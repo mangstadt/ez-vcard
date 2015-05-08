@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ezvcard.parameter.VCardParameters;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -62,6 +64,8 @@ import ezvcard.parameter.VCardParameters;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class StructuredName extends VCardProperty implements HasAltId {
 	private String family;
 	private String given;

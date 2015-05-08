@@ -5,7 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -63,7 +64,10 @@ public class ValidationWarningsTest {
 		warnings.add(new TestProperty2(), v2);
 		warnings.add(null, v3);
 
-		assertEquals(Arrays.asList(v0, v1), warnings.getByProperty(TestProperty1.class));
+		Set<Warning> v0Warnings = new HashSet<Warning>(
+			warnings.getByProperty(TestProperty1.class));
+		assertEquals(new HashSet<Warning>(Arrays.asList(v0, v1)), v0Warnings);
+
 		assertEquals(Arrays.asList(v2), warnings.getByProperty(TestProperty2.class));
 		assertEquals(Arrays.asList(v3), warnings.getByProperty(null));
 		assertEquals(Arrays.asList(), warnings.getByProperty(TestProperty3.class));
@@ -79,14 +83,18 @@ public class ValidationWarningsTest {
 		warnings.add(new TestProperty1(), new Warning("four", 4));
 
 		//@formatter:off
-		String expected =
-		"one" + NEWLINE +
-		"W02: two" + NEWLINE +
-		"[TestProperty1] | three" + NEWLINE +
-		"[TestProperty1] | W04: four" + NEWLINE;
+		List<String> expected = Arrays.asList(
+			"one",
+			"W02: two",
+			"[TestProperty1] | three",
+			"[TestProperty1] | W04: four");
 		//@formatter:on
+		// XXX warning ordering is dependent on IdentityHashMap ordering, so sort lines.
+		Collections.sort(expected);
 		String actual = warnings.toString();
-		assertEquals(expected, actual);
+		List<String> actualSplit = Arrays.asList(Pattern.compile(NEWLINE).split(actual));
+		Collections.sort(actualSplit);
+		assertEquals(expected, actualSplit);
 	}
 
 	private class TestProperty1 extends VCardProperty {

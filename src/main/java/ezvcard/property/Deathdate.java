@@ -6,6 +6,8 @@ import java.util.Set;
 
 import ezvcard.VCardVersion;
 import ezvcard.util.PartialDate;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -101,6 +103,8 @@ import ezvcard.util.PartialDate;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Deathdate extends DateOrTimeProperty {
 	/**
 	 * Creates a deathdate property.

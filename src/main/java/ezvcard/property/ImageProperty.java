@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import ezvcard.parameter.ImageType;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -39,6 +41,8 @@ import ezvcard.parameter.ImageType;
  * Represents a vCard property that stores image data.
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class ImageProperty extends BinaryProperty<ImageType> {
 	/**
 	 * Creates an image property.

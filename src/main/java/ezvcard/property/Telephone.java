@@ -9,6 +9,8 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.util.TelUri;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -73,6 +75,8 @@ import ezvcard.util.TelUri;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Telephone extends VCardProperty implements HasAltId {
 	private String text;
 	private TelUri uri;

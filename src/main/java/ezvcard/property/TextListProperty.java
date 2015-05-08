@@ -29,10 +29,15 @@ package ezvcard.property;
  either expressed or implied, of the FreeBSD Project.
  */
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
  * Represents a property whose value is a list of textual values.
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class TextListProperty extends ListProperty<String> {
 	//empty
 }

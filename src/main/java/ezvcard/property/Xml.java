@@ -3,6 +3,8 @@ package ezvcard.property;
 import java.util.EnumSet;
 import java.util.Set;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -65,6 +67,8 @@ import ezvcard.util.XmlUtils;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Xml extends SimpleProperty<Document> implements HasAltId {
 	/**
 	 * Creates an XML property.

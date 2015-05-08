@@ -9,6 +9,7 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.VCardParameters;
+import lombok.*;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -86,6 +87,8 @@ import ezvcard.parameter.VCardParameters;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Address extends VCardProperty implements HasAltId {
 	private String poBox;
 	private String extendedAddress;
