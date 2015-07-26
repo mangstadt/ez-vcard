@@ -41,7 +41,7 @@ import ezvcard.util.StringUtils;
  */
 
 /**
- * Parses a vCard data stream.
+ * Parses the components out of each line in a vCard data stream.
  * @author Michael Angstadt
  */
 public class VCardRawReader implements Closeable {

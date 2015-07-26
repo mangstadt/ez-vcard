@@ -64,12 +64,15 @@ import ezvcard.util.IOUtils;
  * <pre class="brush:java">
  * VCard vcard1 = ...
  * VCard vcard2 = ...
- * 
  * File file = new File("vcard.vcf");
- * VCardWriter vcardWriter = new VCardWriter(file, VCardVersion.V3_0);
- * vcardWriter.write(vcard1);
- * vcardWriter.write(vcard2);
- * vcardWriter.close();
+ * VCardWriter writer = null;
+ * try {
+ *   writer = new VCardWriter(file, VCardVersion.V3_0);
+ *   writer.write(vcard1);
+ *   writer.write(vcard2);
+ * } finally {
+ *   if (writer != null) writer.close();
+ * }
  * </pre>
  * 
  * </p>
@@ -262,36 +265,60 @@ public class VCardWriter extends StreamWriter implements Flushable {
 				continue;
 			}
 
-			if (value != null) {
-				//set the data type
-				//only add a VALUE parameter if the data type is (1) not "unknown" and (2) different from the property's default data type
-				VCardDataType dataType = scribe.dataType(property, targetVersion);
-				if (dataType != null) {
-					VCardDataType defaultDataType = scribe.defaultDataType(targetVersion);
-					if (dataType != defaultDataType) {
-						if (defaultDataType == VCardDataType.DATE_AND_OR_TIME && (dataType == VCardDataType.DATE || dataType == VCardDataType.DATE_TIME || dataType == VCardDataType.TIME)) {
-							//do not write VALUE if the default data type is "date-and-or-time" and the property's data type is time-based
-						} else {
-							parameters.setValue(dataType);
-						}
-					}
+			/*
+			 * Set the property's data type.
+			 * 
+			 * Only add a VALUE parameter if the data type is:
+			 * (1) not "unknown"
+			 * (2) different from the property's default data type
+			 * (3) not the date/time special case (see code)
+			 */
+			VCardDataType dataType = scribe.dataType(property, targetVersion);
+			if (dataType != null) {
+				VCardDataType defaultDataType = scribe.defaultDataType(targetVersion);
+				if (dataType != defaultDataType && !isDateTimeValueParameterSpecialCase(defaultDataType, dataType)) {
+					parameters.setValue(dataType);
 				}
+			}
 
-				writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, value);
+			//write the property
+			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, value);
 
-				//Outlook 2010 requires an empty line after base64 values (at least, some of the time)
-				//https://code.google.com/p/ez-vcard/issues/detail?id=21
-				if (getTargetVersion() != VCardVersion.V4_0 && property instanceof BinaryProperty) {
-					BinaryProperty binaryProperty = (BinaryProperty) property;
-					if (binaryProperty.getData() != null) {
-						writer.getFoldedLineWriter().writeln("");
-					}
+			/*
+			 * Outlook 2010 requires an empty line after base64 values (at
+			 * least, some of the time).
+			 * See: https://code.google.com/p/ez-vcard/issues/detail?id=21
+			 */
+			if (targetVersion != VCardVersion.V4_0 && property instanceof BinaryProperty) {
+				BinaryProperty binaryProperty = (BinaryProperty) property;
+				if (binaryProperty.getData() != null) {
+					writer.getFoldedLineWriter().writeln("");
 				}
-				continue;
 			}
 		}
 
 		writer.writeEndComponent("VCARD");
+	}
+
+	/**
+	 * Determines if the given default data type is "date-and-or-time" and the
+	 * given data type is time-based. Properties that meet this criteria should
+	 * NOT be given a VALUE parameter.
+	 * @param defaultDataType the property's default data type
+	 * @param dataType the current property instance's data type
+	 * @return true if the default data type is "date-and-or-time" and the
+	 * data type is time-based, false otherwise
+	 */
+	private boolean isDateTimeValueParameterSpecialCase(VCardDataType defaultDataType, VCardDataType dataType) {
+		//@formatter:off
+		return
+		defaultDataType == VCardDataType.DATE_AND_OR_TIME &&
+		(
+			dataType == VCardDataType.DATE ||
+			dataType == VCardDataType.DATE_TIME ||
+			dataType == VCardDataType.TIME
+		);
+		//@formatter:on
 	}
 
 	/**

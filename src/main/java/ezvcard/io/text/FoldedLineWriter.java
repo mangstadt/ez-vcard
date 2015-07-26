@@ -114,7 +114,6 @@ public class FoldedLineWriter extends Writer {
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void write(char[] cbuf, int off, int len, boolean quotedPrintable, Charset charset) throws IOException {
-		//encode to quoted-printable
 		if (quotedPrintable) {
 			if (charset == null) {
 				charset = Charset.forName("UTF-8");
@@ -129,21 +128,30 @@ public class FoldedLineWriter extends Writer {
 				off = 0;
 				len = cbuf.length;
 			} catch (EncoderException e) {
-				//thrown if an unsupported charset is passed into the codec
-				//this should never be thrown because we already know the charset is valid (Charset object is passed in)
+				/*
+				 * Thrown if an unsupported charset is passed into the codec.
+				 * This should never be thrown though, because we already know
+				 * the charset is valid (a Charset object is passed into the
+				 * method).
+				 */
 				throw new RuntimeException(e);
 			}
 		}
 
 		if (lineLength == null) {
-			//if line folding is disabled, then write directly to the Writer
+			/*
+			 * If line folding is disabled, then write directly to the Writer.
+			 */
 			writer.write(cbuf, off, len);
 			return;
 		}
 
 		int effectiveLineLength = lineLength;
 		if (quotedPrintable) {
-			//"=" must be appended onto each line
+			/*
+			 * Account for the "=" character that must be appended onto each
+			 * line.
+			 */
 			effectiveLineLength -= 1;
 		}
 
@@ -153,7 +161,10 @@ public class FoldedLineWriter extends Writer {
 		for (int i = start; i < end; i++) {
 			char c = cbuf[i];
 
-			//keep track of the quoted-printable characters to prevent them from being cut in two at a folding boundary
+			/*
+			 * Keep track of the quoted-printable characters to prevent them
+			 * from being cut in two at a folding boundary.
+			 */
 			if (encodedCharPos >= 0) {
 				encodedCharPos++;
 				if (encodedCharPos == 3) {
@@ -184,24 +195,39 @@ public class FoldedLineWriter extends Writer {
 			}
 
 			if (curLineLength >= effectiveLineLength) {
-				//if the last characters on the line are whitespace, then exceed the max line length in order to include the whitespace on the same line
-				//otherwise it will be lost because it will merge with the padding on the next line
+				/*
+				 * If the last characters on the line are whitespace, then
+				 * exceed the max line length in order to include the whitespace
+				 * on the same line. Otherwise, the whitespace will be lost
+				 * because it will merge with the padding on the next, folded
+				 * line.
+				 */
 				if (Character.isWhitespace(c)) {
 					while (Character.isWhitespace(c) && i < end - 1) {
 						i++;
 						c = cbuf[i];
 					}
 					if (i >= end - 1) {
-						//the rest of the char array is whitespace, so leave the loop
+						/*
+						 * The rest of the char array is whitespace, so leave
+						 * the loop.
+						 */
 						break;
 					}
 				}
 
-				//if we are in the middle of a quoted-printable encoded char, then exceed the max line length in order to print out the rest of the char
+				/*
+				 * If we are in the middle of a quoted-printable encoded
+				 * character, then exceed the max line length so the sequence
+				 * doesn't get split up across multiple lines.
+				 */
 				if (encodedCharPos > 0) {
 					i += 3 - encodedCharPos;
 					if (i >= end - 1) {
-						//the rest of the char array was an encoded char, so leave the loop
+						/*
+						 * The rest of the char array was a quoted-printable
+						 * encoded char, so leave the loop.
+						 */
 						break;
 					}
 				}

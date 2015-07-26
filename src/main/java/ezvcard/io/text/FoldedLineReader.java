@@ -40,7 +40,8 @@ import java.util.regex.Pattern;
  */
 
 /**
- * Automatically unfolds lines of text as they are read.
+ * Reads lines of text from a reader, transparently unfolding lines that are
+ * folded.
  * @author Michael Angstadt
  */
 public class FoldedLineReader extends BufferedReader {
@@ -48,7 +49,7 @@ public class FoldedLineReader extends BufferedReader {
 	 * Regular expression used to detect the first line of folded,
 	 * "quoted-printable" property values.
 	 */
-	private static final Pattern foldedQuotedPrintableValueRegex = Pattern.compile("[^:]*?QUOTED-PRINTABLE.*?:.*?=", Pattern.CASE_INSENSITIVE);
+	private final Pattern foldedQuotedPrintableValueRegex = Pattern.compile("[^:]*?QUOTED-PRINTABLE.*?:.*?=", Pattern.CASE_INSENSITIVE);
 
 	private String lastLine;
 	private int lastLineNum = 0, lineCount = 0;
@@ -95,22 +96,30 @@ public class FoldedLineReader extends BufferedReader {
 	}
 
 	/**
-	 * Reads the next non-empty line. Empty lines must be ignored because some
-	 * vCards (i.e. iPhone) contain empty lines. These empty lines appear in
-	 * between folded lines, which, if not ignored, will cause the parser to
-	 * incorrectly parse the vCard.
+	 * <p>
+	 * Reads the next non-empty line.
+	 * </p>
+	 * <p>
+	 * Empty lines must be ignored because some vCards (such as vCards created
+	 * by iPhones) contain empty lines. These empty lines appear in between
+	 * folded lines, which, if not ignored, will cause the parser to incorrectly
+	 * parse the vCard.
+	 * </p>
 	 * @return the next non-empty line or null of EOF
 	 * @throws IOException if there's a problem reading from the reader
 	 */
 	private String readNonEmptyLine() throws IOException {
-		String line;
-		do {
-			line = super.readLine();
-			if (line != null) {
-				lineCount++;
+		while (true) {
+			String line = super.readLine();
+			if (line == null) {
+				return null;
 			}
-		} while (line != null && line.length() == 0);
-		return line;
+
+			lineCount++;
+			if (line.length() > 0) {
+				return line;
+			}
+		}
 	}
 
 	/**
@@ -150,7 +159,7 @@ public class FoldedLineReader extends BufferedReader {
 		 * END. This is still part of the NOTE property value because the 3rd
 		 * line of NOTE ends with a "=".
 		 * 
-		 * This behavior has only been observed in Outlook vCards.
+		 * This behavior has only been observed in Outlook vCards. >:(
 		 */
 		//@formatter:on
 
@@ -210,6 +219,6 @@ public class FoldedLineReader extends BufferedReader {
 	 * @return the modified string
 	 */
 	private static String chop(String string) {
-		return string.substring(0, string.length() - 1);
+		return (string.length() > 0) ? string.substring(0, string.length() - 1) : string;
 	}
 }

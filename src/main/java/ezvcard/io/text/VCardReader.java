@@ -72,20 +72,24 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * 
  * <pre class="brush:java">
  * File file = new File("vcards.vcf");
- * VCardReader vcardReader = new VCardReader(file);
- * VCard vcard;
- * while ((vcard = vcardReader.readNext()) != null){
- *   ...
+ * VCardReader reader = null;
+ * try {
+ *   reader = new VCardReader(file);
+ *   VCard vcard;
+ *   while ((vcard = reader.readNext()) != null){
+ *     ...
+ *   }
+ * } finally {
+ *   if (reader != null) reader.close();
  * }
- * vcardReader.close();
  * </pre>
  * 
  * </p>
  * @author Michael Angstadt
  */
 public class VCardReader extends StreamReader {
-	private Charset defaultQuotedPrintableCharset;
 	private final VCardRawReader reader;
+	private Charset defaultQuotedPrintableCharset;
 
 	/**
 	 * Creates a vCard reader.
@@ -262,13 +266,13 @@ public class VCardReader extends StreamReader {
 				VCard curVCard = vcardStack.getLast();
 				VCardVersion version = curVCard.getVersion();
 
-				//tweak the parameters
+				//sanitize the parameters
 				processNamelessParameters(parameters);
 				processQuotedMultivaluedTypeParams(parameters);
 
 				//decode property value from quoted-printable
 				try {
-					value = decodeQuotedPrintable(name, parameters, value);
+					value = decodeQuotedPrintableValue(name, parameters, value);
 				} catch (DecoderException e) {
 					warnings.add(reader.getLineNum(), name, 38, e.getMessage());
 				}
@@ -279,7 +283,7 @@ public class VCardReader extends StreamReader {
 					scribe = new RawPropertyScribe(name);
 				}
 
-				//get the data type
+				//get the data type (VALUE parameter)
 				VCardDataType dataType = parameters.getValue();
 				if (dataType == null) {
 					//use the default data type if there is no VALUE parameter
@@ -301,8 +305,13 @@ public class VCardReader extends StreamReader {
 					property.setGroup(group);
 
 					if (property instanceof Label) {
-						//LABELs must be treated specially so they can be matched up with their ADRs
-						labelStack.getLast().add((Label) property);
+						/*
+						 * LABEL properties must be treated specially so they
+						 * can be matched up with the ADR properties that they
+						 * belong to.
+						 */
+						Label label = (Label) property;
+						labelStack.getLast().add(label);
 					} else {
 						curVCard.addProperty(property);
 					}
@@ -355,20 +364,29 @@ public class VCardReader extends StreamReader {
 	 * @param parameters the parameters
 	 */
 	private void processNamelessParameters(VCardParameters parameters) {
-		List<String> namelessParamValues = parameters.get(null);
+		List<String> namelessParamValues = parameters.removeAll(null);
 		for (String paramValue : namelessParamValues) {
-			String paramName;
-			if (VCardDataType.find(paramValue) != null) {
-				paramName = VCardParameters.VALUE;
-			} else if (Encoding.find(paramValue) != null) {
-				paramName = VCardParameters.ENCODING;
-			} else {
-				//otherwise, assume it's a TYPE
-				paramName = VCardParameters.TYPE;
-			}
+			String paramName = guessParameterName(paramValue);
 			parameters.put(paramName, paramValue);
 		}
-		parameters.removeAll(null);
+	}
+
+	/**
+	 * Makes a guess as to what a parameter value's name should be.
+	 * @param value the parameter value
+	 * @return the guessed name
+	 */
+	private String guessParameterName(String value) {
+		if (VCardDataType.find(value) != null) {
+			return VCardParameters.VALUE;
+		}
+
+		if (Encoding.find(value) != null) {
+			return VCardParameters.ENCODING;
+		}
+
+		//otherwise, assume it's a TYPE
+		return VCardParameters.TYPE;
 	}
 
 	/**
@@ -402,12 +420,13 @@ public class VCardReader extends StreamReader {
 	 * encoding and decodes it if it is.
 	 * @param name the property name
 	 * @param parameters the property parameters
-	 * @param value the property value
+	 * @param value the property value (may or may not be encoded in
+	 * quoted-printable
 	 * @return the decoded property value or the untouched property value if it
 	 * is not encoded in quoted-printable encoding
 	 * @throws DecoderException if the value couldn't be decoded
 	 */
-	private String decodeQuotedPrintable(String name, VCardParameters parameters, String value) throws DecoderException {
+	private String decodeQuotedPrintableValue(String name, VCardParameters parameters, String value) throws DecoderException {
 		if (parameters.getEncoding() != Encoding.QUOTED_PRINTABLE) {
 			//the property value is not encoded in quoted-printable encoding
 			return value;
