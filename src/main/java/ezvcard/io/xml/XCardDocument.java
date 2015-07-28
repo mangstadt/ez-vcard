@@ -132,12 +132,11 @@ import ezvcard.util.XmlUtils;
 //@formatter:on
 public class XCardDocument {
 	private final VCardVersion version4 = VCardVersion.V4_0; //xCard only supports 4.0
-
 	private final Document document;
 	private Element root;
 
 	/**
-	 * Creates an xCard document.
+	 * Creates an empty xCard document.
 	 */
 	public XCardDocument() {
 		this(createXCardsRoot());
@@ -197,9 +196,8 @@ public class XCardDocument {
 	 * character encoding that is defined within the XML document itself, and
 	 * should only be used if the encoding is undefined or if the encoding needs
 	 * to be ignored for whatever reason. The
-	 * {@link #XCardDocument(InputStream)} constructor should be used instead,
-	 * since it takes the XML document's character encoding into account when
-	 * parsing.
+	 * {@link #XCardDocument(InputStream)} constructor is preferred, since it
+	 * takes the XML document's character encoding into account when parsing.
 	 * </p>
 	 * @param reader the reader to read the vCards from
 	 * @throws IOException if there's a problem reading from the reader
@@ -224,7 +222,7 @@ public class XCardDocument {
 			//find the <vcards> element
 			root = (Element) xpath.evaluate("//" + nsContext.getPrefix() + ":" + VCARDS.getLocalPart(), document, XPathConstants.NODE);
 		} catch (XPathExpressionException e) {
-			//never thrown because xpath expression is hard coded
+			//should never thrown because the xpath expression is hard coded
 			throw new RuntimeException(e);
 		}
 	}
@@ -232,7 +230,7 @@ public class XCardDocument {
 	/**
 	 * Creates a {@link StreamReader} object that reads vCards from this XML
 	 * document.
-	 * @return the writer
+	 * @return the reader
 	 */
 	public StreamReader reader() {
 		return new XCardDocumentStreamReader();
@@ -248,7 +246,7 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Gets the XML document that was generated.
+	 * Gets the wrapped XML document.
 	 * @return the XML document
 	 */
 	public Document getDocument() {
@@ -264,7 +262,7 @@ public class XCardDocument {
 		try {
 			return reader().readAll();
 		} catch (IOException e) {
-			//not thrown because reading from DOM
+			//not thrown because we're reading from a DOM
 			throw new RuntimeException(e);
 		}
 	}
@@ -272,8 +270,8 @@ public class XCardDocument {
 	/**
 	 * Adds a vCard to the XML document.
 	 * @param vcard the vCard to add
-	 * @throws IllegalArgumentException if a scribe hasn't been registered for a
-	 * custom property class
+	 * @throws IllegalArgumentException if no scribe has been registered for the
+	 * property (only applies to custom property classes)
 	 */
 	public void add(VCard vcard) {
 		writer().write(vcard);
@@ -288,7 +286,7 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to a string and pretty-prints it.
+	 * Writes the XML document to a string, pretty-printing the XML string.
 	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @return the XML string
 	 */
@@ -297,7 +295,7 @@ public class XCardDocument {
 		try {
 			write(sw, indent);
 		} catch (TransformerException e) {
-			//writing to string
+			//not thrown because we're writing to a string
 		}
 		return sw.toString();
 	}
@@ -313,7 +311,8 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to an output stream and pretty-prints it.
+	 * Writes the XML document to an output stream, pretty-printing the XML
+	 * string.
 	 * @param out the output stream
 	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @throws TransformerException if there's a problem writing to the output
@@ -334,7 +333,7 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to a file and pretty-prints it.
+	 * Writes the XML document to a file, pretty-printing the XML string.
 	 * @param file the file stream
 	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @throws TransformerException if there's a problem writing to the file
@@ -359,7 +358,7 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to a writer and pretty-prints it.
+	 * Writes the XML document to a writer, pretty-printing the XML string.
 	 * @param writer the writer
 	 * @param indent the number of indent spaces to use for pretty-printing
 	 * @throws TransformerException if there's a problem writing to the writer
@@ -411,7 +410,7 @@ public class XCardDocument {
 		private void parseVCardElement(Element vcardElement) {
 			List<Element> children = XmlUtils.toElementList(vcardElement.getChildNodes());
 			for (Element child : children) {
-				if (GROUP.getNamespaceURI().equals(child.getNamespaceURI()) && GROUP.getLocalPart().equals(child.getLocalName())) {
+				if (XmlUtils.hasQName(child, GROUP)) {
 					String group = child.getAttribute("name");
 					if (group.length() == 0) {
 						group = null;
@@ -473,7 +472,7 @@ public class XCardDocument {
 		}
 
 		/**
-		 * Parses the property parameters (aka "sub types").
+		 * Parses the property parameters.
 		 * @param element the property's XML element
 		 * @return the parsed parameters
 		 */
@@ -499,7 +498,7 @@ public class XCardDocument {
 		private List<Element> getChildElements(Element parent, QName qname) {
 			List<Element> elements = new ArrayList<Element>();
 			for (Element child : XmlUtils.toElementList(parent.getChildNodes())) {
-				if (qname.getLocalPart().equals(child.getLocalName()) && qname.getNamespaceURI().equals(child.getNamespaceURI())) {
+				if (XmlUtils.hasQName(child, qname)) {
 					elements.add(child);
 				}
 			}
@@ -532,7 +531,7 @@ public class XCardDocument {
 			try {
 				super.write(vcard);
 			} catch (IOException e) {
-				//won't be thrown because writing to DOM
+				//won't be thrown because we're writing to a DOM
 			}
 		}
 

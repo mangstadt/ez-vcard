@@ -579,7 +579,8 @@ public class XCardWriterTest {
 	@Test
 	public void write_prettyPrint() throws Exception {
 		StringWriter sw = new StringWriter();
-		XCardWriter writer = new XCardWriter(sw, "  ");
+		XCardWriter writer = new XCardWriter(sw);
+		writer.setIndent("  ");
 		writer.setAddProdId(false);
 
 		VCard vcard = new VCard();

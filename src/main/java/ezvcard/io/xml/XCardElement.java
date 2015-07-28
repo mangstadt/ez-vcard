@@ -42,7 +42,7 @@ import ezvcard.util.XmlUtils;
  */
 
 /**
- * Wraps xCard functionality around an XML {@link Element}.
+ * Wraps xCard functionality around an XML {@link Element} object.
  * @author Michael Angstadt
  */
 public class XCardElement {

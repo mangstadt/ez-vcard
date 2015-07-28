@@ -86,19 +86,23 @@ import ezvcard.util.XmlUtils;
  * <pre class="brush:java">
  * VCard vcard1 = ...
  * VCard vcard2 = ...
- * 
  * File file = new File("vcards.xml");
- * XCardWriter xcardWriter = new XCardWriter(file);
- * xcardWriter.write(vcard1);
- * xcardWriter.write(vcard2);
- * xcardWriter.close();
+ * XCardWriter writer = null;
+ * try {
+ *   writer = new XCardWriter(file);
+ *   writer.write(vcard1);
+ *   writer.write(vcard2);
+ * } finally {
+ *   if (writer != null) writer.close();
+ * }
  * </pre>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
 public class XCardWriter extends StreamWriter {
-	//how to use SAX to write XML: http://stackoverflow.com/questions/4898590/generating-xml-using-sax-and-java
-	private final VCardVersion targetVersion = VCardVersion.V4_0;
+	//How to use SAX to write XML: http://stackoverflow.com/q/4898590
+
+	private final VCardVersion targetVersion = VCardVersion.V4_0; //xCard only supports 4.0
 	private final Document DOC = XmlUtils.createDocument();
 
 	/**
@@ -122,8 +126,8 @@ public class XCardWriter extends StreamWriter {
 
 	private final Writer writer;
 	private final TransformerHandler handler;
-	private final String indent;
 	private final boolean vcardsElementExists;
+	private String indent;
 	private int level = 0;
 	private boolean textNodeJustPrinted = false, started = false;
 
@@ -137,32 +141,11 @@ public class XCardWriter extends StreamWriter {
 
 	/**
 	 * Creates an xCard writer.
-	 * @param out the output stream to write the xCards to
-	 * @param indent the indentation string to use for pretty printing (e.g.
-	 * "\t") or null not to pretty print
-	 */
-	public XCardWriter(OutputStream out, String indent) {
-		this(utf8Writer(out), indent);
-	}
-
-	/**
-	 * Creates an xCard writer.
 	 * @param file the file to write the xCards to
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public XCardWriter(File file) throws IOException {
 		this(utf8Writer(file));
-	}
-
-	/**
-	 * Creates an xCard writer.
-	 * @param file the file to write the xCards to
-	 * @param indent the indentation string to use for pretty printing (e.g.
-	 * "\t") or null not to pretty print
-	 * @throws IOException if there's a problem opening the file
-	 */
-	public XCardWriter(File file, String indent) throws IOException {
-		this(utf8Writer(file), indent);
 	}
 
 	/**
@@ -175,25 +158,14 @@ public class XCardWriter extends StreamWriter {
 
 	/**
 	 * Creates an xCard writer.
-	 * @param writer the writer to write to
-	 * @param indent the indentation string to use for pretty printing (e.g.
-	 * "\t") or null not to pretty print
-	 */
-	public XCardWriter(Writer writer, String indent) {
-		this(writer, indent, null);
-	}
-
-	/**
-	 * Creates an xCard writer.
 	 * @param parent the DOM node to add child elements to
 	 */
 	public XCardWriter(Node parent) {
-		this(null, null, parent);
+		this(null, parent);
 	}
 
-	private XCardWriter(Writer writer, String indent, Node parent) {
+	private XCardWriter(Writer writer, Node parent) {
 		this.writer = writer;
-		this.indent = indent;
 
 		if (parent instanceof Document) {
 			Node root = parent.getFirstChild();
@@ -223,8 +195,7 @@ public class XCardWriter extends StreamWriter {
 			return false;
 		}
 
-		QName vcards = XCardQNames.VCARDS;
-		return vcards.getNamespaceURI().equals(node.getNamespaceURI()) && vcards.getLocalPart().equals(node.getLocalName());
+		return XmlUtils.hasQName(node, XCardQNames.VCARDS);
 	}
 
 	@Override
@@ -295,6 +266,15 @@ public class XCardWriter extends StreamWriter {
 		} else {
 			parameterDataTypes.put(parameterName, dataType);
 		}
+	}
+
+	/**
+	 * Set the indentation string to use for pretty-printing the output.
+	 * @param indent the indentation string (e.g. 2 spaces) or null to disable
+	 * pretty-printing (defaults to null)
+	 */
+	public void setIndent(String indent) {
+		this.indent = indent;
 	}
 
 	/**
@@ -379,7 +359,6 @@ public class XCardWriter extends StreamWriter {
 					level--;
 					end(element);
 				} else {
-					//make childless elements appear as "<foo />" instead of "<foo></foo>"
 					childless(element);
 				}
 
@@ -429,11 +408,20 @@ public class XCardWriter extends StreamWriter {
 			return;
 		}
 
-		//"\n" is hard-coded here because if the Windows "\r\n" is used, it will encode the "\r" character for XML ("&#13;")
+		/*
+		 * "\n" is hard-coded here because if the Windows "\r\n" is used, it
+		 * will encode the "\r" character for XML ("&#13;")
+		 */
 		String str = '\n' + StringUtils.repeat(indent, level);
 		handler.ignorableWhitespace(str.toCharArray(), 0, str.length());
 	}
 
+	/**
+	 * Makes an childless element appear as {@code<foo />} instead of
+	 * {@code<foo></foo>}
+	 * @param element
+	 * @throws SAXException
+	 */
 	private void childless(Element element) throws SAXException {
 		Attributes attributes = getElementAttributes(element);
 		indent();

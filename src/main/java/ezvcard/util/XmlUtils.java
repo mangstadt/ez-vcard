@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -259,6 +260,16 @@ public class XmlUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Determines if a node has a particular qualified name.
+	 * @param node the node
+	 * @param qname the qualified name
+	 * @return true if the node has the given qualified name, false if not
+	 */
+	public static boolean hasQName(Node node, QName qname) {
+		return qname.getNamespaceURI().equals(node.getNamespaceURI()) && qname.getLocalPart().equals(node.getLocalName());
 	}
 
 	private XmlUtils() {

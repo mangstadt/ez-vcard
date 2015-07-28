@@ -5,7 +5,8 @@ import javax.xml.namespace.QName;
 import ezvcard.VCardVersion;
 
 /**
- * Contains the XML element names of some of the standard xCard elements.
+ * Contains the XML element names of the standard xCard elements (except the
+ * property element names).
  * @author Michael Angstadt
  */
 public interface XCardQNames {
