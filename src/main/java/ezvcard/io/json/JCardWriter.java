@@ -58,12 +58,15 @@ import ezvcard.property.VCardProperty;
  * <pre class="brush:java">
  * VCard vcard1 = ...
  * VCard vcard2 = ...
- * 
  * File file = new File("vcard.json");
- * JCardWriter jcardWriter = new JCardWriter(file);
- * jcardWriter.write(vcard1);
- * jcardWriter.write(vcard2);
- * jcardWriter.close();
+ * JCardWriter writer = null;
+ * try {
+ *   writer = new JCardWriter(file);
+ *   writer.write(vcard1);
+ *   writer.write(vcard2);
+ * } finally {
+ *   if (writer != null) writer.close();
+ * }
  * </pre>
  * 
  * </p>
