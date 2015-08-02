@@ -48,6 +48,9 @@ import ezvcard.parameter.VCardParameters;
 /**
  * Writes data to an vCard data stream.
  * @author Michael Angstadt
+ * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+ * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
  */
 public class VCardRawWriter implements Closeable, Flushable {
 	/**
@@ -116,8 +119,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	private VCardVersion version;
 
 	/**
-	 * Creates a vCard raw writer.
-	 * @param writer the writer to the data stream
+	 * @param writer the writer to wrap
 	 * @param version the vCard version to adhere to
 	 */
 	public VCardRawWriter(Writer writer, VCardVersion version) {
@@ -595,7 +597,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	/**
 	 * Determines if a parameter value contains special characters.
 	 * @param parameterValue the parameter value
-	 * @return true if it contains special character, false if not
+	 * @return true if it contains special characters, false if not
 	 */
 	private boolean containsSpecialChars(String parameterValue) {
 		return quoteMeRegex.matcher(parameterValue).matches();

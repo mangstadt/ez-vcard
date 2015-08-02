@@ -82,24 +82,21 @@ public class JCardReader extends StreamReader {
 	private final JCardRawReader reader;
 
 	/**
-	 * Creates a jCard reader.
-	 * @param json the JSON string
+	 * @param json the JSON string to read from
 	 */
 	public JCardReader(String json) {
 		this(new StringReader(json));
 	}
 
 	/**
-	 * Creates a jCard reader.
-	 * @param in the input stream to read the vCards from
+	 * @param in the input stream to read from
 	 */
 	public JCardReader(InputStream in) {
 		this(utf8Reader(in));
 	}
 
 	/**
-	 * Creates a jCard reader.
-	 * @param file the file to read the vCards from
+	 * @param file the file to read from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public JCardReader(File file) throws FileNotFoundException {
@@ -107,8 +104,7 @@ public class JCardReader extends StreamReader {
 	}
 
 	/**
-	 * Creates a jCard reader.
-	 * @param reader the reader to read the vCards from
+	 * @param reader the reader to read from
 	 */
 	public JCardReader(Reader reader) {
 		this.reader = new JCardRawReader(reader);

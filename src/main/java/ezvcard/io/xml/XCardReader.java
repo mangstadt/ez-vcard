@@ -119,16 +119,14 @@ public class XCardReader extends StreamReader {
 	private final BlockingQueue<Object> threadBlock = new ArrayBlockingQueue<Object>(1);
 
 	/**
-	 * Creates an xCard reader.
-	 * @param xml the XML to read the xCards from
+	 * @param xml the XML to read from
 	 */
 	public XCardReader(String xml) {
 		this(new StringReader(xml));
 	}
 
 	/**
-	 * Creates an xCard reader.
-	 * @param in the input stream to read the xCards from
+	 * @param in the input stream to read from
 	 */
 	public XCardReader(InputStream in) {
 		source = new StreamSource(in);
@@ -136,8 +134,7 @@ public class XCardReader extends StreamReader {
 	}
 
 	/**
-	 * Creates an xCard reader.
-	 * @param file the file to read the xCards from
+	 * @param file the file to read from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public XCardReader(File file) throws FileNotFoundException {
@@ -145,7 +142,6 @@ public class XCardReader extends StreamReader {
 	}
 
 	/**
-	 * Creates an xCard reader.
 	 * @param reader the reader to read from
 	 */
 	public XCardReader(Reader reader) {
@@ -154,7 +150,6 @@ public class XCardReader extends StreamReader {
 	}
 
 	/**
-	 * Creates an xCard reader.
 	 * @param node the DOM node to read from
 	 */
 	public XCardReader(Node node) {

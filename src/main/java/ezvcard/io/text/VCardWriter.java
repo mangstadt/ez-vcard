@@ -98,14 +98,16 @@ import ezvcard.util.IOUtils;
  * 
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+ * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
  */
 public class VCardWriter extends StreamWriter implements Flushable {
 	private final VCardRawWriter writer;
 	private final LinkedList<Boolean> prodIdStack = new LinkedList<Boolean>();
 
 	/**
-	 * Creates a vCard writer.
-	 * @param out the output stream to write the vCard to
+	 * @param out the output stream to write to
 	 * @param targetVersion the version that the vCards should conform to (if
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 */
@@ -114,8 +116,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	}
 
 	/**
-	 * Creates a vCard writer.
-	 * @param file the file to write the vCard to
+	 * @param file the file to write to
 	 * @param targetVersion the version that the vCards should conform to (if
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 * @throws IOException if there's a problem opening the file
@@ -125,8 +126,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	}
 
 	/**
-	 * Creates a vCard writer.
-	 * @param file the file to write the vCard to
+	 * @param file the file to write to
 	 * @param append true to append to the end of the file, false to overwrite
 	 * it
 	 * @param targetVersion the version that the vCards should conform to (if
@@ -138,8 +138,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	}
 
 	/**
-	 * Creates a vCard writer.
-	 * @param writer the writer to write the vCard to
+	 * @param writer the writer to write to
 	 * @param targetVersion the version that the vCards should conform to
 	 */
 	public VCardWriter(Writer writer, VCardVersion targetVersion) {

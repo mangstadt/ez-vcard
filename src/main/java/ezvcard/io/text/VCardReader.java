@@ -86,30 +86,30 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * 
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+ * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
  */
 public class VCardReader extends StreamReader {
 	private final VCardRawReader reader;
 	private Charset defaultQuotedPrintableCharset;
 
 	/**
-	 * Creates a vCard reader.
-	 * @param str the string to read the vCards from
+	 * @param str the string to read from
 	 */
 	public VCardReader(String str) {
 		this(new StringReader(str));
 	}
 
 	/**
-	 * Creates a vCard reader.
-	 * @param in the input stream to read the vCards from
+	 * @param in the input stream to read from
 	 */
 	public VCardReader(InputStream in) {
 		this(new InputStreamReader(in));
 	}
 
 	/**
-	 * Creates a vCard reader.
-	 * @param file the file to read the vCards from
+	 * @param file the file to read from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public VCardReader(File file) throws FileNotFoundException {
@@ -117,8 +117,7 @@ public class VCardReader extends StreamReader {
 	}
 
 	/**
-	 * Creates a vCard reader.
-	 * @param reader the reader to read the vCards from
+	 * @param reader the reader to read from
 	 */
 	public VCardReader(Reader reader) {
 		this.reader = new VCardRawReader(reader);

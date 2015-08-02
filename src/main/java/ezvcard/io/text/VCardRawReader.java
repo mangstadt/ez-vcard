@@ -41,8 +41,11 @@ import ezvcard.util.StringUtils;
  */
 
 /**
- * Parses the components out of each line in a vCard data stream.
+ * Parses the components out of each line in a plain-text vCard data stream.
  * @author Michael Angstadt
+ * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
+ * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
  */
 public class VCardRawReader implements Closeable {
 	private final FoldedLineReader reader;
@@ -50,8 +53,7 @@ public class VCardRawReader implements Closeable {
 	private VCardVersion version = VCardVersion.V2_1; //initialize to 2.1, since the VERSION property can exist anywhere in the file in this version
 
 	/**
-	 * Creates a new reader.
-	 * @param reader the reader to the data stream
+	 * @param reader the reader to wrap
 	 */
 	public VCardRawReader(Reader reader) {
 		this.reader = new FoldedLineReader(reader);

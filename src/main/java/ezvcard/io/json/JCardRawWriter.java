@@ -55,8 +55,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	private boolean open = false;
 
 	/**
-	 * Creates a new raw writer.
-	 * @param writer the writer to the data stream
+	 * @param writer the writer to wrap
 	 * @param wrapInArray true to wrap everything in an array, false not to
 	 * (useful when writing more than one vCard)
 	 */

@@ -53,8 +53,7 @@ public class JCardRawReader implements Closeable {
 	private JCardDataStreamListener listener;
 
 	/**
-	 * Creates a new reader.
-	 * @param reader the reader to the data stream
+	 * @param reader the reader to wrap
 	 */
 	public JCardRawReader(Reader reader) {
 		this.reader = reader;

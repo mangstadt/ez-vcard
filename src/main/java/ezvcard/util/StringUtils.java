@@ -33,7 +33,7 @@ import java.util.Map;
  */
 
 /**
- * Helper class for dealing with vCard strings.
+ * Helper class for dealing with strings.
  * @author Michael Angstadt
  */
 public class StringUtils {
@@ -186,8 +186,7 @@ public class StringUtils {
 	}
 
 	/**
-	 * Callback interface used with various {@code VCardStringUtils.join()}
-	 * methods.
+	 * Callback interface used with various {@code StringUtils.join()} methods.
 	 * @author Michael Angstadt
 	 * @param <T> the value type
 	 */
@@ -207,6 +206,6 @@ public class StringUtils {
 	}
 
 	private StringUtils() {
-		//hide constructor
+		//hide
 	}
 }

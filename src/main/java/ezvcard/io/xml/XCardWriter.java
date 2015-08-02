@@ -132,16 +132,14 @@ public class XCardWriter extends StreamWriter {
 	private boolean textNodeJustPrinted = false, started = false;
 
 	/**
-	 * Creates an xCard writer.
-	 * @param out the output stream to write the xCards to
+	 * @param out the output stream to write to (UTF-8 encoding will be used)
 	 */
 	public XCardWriter(OutputStream out) {
 		this(utf8Writer(out));
 	}
 
 	/**
-	 * Creates an xCard writer.
-	 * @param file the file to write the xCards to
+	 * @param file the file to write to (UTF-8 encoding will be used)
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public XCardWriter(File file) throws IOException {
@@ -149,7 +147,6 @@ public class XCardWriter extends StreamWriter {
 	}
 
 	/**
-	 * Creates an xCard writer.
 	 * @param writer the writer to write to
 	 */
 	public XCardWriter(Writer writer) {
@@ -157,7 +154,6 @@ public class XCardWriter extends StreamWriter {
 	}
 
 	/**
-	 * Creates an xCard writer.
 	 * @param parent the DOM node to add child elements to
 	 */
 	public XCardWriter(Node parent) {
@@ -419,7 +415,7 @@ public class XCardWriter extends StreamWriter {
 	/**
 	 * Makes an childless element appear as {@code<foo />} instead of
 	 * {@code<foo></foo>}
-	 * @param element
+	 * @param element the element
 	 * @throws SAXException
 	 */
 	private void childless(Element element) throws SAXException {
