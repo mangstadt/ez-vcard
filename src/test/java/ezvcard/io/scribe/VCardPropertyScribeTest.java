@@ -1,5 +1,6 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
@@ -337,7 +338,7 @@ public class VCardPropertyScribeTest {
 		};
 
 		TestProperty property = new TestProperty("value");
-		VCardParameters copy = m.prepareParameters(property, VCardVersion.V4_0, new VCard());
+		VCardParameters copy = m.prepareParameters(property, V4_0, new VCard());
 
 		assertNotSame(property.getParameters(), copy);
 		assertEquals("value", copy.first("PARAM"));
@@ -417,7 +418,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void getQName_default() {
-		QName expected = new QName(VCardVersion.V4_0.getXmlNamespace(), "test");
+		QName expected = new QName(V4_0.getXmlNamespace(), "test");
 		QName actual = scribe.getQName();
 		assertEquals(expected, actual);
 	}

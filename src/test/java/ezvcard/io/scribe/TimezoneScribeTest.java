@@ -1,5 +1,8 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
@@ -8,7 +11,6 @@ import java.util.TimeZone;
 import org.junit.Test;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.Timezone;
 import ezvcard.util.UtcOffset;
@@ -66,33 +68,33 @@ public class TimezoneScribeTest {
 	public void prepareParameters() {
 		sensei.assertDataType(withOffset).run(VCardDataType.UTC_OFFSET);
 
-		sensei.assertDataType(withTimezoneId).versions(VCardVersion.V2_1).run(VCardDataType.UTC_OFFSET);
-		sensei.assertDataType(withTimezoneId).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(VCardDataType.TEXT);
+		sensei.assertDataType(withTimezoneId).versions(V2_1).run(VCardDataType.UTC_OFFSET);
+		sensei.assertDataType(withTimezoneId).versions(V3_0, V4_0).run(VCardDataType.TEXT);
 
-		sensei.assertDataType(withText).versions(VCardVersion.V2_1).run(VCardDataType.UTC_OFFSET);
-		sensei.assertDataType(withText).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(VCardDataType.TEXT);
+		sensei.assertDataType(withText).versions(V2_1).run(VCardDataType.UTC_OFFSET);
+		sensei.assertDataType(withText).versions(V3_0, V4_0).run(VCardDataType.TEXT);
 
-		sensei.assertDataType(withOffsetAndTimezoneId).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(VCardDataType.UTC_OFFSET);
-		sensei.assertDataType(withOffsetAndTimezoneId).versions(VCardVersion.V4_0).run(VCardDataType.TEXT);
+		sensei.assertDataType(withOffsetAndTimezoneId).versions(V2_1, V3_0).run(VCardDataType.UTC_OFFSET);
+		sensei.assertDataType(withOffsetAndTimezoneId).versions(V4_0).run(VCardDataType.TEXT);
 
-		sensei.assertDataType(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(VCardDataType.UTC_OFFSET);
-		sensei.assertDataType(empty).versions(VCardVersion.V4_0).run(VCardDataType.TEXT);
+		sensei.assertDataType(empty).versions(V2_1, V3_0).run(VCardDataType.UTC_OFFSET);
+		sensei.assertDataType(empty).versions(V4_0).run(VCardDataType.TEXT);
 	}
 
 	@Test
 	public void writeText() {
-		sensei.assertWriteText(withOffset).versions(VCardVersion.V2_1, VCardVersion.V4_0).run(offsetStrBasic);
-		sensei.assertWriteText(withOffset).versions(VCardVersion.V3_0).run(offsetStrExtended);
+		sensei.assertWriteText(withOffset).versions(V2_1, V4_0).run(offsetStrBasic);
+		sensei.assertWriteText(withOffset).versions(V3_0).run(offsetStrExtended);
 
-		sensei.assertWriteText(withTimezoneId).versions(VCardVersion.V2_1).run(newYork.inDaylightTime(new Date()) ? "-0400" : "-0500");
-		sensei.assertWriteText(withTimezoneId).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(timezoneIdStr);
+		sensei.assertWriteText(withTimezoneId).versions(V2_1).run(newYork.inDaylightTime(new Date()) ? "-0400" : "-0500");
+		sensei.assertWriteText(withTimezoneId).versions(V3_0, V4_0).run(timezoneIdStr);
 
-		sensei.assertWriteText(withText).versions(VCardVersion.V2_1).run("");
-		sensei.assertWriteText(withText).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(textStr);
+		sensei.assertWriteText(withText).versions(V2_1).run("");
+		sensei.assertWriteText(withText).versions(V3_0, V4_0).run(textStr);
 
-		sensei.assertWriteText(withOffsetAndTimezoneId).versions(VCardVersion.V2_1).run(offsetStrBasic);
-		sensei.assertWriteText(withOffsetAndTimezoneId).versions(VCardVersion.V3_0).run(offsetStrExtended);
-		sensei.assertWriteText(withOffsetAndTimezoneId).versions(VCardVersion.V4_0).run(timezoneIdStr);
+		sensei.assertWriteText(withOffsetAndTimezoneId).versions(V2_1).run(offsetStrBasic);
+		sensei.assertWriteText(withOffsetAndTimezoneId).versions(V3_0).run(offsetStrExtended);
+		sensei.assertWriteText(withOffsetAndTimezoneId).versions(V4_0).run(timezoneIdStr);
 
 		sensei.assertWriteText(empty).run("");
 	}
@@ -119,13 +121,13 @@ public class TimezoneScribeTest {
 		sensei.assertParseText(offsetStrExtended).dataType(VCardDataType.UTC_OFFSET).run(is(withOffset));
 		sensei.assertParseText(offsetStrExtended).dataType(VCardDataType.TEXT).run(is(withOffset));
 
-		sensei.assertParseText(timezoneIdStr).versions(VCardVersion.V2_1).cannotParse();
-		sensei.assertParseText(timezoneIdStr).versions(VCardVersion.V3_0).warnings(1).run(is(withTimezoneId));
-		sensei.assertParseText(timezoneIdStr).versions(VCardVersion.V3_0).dataType(VCardDataType.UTC_OFFSET).warnings(1).run(is(withTimezoneId));
-		sensei.assertParseText(timezoneIdStr).versions(VCardVersion.V3_0).dataType(VCardDataType.TEXT).run(is(withTimezoneId));
-		sensei.assertParseText(timezoneIdStr).versions(VCardVersion.V4_0).run(is(withTimezoneId));
-		sensei.assertParseText(timezoneIdStr).versions(VCardVersion.V4_0).dataType(VCardDataType.UTC_OFFSET).warnings(1).run(is(withTimezoneId));
-		sensei.assertParseText(timezoneIdStr).versions(VCardVersion.V4_0).dataType(VCardDataType.TEXT).run(is(withTimezoneId));
+		sensei.assertParseText(timezoneIdStr).versions(V2_1).cannotParse();
+		sensei.assertParseText(timezoneIdStr).versions(V3_0).warnings(1).run(is(withTimezoneId));
+		sensei.assertParseText(timezoneIdStr).versions(V3_0).dataType(VCardDataType.UTC_OFFSET).warnings(1).run(is(withTimezoneId));
+		sensei.assertParseText(timezoneIdStr).versions(V3_0).dataType(VCardDataType.TEXT).run(is(withTimezoneId));
+		sensei.assertParseText(timezoneIdStr).versions(V4_0).run(is(withTimezoneId));
+		sensei.assertParseText(timezoneIdStr).versions(V4_0).dataType(VCardDataType.UTC_OFFSET).warnings(1).run(is(withTimezoneId));
+		sensei.assertParseText(timezoneIdStr).versions(V4_0).dataType(VCardDataType.TEXT).run(is(withTimezoneId));
 
 		sensei.assertParseText("").run(is(empty));
 	}

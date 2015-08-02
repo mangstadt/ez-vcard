@@ -1,5 +1,8 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -7,7 +10,6 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import ezvcard.VCard;
-import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.AddressType;
@@ -77,10 +79,10 @@ public class AddressScribeTest {
 		property.setLabel("label");
 
 		//2.1 and 3.0 should remove it
-		sensei.assertPrepareParams(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run();
+		sensei.assertPrepareParams(property).versions(V2_1, V3_0).run();
 
 		//4.0 should keep it
-		sensei.assertPrepareParams(property).versions(VCardVersion.V4_0).expected("LABEL", "label").run();
+		sensei.assertPrepareParams(property).versions(V4_0).expected("LABEL", "label").run();
 	}
 
 	/**
@@ -93,10 +95,10 @@ public class AddressScribeTest {
 		property.addType(AddressType.PREF);
 
 		//2.1 and 3.0 keep it
-		sensei.assertPrepareParams(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).expected("TYPE", "pref").run();
+		sensei.assertPrepareParams(property).versions(V2_1, V3_0).expected("TYPE", "pref").run();
 
 		//4.0 converts it to "PREF=1"
-		sensei.assertPrepareParams(property).versions(VCardVersion.V4_0).expected("PREF", "1").run();
+		sensei.assertPrepareParams(property).versions(V4_0).expected("PREF", "1").run();
 	}
 
 	/**
@@ -121,14 +123,14 @@ public class AddressScribeTest {
 		vcard.addAddress(adr3);
 
 		//2.1 and 3.0 converts the lowest PREF parameter to "TYPE=pref", and removes all the rest
-		sensei.assertPrepareParams(adr1).versions(VCardVersion.V2_1, VCardVersion.V3_0).vcard(vcard).expected("TYPE", "pref").run();
-		sensei.assertPrepareParams(adr2).versions(VCardVersion.V2_1, VCardVersion.V3_0).vcard(vcard).run();
-		sensei.assertPrepareParams(adr3).versions(VCardVersion.V2_1, VCardVersion.V3_0).vcard(vcard).run();
+		sensei.assertPrepareParams(adr1).versions(V2_1, V3_0).vcard(vcard).expected("TYPE", "pref").run();
+		sensei.assertPrepareParams(adr2).versions(V2_1, V3_0).vcard(vcard).run();
+		sensei.assertPrepareParams(adr3).versions(V2_1, V3_0).vcard(vcard).run();
 
 		//4.0 keeps it
-		sensei.assertPrepareParams(adr1).versions(VCardVersion.V4_0).vcard(vcard).expected("PREF", "1").run();
-		sensei.assertPrepareParams(adr2).versions(VCardVersion.V4_0).vcard(vcard).expected("PREF", "2").run();
-		sensei.assertPrepareParams(adr3).versions(VCardVersion.V4_0).vcard(vcard).run();
+		sensei.assertPrepareParams(adr1).versions(V4_0).vcard(vcard).expected("PREF", "1").run();
+		sensei.assertPrepareParams(adr2).versions(V4_0).vcard(vcard).expected("PREF", "2").run();
+		sensei.assertPrepareParams(adr3).versions(V4_0).vcard(vcard).run();
 	}
 
 	@Test

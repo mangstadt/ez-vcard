@@ -1,10 +1,12 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.Geo;
 
@@ -52,20 +54,20 @@ public class GeoScribeTest {
 
 	@Test
 	public void writeText() {
-		sensei.assertWriteText(withBoth).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("-12.34;56.78");
-		sensei.assertWriteText(withBoth).versions(VCardVersion.V4_0).run("geo:-12.34,56.78");
+		sensei.assertWriteText(withBoth).versions(V2_1, V3_0).run("-12.34;56.78");
+		sensei.assertWriteText(withBoth).versions(V4_0).run("geo:-12.34,56.78");
 
-		sensei.assertWriteText(withLatitude).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("-12.34;0.0");
-		sensei.assertWriteText(withLatitude).versions(VCardVersion.V4_0).run("geo:-12.34,0.0");
+		sensei.assertWriteText(withLatitude).versions(V2_1, V3_0).run("-12.34;0.0");
+		sensei.assertWriteText(withLatitude).versions(V4_0).run("geo:-12.34,0.0");
 
-		sensei.assertWriteText(withLongitude).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("0.0;56.78");
-		sensei.assertWriteText(withLongitude).versions(VCardVersion.V4_0).run("geo:0.0,56.78");
+		sensei.assertWriteText(withLongitude).versions(V2_1, V3_0).run("0.0;56.78");
+		sensei.assertWriteText(withLongitude).versions(V4_0).run("geo:0.0,56.78");
 
-		sensei.assertWriteText(withManyDecimals).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("-12.344444;56.777778");
-		sensei.assertWriteText(withManyDecimals).versions(VCardVersion.V4_0).run("geo:-12.344444,56.777778");
+		sensei.assertWriteText(withManyDecimals).versions(V2_1, V3_0).run("-12.344444;56.777778");
+		sensei.assertWriteText(withManyDecimals).versions(V4_0).run("geo:-12.344444,56.777778");
 
-		sensei.assertWriteText(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run("");
-		sensei.assertWriteText(empty).versions(VCardVersion.V4_0).run("");
+		sensei.assertWriteText(empty).versions(V2_1, V3_0).run("");
+		sensei.assertWriteText(empty).versions(V4_0).run("");
 	}
 
 	@Test
@@ -88,8 +90,8 @@ public class GeoScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText("-12.34;56.78").versions(VCardVersion.V2_1, VCardVersion.V3_0).run(is(withBoth));
-		sensei.assertParseText("geo:-12.34,56.78").versions(VCardVersion.V4_0).run(is(withBoth));
+		sensei.assertParseText("-12.34;56.78").versions(V2_1, V3_0).run(is(withBoth));
+		sensei.assertParseText("geo:-12.34,56.78").versions(V4_0).run(is(withBoth));
 
 		sensei.assertParseText("invalid;56.78").cannotParse();
 		sensei.assertParseText("-12.34;invalid").cannotParse();
