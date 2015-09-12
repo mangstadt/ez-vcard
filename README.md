@@ -40,7 +40,7 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
  * Full compliance with 2.1, 3.0, and 4.0 specifications (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Supports XML, HTML, and JSON encoded vCards (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Extensive unit test coverage.
- * Low Java version requirement (1.5 or above).
+ * Low Java version requirement (1.5 or above, 1.6 for jCards).
  * Few dependencies on external libraries.  Dependencies can be selectively excluded based on the functionality that is needed (see [Dependencies](https://github.com/mangstadt/ez-vcard/wiki/Dependencies)).
 
 # News
@@ -115,13 +115,14 @@ Eike Weyl (Wiki fix)
 
 **Caffeine Suppliers**  
 'feine  
-Starbucks  
 Volo Coffeehouse
 
 _No animals were harmed in the making of this library._
 
 # Donate
 
-Show you thanks by donating to this project! Thank you! :D
+Show you thanks by donating to this project!
 
-![https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)
+[Donate via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+
+[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
