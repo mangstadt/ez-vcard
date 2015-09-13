@@ -45,21 +45,17 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
-*March 21, 2015*
+**September 13, 2015**
+
+[Version 0.9.7](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This released fixes a few miscellaneous bugs.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
+**March 21, 2015**
 
 Due to the [impending shutdown of Google Code](http://google-opensource.blogspot.com/2015/03/farewell-to-google-code.html), ez-vcard has moved to Github!  Please bear with me as I work out the kinks. :)
 
-*October 13, 2014*
+**October 13, 2014**
 
-Downloads Version 0.9.6 released.  This released fixes a few miscellaneous bugs.  Please see the changelog for details.
-
-*August 17, 2014*
-
-Do you use ez-vcard with Android?  The [ez-vcard-android](http://github.com/mangstadt/ez-vcard-android) project makes it easier to use ez-vcard with Android!
-
-*July 26, 2014*
-
-Version 0.9.5 released.  This released fixes a few miscellaneous bugs.  Please see the changelog for details.
+[Version 0.9.6](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This released fixes a few miscellaneous bugs.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
 
 [Old News](https://github.com/mangstadt/ez-vcard/wiki/Old-News)
 
@@ -69,7 +65,7 @@ Version 0.9.5 released.  This released fixes a few miscellaneous bugs.  Please s
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.9.6</version>
+   <version>0.9.7</version>
 </dependency>
 ```
 
