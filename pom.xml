@@ -5,7 +5,7 @@
 	<packaging>bundle</packaging> <!-- "bundle" used for OSGi support -->
 	<version>0.9.7-SNAPSHOT</version>
 	<name>ez-vcard</name>
-	<url>http://code.google.com/p/ez-vcard</url>
+	<url>http://github.com/mangstadt/ez-vcard</url>
 	<inceptionYear>2012</inceptionYear>
 	<organization>
 		<name>Michael Angstadt</name>
@@ -36,14 +36,14 @@
 	</developers>
 
 	<issueManagement>
-		<system>Google Code Issue Tracker</system>
-		<url>http://code.google.com/p/ez-vcard/issues/list</url>
+		<system>Github Issue Tracker</system>
+		<url>https://github.com/mangstadt/ez-vcard/issues</url>
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://ez-vcard.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://ez-vcard.googlecode.com/svn/trunk</developerConnection>
-		<url>http://code.google.com/p/ez-vcard/source/browse/</url>
+		<connection>scm:git:https://github.com/mangstadt/ez-vcard.git</connection>
+		<developerConnection>scm:git:https://github.com/mangstadt/ez-vcard.git</developerConnection>
+		<url>https://github.com/mangstadt/ez-vcard/commits/master</url>
 	</scm>
 
 	<properties>
