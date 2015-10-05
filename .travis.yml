@@ -1,1 +1,7 @@
 language: java
+
+#codecov.io
+before_install:
+  - pip install --user codecov
+after_success:
+  - codecov
