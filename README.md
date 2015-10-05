@@ -1,5 +1,7 @@
 # ez-vcard
 
+[![Join the chat at https://gitter.im/mangstadt/ez-vcard](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mangstadt/ez-vcard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ez-vcard is a vCard library written in Java.  It can read and write vCards in many different formats.  The "ez" stands for "easy" because the goal is to create a library that's easy to use.
 
 <p align="center"><strong><a href="https://github.com/mangstadt/ez-vcard/wiki/Downloads">Downloads</a> |
