@@ -4,8 +4,9 @@
 | --- | --- |
 | Continuous Integration: | [![](https://travis-ci.org/mangstadt/ez-vcard.svg?branch=master)](https://travis-ci.org/mangstadt/ez-vcard) |
 | Code Coverage: | [![codecov.io](http://codecov.io/github/mangstadt/ez-vcard/coverage.svg?branch=master)](http://codecov.io/github/mangstadt/ez-vcard?branch=master) |
+| Maven Central: | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.googlecode.ez-vcard/ez-vcard/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.googlecode.ez-vcard/ez-vcard) |
 | Chat Room: | [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mangstadt/ez-vcard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) |
-| License: | [FreeBSD License](https://github.com/mangstadt/ez-vcard/blob/master/LICENSE) |
+| License: | [![FreeBSD License](https://img.shields.io/badge/License-FreeBSD-red.svg)](https://github.com/mangstadt/ez-vcard/blob/master/LICENSE) |
 
 ez-vcard is a vCard library written in Java.  It can read and write vCards in many different formats.  The "ez" stands for "easy" because the goal is to create a library that's easy to use.
 
@@ -76,11 +77,22 @@ Due to the [impending shutdown of Google Code](http://google-opensource.blogspot
 </dependency>
 ```
 
+# Build Instructions
+
+ez-vcard uses [Maven](http://maven.apache.org/) as its build tool, and adheres to its convensions.
+
+To build the project: `mvn compile`  
+To run the unit tests: `mvn test`  
+To build a JAR: `mvn package`
+
 # Questions / Feedback
 
-Questions and feedback can be posted to the [discussion forum](http://groups.google.com/group/ez-vcard-discuss).  You can also email me directly: mike(dot)angstadt(at)gmail(dot)com
+You have some options:
 
-Also, you might be able to find me or other ez-vcard users on [ez-vcard's Gitter chat room](https://gitter.im/mangstadt/ez-vcard).
+ * [Google Groups discussion forum](http://groups.google.com/group/ez-vcard-discuss)
+ * [Gitter chat room](https://gitter.im/mangstadt/ez-vcard)
+ * [Post a question to StackOverflow](http://stackoverflow.com/questions/ask) with `vcard` as a tag.
+ * Email me directly: [mike.angstadt@gmail.com](mailto:mike.angstadt@gmail.com)
 
 Please submit bug reports and feature requests to the [issue tracker](https://github.com/mangstadt/ez-vcard/issues).  Contributors are listed in the project credits.
 
