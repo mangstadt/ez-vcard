@@ -10,7 +10,7 @@ ez-vcard is a vCard library written in Java.  It can read and write vCards in ma
 
 <p align="center"><strong><a href="https://github.com/mangstadt/ez-vcard/wiki/Downloads">Downloads</a> |
 <a href="http://mangstadt.github.io/ez-vcard/javadocs/latest/index.html">Javadocs</a> |
-<a href="#maven">Maven</a></strong></p>
+<a href="#maven">Maven</a> | <a href="https://github.com/mangstadt/ez-vcard/wiki">Documentation</a></strong></p>
 
 ```java
 String str =
@@ -79,6 +79,8 @@ Due to the [impending shutdown of Google Code](http://google-opensource.blogspot
 
 Questions and feedback can be posted to the [discussion forum](http://groups.google.com/group/ez-vcard-discuss).  You can also email me directly: mike(dot)angstadt(at)gmail(dot)com
 
+Also, you might be able to find me or other ez-vcard users on [ez-vcard's Gitter chat room](https://gitter.im/mangstadt/ez-vcard).
+
 Please submit bug reports and feature requests to the [issue tracker](https://github.com/mangstadt/ez-vcard/issues).  Contributors are listed in the project credits.
 
 # Credits
@@ -120,9 +122,5 @@ Eike Weyl (Wiki fix)
 Volo Coffeehouse
 
 _No animals were harmed in the making of this library._
-
-# Donate
-
-Show you thanks by donating to this project!
 
 [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
