@@ -295,7 +295,8 @@ public class XCardDocument {
 		try {
 			write(sw, indent);
 		} catch (TransformerException e) {
-			//not thrown because we're writing to a string
+			//should not be thrown because we're writing to a string
+			throw new RuntimeException(e);
 		}
 		return sw.toString();
 	}
@@ -344,7 +345,7 @@ public class XCardDocument {
 		try {
 			write(writer, indent);
 		} finally {
-			IOUtils.closeQuietly(writer);
+			writer.close();
 		}
 	}
 
