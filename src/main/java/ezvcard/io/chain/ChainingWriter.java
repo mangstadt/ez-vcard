@@ -1,4 +1,4 @@
-package ezvcard.chain.writer;
+package ezvcard.io.chain;
 
 import java.util.Collection;
 

@@ -1,15 +1,14 @@
-package ezvcard.chain.parser;
+package ezvcard.io.chain;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-
-import org.w3c.dom.Document;
+import java.net.URL;
 
 import ezvcard.Ezvcard;
 import ezvcard.io.StreamReader;
-import ezvcard.io.xml.XCardReader;
+import ezvcard.io.html.HCardParser;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -37,49 +36,62 @@ import ezvcard.io.xml.XCardReader;
  */
 
 /**
- * Chainer class for parsing xCards (XML-encoded vCards).
- * @see Ezvcard#parseXml(InputStream)
- * @see Ezvcard#parseXml(File)
- * @see Ezvcard#parseXml(Reader)
+ * Chainer class for parsing hCards (HTML-encoded vCards).
+ * @see Ezvcard#parseHtml(InputStream)
+ * @see Ezvcard#parseHtml(File)
+ * @see Ezvcard#parseHtml(Reader)
  * @author Michael Angstadt
  */
-public class ChainingXmlParser<T extends ChainingXmlParser<?>> extends ChainingParser<T> {
-	private Document dom;
+public class ChainingHtmlParser<T extends ChainingHtmlParser<?>> extends ChainingParser<T> {
+	private String pageUrl;
+	private URL url;
 
-	public ChainingXmlParser(String string) {
+	public ChainingHtmlParser(String string) {
 		super(string);
 	}
 
-	public ChainingXmlParser(InputStream in) {
+	public ChainingHtmlParser(InputStream in) {
 		super(in);
 	}
 
-	public ChainingXmlParser(File file) {
-		super(file);
-	}
-
-	public ChainingXmlParser(Reader reader) {
+	public ChainingHtmlParser(Reader reader) {
 		super(reader);
 	}
 
-	public ChainingXmlParser(Document dom) {
-		this.dom = dom;
+	public ChainingHtmlParser(File file) {
+		super(file);
+	}
+
+	public ChainingHtmlParser(URL url) {
+		this.url = url;
+	}
+
+	/**
+	 * Sets the original URL of the webpage. This is used to resolve relative
+	 * links and to set the SOURCE property on the vCard. Setting this property
+	 * has no effect if reading from a {@link URL}.
+	 * @param pageUrl the webpage URL
+	 * @return this
+	 */
+	public T pageUrl(String pageUrl) {
+		this.pageUrl = pageUrl;
+		return this_;
 	}
 
 	@Override
 	StreamReader constructReader() throws IOException {
 		if (string != null) {
-			return new XCardReader(string);
+			return new HCardParser(string, pageUrl);
 		}
 		if (in != null) {
-			return new XCardReader(in);
+			return new HCardParser(in, pageUrl);
 		}
 		if (reader != null) {
-			return new XCardReader(reader);
+			return new HCardParser(reader, pageUrl);
 		}
 		if (file != null) {
-			return new XCardReader(file);
+			return new HCardParser(file, pageUrl);
 		}
-		return new XCardReader(dom);
+		return new HCardParser(url);
 	}
 }

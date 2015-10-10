@@ -1,7 +1,9 @@
-package ezvcard.chain.parser;
+package ezvcard.io.chain;
 
 import java.io.IOException;
 import java.util.List;
+
+import org.w3c.dom.Document;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -32,13 +34,17 @@ import ezvcard.VCard;
  */
 
 /**
- * Chainer class for parsing jCards (JSON-encoded vCards) from strings.
- * @see Ezvcard#parseJson(String)
+ * Chainer class for parsing xCards (XML-encoded vCards) from strings or DOMs.
+ * @see Ezvcard#parseXml(String)
  * @author Michael Angstadt
  */
-public class ChainingJsonStringParser extends ChainingJsonParser<ChainingJsonStringParser> {
-	public ChainingJsonStringParser(String json) {
-		super(json);
+public class ChainingXmlMemoryParser extends ChainingXmlParser<ChainingXmlMemoryParser> {
+	public ChainingXmlMemoryParser(String xml) {
+		super(xml);
+	}
+
+	public ChainingXmlMemoryParser(Document dom) {
+		super(dom);
 	}
 
 	@Override

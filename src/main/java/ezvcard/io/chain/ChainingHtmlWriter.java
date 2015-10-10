@@ -1,14 +1,14 @@
-package ezvcard.chain.parser;
+package ezvcard.io.chain;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.net.URL;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.util.Collection;
 
 import ezvcard.Ezvcard;
-import ezvcard.io.StreamReader;
-import ezvcard.io.html.HCardParser;
+import ezvcard.VCard;
+import ezvcard.io.html.HCardPage;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -36,62 +36,59 @@ import ezvcard.io.html.HCardParser;
  */
 
 /**
- * Chainer class for parsing hCards (HTML-encoded vCards).
- * @see Ezvcard#parseHtml(InputStream)
- * @see Ezvcard#parseHtml(File)
- * @see Ezvcard#parseHtml(Reader)
+ * Chainer class for writing hCards (HTML-encoded vCards).
+ * @see Ezvcard#writeHtml(Collection)
+ * @see Ezvcard#writeHtml(VCard...)
  * @author Michael Angstadt
  */
-public class ChainingHtmlParser<T extends ChainingHtmlParser<?>> extends ChainingParser<T> {
-	private String pageUrl;
-	private URL url;
-
-	public ChainingHtmlParser(String string) {
-		super(string);
-	}
-
-	public ChainingHtmlParser(InputStream in) {
-		super(in);
-	}
-
-	public ChainingHtmlParser(Reader reader) {
-		super(reader);
-	}
-
-	public ChainingHtmlParser(File file) {
-		super(file);
-	}
-
-	public ChainingHtmlParser(URL url) {
-		this.url = url;
+public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
+	/**
+	 * @param vcards the vCards to write
+	 */
+	public ChainingHtmlWriter(Collection<VCard> vcards) {
+		super(vcards);
 	}
 
 	/**
-	 * Sets the original URL of the webpage. This is used to resolve relative
-	 * links and to set the SOURCE property on the vCard. Setting this property
-	 * has no effect if reading from a {@link URL}.
-	 * @param pageUrl the webpage URL
-	 * @return this
+	 * Writes the hCards to a string.
+	 * @return the HTML page
 	 */
-	public T pageUrl(String pageUrl) {
-		this.pageUrl = pageUrl;
-		return this_;
+	public String go() {
+		return buildPage().write();
 	}
 
-	@Override
-	StreamReader constructReader() throws IOException {
-		if (string != null) {
-			return new HCardParser(string, pageUrl);
+	/**
+	 * Writes the hCards to an output stream.
+	 * @param out the output stream to write to
+	 * @throws IOException if there's a problem writing to the output stream
+	 */
+	public void go(OutputStream out) throws IOException {
+		buildPage().write(out);
+	}
+
+	/**
+	 * Writes the hCards to a file.
+	 * @param file the file to write to
+	 * @throws IOException if there's a problem writing to the file
+	 */
+	public void go(File file) throws IOException {
+		buildPage().write(file);
+	}
+
+	/**
+	 * Writes the hCards to a writer.
+	 * @param writer the writer to write to
+	 * @throws IOException if there's a problem writing to the writer
+	 */
+	public void go(Writer writer) throws IOException {
+		buildPage().write(writer);
+	}
+
+	private HCardPage buildPage() {
+		HCardPage page = new HCardPage();
+		for (VCard vcard : vcards) {
+			page.add(vcard);
 		}
-		if (in != null) {
-			return new HCardParser(in, pageUrl);
-		}
-		if (reader != null) {
-			return new HCardParser(reader, pageUrl);
-		}
-		if (file != null) {
-			return new HCardParser(file, pageUrl);
-		}
-		return new HCardParser(url);
+		return page;
 	}
 }

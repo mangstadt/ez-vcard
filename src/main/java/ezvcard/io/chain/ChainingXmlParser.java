@@ -1,14 +1,15 @@
-package ezvcard.chain.writer;
+package ezvcard.io.chain;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.util.Collection;
+import java.io.InputStream;
+import java.io.Reader;
+
+import org.w3c.dom.Document;
 
 import ezvcard.Ezvcard;
-import ezvcard.VCard;
-import ezvcard.io.html.HCardPage;
+import ezvcard.io.StreamReader;
+import ezvcard.io.xml.XCardReader;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -36,59 +37,49 @@ import ezvcard.io.html.HCardPage;
  */
 
 /**
- * Chainer class for writing hCards (HTML-encoded vCards).
- * @see Ezvcard#writeHtml(Collection)
- * @see Ezvcard#writeHtml(VCard...)
+ * Chainer class for parsing xCards (XML-encoded vCards).
+ * @see Ezvcard#parseXml(InputStream)
+ * @see Ezvcard#parseXml(File)
+ * @see Ezvcard#parseXml(Reader)
  * @author Michael Angstadt
  */
-public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
-	/**
-	 * @param vcards the vCards to write
-	 */
-	public ChainingHtmlWriter(Collection<VCard> vcards) {
-		super(vcards);
+public class ChainingXmlParser<T extends ChainingXmlParser<?>> extends ChainingParser<T> {
+	private Document dom;
+
+	public ChainingXmlParser(String string) {
+		super(string);
 	}
 
-	/**
-	 * Writes the hCards to a string.
-	 * @return the HTML page
-	 */
-	public String go() {
-		return buildPage().write();
+	public ChainingXmlParser(InputStream in) {
+		super(in);
 	}
 
-	/**
-	 * Writes the hCards to an output stream.
-	 * @param out the output stream to write to
-	 * @throws IOException if there's a problem writing to the output stream
-	 */
-	public void go(OutputStream out) throws IOException {
-		buildPage().write(out);
+	public ChainingXmlParser(File file) {
+		super(file);
 	}
 
-	/**
-	 * Writes the hCards to a file.
-	 * @param file the file to write to
-	 * @throws IOException if there's a problem writing to the file
-	 */
-	public void go(File file) throws IOException {
-		buildPage().write(file);
+	public ChainingXmlParser(Reader reader) {
+		super(reader);
 	}
 
-	/**
-	 * Writes the hCards to a writer.
-	 * @param writer the writer to write to
-	 * @throws IOException if there's a problem writing to the writer
-	 */
-	public void go(Writer writer) throws IOException {
-		buildPage().write(writer);
+	public ChainingXmlParser(Document dom) {
+		this.dom = dom;
 	}
 
-	private HCardPage buildPage() {
-		HCardPage page = new HCardPage();
-		for (VCard vcard : vcards) {
-			page.add(vcard);
+	@Override
+	StreamReader constructReader() throws IOException {
+		if (string != null) {
+			return new XCardReader(string);
 		}
-		return page;
+		if (in != null) {
+			return new XCardReader(in);
+		}
+		if (reader != null) {
+			return new XCardReader(reader);
+		}
+		if (file != null) {
+			return new XCardReader(file);
+		}
+		return new XCardReader(dom);
 	}
 }

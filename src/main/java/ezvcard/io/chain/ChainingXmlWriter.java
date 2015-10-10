@@ -1,16 +1,20 @@
-package ezvcard.chain.writer;
+package ezvcard.io.chain;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
 
+import javax.xml.transform.TransformerException;
+
+import org.w3c.dom.Document;
+
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
-import ezvcard.io.json.JCardWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.xml.XCardDocument;
+import ezvcard.io.xml.XCardDocument.XCardDocumentStreamWriter;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -39,112 +43,107 @@ import ezvcard.property.VCardProperty;
  */
 
 /**
- * Chainer class for writing jCards (JSON-encoded vCards).
- * @see Ezvcard#writeJson(Collection)
- * @see Ezvcard#writeJson(VCard...)
+ * Chainer class for writing xCards (XML-encoded vCards).
+ * @see Ezvcard#writeXml(Collection)
+ * @see Ezvcard#writeXml(VCard...)
  * @author Michael Angstadt
  */
-public class ChainingJsonWriter extends ChainingWriter<ChainingJsonWriter> {
-	private boolean indent = false;
+public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
+	private int indent = -1;
 
 	/**
 	 * @param vcards the vCards to write
 	 */
-	public ChainingJsonWriter(Collection<VCard> vcards) {
+	public ChainingXmlWriter(Collection<VCard> vcards) {
 		super(vcards);
 	}
 
 	/**
-	 * Sets whether or not to pretty-print the JSON.
-	 * @param indent true to pretty-print it, false not to (defaults to
-	 * false)
+	 * Sets the number of indent spaces to use for pretty-printing. If not
+	 * set, then the XML will not be pretty-printed.
+	 * @param indent the number of spaces in the indent string
 	 * @return this
 	 */
-	public ChainingJsonWriter indent(boolean indent) {
+	public ChainingXmlWriter indent(int indent) {
 		this.indent = indent;
 		return this;
 	}
 
 	@Override
-	public ChainingJsonWriter prodId(boolean include) {
+	public ChainingXmlWriter prodId(boolean include) {
 		return super.prodId(include);
 	}
 
 	@Override
-	public ChainingJsonWriter versionStrict(boolean versionStrict) {
+	public ChainingXmlWriter versionStrict(boolean versionStrict) {
 		return super.versionStrict(versionStrict);
 	}
 
 	@Override
-	public ChainingJsonWriter register(VCardPropertyScribe<? extends VCardProperty> scribe) {
+	public ChainingXmlWriter register(VCardPropertyScribe<? extends VCardProperty> scribe) {
 		return super.register(scribe);
 	}
 
 	/**
-	 * Writes the jCards to a string.
-	 * @return the JSON string
+	 * Writes the xCards to a string.
+	 * @return the XML document
 	 */
 	public String go() {
-		StringWriter sw = new StringWriter();
-		try {
-			go(sw);
-		} catch (IOException e) {
-			//should never be thrown because we're writing to a string
-			throw new RuntimeException(e);
-		}
-		return sw.toString();
+		return createXCardDocument().write(indent);
 	}
 
 	/**
-	 * Writes the jCards to an output stream.
+	 * Writes the xCards to an output stream.
 	 * @param out the output stream to write to
-	 * @throws IOException if there's a problem writing to the output stream
+	 * @throws TransformerException if there's a problem writing to the
+	 * output stream
 	 */
-	public void go(OutputStream out) throws IOException {
-		go(new JCardWriter(out, wrapInArray()));
+	public void go(OutputStream out) throws TransformerException {
+		createXCardDocument().write(out, indent);
 	}
 
 	/**
-	 * Writes the jCards to a file.
+	 * Writes the xCards to a file.
 	 * @param file the file to write to
-	 * @throws IOException if there's a problem writing to the file
+	 * @throws IOException if the file can't be opened
+	 * @throws TransformerException if there's a problem writing to the file
 	 */
-	public void go(File file) throws IOException {
-		JCardWriter writer = new JCardWriter(file, wrapInArray());
-		try {
-			go(writer);
-		} finally {
-			writer.close();
-		}
+	public void go(File file) throws IOException, TransformerException {
+		createXCardDocument().write(file, indent);
 	}
 
 	/**
-	 * Writes the jCards to a writer.
+	 * Writes the xCards to a writer.
 	 * @param writer the writer to write to
-	 * @throws IOException if there's a problem writing to the writer
+	 * @throws TransformerException if there's a problem writing to the
+	 * writer
 	 */
-	public void go(Writer writer) throws IOException {
-		go(new JCardWriter(writer, wrapInArray()));
+	public void go(Writer writer) throws TransformerException {
+		createXCardDocument().write(writer, indent);
 	}
 
-	private void go(JCardWriter writer) throws IOException {
+	/**
+	 * Generates an XML document object model (DOM) containing the xCards.
+	 * @return the DOM
+	 */
+	public Document dom() {
+		return createXCardDocument().getDocument();
+	}
+
+	private XCardDocument createXCardDocument() {
+		XCardDocument document = new XCardDocument();
+
+		XCardDocumentStreamWriter writer = document.writer();
 		writer.setAddProdId(prodId);
-		writer.setIndent(indent);
 		writer.setVersionStrict(versionStrict);
 		if (index != null) {
 			writer.setScribeIndex(index);
 		}
-		try {
-			for (VCard vcard : vcards) {
-				writer.write(vcard);
-				writer.flush();
-			}
-		} finally {
-			writer.closeJsonStream();
-		}
-	}
 
-	private boolean wrapInArray() {
-		return vcards.size() > 1;
+		for (VCard vcard : vcards) {
+			writer.write(vcard);
+		}
+
+		return document;
 	}
 }

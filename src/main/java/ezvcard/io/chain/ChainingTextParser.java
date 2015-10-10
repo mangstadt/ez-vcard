@@ -1,4 +1,4 @@
-package ezvcard.chain.parser;
+package ezvcard.io.chain;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.Reader;
 
 import ezvcard.Ezvcard;
 import ezvcard.io.StreamReader;
-import ezvcard.io.json.JCardReader;
+import ezvcard.io.text.VCardReader;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -35,40 +35,62 @@ import ezvcard.io.json.JCardReader;
  */
 
 /**
- * Chainer class for parsing jCards (JSON-encoded vCards).
- * @see Ezvcard#parseJson(InputStream)
- * @see Ezvcard#parseJson(File)
- * @see Ezvcard#parseJson(Reader)
+ * Chainer class for parsing traditional, plain-text vCards.
+ * @see Ezvcard#parse(InputStream)
+ * @see Ezvcard#parse(File)
+ * @see Ezvcard#parse(Reader)
  * @author Michael Angstadt
  */
-public class ChainingJsonParser<T extends ChainingJsonParser<?>> extends ChainingParser<T> {
-	public ChainingJsonParser(String string) {
+public class ChainingTextParser<T extends ChainingTextParser<?>> extends ChainingParser<T> {
+	private boolean caretDecoding = true;
+
+	public ChainingTextParser(String string) {
 		super(string);
 	}
 
-	public ChainingJsonParser(InputStream in) {
+	public ChainingTextParser(InputStream in) {
 		super(in);
 	}
 
-	public ChainingJsonParser(Reader reader) {
+	public ChainingTextParser(Reader reader) {
 		super(reader);
 	}
 
-	public ChainingJsonParser(File file) {
+	public ChainingTextParser(File file) {
 		super(file);
+	}
+
+	/**
+	 * Sets whether the reader will decode characters in parameter values that
+	 * use circumflex accent encoding (enabled by default).
+	 * 
+	 * @param enable true to use circumflex accent decoding, false not to
+	 * @return this
+	 * @see VCardReader#setCaretDecodingEnabled(boolean)
+	 * @see <a href="http://tools.ietf.org/html/rfc6868">RFC 6868</a>
+	 */
+	public T caretDecoding(boolean enable) {
+		caretDecoding = enable;
+		return this_;
 	}
 
 	@Override
 	StreamReader constructReader() throws IOException {
+		VCardReader reader = newReader();
+		reader.setCaretDecodingEnabled(caretDecoding);
+		return reader;
+	}
+
+	private VCardReader newReader() throws IOException {
 		if (string != null) {
-			return new JCardReader(string);
+			return new VCardReader(string);
 		}
 		if (in != null) {
-			return new JCardReader(in);
+			return new VCardReader(in);
 		}
 		if (reader != null) {
-			return new JCardReader(reader);
+			return new VCardReader(reader);
 		}
-		return new JCardReader(file);
+		return new VCardReader(file);
 	}
 }

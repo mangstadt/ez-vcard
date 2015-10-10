@@ -1,4 +1,4 @@
-package ezvcard.chain.parser;
+package ezvcard.io.chain;
 
 import java.io.File;
 import java.io.IOException;
