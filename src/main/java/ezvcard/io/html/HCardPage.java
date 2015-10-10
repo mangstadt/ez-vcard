@@ -19,9 +19,7 @@ import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.parameter.ImageType;
 import ezvcard.property.Photo;
 import ezvcard.util.DataUri;
-import ezvcard.util.IOUtils;
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
@@ -81,9 +79,8 @@ import freemarker.template.TemplateException;
 public class HCardPage {
 	private static final Template template;
 	static {
-		Configuration cfg = new Configuration();
+		Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
 		cfg.setClassForTemplateLoading(HCardPage.class, "");
-		cfg.setObjectWrapper(new DefaultObjectWrapper());
 		cfg.setWhitespaceStripping(true);
 		try {
 			template = cfg.getTemplate("hcard-template.html");
@@ -112,7 +109,8 @@ public class HCardPage {
 		try {
 			write(sw);
 		} catch (IOException e) {
-			//never thrown because we're writing to a string
+			//should never thrown because we're writing to a string
+			throw new RuntimeException(e);
 		}
 		return sw.toString();
 	}
@@ -132,12 +130,11 @@ public class HCardPage {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(File file) throws IOException {
-		FileWriter writer = null;
+		FileWriter writer = new FileWriter(file);
 		try {
-			writer = new FileWriter(file);
 			write(writer);
 		} finally {
-			IOUtils.closeQuietly(writer);
+			writer.close();
 		}
 	}
 
