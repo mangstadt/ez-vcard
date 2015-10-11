@@ -141,7 +141,7 @@ public class FoldedLineReader extends BufferedReader {
 		/*
 		 * Lines that are QUOTED-PRINTABLE are folded in a strange way. A "=" is
 		 * appended to the end of a line to signal that the next line is folded.
-		 * Also, each folded line is *not* prepend with whitespace (which it should
+		 * Also, each folded line is *not* prepended with whitespace (which it should
 		 * be, according to the 2.1 specs).
 		 * 
 		 * For example:
