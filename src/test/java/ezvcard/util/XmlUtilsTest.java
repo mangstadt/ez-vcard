@@ -63,6 +63,7 @@ public class XmlUtilsTest {
 	//@formatter:off
 	private final String xml =
 		"<root>" +
+			"   \n" +
 			"<child1 />" +
 			"some text" +
 			"<n:child2 xmlns:n=\"http://example.com\" />" +
@@ -86,20 +87,24 @@ public class XmlUtilsTest {
 		assertNull(root.getNamespaceURI());
 
 		NodeList nodes = root.getChildNodes();
-		assertEquals(4, nodes.getLength());
+		assertEquals(5, nodes.getLength());
 
-		Element element = (Element) nodes.item(0);
+		int i = 0;
+		Text text = (Text) nodes.item(i++);
+		assertEquals("   \n", text.getTextContent());
+
+		Element element = (Element) nodes.item(i++);
 		assertEquals("child1", element.getLocalName());
 		assertNull(element.getNamespaceURI());
 
-		Text text = (Text) nodes.item(1);
+		text = (Text) nodes.item(i++);
 		assertEquals("some text", text.getTextContent());
 
-		element = (Element) nodes.item(2);
+		element = (Element) nodes.item(i++);
 		assertEquals("child2", element.getLocalName());
 		assertEquals("http://example.com", element.getNamespaceURI());
 
-		text = (Text) nodes.item(3);
+		text = (Text) nodes.item(i++);
 		assertEquals("More text", text.getTextContent());
 	}
 
@@ -183,5 +188,13 @@ public class XmlUtilsTest {
 		Element root = (Element) document.getFirstChild();
 		Element element = XmlUtils.getFirstChildElement(root);
 		assertEquals("child1", element.getLocalName());
+	}
+
+	@Test
+	public void getFirstChildElement_no_children() throws Exception {
+		Document document = XmlUtils.toDocument(xml);
+		Element root = (Element) document.getFirstChild();
+		Element child1 = XmlUtils.getFirstChildElement(root);
+		assertNull(XmlUtils.getFirstChildElement(child1));
 	}
 }

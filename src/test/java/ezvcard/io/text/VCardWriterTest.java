@@ -30,6 +30,7 @@ import ezvcard.property.Birthday;
 import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
+import ezvcard.property.Logo;
 import ezvcard.property.Note;
 import ezvcard.property.Photo;
 import ezvcard.property.SkipMeProperty;
@@ -416,6 +417,7 @@ public class VCardWriterTest {
 		byte data[] = "foobar".getBytes();
 		vcard.addKey(new Key(data, KeyType.X509));
 		vcard.addPhoto(new Photo(data, ImageType.JPEG));
+		vcard.addLogo(new Logo("http://www.company.com/logo.png", ImageType.PNG));
 
 		{
 			StringWriter sw = new StringWriter();
@@ -433,6 +435,7 @@ public class VCardWriterTest {
 				"\r\n" +
 				"PHOTO;ENCODING=base64;JPEG:Zm9vYmFy\r\n" +
 				"\r\n" +
+				"LOGO;PNG;VALUE=url:http://www.company.com/logo.png\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
@@ -455,6 +458,7 @@ public class VCardWriterTest {
 				"\r\n" +
 				"PHOTO;ENCODING=b;TYPE=jpeg:Zm9vYmFy\r\n" +
 				"\r\n" +
+				"LOGO;TYPE=png;VALUE=uri:http://www.company.com/logo.png\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
@@ -475,6 +479,7 @@ public class VCardWriterTest {
 				"VERSION:4.0\r\n" +
 				"KEY:data:application/x509;base64,Zm9vYmFy\r\n" +
 				"PHOTO:data:image/jpeg;base64,Zm9vYmFy\r\n" +
+				"LOGO;MEDIATYPE=image/png:http://www.company.com/logo.png\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 

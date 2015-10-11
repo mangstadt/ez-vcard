@@ -227,17 +227,18 @@ public class VCardRawReaderTest {
 			//8: caret-escaped double quote
 			//9: un-escaped double quote (no special meaning in 2.1)
 			//a: caret that doesn't escape anything
+			//b: backslash-escaped backslash
 			//@formatter:off
 			String vcard = 
 			"VERSION:2.1\r\n" +
-			//          1    2     2     3        4     5            6        7  8       8   9   9     a
-			"ADR;LABEL=1\\23 ^^Main^^ St.^nSection\\; 12^NBuilding 20\\nApt 10\\N^'Austin^', \"TX\" 123^45:;;123 Main Str;Austin;TX;12345;US";
+			//          1    2     2     3        4     5            6        7  8       8   9   9  b      a
+			"ADR;LABEL=1\\23 ^^Main^^ St.^nSection\\; 12^NBuilding 20\\nApt 10\\N^'Austin^', \"TX\" \\\\123^45:;;123 Main Str;Austin;TX;12345;US";
 			//@formatter:on
 			VCardRawReader reader = create(vcard);
 			reader.setCaretDecodingEnabled(false);
 			reader.readLine();
 
-			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" 123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
+			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" \\123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
 			VCardRawLine actual = reader.readLine();
 			assertEquals(expected, actual);
 
@@ -256,17 +257,18 @@ public class VCardRawReaderTest {
 			//8: caret-escaped double quote
 			//9: un-escaped double quote (no special meaning in 2.1)
 			//a: caret that doesn't escape anything
+			//b: backslash-escaped backslash
 			//@formatter:off
 			String vcard = 
 			"VERSION:2.1\r\n" +
-			//          1    2     2     3        4     5            6        7  8       8   9   9     a
-			"ADR;LABEL=1\\23 ^^Main^^ St.^nSection\\; 12^NBuilding 20\\nApt 10\\N^'Austin^', \"TX\" 123^45:;;123 Main Str;Austin;TX;12345;US";
+			//          1    2     2     3        4     5            6        7  8       8   9   9         a
+			"ADR;LABEL=1\\23 ^^Main^^ St.^nSection\\; 12^NBuilding 20\\nApt 10\\N^'Austin^', \"TX\" \\\\123^45:;;123 Main Str;Austin;TX;12345;US";
 			//@formatter:on
 			VCardRawReader reader = create(vcard);
 			reader.setCaretDecodingEnabled(true);
 			reader.readLine();
 
-			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" 123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
+			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" \\123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
 			VCardRawLine actual = reader.readLine();
 			assertEquals(expected, actual);
 
@@ -285,17 +287,18 @@ public class VCardRawReaderTest {
 			//7: caret-escaped double quote
 			//8: backslash-escaped double quote (not part of the standard, included for interoperability)
 			//9: caret that doesn't escape anything
+			//a: backslash-escaped backslash
 			//@formatter:off
 			String vcard = 
 			"VERSION:3.0\r\n" +
-			//         0  1    2     2     3        0   4            5        6  7       7 0 8     8       9  0
-			"ADR;LABEL=\"1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20\\nApt 10\\N^'Austin^', \\\"TX\\\" 123^45\":;;123 Main Str;Austin;TX;12345;US";
+			//         0  1    2     2     3        0   4            5        6  7       7 0 8     8    a      9  0
+			"ADR;LABEL=\"1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20\\nApt 10\\N^'Austin^', \\\"TX\\\" \\\\123^45\":;;123 Main Str;Austin;TX;12345;US";
 			//@formatter:on
 			VCardRawReader reader = create(vcard);
 			reader.setCaretDecodingEnabled(false);
 			reader.readLine();
 
-			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" 123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
+			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" \\123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
 			VCardRawLine actual = reader.readLine();
 			assertEquals(expected, actual);
 
@@ -314,17 +317,18 @@ public class VCardRawReaderTest {
 			//7: caret-escaped double quote
 			//8: backslash-escaped double quote (not part of the standard, included for interoperability)
 			//9: caret that doesn't escape anything
+			//a: backslash-escaped backslash
 			//@formatter:off
 			String vcard = 
 			"VERSION:3.0\r\n" +
-			//         0  1    2     2     3        0   4            5        6  7       7 0 8     8       9  0
-			"ADR;LABEL=\"1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20\\nApt 10\\N^'Austin^', \\\"TX\\\" 123^45\":;;123 Main Str;Austin;TX;12345;US";
+			//         0  1    2     2     3        0   4            5        6  7       7 0 8     8    a      9  0
+			"ADR;LABEL=\"1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20\\nApt 10\\N^'Austin^', \\\"TX\\\" \\\\123^45\":;;123 Main Str;Austin;TX;12345;US";
 			//@formatter:on
 			VCardRawReader reader = create(vcard);
 			reader.setCaretDecodingEnabled(true);
 			reader.readLine();
 
-			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^Main^ St." + NEWLINE + "Section; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "\"Austin\", \"TX\" 123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
+			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^Main^ St." + NEWLINE + "Section; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "\"Austin\", \"TX\" \\123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
 			VCardRawLine actual = reader.readLine();
 			assertEquals(expected, actual);
 
@@ -343,17 +347,18 @@ public class VCardRawReaderTest {
 			//7: caret-escaped double quote
 			//8: backslash-escaped double quote (not part of the standard, included for interoperability)
 			//9: caret that doesn't escape anything
+			//a: backslash-escaped backslash
 			//@formatter:off
 			String vcard = 
 			"VERSION:4.0\r\n" +
-			//         0  1    2     2     3        0   4            5        6  7       7 0 8     8       9  0
-			"ADR;LABEL=\"1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20\\nApt 10\\N^'Austin^', \\\"TX\\\" 123^45\":;;123 Main Str;Austin;TX;12345;US";
+			//         0  1    2     2     3        0   4            5        6  7       7 0 8     8    a      9  0
+			"ADR;LABEL=\"1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20\\nApt 10\\N^'Austin^', \\\"TX\\\" \\\\123^45\":;;123 Main Str;Austin;TX;12345;US";
 			//@formatter:on
 			VCardRawReader reader = create(vcard);
 			reader.setCaretDecodingEnabled(false);
 			reader.readLine();
 
-			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" 123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
+			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "^'Austin^', \"TX\" \\123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
 			VCardRawLine actual = reader.readLine();
 			assertEquals(expected, actual);
 
@@ -372,17 +377,18 @@ public class VCardRawReaderTest {
 			//7: caret-escaped double quote
 			//8: backslash-escaped double quote (not part of the standard, included for interoperability)
 			//9: caret that doesn't escape anything
+			//a: backslash-escaped backslash
 			//@formatter:off
 			String vcard = 
 			"VERSION:4.0\r\n" +
-			//         0  1    2     2     3        0   4            5        6  7       7 0 8     8       9  0
-			"ADR;LABEL=\"1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20\\nApt 10\\N^'Austin^', \\\"TX\\\" 123^45\":;;123 Main Str;Austin;TX;12345;US";
+			//         0  1    2     2     3        0   4            5        6  7       7 0 8     8    a      9  0
+			"ADR;LABEL=\"1\\23 ^^Main^^ St.^nSection; 12^NBuilding 20\\nApt 10\\N^'Austin^', \\\"TX\\\" \\\\123^45\":;;123 Main Str;Austin;TX;12345;US";
 			//@formatter:on
 			VCardRawReader reader = create(vcard);
 			reader.setCaretDecodingEnabled(true);
 			reader.readLine();
 
-			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^Main^ St." + NEWLINE + "Section; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "\"Austin\", \"TX\" 123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
+			VCardRawLine expected = line("ADR").param("LABEL", "1\\23 ^Main^ St." + NEWLINE + "Section; 12^NBuilding 20" + NEWLINE + "Apt 10" + NEWLINE + "\"Austin\", \"TX\" \\123^45").value(";;123 Main Str;Austin;TX;12345;US").build();
 			VCardRawLine actual = reader.readLine();
 			assertEquals(expected, actual);
 
