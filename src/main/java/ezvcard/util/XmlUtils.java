@@ -63,18 +63,18 @@ import org.xml.sax.SAXException;
  * Generic XML utility methods.
  * @author Michael Angstadt
  */
-public class XmlUtils {
+public final class XmlUtils {
 	/**
 	 * Creates a new XML document.
 	 * @return the XML document
 	 */
 	public static Document createDocument() {
 		try {
-			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = fact.newDocumentBuilder();
-			return db.newDocument();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			return builder.newDocument();
 		} catch (ParserConfigurationException e) {
-			//will probably never be thrown because we're not doing anything fancy with the configuration
+			//should never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);
 		}
 	}
@@ -89,7 +89,7 @@ public class XmlUtils {
 		try {
 			return toDocument(new StringReader(xml));
 		} catch (IOException e) {
-			//reading from string
+			//should never be thrown because we're reading from a string
 			throw new RuntimeException(e);
 		}
 	}
@@ -137,7 +137,7 @@ public class XmlUtils {
 		try {
 			builder = factory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			//will probably never be thrown because we're not doing anything fancy with the configuration
+			//should never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);
 		}
 
@@ -192,10 +192,10 @@ public class XmlUtils {
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
 		} catch (TransformerConfigurationException e) {
-			//no complex configurations
+			//should never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);
 		} catch (TransformerFactoryConfigurationError e) {
-			//no complex configurations
+			//should never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);
 		}
 
