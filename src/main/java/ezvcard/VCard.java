@@ -655,10 +655,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property object that was created
 	 */
 	public Classification setClassification(String classification) {
-		Classification type = null;
-		if (classification != null) {
-			type = new Classification(classification);
-		}
+		Classification type = (classification == null) ? null : new Classification(classification);
 		setClassification(type);
 		return type;
 	}
@@ -794,10 +791,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property object that was created
 	 */
 	public SourceDisplayText setSourceDisplayText(String sourceDisplayText) {
-		SourceDisplayText type = null;
-		if (sourceDisplayText != null) {
-			type = new SourceDisplayText(sourceDisplayText);
-		}
+		SourceDisplayText type = (sourceDisplayText == null) ? null : new SourceDisplayText(sourceDisplayText);
 		setSourceDisplayText(type);
 		return type;
 	}
@@ -976,10 +970,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property object that was created
 	 */
 	public FormattedName setFormattedName(String formattedName) {
-		FormattedName type = null;
-		if (formattedName != null) {
-			type = new FormattedName(formattedName);
-		}
+		FormattedName type = (formattedName == null) ? null : new FormattedName(formattedName);
 		setFormattedName(type);
 		return type;
 	}
@@ -1311,10 +1302,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property object that was created
 	 */
 	public SortString setSortString(String sortString) {
-		SortString type = null;
-		if (sortString != null) {
-			type = new SortString(sortString);
-		}
+		SortString type = (sortString == null) ? null : new SortString(sortString);
 		setSortString(type);
 		return type;
 	}
@@ -2194,10 +2182,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property object that was created
 	 */
 	public Revision setRevision(Date rev) {
-		Revision type = null;
-		if (rev != null) {
-			type = new Revision(rev);
-		}
+		Revision type = (rev == null) ? null : new Revision(rev);
 		setRevision(type);
 		return type;
 	}
@@ -2245,10 +2230,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property object that was created
 	 */
 	public ProductId setProductId(String productId) {
-		ProductId type = null;
-		if (productId != null) {
-			type = new ProductId(productId);
-		}
+		ProductId type = (productId == null) ? null : new ProductId(productId);
 		setProductId(type);
 		return type;
 	}
@@ -2576,10 +2558,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property object that was created
 	 */
 	public Mailer setMailer(String mailer) {
-		Mailer type = null;
-		if (mailer != null) {
-			type = new Mailer(mailer);
-		}
+		Mailer type = (mailer == null) ? null : new Mailer(mailer);
 		setMailer(type);
 		return type;
 	}
@@ -4441,14 +4420,14 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the properties
 	 */
 	public <T extends VCardProperty> List<T> getProperties(Class<T> clazz) {
-		List<VCardProperty> props = properties.get(clazz);
+		List<VCardProperty> properties = this.properties.get(clazz);
 
 		//cast to the requested class
-		List<T> ret = new ArrayList<T>(props.size());
-		for (VCardProperty property : props) {
-			ret.add(clazz.cast(property));
+		List<T> listToReturn = new ArrayList<T>(properties.size());
+		for (VCardProperty property : properties) {
+			listToReturn.add(clazz.cast(property));
 		}
-		return ret;
+		return listToReturn;
 	}
 
 	/**
@@ -4459,30 +4438,31 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the properties
 	 */
 	public <T extends VCardProperty & HasAltId> List<List<T>> getPropertiesAlt(Class<T> clazz) {
-		List<T> nullAltId = new ArrayList<T>();
-		ListMultimap<String, T> map = new ListMultimap<String, T>();
+		List<T> propertiesWithoutAltIds = new ArrayList<T>();
+		ListMultimap<String, T> propertiesWithAltIds = new ListMultimap<String, T>();
 		for (T property : getProperties(clazz)) {
 			String altId = property.getAltId();
 			if (altId == null) {
-				nullAltId.add(property);
+				propertiesWithoutAltIds.add(property);
 			} else {
-				map.put(altId, property);
+				propertiesWithAltIds.put(altId, property);
 			}
 		}
 
-		List<List<T>> list = new ArrayList<List<T>>();
-		for (Map.Entry<String, List<T>> entry : map) {
-			list.add(entry.getValue());
+		int size = propertiesWithoutAltIds.size() + propertiesWithAltIds.size();
+		List<List<T>> listToReturn = new ArrayList<List<T>>(size);
+		for (Map.Entry<String, List<T>> entry : propertiesWithAltIds) {
+			listToReturn.add(entry.getValue());
 		}
 
 		//put properties without ALTIDs at the end
-		for (T property : nullAltId) {
-			List<T> l = new ArrayList<T>(1);
-			l.add(property);
-			list.add(l);
+		for (T property : propertiesWithoutAltIds) {
+			List<T> list = new ArrayList<T>(1);
+			list.add(property);
+			listToReturn.add(list);
 		}
 
-		return list;
+		return listToReturn;
 	}
 
 	/**
@@ -4548,15 +4528,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the properties
 	 */
 	public List<RawProperty> getExtendedProperties(String name) {
-		List<RawProperty> props = new ArrayList<RawProperty>();
+		List<RawProperty> properties = new ArrayList<RawProperty>();
 
 		for (RawProperty raw : getProperties(RawProperty.class)) {
 			if (raw.getPropertyName().equalsIgnoreCase(name)) {
-				props.add(raw);
+				properties.add(raw);
 			}
 		}
 
-		return props;
+		return properties;
 	}
 
 	/**
@@ -4598,9 +4578,9 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param name the component name (e.g. "X-ALT-DESC")
 	 */
 	public void removeExtendedProperty(String name) {
-		List<RawProperty> xproperties = getExtendedProperties(name);
-		for (RawProperty xproperty : xproperties) {
-			properties.remove(xproperty.getClass(), xproperty);
+		List<RawProperty> extendedProperties = getExtendedProperties(name);
+		for (RawProperty extendedProperty : extendedProperties) {
+			properties.remove(extendedProperty.getClass(), extendedProperty);
 		}
 	}
 
