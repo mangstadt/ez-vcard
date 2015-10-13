@@ -96,6 +96,8 @@ You have some options:
 
 Please submit bug reports and feature requests to the [issue tracker](https://github.com/mangstadt/ez-vcard/issues).  Contributors are listed in the project credits.
 
+If you'd like to help improve the accuracy of ez-vcard's parsing engine, please submit vCard samples using [this form](https://docs.google.com/forms/d/1SQDjDtPvEWmp-2Sl-R-iaCUbvxOdg8MmlJGdRZlWBtk/viewform?usp=send_form).  All contributions are greatly appreciated.
+
 # Credits
 
 **Lead Developer**  
