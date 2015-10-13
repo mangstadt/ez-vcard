@@ -1,7 +1,5 @@
 package ezvcard.io.text;
 
-import static ezvcard.util.StringUtils.ltrim;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -180,7 +178,9 @@ public class FoldedLineReader extends BufferedReader {
 
 			if (foldedQuotedPrintableLine) {
 				//remove any folding whitespace
-				line = ltrim(line);
+				if (isFoldedLine(line)) {
+					line = line.substring(1);
+				}
 
 				boolean endsInEquals = line.endsWith("=");
 				if (endsInEquals) {
@@ -199,9 +199,8 @@ public class FoldedLineReader extends BufferedReader {
 				break;
 			}
 
-			if (line.length() > 0 && Character.isWhitespace(line.charAt(0))) {
-				//the line is folded
-				line = ltrim(line);
+			if (isFoldedLine(line)) {
+				line = line.substring(1);
 				unfoldedLine.append(line);
 				continue;
 			}
@@ -211,6 +210,15 @@ public class FoldedLineReader extends BufferedReader {
 		}
 
 		return unfoldedLine.toString();
+	}
+
+	private static boolean isFoldedLine(String line) {
+		if (line.length() == 0) {
+			return false;
+		}
+
+		char first = line.charAt(0);
+		return first == ' ' || first == '\t';
 	}
 
 	/**

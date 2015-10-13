@@ -217,7 +217,6 @@ public class VCardRawReader implements Closeable {
 			this.version = version;
 		}
 
-		value = value.trim();
 		return new VCardRawLine(group, propertyName, parameters, value);
 	}
 

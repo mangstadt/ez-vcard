@@ -417,7 +417,7 @@ public class SampleVCardsTest {
 			.locality("Albaney")
 			.region("New York")
 			.postalCode("12345")
-			.country("UnitedStates of America") //the space between "United" and "States" is lost because it was included with the folding character and ignored (see .vcf file)
+			.country("United States of America")
 			.types(AddressType.HOME)
 		.noMore();
 		
@@ -512,7 +512,7 @@ public class SampleVCardsTest {
 		
 		//ADR
 		assertAddress(vcard)
-			.extendedAddress("Crescent moon drive" + NEWLINE + "555-asd" + NEWLINE + "Nice Area, Albaney, New York12345" + NEWLINE + "United States of America")
+			.extendedAddress("Crescent moon drive" + NEWLINE + "555-asd" + NEWLINE + "Nice Area, Albaney, New York 12345" + NEWLINE + "United States of America")
 			.types(AddressType.HOME)
 		.noMore();
 		
@@ -1065,7 +1065,7 @@ public class SampleVCardsTest {
 
 		//LABEL
 		assertSimpleProperty(vcard.getOrphanedLabels())
-			.value("John Doe" + NEWLINE + "New York, NewYork," + NEWLINE + "South Crecent Drive," + NEWLINE + "Building 5, floor 3," + NEWLINE + "USA")
+			.value("John Doe" + NEWLINE + "New York, NewYork," + NEWLINE + "South Crecent Dr ive," + NEWLINE + "Building 5, floor 3," + NEWLINE + "USA")
 			.param("TYPE", "HOME")
 			.param("TYPE", "PARCEL")
 			.param("TYPE", "PREF")
@@ -1114,7 +1114,7 @@ public class SampleVCardsTest {
 			.noMore();
 			
 			assertRawProperty("X-LONG-STRING", vcard)
-				.value("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")
+				.value("12345678901234567890123456789012345678901234567890123456789012 34567890123456789012345678901234567890")
 			.noMore();
 			//@formatter:on
 		}

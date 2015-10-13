@@ -90,18 +90,22 @@ public class FoldedLineReaderTest {
 		//a quoted-printable line whose additional lines *are* folded where the lines end in "="
 		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A=\n" +
 		" New York, New York  12345=0D=0A=\n" +
-		" USA\n" +
+		"  USA\n" +
 
 		//a quoted-printable line whose additional lines *are* folded, where the lines don't end in "="
 		"LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0A\n" +
 		" New York, New York  12345=0D=0A\n" +
-		" USA\n" +
+		"  USA\n" +
 
 		//this line is folded
-		"NOTE:folded \n line\n" +
+		"NOTE:folded \n" +
+		" line\n" +
 
 		//this line is folded with multiple whitespace characters
-		"NOTE:one \n two \n  three \n \t four";
+		"NOTE:one \n" +
+		" two \n" +
+		"  three \n" +
+		"\t \tfour";
 		//@formatter:on
 
 		FoldedLineReader reader = new FoldedLineReader(vcardStr);
@@ -116,11 +120,11 @@ public class FoldedLineReaderTest {
 		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA", reader.readLine());
 		assertEquals("LABEL;HOME:Some text QUOTED-PRINTABLE more text=", reader.readLine());
 		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA=0D=0A4th line", reader.readLine());
-		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA", reader.readLine());
-		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA", reader.readLine());
+		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0A USA", reader.readLine());
+		assertEquals("LABEL;HOME;ENCODING=QUOTED-PRINTABLE:Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0A USA", reader.readLine());
 
 		assertEquals("NOTE:folded line", reader.readLine());
-		assertEquals("NOTE:one two three four", reader.readLine());
+		assertEquals("NOTE:one two  three  \tfour", reader.readLine());
 		assertNull(reader.readLine());
 	}
 

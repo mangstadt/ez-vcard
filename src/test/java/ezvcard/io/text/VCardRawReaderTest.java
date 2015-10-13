@@ -408,18 +408,6 @@ public class VCardRawReaderTest {
 		assertNull(reader.readLine());
 	}
 
-	@Test
-	public void trim_value() throws Throwable {
-		String vcard = "NOTE: Hello world!\t";
-		VCardRawReader reader = create(vcard);
-
-		VCardRawLine expected = line("NOTE").value("Hello world!").build();
-		VCardRawLine actual = reader.readLine();
-		assertEquals(expected, actual);
-
-		assertNull(reader.readLine());
-	}
-
 	@Test(expected = VCardParseException.class)
 	public void invalid_line() throws Throwable {
 		String vcard = "This is not a valid vCard line.";
