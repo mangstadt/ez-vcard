@@ -102,6 +102,7 @@ public class XCardWriterTest {
 
 	@BeforeClass
 	public static void beforeClass() {
+		XMLUnit.setIgnoreAttributeOrder(true);
 		XMLUnit.setIgnoreWhitespace(true);
 	}
 
@@ -618,6 +619,42 @@ public class XCardWriterTest {
 		//@formatter:on
 
 		assertTrue(actual.matches(expectedRegex));
+	}
+
+	@Test
+	public void write_xmlVersion_default() throws Exception {
+		StringWriter sw = new StringWriter();
+		XCardWriter writer = new XCardWriter(sw);
+		VCard vcard = new VCard();
+		writer.write(vcard);
+		writer.close();
+
+		String xml = sw.toString();
+		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
+	}
+
+	@Test
+	public void write_xmlVersion_1_1() throws Exception {
+		StringWriter sw = new StringWriter();
+		XCardWriter writer = new XCardWriter(sw, -1, "1.1");
+		VCard vcard = new VCard();
+		writer.write(vcard);
+		writer.close();
+
+		String xml = sw.toString();
+		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.1\".*?\\?>.*"));
+	}
+
+	@Test
+	public void write_xmlVersion_invalid() throws Exception {
+		StringWriter sw = new StringWriter();
+		XCardWriter writer = new XCardWriter(sw, -1, "10.17");
+		VCard vcard = new VCard();
+		writer.write(vcard);
+		writer.close();
+
+		String xml = sw.toString();
+		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
 	}
 
 	@Test

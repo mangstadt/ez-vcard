@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
@@ -135,7 +137,30 @@ public class XCardWriter extends StreamWriter {
 	 * @param out the output stream to write to (UTF-8 encoding will be used)
 	 */
 	public XCardWriter(OutputStream out) {
-		this(utf8Writer(out));
+		this(out, -1);
+	}
+
+	/**
+	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 */
+	public XCardWriter(OutputStream out, int indent) {
+		this(out, indent, null);
+	}
+
+	/**
+	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
+	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
+	 * like <a href=
+	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
+	 * >xalan</a> to your project)
+	 */
+	public XCardWriter(OutputStream out, int indent, String xmlVersion) {
+		this(utf8Writer(out), -1, xmlVersion);
 	}
 
 	/**
@@ -143,24 +168,72 @@ public class XCardWriter extends StreamWriter {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public XCardWriter(File file) throws IOException {
-		this(utf8Writer(file));
+		this(file, -1);
+	}
+
+	/**
+	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public XCardWriter(File file, int indent) throws IOException {
+		this(file, indent, null);
+	}
+
+	/**
+	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
+	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
+	 * like <a href=
+	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
+	 * >xalan</a> to your project)
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public XCardWriter(File file, int indent, String xmlVersion) throws IOException {
+		this(utf8Writer(file), indent, xmlVersion);
 	}
 
 	/**
 	 * @param writer the writer to write to
 	 */
 	public XCardWriter(Writer writer) {
-		this(writer, null);
+		this(writer, -1);
+	}
+
+	/**
+	 * @param writer the writer to write to
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 */
+	public XCardWriter(Writer writer, int indent) {
+		this(writer, indent, null);
+	}
+
+	/**
+	 * @param writer the writer to write to
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
+	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
+	 * like <a href=
+	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
+	 * >xalan</a> to your project)
+	 */
+	public XCardWriter(Writer writer, int indent, String xmlVersion) {
+		this(writer, null, indent, xmlVersion);
 	}
 
 	/**
 	 * @param parent the DOM node to add child elements to
 	 */
 	public XCardWriter(Node parent) {
-		this(null, parent);
+		this(null, parent, -1, null);
 	}
 
-	private XCardWriter(Writer writer, Node parent) {
+	private XCardWriter(Writer writer, Node parent, int indent, String xmlVersion) {
 		this.writer = writer;
 
 		if (parent instanceof Document) {
@@ -177,6 +250,21 @@ public class XCardWriter extends StreamWriter {
 		} catch (TransformerConfigurationException e) {
 			throw new RuntimeException(e);
 		}
+
+		Map<String, String> outputProperties = new HashMap<String, String>();
+		outputProperties.put(OutputKeys.METHOD, "xml");
+
+		if (indent >= 0) {
+			outputProperties.put(OutputKeys.INDENT, "yes");
+			outputProperties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");
+		}
+
+		if (xmlVersion != null) {
+			outputProperties.put(OutputKeys.VERSION, xmlVersion);
+		}
+
+		Transformer transformer = handler.getTransformer();
+		XmlUtils.assignOutputProperties(transformer, outputProperties);
 
 		Result result = (writer == null) ? new DOMResult(parent) : new StreamResult(writer);
 		handler.setResult(result);
@@ -431,11 +519,11 @@ public class XCardWriter extends StreamWriter {
 	}
 
 	private void start(String element) throws SAXException {
-		start(element, null);
+		start(element, new AttributesImpl());
 	}
 
 	private void start(QName qname) throws SAXException {
-		start(qname, null);
+		start(qname, new AttributesImpl());
 	}
 
 	private void start(QName qname, Attributes attributes) throws SAXException {
@@ -482,7 +570,13 @@ public class XCardWriter extends StreamWriter {
 		NamedNodeMap attributeNodes = element.getAttributes();
 		for (int i = 0; i < attributeNodes.getLength(); i++) {
 			Node node = attributeNodes.item(i);
-			attributes.addAttribute(node.getNamespaceURI(), "", node.getLocalName(), "", node.getNodeValue());
+
+			String localName = node.getLocalName();
+			if ("xmlns".equals(localName)) {
+				continue;
+			}
+
+			attributes.addAttribute(node.getNamespaceURI(), "", localName, "", node.getNodeValue());
 		}
 		return attributes;
 	}

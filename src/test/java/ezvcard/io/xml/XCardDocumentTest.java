@@ -18,6 +18,7 @@ import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -69,6 +70,7 @@ import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
+import ezvcard.property.Xml;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -113,6 +115,7 @@ public class XCardDocumentTest {
 
 	@BeforeClass
 	public static void beforeClass() {
+		XMLUnit.setIgnoreAttributeOrder(true);
 		XMLUnit.setIgnoreWhitespace(true);
 	}
 
@@ -533,6 +536,73 @@ public class XCardDocumentTest {
 	}
 
 	@Test
+	public void add_xml_property() throws Throwable {
+		VCard vcard = new VCard();
+
+		Xml xmlProperty = new Xml("<foo xmlns=\"http://example.com\" a=\"b\">bar<car/></foo>");
+		xmlProperty.addParameter("name", "value");
+		vcard.addXml(xmlProperty);
+
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
+
+		Document actual = xcard.getDocument();
+
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<foo xmlns=\"http://example.com\" a=\"b\">" +
+					"<parameters xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
+						"<name><unknown>value</unknown></name>" +
+					"</parameters>" +
+					"bar<car/>" +
+				"</foo>" +
+			"</vcard>" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		/*
+		 * When using xalan as the JAXP parser, XMLUnit thinks the <name>
+		 * element in the "actual" DOM has the wrong namespace. But when you
+		 * inspect the DOM yourself, the <name> element *does* have the correct
+		 * namespace!
+		 * 
+		 * As a workaround, let's compare the string versions of the two DOMs.
+		 */
+		assertEquals(XmlUtils.toString(expected), XmlUtils.toString(actual));
+		//assertXMLEqual(expected, actual);
+	}
+
+	@Test
+	public void add_xml_property_with_null_value() throws Throwable {
+		VCard vcard = new VCard();
+
+		Xml xmlProperty = new Xml((Document) null);
+		vcard.addXml(xmlProperty);
+
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
+
+		Document actual = xcard.getDocument();
+
+		//@formatter:off
+		String xml =
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
+			"<vcard />" +
+		"</vcards>";
+		Document expected = XmlUtils.toDocument(xml);
+		//@formatter:on
+
+		assertXMLEqual(expected, actual);
+	}
+
+	@Test
 	public void add_extendedTypes() throws Throwable {
 		VCard vcard = new VCard();
 
@@ -616,6 +686,36 @@ public class XCardDocumentTest {
 
 		//use "String.contains()" to ignore the XML declaration at the top
 		assertTrue("Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual, actual.contains(expected));
+	}
+
+	@Test
+	public void write_xmlVerison_default() throws Throwable {
+		VCard vcard = new VCard();
+		XCardDocument xcard = new XCardDocument();
+		xcard.add(vcard);
+
+		String xml = xcard.write();
+		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
+	}
+
+	@Test
+	public void write_xmlVerison_1_1() throws Throwable {
+		VCard vcard = new VCard();
+		XCardDocument xcard = new XCardDocument();
+		xcard.add(vcard);
+
+		String xml = xcard.write(-1, "1.1");
+		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.1\".*?\\?>.*"));
+	}
+
+	@Test
+	public void write_xmlVerison_invalid() throws Throwable {
+		VCard vcard = new VCard();
+		XCardDocument xcard = new XCardDocument();
+		xcard.add(vcard);
+
+		String xml = xcard.write(-1, "10.17");
+		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
 	}
 
 	@Test

@@ -50,6 +50,7 @@ import ezvcard.property.VCardProperty;
  */
 public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	private int indent = -1;
+	private String xmlVersion;
 
 	/**
 	 * @param vcards the vCards to write
@@ -59,13 +60,27 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	}
 
 	/**
-	 * Sets the number of indent spaces to use for pretty-printing. If not
-	 * set, then the XML will not be pretty-printed.
-	 * @param indent the number of spaces in the indent string
+	 * Sets the number of indent spaces to use for pretty-printing. If not set,
+	 * then the XML will not be pretty-printed.
+	 * @param indent the number of spaces in the indent string (pretty-printing
+	 * disabled by default)
 	 * @return this
 	 */
 	public ChainingXmlWriter indent(int indent) {
 		this.indent = indent;
+		return this;
+	}
+
+	/**
+	 * Sets the XML version to use. Note that many JDKs only support 1.0
+	 * natively. For XML 1.1 support, add a JAXP library like <a href=
+	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
+	 * >xalan</a> to your project.
+	 * @param xmlVersion the XML version (defaults to "1.0")
+	 * @return this
+	 */
+	public ChainingXmlWriter xmlVersion(String xmlVersion) {
+		this.xmlVersion = xmlVersion;
 		return this;
 	}
 
@@ -89,17 +104,17 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * @return the XML document
 	 */
 	public String go() {
-		return createXCardDocument().write(indent);
+		return createXCardDocument().write(indent, xmlVersion);
 	}
 
 	/**
 	 * Writes the xCards to an output stream.
 	 * @param out the output stream to write to
-	 * @throws TransformerException if there's a problem writing to the
-	 * output stream
+	 * @throws TransformerException if there's a problem writing to the output
+	 * stream
 	 */
 	public void go(OutputStream out) throws TransformerException {
-		createXCardDocument().write(out, indent);
+		createXCardDocument().write(out, indent, xmlVersion);
 	}
 
 	/**
@@ -109,17 +124,16 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * @throws TransformerException if there's a problem writing to the file
 	 */
 	public void go(File file) throws IOException, TransformerException {
-		createXCardDocument().write(file, indent);
+		createXCardDocument().write(file, indent, xmlVersion);
 	}
 
 	/**
 	 * Writes the xCards to a writer.
 	 * @param writer the writer to write to
-	 * @throws TransformerException if there's a problem writing to the
-	 * writer
+	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void go(Writer writer) throws TransformerException {
-		createXCardDocument().write(writer, indent);
+		createXCardDocument().write(writer, indent, xmlVersion);
 	}
 
 	/**

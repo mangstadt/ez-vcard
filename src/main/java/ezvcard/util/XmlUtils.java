@@ -199,6 +199,20 @@ public final class XmlUtils {
 			throw new RuntimeException(e);
 		}
 
+		assignOutputProperties(transformer, outputProperties);
+
+		DOMSource source = new DOMSource(node);
+		StreamResult result = new StreamResult(writer);
+		transformer.transform(source, result);
+	}
+
+	/**
+	 * Assigns the given output properties to the given transformer, ignoring
+	 * invalid output properties.
+	 * @param transformer the transformer
+	 * @param outputProperties the output properties
+	 */
+	public static void assignOutputProperties(Transformer transformer, Map<String, String> outputProperties) {
 		for (Map.Entry<String, String> property : outputProperties.entrySet()) {
 			try {
 				transformer.setOutputProperty(property.getKey(), property.getValue());
@@ -206,10 +220,6 @@ public final class XmlUtils {
 				//ignore invalid output properties
 			}
 		}
-
-		DOMSource source = new DOMSource(node);
-		StreamResult result = new StreamResult(writer);
-		transformer.transform(source, result);
 	}
 
 	/**

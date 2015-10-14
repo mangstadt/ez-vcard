@@ -31,6 +31,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
@@ -278,7 +279,7 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to a string without pretty-printing it.
+	 * Writes the XML document to a string.
 	 * @return the XML string
 	 */
 	public String write() {
@@ -286,14 +287,30 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to a string, pretty-printing the XML string.
-	 * @param indent the number of indent spaces to use for pretty-printing
+	 * Writes the XML document to a string.
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
 	 * @return the XML string
 	 */
 	public String write(int indent) {
+		return write(indent, null);
+	}
+
+	/**
+	 * Writes the XML document to a string.
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
+	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
+	 * like <a href=
+	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
+	 * >xalan</a> to your project)
+	 * @return the XML string
+	 */
+	public String write(int indent, String xmlVersion) {
 		StringWriter sw = new StringWriter();
 		try {
-			write(sw, indent);
+			write(sw, indent, xmlVersion);
 		} catch (TransformerException e) {
 			//should not be thrown because we're writing to a string
 			throw new RuntimeException(e);
@@ -302,8 +319,8 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to an output stream without pretty-printing it.
-	 * @param out the output stream
+	 * Writes the XML document to an output stream.
+	 * @param out the output stream (UTF-8 encoding will be used)
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
 	 */
@@ -312,20 +329,37 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to an output stream, pretty-printing the XML
-	 * string.
-	 * @param out the output stream
-	 * @param indent the number of indent spaces to use for pretty-printing
+	 * Writes the XML document to an output stream.
+	 * @param out the output stream (UTF-8 encoding will be used)
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
 	 */
 	public void write(OutputStream out, int indent) throws TransformerException {
-		write(utf8Writer(out), indent);
+		write(out, indent, null);
 	}
 
 	/**
-	 * Writes the XML document to a file without pretty-printing it.
-	 * @param file the file
+	 * Writes the XML document to an output stream.
+	 * @param out the output stream (UTF-8 encoding will be used)
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
+	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
+	 * like <a href=
+	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
+	 * >xalan</a> to your project)
+	 * @throws TransformerException if there's a problem writing to the output
+	 * stream
+	 */
+	public void write(OutputStream out, int indent, String xmlVersion) throws TransformerException {
+		write(utf8Writer(out), indent, xmlVersion);
+	}
+
+	/**
+	 * Writes the XML document to a file.
+	 * @param file the file to write to (UTF-8 encoding will be used)
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
@@ -334,23 +368,41 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to a file, pretty-printing the XML string.
-	 * @param file the file stream
-	 * @param indent the number of indent spaces to use for pretty-printing
+	 * Writes the XML document to a file.
+	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(File file, int indent) throws TransformerException, IOException {
+		write(file, indent, null);
+	}
+
+	/**
+	 * Writes the XML document to a file.
+	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
+	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
+	 * like <a href=
+	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
+	 * >xalan</a> to your project)
+	 * @throws TransformerException if there's a problem writing to the file
+	 * @throws IOException if there's a problem writing to the file
+	 */
+	public void write(File file, int indent, String xmlVersion) throws TransformerException, IOException {
 		Writer writer = utf8Writer(file);
 		try {
-			write(writer, indent);
+			write(writer, indent, xmlVersion);
 		} finally {
 			writer.close();
 		}
 	}
 
 	/**
-	 * Writes the XML document to a writer without pretty-printing it.
+	 * Writes the XML document to a writer.
 	 * @param writer the writer
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
@@ -359,18 +411,42 @@ public class XCardDocument {
 	}
 
 	/**
-	 * Writes the XML document to a writer, pretty-printing the XML string.
+	 * Writes the XML document to a writer.
 	 * @param writer the writer
-	 * @param indent the number of indent spaces to use for pretty-printing
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer, int indent) throws TransformerException {
-		Map<String, String> properties = new HashMap<String, String>();
+		write(writer, indent, null);
+	}
+
+	/**
+	 * Writes the XML document to a writer.
+	 * @param writer the writer
+	 * @param indent the number of indent spaces to use for pretty-printing or
+	 * "-1" to disable pretty-printing (disabled by default)
+	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
+	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
+	 * like <a href=
+	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
+	 * >xalan</a> to your project)
+	 * @throws TransformerException if there's a problem writing to the writer
+	 */
+	public void write(Writer writer, int indent, String xmlVersion) throws TransformerException {
+		Map<String, String> outputProperties = new HashMap<String, String>();
+		outputProperties.put(OutputKeys.METHOD, "xml");
+
 		if (indent >= 0) {
-			properties.put(OutputKeys.INDENT, "yes");
-			properties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");
+			outputProperties.put(OutputKeys.INDENT, "yes");
+			outputProperties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");
 		}
-		XmlUtils.toWriter(document, writer, properties);
+
+		if (xmlVersion != null) {
+			outputProperties.put(OutputKeys.VERSION, xmlVersion);
+		}
+
+		XmlUtils.toWriter(document, writer, outputProperties);
 	}
 
 	private class XCardDocumentStreamReader extends StreamReader {
@@ -607,26 +683,36 @@ public class XCardDocument {
 
 		/**
 		 * Marshals a type object to an XML element.
-		 * @param type the type object to marshal
+		 * @param property the property to marshal
 		 * @param vcard the vcard the type belongs to
 		 * @return the XML element
 		 */
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		private Element marshalProperty(VCardProperty type, VCard vcard) {
-			VCardPropertyScribe scribe = index.getPropertyScribe(type);
-			VCardParameters parameters = scribe.prepareParameters(type, version4, vcard);
+		private Element marshalProperty(VCardProperty property, VCard vcard) {
+			VCardPropertyScribe scribe = index.getPropertyScribe(property);
 
-			QName qname = scribe.getQName();
-			Element propertyElement = createElement(qname);
-
-			//marshal the parameters
-			if (!parameters.isEmpty()) {
-				Element parametersElement = marshalParameters(parameters);
-				propertyElement.appendChild(parametersElement);
+			Element propertyElement;
+			if (property instanceof Xml) {
+				Xml xml = (Xml) property;
+				Document propertyDocument = xml.getValue();
+				if (propertyDocument == null) {
+					throw new SkipMeException();
+				}
+				propertyElement = XmlUtils.getRootElement(propertyDocument);
+				propertyElement = (Element) document.importNode(propertyElement, true);
+			} else {
+				QName qname = scribe.getQName();
+				propertyElement = createElement(qname);
+				scribe.writeXml(property, propertyElement);
 			}
 
-			//marshal the value
-			scribe.writeXml(type, propertyElement);
+			//marshal the parameters
+			VCardParameters parameters = scribe.prepareParameters(property, version4, vcard);
+			if (!parameters.isEmpty()) {
+				Element parametersElement = marshalParameters(parameters);
+				Node firstChild = propertyElement.getFirstChild();
+				propertyElement.insertBefore(parametersElement, firstChild);
+			}
 
 			return propertyElement;
 		}
