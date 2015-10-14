@@ -96,6 +96,8 @@ You have some options:
 
 Please submit bug reports and feature requests to the [issue tracker](https://github.com/mangstadt/ez-vcard/issues).  Contributors are listed in the project credits.
 
+If you'd like to help improve the accuracy of ez-vcard's parsing engine, please submit vCard samples using [this form](https://docs.google.com/forms/d/1SQDjDtPvEWmp-2Sl-R-iaCUbvxOdg8MmlJGdRZlWBtk/viewform?usp=send_form).  All contributions are greatly appreciated.
+
 # Credits
 
 **Lead Developer**  
@@ -124,6 +126,7 @@ Juliane Dombrowski ([quoted-printable line folding](https://github.com/mangstadt
 F. Gaffron ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/12))  
 knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](https://github.com/mangstadt/ez-vcard/issues/2))  
 David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7](https://github.com/mangstadt/ez-vcard/issues/7))  
+[rfc2822](https://github.com/rfc2822) ([folding line issue](https://github.com/mangstadt/ez-vcard/issues/30))  
 Matt Siegel ([base64 property value bug](https://github.com/mangstadt/ez-vcard/issues/21), [unit test bug](https://github.com/mangstadt/ez-vcard/issues/22))  
 David Spieler ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/19))  
 Tom Vogel ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/10))  
