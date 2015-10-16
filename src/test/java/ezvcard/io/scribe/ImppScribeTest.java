@@ -6,6 +6,8 @@ import java.net.URI;
 
 import org.junit.Test;
 
+import ezvcard.VCard;
+import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.Impp;
 
@@ -50,6 +52,17 @@ public class ImppScribeTest {
 
 	private final Impp withValue = new Impp(uri);
 	private final Impp empty = new Impp((URI) null);
+
+	@Test
+	public void prepareParameters() {
+		Impp withPref = new Impp(uri);
+		withPref.setPref(1);
+		VCard vcard = new VCard();
+		vcard.addImpp(withPref);
+
+		sensei.assertPrepareParams(withPref).vcard(vcard).versions(VCardVersion.V2_1, VCardVersion.V3_0).expected("TYPE", "pref").run();
+		sensei.assertPrepareParams(withPref).vcard(vcard).versions(VCardVersion.V4_0).expected("PREF", "1").run();
+	}
 
 	@Test
 	public void marshalText() {

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -58,6 +59,11 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 
 	public ImppScribe() {
 		super(Impp.class, "IMPP");
+	}
+
+	@Override
+	protected void _prepareParameters(Impp property, VCardParameters copy, VCardVersion version, VCard vcard) {
+		handlePrefParam(property, copy, version, vcard);
 	}
 
 	@Override
