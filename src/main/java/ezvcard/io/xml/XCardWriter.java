@@ -46,7 +46,6 @@ import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.util.ListMultimap;
-import ezvcard.util.StringUtils;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -129,9 +128,7 @@ public class XCardWriter extends StreamWriter {
 	private final Writer writer;
 	private final TransformerHandler handler;
 	private final boolean vcardsElementExists;
-	private String indent;
-	private int level = 0;
-	private boolean textNodeJustPrinted = false, started = false;
+	private boolean started = false;
 
 	/**
 	 * @param out the output stream to write to (UTF-8 encoding will be used)
@@ -291,7 +288,6 @@ public class XCardWriter extends StreamWriter {
 				if (!vcardsElementExists) {
 					//don't output a <vcards> element if the parent is a <vcards> element
 					start(VCARDS);
-					level++;
 				}
 
 				started = true;
@@ -303,7 +299,6 @@ public class XCardWriter extends StreamWriter {
 			}
 
 			start(VCARD);
-			level++;
 
 			for (Map.Entry<String, List<VCardProperty>> entry : propertiesByGroup) {
 				String groupName = entry.getKey();
@@ -312,7 +307,6 @@ public class XCardWriter extends StreamWriter {
 					attr.addAttribute(XCardQNames.NAMESPACE, "", "name", "", groupName);
 
 					start(GROUP, attr);
-					level++;
 				}
 
 				for (VCardProperty property : entry.getValue()) {
@@ -320,12 +314,10 @@ public class XCardWriter extends StreamWriter {
 				}
 
 				if (groupName != null) {
-					level--;
 					end(GROUP);
 				}
 			}
 
-			level--;
 			end(VCARD);
 		} catch (SAXException e) {
 			throw new IOException(e);
@@ -353,15 +345,6 @@ public class XCardWriter extends StreamWriter {
 	}
 
 	/**
-	 * Set the indentation string to use for pretty-printing the output.
-	 * @param indent the indentation string (e.g. 2 spaces) or null to disable
-	 * pretty-printing (defaults to null)
-	 */
-	public void setIndent(String indent) {
-		this.indent = indent;
-	}
-
-	/**
 	 * Terminates the XML document and closes the output stream.
 	 */
 	public void close() throws IOException {
@@ -372,12 +355,10 @@ public class XCardWriter extends StreamWriter {
 				if (!vcardsElementExists) {
 					//don't output a <vcards> element if the parent is a <vcards> element
 					start(VCARDS);
-					level++;
 				}
 			}
 
 			if (!vcardsElementExists) {
-				level--;
 				end(VCARDS);
 			}
 			handler.endDocument();
@@ -417,12 +398,10 @@ public class XCardWriter extends StreamWriter {
 		}
 
 		start(propertyElement);
-		level++;
 
 		write(parameters);
 		write(propertyElement);
 
-		level--;
 		end(propertyElement);
 	}
 
@@ -436,11 +415,7 @@ public class XCardWriter extends StreamWriter {
 
 				if (element.hasChildNodes()) {
 					start(element);
-					level++;
-
 					write(element);
-
-					level--;
 					end(element);
 				} else {
 					childless(element);
@@ -463,12 +438,10 @@ public class XCardWriter extends StreamWriter {
 		}
 
 		start(PARAMETERS);
-		level++;
 
 		for (Map.Entry<String, List<String>> parameter : parameters) {
 			String parameterName = parameter.getKey().toLowerCase();
 			start(parameterName);
-			level++;
 
 			for (String parameterValue : parameter.getValue()) {
 				VCardDataType dataType = parameterDataTypes.get(parameterName);
@@ -479,25 +452,10 @@ public class XCardWriter extends StreamWriter {
 				end(dataTypeElementName);
 			}
 
-			level--;
 			end(parameterName);
 		}
 
-		level--;
 		end(PARAMETERS);
-	}
-
-	private void indent() throws SAXException {
-		if (indent == null) {
-			return;
-		}
-
-		/*
-		 * "\n" is hard-coded here because if the Windows "\r\n" is used, it
-		 * will encode the "\r" character for XML ("&#13;")
-		 */
-		String str = '\n' + StringUtils.repeat(indent, level);
-		handler.ignorableWhitespace(str.toCharArray(), 0, str.length());
 	}
 
 	/**
@@ -508,7 +466,6 @@ public class XCardWriter extends StreamWriter {
 	 */
 	private void childless(Element element) throws SAXException {
 		Attributes attributes = getElementAttributes(element);
-		indent();
 		handler.startElement(element.getNamespaceURI(), "", element.getLocalName(), attributes);
 		handler.endElement(element.getNamespaceURI(), "", element.getLocalName());
 	}
@@ -535,7 +492,6 @@ public class XCardWriter extends StreamWriter {
 	}
 
 	private void start(String namespace, String element, Attributes attributes) throws SAXException {
-		indent();
 		handler.startElement(namespace, "", element, attributes);
 	}
 
@@ -552,17 +508,11 @@ public class XCardWriter extends StreamWriter {
 	}
 
 	private void end(String namespace, String element) throws SAXException {
-		if (!textNodeJustPrinted) {
-			indent();
-		}
-
 		handler.endElement(namespace, "", element);
-		textNodeJustPrinted = false;
 	}
 
 	private void text(String text) throws SAXException {
 		handler.characters(text.toCharArray(), 0, text.length());
-		textNodeJustPrinted = true;
 	}
 
 	private Attributes getElementAttributes(Element element) {
