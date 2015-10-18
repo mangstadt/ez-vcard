@@ -5,13 +5,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Document;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.VCardDataType;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardDocument;
 import ezvcard.io.xml.XCardDocument.XCardDocumentStreamWriter;
@@ -49,8 +54,12 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  */
 public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
-	private int indent = -1;
-	private String xmlVersion;
+	private final String INDENT_AMOUNT = "{http://xml.apache.org/xslt}indent-amount";
+	private final Map<String, String> outputProperties = new HashMap<String, String>();
+	{
+		outputProperties.put(OutputKeys.METHOD, "xml");
+	}
+	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>(0);
 
 	/**
 	 * @param vcards the vCards to write
@@ -62,13 +71,19 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	/**
 	 * Sets the number of indent spaces to use for pretty-printing. If not set,
 	 * then the XML will not be pretty-printed.
-	 * @param indent the number of spaces in the indent string (pretty-printing
-	 * disabled by default)
+	 * @param indent the number of spaces in the indent string or -1 not to
+	 * pretty-print (disabled by default)
 	 * @return this
 	 */
 	public ChainingXmlWriter indent(int indent) {
-		this.indent = indent;
-		return this;
+		if (indent < 0) {
+			outputProperties.remove(OutputKeys.INDENT);
+			outputProperties.remove(INDENT_AMOUNT);
+			return this;
+		}
+
+		outputProperty(OutputKeys.INDENT, "yes");
+		return outputProperty(INDENT_AMOUNT, indent + "");
 	}
 
 	/**
@@ -80,7 +95,34 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * @return this
 	 */
 	public ChainingXmlWriter xmlVersion(String xmlVersion) {
-		this.xmlVersion = xmlVersion;
+		if (xmlVersion == null) {
+			outputProperties.remove(OutputKeys.VERSION);
+			return this;
+		}
+
+		return outputProperty(OutputKeys.VERSION, xmlVersion);
+	}
+
+	/**
+	 * Assigns an output property to the JAXP transformer (see
+	 * {@link Transformer#setOutputProperty}).
+	 * @param name the property name
+	 * @param value the property value
+	 * @return this
+	 */
+	public ChainingXmlWriter outputProperty(String name, String value) {
+		outputProperties.put(name, value);
+		return this;
+	}
+
+	/**
+	 * Assigns all of the given output properties to the JAXP transformer (see
+	 * {@link Transformer#setOutputProperty}).
+	 * @param outputProperties the properties
+	 * @return this
+	 */
+	public ChainingXmlWriter outputProperties(Map<String, String> outputProperties) {
+		this.outputProperties.putAll(outputProperties);
 		return this;
 	}
 
@@ -100,11 +142,23 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	}
 
 	/**
+	 * Registers the data type of a non-standard parameter. Non-standard
+	 * parameters use the "unknown" data type by default.
+	 * @param parameterName the parameter name (e.g. "x-foo")
+	 * @param dataType the data type
+	 * @return this
+	 */
+	public ChainingXmlWriter register(String parameterName, VCardDataType dataType) {
+		parameterDataTypes.put(parameterName, dataType);
+		return this;
+	}
+
+	/**
 	 * Writes the xCards to a string.
 	 * @return the XML document
 	 */
 	public String go() {
-		return createXCardDocument().write(indent, xmlVersion);
+		return createXCardDocument().write(outputProperties);
 	}
 
 	/**
@@ -114,7 +168,7 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * stream
 	 */
 	public void go(OutputStream out) throws TransformerException {
-		createXCardDocument().write(out, indent, xmlVersion);
+		createXCardDocument().write(out, outputProperties);
 	}
 
 	/**
@@ -124,7 +178,7 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * @throws TransformerException if there's a problem writing to the file
 	 */
 	public void go(File file) throws IOException, TransformerException {
-		createXCardDocument().write(file, indent, xmlVersion);
+		createXCardDocument().write(file, outputProperties);
 	}
 
 	/**
@@ -133,7 +187,7 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void go(Writer writer) throws TransformerException {
-		createXCardDocument().write(writer, indent, xmlVersion);
+		createXCardDocument().write(writer, outputProperties);
 	}
 
 	/**
@@ -150,6 +204,11 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 		XCardDocumentStreamWriter writer = document.writer();
 		writer.setAddProdId(prodId);
 		writer.setVersionStrict(versionStrict);
+		for (Map.Entry<String, VCardDataType> entry : parameterDataTypes.entrySet()) {
+			String parameterName = entry.getKey();
+			VCardDataType dataType = entry.getValue();
+			writer.registerParameterDataType(parameterName, dataType);
+		}
 		if (index != null) {
 			writer.setScribeIndex(index);
 		}

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,8 @@ import ezvcard.util.XmlUtils;
  *   if (writer != null) writer.close();
  * }
  * </pre>
+ * 
+ * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
@@ -157,7 +160,17 @@ public class XCardWriter extends StreamWriter {
 	 * >xalan</a> to your project)
 	 */
 	public XCardWriter(OutputStream out, int indent, String xmlVersion) {
-		this(utf8Writer(out), -1, xmlVersion);
+		this(out, createOutputProperties(indent, xmlVersion));
+	}
+
+	/**
+	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param outputProperties properties to assign to the JAXP
+	 * transformer (see {@link Transformer#setOutputProperty})
+	 * >xalan</a> to your project)
+	 */
+	public XCardWriter(OutputStream out, Map<String, String> outputProperties) {
+		this(utf8Writer(out), outputProperties);
 	}
 
 	/**
@@ -190,7 +203,17 @@ public class XCardWriter extends StreamWriter {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public XCardWriter(File file, int indent, String xmlVersion) throws IOException {
-		this(utf8Writer(file), indent, xmlVersion);
+		this(file, createOutputProperties(indent, xmlVersion));
+	}
+
+	/**
+	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param outputProperties properties to assign to the JAXP
+	 * transformer (see {@link Transformer#setOutputProperty})
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public XCardWriter(File file, Map<String, String> outputProperties) throws IOException {
+		this(utf8Writer(file), outputProperties);
 	}
 
 	/**
@@ -220,17 +243,42 @@ public class XCardWriter extends StreamWriter {
 	 * >xalan</a> to your project)
 	 */
 	public XCardWriter(Writer writer, int indent, String xmlVersion) {
-		this(writer, null, indent, xmlVersion);
+		this(writer, createOutputProperties(indent, xmlVersion));
+	}
+
+	/**
+	 * @param writer the writer to write to
+	 * @param outputProperties properties to assign to the JAXP
+	 * transformer (see {@link Transformer#setOutputProperty})
+	 */
+	public XCardWriter(Writer writer, Map<String, String> outputProperties) {
+		this(writer, null, outputProperties);
 	}
 
 	/**
 	 * @param parent the DOM node to add child elements to
 	 */
 	public XCardWriter(Node parent) {
-		this(null, parent, -1, null);
+		this(null, parent, Collections.<String, String> emptyMap());
 	}
 
-	private XCardWriter(Writer writer, Node parent, int indent, String xmlVersion) {
+	private static Map<String, String> createOutputProperties(int indent, String xmlVersion) {
+		Map<String, String> properties = new HashMap<String, String>();
+		properties.put(OutputKeys.METHOD, "xml");
+
+		if (indent >= 0) {
+			properties.put(OutputKeys.INDENT, "yes");
+			properties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");
+		}
+
+		if (xmlVersion != null) {
+			properties.put(OutputKeys.VERSION, xmlVersion);
+		}
+
+		return properties;
+	}
+
+	private XCardWriter(Writer writer, Node parent, Map<String, String> outputProperties) {
 		this.writer = writer;
 
 		if (parent instanceof Document) {
@@ -248,20 +296,17 @@ public class XCardWriter extends StreamWriter {
 			throw new RuntimeException(e);
 		}
 
-		Map<String, String> outputProperties = new HashMap<String, String>();
-		outputProperties.put(OutputKeys.METHOD, "xml");
-
-		if (indent >= 0) {
-			outputProperties.put(OutputKeys.INDENT, "yes");
-			outputProperties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");
-		}
-
-		if (xmlVersion != null) {
-			outputProperties.put(OutputKeys.VERSION, xmlVersion);
-		}
-
 		Transformer transformer = handler.getTransformer();
-		XmlUtils.assignOutputProperties(transformer, outputProperties);
+
+		/*
+		 * Using Transformer#setOutputProperties(Properties) doesn't work for
+		 * some reason for setting the number of indentation spaces.
+		 */
+		for (Map.Entry<String, String> entry : outputProperties.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+			transformer.setOutputProperty(key, value);
+		}
 
 		Result result = (writer == null) ? new DOMResult(parent) : new StreamResult(writer);
 		handler.setResult(result);

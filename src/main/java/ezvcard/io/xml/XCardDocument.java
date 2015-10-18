@@ -23,7 +23,13 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -308,9 +314,19 @@ public class XCardDocument {
 	 * @return the XML string
 	 */
 	public String write(int indent, String xmlVersion) {
+		return write(createOutputProperties(indent, xmlVersion));
+	}
+
+	/**
+	 * Writes the XML document to a string.
+	 * @param outputProperties properties to assign to the JAXP
+	 * transformer (see {@link Transformer#setOutputProperty})
+	 * @return the XML string
+	 */
+	public String write(Map<String, String> outputProperties) {
 		StringWriter sw = new StringWriter();
 		try {
-			write(sw, indent, xmlVersion);
+			write(sw, outputProperties);
 		} catch (TransformerException e) {
 			//should not be thrown because we're writing to a string
 			throw new RuntimeException(e);
@@ -354,7 +370,19 @@ public class XCardDocument {
 	 * stream
 	 */
 	public void write(OutputStream out, int indent, String xmlVersion) throws TransformerException {
-		write(utf8Writer(out), indent, xmlVersion);
+		write(out, createOutputProperties(indent, xmlVersion));
+	}
+
+	/**
+	 * Writes the XML document to an output stream.
+	 * @param out the output stream (UTF-8 encoding will be used)
+	 * @param outputProperties properties to assign to the JAXP
+	 * transformer (see {@link Transformer#setOutputProperty})
+	 * @throws TransformerException if there's a problem writing to the output
+	 * stream
+	 */
+	public void write(OutputStream out, Map<String, String> outputProperties) throws TransformerException {
+		write(utf8Writer(out), outputProperties);
 	}
 
 	/**
@@ -393,9 +421,21 @@ public class XCardDocument {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(File file, int indent, String xmlVersion) throws TransformerException, IOException {
+		write(file, createOutputProperties(indent, xmlVersion));
+	}
+
+	/**
+	 * Writes the XML document to a file.
+	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param outputProperties properties to assign to the JAXP
+	 * transformer (see {@link Transformer#setOutputProperty})
+	 * @throws TransformerException if there's a problem writing to the file
+	 * @throws IOException if there's a problem writing to the file
+	 */
+	public void write(File file, Map<String, String> outputProperties) throws TransformerException, IOException {
 		Writer writer = utf8Writer(file);
 		try {
-			write(writer, indent, xmlVersion);
+			write(writer, outputProperties);
 		} finally {
 			writer.close();
 		}
@@ -434,19 +474,57 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer, int indent, String xmlVersion) throws TransformerException {
-		Map<String, String> outputProperties = new HashMap<String, String>();
-		outputProperties.put(OutputKeys.METHOD, "xml");
+		write(writer, createOutputProperties(indent, xmlVersion));
+	}
+
+	/**
+	 * Writes the XML document to a writer.
+	 * @param writer the writer
+	 * @param outputProperties properties to assign to the JAXP
+	 * transformer (see {@link Transformer#setOutputProperty})
+	 * @throws TransformerException if there's a problem writing to the writer
+	 */
+	public void write(Writer writer, Map<String, String> outputProperties) throws TransformerException {
+		Transformer transformer;
+		try {
+			transformer = TransformerFactory.newInstance().newTransformer();
+		} catch (TransformerConfigurationException e) {
+			//should never be thrown because we're not doing anything fancy with the configuration
+			throw new RuntimeException(e);
+		} catch (TransformerFactoryConfigurationError e) {
+			//should never be thrown because we're not doing anything fancy with the configuration
+			throw new RuntimeException(e);
+		}
+
+		/*
+		 * Using Transformer#setOutputProperties(Properties) doesn't work for
+		 * some reason for setting the number of indentation spaces.
+		 */
+		for (Map.Entry<String, String> entry : outputProperties.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+			transformer.setOutputProperty(key, value);
+		}
+
+		DOMSource source = new DOMSource(document);
+		StreamResult result = new StreamResult(writer);
+		transformer.transform(source, result);
+	}
+
+	private Map<String, String> createOutputProperties(int indent, String xmlVersion) {
+		Map<String, String> properties = new HashMap<String, String>();
+		properties.put(OutputKeys.METHOD, "xml");
 
 		if (indent >= 0) {
-			outputProperties.put(OutputKeys.INDENT, "yes");
-			outputProperties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");
+			properties.put(OutputKeys.INDENT, "yes");
+			properties.put("{http://xml.apache.org/xslt}indent-amount", indent + "");
 		}
 
 		if (xmlVersion != null) {
-			outputProperties.put(OutputKeys.VERSION, xmlVersion);
+			properties.put(OutputKeys.VERSION, xmlVersion);
 		}
 
-		XmlUtils.toWriter(document, writer, outputProperties);
+		return properties;
 	}
 
 	private class XCardDocumentStreamReader extends StreamReader {
