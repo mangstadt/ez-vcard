@@ -36,6 +36,7 @@ import ezvcard.VCard;
 /**
  * Chainer class for parsing xCards (XML-encoded vCards) from strings or DOMs.
  * @see Ezvcard#parseXml(String)
+ * @see Ezvcard#parseXml(Document)
  * @author Michael Angstadt
  */
 public class ChainingXmlMemoryParser extends ChainingXmlParser<ChainingXmlMemoryParser> {
