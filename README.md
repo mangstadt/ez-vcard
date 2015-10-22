@@ -139,4 +139,6 @@ Volo Coffeehouse
 
 _No animals were harmed in the making of this library._
 
+Thank you [DAVDroid](https://davdroid.bitfire.at/) for your generous donation.
+
 [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
