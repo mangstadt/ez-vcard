@@ -26,7 +26,9 @@ import org.w3c.dom.NodeList;
 import ezvcard.io.LuckyNumType;
 import ezvcard.io.LuckyNumType.LuckyNumScribe;
 import ezvcard.io.xml.XCardNamespaceContext;
+import ezvcard.parameter.ImageType;
 import ezvcard.property.FormattedName;
+import ezvcard.property.Photo;
 import ezvcard.util.XCardBuilder;
 import ezvcard.util.XmlUtils;
 
@@ -454,6 +456,59 @@ public class EzvcardTest {
 
 		actual = Ezvcard.write(vcard).versionStrict(false).go();
 		assertTrue(actual.contains("\r\nMAILER:"));
+	}
+
+	@Test
+	public void write_outlook() throws Exception {
+		byte data[] = "data".getBytes();
+		VCard vcard = new VCard();
+		vcard.addPhoto(new Photo(data, ImageType.JPEG));
+
+		//default
+		{
+			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).go();
+
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"PHOTO;ENCODING=base64;JPEG:ZGF0YQ==\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(expected, actual);
+		}
+
+		//true
+		{
+			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).outlook(true).go();
+
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"PHOTO;ENCODING=base64;JPEG:ZGF0YQ==\r\n" +
+				"\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(expected, actual);
+		}
+
+		//false
+		{
+			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).outlook(false).go();
+
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"PHOTO;ENCODING=base64;JPEG:ZGF0YQ==\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(expected, actual);
+		}
 	}
 
 	@Test

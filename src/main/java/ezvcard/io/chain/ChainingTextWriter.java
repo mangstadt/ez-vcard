@@ -48,6 +48,7 @@ import ezvcard.property.VCardProperty;
 public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	private VCardVersion version;
 	private boolean caretEncoding = false;
+	private boolean outlook = false;
 
 	/**
 	 * @param vcards the vCards to write
@@ -85,6 +86,30 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 */
 	public ChainingTextWriter caretEncoding(boolean enable) {
 		this.caretEncoding = enable;
+		return this;
+	}
+
+	/**
+	 * <p>
+	 * Sets whether the vCards should be fully compatible with Microsoft Outlook
+	 * mail clients. This setting is disabled by default.
+	 * </p>
+	 * <p>
+	 * Enabling this setting may make the vCards incompatible with other vCard
+	 * consumers.
+	 * </p>
+	 * <p>
+	 * Enabling this setting adds an empty line after all base64-encoded
+	 * property values for vCards with versions 2.1 and 3.0. This setting has no
+	 * effect on 4.0 vCards, or on vCards that do not have any properties with
+	 * base64-encoded values.
+	 * </p>
+	 * @param enable true to enable, false to disable (defaults to false).
+	 * @return this
+	 * @see VCardWriter#setOutlookCompatibility(boolean)
+	 */
+	public ChainingTextWriter outlook(boolean enable) {
+		this.outlook = enable;
 		return this;
 	}
 
@@ -165,6 +190,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 		writer.setAddProdId(prodId);
 		writer.setCaretEncodingEnabled(caretEncoding);
 		writer.setVersionStrict(versionStrict);
+		writer.setOutlookCompatibility(outlook);
 		if (index != null) {
 			writer.setScribeIndex(index);
 		}
