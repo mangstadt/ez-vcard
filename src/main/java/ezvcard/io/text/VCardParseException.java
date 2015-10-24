@@ -38,16 +38,23 @@ import java.io.IOException;
 @SuppressWarnings("serial")
 public class VCardParseException extends IOException {
 	private final String line;
+	private final int lineNumber;
 
 	/**
-	 * @param line the line that couldn't be parsed
+	 * @param line the line that couldn't be parsed (unfolded)
+	 * @param lineNumber the line number
 	 */
-	public VCardParseException(String line) {
-		super("Problem parsing vCard line: " + line);
+	public VCardParseException(String line, int lineNumber) {
+		super("Problem parsing vCard at line" + lineNumber + ": " + line);
 		this.line = line;
+		this.lineNumber = lineNumber;
 	}
 
 	public String getLine() {
 		return line;
+	}
+
+	public int getLineNumber() {
+		return lineNumber;
 	}
 }

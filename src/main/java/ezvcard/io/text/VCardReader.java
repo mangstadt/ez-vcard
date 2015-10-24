@@ -196,7 +196,7 @@ public class VCardReader extends StreamReader {
 				line = reader.readLine();
 			} catch (VCardParseException e) {
 				if (!vcardStack.isEmpty()) {
-					warnings.add(reader.getLineNum(), null, 27, e.getLine());
+					warnings.add(e.getLineNumber(), null, 27, e.getLine());
 				}
 				continue;
 			}
@@ -273,7 +273,7 @@ public class VCardReader extends StreamReader {
 				try {
 					value = decodeQuotedPrintableValue(name, parameters, value);
 				} catch (DecoderException e) {
-					warnings.add(reader.getLineNum(), name, 38, e.getMessage());
+					warnings.add(reader.getLineNumber(), name, 38, e.getMessage());
 				}
 
 				//get the scribe
@@ -297,7 +297,7 @@ public class VCardReader extends StreamReader {
 					Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
 
 					for (String warning : result.getWarnings()) {
-						warnings.add(reader.getLineNum(), name, warning);
+						warnings.add(reader.getLineNumber(), name, warning);
 					}
 
 					property = result.getProperty();
@@ -315,9 +315,9 @@ public class VCardReader extends StreamReader {
 						curVCard.addProperty(property);
 					}
 				} catch (SkipMeException e) {
-					warnings.add(reader.getLineNum(), name, 22, e.getMessage());
+					warnings.add(reader.getLineNumber(), name, 22, e.getMessage());
 				} catch (CannotParseException e) {
-					warnings.add(reader.getLineNum(), name, 25, value, e.getMessage());
+					warnings.add(reader.getLineNumber(), name, 25, value, e.getMessage());
 					property = new RawProperty(name, value);
 					property.setGroup(group);
 					curVCard.addProperty(property);
@@ -343,7 +343,7 @@ public class VCardReader extends StreamReader {
 							//shouldn't be thrown because we're reading from a string
 						} finally {
 							for (String w : agentReader.getWarnings()) {
-								warnings.add(reader.getLineNum(), name, 26, w);
+								warnings.add(reader.getLineNumber(), name, 26, w);
 							}
 							IOUtils.closeQuietly(agentReader);
 						}
@@ -452,7 +452,7 @@ public class VCardReader extends StreamReader {
 				charset = defaultQuotedPrintableCharset;
 
 				//the given charset was invalid, so add a warning
-				warnings.add(reader.getLineNum(), name, 23, charsetStr, charset.name());
+				warnings.add(reader.getLineNumber(), name, 23, charsetStr, charset.name());
 			}
 		}
 

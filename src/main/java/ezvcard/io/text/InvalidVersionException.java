@@ -40,9 +40,10 @@ public class InvalidVersionException extends VCardParseException {
 	/**
 	 * @param version the value of the invalid VERSION property
 	 * @param line the line that couldn't be parsed
+	 * @param lineNumber the line number
 	 */
-	public InvalidVersionException(String version, String line) {
-		super(line);
+	public InvalidVersionException(String version, String line, int lineNumber) {
+		super(line, lineNumber);
 		this.version = version;
 	}
 
