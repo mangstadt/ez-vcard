@@ -113,7 +113,7 @@ public final class Ezvcard {
 	static {
 		InputStream in = null;
 		try {
-			in = Ezvcard.class.getResourceAsStream("/ez-vcard.properties");
+			in = Ezvcard.class.getResourceAsStream("ez-vcard.properties");
 			Properties props = new Properties();
 			props.load(in);
 
