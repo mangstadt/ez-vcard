@@ -90,6 +90,7 @@ public class VCardRawReader implements Closeable {
 	 * Reads the next line from the input stream. Folded lines are automatically
 	 * unfolded.
 	 * @return the parsed components of the line
+	 * @throws VCardParseException if a line cannot be parsed
 	 * @throws IOException if there's a problem reading from the stream
 	 */
 	public VCardRawLine readLine() throws IOException {
