@@ -2,6 +2,7 @@ package ezvcard.io.json;
 
 import static ezvcard.util.IOUtils.utf8Reader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -100,7 +101,7 @@ public class JCardReader extends StreamReader {
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public JCardReader(File file) throws FileNotFoundException {
-		this(utf8Reader(file));
+		this(new BufferedReader(utf8Reader(file)));
 	}
 
 	/**

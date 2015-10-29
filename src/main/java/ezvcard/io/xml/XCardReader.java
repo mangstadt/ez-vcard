@@ -5,6 +5,7 @@ import static ezvcard.io.xml.XCardQNames.PARAMETERS;
 import static ezvcard.io.xml.XCardQNames.VCARD;
 import static ezvcard.io.xml.XCardQNames.VCARDS;
 
+import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -138,7 +139,7 @@ public class XCardReader extends StreamReader {
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public XCardReader(File file) throws FileNotFoundException {
-		this(new FileInputStream(file));
+		this(new BufferedInputStream(new FileInputStream(file)));
 	}
 
 	/**

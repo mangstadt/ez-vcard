@@ -1,5 +1,6 @@
 package ezvcard.io.text;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -113,7 +114,7 @@ public class VCardReader extends StreamReader {
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public VCardReader(File file) throws FileNotFoundException {
-		this(new FileReader(file));
+		this(new BufferedReader(new FileReader(file)));
 	}
 
 	/**
