@@ -304,10 +304,9 @@ public class VCardWriter extends StreamWriter implements Flushable {
 			/*
 			 * Set the property's data type.
 			 * 
-			 * Only add a VALUE parameter if the data type is:
-			 * (1) not "unknown"
-			 * (2) different from the property's default data type
-			 * (3) not the date/time special case (see code)
+			 * Only add a VALUE parameter if the data type is: (1) not "unknown"
+			 * (2) different from the property's default data type (3) not the
+			 * date/time special case (see code)
 			 */
 			VCardDataType dataType = scribe.dataType(property, targetVersion);
 			if (dataType != null) {
@@ -327,11 +326,12 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	}
 
 	/**
-	 * Outlook 2010 requires an empty line after base64 values (at
-	 * least, some of the time).
+	 * Outlook 2010 requires an empty line after base64 values (at least, some
+	 * of the time).
 	 * @param targetVersion the vCard version
 	 * @param property the property being written
-	 * @see https://github.com/mangstadt/ez-vcard/issues/21
+	 * @see <a href="https://github.com/mangstadt/ez-vcard/issues/21">Issue
+	 * 21</a>
 	 */
 	private void insertEmptyLineForOutlook(VCardVersion targetVersion, VCardProperty property) throws IOException {
 		if (!outlookCompatibility) {
@@ -364,8 +364,8 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * NOT be given a VALUE parameter.
 	 * @param defaultDataType the property's default data type
 	 * @param dataType the current property instance's data type
-	 * @return true if the default data type is "date-and-or-time" and the
-	 * data type is time-based, false otherwise
+	 * @return true if the default data type is "date-and-or-time" and the data
+	 * type is time-based, false otherwise
 	 */
 	private boolean isDateTimeValueParameterSpecialCase(VCardDataType defaultDataType, VCardDataType dataType) {
 		//@formatter:off

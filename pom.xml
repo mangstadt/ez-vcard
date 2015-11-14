@@ -207,7 +207,7 @@
 					<encoding>UTF-8</encoding>
 					<linksource>true</linksource>
 					<links>
-						<link>http://freemarker.sourceforge.net/docs/api/</link>
+						<link>http://freemarker.incubator.apache.org/docs/api</link>
 						<link>http://jsoup.org/apidocs/</link>
 						<link>http://fasterxml.github.io/jackson-core/javadoc/2.6/</link>
 					</links>
