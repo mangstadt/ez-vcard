@@ -122,6 +122,7 @@ Moritz Bechler (Geo URI bug fix)
 Kiran Kumar Bhushan (quoted-printable bug)  
 Florian Brunner ([OSGi metadata](https://github.com/mangstadt/ez-vcard/issues/11))  
 Pratyush Chandra ([ez-vcard-android](http://github.com/mangstadt/ez-vcard-android))  
+[cmargenau](https://github.com/cmargenau) ([XML 1.1 support](https://github.com/mangstadt/ez-vcard/issues/29)) 
 Juliane Dombrowski ([quoted-printable line folding](https://github.com/mangstadt/ez-vcard/issues/9))  
 F. Gaffron ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/12))  
 knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](https://github.com/mangstadt/ez-vcard/issues/2))  
@@ -139,6 +140,6 @@ Volo Coffeehouse
 
 _No animals were harmed in the making of this library._
 
-Thank you [DAVDroid](https://davdroid.bitfire.at/) for your generous donation.
+Thank you to [DAVDroid](https://davdroid.bitfire.at/) for their generous donation.
 
 [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
