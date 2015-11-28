@@ -361,17 +361,31 @@ public class VCardRawWriterTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void invalid_group_name() throws Throwable {
+	public void invalid_group_name_characters() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
-		writer.writeProperty("invalid*name", "PROP", new VCardParameters(), "");
+		writer.writeProperty("invalid.name", "PROP", new VCardParameters(), "");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void invalid_property_name() throws Throwable {
+	public void invalid_group_name_whitespace() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
-		writer.writeProperty("invalid*name", "");
+		writer.writeProperty("  group", "PROP", new VCardParameters(), "");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalid_property_name_characters() throws Throwable {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+		writer.writeProperty("invalid:name", "");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalid_property_name_whitespace() throws Throwable {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+		writer.writeProperty("  prop", "");
 	}
 
 	/*

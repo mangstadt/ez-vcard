@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -103,6 +104,14 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 		//check parameters
 		warnings.addAll(parameters.validate(version));
+
+		//check group
+		if (group != null) {
+			Pattern validCharacters = Pattern.compile("(?i)[-a-z0-9]+");
+			if (!validCharacters.matcher(group).matches()) {
+				warnings.add(new Warning(23, group));
+			}
+		}
 
 		_validate(warnings, version, vcard);
 

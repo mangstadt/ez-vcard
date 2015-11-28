@@ -4,17 +4,19 @@ import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -49,27 +51,57 @@ import ezvcard.Warning;
  * @author Michael Angstadt
  */
 public class VCardPropertyTest {
+	@SuppressWarnings("unchecked")
 	@Test
-	public void validate() {
-		ValidateType property = new ValidateType();
+	public void validate_overrideable_method_called() {
+		VCardPropertyImpl property = spy(new VCardPropertyImpl());
+		assertValidate(property).versions(VCardVersion.V2_1).run();
+		verify(property)._validate(anyList(), eq(VCardVersion.V2_1), any(VCard.class));
+	}
+
+	@Test
+	public void validate_unsupported_version() {
+		Version3Property property = new Version3Property();
 		assertValidate(property).versions(VCardVersion.V2_1).run(2);
 		assertValidate(property).versions(VCardVersion.V3_0).run();
 		assertValidate(property).versions(VCardVersion.V4_0).run(2);
-		assertTrue(property.validateCalled);
+	}
+
+	@Test
+	public void validate_valid_group() {
+		VCardPropertyImpl property = new VCardPropertyImpl();
+		property.setGroup("Group-1");
+		assertValidate(property).run();
+	}
+
+	@Test
+	public void validate_invalid_group() {
+		VCardPropertyImpl property = new VCardPropertyImpl();
+		property.setGroup("mr.smith");
+		assertValidate(property).run(23);
+	}
+
+	@Test
+	public void validate_parameters() {
+		VCardPropertyImpl property = new VCardPropertyImpl();
+		property.setParameter("ALTID", "1");
+		assertValidate(property).versions(VCardVersion.V2_1).run(6);
+		assertValidate(property).versions(VCardVersion.V3_0).run(6);
+		assertValidate(property).versions(VCardVersion.V4_0).run();
 	}
 
 	@Test
 	public void getSupportedVersions() {
-		VCardTypeImpl withoutSupportedVersions = new VCardTypeImpl();
+		VCardPropertyImpl withoutSupportedVersions = new VCardPropertyImpl();
 		assertSetEquals(withoutSupportedVersions.getSupportedVersions(), VCardVersion.values());
 
-		ValidateType withSupportedVersions = new ValidateType();
+		Version3Property withSupportedVersions = new Version3Property();
 		assertSetEquals(withSupportedVersions.getSupportedVersions(), VCardVersion.V3_0);
 	}
 
 	@Test
 	public void group() {
-		VCardTypeImpl property = new VCardTypeImpl();
+		VCardPropertyImpl property = new VCardPropertyImpl();
 		assertNull(property.getGroup());
 
 		property.setGroup("group");
@@ -78,14 +110,14 @@ public class VCardPropertyTest {
 
 	@Test
 	public void compareTo() {
-		VCardTypeImpl one = new VCardTypeImpl();
+		VCardPropertyImpl one = new VCardPropertyImpl();
 		one.getParameters().setPref(1);
 
-		VCardTypeImpl two = new VCardTypeImpl();
+		VCardPropertyImpl two = new VCardPropertyImpl();
 		one.getParameters().setPref(2);
 
-		VCardTypeImpl null1 = new VCardTypeImpl();
-		VCardTypeImpl null2 = new VCardTypeImpl();
+		VCardPropertyImpl null1 = new VCardPropertyImpl();
+		VCardPropertyImpl null2 = new VCardPropertyImpl();
 
 		assertEquals(-1, one.compareTo(two));
 		assertEquals(1, two.compareTo(one));
@@ -95,21 +127,14 @@ public class VCardPropertyTest {
 		assertEquals(0, null1.compareTo(null2));
 	}
 
-	private class VCardTypeImpl extends VCardProperty {
+	private class VCardPropertyImpl extends VCardProperty {
 		//empty
 	}
 
-	private class ValidateType extends VCardProperty {
-		public boolean validateCalled = false;
-
+	private class Version3Property extends VCardProperty {
 		@Override
 		public Set<VCardVersion> _supportedVersions() {
 			return EnumSet.of(VCardVersion.V3_0);
-		}
-
-		@Override
-		public void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
-			validateCalled = true;
 		}
 	}
 }

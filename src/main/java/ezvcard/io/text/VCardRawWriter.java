@@ -65,11 +65,12 @@ public class VCardRawWriter implements Closeable, Flushable {
 	private static final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
 
 	/**
-	 * Regular expression used to determine if a property name or group contains
-	 * any
-	 * invalid characters.
+	 * List of characters which would break the syntax of the vCard if used
+	 * inside a group or property name. The list of characters permitted by the
+	 * specification is much more strict, but the goal here is to be as lenient
+	 * as possible.
 	 */
-	private static final Pattern propertyNameAndGroupRegex = Pattern.compile("(?i)[-a-z0-9]+");
+	private static final String invalidPropertyGroupNameCharacters = ".;:\n\r";
 
 	/**
 	 * The characters that are not valid in parameter values and that should be
@@ -329,13 +330,21 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 */
 	public void writeProperty(String group, String propertyName, VCardParameters parameters, String value) throws IOException {
 		//validate the group name
-		if (group != null && !propertyNameAndGroupRegex.matcher(group).matches()) {
-			throw new IllegalArgumentException("Group contains invalid characters.  Valid characters are letters, numbers, and hyphens: " + group);
+		if (group != null) {
+			if (!isValidGroupName(group)) {
+				throw new IllegalArgumentException("Property \"" + propertyName + "\" has its group name set to \"" + group + "\".  This group name contains one or more invalid characters.  The following characters are not permitted: .;:\\n\\r");
+			}
+			if (beginsWithWhitespace(group)) {
+				throw new IllegalArgumentException("Property \"" + propertyName + "\" has its group name set to \"" + group + "\".  This group name begins with one or more whitespace characters, which is not permitted.");
+			}
 		}
 
 		//validate the property name
-		if (!propertyNameAndGroupRegex.matcher(propertyName).matches()) {
-			throw new IllegalArgumentException("Property name contains invalid characters.  Valid characters are letters, numbers, and hyphens: " + propertyName);
+		if (!isValidPropertyName(propertyName)) {
+			throw new IllegalArgumentException("Property name \"" + propertyName + "\" contains one or more invalid characters.  The following characters are not permitted: .;:\\n\\r");
+		}
+		if (beginsWithWhitespace(propertyName)) {
+			throw new IllegalArgumentException("Property name \"" + propertyName + "\" begins with one or more whitespace characters, which is not permitted.");
 		}
 
 		value = sanitizeValue(parameters, value);
@@ -414,6 +423,28 @@ public class VCardRawWriter implements Closeable, Flushable {
 		writer.append(':');
 		writer.append(value, useQuotedPrintable, quotedPrintableCharset);
 		writer.append(writer.getNewline());
+	}
+
+	private boolean isValidGroupName(String group) {
+		return isValidPropertyName(group);
+	}
+
+	private boolean isValidPropertyName(String name) {
+		for (int i = 0; i < invalidPropertyGroupNameCharacters.length(); i++) {
+			char c = invalidPropertyGroupNameCharacters.charAt(i);
+			if (name.indexOf(c) >= 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean beginsWithWhitespace(String string) {
+		if (string.length() == 0) {
+			return false;
+		}
+		char first = string.charAt(0);
+		return (first == ' ' || first == '\t');
 	}
 
 	/**
