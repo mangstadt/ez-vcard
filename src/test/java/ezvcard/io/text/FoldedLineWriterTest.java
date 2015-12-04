@@ -154,6 +154,20 @@ public class FoldedLineWriterTest {
 	}
 
 	@Test
+	public void write_surrogate_pair_end() throws Exception {
+		StringWriter sw = new StringWriter();
+		FoldedLineWriter writer = new FoldedLineWriter(sw);
+		writer.setLineLength(5);
+
+		String str = "test\uD83D\uDCF0"; // should not be split
+		writer.write(str, false, Charset.forName("UTF-8"));
+		writer.close();
+		String actual = sw.toString();
+
+		assertEquals("test\uD83D\uDCF0", actual);
+	}
+
+	@Test
 	public void write_different_newlines() throws Exception {
 		StringWriter sw = new StringWriter();
 		FoldedLineWriter writer = new FoldedLineWriter(sw);
