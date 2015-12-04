@@ -110,12 +110,13 @@ public final class TelUri {
 	/**
 	 * Parses a tel URI.
 	 * @param uri the URI
-	 * @return the parsed tel URI
-	 * @throws IllegalArgumentException if the URI cannot be parsed
+	 * @return the parsed tel URI, or null if we're not looking at a URI.
 	 */
 	public static TelUri parse(String uri) {
-		if (uri.length() < 4 || !uri.substring(0, 4).toLowerCase().equals("tel:")) {
-			throw new IllegalArgumentException("Invalid tel URI: '" + uri + "'");
+		if (uri.length() < 4 || uri.charAt(3) != ':' ||
+			!uri.substring(0, 3).toLowerCase().equals("tel")) {
+			// could throw IAE instead, but that gets expensive when parsing is done a lot.
+			return null;
 		}
 
 		// uri:number;stuff=things;more=props

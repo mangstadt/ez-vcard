@@ -126,9 +126,10 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 
 		String uri = element.first(VCardDataType.URI);
 		if (uri != null) {
-			try {
-				return new Telephone(TelUri.parse(uri));
-			} catch (IllegalArgumentException e) {
+			TelUri parse = TelUri.parse(uri);
+			if (parse != null) {
+				return new Telephone(parse);
+			} else {
 				warnings.add(Messages.INSTANCE.getParseMessage(18));
 				return new Telephone(uri);
 			}
@@ -141,9 +142,10 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	protected Telephone _parseHtml(HCardElement element, List<String> warnings) {
 		Telephone property;
 		String href = element.attr("href");
-		try {
-			property = new Telephone(TelUri.parse(href));
-		} catch (IllegalArgumentException e) {
+		TelUri parse = TelUri.parse(href);
+		if (parse != null) {
+			property = new Telephone(parse);
+		} else {
 			//not a tel URI
 			property = new Telephone(element.value());
 		}
@@ -178,9 +180,10 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	private Telephone parse(String value, VCardDataType dataType, List<String> warnings) {
-		try {
-			return new Telephone(TelUri.parse(value));
-		} catch (IllegalArgumentException e) {
+		TelUri parse = TelUri.parse(value);
+		if (parse != null) {
+			return new Telephone(parse);
+		} else {
 			if (dataType == VCardDataType.URI) {
 				warnings.add(Messages.INSTANCE.getParseMessage(18));
 			}
