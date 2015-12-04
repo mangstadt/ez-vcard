@@ -116,6 +116,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 
 	private final FoldedLineWriter writer;
 	private boolean caretEncodingEnabled = false;
+	private boolean propertyValidationEnabled = true;
 	private ParameterValueChangedListener parameterValueChangedListener;
 	private VCardVersion version;
 
@@ -277,6 +278,23 @@ public class VCardRawWriter implements Closeable, Flushable {
 	}
 
 	/**
+	 * Whether property names are checked in strict adherence with the spec.
+	 */
+	public boolean isPropertyValidationEnabled() {
+		return propertyValidationEnabled;
+	}
+
+	/**
+	 * Sets whether property names are checked in strict adherence with the spec, defaults
+	 * to on. Turning this off may be useful when dealing with regrettably lenient services,
+	 * e.g. iCloud, which calls anything before the first colon and after the
+	 * first period (group) as the property name.
+	 */
+	public void setPropertyValidationEnabled(boolean propertyValidationEnabled) {
+		this.propertyValidationEnabled = propertyValidationEnabled;
+	}
+
+	/**
 	 * Writes a property marking the beginning of a component (in other words,
 	 * writes a "BEGIN:NAME" property).
 	 * @param componentName the component name (e.g. "VCARD")
@@ -340,10 +358,10 @@ public class VCardRawWriter implements Closeable, Flushable {
 		}
 
 		//validate the property name
-		if (!isValidPropertyName(propertyName)) {
+		if (propertyValidationEnabled && !isValidPropertyName(propertyName)) {
 			throw new IllegalArgumentException("Property name \"" + propertyName + "\" contains one or more invalid characters.  The following characters are not permitted: .;:\\n\\r");
 		}
-		if (beginsWithWhitespace(propertyName)) {
+		if (propertyValidationEnabled && beginsWithWhitespace(propertyName)) {
 			throw new IllegalArgumentException("Property name \"" + propertyName + "\" begins with one or more whitespace characters, which is not permitted.");
 		}
 

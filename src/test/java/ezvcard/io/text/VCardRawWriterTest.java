@@ -388,6 +388,15 @@ public class VCardRawWriterTest {
 		writer.writeProperty("  prop", "");
 	}
 
+	@Test
+	public void invalid_but_ignored_property_name_characters() throws Throwable {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, VCardVersion.V2_1);
+		writer.setPropertyValidationEnabled(false);
+		writer.writeProperty("some#bizarre$sort%of&name", "");
+		writer.writeProperty("  prop", "");
+	}
+
 	/*
 	 * If newline characters exist in a property value in 2.1, then that
 	 * property value should be "quoted-printable" encoded. The escape sequence
