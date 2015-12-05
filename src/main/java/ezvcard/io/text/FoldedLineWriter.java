@@ -232,6 +232,16 @@ public class FoldedLineWriter extends Writer {
 					}
 				}
 
+				// if last char is the low (second) char in a surrogate pair,
+				// don't split the pair across two lines.
+				if (Character.isLowSurrogate(c)) {
+					i++;
+					if (i >= end - 1) {
+						// surrogate pair finishes the array, leave
+						break;
+					}
+				}
+
 				writer.write(cbuf, start, i - start);
 				if (quotedPrintable) {
 					writer.write('=');
