@@ -146,7 +146,7 @@ public class FoldedLineWriterTest {
 		writer.setLineLength(5);
 
 		String str = "test\uD83D\uDCF0test"; // should not be split
-		writer.write(str, false, Charset.forName("UTF-8"));
+		writer.write(str);
 		writer.close();
 		String actual = sw.toString();
 
@@ -160,7 +160,7 @@ public class FoldedLineWriterTest {
 		writer.setLineLength(5);
 
 		String str = "test\uD83D\uDCF0"; // should not be split
-		writer.write(str, false, Charset.forName("UTF-8"));
+		writer.write(str);
 		writer.close();
 		String actual = sw.toString();
 
