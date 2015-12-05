@@ -83,8 +83,40 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_params() {
+	public void parse_multiple_params() {
 		TelUri uri = TelUri.parse("tel:+1-212-555-0101;param1=value1;param2=value2");
+		assertEquals("+1-212-555-0101", uri.getNumber());
+		assertNull(uri.getExtension());
+		assertNull(uri.getPhoneContext());
+		assertNull(uri.getIsdnSubaddress());
+		assertEquals("value1", uri.getParameter("param1"));
+		assertEquals("value2", uri.getParameter("param2"));
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("param1", "value1");
+		params.put("param2", "value2");
+		assertEquals(params, uri.getParameters());
+	}
+
+	@Test
+	public void parse_param_no_value() {
+		TelUri uri = TelUri.parse("tel:+1-212-555-0101;param1;param2=;param3=");
+		assertEquals("+1-212-555-0101", uri.getNumber());
+		assertNull(uri.getExtension());
+		assertNull(uri.getPhoneContext());
+		assertNull(uri.getIsdnSubaddress());
+		assertEquals("", uri.getParameter("param1"));
+		assertEquals("", uri.getParameter("param2"));
+		assertEquals("", uri.getParameter("param3"));
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("param1", "");
+		params.put("param2", "");
+		params.put("param3", "");
+		assertEquals(params, uri.getParameters());
+	}
+
+	@Test
+	public void parse_param_multiple_semicolons() {
+		TelUri uri = TelUri.parse("tel:+1-212-555-0101;param1=value1;;param2=value2;");
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
 		assertNull(uri.getPhoneContext());
@@ -117,9 +149,9 @@ public class TelUriTest {
 		assertTrue(uri.getParameters().isEmpty());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void parse_not_tel_uri() {
-		TelUri.parse("http://www.ietf.org");
+		assertNull(TelUri.parse("http://www.ietf.org"));
 	}
 
 	@Test

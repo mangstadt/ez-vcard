@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * Example tel URI: {@code tel:+1-212-555-0101}
  * </p>
  * <p>
- * This class is immutable. Use the {@link Builder} object to construct a new
+ * This class is immutable. Use the {@link Builder} class to construct a new
  * instance, or the {@link #parse} method to parse a tel URI string.
  * </p>
  * 
@@ -53,15 +53,15 @@ import java.util.regex.Pattern;
  * <pre class="brush:java">
  * TelUri uri = new TelUri.Builder(&quot;+1-212-555-0101&quot;).extension(&quot;123&quot;).build();
  * TelUri uri = TelUri.parse(&quot;tel:+1-212-555-0101;ext=123&quot;);
- * TelUri copy = new TelUri.Builder(original).extension(&quot;124&quot;).build();
+ * TelUri copy = new TelUri.Builder(uri).extension(&quot;124&quot;).build();
  * </pre>
  * @see <a href="http://tools.ietf.org/html/rfc3966">RFC 3966</a>
  * @author Michael Angstadt
  */
 public final class TelUri {
 	/**
-	 * The characters which are allowed to exist un-encoded inside of a
-	 * parameter value.
+	 * The characters which are allowed to exist unencoded inside of a parameter
+	 * value.
 	 */
 	private static final boolean validParamValueChars[] = new boolean[128];
 	static {
@@ -89,11 +89,6 @@ public final class TelUri {
 	 */
 	private static final Pattern labelTextPattern = Pattern.compile("(?i)^[-a-z0-9]+$");
 
-	/**
-	 * Regular expression for parsing tel URIs.
-	 */
-	private static final Pattern uriPattern = Pattern.compile("(?i)^tel:(.*?)(;(.*))?$");
-
 	private static final String PARAM_EXTENSION = "ext";
 	private static final String PARAM_ISDN_SUBADDRESS = "isub";
 	private static final String PARAM_PHONE_CONTEXT = "phone-context";
@@ -115,47 +110,78 @@ public final class TelUri {
 	/**
 	 * Parses a tel URI.
 	 * @param uri the URI
-	 * @return the parsed tel URI
-	 * @throws IllegalArgumentException if the URI cannot be parsed
+	 * @return the parsed URI or null if the URI is not a tel URI.
 	 */
 	public static TelUri parse(String uri) {
-		Matcher m = uriPattern.matcher(uri);
-		if (!m.find()) {
-			throw new IllegalArgumentException("Invalid tel URI: " + uri);
+		//URI format: tel:number;prop1=value1;prop2=value2
+
+		if (uri.length() < 4 || !uri.substring(0, 4).equalsIgnoreCase("tel:")) {
+			//not a tel URI
+			return null;
 		}
 
 		Builder builder = new Builder();
-		builder.number = m.group(1);
+		ClearableStringBuilder buffer = new ClearableStringBuilder();
+		String paramName = null;
+		for (int i = 4; i < uri.length(); i++) {
+			char c = uri.charAt(i);
 
-		String paramsStr = m.group(3);
-		if (paramsStr != null) {
-			String paramsArray[] = paramsStr.split(";");
-
-			for (String param : paramsArray) {
-				String paramSplit[] = param.split("=", 2);
-				String paramName = paramSplit[0];
-				String paramValue = paramSplit.length > 1 ? decodeParamValue(paramSplit[1]) : "";
-
-				if (PARAM_EXTENSION.equalsIgnoreCase(paramName)) {
-					builder.extension = paramValue;
-					continue;
-				}
-
-				if (PARAM_ISDN_SUBADDRESS.equalsIgnoreCase(paramName)) {
-					builder.isdnSubaddress = paramValue;
-					continue;
-				}
-
-				if (PARAM_PHONE_CONTEXT.equalsIgnoreCase(paramName)) {
-					builder.phoneContext = paramValue;
-					continue;
-				}
-
-				builder.parameters.put(paramName, paramValue);
+			if (c == '=' && builder.number != null && paramName == null) {
+				paramName = buffer.getAndClear();
+				continue;
 			}
+
+			if (c == ';') {
+				handleEndOfParameter(buffer, paramName, builder);
+				paramName = null;
+				continue;
+			}
+
+			buffer.append(c);
 		}
 
+		handleEndOfParameter(buffer, paramName, builder);
+
 		return builder.build();
+	}
+
+	private static void addParameter(String name, String value, Builder builder) {
+		value = decodeParamValue(value);
+
+		if (PARAM_EXTENSION.equalsIgnoreCase(name)) {
+			builder.extension = value;
+			return;
+		}
+
+		if (PARAM_ISDN_SUBADDRESS.equalsIgnoreCase(name)) {
+			builder.isdnSubaddress = value;
+			return;
+		}
+
+		if (PARAM_PHONE_CONTEXT.equalsIgnoreCase(name)) {
+			builder.phoneContext = value;
+			return;
+		}
+
+		builder.parameters.put(name, value);
+	}
+
+	private static void handleEndOfParameter(ClearableStringBuilder buffer, String paramName, Builder builder) {
+		String s = buffer.getAndClear();
+
+		if (builder.number == null) {
+			builder.number = s;
+			return;
+		}
+
+		if (paramName == null) {
+			if (s.length() > 0) {
+				addParameter(s, "", builder);
+			}
+			return;
+		}
+
+		addParameter(paramName, s, builder);
 	}
 
 	/**
@@ -336,7 +362,7 @@ public final class TelUri {
 		StringBuffer sb = new StringBuffer();
 		while (m.find()) {
 			int hex = Integer.parseInt(m.group(1), 16);
-			m.appendReplacement(sb, "" + (char) hex);
+			m.appendReplacement(sb, Character.toString((char) hex));
 		}
 		m.appendTail(sb);
 		return sb.toString();
@@ -350,7 +376,10 @@ public final class TelUri {
 		private Map<String, String> parameters;
 
 		private Builder() {
-			//TreeMap is used because parameters should appear in lexicographical (alphabetical) order (see RFC 3966 p.5)
+			/*
+			 * TreeMap is used because parameters should appear in
+			 * lexicographical (alphabetical) order (see RFC 3966 p.5)
+			 */
 			parameters = new TreeMap<String, String>();
 		}
 

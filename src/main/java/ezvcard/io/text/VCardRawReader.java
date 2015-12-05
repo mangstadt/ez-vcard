@@ -12,6 +12,7 @@ import java.util.List;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.ClearableStringBuilder;
 import ezvcard.util.StringUtils;
 
 /*
@@ -52,8 +53,8 @@ import ezvcard.util.StringUtils;
  */
 public class VCardRawReader implements Closeable {
 	private final Reader reader;
-	private final Buffer buffer = new Buffer();
-	private final Buffer unfoldedLine = new Buffer();
+	private final ClearableStringBuilder buffer = new ClearableStringBuilder();
+	private final ClearableStringBuilder unfoldedLine = new ClearableStringBuilder();
 
 	private boolean eos = false;
 	private boolean caretDecodingEnabled = true;
@@ -481,77 +482,6 @@ public class VCardRawReader implements Closeable {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Wraps a {@link StringBuilder} object, providing utility methods.
-	 */
-	private static class Buffer {
-		private final StringBuilder sb = new StringBuilder();
-
-		/**
-		 * Clears the buffer.
-		 * @return this
-		 */
-		public Buffer clear() {
-			sb.setLength(0);
-			return this;
-		}
-
-		/**
-		 * Gets the buffer's contents.
-		 * @return the buffer's contents
-		 */
-		public String get() {
-			return sb.toString();
-		}
-
-		/**
-		 * Gets the buffer's contents, then clears it.
-		 * @return the buffer's contents
-		 */
-		public String getAndClear() {
-			String string = get();
-			clear();
-			return string;
-		}
-
-		/**
-		 * Appends a character to the buffer.
-		 * @param ch the character to append
-		 * @return this
-		 */
-		public Buffer append(char ch) {
-			sb.append(ch);
-			return this;
-		}
-
-		/**
-		 * Appends a character sequence to the buffer.
-		 * @param string the character sequence to append
-		 * @return this
-		 */
-		public Buffer append(CharSequence string) {
-			sb.append(string);
-			return this;
-		}
-
-		/**
-		 * Removes the last character from the buffer.
-		 * @return this
-		 */
-		public Buffer chop() {
-			sb.setLength(sb.length() - 1);
-			return this;
-		}
-
-		/**
-		 * Gets the length of the buffer.
-		 * @return the buffer's length
-		 */
-		public int length() {
-			return sb.length();
-		}
 	}
 
 	/**
