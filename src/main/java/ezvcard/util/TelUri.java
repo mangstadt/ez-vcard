@@ -89,11 +89,6 @@ public final class TelUri {
 	 */
 	private static final Pattern labelTextPattern = Pattern.compile("(?i)^[-a-z0-9]+$");
 
-	/**
-	 * Regular expression for parsing tel URIs.
-	 */
-	private static final Pattern uriPattern = Pattern.compile("(?i)^tel:(.*?)(;(.*))?$");
-
 	private static final String PARAM_EXTENSION = "ext";
 	private static final String PARAM_ISDN_SUBADDRESS = "isub";
 	private static final String PARAM_PHONE_CONTEXT = "phone-context";
@@ -115,23 +110,23 @@ public final class TelUri {
 	/**
 	 * Parses a tel URI.
 	 * @param uri the URI
-	 * @return the parsed tel URI
-	 * @throws IllegalArgumentException if the URI cannot be parsed
+	 * @return the parsed tel URI, or null if we're not looking at a URI.
 	 */
 	public static TelUri parse(String uri) {
-		Matcher m = uriPattern.matcher(uri);
-		if (!m.find()) {
-			throw new IllegalArgumentException("Invalid tel URI: " + uri);
+		if (uri.length() < 4 || uri.charAt(3) != ':' ||
+			!uri.substring(0, 3).toLowerCase().equals("tel")) {
+			// could throw IAE instead, but that gets expensive when parsing is done a lot.
+			return null;
 		}
 
+		// uri:number;stuff=things;more=props
+		String[] parts = uri.substring(4).split(";");
+
 		Builder builder = new Builder();
-		builder.number = m.group(1);
-
-		String paramsStr = m.group(3);
-		if (paramsStr != null) {
-			String paramsArray[] = paramsStr.split(";");
-
-			for (String param : paramsArray) {
+		builder.number = parts[0];
+		if (parts.length > 1) {
+			for (int i = 1; i < parts.length; i++) {
+				String param = parts[i];
 				String paramSplit[] = param.split("=", 2);
 				String paramName = paramSplit[0];
 				String paramValue = paramSplit.length > 1 ? decodeParamValue(paramSplit[1]) : "";
