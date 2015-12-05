@@ -8,6 +8,8 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.util.TelUri;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -71,6 +73,8 @@ import ezvcard.util.TelUri;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Member extends UriProperty implements HasAltId {
 	/**
 	 * Creates a member property.

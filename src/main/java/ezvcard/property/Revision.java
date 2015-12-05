@@ -1,5 +1,8 @@
 package ezvcard.property;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.Date;
 
 /*
@@ -55,6 +58,8 @@ import java.util.Date;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Revision extends SimpleProperty<Date> {
 	/**
 	 * Creates a revision property.

@@ -6,6 +6,8 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.util.GeoUri;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -85,6 +87,8 @@ import ezvcard.util.GeoUri;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Geo extends VCardProperty implements HasAltId {
 	private GeoUri uri;
 

@@ -1,5 +1,8 @@
 package ezvcard.property;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.List;
 
 /*
@@ -55,6 +58,8 @@ import java.util.List;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Url extends UriProperty implements HasAltId {
 	/**
 	 * Creates a URL property.

@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 
@@ -42,6 +44,8 @@ import ezvcard.Warning;
  * value.
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class RawProperty extends TextProperty {
 	private String propertyName;
 	private VCardDataType dataType;

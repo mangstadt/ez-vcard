@@ -57,6 +57,13 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	}
 
 	/**
+	 * Creates a multimap using a specific backing map.
+	 */
+	public ListMultimap(Map<K, List<V>> backingMap) {
+		map = backingMap;
+	}
+
+	/**
 	 * Creates an empty multimap.
 	 * @param initialCapacity the initial capacity of the underlying map.
 	 */

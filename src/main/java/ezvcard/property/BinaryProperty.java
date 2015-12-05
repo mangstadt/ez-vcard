@@ -11,6 +11,7 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.util.IOUtils;
+import lombok.*;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -46,6 +47,8 @@ import ezvcard.util.IOUtils;
  * @author Michael Angstadt
  * @param <T> the class used for representing the content type of the resource
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCardProperty implements HasAltId {
 	/**
 	 * The decoded data.

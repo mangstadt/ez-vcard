@@ -29,10 +29,15 @@ package ezvcard.property;
  either expressed or implied, of the FreeBSD Project.
  */
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
  * Represents a property whose value is just a regular text value.
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class TextProperty extends SimpleProperty<String> {
 	/**
 	 * Creates a property that contains text.

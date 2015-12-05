@@ -29,6 +29,9 @@ package ezvcard.property;
  either expressed or implied, of the FreeBSD Project.
  */
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
  * <p>
  * Defines the location of the person's death.
@@ -89,6 +92,8 @@ package ezvcard.property;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Deathplace extends PlaceProperty {
 	/**
 	 * Creates a new deathplace property.

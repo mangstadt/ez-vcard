@@ -11,6 +11,8 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.ImppType;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -72,6 +74,8 @@ import ezvcard.parameter.ImppType;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Impp extends VCardProperty implements HasAltId {
 	private static final String AIM = "aim";
 	private static final String ICQ = "icq";

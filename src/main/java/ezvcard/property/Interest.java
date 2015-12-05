@@ -6,6 +6,8 @@ import java.util.Set;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.InterestLevel;
 import ezvcard.parameter.VCardParameters;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -65,6 +67,8 @@ import ezvcard.parameter.VCardParameters;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Interest extends TextProperty implements HasAltId {
 	/**
 	 * Creates an interest property.

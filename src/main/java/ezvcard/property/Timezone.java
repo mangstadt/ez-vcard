@@ -9,6 +9,8 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.util.UtcOffset;
 import ezvcard.util.VCardDateFormat;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -69,6 +71,8 @@ import ezvcard.util.VCardDateFormat;
  * 
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Timezone extends VCardProperty implements HasAltId {
 	private UtcOffset offset;
 	private String text;

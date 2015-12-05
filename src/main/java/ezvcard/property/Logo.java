@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import ezvcard.parameter.ImageType;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -88,6 +90,8 @@ import ezvcard.parameter.ImageType;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Logo extends ImageProperty {
 	/**
 	 * Creates a logo property.

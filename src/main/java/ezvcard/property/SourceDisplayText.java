@@ -4,6 +4,8 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -58,6 +60,8 @@ import ezvcard.VCardVersion;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class SourceDisplayText extends TextProperty {
 	/**
 	 * Creates a source display text property.

@@ -29,10 +29,15 @@ package ezvcard.property;
  either expressed or implied, of the FreeBSD Project.
  */
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
  * Represents a property whose value is a URI.
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class UriProperty extends TextProperty {
 	/**
 	 * Creates a property whose value is a URI.

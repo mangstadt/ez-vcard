@@ -12,6 +12,9 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.VCardParameters;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -45,6 +48,8 @@ import ezvcard.parameter.VCardParameters;
  * Base class for all vCard property classes.
  * @author Michael Angstadt
  */
+@EqualsAndHashCode
+@ToString
 public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
 	 * The group that this property belongs to or null if it doesn't belong to a

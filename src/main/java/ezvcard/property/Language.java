@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -65,6 +67,8 @@ import ezvcard.VCardVersion;
  * 
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Language extends TextProperty implements HasAltId {
 	/**
 	 * Creates a language property.

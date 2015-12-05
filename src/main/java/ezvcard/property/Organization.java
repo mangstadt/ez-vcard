@@ -3,6 +3,8 @@ package ezvcard.property;
 import java.util.List;
 
 import ezvcard.parameter.VCardParameters;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -61,6 +63,8 @@ import ezvcard.parameter.VCardParameters;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Organization extends TextListProperty implements HasAltId {
 	@Override
 	public String getLanguage() {

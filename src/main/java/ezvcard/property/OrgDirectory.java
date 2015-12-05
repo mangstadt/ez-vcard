@@ -4,6 +4,8 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -60,6 +62,8 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class OrgDirectory extends UriProperty implements HasAltId {
 	/**
 	 * @param uri the URI

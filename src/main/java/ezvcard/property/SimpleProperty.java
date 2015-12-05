@@ -5,6 +5,8 @@ import java.util.List;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -40,6 +42,8 @@ import ezvcard.Warning;
  * @param <T> the class of the property's value
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class SimpleProperty<T> extends VCardProperty {
 	protected T value;
 

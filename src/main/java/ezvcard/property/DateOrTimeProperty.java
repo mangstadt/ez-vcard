@@ -9,6 +9,7 @@ import ezvcard.Warning;
 import ezvcard.parameter.Calscale;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.PartialDate;
+import lombok.*;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -43,6 +44,8 @@ import ezvcard.util.PartialDate;
  * Represents a property with a date and/or time value.
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	private String text;
 	private Date date;

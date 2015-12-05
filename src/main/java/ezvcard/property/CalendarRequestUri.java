@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import ezvcard.VCardVersion;
+import lombok.*;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -60,6 +61,8 @@ import ezvcard.VCardVersion;
  * </p>
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class CalendarRequestUri extends UriProperty implements HasAltId {
 	/**
 	 * Creates a calendar request URI property.

@@ -1,5 +1,8 @@
 package ezvcard.property;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.List;
 
 /*
@@ -56,6 +59,8 @@ import java.util.List;
  * 
  * @author Michael Angstadt
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Title extends TextProperty implements HasAltId {
 	/**
 	 * Creates a title property.
