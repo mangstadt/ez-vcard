@@ -3,7 +3,6 @@ package ezvcard.io.text;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -407,133 +406,53 @@ public class VCardRawWriterTest {
 	}
 
 	@Test
-	public void caretEncoding() throws Throwable {
-		//2.1, newline
-		for (VCardVersion version : each(VCardVersion.V2_1)) {
-			for (boolean enabled : each(true, false)) {
-				StringWriter sw = new StringWriter();
-				VCardRawWriter writer = new VCardRawWriter(sw, version);
-				writer.setCaretEncodingEnabled(enabled);
+	public void parameters_special_chars() throws Throwable {
+		//2.1 without caret escaping
+		//replaces \ with \\
+		//replaces ; with \;
+		assertParametersSpecialChars("^\\;=[]\"\t" + ((char) 28), VCardVersion.V2_1, false, "PROP;X-TEST=^\\\\\\;=[]\"\t" + ((char) 28) + ";X-TEST=normal:\r\n");
 
-				VCardParameters parameters = new VCardParameters();
-				parameters.put("NAME", "value\n");
-				try {
-					writer.writeProperty(null, "PROP", parameters, "");
-					fail("IllegalArgumentException expected.");
-				} catch (IllegalArgumentException e) {
-					//expected
-				}
-			}
-		}
+		//2.1 with caret escaping (ignored)
+		//replaces \ with \\
+		//replaces ; with \;
+		assertParametersSpecialChars("^\\;=[]\"\t" + ((char) 28), VCardVersion.V2_1, true, "PROP;X-TEST=^\\\\\\;=[]\"\t" + ((char) 28) + ";X-TEST=normal:\r\n");
 
-		//2.1, double quote
-		for (VCardVersion version : each(VCardVersion.V2_1)) {
-			for (boolean enabled : each(true, false)) {
-				StringWriter sw = new StringWriter();
-				VCardRawWriter writer = new VCardRawWriter(sw, version);
-				writer.setCaretEncodingEnabled(enabled);
+		//3.0 without caret escaping
+		//surrounds in double quotes, since it contains , ; or :
+		assertParametersSpecialChars("^\\,;:=[]\t" + ((char) 28), VCardVersion.V3_0, false, "PROP;X-TEST=\"^\\,;:=[]\t" + ((char) 28) + "\",normal:\r\n");
 
-				VCardParameters parameters = new VCardParameters();
-				parameters.put("NAME", "value\"");
-				writer.writeProperty(null, "PROP", parameters, "");
+		//3.0 with caret escaping (same as 4.0)
+		//replaces ^ with ^^
+		//replaces newline with ^n
+		//replaces " with ^'
+		//surrounds in double quotes, since it contains , ; or :
+		assertParametersSpecialChars("^\\,;:=[]\"\t\n" + ((char) 28), VCardVersion.V3_0, true, "PROP;X-TEST=\"^^\\,;:=[]^'\t^n" + ((char) 28) + "\",normal:\r\n");
 
-				String expected = "PROP;NAME=value\":\r\n";
-				String actual = sw.toString();
-				assertEquals(expected, actual);
-			}
-		}
+		//4.0 without caret escaping
+		//replaces newline with \n
+		//surrounds in double quotes, since it contains , ; or :
+		assertParametersSpecialChars("^\\,;:=[]\t\n" + ((char) 28), VCardVersion.V4_0, false, "PROP;X-TEST=\"^\\,;:=[]\t\\n" + ((char) 28) + "\",normal:\r\n");
 
-		//newline with caret encoding
-		for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
-			writer.setCaretEncodingEnabled(true);
-
-			VCardParameters parameters = new VCardParameters();
-			parameters.put("NAME", "value\n");
-			writer.writeProperty(null, "PROP", parameters, "");
-
-			String expected = "PROP;NAME=value^n:\r\n";
-			String actual = sw.toString();
-			assertEquals(expected, actual);
-		}
-
-		//newline without caret encoding
-		for (VCardVersion version : each(VCardVersion.V3_0)) {
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
-			writer.setCaretEncodingEnabled(false);
-
-			VCardParameters parameters = new VCardParameters();
-			parameters.put("NAME", "value\n");
-			try {
-				writer.writeProperty(null, "PROP", parameters, "");
-				fail("IllegalArgumentException expected.");
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
-		}
-		for (VCardVersion version : each(VCardVersion.V4_0)) {
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
-			writer.setCaretEncodingEnabled(false);
-
-			VCardParameters parameters = new VCardParameters();
-			parameters.put("NAME", "value\n");
-			writer.writeProperty(null, "PROP", parameters, "");
-
-			String expected = "PROP;NAME=value\\n:\r\n";
-			String actual = sw.toString();
-			assertEquals(expected, actual);
-		}
-
-		//double quote with caret encoding
-		for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
-			writer.setCaretEncodingEnabled(true);
-
-			VCardParameters parameters = new VCardParameters();
-			parameters.put("NAME", "value\"");
-			writer.writeProperty(null, "PROP", parameters, "");
-
-			String expected = "PROP;NAME=value^':\r\n";
-			String actual = sw.toString();
-			assertEquals(expected, actual);
-		}
-
-		//double quote without caret encoding
-		for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-			StringWriter sw = new StringWriter();
-			VCardRawWriter writer = new VCardRawWriter(sw, version);
-			writer.setCaretEncodingEnabled(false);
-
-			VCardParameters parameters = new VCardParameters();
-			parameters.put("NAME", "value\"");
-			try {
-				writer.writeProperty(null, "PROP", parameters, "");
-				fail("IllegalArgumentException expected.");
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
-		}
+		//4.0 with caret escaping
+		//replaces ^ with ^^
+		//replaces newline with ^n
+		//replaces " with ^'
+		//surrounds in double quotes, since it contains , ; or :
+		assertParametersSpecialChars("^\\,;:=[]\"\t\n" + ((char) 28), VCardVersion.V4_0, true, "PROP;X-TEST=\"^^\\,;:=[]^'\t^n" + ((char) 28) + "\",normal:\r\n");
 	}
 
-	@Test
-	public void parameter_value_is_quoted() throws Throwable {
-		for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
-			for (char c : ",:;".toCharArray()) {
-				StringWriter sw = new StringWriter();
-				VCardRawWriter writer = new VCardRawWriter(sw, version);
-				VCardParameters parameters = new VCardParameters();
-				parameters.put("NAME", "value" + c);
-				writer.writeProperty(null, "PROP", parameters, "");
+	private void assertParametersSpecialChars(String paramValue, VCardVersion version, boolean caretEncodingEnabled, String expected) throws IOException {
+		StringWriter sw = new StringWriter();
+		VCardRawWriter writer = new VCardRawWriter(sw, version);
+		writer.setCaretEncodingEnabled(caretEncodingEnabled);
 
-				String actual = sw.toString();
-				String expected = "PROP;NAME=\"value" + c + "\":\r\n";
-				assertEquals(actual, expected);
-			}
-		}
+		VCardParameters parameters = new VCardParameters();
+		parameters.put("X-TEST", paramValue);
+		parameters.put("X-TEST", "normal");
+		writer.writeProperty(null, "PROP", parameters, "");
+
+		String actual = sw.toString();
+		assertEquals(expected, actual);
 	}
 
 	@Test
