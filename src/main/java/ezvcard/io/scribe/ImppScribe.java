@@ -127,7 +127,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 
 	private String write(Impp property) {
 		URI uri = property.getUri();
-		return (uri == null) ? "" : uri.toString();
+		return (uri == null) ? "" : uri.toASCIIString();
 	}
 
 	private Impp parse(String value) {
@@ -220,7 +220,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 				return format.buildLink(handle);
 			}
 		}
-		return uri.toString();
+		return uri.toASCIIString();
 	}
 
 	private static class HtmlLinkFormat {
