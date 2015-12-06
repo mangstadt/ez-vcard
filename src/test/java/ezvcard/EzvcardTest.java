@@ -7,6 +7,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -432,14 +433,22 @@ public class EzvcardTest {
 		fn.getParameters().put("X-TEST", "George Herman \"Babe\" Ruth");
 
 		//default should be "false"
-		String actual = Ezvcard.write(vcard).go();
-		assertTrue(actual.contains("\r\nFN;X-TEST=George Herman 'Babe' Ruth:"));
+		try {
+			Ezvcard.write(vcard).go();
+			fail("IllegalArgumentException expected.");
+		} catch (IllegalArgumentException e) {
+			//expected
+		}
 
-		actual = Ezvcard.write(vcard).caretEncoding(true).go();
+		String actual = Ezvcard.write(vcard).caretEncoding(true).go();
 		assertTrue(actual.contains("\r\nFN;X-TEST=George Herman ^'Babe^' Ruth:"));
 
-		actual = Ezvcard.write(vcard).caretEncoding(false).go();
-		assertTrue(actual.contains("\r\nFN;X-TEST=George Herman 'Babe' Ruth:"));
+		try {
+			Ezvcard.write(vcard).caretEncoding(false).go();
+			fail("IllegalArgumentException expected.");
+		} catch (IllegalArgumentException e) {
+			//expected
+		}
 	}
 
 	@Test

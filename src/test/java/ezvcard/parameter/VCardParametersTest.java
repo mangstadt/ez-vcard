@@ -93,7 +93,7 @@ public class VCardParametersTest {
 		parameters.setSortAs("value");
 		parameters.setTimezone("value");
 
-		assertValidate(parameters.validate(VCardVersion.V2_1), 6, 6, 6, 6, 6, 6, 6, 6);
+		assertValidate(parameters.validate(VCardVersion.V2_1), 25, 6, 6, 6, 6, 6, 6, 6, 6);
 		assertValidate(parameters.validate(VCardVersion.V3_0), 6, 6, 6, 6, 6, 6, 6, 6, 6);
 		assertValidate(parameters.validate(VCardVersion.V4_0), 6);
 	}
@@ -131,6 +131,96 @@ public class VCardParametersTest {
 		assertValidate(parameters.validate(VCardVersion.V3_0), 6);
 		assertValidate(parameters.validate(VCardVersion.V4_0), 6);
 	}
+
+	@Test
+	public void validate_parameter_name() {
+		parameters.replace("YES/NO", "value");
+		for (VCardVersion version : VCardVersion.values()) {
+			assertValidate(parameters.validate(version), 26);
+		}
+	}
+
+	@Test
+	public void validate_parameter_value_characters() {
+		for (char c : ",.:=[]".toCharArray()) {
+			parameters.replace("NAME", "value" + c);
+			assertValidate(parameters.validate(VCardVersion.V2_1), 25);
+		}
+
+		char c = (char) 7;
+		parameters.replace("NAME", "value" + c);
+		for (VCardVersion version : VCardVersion.values()) {
+			assertValidate(parameters.validate(version), 25);
+		}
+	}
+
+	//	@Test
+	//	public void parameters_special_chars() throws Throwable {
+	//
+	//		//2.1 without caret escaping
+	//		//removes , : = [ ] FS
+	//		//replaces \ with \\
+	//		//replaces ; with \;
+	//		//replaces newline with space
+	//		assertParametersSpecialChars(VCardVersion.V2_1, false, "PROP;X-TEST=^�\\\\\\;\"\t ;X-TEST=normal:\r\n");
+	//
+	//		//2.1 with caret escaping (ignored)
+	//		//removes , : = [ ] FS
+	//		//replaces \ with \\
+	//		//replaces ; with \;
+	//		//replaces newline with space
+	//		assertParametersSpecialChars(VCardVersion.V2_1, true, "PROP;X-TEST=^�\\\\\\;\"\t ;X-TEST=normal:\r\n");
+	//
+	//		//3.0 without caret escaping
+	//		//removes FS
+	//		//replaces \ with \\
+	//		//replaces newline with space
+	//		//replaces " with '
+	//		//surrounds in double quotes, since it contains , ; or :
+	//		assertParametersSpecialChars(VCardVersion.V3_0, false, "PROP;X-TEST=\"^�\\,;:=[]'\t \",normal:\r\n");
+	//
+	//		//3.0 with caret escaping (same as 4.0)
+	//		//removes FS
+	//		//replaces ^ with ^^
+	//		//replaces newline with ^n
+	//		//replaces " with ^'
+	//		//surrounds in double quotes, since it contains , ; or :
+	//		assertParametersSpecialChars(VCardVersion.V3_0, true, "PROP;X-TEST=\"^^�\\,;:=[]^'\t^n\",normal:\r\n");
+	//
+	//		//4.0 without caret escaping
+	//		//removes FS
+	//		//replaces \ with \\
+	//		//replaces newline with \n
+	//		//replaces " with '
+	//		//surrounds in double quotes, since it contains , ; or :
+	//		assertParametersSpecialChars(VCardVersion.V4_0, false, "PROP;X-TEST=\"^�\\,;:=[]'\t\\n\",normal:\r\n");
+	//
+	//		//4.0 with caret escaping
+	//		//removes FS
+	//		//replaces ^ with ^^
+	//		//replaces newline with ^n
+	//		//replaces " with ^'
+	//		//surrounds in double quotes, since it contains , ; or :
+	//		assertParametersSpecialChars(VCardVersion.V4_0, true, "PROP;X-TEST=\"^^�\\,;:=[]^'\t^n\",normal:\r\n");
+	//	}
+	//
+	//	private void assertParametersSpecialChars(VCardVersion version, boolean caretEncodingEnabled, String expected) throws IOException {
+	//		StringWriter sw = new StringWriter();
+	//		VCardRawWriter writer = new VCardRawWriter(sw, version);
+	//		writer.setCaretEncodingEnabled(caretEncodingEnabled);
+	//
+	//		String paramValue = "^�\\,;:=[]\"\t\n" + ((char) 28);
+	//		VCardParameters parameters = new VCardParameters();
+	//		parameters.put("X-TEST", paramValue);
+	//		parameters.put("X-TEST", "normal");
+	//		writer.writeProperty(null, "PROP", parameters, "");
+	//
+	//		verify(listener).onParameterValueChanged(eq("PROP"), eq("X-TEST"), eq(paramValue), anyString());
+	//		verifyNoMoreInteractions(listener);
+	//
+	//		String actual = sw.toString();
+	//		assertEquals(expected, actual);
+	//	}
 
 	@Test
 	public void case_insensitive() {

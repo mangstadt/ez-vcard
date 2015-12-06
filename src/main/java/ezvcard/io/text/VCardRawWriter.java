@@ -5,7 +5,6 @@ import java.io.Flushable;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -54,69 +53,71 @@ import ezvcard.parameter.VCardParameters;
  */
 public class VCardRawWriter implements Closeable, Flushable {
 	/**
-	 * Regular expression used to determine if a parameter value needs to be
-	 * quoted.
+	 * If any of these characters are found within a parameter value, then the
+	 * entire parameter value must be wrapped in double quotes (applies to
+	 * versions 3.0 and 4.0 only).
 	 */
-	private static final Pattern quoteMeRegex = Pattern.compile(".*?[,:;].*");
+	private final String specialParameterCharacters = ",:;";
 
 	/**
 	 * Regular expression used to detect newline character sequences.
 	 */
-	private static final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
+	private final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
 
 	/**
 	 * List of characters which would break the syntax of the vCard if used
-	 * inside a group or property name. The list of characters permitted by the
+	 * inside a property name. The list of characters permitted by the
 	 * specification is much more strict, but the goal here is to be as lenient
 	 * as possible.
 	 */
-	private static final String invalidPropertyGroupNameCharacters = ".;:\n\r";
+	private final String invalidPropertyNameCharacters = ".;:\n\r";
 
 	/**
-	 * The characters that are not valid in parameter values and that should be
-	 * removed.
+	 * List of characters which would break the syntax of the vCard if used
+	 * inside a group name. The list of characters permitted by the
+	 * specification is much more strict, but the goal here is to be as lenient
+	 * as possible.
 	 */
-	private static final Map<VCardVersion, BitSet> invalidParamValueChars;
-	static {
-		BitSet controlChars = new BitSet(128);
-		controlChars.set(0, 31);
-		controlChars.set(127);
-		controlChars.set('\t', false); //allow
-		controlChars.set('\n', false); //allow
-		controlChars.set('\r', false); //allow
+	private final String invalidGroupNameCharacters = invalidPropertyNameCharacters;
 
-		Map<VCardVersion, BitSet> map = new EnumMap<VCardVersion, BitSet>(VCardVersion.class);
+	/**
+	 * List of characters which would break the syntax of the vCard if used
+	 * inside a parameter name. The list of characters permitted by the
+	 * specification is much more strict, but the goal here is to be as lenient
+	 * as possible.
+	 */
+	private final String invalidParameterNameCharacters = ";:=\n\r";
 
-		//2.1
-		{
-			BitSet bitSet = new BitSet(128);
-			bitSet.or(controlChars);
+	/**
+	 * List of characters which would break the syntax of the vCard if used
+	 * inside a parameter value. These characters cannot be escaped or encoded,
+	 * so they are impossible to include inside of a parameter value. The list
+	 * of characters permitted by the specification is much more strict, but the
+	 * goal here is to be as lenient as possible.
+	 */
+	private final Map<VCardVersion, String> invalidParamValueChars;
+	{
+		Map<VCardVersion, String> map = new EnumMap<VCardVersion, String>(VCardVersion.class);
 
-			bitSet.set(',');
-			bitSet.set('.');
-			bitSet.set(':');
-			bitSet.set('=');
-			bitSet.set('[');
-			bitSet.set(']');
+		/*
+		 * Note: Semi-colons can be escaped.
+		 */
+		map.put(VCardVersion.V2_1, ",:\n\r");
 
-			map.put(VCardVersion.V2_1, bitSet);
-		}
-
-		//3.0, 4.0
-		{
-			BitSet bitSet = new BitSet(128);
-			bitSet.or(controlChars);
-
-			map.put(VCardVersion.V3_0, bitSet);
-			map.put(VCardVersion.V4_0, bitSet);
-		}
+		/*
+		 * Note: For versions 3.0 and 4.0, double quotes and newlines are not
+		 * included in this list, even though they could break the syntax. They
+		 * are checked separately, because they may be able to be encoded,
+		 * depending on whether caret encoding is enabled or not.
+		 */
+		map.put(VCardVersion.V3_0, "");
+		map.put(VCardVersion.V4_0, "");
 
 		invalidParamValueChars = Collections.unmodifiableMap(map);
 	}
 
 	private final FoldedLineWriter writer;
 	private boolean caretEncodingEnabled = false;
-	private ParameterValueChangedListener parameterValueChangedListener;
 	private VCardVersion version;
 
 	/**
@@ -145,30 +146,24 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * </p>
 	 * 
 	 * <p>
-	 * When disabled, the writer will replace newlines with spaces and double
-	 * quotes with single quotes.
+	 * Note that this encoding mechanism is defined separately from the
+	 * iCalendar specification and may not be supported by the vCard consumer.
 	 * </p>
 	 * 
 	 * <table class="simpleTable">
 	 * <tr>
-	 * <th>Character</th>
-	 * <th>Replacement<br>
-	 * (when disabled)</th>
-	 * <th>Replacement<br>
-	 * (when enabled)</th>
+	 * <th>Raw Character</th>
+	 * <th>Encoded Character</th>
 	 * </tr>
 	 * <tr>
 	 * <td>{@code "}</td>
-	 * <td>{@code '}</td>
 	 * <td>{@code ^'}</td>
 	 * </tr>
 	 * <tr>
 	 * <td><i>newline</i></td>
-	 * <td><code><i>space</i></code></td>
 	 * <td>{@code ^n}</td>
 	 * </tr>
 	 * <tr>
-	 * <td>{@code ^}</td>
 	 * <td>{@code ^}</td>
 	 * <td>{@code ^^}</td>
 	 * </tr>
@@ -179,8 +174,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * </p>
 	 * 
 	 * <pre>
-	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
-	 *  sburgh, PA 15212":40.446816;80.00566
+	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPittsburgh, PA 15212":40.446816;80.00566
 	 * </pre>
 	 * 
 	 * @return true if circumflex accent encoding is enabled, false if not
@@ -199,30 +193,24 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * </p>
 	 * 
 	 * <p>
-	 * When disabled, the writer will replace newlines with spaces and double
-	 * quotes with single quotes.
+	 * Note that this encoding mechanism is defined separately from the
+	 * iCalendar specification and may not be supported by the vCard consumer.
 	 * </p>
 	 * 
 	 * <table class="simpleTable">
 	 * <tr>
-	 * <th>Character</th>
-	 * <th>Replacement<br>
-	 * (when disabled)</th>
-	 * <th>Replacement<br>
-	 * (when enabled)</th>
+	 * <th>Raw Character</th>
+	 * <th>Encoded Character</th>
 	 * </tr>
 	 * <tr>
 	 * <td>{@code "}</td>
-	 * <td>{@code '}</td>
 	 * <td>{@code ^'}</td>
 	 * </tr>
 	 * <tr>
 	 * <td><i>newline</i></td>
-	 * <td><code><i>space</i></code></td>
 	 * <td>{@code ^n}</td>
 	 * </tr>
 	 * <tr>
-	 * <td>{@code ^}</td>
 	 * <td>{@code ^}</td>
 	 * <td>{@code ^^}</td>
 	 * </tr>
@@ -233,8 +221,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * </p>
 	 * 
 	 * <pre>
-	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPitt
-	 *  sburgh, PA 15212":40.446816;80.00566
+	 * GEO;X-ADDRESS="Pittsburgh Pirates^n115 Federal St^nPittsburgh, PA 15212":40.446816;80.00566
 	 * </pre>
 	 * 
 	 * @param enable true to use circumflex accent encoding, false not to
@@ -258,22 +245,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 */
 	public void setVersion(VCardVersion version) {
 		this.version = version;
-	}
-
-	/**
-	 * Gets the parameter values changed listener.
-	 * @return the listener or null if not set
-	 */
-	public ParameterValueChangedListener getParameterValueChangedListener() {
-		return parameterValueChangedListener;
-	}
-
-	/**
-	 * Sets the parameter values changed listener.
-	 * @param listener the listener or null to remove
-	 */
-	public void setParameterValueChangedListener(ParameterValueChangedListener listener) {
-		parameterValueChangedListener = listener;
 	}
 
 	/**
@@ -324,30 +295,33 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * @param parameters the property parameters
 	 * @param value the property value (will be converted to "quoted-printable"
 	 * encoding if the {@link Encoding#QUOTED_PRINTABLE} parameter is set)
-	 * @throws IllegalArgumentException if the group or property name contains
-	 * invalid characters
+	 * @throws IllegalArgumentException if the property data contains one or
+	 * more characters which break the vCard syntax and which cannot be escaped
+	 * or encoded
 	 * @throws IOException if there's an I/O problem
 	 */
 	public void writeProperty(String group, String propertyName, VCardParameters parameters, String value) throws IOException {
 		//validate the group name
 		if (group != null) {
-			if (!isValidGroupName(group)) {
-				throw new IllegalArgumentException("Property \"" + propertyName + "\" has its group name set to \"" + group + "\".  This group name contains one or more invalid characters.  The following characters are not permitted: .;:\\n\\r");
+			if (containsAny(group, invalidGroupNameCharacters)) {
+				String invalidCharsList = invalidGroupNameCharacters.replace("\n", "\\n").replace("\r", "\\r");
+				throw new IllegalArgumentException("Property \"" + propertyName + "\" has its group set to \"" + group + "\".  This group name contains one or more invalid characters.  The following characters are not permitted: " + invalidCharsList);
 			}
 			if (beginsWithWhitespace(group)) {
-				throw new IllegalArgumentException("Property \"" + propertyName + "\" has its group name set to \"" + group + "\".  This group name begins with one or more whitespace characters, which is not permitted.");
+				throw new IllegalArgumentException("Property \"" + propertyName + "\" has its group set to \"" + group + "\".  This group name begins with one or more whitespace characters, which is not permitted.");
 			}
 		}
 
 		//validate the property name
-		if (!isValidPropertyName(propertyName)) {
-			throw new IllegalArgumentException("Property name \"" + propertyName + "\" contains one or more invalid characters.  The following characters are not permitted: .;:\\n\\r");
+		if (containsAny(propertyName, invalidPropertyNameCharacters)) {
+			String invalidCharsList = invalidPropertyNameCharacters.replace("\n", "\\n").replace("\r", "\\r");
+			throw new IllegalArgumentException("Property name \"" + propertyName + "\" contains one or more invalid characters.  The following characters are not permitted: " + invalidCharsList);
 		}
 		if (beginsWithWhitespace(propertyName)) {
 			throw new IllegalArgumentException("Property name \"" + propertyName + "\" begins with one or more whitespace characters, which is not permitted.");
 		}
 
-		value = sanitizeValue(parameters, value);
+		value = sanitizePropertyValue(value, parameters);
 
 		/*
 		 * Determine if the property value must be encoded in quoted printable
@@ -385,6 +359,12 @@ public class VCardRawWriter implements Closeable, Flushable {
 				continue;
 			}
 
+			//check the parameter name for invalid characters
+			if (containsAny(parameterName, invalidParameterNameCharacters)) {
+				String invalidCharsList = invalidParameterNameCharacters.replace("\n", "\\n").replace("\r", "\\r");
+				throw new IllegalArgumentException("Property \"" + propertyName + "\" has a parameter named \"" + parameterName + "\".  This parameter's name contains one or more invalid characters.  The following characters are not permitted: " + invalidCharsList);
+			}
+
 			if (version == VCardVersion.V2_1) {
 				boolean isTypeParameter = VCardParameters.TYPE.equalsIgnoreCase(parameterName);
 				for (String parameterValue : parameterValues) {
@@ -410,7 +390,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 				}
 
 				parameterValue = sanitizeParameterValue(parameterValue, parameterName, propertyName);
-				if (containsSpecialChars(parameterValue)) {
+				if (containsAny(parameterValue, specialParameterCharacters)) {
 					writer.append('"').append(parameterValue).append('"');
 				} else {
 					writer.append(parameterValue);
@@ -425,20 +405,11 @@ public class VCardRawWriter implements Closeable, Flushable {
 		writer.append(writer.getNewline());
 	}
 
-	private boolean isValidGroupName(String group) {
-		return isValidPropertyName(group);
-	}
-
-	private boolean isValidPropertyName(String name) {
-		for (int i = 0; i < invalidPropertyGroupNameCharacters.length(); i++) {
-			char c = invalidPropertyGroupNameCharacters.charAt(i);
-			if (name.indexOf(c) >= 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-
+	/**
+	 * Determines if a given string starts with whitespace.
+	 * @param string the string
+	 * @return true if it starts with whitespace, false if not
+	 */
 	private boolean beginsWithWhitespace(String string) {
 		if (string.length() == 0) {
 			return false;
@@ -449,11 +420,11 @@ public class VCardRawWriter implements Closeable, Flushable {
 
 	/**
 	 * Sanitizes a property value for safe inclusion in a vCard.
-	 * @param parameters the property's parameters
 	 * @param value the value to sanitize
+	 * @param parameters the property's parameters
 	 * @return the sanitized value
 	 */
-	private String sanitizeValue(VCardParameters parameters, String value) {
+	private String sanitizePropertyValue(String value, VCardParameters parameters) {
 		if (value == null) {
 			return "";
 		}
@@ -461,14 +432,15 @@ public class VCardRawWriter implements Closeable, Flushable {
 		/*
 		 * 2.1 does not support the "\n" escape sequence (see "Delimiters"
 		 * sub-section in section 2 of the specs) so encode the value in
-		 * quoted-printable encoding if any newline characters exist
+		 * quoted-printable encoding if any newline characters exist.
 		 */
-		if (version == VCardVersion.V2_1 && containsNewlines(value)) {
+		if (version == VCardVersion.V2_1 && containsAny(value, "\r\n")) {
 			parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
 			return value;
 		}
 
-		return escapeNewlines(value);
+		//escape newlines
+		return newlineRegex.matcher(value).replaceAll("\\\\n");
 	}
 
 	/**
@@ -480,103 +452,68 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * @return the sanitized parameter value
 	 */
 	private String sanitizeParameterValue(String parameterValue, String parameterName, String propertyName) {
-		String modifiedValue = null;
-		boolean valueChanged = false;
+		String invalidChars = invalidParamValueChars.get(version);
+		if (containsAny(parameterValue, invalidChars)) {
+			String invalidCharsList = invalidChars.replace("\n", "\\n").replace("\r", "\\r");
+			throw new IllegalArgumentException("Property \"" + propertyName + "\" has a parameter named \"" + parameterName + "\" whose value contains one or more invalid characters.  The following characters are not permitted: " + invalidCharsList);
+		}
 
+		String sanitizedValue = parameterValue;
 		switch (version) {
 		case V2_1:
-			//remove invalid characters
-			modifiedValue = removeInvalidParameterValueChars(parameterValue);
-
-			//replace newlines with spaces
-			modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll(" ");
-
-			//check to see if value was changed
-			valueChanged = !parameterValue.equals(modifiedValue);
+			//Note: 2.1 does not support caret encoding.
 
 			//escape backslashes
-			modifiedValue = modifiedValue.replace("\\", "\\\\");
+			sanitizedValue = sanitizedValue.replace("\\", "\\\\");
 
 			//escape semi-colons (see section 2)
-			modifiedValue = modifiedValue.replace(";", "\\;");
-
-			break;
+			return sanitizedValue.replace(";", "\\;");
 
 		case V3_0:
-			//remove invalid characters
-			modifiedValue = removeInvalidParameterValueChars(parameterValue);
-
 			if (caretEncodingEnabled) {
-				valueChanged = !modifiedValue.equals(parameterValue);
-
-				//apply caret encoding
-				modifiedValue = applyCaretEncoding(modifiedValue);
-			} else {
-				//replace double quotes with single quotes
-				modifiedValue = modifiedValue.replace('"', '\'');
-
-				//replace newlines with spaces
-				modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll(" ");
-
-				valueChanged = !modifiedValue.equals(parameterValue);
+				return applyCaretEncoding(sanitizedValue);
 			}
 
-			break;
+			if (containsAny(sanitizedValue, "\"\r\n")) {
+				throw new IllegalArgumentException("Property \"" + propertyName + "\" has a parameter named \"" + parameterName + "\".  This parameter's value contains double quotes and/or newlines, which cannot be written due to the fact that caret encoding is turned off.  Either remove these characters or enable caret encoding.");
+			}
+
+			return sanitizedValue;
 
 		case V4_0:
-			//remove invalid characters
-			modifiedValue = removeInvalidParameterValueChars(parameterValue);
-
 			if (caretEncodingEnabled) {
-				valueChanged = !modifiedValue.equals(parameterValue);
-
-				//apply caret encoding
-				modifiedValue = applyCaretEncoding(modifiedValue);
-			} else {
-				//replace double quotes with single quotes
-				modifiedValue = modifiedValue.replace('"', '\'');
-
-				valueChanged = !modifiedValue.equals(parameterValue);
-
-				//backslash-escape newlines (for the "LABEL" parameter)
-				modifiedValue = newlineRegex.matcher(modifiedValue).replaceAll("\\\\\\n");
+				return applyCaretEncoding(sanitizedValue);
 			}
 
-			break;
+			if (containsAny(sanitizedValue, "\"")) {
+				throw new IllegalArgumentException("Property \"" + propertyName + "\" has a parameter named \"" + parameterName + "\".  This parameter's value contains double quotes and/or newlines, which cannot be written due to the fact that caret encoding is turned off.  Either remove these characters or enable caret encoding.");
+			}
+
+			/*
+			 * 4.0 allows newlines to be escaped (for the LABEL parameter).
+			 */
+			return newlineRegex.matcher(sanitizedValue).replaceAll("\\\\\\n");
 		}
 
-		if (valueChanged && parameterValueChangedListener != null) {
-			parameterValueChangedListener.onParameterValueChanged(propertyName, parameterName, parameterValue, modifiedValue);
-		}
-
-		return modifiedValue;
+		return "";
 	}
 
 	/**
-	 * Removes invalid characters from a parameter value.
-	 * @param value the parameter value
-	 * @return the sanitized parameter value
+	 * Determines if a string contains one or more characters from the given
+	 * list.
+	 * @param string the string
+	 * @param characters the list of characters to check for
+	 * @return true if the string contains at least one of the characters, false
+	 * if not
 	 */
-	private String removeInvalidParameterValueChars(String value) {
-		BitSet invalidChars = invalidParamValueChars.get(version);
-		StringBuilder sb = null;
-
-		for (int i = 0; i < value.length(); i++) {
-			char ch = value.charAt(i);
-			if (invalidChars.get(ch)) {
-				if (sb == null) {
-					sb = new StringBuilder(value.length());
-					sb.append(value.substring(0, i));
-				}
-				continue;
-			}
-
-			if (sb != null) {
-				sb.append(ch);
+	private boolean containsAny(String string, String characters) {
+		for (int i = 0; i < characters.length(); i++) {
+			char c = characters.charAt(i);
+			if (string.indexOf(c) >= 0) {
+				return true;
 			}
 		}
-
-		return (sb == null) ? value : sb.toString();
+		return false;
 	}
 
 	/**
@@ -589,49 +526,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 		value = newlineRegex.matcher(value).replaceAll("^n");
 		value = value.replace("\"", "^'");
 		return value;
-	}
-
-	/**
-	 * <p>
-	 * Escapes all newline character sequences. The newline character sequences
-	 * are:
-	 * </p>
-	 * <ul>
-	 * <li>{@code \r\n}</li>
-	 * <li>{@code \r}</li>
-	 * <li>{@code \n}</li>
-	 * </ul>
-	 * @param text the text to escape
-	 * @return the escaped text
-	 */
-	private String escapeNewlines(String text) {
-		return newlineRegex.matcher(text).replaceAll("\\\\n");
-	}
-
-	/**
-	 * <p>
-	 * Determines if a string has at least one newline character sequence. The
-	 * newline character sequences are:
-	 * </p>
-	 * <ul>
-	 * <li>{@code \r\n}</li>
-	 * <li>{@code \r}</li>
-	 * <li>{@code \n}</li>
-	 * </ul>
-	 * @param text the text to escape
-	 * @return the escaped text
-	 */
-	private boolean containsNewlines(String text) {
-		return newlineRegex.matcher(text).find();
-	}
-
-	/**
-	 * Determines if a parameter value contains special characters.
-	 * @param parameterValue the parameter value
-	 * @return true if it contains special characters, false if not
-	 */
-	private boolean containsSpecialChars(String parameterValue) {
-		return quoteMeRegex.matcher(parameterValue).matches();
 	}
 
 	/**
@@ -648,26 +542,5 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 */
 	public void close() throws IOException {
 		writer.close();
-	}
-
-	/**
-	 * Invoked when a parameter value is changed in a lossy way, due to it
-	 * containing invalid characters. If a character can be escaped (such as the
-	 * "^" character when caret encoding is enabled), then this does not count
-	 * as the parameter being modified because it can be decoded without losing
-	 * any information.
-	 * @see VCardRawWriter#setParameterValueChangedListener
-	 * @author Michael Angstadt
-	 */
-	public static interface ParameterValueChangedListener {
-		/**
-		 * Called when a parameter value is changed in a lossy way.
-		 * @param propertyName the name of the property that the parameter
-		 * belongs to
-		 * @param parameterName the parameter name
-		 * @param originalValue the original parameter value
-		 * @param modifiedValue the modified parameter value
-		 */
-		void onParameterValueChanged(String propertyName, String parameterName, String originalValue, String modifiedValue);
 	}
 }

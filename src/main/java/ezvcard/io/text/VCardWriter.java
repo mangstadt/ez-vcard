@@ -180,8 +180,8 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * </p>
 	 * 
 	 * <p>
-	 * When disabled, the writer will replace newlines with spaces and double
-	 * quotes with single quotes.
+	 * Note that this encoding mechanism is defined separately from the
+	 * iCalendar specification and may not be supported by the vCard consumer.
 	 * </p>
 	 * @return true if circumflex accent encoding is enabled, false if not
 	 * @see VCardRawWriter#isCaretEncodingEnabled()
@@ -199,8 +199,8 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * </p>
 	 * 
 	 * <p>
-	 * When disabled, the writer will replace newlines with spaces and double
-	 * quotes with single quotes.
+	 * Note that this encoding mechanism is defined separately from the
+	 * iCalendar specification and may not be supported by the vCard consumer.
 	 * </p>
 	 * @param enable true to use circumflex accent encoding, false not to
 	 * @see VCardRawWriter#setCaretEncodingEnabled(boolean)

@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -849,6 +851,59 @@ public class VCardParameters extends ListMultimap<String, String> {
 	public List<Warning> validate(VCardVersion version) {
 		List<Warning> warnings = new ArrayList<Warning>(0);
 
+		/*
+		 * Check for invalid characters in names and values.
+		 */
+		{
+			BitSet invalidCharacters = new BitSet(128);
+			invalidCharacters.set(0, 31);
+			invalidCharacters.set(127);
+			invalidCharacters.set('\t', false); //allow
+			invalidCharacters.set('\n', false); //allow
+			invalidCharacters.set('\r', false); //allow
+			if (version == VCardVersion.V2_1) {
+				invalidCharacters.set(',');
+				invalidCharacters.set('.');
+				invalidCharacters.set(':');
+				invalidCharacters.set('=');
+				invalidCharacters.set('[');
+				invalidCharacters.set(']');
+			}
+
+			Pattern validParameterName = Pattern.compile("(?i)[-a-z0-9]+");
+			for (Map.Entry<String, List<String>> entry : this) {
+				String name = entry.getKey();
+
+				/*
+				 * Don't check LABEL for 2.1 and 3.0 because this is converted
+				 * to a property in those version.
+				 */
+				if (version != VCardVersion.V4_0 && LABEL.equalsIgnoreCase(name)) {
+					continue;
+				}
+
+				//check the parameter name
+				if (!validParameterName.matcher(name).matches()) {
+					warnings.add(new Warning(26, name));
+				}
+
+				//check the parameter value(s)
+				List<String> values = entry.getValue();
+				for (String value : values) {
+					for (int i = 0; i < value.length(); i++) {
+						char c = value.charAt(i);
+						if (invalidCharacters.get(c)) {
+							warnings.add(new Warning(25, name, value, (int) c, i));
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		/*
+		 * Check for invalid or unsupported values (e.g. "ENCODING=foo").
+		 */
 		{
 			int nonStandardCode = 3;
 			int valueNotSupportedCode = 4;
@@ -879,6 +934,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 			}
 		}
 
+		/*
+		 * Check for parameters with malformed values.
+		 */
 		{
 			int malformedCode = 5;
 
@@ -907,6 +965,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 			}
 		}
 
+		/*
+		 * Check that each parameter is supported by the given vCard version.
+		 */
 		{
 			int paramNotSupportedCode = 6;
 			for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
@@ -923,6 +984,10 @@ public class VCardParameters extends ListMultimap<String, String> {
 			}
 		}
 
+		/*
+		 * Check that the CHARSET parameter has a character set that is
+		 * supported by this JVM.
+		 */
 		{
 			int invalidCharsetCode = 22;
 			String charsetStr = getCharset();
