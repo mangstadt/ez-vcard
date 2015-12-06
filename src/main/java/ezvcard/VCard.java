@@ -4693,6 +4693,6 @@ public class VCard implements Iterable<VCardProperty> {
 		while (altIds.contains(Integer.toString(altId))) {
 			altId++;
 		}
-		return altId + "";
+		return Integer.toString(altId);
 	}
 }
