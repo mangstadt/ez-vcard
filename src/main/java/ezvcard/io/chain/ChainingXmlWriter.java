@@ -83,7 +83,7 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 		}
 
 		outputProperty(OutputKeys.INDENT, "yes");
-		return outputProperty(INDENT_AMOUNT, indent + "");
+		return outputProperty(INDENT_AMOUNT, Integer.toString(indent));
 	}
 
 	/**

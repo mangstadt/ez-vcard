@@ -689,7 +689,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @param localId the local ID
 	 */
 	public void addPid(int localId) {
-		put(PID, localId + "");
+		put(PID, Integer.toString(localId));
 	}
 
 	/**

@@ -4690,7 +4690,7 @@ public class VCard implements Iterable<VCardProperty> {
 		}
 
 		int altId = 1;
-		while (altIds.contains(altId + "")) {
+		while (altIds.contains(Integer.toString(altId))) {
 			altId++;
 		}
 		return altId + "";

@@ -320,7 +320,7 @@ public final class GeoUri {
 		StringBuffer sb = new StringBuffer();
 		while (m.find()) {
 			int hex = Integer.parseInt(m.group(1), 16);
-			m.appendReplacement(sb, "" + (char) hex);
+			m.appendReplacement(sb, Character.toString((char) hex));
 		}
 		m.appendTail(sb);
 		return sb.toString();
