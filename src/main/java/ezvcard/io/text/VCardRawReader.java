@@ -326,7 +326,7 @@ public class VCardRawReader implements Closeable {
 		}
 
 		if (propertyName == null) {
-			throw new VCardParseException(unfoldedLine.get(), propertyLineNum);
+			throw new VCardParseException(unfoldedLine.get(), propertyLineNum, "Line is malformed--no colon character found.");
 		}
 
 		String value = buffer.getAndClear();
@@ -334,7 +334,7 @@ public class VCardRawReader implements Closeable {
 		if ("VERSION".equalsIgnoreCase(propertyName)) {
 			VCardVersion version = VCardVersion.valueOfByStr(value);
 			if (version == null) {
-				throw new InvalidVersionException(value, unfoldedLine.get(), propertyLineNum);
+				throw new VCardParseException(unfoldedLine.get(), propertyLineNum, "Unknown version number.");
 			}
 			this.version = version;
 		}

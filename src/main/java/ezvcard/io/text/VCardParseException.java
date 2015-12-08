@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 
 /**
- * Thrown when there's a problem parsing a line in a vCard file.
+ * Thrown when there's a problem parsing a plain-text vCard file.
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
@@ -41,19 +41,30 @@ public class VCardParseException extends IOException {
 	private final int lineNumber;
 
 	/**
-	 * @param line the line that couldn't be parsed (unfolded)
-	 * @param lineNumber the line number
+	 * @param line the line that couldn't be parsed (after being unfolded)
+	 * @param lineNumber the line number (if folded, the line number of the
+	 * first line)
+	 * @param message a message describing the problem.
 	 */
-	public VCardParseException(String line, int lineNumber) {
-		super("Problem parsing vCard at line" + lineNumber + ": " + line);
+	public VCardParseException(String line, int lineNumber, String message) {
+		super(message);
 		this.line = line;
 		this.lineNumber = lineNumber;
 	}
 
+	/**
+	 * Gets the line that could not be parsed (after being unfolded).
+	 * @return the line
+	 */
 	public String getLine() {
 		return line;
 	}
 
+	/**
+	 * Gets the line number of the unparsable line. If the line was folded, this
+	 * will be the line number of the first line.
+	 * @return the line number
+	 */
 	public int getLineNumber() {
 		return lineNumber;
 	}

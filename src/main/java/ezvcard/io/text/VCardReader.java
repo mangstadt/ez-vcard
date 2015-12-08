@@ -197,7 +197,7 @@ public class VCardReader extends StreamReader {
 				line = reader.readLine();
 			} catch (VCardParseException e) {
 				if (!vcardStack.isEmpty()) {
-					warnings.add(e.getLineNumber(), null, 27, e.getLine());
+					warnings.add(e.getLineNumber(), null, 27, e.getMessage(), e.getLine());
 				}
 				continue;
 			}

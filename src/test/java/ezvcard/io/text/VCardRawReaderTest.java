@@ -75,7 +75,7 @@ public class VCardRawReaderTest {
 		assertNull(reader.readLine());
 	}
 
-	@Test(expected = InvalidVersionException.class)
+	@Test(expected = VCardParseException.class)
 	public void invalid_version() throws Throwable {
 		String vcard = "VERSION:invalid";
 		VCardRawReader reader = create(vcard);
