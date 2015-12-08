@@ -4,6 +4,7 @@ import static ezvcard.VCardDataType.INTEGER;
 import static ezvcard.VCardDataType.TEXT;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.property.asserter.PropertyAsserter.assertAddress;
 import static ezvcard.property.asserter.PropertyAsserter.assertRawProperty;
 import static ezvcard.property.asserter.PropertyAsserter.assertSimpleProperty;
@@ -1021,6 +1022,24 @@ public class VCardReaderTest {
 		assertVersion(V2_1, vcard); //default to 2.1
 
 		assertWarnings(1, reader);
+		assertNoMoreVCards(reader);
+	}
+
+	@Test
+	public void setVersionAlias() throws Throwable {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+			"VERSION:invalid\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		reader.setVersionAlias("invalid", V4_0);
+		VCard vcard = reader.readNext();
+		assertVersion(V4_0, vcard);
+
+		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
 	}
 

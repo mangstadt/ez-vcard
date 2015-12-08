@@ -184,6 +184,18 @@ public class VCardReader extends StreamReader {
 		defaultQuotedPrintableCharset = charset;
 	}
 
+	/**
+	 * Defines how the reader should parse a vCard when it encounters a
+	 * non-standard version number. By default, a warning is logged and the
+	 * version property is ignored.
+	 * @param version the version number
+	 * @param parseAccordingTo the parsing rules the reader should use when a
+	 * vCard with the given version number is encountered
+	 */
+	public void setVersionAlias(String version, VCardVersion parseAccordingTo) {
+		reader.setVersionAlias(version, parseAccordingTo);
+	}
+
 	@Override
 	protected VCard _readNext() throws IOException {
 		VCard root = null;

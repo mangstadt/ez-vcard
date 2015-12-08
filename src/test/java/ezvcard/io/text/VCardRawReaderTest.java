@@ -1,5 +1,7 @@
 package ezvcard.io.text;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -80,6 +82,39 @@ public class VCardRawReaderTest {
 		String vcard = "VERSION:invalid";
 		VCardRawReader reader = create(vcard);
 		reader.readLine();
+	}
+
+	@Test
+	public void setVersionAlias() throws Throwable {
+		String vcard = "VERSION:invalid";
+		VCardRawReader reader = create(vcard);
+		reader.setVersionAlias("invalid", V4_0);
+
+		assertEquals(line("VERSION").value("invalid").build(), reader.readLine());
+		assertEquals(V4_0, reader.getVersion());
+		assertNull(reader.readLine());
+	}
+
+	@Test
+	public void setVersionAlias_with_valid_version() throws Throwable {
+		//@formatter:off
+		String vcard =
+		"VERSION:2.1\r\n" +
+		"PROP;PARAM=\"val:ue\":\r\n";
+		//@formatter:on
+
+		VCardRawReader reader = create(vcard);
+		assertEquals(line("VERSION").value("2.1").build(), reader.readLine());
+		assertEquals(V2_1, reader.getVersion());
+		assertEquals(line("PROP").param("PARAM", "\"val").value("ue\":").build(), reader.readLine());
+		assertNull(reader.readLine());
+
+		reader = create(vcard);
+		reader.setVersionAlias("2.1", V4_0);
+		assertEquals(line("VERSION").value("2.1").build(), reader.readLine());
+		assertEquals(V4_0, reader.getVersion());
+		assertEquals(line("PROP").param("PARAM", "val:ue").value("").build(), reader.readLine());
+		assertNull(reader.readLine());
 	}
 
 	@Test
