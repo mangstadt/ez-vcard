@@ -46,7 +46,7 @@ public enum Messages {
 	 * Gets a validation warning message.
 	 * @param code the message code
 	 * @param args the message arguments
-	 * @return the message
+	 * @return the message or null if not found
 	 */
 	public String getValidationWarning(int code, Object... args) {
 		return getMessage("validate." + code, args);
@@ -56,10 +56,32 @@ public enum Messages {
 	 * Gets a parser warning message.
 	 * @param code the message code
 	 * @param args the message arguments
-	 * @return the message
+	 * @return the message or null if not found
 	 */
 	public String getParseMessage(int code, Object... args) {
 		return getMessage("parse." + code, args);
+	}
+
+	/**
+	 * Gets an exception message.
+	 * @param code the message code
+	 * @param args the message arguments
+	 * @return the message or null if not found
+	 */
+	public String getExceptionMessage(int code, Object... args) {
+		String message = getMessage("exception." + code, args);
+		return (message == null) ? null : getMessage("exception.0", code, message);
+	}
+
+	/**
+	 * Builds an {@link IllegalArgumentException} from an exception message.
+	 * @param code the message code
+	 * @param args the message arguments
+	 * @return the exception or null if the message was not found
+	 */
+	public IllegalArgumentException getIllegalArgumentException(int code, Object... args) {
+		String message = getExceptionMessage(code, args);
+		return (message == null) ? null : new IllegalArgumentException(message);
 	}
 
 	/**

@@ -2,6 +2,7 @@ package ezvcard.io.text;
 
 import java.util.Arrays;
 
+import ezvcard.Messages;
 import ezvcard.parameter.VCardParameters;
 
 /*
@@ -155,7 +156,7 @@ public class VCardRawLine {
 
 		public VCardRawLine build() {
 			if (name == null) {
-				throw new IllegalArgumentException("Property name required.");
+				throw Messages.INSTANCE.getIllegalArgumentException(4);
 			}
 			return new VCardRawLine(group, name, parameters, value);
 		}

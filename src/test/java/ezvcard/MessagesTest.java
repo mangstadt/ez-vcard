@@ -65,6 +65,30 @@ public class MessagesTest {
 	}
 
 	@Test
+	public void getExceptionMessage() {
+		String actual = messages.getExceptionMessage(1);
+		String expected = messages.getMessage("exception.0", 1, messages.getMessage("exception.1"));
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void getExceptionMessage_does_not_exist() {
+		assertNull(messages.getExceptionMessage(5000));
+	}
+
+	@Test
+	public void getIllegalArgumentException() {
+		String actual = messages.getIllegalArgumentException(1).getMessage();
+		String expected = messages.getMessage("exception.0", 1, messages.getMessage("exception.1"));
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void getIllegalArgumentException_does_not_exist() {
+		assertNull(messages.getIllegalArgumentException(5000));
+	}
+
+	@Test
 	public void getMessage() throws Exception {
 		String expected = load().getProperty("parse.0");
 		String actual = messages.getMessage("parse.0");

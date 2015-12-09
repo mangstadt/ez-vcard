@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import ezvcard.Messages;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
@@ -304,21 +305,19 @@ public class VCardRawWriter implements Closeable, Flushable {
 		//validate the group name
 		if (group != null) {
 			if (containsAny(group, invalidGroupNameCharacters)) {
-				String invalidCharsList = invalidGroupNameCharacters.replace("\n", "\\n").replace("\r", "\\r");
-				throw new IllegalArgumentException("Property \"" + propertyName + "\" has its group set to \"" + group + "\".  This group name contains one or more invalid characters.  The following characters are not permitted: " + invalidCharsList);
+				throw Messages.INSTANCE.getIllegalArgumentException(7, propertyName, group, printableCharacterList(invalidGroupNameCharacters));
 			}
 			if (beginsWithWhitespace(group)) {
-				throw new IllegalArgumentException("Property \"" + propertyName + "\" has its group set to \"" + group + "\".  This group name begins with one or more whitespace characters, which is not permitted.");
+				throw Messages.INSTANCE.getIllegalArgumentException(8, propertyName, group);
 			}
 		}
 
 		//validate the property name
 		if (containsAny(propertyName, invalidPropertyNameCharacters)) {
-			String invalidCharsList = invalidPropertyNameCharacters.replace("\n", "\\n").replace("\r", "\\r");
-			throw new IllegalArgumentException("Property name \"" + propertyName + "\" contains one or more invalid characters.  The following characters are not permitted: " + invalidCharsList);
+			throw Messages.INSTANCE.getIllegalArgumentException(9, propertyName, printableCharacterList(invalidPropertyNameCharacters));
 		}
 		if (beginsWithWhitespace(propertyName)) {
-			throw new IllegalArgumentException("Property name \"" + propertyName + "\" begins with one or more whitespace characters, which is not permitted.");
+			throw Messages.INSTANCE.getIllegalArgumentException(10, propertyName);
 		}
 
 		value = sanitizePropertyValue(value, parameters);
@@ -361,8 +360,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 
 			//check the parameter name for invalid characters
 			if (containsAny(parameterName, invalidParameterNameCharacters)) {
-				String invalidCharsList = invalidParameterNameCharacters.replace("\n", "\\n").replace("\r", "\\r");
-				throw new IllegalArgumentException("Property \"" + propertyName + "\" has a parameter named \"" + parameterName + "\".  This parameter's name contains one or more invalid characters.  The following characters are not permitted: " + invalidCharsList);
+				throw Messages.INSTANCE.getIllegalArgumentException(11, propertyName, parameterName, printableCharacterList(invalidParameterNameCharacters));
 			}
 
 			if (version == VCardVersion.V2_1) {
@@ -454,8 +452,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	private String sanitizeParameterValue(String parameterValue, String parameterName, String propertyName) {
 		String invalidChars = invalidParamValueChars.get(version);
 		if (containsAny(parameterValue, invalidChars)) {
-			String invalidCharsList = invalidChars.replace("\n", "\\n").replace("\r", "\\r");
-			throw new IllegalArgumentException("Property \"" + propertyName + "\" has a parameter named \"" + parameterName + "\" whose value contains one or more invalid characters.  The following characters are not permitted: " + invalidCharsList);
+			throw Messages.INSTANCE.getIllegalArgumentException(12, propertyName, parameterName, printableCharacterList(invalidChars));
 		}
 
 		String sanitizedValue = parameterValue;
@@ -475,7 +472,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 			}
 
 			if (containsAny(sanitizedValue, "\"\r\n")) {
-				throw new IllegalArgumentException("Property \"" + propertyName + "\" has a parameter named \"" + parameterName + "\".  This parameter's value contains double quotes and/or newlines, which cannot be written due to the fact that caret encoding is turned off.  Either remove these characters or enable caret encoding.");
+				throw Messages.INSTANCE.getIllegalArgumentException(13, propertyName, parameterName);
 			}
 
 			return sanitizedValue;
@@ -486,7 +483,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 			}
 
 			if (containsAny(sanitizedValue, "\"")) {
-				throw new IllegalArgumentException("Property \"" + propertyName + "\" has a parameter named \"" + parameterName + "\".  This parameter's value contains double quotes and/or newlines, which cannot be written due to the fact that caret encoding is turned off.  Either remove these characters or enable caret encoding.");
+				throw Messages.INSTANCE.getIllegalArgumentException(13, propertyName, parameterName);
 			}
 
 			/*
@@ -514,6 +511,10 @@ public class VCardRawWriter implements Closeable, Flushable {
 			}
 		}
 		return false;
+	}
+
+	private String printableCharacterList(String list) {
+		return list.replace("\n", "\\n").replace("\r", "\\r");
 	}
 
 	/**

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ezvcard.Messages;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
@@ -334,7 +335,7 @@ public class VCardRawReader implements Closeable {
 		}
 
 		if (propertyName == null) {
-			throw new VCardParseException(unfoldedLine.get(), propertyLineNum, "Line is malformed--no colon character found.");
+			throw new VCardParseException(unfoldedLine.get(), propertyLineNum, Messages.INSTANCE.getExceptionMessage(5));
 		}
 
 		String value = buffer.getAndClear();
@@ -342,7 +343,7 @@ public class VCardRawReader implements Closeable {
 		if ("VERSION".equalsIgnoreCase(propertyName)) {
 			VCardVersion version = versionAliases.get(value);
 			if (version == null) {
-				throw new VCardParseException(unfoldedLine.get(), propertyLineNum, "Unknown version number.");
+				throw new VCardParseException(unfoldedLine.get(), propertyLineNum, Messages.INSTANCE.getExceptionMessage(6));
 			}
 			this.version = version;
 		}

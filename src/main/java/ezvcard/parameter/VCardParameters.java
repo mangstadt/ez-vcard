@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
@@ -409,7 +410,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 		try {
 			return Integer.valueOf(pref);
 		} catch (NumberFormatException e) {
-			throw new IllegalStateException(PREF + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
+			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, PREF), e);
 		}
 	}
 
@@ -444,7 +445,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 */
 	public void setPref(Integer pref) {
 		if (pref != null && (pref < 1 || pref > 100)) {
-			throw new IllegalArgumentException("Preference value must be between 1 and 100 inclusive.");
+			throw Messages.INSTANCE.getIllegalArgumentException(16);
 		}
 		String value = (pref == null) ? null : pref.toString();
 		replace(PREF, value);
@@ -542,7 +543,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 			GeoUri geoUri = GeoUri.parse(value);
 			return new double[] { geoUri.getCoordA(), geoUri.getCoordB() };
 		} catch (IllegalArgumentException e) {
-			throw new IllegalStateException(GEO + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
+			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, GEO), e);
 		}
 	}
 
@@ -665,7 +666,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				Integer clientPidMapRef = (split.length > 1) ? Integer.valueOf(split[1]) : null;
 				pids.add(new Integer[] { localId, clientPidMapRef });
 			} catch (NumberFormatException e) {
-				throw new IllegalStateException(PID + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
+				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, PID), e);
 			}
 		}
 		return pids;
@@ -813,7 +814,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 		try {
 			return Integer.valueOf(index);
 		} catch (NumberFormatException e) {
-			throw new IllegalStateException(INDEX + " parameter value is malformed and could not be parsed. Retrieve its raw text value instead.", e);
+			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, INDEX), e);
 		}
 	}
 
@@ -834,7 +835,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 */
 	public void setIndex(Integer index) {
 		if (index != null && index <= 0) {
-			throw new IllegalArgumentException("Index value must be greater than 0.");
+			throw Messages.INSTANCE.getIllegalArgumentException(17);
 		}
 		String value = (index == null) ? null : index.toString();
 		replace(INDEX, value);

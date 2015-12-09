@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
+import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.StringUtils;
@@ -110,7 +111,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 */
 	public void writeEndVCard() throws IOException {
 		if (!open) {
-			throw new IllegalStateException("Call \"writeStartVCard\" first.");
+			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(1));
 		}
 
 		generator.writeEndArray(); //end the properties array
@@ -145,7 +146,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 */
 	public void writeProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType, JCardValue value) throws IOException {
 		if (!open) {
-			throw new IllegalStateException("Call \"writeStartVCard\" first.");
+			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(1));
 		}
 
 		generator.writeStartArray();

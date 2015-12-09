@@ -5,6 +5,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
+import ezvcard.Messages;
 import ezvcard.util.org.apache.commons.codec.EncoderException;
 import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
@@ -299,7 +300,7 @@ public class FoldedLineWriter extends Writer {
 	 */
 	public void setLineLength(Integer lineLength) {
 		if (lineLength != null && lineLength <= 0) {
-			throw new IllegalArgumentException("Line length must be greater than 0.");
+			throw Messages.INSTANCE.getIllegalArgumentException(2);
 		}
 		this.lineLength = lineLength;
 	}
@@ -322,7 +323,7 @@ public class FoldedLineWriter extends Writer {
 	 */
 	public void setIndent(String indent) {
 		if (lineLength != null && indent.length() >= lineLength) {
-			throw new IllegalArgumentException("The length of the indent string must be less than the max line length.");
+			throw Messages.INSTANCE.getIllegalArgumentException(3);
 		}
 		this.indent = indent;
 	}
