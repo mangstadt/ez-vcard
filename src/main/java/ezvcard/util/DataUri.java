@@ -1,8 +1,6 @@
 package ezvcard.util;
 
 import java.net.URI;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
@@ -45,7 +43,6 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  * @author Michael Angstadt
  */
 public final class DataUri {
-	private static final Pattern regex = Pattern.compile("^data:(.*?);base64,(.*)", Pattern.CASE_INSENSITIVE);
 	private final byte[] data;
 	private final String contentType;
 
@@ -61,18 +58,45 @@ public final class DataUri {
 
 	/**
 	 * Parses a data URI string.
-	 * @param uri the data URI to parse (e.g.
-	 * "data:image/jpeg;base64,[base64 string]")
-	 * @throws IllegalArgumentException if the given URI is not a valid data URI
+	 * @param uri the URI string (e.g. "data:image/jpeg;base64,[base64 string]")
+	 * @throws IllegalArgumentException if the string is not a valid data URI
 	 */
 	public DataUri(String uri) {
-		Matcher m = regex.matcher(uri);
-		if (!m.find()) {
-			throw new IllegalArgumentException("Invalid data URI: " + uri);
+		//URI format: data:CONTENT/TYPE;base64,DATA
+
+		if (uri.length() < 5 || !uri.substring(0, 5).equalsIgnoreCase("data:")) {
+			//not a data URI
+			throw new IllegalArgumentException("String does not begin with \"data:\".");
 		}
 
-		contentType = m.group(1);
-		data = Base64.decodeBase64(m.group(2));
+		ClearableStringBuilder buffer = new ClearableStringBuilder();
+		String contentType = null;
+		String encoding = null;
+		for (int i = 5; i < uri.length(); i++) {
+			char c = uri.charAt(i);
+
+			if (c == ';' && contentType == null) {
+				contentType = buffer.getAndClear();
+				continue;
+			}
+
+			if (c == ',' && contentType != null && encoding == null) {
+				encoding = buffer.getAndClear();
+				if (!"base64".equalsIgnoreCase(encoding)) {
+					throw new IllegalArgumentException("Encoding \"" + encoding + "\" not supported.  Only \"base64\" is supported.");
+				}
+				continue;
+			}
+
+			buffer.append(c);
+		}
+
+		if (contentType == null || encoding == null) {
+			throw new IllegalArgumentException("Data URI syntax is invalid.");
+		}
+
+		this.contentType = contentType;
+		this.data = Base64.decodeBase64(buffer.getAndClear());
 	}
 
 	/**

@@ -46,15 +46,47 @@ public class DataUriTest {
 	private final String testBase64 = Base64.encodeBase64String(testBytes);
 
 	@Test
-	public void parse_valid() {
+	public void parse() {
 		DataUri uri = new DataUri("data:text/plain;base64," + testBase64);
 		assertEquals("text/plain", uri.getContentType());
 		assertArrayEquals(testBytes, uri.getData());
 	}
 
+	@Test
+	public void parse_comma_in_content_type() {
+		DataUri uri = new DataUri("data:text/pla,in;base64," + testBase64);
+		assertEquals("text/pla,in", uri.getContentType());
+		assertArrayEquals(testBytes, uri.getData());
+	}
+
 	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid() {
+	public void parse_short_string() {
+		new DataUri("a");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_not_a_uri() {
 		new DataUri("not-valid");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_not_a_data_uri() {
+		new DataUri("mailto:johndoe@gmail.com");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_no_semicolon() {
+		new DataUri("data:text/plain");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_no_comma() {
+		new DataUri("data:text/plain;base64");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_wrong_encoding() {
+		new DataUri("data:text/plain;foobar," + testBase64);
 	}
 
 	@Test
