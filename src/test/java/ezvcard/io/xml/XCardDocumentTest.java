@@ -532,7 +532,7 @@ public class XCardDocumentTest {
 		vcard.addProperty(property);
 
 		XCardDocument xcard = new XCardDocument();
-		xcard.add(vcard);
+		xcard.addVCard(vcard);
 	}
 
 	@Test
@@ -692,7 +692,7 @@ public class XCardDocumentTest {
 	public void write_xmlVerison_default() throws Throwable {
 		VCard vcard = new VCard();
 		XCardDocument xcard = new XCardDocument();
-		xcard.add(vcard);
+		xcard.addVCard(vcard);
 
 		String xml = xcard.write();
 		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
@@ -702,7 +702,7 @@ public class XCardDocumentTest {
 	public void write_xmlVerison_1_1() throws Throwable {
 		VCard vcard = new VCard();
 		XCardDocument xcard = new XCardDocument();
-		xcard.add(vcard);
+		xcard.addVCard(vcard);
 
 		String xml = xcard.write(-1, "1.1");
 		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.1\".*?\\?>.*"));
@@ -712,7 +712,7 @@ public class XCardDocumentTest {
 	public void write_xmlVerison_invalid() throws Throwable {
 		VCard vcard = new VCard();
 		XCardDocument xcard = new XCardDocument();
-		xcard.add(vcard);
+		xcard.addVCard(vcard);
 
 		String xml = xcard.write(-1, "10.17");
 		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
@@ -724,7 +724,7 @@ public class XCardDocumentTest {
 		vcard.addNote("\u019dote");
 
 		XCardDocument xcard = new XCardDocument();
-		xcard.add(vcard);
+		xcard.addVCard(vcard);
 
 		File file = tempFolder.newFile();
 		xcard.write(file);

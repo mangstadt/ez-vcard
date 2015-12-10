@@ -280,7 +280,7 @@ public class XCardDocument {
 	 * @throws IllegalArgumentException if no scribe has been registered for the
 	 * property (only applies to custom property classes)
 	 */
-	public void add(VCard vcard) {
+	public void addVCard(VCard vcard) {
 		writer().write(vcard);
 	}
 
