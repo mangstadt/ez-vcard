@@ -97,11 +97,6 @@ public final class GeoUri {
 	 */
 	private static final Pattern labelTextPattern = Pattern.compile("(?i)^[-a-z0-9]+$");
 
-	/**
-	 * Parses geo URIs.
-	 */
-	private static final Pattern uriPattern = Pattern.compile("(?i)^geo:(-?\\d+(\\.\\d+)?),(-?\\d+(\\.\\d+)?)(,(-?\\d+(\\.\\d+)?))?(;(.*))?$");
-
 	private static final String PARAM_CRS = "crs";
 	private static final String PARAM_UNCERTAINTY = "u";
 
@@ -113,8 +108,8 @@ public final class GeoUri {
 	private final Map<String, String> parameters;
 
 	private GeoUri(Builder builder) {
-		this.coordA = builder.coordA;
-		this.coordB = builder.coordB;
+		this.coordA = (builder.coordA == null) ? 0.0 : builder.coordA;
+		this.coordB = (builder.coordB == null) ? 0.0 : builder.coordB;
 		this.coordC = builder.coordC;
 		this.crs = builder.crs;
 		this.uncertainty = builder.uncertainty;
@@ -128,46 +123,121 @@ public final class GeoUri {
 	 * @throws IllegalArgumentException if the string is not a valid geo URI
 	 */
 	public static GeoUri parse(String uri) {
-		Matcher m = uriPattern.matcher(uri);
-		if (!m.find()) {
-			throw new IllegalArgumentException("Invalid geo URI: " + uri);
+		//URI format: geo:LAT,LONG;prop1=value1;prop2=value2
+
+		if (uri.length() < 4 || !uri.substring(0, 4).equalsIgnoreCase("geo:")) {
+			//not a geo URI
+			throw new IllegalArgumentException("String does not begin with \"geo:\".");
 		}
 
-		Builder builder = new Builder(Double.parseDouble(m.group(1)), Double.parseDouble(m.group(3)));
+		Builder builder = new Builder(null, null);
+		ClearableStringBuilder buffer = new ClearableStringBuilder();
+		String paramName = null;
+		boolean coordinatesDone = false;
+		for (int i = 4; i < uri.length(); i++) {
+			char c = uri.charAt(i);
 
-		String coordCStr = m.group(6);
-		if (coordCStr != null) {
-			builder.coordC = Double.valueOf(coordCStr);
-		}
+			if (c == ',' && !coordinatesDone) {
+				handleEndOfCoordinate(buffer, builder);
+				continue;
+			}
 
-		String paramsStr = m.group(9);
-		if (paramsStr != null) {
-			String paramsArray[] = paramsStr.split(";");
-
-			for (String param : paramsArray) {
-				String paramSplit[] = param.split("=", 2);
-				String paramName = paramSplit[0];
-				String paramValue = (paramSplit.length > 1) ? decodeParamValue(paramSplit[1]) : "";
-
-				if (PARAM_CRS.equalsIgnoreCase(paramName)) {
-					builder.crs = paramValue;
-					continue;
-				}
-
-				if (PARAM_UNCERTAINTY.equalsIgnoreCase(paramName)) {
-					try {
-						builder.uncertainty = Double.valueOf(paramValue);
-						continue;
-					} catch (NumberFormatException e) {
-						//if it can't be parsed, then treat it as an ordinary parameter
+			if (c == ';') {
+				if (coordinatesDone) {
+					handleEndOfParameter(buffer, paramName, builder);
+					paramName = null;
+				} else {
+					handleEndOfCoordinate(buffer, builder);
+					if (builder.coordB == null) {
+						throw new IllegalArgumentException("Coordinate B is not present.");
 					}
+					coordinatesDone = true;
 				}
+				continue;
+			}
 
-				builder.parameters.put(paramName, paramValue);
+			if (c == '=' && coordinatesDone && paramName == null) {
+				paramName = buffer.getAndClear();
+				continue;
+			}
+
+			buffer.append(c);
+		}
+
+		if (coordinatesDone) {
+			handleEndOfParameter(buffer, paramName, builder);
+		} else {
+			handleEndOfCoordinate(buffer, builder);
+			if (builder.coordB == null) {
+				throw new IllegalArgumentException("Coordinate B is not present.");
 			}
 		}
 
 		return builder.build();
+	}
+
+	private static void handleEndOfCoordinate(ClearableStringBuilder buffer, Builder builder) {
+		String s = buffer.getAndClear();
+
+		if (builder.coordA == null) {
+			try {
+				builder.coordA = Double.parseDouble(s);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Cannot parse coordinate A.", e);
+			}
+			return;
+		}
+
+		if (builder.coordB == null) {
+			try {
+				builder.coordB = Double.parseDouble(s);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Cannot parse coordinate B.", e);
+			}
+			return;
+		}
+
+		if (builder.coordC == null) {
+			try {
+				builder.coordC = Double.parseDouble(s);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Cannot parse coordinate C.", e);
+			}
+			return;
+		}
+	}
+
+	private static void addParameter(String name, String value, Builder builder) {
+		value = decodeParamValue(value);
+
+		if (PARAM_CRS.equalsIgnoreCase(name)) {
+			builder.crs = value;
+			return;
+		}
+
+		if (PARAM_UNCERTAINTY.equalsIgnoreCase(name)) {
+			try {
+				builder.uncertainty = Double.valueOf(value);
+				return;
+			} catch (NumberFormatException e) {
+				//if it can't be parsed, then treat it as an ordinary parameter
+			}
+		}
+
+		builder.parameters.put(name, value);
+	}
+
+	private static void handleEndOfParameter(ClearableStringBuilder buffer, String paramName, Builder builder) {
+		String s = buffer.getAndClear();
+
+		if (paramName == null) {
+			if (s.length() > 0) {
+				addParameter(s, "", builder);
+			}
+			return;
+		}
+
+		addParameter(paramName, s, builder);
 	}
 
 	/**
@@ -368,7 +438,7 @@ public final class GeoUri {
 		 * @return this
 		 */
 		public Builder coordA(Double coordA) {
-			this.coordA = (coordA == null) ? 0.0 : coordA;
+			this.coordA = coordA;
 			return this;
 		}
 
@@ -378,7 +448,7 @@ public final class GeoUri {
 		 * @return this
 		 */
 		public Builder coordB(Double coordB) {
-			this.coordB = (coordB == null) ? 0.0 : coordB;
+			this.coordB = coordB;
 			return this;
 		}
 
