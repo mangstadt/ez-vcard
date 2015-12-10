@@ -176,13 +176,6 @@ public class XmlUtilsTest {
 	}
 
 	@Test
-	public void getRootElement() throws Exception {
-		Document document = XmlUtils.toDocument(xml);
-		Element root = XmlUtils.getRootElement(document);
-		assertEquals("root", root.getLocalName());
-	}
-
-	@Test
 	public void getFirstChildElement() throws Exception {
 		Document document = XmlUtils.toDocument(xml);
 		Element root = (Element) document.getFirstChild();

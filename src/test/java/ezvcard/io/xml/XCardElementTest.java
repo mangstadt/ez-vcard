@@ -194,7 +194,7 @@ public class XCardElementTest {
 		} catch (SAXException e) {
 			throw new RuntimeException(e);
 		}
-		Element element = XmlUtils.getFirstChildElement(XmlUtils.getRootElement(document));
+		Element element = XmlUtils.getFirstChildElement(document.getDocumentElement());
 		return new XCardElement(element);
 	}
 }

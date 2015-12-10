@@ -341,7 +341,7 @@ public class Sensei<T extends VCardProperty> {
 		 */
 		public void run(String expectedInnerXml) {
 			Document actual = createXCardElement();
-			scribe.writeXml(property, XmlUtils.getRootElement(actual));
+			scribe.writeXml(property, actual.getDocumentElement());
 
 			Document expected = createXCardElement(expectedInnerXml);
 
@@ -542,7 +542,7 @@ public class Sensei<T extends VCardProperty> {
 		protected void run(Check<T> check, Class<? extends RuntimeException> exception) {
 			try {
 				Document document = createXCardElement(innerXml);
-				Element element = XmlUtils.getRootElement(document);
+				Element element = document.getDocumentElement();
 				Result<T> result = scribe.parseXml(element, parameters);
 
 				if (exception != null) {

@@ -239,15 +239,6 @@ public final class XmlUtils {
 	}
 
 	/**
-	 * Gets the root element of a document.
-	 * @param parent the document
-	 * @return the root element
-	 */
-	public static Element getRootElement(Document parent) {
-		return getFirstChildElement((Node) parent);
-	}
-
-	/**
 	 * Gets the first child element of an element.
 	 * @param parent the parent element
 	 * @return the first child element or null if there are no child elements

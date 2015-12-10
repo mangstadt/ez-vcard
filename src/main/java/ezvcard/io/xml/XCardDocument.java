@@ -725,7 +725,7 @@ public class XCardDocument {
 
 			if (root == null) {
 				root = createElement(VCARDS);
-				Element documentRoot = XmlUtils.getRootElement(document);
+				Element documentRoot = document.getDocumentElement();
 				if (documentRoot == null) {
 					document.appendChild(root);
 				} else {
@@ -776,7 +776,7 @@ public class XCardDocument {
 				if (propertyDocument == null) {
 					throw new SkipMeException();
 				}
-				propertyElement = XmlUtils.getRootElement(propertyDocument);
+				propertyElement = propertyDocument.getDocumentElement();
 				propertyElement = (Element) document.importNode(propertyElement, true);
 			} else {
 				QName qname = scribe.getQName();
