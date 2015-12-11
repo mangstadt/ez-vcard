@@ -1,6 +1,8 @@
 package ezvcard.property;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -260,5 +262,12 @@ public class Geo extends VCardProperty implements HasAltId {
 		if (getLongitude() == null) {
 			warnings.add(new Warning(14));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("uri", uri);
+		return values;
 	}
 }

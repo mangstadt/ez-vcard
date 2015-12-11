@@ -1,7 +1,9 @@
 package ezvcard.property;
 
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.VCard;
@@ -181,5 +183,14 @@ public class PlaceProperty extends VCardProperty implements HasAltId {
 		if (uri == null && text == null && geoUri == null) {
 			warnings.add(new Warning(8));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("geoUri", geoUri);
+		values.put("uri", uri);
+		values.put("text", text);
+		return values;
 	}
 }

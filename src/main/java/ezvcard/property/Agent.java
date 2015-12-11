@@ -2,6 +2,7 @@ package ezvcard.property;
 
 import java.text.NumberFormat;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -184,5 +185,13 @@ public class Agent extends VCardProperty {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("url", url);
+		values.put("vcard", vcard);
+		return values;
 	}
 }

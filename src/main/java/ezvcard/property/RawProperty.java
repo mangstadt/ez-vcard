@@ -1,6 +1,8 @@
 package ezvcard.property;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import ezvcard.VCard;
@@ -104,5 +106,14 @@ public class RawProperty extends TextProperty {
 		if (!validCharacters.matcher(propertyName).matches()) {
 			warnings.add(new Warning(24, propertyName));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("propertyName", propertyName);
+		values.put("dataType", dataType);
+		values.put("value", value);
+		return values;
 	}
 }

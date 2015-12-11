@@ -1,7 +1,9 @@
 package ezvcard.property;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.VCard;
@@ -217,5 +219,13 @@ public class Telephone extends VCardProperty implements HasAltId {
 				warnings.add(new Warning(9, type.getValue()));
 			}
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("uri", uri);
+		values.put("text", text);
+		return values;
 	}
 }

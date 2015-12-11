@@ -2,7 +2,9 @@ package ezvcard.property;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.VCard;
@@ -517,6 +519,19 @@ public class Address extends VCardProperty implements HasAltId {
 				warnings.add(new Warning(9, type.getValue()));
 			}
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("poBoxes", poBoxes);
+		values.put("extendedAddresses", extendedAddresses);
+		values.put("streetAddresses", streetAddresses);
+		values.put("localities", localities);
+		values.put("regions", regions);
+		values.put("postalCodes", postalCodes);
+		values.put("countries", countries);
+		return values;
 	}
 
 	private static String first(List<String> list) {

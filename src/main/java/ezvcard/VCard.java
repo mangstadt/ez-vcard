@@ -73,6 +73,7 @@ import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.util.ListMultimap;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -4672,6 +4673,16 @@ public class VCard implements Iterable<VCardProperty> {
 		}
 
 		return warnings;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("version=").append(version);
+		for (VCardProperty property : properties.values()) {
+			sb.append(StringUtils.NEWLINE).append(property);
+		}
+		return sb.toString();
 	}
 
 	/**

@@ -1,6 +1,8 @@
 package ezvcard.property;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
@@ -261,5 +263,13 @@ public class Timezone extends VCardProperty implements HasAltId {
 		if (offset == null && version == VCardVersion.V2_1) {
 			warnings.add(new Warning(20));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("offset", offset);
+		values.put("text", text);
+		return values;
 	}
 }

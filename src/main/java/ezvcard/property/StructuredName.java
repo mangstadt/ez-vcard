@@ -1,7 +1,9 @@
 package ezvcard.property;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import ezvcard.parameter.VCardParameters;
 
@@ -222,5 +224,16 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("family", family);
+		values.put("given", given);
+		values.put("additional", additional);
+		values.put("prefixes", prefixes);
+		values.put("suffixes", suffixes);
+		return values;
 	}
 }

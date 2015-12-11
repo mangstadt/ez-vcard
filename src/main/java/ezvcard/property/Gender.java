@@ -1,7 +1,9 @@
 package ezvcard.property;
 
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.VCard;
@@ -220,5 +222,13 @@ public class Gender extends VCardProperty {
 		if (gender == null) {
 			warnings.add(new Warning(8));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("gender", gender);
+		values.put("text", text);
+		return values;
 	}
 }

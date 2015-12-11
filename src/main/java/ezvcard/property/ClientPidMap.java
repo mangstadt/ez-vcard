@@ -1,7 +1,9 @@
 package ezvcard.property;
 
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -160,5 +162,13 @@ public class ClientPidMap extends VCardProperty {
 		if (pid == null && uri == null) {
 			warnings.add(new Warning(8));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("pid", pid);
+		values.put("uri", uri);
+		return values;
 	}
 }

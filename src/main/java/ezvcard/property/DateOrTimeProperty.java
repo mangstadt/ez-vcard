@@ -1,7 +1,9 @@
 package ezvcard.property;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -220,5 +222,15 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 				warnings.add(new Warning(12));
 			}
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("text", text);
+		values.put("date", date);
+		values.put("dateHasTime", dateHasTime);
+		values.put("partialDate", partialDate);
+		return values;
 	}
 }

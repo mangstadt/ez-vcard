@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -180,5 +181,12 @@ public class Key extends BinaryProperty<KeyType> {
 		if (url != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
 			warnings.add(new Warning(15));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = super.toStringValues();
+		values.put("text", text);
+		return values;
 	}
 }

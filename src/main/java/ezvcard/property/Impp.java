@@ -4,7 +4,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ezvcard.VCard;
@@ -43,9 +45,10 @@ import ezvcard.parameter.ImppType;
 
 /**
  * <p>
- * Defines an instant messenger handle. The handle is represented as a URI in the
- * format "{@code <PROTOCOL>:<HANDLE>}". For example, a Yahoo! Messenger handle
- * of "johndoe@yahoo.com" would look like this: "ymsgr:johndoe@yahoo.com".
+ * Defines an instant messenger handle. The handle is represented as a URI in
+ * the format "{@code <PROTOCOL>:<HANDLE>}". For example, a Yahoo! Messenger
+ * handle of "johndoe@yahoo.com" would look like this:
+ * "ymsgr:johndoe@yahoo.com".
  * </p>
  * 
  * <p>
@@ -416,5 +419,12 @@ public class Impp extends VCardProperty implements HasAltId {
 		if (uri == null) {
 			warnings.add(new Warning(8));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("uri", uri);
+		return values;
 	}
 }

@@ -1,7 +1,9 @@
 package ezvcard.property;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -73,5 +75,12 @@ public class ListProperty<T> extends VCardProperty {
 		if (values.isEmpty()) {
 			warnings.add(new Warning(8));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("values", this.values);
+		return values;
 	}
 }

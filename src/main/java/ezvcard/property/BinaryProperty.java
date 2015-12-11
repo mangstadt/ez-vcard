@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -224,5 +226,14 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 		if (url == null && data == null) {
 			warnings.add(new Warning(8));
 		}
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("data", "length: " + data.length);
+		values.put("url", url);
+		values.put("contentType", contentType);
+		return values;
 	}
 }

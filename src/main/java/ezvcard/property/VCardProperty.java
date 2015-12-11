@@ -2,8 +2,10 @@ package ezvcard.property;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -223,6 +225,37 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 			return -1;
 		}
 		return pref1.compareTo(pref0);
+	}
+
+	/**
+	 * <p>
+	 * Gets string representations of the class's fields for the
+	 * {@link #toString} method.
+	 * </p>
+	 * <p>
+	 * Meant to be overridden by child classes. The default implementation
+	 * returns an empty map.
+	 * </p>
+	 * @return the values of the class's fields (key = field name, value = field
+	 * value)
+	 */
+	protected Map<String, Object> toStringValues() {
+		return Collections.emptyMap();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getClass().getName());
+		sb.append(" [group=").append(group);
+		sb.append(" | parameters=").append(parameters);
+		for (Map.Entry<String, Object> field : toStringValues().entrySet()) {
+			String fieldName = field.getKey();
+			Object fieldValue = field.getValue();
+			sb.append(" | ").append(fieldName).append('=').append(fieldValue);
+		}
+		sb.append(']');
+		return sb.toString();
 	}
 
 	//Note: The following parameter helper methods are package-scoped to prevent them from cluttering up the Javadocs

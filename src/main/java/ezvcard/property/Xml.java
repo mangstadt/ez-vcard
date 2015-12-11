@@ -1,6 +1,8 @@
 package ezvcard.property;
 
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Document;
@@ -112,5 +114,12 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 		Node imported = document.importNode(element, true);
 		document.appendChild(imported);
 		return document;
+	}
+
+	@Override
+	protected Map<String, Object> toStringValues() {
+		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		values.put("value", XmlUtils.toString(value));
+		return values;
 	}
 }
