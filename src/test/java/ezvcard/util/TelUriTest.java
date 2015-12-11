@@ -149,9 +149,9 @@ public class TelUriTest {
 		assertTrue(uri.getParameters().isEmpty());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void parse_not_tel_uri() {
-		assertNull(TelUri.parse("http://www.ietf.org"));
+		TelUri.parse("http://www.ietf.org");
 	}
 
 	@Test

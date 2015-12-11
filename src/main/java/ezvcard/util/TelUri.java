@@ -110,14 +110,15 @@ public final class TelUri {
 	/**
 	 * Parses a tel URI.
 	 * @param uri the URI (e.g. "tel:+1-610-555-1234;ext=101")
-	 * @return the parsed tel URI or null if the string is not a tel URI.
+	 * @return the parsed tel URI
+	 * @throws IllegalArgumentException if the string is not a valid tel URI
 	 */
 	public static TelUri parse(String uri) {
 		//URI format: tel:number;prop1=value1;prop2=value2
 
 		if (uri.length() < 4 || !uri.substring(0, 4).equalsIgnoreCase("tel:")) {
 			//not a tel URI
-			return null;
+			throw new IllegalArgumentException("String does not begin with \"tel:\".");
 		}
 
 		Builder builder = new Builder();
