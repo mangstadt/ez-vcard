@@ -124,15 +124,14 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 			return new Telephone(text);
 		}
 
-		String uriStr = element.first(VCardDataType.URI);
-		if (uriStr != null) {
-			TelUri uri = TelUri.parse(uriStr);
-			if (uri != null) {
+		String uri = element.first(VCardDataType.URI);
+		if (uri != null) {
+			try {
+				return new Telephone(TelUri.parse(uri));
+			} catch (IllegalArgumentException e) {
+				warnings.add(Messages.INSTANCE.getParseMessage(18));
 				return new Telephone(uri);
 			}
-
-			warnings.add(Messages.INSTANCE.getParseMessage(18));
-			return new Telephone(uriStr);
 		}
 
 		throw missingXmlElements(VCardDataType.TEXT, VCardDataType.URI);
@@ -140,9 +139,14 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 
 	@Override
 	protected Telephone _parseHtml(HCardElement element, List<String> warnings) {
+		Telephone property;
 		String href = element.attr("href");
-		TelUri uri = TelUri.parse(href);
-		Telephone property = (uri == null) ? new Telephone(element.value()) : new Telephone(uri);
+		try {
+			property = new Telephone(TelUri.parse(href));
+		} catch (IllegalArgumentException e) {
+			//not a tel URI
+			property = new Telephone(element.value());
+		}
 
 		List<String> types = element.types();
 		for (String type : types) {
@@ -174,14 +178,14 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	private Telephone parse(String value, VCardDataType dataType, List<String> warnings) {
-		TelUri uri = TelUri.parse(value);
-		if (uri != null) {
-			return new Telephone(uri);
+		try {
+			return new Telephone(TelUri.parse(value));
+		} catch (IllegalArgumentException e) {
+			if (dataType == VCardDataType.URI) {
+				warnings.add(Messages.INSTANCE.getParseMessage(18));
+			}
 		}
 
-		if (dataType == VCardDataType.URI) {
-			warnings.add(Messages.INSTANCE.getParseMessage(18));
-		}
 		return new Telephone(value);
 	}
 }
