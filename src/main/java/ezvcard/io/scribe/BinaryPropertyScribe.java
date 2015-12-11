@@ -177,7 +177,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		}
 
 		try {
-			DataUri uri = new DataUri(data);
+			DataUri uri = DataUri.parse(data);
 			U mediaType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 
 			return _newInstance(uri.getData(), mediaType);
@@ -308,7 +308,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		case V4_0:
 			try {
 				//parse as data URI
-				DataUri uri = new DataUri(value);
+				DataUri uri = DataUri.parse(value);
 				contentType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 				return _newInstance(uri.getData(), contentType);
 			} catch (IllegalArgumentException e) {

@@ -93,7 +93,7 @@ public class SoundScribe extends BinaryPropertyScribe<Sound, SoundType> {
 		SoundType mediaType = (type.length() == 0) ? null : _mediaTypeFromMediaTypeParameter(type);
 
 		try {
-			DataUri uri = new DataUri(src);
+			DataUri uri = DataUri.parse(src);
 			mediaType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 			return new Sound(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {

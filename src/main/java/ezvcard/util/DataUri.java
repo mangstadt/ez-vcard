@@ -61,7 +61,7 @@ public final class DataUri {
 	 * @param uri the URI string (e.g. "data:image/jpeg;base64,[base64 string]")
 	 * @throws IllegalArgumentException if the string is not a valid data URI
 	 */
-	public DataUri(String uri) {
+	public static DataUri parse(String uri) {
 		//URI format: data:CONTENT/TYPE;base64,DATA
 
 		if (uri.length() < 5 || !uri.substring(0, 5).equalsIgnoreCase("data:")) {
@@ -69,34 +69,26 @@ public final class DataUri {
 			throw new IllegalArgumentException("String does not begin with \"data:\".");
 		}
 
-		ClearableStringBuilder buffer = new ClearableStringBuilder();
-		String contentType = null;
-		String encoding = null;
-		for (int i = 5; i < uri.length(); i++) {
-			char c = uri.charAt(i);
-
-			if (c == ';' && contentType == null) {
-				contentType = buffer.getAndClear();
-				continue;
-			}
-
-			if (c == ',' && contentType != null && encoding == null) {
-				encoding = buffer.getAndClear();
-				if (!"base64".equalsIgnoreCase(encoding)) {
-					throw new IllegalArgumentException("Encoding \"" + encoding + "\" not supported.  Only \"base64\" is supported.");
-				}
-				continue;
-			}
-
-			buffer.append(c);
-		}
-
-		if (contentType == null || encoding == null) {
+		int semiColon = uri.indexOf(';');
+		if (semiColon < 0) {
 			throw new IllegalArgumentException("Data URI syntax is invalid.");
 		}
 
-		this.contentType = contentType;
-		this.data = Base64.decodeBase64(buffer.getAndClear());
+		int comma = uri.indexOf(',', semiColon + 1);
+		if (comma < 0) {
+			throw new IllegalArgumentException("Data URI syntax is invalid.");
+		}
+
+		String contentType = uri.substring(5, semiColon);
+
+		String encoding = uri.substring(semiColon + 1, comma);
+		if (!"base64".equalsIgnoreCase(encoding)) {
+			throw new IllegalArgumentException("Encoding \"" + encoding + "\" not supported.  Only \"base64\" is supported.");
+		}
+
+		byte[] data = Base64.decodeBase64(uri.substring(comma + 1));
+
+		return new DataUri(contentType, data);
 	}
 
 	/**

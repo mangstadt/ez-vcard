@@ -71,7 +71,7 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 		}
 
 		try {
-			DataUri uri = new DataUri(src);
+			DataUri uri = DataUri.parse(src);
 			ImageType mediaType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 			return _newInstance(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
