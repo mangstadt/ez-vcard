@@ -65,72 +65,61 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	protected String _writeText(Address property, VCardVersion version) {
 		//@formatter:off
 		return structured(
-			property.getPoBox(),
-			property.getExtendedAddress(),
-			property.getStreetAddress(),
-			property.getLocality(),
-			property.getRegion(),
-			property.getPostalCode(),
-			property.getCountry()
+			property.getPoBoxes(),
+			property.getExtendedAddresses(),
+			property.getStreetAddresses(),
+			property.getLocalities(),
+			property.getRegions(),
+			property.getPostalCodes(),
+			property.getCountries()
 		);
 		//@formatter:on
 	}
 
 	@Override
 	protected Address _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		Address property = new Address();
 		StructuredIterator it = structured(value);
-
-		property.setPoBox(it.nextString());
-		property.setExtendedAddress(it.nextString());
-		property.setStreetAddress(it.nextString());
-		property.setLocality(it.nextString());
-		property.setRegion(it.nextString());
-		property.setPostalCode(it.nextString());
-		property.setCountry(it.nextString());
-
-		return property;
+		return parseStructuredValue(it);
 	}
 
 	@Override
 	protected void _writeXml(Address property, XCardElement parent) {
-		parent.append("pobox", property.getPoBox()); //Note: The XML element must always be added, even if the value is null
-		parent.append("ext", property.getExtendedAddress());
-		parent.append("street", property.getStreetAddress());
-		parent.append("locality", property.getLocality());
-		parent.append("region", property.getRegion());
-		parent.append("code", property.getPostalCode());
-		parent.append("country", property.getCountry());
+		parent.append("pobox", property.getPoBoxes()); //Note: The XML element must always be added, even if the value is null
+		parent.append("ext", property.getExtendedAddresses());
+		parent.append("street", property.getStreetAddresses());
+		parent.append("locality", property.getLocalities());
+		parent.append("region", property.getRegions());
+		parent.append("code", property.getPostalCodes());
+		parent.append("country", property.getCountries());
 	}
 
 	@Override
 	protected Address _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		Address property = new Address();
-		property.setPoBox(sanitizeXml(element, "pobox"));
-		property.setExtendedAddress(sanitizeXml(element, "ext"));
-		property.setStreetAddress(sanitizeXml(element, "street"));
-		property.setLocality(sanitizeXml(element, "locality"));
-		property.setRegion(sanitizeXml(element, "region"));
-		property.setPostalCode(sanitizeXml(element, "code"));
-		property.setCountry(sanitizeXml(element, "country"));
+		property.setPoBoxes(sanitizeXml(element, "pobox"));
+		property.setExtendedAddresses(sanitizeXml(element, "ext"));
+		property.setStreetAddresses(sanitizeXml(element, "street"));
+		property.setLocalities(sanitizeXml(element, "locality"));
+		property.setRegions(sanitizeXml(element, "region"));
+		property.setPostalCodes(sanitizeXml(element, "code"));
+		property.setCountries(sanitizeXml(element, "country"));
 		return property;
 	}
 
-	private String sanitizeXml(XCardElement element, String name) {
-		String value = element.first(name);
-		return (value == null || value.length() == 0) ? null : value;
+	private List<String> sanitizeXml(XCardElement element, String name) {
+		return element.all(name);
 	}
 
 	@Override
 	protected Address _parseHtml(HCardElement element, List<String> warnings) {
 		Address property = new Address();
-		property.setPoBox(element.firstValue("post-office-box"));
-		property.setExtendedAddress(element.firstValue("extended-address"));
-		property.setStreetAddress(element.firstValue("street-address"));
-		property.setLocality(element.firstValue("locality"));
-		property.setRegion(element.firstValue("region"));
-		property.setPostalCode(element.firstValue("postal-code"));
-		property.setCountry(element.firstValue("country-name"));
+		property.setPoBoxes(element.allValues("post-office-box"));
+		property.setExtendedAddresses(element.allValues("extended-address"));
+		property.setStreetAddresses(element.allValues("street-address"));
+		property.setLocalities(element.allValues("locality"));
+		property.setRegions(element.allValues("region"));
+		property.setPostalCodes(element.allValues("postal-code"));
+		property.setCountries(element.allValues("country-name"));
 
 		List<String> types = element.types();
 		for (String type : types) {
@@ -144,29 +133,33 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	protected JCardValue _writeJson(Address property) {
 		//@formatter:off
 		return JCardValue.structured(
-			property.getPoBox(),
-			property.getExtendedAddress(),
-			property.getStreetAddress(),
-			property.getLocality(),
-			property.getRegion(),
-			property.getPostalCode(),
-			property.getCountry()
+			property.getPoBoxes(),
+			property.getExtendedAddresses(),
+			property.getStreetAddresses(),
+			property.getLocalities(),
+			property.getRegions(),
+			property.getPostalCodes(),
+			property.getCountries()
 		);
 		//@formatter:on
 	}
 
 	@Override
 	protected Address _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-		Address property = new Address();
 		StructuredIterator it = structured(value);
+		return parseStructuredValue(it);
+	}
 
-		property.setPoBox(it.nextString());
-		property.setExtendedAddress(it.nextString());
-		property.setStreetAddress(it.nextString());
-		property.setLocality(it.nextString());
-		property.setRegion(it.nextString());
-		property.setPostalCode(it.nextString());
-		property.setCountry(it.nextString());
+	private Address parseStructuredValue(StructuredIterator it) {
+		Address property = new Address();
+
+		property.setPoBoxes(it.nextComponent());
+		property.setExtendedAddresses(it.nextComponent());
+		property.setStreetAddresses(it.nextComponent());
+		property.setLocalities(it.nextComponent());
+		property.setRegions(it.nextComponent());
+		property.setPostalCodes(it.nextComponent());
+		property.setCountries(it.nextComponent());
 
 		return property;
 	}

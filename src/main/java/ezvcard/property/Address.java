@@ -1,5 +1,6 @@
 package ezvcard.property;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +10,7 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -79,6 +81,15 @@ import ezvcard.parameter.VCardParameters;
  * </pre>
  * 
  * <p>
+ * <b>Only part of the street address is being returned!</b>
+ * </p>
+ * <p>
+ * This usually means that the vCard you parsed contains unescaped comma
+ * characters. To get the full address, use the {@link #getStreetAddressFull}
+ * method.
+ * </p>
+ * 
+ * <p>
  * <b>Property name:</b> {@code ADR}
  * </p>
  * <p>
@@ -87,20 +98,29 @@ import ezvcard.parameter.VCardParameters;
  * @author Michael Angstadt
  */
 public class Address extends VCardProperty implements HasAltId {
-	private String poBox;
-	private String extendedAddress;
-	private String streetAddress;
-	private String locality;
-	private String region;
-	private String postalCode;
-	private String country;
+	private List<String> poBoxes = new ArrayList<String>(1);
+	private List<String> extendedAddresses = new ArrayList<String>(1);
+	private List<String> streetAddresses = new ArrayList<String>(1);
+	private List<String> localities = new ArrayList<String>(1);
+	private List<String> regions = new ArrayList<String>(1);
+	private List<String> postalCodes = new ArrayList<String>(1);
+	private List<String> countries = new ArrayList<String>(1);
 
 	/**
 	 * Gets the P.O. (post office) box.
 	 * @return the P.O. box or null if not set
 	 */
 	public String getPoBox() {
-		return poBox;
+		return first(poBoxes);
+	}
+
+	/**
+	 * Gets all P.O. (post office) boxes that are assigned to this address. An
+	 * address is unlikely to have more than one, but it's possible nonetheless.
+	 * @return the P.O. boxes
+	 */
+	public List<String> getPoBoxes() {
+		return poBoxes;
 	}
 
 	/**
@@ -108,7 +128,16 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @param poBox the P.O. box or null to remove
 	 */
 	public void setPoBox(String poBox) {
-		this.poBox = poBox;
+		set(poBoxes, poBox);
+	}
+
+	/**
+	 * Sets the P.O. (post office) boxes. An address is unlikely to have more
+	 * than one, but it's possible nonetheless.
+	 * @param poBoxes the P.O. boxes
+	 */
+	public void setPoBoxes(List<String> poBoxes) {
+		this.poBoxes = poBoxes;
 	}
 
 	/**
@@ -116,7 +145,25 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the extended address (e.g. "Suite 200") or null if not set
 	 */
 	public String getExtendedAddress() {
-		return extendedAddress;
+		return first(extendedAddresses);
+	}
+
+	/**
+	 * Gets all extended addresses that are assigned to this address. An address
+	 * is unlikely to have more than one, but it's possible nonetheless.
+	 * @return the extended addresses
+	 */
+	public List<String> getExtendedAddresses() {
+		return extendedAddresses;
+	}
+
+	/**
+	 * Gets the extended address. Use this method when the ADR property of the
+	 * vCard you are parsing contains unescaped comma characters.
+	 * @return the extended address or null if not set
+	 */
+	public String getExtendedAddressFull() {
+		return extendedAddresses.isEmpty() ? null : StringUtils.join(extendedAddresses, ",");
 	}
 
 	/**
@@ -125,7 +172,16 @@ public class Address extends VCardProperty implements HasAltId {
 	 * remove
 	 */
 	public void setExtendedAddress(String extendedAddress) {
-		this.extendedAddress = extendedAddress;
+		set(extendedAddresses, extendedAddress);
+	}
+
+	/**
+	 * Sets the extended addresses. An address is unlikely to have more than
+	 * one, but it's possible nonetheless.
+	 * @param extendedAddresses the extended addresses
+	 */
+	public void setExtendedAddresses(List<String> extendedAddresses) {
+		this.extendedAddresses = extendedAddresses;
 	}
 
 	/**
@@ -133,7 +189,25 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the street address (e.g. "123 Main St")
 	 */
 	public String getStreetAddress() {
-		return streetAddress;
+		return first(streetAddresses);
+	}
+
+	/**
+	 * Gets all street addresses that are assigned to this address. An address
+	 * is unlikely to have more than one, but it's possible nonetheless.
+	 * @return the street addresses
+	 */
+	public List<String> getStreetAddresses() {
+		return streetAddresses;
+	}
+
+	/**
+	 * Gets the street address. Use this method when the ADR property of the
+	 * vCard you are parsing contains unescaped comma characters.
+	 * @return the street address or null if not set
+	 */
+	public String getStreetAddressFull() {
+		return streetAddresses.isEmpty() ? null : StringUtils.join(streetAddresses, ",");
 	}
 
 	/**
@@ -142,7 +216,16 @@ public class Address extends VCardProperty implements HasAltId {
 	 * remove
 	 */
 	public void setStreetAddress(String streetAddress) {
-		this.streetAddress = streetAddress;
+		set(streetAddresses, streetAddress);
+	}
+
+	/**
+	 * Sets the street addresses. An address is unlikely to have more than one,
+	 * but it's possible nonetheless.
+	 * @param streetAddresses the street addresses
+	 */
+	public void setStreetAddresses(List<String> streetAddresses) {
+		this.streetAddresses = streetAddresses;
 	}
 
 	/**
@@ -150,7 +233,16 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the locality (e.g. "Boston") or null if not set
 	 */
 	public String getLocality() {
-		return locality;
+		return first(localities);
+	}
+
+	/**
+	 * Gets all localities that are assigned to this address. An address is
+	 * unlikely to have more than one, but it's possible nonetheless.
+	 * @return the localities
+	 */
+	public List<String> getLocalities() {
+		return localities;
 	}
 
 	/**
@@ -158,39 +250,84 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @param locality the locality or null to remove
 	 */
 	public void setLocality(String locality) {
-		this.locality = locality;
+		set(localities, locality);
 	}
 
 	/**
-	 * Gets the region.
+	 * Sets the localities. An address is unlikely to have more than one, but
+	 * it's possible nonetheless.
+	 * @param localities the localities
+	 */
+	public void setLocalities(List<String> localities) {
+		this.localities = localities;
+	}
+
+	/**
+	 * Gets the region (state).
 	 * @return the region (e.g. "Texas") or null if not set
 	 */
 	public String getRegion() {
-		return region;
+		return first(regions);
 	}
 
 	/**
-	 * Sets the region.
+	 * Gets all regions that are assigned to this address. An address is
+	 * unlikely to have more than one, but it's possible nonetheless.
+	 * @return the regions
+	 */
+	public List<String> getRegions() {
+		return regions;
+	}
+
+	/**
+	 * Sets the region (state).
 	 * @param region the region (e.g. "Texas") or null to remove
 	 */
 	public void setRegion(String region) {
-		this.region = region;
+		set(regions, region);
 	}
 
 	/**
-	 * Gets the postal code.
+	 * Sets the regions. An address is unlikely to have more than one, but it's
+	 * possible nonetheless.
+	 * @param regions the regions
+	 */
+	public void setRegions(List<String> regions) {
+		this.regions = regions;
+	}
+
+	/**
+	 * Gets the postal code (zip code).
 	 * @return the postal code (e.g. "90210") or null if not set
 	 */
 	public String getPostalCode() {
-		return postalCode;
+		return first(postalCodes);
 	}
 
 	/**
-	 * Sets the postal code.
+	 * Gets all postal codes that are assigned to this address. An address is
+	 * unlikely to have more than one, but it's possible nonetheless.
+	 * @return the postal codes
+	 */
+	public List<String> getPostalCodes() {
+		return postalCodes;
+	}
+
+	/**
+	 * Sets the postal code (zip code).
 	 * @param postalCode the postal code (e.g. "90210") or null to remove
 	 */
 	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
+		set(postalCodes, postalCode);
+	}
+
+	/**
+	 * Sets the postal codes. An address is unlikely to have more than one, but
+	 * it's possible nonetheless.
+	 * @param postalCodes the postal codes
+	 */
+	public void setPostalCodes(List<String> postalCodes) {
+		this.postalCodes = postalCodes;
 	}
 
 	/**
@@ -198,7 +335,16 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the country (e.g. "USA") or null if not set
 	 */
 	public String getCountry() {
-		return country;
+		return first(countries);
+	}
+
+	/**
+	 * Gets all countries that are assigned to this address. An address is
+	 * unlikely to have more than one, but it's possible nonetheless.
+	 * @return the countries
+	 */
+	public List<String> getCountries() {
+		return countries;
 	}
 
 	/**
@@ -206,7 +352,16 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @param country the country (e.g. "USA") or null to remove
 	 */
 	public void setCountry(String country) {
-		this.country = country;
+		set(countries, country);
+	}
+
+	/**
+	 * Sets the countries. An address is unlikely to have more than one, but
+	 * it's possible nonetheless.
+	 * @param countries the countries
+	 */
+	public void setCountries(List<String> countries) {
+		this.countries = countries;
 	}
 
 	/**
@@ -361,6 +516,17 @@ public class Address extends VCardProperty implements HasAltId {
 			if (!type.isSupported(version)) {
 				warnings.add(new Warning(9, type.getValue()));
 			}
+		}
+	}
+
+	private static String first(List<String> list) {
+		return list.isEmpty() ? null : list.get(0);
+	}
+
+	private static void set(List<String> list, String value) {
+		list.clear();
+		if (value != null) {
+			list.add(value);
 		}
 	}
 }
