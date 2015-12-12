@@ -1,5 +1,7 @@
 package ezvcard.io.text;
 
+import static ezvcard.util.StringUtils.containsAny;
+
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
@@ -493,24 +495,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 		}
 
 		return "";
-	}
-
-	/**
-	 * Determines if a string contains one or more characters from the given
-	 * list.
-	 * @param string the string
-	 * @param characters the list of characters to check for
-	 * @return true if the string contains at least one of the characters, false
-	 * if not
-	 */
-	private boolean containsAny(String string, String characters) {
-		for (int i = 0; i < characters.length(); i++) {
-			char c = characters.charAt(i);
-			if (string.indexOf(c) >= 0) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private String printableCharacterList(String list) {

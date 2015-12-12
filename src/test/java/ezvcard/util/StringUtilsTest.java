@@ -1,8 +1,10 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,5 +167,47 @@ public class StringUtilsTest {
 				sb.append(key).append(" - ").append(value);
 			}
 		}));
+	}
+
+	@Test
+	public void buildCharacterList() {
+		assertEquals("abc123", StringUtils.buildCharacterList("abc123"));
+
+		assertEquals("abcdef", StringUtils.buildCharacterList("a-f"));
+		assertEquals("abcdef", StringUtils.buildCharacterList("f-a"));
+		assertEquals("abc", StringUtils.buildCharacterList("abc"));
+		assertEquals("a-z1", StringUtils.buildCharacterList("a-z1"));
+
+		assertEquals("abcdef0123456789xyzx-z*", StringUtils.buildCharacterList("a-f", "0-9", "xyz", "x-z*"));
+	}
+
+	@Test
+	public void containsOnly() {
+		String input = "abc123";
+		assertTrue(StringUtils.containsOnly(input, "1ac3b2foq"));
+		assertFalse(StringUtils.containsOnly(input, "a"));
+		assertFalse(StringUtils.containsOnly(input, "a-z"));
+		assertFalse(StringUtils.containsOnly(input, "0-9"));
+		assertTrue(StringUtils.containsOnly(input, "a-z", "0-9"));
+		assertFalse(StringUtils.containsOnly(input, "b-z", "0-9"));
+
+		assertTrue(StringUtils.containsOnly(input, 1, "1ac3b2foq"));
+		assertFalse(StringUtils.containsOnly(input, 1, "a"));
+		assertFalse(StringUtils.containsOnly(input, 1, "a-z"));
+		assertFalse(StringUtils.containsOnly(input, 1, "0-9"));
+		assertTrue(StringUtils.containsOnly(input, 1, "a-z", "0-9"));
+		assertTrue(StringUtils.containsOnly(input, 1, "b-z", "0-9"));
+	}
+
+	@Test
+	public void containsAny() {
+		String input = "abc123";
+		assertTrue(StringUtils.containsAny(input, "a"));
+		assertFalse(StringUtils.containsAny(input, "z"));
+		assertTrue(StringUtils.containsAny(input, "a-z", "0-9"));
+		assertTrue(StringUtils.containsAny(input, "z-a", "9-0"));
+		assertFalse(StringUtils.containsAny(input, "d-z"));
+
+		assertFalse(StringUtils.containsAny(input, 1, "a"));
 	}
 }

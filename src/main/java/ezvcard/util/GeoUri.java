@@ -1,5 +1,7 @@
 package ezvcard.util;
 
+import static ezvcard.util.StringUtils.containsOnly;
+
 import java.net.URI;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -93,11 +95,6 @@ public final class GeoUri {
 	 * Finds hex values in a parameter value.
 	 */
 	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
-
-	/**
-	 * Validates parameter names.
-	 */
-	private static final Pattern labelTextPattern = Pattern.compile("(?i)^[-a-z0-9]+$");
 
 	private static final String PARAM_CRS = "crs";
 	private static final String PARAM_UNCERTAINTY = "u";
@@ -365,10 +362,6 @@ public final class GeoUri {
 		sb.append(';').append(name).append('=').append(encodeParamValue(value));
 	}
 
-	private static boolean isLabelText(String text) {
-		return labelTextPattern.matcher(text).find();
-	}
-
 	private static String encodeParamValue(String value) {
 		StringBuilder sb = null;
 		for (int i = 0; i < value.length(); i++) {
@@ -474,7 +467,7 @@ public final class GeoUri {
 		 * @return this
 		 */
 		public Builder crs(String crs) {
-			if (crs != null && !isLabelText(crs)) {
+			if (crs != null && !containsOnly(crs, "a-z", "A-Z", "0-9", "-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(24);
 			}
 			this.crs = crs;
@@ -501,7 +494,7 @@ public final class GeoUri {
 		 * @return this
 		 */
 		public Builder parameter(String name, String value) {
-			if (!isLabelText(name)) {
+			if (!containsOnly(name, "a-z", "A-Z", "0-9", "-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(23);
 			}
 

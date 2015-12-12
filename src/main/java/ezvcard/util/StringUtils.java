@@ -36,7 +36,7 @@ import java.util.Map;
  * Helper class for dealing with strings.
  * @author Michael Angstadt
  */
-public class StringUtils {
+public final class StringUtils {
 	/**
 	 * The local computer's newline character sequence.
 	 */
@@ -203,6 +203,122 @@ public class StringUtils {
 	 */
 	public static interface JoinMapCallback<K, V> {
 		void handle(StringBuilder sb, K key, V value);
+	}
+
+	/**
+	 * Determines if a string contains *only* the specified characters. This is
+	 * used in place of regular expressions to improve performance.
+	 * @param string the string
+	 * @param characters the list of characters to check for. If the list is 3
+	 * characters long and contains a hyphen in the middle, then it is treated
+	 * as a character range (e.g. "0-9").
+	 * @param moreCharacters more lists of characters to check for. If the list
+	 * is 3 characters long and contains a hyphen in the middle, then it is
+	 * treated as a character range.
+	 * @return true if the strong contains only the specified characters, false
+	 * if not
+	 */
+	public static boolean containsOnly(String string, String characters, String... moreCharacters) {
+		return containsOnly(string, 0, characters, moreCharacters);
+	}
+
+	/**
+	 * Determines if a string contains *only* the specified characters. This is
+	 * used in place of regular expressions to improve performance.
+	 * @param string the string
+	 * @param startIndex the index to start at in the string
+	 * @param characters the list of characters to check for. If the list is 3
+	 * characters long and contains a hyphen in the middle, then it is treated
+	 * as a character range (e.g. "0-9").
+	 * @param moreCharacters more lists of characters to check for. If the list
+	 * is 3 characters long and contains a hyphen in the middle, then it is
+	 * treated as a character range.
+	 * @return true if the strong contains only the specified characters, false
+	 * if not
+	 */
+	public static boolean containsOnly(String string, int startIndex, String characters, String... moreCharacters) {
+		String list = buildCharacterList(characters, moreCharacters);
+		for (int i = startIndex; i < string.length(); i++) {
+			char c = string.charAt(i);
+			if (list.indexOf(c) < 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Determines if a string contains at least one of the specified characters.
+	 * This is used in place of regular expressions to improve performance.
+	 * @param string the string
+	 * @param characters the list of characters to check for. If the list is 3
+	 * characters long and contains a hyphen in the middle, then it is treated
+	 * as a character range (e.g. "0-9").
+	 * @param moreCharacters more lists of characters to check for. If the list
+	 * is 3 characters long and contains a hyphen in the middle, then it is
+	 * @return true if the string contains at least one of the characters, false
+	 * if not
+	 */
+	public static boolean containsAny(String string, String characters, String... moreCharacters) {
+		return containsAny(string, 0, characters, moreCharacters);
+	}
+
+	/**
+	 * Determines if a string contains at least one of the specified characters.
+	 * This is used in place of regular expressions to improve performance.
+	 * @param string the string
+	 * @param startIndex the index to start at in the string
+	 * @param characters the list of characters to check for. If the list is 3
+	 * characters long and contains a hyphen in the middle, then it is treated
+	 * as a character range (e.g. "0-9").
+	 * @param moreCharacters more lists of characters to check for. If the list
+	 * is 3 characters long and contains a hyphen in the middle, then it is
+	 * @return true if the string contains at least one of the characters, false
+	 * if not
+	 */
+	public static boolean containsAny(String string, int startIndex, String characters, String... moreCharacters) {
+		String list = buildCharacterList(characters, moreCharacters);
+		for (int i = startIndex; i < list.length(); i++) {
+			char c = list.charAt(i);
+			if (string.indexOf(c) >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/* package */static String buildCharacterList(String characters, String... moreCharacters) {
+		if (moreCharacters.length == 0 && (characters.length() != 3 || characters.charAt(1) != '-')) {
+			/*
+			 * Optimization based on the assumption that most calls will only
+			 * contain 1 list of characters and that list will not be a range.
+			 */
+			return characters;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = -1; i < moreCharacters.length; i++) {
+			String list = (i == -1) ? characters : moreCharacters[i];
+
+			if (list.length() == 3 && list.charAt(1) == '-') {
+				char start = list.charAt(0);
+				char end = list.charAt(2);
+				if (start > end) {
+					//swap them
+					char temp = start;
+					start = end;
+					end = temp;
+				}
+
+				for (char c = start; c <= end; c++) {
+					sb.append(c);
+				}
+				continue;
+			}
+
+			sb.append(list);
+		}
+		return sb.toString();
 	}
 
 	private StringUtils() {

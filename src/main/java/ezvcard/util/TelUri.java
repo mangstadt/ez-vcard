@@ -1,5 +1,8 @@
 package ezvcard.util;
 
+import static ezvcard.util.StringUtils.containsAny;
+import static ezvcard.util.StringUtils.containsOnly;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -65,19 +68,21 @@ public final class TelUri {
 	 * The characters which are allowed to exist unencoded inside of a parameter
 	 * value.
 	 */
-	private static final boolean validParamValueChars[] = new boolean[128];
+	private static final boolean validParameterValueCharacters[] = new boolean[128];
 	static {
 		for (int i = '0'; i <= '9'; i++) {
-			validParamValueChars[i] = true;
+			validParameterValueCharacters[i] = true;
 		}
 		for (int i = 'A'; i <= 'Z'; i++) {
-			validParamValueChars[i] = true;
+			validParameterValueCharacters[i] = true;
 		}
 		for (int i = 'a'; i <= 'z'; i++) {
-			validParamValueChars[i] = true;
+			validParameterValueCharacters[i] = true;
 		}
-		for (char c : "!$&'()*+-.:[]_~/".toCharArray()) {
-			validParamValueChars[c] = true;
+		String s = "!$&'()*+-.:[]_~/";
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			validParameterValueCharacters[c] = true;
 		}
 	}
 
@@ -85,11 +90,6 @@ public final class TelUri {
 	 * Finds hex values in an encoded parameter value.
 	 */
 	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
-
-	/**
-	 * Validates parameter names.
-	 */
-	private static final Pattern labelTextPattern = Pattern.compile("(?i)^[-a-z0-9]+$");
 
 	private static final String PARAM_EXTENSION = "ext";
 	private static final String PARAM_ISDN_SUBADDRESS = "isub";
@@ -150,7 +150,7 @@ public final class TelUri {
 	}
 
 	private static void addParameter(String name, String value, Builder builder) {
-		value = decodeParamValue(value);
+		value = decodeParameterValue(value);
 
 		if (PARAM_EXTENSION.equalsIgnoreCase(name)) {
 			builder.extension = value;
@@ -273,7 +273,7 @@ public final class TelUri {
 	 * @param sb the string to write to
 	 */
 	private static void writeParameter(String name, String value, StringBuilder sb) {
-		sb.append(';').append(name).append('=').append(encodeParamValue(value));
+		sb.append(';').append(name).append('=').append(encodeParameterValue(value));
 	}
 
 	@Override
@@ -313,41 +313,22 @@ public final class TelUri {
 	}
 
 	/**
-	 * Determines if a given string can be used as a parameter name.
-	 * @param text the parameter name
-	 * @return true if it contains all valid characters, false if not
-	 * @see "RFC 3966 p.5 ('pname' definition)"
-	 */
-	private static boolean isParameterName(String text) {
-		return labelTextPattern.matcher(text).matches();
-	}
-
-	/**
-	 * Determines if a given string is a phone digit.
-	 * @param text the string
-	 * @return true if it's a phone digit, false if not
-	 * @see "RFC 3966 p.5 ('phonedigit' definition)"
-	 */
-	private static boolean isPhoneDigit(String text) {
-		return text.matches("[-0-9.()]+");
-	}
-
-	/**
 	 * Encodes a string for safe inclusion in a parameter value.
 	 * @param value the string to encode
 	 * @return the encoded value
 	 */
-	private static String encodeParamValue(String value) {
+	private static String encodeParameterValue(String value) {
 		StringBuilder sb = null;
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
-			if (c < validParamValueChars.length && validParamValueChars[c]) {
+			if (c < validParameterValueCharacters.length && validParameterValueCharacters[c]) {
 				if (sb != null) {
 					sb.append(c);
 				}
 			} else {
 				if (sb == null) {
-					sb = new StringBuilder(value.substring(0, i));
+					sb = new StringBuilder(value.length() * 2);
+					sb.append(value.substring(0, i));
 				}
 				String hex = Integer.toString(c, 16);
 				sb.append('%').append(hex);
@@ -361,13 +342,23 @@ public final class TelUri {
 	 * @param value the parameter value
 	 * @return the decoded value
 	 */
-	private static String decodeParamValue(String value) {
+	private static String decodeParameterValue(String value) {
 		Matcher m = hexPattern.matcher(value);
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sb = null;
+
 		while (m.find()) {
+			if (sb == null) {
+				sb = new StringBuffer(value.length());
+			}
+
 			int hex = Integer.parseInt(m.group(1), 16);
 			m.appendReplacement(sb, Character.toString((char) hex));
 		}
+
+		if (sb == null) {
+			return value;
+		}
+
 		m.appendTail(sb);
 		return sb.toString();
 	}
@@ -493,14 +484,16 @@ public final class TelUri {
 		 * not adhere to the above rules
 		 */
 		public Builder globalNumber(String globalNumber) {
-			if (!globalNumber.matches(".*?[0-9].*")) {
-				throw Messages.INSTANCE.getIllegalArgumentException(25);
-			}
 			if (!globalNumber.startsWith("+")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(26);
 			}
-			if (!globalNumber.matches("\\+[-0-9.()]*")) {
+
+			if (!containsOnly(globalNumber, 1, "0-9", "-.()")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(27);
+			}
+
+			if (!containsAny(globalNumber, 1, "0-9")) {
+				throw Messages.INSTANCE.getIllegalArgumentException(25);
 			}
 
 			number = globalNumber;
@@ -544,7 +537,11 @@ public final class TelUri {
 		 * not adhere to the above rules
 		 */
 		public Builder localNumber(String localNumber, String phoneContext) {
-			if (!localNumber.matches(".*?[0-9*#].*") || !localNumber.matches("[0-9\\-.()*#]+")) {
+			if (!containsOnly(localNumber, "0-9", "-.()*#")) {
+				throw Messages.INSTANCE.getIllegalArgumentException(28);
+			}
+
+			if (!containsAny(localNumber, "0-9", "*#")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(28);
 			}
 
@@ -561,7 +558,7 @@ public final class TelUri {
 		 * other than the following: digits, hypens, parenthesis, periods
 		 */
 		public Builder extension(String extension) {
-			if (extension != null && !isPhoneDigit(extension)) {
+			if (extension != null && !containsOnly(extension, "0-9", "-.()")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(29);
 			}
 
@@ -589,7 +586,7 @@ public final class TelUri {
 		 * invalid characters
 		 */
 		public Builder parameter(String name, String value) {
-			if (!isParameterName(name)) {
+			if (!containsOnly(name, "a-z", "A-Z", "0-9", "-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(23);
 			}
 
