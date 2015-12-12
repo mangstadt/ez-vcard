@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ezvcard.Messages;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -125,16 +127,17 @@ public final class GeoUri {
 	public static GeoUri parse(String uri) {
 		//URI format: geo:LAT,LONG;prop1=value1;prop2=value2
 
-		if (uri.length() < 4 || !uri.substring(0, 4).equalsIgnoreCase("geo:")) {
+		String scheme = "geo:";
+		if (uri.length() < scheme.length() || !uri.substring(0, scheme.length()).equalsIgnoreCase(scheme)) {
 			//not a geo URI
-			throw new IllegalArgumentException("String does not begin with \"geo:\".");
+			throw Messages.INSTANCE.getIllegalArgumentException(18, scheme);
 		}
 
 		Builder builder = new Builder(null, null);
 		ClearableStringBuilder buffer = new ClearableStringBuilder();
 		String paramName = null;
 		boolean coordinatesDone = false;
-		for (int i = 4; i < uri.length(); i++) {
+		for (int i = scheme.length(); i < uri.length(); i++) {
 			char c = uri.charAt(i);
 
 			if (c == ',' && !coordinatesDone) {
@@ -149,7 +152,7 @@ public final class GeoUri {
 				} else {
 					handleEndOfCoordinate(buffer, builder);
 					if (builder.coordB == null) {
-						throw new IllegalArgumentException("Coordinate B is not present.");
+						throw Messages.INSTANCE.getIllegalArgumentException(21);
 					}
 					coordinatesDone = true;
 				}
@@ -169,7 +172,7 @@ public final class GeoUri {
 		} else {
 			handleEndOfCoordinate(buffer, builder);
 			if (builder.coordB == null) {
-				throw new IllegalArgumentException("Coordinate B is not present.");
+				throw Messages.INSTANCE.getIllegalArgumentException(21);
 			}
 		}
 
@@ -183,7 +186,7 @@ public final class GeoUri {
 			try {
 				builder.coordA = Double.parseDouble(s);
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse coordinate A.", e);
+				throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(22, "A"), e);
 			}
 			return;
 		}
@@ -192,7 +195,7 @@ public final class GeoUri {
 			try {
 				builder.coordB = Double.parseDouble(s);
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse coordinate B.", e);
+				throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(22, "B"), e);
 			}
 			return;
 		}
@@ -201,7 +204,7 @@ public final class GeoUri {
 			try {
 				builder.coordC = Double.parseDouble(s);
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse coordinate C.", e);
+				throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(22, "C"), e);
 			}
 			return;
 		}
@@ -472,7 +475,7 @@ public final class GeoUri {
 		 */
 		public Builder crs(String crs) {
 			if (crs != null && !isLabelText(crs)) {
-				throw new IllegalArgumentException("CRS can only contain letters, numbers, and hypens.");
+				throw Messages.INSTANCE.getIllegalArgumentException(24);
 			}
 			this.crs = crs;
 			return this;
@@ -499,7 +502,7 @@ public final class GeoUri {
 		 */
 		public Builder parameter(String name, String value) {
 			if (!isLabelText(name)) {
-				throw new IllegalArgumentException("Parameter names can only contain letters, numbers, and hyphens.");
+				throw Messages.INSTANCE.getIllegalArgumentException(23);
 			}
 
 			if (value == null) {

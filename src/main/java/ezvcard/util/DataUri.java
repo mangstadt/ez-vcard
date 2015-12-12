@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import java.net.URI;
 
+import ezvcard.Messages;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
@@ -64,26 +65,27 @@ public final class DataUri {
 	public static DataUri parse(String uri) {
 		//URI format: data:CONTENT/TYPE;base64,DATA
 
-		if (uri.length() < 5 || !uri.substring(0, 5).equalsIgnoreCase("data:")) {
+		String scheme = "data:";
+		if (uri.length() < scheme.length() || !uri.substring(0, scheme.length()).equalsIgnoreCase(scheme)) {
 			//not a data URI
-			throw new IllegalArgumentException("String does not begin with \"data:\".");
+			throw Messages.INSTANCE.getIllegalArgumentException(18, scheme);
 		}
 
 		int semiColon = uri.indexOf(';');
 		if (semiColon < 0) {
-			throw new IllegalArgumentException("Data URI syntax is invalid.");
+			throw Messages.INSTANCE.getIllegalArgumentException(19);
 		}
 
 		int comma = uri.indexOf(',', semiColon + 1);
 		if (comma < 0) {
-			throw new IllegalArgumentException("Data URI syntax is invalid.");
+			throw Messages.INSTANCE.getIllegalArgumentException(19);
 		}
 
 		String contentType = uri.substring(5, semiColon);
 
 		String encoding = uri.substring(semiColon + 1, comma);
 		if (!"base64".equalsIgnoreCase(encoding)) {
-			throw new IllegalArgumentException("Encoding \"" + encoding + "\" not supported.  Only \"base64\" is supported.");
+			throw Messages.INSTANCE.getIllegalArgumentException(20, encoding);
 		}
 
 		byte[] data = Base64.decodeBase64(uri.substring(comma + 1));

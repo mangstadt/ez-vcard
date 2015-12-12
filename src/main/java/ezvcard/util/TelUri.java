@@ -6,6 +6,8 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ezvcard.Messages;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -116,15 +118,16 @@ public final class TelUri {
 	public static TelUri parse(String uri) {
 		//URI format: tel:number;prop1=value1;prop2=value2
 
-		if (uri.length() < 4 || !uri.substring(0, 4).equalsIgnoreCase("tel:")) {
+		String scheme = "tel:";
+		if (uri.length() < scheme.length() || !uri.substring(0, scheme.length()).equalsIgnoreCase(scheme)) {
 			//not a tel URI
-			throw new IllegalArgumentException("String does not begin with \"tel:\".");
+			throw Messages.INSTANCE.getIllegalArgumentException(18, scheme);
 		}
 
 		Builder builder = new Builder();
 		ClearableStringBuilder buffer = new ClearableStringBuilder();
 		String paramName = null;
-		for (int i = 4; i < uri.length(); i++) {
+		for (int i = scheme.length(); i < uri.length(); i++) {
 			char c = uri.charAt(i);
 
 			if (c == '=' && builder.number != null && paramName == null) {
@@ -587,7 +590,7 @@ public final class TelUri {
 		 */
 		public Builder parameter(String name, String value) {
 			if (!isParameterName(name)) {
-				throw new IllegalArgumentException("Parameter names can only contain letters, numbers, and hyphens.");
+				throw Messages.INSTANCE.getIllegalArgumentException(23);
 			}
 
 			if (value == null) {
