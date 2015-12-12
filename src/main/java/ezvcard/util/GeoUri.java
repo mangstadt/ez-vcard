@@ -75,19 +75,21 @@ public final class GeoUri {
 	 * The characters which are allowed to exist un-encoded inside of a
 	 * parameter value.
 	 */
-	private static final boolean validParamValueChars[] = new boolean[128];
+	private static final boolean validParameterValueCharacters[] = new boolean[128];
 	static {
 		for (int i = '0'; i <= '9'; i++) {
-			validParamValueChars[i] = true;
+			validParameterValueCharacters[i] = true;
 		}
 		for (int i = 'A'; i <= 'Z'; i++) {
-			validParamValueChars[i] = true;
+			validParameterValueCharacters[i] = true;
 		}
 		for (int i = 'a'; i <= 'z'; i++) {
-			validParamValueChars[i] = true;
+			validParameterValueCharacters[i] = true;
 		}
-		for (char c : "!$&'()*+-.:[]_~".toCharArray()) {
-			validParamValueChars[c] = true;
+		String s = "!$&'()*+-.:[]_~";
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			validParameterValueCharacters[c] = true;
 		}
 	}
 
@@ -208,7 +210,7 @@ public final class GeoUri {
 	}
 
 	private static void addParameter(String name, String value, Builder builder) {
-		value = decodeParamValue(value);
+		value = decodeParameterValue(value);
 
 		if (PARAM_CRS.equalsIgnoreCase(name)) {
 			builder.crs = value;
@@ -359,20 +361,26 @@ public final class GeoUri {
 	 * @param sb the string to write to
 	 */
 	private void writeParameter(String name, String value, StringBuilder sb) {
-		sb.append(';').append(name).append('=').append(encodeParamValue(value));
+		sb.append(';').append(name).append('=').append(encodeParameterValue(value));
 	}
 
-	private static String encodeParamValue(String value) {
+	/**
+	 * Encodes a string for safe inclusion in a parameter value.
+	 * @param value the string to encode
+	 * @return the encoded value
+	 */
+	private static String encodeParameterValue(String value) {
 		StringBuilder sb = null;
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
-			if (c < validParamValueChars.length && validParamValueChars[c]) {
+			if (c < validParameterValueCharacters.length && validParameterValueCharacters[c]) {
 				if (sb != null) {
 					sb.append(c);
 				}
 			} else {
 				if (sb == null) {
-					sb = new StringBuilder(value.substring(0, i));
+					sb = new StringBuilder(value.length() * 2);
+					sb.append(value.substring(0, i));
 				}
 				String hex = Integer.toString(c, 16);
 				sb.append('%').append(hex);
@@ -381,13 +389,28 @@ public final class GeoUri {
 		return (sb == null) ? value : sb.toString();
 	}
 
-	private static String decodeParamValue(String value) {
+	/**
+	 * Decodes escaped characters in a parameter value.
+	 * @param value the parameter value
+	 * @return the decoded value
+	 */
+	private static String decodeParameterValue(String value) {
 		Matcher m = hexPattern.matcher(value);
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sb = null;
+
 		while (m.find()) {
+			if (sb == null) {
+				sb = new StringBuffer(value.length());
+			}
+
 			int hex = Integer.parseInt(m.group(1), 16);
 			m.appendReplacement(sb, Character.toString((char) hex));
 		}
+
+		if (sb == null) {
+			return value;
+		}
+
 		m.appendTail(sb);
 		return sb.toString();
 	}
