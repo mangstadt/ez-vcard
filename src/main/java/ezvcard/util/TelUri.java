@@ -399,10 +399,10 @@ public final class TelUri {
 		 * <li>Limit themselves to the following characters:
 		 * <ul>
 		 * <li>{@code 0-9} (digits)</li>
-		 * <li>{@code -} (hypen)</li>
+		 * <li>{@code -} (hyphen)</li>
 		 * <li>{@code .} (period)</li>
-		 * <li>{@code (} (opening paraenthesis)</li>
-		 * <li>{@code )} (closing paraenthesis)</li>
+		 * <li>{@code (} (opening parenthesis)</li>
+		 * <li>{@code )} (closing parenthesis)</li>
 		 * </ul>
 		 * </li>
 		 * </ol>
@@ -434,10 +434,10 @@ public final class TelUri {
 		 * <li>Limit themselves to the following characters:
 		 * <ul>
 		 * <li>{@code 0-9} (digits)</li>
-		 * <li>{@code -} (hypen)</li>
+		 * <li>{@code -} (hyphen)</li>
 		 * <li>{@code .} (period)</li>
-		 * <li>{@code (} (opening paraenthesis)</li>
-		 * <li>{@code )} (closing paraenthesis)</li>
+		 * <li>{@code (} (opening parenthesis)</li>
+		 * <li>{@code )} (closing parenthesis)</li>
 		 * <li>{@code *} (asterisk)</li>
 		 * <li>{@code #} (hash)</li>
 		 * </ul>
@@ -479,10 +479,10 @@ public final class TelUri {
 		 * <li>Limit themselves to the following characters:
 		 * <ul>
 		 * <li>{@code 0-9} (digits)</li>
-		 * <li>{@code -} (hypen)</li>
+		 * <li>{@code -} (hyphen)</li>
 		 * <li>{@code .} (period)</li>
-		 * <li>{@code (} (opening paraenthesis)</li>
-		 * <li>{@code )} (closing paraenthesis)</li>
+		 * <li>{@code (} (opening parenthesis)</li>
+		 * <li>{@code )} (closing parenthesis)</li>
 		 * </ul>
 		 * </li>
 		 * </ol>
@@ -494,13 +494,13 @@ public final class TelUri {
 		 */
 		public Builder globalNumber(String globalNumber) {
 			if (!globalNumber.matches(".*?[0-9].*")) {
-				throw new IllegalArgumentException("Global number must contain at least one digit.");
+				throw Messages.INSTANCE.getIllegalArgumentException(25);
 			}
 			if (!globalNumber.startsWith("+")) {
-				throw new IllegalArgumentException("Global number must start with \"+\".");
+				throw Messages.INSTANCE.getIllegalArgumentException(26);
 			}
 			if (!globalNumber.matches("\\+[-0-9.()]*")) {
-				throw new IllegalArgumentException("Global number contains invalid characters.");
+				throw Messages.INSTANCE.getIllegalArgumentException(27);
 			}
 
 			number = globalNumber;
@@ -526,10 +526,10 @@ public final class TelUri {
 		 * <li>Limit themselves to the following characters:
 		 * <ul>
 		 * <li>{@code 0-9} (digits)</li>
-		 * <li>{@code -} (hypen)</li>
+		 * <li>{@code -} (hyphen)</li>
 		 * <li>{@code .} (period)</li>
-		 * <li>{@code (} (opening paraenthesis)</li>
-		 * <li>{@code )} (closing paraenthesis)</li>
+		 * <li>{@code (} (opening parenthesis)</li>
+		 * <li>{@code )} (closing parenthesis)</li>
 		 * <li>{@code *} (asterisk)</li>
 		 * <li>{@code #} (hash)</li>
 		 * </ul>
@@ -545,7 +545,7 @@ public final class TelUri {
 		 */
 		public Builder localNumber(String localNumber, String phoneContext) {
 			if (!localNumber.matches(".*?[0-9*#].*") || !localNumber.matches("[0-9\\-.()*#]+")) {
-				throw new IllegalArgumentException("Local number contains invalid characters.");
+				throw Messages.INSTANCE.getIllegalArgumentException(28);
 			}
 
 			number = localNumber;
@@ -562,7 +562,7 @@ public final class TelUri {
 		 */
 		public Builder extension(String extension) {
 			if (extension != null && !isPhoneDigit(extension)) {
-				throw new IllegalArgumentException("Extension contains invalid characters.");
+				throw Messages.INSTANCE.getIllegalArgumentException(29);
 			}
 
 			this.extension = extension;
