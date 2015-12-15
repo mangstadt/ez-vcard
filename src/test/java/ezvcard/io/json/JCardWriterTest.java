@@ -279,6 +279,20 @@ public class JCardWriterTest {
 
 	@Test
 	public void jcard_example() throws Throwable {
+		VCard vcard = createExample();
+
+		assertValidate(vcard).versions(VCardVersion.V4_0).run();
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.close();
+		String actual = sw.toString();
+
+		assertExample(actual, "jcard-example.json");
+	}
+
+	public static VCard createExample() {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("SimonPerreault");
@@ -341,10 +355,11 @@ public class JCardWriterTest {
 		vcard.setTimezone(new Timezone(new UtcOffset(false, -5, 0)));
 
 		vcard.addUrl("http://nomis80.org").setType("home");
+		return vcard;
+	}
 
-		assertValidate(vcard).versions(VCardVersion.V4_0).run();
-
-		assertExample(vcard, "jcard-example.json", new Filter() {
+	public static void assertExample(String actual, String exampleFileName) throws IOException {
+		Filter filter = new Filter() {
 			public String filter(String json) {
 				//replace "date-and-or-time" data types with the data types ez-vcard uses
 				//ez-vcard avoids the use of "date-and-or-time"
@@ -352,23 +367,13 @@ public class JCardWriterTest {
 				json = json.replaceAll("\"anniversary\",\\{\\},\"date-and-or-time\"", "\"anniversary\",{},\"date-time\"");
 				return json;
 			}
-		});
-	}
+		};
 
-	private void assertExample(VCard vcard, String exampleFileName, Filter filter) throws IOException {
-		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
-		writer.write(vcard);
-		writer.close();
-
-		String expected = new String(IOUtils.toByteArray(getClass().getResourceAsStream(exampleFileName)));
+		String expected = new String(IOUtils.toByteArray(JCardWriterTest.class.getResourceAsStream(exampleFileName)));
 		expected = expected.replaceAll("\\s", "");
 		if (filter != null) {
 			expected = filter.filter(expected);
 		}
-
-		String actual = sw.toString();
 
 		assertEquals(expected, actual);
 	}

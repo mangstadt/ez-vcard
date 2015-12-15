@@ -51,12 +51,25 @@ public class JCardRawReader implements Closeable {
 	private JsonParser parser;
 	private boolean eof = false;
 	private JCardDataStreamListener listener;
+	private boolean strict = false;
 
 	/**
 	 * @param reader the reader to wrap
 	 */
 	public JCardRawReader(Reader reader) {
 		this.reader = reader;
+	}
+
+	/**
+	 * @param parser the parser to read from
+	 * @param strict ensure that the parser is pointing to the first token of
+	 *            a valid jcard at the start of parsing, and that parsing 
+	 *            consumes the final token of that jcard before returning
+	 */
+	public JCardRawReader(JsonParser parser, boolean strict) {
+		reader = null;
+		this.parser = parser;
+		this.strict  = strict;
 	}
 
 	/**
@@ -86,11 +99,13 @@ public class JCardRawReader implements Closeable {
 		this.listener = listener;
 
 		//find the next vCard object
-		JsonToken prev = null;
+		JsonToken prev = parser.getCurrentToken();
 		JsonToken cur;
 		while ((cur = parser.nextToken()) != null) {
 			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING && "vcard".equals(parser.getValueAsString())) {
 				break;
+			} else if (strict) {
+				throw new JCardParseException(JsonToken.VALUE_STRING, cur);
 			}
 			prev = cur;
 		}
@@ -102,6 +117,10 @@ public class JCardRawReader implements Closeable {
 
 		listener.beginVCard();
 		parseProperties();
+		
+		if (strict) {
+			check(JsonToken.END_ARRAY, parser.nextToken());
+		}
 	}
 
 	private void parseProperties() throws IOException {
@@ -271,6 +290,8 @@ public class JCardRawReader implements Closeable {
 	 * Closes the underlying {@link Reader} object.
 	 */
 	public void close() throws IOException {
-		reader.close();
+		if (reader != null) {
+			reader.close();
+		}
 	}
 }

@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
+import com.fasterxml.jackson.core.JsonParser;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -109,6 +111,13 @@ public class JCardReader extends StreamReader {
 	 */
 	public JCardReader(Reader reader) {
 		this.reader = new JCardRawReader(reader);
+	}
+
+	/**
+	 * @param parser the parser to read from
+	 */
+	public JCardReader(JsonParser parser) {
+		this.reader = new JCardRawReader(parser, true);
 	}
 
 	@Override

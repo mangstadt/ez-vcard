@@ -16,6 +16,11 @@ import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import ezvcard.io.json.JCardDeserializer;
+import ezvcard.io.json.JCardSerializer;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
@@ -108,6 +113,8 @@ import ezvcard.util.StringUtils;
  * Represents a vCard.
  * @author Michael Angstadt
  */
+@JsonSerialize(using = JCardSerializer.class)
+@JsonDeserialize(using = JCardDeserializer.class)
 public class VCard implements Iterable<VCardProperty> {
 	private VCardVersion version = VCardVersion.V3_0;
 

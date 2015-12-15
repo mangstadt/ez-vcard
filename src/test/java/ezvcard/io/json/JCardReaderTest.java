@@ -461,6 +461,14 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(getClass().getResourceAsStream("jcard-example.json"));
 
 		VCard vcard = reader.readNext();
+		
+		validateExampleJCard(vcard);
+		
+		assertWarnings(0, reader);
+		assertNoMoreVCards(reader);
+	}
+
+	public static void validateExampleJCard(VCard vcard) {
 		assertVersion(V4_0, vcard);
 		assertPropertyCount(16, vcard);
 
@@ -544,7 +552,5 @@ public class JCardReaderTest {
 		//@formatter:on
 
 		assertValidate(vcard).versions(vcard.getVersion()).run();
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
 	}
 }
