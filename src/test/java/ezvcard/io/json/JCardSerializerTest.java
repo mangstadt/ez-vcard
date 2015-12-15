@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -20,6 +21,12 @@ import ezvcard.VCard;
  * @author Buddy Gorven
  */
 public class JCardSerializerTest {
+	
+	@BeforeClass
+	public static void configure() {
+		JCardSerializer.addProdIdByDefault(false);
+	}
+
 	@Test
 	public void serialize_single_vcard() throws Throwable {
 
