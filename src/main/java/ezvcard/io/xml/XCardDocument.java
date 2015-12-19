@@ -7,7 +7,6 @@ import static ezvcard.io.xml.XCardQNames.VCARDS;
 import static ezvcard.util.IOUtils.utf8Writer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,7 +52,6 @@ import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
-import ezvcard.util.IOUtils;
 import ezvcard.util.ListMultimap;
 import ezvcard.util.XmlUtils;
 
@@ -140,20 +138,15 @@ import ezvcard.util.XmlUtils;
 public class XCardDocument {
 	private final VCardVersion version4 = VCardVersion.V4_0; //xCard only supports 4.0
 	private final Document document;
-	private Element root;
+	private Element vcardsRootElement;
 
 	/**
 	 * Creates an empty xCard document.
 	 */
 	public XCardDocument() {
-		this(createXCardsRoot());
-	}
-
-	private static Document createXCardsRoot() {
-		Document document = XmlUtils.createDocument();
-		Element root = document.createElementNS(VCARDS.getNamespaceURI(), VCARDS.getLocalPart());
-		document.appendChild(root);
-		return document;
+		document = XmlUtils.createDocument();
+		vcardsRootElement = document.createElementNS(VCARDS.getNamespaceURI(), VCARDS.getLocalPart());
+		document.appendChild(vcardsRootElement);
 	}
 
 	/**
@@ -182,16 +175,7 @@ public class XCardDocument {
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
 	public XCardDocument(File file) throws SAXException, IOException {
-		this(readFile(file));
-	}
-
-	private static Document readFile(File file) throws SAXException, IOException {
-		InputStream in = new FileInputStream(file);
-		try {
-			return XmlUtils.toDocument(in);
-		} finally {
-			IOUtils.closeQuietly(in);
-		}
+		this(XmlUtils.toDocument(file));
 	}
 
 	/**
@@ -227,7 +211,7 @@ public class XCardDocument {
 
 		try {
 			//find the <vcards> element
-			root = (Element) xpath.evaluate("//" + nsContext.getPrefix() + ":" + VCARDS.getLocalPart(), document, XPathConstants.NODE);
+			vcardsRootElement = (Element) xpath.evaluate("//" + nsContext.getPrefix() + ":" + VCARDS.getLocalPart(), document, XPathConstants.NODE);
 		} catch (XPathExpressionException e) {
 			//should never thrown because the xpath expression is hard coded
 			throw new RuntimeException(e);
@@ -530,7 +514,7 @@ public class XCardDocument {
 	private class XCardDocumentStreamReader extends StreamReader {
 		private final Iterator<Element> vcardElements;
 		{
-			List<Element> list = (root == null) ? Collections.<Element> emptyList() : getChildElements(root, VCARD);
+			List<Element> list = (vcardsRootElement == null) ? Collections.<Element> emptyList() : getChildElements(vcardsRootElement, VCARD);
 			vcardElements = list.iterator();
 		}
 
@@ -723,16 +707,16 @@ public class XCardDocument {
 				}
 			}
 
-			if (root == null) {
-				root = createElement(VCARDS);
+			if (vcardsRootElement == null) {
+				vcardsRootElement = createElement(VCARDS);
 				Element documentRoot = document.getDocumentElement();
 				if (documentRoot == null) {
-					document.appendChild(root);
+					document.appendChild(vcardsRootElement);
 				} else {
-					documentRoot.appendChild(root);
+					documentRoot.appendChild(vcardsRootElement);
 				}
 			}
-			root.appendChild(vcardElement);
+			vcardsRootElement.appendChild(vcardElement);
 		}
 
 		@Override
