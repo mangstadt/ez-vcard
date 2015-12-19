@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -160,7 +159,7 @@ public class XCardWriter extends StreamWriter {
 	 * >xalan</a> to your project)
 	 */
 	public XCardWriter(OutputStream out, int indent, String xmlVersion) {
-		this(out, createOutputProperties(indent, xmlVersion));
+		this(out, new XCardOutputProperties(indent, xmlVersion));
 	}
 
 	/**
@@ -202,7 +201,7 @@ public class XCardWriter extends StreamWriter {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public XCardWriter(File file, int indent, String xmlVersion) throws IOException {
-		this(file, createOutputProperties(indent, xmlVersion));
+		this(file, new XCardOutputProperties(indent, xmlVersion));
 	}
 
 	/**
@@ -242,7 +241,7 @@ public class XCardWriter extends StreamWriter {
 	 * >xalan</a> to your project)
 	 */
 	public XCardWriter(Writer writer, int indent, String xmlVersion) {
-		this(writer, createOutputProperties(indent, xmlVersion));
+		this(writer, new XCardOutputProperties(indent, xmlVersion));
 	}
 
 	/**
@@ -259,22 +258,6 @@ public class XCardWriter extends StreamWriter {
 	 */
 	public XCardWriter(Node parent) {
 		this(null, parent, Collections.<String, String> emptyMap());
-	}
-
-	private static Map<String, String> createOutputProperties(int indent, String xmlVersion) {
-		Map<String, String> properties = new HashMap<String, String>();
-		properties.put(OutputKeys.METHOD, "xml");
-
-		if (indent >= 0) {
-			properties.put(OutputKeys.INDENT, "yes");
-			properties.put("{http://xml.apache.org/xslt}indent-amount", Integer.toString(indent));
-		}
-
-		if (xmlVersion != null) {
-			properties.put(OutputKeys.VERSION, xmlVersion);
-		}
-
-		return properties;
 	}
 
 	private XCardWriter(Writer writer, Node parent, Map<String, String> outputProperties) {

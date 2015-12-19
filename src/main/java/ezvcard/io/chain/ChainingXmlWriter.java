@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
@@ -20,6 +19,7 @@ import ezvcard.VCardDataType;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardDocument;
 import ezvcard.io.xml.XCardDocument.XCardDocumentStreamWriter;
+import ezvcard.io.xml.XCardOutputProperties;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -54,11 +54,7 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  */
 public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
-	private final String INDENT_AMOUNT = "{http://xml.apache.org/xslt}indent-amount";
-	private final Map<String, String> outputProperties = new HashMap<String, String>();
-	{
-		outputProperties.put(OutputKeys.METHOD, "xml");
-	}
+	private final XCardOutputProperties outputProperties = new XCardOutputProperties();
 	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>(0);
 
 	/**
@@ -76,14 +72,9 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * @return this
 	 */
 	public ChainingXmlWriter indent(int indent) {
-		if (indent < 0) {
-			outputProperties.remove(OutputKeys.INDENT);
-			outputProperties.remove(INDENT_AMOUNT);
-			return this;
-		}
-
-		outputProperty(OutputKeys.INDENT, "yes");
-		return outputProperty(INDENT_AMOUNT, Integer.toString(indent));
+		Integer value = (indent < 0) ? null : indent;
+		outputProperties.setIndent(value);
+		return this;
 	}
 
 	/**
@@ -95,12 +86,8 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * @return this
 	 */
 	public ChainingXmlWriter xmlVersion(String xmlVersion) {
-		if (xmlVersion == null) {
-			outputProperties.remove(OutputKeys.VERSION);
-			return this;
-		}
-
-		return outputProperty(OutputKeys.VERSION, xmlVersion);
+		outputProperties.setXmlVersion(xmlVersion);
+		return this;
 	}
 
 	/**

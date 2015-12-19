@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -298,7 +297,7 @@ public class XCardDocument {
 	 * @return the XML string
 	 */
 	public String write(int indent, String xmlVersion) {
-		return write(createOutputProperties(indent, xmlVersion));
+		return write(new XCardOutputProperties(indent, xmlVersion));
 	}
 
 	/**
@@ -354,7 +353,7 @@ public class XCardDocument {
 	 * stream
 	 */
 	public void write(OutputStream out, int indent, String xmlVersion) throws TransformerException {
-		write(out, createOutputProperties(indent, xmlVersion));
+		write(out, new XCardOutputProperties(indent, xmlVersion));
 	}
 
 	/**
@@ -405,7 +404,7 @@ public class XCardDocument {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(File file, int indent, String xmlVersion) throws TransformerException, IOException {
-		write(file, createOutputProperties(indent, xmlVersion));
+		write(file, new XCardOutputProperties(indent, xmlVersion));
 	}
 
 	/**
@@ -458,7 +457,7 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer, int indent, String xmlVersion) throws TransformerException {
-		write(writer, createOutputProperties(indent, xmlVersion));
+		write(writer, new XCardOutputProperties(indent, xmlVersion));
 	}
 
 	/**
@@ -493,22 +492,6 @@ public class XCardDocument {
 		DOMSource source = new DOMSource(document);
 		StreamResult result = new StreamResult(writer);
 		transformer.transform(source, result);
-	}
-
-	private Map<String, String> createOutputProperties(int indent, String xmlVersion) {
-		Map<String, String> properties = new HashMap<String, String>();
-		properties.put(OutputKeys.METHOD, "xml");
-
-		if (indent >= 0) {
-			properties.put(OutputKeys.INDENT, "yes");
-			properties.put("{http://xml.apache.org/xslt}indent-amount", Integer.toString(indent));
-		}
-
-		if (xmlVersion != null) {
-			properties.put(OutputKeys.VERSION, xmlVersion);
-		}
-
-		return properties;
 	}
 
 	private class XCardDocumentStreamReader extends StreamReader {
