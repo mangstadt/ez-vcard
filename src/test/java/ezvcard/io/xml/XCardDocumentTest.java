@@ -680,7 +680,7 @@ public class XCardDocumentTest {
 		writer.setAddProdId(false);
 		writer.write(vcard);
 
-		String actual = xcard.write(-1);
+		String actual = xcard.write();
 
 		String expected = "<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\"><vcard><fn><text>John Doe</text></fn></vcard></vcards>";
 
@@ -704,7 +704,7 @@ public class XCardDocumentTest {
 		XCardDocument xcard = new XCardDocument();
 		xcard.addVCard(vcard);
 
-		String xml = xcard.write(-1, "1.1");
+		String xml = xcard.write(null, "1.1");
 		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.1\".*?\\?>.*"));
 	}
 
@@ -714,7 +714,7 @@ public class XCardDocumentTest {
 		XCardDocument xcard = new XCardDocument();
 		xcard.addVCard(vcard);
 
-		String xml = xcard.write(-1, "10.17");
+		String xml = xcard.write(null, "10.17");
 		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
 	}
 

@@ -634,7 +634,7 @@ public class XCardWriterTest {
 	@Test
 	public void write_xmlVersion_1_1() throws Exception {
 		StringWriter sw = new StringWriter();
-		XCardWriter writer = new XCardWriter(sw, -1, "1.1");
+		XCardWriter writer = new XCardWriter(sw, null, "1.1");
 		VCard vcard = new VCard();
 		writer.write(vcard);
 		writer.close();
@@ -646,7 +646,7 @@ public class XCardWriterTest {
 	@Test
 	public void write_xmlVersion_invalid() throws Exception {
 		StringWriter sw = new StringWriter();
-		XCardWriter writer = new XCardWriter(sw, -1, "10.17");
+		XCardWriter writer = new XCardWriter(sw, null, "10.17");
 		VCard vcard = new VCard();
 		writer.write(vcard);
 		writer.close();

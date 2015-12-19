@@ -15,7 +15,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -272,23 +271,23 @@ public class XCardDocument {
 	 * @return the XML string
 	 */
 	public String write() {
-		return write(-1);
+		return write((Integer) null);
 	}
 
 	/**
 	 * Writes the XML document to a string.
 	 * @param indent the number of indent spaces to use for pretty-printing or
-	 * "-1" to disable pretty-printing (disabled by default)
+	 * null to disable pretty-printing (disabled by default)
 	 * @return the XML string
 	 */
-	public String write(int indent) {
+	public String write(Integer indent) {
 		return write(indent, null);
 	}
 
 	/**
 	 * Writes the XML document to a string.
 	 * @param indent the number of indent spaces to use for pretty-printing or
-	 * "-1" to disable pretty-printing (disabled by default)
+	 * null to disable pretty-printing (disabled by default)
 	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
 	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
 	 * like <a href=
@@ -296,7 +295,7 @@ public class XCardDocument {
 	 * >xalan</a> to your project)
 	 * @return the XML string
 	 */
-	public String write(int indent, String xmlVersion) {
+	public String write(Integer indent, String xmlVersion) {
 		return write(new XCardOutputProperties(indent, xmlVersion));
 	}
 
@@ -324,18 +323,18 @@ public class XCardDocument {
 	 * stream
 	 */
 	public void write(OutputStream out) throws TransformerException {
-		write(out, -1);
+		write(out, (Integer) null);
 	}
 
 	/**
 	 * Writes the XML document to an output stream.
 	 * @param out the output stream (UTF-8 encoding will be used)
 	 * @param indent the number of indent spaces to use for pretty-printing or
-	 * "-1" to disable pretty-printing (disabled by default)
+	 * null to disable pretty-printing (disabled by default)
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
 	 */
-	public void write(OutputStream out, int indent) throws TransformerException {
+	public void write(OutputStream out, Integer indent) throws TransformerException {
 		write(out, indent, null);
 	}
 
@@ -343,7 +342,7 @@ public class XCardDocument {
 	 * Writes the XML document to an output stream.
 	 * @param out the output stream (UTF-8 encoding will be used)
 	 * @param indent the number of indent spaces to use for pretty-printing or
-	 * "-1" to disable pretty-printing (disabled by default)
+	 * null to disable pretty-printing (disabled by default)
 	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
 	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
 	 * like <a href=
@@ -352,7 +351,7 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
 	 */
-	public void write(OutputStream out, int indent, String xmlVersion) throws TransformerException {
+	public void write(OutputStream out, Integer indent, String xmlVersion) throws TransformerException {
 		write(out, new XCardOutputProperties(indent, xmlVersion));
 	}
 
@@ -375,18 +374,18 @@ public class XCardDocument {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(File file) throws TransformerException, IOException {
-		write(file, -1);
+		write(file, (Integer) null);
 	}
 
 	/**
 	 * Writes the XML document to a file.
 	 * @param file the file to write to (UTF-8 encoding will be used)
 	 * @param indent the number of indent spaces to use for pretty-printing or
-	 * "-1" to disable pretty-printing (disabled by default)
+	 * null to disable pretty-printing (disabled by default)
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void write(File file, int indent) throws TransformerException, IOException {
+	public void write(File file, Integer indent) throws TransformerException, IOException {
 		write(file, indent, null);
 	}
 
@@ -394,7 +393,7 @@ public class XCardDocument {
 	 * Writes the XML document to a file.
 	 * @param file the file to write to (UTF-8 encoding will be used)
 	 * @param indent the number of indent spaces to use for pretty-printing or
-	 * "-1" to disable pretty-printing (disabled by default)
+	 * null to disable pretty-printing (disabled by default)
 	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
 	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
 	 * like <a href=
@@ -403,7 +402,7 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void write(File file, int indent, String xmlVersion) throws TransformerException, IOException {
+	public void write(File file, Integer indent, String xmlVersion) throws TransformerException, IOException {
 		write(file, new XCardOutputProperties(indent, xmlVersion));
 	}
 
@@ -430,17 +429,17 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer) throws TransformerException {
-		write(writer, -1);
+		write(writer, (Integer) null);
 	}
 
 	/**
 	 * Writes the XML document to a writer.
 	 * @param writer the writer
 	 * @param indent the number of indent spaces to use for pretty-printing or
-	 * "-1" to disable pretty-printing (disabled by default)
+	 * null to disable pretty-printing (disabled by default)
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
-	public void write(Writer writer, int indent) throws TransformerException {
+	public void write(Writer writer, Integer indent) throws TransformerException {
 		write(writer, indent, null);
 	}
 
@@ -448,7 +447,7 @@ public class XCardDocument {
 	 * Writes the XML document to a writer.
 	 * @param writer the writer
 	 * @param indent the number of indent spaces to use for pretty-printing or
-	 * "-1" to disable pretty-printing (disabled by default)
+	 * null to disable pretty-printing (disabled by default)
 	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
 	 * JDKs only support 1.0 natively. For XML 1.1 support, add a JAXP library
 	 * like <a href=
@@ -456,7 +455,7 @@ public class XCardDocument {
 	 * >xalan</a> to your project)
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
-	public void write(Writer writer, int indent, String xmlVersion) throws TransformerException {
+	public void write(Writer writer, Integer indent, String xmlVersion) throws TransformerException {
 		write(writer, new XCardOutputProperties(indent, xmlVersion));
 	}
 
@@ -628,26 +627,7 @@ public class XCardDocument {
 		}
 	}
 
-	public class XCardDocumentStreamWriter extends StreamWriter {
-		/**
-		 * Defines the names of the XML elements that are used to hold each
-		 * parameter's value.
-		 */
-		private final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>();
-		{
-			registerParameterDataType(VCardParameters.ALTID, VCardDataType.TEXT);
-			registerParameterDataType(VCardParameters.CALSCALE, VCardDataType.TEXT);
-			registerParameterDataType(VCardParameters.GEO, VCardDataType.URI);
-			registerParameterDataType(VCardParameters.LABEL, VCardDataType.TEXT);
-			registerParameterDataType(VCardParameters.LANGUAGE, VCardDataType.LANGUAGE_TAG);
-			registerParameterDataType(VCardParameters.MEDIATYPE, VCardDataType.TEXT);
-			registerParameterDataType(VCardParameters.PID, VCardDataType.TEXT);
-			registerParameterDataType(VCardParameters.PREF, VCardDataType.INTEGER);
-			registerParameterDataType(VCardParameters.SORT_AS, VCardDataType.TEXT);
-			registerParameterDataType(VCardParameters.TYPE, VCardDataType.TEXT);
-			registerParameterDataType(VCardParameters.TZ, VCardDataType.URI);
-		}
-
+	public class XCardDocumentStreamWriter extends XCardWriterBase {
 		@Override
 		public void write(VCard vcard) {
 			try {
@@ -659,12 +639,13 @@ public class XCardDocument {
 
 		@Override
 		protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
-			ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<String, VCardProperty>(); //group the types by group name (null = no group name)
+			//group properties by group name (null = no group name)
+			ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<String, VCardProperty>();
 			for (VCardProperty property : properties) {
 				propertiesByGroup.put(property.getGroup(), property);
 			}
 
-			//marshal each type object
+			//marshal each property object
 			Element vcardElement = createElement(VCARD);
 			for (Map.Entry<String, List<VCardProperty>> entry : propertiesByGroup) {
 				String groupName = entry.getKey();
@@ -702,26 +683,6 @@ public class XCardDocument {
 			vcardsRootElement.appendChild(vcardElement);
 		}
 
-		@Override
-		protected VCardVersion getTargetVersion() {
-			return VCardVersion.V4_0;
-		}
-
-		/**
-		 * Registers the data type of an experimental parameter. Experimental
-		 * parameters use the "unknown" data type by default.
-		 * @param parameterName the parameter name (e.g. "x-foo")
-		 * @param dataType the data type or null to remove
-		 */
-		public void registerParameterDataType(String parameterName, VCardDataType dataType) {
-			parameterName = parameterName.toLowerCase();
-			if (dataType == null) {
-				parameterDataTypes.remove(parameterName);
-			} else {
-				parameterDataTypes.put(parameterName, dataType);
-			}
-		}
-
 		public void close() {
 			//empty
 		}
@@ -752,7 +713,7 @@ public class XCardDocument {
 			}
 
 			//marshal the parameters
-			VCardParameters parameters = scribe.prepareParameters(property, version4, vcard);
+			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
 			if (!parameters.isEmpty()) {
 				Element parametersElement = marshalParameters(parameters);
 				Node firstChild = propertyElement.getFirstChild();
@@ -784,12 +745,12 @@ public class XCardDocument {
 		}
 
 		/**
-		 * Creates a new XML element.
+		 * Creates a new XML element under the vCard namespace.
 		 * @param name the name of the XML element
 		 * @return the new XML element
 		 */
 		private Element createElement(String name) {
-			return createElement(name, version4.getXmlNamespace());
+			return createElement(name, targetVersion.getXmlNamespace());
 		}
 
 		/**

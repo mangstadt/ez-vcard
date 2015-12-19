@@ -67,13 +67,12 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	/**
 	 * Sets the number of indent spaces to use for pretty-printing. If not set,
 	 * then the XML will not be pretty-printed.
-	 * @param indent the number of spaces in the indent string or -1 not to
+	 * @param indent the number of spaces in the indent string or null not to
 	 * pretty-print (disabled by default)
 	 * @return this
 	 */
-	public ChainingXmlWriter indent(int indent) {
-		Integer value = (indent < 0) ? null : indent;
-		outputProperties.setIndent(value);
+	public ChainingXmlWriter indent(Integer indent) {
+		outputProperties.setIndent(indent);
 		return this;
 	}
 
