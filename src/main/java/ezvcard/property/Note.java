@@ -64,6 +64,14 @@ public class Note extends TextProperty implements HasAltId {
 		super(note);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Note(Note original) {
+		super(original);
+	}
+
 	@Override
 	public List<Integer[]> getPids() {
 		return super.getPids();
@@ -131,5 +139,10 @@ public class Note extends TextProperty implements HasAltId {
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
+	}
+
+	@Override
+	public Note copy() {
+		return new Note(this);
 	}
 }

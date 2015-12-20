@@ -136,6 +136,14 @@ public class Deathdate extends DateOrTimeProperty {
 		super(text);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Deathdate(Deathdate original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -149,5 +157,10 @@ public class Deathdate extends DateOrTimeProperty {
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
+	}
+
+	@Override
+	public Deathdate copy() {
+		return new Deathdate(this);
 	}
 }

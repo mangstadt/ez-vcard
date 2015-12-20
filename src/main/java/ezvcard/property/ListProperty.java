@@ -44,7 +44,20 @@ import ezvcard.Warning;
  * @param <T> the type of values sorted in the list
  */
 public class ListProperty<T> extends VCardProperty {
-	protected List<T> values = new ArrayList<T>();
+	protected List<T> values;
+
+	public ListProperty() {
+		values = new ArrayList<T>();
+	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public ListProperty(ListProperty<T> original) {
+		super(original);
+		values = new ArrayList<T>(original.values);
+	}
 
 	/**
 	 * Gest the list of values.

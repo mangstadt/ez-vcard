@@ -114,7 +114,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 
 	private Revision parse(String value) {
 		if (value == null || value.length() == 0) {
-			return new Revision(null);
+			return new Revision((Date) null);
 		}
 
 		try {

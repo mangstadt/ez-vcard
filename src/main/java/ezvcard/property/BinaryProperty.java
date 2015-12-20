@@ -107,6 +107,17 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public BinaryProperty(BinaryProperty<T> original) {
+		super(original);
+		data = original.data;
+		url = original.url;
+		contentType = original.contentType;
+	}
+
+	/**
 	 * Gets the binary data of the resource.
 	 * @return the binary data or null if there is none
 	 */

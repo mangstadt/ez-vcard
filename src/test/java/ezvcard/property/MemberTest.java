@@ -42,7 +42,7 @@ import ezvcard.VCardVersion;
 public class MemberTest {
 	@Test
 	public void validate() {
-		Member empty = new Member(null);
+		Member empty = new Member((String) null);
 		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 8, 17);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(8, 17);
 

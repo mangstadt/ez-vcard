@@ -65,6 +65,14 @@ public class Source extends UriProperty implements HasAltId {
 		super(url);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Source(Source original) {
+		super(original);
+	}
+
 	@Override
 	public List<Integer[]> getPids() {
 		return super.getPids();
@@ -98,5 +106,10 @@ public class Source extends UriProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	public Source copy() {
+		return new Source(this);
 	}
 }

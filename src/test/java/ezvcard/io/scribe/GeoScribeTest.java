@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.Geo;
+import ezvcard.util.GeoUri;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -50,7 +51,7 @@ public class GeoScribeTest {
 	private final Geo withLatitude = new Geo(-12.34, null);
 	private final Geo withLongitude = new Geo(null, 56.78);
 	private final Geo withManyDecimals = new Geo(-12.3444444444, 56.7777777777);
-	private final Geo empty = new Geo(null);
+	private final Geo empty = new Geo((GeoUri) null);
 
 	@Test
 	public void writeText() {

@@ -127,6 +127,14 @@ public class Logo extends ImageProperty {
 		super(file, type);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Logo(Logo original) {
+		super(original);
+	}
+
 	@Override
 	public String getLanguage() {
 		return super.getLanguage();
@@ -135,5 +143,10 @@ public class Logo extends ImageProperty {
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
+	}
+
+	@Override
+	public Logo copy() {
+		return new Logo(this);
 	}
 }

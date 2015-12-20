@@ -74,6 +74,17 @@ public class PlaceProperty extends VCardProperty implements HasAltId {
 		setText(text);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public PlaceProperty(PlaceProperty original) {
+		super(original);
+		geoUri = original.geoUri;
+		uri = original.uri;
+		text = original.text;
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);

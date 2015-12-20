@@ -427,6 +427,11 @@ public class JCardReaderTest {
 		public TypeForTesting(JCardValue value) {
 			this.value = value;
 		}
+
+		@Override
+		public TypeForTesting copy() {
+			throw new UnsupportedOperationException("Copy method should not be used.");
+		}
 	}
 
 	private static class TypeForTestingScribe extends VCardPropertyScribe<TypeForTesting> {

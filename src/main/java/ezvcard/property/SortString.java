@@ -92,8 +92,21 @@ public class SortString extends TextProperty {
 		super(sortString);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public SortString(SortString original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0);
+	}
+
+	@Override
+	public SortString copy() {
+		return new SortString(this);
 	}
 }

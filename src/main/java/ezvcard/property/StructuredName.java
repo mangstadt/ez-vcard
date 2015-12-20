@@ -67,9 +67,28 @@ import ezvcard.parameter.VCardParameters;
 public class StructuredName extends VCardProperty implements HasAltId {
 	private String family;
 	private String given;
-	private List<String> additional = new ArrayList<String>();
-	private List<String> prefixes = new ArrayList<String>();
-	private List<String> suffixes = new ArrayList<String>();
+	private List<String> additional;
+	private List<String> prefixes;
+	private List<String> suffixes;
+
+	public StructuredName() {
+		additional = new ArrayList<String>();
+		prefixes = new ArrayList<String>();
+		suffixes = new ArrayList<String>();
+	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public StructuredName(StructuredName original) {
+		super(original);
+		family = original.family;
+		given = original.given;
+		additional = new ArrayList<String>(original.additional);
+		prefixes = new ArrayList<String>(original.prefixes);
+		suffixes = new ArrayList<String>(original.suffixes);
+	}
 
 	/**
 	 * Gets the family name (aka "last name").
@@ -235,5 +254,10 @@ public class StructuredName extends VCardProperty implements HasAltId {
 		values.put("prefixes", prefixes);
 		values.put("suffixes", suffixes);
 		return values;
+	}
+
+	@Override
+	public StructuredName copy() {
+		return new StructuredName(this);
 	}
 }

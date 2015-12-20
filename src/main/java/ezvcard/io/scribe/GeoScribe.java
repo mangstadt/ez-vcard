@@ -126,7 +126,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 
 	private Geo parse(String value, VCardVersion version, List<String> warnings) {
 		if (value == null || value.length() == 0) {
-			return new Geo(null);
+			return new Geo((GeoUri) null);
 		}
 
 		switch (version) {

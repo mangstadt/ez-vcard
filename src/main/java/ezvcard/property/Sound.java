@@ -127,6 +127,14 @@ public class Sound extends BinaryProperty<SoundType> {
 		super(file, type);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Sound(Sound original) {
+		super(original);
+	}
+
 	@Override
 	public String getLanguage() {
 		return super.getLanguage();
@@ -135,5 +143,10 @@ public class Sound extends BinaryProperty<SoundType> {
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
+	}
+
+	@Override
+	public Sound copy() {
+		return new Sound(this);
 	}
 }

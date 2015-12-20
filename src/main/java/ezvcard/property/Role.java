@@ -64,6 +64,14 @@ public class Role extends TextProperty implements HasAltId {
 		super(role);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Role(Role original) {
+		super(original);
+	}
+
 	@Override
 	public String getLanguage() {
 		return super.getLanguage();
@@ -131,5 +139,10 @@ public class Role extends TextProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	public Role copy() {
+		return new Role(this);
 	}
 }

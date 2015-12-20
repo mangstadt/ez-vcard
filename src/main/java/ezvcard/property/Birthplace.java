@@ -113,4 +113,17 @@ public class Birthplace extends PlaceProperty {
 	public Birthplace(String text) {
 		super(text);
 	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Birthplace(Birthplace original) {
+		super(original);
+	}
+
+	@Override
+	public Birthplace copy() {
+		return new Birthplace(this);
+	}
 }

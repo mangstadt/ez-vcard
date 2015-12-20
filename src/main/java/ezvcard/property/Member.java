@@ -81,6 +81,14 @@ public class Member extends UriProperty implements HasAltId {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Member(Member original) {
+		super(original);
+	}
+
+	/**
 	 * Creates a member property whose value is an email address.
 	 * @param email the email address
 	 * @return the property
@@ -193,5 +201,10 @@ public class Member extends UriProperty implements HasAltId {
 		if (vcard.getKind() == null || !vcard.getKind().isGroup()) {
 			warnings.add(new Warning(17));
 		}
+	}
+
+	@Override
+	public Member copy() {
+		return new Member(this);
 	}
 }

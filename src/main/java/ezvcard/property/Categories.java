@@ -63,6 +63,18 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class Categories extends TextListProperty implements HasAltId {
+	public Categories() {
+		//empty
+	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Categories(Categories original) {
+		super(original);
+	}
+
 	@Override
 	public List<Integer[]> getPids() {
 		return super.getPids();
@@ -125,5 +137,10 @@ public class Categories extends TextListProperty implements HasAltId {
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
+	}
+
+	@Override
+	public Categories copy() {
+		return new Categories(this);
 	}
 }

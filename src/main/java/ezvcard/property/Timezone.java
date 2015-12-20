@@ -116,6 +116,16 @@ public class Timezone extends VCardProperty implements HasAltId {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Timezone(Timezone original) {
+		super(original);
+		offset = original.offset;
+		text = original.text;
+	}
+
+	/**
 	 * Gets the UTC offset.
 	 * @return the UTC offset or null if not set
 	 */
@@ -271,5 +281,10 @@ public class Timezone extends VCardProperty implements HasAltId {
 		values.put("offset", offset);
 		values.put("text", text);
 		return values;
+	}
+
+	@Override
+	public Timezone copy() {
+		return new Timezone(this);
 	}
 }

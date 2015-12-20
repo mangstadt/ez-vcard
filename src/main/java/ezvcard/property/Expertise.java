@@ -74,6 +74,14 @@ public class Expertise extends TextProperty implements HasAltId {
 		super(skill);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Expertise(Expertise original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -155,5 +163,10 @@ public class Expertise extends TextProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	public Expertise copy() {
+		return new Expertise(this);
 	}
 }

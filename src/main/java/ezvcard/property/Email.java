@@ -78,6 +78,14 @@ public class Email extends TextProperty implements HasAltId {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Email(Email original) {
+		super(original);
+	}
+
+	/**
 	 * Gets all the TYPE parameters.
 	 * @return the TYPE parameters or empty set if there are none
 	 */
@@ -154,5 +162,10 @@ public class Email extends TextProperty implements HasAltId {
 				warnings.add(new Warning(9, type.getValue()));
 			}
 		}
+	}
+
+	@Override
+	public Email copy() {
+		return new Email(this);
 	}
 }

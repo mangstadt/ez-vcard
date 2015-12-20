@@ -74,6 +74,14 @@ public class Interest extends TextProperty implements HasAltId {
 		super(interest);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Interest(Interest original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -155,5 +163,10 @@ public class Interest extends TextProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	public Interest copy() {
+		return new Interest(this);
 	}
 }

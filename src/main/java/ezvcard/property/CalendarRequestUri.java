@@ -69,6 +69,14 @@ public class CalendarRequestUri extends UriProperty implements HasAltId {
 		super(uri);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public CalendarRequestUri(CalendarRequestUri original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -153,5 +161,10 @@ public class CalendarRequestUri extends UriProperty implements HasAltId {
 	 */
 	public void setType(String type) {
 		parameters.setType(type);
+	}
+
+	@Override
+	public CalendarRequestUri copy() {
+		return new CalendarRequestUri(this);
 	}
 }

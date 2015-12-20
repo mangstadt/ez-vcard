@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+import ezvcard.util.GeoUri;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -41,7 +43,7 @@ import org.junit.Test;
 public class GeoTest {
 	@Test
 	public void validate() {
-		Geo empty = new Geo(null);
+		Geo empty = new Geo((GeoUri) null);
 		assertValidate(empty).run(13, 14);
 
 		Geo withValue = new Geo(-12.34, 56.78);
@@ -50,7 +52,7 @@ public class GeoTest {
 
 	@Test
 	public void latitude() {
-		Geo property = new Geo(null);
+		Geo property = new Geo((GeoUri) null);
 		assertNull(property.getLatitude());
 		assertNull(property.getGeoUri());
 
@@ -61,7 +63,7 @@ public class GeoTest {
 
 	@Test
 	public void longitude() {
-		Geo property = new Geo(null);
+		Geo property = new Geo((GeoUri) null);
 		assertNull(property.getLongitude());
 		assertNull(property.getGeoUri());
 

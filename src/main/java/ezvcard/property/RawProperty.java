@@ -70,6 +70,16 @@ public class RawProperty extends TextProperty {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public RawProperty(RawProperty original) {
+		super(original);
+		propertyName = original.propertyName;
+		dataType = original.dataType;
+	}
+
+	/**
 	 * Gets the name of the property.
 	 * @return the property name
 	 */
@@ -115,5 +125,10 @@ public class RawProperty extends TextProperty {
 		values.put("dataType", dataType);
 		values.put("value", value);
 		return values;
+	}
+
+	@Override
+	public RawProperty copy() {
+		return new RawProperty(this);
 	}
 }

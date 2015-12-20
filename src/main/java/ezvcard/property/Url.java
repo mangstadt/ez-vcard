@@ -65,6 +65,14 @@ public class Url extends UriProperty implements HasAltId {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Url(Url original) {
+		super(original);
+	}
+
+	/**
 	 * Gets the MEDIATYPE parameter.
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -154,5 +162,10 @@ public class Url extends UriProperty implements HasAltId {
 	 */
 	public void setType(String type) {
 		parameters.setType(type);
+	}
+
+	@Override
+	public Url copy() {
+		return new Url(this);
 	}
 }

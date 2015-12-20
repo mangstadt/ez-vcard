@@ -116,6 +116,15 @@ public class Impp extends VCardProperty implements HasAltId {
 		setUri(protocol, handle);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Impp(Impp original) {
+		super(original);
+		uri = original.uri;
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
@@ -426,5 +435,10 @@ public class Impp extends VCardProperty implements HasAltId {
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
 		values.put("uri", uri);
 		return values;
+	}
+
+	@Override
+	public Impp copy() {
+		return new Impp(this);
 	}
 }

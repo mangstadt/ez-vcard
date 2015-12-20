@@ -1,5 +1,7 @@
 package ezvcard.property;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,7 +59,20 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
 	 * The property's parameters.
 	 */
-	protected VCardParameters parameters = new VCardParameters();
+	protected VCardParameters parameters;
+
+	public VCardProperty() {
+		parameters = new VCardParameters();
+	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	protected VCardProperty(VCardProperty original) {
+		group = original.group;
+		parameters = new VCardParameters(original.parameters);
+	}
 
 	/**
 	 * Gets the vCard versions that support this property.
@@ -256,6 +271,54 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		}
 		sb.append(']');
 		return sb.toString();
+	}
+
+	/**
+	 * <p>
+	 * Creates a copy of this property object.
+	 * </p>
+	 * <p>
+	 * The default implementation of this method uses reflection to look for a
+	 * copy constructor. Child classes should override this method to avoid the
+	 * performance overhead involved in using reflection.
+	 * </p>
+	 * <p>
+	 * The child class's copy constructor, if present, MUST invoke the
+	 * {@link #VCardProperty(VCardProperty)} super constructor to ensure that
+	 * the group name and parameters are also copied.
+	 * </p>
+	 * <p>
+	 * This method MUST be overridden by the child class if the child class does
+	 * not have a copy constructor. Otherwise, an
+	 * {@link UnsupportedOperationException} will be thrown when an attempt is
+	 * made to copy the property (such as in the {@link VCard#VCard(VCard) VCard
+	 * class's copy constructor}).
+	 * </p>
+	 * @return the copy
+	 * @throws UnsupportedOperationException if the class does not have a copy
+	 * constructor or there is a problem invoking it
+	 */
+	public VCardProperty copy() {
+		Class<? extends VCardProperty> clazz = getClass();
+
+		try {
+			Constructor<? extends VCardProperty> copyConstructor = clazz.getConstructor(clazz);
+			return copyConstructor.newInstance(this);
+		} catch (SecurityException e) {
+			throw new UnsupportedOperationException("Property class " + clazz.getName() + " denied access to its copy constructor.", e);
+		} catch (NoSuchMethodException e) {
+			throw new UnsupportedOperationException("Property class " + clazz.getName() + " does not have a copy constructor.", e);
+		} catch (IllegalArgumentException e) {
+			//should never be thrown because we check for a method with the right parameters
+			throw new RuntimeException(e);
+		} catch (InstantiationException e) {
+			throw new UnsupportedOperationException("Property class " + clazz.getName() + " is abstract and cannot be instantiated.", e);
+		} catch (IllegalAccessException e) {
+			//should never be thrown because we call setAccessible(true)
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new UnsupportedOperationException("Copy constructor of property class " + clazz.getName() + " threw an exception.", e);
+		}
 	}
 
 	//Note: The following parameter helper methods are package-scoped to prevent them from cluttering up the Javadocs

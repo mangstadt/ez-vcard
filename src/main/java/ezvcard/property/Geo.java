@@ -108,6 +108,15 @@ public class Geo extends VCardProperty implements HasAltId {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Geo(Geo original) {
+		super(original);
+		uri = original.uri;
+	}
+
+	/**
 	 * Gets the latitude.
 	 * @return the latitude
 	 */
@@ -269,5 +278,10 @@ public class Geo extends VCardProperty implements HasAltId {
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
 		values.put("uri", uri);
 		return values;
+	}
+
+	@Override
+	public Geo copy() {
+		return new Geo(this);
 	}
 }

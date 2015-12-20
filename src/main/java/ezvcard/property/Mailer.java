@@ -67,8 +67,21 @@ public class Mailer extends TextProperty {
 		super(emailClient);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Mailer(Mailer original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
+	}
+
+	@Override
+	public Mailer copy() {
+		return new Mailer(this);
 	}
 }

@@ -74,6 +74,14 @@ public class Hobby extends TextProperty implements HasAltId {
 		super(hobby);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Hobby(Hobby original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -154,5 +162,10 @@ public class Hobby extends TextProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	public Hobby copy() {
+		return new Hobby(this);
 	}
 }

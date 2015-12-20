@@ -1,9 +1,14 @@
 package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertValidate;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCardVersion;
@@ -57,5 +62,36 @@ public class XmlTest {
 	@Test(expected = SAXException.class)
 	public void invalid_xml() throws Throwable {
 		new Xml("not valid XML");
+	}
+
+	@Test
+	public void copy() throws Throwable {
+		Xml property = new Xml("<root><foo attr=\"value\">text</foo></root>");
+		Xml copy = new Xml(property);
+
+		assertNotSame(property.getValue(), copy.getValue());
+		assertXMLEqual(property.getValue(), copy.getValue());
+		assertXMLNotSame(property.getValue().getDocumentElement(), copy.getValue().getDocumentElement());
+	}
+
+	@Test
+	public void copy_null_value() throws Throwable {
+		Xml property = new Xml((Document) null);
+		Xml copy = new Xml(property);
+
+		assertNull(property.getValue());
+		assertNull(copy.getValue());
+	}
+
+	private static void assertXMLNotSame(Node node1, Node node2) {
+		assertNotSame(node1, node2);
+
+		NodeList children1 = node1.getChildNodes();
+		NodeList children2 = node2.getChildNodes();
+		for (int i = 0; i < children1.getLength(); i++) {
+			Node child1 = children1.item(i);
+			Node child2 = children2.item(i);
+			assertXMLNotSame(child1, child2);
+		}
 	}
 }

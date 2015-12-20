@@ -107,6 +107,16 @@ public class ClientPidMap extends VCardProperty {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public ClientPidMap(ClientPidMap original) {
+		super(original);
+		pid = original.pid;
+		uri = original.uri;
+	}
+
+	/**
 	 * Generates a CLIENTPIDMAP type that contains a random UID URI.
 	 * @param pid the PID
 	 * @return a CLIENTPIDMAP type with a random UID URI
@@ -170,5 +180,10 @@ public class ClientPidMap extends VCardProperty {
 		values.put("pid", pid);
 		values.put("uri", uri);
 		return values;
+	}
+
+	@Override
+	public ClientPidMap copy() {
+		return new ClientPidMap(this);
 	}
 }

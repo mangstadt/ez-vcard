@@ -96,6 +96,16 @@ public class Telephone extends VCardProperty implements HasAltId {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Telephone(Telephone original) {
+		super(original);
+		text = original.text;
+		uri = original.uri;
+	}
+
+	/**
 	 * Gets the telephone number as a text value.
 	 * @return the telephone number or null if the text value is not set
 	 */
@@ -227,5 +237,10 @@ public class Telephone extends VCardProperty implements HasAltId {
 		values.put("uri", uri);
 		values.put("text", text);
 		return values;
+	}
+
+	@Override
+	public Telephone copy() {
+		return new Telephone(this);
 	}
 }

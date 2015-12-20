@@ -88,6 +88,14 @@ public class Label extends TextProperty {
 		super(label);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Label(Label original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
@@ -130,5 +138,10 @@ public class Label extends TextProperty {
 	@Override
 	public void setLanguage(String language) {
 		super.setLanguage(language);
+	}
+
+	@Override
+	public Label copy() {
+		return new Label(this);
 	}
 }

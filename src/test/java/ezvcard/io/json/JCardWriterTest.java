@@ -383,6 +383,11 @@ public class JCardWriterTest {
 		public TestProperty(JCardValue value) {
 			this.value = value;
 		}
+
+		@Override
+		public TestProperty copy() {
+			throw new UnsupportedOperationException("Copy method should not be used.");
+		}
 	}
 
 	private static class TestScribe extends VCardPropertyScribe<TestProperty> {

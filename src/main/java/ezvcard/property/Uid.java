@@ -69,11 +69,24 @@ public class Uid extends UriProperty {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Uid(Uid original) {
+		super(original);
+	}
+
+	/**
 	 * Creates a UID property that contains a random UUID URI.
 	 * @return the property
 	 */
 	public static Uid random() {
 		String uuid = UUID.randomUUID().toString();
 		return new Uid("urn:uuid:" + uuid);
+	}
+
+	@Override
+	public Uid copy() {
+		return new Uid(this);
 	}
 }

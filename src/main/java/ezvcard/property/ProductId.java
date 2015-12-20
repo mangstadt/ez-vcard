@@ -67,8 +67,21 @@ public class ProductId extends TextProperty {
 		super(prodId);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public ProductId(ProductId original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
+	}
+
+	@Override
+	public ProductId copy() {
+		return new ProductId(this);
 	}
 }

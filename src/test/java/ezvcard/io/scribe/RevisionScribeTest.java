@@ -56,7 +56,7 @@ public class RevisionScribeTest {
 	private final String datetimeStrExt = "1980-06-05T12:10:20Z";
 
 	private final Revision withValue = new Revision(datetime);
-	private final Revision empty = new Revision(null);
+	private final Revision empty = new Revision((Date) null);
 
 	@Test
 	public void writeText() {

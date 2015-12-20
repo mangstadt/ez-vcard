@@ -153,6 +153,15 @@ public class Key extends BinaryProperty<KeyType> {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Key(Key original) {
+		super(original);
+		text = original.text;
+	}
+
+	/**
 	 * Sets a plain text representation of the key.
 	 * @param text the key in plain text
 	 * @param type the key type
@@ -188,5 +197,10 @@ public class Key extends BinaryProperty<KeyType> {
 		Map<String, Object> values = super.toStringValues();
 		values.put("text", text);
 		return values;
+	}
+
+	@Override
+	public Key copy() {
+		return new Key(this);
 	}
 }

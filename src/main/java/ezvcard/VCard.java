@@ -109,9 +109,27 @@ import ezvcard.util.StringUtils;
  * @author Michael Angstadt
  */
 public class VCard implements Iterable<VCardProperty> {
-	private VCardVersion version = VCardVersion.V3_0;
+	private VCardVersion version;
 
-	private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
+	private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties;
+
+	public VCard() {
+		version = VCardVersion.V3_0;
+		properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
+	}
+
+	/**
+	 * Copy constructor. Performs a deep copy of all the given vCard's
+	 * properties.
+	 * @param original the vCard to make a copy of
+	 */
+	public VCard(VCard original) {
+		version = original.version;
+		properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>(original.properties.size());
+		for (VCardProperty property : original.getProperties()) {
+			addProperty(property.copy());
+		}
+	}
 
 	/**
 	 * <p>

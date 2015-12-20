@@ -98,6 +98,16 @@ public class Related extends VCardProperty implements HasAltId {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Related(Related original) {
+		super(original);
+		uri = original.uri;
+		text = original.text;
+	}
+
+	/**
 	 * Creates a related property whose value is an email address.
 	 * @param email the email address
 	 * @return the property
@@ -233,5 +243,10 @@ public class Related extends VCardProperty implements HasAltId {
 		if (uri == null && text == null) {
 			warnings.add(new Warning(8));
 		}
+	}
+
+	@Override
+	public Related copy() {
+		return new Related(this);
 	}
 }

@@ -62,6 +62,18 @@ import ezvcard.parameter.VCardParameters;
  * @author Michael Angstadt
  */
 public class Organization extends TextListProperty implements HasAltId {
+	public Organization() {
+		//empty
+	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Organization(Organization original) {
+		super(original);
+	}
+
 	@Override
 	public String getLanguage() {
 		return super.getLanguage();
@@ -162,5 +174,10 @@ public class Organization extends TextListProperty implements HasAltId {
 	 */
 	public void setSortAs(String... names) {
 		parameters.setSortAs(names);
+	}
+
+	@Override
+	public Organization copy() {
+		return new Organization(this);
 	}
 }

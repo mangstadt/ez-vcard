@@ -63,6 +63,18 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  */
 public class Nickname extends TextListProperty implements HasAltId {
+	public Nickname() {
+		//empty
+	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Nickname(Nickname original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
@@ -135,5 +147,10 @@ public class Nickname extends TextListProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	public Nickname copy() {
+		return new Nickname(this);
 	}
 }

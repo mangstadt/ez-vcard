@@ -34,5 +34,15 @@ package ezvcard.property;
  * @author Michael Angstadt
  */
 public class TextListProperty extends ListProperty<String> {
-	//empty
+	public TextListProperty() {
+		//empty
+	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public TextListProperty(TextListProperty original) {
+		super(original);
+	}
 }

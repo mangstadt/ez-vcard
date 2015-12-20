@@ -91,6 +91,14 @@ public class Kind extends TextProperty {
 		super(kind);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Kind(Kind original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -194,5 +202,10 @@ public class Kind extends TextProperty {
 	 */
 	public static Kind device() {
 		return new Kind(DEVICE);
+	}
+
+	@Override
+	public Kind copy() {
+		return new Kind(this);
 	}
 }

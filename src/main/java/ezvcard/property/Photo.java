@@ -126,4 +126,17 @@ public class Photo extends ImageProperty {
 	public Photo(File file, ImageType type) throws IOException {
 		super(file, type);
 	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Photo(Photo original) {
+		super(original);
+	}
+
+	@Override
+	public Photo copy() {
+		return new Photo(this);
+	}
 }

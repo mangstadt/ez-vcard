@@ -41,4 +41,13 @@ public class TextProperty extends SimpleProperty<String> {
 	public TextProperty(String value) {
 		super(value);
 	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public TextProperty(TextProperty original) {
+		super(original);
+		value = original.value;
+	}
 }

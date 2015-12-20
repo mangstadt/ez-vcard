@@ -54,6 +54,15 @@ public class SimpleProperty<T> extends VCardProperty {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public SimpleProperty(SimpleProperty<T> original) {
+		super(original);
+		value = original.value;
+	}
+
+	/**
 	 * Gets the value of this property.
 	 * @return the value or null if not set
 	 */

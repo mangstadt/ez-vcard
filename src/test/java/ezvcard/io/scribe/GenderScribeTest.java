@@ -49,7 +49,7 @@ public class GenderScribeTest {
 	private final String textEscaped = "te\\;xt";
 
 	private final Gender withGender = Gender.male();
-	private final Gender withText = new Gender(null);
+	private final Gender withText = new Gender((String) null);
 	{
 		withText.setText(text);
 	}
@@ -57,7 +57,7 @@ public class GenderScribeTest {
 	{
 		withGenderAndText.setText(text);
 	}
-	private final Gender empty = new Gender(null);
+	private final Gender empty = new Gender((String) null);
 
 	@Test
 	public void writeText() {

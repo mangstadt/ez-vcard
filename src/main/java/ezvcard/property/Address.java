@@ -100,13 +100,38 @@ import ezvcard.util.StringUtils;
  * @author Michael Angstadt
  */
 public class Address extends VCardProperty implements HasAltId {
-	private List<String> poBoxes = new ArrayList<String>(1);
-	private List<String> extendedAddresses = new ArrayList<String>(1);
-	private List<String> streetAddresses = new ArrayList<String>(1);
-	private List<String> localities = new ArrayList<String>(1);
-	private List<String> regions = new ArrayList<String>(1);
-	private List<String> postalCodes = new ArrayList<String>(1);
-	private List<String> countries = new ArrayList<String>(1);
+	private List<String> poBoxes;
+	private List<String> extendedAddresses;
+	private List<String> streetAddresses;
+	private List<String> localities;
+	private List<String> regions;
+	private List<String> postalCodes;
+	private List<String> countries;
+
+	public Address() {
+		poBoxes = new ArrayList<String>(1);
+		extendedAddresses = new ArrayList<String>(1);
+		streetAddresses = new ArrayList<String>(1);
+		localities = new ArrayList<String>(1);
+		regions = new ArrayList<String>(1);
+		postalCodes = new ArrayList<String>(1);
+		countries = new ArrayList<String>(1);
+	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Address(Address original) {
+		super(original);
+		poBoxes = new ArrayList<String>(original.poBoxes);
+		extendedAddresses = new ArrayList<String>(original.extendedAddresses);
+		streetAddresses = new ArrayList<String>(original.streetAddresses);
+		localities = new ArrayList<String>(original.localities);
+		regions = new ArrayList<String>(original.regions);
+		postalCodes = new ArrayList<String>(original.postalCodes);
+		countries = new ArrayList<String>(original.countries);
+	}
 
 	/**
 	 * Gets the P.O. (post office) box.
@@ -532,6 +557,11 @@ public class Address extends VCardProperty implements HasAltId {
 		values.put("postalCodes", postalCodes);
 		values.put("countries", countries);
 		return values;
+	}
+
+	@Override
+	public Address copy() {
+		return new Address(this);
 	}
 
 	private static String first(List<String> list) {

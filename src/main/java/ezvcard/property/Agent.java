@@ -121,6 +121,16 @@ public class Agent extends VCardProperty {
 		setVCard(vcard);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Agent(Agent original) {
+		super(original);
+		url = original.url;
+		vcard = (original.vcard == null) ? null : new VCard(original.vcard);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
@@ -193,5 +203,10 @@ public class Agent extends VCardProperty {
 		values.put("url", url);
 		values.put("vcard", vcard);
 		return values;
+	}
+
+	@Override
+	public Agent copy() {
+		return new Agent(this);
 	}
 }

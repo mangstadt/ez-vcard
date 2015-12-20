@@ -41,4 +41,12 @@ public class UriProperty extends TextProperty {
 	public UriProperty(String uri) {
 		super(uri);
 	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public UriProperty(UriProperty original) {
+		super(original);
+	}
 }

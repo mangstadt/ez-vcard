@@ -3,13 +3,18 @@ package ezvcard.property;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -125,6 +130,72 @@ public class VCardPropertyTest {
 		assertEquals(-1, one.compareTo(null1));
 		assertEquals(1, null1.compareTo(one));
 		assertEquals(0, null1.compareTo(null2));
+	}
+
+	@Test
+	public void copy() {
+		CopyConstructorTest property = new CopyConstructorTest("value");
+		property.setGroup("group");
+		property.getParameters().setLanguage("en-us");
+		CopyConstructorTest copy = (CopyConstructorTest) property.copy();
+
+		assertNotSame(property, copy);
+		assertEquals(property.value, copy.value);
+
+		assertEquals(property.getGroup(), copy.getGroup());
+		assertNotSame(property.getParameters(), copy.getParameters());
+		assertEquals(property.getParameters(), copy.getParameters());
+	}
+
+	@Test
+	public void copy_constructor_throws_exception() {
+		RuntimeException exception = new RuntimeException();
+		CopyConstructorThrowsExceptionTest property = new CopyConstructorThrowsExceptionTest(exception);
+		try {
+			property.copy();
+			fail("Expected an exception to be thrown.");
+		} catch (UnsupportedOperationException e) {
+			assertTrue(e.getCause() instanceof InvocationTargetException);
+			assertSame(e.getCause().getCause(), exception);
+		}
+	}
+
+	@Test
+	public void copy_no_copy_constructor() {
+		VCardPropertyImpl property = new VCardPropertyImpl();
+		try {
+			property.copy();
+			fail("Expected an exception to be thrown.");
+		} catch (UnsupportedOperationException e) {
+			assertTrue(e.getCause() instanceof NoSuchMethodException);
+		}
+	}
+
+	private static class CopyConstructorTest extends VCardProperty {
+		private String value;
+
+		public CopyConstructorTest(String value) {
+			this.value = value;
+		}
+
+		@SuppressWarnings("unused")
+		public CopyConstructorTest(CopyConstructorTest original) {
+			super(original);
+			value = original.value;
+		}
+	}
+
+	private static class CopyConstructorThrowsExceptionTest extends VCardProperty {
+		private final RuntimeException e;
+
+		public CopyConstructorThrowsExceptionTest(RuntimeException e) {
+			this.e = e;
+		}
+
+		@SuppressWarnings("unused")
+		public CopyConstructorThrowsExceptionTest(CopyConstructorThrowsExceptionTest original) {
+			throw original.e;
+		}
 	}
 
 	private class VCardPropertyImpl extends VCardProperty {

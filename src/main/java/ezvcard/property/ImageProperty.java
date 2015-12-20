@@ -77,4 +77,12 @@ public class ImageProperty extends BinaryProperty<ImageType> {
 	public ImageProperty(File file, ImageType type) throws IOException {
 		super(file, type);
 	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public ImageProperty(ImageProperty original) {
+		super(original);
+	}
 }

@@ -66,6 +66,14 @@ public class Profile extends TextProperty {
 		super("VCARD");
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Profile(Profile original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0);
@@ -77,5 +85,10 @@ public class Profile extends TextProperty {
 			//see RFC 2426 p.5
 			warnings.add(new Warning(18, value));
 		}
+	}
+
+	@Override
+	public Profile copy() {
+		return new Profile(this);
 	}
 }

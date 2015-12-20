@@ -1,7 +1,9 @@
 package ezvcard;
 
+import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -224,6 +226,20 @@ public class VCardTest {
 		assertValidate(vcard).versions(VCardVersion.V4_0).prop(prop, 0).run();
 		assertEquals(VCardVersion.V4_0, prop.validateVersion);
 		assertSame(vcard, prop.validateVCard);
+	}
+
+	@Test
+	public void copy() {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcard.setVersion(VCardVersion.V2_1);
+
+		VCard copy = new VCard(vcard);
+
+		assertEquals(vcard.getVersion(), copy.getVersion());
+		assertPropertyCount(1, copy);
+		assertNotSame(vcard.getFormattedName(), copy.getFormattedName());
+		assertEquals(vcard.getFormattedName().getValue(), copy.getFormattedName().getValue());
 	}
 
 	private class HasAltIdImpl extends VCardProperty implements HasAltId {

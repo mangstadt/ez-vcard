@@ -113,4 +113,17 @@ public class Deathplace extends PlaceProperty {
 	public Deathplace(String text) {
 		super(text);
 	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Deathplace(Deathplace original) {
+		super(original);
+	}
+
+	@Override
+	public Deathplace copy() {
+		return new Deathplace(this);
+	}
 }

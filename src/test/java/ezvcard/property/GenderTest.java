@@ -44,7 +44,7 @@ import ezvcard.VCardVersion;
 public class GenderTest {
 	@Test
 	public void validate() {
-		Gender empty = new Gender(null);
+		Gender empty = new Gender((String) null);
 		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 8);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
 

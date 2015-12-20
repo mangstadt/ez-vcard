@@ -65,6 +65,14 @@ public class FormattedName extends TextProperty implements HasAltId {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public FormattedName(FormattedName original) {
+		super(original);
+	}
+
+	/**
 	 * Gets the TYPE parameter.
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -131,5 +139,10 @@ public class FormattedName extends TextProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	public FormattedName copy() {
+		return new FormattedName(this);
 	}
 }

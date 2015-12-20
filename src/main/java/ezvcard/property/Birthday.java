@@ -131,4 +131,17 @@ public class Birthday extends DateOrTimeProperty {
 	public Birthday(String text) {
 		super(text);
 	}
+
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Birthday(Birthday original) {
+		super(original);
+	}
+
+	@Override
+	public Birthday copy() {
+		return new Birthday(this);
+	}
 }

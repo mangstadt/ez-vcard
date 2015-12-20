@@ -68,8 +68,21 @@ public class Classification extends TextProperty {
 		super(classValue);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Classification(Classification original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0);
+	}
+
+	@Override
+	public Classification copy() {
+		return new Classification(this);
 	}
 }

@@ -65,6 +65,14 @@ public class Title extends TextProperty implements HasAltId {
 		super(title);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Title(Title original) {
+		super(original);
+	}
+
 	@Override
 	public String getLanguage() {
 		return super.getLanguage();
@@ -132,5 +140,10 @@ public class Title extends TextProperty implements HasAltId {
 	//@Override
 	public void setAltId(String altId) {
 		parameters.setAltId(altId);
+	}
+
+	@Override
+	public Title copy() {
+		return new Title(this);
 	}
 }

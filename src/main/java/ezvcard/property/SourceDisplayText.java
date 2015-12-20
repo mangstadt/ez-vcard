@@ -67,8 +67,21 @@ public class SourceDisplayText extends TextProperty {
 		super(displayText);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public SourceDisplayText(SourceDisplayText original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V3_0);
+	}
+
+	@Override
+	public SourceDisplayText copy() {
+		return new SourceDisplayText(this);
 	}
 }

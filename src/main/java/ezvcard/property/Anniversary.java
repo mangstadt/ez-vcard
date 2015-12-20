@@ -136,8 +136,21 @@ public class Anniversary extends DateOrTimeProperty {
 		super(text);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Anniversary(Anniversary original) {
+		super(original);
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
+	}
+
+	@Override
+	public Anniversary copy() {
+		return new Anniversary(this);
 	}
 }

@@ -97,6 +97,16 @@ public class Gender extends VCardProperty {
 		this.gender = gender;
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Gender(Gender original) {
+		super(original);
+		gender = original.gender;
+		text = original.text;
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -230,5 +240,10 @@ public class Gender extends VCardProperty {
 		values.put("gender", gender);
 		values.put("text", text);
 		return values;
+	}
+
+	@Override
+	public Gender copy() {
+		return new Gender(this);
 	}
 }

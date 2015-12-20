@@ -65,10 +65,24 @@ public class Revision extends SimpleProperty<Date> {
 	}
 
 	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Revision(Revision original) {
+		super(original);
+		value = (original.value == null) ? null : new Date(original.value.getTime());
+	}
+
+	/**
 	 * Creates a revision property whose value is the current time.
 	 * @return the property
 	 */
 	public static Revision now() {
 		return new Revision(new Date());
+	}
+
+	@Override
+	public Revision copy() {
+		return new Revision(this);
 	}
 }

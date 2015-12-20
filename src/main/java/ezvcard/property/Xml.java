@@ -94,6 +94,19 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 		super(document);
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param original the property to make a copy of
+	 */
+	public Xml(Xml original) {
+		super(original);
+		if (original.value != null) {
+			value = XmlUtils.createDocument();
+			Node node = value.importNode(original.value.getDocumentElement(), true);
+			value.appendChild(node);
+		}
+	}
+
 	@Override
 	public Set<VCardVersion> _supportedVersions() {
 		return EnumSet.of(VCardVersion.V4_0);
@@ -121,5 +134,10 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
 		values.put("value", XmlUtils.toString(value));
 		return values;
+	}
+
+	@Override
+	public Xml copy() {
+		return new Xml(this);
 	}
 }
