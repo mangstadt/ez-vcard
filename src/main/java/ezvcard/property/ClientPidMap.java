@@ -186,4 +186,28 @@ public class ClientPidMap extends VCardProperty {
 	public ClientPidMap copy() {
 		return new ClientPidMap(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((pid == null) ? 0 : pid.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		ClientPidMap other = (ClientPidMap) obj;
+		if (pid == null) {
+			if (other.pid != null) return false;
+		} else if (!pid.equals(other.pid)) return false;
+		if (uri == null) {
+			if (other.uri != null) return false;
+		} else if (!uri.equals(other.uri)) return false;
+		return true;
+	}
 }

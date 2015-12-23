@@ -209,4 +209,28 @@ public class Agent extends VCardProperty {
 	public Agent copy() {
 		return new Agent(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((vcard == null) ? 0 : vcard.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		Agent other = (Agent) obj;
+		if (url == null) {
+			if (other.url != null) return false;
+		} else if (!url.equals(other.url)) return false;
+		if (vcard == null) {
+			if (other.vcard != null) return false;
+		} else if (!vcard.equals(other.vcard)) return false;
+		return true;
+	}
 }

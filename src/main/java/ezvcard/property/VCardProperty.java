@@ -321,7 +321,36 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		}
 	}
 
-	//Note: The following parameter helper methods are package-scoped to prevent them from cluttering up the Javadocs
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((group == null) ? 0 : group.hashCode());
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		VCardProperty other = (VCardProperty) obj;
+		if (group == null) {
+			if (other.group != null) return false;
+		} else if (!group.equals(other.group)) return false;
+		if (parameters == null) {
+			if (other.parameters != null) return false;
+		} else if (!parameters.equals(other.parameters)) return false;
+		return true;
+	}
+
+	/*
+	 * Note: The following parameter helper methods are package-scoped so they
+	 * don't clutter up the Javadocs for the VCardProperty class. They are
+	 * defined here instead of in the child classes that use them, so that their
+	 * Javadocs don't have to be repeated.
+	 */
 
 	/**
 	 * <p>

@@ -564,6 +564,50 @@ public class Address extends VCardProperty implements HasAltId {
 		return new Address(this);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((countries == null) ? 0 : countries.hashCode());
+		result = prime * result + ((extendedAddresses == null) ? 0 : extendedAddresses.hashCode());
+		result = prime * result + ((localities == null) ? 0 : localities.hashCode());
+		result = prime * result + ((poBoxes == null) ? 0 : poBoxes.hashCode());
+		result = prime * result + ((postalCodes == null) ? 0 : postalCodes.hashCode());
+		result = prime * result + ((regions == null) ? 0 : regions.hashCode());
+		result = prime * result + ((streetAddresses == null) ? 0 : streetAddresses.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		Address other = (Address) obj;
+		if (countries == null) {
+			if (other.countries != null) return false;
+		} else if (!countries.equals(other.countries)) return false;
+		if (extendedAddresses == null) {
+			if (other.extendedAddresses != null) return false;
+		} else if (!extendedAddresses.equals(other.extendedAddresses)) return false;
+		if (localities == null) {
+			if (other.localities != null) return false;
+		} else if (!localities.equals(other.localities)) return false;
+		if (poBoxes == null) {
+			if (other.poBoxes != null) return false;
+		} else if (!poBoxes.equals(other.poBoxes)) return false;
+		if (postalCodes == null) {
+			if (other.postalCodes != null) return false;
+		} else if (!postalCodes.equals(other.postalCodes)) return false;
+		if (regions == null) {
+			if (other.regions != null) return false;
+		} else if (!regions.equals(other.regions)) return false;
+		if (streetAddresses == null) {
+			if (other.streetAddresses != null) return false;
+		} else if (!streetAddresses.equals(other.streetAddresses)) return false;
+		return true;
+	}
+
 	private static String first(List<String> list) {
 		return list.isEmpty() ? null : list.get(0);
 	}

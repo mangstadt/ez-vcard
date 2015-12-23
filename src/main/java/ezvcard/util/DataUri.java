@@ -1,6 +1,7 @@
 package ezvcard.util;
 
 import java.net.URI;
+import java.util.Arrays;
 
 import ezvcard.Messages;
 import ezvcard.util.org.apache.commons.codec.binary.Base64;
@@ -120,5 +121,27 @@ public final class DataUri {
 	@Override
 	public String toString() {
 		return "data:" + contentType + ";base64," + Base64.encodeBase64String(data);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((contentType == null) ? 0 : contentType.toLowerCase().hashCode());
+		result = prime * result + Arrays.hashCode(data);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		DataUri other = (DataUri) obj;
+		if (contentType == null) {
+			if (other.contentType != null) return false;
+		} else if (!contentType.equalsIgnoreCase(other.contentType)) return false;
+		if (!Arrays.equals(data, other.data)) return false;
+		return true;
 	}
 }

@@ -245,4 +245,34 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 		values.put("partialDate", partialDate);
 		return values;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + (dateHasTime ? 1231 : 1237);
+		result = prime * result + ((partialDate == null) ? 0 : partialDate.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		DateOrTimeProperty other = (DateOrTimeProperty) obj;
+		if (date == null) {
+			if (other.date != null) return false;
+		} else if (!date.equals(other.date)) return false;
+		if (dateHasTime != other.dateHasTime) return false;
+		if (partialDate == null) {
+			if (other.partialDate != null) return false;
+		} else if (!partialDate.equals(other.partialDate)) return false;
+		if (text == null) {
+			if (other.text != null) return false;
+		} else if (!text.equals(other.text)) return false;
+		return true;
+	}
 }

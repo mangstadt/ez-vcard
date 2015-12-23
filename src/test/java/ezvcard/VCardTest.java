@@ -1,8 +1,11 @@
 package ezvcard;
 
+import static ezvcard.util.TestUtils.assertEqualsAndHash;
+import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -14,6 +17,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import ezvcard.property.Gender;
 import ezvcard.property.HasAltId;
 import ezvcard.property.Note;
 import ezvcard.property.RawProperty;
@@ -240,6 +244,112 @@ public class VCardTest {
 		assertPropertyCount(1, copy);
 		assertNotSame(vcard.getFormattedName(), copy.getFormattedName());
 		assertEquals(vcard.getFormattedName().getValue(), copy.getFormattedName().getValue());
+		assertEquals(vcard, copy);
+	}
+
+	@Test
+	public void equals_essentials() {
+		VCard one = new VCard();
+		one.setFormattedName("Name");
+		assertEqualsMethodEssentials(one);
+	}
+
+	@Test
+	public void equals_different_version() {
+		VCard one = new VCard();
+		one.setFormattedName("Name");
+		one.setVersion(VCardVersion.V2_1);
+
+		VCard two = new VCard();
+		two.setFormattedName("Name");
+		two.setVersion(VCardVersion.V3_0);
+
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
+	}
+
+	@Test
+	public void equals_different_number_of_properties() {
+		VCard one = new VCard();
+		one.setFormattedName("Name");
+
+		VCard two = new VCard();
+		two.setGender(Gender.male());
+		two.setFormattedName("Name");
+
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
+	}
+
+	@Test
+	public void equals_properties_not_equal() {
+		VCard one = new VCard();
+		one.setFormattedName("John");
+
+		VCard two = new VCard();
+		two.setFormattedName("Jane");
+
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
+	}
+
+	@Test
+	public void equals_ignore_property_order() {
+		VCard one = new VCard();
+		one.setFormattedName("Name");
+		one.setGender(Gender.male());
+		one.addNote("Note 1");
+		one.addNote("Note 2");
+
+		VCard two = new VCard();
+		two.setGender(Gender.male());
+		two.setFormattedName("Name");
+		two.addNote("Note 2");
+		two.addNote("Note 1");
+
+		assertEqualsAndHash(one, two);
+	}
+
+	@Test
+	public void equals_multiple_identical_properties() {
+		VCard one = new VCard();
+		one.setFormattedName("Name");
+		one.setGender(Gender.male());
+		one.addNote("Note 1");
+		one.addNote("Note 1");
+
+		VCard two = new VCard();
+		two.setFormattedName("Name");
+		two.setGender(Gender.male());
+		two.addNote("Note 1");
+		two.addNote("Note 1");
+
+		assertEqualsAndHash(one, two);
+	}
+
+	/**
+	 * This tests to make sure that, if some hashing mechanism is used to
+	 * determine equality, identical properties in the same vCard are not
+	 * treated as a single property when they are put in a HashSet.
+	 */
+	@Test
+	public void equals_multiple_identical_properties_not_equal() {
+		VCard one = new VCard();
+		one.setFormattedName("Name");
+		one.setGender(Gender.male());
+		one.addNote("Note 1");
+		one.addNote("Note 1");
+		one.addNote("Note 2");
+
+		VCard two = new VCard();
+		two.setFormattedName("Name");
+		two.setGender(Gender.male());
+		two.addNote("Note 1");
+		two.addNote("Note 2");
+		two.addNote("Note 2");
+
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
 	}
 
 	private class HasAltIdImpl extends VCardProperty implements HasAltId {

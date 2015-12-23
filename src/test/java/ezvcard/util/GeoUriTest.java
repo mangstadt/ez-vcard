@@ -1,5 +1,6 @@
 package ezvcard.util;
 
+import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -8,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -286,5 +289,17 @@ public class GeoUriTest {
 		assertEquals("geo:12.3489,45.6711", uri.toString(4));
 		assertEquals("geo:12,46", uri.toString(0));
 		assertEquals("geo:12,46", uri.toString(-1));
+	}
+
+	@Test
+	public void equals_contract() {
+		EqualsVerifier.forClass(GeoUri.class).usingGetClass().verify();
+	}
+
+	@Test
+	public void equals_ignore_case() {
+		GeoUri one = new GeoUri.Builder(1.0, 2.0).crs("crs").parameter("name", "value").build();
+		GeoUri two = new GeoUri.Builder(1.0, 2.0).crs("CRS").parameter("NAME", "VALUE").build();
+		assertEqualsAndHash(one, two);
 	}
 }

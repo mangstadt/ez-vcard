@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import static ezvcard.util.TestUtils.buildTimezone;
 import static org.junit.Assert.assertEquals;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 import org.junit.Test;
 
@@ -181,5 +182,10 @@ public class UtcOffsetTest {
 		UtcOffset offset = new UtcOffset(positive, hour, minute);
 		String actual = offset.toString(extended);
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void equals_contract() {
+		EqualsVerifier.forClass(UtcOffset.class).usingGetClass().verify();
 	}
 }

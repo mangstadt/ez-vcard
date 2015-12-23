@@ -140,4 +140,26 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 	public Xml copy() {
 		return new Xml(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((value == null) ? 0 : XmlUtils.toString(value).hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (getClass() != obj.getClass()) return false;
+		Xml other = (Xml) obj;
+		if (value == null) {
+			if (other.value != null) return false;
+		} else {
+			if (other.value == null) return false;
+			if (!XmlUtils.toString(value).equals(XmlUtils.toString(other.value))) return false;
+		}
+		return true;
+	}
 }

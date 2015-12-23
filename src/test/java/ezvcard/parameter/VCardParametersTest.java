@@ -1,10 +1,13 @@
 package ezvcard.parameter;
 
+import static ezvcard.util.TestUtils.assertEqualsAndHash;
+import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -308,5 +311,99 @@ public class VCardParametersTest {
 		parameters.setSortAs("one", "two");
 		parameters.setSortAs((String) null);
 		assertEquals(Arrays.asList((String) null), parameters.getSortAs());
+	}
+
+	@Test
+	public void equals_essentials() {
+		VCardParameters one = new VCardParameters();
+		one.put("foo", "bar");
+		assertEqualsMethodEssentials(one);
+	}
+
+	@Test
+	public void equals_different_number_of_parameters() {
+		VCardParameters one = new VCardParameters();
+		one.put("foo", "one");
+
+		VCardParameters two = new VCardParameters();
+		two.put("foo", "one");
+		two.put("foo", "two");
+
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
+	}
+
+	@Test
+	public void equals_case_insensitive() {
+		VCardParameters one = new VCardParameters();
+		one.put("foo", "bar");
+
+		VCardParameters two = new VCardParameters();
+		two.put("FOO", "BAR");
+
+		assertEqualsAndHash(one, two);
+	}
+
+	@Test
+	public void equals_order_does_not_matter() {
+		VCardParameters one = new VCardParameters();
+		one.put("foo", "one");
+		one.put("foo", "two");
+		one.put("foo", "three");
+
+		VCardParameters two = new VCardParameters();
+		two.put("foo", "TWO");
+		two.put("foo", "one");
+		two.put("foo", "three");
+
+		assertEqualsAndHash(one, two);
+	}
+
+	@Test
+	public void equals_duplicate_values() {
+		VCardParameters one = new VCardParameters();
+		one.put("foo", "one");
+		one.put("foo", "one");
+		one.put("foo", "two");
+
+		VCardParameters two = new VCardParameters();
+		two.put("foo", "one");
+		two.put("foo", "one");
+		two.put("foo", "two");
+
+		assertEqualsAndHash(one, two);
+	}
+
+	@Test
+	public void equals_different_duplicates_same_value_size() {
+		VCardParameters one = new VCardParameters();
+		one.put("foo", "one");
+		one.put("foo", "one");
+		one.put("foo", "two");
+
+		VCardParameters two = new VCardParameters();
+		two.put("foo", "one");
+		two.put("foo", "two");
+		two.put("foo", "two");
+
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
+	}
+
+	@Test
+	public void equals_multiple_keys() {
+		VCardParameters one = new VCardParameters();
+		one.put("foo", "BAR");
+		one.put("super", "man");
+		one.put("super", "bad");
+		one.put("hello", "world");
+
+		VCardParameters two = new VCardParameters();
+		two.put("hello", "world");
+		two.put("super", "MAN");
+		two.put("foo", "bar");
+		two.put("super", "bad");
+
+		assertEqualsAndHash(one, two);
 	}
 }

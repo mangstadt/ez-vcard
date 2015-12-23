@@ -252,10 +252,15 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	}
 
 	/**
+	 * <p>
 	 * Modifies a given key before it is used to interact with the internal map.
-	 * This method is meant to be overridden by child classes if necessary.
+	 * </p>
+	 * <p>
+	 * This method is meant to be overridden by child classes if necessary. The
+	 * default implementation of this method returns the key unchanged.
+	 * </p>
 	 * @param key the key
-	 * @return the modified key (by default, the key is returned as-is)
+	 * @return the modified key
 	 */
 	protected K sanitizeKey(K key) {
 		return key;
@@ -278,12 +283,9 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 
 		ListMultimap<?, ?> other = (ListMultimap<?, ?>) obj;
 		return map.equals(other.map);

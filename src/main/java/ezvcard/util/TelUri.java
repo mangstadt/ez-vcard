@@ -280,11 +280,11 @@ public final class TelUri {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((extension == null) ? 0 : extension.hashCode());
-		result = prime * result + ((isdnSubaddress == null) ? 0 : isdnSubaddress.hashCode());
-		result = prime * result + ((number == null) ? 0 : number.hashCode());
-		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-		result = prime * result + ((phoneContext == null) ? 0 : phoneContext.hashCode());
+		result = prime * result + ((extension == null) ? 0 : extension.toLowerCase().hashCode());
+		result = prime * result + ((isdnSubaddress == null) ? 0 : isdnSubaddress.toLowerCase().hashCode());
+		result = prime * result + ((number == null) ? 0 : number.toLowerCase().hashCode());
+		result = prime * result + ((parameters == null) ? 0 : StringUtils.toLowerCase(parameters).hashCode());
+		result = prime * result + ((phoneContext == null) ? 0 : phoneContext.toLowerCase().hashCode());
 		return result;
 	}
 
@@ -296,19 +296,26 @@ public final class TelUri {
 		TelUri other = (TelUri) obj;
 		if (extension == null) {
 			if (other.extension != null) return false;
-		} else if (!extension.equals(other.extension)) return false;
+		} else if (!extension.equalsIgnoreCase(other.extension)) return false;
 		if (isdnSubaddress == null) {
 			if (other.isdnSubaddress != null) return false;
-		} else if (!isdnSubaddress.equals(other.isdnSubaddress)) return false;
+		} else if (!isdnSubaddress.equalsIgnoreCase(other.isdnSubaddress)) return false;
 		if (number == null) {
 			if (other.number != null) return false;
-		} else if (!number.equals(other.number)) return false;
+		} else if (!number.equalsIgnoreCase(other.number)) return false;
 		if (parameters == null) {
 			if (other.parameters != null) return false;
-		} else if (!parameters.equals(other.parameters)) return false;
+		} else {
+			if (other.parameters == null) return false;
+			if (parameters.size() != other.parameters.size()) return false;
+
+			Map<String, String> parametersLower = StringUtils.toLowerCase(parameters);
+			Map<String, String> otherParametersLower = StringUtils.toLowerCase(other.parameters);
+			if (!parametersLower.equals(otherParametersLower)) return false;
+		}
 		if (phoneContext == null) {
 			if (other.phoneContext != null) return false;
-		} else if (!phoneContext.equals(other.phoneContext)) return false;
+		} else if (!phoneContext.equalsIgnoreCase(other.phoneContext)) return false;
 		return true;
 	}
 

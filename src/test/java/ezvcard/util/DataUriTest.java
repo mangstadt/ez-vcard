@@ -1,9 +1,13 @@
 package ezvcard.util;
 
+import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
+import java.util.Arrays;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 import org.junit.Test;
 
@@ -103,5 +107,17 @@ public class DataUriTest {
 		URI theUri = uri.toUri();
 		assertEquals("data", theUri.getScheme());
 		assertEquals("text/plain;base64," + testBase64, theUri.getRawSchemeSpecificPart());
+	}
+
+	@Test
+	public void equals_contract() {
+		EqualsVerifier.forClass(DataUri.class).usingGetClass().verify();
+	}
+
+	@Test
+	public void equals_ignore_case() {
+		DataUri one = new DataUri("TEXT/plain", testBytes);
+		DataUri two = new DataUri("text/plain", Arrays.copyOf(testBytes, testBytes.length));
+		assertEqualsAndHash(one, two);
 	}
 }

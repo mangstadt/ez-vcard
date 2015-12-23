@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 import org.junit.Test;
 
@@ -269,14 +270,8 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void equals() {
-		PartialDate d1 = builder().month(4).date(20).hour(5).build();
-		PartialDate d2 = builder().month(4).date(20).hour(5).build();
-		PartialDate d3 = builder().month(4).date(20).hour(5).minute(20).build();
-		assertTrue(d1.equals(d2));
-		assertTrue(d2.equals(d1));
-		assertTrue(d1.equals(d1));
-		assertFalse(d1.equals(d3));
+	public void equals_contract() {
+		EqualsVerifier.forClass(PartialDate.class).usingGetClass().verify();
 	}
 
 	private static void assertToISO8601(PartialDate.Builder dateBuilder, String expectedBasic, String expectedExtended) {

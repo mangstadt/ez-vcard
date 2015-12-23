@@ -1010,4 +1010,98 @@ public class VCardParameters extends ListMultimap<String, String> {
 	protected String sanitizeKey(String key) {
 		return (key == null) ? null : key.toUpperCase();
 	}
+
+	@Override
+	public int hashCode() {
+		/*
+		 * Remember: Case does not matter and neither does key order or value
+		 * order.
+		 */
+		final int prime = 31;
+		int result = 1;
+
+		for (Map.Entry<String, List<String>> entry : this) {
+			String key = entry.getKey();
+			List<String> value = entry.getValue();
+
+			int valueHash = 1;
+			for (String v : value) {
+				valueHash += v.toLowerCase().hashCode();
+			}
+
+			int entryHash = 1;
+			entryHash += prime * entryHash + key.toLowerCase().hashCode();
+			entryHash += prime * entryHash + valueHash;
+
+			result += entryHash;
+		}
+
+		return result;
+	}
+
+	/**
+	 * <p>
+	 * Determines whether the given object is logically equivalent to this list
+	 * of vCard parameters.
+	 * </p>
+	 * <p>
+	 * vCard parameters are case-insensitive. Also, the order in which they are
+	 * defined does not matter.
+	 * </p>
+	 * @param obj the object to compare to
+	 * @return true if the objects are equal, false if not
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		/*
+		 * Remember: Case does not matter and neither does key order or value
+		 * order.
+		 */
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+
+		VCardParameters other = (VCardParameters) obj;
+		if (size() != other.size()) return false;
+
+		for (Map.Entry<String, List<String>> entry : this) {
+			String key = entry.getKey();
+			List<String> value = entry.getValue();
+
+			/*
+			 * The parameters are stored in a ListMultimap. This class never
+			 * returns null. It returns an empty list when the key is not found.
+			 * But keep the null check just incase.
+			 */
+			if (value == null) {
+				if (other.get(key) != null || !other.containsKey(key)) {
+					return false;
+				}
+				continue;
+			}
+
+			List<String> otherValue = other.get(key);
+			if (otherValue == null || value.size() != otherValue.size()) {
+				return false;
+			}
+
+			List<String> valueLower = new ArrayList<String>(value.size());
+			for (String v : value) {
+				valueLower.add(v.toLowerCase());
+			}
+			Collections.sort(valueLower);
+
+			List<String> otherValueLower = new ArrayList<String>(otherValue.size());
+			for (String v : otherValue) {
+				otherValueLower.add(v.toLowerCase());
+			}
+			Collections.sort(otherValueLower);
+
+			if (!valueLower.equals(otherValueLower)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }

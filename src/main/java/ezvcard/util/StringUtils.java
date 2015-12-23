@@ -1,6 +1,7 @@
 package ezvcard.util;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /*
@@ -319,6 +320,24 @@ public final class StringUtils {
 			sb.append(list);
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Creates a copy of the given map, converting its keys and values to
+	 * lowercase.
+	 * @param map the map
+	 * @return the copy with lowercase keys and values
+	 */
+	public static Map<String, String> toLowerCase(Map<String, String> map) {
+		Map<String, String> lowerCaseMap = new HashMap<String, String>(map.size());
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			String key = entry.getKey().toLowerCase();
+			String value = entry.getValue();
+			value = (value == null) ? null : value.toLowerCase();
+
+			lowerCaseMap.put(key, value);
+		}
+		return lowerCaseMap;
 	}
 
 	private StringUtils() {

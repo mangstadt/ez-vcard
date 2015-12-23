@@ -4703,6 +4703,63 @@ public class VCard implements Iterable<VCardProperty> {
 		return sb.toString();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
+
+		int propertiesHash = 1;
+		for (VCardProperty property : properties.values()) {
+			propertiesHash += property.hashCode();
+		}
+		result = prime * result + propertiesHash;
+
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		VCard other = (VCard) obj;
+		if (version != other.version) return false;
+		if (properties.size() != other.properties.size()) return false;
+
+		for (Map.Entry<Class<? extends VCardProperty>, List<VCardProperty>> entry : properties) {
+			Class<? extends VCardProperty> key = entry.getKey();
+			List<VCardProperty> value = entry.getValue();
+			List<VCardProperty> otherValue = other.properties.get(key);
+
+			/*
+			 * The properties are stored in a ListMultimap. This class never
+			 * returns null. It returns an empty list when the key is not found.
+			 * But keep the null check just incase.
+			 */
+			if (value == null) {
+				if (otherValue != null || !other.properties.containsKey(key)) {
+					return false;
+				}
+				continue;
+			}
+
+			if (otherValue == null || value.size() != otherValue.size()) {
+				return false;
+			}
+
+			List<VCardProperty> otherValueCopy = new ArrayList<VCardProperty>(otherValue);
+			for (VCardProperty property : value) {
+				if (!otherValueCopy.remove(property)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	/**
 	 * Generates a unique ALTID parameter value.
 	 * @param properties the collection of properties under which the ALTID must

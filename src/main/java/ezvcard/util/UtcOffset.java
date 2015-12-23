@@ -44,7 +44,10 @@ public final class UtcOffset {
 	 * integer is ignored)
 	 */
 	public UtcOffset(boolean positive, int hour, int minute) {
-		//Note: The (hour, minute) constructor was removed because it could not handle timezones such as "-0030"
+		/*
+		 * Note: The (hour, minute) constructor was removed because it could not
+		 * handle timezones such as "-0030".
+		 */
 		int sign = positive ? 1 : -1;
 		hour = Math.abs(hour);
 		minute = Math.abs(minute);

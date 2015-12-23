@@ -131,4 +131,28 @@ public class RawProperty extends TextProperty {
 	public RawProperty copy() {
 		return new RawProperty(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((dataType == null) ? 0 : dataType.hashCode());
+		result = prime * result + ((propertyName == null) ? 0 : propertyName.toLowerCase().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		RawProperty other = (RawProperty) obj;
+		if (dataType == null) {
+			if (other.dataType != null) return false;
+		} else if (!dataType.equals(other.dataType)) return false;
+		if (propertyName == null) {
+			if (other.propertyName != null) return false;
+		} else if (!propertyName.equalsIgnoreCase(other.propertyName)) return false;
+		return true;
+	}
 }

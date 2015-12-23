@@ -1,6 +1,7 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -365,6 +366,36 @@ public class TestUtils {
 	 */
 	public static Date utc(String text) {
 		return date(text + " +0000");
+	}
+
+	/**
+	 * <p>
+	 * Asserts some of the basic rules for the equals() method:
+	 * </p>
+	 * <ul>
+	 * <li>The same object instance is equal to itself.</li>
+	 * <li>Passing {@code null} into the method returns false.</li>
+	 * <li>Passing an instance of a different class into the method returns
+	 * false.</li>
+	 * </ul>
+	 * @param object an instance of the class to test.
+	 */
+	public static void assertEqualsMethodEssentials(Object object) {
+		assertEquals(object, object);
+		assertFalse(object.equals(null));
+		assertFalse(object.equals("other class"));
+	}
+
+	/**
+	 * Asserts that two objects are equal according to their equals() method.
+	 * Also asserts that their hash codes are the same.
+	 * @param one the first object
+	 * @param two the second object
+	 */
+	public static void assertEqualsAndHash(Object one, Object two) {
+		assertEquals(one, two);
+		assertEquals(two, one);
+		assertEquals(one.hashCode(), two.hashCode());
 	}
 
 	public static <T> T[] each(T... t) {

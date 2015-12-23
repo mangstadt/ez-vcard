@@ -246,4 +246,28 @@ public class Gender extends VCardProperty {
 	public Gender copy() {
 		return new Gender(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		Gender other = (Gender) obj;
+		if (gender == null) {
+			if (other.gender != null) return false;
+		} else if (!gender.equals(other.gender)) return false;
+		if (text == null) {
+			if (other.text != null) return false;
+		} else if (!text.equals(other.text)) return false;
+		return true;
+	}
 }

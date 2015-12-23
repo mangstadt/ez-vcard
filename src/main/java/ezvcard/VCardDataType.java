@@ -249,4 +249,19 @@ public class VCardDataType {
 	public static Collection<VCardDataType> all() {
 		return enums.all();
 	}
+
+	/*
+	 * Note: This class doesn't need equals() or hashCode() because the
+	 * CaseClasses object enforces reference equality.
+	 */
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
 }

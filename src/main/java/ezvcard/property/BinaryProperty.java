@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,5 +247,32 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 		values.put("url", url);
 		values.put("contentType", contentType);
 		return values;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
+		result = prime * result + Arrays.hashCode(data);
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		@SuppressWarnings("rawtypes")
+		BinaryProperty other = (BinaryProperty) obj;
+		if (contentType == null) {
+			if (other.contentType != null) return false;
+		} else if (!contentType.equals(other.contentType)) return false;
+		if (!Arrays.equals(data, other.data)) return false;
+		if (url == null) {
+			if (other.url != null) return false;
+		} else if (!url.equals(other.url)) return false;
+		return true;
 	}
 }

@@ -260,4 +260,40 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	public StructuredName copy() {
 		return new StructuredName(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((additional == null) ? 0 : additional.hashCode());
+		result = prime * result + ((family == null) ? 0 : family.hashCode());
+		result = prime * result + ((given == null) ? 0 : given.hashCode());
+		result = prime * result + ((prefixes == null) ? 0 : prefixes.hashCode());
+		result = prime * result + ((suffixes == null) ? 0 : suffixes.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		StructuredName other = (StructuredName) obj;
+		if (additional == null) {
+			if (other.additional != null) return false;
+		} else if (!additional.equals(other.additional)) return false;
+		if (family == null) {
+			if (other.family != null) return false;
+		} else if (!family.equals(other.family)) return false;
+		if (given == null) {
+			if (other.given != null) return false;
+		} else if (!given.equals(other.given)) return false;
+		if (prefixes == null) {
+			if (other.prefixes != null) return false;
+		} else if (!prefixes.equals(other.prefixes)) return false;
+		if (suffixes == null) {
+			if (other.suffixes != null) return false;
+		} else if (!suffixes.equals(other.suffixes)) return false;
+		return true;
+	}
 }

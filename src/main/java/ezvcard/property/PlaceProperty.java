@@ -204,4 +204,32 @@ public class PlaceProperty extends VCardProperty implements HasAltId {
 		values.put("text", text);
 		return values;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((geoUri == null) ? 0 : geoUri.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
+		PlaceProperty other = (PlaceProperty) obj;
+		if (geoUri == null) {
+			if (other.geoUri != null) return false;
+		} else if (!geoUri.equals(other.geoUri)) return false;
+		if (text == null) {
+			if (other.text != null) return false;
+		} else if (!text.equals(other.text)) return false;
+		if (uri == null) {
+			if (other.uri != null) return false;
+		} else if (!uri.equals(other.uri)) return false;
+		return true;
+	}
 }
