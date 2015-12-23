@@ -325,7 +325,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((group == null) ? 0 : group.hashCode());
+		result = prime * result + ((group == null) ? 0 : group.toLowerCase().hashCode());
 		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
 		return result;
 	}
@@ -338,7 +338,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		VCardProperty other = (VCardProperty) obj;
 		if (group == null) {
 			if (other.group != null) return false;
-		} else if (!group.equals(other.group)) return false;
+		} else if (!group.equalsIgnoreCase(other.group)) return false;
 		if (parameters == null) {
 			if (other.parameters != null) return false;
 		} else if (!parameters.equals(other.parameters)) return false;

@@ -1,8 +1,11 @@
 package ezvcard.property;
 
+import static ezvcard.util.TestUtils.assertEqualsAndHash;
+import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -169,6 +172,43 @@ public class VCardPropertyTest {
 		} catch (UnsupportedOperationException e) {
 			assertTrue(e.getCause() instanceof NoSuchMethodException);
 		}
+	}
+
+	@Test
+	public void equals_essentials() {
+		VCardPropertyImpl one = new VCardPropertyImpl();
+		assertEqualsMethodEssentials(one);
+	}
+
+	@Test
+	public void equals_different_group() {
+		VCardPropertyImpl one = new VCardPropertyImpl();
+		one.setGroup("one");
+		VCardPropertyImpl two = new VCardPropertyImpl();
+		two.setGroup("two");
+
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
+	}
+
+	@Test
+	public void equals_different_parameters() {
+		VCardPropertyImpl one = new VCardPropertyImpl();
+		one.getParameters().put("one", "value");
+		VCardPropertyImpl two = new VCardPropertyImpl();
+		two.getParameters().put("two", "value");
+
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
+	}
+
+	@Test
+	public void equals_group_ignore_case() {
+		VCardPropertyImpl one = new VCardPropertyImpl();
+		one.setGroup("GROUP");
+		VCardPropertyImpl two = new VCardPropertyImpl();
+		two.setGroup("group");
+		assertEqualsAndHash(one, two);
 	}
 
 	private static class CopyConstructorTest extends VCardProperty {
