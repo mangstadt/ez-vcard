@@ -257,6 +257,7 @@ public final class StringUtils {
 	 * as a character range (e.g. "0-9").
 	 * @param moreCharacters more lists of characters to check for. If the list
 	 * is 3 characters long and contains a hyphen in the middle, then it is
+	 * treated as a character range (e.g. "0-9").
 	 * @return true if the string contains at least one of the characters, false
 	 * if not
 	 */
@@ -274,6 +275,7 @@ public final class StringUtils {
 	 * as a character range (e.g. "0-9").
 	 * @param moreCharacters more lists of characters to check for. If the list
 	 * is 3 characters long and contains a hyphen in the middle, then it is
+	 * treated as a character range (e.g. "0-9").
 	 * @return true if the string contains at least one of the characters, false
 	 * if not
 	 */
@@ -288,7 +290,18 @@ public final class StringUtils {
 		return false;
 	}
 
-	/* package */static String buildCharacterList(String characters, String... moreCharacters) {
+	/**
+	 * Builds a character list for the {@link #containsAny} and
+	 * {@link #containsOnly} methods.
+	 * @param characters the list of characters to check for. If the list is 3
+	 * characters long and contains a hyphen in the middle, then it is treated
+	 * as a character range (e.g. "0-9").
+	 * @param moreCharacters more lists of characters to check for. If the list
+	 * is 3 characters long and contains a hyphen in the middle, then it is
+	 * treated as a character range (e.g. "0-9").
+	 * @return
+	 */
+	public static String buildCharacterList(String characters, String... moreCharacters) {
 		if (moreCharacters.length == 0 && (characters.length() != 3 || characters.charAt(1) != '-')) {
 			/*
 			 * Optimization based on the assumption that most calls will only

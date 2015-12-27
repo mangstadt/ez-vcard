@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
@@ -23,6 +22,7 @@ import ezvcard.property.Organization;
 import ezvcard.property.StructuredName;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -871,7 +871,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				invalidCharacters.set(']');
 			}
 
-			Pattern validParameterName = Pattern.compile("(?i)[-a-z0-9]+");
+			String acceptableCharacters = StringUtils.buildCharacterList("-", "a-z", "A-Z", "0-9");
 			for (Map.Entry<String, List<String>> entry : this) {
 				String name = entry.getKey();
 
@@ -884,7 +884,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				}
 
 				//check the parameter name
-				if (!validParameterName.matcher(name).matches()) {
+				if (!StringUtils.containsOnly(name, acceptableCharacters)) {
 					warnings.add(new Warning(26, name));
 				}
 

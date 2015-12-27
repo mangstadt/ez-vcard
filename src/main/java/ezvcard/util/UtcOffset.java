@@ -1,8 +1,6 @@
 package ezvcard.util;
 
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -69,23 +67,49 @@ public final class UtcOffset {
 	 * @throws IllegalArgumentException if the text cannot be parsed
 	 */
 	public static UtcOffset parse(String text) {
-		Pattern timeZoneRegex = Pattern.compile("^([-\\+])?(\\d{1,2})(:?(\\d{2}))?$");
-		Matcher m = timeZoneRegex.matcher(text);
-
-		if (!m.find()) {
-			throw new IllegalArgumentException("Offset string is not in ISO8610 format: " + text);
+		int i = 0;
+		char sign = text.charAt(i);
+		boolean positive = true;
+		if (sign == '-') {
+			positive = false;
+			i++;
+		} else if (sign == '+') {
+			i++;
 		}
 
-		String signStr = m.group(1);
-		boolean positive = !"-".equals(signStr);
+		int maxLength = i + 4;
+		int colon = text.indexOf(':', i);
+		if (colon >= 0) {
+			maxLength++;
+		}
+		if (text.length() > maxLength) {
+			throw new IllegalArgumentException("UTC offset string is not in ISO8610 format: " + text);
+		}
 
-		String hourStr = m.group(2);
-		int hourOffset = Integer.parseInt(hourStr);
+		String hourStr, minuteStr = null;
+		if (colon < 0) {
+			hourStr = text.substring(i);
+			int minutePos = hourStr.length() - 2;
+			if (minutePos > 0) {
+				minuteStr = hourStr.substring(minutePos);
+				hourStr = hourStr.substring(0, minutePos);
+			}
+		} else {
+			hourStr = text.substring(i, colon);
+			if (colon < text.length() - 1) {
+				minuteStr = text.substring(colon + 1);
+			}
+		}
 
-		String minuteStr = m.group(4);
-		int minuteOffset = (minuteStr == null) ? 0 : Integer.parseInt(minuteStr);
+		int hour, minute;
+		try {
+			hour = Integer.parseInt(hourStr);
+			minute = (minuteStr == null) ? 0 : Integer.parseInt(minuteStr);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("UTC offset string is not in ISO8610 format: " + text);
+		}
 
-		return new UtcOffset(positive, hourOffset, minuteOffset);
+		return new UtcOffset(positive, hour, minute);
 	}
 
 	/**

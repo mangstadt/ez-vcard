@@ -1,8 +1,6 @@
 package ezvcard.io.scribe;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -56,25 +54,29 @@ public class EmailScribe extends StringPropertyScribe<Email> {
 
 	@Override
 	protected Email _parseHtml(HCardElement element, List<String> warnings) {
-		//check to see if the email address is within in "mailto:" link
-		String email;
 		String href = element.attr("href");
-		if (href.length() > 0) {
-			Pattern p = Pattern.compile("^mailto:(.*)$", Pattern.CASE_INSENSITIVE);
-			Matcher m = p.matcher(href);
-			email = m.find() ? m.group(1) : element.value();
-		} else {
+		String email = extractEmailFromHrefAttribute(href);
+		if (email == null) {
 			email = element.value();
 		}
 
 		Email property = new Email(email);
 
-		//add TYPE parameters
 		List<String> types = element.types();
 		for (String type : types) {
 			property.getParameters().addType(type);
 		}
 
 		return property;
+	}
+
+	private static String extractEmailFromHrefAttribute(String value) {
+		int colon = value.indexOf(':');
+		if (colon < 0) {
+			return null;
+		}
+
+		String scheme = value.substring(0, colon);
+		return scheme.equalsIgnoreCase("mailto") ? value.substring(colon + 1) : null;
 	}
 }

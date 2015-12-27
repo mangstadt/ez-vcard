@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -139,8 +139,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 		//check group
 		if (group != null) {
-			Pattern validCharacters = Pattern.compile("(?i)[-a-z0-9]+");
-			if (!validCharacters.matcher(group).matches()) {
+			if (!StringUtils.containsOnly(group, "-", "a-z", "A-Z", "0-9")) {
 				warnings.add(new Warning(23, group));
 			}
 		}

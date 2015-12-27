@@ -453,6 +453,19 @@ public class Sensei<T extends VCardProperty> {
 
 		/**
 		 * Runs the test.
+		 * @param expected the expected property. Expected and actual property
+		 * objects will be compared with the {@code equals()} method.
+		 */
+		public void run(final T expected) {
+			run(new Check<T>() {
+				public void check(T actual) {
+					assertEquals(expected, actual);
+				}
+			}, null);
+		}
+
+		/**
+		 * Runs the test.
 		 * @param check object for validating the parsed property object or null
 		 * not to validate the property
 		 * @param exception the exception that is expected to be thrown or null
