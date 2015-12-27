@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ezvcard.Messages;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -153,7 +155,7 @@ public final class PartialDate {
 		}
 
 		if (!success) {
-			throw new IllegalArgumentException("Could not parse date: " + string);
+			throw Messages.INSTANCE.getIllegalArgumentException(36, string);
 		}
 		return builder.build();
 	}
@@ -497,7 +499,7 @@ public final class PartialDate {
 		 */
 		public Builder month(Integer month) {
 			if (month != null && (month < 1 || month > 12)) {
-				throw new IllegalArgumentException("Month must be between 1 and 12 inclusive.");
+				throw Messages.INSTANCE.getIllegalArgumentException(37, "Month", 1, 12);
 			}
 
 			components[MONTH] = month;
@@ -510,7 +512,7 @@ public final class PartialDate {
 		 */
 		public Builder date(Integer date) {
 			if (date != null && (date < 1 || date > 31)) {
-				throw new IllegalArgumentException("Date must be between 1 and 31 inclusive.");
+				throw Messages.INSTANCE.getIllegalArgumentException(37, "Date", 1, 31);
 			}
 
 			components[DATE] = date;
@@ -523,7 +525,7 @@ public final class PartialDate {
 		 */
 		public Builder hour(Integer hour) {
 			if (hour != null && (hour < 0 || hour > 23)) {
-				throw new IllegalArgumentException("Hour must be between 0 and 23 inclusive.");
+				throw Messages.INSTANCE.getIllegalArgumentException(37, "Hour", 0, 23);
 			}
 
 			components[HOUR] = hour;
@@ -536,7 +538,7 @@ public final class PartialDate {
 		 */
 		public Builder minute(Integer minute) {
 			if (minute != null && (minute < 0 || minute > 59)) {
-				throw new IllegalArgumentException("Minute must be between 0 and 59 inclusive.");
+				throw Messages.INSTANCE.getIllegalArgumentException(37, "Minute", 0, 59);
 			}
 
 			components[MINUTE] = minute;
@@ -549,7 +551,7 @@ public final class PartialDate {
 		 */
 		public Builder second(Integer second) {
 			if (second != null && (second < 0 || second > 59)) {
-				throw new IllegalArgumentException("Second must be between 0 and 59 inclusive.");
+				throw Messages.INSTANCE.getIllegalArgumentException(37, "Second", 0, 59);
 			}
 
 			components[SECOND] = second;
@@ -563,10 +565,10 @@ public final class PartialDate {
 
 		public PartialDate build() {
 			if (components[YEAR] != null && components[MONTH] == null && components[DATE] != null) {
-				throw new IllegalArgumentException("Invalid date component combination: year, date");
+				throw Messages.INSTANCE.getIllegalArgumentException(38);
 			}
 			if (components[HOUR] != null && components[MINUTE] == null && components[SECOND] != null) {
-				throw new IllegalArgumentException("Invalid time component combination: hour, second");
+				throw Messages.INSTANCE.getIllegalArgumentException(39);
 			}
 
 			return new PartialDate(components, offset);

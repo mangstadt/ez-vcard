@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import ezvcard.Messages;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -261,7 +263,7 @@ public enum VCardDateFormat {
 		//determine which ISOFormat the date is in
 		VCardDateFormat format = find(dateStr);
 		if (format == null) {
-			throw parseException(dateStr);
+			throw Messages.INSTANCE.getIllegalArgumentException(41, dateStr);
 		}
 
 		//parse the date
@@ -270,7 +272,7 @@ public enum VCardDateFormat {
 			return df.parse(dateStr);
 		} catch (ParseException e) {
 			//should never be thrown because the string is checked against a regex before being parsed
-			throw parseException(dateStr);
+			throw Messages.INSTANCE.getIllegalArgumentException(41, dateStr);
 		}
 	}
 
@@ -301,9 +303,5 @@ public enum VCardDateFormat {
 	public static TimeZone parseTimeZoneId(String timezoneId) {
 		TimeZone timezone = TimeZone.getTimeZone(timezoneId);
 		return "GMT".equals(timezone.getID()) ? null : timezone;
-	}
-
-	private static IllegalArgumentException parseException(String dateStr) {
-		return new IllegalArgumentException("Date string \"" + dateStr + "\" is not in a valid ISO-8601 format.");
 	}
 }

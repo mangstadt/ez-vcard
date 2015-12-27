@@ -2,6 +2,8 @@ package ezvcard.util;
 
 import java.util.TimeZone;
 
+import ezvcard.Messages;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -83,7 +85,7 @@ public final class UtcOffset {
 			maxLength++;
 		}
 		if (text.length() > maxLength) {
-			throw new IllegalArgumentException("UTC offset string is not in ISO8610 format: " + text);
+			throw Messages.INSTANCE.getIllegalArgumentException(40, text);
 		}
 
 		String hourStr, minuteStr = null;
@@ -106,7 +108,7 @@ public final class UtcOffset {
 			hour = Integer.parseInt(hourStr);
 			minute = (minuteStr == null) ? 0 : Integer.parseInt(minuteStr);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("UTC offset string is not in ISO8610 format: " + text);
+			throw Messages.INSTANCE.getIllegalArgumentException(40, text);
 		}
 
 		return new UtcOffset(positive, hour, minute);
