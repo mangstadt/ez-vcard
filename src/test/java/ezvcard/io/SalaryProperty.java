@@ -2,14 +2,8 @@ package ezvcard.io;
 
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.html.HCardElement;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
@@ -45,20 +39,20 @@ import ezvcard.property.VCardProperty;
  */
 
 /**
- * An extended type class used for testing that contains XML marshalling methods
- * and a QName.
+ * An extended type class used for testing that contains XML marshalling
+ * methods, but not a QName.
  * @author Michael Angstadt
  */
-public class LuckyNumType extends VCardProperty {
-	public int luckyNum;
+public class SalaryProperty extends VCardProperty {
+	public int salary;
 
-	public LuckyNumType(int luckyNum) {
-		this.luckyNum = luckyNum;
+	public SalaryProperty(int salary) {
+		this.salary = salary;
 	}
 
-	public static class LuckyNumScribe extends VCardPropertyScribe<LuckyNumType> {
-		public LuckyNumScribe() {
-			super(LuckyNumType.class, "X-LUCKY-NUM", new QName("http://luckynum.com", "lucky-num"));
+	public static class SalaryScribe extends VCardPropertyScribe<SalaryProperty> {
+		public SalaryScribe() {
+			super(SalaryProperty.class, "X-SALARY");
 		}
 
 		@Override
@@ -67,38 +61,24 @@ public class LuckyNumType extends VCardProperty {
 		}
 
 		@Override
-		protected String _writeText(LuckyNumType property, VCardVersion version) {
-			return property.luckyNum + "";
+		protected String _writeText(SalaryProperty property, VCardVersion version) {
+			return property.salary + "";
 		}
 
 		@Override
-		protected LuckyNumType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-			int luckyNum = Integer.parseInt(value);
-			return new LuckyNumType(luckyNum);
+		protected SalaryProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			return new SalaryProperty(Integer.parseInt(value));
 		}
 
 		@Override
-		protected void _writeXml(LuckyNumType property, XCardElement parent) {
-			int luckyNum = property.luckyNum;
-			parent.element().setTextContent(luckyNum + "");
+		protected void _writeXml(SalaryProperty property, XCardElement parent) {
+			parent.element().setTextContent(property.salary + "");
 		}
 
 		@Override
-		protected LuckyNumType _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
-			NodeList nodeList = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
-			if (nodeList.getLength() == 0) {
-				return new LuckyNumType(0);
-			}
-
-			Element num = (Element) nodeList.item(0);
-			int luckyNum = Integer.parseInt(num.getTextContent());
-
-			return new LuckyNumType(luckyNum);
-		}
-
-		@Override
-		protected LuckyNumType _parseHtml(HCardElement element, List<String> warnings) {
-			return new LuckyNumType(Integer.parseInt(element.value()));
+		protected SalaryProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+			return new SalaryProperty(Integer.parseInt(element.first(VCardDataType.INTEGER)));
 		}
 	}
+
 }

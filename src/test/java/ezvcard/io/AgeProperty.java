@@ -5,7 +5,6 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 
@@ -39,46 +38,35 @@ import ezvcard.property.VCardProperty;
  */
 
 /**
- * An extended type class used for testing that contains XML marshalling
- * methods, but not a QName.
+ * A property class used for testing whose scribe does NOT contain XML
+ * marshalling methods, nor a QName.
  * @author Michael Angstadt
  */
-public class SalaryType extends VCardProperty {
-	public int salary;
+public class AgeProperty extends VCardProperty {
+	public int age;
 
-	public SalaryType(int salary) {
-		this.salary = salary;
+	public AgeProperty(int age) {
+		this.age = age;
 	}
 
-	public static class SalaryScribe extends VCardPropertyScribe<SalaryType> {
-		public SalaryScribe() {
-			super(SalaryType.class, "X-SALARY");
+	public static class AgeScribe extends VCardPropertyScribe<AgeProperty> {
+		public AgeScribe() {
+			super(AgeProperty.class, "X-AGE");
 		}
 
 		@Override
 		protected VCardDataType _defaultDataType(VCardVersion version) {
-			return VCardDataType.INTEGER;
+			return null;
 		}
 
 		@Override
-		protected String _writeText(SalaryType property, VCardVersion version) {
-			return property.salary + "";
+		protected String _writeText(AgeProperty property, VCardVersion version) {
+			return property.age + "";
 		}
 
 		@Override
-		protected SalaryType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-			return new SalaryType(Integer.parseInt(value));
-		}
-
-		@Override
-		protected void _writeXml(SalaryType property, XCardElement parent) {
-			parent.element().setTextContent(property.salary + "");
-		}
-
-		@Override
-		protected SalaryType _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
-			return new SalaryType(Integer.parseInt(element.first(VCardDataType.INTEGER)));
+		protected AgeProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			return new AgeProperty(Integer.parseInt(value));
 		}
 	}
-
 }

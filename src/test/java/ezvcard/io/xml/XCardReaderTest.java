@@ -42,14 +42,14 @@ import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
-import ezvcard.io.AgeType;
-import ezvcard.io.AgeType.AgeScribe;
-import ezvcard.io.LuckyNumType;
-import ezvcard.io.LuckyNumType.LuckyNumScribe;
-import ezvcard.io.MyFormattedNameType;
-import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
-import ezvcard.io.SalaryType;
-import ezvcard.io.SalaryType.SalaryScribe;
+import ezvcard.io.AgeProperty;
+import ezvcard.io.AgeProperty.AgeScribe;
+import ezvcard.io.LuckyNumProperty;
+import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
+import ezvcard.io.MyFormattedNameProperty;
+import ezvcard.io.MyFormattedNameProperty.MyFormattedNameScribe;
+import ezvcard.io.SalaryProperty;
+import ezvcard.io.SalaryProperty.SalaryScribe;
 import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.parameter.AddressType;
@@ -634,18 +634,18 @@ public class XCardReaderTest {
 				//xCard namespace:  no
 				//scribe:           yes
 				//parseXml impl:    yes
-				//expected:         LuckyNumType
+				//expected:         LuckyNumProperty
 				"<a:lucky-num xmlns:a=\"http://luckynum.com\"><a:num>21</a:num></a:lucky-num>" +
 				
 				//xCard namespace:  yes
 				//scribe:           yes
 				//parseXml impl:    yes
-				//expected:         SalaryType
+				//expected:         SalaryProperty
 				"<x-salary><integer>1000000</integer></x-salary>" +
 				
 				//xCard namespace:  yes
 				//parseXml impl:    no
-				//expected:         AgeType (should be unmarshalled using the default parseXml implementation)
+				//expected:         AgeProperty (should be unmarshalled using the default parseXml implementation)
 				"<x-age><integer>24</integer></x-age>" +
 				
 				//xCard namespace:  yes
@@ -655,7 +655,7 @@ public class XCardReaderTest {
 				
 				//xCard namespace:  yes
 				//scribe:           yes (standard scribe overridden)
-				//expected:         MyFormattedNameType
+				//expected:         MyFormattedNameProperty
 				"<fn><name>John Doe</name></fn>" +
 			"</vcard>" +
 		"</vcards>";
@@ -681,20 +681,20 @@ public class XCardReaderTest {
 				assertFalse(xmlIt.hasNext());
 			}
 
-			LuckyNumType luckyNum = vcard.getProperty(LuckyNumType.class);
+			LuckyNumProperty luckyNum = vcard.getProperty(LuckyNumProperty.class);
 			assertEquals(21, luckyNum.luckyNum);
 
-			SalaryType salary = vcard.getProperty(SalaryType.class);
+			SalaryProperty salary = vcard.getProperty(SalaryProperty.class);
 			assertEquals(1000000, salary.salary);
 
-			AgeType age = vcard.getProperty(AgeType.class);
+			AgeProperty age = vcard.getProperty(AgeProperty.class);
 			assertEquals(24, age.age);
 
 			RawProperty gender = vcard.getExtendedProperty("X-GENDER");
 			assertEquals(VCardDataType.TEXT, gender.getDataType());
 			assertEquals("m", gender.getValue());
 
-			MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);
+			MyFormattedNameProperty fn = vcard.getProperty(MyFormattedNameProperty.class);
 			assertEquals("JOHN DOE", fn.value);
 
 			assertWarnings(0, reader);

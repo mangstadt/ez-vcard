@@ -4,7 +4,10 @@ import java.util.List;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.html.HCardElement;
+import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 
@@ -38,35 +41,58 @@ import ezvcard.property.VCardProperty;
  */
 
 /**
- * An extended type class used for testing that does NOT contain XML marshalling
- * methods, nor a QName.
  * @author Michael Angstadt
  */
-public class AgeType extends VCardProperty {
-	public int age;
+public class MyFormattedNameProperty extends VCardProperty {
+	public String value;
 
-	public AgeType(int age) {
-		this.age = age;
+	public MyFormattedNameProperty(String value) {
+		this.value = value;
 	}
 
-	public static class AgeScribe extends VCardPropertyScribe<AgeType> {
-		public AgeScribe() {
-			super(AgeType.class, "X-AGE");
+	public static class MyFormattedNameScribe extends VCardPropertyScribe<MyFormattedNameProperty> {
+		public MyFormattedNameScribe() {
+			super(MyFormattedNameProperty.class, "FN");
 		}
 
 		@Override
 		protected VCardDataType _defaultDataType(VCardVersion version) {
-			return null;
+			return VCardDataType.get("name");
 		}
 
 		@Override
-		protected String _writeText(AgeType property, VCardVersion version) {
-			return property.age + "";
+		protected String _writeText(MyFormattedNameProperty property, VCardVersion version) {
+			return property.value.toUpperCase();
 		}
 
 		@Override
-		protected AgeType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-			return new AgeType(Integer.parseInt(value));
+		protected MyFormattedNameProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			return new MyFormattedNameProperty(value.toUpperCase());
+		}
+
+		@Override
+		protected void _writeXml(MyFormattedNameProperty property, XCardElement parent) {
+			parent.append("name", property.value);
+		}
+
+		@Override
+		protected MyFormattedNameProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+			return new MyFormattedNameProperty(element.first("name").toUpperCase());
+		}
+
+		@Override
+		protected MyFormattedNameProperty _parseHtml(HCardElement element, List<String> warnings) {
+			return new MyFormattedNameProperty(element.value().toUpperCase());
+		}
+
+		@Override
+		protected JCardValue _writeJson(MyFormattedNameProperty property) {
+			return JCardValue.single(property.value.toUpperCase());
+		}
+
+		@Override
+		protected MyFormattedNameProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+			return new MyFormattedNameProperty(value.asSingle().toUpperCase());
 		}
 	}
 }

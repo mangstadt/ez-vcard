@@ -20,10 +20,10 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.io.LuckyNumType;
-import ezvcard.io.LuckyNumType.LuckyNumScribe;
-import ezvcard.io.MyFormattedNameType;
-import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
+import ezvcard.io.LuckyNumProperty;
+import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
+import ezvcard.io.MyFormattedNameProperty;
+import ezvcard.io.MyFormattedNameProperty.MyFormattedNameScribe;
 import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.parameter.AddressType;
@@ -932,7 +932,7 @@ public class HCardParserTest {
 			assertPropertyCount(3, vcard);
 
 			//read a type that has a type class
-			List<LuckyNumType> luckyNumTypes = vcard.getProperties(LuckyNumType.class);
+			List<LuckyNumProperty> luckyNumTypes = vcard.getProperties(LuckyNumProperty.class);
 			assertEquals(2, luckyNumTypes.size());
 			assertEquals(24, luckyNumTypes.get(0).luckyNum);
 			assertEquals(22, luckyNumTypes.get(1).luckyNum);
@@ -972,7 +972,7 @@ public class HCardParserTest {
 			assertPropertyCount(1, vcard);
 
 			//read a type that has a type class
-			assertEquals("JOHN DOE", vcard.getProperty(MyFormattedNameType.class).value);
+			assertEquals("JOHN DOE", vcard.getProperty(MyFormattedNameProperty.class).value);
 
 			assertWarnings(0, parser);
 		}

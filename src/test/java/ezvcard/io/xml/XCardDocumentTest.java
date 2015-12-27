@@ -40,13 +40,13 @@ import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.AgeType;
-import ezvcard.io.AgeType.AgeScribe;
+import ezvcard.io.AgeProperty;
+import ezvcard.io.AgeProperty.AgeScribe;
 import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.LuckyNumType;
-import ezvcard.io.LuckyNumType.LuckyNumScribe;
-import ezvcard.io.SalaryType;
-import ezvcard.io.SalaryType.SalaryScribe;
+import ezvcard.io.LuckyNumProperty;
+import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
+import ezvcard.io.SalaryProperty;
+import ezvcard.io.SalaryProperty.SalaryScribe;
 import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -607,15 +607,15 @@ public class XCardDocumentTest {
 		VCard vcard = new VCard();
 
 		//contains marshal methods and QName
-		LuckyNumType num = new LuckyNumType(24);
+		LuckyNumProperty num = new LuckyNumProperty(24);
 		vcard.addProperty(num);
 
 		//contains marshal methods, but does not have a QName
-		SalaryType salary = new SalaryType(1000000);
+		SalaryProperty salary = new SalaryProperty(1000000);
 		vcard.addProperty(salary);
 
 		//does not contain marshal methods nor QName
-		AgeType age = new AgeType(22);
+		AgeProperty age = new AgeProperty(22);
 		vcard.addProperty(age);
 
 		XCardDocument xcard = new XCardDocument();

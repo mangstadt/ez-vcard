@@ -29,10 +29,10 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.LuckyNumType;
-import ezvcard.io.LuckyNumType.LuckyNumScribe;
-import ezvcard.io.MyFormattedNameType;
-import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
+import ezvcard.io.LuckyNumProperty;
+import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
+import ezvcard.io.MyFormattedNameProperty;
+import ezvcard.io.MyFormattedNameProperty.MyFormattedNameScribe;
 import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -409,7 +409,7 @@ public class VCardReaderTest {
 		assertPropertyCount(3, vcard);
 
 		//read a type that has a type class
-		List<LuckyNumType> luckyNumTypes = vcard.getProperties(LuckyNumType.class);
+		List<LuckyNumProperty> luckyNumTypes = vcard.getProperties(LuckyNumProperty.class);
 		assertEquals(2, luckyNumTypes.size());
 		assertEquals(24, luckyNumTypes.get(0).luckyNum);
 		assertEquals(22, luckyNumTypes.get(1).luckyNum);
@@ -440,7 +440,7 @@ public class VCardReaderTest {
 		assertPropertyCount(1, vcard);
 
 		//read a type that has a type class
-		MyFormattedNameType fn = vcard.getProperty(MyFormattedNameType.class);
+		MyFormattedNameProperty fn = vcard.getProperty(MyFormattedNameProperty.class);
 		assertEquals("JOHN DOE", fn.value);
 
 		assertWarnings(0, reader);

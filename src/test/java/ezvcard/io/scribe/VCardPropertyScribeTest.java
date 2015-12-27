@@ -60,7 +60,7 @@ public class VCardPropertyScribeTest {
 	@ClassRule
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
-	private final VCardPropertyMarshallerImpl scribe = new VCardPropertyMarshallerImpl();
+	private final VCardPropertyScribeImpl scribe = new VCardPropertyScribeImpl();
 	private final Sensei<TestProperty> sensei = new Sensei<TestProperty>(scribe);
 
 	private final Date datetime = date("2013-06-11 14:43:02");
@@ -318,7 +318,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void dataType_custom() {
-		VCardPropertyMarshallerImpl scribe = new VCardPropertyMarshallerImpl() {
+		VCardPropertyScribeImpl scribe = new VCardPropertyScribeImpl() {
 			@Override
 			protected VCardDataType _dataType(TestProperty property, VCardVersion version) {
 				return VCardDataType.URI;
@@ -330,7 +330,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void prepareParameters() {
-		VCardPropertyMarshallerImpl m = new VCardPropertyMarshallerImpl() {
+		VCardPropertyScribeImpl m = new VCardPropertyScribeImpl() {
 			@Override
 			protected void _prepareParameters(TestProperty property, VCardParameters copy, VCardVersion version, VCard vcard) {
 				copy.put("PARAM", "value");
@@ -426,7 +426,7 @@ public class VCardPropertyScribeTest {
 	@Test
 	public void getQName_custom() {
 		QName expected = new QName("http://example.com", "foo");
-		VCardPropertyMarshallerImpl m = new VCardPropertyMarshallerImpl(expected);
+		VCardPropertyScribeImpl m = new VCardPropertyScribeImpl(expected);
 		QName actual = m.getQName();
 		assertEquals(expected, actual);
 	}
@@ -479,12 +479,12 @@ public class VCardPropertyScribeTest {
 		});
 	}
 
-	private class VCardPropertyMarshallerImpl extends VCardPropertyScribe<TestProperty> {
-		private VCardPropertyMarshallerImpl() {
+	private class VCardPropertyScribeImpl extends VCardPropertyScribe<TestProperty> {
+		private VCardPropertyScribeImpl() {
 			super(TestProperty.class, "TEST");
 		}
 
-		private VCardPropertyMarshallerImpl(QName qname) {
+		private VCardPropertyScribeImpl(QName qname) {
 			super(TestProperty.class, "TEST", qname);
 		}
 

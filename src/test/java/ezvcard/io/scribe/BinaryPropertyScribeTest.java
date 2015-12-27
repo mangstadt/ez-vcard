@@ -52,7 +52,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  * @author Michael Angstadt
  */
 public class BinaryPropertyScribeTest {
-	private final BinaryPropertyMarshallerImpl scribe = new BinaryPropertyMarshallerImpl();
+	private final BinaryPropertyScribeImpl scribe = new BinaryPropertyScribeImpl();
 	private final Sensei<BinaryTypeImpl> sensei = new Sensei<BinaryTypeImpl>(scribe);
 
 	private final String url = "http://example.com/image.jpg";
@@ -291,8 +291,8 @@ public class BinaryPropertyScribeTest {
 		sensei.assertParseJson(dataUri).run(hasData(data, ImageType.JPEG));
 	}
 
-	private static class BinaryPropertyMarshallerImpl extends BinaryPropertyScribe<BinaryTypeImpl, ImageType> {
-		public BinaryPropertyMarshallerImpl() {
+	private static class BinaryPropertyScribeImpl extends BinaryPropertyScribe<BinaryTypeImpl, ImageType> {
+		public BinaryPropertyScribeImpl() {
 			super(BinaryTypeImpl.class, "BINARY");
 		}
 

@@ -59,7 +59,7 @@ import ezvcard.util.XmlUtils;
  */
 
 /**
- * Base class for vCard property scribes (marshallers).
+ * Base class for vCard property scribes (aka "marshallers" or "serializers").
  * @param <T> the property class
  * @author Michael Angstadt
  */
@@ -69,7 +69,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	protected final QName qname;
 
 	/**
-	 * Creates a new marshaller.
+	 * Creates a new scribe.
 	 * @param clazz the property class
 	 * @param propertyName the property name (e.g. "FN")
 	 */
@@ -78,7 +78,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Creates a new marshaller.
+	 * Creates a new scribe.
 	 * @param clazz the property class
 	 * @param propertyName the property name (e.g. "FN")
 	 * @param qname the XML element name and namespace to use for xCard

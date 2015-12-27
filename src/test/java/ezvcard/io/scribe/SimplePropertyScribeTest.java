@@ -41,7 +41,7 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  */
 public class SimplePropertyScribeTest {
-	private final SimplePropertyMarshallerImpl scribe = new SimplePropertyMarshallerImpl();
+	private final SimplePropertyScribeImpl scribe = new SimplePropertyScribeImpl();
 	private final Sensei<TestProperty> sensei = new Sensei<TestProperty>(scribe);
 
 	private final String value = "One, two\nthree; four\\.";
@@ -93,8 +93,8 @@ public class SimplePropertyScribeTest {
 		sensei.assertParseJson("").run(hasText(""));
 	}
 
-	private static class SimplePropertyMarshallerImpl extends SimplePropertyScribe<TestProperty> {
-		public SimplePropertyMarshallerImpl() {
+	private static class SimplePropertyScribeImpl extends SimplePropertyScribe<TestProperty> {
+		public SimplePropertyScribeImpl() {
 			super(TestProperty.class, "TEST", VCardDataType.TEXT);
 		}
 

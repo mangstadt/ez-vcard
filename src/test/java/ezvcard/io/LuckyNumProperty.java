@@ -2,10 +2,14 @@ package ezvcard.io;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
-import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
@@ -41,58 +45,60 @@ import ezvcard.property.VCardProperty;
  */
 
 /**
+ * A property class class used for testing whose scribe DOES contain XML
+ * marshalling methods and a QName (unlike {@link AgeProperty}, which does not).
  * @author Michael Angstadt
  */
-public class MyFormattedNameType extends VCardProperty {
-	public String value;
+public class LuckyNumProperty extends VCardProperty {
+	public int luckyNum;
 
-	public MyFormattedNameType(String value) {
-		this.value = value;
+	public LuckyNumProperty(int luckyNum) {
+		this.luckyNum = luckyNum;
 	}
 
-	public static class MyFormattedNameScribe extends VCardPropertyScribe<MyFormattedNameType> {
-		public MyFormattedNameScribe() {
-			super(MyFormattedNameType.class, "FN");
+	public static class LuckyNumScribe extends VCardPropertyScribe<LuckyNumProperty> {
+		public LuckyNumScribe() {
+			super(LuckyNumProperty.class, "X-LUCKY-NUM", new QName("http://luckynum.com", "lucky-num"));
 		}
 
 		@Override
 		protected VCardDataType _defaultDataType(VCardVersion version) {
-			return VCardDataType.get("name");
+			return VCardDataType.INTEGER;
 		}
 
 		@Override
-		protected String _writeText(MyFormattedNameType property, VCardVersion version) {
-			return property.value.toUpperCase();
+		protected String _writeText(LuckyNumProperty property, VCardVersion version) {
+			return property.luckyNum + "";
 		}
 
 		@Override
-		protected MyFormattedNameType _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-			return new MyFormattedNameType(value.toUpperCase());
+		protected LuckyNumProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			int luckyNum = Integer.parseInt(value);
+			return new LuckyNumProperty(luckyNum);
 		}
 
 		@Override
-		protected void _writeXml(MyFormattedNameType property, XCardElement parent) {
-			parent.append("name", property.value);
+		protected void _writeXml(LuckyNumProperty property, XCardElement parent) {
+			int luckyNum = property.luckyNum;
+			parent.element().setTextContent(luckyNum + "");
 		}
 
 		@Override
-		protected MyFormattedNameType _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
-			return new MyFormattedNameType(element.first("name").toUpperCase());
+		protected LuckyNumProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+			NodeList nodeList = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
+			if (nodeList.getLength() == 0) {
+				return new LuckyNumProperty(0);
+			}
+
+			Element num = (Element) nodeList.item(0);
+			int luckyNum = Integer.parseInt(num.getTextContent());
+
+			return new LuckyNumProperty(luckyNum);
 		}
 
 		@Override
-		protected MyFormattedNameType _parseHtml(HCardElement element, List<String> warnings) {
-			return new MyFormattedNameType(element.value().toUpperCase());
-		}
-
-		@Override
-		protected JCardValue _writeJson(MyFormattedNameType property) {
-			return JCardValue.single(property.value.toUpperCase());
-		}
-
-		@Override
-		protected MyFormattedNameType _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-			return new MyFormattedNameType(value.asSingle().toUpperCase());
+		protected LuckyNumProperty _parseHtml(HCardElement element, List<String> warnings) {
+			return new LuckyNumProperty(Integer.parseInt(element.value()));
 		}
 	}
 }

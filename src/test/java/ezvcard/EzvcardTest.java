@@ -24,8 +24,8 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import ezvcard.io.LuckyNumType;
-import ezvcard.io.LuckyNumType.LuckyNumScribe;
+import ezvcard.io.LuckyNumProperty;
+import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
 import ezvcard.io.xml.XCardNamespaceContext;
 import ezvcard.parameter.ImageType;
 import ezvcard.property.FormattedName;
@@ -131,7 +131,7 @@ public class EzvcardTest {
 
 		VCard vcard = Ezvcard.parse(str).register(new LuckyNumScribe()).first();
 		assertVersion(VCardVersion.V2_1, vcard);
-		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
+		List<LuckyNumProperty> ext = vcard.getProperties(LuckyNumProperty.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
 	}
@@ -200,7 +200,7 @@ public class EzvcardTest {
 
 		VCard vcard = Ezvcard.parseXml(xb.toString()).register(new LuckyNumScribe()).first();
 		assertVersion(VCardVersion.V4_0, vcard);
-		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
+		List<LuckyNumProperty> ext = vcard.getProperties(LuckyNumProperty.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
 	}
@@ -264,7 +264,7 @@ public class EzvcardTest {
 
 		VCard vcard = Ezvcard.parseHtml(html).register(new LuckyNumScribe()).first();
 		assertVersion(VCardVersion.V3_0, vcard);
-		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
+		List<LuckyNumProperty> ext = vcard.getProperties(LuckyNumProperty.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
 	}
@@ -365,7 +365,7 @@ public class EzvcardTest {
 
 		VCard vcard = Ezvcard.parseJson(json).register(new LuckyNumScribe()).first();
 		assertVersion(VCardVersion.V4_0, vcard);
-		List<LuckyNumType> ext = vcard.getProperties(LuckyNumType.class);
+		List<LuckyNumProperty> ext = vcard.getProperties(LuckyNumProperty.class);
 		assertEquals(1, ext.size());
 		assertEquals(22, ext.get(0).luckyNum);
 	}

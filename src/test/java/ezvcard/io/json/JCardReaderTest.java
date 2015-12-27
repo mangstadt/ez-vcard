@@ -31,8 +31,8 @@ import org.junit.rules.TemporaryFolder;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.io.MyFormattedNameType;
-import ezvcard.io.MyFormattedNameType.MyFormattedNameScribe;
+import ezvcard.io.MyFormattedNameProperty;
+import ezvcard.io.MyFormattedNameProperty.MyFormattedNameScribe;
 import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -335,7 +335,7 @@ public class JCardReaderTest {
 		assertPropertyCount(1, vcard);
 		assertVersion(V4_0, vcard);
 
-		MyFormattedNameType prop = vcard.getProperty(MyFormattedNameType.class);
+		MyFormattedNameProperty prop = vcard.getProperty(MyFormattedNameProperty.class);
 		assertEquals("JOHN DOE", prop.value);
 		assertWarnings(0, reader);
 	}

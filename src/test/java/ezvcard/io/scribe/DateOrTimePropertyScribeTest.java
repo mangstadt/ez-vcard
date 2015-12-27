@@ -56,7 +56,7 @@ public class DateOrTimePropertyScribeTest {
 	@ClassRule
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
-	private final DateOrTimeMarshallerImpl scribe = new DateOrTimeMarshallerImpl();
+	private final DateOrTimeScribeImpl scribe = new DateOrTimeScribeImpl();
 	private final Sensei<DateOrTimeTypeImpl> sensei = new Sensei<DateOrTimeTypeImpl>(scribe);
 
 	private final Date date = date("1980-06-05");
@@ -209,8 +209,8 @@ public class DateOrTimePropertyScribeTest {
 		sensei.assertParseHtml("<time>June 5, 1980</time>").cannotParse();
 	}
 
-	private static class DateOrTimeMarshallerImpl extends DateOrTimePropertyScribe<DateOrTimeTypeImpl> {
-		public DateOrTimeMarshallerImpl() {
+	private static class DateOrTimeScribeImpl extends DateOrTimePropertyScribe<DateOrTimeTypeImpl> {
+		public DateOrTimeScribeImpl() {
 			super(DateOrTimeTypeImpl.class, "DATETIME");
 		}
 

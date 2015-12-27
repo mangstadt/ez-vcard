@@ -37,11 +37,11 @@ import ezvcard.property.Xml;
 
 /**
  * <p>
- * Manages a collection of property scribes (marshallers) to use when reading or
- * writing a vCard. The same instance of this object can be re-used across
- * multiple vCard reader/writer objects. This is useful if you have custom
- * scribe classes defined, as it allows you to only define them once instead of
- * each time a vCard reader/writer object is created.
+ * Manages a collection of property scribes (aka "marshallers" or "serializers")
+ * to use when reading or writing a vCard. The same instance of this object can
+ * be re-used across multiple vCard reader/writer objects. This is useful if you
+ * have custom scribe classes defined, as it allows you to only define them once
+ * instead of each time a vCard reader/writer object is created.
  * </p>
  * <p>
  * <b>Example:</b>
@@ -75,7 +75,7 @@ import ezvcard.property.Xml;
  * @author Michael Angstadt
  */
 public class ScribeIndex {
-	//define standard property marshallers
+	//define standard property scribes
 	private static final Map<String, VCardPropertyScribe<? extends VCardProperty>> standardByName = new HashMap<String, VCardPropertyScribe<? extends VCardProperty>>();
 	private static final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> standardByClass = new HashMap<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>>();
 	private static final Map<QName, VCardPropertyScribe<? extends VCardProperty>> standardByQName = new HashMap<QName, VCardPropertyScribe<? extends VCardProperty>>();
@@ -150,9 +150,9 @@ public class ScribeIndex {
 	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(String propertyName) {
 		propertyName = propertyName.toUpperCase();
 
-		VCardPropertyScribe<? extends VCardProperty> marshaller = extendedByName.get(propertyName);
-		if (marshaller != null) {
-			return marshaller;
+		VCardPropertyScribe<? extends VCardProperty> scribe = extendedByName.get(propertyName);
+		if (scribe != null) {
+			return scribe;
 		}
 
 		return standardByName.get(propertyName);
@@ -177,9 +177,9 @@ public class ScribeIndex {
 	 * @return the property scribe or null if not found
 	 */
 	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(Class<? extends VCardProperty> clazz) {
-		VCardPropertyScribe<? extends VCardProperty> marshaller = extendedByClass.get(clazz);
-		if (marshaller != null) {
-			return marshaller;
+		VCardPropertyScribe<? extends VCardProperty> scribe = extendedByClass.get(clazz);
+		if (scribe != null) {
+			return scribe;
 		}
 
 		return standardByClass.get(clazz);
@@ -205,14 +205,14 @@ public class ScribeIndex {
 	 * @return the property scribe or a {@link XmlScribe} if not found
 	 */
 	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(QName qname) {
-		VCardPropertyScribe<? extends VCardProperty> marshaller = extendedByQName.get(qname);
-		if (marshaller != null) {
-			return marshaller;
+		VCardPropertyScribe<? extends VCardProperty> scribe = extendedByQName.get(qname);
+		if (scribe != null) {
+			return scribe;
 		}
 
-		marshaller = standardByQName.get(qname);
-		if (marshaller != null) {
-			return marshaller;
+		scribe = standardByQName.get(qname);
+		if (scribe != null) {
+			return scribe;
 		}
 
 		if (VCardVersion.V4_0.getXmlNamespace().equals(qname.getNamespaceURI())) {

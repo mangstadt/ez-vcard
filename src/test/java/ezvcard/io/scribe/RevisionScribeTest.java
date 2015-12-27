@@ -69,7 +69,7 @@ public class RevisionScribeTest {
 	}
 
 	@Test
-	public void marshalJson() {
+	public void writeJson() {
 		sensei.assertWriteJson(withValue).run(datetimeStrExt);
 		sensei.assertWriteJson(empty).run("");
 	}

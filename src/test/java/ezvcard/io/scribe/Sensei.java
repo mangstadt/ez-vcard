@@ -54,7 +54,7 @@ import ezvcard.util.XmlUtils;
  */
 
 /**
- * Utility class used for unit testing property marshallers.
+ * Utility class used for unit testing property scribes.
  * @param <T> the property class
  * @author Michael Angstadt
  */
