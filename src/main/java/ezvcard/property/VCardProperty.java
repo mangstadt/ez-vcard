@@ -130,19 +130,8 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		List<Warning> warnings = new ArrayList<Warning>(0);
 
 		//check the supported versions
-		SupportedVersions supportedVersionsAnnotation = getClass().getAnnotation(SupportedVersions.class);
-		if (supportedVersionsAnnotation != null) {
-			VCardVersion supportedVersions[] = supportedVersionsAnnotation.value();
-			boolean found = false;
-			for (VCardVersion supportedVersion : supportedVersions) {
-				if (supportedVersion == version) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				warnings.add(new Warning(2, Arrays.toString(supportedVersions)));
-			}
+		if (!isSupportedBy(version)) {
+			warnings.add(new Warning(2, Arrays.toString(getSupportedVersions())));
 		}
 
 		//check parameters
