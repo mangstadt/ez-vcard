@@ -2,13 +2,13 @@ package ezvcard.property;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
@@ -75,6 +75,7 @@ import ezvcard.parameter.ImppType;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions({ VCardVersion.V3_0, VCardVersion.V4_0 })
 public class Impp extends VCardProperty implements HasAltId {
 	private static final String AIM = "aim";
 	private static final String ICQ = "icq";
@@ -123,11 +124,6 @@ public class Impp extends VCardProperty implements HasAltId {
 	public Impp(Impp original) {
 		super(original);
 		uri = original.uri;
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
 	}
 
 	/**

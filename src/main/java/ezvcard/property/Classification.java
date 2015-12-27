@@ -1,8 +1,6 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
-import java.util.Set;
-
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 
 /*
@@ -58,6 +56,7 @@ import ezvcard.VCardVersion;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V3_0)
 public class Classification extends TextProperty {
 	/**
 	 * Creates a classification property.
@@ -74,11 +73,6 @@ public class Classification extends TextProperty {
 	 */
 	public Classification(Classification original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V3_0);
 	}
 
 	@Override

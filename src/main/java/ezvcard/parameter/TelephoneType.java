@@ -1,8 +1,12 @@
 package ezvcard.parameter;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
+
 import java.util.Collection;
 
-import ezvcard.VCardVersion;
+import ezvcard.SupportedVersions;
 import ezvcard.property.Telephone;
 
 /*
@@ -41,91 +45,52 @@ import ezvcard.property.Telephone;
  * </p>
  * @author Michael Angstadt
  */
-public class TelephoneType extends VersionedVCardParameter {
+public class TelephoneType extends VCardParameter {
 	private static final VCardParameterCaseClasses<TelephoneType> enums = new VCardParameterCaseClasses<TelephoneType>(TelephoneType.class);
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final TelephoneType BBS = new TelephoneType("bbs", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final TelephoneType BBS = new TelephoneType("bbs");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final TelephoneType CAR = new TelephoneType("car", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final TelephoneType CAR = new TelephoneType("car");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final TelephoneType CELL = new TelephoneType("cell");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final TelephoneType FAX = new TelephoneType("fax");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final TelephoneType HOME = new TelephoneType("home");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final TelephoneType ISDN = new TelephoneType("isdn", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final TelephoneType ISDN = new TelephoneType("isdn");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final TelephoneType MODEM = new TelephoneType("modem", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final TelephoneType MODEM = new TelephoneType("modem");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final TelephoneType MSG = new TelephoneType("msg", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final TelephoneType MSG = new TelephoneType("msg");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final TelephoneType PAGER = new TelephoneType("pager");
 
-	/**
-	 * <b>Supported versions:</b> {@code 3.0}
-	 */
-	public static final TelephoneType PCS = new TelephoneType("pcs", VCardVersion.V3_0);
+	@SupportedVersions(V3_0)
+	public static final TelephoneType PCS = new TelephoneType("pcs");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final TelephoneType PREF = new TelephoneType("pref", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final TelephoneType PREF = new TelephoneType("pref");
 
-	/**
-	 * <b>Supported versions:</b> {@code 4.0}
-	 */
-	public static final TelephoneType TEXT = new TelephoneType("text", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final TelephoneType TEXT = new TelephoneType("text");
 
-	/**
-	 * <b>Supported versions:</b> {@code 4.0}
-	 */
-	public static final TelephoneType TEXTPHONE = new TelephoneType("textphone", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final TelephoneType TEXTPHONE = new TelephoneType("textphone");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final TelephoneType VIDEO = new TelephoneType("video");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final TelephoneType VOICE = new TelephoneType("voice");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final TelephoneType WORK = new TelephoneType("work");
 
-	private TelephoneType(String value, VCardVersion... supportedVersions) {
-		super(value, supportedVersions);
+	private TelephoneType(String value) {
+		super(value);
 	}
 
 	/**

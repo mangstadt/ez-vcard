@@ -1,12 +1,11 @@
 package ezvcard.property;
 
 import java.text.NumberFormat;
-import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
@@ -94,6 +93,7 @@ import ezvcard.Warning;
  * 
  * @author Michael Angstadt
  */
+@SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
 public class Agent extends VCardProperty {
 	private String url;
 	private VCard vcard;
@@ -129,11 +129,6 @@ public class Agent extends VCardProperty {
 		super(original);
 		url = original.url;
 		vcard = (original.vcard == null) ? null : new VCard(original.vcard);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
 	}
 
 	/**

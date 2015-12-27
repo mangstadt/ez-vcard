@@ -919,7 +919,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				Encoding encoding = Encoding.find(value);
 				if (encoding == null) {
 					warnings.add(new Warning(nonStandardCode, ENCODING, value, Encoding.all()));
-				} else if (!encoding.isSupported(version)) {
+				} else if (!encoding.isSupportedBy(version)) {
 					warnings.add(new Warning(valueNotSupportedCode, ENCODING, value));
 				}
 			}
@@ -929,7 +929,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				VCardDataType dataType = VCardDataType.find(value);
 				if (dataType == null) {
 					warnings.add(new Warning(nonStandardCode, VALUE, value, VCardDataType.all()));
-				} else if (!dataType.isSupported(version)) {
+				} else if (!dataType.isSupportedBy(version)) {
 					warnings.add(new Warning(valueNotSupportedCode, VALUE, value));
 				}
 			}

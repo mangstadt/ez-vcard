@@ -1,10 +1,12 @@
 package ezvcard;
 
-import java.util.Arrays;
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
 
 import ezvcard.util.CaseClasses;
 
@@ -55,147 +57,108 @@ public class VCardDataType {
 	};
 
 	/**
-	 * <p>
 	 * A uniform resource locator (e.g. "http://www.example.com/image.jpg").
 	 * This data type is only used in 2.1 vCards. All other vCard versions use
 	 * {@link #URI}.
-	 * </p>
-	 * <b>Supported versions:</b> {@code 2.1 (p.18-9)}
 	 */
-	public static final VCardDataType URL = new VCardDataType("url", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final VCardDataType URL = new VCardDataType("url");
 
 	/**
-	 * <p>
 	 * Refers to a MIME entity within an email.
-	 * </p>
-	 * <b>Supported versions:</b> {@code 2.1 (p.8-9)}
 	 */
-	public static final VCardDataType CONTENT_ID = new VCardDataType("content-id", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final VCardDataType CONTENT_ID = new VCardDataType("content-id");
 
 	/**
-	 * <p>
 	 * A non-textual value, such as a picture or sound file.
-	 * </p>
-	 * <b>Supported versions:</b> {@code 3.0}
 	 */
-	public static final VCardDataType BINARY = new VCardDataType("binary", VCardVersion.V3_0);
+	@SupportedVersions(V3_0)
+	public static final VCardDataType BINARY = new VCardDataType("binary");
 
 	/**
-	 * <p>
 	 * A uniform resource identifier (e.g. "http://www.example.com/image.jpg").
 	 * 2.1 vCards use {@link #URL} instead.
-	 * </p>
-	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 */
-	public static final VCardDataType URI = new VCardDataType("uri", VCardVersion.V3_0, VCardVersion.V4_0);
+	@SupportedVersions({ V3_0, V4_0 })
+	public static final VCardDataType URI = new VCardDataType("uri");
 
 	/**
-	 * <p>
 	 * A plain text value.
-	 * </p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 */
 	public static final VCardDataType TEXT = new VCardDataType("text");
 
 	/**
-	 * <p>
 	 * A date that does not have a time component (e.g. "2015-02-16").
-	 * </p>
-	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 */
-	public static final VCardDataType DATE = new VCardDataType("date", VCardVersion.V3_0, VCardVersion.V4_0);
+	@SupportedVersions({ V3_0, V4_0 })
+	public static final VCardDataType DATE = new VCardDataType("date");
 
 	/**
-	 * <p>
 	 * A time that does not have a date component (e.g. "08:34:00").
-	 * </p>
-	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 */
-	public static final VCardDataType TIME = new VCardDataType("time", VCardVersion.V3_0, VCardVersion.V4_0);
+	@SupportedVersions({ V3_0, V4_0 })
+	public static final VCardDataType TIME = new VCardDataType("time");
 
 	/**
-	 * <p>
 	 * A date with a time component (e.g. "2015-02-16 08:34:00").
-	 * </p>
-	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 */
-	public static final VCardDataType DATE_TIME = new VCardDataType("date-time", VCardVersion.V3_0, VCardVersion.V4_0);
+	@SupportedVersions({ V3_0, V4_0 })
+	public static final VCardDataType DATE_TIME = new VCardDataType("date-time");
 
 	/**
-	 * <p>
 	 * Any sort of date/time combination. The value can be a date (e.g.
 	 * "2015-02-16"), a time (e.g. "08:34:00"), or a date with a time component
 	 * (e.g. "2015-02-16 08:34:00").
-	 * </p>
-	 * <b>Supported versions:</b> {@code 4.0}
 	 */
-	public static final VCardDataType DATE_AND_OR_TIME = new VCardDataType("date-and-or-time", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final VCardDataType DATE_AND_OR_TIME = new VCardDataType("date-and-or-time");
 
 	/**
-	 * <p>
 	 * A specific moment in time. Timestamps should be in UTC time.
-	 * </p>
-	 * <b>Supported versions:</b> {@code 4.0}
 	 */
-	public static final VCardDataType TIMESTAMP = new VCardDataType("timestamp", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final VCardDataType TIMESTAMP = new VCardDataType("timestamp");
 
 	/**
-	 * <p>
 	 * A boolean value ("true" or "false").
-	 * </p>
-	 * <b>Supported versions:</b> {@code 4.0}
 	 */
-	public static final VCardDataType BOOLEAN = new VCardDataType("boolean", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final VCardDataType BOOLEAN = new VCardDataType("boolean");
 
 	/**
-	 * <p>
 	 * An integer value (e.g. "42").
-	 * </p>
-	 * <b>Supported versions:</b> {@code 4.0}
 	 */
-	public static final VCardDataType INTEGER = new VCardDataType("integer", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final VCardDataType INTEGER = new VCardDataType("integer");
 
 	/**
-	 * <p>
 	 * A floating-point value (e.g. "3.14").
-	 * </p>
-	 * <b>Supported versions:</b> {@code 4.0}
 	 */
-	public static final VCardDataType FLOAT = new VCardDataType("float", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final VCardDataType FLOAT = new VCardDataType("float");
 
 	/**
-	 * <p>
 	 * An offset from UTC time, in hours and minutes (e.g. "-0500").
-	 * </p>
-	 * <b>Supported versions:</b> {@code 4.0}
 	 */
-	public static final VCardDataType UTC_OFFSET = new VCardDataType("utc-offset", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final VCardDataType UTC_OFFSET = new VCardDataType("utc-offset");
 
 	/**
-	 * <p>
 	 * A standardized abbreviation for a language (e.g. "en-us" for American
 	 * English).
-	 * </p>
-	 * <b>Supported versions:</b> {@code 4.0}
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
 	 */
-	public static final VCardDataType LANGUAGE_TAG = new VCardDataType("language-tag", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final VCardDataType LANGUAGE_TAG = new VCardDataType("language-tag");
 
 	private final String name;
-	private final Set<VCardVersion> supportedVersions;
 
 	/**
 	 * @param name the data type name
-	 * @param supportedVersions the vCard versions it is supported in
 	 */
-	private VCardDataType(String name, VCardVersion... supportedVersions) {
+	private VCardDataType(String name) {
 		this.name = name;
-		if (supportedVersions.length == 0) {
-			supportedVersions = VCardVersion.values();
-		}
-
-		Set<VCardVersion> set = EnumSet.copyOf(Arrays.asList(supportedVersions));
-		this.supportedVersions = Collections.unmodifiableSet(set);
 	}
 
 	/**
@@ -207,12 +170,88 @@ public class VCardDataType {
 	}
 
 	/**
-	 * Determines if the data type is supported by the given vCard version.
+	 * <p>
+	 * Gets the vCard versions that support this data type.
+	 * </p>
+	 * <p>
+	 * The supported versions are defined by assigning a
+	 * {@link SupportedVersions} annotation to the data type's static field (for
+	 * example, {@link VCardDataType#CONTENT_ID}). Dynamically-created data
+	 * types (i.e. non-standard data types) are considered to be supported by
+	 * all versions.
+	 * </p>
+	 * @return the vCard versions that support this data type
+	 */
+	public VCardVersion[] getSupportedVersions() {
+		for (Field field : getClass().getFields()) {
+			if (!Modifier.isStatic(field.getModifiers())) {
+				continue;
+			}
+
+			Object fieldValue;
+			try {
+				fieldValue = field.get(null);
+			} catch (IllegalArgumentException e) {
+				//should never be thrown because we check for the static modified
+				continue;
+			} catch (IllegalAccessException e) {
+				continue;
+			}
+
+			if (fieldValue == this) {
+				SupportedVersions supportedVersionsAnnotation = field.getAnnotation(SupportedVersions.class);
+				return (supportedVersionsAnnotation == null) ? VCardVersion.values() : supportedVersionsAnnotation.value();
+			}
+		}
+
+		return VCardVersion.values();
+	}
+
+	/**
+	 * <p>
+	 * Determines if this data type is supported by the given vCard version.
+	 * </p>
+	 * <p>
+	 * The supported versions are defined by assigning a
+	 * {@link SupportedVersions} annotation to the data type's static field (for
+	 * example, {@link VCardDataType#CONTENT_ID}). Dynamically-created data
+	 * types (i.e. non-standard data types) are considered to be supported by
+	 * all versions.
+	 * </p>
 	 * @param version the vCard version
 	 * @return true if it is supported, false if not
 	 */
-	public boolean isSupported(VCardVersion version) {
-		return supportedVersions.contains(version);
+	public boolean isSupportedBy(VCardVersion version) {
+		for (Field field : getClass().getFields()) {
+			if (!Modifier.isStatic(field.getModifiers())) {
+				continue;
+			}
+
+			Object fieldValue;
+			try {
+				fieldValue = field.get(null);
+			} catch (IllegalArgumentException e) {
+				//should never be thrown because we check for the static modified
+				continue;
+			} catch (IllegalAccessException e) {
+				continue;
+			}
+
+			if (fieldValue == this) {
+				SupportedVersions supportedVersionsAnnotation = field.getAnnotation(SupportedVersions.class);
+				if (supportedVersionsAnnotation == null) {
+					return true;
+				}
+
+				for (VCardVersion supportedVersion : supportedVersionsAnnotation.value()) {
+					if (supportedVersion == version) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

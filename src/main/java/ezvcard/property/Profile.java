@@ -1,9 +1,8 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
@@ -61,6 +60,7 @@ import ezvcard.Warning;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V3_0)
 public class Profile extends TextProperty {
 	public Profile() {
 		super("VCARD");
@@ -72,11 +72,6 @@ public class Profile extends TextProperty {
 	 */
 	public Profile(Profile original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V3_0);
 	}
 
 	@Override

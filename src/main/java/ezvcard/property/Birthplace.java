@@ -1,5 +1,8 @@
 package ezvcard.property;
 
+import ezvcard.SupportedVersions;
+import ezvcard.VCardVersion;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -89,6 +92,7 @@ package ezvcard.property;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Birthplace extends PlaceProperty {
 	/**
 	 * Creates a new birthplace property.

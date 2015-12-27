@@ -1,8 +1,11 @@
 package ezvcard.parameter;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+
 import java.util.Collection;
 
-import ezvcard.VCardVersion;
+import ezvcard.SupportedVersions;
 import ezvcard.property.Address;
 import ezvcard.property.Label;
 
@@ -43,46 +46,30 @@ import ezvcard.property.Label;
  * </p>
  * @author Michael Angstadt
  */
-public class AddressType extends VersionedVCardParameter {
+public class AddressType extends VCardParameter {
 	private static final VCardParameterCaseClasses<AddressType> enums = new VCardParameterCaseClasses<AddressType>(AddressType.class);
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final AddressType HOME = new AddressType("home");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 */
 	public static final AddressType WORK = new AddressType("work");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressType DOM = new AddressType("dom", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final AddressType DOM = new AddressType("dom");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressType INTL = new AddressType("intl", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final AddressType INTL = new AddressType("intl");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressType POSTAL = new AddressType("postal", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final AddressType POSTAL = new AddressType("postal");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressType PARCEL = new AddressType("parcel", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final AddressType PARCEL = new AddressType("parcel");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final AddressType PREF = new AddressType("pref", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final AddressType PREF = new AddressType("pref");
 
-	private AddressType(String value, VCardVersion... supportedVersions) {
-		super(value, supportedVersions);
+	private AddressType(String value) {
+		super(value);
 	}
 
 	/**

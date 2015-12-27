@@ -5,12 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
@@ -75,26 +74,43 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the vCard versions that support this property.
+	 * </p>
+	 * <p>
+	 * The supported versions are defined by assigning a
+	 * {@link SupportedVersions} annotation to the property class. Property
+	 * classes without this annotation are considered to be supported by all
+	 * versions.
+	 * </p>
 	 * @return the vCard versions that support this property.
 	 */
-	public final Set<VCardVersion> getSupportedVersions() {
-		return _supportedVersions();
+	public final VCardVersion[] getSupportedVersions() {
+		SupportedVersions supportedVersionsAnnotation = getClass().getAnnotation(SupportedVersions.class);
+		return (supportedVersionsAnnotation == null) ? VCardVersion.values() : supportedVersionsAnnotation.value();
 	}
 
 	/**
 	 * <p>
-	 * Gets the vCard versions that support this property.
+	 * Determines if this property is supported by the given vCard version.
 	 * </p>
 	 * <p>
-	 * This method should be overridden by child classes if the property does
-	 * not support all vCard versions. The default implementation of this method
-	 * returns all vCard versions.
+	 * The supported versions are defined by assigning a
+	 * {@link SupportedVersions} annotation to the property class. Property
+	 * classes without this annotation are considered to be supported by all
+	 * versions.
 	 * </p>
-	 * @return the vCard versions that support this property.
+	 * @param version the vCard version
+	 * @return true if it is supported, false if not
 	 */
-	protected Set<VCardVersion> _supportedVersions() {
-		return EnumSet.copyOf(Arrays.asList(VCardVersion.values()));
+	public final boolean isSupportedBy(VCardVersion version) {
+		VCardVersion supportedVersions[] = getSupportedVersions();
+		for (VCardVersion supportedVersion : supportedVersions) {
+			if (supportedVersion == version) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -114,9 +130,19 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		List<Warning> warnings = new ArrayList<Warning>(0);
 
 		//check the supported versions
-		Set<VCardVersion> supportedVersions = getSupportedVersions();
-		if (!supportedVersions.contains(version)) {
-			warnings.add(new Warning(2, supportedVersions));
+		SupportedVersions supportedVersionsAnnotation = getClass().getAnnotation(SupportedVersions.class);
+		if (supportedVersionsAnnotation != null) {
+			VCardVersion supportedVersions[] = supportedVersionsAnnotation.value();
+			boolean found = false;
+			for (VCardVersion supportedVersion : supportedVersions) {
+				if (supportedVersion == version) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				warnings.add(new Warning(2, Arrays.toString(supportedVersions)));
+			}
 		}
 
 		//check parameters

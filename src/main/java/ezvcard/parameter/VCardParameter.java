@@ -1,5 +1,11 @@
 package ezvcard.parameter;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import ezvcard.SupportedVersions;
+import ezvcard.VCardVersion;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -55,6 +61,92 @@ public class VCardParameter {
 		return value;
 	}
 
+	/**
+	 * <p>
+	 * Gets the vCard versions that support this parameter value.
+	 * </p>
+	 * <p>
+	 * The supported versions are defined by assigning a
+	 * {@link SupportedVersions} annotation to the parameter value's static
+	 * field (for example, {@link AddressType#DOM}). Dynamically-created
+	 * parameter values (i.e. non-standard values) are considered to be
+	 * supported by all versions.
+	 * </p>
+	 * @return the vCard versions that support this parameter.
+	 */
+	public VCardVersion[] getSupportedVersions() {
+		for (Field field : getClass().getFields()) {
+			if (!Modifier.isStatic(field.getModifiers())) {
+				continue;
+			}
+
+			Object fieldValue;
+			try {
+				fieldValue = field.get(null);
+			} catch (IllegalArgumentException e) {
+				//should never be thrown because we check for the static modified
+				continue;
+			} catch (IllegalAccessException e) {
+				continue;
+			}
+
+			if (fieldValue == this) {
+				SupportedVersions supportedVersionsAnnotation = field.getAnnotation(SupportedVersions.class);
+				return (supportedVersionsAnnotation == null) ? VCardVersion.values() : supportedVersionsAnnotation.value();
+			}
+		}
+
+		return VCardVersion.values();
+	}
+
+	/**
+	 * <p>
+	 * Determines if this parameter value is supported by the given vCard
+	 * version.
+	 * </p>
+	 * <p>
+	 * The supported versions are defined by assigning a
+	 * {@link SupportedVersions} annotation to the parameter value's static
+	 * field (for example, {@link AddressType#DOM}). Dynamically-created
+	 * parameter values (i.e. non-standard values) are considered to be
+	 * supported by all versions.
+	 * </p>
+	 * @param version the vCard version
+	 * @return true if it is supported, false if not
+	 */
+	public boolean isSupportedBy(VCardVersion version) {
+		for (Field field : getClass().getFields()) {
+			if (!Modifier.isStatic(field.getModifiers())) {
+				continue;
+			}
+
+			Object fieldValue;
+			try {
+				fieldValue = field.get(null);
+			} catch (IllegalArgumentException e) {
+				//should never be thrown because we check for the static modified
+				continue;
+			} catch (IllegalAccessException e) {
+				continue;
+			}
+
+			if (fieldValue == this) {
+				SupportedVersions supportedVersionsAnnotation = field.getAnnotation(SupportedVersions.class);
+				if (supportedVersionsAnnotation == null) {
+					return true;
+				}
+
+				for (VCardVersion supportedVersion : supportedVersionsAnnotation.value()) {
+					if (supportedVersion == version) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return value;
@@ -70,18 +162,13 @@ public class VCardParameter {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 		VCardParameter other = (VCardParameter) obj;
 		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals(other.value))
-			return false;
+			if (other.value != null) return false;
+		} else if (!value.equals(other.value)) return false;
 		return true;
 	}
 }

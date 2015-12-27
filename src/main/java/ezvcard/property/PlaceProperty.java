@@ -1,10 +1,8 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -83,11 +81,6 @@ public class PlaceProperty extends VCardProperty implements HasAltId {
 		geoUri = original.geoUri;
 		uri = original.uri;
 		text = original.text;
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**

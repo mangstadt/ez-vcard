@@ -1,9 +1,8 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 
 /*
@@ -62,6 +61,7 @@ import ezvcard.VCardVersion;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions({ VCardVersion.V3_0, VCardVersion.V4_0 })
 public class Nickname extends TextListProperty implements HasAltId {
 	public Nickname() {
 		//empty
@@ -73,11 +73,6 @@ public class Nickname extends TextListProperty implements HasAltId {
 	 */
 	public Nickname(Nickname original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V3_0, VCardVersion.V4_0);
 	}
 
 	/**

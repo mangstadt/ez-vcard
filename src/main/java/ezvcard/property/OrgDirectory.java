@@ -1,8 +1,6 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
-import java.util.Set;
-
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 
 /*
@@ -60,6 +58,7 @@ import ezvcard.VCardVersion;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class OrgDirectory extends UriProperty implements HasAltId {
 	/**
 	 * @param uri the URI
@@ -74,11 +73,6 @@ public class OrgDirectory extends UriProperty implements HasAltId {
 	 */
 	public OrgDirectory(OrgDirectory original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	@Override

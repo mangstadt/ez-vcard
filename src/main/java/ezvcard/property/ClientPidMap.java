@@ -1,12 +1,11 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
@@ -92,6 +91,7 @@ import ezvcard.parameter.VCardParameters;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class ClientPidMap extends VCardProperty {
 	private Integer pid;
 	private String uri;
@@ -124,11 +124,6 @@ public class ClientPidMap extends VCardProperty {
 	public static ClientPidMap random(Integer pid) {
 		String uuid = UUID.randomUUID().toString();
 		return new ClientPidMap(pid, "urn:uuid:" + uuid);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**

@@ -175,7 +175,7 @@ public abstract class StreamWriter implements Closeable {
 				continue;
 			}
 
-			if (versionStrict && !property.getSupportedVersions().contains(targetVersion)) {
+			if (versionStrict && !property.isSupportedBy(targetVersion)) {
 				//do not add the property to the vCard if it is not supported by the target version
 				continue;
 			}

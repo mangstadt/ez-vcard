@@ -1,9 +1,8 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
@@ -71,6 +70,7 @@ import ezvcard.util.TelUri;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Member extends UriProperty implements HasAltId {
 	/**
 	 * Creates a member property.
@@ -114,11 +114,6 @@ public class Member extends UriProperty implements HasAltId {
 	 */
 	public static Member telephone(TelUri telUri) {
 		return new Member(telUri.toString());
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**

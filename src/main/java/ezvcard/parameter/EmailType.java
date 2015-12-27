@@ -1,8 +1,12 @@
 package ezvcard.parameter;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
+
 import java.util.Collection;
 
-import ezvcard.VCardVersion;
+import ezvcard.SupportedVersions;
 import ezvcard.property.Email;
 
 /*
@@ -41,86 +45,56 @@ import ezvcard.property.Email;
  * </p>
  * @author Michael Angstadt
  */
-public class EmailType extends VersionedVCardParameter {
+public class EmailType extends VCardParameter {
 	private static final VCardParameterCaseClasses<EmailType> enums = new VCardParameterCaseClasses<EmailType>(EmailType.class);
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final EmailType INTERNET = new EmailType("internet", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final EmailType INTERNET = new EmailType("internet");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final EmailType X400 = new EmailType("x400", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final EmailType X400 = new EmailType("x400");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1, 3.0}
-	 */
-	public static final EmailType PREF = new EmailType("pref", VCardVersion.V2_1, VCardVersion.V3_0);
+	@SupportedVersions({ V2_1, V3_0 })
+	public static final EmailType PREF = new EmailType("pref");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType AOL = new EmailType("aol", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType AOL = new EmailType("aol");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType APPLELINK = new EmailType("applelink", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType APPLELINK = new EmailType("applelink");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType ATTMAIL = new EmailType("attmail", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType ATTMAIL = new EmailType("attmail");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType CIS = new EmailType("cis", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType CIS = new EmailType("cis");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType EWORLD = new EmailType("eworld", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType EWORLD = new EmailType("eworld");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType IBMMAIL = new EmailType("ibmmail", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType IBMMAIL = new EmailType("ibmmail");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType MCIMAIL = new EmailType("mcimail", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType MCIMAIL = new EmailType("mcimail");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType POWERSHARE = new EmailType("powershare", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType POWERSHARE = new EmailType("powershare");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType PRODIGY = new EmailType("prodigy", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType PRODIGY = new EmailType("prodigy");
 
-	/**
-	 * <b>Supported versions:</b> {@code 2.1 (suggested)}
-	 */
-	public static final EmailType TLX = new EmailType("tlx", VCardVersion.V2_1);
+	@SupportedVersions(V2_1)
+	public static final EmailType TLX = new EmailType("tlx");
 
-	/**
-	 * <b>Supported versions:</b> {@code 4.0}
-	 */
-	public static final EmailType HOME = new EmailType("home", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final EmailType HOME = new EmailType("home");
 
-	/**
-	 * <b>Supported versions:</b> {@code 4.0}
-	 */
-	public static final EmailType WORK = new EmailType("work", VCardVersion.V4_0);
+	@SupportedVersions(V4_0)
+	public static final EmailType WORK = new EmailType("work");
 
-	private EmailType(String value, VCardVersion... supportedVersions) {
-		super(value, supportedVersions);
+	private EmailType(String value) {
+		super(value);
 	}
 
 	/**

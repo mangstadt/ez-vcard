@@ -2,9 +2,10 @@ package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertValidate;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -18,11 +19,10 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.EnumSet;
-import java.util.Set;
 
 import org.junit.Test;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 
@@ -101,10 +101,23 @@ public class VCardPropertyTest {
 	@Test
 	public void getSupportedVersions() {
 		VCardPropertyImpl withoutSupportedVersions = new VCardPropertyImpl();
-		assertSetEquals(withoutSupportedVersions.getSupportedVersions(), VCardVersion.values());
+		assertArrayEquals(VCardVersion.values(), withoutSupportedVersions.getSupportedVersions());
 
 		Version3Property withSupportedVersions = new Version3Property();
-		assertSetEquals(withSupportedVersions.getSupportedVersions(), VCardVersion.V3_0);
+		assertArrayEquals(new VCardVersion[] { VCardVersion.V3_0 }, withSupportedVersions.getSupportedVersions());
+	}
+
+	@Test
+	public void isSupportedBy() {
+		VCardPropertyImpl withoutSupportedVersions = new VCardPropertyImpl();
+		for (VCardVersion version : VCardVersion.values()) {
+			assertTrue(withoutSupportedVersions.isSupportedBy(version));
+		}
+
+		Version3Property withSupportedVersions = new Version3Property();
+		assertFalse(withSupportedVersions.isSupportedBy(VCardVersion.V2_1));
+		assertTrue(withSupportedVersions.isSupportedBy(VCardVersion.V3_0));
+		assertFalse(withSupportedVersions.isSupportedBy(VCardVersion.V4_0));
 	}
 
 	@Test
@@ -242,10 +255,8 @@ public class VCardPropertyTest {
 		//empty
 	}
 
+	@SupportedVersions(VCardVersion.V3_0)
 	private class Version3Property extends VCardProperty {
-		@Override
-		public Set<VCardVersion> _supportedVersions() {
-			return EnumSet.of(VCardVersion.V3_0);
-		}
+		//empty
 	}
 }

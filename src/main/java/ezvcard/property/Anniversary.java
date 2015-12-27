@@ -1,9 +1,8 @@
 package ezvcard.property;
 
 import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 import ezvcard.util.PartialDate;
 
@@ -101,6 +100,7 @@ import ezvcard.util.PartialDate;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Anniversary extends DateOrTimeProperty {
 	/**
 	 * Creates an anniversary property.
@@ -142,11 +142,6 @@ public class Anniversary extends DateOrTimeProperty {
 	 */
 	public Anniversary(Anniversary original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	@Override

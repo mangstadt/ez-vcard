@@ -1,11 +1,11 @@
-package ezvcard.parameter;
+package ezvcard;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import org.junit.Test;
-
-import ezvcard.VCardVersion;
+import ezvcard.parameter.VCardParameter;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -33,29 +33,38 @@ import ezvcard.VCardVersion;
  */
 
 /**
+ * <p>
+ * Defines the vCard version(s) that support a property ({@link VCardProperty}
+ * class), parameter value ({@link VCardParameter} instance), or data type (
+ * {@link VCardDataType} instance). If this annotation is not present, then all
+ * versions are presumed to be supported.
+ * </p>
+ * <p>
+ * <b>Examples</b>
+ * </p>
+ * 
+ * <pre class="brush:java">
+ * {@literal @}SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
+ * public class Agent extends VCardProperty{
+ *   ...
+ * }
+ * 
+ * public class AddressType extends VCardParameter{
+ *   {@literal @}SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
+ *   public static final AddressType DOM = new AddressType("dom");
+ *   ...
+ * }
+ * 
+ * public class VCardDataType{
+ *   {@literal @}SupportedVersions(VCardVersion.V2_1)
+ *   public static final VCardDataType CONTENT_ID = new VCardDataType("content-id");
+ *   ...
+ * }
+ * </pre>
  * @author Michael Angstadt
  */
-public class VersionedVCardParameterTest {
-	@Test
-	public void isSupported() {
-		VersionedVCardParameter p = new VersionedVCardParameter("value");
-		assertTrue(p.isSupported(VCardVersion.V2_1));
-		assertTrue(p.isSupported(VCardVersion.V3_0));
-		assertTrue(p.isSupported(VCardVersion.V4_0));
-
-		p = new VersionedVCardParameter("value", VCardVersion.V2_1);
-		assertTrue(p.isSupported(VCardVersion.V2_1));
-		assertFalse(p.isSupported(VCardVersion.V3_0));
-		assertFalse(p.isSupported(VCardVersion.V4_0));
-
-		p = new VersionedVCardParameter("value", VCardVersion.V2_1, VCardVersion.V3_0);
-		assertTrue(p.isSupported(VCardVersion.V2_1));
-		assertTrue(p.isSupported(VCardVersion.V3_0));
-		assertFalse(p.isSupported(VCardVersion.V4_0));
-
-		p = new VersionedVCardParameter("value", VCardVersion.V2_1, VCardVersion.V3_0, VCardVersion.V4_0);
-		assertTrue(p.isSupported(VCardVersion.V2_1));
-		assertTrue(p.isSupported(VCardVersion.V3_0));
-		assertTrue(p.isSupported(VCardVersion.V4_0));
-	}
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SupportedVersions {
+	VCardVersion[] value();
 }

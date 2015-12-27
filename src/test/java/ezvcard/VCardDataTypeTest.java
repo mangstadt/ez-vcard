@@ -1,6 +1,8 @@
 package ezvcard;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -16,7 +18,6 @@ public class VCardDataTypeTest {
 
 		VCardDataType test = VCardDataType.get("test");
 		VCardDataType test2 = VCardDataType.get("tEsT");
-		assertEquals("test", test2.getName());
 		assertSame(test, test2);
 	}
 
@@ -50,5 +51,28 @@ public class VCardDataTypeTest {
 		assertTrue(all.contains(VCardDataType.URI));
 		assertTrue(all.contains(VCardDataType.URL));
 		assertTrue(all.contains(VCardDataType.UTC_OFFSET));
+	}
+
+	@Test
+	public void getSupportedVersions() {
+		assertArrayEquals(new VCardVersion[] { VCardVersion.V2_1 }, VCardDataType.CONTENT_ID.getSupportedVersions());
+		assertArrayEquals(VCardVersion.values(), VCardDataType.TEXT.getSupportedVersions());
+		assertArrayEquals(VCardVersion.values(), VCardDataType.get("test").getSupportedVersions());
+	}
+
+	@Test
+	public void isSupportedBy() {
+		assertTrue(VCardDataType.CONTENT_ID.isSupportedBy(VCardVersion.V2_1));
+		assertFalse(VCardDataType.CONTENT_ID.isSupportedBy(VCardVersion.V3_0));
+		assertFalse(VCardDataType.CONTENT_ID.isSupportedBy(VCardVersion.V4_0));
+
+		for (VCardVersion version : VCardVersion.values()) {
+			assertTrue(VCardDataType.TEXT.isSupportedBy(version));
+		}
+
+		VCardDataType test = VCardDataType.get("test");
+		for (VCardVersion version : VCardVersion.values()) {
+			assertTrue(test.isSupportedBy(version));
+		}
 	}
 }

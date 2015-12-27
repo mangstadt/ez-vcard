@@ -1,9 +1,9 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.AddressType;
@@ -79,6 +79,7 @@ import ezvcard.parameter.AddressType;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
 public class Label extends TextProperty {
 	/**
 	 * Creates a label property.
@@ -94,11 +95,6 @@ public class Label extends TextProperty {
 	 */
 	public Label(Label original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
 	}
 
 	/**

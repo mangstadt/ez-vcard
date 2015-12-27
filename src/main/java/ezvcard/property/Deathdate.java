@@ -1,9 +1,8 @@
 package ezvcard.property;
 
 import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 import ezvcard.util.PartialDate;
 
@@ -101,6 +100,7 @@ import ezvcard.util.PartialDate;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Deathdate extends DateOrTimeProperty {
 	/**
 	 * Creates a deathdate property.
@@ -142,11 +142,6 @@ public class Deathdate extends DateOrTimeProperty {
 	 */
 	public Deathdate(Deathdate original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	@Override

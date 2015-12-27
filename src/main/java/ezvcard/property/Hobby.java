@@ -1,8 +1,6 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
-import java.util.Set;
-
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.HobbyLevel;
 import ezvcard.parameter.VCardParameters;
@@ -65,6 +63,7 @@ import ezvcard.parameter.VCardParameters;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Hobby extends TextProperty implements HasAltId {
 	/**
 	 * Creates a hobby property.
@@ -80,11 +79,6 @@ public class Hobby extends TextProperty implements HasAltId {
 	 */
 	public Hobby(Hobby original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**

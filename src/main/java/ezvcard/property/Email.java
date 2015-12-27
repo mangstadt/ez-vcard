@@ -158,7 +158,7 @@ public class Email extends TextProperty implements HasAltId {
 				//ignore because it is converted to a PREF parameter for 4.0 vCards
 				continue;
 			}
-			if (!type.isSupported(version)) {
+			if (!type.isSupportedBy(version)) {
 				warnings.add(new Warning(9, type.getValue()));
 			}
 		}

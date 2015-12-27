@@ -1,9 +1,8 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 
 /*
@@ -65,6 +64,7 @@ import ezvcard.VCardVersion;
  * 
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Language extends TextProperty implements HasAltId {
 	/**
 	 * Creates a language property.
@@ -80,11 +80,6 @@ public class Language extends TextProperty implements HasAltId {
 	 */
 	public Language(Language original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**

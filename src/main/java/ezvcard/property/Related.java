@@ -1,10 +1,10 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
@@ -78,6 +78,7 @@ import ezvcard.util.TelUri;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Related extends VCardProperty implements HasAltId {
 	private String uri;
 	private String text;
@@ -133,11 +134,6 @@ public class Related extends VCardProperty implements HasAltId {
 	 */
 	public static Related telephone(TelUri telUri) {
 		return new Related(telUri.toString());
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**

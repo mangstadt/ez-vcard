@@ -1,11 +1,10 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
@@ -78,6 +77,7 @@ import ezvcard.Warning;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Gender extends VCardProperty {
 	public static final String MALE = "M";
 	public static final String FEMALE = "F";
@@ -105,11 +105,6 @@ public class Gender extends VCardProperty {
 		super(original);
 		gender = original.gender;
 		text = original.text;
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**

@@ -225,7 +225,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 				continue;
 			}
 
-			if (!type.isSupported(version)) {
+			if (!type.isSupportedBy(version)) {
 				warnings.add(new Warning(9, type.getValue()));
 			}
 		}

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import ezvcard.VCardVersion;
 import ezvcard.util.GeoUri;
 
 /*
@@ -50,23 +49,19 @@ public class PlacePropertyTest {
 	@Test
 	public void validate() {
 		PlaceProperty empty = new PlaceProperty();
-		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 8);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
+		assertValidate(empty).run(8);
 
 		PlaceProperty withText = new PlaceProperty();
 		withText.setText(text);
-		assertValidate(withText).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
-		assertValidate(withText).versions(VCardVersion.V4_0).run();
+		assertValidate(withText).run();
 
 		PlaceProperty withUri = new PlaceProperty();
 		withUri.setUri(uri);
-		assertValidate(withUri).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
-		assertValidate(withUri).versions(VCardVersion.V4_0).run();
+		assertValidate(withUri).run();
 
 		PlaceProperty withGeoUri = new PlaceProperty();
 		withGeoUri.setGeoUri(geoUriObj);
-		assertValidate(withGeoUri).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
-		assertValidate(withGeoUri).versions(VCardVersion.V4_0).run();
+		assertValidate(withGeoUri).run();
 	}
 
 	@Test

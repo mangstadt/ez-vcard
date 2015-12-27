@@ -1,15 +1,14 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 import ezvcard.util.XmlUtils;
 
@@ -67,6 +66,7 @@ import ezvcard.util.XmlUtils;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class Xml extends SimpleProperty<Document> implements HasAltId {
 	/**
 	 * Creates an XML property.
@@ -105,11 +105,6 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 			Node node = value.importNode(original.value.getDocumentElement(), true);
 			value.appendChild(node);
 		}
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	//@Override

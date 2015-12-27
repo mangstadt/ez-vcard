@@ -1,8 +1,6 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
-import java.util.Set;
-
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 
 /*
@@ -58,6 +56,7 @@ import ezvcard.VCardVersion;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
 public class Mailer extends TextProperty {
 	/**
 	 * Creates a mailer property.
@@ -73,11 +72,6 @@ public class Mailer extends TextProperty {
 	 */
 	public Mailer(Mailer original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V2_1, VCardVersion.V3_0);
 	}
 
 	@Override

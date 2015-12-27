@@ -1,9 +1,8 @@
 package ezvcard.property;
 
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
+import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
 
 /*
@@ -60,6 +59,7 @@ import ezvcard.VCardVersion;
  * </p>
  * @author Michael Angstadt
  */
+@SupportedVersions(VCardVersion.V4_0)
 public class CalendarRequestUri extends UriProperty implements HasAltId {
 	/**
 	 * Creates a calendar request URI property.
@@ -75,11 +75,6 @@ public class CalendarRequestUri extends UriProperty implements HasAltId {
 	 */
 	public CalendarRequestUri(CalendarRequestUri original) {
 		super(original);
-	}
-
-	@Override
-	public Set<VCardVersion> _supportedVersions() {
-		return EnumSet.of(VCardVersion.V4_0);
 	}
 
 	/**
