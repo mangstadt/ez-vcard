@@ -129,18 +129,27 @@ public final class PartialDate {
 	 * @param string the string (e.g. "--0420T15")
 	 */
 	public static PartialDate parse(String string) {
+		int t = string.indexOf('T');
+		String beforeT, afterT;
+		if (t < 0) {
+			beforeT = string;
+			afterT = null;
+		} else {
+			beforeT = string.substring(0, t);
+			afterT = (t < string.length() - 1) ? string.substring(t + 1) : null;
+		}
+
 		Builder builder = new Builder();
-		String split[] = string.split("T");
 		boolean success;
-		if (split.length == 1) {
+		if (afterT == null) {
 			//date or time
-			success = parseDate(string, builder) || parseTime(string, builder);
-		} else if (split[0].length() == 0) {
+			success = parseDate(beforeT, builder) || parseTime(beforeT, builder);
+		} else if (beforeT.length() == 0) {
 			//time
-			success = parseTime(split[1], builder);
+			success = parseTime(afterT, builder);
 		} else {
 			//date and time
-			success = parseDate(split[0], builder) && parseTime(split[1], builder);
+			success = parseDate(beforeT, builder) && parseTime(afterT, builder);
 		}
 
 		if (!success) {

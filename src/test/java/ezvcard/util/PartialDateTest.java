@@ -234,6 +234,7 @@ public class PartialDateTest {
 		assertParse("--04-20", builder().month(4).date(20));
 		assertParse("19800420", builder().year(1980).month(4).date(20));
 		assertParse("1980-04-20", builder().year(1980).month(4).date(20));
+		assertParse("1980-04-20T", builder().year(1980).month(4).date(20));
 
 		assertParse("T05", builder().hour(5));
 		assertParse("T-20", builder().minute(20));

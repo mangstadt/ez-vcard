@@ -140,6 +140,27 @@ public class VCardReaderTest {
 	}
 
 	@Test
+	public void type_parameter_enclosed_in_double_quotes_extra_commas() throws Throwable {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+			"VERSION:4.0\r\n" +
+			"ADR;TYPE=\"dom,home,,work,\":;;;;\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		VCardReader reader = new VCardReader(str);
+		VCard vcard = reader.readNext();
+		assertPropertyCount(1, vcard);
+
+		Address adr = vcard.getAddresses().get(0);
+		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK, AddressType.get(""));
+
+		assertWarnings(0, reader);
+		assertNoMoreVCards(reader);
+	}
+
+	@Test
 	public void nameless_parameters() throws Exception {
 		//@formatter:off
 		String str =

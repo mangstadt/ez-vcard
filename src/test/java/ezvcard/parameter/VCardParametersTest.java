@@ -224,31 +224,54 @@ public class VCardParametersTest {
 	}
 
 	/**
-	 * Make sure it handles PID values correctly.
+	 * Asserts that it marshals a PID value to a string correctly when adding
+	 * the parameter to the parameters list.
 	 */
 	@Test
-	public void pid() {
+	public void addPid() {
 		assertTrue(parameters.getPids().isEmpty());
 		parameters.addPid(1);
 		parameters.addPid(2, 1);
 
-		//make sure it builds the correct string values
 		assertEquals(Arrays.asList("1", "2.1"), parameters.get("PID"));
+	}
 
-		//make sure it unmarshals the string values correctly
+	/**
+	 * Asserts that it unmarshals a PID value correctly when retrieving the
+	 * parameter from the parameters list.
+	 */
+	@Test
+	public void getPid() {
+		assertTrue(parameters.getPids().isEmpty());
+		parameters.addPid(1);
+		parameters.addPid(2, 1);
+
 		Iterator<Integer[]> it = parameters.getPids().iterator();
+
 		Integer[] pid = it.next();
-		assertIntEquals(1, pid[0]);
-		assertNull(pid[1]);
+		assertArrayEquals(new Integer[] { 1, null }, pid);
+
 		pid = it.next();
-		assertIntEquals(2, pid[0]);
-		assertIntEquals(1, pid[1]);
+		assertArrayEquals(new Integer[] { 2, 1 }, pid);
+
+		assertFalse(it.hasNext());
+	}
+
+	@Test
+	public void getPid_trailing_dot() {
+		assertTrue(parameters.getPids().isEmpty());
+		parameters.put("PID", "1.");
+
+		Iterator<Integer[]> it = parameters.getPids().iterator();
+
+		Integer[] pid = it.next();
+		assertArrayEquals(new Integer[] { 1, null }, pid);
+
 		assertFalse(it.hasNext());
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void pid_malformed() {
-		parameters.put("PID", "1.1");
+	public void getPid_malformed() {
 		parameters.put("PID", "invalid");
 		parameters.getPids();
 	}

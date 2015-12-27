@@ -660,10 +660,18 @@ public class VCardParameters extends ListMultimap<String, String> {
 		List<String> values = get(PID);
 		List<Integer[]> pids = new ArrayList<Integer[]>(values.size());
 		for (String value : values) {
-			String split[] = value.split("\\.");
+			int dot = value.indexOf('.');
+			String localIdStr, clientPidMapRefStr;
+			if (dot < 0) {
+				localIdStr = value;
+				clientPidMapRefStr = null;
+			} else {
+				localIdStr = value.substring(0, dot);
+				clientPidMapRefStr = (dot < value.length() - 1) ? value.substring(dot + 1) : null;
+			}
 			try {
-				Integer localId = Integer.valueOf(split[0]);
-				Integer clientPidMapRef = (split.length > 1) ? Integer.valueOf(split[1]) : null;
+				Integer localId = Integer.valueOf(localIdStr);
+				Integer clientPidMapRef = (clientPidMapRefStr == null) ? null : Integer.valueOf(clientPidMapRefStr);
 				pids.add(new Integer[] { localId, clientPidMapRef });
 			} catch (NumberFormatException e) {
 				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, PID), e);
