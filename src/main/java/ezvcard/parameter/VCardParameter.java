@@ -115,36 +115,12 @@ public class VCardParameter {
 	 * @return true if it is supported, false if not
 	 */
 	public boolean isSupportedBy(VCardVersion version) {
-		for (Field field : getClass().getFields()) {
-			if (!Modifier.isStatic(field.getModifiers())) {
-				continue;
-			}
-
-			Object fieldValue;
-			try {
-				fieldValue = field.get(null);
-			} catch (IllegalArgumentException e) {
-				//should never be thrown because we check for the static modified
-				continue;
-			} catch (IllegalAccessException e) {
-				continue;
-			}
-
-			if (fieldValue == this) {
-				SupportedVersions supportedVersionsAnnotation = field.getAnnotation(SupportedVersions.class);
-				if (supportedVersionsAnnotation == null) {
-					return true;
-				}
-
-				for (VCardVersion supportedVersion : supportedVersionsAnnotation.value()) {
-					if (supportedVersion == version) {
-						return true;
-					}
-				}
-				return false;
+		for (VCardVersion supportedVersion : getSupportedVersions()) {
+			if (supportedVersion == version) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	@Override
