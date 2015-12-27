@@ -1,14 +1,12 @@
 package ezvcard.io.scribe;
 
 import static ezvcard.util.TestUtils.date;
-import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.Revision;
 import ezvcard.util.DefaultTimezoneRule;
 
@@ -78,42 +76,34 @@ public class RevisionScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText(datetimeStr).run(is(withValue));
+		sensei.assertParseText(datetimeStr).run(withValue);
 		sensei.assertParseText("invalid").cannotParse();
-		sensei.assertParseText("").run(is(empty));
+		sensei.assertParseText("").run(empty);
 	}
 
 	@Test
 	public void parseXml() {
-		sensei.assertParseXml("<timestamp>" + datetimeStr + "</timestamp>").run(is(withValue));
+		sensei.assertParseXml("<timestamp>" + datetimeStr + "</timestamp>").run(withValue);
 		sensei.assertParseXml("<timestamp>invalid</timestamp>").cannotParse();
 		sensei.assertParseXml("").cannotParse();
 	}
 
 	@Test
 	public void parseHtml() {
-		sensei.assertParseHtml("<time datetime=\"" + datetimeStrExt + "\">June 5, 1980</time>").run(is(withValue));
+		sensei.assertParseHtml("<time datetime=\"" + datetimeStrExt + "\">June 5, 1980</time>").run(withValue);
 		sensei.assertParseHtml("<time datetime=\"invalid\">June 5, 1980</time>").cannotParse();
 
-		sensei.assertParseHtml("<time>" + datetimeStrExt + "</time>").run(is(withValue));
+		sensei.assertParseHtml("<time>" + datetimeStrExt + "</time>").run(withValue);
 		sensei.assertParseHtml("<time>invalid</time>").cannotParse();
 
-		sensei.assertParseHtml("<div>" + datetimeStrExt + "</div>").run(is(withValue));
+		sensei.assertParseHtml("<div>" + datetimeStrExt + "</div>").run(withValue);
 		sensei.assertParseHtml("<div>invalid</div>").cannotParse();
 	}
 
 	@Test
 	public void parseJson() {
-		sensei.assertParseJson(datetimeStrExt).run(is(withValue));
+		sensei.assertParseJson(datetimeStrExt).run(withValue);
 		sensei.assertParseJson("invalid").cannotParse();
-		sensei.assertParseJson("").run(is(empty));
-	}
-
-	private Check<Revision> is(final Revision expected) {
-		return new Check<Revision>() {
-			public void check(Revision actual) {
-				assertEquals(expected.getValue(), actual.getValue());
-			}
-		};
+		sensei.assertParseJson("").run(empty);
 	}
 }

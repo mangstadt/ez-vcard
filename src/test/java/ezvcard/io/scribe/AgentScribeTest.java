@@ -14,7 +14,6 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.Agent;
 
 /*
@@ -86,8 +85,8 @@ public class AgentScribeTest {
 
 	@Test
 	public void parseText_url() {
-		sensei.assertParseText(url).dataType(VCardDataType.URL).run(hasUrl);
-		sensei.assertParseText(url).dataType(VCardDataType.URI).run(hasUrl);
+		sensei.assertParseText(url).dataType(VCardDataType.URL).run(withUrl);
+		sensei.assertParseText(url).dataType(VCardDataType.URI).run(withUrl);
 	}
 
 	@Test
@@ -124,8 +123,8 @@ public class AgentScribeTest {
 
 	@Test
 	public void parseHtml() {
-		sensei.assertParseHtml("<a href=\"" + url + "\"></a>").run(hasUrl);
-		sensei.assertParseHtml("<div>" + url + "</div>").run(hasUrl);
+		sensei.assertParseHtml("<a href=\"" + url + "\"></a>").run(withUrl);
+		sensei.assertParseHtml("<div>" + url + "</div>").run(withUrl);
 
 		try {
 			//@formatter:off
@@ -149,11 +148,4 @@ public class AgentScribeTest {
 			assertEquals(vcard, property.getVCard());
 		}
 	}
-
-	private final Check<Agent> hasUrl = new Check<Agent>() {
-		public void check(Agent property) {
-			assertEquals(url, property.getUrl());
-			assertNull(property.getVCard());
-		}
-	};
 }

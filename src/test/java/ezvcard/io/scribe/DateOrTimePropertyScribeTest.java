@@ -157,18 +157,18 @@ public class DateOrTimePropertyScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText(dateExtendedStr).run(is(withDate));
-		sensei.assertParseText(dateTimeExtendedStr).run(is(withDateTime));
+		sensei.assertParseText(dateExtendedStr).run(withDate);
+		sensei.assertParseText(dateTimeExtendedStr).run(withDateTime);
 		sensei.assertParseText(partialDate.toISO8601(false)).versions(V2_1, V3_0).cannotParse();
-		sensei.assertParseText(partialDate.toISO8601(false)).versions(V4_0).run(is(withPartialDate));
+		sensei.assertParseText(partialDate.toISO8601(false)).versions(V4_0).run(withPartialDate);
 		sensei.assertParseText(partialTime.toISO8601(false)).versions(V2_1, V3_0).cannotParse();
-		sensei.assertParseText(partialTime.toISO8601(false)).versions(V4_0).run(is(withPartialTime));
+		sensei.assertParseText(partialTime.toISO8601(false)).versions(V4_0).run(withPartialTime);
 		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(V2_1, V3_0).cannotParse();
-		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(V4_0).run(is(withPartialDateTime));
+		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(V4_0).run(withPartialDateTime);
 		sensei.assertParseText(text).versions(V2_1, V3_0).cannotParse();
 		sensei.assertParseText(text).versions(V4_0).warnings(1).run(hasText(text));
 		sensei.assertParseText(text).versions(V2_1, V3_0).dataType(TEXT).cannotParse();
-		sensei.assertParseText(text).versions(V4_0).dataType(TEXT).run(is(withText));
+		sensei.assertParseText(text).versions(V4_0).dataType(TEXT).run(withText);
 	}
 
 	@Test
@@ -176,36 +176,36 @@ public class DateOrTimePropertyScribeTest {
 		String tags[] = { "date", "date-time", "date-and-or-time" };
 		for (String tag : tags) {
 			String format = "<" + tag + ">%s</" + tag + ">";
-			sensei.assertParseXml(String.format(format, dateStr)).run(is(withDate));
-			sensei.assertParseXml(String.format(format, dateTimeStr)).run(is(withDateTime));
-			sensei.assertParseXml(String.format(format, partialDate.toISO8601(false))).run(is(withPartialDate));
-			sensei.assertParseXml(String.format(format, partialTime.toISO8601(false))).run(is(withPartialTime));
-			sensei.assertParseXml(String.format(format, partialDateTime.toISO8601(false))).run(is(withPartialDateTime));
+			sensei.assertParseXml(String.format(format, dateStr)).run(withDate);
+			sensei.assertParseXml(String.format(format, dateTimeStr)).run(withDateTime);
+			sensei.assertParseXml(String.format(format, partialDate.toISO8601(false))).run(withPartialDate);
+			sensei.assertParseXml(String.format(format, partialTime.toISO8601(false))).run(withPartialTime);
+			sensei.assertParseXml(String.format(format, partialDateTime.toISO8601(false))).run(withPartialDateTime);
 			sensei.assertParseXml(String.format(format, "invalid")).warnings(1).run(hasText("invalid"));
 		}
 
-		sensei.assertParseXml("<text>" + text + "</text>").run(is(withText));
-		sensei.assertParseXml("<date>" + dateStr + "</date><date>invalid</date>").run(is(withDate)); //only considers the first
+		sensei.assertParseXml("<text>" + text + "</text>").run(withText);
+		sensei.assertParseXml("<date>" + dateStr + "</date><date>invalid</date>").run(withDate); //only considers the first
 		sensei.assertParseXml("").cannotParse();
 
 	}
 
 	@Test
 	public void parseJson() {
-		sensei.assertParseJson(dateExtendedStr).run(is(withDate));
-		sensei.assertParseJson(dateTimeExtendedStr).run(is(withDateTime));
-		sensei.assertParseJson(partialDate.toISO8601(true)).run(is(withPartialDate));
-		sensei.assertParseJson(partialTime.toISO8601(true)).run(is(withPartialTime));
-		sensei.assertParseJson(partialDateTime.toISO8601(true)).run(is(withPartialDateTime));
-		sensei.assertParseJson(text).warnings(1).run(is(withText));
-		sensei.assertParseJson(text).dataType(TEXT).run(is(withText));
+		sensei.assertParseJson(dateExtendedStr).run(withDate);
+		sensei.assertParseJson(dateTimeExtendedStr).run(withDateTime);
+		sensei.assertParseJson(partialDate.toISO8601(true)).run(withPartialDate);
+		sensei.assertParseJson(partialTime.toISO8601(true)).run(withPartialTime);
+		sensei.assertParseJson(partialDateTime.toISO8601(true)).run(withPartialDateTime);
+		sensei.assertParseJson(text).warnings(1).run(withText);
+		sensei.assertParseJson(text).dataType(TEXT).run(withText);
 	}
 
 	@Test
 	public void parseHtml() {
-		sensei.assertParseHtml("<time datetime=\"" + dateExtendedStr + "\">June 5, 1980</time>").run(is(withDate));
-		sensei.assertParseHtml("<time>" + dateExtendedStr + "</time>").run(is(withDate));
-		sensei.assertParseHtml("<div>" + dateExtendedStr + "</div>").run(is(withDate));
+		sensei.assertParseHtml("<time datetime=\"" + dateExtendedStr + "\">June 5, 1980</time>").run(withDate);
+		sensei.assertParseHtml("<time>" + dateExtendedStr + "</time>").run(withDate);
+		sensei.assertParseHtml("<div>" + dateExtendedStr + "</div>").run(withDate);
 		sensei.assertParseHtml("<time>June 5, 1980</time>").cannotParse();
 	}
 
@@ -248,17 +248,6 @@ public class DateOrTimePropertyScribeTest {
 				assertNull(property.getDate());
 				assertNull(property.getPartialDate());
 				assertEquals(text, property.getText());
-			}
-		};
-	}
-
-	private Check<DateOrTimeTypeImpl> is(final DateOrTimeTypeImpl expected) {
-		return new Check<DateOrTimeTypeImpl>() {
-			public void check(DateOrTimeTypeImpl actual) {
-				assertEquals(expected.getDate(), actual.getDate());
-				assertEquals(expected.hasTime(), actual.hasTime());
-				assertEquals(expected.getPartialDate(), actual.getPartialDate());
-				assertEquals(expected.getText(), actual.getText());
 			}
 		};
 	}

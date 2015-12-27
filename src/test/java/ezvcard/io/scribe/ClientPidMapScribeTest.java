@@ -70,7 +70,7 @@ public class ClientPidMapScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText(pid + ";" + uri).run(has(pid, uri));
+		sensei.assertParseText(pid + ";" + uri).run(withValue);
 		sensei.assertParseText(pid + ";" + uri + ";foo").run(has(pid, uri + ";foo"));
 		sensei.assertParseText("no semicolon").cannotParse();
 		sensei.assertParseText("not-a-number;bar").cannotParse();
@@ -78,7 +78,7 @@ public class ClientPidMapScribeTest {
 
 	@Test
 	public void parseXml() {
-		sensei.assertParseXml("<uri>" + uri + "</uri><sourceid>" + pid + "</sourceid>").run(has(pid, uri));
+		sensei.assertParseXml("<uri>" + uri + "</uri><sourceid>" + pid + "</sourceid>").run(withValue);
 
 		sensei.assertParseXml("<uri>" + uri + "</uri><sourceid>not-a-number</sourceid>").cannotParse();
 		sensei.assertParseXml("<uri>" + uri + "</uri>").cannotParse();
@@ -89,7 +89,7 @@ public class ClientPidMapScribeTest {
 	@Test
 	public void parseJson() {
 		JCardValue value = JCardValue.structured(pid + "", uri);
-		sensei.assertParseJson(value).run(has(pid, uri));
+		sensei.assertParseJson(value).run(withValue);
 
 		value = JCardValue.structured("not-a-number", uri);
 		sensei.assertParseJson(value).cannotParse();

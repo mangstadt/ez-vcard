@@ -3,11 +3,9 @@ package ezvcard.io.scribe;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.Geo;
 import ezvcard.util.GeoUri;
 
@@ -91,8 +89,8 @@ public class GeoScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText("-12.34;56.78").versions(V2_1, V3_0).run(is(withBoth));
-		sensei.assertParseText("geo:-12.34,56.78").versions(V4_0).run(is(withBoth));
+		sensei.assertParseText("-12.34;56.78").versions(V2_1, V3_0).run(withBoth);
+		sensei.assertParseText("geo:-12.34,56.78").versions(V4_0).run(withBoth);
 
 		sensei.assertParseText("invalid;56.78").cannotParse();
 		sensei.assertParseText("-12.34;invalid").cannotParse();
@@ -108,12 +106,12 @@ public class GeoScribeTest {
 		sensei.assertParseText("geo:-12.34,").cannotParse();
 		sensei.assertParseText("geo:-12.34").cannotParse();
 
-		sensei.assertParseText("").run(is(empty));
+		sensei.assertParseText("").run(empty);
 	}
 
 	@Test
 	public void parseXml() {
-		sensei.assertParseXml("<uri>geo:-12.34,56.78</uri>").run(is(withBoth));
+		sensei.assertParseXml("<uri>geo:-12.34,56.78</uri>").run(withBoth);
 		sensei.assertParseXml("<uri>geo:invalid,56.78</uri>").cannotParse();
 		sensei.assertParseXml("<uri>geo:-12.34,invalid</uri>").cannotParse();
 		sensei.assertParseXml("<uri>geo:invalid,invalid</uri>").cannotParse();
@@ -132,7 +130,7 @@ public class GeoScribeTest {
 			"<span class=\"latitude\">-12.34</span>" +
 			"<span class=\"longitude\">56.78</span>" +
 		"</div>"		
-		).run(is(withBoth));
+		).run(withBoth);
 		
 		sensei.assertParseHtml(
 		"<div>" +
@@ -176,7 +174,7 @@ public class GeoScribeTest {
 
 	@Test
 	public void parseJson() {
-		sensei.assertParseJson("geo:-12.34,56.78").run(is(withBoth));
+		sensei.assertParseJson("geo:-12.34,56.78").run(withBoth);
 		sensei.assertParseJson("geo:invalid,56.78").cannotParse();
 		sensei.assertParseJson("geo:-12.34,invalid").cannotParse();
 		sensei.assertParseJson("geo:invalid,invalid").cannotParse();
@@ -184,16 +182,6 @@ public class GeoScribeTest {
 		sensei.assertParseJson("geo:-12.34,").cannotParse();
 		sensei.assertParseJson("geo:-12.34").cannotParse();
 		sensei.assertParseJson("invalid").cannotParse();
-		sensei.assertParseJson("").run(is(empty));
-	}
-
-	private Check<Geo> is(final Geo expected) {
-		return new Check<Geo>() {
-			public void check(Geo actual) {
-				assertEquals(expected.getGeoUri() == null, actual.getGeoUri() == null);
-				assertEquals(expected.getLatitude(), actual.getLatitude());
-				assertEquals(expected.getLongitude(), actual.getLongitude());
-			}
-		};
+		sensei.assertParseJson("").run(empty);
 	}
 }

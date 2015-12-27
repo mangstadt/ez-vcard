@@ -141,13 +141,13 @@ public class TelephoneScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText(text).run(is(withText));
-		sensei.assertParseText(text).dataType(VCardDataType.TEXT).run(is(withText));
-		sensei.assertParseText(text).dataType(VCardDataType.URI).warnings(1).run(is(withText));
+		sensei.assertParseText(text).run(withText);
+		sensei.assertParseText(text).dataType(VCardDataType.TEXT).run(withText);
+		sensei.assertParseText(text).dataType(VCardDataType.URI).warnings(1).run(withText);
 
-		sensei.assertParseText(uri).run(is(withUri));
-		sensei.assertParseText(uri).dataType(VCardDataType.TEXT).run(is(withUri));
-		sensei.assertParseText(uri).dataType(VCardDataType.URI).run(is(withUri));
+		sensei.assertParseText(uri).run(withUri);
+		sensei.assertParseText(uri).dataType(VCardDataType.TEXT).run(withUri);
+		sensei.assertParseText(uri).dataType(VCardDataType.URI).run(withUri);
 
 		sensei.assertParseText("invalid").run(hasText("invalid"));
 		sensei.assertParseText("invalid").dataType(VCardDataType.TEXT).run(hasText("invalid"));
@@ -160,11 +160,11 @@ public class TelephoneScribeTest {
 
 	@Test
 	public void parseXml() {
-		sensei.assertParseXml("<text>" + text + "</text>").run(is(withText));
-		sensei.assertParseXml("<uri>" + uri + "</uri>").run(is(withUri));
+		sensei.assertParseXml("<text>" + text + "</text>").run(withText);
+		sensei.assertParseXml("<uri>" + uri + "</uri>").run(withUri);
 
 		//prefer <text> to <uri>
-		sensei.assertParseXml("<uri>" + uri + "</uri><text>" + text + "</text>").run(is(withText));
+		sensei.assertParseXml("<uri>" + uri + "</uri><text>" + text + "</text>").run(withText);
 
 		sensei.assertParseXml("<uri>invalid</uri>").warnings(1).run(hasText("invalid"));
 		sensei.assertParseXml("").cannotParse();
@@ -181,23 +181,23 @@ public class TelephoneScribeTest {
 			"<span class=\"value\">" + text + "</span>" +
 		"</div>").run(new Check<Telephone>(){
 			public void check(Telephone property) {
-				is(withText).check(property);
+				assertEquals(text, property.getText());
 				assertSetEquals(property.getTypes(), TelephoneType.HOME, TelephoneType.CELL, TelephoneType.get("foo"));
 			}
 		});
 
-		sensei.assertParseHtml("<a href=\"" + uri + "\">Call me</a>").run(is(withUri));
-		sensei.assertParseHtml("<a href=\"foo\">" + text + "</a>").run(is(withText));
+		sensei.assertParseHtml("<a href=\"" + uri + "\">Call me</a>").run(withUri);
+		sensei.assertParseHtml("<a href=\"foo\">" + text + "</a>").run(withText);
 		//@formatter:on
 	}
 
 	@Test
 	public void parseJson() {
-		sensei.assertParseJson(text).dataType(VCardDataType.TEXT).run(is(withText));
-		sensei.assertParseJson(text).dataType(VCardDataType.URI).warnings(1).run(is(withText));
+		sensei.assertParseJson(text).dataType(VCardDataType.TEXT).run(withText);
+		sensei.assertParseJson(text).dataType(VCardDataType.URI).warnings(1).run(withText);
 
-		sensei.assertParseJson(uri).dataType(VCardDataType.TEXT).run(is(withUri));
-		sensei.assertParseJson(uri).dataType(VCardDataType.URI).run(is(withUri));
+		sensei.assertParseJson(uri).dataType(VCardDataType.TEXT).run(withUri);
+		sensei.assertParseJson(uri).dataType(VCardDataType.URI).run(withUri);
 
 		sensei.assertParseJson("invalid").dataType(VCardDataType.TEXT).run(hasText("invalid"));
 		sensei.assertParseJson("invalid").dataType(VCardDataType.URI).warnings(1).run(hasText("invalid"));
@@ -211,15 +211,6 @@ public class TelephoneScribeTest {
 			public void check(Telephone actual) {
 				assertEquals(text, actual.getText());
 				assertNull(actual.getUri());
-			}
-		};
-	}
-
-	private Check<Telephone> is(final Telephone expected) {
-		return new Check<Telephone>() {
-			public void check(Telephone actual) {
-				assertEquals(expected.getText(), actual.getText());
-				assertEquals(expected.getUri(), actual.getUri());
 			}
 		};
 	}

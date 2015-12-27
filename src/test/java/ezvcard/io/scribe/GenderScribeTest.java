@@ -1,11 +1,8 @@
 package ezvcard.io.scribe;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import ezvcard.io.json.JCardValue;
-import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.Gender;
 
 /*
@@ -85,39 +82,30 @@ public class GenderScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText(gender + ";" + textEscaped).run(is(withGenderAndText));
-		sensei.assertParseText(gender).run(is(withGender));
-		sensei.assertParseText(";" + textEscaped).run(is(withText));
-		sensei.assertParseText("").run(is(empty));
+		sensei.assertParseText(gender + ";" + textEscaped).run(withGenderAndText);
+		sensei.assertParseText(gender).run(withGender);
+		sensei.assertParseText(";" + textEscaped).run(withText);
+		sensei.assertParseText("").run(empty);
 	}
 
 	@Test
 	public void parseXml() {
-		sensei.assertParseXml("<sex>" + gender + "</sex><identity>" + text + "</identity>").run(is(withGenderAndText));
-		sensei.assertParseXml("<sex>" + gender + "</sex>").run(is(withGender));
+		sensei.assertParseXml("<sex>" + gender + "</sex><identity>" + text + "</identity>").run(withGenderAndText);
+		sensei.assertParseXml("<sex>" + gender + "</sex>").run(withGender);
 		sensei.assertParseXml("<identity>" + text + "</identity>").cannotParse();
 		sensei.assertParseXml("").cannotParse();
 	}
 
 	@Test
 	public void parseJson() {
-		sensei.assertParseJson(JCardValue.structured(gender, text)).run(is(withGenderAndText));
+		sensei.assertParseJson(JCardValue.structured(gender, text)).run(withGenderAndText);
 
 		//single-valued array
-		sensei.assertParseJson(JCardValue.structured(gender)).run(is(withGender));
+		sensei.assertParseJson(JCardValue.structured(gender)).run(withGender);
 
-		sensei.assertParseJson(gender).run(is(withGender));
+		sensei.assertParseJson(gender).run(withGender);
 
-		sensei.assertParseJson(JCardValue.structured(null, text)).run(is(withText));
-		sensei.assertParseJson("").run(is(empty));
-	}
-
-	private Check<Gender> is(final Gender expected) {
-		return new Check<Gender>() {
-			public void check(Gender actual) {
-				assertEquals(expected.getGender(), actual.getGender());
-				assertEquals(expected.getText(), actual.getText());
-			}
-		};
+		sensei.assertParseJson(JCardValue.structured(null, text)).run(withText);
+		sensei.assertParseJson("").run(empty);
 	}
 }

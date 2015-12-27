@@ -71,13 +71,13 @@ public class SimplePropertyScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText(valueEscaped).run(is(withValue));
+		sensei.assertParseText(valueEscaped).run(withValue);
 		sensei.assertParseText("").run(hasText(""));
 	}
 
 	@Test
 	public void parseXml() {
-		sensei.assertParseXml("<text>" + value + "</text>").run(is(withValue));
+		sensei.assertParseXml("<text>" + value + "</text>").run(withValue);
 		sensei.assertParseXml("").cannotParse();
 	}
 
@@ -89,7 +89,7 @@ public class SimplePropertyScribeTest {
 
 	@Test
 	public void parseJson() {
-		sensei.assertParseJson(value).run(is(withValue));
+		sensei.assertParseJson(value).run(withValue);
 		sensei.assertParseJson("").run(hasText(""));
 	}
 
@@ -121,14 +121,6 @@ public class SimplePropertyScribeTest {
 		return new Check<TestProperty>() {
 			public void check(TestProperty actual) {
 				assertEquals(text, actual.value);
-			}
-		};
-	}
-
-	private Check<TestProperty> is(final TestProperty expected) {
-		return new Check<TestProperty>() {
-			public void check(TestProperty actual) {
-				assertEquals(expected.value, actual.value);
 			}
 		};
 	}
