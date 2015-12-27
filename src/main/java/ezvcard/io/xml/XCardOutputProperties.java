@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import javax.xml.transform.OutputKeys;
 
+import ezvcard.Messages;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -90,7 +92,7 @@ public class XCardOutputProperties extends HashMap<String, String> {
 		}
 
 		if (indent < 0) {
-			throw new IllegalArgumentException("Indent amount cannot be less than zero.");
+			throw Messages.INSTANCE.getIllegalArgumentException(30);
 		}
 
 		put(OutputKeys.INDENT, "yes");

@@ -75,7 +75,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 		try {
 			return new Xml(value);
 		} catch (SAXException e) {
-			throw new CannotParseException("Cannot parse value as XML: " + value);
+			throw new CannotParseException(21);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 			String xml = value.asSingle();
 			return (xml == null) ? new Xml((Document) null) : new Xml(xml);
 		} catch (SAXException e) {
-			throw new CannotParseException("Cannot parse value as XML: " + value);
+			throw new CannotParseException(22);
 		}
 	}
 

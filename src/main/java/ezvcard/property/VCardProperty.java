@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import ezvcard.Messages;
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -319,19 +320,19 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 			Constructor<? extends VCardProperty> copyConstructor = clazz.getConstructor(clazz);
 			return copyConstructor.newInstance(this);
 		} catch (SecurityException e) {
-			throw new UnsupportedOperationException("Property class " + clazz.getName() + " denied access to its copy constructor.", e);
+			throw new UnsupportedOperationException(Messages.INSTANCE.getExceptionMessage(31, clazz.getName()), e);
 		} catch (NoSuchMethodException e) {
-			throw new UnsupportedOperationException("Property class " + clazz.getName() + " does not have a copy constructor.", e);
+			throw new UnsupportedOperationException(Messages.INSTANCE.getExceptionMessage(32, clazz.getName()), e);
 		} catch (IllegalArgumentException e) {
 			//should never be thrown because we check for a method with the right parameters
 			throw new RuntimeException(e);
 		} catch (InstantiationException e) {
-			throw new UnsupportedOperationException("Property class " + clazz.getName() + " is abstract and cannot be instantiated.", e);
+			throw new UnsupportedOperationException(Messages.INSTANCE.getExceptionMessage(33, clazz.getName()), e);
 		} catch (IllegalAccessException e) {
 			//should never be thrown because we call setAccessible(true)
 			throw new RuntimeException(e);
 		} catch (InvocationTargetException e) {
-			throw new UnsupportedOperationException("Copy constructor of property class " + clazz.getName() + " threw an exception.", e);
+			throw new UnsupportedOperationException(Messages.INSTANCE.getExceptionMessage(34, clazz.getName()), e);
 		}
 	}
 

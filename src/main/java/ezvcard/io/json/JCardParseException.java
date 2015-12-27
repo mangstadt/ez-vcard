@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonToken;
 
+import ezvcard.Messages;
+
 /*
  Copyright (c) 2012-2015, Michael Angstadt
  All rights reserved.
@@ -49,7 +51,7 @@ public class JCardParseException extends IOException {
 	 * @param actual the actual JSON token
 	 */
 	public JCardParseException(JsonToken expected, JsonToken actual) {
-		super("Expected " + expected + " but was " + actual + ".");
+		super(Messages.INSTANCE.getExceptionMessage(35, expected, actual));
 		this.expected = expected;
 		this.actual = actual;
 	}
