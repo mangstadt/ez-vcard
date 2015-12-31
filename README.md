@@ -85,6 +85,8 @@ To build the project: `mvn compile`
 To run the unit tests: `mvn test`  
 To build a JAR: `mvn package`
 
+**Eclipse users:** Due to a quirk in the build process, before running the `eclipse:eclipse` goal, you must tweak some of the `<resource>` definitions in the POM file.  See the comments in the POM file for details.
+
 # Questions / Feedback
 
 You have some options:

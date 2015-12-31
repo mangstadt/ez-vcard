@@ -124,7 +124,8 @@
 			</resource>
 			
 			<!--
-			Apparently, the "eclipse:eclipse" goal doesn't like the above <resource> definitions, so use the one below when running this goal
+			For reasons unknown, the "eclipse:eclipse" goal fails with the above <resource> definitions.
+			Uncomment the <resource> block below and comment out the <resource> blocks above when running this goal.
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
