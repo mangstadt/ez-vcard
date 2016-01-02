@@ -58,6 +58,9 @@ import java.util.UUID;
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-46">RFC 6350 p.46</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-24">RFC 2426 p.24</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.21</a>
  */
 public class Uid extends UriProperty {
 	/**

@@ -69,6 +69,7 @@ import ezvcard.util.TelUri;
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-41">RFC 6350 p.41</a>
  */
 @SupportedVersions(VCardVersion.V4_0)
 public class Member extends UriProperty implements HasAltId {

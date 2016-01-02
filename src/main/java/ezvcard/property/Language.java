@@ -63,6 +63,7 @@ import ezvcard.VCardVersion;
  * </p>
  * 
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-37">RFC 6350 p.37</a>
  */
 @SupportedVersions(VCardVersion.V4_0)
 public class Language extends TextProperty implements HasAltId {

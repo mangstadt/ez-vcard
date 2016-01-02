@@ -98,7 +98,7 @@ import ezvcard.util.PartialDate;
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+ * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
  */
 @SupportedVersions(VCardVersion.V4_0)
 public class Deathdate extends DateOrTimeProperty {

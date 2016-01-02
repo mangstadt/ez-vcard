@@ -80,6 +80,7 @@ import ezvcard.VCardVersion;
  * <b>Supported versions:</b> {@code 3.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426 p.22</a>
  */
 @SupportedVersions(VCardVersion.V3_0)
 public class SortString extends TextProperty {

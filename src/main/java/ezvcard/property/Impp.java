@@ -74,6 +74,8 @@ import ezvcard.parameter.ImppType;
  * <b>Supported versions:</b> {@code 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350 p.36</a>
+ * @see <a href="http://tools.ietf.org/html/rfc4770">RFC 4770</a>
  */
 @SupportedVersions({ VCardVersion.V3_0, VCardVersion.V4_0 })
 public class Impp extends VCardProperty implements HasAltId {

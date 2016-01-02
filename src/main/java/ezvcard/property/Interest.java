@@ -61,7 +61,7 @@ import ezvcard.parameter.VCardParameters;
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+ * @see <a href="http://tools.ietf.org/html/rfc6715#page-5">RFC 6715 p.5</a>
  */
 @SupportedVersions(VCardVersion.V4_0)
 public class Interest extends TextProperty implements HasAltId {

@@ -74,6 +74,9 @@ import ezvcard.util.TelUri;
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-34">RFC 6350 p.34</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-14">RFC 2426 p.14</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.13</a>
  */
 public class Telephone extends VCardProperty implements HasAltId {
 	private String text;

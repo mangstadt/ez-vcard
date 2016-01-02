@@ -59,6 +59,7 @@ import ezvcard.Warning;
  * <b>Supported versions:</b> {@code 3.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
  */
 @SupportedVersions(VCardVersion.V3_0)
 public class Profile extends TextProperty {

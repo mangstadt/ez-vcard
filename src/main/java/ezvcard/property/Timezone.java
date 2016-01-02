@@ -70,6 +70,9 @@ import ezvcard.util.VCardDateFormat;
  * </p>
  * 
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350 p.22</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426 p.16</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
  */
 public class Timezone extends VCardProperty implements HasAltId {
 	private UtcOffset offset;

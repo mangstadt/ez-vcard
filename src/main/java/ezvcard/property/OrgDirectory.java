@@ -56,7 +56,7 @@ import ezvcard.VCardVersion;
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+ * @see <a href="http://tools.ietf.org/html/rfc6715#page-6">RFC 6715 p.6</a>
  */
 @SupportedVersions(VCardVersion.V4_0)
 public class OrgDirectory extends UriProperty implements HasAltId {
