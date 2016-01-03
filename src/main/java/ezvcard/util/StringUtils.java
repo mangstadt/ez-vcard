@@ -299,7 +299,7 @@ public final class StringUtils {
 	 * @param moreCharacters more lists of characters to check for. If the list
 	 * is 3 characters long and contains a hyphen in the middle, then it is
 	 * treated as a character range (e.g. "0-9").
-	 * @return
+	 * @return the character list
 	 */
 	public static String buildCharacterList(String characters, String... moreCharacters) {
 		if (moreCharacters.length == 0 && (characters.length() != 3 || characters.charAt(1) != '-')) {
