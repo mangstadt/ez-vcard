@@ -86,6 +86,9 @@ import ezvcard.util.GeoUri;
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350 p.38</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426 p.16</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
  */
 public class Geo extends VCardProperty implements HasAltId {
 	private GeoUri uri;

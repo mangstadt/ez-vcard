@@ -54,6 +54,9 @@ import java.util.Date;
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350 p.45</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426 p.22</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
  */
 public class Revision extends SimpleProperty<Date> {
 	/**

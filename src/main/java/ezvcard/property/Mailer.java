@@ -55,6 +55,8 @@ import ezvcard.VCardVersion;
  * <b>Supported versions:</b> {@code 2.1, 3.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426 p.15</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
  */
 @SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
 public class Mailer extends TextProperty {

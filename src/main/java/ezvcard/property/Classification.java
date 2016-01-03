@@ -55,6 +55,7 @@ import ezvcard.VCardVersion;
  * <b>Supported versions:</b> {@code 3.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426 p.26</a>
  */
 @SupportedVersions(VCardVersion.V3_0)
 public class Classification extends TextProperty {

@@ -90,7 +90,7 @@ import ezvcard.VCardVersion;
  * <b>Supported versions:</b> {@code 4.0}
  * </p>
  * @author Michael Angstadt
- * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+ * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
  */
 @SupportedVersions(VCardVersion.V4_0)
 public class Deathplace extends PlaceProperty {

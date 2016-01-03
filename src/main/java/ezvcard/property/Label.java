@@ -78,6 +78,8 @@ import ezvcard.parameter.AddressType;
  * <b>Supported versions:</b> {@code 2.1, 3.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-13">RFC 2426 p.13</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.12</a>
  */
 @SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
 public class Label extends TextProperty {

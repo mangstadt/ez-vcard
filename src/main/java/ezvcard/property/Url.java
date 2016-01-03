@@ -54,6 +54,9 @@ import java.util.List;
  * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350 p.47</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-25">RFC 2426 p.25</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.21</a>
  */
 public class Url extends UriProperty implements HasAltId {
 	/**

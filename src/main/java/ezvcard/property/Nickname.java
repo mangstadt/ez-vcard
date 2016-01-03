@@ -60,6 +60,8 @@ import ezvcard.VCardVersion;
  * <b>Supported versions:</b> {@code 3.0, 4.0}
  * </p>
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350 p.29</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
  */
 @SupportedVersions({ VCardVersion.V3_0, VCardVersion.V4_0 })
 public class Nickname extends TextListProperty implements HasAltId {

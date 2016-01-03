@@ -92,6 +92,8 @@ import ezvcard.Warning;
  * </p>
  * 
  * @author Michael Angstadt
+ * @see <a href="http://tools.ietf.org/html/rfc2426#page-19">RFC 2426 p.19</a>
+ * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.18</a>
  */
 @SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
 public class Agent extends VCardProperty {
