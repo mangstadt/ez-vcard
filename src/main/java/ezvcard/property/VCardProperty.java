@@ -140,7 +140,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 		//check group
 		if (group != null) {
-			if (!StringUtils.containsOnly(group, "-", "a-z", "A-Z", "0-9")) {
+			if (!StringUtils.containsOnly(group, "-a-zA-Z0-9")) {
 				warnings.add(new Warning(23, group));
 			}
 		}

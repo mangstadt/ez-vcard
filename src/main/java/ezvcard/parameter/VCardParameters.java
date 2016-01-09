@@ -879,7 +879,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				invalidCharacters.set(']');
 			}
 
-			String acceptableCharacters = StringUtils.buildCharacterList("-", "a-z", "A-Z", "0-9");
+			BitSet acceptableCharacters = StringUtils.expandCharacterList("-a-zA-Z0-9");
 			for (Map.Entry<String, List<String>> entry : this) {
 				String name = entry.getKey();
 

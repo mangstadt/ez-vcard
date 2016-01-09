@@ -112,7 +112,7 @@ public class RawProperty extends TextProperty {
 	}
 
 	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
-		if (!StringUtils.containsOnly(propertyName, "-", "a-z", "A-Z", "0-9")) {
+		if (!StringUtils.containsOnly(propertyName, "-a-zA-Z0-9")) {
 			warnings.add(new Warning(24, propertyName));
 		}
 	}

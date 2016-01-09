@@ -1,5 +1,6 @@
 package ezvcard.util;
 
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -210,17 +211,17 @@ public final class StringUtils {
 	 * Determines if a string contains *only* the specified characters. This is
 	 * used in place of regular expressions to improve performance.
 	 * @param string the string
-	 * @param characters the list of characters to check for. If the list is 3
-	 * characters long and contains a hyphen in the middle, then it is treated
-	 * as a character range (e.g. "0-9").
-	 * @param moreCharacters more lists of characters to check for. If the list
-	 * is 3 characters long and contains a hyphen in the middle, then it is
-	 * treated as a character range.
+	 * @param characters the list of characters to check for. Ranges of
+	 * characters are represented using a hyphen. Therefore, to include a raw
+	 * hyphen in the character list, it must come at the very beginning or very
+	 * end of the given string. In this example, "a-f_:-", the following
+	 * characters are included in the final character list: lowercase letters a
+	 * through f, underscores, colons, and hyphens
 	 * @return true if the strong contains only the specified characters, false
 	 * if not
 	 */
-	public static boolean containsOnly(String string, String characters, String... moreCharacters) {
-		return containsOnly(string, 0, characters, moreCharacters);
+	public static boolean containsOnly(String string, String characters) {
+		return containsOnly(string, 0, characters);
 	}
 
 	/**
@@ -228,20 +229,45 @@ public final class StringUtils {
 	 * used in place of regular expressions to improve performance.
 	 * @param string the string
 	 * @param startIndex the index to start at in the string
-	 * @param characters the list of characters to check for. If the list is 3
-	 * characters long and contains a hyphen in the middle, then it is treated
-	 * as a character range (e.g. "0-9").
-	 * @param moreCharacters more lists of characters to check for. If the list
-	 * is 3 characters long and contains a hyphen in the middle, then it is
-	 * treated as a character range.
+	 * @param characters the list of characters to check for. Ranges of
+	 * characters are represented using a hyphen. Therefore, to include a raw
+	 * hyphen in the character list, it must come at the very beginning or very
+	 * end of the string. For example, in the string "a-f_:-", the following
+	 * characters are included in the final character list: lowercase letters a
+	 * through f, underscores, colons, and hyphens.
 	 * @return true if the strong contains only the specified characters, false
 	 * if not
 	 */
-	public static boolean containsOnly(String string, int startIndex, String characters, String... moreCharacters) {
-		String list = buildCharacterList(characters, moreCharacters);
+	public static boolean containsOnly(String string, int startIndex, String characters) {
+		BitSet set = expandCharacterList(characters);
+		return containsOnly(string, startIndex, set);
+	}
+
+	/**
+	 * Determines if a string contains *only* the specified characters. This is
+	 * used in place of regular expressions to improve performance.
+	 * @param string the string
+	 * @param characters the list of characters to check for
+	 * @return true if the strong contains only the specified characters, false
+	 * if not
+	 */
+	public static boolean containsOnly(String string, BitSet characters) {
+		return containsOnly(string, 0, characters);
+	}
+
+	/**
+	 * Determines if a string contains *only* the specified characters. This is
+	 * used in place of regular expressions to improve performance.
+	 * @param string the string
+	 * @param startIndex the index to start at in the string
+	 * @param characters the list of characters to check for
+	 * @return true if the strong contains only the specified characters, false
+	 * if not
+	 */
+	public static boolean containsOnly(String string, int startIndex, BitSet characters) {
 		for (int i = startIndex; i < string.length(); i++) {
 			char c = string.charAt(i);
-			if (list.indexOf(c) < 0) {
+			if (!characters.get(c)) {
 				return false;
 			}
 		}
@@ -252,17 +278,17 @@ public final class StringUtils {
 	 * Determines if a string contains at least one of the specified characters.
 	 * This is used in place of regular expressions to improve performance.
 	 * @param string the string
-	 * @param characters the list of characters to check for. If the list is 3
-	 * characters long and contains a hyphen in the middle, then it is treated
-	 * as a character range (e.g. "0-9").
-	 * @param moreCharacters more lists of characters to check for. If the list
-	 * is 3 characters long and contains a hyphen in the middle, then it is
-	 * treated as a character range (e.g. "0-9").
+	 * @param characters the list of characters to check for. Ranges of
+	 * characters are represented using a hyphen. Therefore, to include a raw
+	 * hyphen in the character list, it must come at the very beginning or very
+	 * end of the string. For example, in the string "a-f_:-", the following
+	 * characters are included in the final character list: lowercase letters a
+	 * through f, underscores, colons, and hyphens.
 	 * @return true if the string contains at least one of the characters, false
 	 * if not
 	 */
-	public static boolean containsAny(String string, String characters, String... moreCharacters) {
-		return containsAny(string, 0, characters, moreCharacters);
+	public static boolean containsAny(String string, String characters) {
+		return containsAny(string, 0, characters);
 	}
 
 	/**
@@ -270,20 +296,45 @@ public final class StringUtils {
 	 * This is used in place of regular expressions to improve performance.
 	 * @param string the string
 	 * @param startIndex the index to start at in the string
-	 * @param characters the list of characters to check for. If the list is 3
-	 * characters long and contains a hyphen in the middle, then it is treated
-	 * as a character range (e.g. "0-9").
-	 * @param moreCharacters more lists of characters to check for. If the list
-	 * is 3 characters long and contains a hyphen in the middle, then it is
-	 * treated as a character range (e.g. "0-9").
+	 * @param characters the list of characters to check for. Ranges of
+	 * characters are represented using a hyphen. Therefore, to include a raw
+	 * hyphen in the character list, it must come at the very beginning or very
+	 * end of the string. For example, in the string "a-f_:-", the following
+	 * characters are included in the final character list: lowercase letters a
+	 * through f, underscores, colons, and hyphens.
 	 * @return true if the string contains at least one of the characters, false
 	 * if not
 	 */
-	public static boolean containsAny(String string, int startIndex, String characters, String... moreCharacters) {
-		String list = buildCharacterList(characters, moreCharacters);
-		for (int i = startIndex; i < list.length(); i++) {
-			char c = list.charAt(i);
-			if (string.indexOf(c) >= 0) {
+	public static boolean containsAny(String string, int startIndex, String characters) {
+		BitSet set = expandCharacterList(characters);
+		return containsAny(string, startIndex, set);
+	}
+
+	/**
+	 * Determines if a string contains at least one of the specified characters.
+	 * This is used in place of regular expressions to improve performance.
+	 * @param string the string
+	 * @param characters the list of characters to check for
+	 * @return true if the string contains at least one of the characters, false
+	 * if not
+	 */
+	public static boolean containsAny(String string, BitSet characters) {
+		return containsAny(string, 0, characters);
+	}
+
+	/**
+	 * Determines if a string contains at least one of the specified characters.
+	 * This is used in place of regular expressions to improve performance.
+	 * @param string the string
+	 * @param startIndex the index to start at in the string
+	 * @param characters the list of characters to check for
+	 * @return true if the string contains at least one of the characters, false
+	 * if not
+	 */
+	public static boolean containsAny(String string, int startIndex, BitSet characters) {
+		for (int i = startIndex; i < string.length(); i++) {
+			char c = string.charAt(i);
+			if (characters.get(c)) {
 				return true;
 			}
 		}
@@ -291,32 +342,26 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Builds a character list for the {@link #containsAny} and
+	 * Inserts the characters and any character ranges that are in a string into
+	 * a {@link BitSet}. Used for the {@link #containsAny} and
 	 * {@link #containsOnly} methods.
-	 * @param characters the list of characters to check for. If the list is 3
-	 * characters long and contains a hyphen in the middle, then it is treated
-	 * as a character range (e.g. "0-9").
-	 * @param moreCharacters more lists of characters to check for. If the list
-	 * is 3 characters long and contains a hyphen in the middle, then it is
-	 * treated as a character range (e.g. "0-9").
-	 * @return the character list
+	 * @param characters the list of characters to add. Ranges of characters are
+	 * represented using a hyphen. Therefore, to include a raw hyphen in the
+	 * character list, it must come at the very beginning or very end of the
+	 * string. For example, in the string "a-f_:-", the following characters are
+	 * included in the final character list: lowercase letters a through f,
+	 * underscores, colons, and hyphens.
+	 * @return the expanded character list
 	 */
-	public static String buildCharacterList(String characters, String... moreCharacters) {
-		if (moreCharacters.length == 0 && (characters.length() != 3 || characters.charAt(1) != '-')) {
-			/*
-			 * Optimization based on the assumption that most calls will only
-			 * contain 1 list of characters and that list will not be a range.
-			 */
-			return characters;
-		}
+	public static BitSet expandCharacterList(String characters) {
+		BitSet set = new BitSet(128);
+		for (int i = 0; i < characters.length(); i++) {
+			char c = characters.charAt(i);
+			char next = (i < characters.length() - 2) ? characters.charAt(i + 1) : 0;
 
-		StringBuilder sb = new StringBuilder();
-		for (int i = -1; i < moreCharacters.length; i++) {
-			String list = (i == -1) ? characters : moreCharacters[i];
-
-			if (list.length() == 3 && list.charAt(1) == '-') {
-				char start = list.charAt(0);
-				char end = list.charAt(2);
+			if (next == '-') {
+				char start = c;
+				char end = characters.charAt(i + 2);
 				if (start > end) {
 					//swap them
 					char temp = start;
@@ -324,15 +369,15 @@ public final class StringUtils {
 					end = temp;
 				}
 
-				for (char c = start; c <= end; c++) {
-					sb.append(c);
-				}
+				set.set(start, end + 1);
+				i += 2;
 				continue;
 			}
 
-			sb.append(list);
+			set.set(c);
 		}
-		return sb.toString();
+
+		return set;
 	}
 
 	/**

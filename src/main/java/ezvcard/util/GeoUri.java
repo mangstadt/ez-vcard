@@ -537,7 +537,7 @@ public final class GeoUri {
 		 * @return this
 		 */
 		public Builder crs(String crs) {
-			if (crs != null && !containsOnly(crs, "a-z", "A-Z", "0-9", "-")) {
+			if (crs != null && !containsOnly(crs, "a-zA-Z0-9-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(24);
 			}
 			this.crs = crs;
@@ -564,7 +564,7 @@ public final class GeoUri {
 		 * @return this
 		 */
 		public Builder parameter(String name, String value) {
-			if (!containsOnly(name, "a-z", "A-Z", "0-9", "-")) {
+			if (!containsOnly(name, "a-zA-Z0-9-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(23);
 			}
 

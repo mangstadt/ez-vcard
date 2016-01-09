@@ -495,7 +495,7 @@ public final class TelUri {
 				throw Messages.INSTANCE.getIllegalArgumentException(26);
 			}
 
-			if (!containsOnly(globalNumber, 1, "0-9", "-.()")) {
+			if (!containsOnly(globalNumber, 1, "0-9.()-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(27);
 			}
 
@@ -544,11 +544,11 @@ public final class TelUri {
 		 * not adhere to the above rules
 		 */
 		public Builder localNumber(String localNumber, String phoneContext) {
-			if (!containsOnly(localNumber, "0-9", "-.()*#")) {
+			if (!containsOnly(localNumber, "0-9.()*#-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(28);
 			}
 
-			if (!containsAny(localNumber, "0-9", "*#")) {
+			if (!containsAny(localNumber, "0-9*#")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(28);
 			}
 
@@ -565,7 +565,7 @@ public final class TelUri {
 		 * other than the following: digits, hypens, parenthesis, periods
 		 */
 		public Builder extension(String extension) {
-			if (extension != null && !containsOnly(extension, "0-9", "-.()")) {
+			if (extension != null && !containsOnly(extension, "0-9.()-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(29);
 			}
 
@@ -593,7 +593,7 @@ public final class TelUri {
 		 * invalid characters
 		 */
 		public Builder parameter(String name, String value) {
-			if (!containsOnly(name, "a-z", "A-Z", "0-9", "-")) {
+			if (!containsOnly(name, "a-zA-Z0-9-")) {
 				throw Messages.INSTANCE.getIllegalArgumentException(23);
 			}
 

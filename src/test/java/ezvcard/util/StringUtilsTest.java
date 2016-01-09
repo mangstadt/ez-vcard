@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -170,15 +171,56 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void buildCharacterList() {
-		assertEquals("abc123", StringUtils.buildCharacterList("abc123"));
+	public void expandCharacterList() {
+		BitSet actual = StringUtils.expandCharacterList("abc123");
+		BitSet expected = new BitSet();
+		expected.set('a', 'd');
+		expected.set('1', '4');
+		assertEquals(expected, actual);
 
-		assertEquals("abcdef", StringUtils.buildCharacterList("a-f"));
-		assertEquals("abcdef", StringUtils.buildCharacterList("f-a"));
-		assertEquals("abc", StringUtils.buildCharacterList("abc"));
-		assertEquals("a-z1", StringUtils.buildCharacterList("a-z1"));
+		actual = StringUtils.expandCharacterList("a-f");
+		expected = new BitSet();
+		expected.set('a', 'g');
+		assertEquals(expected, actual);
 
-		assertEquals("abcdef0123456789xyzx-z*", StringUtils.buildCharacterList("a-f", "0-9", "xyz", "x-z*"));
+		actual = StringUtils.expandCharacterList("a-fa-f");
+		expected = new BitSet();
+		expected.set('a', 'g');
+		assertEquals(expected, actual);
+
+		actual = StringUtils.expandCharacterList("f-a");
+		expected = new BitSet();
+		expected.set('a', 'g');
+		assertEquals(expected, actual);
+
+		actual = StringUtils.expandCharacterList("a-fz");
+		expected = new BitSet();
+		expected.set('a', 'g');
+		expected.set('z');
+		assertEquals(expected, actual);
+
+		actual = StringUtils.expandCharacterList("-a-f");
+		expected = new BitSet();
+		expected.set('a', 'g');
+		expected.set('-');
+		assertEquals(expected, actual);
+
+		actual = StringUtils.expandCharacterList("a-f-");
+		expected = new BitSet();
+		expected.set('a', 'g');
+		expected.set('-');
+		assertEquals(expected, actual);
+
+		actual = StringUtils.expandCharacterList("-a-f0-9xyz*");
+		expected = new BitSet();
+		expected.set('a', 'g');
+		expected.set('-');
+		expected.set('0', '9' + 1);
+		expected.set('x');
+		expected.set('y');
+		expected.set('z');
+		expected.set('*');
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -188,15 +230,15 @@ public class StringUtilsTest {
 		assertFalse(StringUtils.containsOnly(input, "a"));
 		assertFalse(StringUtils.containsOnly(input, "a-z"));
 		assertFalse(StringUtils.containsOnly(input, "0-9"));
-		assertTrue(StringUtils.containsOnly(input, "a-z", "0-9"));
-		assertFalse(StringUtils.containsOnly(input, "b-z", "0-9"));
+		assertTrue(StringUtils.containsOnly(input, "a-z0-9"));
+		assertFalse(StringUtils.containsOnly(input, "b-z0-9"));
 
 		assertTrue(StringUtils.containsOnly(input, 1, "1ac3b2foq"));
 		assertFalse(StringUtils.containsOnly(input, 1, "a"));
 		assertFalse(StringUtils.containsOnly(input, 1, "a-z"));
 		assertFalse(StringUtils.containsOnly(input, 1, "0-9"));
-		assertTrue(StringUtils.containsOnly(input, 1, "a-z", "0-9"));
-		assertTrue(StringUtils.containsOnly(input, 1, "b-z", "0-9"));
+		assertTrue(StringUtils.containsOnly(input, 1, "a-z0-9"));
+		assertTrue(StringUtils.containsOnly(input, 1, "b-z0-9"));
 	}
 
 	@Test
@@ -204,8 +246,7 @@ public class StringUtilsTest {
 		String input = "abc123";
 		assertTrue(StringUtils.containsAny(input, "a"));
 		assertFalse(StringUtils.containsAny(input, "z"));
-		assertTrue(StringUtils.containsAny(input, "a-z", "0-9"));
-		assertTrue(StringUtils.containsAny(input, "z-a", "9-0"));
+		assertTrue(StringUtils.containsAny(input, "a-z0-9"));
 		assertFalse(StringUtils.containsAny(input, "d-z"));
 
 		assertFalse(StringUtils.containsAny(input, 1, "a"));
