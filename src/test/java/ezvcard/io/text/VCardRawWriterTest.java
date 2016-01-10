@@ -410,35 +410,35 @@ public class VCardRawWriterTest {
 		//2.1 without caret escaping
 		//replaces \ with \\
 		//replaces ; with \;
-		assertParametersSpecialChars("^\\;=[]\"\t" + ((char) 28), VCardVersion.V2_1, false, "PROP;X-TEST=^\\\\\\;=[]\"\t" + ((char) 28) + ";X-TEST=normal:\r\n");
+		assertParametersSpecialChars("^\\;=[]\"\t" + ((char) 28), V2_1, false, "PROP;X-TEST=^\\\\\\;=[]\"\t" + ((char) 28) + ";X-TEST=normal:\r\n");
 
 		//2.1 with caret escaping (ignored)
 		//replaces \ with \\
 		//replaces ; with \;
-		assertParametersSpecialChars("^\\;=[]\"\t" + ((char) 28), VCardVersion.V2_1, true, "PROP;X-TEST=^\\\\\\;=[]\"\t" + ((char) 28) + ";X-TEST=normal:\r\n");
+		assertParametersSpecialChars("^\\;=[]\"\t" + ((char) 28), V2_1, true, "PROP;X-TEST=^\\\\\\;=[]\"\t" + ((char) 28) + ";X-TEST=normal:\r\n");
 
 		//3.0 without caret escaping
 		//surrounds in double quotes, since it contains , ; or :
-		assertParametersSpecialChars("^\\,;:=[]\t" + ((char) 28), VCardVersion.V3_0, false, "PROP;X-TEST=\"^\\,;:=[]\t" + ((char) 28) + "\",normal:\r\n");
+		assertParametersSpecialChars("^\\,;:=[]\t" + ((char) 28), V3_0, false, "PROP;X-TEST=\"^\\,;:=[]\t" + ((char) 28) + "\",normal:\r\n");
 
 		//3.0 with caret escaping (same as 4.0)
 		//replaces ^ with ^^
 		//replaces newline with ^n
 		//replaces " with ^'
 		//surrounds in double quotes, since it contains , ; or :
-		assertParametersSpecialChars("^\\,;:=[]\"\t\n" + ((char) 28), VCardVersion.V3_0, true, "PROP;X-TEST=\"^^\\,;:=[]^'\t^n" + ((char) 28) + "\",normal:\r\n");
+		assertParametersSpecialChars("^\\,;:=[]\"\t\n" + ((char) 28), V3_0, true, "PROP;X-TEST=\"^^\\,;:=[]^'\t^n" + ((char) 28) + "\",normal:\r\n");
 
 		//4.0 without caret escaping
 		//replaces newline with \n
 		//surrounds in double quotes, since it contains , ; or :
-		assertParametersSpecialChars("^\\,;:=[]\t\n" + ((char) 28), VCardVersion.V4_0, false, "PROP;X-TEST=\"^\\,;:=[]\t\\n" + ((char) 28) + "\",normal:\r\n");
+		assertParametersSpecialChars("^\\,;:=[]\t\n" + ((char) 28), V4_0, false, "PROP;X-TEST=\"^\\,;:=[]\t\\n" + ((char) 28) + "\",normal:\r\n");
 
 		//4.0 with caret escaping
 		//replaces ^ with ^^
 		//replaces newline with ^n
 		//replaces " with ^'
 		//surrounds in double quotes, since it contains , ; or :
-		assertParametersSpecialChars("^\\,;:=[]\"\t\n" + ((char) 28), VCardVersion.V4_0, true, "PROP;X-TEST=\"^^\\,;:=[]^'\t^n" + ((char) 28) + "\",normal:\r\n");
+		assertParametersSpecialChars("^\\,;:=[]\"\t\n" + ((char) 28), V4_0, true, "PROP;X-TEST=\"^^\\,;:=[]^'\t^n" + ((char) 28) + "\",normal:\r\n");
 	}
 
 	private void assertParametersSpecialChars(String paramValue, VCardVersion version, boolean caretEncodingEnabled, String expected) throws IOException {

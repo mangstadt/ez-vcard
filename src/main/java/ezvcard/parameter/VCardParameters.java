@@ -864,22 +864,22 @@ public class VCardParameters extends ListMultimap<String, String> {
 		 * Check for invalid characters in names and values.
 		 */
 		{
-			BitSet invalidCharacters = new BitSet(128);
-			invalidCharacters.set(0, 31);
-			invalidCharacters.set(127);
-			invalidCharacters.set('\t', false); //allow
-			invalidCharacters.set('\n', false); //allow
-			invalidCharacters.set('\r', false); //allow
+			BitSet invalidValueChars = new BitSet(128);
+			invalidValueChars.set(0, 31);
+			invalidValueChars.set(127);
+			invalidValueChars.set('\t', false); //allow
+			invalidValueChars.set('\n', false); //allow
+			invalidValueChars.set('\r', false); //allow
 			if (version == VCardVersion.V2_1) {
-				invalidCharacters.set(',');
-				invalidCharacters.set('.');
-				invalidCharacters.set(':');
-				invalidCharacters.set('=');
-				invalidCharacters.set('[');
-				invalidCharacters.set(']');
+				invalidValueChars.set(',');
+				invalidValueChars.set('.');
+				invalidValueChars.set(':');
+				invalidValueChars.set('=');
+				invalidValueChars.set('[');
+				invalidValueChars.set(']');
 			}
 
-			CharacterBitSet acceptableCharacters = new CharacterBitSet("-a-zA-Z0-9");
+			CharacterBitSet validNameChars = new CharacterBitSet("-a-zA-Z0-9");
 			for (Map.Entry<String, List<String>> entry : this) {
 				String name = entry.getKey();
 
@@ -892,7 +892,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				}
 
 				//check the parameter name
-				if (!acceptableCharacters.containsOnly(name)) {
+				if (!validNameChars.containsOnly(name)) {
 					warnings.add(new Warning(26, name));
 				}
 
@@ -901,7 +901,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				for (String value : values) {
 					for (int i = 0; i < value.length(); i++) {
 						char c = value.charAt(i);
-						if (invalidCharacters.get(c)) {
+						if (invalidValueChars.get(c)) {
 							warnings.add(new Warning(25, name, value, (int) c, i));
 							break;
 						}

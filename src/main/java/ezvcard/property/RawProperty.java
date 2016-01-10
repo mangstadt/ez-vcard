@@ -111,6 +111,7 @@ public class RawProperty extends TextProperty {
 		this.dataType = dataType;
 	}
 
+	@Override
 	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		CharacterBitSet validCharacters = new CharacterBitSet("-a-zA-Z0-9");
 		if (!validCharacters.containsOnly(propertyName)) {

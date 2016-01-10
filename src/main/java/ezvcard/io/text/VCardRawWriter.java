@@ -157,8 +157,8 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * </p>
 	 * 
 	 * <p>
-	 * Note that this encoding mechanism is defined separately from the
-	 * iCalendar specification and may not be supported by the vCard consumer.
+	 * Note that this encoding mechanism is defined separately from the vCard
+	 * specification and may not be supported by the vCard consumer.
 	 * </p>
 	 * 
 	 * <table class="simpleTable">
@@ -204,8 +204,8 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * </p>
 	 * 
 	 * <p>
-	 * Note that this encoding mechanism is defined separately from the
-	 * iCalendar specification and may not be supported by the vCard consumer.
+	 * Note that this encoding mechanism is defined separately from the vCard
+	 * specification and may not be supported by the vCard consumer.
 	 * </p>
 	 * 
 	 * <table class="simpleTable">
@@ -259,29 +259,27 @@ public class VCardRawWriter implements Closeable, Flushable {
 	}
 
 	/**
-	 * Writes a property marking the beginning of a component (in other words,
-	 * writes a "BEGIN:NAME" property).
+	 * Writes a property marking the beginning of a component.
 	 * @param componentName the component name (e.g. "VCARD")
-	 * @throws IOException if there's an I/O problem
+	 * @throws IOException if there's a problem writing to the data stream
 	 */
 	public void writeBeginComponent(String componentName) throws IOException {
 		writeProperty("BEGIN", componentName);
 	}
 
 	/**
-	 * Writes a property marking the end of a component (in other words, writes
-	 * a "END:NAME" property).
+	 * Writes a property marking the end of a component.
 	 * @param componentName the component name (e.g. "VCARD")
-	 * @throws IOException if there's an I/O problem
+	 * @throws IOException if there's a problem writing to the data stream
 	 */
 	public void writeEndComponent(String componentName) throws IOException {
 		writeProperty("END", componentName);
 	}
 
 	/**
-	 * Writes a "VERSION" property, based on the vCard version that the writer
-	 * is adhering to.
-	 * @throws IOException if there's an I/O problem
+	 * Writes a "VERSION" property, setting its value to vCard version that this
+	 * writer is adhering to.
+	 * @throws IOException if there's a problem writing to the data stream
 	 */
 	public void writeVersion() throws IOException {
 		writeProperty("VERSION", version.getVersion());
@@ -291,9 +289,10 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * Writes a property to the vCard data stream.
 	 * @param propertyName the property name (e.g. "FN")
 	 * @param value the property value
-	 * @throws IllegalArgumentException if the property name contains invalid
-	 * characters
-	 * @throws IOException if there's an I/O problem
+	 * @throws IllegalArgumentException if the property data contains one or
+	 * more characters which break the vCard syntax and which cannot be escaped
+	 * or encoded
+	 * @throws IOException if there's a problem writing to the data stream
 	 */
 	public void writeProperty(String propertyName, String value) throws IOException {
 		writeProperty(null, propertyName, new VCardParameters(), value);
@@ -309,7 +308,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * @throws IllegalArgumentException if the property data contains one or
 	 * more characters which break the vCard syntax and which cannot be escaped
 	 * or encoded
-	 * @throws IOException if there's an I/O problem
+	 * @throws IOException if there's a problem writing to the data stream
 	 */
 	public void writeProperty(String group, String propertyName, VCardParameters parameters, String value) throws IOException {
 		//validate the group name
@@ -447,17 +446,17 @@ public class VCardRawWriter implements Closeable, Flushable {
 			return value;
 		}
 
-		//escape newlines
-		return newlineRegex.matcher(value).replaceAll("\\\\n");
+		return escapeNewlines(value);
 	}
 
 	/**
-	 * Removes or escapes all invalid characters in a parameter value.
+	 * Sanitizes a parameter value for serialization.
 	 * @param parameterValue the parameter value
 	 * @param parameterName the parameter name
 	 * @param propertyName the name of the property to which the parameter
 	 * belongs
 	 * @return the sanitized parameter value
+	 * @throws IllegalArgumentException if the value contains invalid characters
 	 */
 	private String sanitizeParameterValue(String parameterValue, String parameterName, String propertyName) {
 		CharacterBitSet invalidChars = (caretEncodingEnabled ? invalidParamValueCharsWithCaretEncoding : invalidParamValueChars).get(version);
@@ -510,6 +509,15 @@ public class VCardRawWriter implements Closeable, Flushable {
 		value = newlineRegex.matcher(value).replaceAll("^n");
 		value = value.replace("\"", "^'");
 		return value;
+	}
+
+	/**
+	 * Escapes all newlines in a string.
+	 * @param string the string to escape
+	 * @return the escaped string
+	 */
+	private String escapeNewlines(String string) {
+		return newlineRegex.matcher(string).replaceAll("\\\\n");
 	}
 
 	/**
