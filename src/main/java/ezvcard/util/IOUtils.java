@@ -48,7 +48,7 @@ import java.nio.charset.Charset;
  * I/O helper classes.
  * @author Michael Angstadt
  */
-public class IOUtils {
+public final class IOUtils {
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 
 	/**
