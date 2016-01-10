@@ -128,7 +128,7 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 	@Override
 	protected Map<String, Object> toStringValues() {
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
-		values.put("value", XmlUtils.toString(value));
+		values.put("value", (value == null) ? "null" : XmlUtils.toString(value));
 		return values;
 	}
 
