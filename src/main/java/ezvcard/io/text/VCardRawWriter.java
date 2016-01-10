@@ -1,7 +1,5 @@
 package ezvcard.io.text;
 
-import static ezvcard.util.StringUtils.containsAny;
-
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
@@ -17,6 +15,7 @@ import ezvcard.Messages;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.CharacterBitSet;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -60,12 +59,13 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * entire parameter value must be wrapped in double quotes (applies to
 	 * versions 3.0 and 4.0 only).
 	 */
-	private final String specialParameterCharacters = ",:;";
+	private final CharacterBitSet specialParameterCharacters = new CharacterBitSet(",:;");
 
 	/**
 	 * Regular expression used to detect newline character sequences.
 	 */
 	private final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
+	private final CharacterBitSet newlineBitSet = new CharacterBitSet("\r\n");
 
 	/**
 	 * List of characters which would break the syntax of the vCard if used
@@ -73,7 +73,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * specification is much more strict, but the goal here is to be as lenient
 	 * as possible.
 	 */
-	private final String invalidPropertyNameCharacters = ".;:\n\r";
+	private final CharacterBitSet invalidPropertyNameCharacters = new CharacterBitSet(".;:\n\r");
 
 	/**
 	 * List of characters which would break the syntax of the vCard if used
@@ -81,7 +81,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * specification is much more strict, but the goal here is to be as lenient
 	 * as possible.
 	 */
-	private final String invalidGroupNameCharacters = invalidPropertyNameCharacters;
+	private final CharacterBitSet invalidGroupNameCharacters = invalidPropertyNameCharacters;
 
 	/**
 	 * List of characters which would break the syntax of the vCard if used
@@ -89,34 +89,42 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * specification is much more strict, but the goal here is to be as lenient
 	 * as possible.
 	 */
-	private final String invalidParameterNameCharacters = ";:=\n\r";
+	private final CharacterBitSet invalidParameterNameCharacters = new CharacterBitSet(";:=\n\r");
 
 	/**
 	 * List of characters which would break the syntax of the vCard if used
-	 * inside a parameter value. These characters cannot be escaped or encoded,
-	 * so they are impossible to include inside of a parameter value. The list
-	 * of characters permitted by the specification is much more strict, but the
-	 * goal here is to be as lenient as possible.
+	 * inside a parameter value with caret encoding disabled. These characters
+	 * cannot be escaped or encoded, so they are impossible to include inside of
+	 * a parameter value. The list of characters permitted by the specification
+	 * is much more strict, but the goal here is to be as lenient as possible.
 	 */
-	private final Map<VCardVersion, String> invalidParamValueChars;
+	private final Map<VCardVersion, CharacterBitSet> invalidParamValueChars;
 	{
-		Map<VCardVersion, String> map = new EnumMap<VCardVersion, String>(VCardVersion.class);
+		Map<VCardVersion, CharacterBitSet> map = new EnumMap<VCardVersion, CharacterBitSet>(VCardVersion.class);
 
-		/*
-		 * Note: Semi-colons can be escaped.
-		 */
-		map.put(VCardVersion.V2_1, ",:\n\r");
-
-		/*
-		 * Note: For versions 3.0 and 4.0, double quotes and newlines are not
-		 * included in this list, even though they could break the syntax. They
-		 * are checked separately, because they may be able to be encoded,
-		 * depending on whether caret encoding is enabled or not.
-		 */
-		map.put(VCardVersion.V3_0, "");
-		map.put(VCardVersion.V4_0, "");
+		map.put(VCardVersion.V2_1, new CharacterBitSet(",:\n\r")); //note: semicolons can be escaped
+		map.put(VCardVersion.V3_0, new CharacterBitSet("\"\r\n"));
+		map.put(VCardVersion.V4_0, new CharacterBitSet("\""));
 
 		invalidParamValueChars = Collections.unmodifiableMap(map);
+	}
+
+	/**
+	 * List of characters which would break the syntax of the vCard if used
+	 * inside a parameter value with caret encoding enabled. These characters
+	 * cannot be escaped or encoded, so they are impossible to include inside of
+	 * a parameter value. The list of characters permitted by the specification
+	 * is much more strict, but the goal here is to be as lenient as possible.
+	 */
+	private final Map<VCardVersion, CharacterBitSet> invalidParamValueCharsWithCaretEncoding;
+	{
+		Map<VCardVersion, CharacterBitSet> map = new EnumMap<VCardVersion, CharacterBitSet>(VCardVersion.class);
+
+		map.put(VCardVersion.V2_1, invalidParamValueChars.get(VCardVersion.V2_1)); //2.1 does not support caret encoding
+		map.put(VCardVersion.V3_0, new CharacterBitSet(""));
+		map.put(VCardVersion.V4_0, new CharacterBitSet(""));
+
+		invalidParamValueCharsWithCaretEncoding = Collections.unmodifiableMap(map);
 	}
 
 	private final FoldedLineWriter writer;
@@ -306,8 +314,8 @@ public class VCardRawWriter implements Closeable, Flushable {
 	public void writeProperty(String group, String propertyName, VCardParameters parameters, String value) throws IOException {
 		//validate the group name
 		if (group != null) {
-			if (containsAny(group, invalidGroupNameCharacters)) {
-				throw Messages.INSTANCE.getIllegalArgumentException(7, propertyName, group, printableCharacterList(invalidGroupNameCharacters));
+			if (invalidGroupNameCharacters.containsAny(group)) {
+				throw Messages.INSTANCE.getIllegalArgumentException(7, propertyName, group, printableCharacterList(invalidGroupNameCharacters.characters()));
 			}
 			if (beginsWithWhitespace(group)) {
 				throw Messages.INSTANCE.getIllegalArgumentException(8, propertyName, group);
@@ -315,8 +323,8 @@ public class VCardRawWriter implements Closeable, Flushable {
 		}
 
 		//validate the property name
-		if (containsAny(propertyName, invalidPropertyNameCharacters)) {
-			throw Messages.INSTANCE.getIllegalArgumentException(9, propertyName, printableCharacterList(invalidPropertyNameCharacters));
+		if (invalidPropertyNameCharacters.containsAny(propertyName)) {
+			throw Messages.INSTANCE.getIllegalArgumentException(9, propertyName, printableCharacterList(invalidPropertyNameCharacters.characters()));
 		}
 		if (beginsWithWhitespace(propertyName)) {
 			throw Messages.INSTANCE.getIllegalArgumentException(10, propertyName);
@@ -361,8 +369,8 @@ public class VCardRawWriter implements Closeable, Flushable {
 			}
 
 			//check the parameter name for invalid characters
-			if (containsAny(parameterName, invalidParameterNameCharacters)) {
-				throw Messages.INSTANCE.getIllegalArgumentException(11, propertyName, parameterName, printableCharacterList(invalidParameterNameCharacters));
+			if (invalidParameterNameCharacters.containsAny(parameterName)) {
+				throw Messages.INSTANCE.getIllegalArgumentException(11, propertyName, parameterName, printableCharacterList(invalidParameterNameCharacters.characters()));
 			}
 
 			if (version == VCardVersion.V2_1) {
@@ -390,7 +398,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 				}
 
 				parameterValue = sanitizeParameterValue(parameterValue, parameterName, propertyName);
-				if (containsAny(parameterValue, specialParameterCharacters)) {
+				if (specialParameterCharacters.containsAny(parameterValue)) {
 					writer.append('"').append(parameterValue).append('"');
 				} else {
 					writer.append(parameterValue);
@@ -434,7 +442,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 		 * sub-section in section 2 of the specs) so encode the value in
 		 * quoted-printable encoding if any newline characters exist.
 		 */
-		if (version == VCardVersion.V2_1 && containsAny(value, "\r\n")) {
+		if (version == VCardVersion.V2_1 && newlineBitSet.containsAny(value)) {
 			parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
 			return value;
 		}
@@ -452,9 +460,9 @@ public class VCardRawWriter implements Closeable, Flushable {
 	 * @return the sanitized parameter value
 	 */
 	private String sanitizeParameterValue(String parameterValue, String parameterName, String propertyName) {
-		String invalidChars = invalidParamValueChars.get(version);
-		if (containsAny(parameterValue, invalidChars)) {
-			throw Messages.INSTANCE.getIllegalArgumentException(12, propertyName, parameterName, printableCharacterList(invalidChars));
+		CharacterBitSet invalidChars = (caretEncodingEnabled ? invalidParamValueCharsWithCaretEncoding : invalidParamValueChars).get(version);
+		if (invalidChars.containsAny(parameterValue)) {
+			throw Messages.INSTANCE.getIllegalArgumentException(12, propertyName, parameterName, printableCharacterList(invalidChars.characters()));
 		}
 
 		String sanitizedValue = parameterValue;
@@ -472,20 +480,11 @@ public class VCardRawWriter implements Closeable, Flushable {
 			if (caretEncodingEnabled) {
 				return applyCaretEncoding(sanitizedValue);
 			}
-
-			if (containsAny(sanitizedValue, "\"\r\n")) {
-				throw Messages.INSTANCE.getIllegalArgumentException(13, propertyName, parameterName);
-			}
-
 			return sanitizedValue;
 
 		case V4_0:
 			if (caretEncodingEnabled) {
 				return applyCaretEncoding(sanitizedValue);
-			}
-
-			if (containsAny(sanitizedValue, "\"")) {
-				throw Messages.INSTANCE.getIllegalArgumentException(13, propertyName, parameterName);
 			}
 
 			/*

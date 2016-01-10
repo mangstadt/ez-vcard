@@ -8,7 +8,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
-import ezvcard.util.StringUtils;
+import ezvcard.util.CharacterBitSet;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -112,7 +112,8 @@ public class RawProperty extends TextProperty {
 	}
 
 	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
-		if (!StringUtils.containsOnly(propertyName, "-a-zA-Z0-9")) {
+		CharacterBitSet validCharacters = new CharacterBitSet("-a-zA-Z0-9");
+		if (!validCharacters.containsOnly(propertyName)) {
 			warnings.add(new Warning(24, propertyName));
 		}
 	}

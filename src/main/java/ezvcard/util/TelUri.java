@@ -1,8 +1,5 @@
 package ezvcard.util;
 
-import static ezvcard.util.StringUtils.containsAny;
-import static ezvcard.util.StringUtils.containsOnly;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -376,6 +373,7 @@ public final class TelUri {
 		private String isdnSubaddress;
 		private String phoneContext;
 		private Map<String, String> parameters;
+		private CharacterBitSet validParamNameChars = new CharacterBitSet("a-zA-Z0-9-");
 
 		private Builder() {
 			/*
@@ -495,11 +493,13 @@ public final class TelUri {
 				throw Messages.INSTANCE.getIllegalArgumentException(26);
 			}
 
-			if (!containsOnly(globalNumber, 1, "0-9.()-")) {
+			CharacterBitSet validChars = new CharacterBitSet("0-9.()-");
+			if (!validChars.containsOnly(globalNumber, 1)) {
 				throw Messages.INSTANCE.getIllegalArgumentException(27);
 			}
 
-			if (!containsAny(globalNumber, 1, "0-9")) {
+			CharacterBitSet requiredChars = new CharacterBitSet("0-9");
+			if (!requiredChars.containsAny(globalNumber, 1)) {
 				throw Messages.INSTANCE.getIllegalArgumentException(25);
 			}
 
@@ -544,11 +544,13 @@ public final class TelUri {
 		 * not adhere to the above rules
 		 */
 		public Builder localNumber(String localNumber, String phoneContext) {
-			if (!containsOnly(localNumber, "0-9.()*#-")) {
+			CharacterBitSet validChars = new CharacterBitSet("0-9.()*#-");
+			if (!validChars.containsOnly(localNumber)) {
 				throw Messages.INSTANCE.getIllegalArgumentException(28);
 			}
 
-			if (!containsAny(localNumber, "0-9*#")) {
+			CharacterBitSet requiredChars = new CharacterBitSet("0-9*#");
+			if (!requiredChars.containsAny(localNumber)) {
 				throw Messages.INSTANCE.getIllegalArgumentException(28);
 			}
 
@@ -565,8 +567,11 @@ public final class TelUri {
 		 * other than the following: digits, hypens, parenthesis, periods
 		 */
 		public Builder extension(String extension) {
-			if (extension != null && !containsOnly(extension, "0-9.()-")) {
-				throw Messages.INSTANCE.getIllegalArgumentException(29);
+			if (extension != null) {
+				CharacterBitSet validChars = new CharacterBitSet("0-9.()-");
+				if (!validChars.containsOnly(extension)) {
+					throw Messages.INSTANCE.getIllegalArgumentException(29);
+				}
 			}
 
 			this.extension = extension;
@@ -593,7 +598,7 @@ public final class TelUri {
 		 * invalid characters
 		 */
 		public Builder parameter(String name, String value) {
-			if (!containsOnly(name, "a-zA-Z0-9-")) {
+			if (!validParamNameChars.containsOnly(name)) {
 				throw Messages.INSTANCE.getIllegalArgumentException(23);
 			}
 

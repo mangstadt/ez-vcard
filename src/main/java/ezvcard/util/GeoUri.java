@@ -1,7 +1,5 @@
 package ezvcard.util;
 
-import static ezvcard.util.StringUtils.containsOnly;
-
 import java.net.URI;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -473,6 +471,7 @@ public final class GeoUri {
 		private String crs;
 		private Double uncertainty;
 		private Map<String, String> parameters;
+		private CharacterBitSet validParamChars = new CharacterBitSet("a-zA-Z0-9-");
 
 		/**
 		 * Creates a new {@link GeoUri} builder.
@@ -537,7 +536,7 @@ public final class GeoUri {
 		 * @return this
 		 */
 		public Builder crs(String crs) {
-			if (crs != null && !containsOnly(crs, "a-zA-Z0-9-")) {
+			if (crs != null && !validParamChars.containsOnly(crs)) {
 				throw Messages.INSTANCE.getIllegalArgumentException(24);
 			}
 			this.crs = crs;
@@ -564,7 +563,7 @@ public final class GeoUri {
 		 * @return this
 		 */
 		public Builder parameter(String name, String value) {
-			if (!containsOnly(name, "a-zA-Z0-9-")) {
+			if (!validParamChars.containsOnly(name)) {
 				throw Messages.INSTANCE.getIllegalArgumentException(23);
 			}
 

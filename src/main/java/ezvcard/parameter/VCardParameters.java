@@ -20,9 +20,9 @@ import ezvcard.Warning;
 import ezvcard.property.Address;
 import ezvcard.property.Organization;
 import ezvcard.property.StructuredName;
+import ezvcard.util.CharacterBitSet;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
-import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -879,7 +879,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				invalidCharacters.set(']');
 			}
 
-			BitSet acceptableCharacters = StringUtils.expandCharacterList("-a-zA-Z0-9");
+			CharacterBitSet acceptableCharacters = new CharacterBitSet("-a-zA-Z0-9");
 			for (Map.Entry<String, List<String>> entry : this) {
 				String name = entry.getKey();
 
@@ -892,7 +892,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				}
 
 				//check the parameter name
-				if (!StringUtils.containsOnly(name, acceptableCharacters)) {
+				if (!acceptableCharacters.containsOnly(name)) {
 					warnings.add(new Warning(26, name));
 				}
 

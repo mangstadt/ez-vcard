@@ -14,7 +14,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.util.StringUtils;
+import ezvcard.util.CharacterBitSet;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -140,7 +140,8 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 		//check group
 		if (group != null) {
-			if (!StringUtils.containsOnly(group, "-a-zA-Z0-9")) {
+			CharacterBitSet validCharacters = new CharacterBitSet("-a-zA-Z0-9");
+			if (!validCharacters.containsOnly(group)) {
 				warnings.add(new Warning(23, group));
 			}
 		}
