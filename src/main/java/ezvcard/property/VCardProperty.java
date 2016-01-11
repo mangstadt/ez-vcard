@@ -1,7 +1,6 @@
 package ezvcard.property;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -320,20 +319,8 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		try {
 			Constructor<? extends VCardProperty> copyConstructor = clazz.getConstructor(clazz);
 			return copyConstructor.newInstance(this);
-		} catch (SecurityException e) {
+		} catch (Exception e) {
 			throw new UnsupportedOperationException(Messages.INSTANCE.getExceptionMessage(31, clazz.getName()), e);
-		} catch (NoSuchMethodException e) {
-			throw new UnsupportedOperationException(Messages.INSTANCE.getExceptionMessage(32, clazz.getName()), e);
-		} catch (IllegalArgumentException e) {
-			//should never be thrown because we check for a method with the right parameters
-			throw new RuntimeException(e);
-		} catch (InstantiationException e) {
-			throw new UnsupportedOperationException(Messages.INSTANCE.getExceptionMessage(33, clazz.getName()), e);
-		} catch (IllegalAccessException e) {
-			//should never be thrown because we call setAccessible(true)
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new UnsupportedOperationException(Messages.INSTANCE.getExceptionMessage(34, clazz.getName()), e);
 		}
 	}
 
