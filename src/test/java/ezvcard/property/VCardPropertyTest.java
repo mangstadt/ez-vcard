@@ -207,9 +207,9 @@ public class VCardPropertyTest {
 	@Test
 	public void equals_different_parameters() {
 		VCardPropertyImpl one = new VCardPropertyImpl();
-		one.getParameters().put("one", "value");
+		one.addParameter("one", "value");
 		VCardPropertyImpl two = new VCardPropertyImpl();
-		two.getParameters().put("two", "value");
+		two.addParameter("two", "value");
 
 		assertNotEquals(one, two);
 		assertNotEquals(two, one);
