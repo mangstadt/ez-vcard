@@ -1,11 +1,13 @@
 package ezvcard;
 
+import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
@@ -65,7 +67,7 @@ public class ValidationWarningsTest {
 		warnings.add(new TestProperty2(), v2);
 		warnings.add(null, v3);
 
-		assertEquals(Arrays.asList(v0, v1), warnings.getByProperty(TestProperty1.class));
+		assertSetEquals(new HashSet<Warning>(warnings.getByProperty(TestProperty1.class)), v0, v1);
 		assertEquals(Arrays.asList(v2), warnings.getByProperty(TestProperty2.class));
 		assertEquals(Arrays.asList(v3), warnings.getByProperty(null));
 		assertEquals(Arrays.asList(), warnings.getByProperty(TestProperty3.class));
