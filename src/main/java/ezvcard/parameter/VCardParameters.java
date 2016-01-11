@@ -1022,8 +1022,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	@Override
 	public int hashCode() {
 		/*
-		 * Remember: Case does not matter and neither does key order or value
-		 * order.
+		 * Remember: Keys are case-insensitive, key order does not matter, and
+		 * value order does not matter
 		 */
 		final int prime = 31;
 		int result = 1;
@@ -1062,8 +1062,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	@Override
 	public boolean equals(Object obj) {
 		/*
-		 * Remember: Case does not matter and neither does key order or value
-		 * order.
+		 * Remember: Keys are case-insensitive, key order does not matter, and
+		 * value order does not matter
 		 */
 		if (this == obj) return true;
 		if (obj == null) return false;
