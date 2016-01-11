@@ -261,11 +261,8 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
-		if (getClass() != obj.getClass()) return false;
-		@SuppressWarnings("rawtypes")
-		BinaryProperty other = (BinaryProperty) obj;
+		BinaryProperty<?> other = (BinaryProperty<?>) obj;
 		if (contentType == null) {
 			if (other.contentType != null) return false;
 		} else if (!contentType.equals(other.contentType)) return false;

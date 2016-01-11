@@ -254,9 +254,7 @@ public class Gender extends VCardProperty {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
-		if (getClass() != obj.getClass()) return false;
 		Gender other = (Gender) obj;
 		if (gender == null) {
 			if (other.gender != null) return false;

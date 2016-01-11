@@ -583,9 +583,7 @@ public class Address extends VCardProperty implements HasAltId {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
-		if (getClass() != obj.getClass()) return false;
 		Address other = (Address) obj;
 		if (countries == null) {
 			if (other.countries != null) return false;

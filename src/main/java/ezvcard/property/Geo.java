@@ -298,9 +298,7 @@ public class Geo extends VCardProperty implements HasAltId {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
-		if (getClass() != obj.getClass()) return false;
 		Geo other = (Geo) obj;
 		if (uri == null) {
 			if (other.uri != null) return false;

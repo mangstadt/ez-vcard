@@ -278,9 +278,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
-		if (getClass() != obj.getClass()) return false;
 		StructuredName other = (StructuredName) obj;
 		if (additional == null) {
 			if (other.additional != null) return false;

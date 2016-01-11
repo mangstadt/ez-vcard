@@ -218,9 +218,7 @@ public class Agent extends VCardProperty {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
-		if (getClass() != obj.getClass()) return false;
 		Agent other = (Agent) obj;
 		if (url == null) {
 			if (other.url != null) return false;
