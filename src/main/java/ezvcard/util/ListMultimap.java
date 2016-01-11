@@ -39,9 +39,7 @@ import java.util.Set;
  */
 
 /**
- * A multimap that uses {@link List} objects to store its values. The internal
- * {@link Map} implementation is a {@link LinkedHashMap} that uses
- * {@link ArrayList} for its values.
+ * A multimap that uses {@link ArrayList} objects to store its values.
  * @author Michael Angstadt
  * @param <K> the key
  * @param <V> the value
@@ -50,18 +48,28 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	private final Map<K, List<V>> map;
 
 	/**
-	 * Creates an empty multimap.
+	 * Creates an empty multimap, using a {@link LinkedHashMap} as the backing
+	 * map.
 	 */
 	public ListMultimap() {
-		map = new LinkedHashMap<K, List<V>>();
+		this(new LinkedHashMap<K, List<V>>());
 	}
 
 	/**
-	 * Creates an empty multimap.
-	 * @param initialCapacity the initial capacity of the underlying map.
+	 * Creates an empty multimap, using a {@link LinkedHashMap} as the backing
+	 * map.
+	 * @param initialCapacity the initial capacity of the backing map.
 	 */
 	public ListMultimap(int initialCapacity) {
-		map = new LinkedHashMap<K, List<V>>(initialCapacity);
+		this(new LinkedHashMap<K, List<V>>(initialCapacity));
+	}
+
+	/**
+	 * Creates an empty multimap, using the given backing map.
+	 * @param backingMap the backing map
+	 */
+	public ListMultimap(Map<K, List<V>> backingMap) {
+		map = backingMap;
 	}
 
 	/**

@@ -1,15 +1,17 @@
 package ezvcard;
 
-import static ezvcard.util.StringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 
 import ezvcard.property.VCardProperty;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -79,14 +81,20 @@ public class ValidationWarningsTest {
 		warnings.add(new TestProperty1(), new Warning("four", 4));
 
 		//@formatter:off
-		String expected =
-		"one" + NEWLINE +
-		"W02: two" + NEWLINE +
-		"[TestProperty1] | three" + NEWLINE +
-		"[TestProperty1] | W04: four" + NEWLINE;
+		List<String> expectedLines = Arrays.asList(
+			"one",
+			"W02: two",
+			"[TestProperty1] | three",
+			"[TestProperty1] | W04: four"
+		);
 		//@formatter:on
+		Collections.sort(expectedLines);
+
 		String actual = warnings.toString();
-		assertEquals(expected, actual);
+		List<String> actualLines = Arrays.asList(actual.split(StringUtils.NEWLINE));
+		Collections.sort(actualLines);
+
+		assertEquals(expectedLines, actualLines);
 	}
 
 	private class TestProperty1 extends VCardProperty {

@@ -2,6 +2,7 @@ package ezvcard;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,7 @@ import ezvcard.util.StringUtils;
  * @see VCard#validate
  */
 public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, List<Warning>>> {
-	private final ListMultimap<VCardProperty, Warning> warnings = new ListMultimap<VCardProperty, Warning>();
+	private final ListMultimap<VCardProperty, Warning> warnings = new ListMultimap<VCardProperty, Warning>(new IdentityHashMap<VCardProperty, List<Warning>>());
 
 	/**
 	 * Adds a validation warning.
