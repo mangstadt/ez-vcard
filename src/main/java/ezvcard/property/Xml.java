@@ -148,6 +148,7 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
+		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Xml other = (Xml) obj;
 		if (value == null) {
