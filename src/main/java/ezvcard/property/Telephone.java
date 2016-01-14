@@ -258,6 +258,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
 		Telephone other = (Telephone) obj;
 		if (text == null) {

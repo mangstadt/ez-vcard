@@ -302,6 +302,7 @@ public class Timezone extends VCardProperty implements HasAltId {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
 		Timezone other = (Timezone) obj;
 		if (offset == null) {

@@ -259,6 +259,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
 		DateOrTimeProperty other = (DateOrTimeProperty) obj;
 		if (date == null) {

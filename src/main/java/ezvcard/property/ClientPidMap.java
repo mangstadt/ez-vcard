@@ -194,6 +194,7 @@ public class ClientPidMap extends VCardProperty {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
 		ClientPidMap other = (ClientPidMap) obj;
 		if (pid == null) {
