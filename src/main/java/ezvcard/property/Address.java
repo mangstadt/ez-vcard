@@ -1,6 +1,7 @@
 package ezvcard.property;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -103,13 +104,13 @@ import ezvcard.util.StringUtils;
  * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
  */
 public class Address extends VCardProperty implements HasAltId {
-	private List<String> poBoxes;
-	private List<String> extendedAddresses;
-	private List<String> streetAddresses;
-	private List<String> localities;
-	private List<String> regions;
-	private List<String> postalCodes;
-	private List<String> countries;
+	private final List<String> poBoxes;
+	private final List<String> extendedAddresses;
+	private final List<String> streetAddresses;
+	private final List<String> localities;
+	private final List<String> regions;
+	private final List<String> postalCodes;
+	private final List<String> countries;
 
 	public Address() {
 		poBoxes = new ArrayList<String>(1);
@@ -166,8 +167,8 @@ public class Address extends VCardProperty implements HasAltId {
 	 * than one, but it's possible nonetheless.
 	 * @param poBoxes the P.O. boxes
 	 */
-	public void setPoBoxes(List<String> poBoxes) {
-		this.poBoxes = poBoxes;
+	public void setPoBoxes(Collection<String> poBoxes) {
+		set(this.poBoxes, poBoxes);
 	}
 
 	/**
@@ -210,8 +211,8 @@ public class Address extends VCardProperty implements HasAltId {
 	 * one, but it's possible nonetheless.
 	 * @param extendedAddresses the extended addresses
 	 */
-	public void setExtendedAddresses(List<String> extendedAddresses) {
-		this.extendedAddresses = extendedAddresses;
+	public void setExtendedAddresses(Collection<String> extendedAddresses) {
+		set(this.extendedAddresses, extendedAddresses);
 	}
 
 	/**
@@ -254,8 +255,8 @@ public class Address extends VCardProperty implements HasAltId {
 	 * but it's possible nonetheless.
 	 * @param streetAddresses the street addresses
 	 */
-	public void setStreetAddresses(List<String> streetAddresses) {
-		this.streetAddresses = streetAddresses;
+	public void setStreetAddresses(Collection<String> streetAddresses) {
+		set(this.streetAddresses, streetAddresses);
 	}
 
 	/**
@@ -288,8 +289,8 @@ public class Address extends VCardProperty implements HasAltId {
 	 * it's possible nonetheless.
 	 * @param localities the localities
 	 */
-	public void setLocalities(List<String> localities) {
-		this.localities = localities;
+	public void setLocalities(Collection<String> localities) {
+		set(this.localities, localities);
 	}
 
 	/**
@@ -322,8 +323,8 @@ public class Address extends VCardProperty implements HasAltId {
 	 * possible nonetheless.
 	 * @param regions the regions
 	 */
-	public void setRegions(List<String> regions) {
-		this.regions = regions;
+	public void setRegions(Collection<String> regions) {
+		set(this.regions, regions);
 	}
 
 	/**
@@ -356,8 +357,8 @@ public class Address extends VCardProperty implements HasAltId {
 	 * it's possible nonetheless.
 	 * @param postalCodes the postal codes
 	 */
-	public void setPostalCodes(List<String> postalCodes) {
-		this.postalCodes = postalCodes;
+	public void setPostalCodes(Collection<String> postalCodes) {
+		set(this.postalCodes, postalCodes);
 	}
 
 	/**
@@ -390,8 +391,8 @@ public class Address extends VCardProperty implements HasAltId {
 	 * it's possible nonetheless.
 	 * @param countries the countries
 	 */
-	public void setCountries(List<String> countries) {
-		this.countries = countries;
+	public void setCountries(Collection<String> countries) {
+		set(this.countries, countries);
 	}
 
 	/**
@@ -571,13 +572,13 @@ public class Address extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((countries == null) ? 0 : countries.hashCode());
-		result = prime * result + ((extendedAddresses == null) ? 0 : extendedAddresses.hashCode());
-		result = prime * result + ((localities == null) ? 0 : localities.hashCode());
-		result = prime * result + ((poBoxes == null) ? 0 : poBoxes.hashCode());
-		result = prime * result + ((postalCodes == null) ? 0 : postalCodes.hashCode());
-		result = prime * result + ((regions == null) ? 0 : regions.hashCode());
-		result = prime * result + ((streetAddresses == null) ? 0 : streetAddresses.hashCode());
+		result = prime * result + countries.hashCode();
+		result = prime * result + extendedAddresses.hashCode();
+		result = prime * result + localities.hashCode();
+		result = prime * result + poBoxes.hashCode();
+		result = prime * result + postalCodes.hashCode();
+		result = prime * result + regions.hashCode();
+		result = prime * result + streetAddresses.hashCode();
 		return result;
 	}
 
@@ -585,27 +586,13 @@ public class Address extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (!super.equals(obj)) return false;
 		Address other = (Address) obj;
-		if (countries == null) {
-			if (other.countries != null) return false;
-		} else if (!countries.equals(other.countries)) return false;
-		if (extendedAddresses == null) {
-			if (other.extendedAddresses != null) return false;
-		} else if (!extendedAddresses.equals(other.extendedAddresses)) return false;
-		if (localities == null) {
-			if (other.localities != null) return false;
-		} else if (!localities.equals(other.localities)) return false;
-		if (poBoxes == null) {
-			if (other.poBoxes != null) return false;
-		} else if (!poBoxes.equals(other.poBoxes)) return false;
-		if (postalCodes == null) {
-			if (other.postalCodes != null) return false;
-		} else if (!postalCodes.equals(other.postalCodes)) return false;
-		if (regions == null) {
-			if (other.regions != null) return false;
-		} else if (!regions.equals(other.regions)) return false;
-		if (streetAddresses == null) {
-			if (other.streetAddresses != null) return false;
-		} else if (!streetAddresses.equals(other.streetAddresses)) return false;
+		if (!countries.equals(other.countries)) return false;
+		if (!extendedAddresses.equals(other.extendedAddresses)) return false;
+		if (!localities.equals(other.localities)) return false;
+		if (!poBoxes.equals(other.poBoxes)) return false;
+		if (!postalCodes.equals(other.postalCodes)) return false;
+		if (!regions.equals(other.regions)) return false;
+		if (!streetAddresses.equals(other.streetAddresses)) return false;
 		return true;
 	}
 
@@ -617,6 +604,13 @@ public class Address extends VCardProperty implements HasAltId {
 		list.clear();
 		if (value != null) {
 			list.add(value);
+		}
+	}
+
+	private static void set(List<String> destination, Collection<String> source) {
+		destination.clear();
+		if (source != null) {
+			destination.addAll(source);
 		}
 	}
 }
