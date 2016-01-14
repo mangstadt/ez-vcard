@@ -1,5 +1,6 @@
 package ezvcard.property;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -104,7 +105,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * @throws IOException if there is a problem reading from the file
 	 */
 	public BinaryProperty(File file, T type) throws IOException {
-		this(new FileInputStream(file), type);
+		this(new BufferedInputStream(new FileInputStream(file)), type);
 	}
 
 	/**
@@ -113,7 +114,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 */
 	public BinaryProperty(BinaryProperty<T> original) {
 		super(original);
-		data = original.data;
+		data = (original.data == null) ? null : Arrays.copyOf(original.data, original.data.length);
 		url = original.url;
 		contentType = original.contentType;
 	}
