@@ -1,6 +1,7 @@
 package ezvcard.property;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Document;
@@ -9,7 +10,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import ezvcard.SupportedVersions;
+import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.Warning;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -67,8 +70,16 @@ import ezvcard.util.XmlUtils;
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6350#page-27">RFC 6350 p.27</a>
  */
+/*
+ * Note: This class does not extend SimpleProperty because of issues
+ * implementing "equals". SimpleProperty's "equals" method calls the "equals"
+ * method on the "value" field. However, equals method for the "Document" class
+ * does not check for true equality.
+ */
 @SupportedVersions(VCardVersion.V4_0)
-public class Xml extends SimpleProperty<Document> implements HasAltId {
+public class Xml extends VCardProperty implements HasAltId {
+	private Document value;
+
 	/**
 	 * Creates an XML property.
 	 * @param xml the XML to use as the property's value
@@ -87,12 +98,19 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 		this(detachElement(element));
 	}
 
+	private static Document detachElement(Element element) {
+		Document document = XmlUtils.createDocument();
+		Node imported = document.importNode(element, true);
+		document.appendChild(imported);
+		return document;
+	}
+
 	/**
 	 * Creates an XML property.
 	 * @param document the XML document to use as the property's value
 	 */
 	public Xml(Document document) {
-		super(document);
+		this.value = document;
 	}
 
 	/**
@@ -101,11 +119,23 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 	 */
 	public Xml(Xml original) {
 		super(original);
-		if (original.value != null) {
-			value = XmlUtils.createDocument();
-			Node node = value.importNode(original.value.getDocumentElement(), true);
-			value.appendChild(node);
-		}
+		value = (original.value == null) ? null : detachElement(original.value.getDocumentElement());
+	}
+
+	/**
+	 * Gets the value of this property.
+	 * @return the value or null if not set
+	 */
+	public Document getValue() {
+		return value;
+	}
+
+	/**
+	 * Sets the value of this property.
+	 * @param value the value
+	 */
+	public void setValue(Document value) {
+		this.value = value;
 	}
 
 	//@Override
@@ -118,11 +148,11 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 		parameters.setAltId(altId);
 	}
 
-	private static Document detachElement(Element element) {
-		Document document = XmlUtils.createDocument();
-		Node imported = document.importNode(element, true);
-		document.appendChild(imported);
-		return document;
+	@Override
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+		if (value == null) {
+			warnings.add(new Warning(8));
+		}
 	}
 
 	@Override
@@ -148,8 +178,7 @@ public class Xml extends SimpleProperty<Document> implements HasAltId {
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
+		if (!super.equals(obj)) return false;
 		Xml other = (Xml) obj;
 		if (value == null) {
 			if (other.value != null) return false;
