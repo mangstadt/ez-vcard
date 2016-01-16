@@ -8,9 +8,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 import ezvcard.VCardDataType;
@@ -104,13 +101,8 @@ public class RawPropertyTest {
 
 	@Test
 	public void equals() {
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
-
-		RawProperty property = new RawProperty(null, null);
-		properties.add(property);
-
 		//@formatter:off
-		assertNothingIsEqual(new VCardProperty[]{
+		assertNothingIsEqual(
 			new RawProperty(null, null),
 			new RawProperty("name", null),
 			new RawProperty(null, "value"),
@@ -122,8 +114,8 @@ public class RawPropertyTest {
 			new RawProperty("name", "value2"),
 			new RawProperty("name2", "value2"),
 			new RawProperty("name", "value", VCardDataType.TEXT),
-			new RawProperty("name", "value", VCardDataType.URI),
-		});
+			new RawProperty("name", "value", VCardDataType.URI)
+		);
 		
 		assertEqualsMethod(RawProperty.class, "name", "value")
 		.constructor(new Class<?>[]{String.class, String.class}, null, null).test()

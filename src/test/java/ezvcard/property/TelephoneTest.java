@@ -1,10 +1,21 @@
 package ezvcard.property;
 
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
+import static ezvcard.util.TestUtils.assertSetEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
+import ezvcard.parameter.TelephoneType;
 import ezvcard.util.TelUri;
 
 /*
@@ -41,6 +52,64 @@ import ezvcard.util.TelUri;
  */
 public class TelephoneTest {
 	@Test
+	public void constructors() throws Exception {
+		Telephone property = new Telephone((String) null);
+		assertNull(property.getText());
+		assertNull(property.getUri());
+		assertSetEquals(property.getTypes());
+
+		property = new Telephone("text");
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertSetEquals(property.getTypes());
+
+		property = new Telephone(new TelUri.Builder("+1").build());
+		assertNull(property.getText());
+		assertEquals(new TelUri.Builder("+1").build(), property.getUri());
+		assertSetEquals(property.getTypes());
+	}
+
+	@Test
+	public void set_value() {
+		Telephone property = new Telephone((String) null);
+
+		property.setText("text");
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertSetEquals(property.getTypes());
+
+		property.setUri(new TelUri.Builder("+1").build());
+		assertNull(property.getText());
+		assertEquals(new TelUri.Builder("+1").build(), property.getUri());
+		assertSetEquals(property.getTypes());
+
+		property.setText("text");
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertSetEquals(property.getTypes());
+
+		property.addType(TelephoneType.WORK);
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertSetEquals(property.getTypes(), TelephoneType.WORK);
+
+		property.addType(TelephoneType.WORK);
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertSetEquals(property.getTypes(), TelephoneType.WORK);
+
+		property.addType(TelephoneType.HOME);
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertSetEquals(property.getTypes(), TelephoneType.WORK, TelephoneType.HOME);
+
+		property.removeType(TelephoneType.HOME);
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertSetEquals(property.getTypes(), TelephoneType.WORK);
+	}
+
+	@Test
 	public void validate() {
 		Telephone empty = new Telephone((String) null);
 		assertValidate(empty).run(8);
@@ -52,5 +121,70 @@ public class TelephoneTest {
 		assertValidate(withUri).versions(VCardVersion.V2_1).run(19);
 		assertValidate(withUri).versions(VCardVersion.V3_0).run(19);
 		assertValidate(withUri).versions(VCardVersion.V4_0).run();
+
+		Telephone withTypes = new Telephone("(800) 555-5555");
+		withTypes.addType(TelephoneType.TEXTPHONE);
+		withTypes.addType(TelephoneType.PREF);
+		assertValidate(withTypes).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(9);
+		assertValidate(withTypes).versions(VCardVersion.V4_0).run();
+	}
+
+	@Test
+	public void toStringValues() {
+		Telephone property = new Telephone("text");
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		Telephone original = new Telephone((String) null);
+		assertCopy(original);
+
+		original = new Telephone("text");
+		assertCopy(original);
+
+		original = new Telephone(new TelUri.Builder("+1").build());
+		assertCopy(original);
+
+		original = new Telephone("text");
+		original.addType(TelephoneType.HOME);
+		assertCopy(original);
+	}
+
+	@Test
+	public void equals() {
+		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+
+		Telephone property = new Telephone((String) null);
+		properties.add(property);
+
+		property = new Telephone("text");
+		properties.add(property);
+
+		property = new Telephone("text");
+		property.addType(TelephoneType.HOME);
+		properties.add(property);
+
+		property = new Telephone("text2");
+		properties.add(property);
+
+		property = new Telephone(new TelUri.Builder("+1").build());
+		properties.add(property);
+
+		property = new Telephone(new TelUri.Builder("+1").build());
+		property.addType(TelephoneType.HOME);
+		properties.add(property);
+
+		property = new Telephone(new TelUri.Builder("+2").build());
+		properties.add(property);
+
+		assertNothingIsEqual(properties);
+
+		//@formatter:off
+		assertEqualsMethod(Telephone.class, "text")
+		.constructor(new Class<?>[]{String.class}, (String)null).test()
+		.constructor("text").test()
+		.constructor(new TelUri.Builder("+1").build()).test();
+		//@formatter:on
 	}
 }

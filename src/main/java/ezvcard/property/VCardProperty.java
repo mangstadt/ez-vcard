@@ -172,9 +172,12 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	/**
 	 * Sets the property's parameters.
-	 * @param parameters the parameters
+	 * @param parameters the parameters (cannot be null)
 	 */
 	public void setParameters(VCardParameters parameters) {
+		if (parameters == null) {
+			throw new NullPointerException("Parameters object cannot be null.");
+		}
 		this.parameters = parameters;
 	}
 
@@ -277,14 +280,14 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getName());
-		sb.append(" [group=").append(group);
+		sb.append(" [ group=").append(group);
 		sb.append(" | parameters=").append(parameters);
 		for (Map.Entry<String, Object> field : toStringValues().entrySet()) {
 			String fieldName = field.getKey();
 			Object fieldValue = field.getValue();
 			sb.append(" | ").append(fieldName).append('=').append(fieldValue);
 		}
-		sb.append(']');
+		sb.append(" ]");
 		return sb.toString();
 	}
 
@@ -329,7 +332,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((group == null) ? 0 : group.toLowerCase().hashCode());
-		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + parameters.hashCode();
 		return result;
 	}
 
@@ -342,9 +345,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		if (group == null) {
 			if (other.group != null) return false;
 		} else if (!group.equalsIgnoreCase(other.group)) return false;
-		if (parameters == null) {
-			if (other.parameters != null) return false;
-		} else if (!parameters.equals(other.parameters)) return false;
+		if (!parameters.equals(other.parameters)) return false;
 		return true;
 	}
 

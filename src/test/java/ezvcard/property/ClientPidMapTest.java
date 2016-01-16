@@ -2,9 +2,9 @@ package ezvcard.property;
 
 import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
-import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
+import static ezvcard.util.TestUtils.assertIntEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -126,8 +126,8 @@ public class ClientPidMapTest {
 		);
 		
 		assertEqualsMethod(ClientPidMap.class, 1, "uri")
-			.constructor(new Class<?>[] { Integer.class, String.class }, null, null).test()
-			.constructor(1, "uri").test();
+		.constructor(new Class<?>[] { Integer.class, String.class }, null, null).test()
+		.constructor(1, "uri").test();
 		//@formatter:on
 	}
 }

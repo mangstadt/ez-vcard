@@ -139,11 +139,11 @@ public class GeoTest {
 	@Test
 	public void equals() {
 		//@formatter:off
-		assertNothingIsEqual(new VCardProperty[]{
+		assertNothingIsEqual(
 			new Geo((GeoUri) null),
 			new Geo(new GeoUri.Builder(12.34, 56.78).build()),
 			new Geo(new GeoUri.Builder(12.34, -56.78).build())
-		});
+		);
 		
 		assertEqualsMethod(Geo.class, new GeoUri.Builder(12.34, 56.78).build())
 		.constructor(new Class<?>[]{GeoUri.class}, (GeoUri)null).test()

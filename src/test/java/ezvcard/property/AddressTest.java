@@ -362,14 +362,15 @@ public class AddressTest {
 
 		//@formatter:off
 		assertEqualsMethod(Address.class)
-			.constructor()
-				.method("setExtendedAddress", "value").test()
-				.method("setPoBox", "value").test()
-				.method("setStreetAddress", "value").test()
-				.method("setLocality", "value").test()
-				.method("setRegion", "value").test()
-				.method("setPostalCode", "value").test()
-				.method("setCountry", "value").test();
+		.constructor()
+			.test()
+			.method("setExtendedAddress", "value").test()
+			.method("setPoBox", "value").test()
+			.method("setStreetAddress", "value").test()
+			.method("setLocality", "value").test()
+			.method("setRegion", "value").test()
+			.method("setPostalCode", "value").test()
+			.method("setCountry", "value").test();
 		//@formatter:on
 	}
 }

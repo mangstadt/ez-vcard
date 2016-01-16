@@ -117,16 +117,24 @@ public class AgentTest {
 
 	@Test
 	public void equals() {
-		//@formatter:off
-		assertEqualsMethod(Agent.class)
-			.constructor().test()
-			.constructor("url").test()
-			.test(new Agent(new VCard()), new Agent(new VCard()));
-		//@formatter:on
-
 		VCard vcard = new VCard();
 		VCard vcard2 = new VCard();
 		vcard2.setVersion(VCardVersion.V4_0);
-		assertNothingIsEqual(new Agent(), new Agent("url"), new Agent("url2"), new Agent(vcard), new Agent(vcard2));
+
+		//@formatter:off
+		assertNothingIsEqual(
+			new Agent(),
+			new Agent("url"),
+			new Agent("url2"),
+			new Agent(vcard),
+			new Agent(vcard2)
+		);
+
+		assertEqualsMethod(Agent.class)
+		.constructor().test()
+		.constructor("url")
+			.test()
+			.test(new Agent(new VCard()), new Agent(new VCard()));
+		//@formatter:on
 	}
 }

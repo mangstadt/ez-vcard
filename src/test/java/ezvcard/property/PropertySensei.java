@@ -17,6 +17,7 @@ import java.util.List;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
+import ezvcard.util.TestUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -172,8 +173,8 @@ public class PropertySensei {
 	/**
 	 * <p>
 	 * Asserts some essential behaviors of the equals method (see
-	 * {@link #assertEqualsMethodEssentials}. And asserts that the fields in
-	 * {@link VCardProperty} are checked.
+	 * {@link TestUtils#assertEqualsMethodEssentials}). Also asserts that the
+	 * fields in the {@link VCardProperty} base class are checked.
 	 * </p>
 	 * <p>
 	 * Calling the chaining methods of the object that this method returns will
@@ -328,7 +329,8 @@ public class PropertySensei {
 
 	/**
 	 * Asserts that none of the given property instances are equal to each
-	 * other.
+	 * other. Also creates copies of the first property, setting the fields in
+	 * {@link VCardProperty} to assert that these fields are checked too.
 	 * @param properties the properties
 	 */
 	public static void assertNothingIsEqual(VCardProperty... properties) {
@@ -337,7 +339,8 @@ public class PropertySensei {
 
 	/**
 	 * Asserts that none of the given property instances are equal to each
-	 * other.
+	 * other. Also creates copies of the first property, setting the fields in
+	 * {@link VCardProperty} to assert that these fields are checked too.
 	 * @param properties the properties
 	 */
 	public static void assertNothingIsEqual(Iterable<VCardProperty> properties) {

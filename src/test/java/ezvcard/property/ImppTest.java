@@ -218,11 +218,11 @@ public class ImppTest {
 	@Test
 	public void equals() {
 		//@formatter:off
-		assertNothingIsEqual(new VCardProperty[]{
+		assertNothingIsEqual(
 			new Impp((String) null),
 			new Impp("aim:username"),
 			new Impp("aim:username2")
-		});
+		);
 		
 		assertEqualsMethod(Impp.class, "aim:username")
 		.constructor(new Class<?>[]{String.class}, (String)null).test()

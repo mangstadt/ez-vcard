@@ -1,10 +1,14 @@
 package ezvcard.property;
 
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
-import java.util.Date;
+import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import org.junit.Test;
@@ -48,6 +52,42 @@ public class TimezoneTest {
 	private final TimeZone newYork = TimeZone.getTimeZone("America/New_York");
 
 	@Test
+	public void constructors() throws Exception {
+		Timezone property = new Timezone((String) null);
+		assertNull(property.getOffset());
+		assertNull(property.getText());
+
+		property = new Timezone(new UtcOffset(true, 1, 0));
+		assertEquals(new UtcOffset(true, 1, 0), property.getOffset());
+		assertNull(property.getText());
+
+		property = new Timezone(new SimpleTimeZone(1000 * 60 * 60, "ID"));
+		assertEquals(new UtcOffset(true, 1, 0), property.getOffset());
+		assertEquals("ID", property.getText());
+
+		property = new Timezone("text");
+		assertNull(property.getOffset());
+		assertEquals("text", property.getText());
+
+		property = new Timezone(new UtcOffset(true, 1, 0), "text");
+		assertEquals(new UtcOffset(true, 1, 0), property.getOffset());
+		assertEquals("text", property.getText());
+	}
+
+	@Test
+	public void set_value() {
+		Timezone property = new Timezone((String) null);
+
+		property.setOffset(new UtcOffset(true, 1, 0));
+		assertEquals(new UtcOffset(true, 1, 0), property.getOffset());
+		assertNull(property.getText());
+
+		property.setText("text");
+		assertEquals(new UtcOffset(true, 1, 0), property.getOffset());
+		assertEquals("text", property.getText());
+	}
+
+	@Test
 	public void validate() {
 		Timezone empty = new Timezone((UtcOffset) null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(8, 20);
@@ -61,15 +101,6 @@ public class TimezoneTest {
 		assertValidate(withText).versions(VCardVersion.V2_1).run(20);
 		assertValidate(withText).versions(VCardVersion.V3_0).run();
 		assertValidate(withText).versions(VCardVersion.V4_0).run();
-	}
-
-	@Test
-	public void constructor_timezone() {
-		Timezone tz = new Timezone(newYork);
-
-		assertEquals(newYork.getID(), tz.getText());
-		int hour = newYork.inDaylightTime(new Date()) ? -4 : -5;
-		assertEquals(new UtcOffset(false, hour, 0), tz.getOffset());
 	}
 
 	@Test
@@ -99,5 +130,43 @@ public class TimezoneTest {
 		TimeZone actual = t.toTimeZone();
 		assertEquals(-(5 * 1000 * 60 * 60 + 30 * 1000 * 60), actual.getRawOffset());
 		assertEquals("text", actual.getID());
+	}
+
+	@Test
+	public void toStringValues() {
+		Timezone property = new Timezone("text");
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		Timezone original = new Timezone((String) null);
+		assertCopy(original);
+
+		original = new Timezone("text");
+		assertCopy(original);
+
+		original = new Timezone(new UtcOffset(true, 1, 0));
+		assertCopy(original);
+	}
+
+	@Test
+	public void equals() {
+		//@formatter:off
+		assertNothingIsEqual(
+			new Timezone((String) null),
+			new Timezone("text"),
+			new Timezone("text2"),
+			new Timezone(new UtcOffset(true, 1, 0)),
+			new Timezone(new UtcOffset(true, 2, 0)),
+			new Timezone(new UtcOffset(true, 1, 0), "text")
+		);
+		
+		assertEqualsMethod(Timezone.class, "text")
+		.constructor(new Class<?>[]{String.class}, (String)null).test()
+		.constructor("text").test()
+		.constructor(new UtcOffset(true, 1, 0)).test()
+		.constructor(new UtcOffset(true, 1, 0), "text").test();
+		//@formatter:on
 	}
 }

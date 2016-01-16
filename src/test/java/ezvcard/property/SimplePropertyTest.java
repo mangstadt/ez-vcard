@@ -1,6 +1,12 @@
 package ezvcard.property;
 
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -38,17 +44,68 @@ import org.junit.Test;
  */
 public class SimplePropertyTest {
 	@Test
+	public void constructors() throws Exception {
+		SimplePropertyImpl property = new SimplePropertyImpl((String) null);
+		assertNull(property.getValue());
+
+		property = new SimplePropertyImpl("value");
+		assertEquals("value", property.getValue());
+	}
+
+	@Test
+	public void set_value() {
+		SimplePropertyImpl property = new SimplePropertyImpl("value");
+
+		property.setValue("value2");
+		assertEquals("value2", property.getValue());
+	}
+
+	@Test
 	public void validate() {
-		SimplePropertyImpl empty = new SimplePropertyImpl(null);
+		SimplePropertyImpl empty = new SimplePropertyImpl((String) null);
 		assertValidate(empty).run(8);
 
 		SimplePropertyImpl withValue = new SimplePropertyImpl("text");
 		assertValidate(withValue).run();
 	}
 
-	private class SimplePropertyImpl extends SimpleProperty<String> {
+	@Test
+	public void toStringValues() {
+		SimplePropertyImpl property = new SimplePropertyImpl("value");
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		SimplePropertyImpl original = new SimplePropertyImpl((String) null);
+		assertCopy(original);
+
+		original = new SimplePropertyImpl("value");
+		assertCopy(original);
+	}
+
+	@Test
+	public void equals() {
+		//@formatter:off
+		assertNothingIsEqual(
+			new SimplePropertyImpl((String) null),
+			new SimplePropertyImpl("value"),
+			new SimplePropertyImpl("value2")
+		);
+		
+		assertEqualsMethod(SimplePropertyImpl.class, "value")
+		.constructor(new Class<?>[]{String.class}, (String)null).test()
+		.constructor("value").test();
+		//@formatter:on
+	}
+
+	public static class SimplePropertyImpl extends SimpleProperty<String> {
 		public SimplePropertyImpl(String value) {
 			super(value);
+		}
+
+		public SimplePropertyImpl(SimplePropertyImpl original) {
+			super(original);
 		}
 	}
 }

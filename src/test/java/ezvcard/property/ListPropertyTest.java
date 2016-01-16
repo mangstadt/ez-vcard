@@ -107,8 +107,9 @@ public class ListPropertyTest {
 
 		//@formatter:off
 		assertEqualsMethod(ListPropertyImpl.class)
-		.constructor().test()
-		.constructor().method("addValue", new Class<?>[]{Object.class}, "value").test();
+		.constructor()
+			.test()
+			.method("addValue", new Class<?>[]{Object.class}, "value").test();
 		//@formatter:on
 	}
 

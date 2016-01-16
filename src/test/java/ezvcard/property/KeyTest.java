@@ -173,8 +173,9 @@ public class KeyTest {
 
 		//@formatter:off
 		assertEqualsMethod(Key.class)
-		.constructor().test()
-		.constructor().method("setText", "text", KeyType.GPG).test();
+		.constructor()
+			.test()
+			.method("setText", "text", KeyType.GPG).test();
 		//@formatter:on
 	}
 }

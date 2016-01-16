@@ -206,8 +206,9 @@ public class GenderTest {
 		//@formatter:off
 		assertEqualsMethod(Gender.class, "male")
 		.constructor(new Class<?>[]{String.class}, (String)null).test()
-		.constructor("male").test()
-		.constructor("male").method("setText", "text").test();
+		.constructor("male")
+			.test()
+			.method("setText", "text").test();
 		//@formatter:on
 	}
 }

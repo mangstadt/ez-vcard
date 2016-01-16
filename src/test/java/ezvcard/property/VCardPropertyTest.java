@@ -1,12 +1,12 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertEqualsAndHash;
-import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
+import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -19,12 +19,16 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -130,6 +134,45 @@ public class VCardPropertyTest {
 	}
 
 	@Test
+	public void parameters() {
+		VCardPropertyImpl property = new VCardPropertyImpl();
+		assertEquals(new VCardParameters(), property.getParameters());
+
+		try {
+			property.setParameters(null);
+			fail("NPE expected.");
+		} catch (NullPointerException e) {
+			//expected
+		}
+
+		VCardParameters parameters = new VCardParameters();
+		property.setParameters(parameters);
+		assertSame(parameters, property.getParameters());
+
+		property.addParameter("PARAM", "value");
+		property.addParameter("PARAM", "value2");
+		assertEquals("value", property.getParameter("PARAM"));
+		assertEquals(Arrays.asList("value", "value2"), property.getParameters("PARAM"));
+		VCardParameters expected = new VCardParameters();
+		expected.put("PARAM", "value");
+		expected.put("PARAM", "value2");
+		assertEquals(expected, property.getParameters());
+
+		property.setParameter("PARAM", "one");
+		assertEquals("one", property.getParameter("PARAM"));
+		assertEquals(Arrays.asList("one"), property.getParameters("PARAM"));
+		expected = new VCardParameters();
+		expected.put("PARAM", "one");
+		assertEquals(expected, property.getParameters());
+
+		property.removeParameter("PARAM");
+		assertNull(property.getParameter("PARAM"));
+		assertEquals(Arrays.asList(), property.getParameters("PARAM"));
+		expected = new VCardParameters();
+		assertEquals(expected, property.getParameters());
+	}
+
+	@Test
 	public void compareTo() {
 		VCardPropertyImpl one = new VCardPropertyImpl();
 		one.getParameters().setPref(1);
@@ -188,31 +231,30 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void equals_essentials() {
-		VCardPropertyImpl one = new VCardPropertyImpl();
-		assertEqualsMethodEssentials(one);
+	public void toStringValues() {
+		VCardPropertyImpl property = new VCardPropertyImpl();
+		assertTrue(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void equals_different_group() {
-		VCardPropertyImpl one = new VCardPropertyImpl();
-		one.setGroup("one");
-		VCardPropertyImpl two = new VCardPropertyImpl();
-		two.setGroup("two");
+	public void toString_() {
+		VCardProperty property = new VCardPropertyImpl();
+		assertEquals(VCardPropertyImpl.class.getName() + " [ group=null | parameters={} ]", property.toString());
 
-		assertNotEquals(one, two);
-		assertNotEquals(two, one);
+		property = new CopyConstructorTest("text");
+		property.setGroup("group");
+		property.addParameter("PARAM", "value");
+		assertEquals(CopyConstructorTest.class.getName() + " [ group=group | parameters={PARAM=[value]} | value=text ]", property.toString());
 	}
 
 	@Test
-	public void equals_different_parameters() {
-		VCardPropertyImpl one = new VCardPropertyImpl();
-		one.addParameter("one", "value");
-		VCardPropertyImpl two = new VCardPropertyImpl();
-		two.addParameter("two", "value");
-
-		assertNotEquals(one, two);
-		assertNotEquals(two, one);
+	public void equals() {
+		//@formatter:off
+		assertNothingIsEqual(new CopyConstructorTest(""));
+		
+		assertEqualsMethod(VCardPropertyImpl.class)
+		.constructor();
+		//@formatter:on
 	}
 
 	@Test
@@ -236,6 +278,13 @@ public class VCardPropertyTest {
 			super(original);
 			value = original.value;
 		}
+
+		@Override
+		protected Map<String, Object> toStringValues() {
+			Map<String, Object> values = new LinkedHashMap<String, Object>();
+			values.put("value", value);
+			return values;
+		}
 	}
 
 	private static class CopyConstructorThrowsExceptionTest extends VCardProperty {
@@ -251,7 +300,7 @@ public class VCardPropertyTest {
 		}
 	}
 
-	private class VCardPropertyImpl extends VCardProperty {
+	public static class VCardPropertyImpl extends VCardProperty {
 		//empty
 	}
 

@@ -86,7 +86,7 @@ public class Xml extends VCardProperty implements HasAltId {
 	 * @throws SAXException if the XML cannot be parsed
 	 */
 	public Xml(String xml) throws SAXException {
-		this(XmlUtils.toDocument(xml));
+		this((xml == null) ? null : XmlUtils.toDocument(xml));
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class Xml extends VCardProperty implements HasAltId {
 	 * element is imported into an empty {@link Document} object)
 	 */
 	public Xml(Element element) {
-		this(detachElement(element));
+		this((element == null) ? null : detachElement(element));
 	}
 
 	private static Document detachElement(Element element) {
@@ -119,7 +119,10 @@ public class Xml extends VCardProperty implements HasAltId {
 	 */
 	public Xml(Xml original) {
 		super(original);
-		value = (original.value == null) ? null : detachElement(original.value.getDocumentElement());
+		if (original.value != null) {
+			Element root = original.value.getDocumentElement();
+			value = (root == null) ? XmlUtils.createDocument() : detachElement(root);
+		}
 	}
 
 	/**
