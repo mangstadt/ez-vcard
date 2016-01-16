@@ -1,7 +1,13 @@
 package ezvcard.property;
 
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.util.TestUtils.assertIntEquals;
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
+import static ezvcard.property.PropertySensei.assertValidate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -42,6 +48,45 @@ import ezvcard.VCardVersion;
  */
 public class ClientPidMapTest {
 	@Test
+	public void constructors() throws Exception {
+		ClientPidMap property = new ClientPidMap(null, null);
+		assertNull(property.getPid());
+		assertNull(property.getUri());
+
+		property = new ClientPidMap(1, "uri");
+		assertIntEquals(1, property.getPid());
+		assertEquals("uri", property.getUri());
+	}
+
+	@Test
+	public void set_value() {
+		ClientPidMap property = new ClientPidMap(1, "uri");
+
+		property.setPid(2);
+		assertIntEquals(2, property.getPid());
+		assertEquals("uri", property.getUri());
+
+		property.setUri("uri2");
+		assertIntEquals(2, property.getPid());
+		assertEquals("uri2", property.getUri());
+
+		property.setPid(null);
+		assertNull(property.getPid());
+		assertEquals("uri2", property.getUri());
+
+		property.setUri(null);
+		assertNull(property.getPid());
+		assertNull(property.getUri());
+	}
+
+	@Test
+	public void random() {
+		ClientPidMap clientpidmap = ClientPidMap.random(2);
+		assertIntEquals(2, clientpidmap.getPid());
+		assertTrue(clientpidmap.getUri().matches("urn:uuid:[-\\da-f]+"));
+	}
+
+	@Test
 	public void validate() {
 		ClientPidMap empty = new ClientPidMap(null, null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
@@ -55,9 +100,34 @@ public class ClientPidMapTest {
 	}
 
 	@Test
-	public void random() {
-		ClientPidMap clientpidmap = ClientPidMap.random(2);
-		assertIntEquals(2, clientpidmap.getPid());
-		assertTrue(clientpidmap.getUri().matches("urn:uuid:[-\\da-f]+"));
+	public void toStringValues() {
+		ClientPidMap property = new ClientPidMap(1, "uri");
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		ClientPidMap original = new ClientPidMap(1, "uri");
+		assertCopy(original);
+	}
+
+	@Test
+	public void equals() {
+		//@formatter:off
+		assertNothingIsEqual(
+			new ClientPidMap(null, null),
+			new ClientPidMap(1, null),
+			new ClientPidMap(2, null),
+			new ClientPidMap(null, "uri"),
+			new ClientPidMap(null, "uri2"),
+			new ClientPidMap(1, "uri"),
+			new ClientPidMap(2, "uri"),
+			new ClientPidMap(1, "uri2")
+		);
+		
+		assertEqualsMethod(ClientPidMap.class, 1, "uri")
+			.constructor(new Class<?>[] { Integer.class, String.class }, null, null).test()
+			.constructor(1, "uri").test();
+		//@formatter:on
 	}
 }

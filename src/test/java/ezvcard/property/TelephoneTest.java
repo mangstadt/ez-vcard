@@ -1,6 +1,6 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertValidate;
 
 import org.junit.Test;
 

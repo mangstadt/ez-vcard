@@ -1,8 +1,19 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
+import static ezvcard.property.PropertySensei.assertValidate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
+
+import ezvcard.VCardDataType;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -38,11 +49,87 @@ import org.junit.Test;
  */
 public class RawPropertyTest {
 	@Test
+	public void constructors() throws Exception {
+		RawProperty property = new RawProperty("name", "value");
+		assertEquals("name", property.getPropertyName());
+		assertEquals("value", property.getValue());
+		assertNull(property.getDataType());
+
+		property = new RawProperty("name", "value", VCardDataType.TEXT);
+		assertEquals("name", property.getPropertyName());
+		assertEquals("value", property.getValue());
+		assertEquals(VCardDataType.TEXT, property.getDataType());
+	}
+
+	@Test
+	public void set_value() {
+		RawProperty property = new RawProperty("name", "value");
+
+		property.setPropertyName("name2");
+		assertEquals("name2", property.getPropertyName());
+		assertEquals("value", property.getValue());
+		assertNull(property.getDataType());
+
+		property.setValue("value2");
+		assertEquals("name2", property.getPropertyName());
+		assertEquals("value2", property.getValue());
+		assertNull(property.getDataType());
+
+		property.setDataType(VCardDataType.TEXT);
+		assertEquals("name2", property.getPropertyName());
+		assertEquals("value2", property.getValue());
+		assertEquals(VCardDataType.TEXT, property.getDataType());
+	}
+
+	@Test
 	public void validate() {
 		RawProperty property = new RawProperty("foo.bar", "value");
 		assertValidate(property).run(24);
 
 		property = new RawProperty("foobar", "value");
 		assertValidate(property).run();
+	}
+
+	@Test
+	public void toStringValues() {
+		RawProperty property = new RawProperty("name", "value");
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		RawProperty original = new RawProperty("name", "value", VCardDataType.TEXT);
+		assertCopy(original);
+	}
+
+	@Test
+	public void equals() {
+		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+
+		RawProperty property = new RawProperty(null, null);
+		properties.add(property);
+
+		//@formatter:off
+		assertNothingIsEqual(new VCardProperty[]{
+			new RawProperty(null, null),
+			new RawProperty("name", null),
+			new RawProperty(null, "value"),
+			new RawProperty(null, null, VCardDataType.TEXT),
+			new RawProperty("name", null, VCardDataType.TEXT),
+			new RawProperty(null, "value", VCardDataType.TEXT),
+			new RawProperty("name", "value"),
+			new RawProperty("name2", "value"),
+			new RawProperty("name", "value2"),
+			new RawProperty("name2", "value2"),
+			new RawProperty("name", "value", VCardDataType.TEXT),
+			new RawProperty("name", "value", VCardDataType.URI),
+		});
+		
+		assertEqualsMethod(RawProperty.class, "name", "value")
+		.constructor(new Class<?>[]{String.class, String.class}, null, null).test()
+		.constructor("name", "value").test()
+		.constructor("NAME", "value").test()
+		.constructor("name", "value", VCardDataType.TEXT).test();
+		//@formatter:on
 	}
 }

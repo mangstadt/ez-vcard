@@ -1,6 +1,12 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
+import static ezvcard.property.PropertySensei.assertValidate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -41,6 +47,40 @@ import ezvcard.VCardVersion;
  */
 public class AgentTest {
 	@Test
+	public void set_value() {
+		VCard vcard = new VCard();
+		Agent agent = new Agent();
+
+		agent.setUrl("one");
+		assertEquals("one", agent.getUrl());
+		assertNull(agent.getVCard());
+
+		agent.setVCard(vcard);
+		assertNull(agent.getUrl());
+		assertEquals(vcard, agent.getVCard());
+
+		agent.setUrl("one");
+		assertEquals("one", agent.getUrl());
+		assertNull(agent.getVCard());
+	}
+
+	@Test
+	public void constructors() {
+		VCard vcard = new VCard();
+		Agent agent = new Agent();
+		assertNull(agent.getUrl());
+		assertNull(agent.getVCard());
+
+		agent = new Agent("one");
+		assertEquals("one", agent.getUrl());
+		assertNull(agent.getVCard());
+
+		agent = new Agent(vcard);
+		assertNull(agent.getUrl());
+		assertEquals(vcard, agent.getVCard());
+	}
+
+	@Test
 	public void validate() {
 		Agent property = new Agent();
 		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(8);
@@ -55,5 +95,38 @@ public class AgentTest {
 		property.setUrl("http://example.com");
 		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run();
 		assertValidate(property).versions(VCardVersion.V4_0).run(2);
+	}
+
+	@Test
+	public void toStringValues() {
+		Agent property = new Agent();
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		Agent original = new Agent();
+		assertCopy(original);
+
+		original = new Agent("url");
+		assertCopy(original);
+
+		original = new Agent(new VCard());
+		assertCopy(original).notSame("getVCard");
+	}
+
+	@Test
+	public void equals() {
+		//@formatter:off
+		assertEqualsMethod(Agent.class)
+			.constructor().test()
+			.constructor("url").test()
+			.test(new Agent(new VCard()), new Agent(new VCard()));
+		//@formatter:on
+
+		VCard vcard = new VCard();
+		VCard vcard2 = new VCard();
+		vcard2.setVersion(VCardVersion.V4_0);
+		assertNothingIsEqual(new Agent(), new Agent("url"), new Agent("url2"), new Agent(vcard), new Agent(vcard2));
 	}
 }

@@ -1,9 +1,16 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
+import static ezvcard.property.PropertySensei.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -43,14 +50,27 @@ import ezvcard.VCardVersion;
  */
 public class GenderTest {
 	@Test
-	public void validate() {
-		Gender empty = new Gender((String) null);
-		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 8);
-		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
+	public void constructors() throws Exception {
+		Gender property = new Gender((String) null);
+		assertNull(property.getGender());
+		assertNull(property.getText());
 
-		Gender male = Gender.male();
-		assertValidate(male).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
-		assertValidate(male).versions(VCardVersion.V4_0).run();
+		property = new Gender("male");
+		assertEquals("male", property.getGender());
+		assertNull(property.getText());
+	}
+
+	@Test
+	public void set_value() {
+		Gender property = new Gender("male");
+
+		property.setText("text");
+		assertEquals("male", property.getGender());
+		assertEquals("text", property.getText());
+
+		property.setGender("female");
+		assertEquals("female", property.getGender());
+		assertEquals("text", property.getText());
 	}
 
 	@Test
@@ -131,5 +151,63 @@ public class GenderTest {
 	public void unknown() {
 		Gender gender = Gender.unknown();
 		assertEquals("U", gender.getGender());
+	}
+
+	@Test
+	public void validate() {
+		Gender empty = new Gender((String) null);
+		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 8);
+		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
+
+		Gender male = Gender.male();
+		assertValidate(male).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2);
+		assertValidate(male).versions(VCardVersion.V4_0).run();
+	}
+
+	@Test
+	public void toStringValues() {
+		Gender property = new Gender("male");
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		Gender original = new Gender((String) null);
+		assertCopy(original);
+
+		original = new Gender("male");
+		original.setText("text");
+		assertCopy(original);
+	}
+
+	@Test
+	public void equals() {
+		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+
+		Gender property = new Gender((String) null);
+		properties.add(property);
+
+		property = new Gender("male");
+		properties.add(property);
+
+		property = new Gender("male");
+		property.setText("text");
+		properties.add(property);
+
+		property = new Gender("female");
+		properties.add(property);
+
+		property = new Gender((String) null);
+		property.setText("text");
+		properties.add(property);
+
+		assertNothingIsEqual(properties);
+
+		//@formatter:off
+		assertEqualsMethod(Gender.class, "male")
+		.constructor(new Class<?>[]{String.class}, (String)null).test()
+		.constructor("male").test()
+		.constructor("male").method("setText", "text").test();
+		//@formatter:on
 	}
 }

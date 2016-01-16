@@ -185,6 +185,18 @@ public class Key extends BinaryProperty<KeyType> {
 	}
 
 	@Override
+	public void setUrl(String url, KeyType type) {
+		super.setUrl(url, type);
+		text = null;
+	}
+
+	@Override
+	public void setData(byte[] data, KeyType type) {
+		super.setData(data, type);
+		text = null;
+	}
+
+	@Override
 	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
 		if (url == null && data == null && text == null) {
 			warnings.add(new Warning(8));

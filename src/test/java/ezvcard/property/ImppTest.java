@@ -1,6 +1,9 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
+import static ezvcard.property.PropertySensei.assertValidate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -195,5 +198,35 @@ public class ImppTest {
 	public void getHandle_no_uri() {
 		Impp impp = new Impp((String) null);
 		assertNull(impp.getHandle());
+	}
+
+	@Test
+	public void toStringValues() {
+		Impp property = new Impp("protocol", "uri");
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		Impp original = new Impp((String) null);
+		assertCopy(original);
+
+		original = new Impp("aim:username");
+		assertCopy(original);
+	}
+
+	@Test
+	public void equals() {
+		//@formatter:off
+		assertNothingIsEqual(new VCardProperty[]{
+			new Impp((String) null),
+			new Impp("aim:username"),
+			new Impp("aim:username2")
+		});
+		
+		assertEqualsMethod(Impp.class, "aim:username")
+		.constructor(new Class<?>[]{String.class}, (String)null).test()
+		.constructor("aim:username").test();
+		//@formatter:on
 	}
 }

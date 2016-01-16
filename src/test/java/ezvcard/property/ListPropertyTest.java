@@ -1,9 +1,15 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
+import static ezvcard.property.PropertySensei.assertValidate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -61,7 +67,58 @@ public class ListPropertyTest {
 		assertEquals(Arrays.asList("one", "three"), property.getValues());
 	}
 
-	private class ListPropertyImpl extends ListProperty<String> {
-		//empty
+	@Test
+	public void toStringValues() {
+		ListPropertyImpl property = new ListPropertyImpl();
+		assertFalse(property.toStringValues().isEmpty());
+	}
+
+	@Test
+	public void copy() {
+		ListPropertyImpl original = new ListPropertyImpl();
+		assertCopy(original);
+
+		original = new ListPropertyImpl();
+		original.addValue("value");
+		assertCopy(original).notSame("getValues");
+	}
+
+	@Test
+	public void equals() {
+		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+
+		ListPropertyImpl property = new ListPropertyImpl();
+		properties.add(property);
+
+		property = new ListPropertyImpl();
+		property.addValue("value");
+		properties.add(property);
+
+		property = new ListPropertyImpl();
+		property.addValue("value2");
+		properties.add(property);
+
+		property = new ListPropertyImpl();
+		property.addValue("value");
+		property.addValue("value2");
+		properties.add(property);
+
+		assertNothingIsEqual(properties);
+
+		//@formatter:off
+		assertEqualsMethod(ListPropertyImpl.class)
+		.constructor().test()
+		.constructor().method("addValue", new Class<?>[]{Object.class}, "value").test();
+		//@formatter:on
+	}
+
+	public static class ListPropertyImpl extends ListProperty<String> {
+		public ListPropertyImpl() {
+			super();
+		}
+
+		public ListPropertyImpl(ListPropertyImpl original) {
+			super(original);
+		}
 	}
 }

@@ -44,7 +44,7 @@ import ezvcard.Warning;
  * @param <T> the type of values sorted in the list
  */
 public class ListProperty<T> extends VCardProperty {
-	protected List<T> values;
+	protected final List<T> values;
 
 	public ListProperty() {
 		values = new ArrayList<T>();
@@ -101,7 +101,7 @@ public class ListProperty<T> extends VCardProperty {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((values == null) ? 0 : values.hashCode());
+		result = prime * result + values.hashCode();
 		return result;
 	}
 
@@ -110,9 +110,7 @@ public class ListProperty<T> extends VCardProperty {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
 		ListProperty<?> other = (ListProperty<?>) obj;
-		if (values == null) {
-			if (other.values != null) return false;
-		} else if (!values.equals(other.values)) return false;
+		if (!values.equals(other.values)) return false;
 		return true;
 	}
 }

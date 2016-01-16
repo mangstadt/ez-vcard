@@ -1,9 +1,15 @@
 package ezvcard.property;
 
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertCopy;
+import static ezvcard.property.PropertySensei.assertEqualsMethod;
+import static ezvcard.property.PropertySensei.assertNothingIsEqual;
+import static ezvcard.property.PropertySensei.assertValidate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -47,6 +53,77 @@ public class PlacePropertyTest {
 	private final GeoUri geoUriObj = new GeoUri.Builder(40.71448, -74.00598).build();
 
 	@Test
+	public void constructors() throws Exception {
+		PlaceProperty property = new PlaceProperty();
+		assertNull(property.getText());
+		assertNull(property.getUri());
+		assertNull(property.getGeoUri());
+		assertNull(property.getLatitude());
+		assertNull(property.getLongitude());
+
+		property = new PlaceProperty("text");
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertNull(property.getGeoUri());
+		assertNull(property.getLatitude());
+		assertNull(property.getLongitude());
+
+		property = new PlaceProperty(12.34, 56.78);
+		assertNull(property.getText());
+		assertNull(property.getUri());
+		assertEquals(new GeoUri.Builder(12.34, 56.78).build(), property.getGeoUri());
+		assertEquals(12.34, property.getLatitude(), 0.1);
+		assertEquals(56.78, property.getLongitude(), 0.1);
+	}
+
+	@Test
+	public void set_value() {
+		PlaceProperty property = new PlaceProperty();
+
+		property.setText("text");
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertNull(property.getGeoUri());
+		assertNull(property.getLatitude());
+		assertNull(property.getLongitude());
+
+		property.setCoordinates(12.34, 56.78);
+		assertNull(property.getText());
+		assertNull(property.getUri());
+		assertEquals(new GeoUri.Builder(12.34, 56.78).build(), property.getGeoUri());
+		assertEquals(12.34, property.getLatitude(), 0.1);
+		assertEquals(56.78, property.getLongitude(), 0.1);
+
+		property.setUri("uri");
+		assertNull(property.getText());
+		assertEquals("uri", property.getUri());
+		assertNull(property.getGeoUri());
+		assertNull(property.getLatitude());
+		assertNull(property.getLongitude());
+
+		property.setGeoUri(new GeoUri.Builder(12.34, 56.78).coordC(1.0).build());
+		assertNull(property.getText());
+		assertNull(property.getUri());
+		assertEquals(new GeoUri.Builder(12.34, 56.78).coordC(1.0).build(), property.getGeoUri());
+		assertEquals(12.34, property.getLatitude(), 0.1);
+		assertEquals(56.78, property.getLongitude(), 0.1);
+
+		property.setCoordinates(12.34, 56.78);
+		assertNull(property.getText());
+		assertNull(property.getUri());
+		assertEquals(new GeoUri.Builder(12.34, 56.78).build(), property.getGeoUri());
+		assertEquals(12.34, property.getLatitude(), 0.1);
+		assertEquals(56.78, property.getLongitude(), 0.1);
+
+		property.setText("text");
+		assertEquals("text", property.getText());
+		assertNull(property.getUri());
+		assertNull(property.getGeoUri());
+		assertNull(property.getLatitude());
+		assertNull(property.getLongitude());
+	}
+
+	@Test
 	public void validate() {
 		PlaceProperty empty = new PlaceProperty();
 		assertValidate(empty).run(8);
@@ -65,51 +142,62 @@ public class PlacePropertyTest {
 	}
 
 	@Test
-	public void setUri() {
+	public void toStringValues() {
 		PlaceProperty property = new PlaceProperty();
-
-		assertNull(property.getUri());
-
-		property.setText(text);
-		property.setGeoUri(geoUriObj);
-		property.setUri(uri);
-
-		assertEquals(uri, property.getUri());
-		assertNull(property.getText());
-		assertNull(property.getGeoUri());
-		assertNull(property.getLatitude());
-		assertNull(property.getLongitude());
+		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void setText() {
-		PlaceProperty property = new PlaceProperty();
+	public void copy() {
+		PlaceProperty original = new PlaceProperty();
+		assertCopy(original);
 
-		assertNull(property.getText());
+		original = new PlaceProperty("text");
+		assertCopy(original);
 
-		property.setUri(uri);
-		property.setGeoUri(geoUriObj);
-		property.setText(text);
+		original = new PlaceProperty(12.34, 56.78);
+		assertCopy(original);
 
-		assertEquals(text, property.getText());
-		assertNull(property.getUri());
-		assertNull(property.getGeoUri());
-		assertNull(property.getLatitude());
-		assertNull(property.getLongitude());
+		original = new PlaceProperty();
+		original.setUri("uri");
+		assertCopy(original);
 	}
 
 	@Test
-	public void setGeoUri() {
+	public void equals() {
+		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+
 		PlaceProperty property = new PlaceProperty();
+		properties.add(property);
 
-		assertNull(property.getGeoUri());
+		property = new PlaceProperty("text");
+		properties.add(property);
 
-		property.setText(text);
-		property.setUri(uri);
-		property.setGeoUri(geoUriObj);
+		property = new PlaceProperty("text2");
+		properties.add(property);
 
-		assertSame(property.getGeoUri(), geoUriObj);
-		assertEquals(geoUriObj.getCoordA(), property.getLatitude());
-		assertEquals(geoUriObj.getCoordB(), property.getLongitude());
+		property = new PlaceProperty(12.34, 56.78);
+		properties.add(property);
+
+		property = new PlaceProperty(-12.34, -56.78);
+		properties.add(property);
+
+		property = new PlaceProperty();
+		property.setUri("uri");
+		properties.add(property);
+
+		property = new PlaceProperty();
+		property.setUri("uri2");
+		properties.add(property);
+
+		assertNothingIsEqual(properties);
+
+		//@formatter:off
+		assertEqualsMethod(PlaceProperty.class)
+		.constructor().test()
+		.constructor("text")
+		.constructor(new Class<?>[]{double.class, double.class}, 12.34, 56.78)
+		.constructor().method("setUri", "uri").test();
+		//@formatter:on
 	}
 }

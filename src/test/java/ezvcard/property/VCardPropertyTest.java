@@ -2,7 +2,7 @@ package ezvcard.property;
 
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
-import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.property.PropertySensei.assertValidate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

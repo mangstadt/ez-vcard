@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -137,7 +138,7 @@ public class TestUtils {
 		}
 	}
 
-	private static boolean checkCodes(List<Warning> warnings, Integer... expectedCodes) {
+	public static boolean checkCodes(List<Warning> warnings, Integer... expectedCodes) {
 		if (warnings.size() != expectedCodes.length) {
 			return false;
 		}
@@ -218,61 +219,6 @@ public class TestUtils {
 					if (!passed) {
 						fail("For version " + version + ", expected validation warnings did not match actual warnings.  Actual warnings:\n" + warnings);
 					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Asserts the validation of a property object.
-	 * @param property the property object
-	 * @return the validation checker object
-	 */
-	public static PropValidateChecker assertValidate(VCardProperty property) {
-		return new PropValidateChecker(property);
-	}
-
-	public static class PropValidateChecker {
-		private final VCardProperty property;
-		private VCard vcard;
-		private VCardVersion versions[] = VCardVersion.values();
-
-		public PropValidateChecker(VCardProperty property) {
-			this.property = property;
-			vcard(new VCard());
-		}
-
-		/**
-		 * Defines the versions to check (defaults to all versions).
-		 * @param versions the versions to check
-		 * @return this
-		 */
-		public PropValidateChecker versions(VCardVersion... versions) {
-			this.versions = versions;
-			return this;
-		}
-
-		/**
-		 * Defines the vCard instance to use (defaults to an empty vCard).
-		 * @param vcard the vCard instance
-		 * @return this
-		 */
-		public PropValidateChecker vcard(VCard vcard) {
-			vcard.addProperty(property);
-			this.vcard = vcard;
-			return this;
-		}
-
-		/**
-		 * Performs the validation check.
-		 * @param expectedCodes the expected warning codes
-		 */
-		public void run(Integer... expectedCodes) {
-			for (VCardVersion version : versions) {
-				List<Warning> warnings = property.validate(version, vcard);
-				boolean passed = checkCodes(warnings, expectedCodes);
-				if (!passed) {
-					fail("For version " + version + ", expected codes were " + Arrays.toString(expectedCodes) + " but were actually:\n" + warnings);
 				}
 			}
 		}
@@ -396,6 +342,17 @@ public class TestUtils {
 		assertEquals(one, two);
 		assertEquals(two, one);
 		assertEquals(one.hashCode(), two.hashCode());
+	}
+
+	/**
+	 * Asserts that calling {@code one.equals(two)} and {@code two.equals(one)}
+	 * will both return false.
+	 * @param one the first object
+	 * @param two the second object
+	 */
+	public static void assertNotEqualsBothWays(Object one, Object two) {
+		assertNotEquals(one, two);
+		assertNotEquals(two, one);
 	}
 
 	public static <T> T[] each(T... t) {
