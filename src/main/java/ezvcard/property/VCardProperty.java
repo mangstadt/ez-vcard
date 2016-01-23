@@ -79,9 +79,9 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * </p>
 	 * <p>
 	 * The supported versions are defined by assigning a
-	 * {@link SupportedVersions} annotation to the property class. Property
-	 * classes without this annotation are considered to be supported by all
-	 * versions.
+	 * {@link SupportedVersions @SupportedVersions} annotation to the property
+	 * class. Property classes without this annotation are considered to be
+	 * supported by all versions.
 	 * </p>
 	 * @return the vCard versions that support this property.
 	 */
@@ -297,7 +297,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * </p>
 	 * <p>
 	 * The default implementation of this method uses reflection to look for a
-	 * copy constructor. Child classes should override this method to avoid the
+	 * copy constructor. Child classes SHOULD override this method to avoid the
 	 * performance overhead involved in using reflection.
 	 * </p>
 	 * <p>
