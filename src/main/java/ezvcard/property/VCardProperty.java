@@ -176,7 +176,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 */
 	public void setParameters(VCardParameters parameters) {
 		if (parameters == null) {
-			throw new NullPointerException("Parameters object cannot be null.");
+			throw new NullPointerException(Messages.INSTANCE.getExceptionMessage(42));
 		}
 		this.parameters = parameters;
 	}

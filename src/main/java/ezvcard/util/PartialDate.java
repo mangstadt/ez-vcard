@@ -334,7 +334,7 @@ public final class PartialDate {
 		} else if (!hasYear() && hasMonth() && hasDate()) {
 			sb.append("--").append(monthStr).append(dash).append(dateStr);
 		} else if (hasYear() && !hasMonth() && hasDate()) {
-			throw new IllegalStateException("Invalid date component combination: year, date");
+			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(38));
 		} else if (hasYear() && hasMonth() && hasDate()) {
 			sb.append(yearStr).append(dash).append(monthStr).append(dash).append(dateStr);
 		}
@@ -358,7 +358,7 @@ public final class PartialDate {
 			} else if (!hasHour() && hasMinute() && hasSecond()) {
 				sb.append("-").append(minuteStr).append(dash).append(secondStr);
 			} else if (hasHour() && !hasMinute() && hasSecond()) {
-				throw new IllegalStateException("Invalid time component combination: hour, second");
+				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(39));
 			} else if (hasHour() && hasMinute() && hasSecond()) {
 				sb.append(hourStr).append(dash).append(minuteStr).append(dash).append(secondStr);
 			}
