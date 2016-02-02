@@ -107,18 +107,7 @@ public class SimpleProperty<T> extends VCardProperty {
 		SimpleProperty<?> other = (SimpleProperty<?>) obj;
 		if (value == null) {
 			if (other.value != null) return false;
-		} else if (!valueEquals(other)) return false;
+		} else if (!value.equals(other.value)) return false;
 		return true;
-	}
-
-	/**
-	 * Checks to see if this object's value is equal to the value of another
-	 * {@link SimpleProperty}'s value. Child classes can override this if value
-	 * equality cannot be determined with "equals()".
-	 * @param otherValue
-	 * @return
-	 */
-	protected boolean valueEquals(SimpleProperty<?> other) {
-		return value.equals(other.value);
 	}
 }
