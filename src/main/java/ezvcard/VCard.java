@@ -4501,30 +4501,45 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
+	 * Replaces all existing properties of the given property instance's class
+	 * with the given property instance.
+	 * @param property the property
+	 * @return the properties that were replaced
+	 */
+	public List<VCardProperty> setProperty(VCardProperty property) {
+		return properties.replace(property.getClass(), property);
+	}
+
+	/**
 	 * Replaces all existing properties of the given class with a single
 	 * property instance. If the property instance is null, then all instances
 	 * of that property will be removed.
 	 * @param clazz the property class (e.g. "Note.class")
 	 * @param property the property or null to remove
+	 * @return the properties that were replaced
 	 */
-	public <T extends VCardProperty> void setProperty(Class<T> clazz, T property) {
-		properties.replace(clazz, property);
+	public <T extends VCardProperty> List<T> setProperty(Class<T> clazz, T property) {
+		List<VCardProperty> replaced = properties.replace(clazz, property);
+		return castList(replaced, clazz);
 	}
 
 	/**
 	 * Removes a property instance from the vCard.
 	 * @param property the property to remove
+	 * @return true if it was removed, false if it wasn't found
 	 */
-	public void removeProperty(VCardProperty property) {
-		properties.remove(property.getClass(), property);
+	public boolean removeProperty(VCardProperty property) {
+		return properties.remove(property.getClass(), property);
 	}
 
 	/**
 	 * Removes all properties of a given class.
 	 * @param clazz the class of the properties to remove (e.g. "Note.class")
+	 * @return the properties that were removed
 	 */
-	public void removeProperties(Class<? extends VCardProperty> clazz) {
-		properties.removeAll(clazz);
+	public <T extends VCardProperty> List<T> removeProperties(Class<T> clazz) {
+		List<VCardProperty> removed = properties.removeAll(clazz);
+		return castList(removed, clazz);
 	}
 
 	/**
@@ -4533,7 +4548,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property or null if none were found
 	 */
 	public RawProperty getExtendedProperty(String name) {
-		for (RawProperty raw : getProperties(RawProperty.class)) {
+		for (RawProperty raw : getExtendedProperties()) {
 			if (raw.getPropertyName().equalsIgnoreCase(name)) {
 				return raw;
 			}
@@ -4549,7 +4564,7 @@ public class VCard implements Iterable<VCardProperty> {
 	public List<RawProperty> getExtendedProperties(String name) {
 		List<RawProperty> properties = new ArrayList<RawProperty>();
 
-		for (RawProperty raw : getProperties(RawProperty.class)) {
+		for (RawProperty raw : getExtendedProperties()) {
 			if (raw.getPropertyName().equalsIgnoreCase(name)) {
 				properties.add(raw);
 			}
@@ -4579,6 +4594,19 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
+	 * Adds an extended property.
+	 * @param name the property name (e.g. "X-ALT-DESC")
+	 * @param value the property value
+	 * @param dataType the property value's data type
+	 * @return the property object that was created
+	 */
+	public RawProperty addExtendedProperty(String name, String value, VCardDataType dataType) {
+		RawProperty raw = new RawProperty(name, value, dataType);
+		addProperty(raw);
+		return raw;
+	}
+
+	/**
 	 * Replaces all existing extended properties with the given name with a
 	 * single property instance.
 	 * @param name the property name (e.g. "X-ALT-DESC")
@@ -4587,20 +4615,33 @@ public class VCard implements Iterable<VCardProperty> {
 	 */
 	public RawProperty setExtendedProperty(String name, String value) {
 		removeExtendedProperty(name);
-		RawProperty raw = new RawProperty(name, value);
-		addProperty(raw);
-		return raw;
+		return addExtendedProperty(name, value);
+	}
+
+	/**
+	 * Replaces all existing extended properties with the given name with a
+	 * single property instance.
+	 * @param name the property name (e.g. "X-ALT-DESC")
+	 * @param value the property value
+	 * @param dataType the property value's data type
+	 * @return the property object that was created
+	 */
+	public RawProperty setExtendedProperty(String name, String value, VCardDataType dataType) {
+		removeExtendedProperty(name);
+		return addExtendedProperty(name, value, dataType);
 	}
 
 	/**
 	 * Removes all extended properties that have the given name.
 	 * @param name the component name (e.g. "X-ALT-DESC")
+	 * @return the properties that were removed
 	 */
-	public void removeExtendedProperty(String name) {
-		List<RawProperty> extendedProperties = getExtendedProperties(name);
-		for (RawProperty extendedProperty : extendedProperties) {
+	public List<RawProperty> removeExtendedProperty(String name) {
+		List<RawProperty> toRemove = getExtendedProperties(name);
+		for (RawProperty extendedProperty : toRemove) {
 			properties.remove(extendedProperty.getClass(), extendedProperty);
 		}
+		return toRemove;
 	}
 
 	/**
@@ -4641,9 +4682,10 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
+	 * @return the properties that were replaced
 	 */
-	public <T extends VCardProperty & HasAltId> void setPropertyAlt(Class<T> propertyClass, T... altRepresentations) {
-		setPropertyAlt(propertyClass, Arrays.asList(altRepresentations));
+	public <T extends VCardProperty & HasAltId> List<T> setPropertyAlt(Class<T> propertyClass, T... altRepresentations) {
+		return setPropertyAlt(propertyClass, Arrays.asList(altRepresentations));
 	}
 
 	/**
@@ -4654,10 +4696,27 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
+	 * @return the properties that were replaced
 	 */
-	public <T extends VCardProperty & HasAltId> void setPropertyAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
-		removeProperties(propertyClass);
+	public <T extends VCardProperty & HasAltId> List<T> setPropertyAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
+		List<T> removed = removeProperties(propertyClass);
 		addPropertyAlt(propertyClass, altRepresentations);
+		return removed;
+	}
+
+	/**
+	 * Casts all objects in the given list to the given class, adding the casted
+	 * objects to a new list.
+	 * @param list the list to cast
+	 * @param castTo the class to cast to
+	 * @return the new list
+	 */
+	private static <T> List<T> castList(List<?> list, Class<T> castTo) {
+		List<T> casted = new ArrayList<T>(list.size());
+		for (Object object : list) {
+			casted.add(castTo.cast(object));
+		}
+		return casted;
 	}
 
 	/**

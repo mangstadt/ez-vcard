@@ -1,17 +1,19 @@
 package ezvcard;
 
+import static ezvcard.util.TestUtils.assertCollectionContains;
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertValidate;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,9 +23,9 @@ import ezvcard.property.Gender;
 import ezvcard.property.HasAltId;
 import ezvcard.property.Note;
 import ezvcard.property.RawProperty;
-import ezvcard.property.Revision;
 import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2015, Michael Angstadt
@@ -59,59 +61,159 @@ import ezvcard.property.VCardProperty;
  */
 public class VCardTest {
 	@Test
-	public void getAllTypes() {
+	public void getProperties() {
 		VCard vcard = new VCard();
+		assertCollectionContains(vcard.getProperties());
+		assertEquals(asList(), vcard.getProperties(Note.class));
+		assertEquals(asList(), vcard.getProperties(RawProperty.class));
 
-		//type stored in VCardProperty variable
-		Revision rev = Revision.now();
-		vcard.setRevision(rev);
+		Note property1 = new Note("value");
+		vcard.addProperty(property1);
+		assertCollectionContains(vcard.getProperties(), property1);
+		assertEquals(asList(property1), vcard.getProperties(Note.class));
+		assertEquals(asList(), vcard.getProperties(RawProperty.class));
 
-		//type stored in a List
-		Note note = new Note("A note.");
-		vcard.addNote(note);
+		RawProperty property2 = vcard.addExtendedProperty("X-GENDER", "male");
+		RawProperty property3 = vcard.addExtendedProperty("X-MANAGER", "Michael Scott");
+		assertCollectionContains(vcard.getProperties(), property1, property2, property3);
+		assertEquals(asList(property1), vcard.getProperties(Note.class));
+		assertEquals(asList(property2, property3), vcard.getProperties(RawProperty.class));
 
-		//extended type with unique name
-		RawProperty xGender = vcard.addExtendedProperty("X-GENDER", "male");
-
-		//extended types with same name
-		RawProperty xManager1 = vcard.addExtendedProperty("X-MANAGER", "Michael Scott");
-		RawProperty xManager2 = vcard.addExtendedProperty("X-MANAGER", "Pointy Haired Boss");
-
-		Collection<VCardProperty> types = vcard.getProperties();
-		assertEquals(5, types.size());
-		assertTrue(types.contains(rev));
-		assertTrue(types.contains(note));
-		assertTrue(types.contains(xGender));
-		assertTrue(types.contains(xManager1));
-		assertTrue(types.contains(xManager2));
 	}
 
 	@Test
-	public void getTypes_none() {
+	public void addProperty() {
 		VCard vcard = new VCard();
-		vcard.setVersion(VCardVersion.V2_1); //no type class is returned for VERSION
-		assertTrue(vcard.getProperties().isEmpty());
+		assertEquals(asList(), vcard.getProperties(Note.class));
+
+		Note property1 = new Note("value");
+		vcard.addProperty(property1);
+		assertEquals(asList(property1), vcard.getProperties(Note.class));
+
+		Note property2 = new Note("value2");
+		vcard.addProperty(property2);
+		assertEquals(asList(property1, property2), vcard.getProperties(Note.class));
 	}
 
 	@Test
-	public void addExtendedType() {
+	public void setProperty() {
 		VCard vcard = new VCard();
-		RawProperty type = vcard.addExtendedProperty("NAME", "value");
-		assertEquals("NAME", type.getPropertyName());
-		assertEquals("value", type.getValue());
-		assertEquals(Arrays.asList(type), vcard.getExtendedProperties("NAME"));
+
+		Note property1 = new Note("value");
+		assertEquals(asList(), vcard.setProperty(property1));
+		assertEquals(asList(property1), vcard.getProperties(Note.class));
+
+		Note property2 = new Note("value2");
+		assertEquals(asList(property1), vcard.setProperty(property2));
+		assertEquals(asList(property2), vcard.getProperties(Note.class));
+
+		Note property3 = new Note("value3");
+		vcard.addProperty(property3);
+		assertEquals(asList(property2, property3), vcard.getProperties(Note.class));
+
+		Note property4 = new Note("value4");
+		assertEquals(asList(property2, property3), vcard.setProperty(property4));
+		assertEquals(asList(property4), vcard.getProperties(Note.class));
 	}
 
 	@Test
-	public void addType() {
+	public void removeProperty() {
 		VCard vcard = new VCard();
-		VCardPropertyImpl type = new VCardPropertyImpl();
-		vcard.addProperty(type);
-		assertEquals(Arrays.asList(type), vcard.getProperties(type.getClass()));
+
+		Note property1 = new Note("value");
+		assertFalse(vcard.removeProperty(property1));
+
+		vcard.addProperty(property1);
+		assertEquals(asList(property1), vcard.getProperties(Note.class));
+		assertTrue(vcard.removeProperty(property1));
+		assertEquals(asList(), vcard.getProperties(Note.class));
 	}
 
 	@Test
-	public void addTypeAlt() {
+	public void removeProperties() {
+		VCard vcard = new VCard();
+
+		assertEquals(asList(), vcard.removeProperties(Note.class));
+
+		Note property1 = new Note("value");
+		Note property2 = new Note("value2");
+		vcard.addProperty(property1);
+		vcard.addProperty(property2);
+		assertEquals(asList(property1, property2), vcard.getProperties(Note.class));
+
+		assertEquals(asList(property1, property2), vcard.removeProperties(Note.class));
+		assertEquals(asList(), vcard.getProperties(Note.class));
+	}
+
+	@Test
+	public void getExtendedProperty() {
+		VCard vcard = new VCard();
+		assertNull(vcard.getExtendedProperty("NAME"));
+
+		vcard.addExtendedProperty("NAME2", "value");
+		assertNull(vcard.getExtendedProperty("NAME"));
+
+		RawProperty property = vcard.addExtendedProperty("NAME", "value");
+		assertEquals(property, vcard.getExtendedProperty("NAME"));
+		assertEquals(property, vcard.getExtendedProperty("name"));
+
+		vcard.addExtendedProperty("NAME", "value2");
+		assertEquals(property, vcard.getExtendedProperty("NAME"));
+	}
+
+	@Test
+	public void addExtendedProperty() {
+		VCard vcard = new VCard();
+		assertEquals(asList(), vcard.getExtendedProperties());
+
+		RawProperty property = vcard.addExtendedProperty("NAME", "value");
+		assertEquals("NAME", property.getPropertyName());
+		assertEquals("value", property.getValue());
+		assertNull(property.getDataType());
+		assertEquals(asList(property), vcard.getExtendedProperties());
+
+		RawProperty property2 = vcard.addExtendedProperty("NAME", "value", VCardDataType.TEXT);
+		assertEquals("NAME", property2.getPropertyName());
+		assertEquals("value", property2.getValue());
+		assertEquals(VCardDataType.TEXT, property2.getDataType());
+		assertEquals(asList(property, property2), vcard.getExtendedProperties());
+	}
+
+	@Test
+	public void setExtendedProperty() {
+		VCard vcard = new VCard();
+		assertEquals(asList(), vcard.getExtendedProperties());
+
+		RawProperty property = vcard.setExtendedProperty("NAME", "value");
+		assertEquals("NAME", property.getPropertyName());
+		assertEquals("value", property.getValue());
+		assertNull(property.getDataType());
+		assertEquals(asList(property), vcard.getExtendedProperties());
+
+		RawProperty property2 = vcard.setExtendedProperty("NAME", "value", VCardDataType.TEXT);
+		assertEquals("NAME", property2.getPropertyName());
+		assertEquals("value", property2.getValue());
+		assertEquals(VCardDataType.TEXT, property2.getDataType());
+		assertEquals(asList(property2), vcard.getExtendedProperties());
+	}
+
+	@Test
+	public void removeExtendedProperty() {
+		VCard vcard = new VCard();
+		assertEquals(asList(), vcard.removeExtendedProperty("NAME"));
+		assertEquals(asList(), vcard.getExtendedProperties());
+
+		RawProperty property = vcard.addExtendedProperty("NAME", "value");
+		RawProperty property2 = vcard.addExtendedProperty("NAME", "value2");
+		RawProperty property3 = vcard.addExtendedProperty("NAME2", "value");
+		assertEquals(asList(property, property2, property3), vcard.getExtendedProperties());
+
+		assertEquals(asList(property, property2), vcard.removeExtendedProperty("NAME"));
+		assertEquals(asList(property3), vcard.getExtendedProperties());
+	}
+
+	@Test
+	public void addPropertyAlt() {
 		VCard vcard = new VCard();
 
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
@@ -124,50 +226,49 @@ public class VCardTest {
 
 		vcard.addPropertyAlt(HasAltIdImpl.class, two1, two2);
 
-		List<HasAltIdImpl> props = vcard.getProperties(HasAltIdImpl.class);
+		assertEquals(asList(one1, null1, two1, two2), vcard.getProperties(HasAltIdImpl.class));
 
-		Collection<HasAltIdImpl> expected = Arrays.asList(one1, null1, two1, two2);
-		assertEquals(expected, props);
+		assertEquals("1", one1.getAltId());
+		assertEquals(null, null1.getAltId());
+		assertEquals("2", two1.getAltId());
+		assertEquals("2", two2.getAltId());
+	}
 
-		assertEquals("1", one1.altId);
-		assertEquals(null, null1.altId);
-		assertEquals("2", two1.altId);
-		assertEquals("2", two2.altId);
+	@Test
+	public void setPropertyAlt() {
+		VCard vcard = new VCard();
+
+		HasAltIdImpl property = new HasAltIdImpl(null);
+		HasAltIdImpl property2 = new HasAltIdImpl(null);
+		assertEquals(asList(), vcard.setPropertyAlt(HasAltIdImpl.class, property, property2));
+
+		HasAltIdImpl property3 = new HasAltIdImpl(null);
+		HasAltIdImpl property4 = new HasAltIdImpl(null);
+		assertEquals(asList(property, property2), vcard.setPropertyAlt(HasAltIdImpl.class, property3, property4));
 	}
 
 	@Test
 	public void generateAltId() {
-		Collection<HasAltId> list = new ArrayList<HasAltId>();
-		list.add(new HasAltIdImpl("1"));
-		list.add(new HasAltIdImpl("1"));
-		list.add(new HasAltIdImpl("2"));
+		Collection<HasAltIdImpl> list = asList(new HasAltIdImpl("1"), new HasAltIdImpl("1"), new HasAltIdImpl("2"));
 		assertEquals("3", VCard.generateAltId(list));
 
-		list = new ArrayList<HasAltId>();
-		list.add(new HasAltIdImpl("1"));
-		list.add(new HasAltIdImpl("1"));
-		list.add(new HasAltIdImpl("3"));
+		list = asList(new HasAltIdImpl("1"), new HasAltIdImpl("1"), new HasAltIdImpl("3"));
 		assertEquals("2", VCard.generateAltId(list));
 
-		list = new ArrayList<HasAltId>();
-		list.add(new HasAltIdImpl("2"));
-		list.add(new HasAltIdImpl("2"));
-		list.add(new HasAltIdImpl("3"));
+		list = asList(new HasAltIdImpl("2"), new HasAltIdImpl("2"), new HasAltIdImpl("3"));
 		assertEquals("1", VCard.generateAltId(list));
 
-		list = new ArrayList<HasAltId>();
+		list = asList();
 		assertEquals("1", VCard.generateAltId(list));
 
-		list = new ArrayList<HasAltId>();
-		list.add(new HasAltIdImpl("one"));
-		list.add(new HasAltIdImpl("one"));
-		list.add(new HasAltIdImpl("three"));
+		list = asList(new HasAltIdImpl("one"), new HasAltIdImpl("one"), new HasAltIdImpl("three"));
 		assertEquals("1", VCard.generateAltId(list));
 	}
 
 	@Test
 	public void getPropertiesAlt() {
 		VCard vcard = new VCard();
+		assertEquals(asList(), vcard.getPropertiesAlt(HasAltIdImpl.class));
 
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
 		vcard.addProperty(one1);
@@ -182,23 +283,11 @@ public class VCardTest {
 
 		//@formatter:off
 		@SuppressWarnings("unchecked")
-		List<List<HasAltIdImpl>> expected = Arrays.asList(
-			Arrays.asList(one1, one2),
-			Arrays.asList(two1),
-			Arrays.asList(null1),
-			Arrays.asList(null2)
-		);
-		//@formatter:on
-		assertEquals(expected, vcard.getPropertiesAlt(HasAltIdImpl.class));
-	}
-
-	@Test
-	public void getPropertiesAlt_empty() {
-		VCard vcard = new VCard();
-
-		//@formatter:off
-		@SuppressWarnings("unchecked")
-		List<List<HasAltIdImpl>> expected = Arrays.asList(
+		List<List<HasAltIdImpl>> expected = asList(
+			asList(one1, one2),
+			asList(two1),
+			asList(null1),
+			asList(null2)
 		);
 		//@formatter:on
 		assertEquals(expected, vcard.getPropertiesAlt(HasAltIdImpl.class));
@@ -327,6 +416,18 @@ public class VCardTest {
 		assertEqualsAndHash(one, two);
 	}
 
+	@Test
+	public void toString_() {
+		VCard vcard = new VCard();
+		assertEquals("version=3.0", vcard.toString());
+
+		vcard.setVersion(null);
+		assertEquals("version=null", vcard.toString());
+
+		vcard.addNote("value");
+		assertEquals("version=null" + StringUtils.NEWLINE + "ezvcard.property.Note [ group=null | parameters={} | value=value ]", vcard.toString());
+	}
+
 	/**
 	 * This tests to make sure that, if some hashing mechanism is used to
 	 * determine equality, identical properties in the same vCard are not
@@ -353,20 +454,18 @@ public class VCardTest {
 	}
 
 	private class HasAltIdImpl extends VCardProperty implements HasAltId {
-		private String altId;
-
 		public HasAltIdImpl(String altId) {
-			this.altId = altId;
+			setAltId(altId);
 		}
 
-		//@Overrides
+		//@Override
 		public String getAltId() {
-			return altId;
+			return parameters.getAltId();
 		}
 
-		//@Overrides
+		//@Override
 		public void setAltId(String altId) {
-			this.altId = altId;
+			parameters.setAltId(altId);
 		}
 	}
 

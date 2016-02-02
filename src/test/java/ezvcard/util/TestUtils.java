@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -231,6 +233,21 @@ public class TestUtils {
 	 */
 	public static void assertIntEquals(int expected, Integer actual) {
 		assertEquals(Integer.valueOf(expected), actual);
+	}
+
+	/**
+	 * Asserts the contents of a collection. Does not check for order.
+	 * @param actual the actual collection
+	 * @param expectedElements the elements that are expected to be in the
+	 * collection (order does not matter)
+	 */
+	public static <T> void assertCollectionContains(Collection<T> actual, T... expectedElements) {
+		assertEquals(expectedElements.length, actual.size());
+
+		Collection<T> actualCopy = new ArrayList<T>(actual);
+		for (T expectedElement : expectedElements) {
+			assertTrue("Collection did not contain: " + expectedElement, actualCopy.remove(expectedElement));
+		}
 	}
 
 	/**
