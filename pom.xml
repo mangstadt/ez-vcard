@@ -3,7 +3,7 @@
 	<groupId>com.googlecode.ez-vcard</groupId>
 	<artifactId>ez-vcard</artifactId>
 	<packaging>bundle</packaging> <!-- "bundle" used for OSGi support -->
-	<version>0.9.9</version>
+	<version>0.9.10-SNAPSHOT</version>
 	<name>ez-vcard</name>
 	<url>http://github.com/mangstadt/ez-vcard</url>
 	<inceptionYear>2012</inceptionYear>
