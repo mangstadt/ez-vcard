@@ -450,112 +450,104 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
-	 * Gets the type of entity this vCard represents.
 	 * <p>
-	 * <b>Property name:</b> {@code KIND}
+	 * Gets the type of entity this vCard represents.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code KIND}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the kind
+	 * @return the kind or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-25">RFC 6350
+	 * p.25</a
 	 */
 	public Kind getKind() {
 		return getProperty(Kind.class);
 	}
 
 	/**
-	 * Sets the type of entity this vCard represents.
 	 * <p>
-	 * <b>Property name:</b> {@code KIND}
+	 * Sets the type of entity this vCard represents.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code KIND}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param kind the kind
+	 * @param kind the kind or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-25">RFC 6350
+	 * p.25</a
 	 */
 	public void setKind(Kind kind) {
 		setProperty(Kind.class, kind);
 	}
 
 	/**
-	 * Gets the gender of the person.
 	 * <p>
-	 * <b>Property name:</b> {@code GENDER}
+	 * Gets the gender of the person.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code GENDER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the gender
+	 * @return the gender or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
+	 * p.32</a>
 	 */
 	public Gender getGender() {
 		return getProperty(Gender.class);
 	}
 
 	/**
-	 * Sets the gender of the person.
 	 * <p>
-	 * <b>Property name:</b> {@code GENDER}
+	 * Sets the gender of the person.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code GENDER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param gender the gender
+	 * @param gender the gender or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
+	 * p.32</a>
 	 */
 	public void setGender(Gender gender) {
 		setProperty(Gender.class, gender);
 	}
 
 	/**
-	 * Gets the members of the group. Only valid if the KIND property is set to
-	 * "group".
-	 * 
 	 * <p>
-	 * 
-	 * <pre class="brush:java">
-	 * VCard vcard = ...
-	 * Kind kind = vcard.getKind();
-	 * if (kind != null && kind.isGroup()){
-	 *   for (Member member : vcard.getMembers(){
-	 *     ...
-	 *   }
-	 * }
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * <p>
-	 * <b>Property name:</b> {@code MEMBER}
+	 * Gets the members of the group that this vCard represents.
 	 * </p>
 	 * <p>
+	 * Note: If a vCard has any {@link Member} properties, then it must also
+	 * have a {@link Kind} property whose value is set to "group".
+	 * </p>
+	 * <p>
+	 * <b>Property name:</b> {@code MEMBER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the members
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-41">RFC 6350
+	 * p.41</a>
 	 */
 	public List<Member> getMembers() {
 		return getProperties(Member.class);
 	}
 
 	/**
-	 * Adds a member to the group. Only valid if the KIND property is set to
-	 * "group".
-	 * 
 	 * <p>
-	 * 
-	 * <pre class="brush:java">
-	 * VCard vcard = new VCard();
-	 * vcard.setKind(Kind.group());
-	 * vcard.addMember(...);
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * <p>
-	 * <b>Property name:</b> {@code MEMBER}
+	 * Adds a member to the group that this vCard represents.
 	 * </p>
 	 * <p>
+	 * Note: If a vCard has any {@link Member} properties, then it must also
+	 * have a {@link Kind} property whose value is set to "group".
+	 * </p>
+	 * <p>
+	 * <b>Property name:</b> {@code MEMBER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param member the member to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-41">RFC 6350
+	 * p.41</a>
 	 */
 	public void addMember(Member member) {
 		addProperty(member);
@@ -563,115 +555,109 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a member property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a member to the group that this vCard represents.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code MEMBER}
+	 * Note: If a vCard has any {@link Member} properties, then it must also
+	 * have a {@link Kind} property whose value is set to "group".
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code MEMBER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addMemberAlt(Collection<Member> altRepresentations) {
-		addPropertyAlt(Member.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a member property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code MEMBER}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-41">RFC 6350
+	 * p.41</a>
 	 */
 	public void addMemberAlt(Member... altRepresentations) {
 		addPropertyAlt(Member.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the PROFILE property.
 	 * <p>
-	 * <b>Property name:</b> {@code PROFILE}
+	 * Gets the profile property. This property simply identifies the vCard as a
+	 * vCard.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code PROFILE}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @return the property
+	 * @return the profile or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public Profile getProfile() {
 		return getProperty(Profile.class);
 	}
 
 	/**
-	 * Sets the PROFILE property.
 	 * <p>
-	 * <b>Property name:</b> {@code PROFILE}
+	 * Sets the profile property. This property simply identifies the vCard as a
+	 * vCard.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code PROFILE}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @param profile the property
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
+	 * @param profile the profile or null to remove
 	 */
 	public void setProfile(Profile profile) {
 		setProperty(Profile.class, profile);
 	}
 
 	/**
+	 * <p>
 	 * Gets the classification of the vCard, which describes the sensitivity of
 	 * the information in the vCard.
-	 * <p>
-	 * <b>Property name:</b> {@code CLASS}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CLASS}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @return the classification
+	 * @return the classification or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
+	 * p.26</a>
 	 */
 	public Classification getClassification() {
 		return getProperty(Classification.class);
 	}
 
 	/**
+	 * <p>
 	 * Sets the classification of the vCard, which describes the sensitivity of
 	 * the information in the vCard.
-	 * <p>
-	 * <b>Property name:</b> {@code CLASS}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CLASS}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @param classification the classification
+	 * @param classification the classification or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
+	 * p.26</a>
 	 */
 	public void setClassification(Classification classification) {
 		setProperty(Classification.class, classification);
 	}
 
 	/**
+	 * <p>
 	 * Sets the classification of the vCard, which describes the sensitivity of
-	 * the information in the vCard. This is a convenience method for
-	 * {@link #setClassification(Classification)}.
-	 * <p>
+	 * the information in the vCard.
 	 * </p>
 	 * <p>
+	 * <b>Supported versions:</b> {@code 3.0}<br>
 	 * <b>Property name:</b> {@code CLASS}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
 	 * @param classification the classification (e.g. "PUBLIC", "PRIVATE",
 	 * "CONFIDENTIAL") or null to remove
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
+	 * p.26</a>
 	 */
 	public Classification setClassification(String classification) {
 		Classification type = (classification == null) ? null : new Classification(classification);
@@ -680,47 +666,55 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the URIs that can be used to retrieve the most up-to-date version of
 	 * the person's vCard.
-	 * <p>
-	 * <b>Property name:</b> {@code SOURCE}
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 3.0, 4.0}
+	 * <b>Property name:</b> {@code SOURCE} <b>Supported versions:</b>
+	 * {@code 3.0, 4.0}
 	 * </p>
 	 * @return the sources
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-24">RFC 6350
+	 * p.24</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public List<Source> getSources() {
 		return getProperties(Source.class);
 	}
 
 	/**
+	 * <p>
 	 * Adds a URI that can be used to retrieve the most up-to-date version of
 	 * the person's vCard.
-	 * <p>
-	 * <b>Property name:</b> {@code SOURCE}
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 3.0, 4.0}
+	 * <b>Property name:</b> {@code SOURCE} <b>Supported versions:</b>
+	 * {@code 3.0, 4.0}
 	 * </p>
 	 * @param source the source
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-24">RFC 6350
+	 * p.24</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public void addSource(Source source) {
 		addProperty(source);
 	}
 
 	/**
-	 * Adds a URI that can be used to retrieve the most up-to-date version of
-	 * the person's vCard. This is a convenience method for
-	 * {@link #addSource(Source)} .
 	 * <p>
-	 * <b>Property name:</b> {@code SOURCE}
+	 * Adds a URI that can be used to retrieve the most up-to-date version of
+	 * the person's vCard.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code SOURCE}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @param source the source URI (e.g. "http://example.com/vcard.vcf")
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-24">RFC 6350
+	 * p.24</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public Source addSource(String source) {
 		Source type = new Source(source);
@@ -730,84 +724,70 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a source property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a URI that can be used to retrieve the most up-to-date version of
+	 * the person's vCard.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code SOURCE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code SOURCE}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addSourceAlt(Collection<Source> altRepresentations) {
-		addPropertyAlt(Source.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a source property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code SOURCE}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-24">RFC 6350
+	 * p.24</a>
 	 */
 	public void addSourceAlt(Source... altRepresentations) {
 		addPropertyAlt(Source.class, altRepresentations);
 	}
 
 	/**
-	 * Gets a textual representation of the SOURCE property.
 	 * <p>
-	 * <b>Property name:</b> {@code NAME}
+	 * Gets a textual representation of the {@link Source} property.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code NAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @return a textual representation of the vCard source
+	 * @return a textual representation of the vCard source or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public SourceDisplayText getSourceDisplayText() {
 		return getProperty(SourceDisplayText.class);
 	}
 
 	/**
-	 * Sets a textual representation of the SOURCE property.
 	 * <p>
-	 * <b>Property name:</b> {@code NAME}
+	 * Sets a textual representation of the {@link Source} property.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code NAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @param sourceDisplayText a textual representation of the vCard source
+	 * @param sourceDisplayText a textual representation of the vCard source or
+	 * null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public void setSourceDisplayText(SourceDisplayText sourceDisplayText) {
 		setProperty(SourceDisplayText.class, sourceDisplayText);
 	}
 
 	/**
-	 * Sets a textual representation of the SOURCE property. This is a
-	 * convenience method for {@link #setSourceDisplayText(SourceDisplayText)}.
 	 * <p>
-	 * <b>Property name:</b> {@code NAME}
+	 * Sets a textual representation of the {@link Source} property.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code NAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
 	 * @param sourceDisplayText a textual representation of the vCard source or
 	 * null to remove
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public SourceDisplayText setSourceDisplayText(String sourceDisplayText) {
 		SourceDisplayText type = (sourceDisplayText == null) ? null : new SourceDisplayText(sourceDisplayText);
@@ -817,19 +797,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all instances of the formatted name property. Version 4.0 vCards may
-	 * have multiple instances if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
-	 * with different TYPE parameters are defined.
+	 * Gets all instances of the {@link FormattedName} property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
+	 * Version 4.0 vCards may have multiple instances if alternative
+	 * representations are defined (see
+	 * {@link #addFormattedNameAlt(FormattedName...) addFormattedNameAlt}) or if
+	 * properties with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code FN}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the formatted name properties
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
+	 * p.28</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public List<FormattedName> getFormattedNames() {
 		return getProperties(FormattedName.class);
@@ -837,15 +822,17 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets the text value used for displaying the person's name.
+	 * Gets the person's full name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code FN}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the formatted name property or null if one doesn't exist
+	 * @return the full name or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
+	 * p.28</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public FormattedName getFormattedName() {
 		return getProperty(FormattedName.class);
@@ -853,39 +840,23 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the formatted name property as a group of alternative
-	 * representations (see: {@link VCardParameters#getAltId description of
-	 * ALTID} ). An appropriate ALTID parameter value is automatically generated
-	 * and assigned to the properties.
+	 * Sets the person's full name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code FN}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setFormattedNameAlt(Collection<FormattedName> altRepresentations) {
-		setPropertyAlt(FormattedName.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the formatted name property as a group of alternative
-	 * representations (see: {@link VCardParameters#getAltId description of
-	 * ALTID} ). An appropriate ALTID parameter value is automatically generated
-	 * and assigned to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
+	 * p.28</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public void setFormattedNameAlt(FormattedName... altRepresentations) {
 		setPropertyAlt(FormattedName.class, altRepresentations);
@@ -893,63 +864,41 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a formatted name property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Adds a version of the person's full name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code FN}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addFormattedNameAlt(Collection<FormattedName> altRepresentations) {
-		addPropertyAlt(FormattedName.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a formatted name property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
+	 * p.28</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public void addFormattedNameAlt(FormattedName... altRepresentations) {
 		addPropertyAlt(FormattedName.class, altRepresentations);
 	}
 
-	/*
-	 * Not going to add this method because if they are defining alternative
-	 * representations, then they'll probably want to set parameters on each one
-	 * (like "LANGUAGE").
-	 * 
-	 * public void addFormattedName(String... altRepresentations) { }
-	 */
-
 	/**
 	 * <p>
-	 * Sets the text value used for displaying the person's name.
+	 * Sets the person's full name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code FN}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param formattedName the formatted name property or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
+	 * p.28</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public void setFormattedName(FormattedName formattedName) {
 		setProperty(FormattedName.class, formattedName);
@@ -957,17 +906,18 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a text value used for displaying the person's name. Note that only
-	 * version 4.0 vCards support multiple instances of this property.
+	 * Adds a version of the person's full name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code FN}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @param formattedName the formatted name property
+	 * @param formattedName the formatted name property to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
+	 * p.28</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public void addFormattedName(FormattedName formattedName) {
 		addProperty(formattedName);
@@ -975,18 +925,19 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the text value used for displaying the person's name. This is a
-	 * convenience method for {@link #setFormattedName(FormattedName)}.
+	 * Sets the person's full name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code FN}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param formattedName the formatted name (e.g. "John Doe") or null to
 	 * remove
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
+	 * p.28</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public FormattedName setFormattedName(String formattedName) {
 		FormattedName type = (formattedName == null) ? null : new FormattedName(formattedName);
@@ -996,18 +947,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all structured name properties. Version 4.0 vCards may have multiple
-	 * instances if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}).
+	 * Gets all structured name properties.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code N}
+	 * Version 4.0 vCards may have multiple instances if alternative
+	 * representations are defined (see
+	 * {@link #setStructuredNameAlt(StructuredName...) setStructuredNameAlt}) or
+	 * if properties with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}
-	 * </p>
+	 * <b>Property name:</b> {@code N}<br>
+	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
-	 * @return the structured name property objects
+	 * </p>
+	 * @return the structured name properties
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public List<StructuredName> getStructuredNames() {
 		return getProperties(StructuredName.class);
@@ -1018,12 +975,14 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the individual components of the person's name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code N}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code N}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the components of the person's name
+	 * @return the components of the person's name or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public StructuredName getStructuredName() {
 		return getProperty(StructuredName.class);
@@ -1031,39 +990,23 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the structured name property as a group of alternative
-	 * representations (see {@link VCardParameters#getAltId} for more details).
-	 * An appropriate ALTID parameter value is automatically generated and
-	 * assigned to the properties.
+	 * Sets the individual components of the person's name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code N}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code N}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setStructuredNameAlt(Collection<StructuredName> altRepresentations) {
-		setPropertyAlt(StructuredName.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the structured name property as a group of alternative
-	 * representations (see {@link VCardParameters#getAltId} for more details).
-	 * An appropriate ALTID parameter value is automatically generated and
-	 * assigned to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code N}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.9</a>
 	 */
 	public void setStructuredNameAlt(StructuredName... altRepresentations) {
 		setPropertyAlt(StructuredName.class, altRepresentations);
@@ -1072,9 +1015,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Sets the individual components of the person's name.
 	 * <p>
-	 * <b>Property name:</b> {@code N}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code N}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param structuredName the components of the person's name or null to
@@ -1086,18 +1027,22 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all instances of the nickname property. Version 4.0 vCards may have
-	 * multiple instances if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
-	 * with different TYPE parameters are defined.
+	 * Gets all instances of the {@link Nickname} property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
+	 * Version 4.0 vCards may have multiple instances if alternative
+	 * representations are defined (see {@link #setNicknameAlt(Nickname...)
+	 * setNicknameAlt}) or if properties with different TYPE parameters are
+	 * defined.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @return the nickname properties
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
 	 */
 	public List<Nickname> getNicknames() {
 		return getProperties(Nickname.class);
@@ -1108,12 +1053,13 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the person's nicknames.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the person's nicknames
+	 * @return the person's nicknames or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
 	 */
 	public Nickname getNickname() {
 		return getProperty(Nickname.class);
@@ -1121,39 +1067,22 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the nickname property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Sets the person's nicknames.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setNicknameAlt(Collection<Nickname> altRepresentations) {
-		setPropertyAlt(Nickname.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the nickname property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
 	 */
 	public void setNicknameAlt(Nickname... altRepresentations) {
 		setPropertyAlt(Nickname.class, altRepresentations);
@@ -1161,39 +1090,22 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a nickname property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a collection of nicknames for the person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addNicknameAlt(Collection<Nickname> altRepresentations) {
-		addPropertyAlt(Nickname.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a nickname property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
 	 */
 	public void addNicknameAlt(Nickname... altRepresentations) {
 		addPropertyAlt(Nickname.class, altRepresentations);
@@ -1201,16 +1113,16 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the person's nickname(s).
+	 * Sets the person's nicknames.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param nickname the nickname property or null to remove (note that
-	 * multiple nicknames may be added this object)
+	 * @param nickname the nickname property or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
 	 */
 	public void setNickname(Nickname nickname) {
 		setProperty(Nickname.class, nickname);
@@ -1218,18 +1130,21 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a set of nicknames. Note that only version 4.0 vCards support
-	 * multiple instances of this property.
+	 * Adds a set of nicknames for the person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
+	 * Note that only version 4.0 vCards support multiple instances of this
+	 * property.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @param nickname the nickname property (note that multiple nicknames may
-	 * be added this object)
+	 * @param nickname the nickname property
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
 	 */
 	public void addNickname(Nickname nickname) {
 		addProperty(nickname);
@@ -1237,45 +1152,47 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the person's nicknames. This is a convenience method for
-	 * {@link #setNickname(Nickname)}.
+	 * Sets the person's nicknames.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code NICKNAME}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param nicknames the nickname(s) (e.g. "Jonny") or null to remove
+	 * @param nicknames the nicknames (e.g. "John", "Jon")
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
+	 * p.29</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
 	 */
 	public Nickname setNickname(String... nicknames) {
-		Nickname type = null;
-		if (nicknames != null) {
-			type = new Nickname();
+		Nickname property = null;
+		if (nicknames != null && nicknames.length > 0 && nicknames[0] != null) {
+			property = new Nickname();
 			for (String nickname : nicknames) {
-				type.addValue(nickname);
+				property.addValue(nickname);
 			}
 		}
-		setNickname(type);
-		return type;
+		setNickname(property);
+		return property;
 	}
 
 	/**
 	 * <p>
-	 * Gets the string that should be used to sort the vCard.
+	 * Gets the string that should be used to sort the vCard. This typically set
+	 * to the person's family name (last name).
 	 * </p>
 	 * <p>
-	 * For 4.0 vCards, use the {@link StructuredName#getSortAs} and/or
-	 * {@link Organization#getSortAs} methods.
+	 * For 4.0 vCards, this information is stored in the
+	 * {@link StructuredName#getSortAs} and/or {@link Organization#getSortAs}
+	 * methods.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code SORT-STRING}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code SORT-STRING}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @return the sort string
+	 * @return the sort string or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
+	 * p.22</a>
 	 */
 	public SortString getSortString() {
 		return getProperty(SortString.class);
@@ -1283,19 +1200,21 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the string that should be used to sort the vCard.
+	 * Sets the string that should be used to sort the vCard. This typically set
+	 * to the person's family name (last name).
 	 * </p>
 	 * <p>
-	 * For 4.0 vCards, use the {@link StructuredName#setSortAs} and/or
-	 * {@link Organization#setSortAs} methods.
+	 * For 4.0 vCards, this information is stored in the
+	 * {@link StructuredName#getSortAs} and/or {@link Organization#getSortAs}
+	 * methods.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code SORT-STRING}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code SORT-STRING}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @param sortString the sort string
+	 * @param sortString the sort string or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
+	 * p.22</a>
 	 */
 	public void setSortString(SortString sortString) {
 		setProperty(SortString.class, sortString);
@@ -1303,22 +1222,23 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the string that should be used to sort the vCard. This is a
-	 * convenience method for {@link #setSortString(SortString)}.
+	 * Sets the string that should be used to sort the vCard. This typically set
+	 * to the person's family name (last name).
 	 * </p>
 	 * <p>
-	 * For 4.0 vCards, use the {@link StructuredName#setSortAs} and/or
-	 * {@link Organization#setSortAs} methods.
+	 * For 4.0 vCards, this information is stored in the
+	 * {@link StructuredName#getSortAs} and/or {@link Organization#getSortAs}
+	 * methods.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code SORT-STRING}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code SORT-STRING}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
 	 * @param sortString the sort string (e.g. "Armour" if the person's last
 	 * name is "d'Armour") or null to remove
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
+	 * p.22</a>
 	 */
 	public SortString setSortString(String sortString) {
 		SortString type = (sortString == null) ? null : new SortString(sortString);
@@ -1327,44 +1247,58 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
-	 * Gets the titles associated with the person.
 	 * <p>
-	 * <b>Property name:</b> {@code TITLE}
+	 * Gets the titles associated with the person.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code TITLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the titles
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
+	 * p.39</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-17">RFC 2426
+	 * p.17</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public List<Title> getTitles() {
 		return getProperties(Title.class);
 	}
 
 	/**
-	 * Adds a title associated with the person.
 	 * <p>
-	 * <b>Property name:</b> {@code TITLE}
+	 * Adds a title associated with the person.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code TITLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param title the title
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
+	 * p.39</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-17">RFC 2426
+	 * p.17</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public void addTitle(Title title) {
 		addProperty(title);
 	}
 
 	/**
-	 * Adds a title associated with the person. This is a convenience method for
-	 * {@link #addTitle(Title)}.
 	 * <p>
-	 * <b>Property name:</b> {@code TITLE}
+	 * Adds a title associated with the person.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code TITLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param title the title (e.g. "V.P. Research and Development")
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
+	 * p.39</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-17">RFC 2426
+	 * p.17</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public Title addTitle(String title) {
 		Title type = new Title(title);
@@ -1374,83 +1308,82 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a title property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a title associated with the person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code TITLE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code TITLE}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addTitleAlt(Collection<Title> altRepresentations) {
-		addPropertyAlt(Title.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a title property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code TITLE}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
+	 * p.39</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-17">RFC 2426
+	 * p.17</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public void addTitleAlt(Title... altRepresentations) {
 		addPropertyAlt(Title.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the roles associated with the person.
 	 * <p>
-	 * <b>Property name:</b> {@code ROLE}
+	 * Gets the roles associated with the person.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ROLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the roles
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
+	 * p.39</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
+	 * p.18</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public List<Role> getRoles() {
 		return getProperties(Role.class);
 	}
 
 	/**
-	 * Adds a role associated with the person.
 	 * <p>
-	 * <b>Property name:</b> {@code ROLE}
+	 * Adds a role associated with the person.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ROLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param role the role
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
+	 * p.39</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
+	 * p.18</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public void addRole(Role role) {
 		addProperty(role);
 	}
 
 	/**
-	 * Adds a role associated with the person. This is a convenience method for
-	 * {@link #addRole(Role)}.
 	 * <p>
-	 * <b>Property name:</b> {@code ROLE}
+	 * Adds a role associated with the person.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ROLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param role the role (e.g. "Executive")
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
+	 * p.39</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
+	 * p.18</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public Role addRole(String role) {
 		Role type = new Role(role);
@@ -1460,51 +1393,36 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a role property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a role associated with the person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ROLE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ROLE}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addRoleAlt(Collection<Role> altRepresentations) {
-		addPropertyAlt(Role.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a role property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code ROLE}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * 
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
+	 * p.39</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
+	 * p.18</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public void addRoleAlt(Role... altRepresentations) {
 		addPropertyAlt(Role.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the photos attached to the vCard, such as a picture of the person's
-	 * face.
 	 * <p>
-	 * <b>Property name:</b> {@code PHOTO}
+	 * Gets the photos attached to the vCard, such as the person's portrait.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code PHOTO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the photos
@@ -1514,11 +1432,11 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
-	 * Adds a photo to the vCard, such as a picture of the person's face.
 	 * <p>
-	 * <b>Property name:</b> {@code PHOTO}
+	 * Adds a photo to the vCard, such as the person's portrait.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code PHOTO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param photo the photo to add
@@ -1529,67 +1447,57 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a photo property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a photo to the vCard, such as the person's portrait.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code PHOTO}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addPhotoAlt(Collection<Photo> altRepresentations) {
-		addPropertyAlt(Photo.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a photo property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
 	 */
 	public void addPhotoAlt(Photo... altRepresentations) {
 		addPropertyAlt(Photo.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the logos attached to the vCard, such a company logo.
 	 * <p>
-	 * <b>Property name:</b> {@code LOGO}
+	 * Gets the logos attached to the vCard, such a company logo.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code LOGO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the logos
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
+	 * p.18</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public List<Logo> getLogos() {
 		return getProperties(Logo.class);
 	}
 
 	/**
-	 * Adds a logo to the vCard, such as a company logo.
 	 * <p>
-	 * <b>Property name:</b> {@code LOGO}
+	 * Adds a logo to the vCard, such as a company logo.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code LOGO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param logo the logo to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
+	 * p.18</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public void addLogo(Logo logo) {
 		addProperty(logo);
@@ -1597,68 +1505,63 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a logo property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a logo to the vCard, such as a company logo.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code LOGO}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code LOGO}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addLogoAlt(Collection<Logo> altRepresentations) {
-		addPropertyAlt(Logo.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a logo property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code LOGO}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
+	 * p.18</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.17</a>
 	 */
 	public void addLogoAlt(Logo... altRepresentations) {
 		addPropertyAlt(Logo.class, altRepresentations);
 	}
 
 	/**
+	 * <p>
 	 * Gets the sounds attached to the vCard, such as a pronunciation of the
 	 * person's name.
-	 * <p>
-	 * <b>Property name:</b> {@code SOUND}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code SOUND}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the sounds
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
+	 * p.45</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-23">RFC 2426
+	 * p.23</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.20</a>
 	 */
 	public List<Sound> getSounds() {
 		return getProperties(Sound.class);
 	}
 
 	/**
-	 * Adds a sound to the vCard, such as a pronunciation of the person's name.
 	 * <p>
-	 * <b>Property name:</b> {@code SOUND}
+	 * Adds a sound to the vCard, such as a pronunciation of the person's name.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code SOUND}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param sound the sound to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
+	 * p.45</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-23">RFC 2426
+	 * p.23</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.20</a>
 	 */
 	public void addSound(Sound sound) {
 		addProperty(sound);
@@ -1666,39 +1569,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a sound property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a sound to the vCard, such as a pronunciation of the person's name.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code SOUND}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addSoundAlt(Collection<Sound> altRepresentations) {
-		addPropertyAlt(Sound.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a sound property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code FN}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
+	 * p.45</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-23">RFC 2426
+	 * p.23</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.20</a>
 	 */
 	public void addSoundAlt(Sound... altRepresentations) {
 		addPropertyAlt(Sound.class, altRepresentations);
@@ -1706,18 +1594,18 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all birthplace property instances. There may be multiple instances
-	 * if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}).
+	 * Gets all {@link Birthplace} property instances.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code BIRTHPLACE}
+	 * There may be multiple instances if alternative representations are
+	 * defined (see {@link #setBirthplaceAlt(Birthplace...) setBirthplaceAlt}).
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code BIRTHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the birthplace properties
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-2">RFC 6474 p.2</a>
 	 */
 	public List<Birthplace> getBirthplaces() {
 		return getProperties(Birthplace.class);
@@ -1728,13 +1616,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code BIRTHPLACE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code BIRTHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the birthplace or null if one doesn't exist
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @return the birthplace or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-2">RFC 6474 p.2</a>
 	 */
 	public Birthplace getBirthplace() {
 		return getProperty(Birthplace.class);
@@ -1742,39 +1628,19 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the person's birthplace as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}. An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Sets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code BIRTHPLACE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code BIRTHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
-	 */
-	public void setBirthplaceAlt(Collection<Birthplace> altRepresentations) {
-		setPropertyAlt(Birthplace.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the person's birthplace as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}. An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code BIRTHPLACE}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-2">RFC 6474 p.2</a>
 	 */
 	public void setBirthplaceAlt(Birthplace... altRepresentations) {
 		setPropertyAlt(Birthplace.class, altRepresentations);
@@ -1785,13 +1651,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets the person's birthplace.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code BIRTHPLACE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code BIRTHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param birthplace the birthplace or null to remove
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-2">RFC 6474 p.2</a>
 	 */
 	public void setBirthplace(Birthplace birthplace) {
 		setProperty(Birthplace.class, birthplace);
@@ -1799,18 +1663,18 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all deathplace property instances. There may be multiple instances
-	 * if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}).
+	 * Gets all {@link Deathplace} property instances.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code DEATHPLACE}
+	 * There may be multiple instances if alternative representations are
+	 * defined (see {@link #setDeathplaceAlt(Deathplace...) setDeathplaceAlt}).
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code DEATHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the deathplace properties
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
 	 */
 	public List<Deathplace> getDeathplaces() {
 		return getProperties(Deathplace.class);
@@ -1818,16 +1682,14 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets the person's deathplace.
+	 * Gets the person's place of death.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code DEATHPLACE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code DEATHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the deathplace or null if one doesn't exist
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @return the deathplace or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
 	 */
 	public Deathplace getDeathplace() {
 		return getProperty(Deathplace.class);
@@ -1835,39 +1697,19 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the person's deathplace as a group of alternative representations
-	 * (see {@link VCardParameters#getAltId} for more details). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Sets the person's place of death.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code DEATHPLACE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code DEATHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
-	 */
-	public void setDeathplaceAlt(Collection<Deathplace> altRepresentations) {
-		setPropertyAlt(Deathplace.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the person's deathplace as a group of alternative representations
-	 * (see {@link VCardParameters#getAltId} for more details). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code DEATHPLACE}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
 	 */
 	public void setDeathplaceAlt(Deathplace... altRepresentations) {
 		setPropertyAlt(Deathplace.class, altRepresentations);
@@ -1875,16 +1717,14 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the person's deathplace.
+	 * Sets the person's place of death.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code DEATHPLACE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code DEATHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param deathplace the deathplace or null to remove
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
 	 */
 	public void setDeathplace(Deathplace deathplace) {
 		setProperty(Deathplace.class, deathplace);
@@ -1892,18 +1732,18 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all death date property instances. There may be multiple instances
-	 * if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}).
+	 * Gets all {@link Deathdate} property instances.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code DEATHDATE}
+	 * There may be multiple instances if alternative representations are
+	 * defined (see {@link #setDeathdateAlt(Deathdate...) setDeathdateAlt}).
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code DEATHDATE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the death date properties
-	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
 	 */
 	public List<Deathdate> getDeathdates() {
 		return getProperties(Deathdate.class);
@@ -1914,13 +1754,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the person's time of death.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code DEATHDATE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code DEATHDATE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the time of death or null if one doesn't exist
+	 * @return the time of death or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
 	 */
 	public Deathdate getDeathdate() {
 		return getProperty(Deathdate.class);
@@ -1928,37 +1767,19 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the deathdate property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Sets the person's time of death.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code DEATHDATE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code DEATHDATE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setDeathdateAlt(Collection<Deathdate> altRepresentations) {
-		setPropertyAlt(Deathdate.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the deathdate property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code DEATHDATE}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
 	 */
 	public void setDeathdateAlt(Deathdate... altRepresentations) {
 		setPropertyAlt(Deathdate.class, altRepresentations);
@@ -1969,13 +1790,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets the person's time of death.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code DEATHDATE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code DEATHDATE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param deathdate the time of death or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
 	 */
 	public void setDeathdate(Deathdate deathdate) {
 		setProperty(Deathdate.class, deathdate);
@@ -1983,18 +1803,23 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all birthday property instances. Version 4.0 vCards may have
-	 * multiple instances if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}).
+	 * Gets all {@link Birthday} property instances.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code BDAY}
+	 * There may be multiple instances if alternative representations are
+	 * defined (see {@link #setBirthdayAlt(Birthday...) setBirthdayAlt}).
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code BDAY}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @return the birthday properties
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
+	 * p.30</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
+	 * p.11</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
 	 */
 	public List<Birthday> getBirthdays() {
 		return getProperties(Birthday.class);
@@ -2005,12 +1830,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the person's birthday.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code BDAY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code BDAY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the birthday
+	 * @return the birthday or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
+	 * p.30</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
+	 * p.11</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
 	 */
 	public Birthday getBirthday() {
 		return getProperty(Birthday.class);
@@ -2018,39 +1846,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the person's birthday as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Sets the person's birthday.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code BDAY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code BDAY}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setBirthdayAlt(Collection<Birthday> altRepresentations) {
-		setPropertyAlt(Birthday.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the person's birthday as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code BDAY}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
+	 * p.30</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
+	 * p.11</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
 	 */
 	public void setBirthdayAlt(Birthday... altRepresentations) {
 		setPropertyAlt(Birthday.class, altRepresentations);
@@ -2061,12 +1874,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets the person's birthday.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code BDAY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code BDAY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param birthday the birthday or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
+	 * p.30</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
+	 * p.11</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
 	 */
 	public void setBirthday(Birthday birthday) {
 		setProperty(Birthday.class, birthday);
@@ -2074,17 +1890,20 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all anniversary property instances. There may be multiple instances
-	 * if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}).
+	 * Gets all {@link Anniversary} property instances.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ANNIVERSARY}
+	 * There may be multiple instances if alternative representations are
+	 * defined (see {@link #setAnniversaryAlt(Anniversary...) setAnniversaryAlt}
+	 * ).
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ANNIVERSARY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the anniversary properties
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
+	 * p.31</a>
 	 */
 	public List<Anniversary> getAnniversaries() {
 		return getProperties(Anniversary.class);
@@ -2095,12 +1914,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the person's anniversary.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ANNIVERSARY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ANNIVERSARY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the anniversary
+	 * @return the anniversary or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
+	 * p.31</a>
 	 */
 	public Anniversary getAnniversary() {
 		return getProperty(Anniversary.class);
@@ -2108,37 +1927,20 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the person's anniversary as a group of alternative representations
-	 * (see {@link VCardParameters#getAltId} for more details). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Sets the person's anniversary.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ANNIVERSARY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ANNIVERSARY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setAnniversaryAlt(Collection<Anniversary> altRepresentations) {
-		setPropertyAlt(Anniversary.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the person's anniversary as a group of alternative representations
-	 * (see {@link VCardParameters#getAltId} for more details). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code ANNIVERSARY}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
+	 * p.31</a>
 	 */
 	public void setAnniversaryAlt(Anniversary... altRepresentations) {
 		setPropertyAlt(Anniversary.class, altRepresentations);
@@ -2149,12 +1951,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets the person's anniversary.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ANNIVERSARY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ANNIVERSARY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param anniversary the anniversary or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
+	 * p.31</a>
 	 */
 	public void setAnniversary(Anniversary anniversary) {
 		setProperty(Anniversary.class, anniversary);
@@ -2163,42 +1965,54 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Gets the time that the vCard was last modified.
 	 * <p>
-	 * <b>Property name:</b> {@code REV}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code REV}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the last modified time
+	 * @return the last modified time or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
+	 * p.45</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
+	 * p.22</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public Revision getRevision() {
 		return getProperty(Revision.class);
 	}
 
 	/**
-	 * Sets the time that the vCard was last modified.
 	 * <p>
-	 * <b>Property name:</b> {@code REV}
+	 * Sets the time that the vCard was last modified.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code REV}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param rev the last modified time
+	 * @param rev the last modified time or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
+	 * p.45</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
+	 * p.22</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public void setRevision(Revision rev) {
 		setProperty(Revision.class, rev);
 	}
 
 	/**
-	 * Sets the time that the vCard was last modified. This is a convenience
-	 * method for {@link #setRevision(Revision)}.
 	 * <p>
-	 * <b>Property name:</b> {@code REV}
+	 * Sets the time that the vCard was last modified.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code REV}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param rev the last modified time or null to remove
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
+	 * p.45</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
+	 * p.22</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public Revision setRevision(Date rev) {
 		Revision type = (rev == null) ? null : new Revision(rev);
@@ -2207,46 +2021,58 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the product ID, which identifies the software that created the
 	 * vCard.
-	 * <p>
-	 * <b>Property name:</b> {@code PRODID}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code PRODID}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the product ID
+	 * @return the product ID or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
+	 * p.44</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
+	 * p.21</a>
 	 */
 	public ProductId getProductId() {
 		return getProperty(ProductId.class);
 	}
 
 	/**
+	 * <p>
 	 * Sets the product ID, which identifies the software that created the
 	 * vCard.
-	 * <p>
-	 * <b>Property name:</b> {@code PRODID}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code PRODID}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param productId the product ID
+	 * @param productId the product ID or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
+	 * p.44</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
+	 * p.21</a>
 	 */
 	public void setProductId(ProductId productId) {
 		setProperty(ProductId.class, productId);
 	}
 
 	/**
-	 * Sets the product ID, which identifies the software that created the
-	 * vCard. This is a convenience method for {@link #setProductId(ProductId)}.
 	 * <p>
-	 * <b>Property name:</b> {@code PRODID}
+	 * Sets the product ID, which identifies the software that created the
+	 * vCard.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code PRODID}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @param productId the product ID (e.g. "ez-vcard 1.0") or null to remove
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
+	 * p.44</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
+	 * p.21</a>
 	 */
 	public ProductId setProductId(String productId) {
 		ProductId type = (productId == null) ? null : new ProductId(productId);
@@ -2255,28 +2081,38 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
-	 * Gets the mailing addresses.
 	 * <p>
-	 * <b>Property name:</b> {@code ADR}
+	 * Gets the mailing addresses.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ADR}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the mailing addresses
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
+	 * p.32</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
+	 * p.11</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
 	 */
 	public List<Address> getAddresses() {
 		return getProperties(Address.class);
 	}
 
 	/**
-	 * Adds a mailing address.
 	 * <p>
-	 * <b>Property name:</b> {@code ADR}
+	 * Adds a mailing address.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ADR}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param address the mailing address to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
+	 * p.32</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
+	 * p.11</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
 	 */
 	public void addAddress(Address address) {
 		addProperty(address);
@@ -2284,116 +2120,122 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an address property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a mailing address.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ADR}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ADR}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addAddressAlt(Collection<Address> altRepresentations) {
-		addPropertyAlt(Address.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an address property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code ADR}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
+	 * p.32</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
+	 * p.11</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
 	 */
 	public void addAddressAlt(Address... altRepresentations) {
 		addPropertyAlt(Address.class, altRepresentations);
 	}
 
 	/**
-	 * Gets all mailing labels that could not be assigned to an address. Use
-	 * {@link Address#getLabel} to get a label that has been assigned to an
-	 * address.
 	 * <p>
-	 * <b>Property name:</b> {@code LABEL}
+	 * Gets all mailing labels that could not be assigned to an {@link Address}
+	 * property. Use {@link Address#getLabel} to get a label that has been
+	 * assigned to an address.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code LABEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
 	 * @return the orphaned labels
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-13">RFC 2426
+	 * p.13</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.12</a>
 	 */
 	public List<Label> getOrphanedLabels() {
 		return getProperties(Label.class);
 	}
 
 	/**
-	 * Adds a mailing label which is not associated with any address. Use of
-	 * this method is discouraged. To add a mailing label to an address, use the
-	 * {@link Address#setLabel} method.
 	 * <p>
-	 * <b>Property name:</b> {@code LABEL}
+	 * Adds a mailing label which is not associated with an {@link Address}
+	 * property.
 	 * </p>
+	 * </p>Use of this method is strongly discouraged. To add a mailing label to
+	 * an address, use the {@link Address#setLabel} method.</p>
 	 * <p>
+	 * <b>Property name:</b> {@code LABEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
 	 * @param label the orphaned label to add
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-13">RFC 2426
+	 * p.13</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.12</a>
 	 */
 	public void addOrphanedLabel(Label label) {
 		addProperty(label);
 	}
 
 	/**
-	 * Gets the email addresses.
 	 * <p>
-	 * <b>Property name:</b> {@code EMAIL}
+	 * Gets the email addresses.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code EMAIL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the email addresses
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
+	 * p.36</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
+	 * p.15</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
 	 */
 	public List<Email> getEmails() {
 		return getProperties(Email.class);
 	}
 
 	/**
-	 * Adds an email address.
 	 * <p>
-	 * <b>Property name:</b> {@code EMAIL}
+	 * Adds an email address.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code EMAIL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param email the email address to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
+	 * p.36</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
+	 * p.15</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
 	 */
 	public void addEmail(Email email) {
 		addProperty(email);
 	}
 
 	/**
-	 * Adds an email address. This is a convenience method for
-	 * {@link #addEmail(Email)}.
 	 * <p>
-	 * <b>Property name:</b> {@code EMAIL}
+	 * Adds an email address.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code EMAIL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param email the email address to add (e.g. "johndoe@aol.com")
 	 * @param types the type(s) to assign to the email
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
+	 * p.36</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
+	 * p.15</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
 	 */
 	public Email addEmail(String email, EmailType... types) {
 		Email type = new Email(email);
@@ -2406,79 +2248,73 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an email property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds an email address.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code EMAIL}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code EMAIL}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addEmailAlt(Collection<Email> altRepresentations) {
-		addPropertyAlt(Email.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an email property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code EMAIL}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
+	 * p.36</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
+	 * p.15</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
 	 */
 	public void addEmailAlt(Email... altRepresentations) {
 		addPropertyAlt(Email.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the telephone numbers.
 	 * <p>
-	 * <b>Property name:</b> {@code TEL}
+	 * Gets the telephone numbers.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code TEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the telephone numbers
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-34">RFC 6350
+	 * p.34</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-14">RFC 2426
+	 * p.14</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.13</a>
 	 */
 	public List<Telephone> getTelephoneNumbers() {
 		return getProperties(Telephone.class);
 	}
 
 	/**
-	 * Adds a telephone number.
 	 * <p>
-	 * <b>Property name:</b> {@code TEL}
+	 * Adds a telephone number.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code TEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param telephoneNumber the telephone number to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-34">RFC 6350
+	 * p.34</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-14">RFC 2426
+	 * p.14</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.13</a>
 	 */
 	public void addTelephoneNumber(Telephone telephoneNumber) {
 		addProperty(telephoneNumber);
 	}
 
 	/**
-	 * Adds a telephone number. This is a convenience method for
-	 * {@link #addTelephoneNumber(Telephone)}.
 	 * <p>
-	 * <b>Property name:</b> {@code TEL}
+	 * Adds a telephone number.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code TEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param telephoneNumber the telephone number to add (e.g.
@@ -2486,6 +2322,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param types the type(s) to assign to the telephone number (e.g. "cell",
 	 * "work", etc)
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-34">RFC 6350
+	 * p.34</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-14">RFC 2426
+	 * p.14</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.13</a>
 	 */
 	public Telephone addTelephoneNumber(String telephoneNumber, TelephoneType... types) {
 		Telephone type = new Telephone(telephoneNumber);
@@ -2498,83 +2339,76 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a telephone property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a telephone number.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code TEL}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code TEL}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addTelephoneNumberAlt(Collection<Telephone> altRepresentations) {
-		addPropertyAlt(Telephone.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a telephone property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code TEL}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-34">RFC 6350
+	 * p.34</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-14">RFC 2426
+	 * p.14</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.13</a>
 	 */
 	public void addTelephoneNumberAlt(Telephone... altRepresentations) {
 		addPropertyAlt(Telephone.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the email client that the person uses.
 	 * <p>
-	 * <b>Property name:</b> {@code MAILER}
+	 * Gets the email client that the person uses.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code MAILER}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @return the email client
+	 * @return the email client or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
+	 * p.15</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
 	 */
 	public Mailer getMailer() {
 		return getProperty(Mailer.class);
 	}
 
 	/**
-	 * Sets the email client that the person uses.
 	 * <p>
-	 * <b>Property name:</b> {@code MAILER}
+	 * Sets the email client that the person uses.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code MAILER}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @param mailer the email client
+	 * @param mailer the email client or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
+	 * p.15</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
 	 */
 	public void setMailer(Mailer mailer) {
 		setProperty(Mailer.class, mailer);
 	}
 
 	/**
-	 * Sets the email client that the person uses. This is a convenience method
-	 * for {@link #setMailer(Mailer)}.
 	 * <p>
-	 * <b>Property name:</b> {@code MAILER}
+	 * Sets the email client that the person uses.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code MAILER}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
 	 * @param mailer the email client (e.g. "Thunderbird") or null to remove
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
+	 * p.15</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
 	 */
 	public Mailer setMailer(String mailer) {
 		Mailer type = (mailer == null) ? null : new Mailer(mailer);
@@ -2583,46 +2417,61 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
+	 * <p>
 	 * Gets the URLs. URLs can point to websites such as a personal homepage or
 	 * business website.
-	 * <p>
-	 * <b>Property name:</b> {@code URL}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code URL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the URLs
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
+	 * p.47</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-25">RFC 2426
+	 * p.25</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.21</a>
 	 */
 	public List<Url> getUrls() {
 		return getProperties(Url.class);
 	}
 
 	/**
+	 * <p>
 	 * Adds a URL. URLs can point to websites such as a personal homepage or
 	 * business website.
-	 * <p>
-	 * <b>Property name:</b> {@code URL}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code URL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param url the URL to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
+	 * p.47</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-25">RFC 2426
+	 * p.25</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.21</a>
 	 */
 	public void addUrl(Url url) {
 		addProperty(url);
 	}
 
 	/**
-	 * Adds a URL. URLs can point to websites such as a personal homepage or
-	 * business website. This is a convenience method for {@link #addUrl(Url)}.
 	 * <p>
-	 * <b>Property name:</b> {@code URL}
+	 * Adds a URL. URLs can point to websites such as a personal homepage or
+	 * business website.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code URL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param url the URL to add (e.g. "http://example.com")
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
+	 * p.47</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-25">RFC 2426
+	 * p.25</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.21</a>
 	 */
 	public Url addUrl(String url) {
 		Url type = new Url(url);
@@ -2632,39 +2481,25 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a URL property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a URL. URLs can point to websites such as a personal homepage or
+	 * business website.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code URL}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code URL}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addUrlAlt(Collection<Url> altRepresentations) {
-		addPropertyAlt(Url.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a URL property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code URL}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
+	 * p.47</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-25">RFC 2426
+	 * p.25</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.21</a>
 	 */
 	public void addUrlAlt(Url... altRepresentations) {
 		addPropertyAlt(Url.class, altRepresentations);
@@ -2672,19 +2507,25 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all instances of the timezone property. Version 4.0 vCards may have
-	 * multiple instances if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
-	 * with different TYPE parameters are defined.
+	 * Gets all instances of the {@link Timezone} property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code TZ}
+	 * Version 4.0 vCards may have multiple instances if alternative
+	 * representations are defined (see {@link #setTimezoneAlt(Timezone...)
+	 * setTimezoneAlt}) or if properties with different TYPE parameters are
+	 * defined.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code TZ}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the timezones
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
+	 * p.22</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public List<Timezone> getTimezones() {
 		return getProperties(Timezone.class);
@@ -2695,12 +2536,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the timezone the person lives/works in.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code TZ}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code TZ}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the timezone
+	 * @return the timezone or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
+	 * p.22</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public Timezone getTimezone() {
 		return getProperty(Timezone.class);
@@ -2708,39 +2552,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the timezone the person lives/works in as a group of alternative
-	 * representations (see: {@link VCardParameters#getAltId description of
-	 * ALTID} ). An appropriate ALTID parameter value is automatically generated
-	 * and assigned to the properties.
+	 * Sets the timezone the person lives/works in.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code TZ}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code TZ}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setTimezoneAlt(Collection<Timezone> altRepresentations) {
-		setPropertyAlt(Timezone.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the timezone the person lives/works in as a group of alternative
-	 * representations (see: {@link VCardParameters#getAltId description of
-	 * ALTID} ). An appropriate ALTID parameter value is automatically generated
-	 * and assigned to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code TZ}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
+	 * p.22</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public void setTimezoneAlt(Timezone... altRepresentations) {
 		setPropertyAlt(Timezone.class, altRepresentations);
@@ -2748,39 +2577,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a timezone the person lives/works in as a group of alternative
-	 * representations (see: {@link VCardParameters#getAltId description of
-	 * ALTID} ). An appropriate ALTID parameter value is automatically generated
-	 * and assigned to the properties.
+	 * Adds a timezone the person lives/works in.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code TZ}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code TZ}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addTimezoneAlt(Collection<Timezone> altRepresentations) {
-		addPropertyAlt(Timezone.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a timezone the person lives/works in as a group of alternative
-	 * representations (see: {@link VCardParameters#getAltId description of
-	 * ALTID} ). An appropriate ALTID parameter value is automatically generated
-	 * and assigned to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code TZ}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
+	 * p.22</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public void addTimezoneAlt(Timezone... altRepresentations) {
 		addPropertyAlt(Timezone.class, altRepresentations);
@@ -2791,12 +2605,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets the timezone the person lives/works in.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code TZ}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code TZ}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param timezone the timezone or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
+	 * p.22</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public void setTimezone(Timezone timezone) {
 		setProperty(Timezone.class, timezone);
@@ -2807,13 +2624,16 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Adds a timezone the person lives/works in.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code TZ}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code TZ}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param timezone the timezone or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
+	 * p.22</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public void addTimezone(Timezone timezone) {
 		addProperty(timezone);
@@ -2821,19 +2641,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all instances of the geo property. Version 4.0 vCards may have
-	 * multiple instances if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
-	 * with different TYPE parameters are defined.
+	 * Gets all instances of the {@link Geo} property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code GEO}
+	 * Version 4.0 vCards may have multiple instances if alternative
+	 * representations are defined (see {@link #setGeoAlt(Geo...) setGeoAlt}) or
+	 * if properties with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the geo properties
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
+	 * p.38</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public List<Geo> getGeos() {
 		return getProperties(Geo.class);
@@ -2844,12 +2669,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the geographical position of where the person lives/works.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code GEO}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the geographical position or null if one doesn't exist
+	 * @return the geographical position or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
+	 * p.38</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public Geo getGeo() {
 		return getProperty(Geo.class);
@@ -2857,59 +2685,49 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the geographical position of where the person lives/works as a group
-	 * of alternative representations (see: {@link VCardParameters#getAltId
-	 * description of ALTID}). An appropriate ALTID parameter value is
-	 * automatically generated and assigned to the properties.
+	 * Sets the geographical position of where the person lives/works.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code GEO}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
+	 * p.38</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
-	public void setGeoAlt(Collection<Geo> altRepresentations) {
+	public void setGeoAlt(Geo... altRepresentations) {
 		setPropertyAlt(Geo.class, altRepresentations);
 	}
 
 	/**
 	 * <p>
-	 * Adds a geographical position of where the person lives/works as a group
-	 * of alternative representations (see: {@link VCardParameters#getAltId
-	 * description of ALTID}). An appropriate ALTID parameter value is
-	 * automatically generated and assigned to the properties.
+	 * Adds a geographical position of where the person lives/works.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code GEO}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addGeoAlt(Collection<Geo> altRepresentations) {
-		addPropertyAlt(Geo.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a geographical position of where the person lives/works as a group
-	 * of alternative representations (see: {@link VCardParameters#getAltId
-	 * description of ALTID}). An appropriate ALTID parameter value is
-	 * automatically generated and assigned to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code GEO}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
+	 * p.38</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public void addGeoAlt(Geo... altRepresentations) {
 		addPropertyAlt(Geo.class, altRepresentations);
@@ -2920,12 +2738,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets the geographical position of where the person lives/works.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code GEO}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param geo the geographical position or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
+	 * p.38</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public void setGeo(Geo geo) {
 		setProperty(Geo.class, geo);
@@ -2937,13 +2758,16 @@ public class VCard implements Iterable<VCardProperty> {
 	 * only version 4.0 vCards support multiple instances of this property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code GEO}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param geo the geographical position
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
+	 * p.38</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public void addGeo(Geo geo) {
 		addProperty(geo);
@@ -2951,18 +2775,20 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the geographical position of where the person lives/works. This is a
-	 * convenience method for {@link #setGeo(Geo)}.
+	 * Sets the geographical position of where the person lives/works.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code GEO}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param latitude the latitude
 	 * @param longitude the longitude
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
+	 * p.38</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
+	 * p.16</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
 	 */
 	public Geo setGeo(double latitude, double longitude) {
 		Geo type = new Geo(latitude, longitude);
@@ -2972,19 +2798,25 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all instances of the organization property. Version 4.0 vCards may
-	 * have multiple instances if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
-	 * with different TYPE parameters are defined.
+	 * Gets all instances of the {@link Organization} property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ORG}
+	 * Version 4.0 vCards may have multiple instances if alternative
+	 * representations are defined (see
+	 * {@link #setOrganizationAlt(Organization...) setOrganizationAlt}) or if
+	 * properties with different TYPE parameters are defined.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ORG}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the organization properties
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public List<Organization> getOrganizations() {
 		return getProperties(Organization.class);
@@ -2995,12 +2827,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets the hierarchy of department(s) to which the person belongs.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ORG}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ORG}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the department(s)
+	 * @return the department(s) or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public Organization getOrganization() {
 		return getProperty(Organization.class);
@@ -3008,39 +2843,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the organization property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Sets the hierarchy of department(s) to which the person belongs.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ORG}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ORG}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setOrganizationAlt(Collection<Organization> altRepresentations) {
-		setPropertyAlt(Organization.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the organization property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code ORG}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public void setOrganizationAlt(Organization... altRepresentations) {
 		setPropertyAlt(Organization.class, altRepresentations);
@@ -3048,39 +2868,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an organization property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Adds a hierarchy of department(s) to which the person belongs.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ORG}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ORG}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addOrganizationAlt(Collection<Organization> altRepresentations) {
-		addPropertyAlt(Organization.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an organization property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code ORG}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public void addOrganizationAlt(Organization... altRepresentations) {
 		addPropertyAlt(Organization.class, altRepresentations);
@@ -3091,12 +2896,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Sets the hierarchy of departments to which the person belongs.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ORG}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ORG}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param organization the organization property or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public void setOrganization(Organization organization) {
 		setProperty(Organization.class, organization);
@@ -3108,13 +2916,16 @@ public class VCard implements Iterable<VCardProperty> {
 	 * only version 4.0 vCards support multiple instances of this property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ORG}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ORG}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param organization the organization property
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public void addOrganization(Organization organization) {
 		addProperty(organization);
@@ -3122,19 +2933,21 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the hierarchy of departments to which the person belongs. This is a
-	 * convenience method for {@link #setOrganization(Organization)}.
+	 * Sets the hierarchy of departments to which the person belongs.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ORG}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ORG}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param departments the ordered list of department(s), starting with the
-	 * broadest and ending with the most specific (e.g. "Google", "GMail Team",
+	 * broadest and ending with the most specific (e.g. "Google", "Gmail Team",
 	 * "Spam Detection Squad") or null to remove
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
+	 * p.40</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public Organization setOrganization(String... departments) {
 		Organization type = null;
@@ -3150,19 +2963,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all instances of the categories property. Version 4.0 vCards may
-	 * have multiple instances if alternative representations are defined (see:
-	 * {@link VCardParameters#getAltId description of ALTID}) or if properties
-	 * with different TYPE parameters are defined.
+	 * Gets all instances of the {@link Categories} property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
+	 * Version 4.0 vCards may have multiple instances if alternative
+	 * representations are defined (see {@link #setCategoriesAlt(Categories...)
+	 * setCategoriesAlt}) or if properties with different TYPE parameters are
+	 * defined.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the categories properties
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
+	 * p.43</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
 	 */
 	public List<Categories> getCategoriesList() {
 		return getProperties(Categories.class);
@@ -3170,16 +2988,18 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets the list of keywords (aka "tags") that can be used to describe the
+	 * Gets the list of "keywords" or "tags" that can be used to describe the
 	 * person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the categories
+	 * @return the categories or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
+	 * p.43</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
 	 */
 	public Categories getCategories() {
 		return getProperty(Categories.class);
@@ -3187,39 +3007,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the categories property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Sets the list of "keywords" or "tags" that can be used to describe the
+	 * person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void setCategoriesAlt(Collection<Categories> altRepresentations) {
-		setPropertyAlt(Categories.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Sets the categories property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
+	 * p.43</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
 	 */
 	public void setCategoriesAlt(Categories... altRepresentations) {
 		setPropertyAlt(Categories.class, altRepresentations);
@@ -3227,39 +3032,24 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a categories property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Adds a list of "keywords" or "tags" that can be used to describe the
+	 * person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addCategoriesAlt(Collection<Categories> altRepresentations) {
-		addPropertyAlt(Categories.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a categories property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
+	 * p.43</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
 	 */
 	public void addCategoriesAlt(Categories... altRepresentations) {
 		addPropertyAlt(Categories.class, altRepresentations);
@@ -3267,17 +3057,18 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the list of keywords (aka "tags") that can be used to describe the
+	 * Sets the list of "keywords" or "tags" that can be used to describe the
 	 * person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param categories the categories or null to remove (note: multiple
-	 * categories may be added to this object)
+	 * @param categories the categories or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
+	 * p.43</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
 	 */
 	public void setCategories(Categories categories) {
 		setProperty(Categories.class, categories);
@@ -3285,19 +3076,21 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a list of keywords (aka "tags") that can be used to describe the
+	 * Adds a list of "keywords" or "tags" that can be used to describe the
 	 * person. Note that only version 4.0 vCards support multiple instances of
 	 * this property.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @param categories the categories (note: multiple categories may be added
 	 * to this object)
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
+	 * p.43</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
 	 */
 	public void addCategories(Categories categories) {
 		addProperty(categories);
@@ -3305,19 +3098,19 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the list of keywords (aka "tags") that can be used to describe the
-	 * person. This is a convenience method for
-	 * {@link #setCategories(Categories)}.
+	 * Sets the list of "keywords" or "tags" that can be used to describe the
+	 * person.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CATEGORIES}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param categories the category or categories (e.g. "swimmer", "biker",
-	 * "knitter")
+	 * @param categories the categories (e.g. "swimmer", "biker", "knitter")
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
+	 * p.43</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
+	 * p.20</a>
 	 */
 	public Categories setCategories(String... categories) {
 		Categories type = null;
@@ -3332,72 +3125,92 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
-	 * Gets information about the person's agent.
 	 * <p>
-	 * <b>Property name:</b> {@code AGENT}
+	 * Gets information about the person's agent.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code AGENT}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @return the agent information
+	 * @return the agent information or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-19">RFC 2426
+	 * p.19</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.18</a>
 	 */
 	public Agent getAgent() {
 		return getProperty(Agent.class);
 	}
 
 	/**
-	 * Sets information about the person's agent.
 	 * <p>
-	 * <b>Property name:</b> {@code AGENT}
+	 * Sets information about the person's agent.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code AGENT}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @param agent the agent information
+	 * @param agent the agent information or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-19">RFC 2426
+	 * p.19</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.18</a>
 	 */
 	public void setAgent(Agent agent) {
 		setProperty(Agent.class, agent);
 	}
 
 	/**
-	 * Gets the notes. Notes contain free-form, miscellaneous text.
 	 * <p>
-	 * <b>Property name:</b> {@code NOTE}
+	 * Gets the notes. Notes contain free-form, miscellaneous text.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code NOTE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the notes
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
+	 * p.44</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
+	 * p.21</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public List<Note> getNotes() {
 		return getProperties(Note.class);
 	}
 
 	/**
-	 * Adds a note. Notes contain free-form, miscellaneous text.
 	 * <p>
-	 * <b>Property name:</b> {@code NOTE}
+	 * Adds a note. Notes contain free-form, miscellaneous text.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code NOTE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param note the note to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
+	 * p.44</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
+	 * p.21</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public void addNote(Note note) {
 		addProperty(note);
 	}
 
 	/**
-	 * Adds a note. Notes contain free-form, miscellaneous text. This is a
-	 * convenience method for {@link #addNote(Note)}.
 	 * <p>
-	 * <b>Property name:</b> {@code NOTE}
+	 * Adds a note. Notes contain free-form, miscellaneous text.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code NOTE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param note the note to add
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
+	 * p.44</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
+	 * p.21</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public Note addNote(String note) {
 		Note type = new Note(note);
@@ -3407,95 +3220,100 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a note property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a note. Notes contain free-form, miscellaneous text.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code NOTE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code NOTE}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addNoteAlt(Collection<Note> altRepresentations) {
-		addPropertyAlt(Note.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a note property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code NOTE}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
+	 * p.44</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
+	 * p.21</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
 	public void addNoteAlt(Note... altRepresentations) {
 		addPropertyAlt(Note.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the unique identifier of the vCard.
 	 * <p>
-	 * <b>Property name:</b> {@code UID}
+	 * Gets the unique identifier of the vCard.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code UID}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the unique identifier
+	 * @return the unique identifier or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-46">RFC 6350
+	 * p.46</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-24">RFC 2426
+	 * p.24</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.21</a>
 	 */
 	public Uid getUid() {
 		return getProperty(Uid.class);
 	}
 
 	/**
-	 * Sets the unique identifier of the vCard.
 	 * <p>
-	 * <b>Property name:</b> {@code UID}
+	 * Sets the unique identifier of the vCard.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code UID}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param uid the unique identifier
+	 * @param uid the unique identifier or null to remove
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-46">RFC 6350
+	 * p.46</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-24">RFC 2426
+	 * p.24</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.21</a>
 	 */
 	public void setUid(Uid uid) {
 		setProperty(Uid.class, uid);
 	}
 
 	/**
-	 * Gets the public encryption keys.
 	 * <p>
-	 * <b>Property name:</b> {@code KEY}
+	 * Gets the public encryption keys.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code KEY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @return the keys
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-48">RFC 6350
+	 * p.48</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
+	 * p.26</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.22</a>
 	 */
 	public List<Key> getKeys() {
 		return getProperties(Key.class);
 	}
 
 	/**
-	 * Adds a public encryption key.
 	 * <p>
-	 * <b>Property name:</b> {@code KEY}
+	 * Adds a public encryption key.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code KEY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
 	 * @param key the key to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-48">RFC 6350
+	 * p.48</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
+	 * p.26</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.22</a>
 	 */
 	public void addKey(Key key) {
 		addProperty(key);
@@ -3503,67 +3321,58 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a key property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a public encryption key.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code KEY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code KEY}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addKeyAlt(Collection<Key> altRepresentations) {
-		addPropertyAlt(Key.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a key property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code KEY}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-48">RFC 6350
+	 * p.48</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
+	 * p.26</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.22</a>
 	 */
 	public void addKeyAlt(Key... altRepresentations) {
 		addPropertyAlt(Key.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the instant messaging handles.
 	 * <p>
-	 * <b>Property name:</b> {@code IMPP}
+	 * Gets the instant messaging handles.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code IMPP}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @return the instant messaging handles
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
+	 * p.36</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc4770">RFC 4770</a>
 	 */
 	public List<Impp> getImpps() {
 		return getProperties(Impp.class);
 	}
 
 	/**
-	 * Adds an instant messaging handle.
 	 * <p>
-	 * <b>Property name:</b> {@code IMPP}
+	 * Adds an instant messaging handle.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code IMPP}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @param impp the instant messaging handle to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
+	 * p.36</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc4770">RFC 4770</a>
 	 */
 	public void addImpp(Impp impp) {
 		addProperty(impp);
@@ -3571,67 +3380,54 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an impp property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds an instant messaging handle.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code IMPP}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code IMPP}<br>
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addImppAlt(Collection<Impp> altRepresentations) {
-		addPropertyAlt(Impp.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an impp property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code IMPP}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0*}<br>
-	 * <i>* Only 4.0 supports alternative representations</i>
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
+	 * p.36</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc4770">RFC 4770</a>
 	 */
 	public void addImppAlt(Impp... altRepresentations) {
 		addPropertyAlt(Impp.class, altRepresentations);
 	}
 
 	/**
-	 * Gets a list of people that the person is related to.
 	 * <p>
-	 * <b>Property name:</b> {@code RELATED}
+	 * Gets a list of people that the person is related to.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code RELATED}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the person's relations
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-42">RFC 6350
+	 * p.42</a>
 	 */
 	public List<Related> getRelations() {
 		return getProperties(Related.class);
 	}
 
 	/**
-	 * Adds someone that the person is related to.
 	 * <p>
-	 * <b>Property name:</b> {@code RELATED}
+	 * Adds someone that the person is related to.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code RELATED}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param related the relation to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-42">RFC 6350
+	 * p.42</a>
 	 */
 	public void addRelated(Related related) {
 		addProperty(related);
@@ -3639,81 +3435,69 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a related property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds someone that the person is related to.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code RELATED}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code RELATED}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addRelatedAlt(Collection<Related> altRepresentations) {
-		addPropertyAlt(Related.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a related property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code RELATED}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-42">RFC 6350
+	 * p.42</a>
 	 */
 	public void addRelatedAlt(Related... altRepresentations) {
 		addPropertyAlt(Related.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the languages that the person speaks.
 	 * <p>
-	 * <b>Property name:</b> {@code LANG}
+	 * Gets the languages that the person speaks.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code LANG}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the languages
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-37">RFC 6350
+	 * p.37</a>
 	 */
 	public List<Language> getLanguages() {
 		return getProperties(Language.class);
 	}
 
 	/**
-	 * Adds a language that the person speaks.
 	 * <p>
-	 * <b>Property name:</b> {@code LANG}
+	 * Adds a language that the person speaks.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code LANG}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param language the language to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-37">RFC 6350
+	 * p.37</a>
 	 */
 	public void addLanguage(Language language) {
 		addProperty(language);
 	}
 
 	/**
-	 * Adds a language that the person speaks. This is a convenience method for
-	 * {@link #addLanguage(Language)}.
 	 * <p>
-	 * <b>Property name:</b> {@code LANG}
+	 * Adds a language that the person speaks.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code LANG}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param language the language to add (e.g. "en-us")
 	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-37">RFC 6350
+	 * p.37</a>
 	 */
 	public Language addLanguage(String language) {
 		Language type = new Language(language);
@@ -3723,65 +3507,53 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a language property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a language that the person speaks.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code LANG}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code LANG}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addLanguageAlt(Collection<Language> altRepresentations) {
-		addPropertyAlt(Language.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a language property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code LANG}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-37">RFC 6350
+	 * p.37</a>
 	 */
 	public void addLanguageAlt(Language... altRepresentations) {
 		addPropertyAlt(Language.class, altRepresentations);
 	}
 
 	/**
+	 * <p>
 	 * Gets the URIs that can be used to schedule a meeting with the person on
 	 * his or her calendar.
-	 * <p>
-	 * <b>Property name:</b> {@code CALADRURI}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CALADRURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the calendar request URIs
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
+	 * p.50</a>
 	 */
 	public List<CalendarRequestUri> getCalendarRequestUris() {
 		return getProperties(CalendarRequestUri.class);
 	}
 
 	/**
+	 * <p>
 	 * Adds a URI that can be used to schedule a meeting with the person on his
 	 * or her calendar.
-	 * <p>
-	 * <b>Property name:</b> {@code CALADRURI}
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CALADRURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param calendarRequestUri the calendar request URI to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
+	 * p.50</a>
 	 */
 	public void addCalendarRequestUri(CalendarRequestUri calendarRequestUri) {
 		addProperty(calendarRequestUri);
@@ -3789,65 +3561,53 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a calendar request URI property as a group of alternative
-	 * representations (see: {@link VCardParameters#getAltId description of
-	 * ALTID} ). An appropriate ALTID parameter value is automatically generated
-	 * and assigned to the properties.
+	 * Adds a URI that can be used to schedule a meeting with the person on his
+	 * or her calendar.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CALADRURI}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code CALADRURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addCalendarRequestUriAlt(Collection<CalendarRequestUri> altRepresentations) {
-		addPropertyAlt(CalendarRequestUri.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a calendar request URI property as a group of alternative
-	 * representations (see: {@link VCardParameters#getAltId description of
-	 * ALTID} ). An appropriate ALTID parameter value is automatically generated
-	 * and assigned to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code CALADRURI}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
+	 * p.50</a>
 	 */
 	public void addCalendarRequestUriAlt(CalendarRequestUri... altRepresentations) {
 		addPropertyAlt(CalendarRequestUri.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the URIs that point to the person's calendar.
 	 * <p>
-	 * <b>Property name:</b> {@code CALURI}
+	 * Gets the URIs that point to the person's calendar.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CALURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the calendar URIs
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
+	 * p.50</a>
 	 */
 	public List<CalendarUri> getCalendarUris() {
 		return getProperties(CalendarUri.class);
 	}
 
 	/**
-	 * Adds a URI that points to the person's calendar.
 	 * <p>
-	 * <b>Property name:</b> {@code CALURI}
+	 * Adds a URI that points to the person's calendar.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CALURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param calendarUri the calendar URI to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
+	 * p.50</a>
 	 */
 	public void addCalendarUri(CalendarUri calendarUri) {
 		addProperty(calendarUri);
@@ -3855,67 +3615,53 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a calendar URI property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Adds a URI that points to the person's calendar.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code CALURI}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code CALURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addCalendarUriAlt(Collection<CalendarUri> altRepresentations) {
-		addPropertyAlt(CalendarUri.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a calendar URI property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code CALURI}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
+	 * p.50</a>
 	 */
 	public void addCalendarUriAlt(CalendarUri... altRepresentations) {
 		addPropertyAlt(CalendarUri.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the URLs that can be used to determine when the person is free
-	 * and/or busy.
 	 * <p>
-	 * <b>Property name:</b> {@code FBURL}
+	 * Gets the URLs that can be used to determine when the person is free or
+	 * busy.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code FBURL}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the free-busy URLs
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-49">RFC 6350
+	 * p.49</a>
 	 */
 	public List<FreeBusyUrl> getFbUrls() {
 		return getProperties(FreeBusyUrl.class);
 	}
 
 	/**
-	 * Adds a URL that can be used to determine when the person is free and/or
-	 * busy.
 	 * <p>
-	 * <b>Property name:</b> {@code FBURL}
+	 * Adds a URL that can be used to determine when the person is free or busy.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code FBURL}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param fbUrl the free-busy URL to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-49">RFC 6350
+	 * p.49</a>
 	 */
 	public void addFbUrl(FreeBusyUrl fbUrl) {
 		addProperty(fbUrl);
@@ -3923,101 +3669,98 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an fburl property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a URL that can be used to determine when the person is free or busy.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code FBURL}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code FBURL}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addFbUrlAlt(Collection<FreeBusyUrl> altRepresentations) {
-		addPropertyAlt(FreeBusyUrl.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an fburl property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
 	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code FBURL}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-49">RFC 6350
+	 * p.49</a>
 	 */
 	public void addFbUrlAlt(FreeBusyUrl... altRepresentations) {
 		addPropertyAlt(FreeBusyUrl.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the properties that are used to assign globally-unique identifiers
-	 * to individual property instances. CLIENTPIDMAPs are used for merging
-	 * together different versions of the same vCard.
 	 * <p>
-	 * <b>Property name:</b> {@code CLIENTPIDMAP}
+	 * Gets the properties that are used to assign globally-unique identifiers
+	 * to individual property instances. They are used for merging together
+	 * different versions of the same vCard.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CLIENTPIDMAP}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the client PID maps
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
+	 * p.47</a>
 	 */
 	public List<ClientPidMap> getClientPidMaps() {
 		return getProperties(ClientPidMap.class);
 	}
 
 	/**
-	 * Adds a property that is used to assign a globally-unique identifier to an
-	 * individual property instance. CLIENTPIDMAPs are used for merging together
-	 * different versions of the same vCard.
 	 * <p>
-	 * <b>Property name:</b> {@code CLIENTPIDMAP}
+	 * Adds a property that is used to assign a globally-unique identifier to an
+	 * individual property instance. They are used for merging together
+	 * different versions of the same vCard.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code CLIENTPIDMAP}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param clientPidMap the client PID map to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
+	 * p.47</a>
 	 */
 	public void addClientPidMap(ClientPidMap clientPidMap) {
 		addProperty(clientPidMap);
 	}
 
 	/**
-	 * Gets any XML data that is attached to the vCard. XML properties may be
-	 * present if the vCard was encoded in XML and the XML document contained
-	 * non-standard elements. The XML vCard properties in this case would
-	 * contain all of the non-standard XML elements.
 	 * <p>
-	 * <b>Property name:</b> {@code XML}
+	 * Gets any XML data that is attached to the vCard.
 	 * </p>
 	 * <p>
+	 * These properties may be present if the vCard was encoded in XML ("xCard"
+	 * format) and the XML document contained non-standard elements. In this
+	 * case, the properties would contain all of the non-standard XML elements.
+	 * </p>
+	 * <p>
+	 * <b>Property name:</b> {@code XML}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the XML data
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-27">RFC 6350
+	 * p.27</a>
 	 */
 	public List<Xml> getXmls() {
 		return getProperties(Xml.class);
 	}
 
 	/**
-	 * Adds XML data to the vCard. XML properties may be present if the vCard
-	 * was encoded in XML and the XML document contained non-standard elements.
-	 * The XML vCard properties in this case would contain all of the
-	 * non-standard XML elements.
 	 * <p>
-	 * <b>Property name:</b> {@code XML}
+	 * Adds XML data to the vCard.
 	 * </p>
 	 * <p>
+	 * These properties may be present if the vCard was encoded in XML ("xCard"
+	 * format) and the XML document contained non-standard elements. In this
+	 * case, the properties would contain all of the non-standard XML elements.
+	 * </p>
+	 * <p>
+	 * <b>Property name:</b> {@code XML}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param xml the XML data to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-27">RFC 6350
+	 * p.27</a>
 	 */
 	public void addXml(Xml xml) {
 		addProperty(xml);
@@ -4025,87 +3768,72 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an XML property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds XML data to the vCard.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code XML}
+	 * These properties may be present if the vCard was encoded in XML ("xCard"
+	 * format) and the XML document contained non-standard elements. In this
+	 * case, the properties would contain all of the non-standard XML elements.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code XML}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addXmlAlt(Collection<Xml> altRepresentations) {
-		addPropertyAlt(Xml.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an XML property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code XML}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-27">RFC 6350
+	 * p.27</a>
 	 */
 	public void addXmlAlt(Xml... altRepresentations) {
 		addPropertyAlt(Xml.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the professional subject areas of which the the person is
-	 * knowledgeable.
 	 * <p>
-	 * <b>Property name:</b> {@code EXPERTISE}
+	 * Gets the professional subject areas that the person is knowledgeable in.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code EXPERTISE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the professional skills
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @return the professional subject area
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-3">RFC 6715 p.3</a>
 	 */
 	public List<Expertise> getExpertise() {
 		return getProperties(Expertise.class);
 	}
 
 	/**
-	 * Adds a professional subject area of which the the person is
-	 * knowledgeable.
 	 * <p>
-	 * <b>Property name:</b> {@code EXPERTISE}
+	 * Adds a professional subject area that the person is knowledgeable in.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code EXPERTISE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param expertise the professional skill to add
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @param expertise the professional subject area to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-3">RFC 6715 p.3</a>
 	 */
 	public void addExpertise(Expertise expertise) {
 		addProperty(expertise);
 	}
 
 	/**
-	 * Adds a professional subject area of which the the person is
-	 * knowledgeable. This is a convenience method for
-	 * {@link #addExpertise(Expertise)}.
 	 * <p>
-	 * <b>Property name:</b> {@code EXPERTISE}
+	 * Adds a professional subject area that the person is knowledgeable in.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code EXPERTISE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param expertise the professional skill to add (e.g. "programming")
+	 * @param expertise the professional subject area to add (e.g.
+	 * "programming")
 	 * @return the property object that was created
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-3">RFC 6715 p.3</a>
 	 */
 	public Expertise addExpertise(String expertise) {
 		Expertise type = new Expertise(expertise);
@@ -4115,86 +3843,65 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an expertise property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Adds a professional subject area that the person is knowledgeable in.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code EXPERTISE}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code EXPERTISE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
-	 */
-	public void addExpertiseAlt(Collection<Expertise> altRepresentations) {
-		addPropertyAlt(Expertise.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an expertise property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code EXPERTISE}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-3">RFC 6715 p.3</a>
 	 */
 	public void addExpertiseAlt(Expertise... altRepresentations) {
 		addPropertyAlt(Expertise.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the hobbies that the person actively engages in.
 	 * <p>
-	 * <b>Property name:</b> {@code HOBBY}
+	 * Gets the hobbies that the person actively engages in.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code HOBBY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the hobbies
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-4">RFC 6715 p.4</a>
 	 */
 	public List<Hobby> getHobbies() {
 		return getProperties(Hobby.class);
 	}
 
 	/**
-	 * Adds a hobby that the person actively engages in.
 	 * <p>
-	 * <b>Property name:</b> {@code HOBBY}
+	 * Adds a hobby that the person actively engages in.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code HOBBY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param hobby the hobby to add
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-4">RFC 6715 p.4</a>
 	 */
 	public void addHobby(Hobby hobby) {
 		addProperty(hobby);
 	}
 
 	/**
-	 * Adds a hobby that the person actively engages in. This is a convenience
-	 * method for {@link #addHobby(Hobby)}.
 	 * <p>
-	 * <b>Property name:</b> {@code HOBBY}
+	 * Adds a hobby that the person actively engages in.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code HOBBY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param hobby the hobby to add (e.g. "photography")
-	 * @return the type objec that was created
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-4">RFC 6715 p.4</a>
 	 */
 	public Hobby addHobby(String hobby) {
 		Hobby type = new Hobby(hobby);
@@ -4204,84 +3911,65 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds a hobby property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds a hobby that the person actively engages in.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code HOBBY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code HOBBY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
-	 */
-	public void addHobbyAlt(Collection<Hobby> altRepresentations) {
-		addPropertyAlt(Hobby.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds a hobby property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
 	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code HOBBY}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-4">RFC 6715 p.4</a>
 	 */
 	public void addHobbyAlt(Hobby... altRepresentations) {
 		addPropertyAlt(Hobby.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the person's interests.
 	 * <p>
-	 * <b>Property name:</b> {@code INTEREST}
+	 * Gets the person's interests.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code INTEREST}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the interests
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-5">RFC 6715 p.5</a>
 	 */
 	public List<Interest> getInterests() {
 		return getProperties(Interest.class);
 	}
 
 	/**
-	 * Adds an interest.
 	 * <p>
-	 * <b>Property name:</b> {@code INTEREST}
+	 * Adds an interest.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code INTEREST}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param interest the interest to add
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-5">RFC 6715 p.5</a>
 	 */
 	public void addInterest(Interest interest) {
 		addProperty(interest);
 	}
 
 	/**
-	 * Adds an interest. This is a convenience method for
-	 * {@link #addInterest(Interest)}.
 	 * <p>
-	 * <b>Property name:</b> {@code INTEREST}
+	 * Adds an interest.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code INTEREST}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param interest the interest to add (e.g. "football")
 	 * @return the property object that was created
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-5">RFC 6715 p.5</a>
 	 */
 	public Interest addInterest(String interest) {
 		Interest type = new Interest(interest);
@@ -4291,85 +3979,66 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an interest property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
+	 * Adds an interest.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code INTEREST}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code INTEREST}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
-	 */
-	public void addInterestAlt(Collection<Interest> altRepresentations) {
-		addPropertyAlt(Interest.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an interest property as a group of alternative representations (see:
-	 * {@link VCardParameters#getAltId description of ALTID}). An appropriate
-	 * ALTID parameter value is automatically generated and assigned to the
-	 * properties.
 	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code INTEREST}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * @param altRepresentations the alternative representations of the property
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-5">RFC 6715 p.5</a>
 	 */
 	public void addInterestAlt(Interest... altRepresentations) {
 		addPropertyAlt(Interest.class, altRepresentations);
 	}
 
 	/**
-	 * Gets the organization directories.
 	 * <p>
-	 * <b>Property name:</b> {@code ORG-DIRECTORY}
+	 * Gets the organization directories.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ORG-DIRECTORY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the organization directories
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-6">RFC 6715 p.6</a>
 	 */
 	public List<OrgDirectory> getOrgDirectories() {
 		return getProperties(OrgDirectory.class);
 	}
 
 	/**
-	 * Adds an organization directory.
 	 * <p>
-	 * <b>Property name:</b> {@code ORG-DIRECTORY}
+	 * Adds an organization directory.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ORG-DIRECTORY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param orgDirectory the organization directory to add
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-6">RFC 6715 p.6</a>
 	 */
 	public void addOrgDirectory(OrgDirectory orgDirectory) {
 		addProperty(orgDirectory);
 	}
 
 	/**
-	 * Adds an organization directory. This is a convenience method for
-	 * {@link #addOrgDirectory(OrgDirectory)}.
 	 * <p>
-	 * <b>Property name:</b> {@code ORG-DIRECTORY}
+	 * Adds an organization directory.
 	 * </p>
 	 * <p>
+	 * <b>Property name:</b> {@code ORG-DIRECTORY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param orgDirectory the organization directory to add (e.g.
 	 * "http://company.com/staff")
 	 * @return the property object that was created
-	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-6">RFC 6715 p.6</a>
 	 */
 	public OrgDirectory addOrgDirectory(String orgDirectory) {
 		OrgDirectory type = new OrgDirectory(orgDirectory);
@@ -4379,37 +4048,19 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Adds an org directory property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
+	 * Adds an organization directory.
 	 * </p>
 	 * <p>
-	 * <b>Property name:</b> {@code ORG-DIRECTORY}
-	 * </p>
-	 * <p>
+	 * <b>Property name:</b> {@code ORG-DIRECTORY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param altRepresentations the alternative representations of the property
-	 */
-	public void addOrgDirectoryAlt(Collection<OrgDirectory> altRepresentations) {
-		addPropertyAlt(OrgDirectory.class, altRepresentations);
-	}
-
-	/**
-	 * <p>
-	 * Adds an org directory property as a group of alternative representations
-	 * (see: {@link VCardParameters#getAltId description of ALTID}). An
-	 * appropriate ALTID parameter value is automatically generated and assigned
-	 * to the properties.
-	 * </p>
-	 * <p>
-	 * <b>Property name:</b> {@code ORG-DIRECTORY}
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param altRepresentations the alternative representations of the property
+	 * @param altRepresentations the alternative representations of the same
+	 * value. These properties contain the same information, but in different
+	 * forms (such as different languages). See {@link VCardParameters#getAltId
+	 * this description of the ALTID parameter} for more information. Note that
+	 * this method automatically assigns an appropriate ALTID parameter to each
+	 * property.
+	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-6">RFC 6715 p.6</a>
 	 */
 	public void addOrgDirectoryAlt(OrgDirectory... altRepresentations) {
 		addPropertyAlt(OrgDirectory.class, altRepresentations);
