@@ -372,6 +372,28 @@ public class TestUtils {
 		assertNotEquals(two, one);
 	}
 
+	/**
+	 * Asserts that none of the given objects are equal to each other.
+	 * @param objects the objects
+	 */
+	public static void assertNothingIsEqual(Object... objects) {
+		assertNothingIsEqual(Arrays.asList(objects));
+	}
+
+	/**
+	 * Asserts that none of the given objects are equal to each other.
+	 * @param objects the objects
+	 */
+	public static void assertNothingIsEqual(Iterable<Object> objects) {
+		for (Object object1 : objects) {
+			for (Object object2 : objects) {
+				if (object1 != object2) {
+					assertNotEquals("Objects should not be equal:\n" + object1 + "\n" + object2, object1, object2);
+				}
+			}
+		}
+	}
+
 	public static <T> T[] each(T... t) {
 		return t;
 	}

@@ -1,13 +1,14 @@
 package ezvcard.util;
 
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
+import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
+import static ezvcard.util.TestUtils.assertNothingIsEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
-import java.net.URI;
-import java.util.Arrays;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
+import java.io.UnsupportedEncodingException;
 
 import org.junit.Test;
 
@@ -46,21 +47,101 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  * @author Michael Angstadt
  */
 public class DataUriTest {
-	private final byte[] testBytes = "test-data".getBytes();
-	private final String testBase64 = Base64.encodeBase64String(testBytes);
+	private final String dataString = "test-data";
+	private final byte[] dataBytes;
+	{
+		try {
+			dataBytes = dataString.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	private final String dataBase64 = Base64.encodeBase64String(dataBytes);
+
+	@Test
+	public void constructor() {
+		DataUri uri = new DataUri("text");
+		assertEquals("text/plain", uri.getContentType());
+		assertNull(uri.getData());
+		assertEquals("text", uri.getText());
+
+		uri = new DataUri("text/html", "text");
+		assertEquals("text/html", uri.getContentType());
+		assertNull(uri.getData());
+		assertEquals("text", uri.getText());
+
+		//convert content type to lower case
+		uri = new DataUri("TEXT/HTML", "text");
+		assertEquals("text/html", uri.getContentType());
+		assertNull(uri.getData());
+		assertEquals("text", uri.getText());
+
+		uri = new DataUri("image/png", dataBytes);
+		assertEquals("image/png", uri.getContentType());
+		assertArrayEquals(dataBytes, uri.getData());
+		assertNull(uri.getText());
+
+		//convert null content type to empty string
+		uri = new DataUri(null, dataBytes);
+		assertEquals("", uri.getContentType());
+	}
+
+	@Test
+	public void copy() {
+		DataUri uri = new DataUri("text/html", "text");
+		DataUri copy = new DataUri(uri);
+		assertEquals("text/html", copy.getContentType());
+		assertNull(copy.getData());
+		assertEquals("text", copy.getText());
+		assertEqualsAndHash(uri, copy);
+
+		uri = new DataUri("image/png", dataBytes);
+		copy = new DataUri(uri);
+		assertEquals("image/png", copy.getContentType());
+		assertArrayEquals(dataBytes, copy.getData());
+		assertNotSame(uri.getData(), copy.getData());
+		assertNull(copy.getText());
+		assertEqualsAndHash(uri, copy);
+	}
 
 	@Test
 	public void parse() {
-		DataUri uri = DataUri.parse("data:text/plain;base64," + testBase64);
-		assertEquals("text/plain", uri.getContentType());
-		assertArrayEquals(testBytes, uri.getData());
+		DataUri expected = new DataUri("image/png", dataBytes);
+		DataUri actual = DataUri.parse("data:image/png;base64," + dataBase64);
+		assertEquals(expected, actual);
+
+		expected = new DataUri("", dataBytes);
+		actual = DataUri.parse("data:;base64," + dataBase64);
+		assertEquals(expected, actual);
+
+		expected = new DataUri("image/png", dataString);
+		actual = DataUri.parse("data:image/png;charset=UTF-8;base64," + dataBase64);
+		assertEquals(expected, actual);
+
+		//order of charset and base64 matter
+		expected = new DataUri("image/png", dataString);
+		actual = DataUri.parse("data:image/png;base64;charset=UTF-8," + dataBase64);
+		assertEquals(expected, actual);
+
+		//ignore unknown tokens
+		expected = new DataUri("image/png", dataString);
+		actual = DataUri.parse("data:image/png;charset=UTF-8;foo;base64;bar," + dataBase64);
+		assertEquals(expected, actual);
+
+		expected = new DataUri("image/png", dataBase64);
+		actual = DataUri.parse("data:image/png;charset=UTF-8," + dataBase64);
+		assertEquals(expected, actual);
+
+		expected = new DataUri("image/png", dataBase64);
+		actual = DataUri.parse("data:image/png;charset=UTF-8;foobar," + dataBase64);
+		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void parse_comma_in_content_type() {
-		DataUri uri = DataUri.parse("data:text/pla,in;base64," + testBase64);
-		assertEquals("text/pla,in", uri.getContentType());
-		assertArrayEquals(testBytes, uri.getData());
+		DataUri expected = new DataUri("text/pla", "in;base64," + dataBase64);
+		DataUri actual = DataUri.parse("data:text/pla,in;base64," + dataBase64);
+		assertEquals(expected, actual);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -74,13 +155,8 @@ public class DataUriTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void parse_not_a_data_uri() {
+	public void parse_wrong_scheme() {
 		DataUri.parse("mailto:johndoe@gmail.com");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_no_semicolon() {
-		DataUri.parse("data:text/plain");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -89,35 +165,48 @@ public class DataUriTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void parse_wrong_encoding() {
-		DataUri.parse("data:text/plain;foobar," + testBase64);
+	public void parse_bad_charset() {
+		DataUri.parse("data:text/plain;charset=foobar;base64," + dataBase64);
 	}
 
 	@Test
 	public void toString_() {
-		DataUri uri = new DataUri("text/plain", testBytes);
-		assertEquals("text/plain", uri.getContentType());
-		assertArrayEquals(testBytes, uri.getData());
-		assertEquals("data:text/plain;base64," + testBase64, uri.toString());
+		DataUri uri = new DataUri("text/plain", dataBytes);
+		assertEquals("data:text/plain;base64," + dataBase64, uri.toString());
+
+		uri = new DataUri("text/plain", dataBytes);
+		assertEquals("data:text/plain;base64," + dataBase64, uri.toString("UTF-8"));
+
+		uri = new DataUri("text/plain", dataString);
+		assertEquals("data:text/plain," + dataString, uri.toString());
+
+		uri = new DataUri("text/plain", dataString);
+		assertEquals("data:text/plain;charset=UTF-8;base64," + dataBase64, uri.toString("UTF-8"));
+
+		uri = new DataUri("text/plain", (String) null);
+		assertEquals("data:text/plain,", uri.toString());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void toString_bad_charset() {
+		DataUri uri = new DataUri("text/plain", dataString);
+		uri.toString("foobar");
 	}
 
 	@Test
-	public void toUri() {
-		DataUri uri = new DataUri("text/plain", testBytes);
-		URI theUri = uri.toUri();
-		assertEquals("data", theUri.getScheme());
-		assertEquals("text/plain;base64," + testBase64, theUri.getRawSchemeSpecificPart());
-	}
+	public void equals() {
+		assertEqualsMethodEssentials(new DataUri(""));
 
-	@Test
-	public void equals_contract() {
-		EqualsVerifier.forClass(DataUri.class).usingGetClass().verify();
-	}
-
-	@Test
-	public void equals_ignore_case() {
-		DataUri one = new DataUri("TEXT/plain", testBytes);
-		DataUri two = new DataUri("text/plain", Arrays.copyOf(testBytes, testBytes.length));
-		assertEqualsAndHash(one, two);
+		//@formatter:off
+		assertNothingIsEqual(
+			new DataUri("text/plain", dataBytes),
+			new DataUri("image/png", dataBytes),
+			new DataUri("text/plain", "other-string".getBytes()),
+			new DataUri("text/plain", dataString),
+			new DataUri("text/html", dataString),
+			new DataUri("text/plain", "other-string"),
+			new DataUri("text/plain", (String)null)
+		);
+		//@formatter:on
 	}
 }
