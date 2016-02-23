@@ -1,6 +1,10 @@
 package ezvcard.io.json;
 
+import static ezvcard.VCardVersion.*;
 import static org.junit.Assert.assertEquals;
+import static ezvcard.property.asserter.PropertyAsserter.*;
+import static ezvcard.util.TestUtils.*;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -15,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ezvcard.VCard;
+import ezvcard.io.json.JCardDeserializerTest.NestedVCard;
 
 
 /**
@@ -33,6 +38,32 @@ public class JCardSerializerTest {
 		VCard example = JCardWriterTest.createExample();
 		String actual = toString(example);
 		JCardWriterTest.assertExample(actual, "jcard-example.json");
+	}
+	
+	@Test
+	public void serialize_nested() throws Throwable {
+		NestedVCard nested = new NestedVCard();
+		nested.setVcard(JCardWriterTest.createExample());
+		
+		StringWriter result = new StringWriter();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.writeValue(result, nested);
+		String nestedJson = result.toString();
+		
+		String actual = nestedJson.substring(nestedJson.indexOf('['), nestedJson.lastIndexOf(']') + 1);
+		JCardWriterTest.assertExample(actual, "jcard-example.json");
+	}
+	
+	@Test
+	public void read_nested_null() throws Throwable {
+		NestedVCard nested = new NestedVCard();
+		
+		StringWriter result = new StringWriter();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.writeValue(result, nested);
+		String nestedJson = result.toString();
+		
+		assertEquals("{\"vcard\":null}", nestedJson.replaceAll("\\s", ""));
 	}
 	
 	@Test
@@ -72,6 +103,7 @@ public class JCardSerializerTest {
 	public String toString(Object example) throws IOException, JsonGenerationException, JsonMappingException {
 		StringWriter result = new StringWriter();
 		ObjectMapper mapper = new ObjectMapper();
+		JCardSerializer.configureObjectMapper(mapper);
 		mapper.writeValue(result, example);
 		return result.toString();
 	}

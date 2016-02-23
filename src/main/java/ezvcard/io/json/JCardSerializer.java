@@ -1,15 +1,24 @@
 package ezvcard.io.json;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import ezvcard.VCard;
 
-public class JCardSerializer extends JsonSerializer<VCard> {
+public class JCardSerializer extends StdSerializer<VCard> {
+	private static final long serialVersionUID = 1L;
+
+	public static void configureObjectMapper(ObjectMapper mapper) {
+		List<JsonSerializer<?>> list = new ArrayList<JsonSerializer<?>>();
+		list.add(new JCardSerializer());
+		mapper.registerModule(new SimpleModule("jcardserializer", Version.unknownVersion(), list));
+	}
 
 	private static boolean addProdIdDefault = true;
 	private boolean addProdId = addProdIdDefault;
@@ -32,6 +41,7 @@ public class JCardSerializer extends JsonSerializer<VCard> {
 	 * Creates a new JCardSerializer with default settings
 	 */
 	public JCardSerializer() {
+		super(VCard.class);
 	}
 
 	/**
@@ -42,6 +52,7 @@ public class JCardSerializer extends JsonSerializer<VCard> {
 	 *            this object
 	 */
 	public JCardSerializer(boolean addProdId) {
+		this();
 		this.addProdId = addProdId;
 	}
 
