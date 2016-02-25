@@ -84,9 +84,10 @@ public class VCardWriterTest {
 	public void generalStructure() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
+		vcard.setProductId("ez-vcard");
 
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V2_1);
+		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -94,7 +95,8 @@ public class VCardWriterTest {
 		//@formatter:off
 		String expected =
 		"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
+			"VERSION:4.0\r\n" +
+			"PRODID:ez-vcard\r\n" +
 			"FN:John Doe\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on

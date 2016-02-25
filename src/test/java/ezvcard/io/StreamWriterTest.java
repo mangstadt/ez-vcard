@@ -1,14 +1,20 @@
 package ezvcard.io;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -18,6 +24,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.AddressType;
 import ezvcard.property.Address;
+import ezvcard.property.FormattedName;
 import ezvcard.property.Gender;
 import ezvcard.property.Label;
 import ezvcard.property.Mailer;
@@ -90,11 +97,11 @@ public class StreamWriterTest {
 		{
 			vcard.setProductId((String) null);
 			{
-				writer.write(vcard, VCardVersion.V2_1);
+				writer.write(vcard, V2_1);
 				assertEquals(1, writer.count());
 				assertEquals(1, writer.count(RawProperty.class));
 
-				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
+				for (VCardVersion version : each(V3_0, V4_0)) {
 					writer.write(vcard, version);
 					assertEquals(1, writer.count());
 					assertEquals(1, writer.count(ProductId.class));
@@ -103,11 +110,11 @@ public class StreamWriterTest {
 
 			vcard.setProductId("value"); //should be ignored
 			{
-				writer.write(vcard, VCardVersion.V2_1);
+				writer.write(vcard, V2_1);
 				assertEquals(1, writer.count());
 				assertEquals(1, writer.count(RawProperty.class));
 
-				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
+				for (VCardVersion version : each(V3_0, V4_0)) {
 					writer.write(vcard, version);
 					assertEquals(1, writer.count());
 					ProductId prodid = writer.first(ProductId.class);
@@ -128,10 +135,10 @@ public class StreamWriterTest {
 
 			vcard.setProductId("value");
 			{
-				writer.write(vcard, VCardVersion.V2_1);
+				writer.write(vcard, V2_1);
 				assertEquals(0, writer.count());
 
-				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
+				for (VCardVersion version : each(V3_0, V4_0)) {
 					writer.write(vcard, version);
 					ProductId prodId = writer.first(ProductId.class);
 					assertEquals("value", prodId.getValue());
@@ -143,11 +150,11 @@ public class StreamWriterTest {
 		{
 			vcard.setProductId((String) null);
 			{
-				writer.write(vcard, VCardVersion.V2_1);
+				writer.write(vcard, V2_1);
 				assertEquals(1, writer.count());
 				assertEquals(1, writer.count(RawProperty.class));
 
-				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
+				for (VCardVersion version : each(V3_0, V4_0)) {
 					writer.write(vcard, version);
 					assertEquals(1, writer.count());
 					assertEquals(1, writer.count(ProductId.class));
@@ -156,17 +163,66 @@ public class StreamWriterTest {
 
 			vcard.setProductId("value"); //should be ignored
 			{
-				writer.write(vcard, VCardVersion.V2_1);
+				writer.write(vcard, V2_1);
 				assertEquals(1, writer.count());
 				assertEquals(1, writer.count(RawProperty.class));
 
-				for (VCardVersion version : each(VCardVersion.V3_0, VCardVersion.V4_0)) {
+				for (VCardVersion version : each(V3_0, V4_0)) {
 					writer.write(vcard, version);
 					assertEquals(1, writer.count());
 					ProductId prodid = writer.first(ProductId.class);
 					assertNotEquals("value", prodid.getValue());
 				}
 			}
+		}
+	}
+
+	/**
+	 * Asserts that the PRODID property is always put at the front of the vCard.
+	 */
+	@Test
+	public void productId_order() throws IOException {
+		vcard.setFormattedName("Name");
+
+		{
+			writer.write(vcard, V2_1);
+
+			Iterator<VCardProperty> it = writer.propertiesList.iterator();
+
+			VCardProperty property = it.next();
+			assertTrue(property instanceof RawProperty);
+			property = it.next();
+			assertTrue(property instanceof FormattedName);
+
+			assertFalse(it.hasNext());
+		}
+
+		for (VCardVersion version : each(V3_0, V4_0)) {
+			writer.write(vcard, version);
+
+			Iterator<VCardProperty> it = writer.propertiesList.iterator();
+
+			VCardProperty property = it.next();
+			assertTrue(property instanceof ProductId);
+			property = it.next();
+			assertTrue(property instanceof FormattedName);
+
+			assertFalse(it.hasNext());
+		}
+
+		vcard.setProductId("value");
+		writer.setAddProdId(false);
+		for (VCardVersion version : each(V3_0, V4_0)) {
+			writer.write(vcard, version);
+
+			Iterator<VCardProperty> it = writer.propertiesList.iterator();
+
+			VCardProperty property = it.next();
+			assertTrue(property instanceof ProductId);
+			property = it.next();
+			assertTrue(property instanceof FormattedName);
+
+			assertFalse(it.hasNext());
 		}
 	}
 
@@ -178,13 +234,13 @@ public class StreamWriterTest {
 
 		//default value
 		{
-			for (VCardVersion version : each(VCardVersion.V2_1, VCardVersion.V3_0)) {
+			for (VCardVersion version : each(V2_1, V3_0)) {
 				writer.write(vcard, version);
 				assertEquals(1, writer.count());
 				assertEquals(1, writer.count(Mailer.class));
 			}
 
-			writer.write(vcard, VCardVersion.V4_0);
+			writer.write(vcard, V4_0);
 			assertEquals(1, writer.count());
 			assertEquals(1, writer.count(Gender.class));
 		}
@@ -201,13 +257,13 @@ public class StreamWriterTest {
 
 		writer.setVersionStrict(true);
 		{
-			for (VCardVersion version : each(VCardVersion.V2_1, VCardVersion.V3_0)) {
+			for (VCardVersion version : each(V2_1, V3_0)) {
 				writer.write(vcard, version);
 				assertEquals(1, writer.count());
 				assertEquals(1, writer.count(Mailer.class));
 			}
 
-			writer.write(vcard, VCardVersion.V4_0);
+			writer.write(vcard, V4_0);
 			assertEquals(1, writer.count());
 			assertEquals(1, writer.count(Gender.class));
 		}
@@ -232,7 +288,7 @@ public class StreamWriterTest {
 		adr = new Address();
 		vcard.addAddress(adr);
 
-		for (VCardVersion version : each(VCardVersion.V2_1, VCardVersion.V3_0)) {
+		for (VCardVersion version : each(V2_1, V3_0)) {
 			writer.write(vcard, version);
 			assertEquals(5, writer.count());
 			assertEquals(3, writer.count(Address.class));
@@ -247,17 +303,18 @@ public class StreamWriterTest {
 			assertSetEquals(label.getTypes());
 		}
 
-		writer.write(vcard, VCardVersion.V4_0);
+		writer.write(vcard, V4_0);
 		assertEquals(3, writer.count());
 		assertEquals(3, writer.count(Address.class));
 	}
 
 	private class StreamWriterStub extends StreamWriter {
 		private VCardVersion targetVersion;
+		private List<VCardProperty> propertiesList;
 		private ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = null;
 
 		public StreamWriterStub() {
-			this(VCardVersion.V4_0);
+			this(V4_0);
 		}
 
 		public StreamWriterStub(VCardVersion targetVersion) {
@@ -276,6 +333,7 @@ public class StreamWriterTest {
 
 		@Override
 		protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
+			propertiesList = properties;
 			this.properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
 			for (VCardProperty property : properties) {
 				this.properties.put(property.getClass(), property);
