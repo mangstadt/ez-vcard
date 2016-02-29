@@ -6,17 +6,14 @@ import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import ezvcard.VCard;
 
@@ -36,16 +33,16 @@ public class JCardDeserializerTest {
 	}
 	
 	public static class NestedVCard {
-		private VCard vcard;
+		private VCard contact;
 		
 		@JsonDeserialize(using=JCardDeserializer.class)
-		public VCard getVcard() {
-			return vcard;
+		public VCard getContact() {
+			return contact;
 		}
 
 		@JsonSerialize(using=JCardSerializer.class)
-		public void setVcard(VCard vcard) {
-			this.vcard = vcard;
+		public void setContact(VCard vcard) {
+			this.contact = vcard;
 		}
 	}
 	
@@ -54,18 +51,20 @@ public class JCardDeserializerTest {
 		//@formatter:off
 		String json =
 		"{" +
-		  "\"vcard\": [\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
-		    "]" +
+		  "\"contact\": "+
+		  "[" +
+		    "\"vcard\"," +
+			  "[" +
+			    "[\"version\", {}, \"text\", \"4.0\"]," +
+			    "[\"fn\", {}, \"text\", \"John Doe\"]" +
+			  "]" +
 		  "]" +
 		"}";
 		//@formatter:on
 		
 		NestedVCard nested = new ObjectMapper().readValue(json, NestedVCard.class);
 		
-		VCard vcard = nested.getVcard();
+		VCard vcard = nested.getContact();
 		assertVersion(V4_0, vcard);
 		assertPropertyCount(1, vcard);
 
@@ -81,13 +80,13 @@ public class JCardDeserializerTest {
 		//@formatter:off
 		String json =
 		"{" +
-		  "\"vcard\": null" +
+		  "\"contact\": null" +
 		"}";
 		//@formatter:on
 		
 		NestedVCard nested = new ObjectMapper().readValue(json, NestedVCard.class);
 		
-		VCard vcard = nested.getVcard();
+		VCard vcard = nested.getContact();
 		assertEquals(null, vcard);
 	}
 

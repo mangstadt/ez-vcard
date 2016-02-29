@@ -110,9 +110,6 @@ public class JCardRawReader implements Closeable {
 
 		// find the next vCard object
 		JsonToken prev = parser.getCurrentToken();
-		if (prev == JsonToken.VALUE_NULL) {
-			return; // vcard will be null in the listener
-		}
 		JsonToken cur;
 		while ((cur = parser.nextToken()) != null) {
 			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING
