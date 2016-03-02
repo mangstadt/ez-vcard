@@ -36,6 +36,13 @@ public class JCardModule extends SimpleModule {
 	 */
 	public JCardModule() {
 		super(MODULE_NAME, MODULE_VERSION);
+
+		// Register the same scribe with both, as per the documentation of
+		// this.getScribeIndex()
+		ScribeIndex index = new ScribeIndex();
+		serializer.setScribeIndex(index);
+		deserializer.setScribeIndex(index);
+
 		addSerializer(serializer);
 		addDeserializer(VCard.class, deserializer);
 	}
@@ -105,7 +112,9 @@ public class JCardModule extends SimpleModule {
 	}
 
 	/**
-	 * Gets the scribe index.
+	 * Gets the scribe index. Note that the same scribe index will be registered
+	 * with both the serializer and the deserializer — thus registering a scribe
+	 * with this index will register it with both.
 	 * 
 	 * @return the scribe index
 	 */
@@ -121,5 +130,6 @@ public class JCardModule extends SimpleModule {
 	 */
 	public void setScribeIndex(ScribeIndex index) {
 		serializer.setScribeIndex(index);
+		deserializer.setScribeIndex(index);
 	}
 }
