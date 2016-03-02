@@ -12,11 +12,8 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import ezvcard.VCard;
-
 
 /**
  * @author Buddy Gorven
@@ -26,26 +23,12 @@ public class JCardDeserializerTest {
 	public void deserialize_single_vcard() throws Throwable {
 
 		ObjectMapper mapper = new ObjectMapper();
-		JCardDeserializer.configureObjectMapper(mapper);
+		mapper.registerModule(new JCardModule());
 		VCard result = mapper.readValue(getClass().getResourceAsStream("jcard-example.json"), VCard.class);
-		
+
 		JCardReaderTest.validateExampleJCard(result);
 	}
-	
-	public static class NestedVCard {
-		private VCard contact;
-		
-		@JsonDeserialize(using=JCardDeserializer.class)
-		public VCard getContact() {
-			return contact;
-		}
 
-		@JsonSerialize(using=JCardSerializer.class)
-		public void setContact(VCard vcard) {
-			this.contact = vcard;
-		}
-	}
-	
 	@Test
 	public void read_nested() throws Throwable {
 		//@formatter:off
@@ -61,9 +44,9 @@ public class JCardDeserializerTest {
 		  "]" +
 		"}";
 		//@formatter:on
-		
+
 		NestedVCard nested = new ObjectMapper().readValue(json, NestedVCard.class);
-		
+
 		VCard vcard = nested.getContact();
 		assertVersion(V4_0, vcard);
 		assertPropertyCount(1, vcard);
@@ -74,7 +57,7 @@ public class JCardDeserializerTest {
 		.noMore();
 		//@formatter:on
 	}
-	
+
 	@Test
 	public void read_nested_null() throws Throwable {
 		//@formatter:off
@@ -83,9 +66,9 @@ public class JCardDeserializerTest {
 		  "\"contact\": null" +
 		"}";
 		//@formatter:on
-		
+
 		NestedVCard nested = new ObjectMapper().readValue(json, NestedVCard.class);
-		
+
 		VCard vcard = nested.getContact();
 		assertEquals(null, vcard);
 	}
@@ -109,13 +92,14 @@ public class JCardDeserializerTest {
 		  "]" +
 		"]";
 		//@formatter:on
-		
+
 		ObjectMapper mapper = new ObjectMapper();
-		JCardDeserializer.configureObjectMapper(mapper);
-		List<VCard> cards = mapper.readValue(json, new TypeReference<List<VCard>>() {});
+		mapper.registerModule(new JCardModule());
+		List<VCard> cards = mapper.readValue(json, new TypeReference<List<VCard>>() {
+		});
 
 		assertEquals(2, cards.size());
-		
+
 		VCard vcard = cards.get(0);
 		assertVersion(V4_0, vcard);
 		assertPropertyCount(1, vcard);

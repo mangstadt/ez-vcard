@@ -1,60 +1,43 @@
 package ezvcard.io.json;
 
-import java.io.IOException;
+import static java.lang.Integer.parseInt;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.property.VCardProperty;
 
-@JsonFormat
-public class JCardSerializer extends StdSerializer<VCard>implements ContextualSerializer {
+/**
+ * Module for jackson-databind with JCardSerializer and JCardDeserializer as the
+ * default serializers for {@link VCard}s
+ * 
+ * @author buddy
+ *
+ */
+public class JCardModule extends SimpleModule {
 	private static final long serialVersionUID = 1L;
 
-	private ScribeIndex index = new ScribeIndex();
-	private boolean addProdId = true;
-	private boolean versionStrict = true;
+	public static final String MODULE_NAME = "JCardModule";
+	private static final String[] V = Ezvcard.VERSION.split("[.-]");
+	public static final Version MODULE_VERSION = new Version(parseInt(V[0]), parseInt(V[1]), parseInt(V[2]),
+			V.length > 3 ? V[3] : "RELEASE", "com.googlecode.ez-vcard", "ez-vcard");
+
+	private final JCardDeserializer deserializer = new JCardDeserializer();
+	private final JCardSerializer serializer = new JCardSerializer();
 
 	/**
-	 * Creates a new JCardSerializer with default settings
+	 * Creates a JCardModule, which can be registered with an ObjectMapper using
+	 * {@link ObjectMapper#registerModule}
 	 */
-	public JCardSerializer() {
-		super(VCard.class);
-	}
-
-	@Override
-	public void serialize(VCard value, JsonGenerator gen, SerializerProvider serializers)
-			throws IOException, JsonProcessingException {
-		JCardWriter writer = new JCardWriter(gen);
-		writer.setAddProdId(isAddProdId());
-		writer.setScribeIndex(getScribeIndex());
-		writer.setVersionStrict(isVersionStrict());
-		writer.write(value);
-	}
-
-	public JCardSerializer createContextual(SerializerProvider prov, BeanProperty property)
-			throws JsonMappingException {
-		if (property != null) {
-			JCardFormat annotation = property.getAnnotation(JCardFormat.class);
-			if (annotation != null) {
-				JCardSerializer result = new JCardSerializer();
-				result.setAddProdId(annotation.addProdId());
-				result.setVersionStrict(annotation.versionStrict());
-				result.setScribeIndex(getScribeIndex());
-				return result;
-			}
-		}
-
-		return this;
+	public JCardModule() {
+		super(MODULE_NAME, MODULE_VERSION);
+		addSerializer(serializer);
+		addDeserializer(VCard.class, deserializer);
 	}
 
 	/**
@@ -67,7 +50,7 @@ public class JCardSerializer extends StdSerializer<VCard>implements ContextualSe
 	 *         true)
 	 */
 	public boolean isAddProdId() {
-		return addProdId;
+		return serializer.isAddProdId();
 	}
 
 	/**
@@ -80,7 +63,7 @@ public class JCardSerializer extends StdSerializer<VCard>implements ContextualSe
 	 *            true to add this property, false not to (defaults to true)
 	 */
 	public void setAddProdId(boolean addProdId) {
-		this.addProdId = addProdId;
+		serializer.setAddProdId(addProdId);
 	}
 
 	/**
@@ -91,7 +74,7 @@ public class JCardSerializer extends StdSerializer<VCard>implements ContextualSe
 	 *         version, false to include them anyway (defaults to true)
 	 */
 	public boolean isVersionStrict() {
-		return versionStrict;
+		return serializer.isVersionStrict();
 	}
 
 	/**
@@ -103,7 +86,7 @@ public class JCardSerializer extends StdSerializer<VCard>implements ContextualSe
 	 *            version, false to include them anyway (defaults to true)
 	 */
 	public void setVersionStrict(boolean versionStrict) {
-		this.versionStrict = versionStrict;
+		serializer.setVersionStrict(versionStrict);
 	}
 
 	/**
@@ -118,7 +101,7 @@ public class JCardSerializer extends StdSerializer<VCard>implements ContextualSe
 	 *            the scribe to register
 	 */
 	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		index.register(scribe);
+		serializer.registerScribe(scribe);
 	}
 
 	/**
@@ -127,7 +110,7 @@ public class JCardSerializer extends StdSerializer<VCard>implements ContextualSe
 	 * @return the scribe index
 	 */
 	public ScribeIndex getScribeIndex() {
-		return index;
+		return serializer.getScribeIndex();
 	}
 
 	/**
@@ -137,6 +120,6 @@ public class JCardSerializer extends StdSerializer<VCard>implements ContextualSe
 	 *            the scribe index
 	 */
 	public void setScribeIndex(ScribeIndex index) {
-		this.index = index;
+		serializer.setScribeIndex(index);
 	}
 }

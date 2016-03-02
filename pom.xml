@@ -79,6 +79,14 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.6.1</version>
+			<optional>
+				true
+				<!--
+				The only classes that refer to objects from jackson-databind are JCardModule, JCardSerializer, and JCardDeserializer, all of which
+				consume external objects from jackson-databind for their functionality, so any project using them will already have its own dependency
+				on jackson-databind.
+				-->
+			</optional>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
