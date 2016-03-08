@@ -1075,21 +1075,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 		for (Map.Entry<String, List<String>> entry : this) {
 			String key = entry.getKey();
 			List<String> value = entry.getValue();
-
-			/*
-			 * The parameters are stored in a ListMultimap. This class never
-			 * returns null. It returns an empty list when the key is not found.
-			 * But keep the null check just incase.
-			 */
-			if (value == null) {
-				if (other.get(key) != null || !other.containsKey(key)) {
-					return false;
-				}
-				continue;
-			}
-
 			List<String> otherValue = other.get(key);
-			if (otherValue == null || value.size() != otherValue.size()) {
+
+			if (value.size() != otherValue.size()) {
 				return false;
 			}
 
