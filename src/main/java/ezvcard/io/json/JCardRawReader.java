@@ -250,7 +250,7 @@ public class JCardRawReader implements Closeable {
 	 * Handles the vCard data as it is read off the data stream.
 	 * @author Michael Angstadt
 	 */
-	public static interface JCardDataStreamListener {
+	public interface JCardDataStreamListener {
 		/**
 		 * Called when a vCard has been found in the stream.
 		 */

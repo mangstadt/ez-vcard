@@ -191,7 +191,7 @@ public final class StringUtils {
 	 * @author Michael Angstadt
 	 * @param <T> the value type
 	 */
-	public static interface JoinCallback<T> {
+	public interface JoinCallback<T> {
 		void handle(StringBuilder sb, T value);
 	}
 
@@ -202,7 +202,7 @@ public final class StringUtils {
 	 * @param <K> the key class
 	 * @param <V> the value class
 	 */
-	public static interface JoinMapCallback<K, V> {
+	public interface JoinMapCallback<K, V> {
 		void handle(StringBuilder sb, K key, V value);
 	}
 

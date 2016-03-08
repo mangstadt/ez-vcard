@@ -101,7 +101,7 @@ public class EmbeddedVCardException extends RuntimeException {
 	/**
 	 * Injects an unmarshalled vCard into the property object.
 	 */
-	public static interface InjectionCallback {
+	public interface InjectionCallback {
 		/**
 		 * Injects an unmarshalled vCard into the property object.
 		 * @param vcard the vCard to inject
