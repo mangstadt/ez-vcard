@@ -115,7 +115,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 	protected Xml _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		try {
 			String xml = value.asSingle();
-			return (xml == null) ? new Xml((Document) null) : new Xml(xml);
+			return (xml.length() == 0) ? new Xml((Document) null) : new Xml(xml);
 		} catch (SAXException e) {
 			throw new CannotParseException(22);
 		}
