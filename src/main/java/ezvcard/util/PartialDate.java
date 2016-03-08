@@ -444,7 +444,7 @@ public final class PartialDate {
 						groupStr = groupStr.substring(1);
 					}
 
-					int component = Integer.valueOf(groupStr);
+					int component = Integer.parseInt(groupStr);
 					if (index == TIMEZONE_HOUR) {
 						offsetHour = component;
 						offsetPositive = startsWithPlus;
