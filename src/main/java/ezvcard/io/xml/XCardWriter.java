@@ -280,7 +280,7 @@ public class XCardWriter extends XCardWriterBase {
 			return false;
 		}
 
-		return XmlUtils.hasQName(node, XCardQNames.VCARDS);
+		return XmlUtils.hasQName(node, VCARDS);
 	}
 
 	@Override
