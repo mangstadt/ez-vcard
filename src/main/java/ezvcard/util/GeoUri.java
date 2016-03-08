@@ -107,8 +107,8 @@ public final class GeoUri {
 	private final Map<String, String> parameters;
 
 	private GeoUri(Builder builder) {
-		this.coordA = (builder.coordA == null) ? 0.0 : builder.coordA;
-		this.coordB = (builder.coordB == null) ? 0.0 : builder.coordB;
+		this.coordA = (builder.coordA == null) ? Double.valueOf(0.0) : builder.coordA;
+		this.coordB = (builder.coordB == null) ? Double.valueOf(0.0) : builder.coordB;
 		this.coordC = builder.coordC;
 		this.crs = builder.crs;
 		this.uncertainty = builder.uncertainty;
