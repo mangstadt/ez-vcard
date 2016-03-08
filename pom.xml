@@ -258,7 +258,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.5.3</version>
+				<version>3.0.3</version>
 			</plugin>
 
 			<!--
@@ -269,7 +269,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.6</version>
 				<configuration>
 					<targetJdk>${java.version}</targetJdk>
 				</configuration>
