@@ -37,8 +37,9 @@ import ezvcard.VCard;
  * unmarshalled {@link VCard} object.
  * @author Michael Angstadt
  */
-@SuppressWarnings("serial")
 public class SkipMeException extends RuntimeException {
+	private static final long serialVersionUID = -2317261463920887137L;
+
 	/**
 	 * Creates a skip-me exception.
 	 */

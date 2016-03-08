@@ -40,6 +40,10 @@ import ezvcard.property.VCardProperty;
  */
 @SuppressWarnings("serial")
 public class EmbeddedVCardException extends RuntimeException {
+	/*
+	 * Serialization note: Not going to bother adding a serialVersionUID, since
+	 * VCard is not serializable.
+	 */
 	private final VCard vcard;
 	private final InjectionCallback callback;
 

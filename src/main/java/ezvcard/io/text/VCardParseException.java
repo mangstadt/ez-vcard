@@ -35,8 +35,8 @@ import java.io.IOException;
  * Thrown when there's a problem parsing a plain-text vCard file.
  * @author Michael Angstadt
  */
-@SuppressWarnings("serial")
 public class VCardParseException extends IOException {
+	private static final long serialVersionUID = 3648698893687477644L;
 	private final String line;
 	private final int lineNumber;
 

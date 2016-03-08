@@ -41,8 +41,8 @@ import ezvcard.Messages;
  * format).
  * @author Michael Angstadt
  */
-@SuppressWarnings("serial")
 public class JCardParseException extends IOException {
+	private static final long serialVersionUID = 5139480815617303404L;
 	private final JsonToken expected, actual;
 
 	/**

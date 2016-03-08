@@ -33,8 +33,9 @@ import ezvcard.Messages;
  * date string).
  * @author Michael Angstadt
  */
-@SuppressWarnings("serial")
 public class CannotParseException extends RuntimeException {
+	private static final long serialVersionUID = -486457159436167471L;
+
 	/**
 	 * Creates a new "cannot parse" exception.
 	 */
