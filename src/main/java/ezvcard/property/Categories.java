@@ -4,6 +4,7 @@ import java.util.List;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
+import ezvcard.parameter.Pid;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -78,18 +79,8 @@ public class Categories extends TextListProperty implements HasAltId {
 	}
 
 	@Override
-	public List<Integer[]> getPids() {
+	public List<Pid> getPids() {
 		return super.getPids();
-	}
-
-	@Override
-	public void addPid(int localId, int clientPidMapRef) {
-		super.addPid(localId, clientPidMapRef);
-	}
-
-	@Override
-	public void removePids() {
-		super.removePids();
 	}
 
 	@Override

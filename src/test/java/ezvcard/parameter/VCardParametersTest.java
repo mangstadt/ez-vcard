@@ -6,13 +6,11 @@ import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,9 +76,9 @@ public class VCardParametersTest {
 		parameters.put("PREF", "invalid");
 		parameters.put("PID", "invalid");
 
-		assertValidate(parameters.validate(VCardVersion.V2_1), 5, 5, 5, 5, 6, 6, 6);
-		assertValidate(parameters.validate(VCardVersion.V3_0), 5, 5, 5, 5, 6, 6, 6);
-		assertValidate(parameters.validate(VCardVersion.V4_0), 5, 5, 5, 5);
+		assertValidate(parameters.validate(VCardVersion.V2_1), 5, 5, 27, 5, 6, 6, 6);
+		assertValidate(parameters.validate(VCardVersion.V3_0), 5, 5, 27, 5, 6, 6, 6);
+		assertValidate(parameters.validate(VCardVersion.V4_0), 5, 5, 27, 5);
 	}
 
 	@Test
@@ -221,59 +219,6 @@ public class VCardParametersTest {
 	public void geo_malformed() {
 		parameters.put("GEO", "invalid");
 		parameters.getGeo();
-	}
-
-	/**
-	 * Asserts that it marshals a PID value to a string correctly when adding
-	 * the parameter to the parameters list.
-	 */
-	@Test
-	public void addPid() {
-		assertTrue(parameters.getPids().isEmpty());
-		parameters.addPid(1);
-		parameters.addPid(2, 1);
-
-		assertEquals(Arrays.asList("1", "2.1"), parameters.get("PID"));
-	}
-
-	/**
-	 * Asserts that it unmarshals a PID value correctly when retrieving the
-	 * parameter from the parameters list.
-	 */
-	@Test
-	public void getPid() {
-		assertTrue(parameters.getPids().isEmpty());
-		parameters.addPid(1);
-		parameters.addPid(2, 1);
-
-		Iterator<Integer[]> it = parameters.getPids().iterator();
-
-		Integer[] pid = it.next();
-		assertArrayEquals(new Integer[] { 1, null }, pid);
-
-		pid = it.next();
-		assertArrayEquals(new Integer[] { 2, 1 }, pid);
-
-		assertFalse(it.hasNext());
-	}
-
-	@Test
-	public void getPid_trailing_dot() {
-		assertTrue(parameters.getPids().isEmpty());
-		parameters.put("PID", "1.");
-
-		Iterator<Integer[]> it = parameters.getPids().iterator();
-
-		Integer[] pid = it.next();
-		assertArrayEquals(new Integer[] { 1, null }, pid);
-
-		assertFalse(it.hasNext());
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void getPid_malformed() {
-		parameters.put("PID", "invalid");
-		parameters.getPids();
 	}
 
 	@Test

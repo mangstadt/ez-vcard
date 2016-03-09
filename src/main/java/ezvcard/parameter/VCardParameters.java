@@ -637,107 +637,6 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets all PID parameter values. PIDs can exist on any property where
-	 * multiple instances are allowed (such as EMAIL or ADR, but not N because
-	 * only 1 instance of N is allowed).
-	 * </p>
-	 * <p>
-	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
-	 * individual property instance to be uniquely identifiable. This feature is
-	 * made use of when two different versions of the same vCard have to be
-	 * merged together (called "synchronizing").
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @throws IllegalStateException if the parameter value is malformed and
-	 * cannot be parsed
-	 * @return the PID values or empty set if there are none. Index 0 is the
-	 * local ID and index 1 is the ID used to reference the CLIENTPIDMAP
-	 * property. Index 0 will never be null, but index 1 may be null.
-	 */
-	public List<Integer[]> getPids() {
-		List<String> values = get(PID);
-		List<Integer[]> pids = new ArrayList<Integer[]>(values.size());
-		for (String value : values) {
-			int dot = value.indexOf('.');
-			String localIdStr, clientPidMapRefStr;
-			if (dot < 0) {
-				localIdStr = value;
-				clientPidMapRefStr = null;
-			} else {
-				localIdStr = value.substring(0, dot);
-				clientPidMapRefStr = (dot < value.length() - 1) ? value.substring(dot + 1) : null;
-			}
-			try {
-				Integer localId = Integer.valueOf(localIdStr);
-				Integer clientPidMapRef = (clientPidMapRefStr == null) ? null : Integer.valueOf(clientPidMapRefStr);
-				pids.add(new Integer[] { localId, clientPidMapRef });
-			} catch (NumberFormatException e) {
-				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, PID), e);
-			}
-		}
-		return pids;
-	}
-
-	/**
-	 * <p>
-	 * Adds a PID parameter value. PIDs can exist on any property where multiple
-	 * instances are allowed (such as EMAIL or ADR, but not N because only 1
-	 * instance of N is allowed).
-	 * </p>
-	 * <p>
-	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
-	 * individual property instance to be uniquely identifiable. This feature is
-	 * made use of when two different versions of the same vCard have to be
-	 * merged together (called "synchronizing").
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param localId the local ID
-	 */
-	public void addPid(int localId) {
-		put(PID, Integer.toString(localId));
-	}
-
-	/**
-	 * <p>
-	 * Adds a PID parameter value. PIDs can exist on any property where multiple
-	 * instances are allowed (such as EMAIL or ADR, but not N because only 1
-	 * instance of N is allowed).
-	 * </p>
-	 * <p>
-	 * When used in conjunction with the CLIENTPIDMAP property, it allows an
-	 * individual property instance to be uniquely identifiable. This feature is
-	 * made use of when two different versions of the same vCard have to be
-	 * merged together (called "synchronizing").
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param localId the local ID
-	 * @param clientPidMapRef the ID used to reference the property's globally
-	 * unique identifier in the CLIENTPIDMAP property.
-	 */
-	public void addPid(int localId, int clientPidMapRef) {
-		put(PID, localId + "." + clientPidMapRef);
-	}
-
-	/**
-	 * <p>
-	 * Removes all PID values.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 */
-	public void removePids() {
-		removeAll(PID);
-	}
-
-	/**
-	 * <p>
 	 * Gets the MEDIATYPE parameter. This is used in properties that have a URL
 	 * as a value, such as PHOTO and SOUND. It defines the content type of the
 	 * referenced resource.
@@ -961,10 +860,11 @@ public class VCardParameters extends ListMultimap<String, String> {
 				warnings.add(new Warning(malformedCode, INDEX, first(INDEX)));
 			}
 
-			try {
-				getPids();
-			} catch (IllegalStateException e) {
-				warnings.add(new Warning(malformedCode, PID, first(PID)));
+			List<String> pids = get(PID);
+			for (String pid : pids) {
+				if (!pid.matches("\\d+(\\.\\d+)?")) {
+					warnings.add(new Warning(27, pid));
+				}
 			}
 
 			try {

@@ -1,6 +1,7 @@
 package ezvcard.property;
 
 import java.lang.reflect.Constructor;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
+import ezvcard.parameter.Pid;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.CharacterBitSet;
 
@@ -358,45 +360,29 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all PID values.
+	 * Gets all PID parameter values. PIDs can exist on any property where
+	 * multiple instances are allowed (such as {@link Email} or {@link Address},
+	 * but not {@link StructuredName} because only 1 instance of this property
+	 * is allowed per vCard).
+	 * </p>
+	 * <p>
+	 * When used in conjunction with the {@link ClientPidMap} property, it
+	 * allows an individual property instance to be uniquely identifiable. This
+	 * feature is made use of when two different versions of the same vCard have
+	 * to be merged together (called "synchronizing").
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the PID values or empty set if there are none
-	 * @see VCardParameters#getPids
+	 * @return the PID parameter values
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#section-5.5">RFC 6350
+	 * Section 5.5</a>
 	 */
-	List<Integer[]> getPids() {
-		return parameters.getPids();
-	}
-
-	/**
-	 * <p>
-	 * Adds a PID value.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param localId the local ID
-	 * @param clientPidMapRef the ID used to reference the property's globally
-	 * unique identifier in the CLIENTPIDMAP property.
-	 * @see VCardParameters#addPid(int, int)
-	 */
-	void addPid(int localId, int clientPidMapRef) {
-		parameters.addPid(localId, clientPidMapRef);
-	}
-
-	/**
-	 * <p>
-	 * Removes all PID values.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @see VCardParameters#removePids
-	 */
-	void removePids() {
-		parameters.removePids();
+	List<Pid> getPids() {
+		if (pidParameterList == null) {
+			pidParameterList = new PidParameterList();
+		}
+		return pidParameterList;
 	}
 
 	/**
@@ -473,5 +459,128 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 */
 	void setIndex(Integer index) {
 		parameters.setIndex(index);
+	}
+
+	private PidParameterList pidParameterList;
+
+	protected class PidParameterList extends VCardParameterList<Pid> {
+		public PidParameterList() {
+			super(VCardParameters.PID);
+		}
+
+		@Override
+		protected String _asString(Pid value) {
+			Integer localId = value.getLocalId();
+			Integer clientPidMapReference = value.getClientPidMapReference();
+			return (clientPidMapReference == null) ? Integer.toString(localId) : localId + "." + clientPidMapReference;
+		}
+
+		@Override
+		protected Pid _asObject(String value) {
+			int dot = value.indexOf('.');
+			String localIdStr, clientPidMapReferenceStr;
+			if (dot < 0) {
+				localIdStr = value;
+				clientPidMapReferenceStr = null;
+			} else {
+				localIdStr = value.substring(0, dot);
+				clientPidMapReferenceStr = (dot == value.length() - 1) ? null : value.substring(dot + 1);
+			}
+
+			Integer localId = Integer.valueOf(localIdStr);
+			Integer clientPidMapReference = (clientPidMapReferenceStr == null) ? null : Integer.valueOf(clientPidMapReferenceStr);
+			return new Pid(localId, clientPidMapReference);
+		}
+	};
+
+	/**
+	 * <p>
+	 * A list that holds the values of a particular parameter.
+	 * </p>
+	 * <p>
+	 * This list is backed by the property's {@link VCardParameters} object. Any
+	 * changes made to the list will affect the property's
+	 * {@link VCardParameters} object and vice versa.
+	 * </p>
+	 */
+	protected abstract class VCardParameterList<T> extends AbstractList<T> {
+		protected final String parameterName;
+
+		/**
+		 * Creates a new list.
+		 * @param parameterName the name of the parameter
+		 */
+		public VCardParameterList(String parameterName) {
+			this.parameterName = parameterName;
+		}
+
+		@Override
+		public void add(int index, T value) {
+			String valueStr = _asString(value);
+
+			/*
+			 * Note: If a property name does not exist, then the parameters
+			 * object will return an empty list. Any objects added to this empty
+			 * list will NOT be added to the parameters object.
+			 */
+			List<String> values = values();
+			if (values.isEmpty()) {
+				parameters.put(parameterName, valueStr);
+			} else {
+				values.add(index, valueStr);
+			}
+		}
+
+		@Override
+		public T remove(int index) {
+			String removed = values().remove(index);
+			return asObject(removed);
+		}
+
+		@Override
+		public T get(int index) {
+			String value = values().get(index);
+			return asObject(value);
+		}
+
+		@Override
+		public T set(int index, T value) {
+			String valueStr = _asString(value);
+			String replaced = values().set(index, valueStr);
+			return asObject(replaced);
+		}
+
+		@Override
+		public int size() {
+			return values().size();
+		}
+
+		private T asObject(String value) {
+			try {
+				return _asObject(value);
+			} catch (Exception e) {
+				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, parameterName), e);
+			}
+		}
+
+		/**
+		 * Converts the object to a String value for storing in the
+		 * {@link VCardParameters} object.
+		 * @param value the value
+		 * @return the string value
+		 */
+		protected abstract String _asString(T value);
+
+		/**
+		 * Converts a String value to its object form.
+		 * @param value the string value
+		 * @return the object
+		 * @throws Exception if there is a problem parsing the string
+		 */
+		protected abstract T _asObject(String value) throws Exception;
+
+		private List<String> values() {
+			return parameters.get(parameterName);
+		}
 	}
 }

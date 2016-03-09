@@ -14,6 +14,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.MediaTypeParameter;
+import ezvcard.parameter.Pid;
 import ezvcard.util.IOUtils;
 
 /*
@@ -200,18 +201,8 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	}
 
 	@Override
-	public List<Integer[]> getPids() {
+	public List<Pid> getPids() {
 		return super.getPids();
-	}
-
-	@Override
-	public void addPid(int localId, int clientPidMapRef) {
-		super.addPid(localId, clientPidMapRef);
-	}
-
-	@Override
-	public void removePids() {
-		super.removePids();
 	}
 
 	@Override

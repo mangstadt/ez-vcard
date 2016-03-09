@@ -2,6 +2,8 @@ package ezvcard.property;
 
 import java.util.List;
 
+import ezvcard.parameter.Pid;
+
 /*
  Copyright (c) 2012-2016, Michael Angstadt
  All rights reserved.
@@ -76,18 +78,8 @@ public class Note extends TextProperty implements HasAltId {
 	}
 
 	@Override
-	public List<Integer[]> getPids() {
+	public List<Pid> getPids() {
 		return super.getPids();
-	}
-
-	@Override
-	public void addPid(int localId, int clientPidMapRef) {
-		super.addPid(localId, clientPidMapRef);
-	}
-
-	@Override
-	public void removePids() {
-		super.removePids();
 	}
 
 	@Override

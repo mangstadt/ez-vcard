@@ -8,6 +8,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.EmailType;
+import ezvcard.parameter.Pid;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -118,18 +119,8 @@ public class Email extends TextProperty implements HasAltId {
 	}
 
 	@Override
-	public List<Integer[]> getPids() {
+	public List<Pid> getPids() {
 		return super.getPids();
-	}
-
-	@Override
-	public void addPid(int localId, int clientPidMapRef) {
-		super.addPid(localId, clientPidMapRef);
-	}
-
-	@Override
-	public void removePids() {
-		super.removePids();
 	}
 
 	@Override

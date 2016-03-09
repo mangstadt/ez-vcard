@@ -9,6 +9,7 @@ import java.util.Set;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
+import ezvcard.parameter.Pid;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.util.TelUri;
 
@@ -178,18 +179,8 @@ public class Telephone extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	public List<Integer[]> getPids() {
+	public List<Pid> getPids() {
 		return super.getPids();
-	}
-
-	@Override
-	public void addPid(int localId, int clientPidMapRef) {
-		super.addPid(localId, clientPidMapRef);
-	}
-
-	@Override
-	public void removePids() {
-		super.removePids();
 	}
 
 	@Override

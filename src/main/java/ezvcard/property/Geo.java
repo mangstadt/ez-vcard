@@ -7,6 +7,7 @@ import java.util.Map;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
+import ezvcard.parameter.Pid;
 import ezvcard.util.GeoUri;
 
 /*
@@ -232,18 +233,8 @@ public class Geo extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	public List<Integer[]> getPids() {
+	public List<Pid> getPids() {
 		return super.getPids();
-	}
-
-	@Override
-	public void addPid(int localId, int clientPidMapRef) {
-		super.addPid(localId, clientPidMapRef);
-	}
-
-	@Override
-	public void removePids() {
-		super.removePids();
 	}
 
 	@Override

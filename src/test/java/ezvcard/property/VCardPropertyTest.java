@@ -173,6 +173,12 @@ public class VCardPropertyTest {
 	}
 
 	@Test
+	public void getPids() {
+		VCardPropertyImpl property = new VCardPropertyImpl();
+		assertSame(property.getPids(), property.getPids());
+	}
+
+	@Test
 	public void compareTo() {
 		VCardPropertyImpl one = new VCardPropertyImpl();
 		one.getParameters().setPref(1);

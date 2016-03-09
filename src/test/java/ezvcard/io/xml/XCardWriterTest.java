@@ -38,6 +38,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.ImageType;
+import ezvcard.parameter.Pid;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
@@ -345,7 +346,7 @@ public class XCardWriterTest {
 		note.setParameter(VCardParameters.LABEL, "value");
 		note.setParameter(VCardParameters.LANGUAGE, "en");
 		note.setParameter(VCardParameters.MEDIATYPE, "text/plain");
-		note.addPid(1, 1);
+		note.getPids().add(new Pid(1, 1));
 		note.setParameter(VCardParameters.PREF, "1");
 		note.setParameter(VCardParameters.SORT_AS, "value");
 		note.setParameter(VCardParameters.TYPE, "home");
