@@ -49,7 +49,7 @@ public class EmailScribeTest {
 	@Test
 	public void prepareParameters_type_pref() {
 		Email property = new Email("johndoe@example.com");
-		property.addType(EmailType.PREF);
+		property.getTypes().add(EmailType.PREF);
 
 		sensei.assertPrepareParams(property).versions(V2_1, V3_0).expected("TYPE", "pref").run();
 		sensei.assertPrepareParams(property).versions(V4_0).expected("PREF", "1").run();
@@ -99,7 +99,7 @@ public class EmailScribeTest {
 	@Test
 	public void parseHtml_types() {
 		Email expected = new Email("johndoe@example.com");
-		expected.addType(EmailType.HOME);
+		expected.getTypes().add(EmailType.HOME);
 
 		//@formatter:off
 		sensei.assertParseHtml(

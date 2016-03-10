@@ -414,7 +414,7 @@ public class HCardPageTest {
 		vcard.addTelephoneNumber(tel);
 
 		tel = new Telephone(new TelUri.Builder("+1-555-333-4444").build());
-		tel.addType(TelephoneType.WORK);
+		tel.getTypes().add(TelephoneType.WORK);
 		vcard.addTelephoneNumber(tel);
 
 		vcard.addTelephoneNumber("(555) 111-2222", TelephoneType.HOME, TelephoneType.VOICE, TelephoneType.PREF);
@@ -427,7 +427,7 @@ public class HCardPageTest {
 		adr.setPostalCode("12345");
 		adr.setCountry("USA");
 		adr.setLabel("123 Main St." + NEWLINE + "Austin TX, 12345" + NEWLINE + "USA");
-		adr.addType(AddressType.HOME);
+		adr.getTypes().add(AddressType.HOME);
 		vcard.addAddress(adr);
 
 		adr = new Address();
@@ -437,8 +437,8 @@ public class HCardPageTest {
 		adr.setRegion("NY");
 		adr.setPostalCode("11111");
 		adr.setCountry("USA");
-		adr.addType(AddressType.PREF);
-		adr.addType(AddressType.WORK);
+		adr.getTypes().add(AddressType.PREF);
+		adr.getTypes().add(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		vcard.setOrganization("Google", "GMail");

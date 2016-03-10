@@ -310,22 +310,22 @@ public class JCardWriterTest {
 		adr.setRegion("QC");
 		adr.setPostalCode("G1V2M2");
 		adr.setCountry("Canada");
-		adr.addType(AddressType.WORK);
+		adr.getTypes().add(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		Telephone tel = new Telephone(telUri);
-		tel.addType(TelephoneType.WORK);
-		tel.addType(TelephoneType.VOICE);
+		tel.getTypes().add(TelephoneType.WORK);
+		tel.getTypes().add(TelephoneType.VOICE);
 		tel.setPref(1);
 		vcard.addTelephoneNumber(tel);
 
 		tel = new Telephone(new TelUri.Builder("+1-418-262-6501").build());
-		tel.addType(TelephoneType.WORK);
-		tel.addType(TelephoneType.CELL);
-		tel.addType(TelephoneType.VOICE);
-		tel.addType(TelephoneType.VIDEO);
-		tel.addType(TelephoneType.TEXT);
+		tel.getTypes().add(TelephoneType.WORK);
+		tel.getTypes().add(TelephoneType.CELL);
+		tel.getTypes().add(TelephoneType.VOICE);
+		tel.getTypes().add(TelephoneType.VIDEO);
+		tel.getTypes().add(TelephoneType.TEXT);
 		vcard.addTelephoneNumber(tel);
 
 		vcard.addEmail("simon.perreault@viagenie.ca", EmailType.WORK);

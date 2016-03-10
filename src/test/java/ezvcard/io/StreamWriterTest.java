@@ -3,7 +3,6 @@ package ezvcard.io;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -14,6 +13,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -276,7 +276,7 @@ public class StreamWriterTest {
 		//address with label and type
 		Address adr = new Address();
 		adr.setLabel("value1");
-		adr.addType(AddressType.HOME);
+		adr.getTypes().add(AddressType.HOME);
 		vcard.addAddress(adr);
 
 		//address with label
@@ -296,11 +296,11 @@ public class StreamWriterTest {
 
 			Label label = writer.get(Label.class).get(0);
 			assertEquals("value1", label.getValue());
-			assertSetEquals(label.getTypes(), AddressType.HOME);
+			assertEquals(Arrays.asList(AddressType.HOME), label.getTypes());
 
 			label = writer.get(Label.class).get(1);
 			assertEquals("value2", label.getValue());
-			assertSetEquals(label.getTypes());
+			assertEquals(Arrays.asList(), label.getTypes());
 		}
 
 		writer.write(vcard, V4_0);

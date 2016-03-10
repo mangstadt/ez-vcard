@@ -4,12 +4,12 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -59,12 +59,12 @@ public class RelatedTest {
 		Related property = new Related();
 		assertNull(property.getUri());
 		assertNull(property.getText());
-		assertSetEquals(property.getTypes());
+		assertEquals(Arrays.asList(), property.getTypes());
 
 		property = new Related(uri);
 		assertEquals(uri, property.getUri());
 		assertNull(property.getText());
-		assertSetEquals(property.getTypes());
+		assertEquals(Arrays.asList(), property.getTypes());
 	}
 
 	@Test
@@ -74,32 +74,27 @@ public class RelatedTest {
 		property.setText(text);
 		assertNull(property.getUri());
 		assertEquals(text, property.getText());
-		assertSetEquals(property.getTypes());
+		assertEquals(Arrays.asList(), property.getTypes());
 
 		property.setUri(uri);
 		assertEquals(uri, property.getUri());
 		assertNull(property.getText());
-		assertSetEquals(property.getTypes());
+		assertEquals(Arrays.asList(), property.getTypes());
 
-		property.addType(RelatedType.ACQUAINTANCE);
+		property.getTypes().add(RelatedType.ACQUAINTANCE);
 		assertEquals(uri, property.getUri());
 		assertNull(property.getText());
-		assertSetEquals(property.getTypes(), RelatedType.ACQUAINTANCE);
+		assertEquals(Arrays.asList(RelatedType.ACQUAINTANCE), property.getTypes());
 
-		property.addType(RelatedType.ACQUAINTANCE);
+		property.getTypes().add(RelatedType.AGENT);
 		assertEquals(uri, property.getUri());
 		assertNull(property.getText());
-		assertSetEquals(property.getTypes(), RelatedType.ACQUAINTANCE);
+		assertEquals(Arrays.asList(RelatedType.ACQUAINTANCE, RelatedType.AGENT), property.getTypes());
 
-		property.addType(RelatedType.AGENT);
+		property.getTypes().remove(RelatedType.AGENT);
 		assertEquals(uri, property.getUri());
 		assertNull(property.getText());
-		assertSetEquals(property.getTypes(), RelatedType.ACQUAINTANCE, RelatedType.AGENT);
-
-		property.removeType(RelatedType.AGENT);
-		assertEquals(uri, property.getUri());
-		assertNull(property.getText());
-		assertSetEquals(property.getTypes(), RelatedType.ACQUAINTANCE);
+		assertEquals(Arrays.asList(RelatedType.ACQUAINTANCE), property.getTypes());
 	}
 
 	@Test
@@ -158,7 +153,7 @@ public class RelatedTest {
 		assertCopy(original);
 
 		original = new Related(uri);
-		original.addType(RelatedType.ACQUAINTANCE);
+		original.getTypes().add(RelatedType.ACQUAINTANCE);
 		assertCopy(original);
 
 		original = new Related(uri);
@@ -177,7 +172,7 @@ public class RelatedTest {
 		properties.add(property);
 
 		property = new Related("uri");
-		property.addType(RelatedType.ACQUAINTANCE);
+		property.getTypes().add(RelatedType.ACQUAINTANCE);
 		properties.add(property);
 
 		property = new Related("uri2");
@@ -189,7 +184,7 @@ public class RelatedTest {
 
 		property = new Related();
 		property.setText("text");
-		property.addType(RelatedType.ACQUAINTANCE);
+		property.getTypes().add(RelatedType.ACQUAINTANCE);
 		properties.add(property);
 
 		property = new Related();

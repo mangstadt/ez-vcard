@@ -553,22 +553,22 @@ public class VCardWriterTest {
 		adr.setRegion("QC");
 		adr.setPostalCode("G1V 2M2");
 		adr.setCountry("Canada");
-		adr.addType(AddressType.WORK);
+		adr.getTypes().add(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		TelUri telUri = new TelUri.Builder("+1-418-656-9254").extension("102").build();
 		Telephone tel = new Telephone(telUri);
 		tel.setPref(1);
-		tel.addType(TelephoneType.WORK);
-		tel.addType(TelephoneType.VOICE);
+		tel.getTypes().add(TelephoneType.WORK);
+		tel.getTypes().add(TelephoneType.VOICE);
 		vcard.addTelephoneNumber(tel);
 
 		tel = new Telephone(new TelUri.Builder("+1-418-262-6501").build());
-		tel.addType(TelephoneType.WORK);
-		tel.addType(TelephoneType.VOICE);
-		tel.addType(TelephoneType.CELL);
-		tel.addType(TelephoneType.VIDEO);
-		tel.addType(TelephoneType.TEXT);
+		tel.getTypes().add(TelephoneType.WORK);
+		tel.getTypes().add(TelephoneType.VOICE);
+		tel.getTypes().add(TelephoneType.CELL);
+		tel.getTypes().add(TelephoneType.VIDEO);
+		tel.getTypes().add(TelephoneType.TEXT);
 		vcard.addTelephoneNumber(tel);
 
 		vcard.addEmail("simon.perreault@viagenie.ca", EmailType.WORK);
@@ -641,9 +641,9 @@ public class VCardWriterTest {
 			adr.setRegion("NC");
 			adr.setPostalCode("27613-3502");
 			adr.setCountry("U.S.A.");
-			adr.addType(AddressType.WORK);
-			adr.addType(AddressType.POSTAL);
-			adr.addType(AddressType.PARCEL);
+			adr.getTypes().add(AddressType.WORK);
+			adr.getTypes().add(AddressType.POSTAL);
+			adr.getTypes().add(AddressType.PARCEL);
 			vcard.addAddress(adr);
 
 			vcard.addTelephoneNumber("+1-919-676-9515", TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK);
@@ -672,7 +672,7 @@ public class VCardWriterTest {
 			adr.setRegion("CA");
 			adr.setPostalCode("94043");
 			adr.setCountry("U.S.A.");
-			adr.addType(AddressType.WORK);
+			adr.getTypes().add(AddressType.WORK);
 			vcard.addAddress(adr);
 
 			vcard.addTelephoneNumber("+1-415-937-3419", TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK);

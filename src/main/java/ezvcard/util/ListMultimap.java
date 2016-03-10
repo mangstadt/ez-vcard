@@ -1,6 +1,7 @@
 package ezvcard.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -85,7 +86,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	}
 
 	/**
-	 * Adds a value to the multimap.
+	 * Adds a single value to the multimap.
 	 * @param key the key
 	 * @param value the value to add
 	 */
@@ -102,6 +103,15 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	public void putAll(K key, Collection<V> values) {
 		List<V> existingValues = get(key, true);
 		existingValues.addAll(values);
+	}
+
+	/**
+	 * Adds multiple values to the multimap.
+	 * @param key the key
+	 * @param values the values to add
+	 */
+	public void putAll(K key, V... values) {
+		putAll(key, Arrays.asList(values));
 	}
 
 	/**

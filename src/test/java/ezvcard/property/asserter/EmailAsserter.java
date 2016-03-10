@@ -1,8 +1,8 @@
 package ezvcard.property.asserter;
 
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ezvcard.parameter.EmailType;
@@ -61,7 +61,7 @@ public class EmailAsserter extends PropertyAsserter<EmailAsserter, Email> {
 	@Override
 	protected void _run(Email property) {
 		assertEquals(value, property.getValue());
-		assertSetEquals(property.getTypes(), types);
+		assertEquals(Arrays.asList(types), property.getTypes());
 	}
 
 	@Override

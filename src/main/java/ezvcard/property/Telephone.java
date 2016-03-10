@@ -1,10 +1,8 @@
 package ezvcard.property;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -82,6 +80,12 @@ import ezvcard.util.TelUri;
 public class Telephone extends VCardProperty implements HasAltId {
 	private String text;
 	private TelUri uri;
+	private final List<TelephoneType> types = new TypeParameterEnumList<TelephoneType>() {
+		@Override
+		protected TelephoneType _asObject(String value) throws Exception {
+			return TelephoneType.get(value);
+		}
+	};
 
 	/**
 	 * Creates a telephone property.
@@ -150,32 +154,12 @@ public class Telephone extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all the TYPE parameters.
-	 * @return the TYPE parameters or empty set if there are none
+	 * Gets the list that stores this property's telephone types (TYPE
+	 * parameters).
+	 * @return the telephone types (e.g. "HOME", "WORK")
 	 */
-	public Set<TelephoneType> getTypes() {
-		Set<String> values = parameters.getTypes();
-		Set<TelephoneType> types = new HashSet<TelephoneType>(values.size());
-		for (String value : values) {
-			types.add(TelephoneType.get(value));
-		}
+	public List<TelephoneType> getTypes() {
 		return types;
-	}
-
-	/**
-	 * Adds a TYPE parameter.
-	 * @param type the TYPE parameter to add
-	 */
-	public void addType(TelephoneType type) {
-		parameters.addType(type.getValue());
-	}
-
-	/**
-	 * Removes a TYPE parameter.
-	 * @param type the TYPE parameter to remove
-	 */
-	public void removeType(TelephoneType type) {
-		parameters.removeType(type.getValue());
 	}
 
 	@Override

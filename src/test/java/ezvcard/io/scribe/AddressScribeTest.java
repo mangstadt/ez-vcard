@@ -3,7 +3,6 @@ package ezvcard.io.scribe;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -131,7 +130,7 @@ public class AddressScribeTest {
 	@Test
 	public void prepareParameters_type_pref() {
 		Address property = new Address();
-		property.addType(AddressType.PREF);
+		property.getTypes().add(AddressType.PREF);
 
 		//2.1 and 3.0 keep it
 		sensei.assertPrepareParams(property).versions(V2_1, V3_0).expected("TYPE", "pref").run();
@@ -337,7 +336,7 @@ public class AddressScribeTest {
 				assertEquals("TX", property.getRegion());
 				assertEquals("12345", property.getPostalCode());
 				assertEquals("USA", property.getCountry());
-				assertSetEquals(property.getTypes(), AddressType.HOME, AddressType.POSTAL, AddressType.get("other"));
+				assertEquals(Arrays.asList(AddressType.HOME, AddressType.POSTAL, AddressType.get("other")), property.getTypes());
 			}
 		});
 		//@formatter:on

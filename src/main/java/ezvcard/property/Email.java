@@ -1,8 +1,6 @@
 package ezvcard.property;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -73,6 +71,13 @@ import ezvcard.parameter.Pid;
  * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
  */
 public class Email extends TextProperty implements HasAltId {
+	private final List<EmailType> types = new TypeParameterEnumList<EmailType>() {
+		@Override
+		protected EmailType _asObject(String value) throws Exception {
+			return EmailType.get(value);
+		}
+	};
+
 	/**
 	 * Creates an email property.
 	 * @param email the email (e.g. "johndoe@example.com")
@@ -90,32 +95,11 @@ public class Email extends TextProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all the TYPE parameters.
-	 * @return the TYPE parameters or empty set if there are none
+	 * Gets the list that stores this property's email types (TYPE parameters).
+	 * @return the email types (e.g. "INTERNET", "WORK")
 	 */
-	public Set<EmailType> getTypes() {
-		Set<String> values = parameters.getTypes();
-		Set<EmailType> types = new HashSet<EmailType>(values.size());
-		for (String value : values) {
-			types.add(EmailType.get(value));
-		}
+	public List<EmailType> getTypes() {
 		return types;
-	}
-
-	/**
-	 * Adds a TYPE parameter.
-	 * @param type the TYPE parameter to add
-	 */
-	public void addType(EmailType type) {
-		parameters.addType(type.getValue());
-	}
-
-	/**
-	 * Removes a TYPE parameter.
-	 * @param type the TYPE parameter to remove
-	 */
-	public void removeType(EmailType type) {
-		parameters.removeType(type.getValue());
 	}
 
 	@Override

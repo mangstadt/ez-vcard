@@ -13,7 +13,6 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.parameter.AddressType;
 import ezvcard.property.Address;
 import ezvcard.property.Label;
 import ezvcard.property.ProductId;
@@ -175,7 +174,7 @@ public abstract class StreamWriter implements Closeable {
 				//do not add the property to the vCard if it is not supported by the target version
 				continue;
 			}
-			
+
 			//do not add PRODID to the property list yet
 			if (property instanceof ProductId) {
 				prodIdProperty = property;
@@ -199,9 +198,7 @@ public abstract class StreamWriter implements Closeable {
 				}
 
 				Label label = new Label(labelStr);
-				for (AddressType adrType : adr.getTypes()) {
-					label.addType(adrType);
-				}
+				label.getTypes().addAll(adr.getTypes());
 				propertiesToAdd.add(label);
 			}
 		}

@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.io.scribe.ScribeIndex;
@@ -93,7 +92,7 @@ public abstract class StreamReader implements Closeable {
 		List<Address> adrs = vcard.getAddresses();
 		for (Label label : labels) {
 			boolean orphaned = true;
-			Set<AddressType> labelTypes = label.getTypes();
+			List<AddressType> labelTypes = label.getTypes();
 			for (Address adr : adrs) {
 				if (adr.getLabel() != null) {
 					//a label has already been assigned to it

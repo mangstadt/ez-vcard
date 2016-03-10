@@ -1,10 +1,8 @@
 package ezvcard.property;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
@@ -86,6 +84,12 @@ import ezvcard.util.TelUri;
 public class Related extends VCardProperty implements HasAltId {
 	private String uri;
 	private String text;
+	private final List<RelatedType> types = new TypeParameterEnumList<RelatedType>() {
+		@Override
+		protected RelatedType _asObject(String value) throws Exception {
+			return RelatedType.get(value);
+		}
+	};
 
 	/**
 	 * Creates a related property
@@ -175,32 +179,12 @@ public class Related extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all the TYPE parameters.
-	 * @return the TYPE parameters or empty set if there are none
+	 * Gets the list that stores this property's relationship types (TYPE
+	 * parameters).
+	 * @return the relationship types (e.g. "child", "co-worker")
 	 */
-	public Set<RelatedType> getTypes() {
-		Set<String> values = parameters.getTypes();
-		Set<RelatedType> types = new HashSet<RelatedType>(values.size());
-		for (String value : values) {
-			types.add(RelatedType.get(value));
-		}
+	public List<RelatedType> getTypes() {
 		return types;
-	}
-
-	/**
-	 * Adds a TYPE parameter.
-	 * @param type the TYPE parameter to add
-	 */
-	public void addType(RelatedType type) {
-		parameters.addType(type.getValue());
-	}
-
-	/**
-	 * Removes a TYPE parameter.
-	 * @param type the TYPE parameter to remove
-	 */
-	public void removeType(RelatedType type) {
-		parameters.removeType(type.getValue());
 	}
 
 	@Override

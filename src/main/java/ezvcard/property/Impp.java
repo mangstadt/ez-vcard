@@ -2,11 +2,9 @@ package ezvcard.property;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
@@ -90,6 +88,12 @@ public class Impp extends VCardProperty implements HasAltId {
 	private static final String YAHOO = "ymsgr";
 
 	private URI uri;
+	private final List<ImppType> types = new TypeParameterEnumList<ImppType>() {
+		@Override
+		protected ImppType _asObject(String value) throws Exception {
+			return ImppType.get(value);
+		}
+	};
 
 	/**
 	 * Creates an IMPP property. Note that this class has static factory methods
@@ -337,32 +341,11 @@ public class Impp extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all the TYPE parameters.
-	 * @return the TYPE parameters or empty set if there are none
+	 * Gets the list that stores this property's IMPP types (TYPE parameters).
+	 * @return the IMPP types (e.g. "HOME", "WORK")
 	 */
-	public Set<ImppType> getTypes() {
-		Set<String> values = parameters.getTypes();
-		Set<ImppType> types = new HashSet<ImppType>(values.size());
-		for (String value : values) {
-			types.add(ImppType.get(value));
-		}
+	public List<ImppType> getTypes() {
 		return types;
-	}
-
-	/**
-	 * Adds a TYPE parameter.
-	 * @param type the TYPE parameter to add
-	 */
-	public void addType(ImppType type) {
-		parameters.addType(type.getValue());
-	}
-
-	/**
-	 * Removes a TYPE parameter.
-	 * @param type the TYPE parameter to remove
-	 */
-	public void removeType(ImppType type) {
-		parameters.removeType(type.getValue());
 	}
 
 	/**

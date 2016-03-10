@@ -3,9 +3,10 @@ package ezvcard.io.scribe;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -77,7 +78,7 @@ public class TelephoneScribeTest {
 		//TODO move test to VCardPropertyScribeTest
 
 		Telephone property = new Telephone((String) null);
-		property.addType(TelephoneType.PREF);
+		property.getTypes().add(TelephoneType.PREF);
 
 		//2.1 and 3.0 keep it
 		sensei.assertPrepareParams(property).versions(V2_1, V3_0).expected("TYPE", "pref").run();
@@ -182,7 +183,7 @@ public class TelephoneScribeTest {
 		"</div>").run(new Check<Telephone>(){
 			public void check(Telephone property) {
 				assertEquals(text, property.getText());
-				assertSetEquals(property.getTypes(), TelephoneType.HOME, TelephoneType.CELL, TelephoneType.get("foo"));
+				assertEquals(Arrays.asList(TelephoneType.HOME, TelephoneType.CELL, TelephoneType.get("foo")), property.getTypes());
 			}
 		});
 

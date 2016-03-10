@@ -48,10 +48,10 @@ public class EmailTest {
 		property.setValue("johndoe@example.com");
 		assertValidate(property).run();
 
-		property.addType(EmailType.AOL);
-		property.addType(EmailType.INTERNET);
-		property.addType(EmailType.HOME);
-		property.addType(EmailType.PREF);
+		property.getTypes().add(EmailType.AOL);
+		property.getTypes().add(EmailType.INTERNET);
+		property.getTypes().add(EmailType.HOME);
+		property.getTypes().add(EmailType.PREF);
 		assertValidate(property).versions(VCardVersion.V2_1).run(9);
 		assertValidate(property).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(9, 9);
 	}

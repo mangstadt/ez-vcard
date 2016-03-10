@@ -1214,7 +1214,7 @@ public class SampleVCardsTest {
 
 		//EMAIL
 		assertEmail(vcard)
-			.types(EmailType.INTERNET, EmailType.PREF)
+			.types(EmailType.PREF, EmailType.INTERNET)
 			.value("john.doe@ibm.cm")
 		.noMore();
 		
@@ -1320,7 +1320,7 @@ public class SampleVCardsTest {
 			.types(TelephoneType.CELL, TelephoneType.VOICE)
 			.text("(111) 555-4444")
 		.next()
-			.types(TelephoneType.FAX, TelephoneType.WORK)
+			.types(TelephoneType.WORK, TelephoneType.FAX)
 			.text("(111) 555-3333")
 		.noMore();
 		
@@ -1363,7 +1363,7 @@ public class SampleVCardsTest {
 
 		//EMAIL
 		assertEmail(vcard)
-			.types(EmailType.INTERNET, EmailType.PREF)
+			.types(EmailType.PREF, EmailType.INTERNET)
 			.value("mike.angstadt@gmail.com")
 		.noMore();
 			
@@ -1638,7 +1638,7 @@ public class SampleVCardsTest {
 			.types(TelephoneType.CELL, TelephoneType.VOICE)
 			.text("MobilePhone")
 		.next()
-			.types(TelephoneType.FAX, TelephoneType.WORK)
+			.types(TelephoneType.WORK, TelephoneType.FAX)
 			.text("BusinessFaxPhone")
 		.noMore();
 		
@@ -1678,7 +1678,7 @@ public class SampleVCardsTest {
 
 		//EMAIL
 		assertEmail(vcard)
-			.types(EmailType.INTERNET, EmailType.PREF)
+			.types(EmailType.PREF, EmailType.INTERNET)
 			.value("jdoe@hotmail.com")
 		.noMore();
 
@@ -1768,7 +1768,7 @@ public class SampleVCardsTest {
 
 		//EMAIL
 		assertEmail(vcard)
-			.types(EmailType.INTERNET, EmailType.PREF)
+			.types(EmailType.PREF, EmailType.INTERNET)
 			.value("doe.john@hotmail.com")
 		.next()
 			.types(EmailType.INTERNET)
@@ -1903,7 +1903,7 @@ public class SampleVCardsTest {
 			.uri(new TelUri.Builder("+1-418-656-9254").extension("102").build())
 			.param("PREF", "1")
 		.next()
-			.types(TelephoneType.WORK, TelephoneType.VOICE, TelephoneType.CELL, TelephoneType.VIDEO, TelephoneType.TEXT)
+			.types(TelephoneType.WORK, TelephoneType.CELL, TelephoneType.VOICE, TelephoneType.VIDEO, TelephoneType.TEXT)
 			.uri(new TelUri.Builder("+1-418-262-6501").build())
 		.noMore();
 
@@ -1966,10 +1966,10 @@ public class SampleVCardsTest {
 			.noMore();
 
 			assertTelephone(vcard)
-				.types(TelephoneType.WORK, TelephoneType.VOICE, TelephoneType.MSG)
+				.types(TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK)
 				.text("+1-919-676-9515")
 			.next()
-				.types(TelephoneType.WORK, TelephoneType.FAX)
+				.types(TelephoneType.FAX, TelephoneType.WORK)
 				.text("+1-919-676-9564")
 			.noMore();
 
@@ -2014,10 +2014,10 @@ public class SampleVCardsTest {
 			.noMore();
 
 			assertTelephone(vcard)
-				.types(TelephoneType.WORK, TelephoneType.VOICE, TelephoneType.MSG)
+				.types(TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK)
 				.text("+1-415-937-3419")
 			.next()
-				.types(TelephoneType.WORK, TelephoneType.FAX)
+				.types(TelephoneType.FAX, TelephoneType.WORK)
 				.text("+1-415-528-4164")
 			.noMore();
 

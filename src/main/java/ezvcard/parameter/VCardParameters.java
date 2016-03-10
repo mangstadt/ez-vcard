@@ -8,7 +8,6 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -175,19 +174,6 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Removes the VALUE parameter. This defines what kind of data type the
-	 * property has, such as "text" or "URI". Only used in text-based vCards.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 * </p>
-	 */
-	public void removeValue() {
-		removeAll(VALUE);
-	}
-
-	/**
-	 * <p>
 	 * Gets the CHARSET parameter.
 	 * </p>
 	 * <p>
@@ -294,32 +280,6 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets all TYPE parameters.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 * </p>
-	 * @return the values or empty set if not found
-	 */
-	public Set<String> getTypes() {
-		return new HashSet<String>(get(TYPE));
-	}
-
-	/**
-	 * <p>
-	 * Adds a TYPE parameter.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 * </p>
-	 * @param type the value
-	 */
-	public void addType(String type) {
-		put(TYPE, type);
-	}
-
-	/**
-	 * <p>
 	 * Gets the first TYPE parameter.
 	 * </p>
 	 * <p>
@@ -328,8 +288,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @return the value or null if not found.
 	 */
 	public String getType() {
-		Set<String> types = getTypes();
-		return types.isEmpty() ? null : types.iterator().next();
+		return first(TYPE);
 	}
 
 	/**
@@ -343,31 +302,6 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 */
 	public void setType(String type) {
 		replace(TYPE, type);
-	}
-
-	/**
-	 * <p>
-	 * Removes a TYPE parameter.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 * </p>
-	 * @param type the value to remove
-	 */
-	public void removeType(String type) {
-		remove(TYPE, type);
-	}
-
-	/**
-	 * <p>
-	 * Removes all TYPE parameters.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
-	 * </p>
-	 */
-	public void removeTypes() {
-		removeAll(TYPE);
 	}
 
 	/**

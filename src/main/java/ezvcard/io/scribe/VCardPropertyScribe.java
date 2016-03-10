@@ -1134,14 +1134,14 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 			}
 
 			if (property == mostPreferred) {
-				copy.addType("pref");
+				copy.put(VCardParameters.TYPE, "pref");
 			}
 
 			break;
 		case V4_0:
-			for (String type : property.getParameters().getTypes()) {
+			for (String type : property.getParameters().get(VCardParameters.TYPE)) {
 				if ("pref".equalsIgnoreCase(type)) {
-					copy.removeType(type);
+					copy.remove(VCardParameters.TYPE, type);
 					copy.setPref(1);
 					break;
 				}

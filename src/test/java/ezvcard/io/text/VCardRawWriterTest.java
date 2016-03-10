@@ -138,18 +138,15 @@ public class VCardRawWriterTest {
 		VCardRawWriter writer = new VCardRawWriter(sw, version);
 
 		VCardParameters parameters = new VCardParameters();
-		parameters.addType("one");
+		parameters.putAll(VCardParameters.TYPE, "one");
 		writer.writeProperty(null, "PROP", parameters, "");
 
 		parameters = new VCardParameters();
-		parameters.addType("one");
-		parameters.addType("two");
+		parameters.putAll(VCardParameters.TYPE, "one", "two");
 		writer.writeProperty(null, "PROP", parameters, "");
 
 		parameters = new VCardParameters();
-		parameters.addType("one");
-		parameters.addType("two");
-		parameters.addType("three");
+		parameters.putAll(VCardParameters.TYPE, "one", "two", "three");
 		writer.writeProperty(null, "PROP", parameters, "");
 
 		String actual = sw.toString();

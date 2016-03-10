@@ -970,7 +970,7 @@ public class XCardReaderTest {
 				.types(TelephoneType.WORK, TelephoneType.VOICE)
 			.next()
 				.uri(new TelUri.Builder("+1-418-262-6501").build())
-				.types(TelephoneType.WORK, TelephoneType.VOICE, TelephoneType.CELL, TelephoneType.VIDEO, TelephoneType.TEXT)
+				.types(TelephoneType.WORK, TelephoneType.TEXT, TelephoneType.VOICE, TelephoneType.CELL, TelephoneType.VIDEO)
 			.noMore();
 			
 			assertEmail(vcard)

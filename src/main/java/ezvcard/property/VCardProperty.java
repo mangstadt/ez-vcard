@@ -14,6 +14,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.Pid;
+import ezvcard.parameter.VCardParameter;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.CharacterBitSet;
 
@@ -360,10 +361,10 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets all PID parameter values. PIDs can exist on any property where
-	 * multiple instances are allowed (such as {@link Email} or {@link Address},
-	 * but not {@link StructuredName} because only 1 instance of this property
-	 * is allowed per vCard).
+	 * Gets the list that stores this property's PID parameter values. PIDs can
+	 * exist on any property where multiple instances are allowed (such as
+	 * {@link Email} or {@link Address}, but not {@link StructuredName} because
+	 * only 1 instance of this property is allowed per vCard).
 	 * </p>
 	 * <p>
 	 * When used in conjunction with the {@link ClientPidMap} property, it
@@ -492,6 +493,31 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 			return new Pid(localId, clientPidMapReference);
 		}
 	};
+
+	/**
+	 * <p>
+	 * A list that holds the values of a particular parameter. It automatically
+	 * converts parameter value Strings from the property's
+	 * {@link VCardParameters} object to the appropriate {@link VCardParameter}
+	 * object that some parameters use.
+	 * </p>
+	 * <p>
+	 * The list is backed by the property's {@link VCardParameters} object, so
+	 * any changes made to the list will affect the property's
+	 * {@link VCardParameters} object and vice versa.
+	 * </p>
+	 * @param <T> the {@link VCardParameter} class
+	 */
+	protected abstract class TypeParameterEnumList<T extends VCardParameter> extends VCardParameterList<T> {
+		public TypeParameterEnumList() {
+			super(VCardParameters.TYPE);
+		}
+
+		@Override
+		protected String _asString(T value) {
+			return value.getValue();
+		}
+	}
 
 	/**
 	 * <p>

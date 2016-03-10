@@ -263,9 +263,9 @@ public class AddressTest {
 		Address property = new Address();
 		assertValidate(property).run();
 
-		property.addType(AddressType.DOM);
-		property.addType(AddressType.HOME);
-		property.addType(AddressType.PREF);
+		property.getTypes().add(AddressType.DOM);
+		property.getTypes().add(AddressType.HOME);
+		property.getTypes().add(AddressType.PREF);
 		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run();
 		assertValidate(property).versions(VCardVersion.V4_0).run(9);
 	}

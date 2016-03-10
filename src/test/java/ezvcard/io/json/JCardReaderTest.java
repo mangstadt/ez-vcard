@@ -519,7 +519,7 @@ public class JCardReaderTest {
 			.param("PREF", "1")
 		.next()
 			.uri(new TelUri.Builder("+1-418-262-6501").build())
-			.types(TelephoneType.WORK, TelephoneType.VOICE, TelephoneType.CELL, TelephoneType.VIDEO, TelephoneType.TEXT)
+			.types(TelephoneType.WORK, TelephoneType.CELL, TelephoneType.VOICE, TelephoneType.VIDEO, TelephoneType.TEXT)
 		.noMore();
 		
 		assertEmail(vcard)

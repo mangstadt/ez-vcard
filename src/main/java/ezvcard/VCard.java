@@ -2254,12 +2254,10 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
 	 */
 	public Email addEmail(String email, EmailType... types) {
-		Email type = new Email(email);
-		for (EmailType t : types) {
-			type.addType(t);
-		}
-		addEmail(type);
-		return type;
+		Email property = new Email(email);
+		property.getTypes().addAll(Arrays.asList(types));
+		addEmail(property);
+		return property;
 	}
 
 	/**
@@ -2345,12 +2343,10 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.13</a>
 	 */
 	public Telephone addTelephoneNumber(String telephoneNumber, TelephoneType... types) {
-		Telephone type = new Telephone(telephoneNumber);
-		for (TelephoneType t : types) {
-			type.addType(t);
-		}
-		addTelephoneNumber(type);
-		return type;
+		Telephone property = new Telephone(telephoneNumber);
+		property.getTypes().addAll(Arrays.asList(types));
+		addTelephoneNumber(property);
+		return property;
 	}
 
 	/**

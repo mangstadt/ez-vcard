@@ -119,7 +119,7 @@ public class JohnDoeVCard {
 		adr.setPostalCode("12345");
 		adr.setCountry("USA");
 		adr.setLabel("123 Wall St.\nNew York, NY 12345\nUSA");
-		adr.addType(AddressType.WORK);
+		adr.getTypes().add(AddressType.WORK);
 		vcard.addAddress(adr);
 
 		adr = new Address();
@@ -129,7 +129,7 @@ public class JohnDoeVCard {
 		adr.setPostalCode("54321");
 		adr.setCountry("USA");
 		adr.setLabel("123 Main St.\nAlbany, NY 54321\nUSA");
-		adr.addType(AddressType.HOME);
+		adr.getTypes().add(AddressType.HOME);
 		vcard.addAddress(adr);
 
 		vcard.addTelephoneNumber("1-555-555-1234", TelephoneType.WORK);

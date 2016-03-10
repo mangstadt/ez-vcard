@@ -1,8 +1,8 @@
 package ezvcard.property.asserter;
 
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ezvcard.parameter.AddressType;
@@ -103,7 +103,7 @@ public class AddressAsserter extends PropertyAsserter<AddressAsserter, Address> 
 		assertEquals(postalCode, property.getPostalCode());
 		assertEquals(country, property.getCountry());
 		assertEquals(label, property.getLabel());
-		assertSetEquals(property.getTypes(), types);
+		assertEquals(Arrays.asList(types), property.getTypes());
 	}
 
 	@Override

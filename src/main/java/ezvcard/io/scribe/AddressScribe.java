@@ -122,9 +122,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 		property.setCountries(element.allValues("country-name"));
 
 		List<String> types = element.types();
-		for (String type : types) {
-			property.getParameters().addType(type);
-		}
+		property.getParameters().putAll(VCardParameters.TYPE, types);
 
 		return property;
 	}

@@ -11,7 +11,6 @@ import static ezvcard.property.asserter.PropertyAsserter.assertSimpleProperty;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertPropertyCount;
-import static ezvcard.util.TestUtils.assertSetEquals;
 import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
@@ -103,11 +102,11 @@ public class VCardReaderTest {
 
 		Address adr = vcard.getAddresses().get(0);
 		assertEquals(2, adr.getParameters().size());
-		assertSetEquals(adr.getTypes(), AddressType.HOME, AddressType.WORK);
+		assertEquals(Arrays.asList(AddressType.HOME, AddressType.WORK), adr.getTypes());
 
 		Label label = vcard.getOrphanedLabels().get(0);
 		assertEquals(2, label.getParameters().size());
-		assertSetEquals(label.getTypes(), AddressType.DOM, AddressType.PARCEL);
+		assertEquals(Arrays.asList(AddressType.DOM, AddressType.PARCEL), label.getTypes());
 
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
@@ -132,7 +131,7 @@ public class VCardReaderTest {
 
 		for (Address adr : vcard.getAddresses()) {
 			assertEquals(3, adr.getParameters().size());
-			assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK);
+			assertEquals(Arrays.asList(AddressType.DOM, AddressType.HOME, AddressType.WORK), adr.getTypes());
 		}
 
 		assertWarnings(0, reader);
@@ -154,7 +153,7 @@ public class VCardReaderTest {
 		assertPropertyCount(1, vcard);
 
 		Address adr = vcard.getAddresses().get(0);
-		assertSetEquals(adr.getTypes(), AddressType.DOM, AddressType.HOME, AddressType.WORK, AddressType.get(""));
+		assertEquals(Arrays.asList(AddressType.DOM, AddressType.HOME, AddressType.get(""), AddressType.WORK, AddressType.get("")), adr.getTypes());
 
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
@@ -627,11 +626,11 @@ public class VCardReaderTest {
 			Iterator<Address> adrs = vcard.getAddresses().iterator();
 
 			Address adr = adrs.next();
-			assertSetEquals(adr.getTypes(), AddressType.HOME);
+			assertEquals(Arrays.asList(AddressType.HOME), adr.getTypes());
 			assertNull(adr.getLabel());
 
 			adr = adrs.next();
-			assertSetEquals(adr.getTypes(), AddressType.WORK);
+			assertEquals(Arrays.asList(AddressType.WORK), adr.getTypes());
 			assertEquals("work label", adr.getLabel());
 		}
 
@@ -640,11 +639,11 @@ public class VCardReaderTest {
 			assertPropertyCount(3, vcard);
 
 			Address adr = vcard.getAddresses().get(0);
-			assertSetEquals(adr.getTypes(), AddressType.DOM);
+			assertEquals(Arrays.asList(AddressType.DOM), adr.getTypes());
 			assertNull(adr.getLabel());
 
 			Label label = vcard.getOrphanedLabels().get(0);
-			assertSetEquals(label.getTypes(), AddressType.HOME);
+			assertEquals(Arrays.asList(AddressType.HOME), label.getTypes());
 		}
 
 		vcard = vcard.getAgent().getVCard();
@@ -652,7 +651,7 @@ public class VCardReaderTest {
 			assertPropertyCount(1, vcard);
 
 			Address adr = vcard.getAddresses().get(0);
-			assertSetEquals(adr.getTypes(), AddressType.DOM);
+			assertEquals(Arrays.asList(AddressType.DOM), adr.getTypes());
 			assertEquals("dom label", adr.getLabel());
 		}
 

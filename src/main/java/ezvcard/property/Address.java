@@ -2,11 +2,9 @@ package ezvcard.property;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -112,6 +110,12 @@ public class Address extends VCardProperty implements HasAltId {
 	private final List<String> regions;
 	private final List<String> postalCodes;
 	private final List<String> countries;
+	private final List<AddressType> types = new TypeParameterEnumList<AddressType>() {
+		@Override
+		protected AddressType _asObject(String value) throws Exception {
+			return AddressType.get(value);
+		}
+	};
 
 	public Address() {
 		poBoxes = new ArrayList<String>(1);
@@ -397,32 +401,12 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all the TYPE parameters.
-	 * @return the TYPE parameters or empty set if there are none
+	 * Gets the list that stores this property's address types (TYPE
+	 * parameters).
+	 * @return the address types (e.g. "HOME", "WORK")
 	 */
-	public Set<AddressType> getTypes() {
-		Set<String> values = parameters.getTypes();
-		Set<AddressType> types = new HashSet<AddressType>(values.size());
-		for (String value : values) {
-			types.add(AddressType.get(value));
-		}
+	public List<AddressType> getTypes() {
 		return types;
-	}
-
-	/**
-	 * Adds a TYPE parameter.
-	 * @param type the TYPE parameter to add
-	 */
-	public void addType(AddressType type) {
-		parameters.addType(type.getValue());
-	}
-
-	/**
-	 * Removes a TYPE parameter.
-	 * @param type the TYPE parameter to remove
-	 */
-	public void removeType(AddressType type) {
-		parameters.removeType(type.getValue());
 	}
 
 	@Override

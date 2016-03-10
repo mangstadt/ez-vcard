@@ -63,9 +63,7 @@ public class EmailScribe extends StringPropertyScribe<Email> {
 		Email property = new Email(email);
 
 		List<String> types = element.types();
-		for (String type : types) {
-			property.getParameters().addType(type);
-		}
+		property.getParameters().putAll(VCardParameters.TYPE, types);
 
 		return property;
 	}
