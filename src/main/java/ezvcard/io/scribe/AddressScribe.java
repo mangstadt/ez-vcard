@@ -96,13 +96,13 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	@Override
 	protected Address _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		Address property = new Address();
-		property.setPoBoxes(sanitizeXml(element, "pobox"));
-		property.setExtendedAddresses(sanitizeXml(element, "ext"));
-		property.setStreetAddresses(sanitizeXml(element, "street"));
-		property.setLocalities(sanitizeXml(element, "locality"));
-		property.setRegions(sanitizeXml(element, "region"));
-		property.setPostalCodes(sanitizeXml(element, "code"));
-		property.setCountries(sanitizeXml(element, "country"));
+		property.getPoBoxes().addAll(sanitizeXml(element, "pobox"));
+		property.getExtendedAddresses().addAll(sanitizeXml(element, "ext"));
+		property.getStreetAddresses().addAll(sanitizeXml(element, "street"));
+		property.getLocalities().addAll(sanitizeXml(element, "locality"));
+		property.getRegions().addAll(sanitizeXml(element, "region"));
+		property.getPostalCodes().addAll(sanitizeXml(element, "code"));
+		property.getCountries().addAll(sanitizeXml(element, "country"));
 		return property;
 	}
 
@@ -113,13 +113,13 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	@Override
 	protected Address _parseHtml(HCardElement element, List<String> warnings) {
 		Address property = new Address();
-		property.setPoBoxes(element.allValues("post-office-box"));
-		property.setExtendedAddresses(element.allValues("extended-address"));
-		property.setStreetAddresses(element.allValues("street-address"));
-		property.setLocalities(element.allValues("locality"));
-		property.setRegions(element.allValues("region"));
-		property.setPostalCodes(element.allValues("postal-code"));
-		property.setCountries(element.allValues("country-name"));
+		property.getPoBoxes().addAll(element.allValues("post-office-box"));
+		property.getExtendedAddresses().addAll(element.allValues("extended-address"));
+		property.getStreetAddresses().addAll(element.allValues("street-address"));
+		property.getLocalities().addAll(element.allValues("locality"));
+		property.getRegions().addAll(element.allValues("region"));
+		property.getPostalCodes().addAll(element.allValues("postal-code"));
+		property.getCountries().addAll(element.allValues("country-name"));
 
 		List<String> types = element.types();
 		property.getParameters().putAll(VCardParameters.TYPE, types);
@@ -151,13 +151,13 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	private Address parseStructuredValue(StructuredIterator it) {
 		Address property = new Address();
 
-		property.setPoBoxes(it.nextComponent());
-		property.setExtendedAddresses(it.nextComponent());
-		property.setStreetAddresses(it.nextComponent());
-		property.setLocalities(it.nextComponent());
-		property.setRegions(it.nextComponent());
-		property.setPostalCodes(it.nextComponent());
-		property.setCountries(it.nextComponent());
+		property.getPoBoxes().addAll(it.nextComponent());
+		property.getExtendedAddresses().addAll(it.nextComponent());
+		property.getStreetAddresses().addAll(it.nextComponent());
+		property.getLocalities().addAll(it.nextComponent());
+		property.getRegions().addAll(it.nextComponent());
+		property.getPostalCodes().addAll(it.nextComponent());
+		property.getCountries().addAll(it.nextComponent());
 
 		return property;
 	}

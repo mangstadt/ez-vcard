@@ -1,7 +1,6 @@
 package ezvcard.property;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,8 +150,9 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all P.O. (post office) boxes that are assigned to this address. An
-	 * address is unlikely to have more than one, but it's possible nonetheless.
+	 * Gets the list that holds the P.O. (post office) boxes that are assigned
+	 * to this address. An address is unlikely to have more than one, but it's
+	 * possible nonetheless.
 	 * @return the P.O. boxes
 	 */
 	public List<String> getPoBoxes() {
@@ -168,15 +168,6 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the P.O. (post office) boxes. An address is unlikely to have more
-	 * than one, but it's possible nonetheless.
-	 * @param poBoxes the P.O. boxes
-	 */
-	public void setPoBoxes(Collection<String> poBoxes) {
-		set(this.poBoxes, poBoxes);
-	}
-
-	/**
 	 * Gets the extended address.
 	 * @return the extended address (e.g. "Suite 200") or null if not set
 	 */
@@ -185,8 +176,9 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all extended addresses that are assigned to this address. An address
-	 * is unlikely to have more than one, but it's possible nonetheless.
+	 * Gets the list that holds the extended addresses that are assigned to this
+	 * address. An address is unlikely to have more than one, but it's possible
+	 * nonetheless.
 	 * @return the extended addresses
 	 */
 	public List<String> getExtendedAddresses() {
@@ -212,15 +204,6 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the extended addresses. An address is unlikely to have more than
-	 * one, but it's possible nonetheless.
-	 * @param extendedAddresses the extended addresses
-	 */
-	public void setExtendedAddresses(Collection<String> extendedAddresses) {
-		set(this.extendedAddresses, extendedAddresses);
-	}
-
-	/**
 	 * Gets the street address
 	 * @return the street address (e.g. "123 Main St")
 	 */
@@ -229,8 +212,9 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all street addresses that are assigned to this address. An address
-	 * is unlikely to have more than one, but it's possible nonetheless.
+	 * Gets the list that holds the street addresses that are assigned to this
+	 * address. An address is unlikely to have more than one, but it's possible
+	 * nonetheless.
 	 * @return the street addresses
 	 */
 	public List<String> getStreetAddresses() {
@@ -256,15 +240,6 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the street addresses. An address is unlikely to have more than one,
-	 * but it's possible nonetheless.
-	 * @param streetAddresses the street addresses
-	 */
-	public void setStreetAddresses(Collection<String> streetAddresses) {
-		set(this.streetAddresses, streetAddresses);
-	}
-
-	/**
 	 * Gets the locality (city)
 	 * @return the locality (e.g. "Boston") or null if not set
 	 */
@@ -273,8 +248,9 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all localities that are assigned to this address. An address is
-	 * unlikely to have more than one, but it's possible nonetheless.
+	 * Gets the list that holds the localities that are assigned to this
+	 * address. An address is unlikely to have more than one, but it's possible
+	 * nonetheless.
 	 * @return the localities
 	 */
 	public List<String> getLocalities() {
@@ -290,15 +266,6 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the localities. An address is unlikely to have more than one, but
-	 * it's possible nonetheless.
-	 * @param localities the localities
-	 */
-	public void setLocalities(Collection<String> localities) {
-		set(this.localities, localities);
-	}
-
-	/**
 	 * Gets the region (state).
 	 * @return the region (e.g. "Texas") or null if not set
 	 */
@@ -307,8 +274,9 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all regions that are assigned to this address. An address is
-	 * unlikely to have more than one, but it's possible nonetheless.
+	 * Gets the list that holds the regions that are assigned to this address.
+	 * An address is unlikely to have more than one, but it's possible
+	 * nonetheless.
 	 * @return the regions
 	 */
 	public List<String> getRegions() {
@@ -324,15 +292,6 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the regions. An address is unlikely to have more than one, but it's
-	 * possible nonetheless.
-	 * @param regions the regions
-	 */
-	public void setRegions(Collection<String> regions) {
-		set(this.regions, regions);
-	}
-
-	/**
 	 * Gets the postal code (zip code).
 	 * @return the postal code (e.g. "90210") or null if not set
 	 */
@@ -341,8 +300,9 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all postal codes that are assigned to this address. An address is
-	 * unlikely to have more than one, but it's possible nonetheless.
+	 * Gets the list that holds the postal codes that are assigned to this
+	 * address. An address is unlikely to have more than one, but it's possible
+	 * nonetheless.
 	 * @return the postal codes
 	 */
 	public List<String> getPostalCodes() {
@@ -358,15 +318,6 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the postal codes. An address is unlikely to have more than one, but
-	 * it's possible nonetheless.
-	 * @param postalCodes the postal codes
-	 */
-	public void setPostalCodes(Collection<String> postalCodes) {
-		set(this.postalCodes, postalCodes);
-	}
-
-	/**
 	 * Gets the country.
 	 * @return the country (e.g. "USA") or null if not set
 	 */
@@ -375,8 +326,9 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets all countries that are assigned to this address. An address is
-	 * unlikely to have more than one, but it's possible nonetheless.
+	 * Gets the list that holds the countries that are assigned to this address.
+	 * An address is unlikely to have more than one, but it's possible
+	 * nonetheless.
 	 * @return the countries
 	 */
 	public List<String> getCountries() {
@@ -389,15 +341,6 @@ public class Address extends VCardProperty implements HasAltId {
 	 */
 	public void setCountry(String country) {
 		set(countries, country);
-	}
-
-	/**
-	 * Sets the countries. An address is unlikely to have more than one, but
-	 * it's possible nonetheless.
-	 * @param countries the countries
-	 */
-	public void setCountries(Collection<String> countries) {
-		set(this.countries, countries);
 	}
 
 	/**
@@ -580,13 +523,6 @@ public class Address extends VCardProperty implements HasAltId {
 		list.clear();
 		if (value != null) {
 			list.add(value);
-		}
-	}
-
-	private static void set(List<String> destination, Collection<String> source) {
-		destination.clear();
-		if (source != null) {
-			destination.addAll(source);
 		}
 	}
 }

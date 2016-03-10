@@ -61,9 +61,9 @@ public class AddressTest {
 		assertEquals("zero", property.getExtendedAddress());
 		assertEquals(Arrays.asList("zero"), property.getExtendedAddresses());
 
-		property.setExtendedAddresses(Arrays.asList("one", "two"));
-		assertEquals("one", property.getExtendedAddress());
-		assertEquals(Arrays.asList("one", "two"), property.getExtendedAddresses());
+		property.getExtendedAddresses().add("one");
+		assertEquals("zero", property.getExtendedAddress());
+		assertEquals(Arrays.asList("zero", "one"), property.getExtendedAddresses());
 
 		property.setExtendedAddress(null);
 		assertNull(property.getExtendedAddress());
@@ -72,10 +72,6 @@ public class AddressTest {
 		property.setExtendedAddress("three");
 		assertEquals("three", property.getExtendedAddress());
 		assertEquals(Arrays.asList("three"), property.getExtendedAddresses());
-
-		property.setExtendedAddresses(null);
-		assertNull(property.getExtendedAddress());
-		assertTrue(property.getExtendedAddresses().isEmpty());
 	}
 
 	@Test
@@ -88,9 +84,9 @@ public class AddressTest {
 		assertEquals("zero", property.getPoBox());
 		assertEquals(Arrays.asList("zero"), property.getPoBoxes());
 
-		property.setPoBoxes(Arrays.asList("one", "two"));
-		assertEquals("one", property.getPoBox());
-		assertEquals(Arrays.asList("one", "two"), property.getPoBoxes());
+		property.getPoBoxes().add("one");
+		assertEquals("zero", property.getPoBox());
+		assertEquals(Arrays.asList("zero", "one"), property.getPoBoxes());
 
 		property.setPoBox(null);
 		assertNull(property.getPoBox());
@@ -99,10 +95,6 @@ public class AddressTest {
 		property.setPoBox("three");
 		assertEquals("three", property.getPoBox());
 		assertEquals(Arrays.asList("three"), property.getPoBoxes());
-
-		property.setPoBoxes(null);
-		assertNull(property.getPoBox());
-		assertTrue(property.getPoBoxes().isEmpty());
 	}
 
 	@Test
@@ -115,9 +107,9 @@ public class AddressTest {
 		assertEquals("zero", property.getStreetAddress());
 		assertEquals(Arrays.asList("zero"), property.getStreetAddresses());
 
-		property.setStreetAddresses(Arrays.asList("one", "two"));
-		assertEquals("one", property.getStreetAddress());
-		assertEquals(Arrays.asList("one", "two"), property.getStreetAddresses());
+		property.getStreetAddresses().add("one");
+		assertEquals("zero", property.getStreetAddress());
+		assertEquals(Arrays.asList("zero", "one"), property.getStreetAddresses());
 
 		property.setStreetAddress(null);
 		assertNull(property.getStreetAddress());
@@ -126,10 +118,6 @@ public class AddressTest {
 		property.setStreetAddress("three");
 		assertEquals("three", property.getStreetAddress());
 		assertEquals(Arrays.asList("three"), property.getStreetAddresses());
-
-		property.setStreetAddresses(null);
-		assertNull(property.getStreetAddress());
-		assertTrue(property.getStreetAddresses().isEmpty());
 	}
 
 	@Test
@@ -142,9 +130,9 @@ public class AddressTest {
 		assertEquals("zero", property.getLocality());
 		assertEquals(Arrays.asList("zero"), property.getLocalities());
 
-		property.setLocalities(Arrays.asList("one", "two"));
-		assertEquals("one", property.getLocality());
-		assertEquals(Arrays.asList("one", "two"), property.getLocalities());
+		property.getLocalities().add("one");
+		assertEquals("zero", property.getLocality());
+		assertEquals(Arrays.asList("zero", "one"), property.getLocalities());
 
 		property.setLocality(null);
 		assertNull(property.getLocality());
@@ -153,10 +141,6 @@ public class AddressTest {
 		property.setLocality("three");
 		assertEquals("three", property.getLocality());
 		assertEquals(Arrays.asList("three"), property.getLocalities());
-
-		property.setLocalities(null);
-		assertNull(property.getLocality());
-		assertTrue(property.getLocalities().isEmpty());
 	}
 
 	@Test
@@ -169,9 +153,9 @@ public class AddressTest {
 		assertEquals("zero", property.getRegion());
 		assertEquals(Arrays.asList("zero"), property.getRegions());
 
-		property.setRegions(Arrays.asList("one", "two"));
-		assertEquals("one", property.getRegion());
-		assertEquals(Arrays.asList("one", "two"), property.getRegions());
+		property.getRegions().add("one");
+		assertEquals("zero", property.getRegion());
+		assertEquals(Arrays.asList("zero", "one"), property.getRegions());
 
 		property.setRegion(null);
 		assertNull(property.getRegion());
@@ -180,10 +164,6 @@ public class AddressTest {
 		property.setRegion("three");
 		assertEquals("three", property.getRegion());
 		assertEquals(Arrays.asList("three"), property.getRegions());
-
-		property.setRegions(null);
-		assertNull(property.getRegion());
-		assertTrue(property.getRegions().isEmpty());
 	}
 
 	@Test
@@ -196,9 +176,9 @@ public class AddressTest {
 		assertEquals("zero", property.getPostalCode());
 		assertEquals(Arrays.asList("zero"), property.getPostalCodes());
 
-		property.setPostalCodes(Arrays.asList("one", "two"));
-		assertEquals("one", property.getPostalCode());
-		assertEquals(Arrays.asList("one", "two"), property.getPostalCodes());
+		property.getPostalCodes().add("one");
+		assertEquals("zero", property.getPostalCode());
+		assertEquals(Arrays.asList("zero", "one"), property.getPostalCodes());
 
 		property.setPostalCode(null);
 		assertNull(property.getPostalCode());
@@ -207,10 +187,6 @@ public class AddressTest {
 		property.setPostalCode("three");
 		assertEquals("three", property.getPostalCode());
 		assertEquals(Arrays.asList("three"), property.getPostalCodes());
-
-		property.setPostalCodes(null);
-		assertNull(property.getPostalCode());
-		assertTrue(property.getPostalCodes().isEmpty());
 	}
 
 	@Test
@@ -223,9 +199,9 @@ public class AddressTest {
 		assertEquals("zero", property.getCountry());
 		assertEquals(Arrays.asList("zero"), property.getCountries());
 
-		property.setCountries(Arrays.asList("one", "two"));
-		assertEquals("one", property.getCountry());
-		assertEquals(Arrays.asList("one", "two"), property.getCountries());
+		property.getCountries().add("one");
+		assertEquals("zero", property.getCountry());
+		assertEquals(Arrays.asList("zero", "one"), property.getCountries());
 
 		property.setCountry(null);
 		assertNull(property.getCountry());
@@ -234,10 +210,6 @@ public class AddressTest {
 		property.setCountry("three");
 		assertEquals("three", property.getCountry());
 		assertEquals(Arrays.asList("three"), property.getCountries());
-
-		property.setCountries(null);
-		assertNull(property.getCountry());
-		assertTrue(property.getCountries().isEmpty());
 	}
 
 	@Test

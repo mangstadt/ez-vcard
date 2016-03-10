@@ -6,7 +6,6 @@ import static ezvcard.VCardVersion.V4_0;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -66,8 +65,8 @@ public class AddressScribeTest {
 	private final Address withMultipleValuesFields = new Address();
 	{
 		withMultipleValuesFields.setPoBox("P.O. Box 1234;");
-		withMultipleValuesFields.setExtendedAddresses(new ArrayList<String>(Arrays.asList("Apt, 11", "P.O. Box 12")));
-		withMultipleValuesFields.setStreetAddresses(new ArrayList<String>(Arrays.asList("123 Main St", "555 Main St")));
+		withMultipleValuesFields.getExtendedAddresses().addAll(Arrays.asList("Apt, 11", "P.O. Box 12"));
+		withMultipleValuesFields.getStreetAddresses().addAll(Arrays.asList("123 Main St", "555 Main St"));
 		withMultipleValuesFields.setLocality("Austin");
 		withMultipleValuesFields.setRegion("TX");
 		withMultipleValuesFields.setPostalCode("12345");
