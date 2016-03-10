@@ -464,6 +464,21 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	private PidParameterList pidParameterList;
 
+	/**
+	 * <p>
+	 * A list that holds the values of the PID parameter.
+	 * </p>
+	 * <p>
+	 * This class automatically converts the raw parameter values (strings) to
+	 * {@link Pid} objects and vice versa. If a string value cannot be
+	 * converted, an {@link IllegalStateException} will be thrown.
+	 * </p>
+	 * <p>
+	 * This list is backed by the property's {@link VCardParameters} object. Any
+	 * changes made to it will affect the property's {@link VCardParameters}
+	 * object and vice versa.
+	 * </p>
+	 */
 	protected class PidParameterList extends VCardParameterList<Pid> {
 		public PidParameterList() {
 			super(VCardParameters.PID);
@@ -496,15 +511,16 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * A list that holds the values of a particular parameter. It automatically
-	 * converts parameter value Strings from the property's
-	 * {@link VCardParameters} object to the appropriate {@link VCardParameter}
-	 * object that some parameters use.
+	 * A list that holds the values of the TYPE parameter.
 	 * </p>
 	 * <p>
-	 * The list is backed by the property's {@link VCardParameters} object, so
-	 * any changes made to the list will affect the property's
-	 * {@link VCardParameters} object and vice versa.
+	 * This class automatically converts the raw parameter values (strings) to
+	 * {@link VCardParameter} objects and vice versa.
+	 * </p>
+	 * <p>
+	 * This list is backed by the property's {@link VCardParameters} object. Any
+	 * changes made to it will affect the property's {@link VCardParameters}
+	 * object and vice versa.
 	 * </p>
 	 * @param <T> the {@link VCardParameter} class
 	 */
@@ -533,8 +549,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		protected final String parameterName;
 
 		/**
-		 * Creates a new list.
-		 * @param parameterName the name of the parameter
+		 * @param parameterName the name of the parameter (case insensitive)
 		 */
 		public VCardParameterList(String parameterName) {
 			this.parameterName = parameterName;
