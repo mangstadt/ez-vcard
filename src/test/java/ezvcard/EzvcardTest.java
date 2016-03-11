@@ -67,6 +67,7 @@ import ezvcard.util.XmlUtils;
  */
 public class EzvcardTest {
 	private final XPath xpath = XPathFactory.newInstance().newXPath();
+
 	{
 		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
 	}
@@ -146,7 +147,7 @@ public class EzvcardTest {
 		"END:VCARD\r\n";
 		//@formatter:on
 
-		//defaults to true
+		// defaults to true
 		VCard vcard = Ezvcard.parse(str).first();
 		assertEquals("George Herman \"Babe\" Ruth", vcard.getFormattedName().getParameter("X-TEST"));
 
@@ -278,14 +279,14 @@ public class EzvcardTest {
 		"</div>";
 		//@formatter:on
 
-		//without
+		// without
 		VCard vcard = Ezvcard.parseHtml(html).first();
 		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		assertTrue(vcard.getSources().isEmpty());
 		assertEquals("profile.html", vcard.getUrls().get(0).getValue());
 
-		//with
+		// with
 		vcard = Ezvcard.parseHtml(html).pageUrl("http://www.example.com/index.html").first();
 		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -394,7 +395,8 @@ public class EzvcardTest {
 		vcard3.setFormattedName(new FormattedName("Janet Doe"));
 
 		String actual = Ezvcard.write(vcard1, vcard2, vcard3).go();
-		assertTrue(actual.matches("(?s)BEGIN:VCARD.*?VERSION:2\\.1.*?FN:John Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:3\\.0.*?FN:Jane Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:4\\.0.*?FN:Janet Doe.*?END:VCARD.*"));
+		assertTrue(actual.matches(
+				"(?s)BEGIN:VCARD.*?VERSION:2\\.1.*?FN:John Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:3\\.0.*?FN:Jane Doe.*?END:VCARD.*?BEGIN:VCARD.*?VERSION:4\\.0.*?FN:Janet Doe.*?END:VCARD.*"));
 	}
 
 	@Test
@@ -432,12 +434,12 @@ public class EzvcardTest {
 		FormattedName fn = vcard.setFormattedName("test");
 		fn.getParameters().put("X-TEST", "George Herman \"Babe\" Ruth");
 
-		//default should be "false"
+		// default should be "false"
 		try {
 			Ezvcard.write(vcard).go();
 			fail("IllegalArgumentException expected.");
 		} catch (IllegalArgumentException e) {
-			//expected
+			// expected
 		}
 
 		String actual = Ezvcard.write(vcard).caretEncoding(true).go();
@@ -447,7 +449,7 @@ public class EzvcardTest {
 			Ezvcard.write(vcard).caretEncoding(false).go();
 			fail("IllegalArgumentException expected.");
 		} catch (IllegalArgumentException e) {
-			//expected
+			// expected
 		}
 	}
 
@@ -455,7 +457,7 @@ public class EzvcardTest {
 	public void write_versionStrict() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V4_0);
-		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+		vcard.setMailer("mailer"); // only supported by 2.1 and 3.0
 
 		String actual = Ezvcard.write(vcard).go();
 		assertFalse(actual.contains("\r\nMAILER:"));
@@ -473,7 +475,7 @@ public class EzvcardTest {
 		VCard vcard = new VCard();
 		vcard.addPhoto(new Photo(data, ImageType.JPEG));
 
-		//default
+		// default
 		{
 			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).go();
 
@@ -488,7 +490,7 @@ public class EzvcardTest {
 			assertEquals(expected, actual);
 		}
 
-		//true
+		// true
 		{
 			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).outlook(true).go();
 
@@ -504,7 +506,7 @@ public class EzvcardTest {
 			assertEquals(expected, actual);
 		}
 
-		//false
+		// false
 		{
 			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).outlook(false).go();
 
@@ -596,7 +598,7 @@ public class EzvcardTest {
 	@Test
 	public void writeXml_versionStrict() throws Exception {
 		VCard vcard = new VCard();
-		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+		vcard.setMailer("mailer"); // only supported by 2.1 and 3.0
 
 		Document dom = Ezvcard.writeXml(vcard).dom();
 		Double count = (Double) xpath.evaluate("count(/v:vcards/v:vcard/v:mailer)", dom, XPathConstants.NUMBER);
@@ -717,7 +719,7 @@ public class EzvcardTest {
 	@Test
 	public void writeJson_versionStrict() {
 		VCard vcard = new VCard();
-		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
+		vcard.setMailer("mailer"); // only supported by 2.1 and 3.0
 
 		String actual = Ezvcard.writeJson(vcard).go();
 		assertFalse(actual.contains("[\"mailer\","));
@@ -733,12 +735,12 @@ public class EzvcardTest {
 	public void writeJson_indent() {
 		VCard vcard = new VCard();
 
-		//defaults to "false"
+		// defaults to "false"
 		String actual = Ezvcard.writeJson(vcard).go();
 		assertTrue(actual.startsWith("[\"vcard\",[[\""));
 
 		actual = Ezvcard.writeJson(vcard).indent(true).go();
-		assertTrue(actual.startsWith("[" + NEWLINE + "\"vcard\",[[" + NEWLINE));
+		assertTrue(actual.startsWith("[" + NEWLINE + "  \"vcard\"," + NEWLINE + "  [" + NEWLINE + "    ["));
 
 		actual = Ezvcard.writeJson(vcard).indent(false).go();
 		assertTrue(actual.startsWith("[\"vcard\",[[\""));
@@ -752,7 +754,8 @@ public class EzvcardTest {
 		FileWriter writer = new FileWriter(file);
 		try {
 			Ezvcard.writeJson(vcard).go(writer);
-			writer.write("test"); //an exception will be thrown if the writer is closed
+			writer.write("test"); // an exception will be thrown if the writer
+									// is closed
 		} finally {
 			writer.close();
 			file.delete();

@@ -153,14 +153,21 @@ public class JCardWriterTest {
 
 		//@formatter:off
 		String expected =
-		"[" + NEWLINE +
-		"[" + NEWLINE +
-		"\"vcard\",[[" + NEWLINE +
-		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
-		"  \"fn\",{},\"text\",\"John Doe\"]]],[" + NEWLINE +
-		"\"vcard\",[[" + NEWLINE +
-		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
-		"  \"fn\",{},\"text\",\"John Doe\"]]]" + NEWLINE +
+		"[" + NEWLINE + 
+		"[" + NEWLINE + 
+		"  \"vcard\"," + NEWLINE + 
+		"  [" + NEWLINE + 
+		"    [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE + 
+		"    [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE + 
+		"  ]" + NEWLINE + 
+		"]," + NEWLINE + 
+		"[" + NEWLINE + 
+		"  \"vcard\"," + NEWLINE + 
+		"  [" + NEWLINE + 
+		"    [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE + 
+		"    [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE + 
+		"  ]" + NEWLINE + 
+		"]" + NEWLINE + 
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
