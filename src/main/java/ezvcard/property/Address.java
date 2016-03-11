@@ -11,6 +11,7 @@ import ezvcard.Warning;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.GeoUri;
 import ezvcard.util.StringUtils;
 
 /*
@@ -379,31 +380,33 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	/**
+	 * <p>
 	 * Gets the global positioning coordinates that are associated with this
 	 * address.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the latitude (index 0) and longitude (index 1) or null if not set
-	 * or null if the parameter value was in an incorrect format
+	 * @return the geo URI or not if not found
 	 * @see VCardParameters#getGeo
 	 */
-	public double[] getGeo() {
+	public GeoUri getGeo() {
 		return parameters.getGeo();
 	}
 
 	/**
+	 * <p>
 	 * Sets the global positioning coordinates that are associated with this
 	 * address.
+	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param latitude the latitude
-	 * @param longitude the longitude
+	 * @param uri the geo URI or null to remove
 	 * @see VCardParameters#setGeo
 	 */
-	public void setGeo(double latitude, double longitude) {
-		parameters.setGeo(latitude, longitude);
+	public void setGeo(GeoUri uri) {
+		parameters.setGeo(uri);
 	}
 
 	@Override

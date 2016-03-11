@@ -18,6 +18,8 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.property.Address;
 import ezvcard.property.Organization;
+import ezvcard.property.Photo;
+import ezvcard.property.Sound;
 import ezvcard.property.StructuredName;
 import ezvcard.util.CharacterBitSet;
 import ezvcard.util.GeoUri;
@@ -83,14 +85,20 @@ public class VCardParameters extends ListMultimap<String, String> {
 		m.put(GEO, EnumSet.of(VCardVersion.V4_0));
 		m.put(INDEX, EnumSet.of(VCardVersion.V4_0));
 
-		//don't check LABEL because this is removed and converted to LABEL properties for 2.1 and 3.0 vCards 
+		/*
+		 * Don't check LABEL because this is removed and converted to LABEL
+		 * properties for 2.1 and 3.0 vCards.
+		 */
 		//m.put(LABEL, EnumSet.of(VCardVersion.V4_0));
 
 		m.put(LEVEL, EnumSet.of(VCardVersion.V4_0));
 		m.put(MEDIATYPE, EnumSet.of(VCardVersion.V4_0));
 		m.put(PID, EnumSet.of(VCardVersion.V4_0));
 
-		//don't check PREF because this is removed and converted to "TYPE=PREF" for 2.1 and 3.0 vCards
+		/*
+		 * Don't check PREF because this is removed and converted to "TYPE=PREF"
+		 * for 2.1 and 3.0 vCards.
+		 */
 		//m.put(PREF, EnumSet.of(VCardVersion.V4_0));
 
 		m.put(SORT_AS, EnumSet.of(VCardVersion.V4_0));
@@ -311,11 +319,11 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * the same type. If a property doesn't have a preference value, then it is
 	 * considered the least preferred.
 	 * </p>
-	 * 
 	 * <p>
 	 * In the vCard below, the address on the second row is the most preferred
 	 * because it has the lowest PREF value.
 	 * </p>
+	 * <p>
 	 * 
 	 * <pre>
 	 * ADR;TYPE=work;PREF=2:
@@ -323,17 +331,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * ADR;TYPE=home:
 	 * </pre>
 	 * 
-	 * <p>
-	 * Preference values must be numeric and must be between 1 and 100.
 	 * </p>
-	 * 
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @throws IllegalStateException if the parameter value is malformed and
 	 * cannot be parsed
-	 * @return the preference value or null if it doesn't exist or null if it
-	 * couldn't be parsed into a number
+	 * @return the preference value or null if not found
 	 */
 	public Integer getPref() {
 		String pref = first(PREF);
@@ -355,11 +359,11 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * the same type. If a property doesn't have a preference value, then it is
 	 * considered the least preferred.
 	 * </p>
-	 * 
 	 * <p>
 	 * In the vCard below, the address on the second row is the most preferred
 	 * because it has the lowest PREF value.
 	 * </p>
+	 * <p>
 	 * 
 	 * <pre>
 	 * ADR;TYPE=work;PREF=2:
@@ -367,22 +371,15 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * ADR;TYPE=home:
 	 * </pre>
 	 * 
-	 * <p>
-	 * Preference values must be numeric and must be between 1 and 100.
 	 * </p>
-	 * 
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param pref the preference value or null to remove
-	 * @throws IllegalArgumentException if the value is not between 1 and 100
+	 * @param pref the preference value (must be between 1 and 100 inclusive) or
+	 * null to remove
 	 */
 	public void setPref(Integer pref) {
-		if (pref != null && (pref < 1 || pref > 100)) {
-			throw Messages.INSTANCE.getIllegalArgumentException(16);
-		}
-		String value = (pref == null) ? null : pref.toString();
-		replace(PREF, value);
+		replace(PREF, (pref == null) ? null : pref.toString());
 	}
 
 	/**
@@ -404,7 +401,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <pre>
 	 * NOTE;ALTID=1;LANGUAGE=en: Hello world!
 	 * NOTE;ALTID=1;LANGUAGE=fr: Bonjour tout le monde!
-	 * NOTE;ALTID=1;LANGUAGE=es: �Hola, mundo!
+	 * NOTE;ALTID=1;LANGUAGE=es: ¡Hola, mundo!
 	 * NOTE;ALTID=2;LANGUAGE=de: Meine Lieblingsfarbe ist blau.
 	 * NOTE;ALTID=2;LANGUAGE=en: My favorite color is blue.
 	 * NOTE: This vCard will self-destruct in 5 seconds.
@@ -413,7 +410,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the ALTID or null if it doesn't exist
+	 * @return the ALTID or null if not found
 	 */
 	public String getAltId() {
 		return first(ALTID);
@@ -438,7 +435,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <pre>
 	 * NOTE;ALTID=1;LANGUAGE=en: Hello world!
 	 * NOTE;ALTID=1;LANGUAGE=fr: Bonjour tout le monde!
-	 * NOTE;ALTID=1;LANGUAGE=es: �Hola, mundo!
+	 * NOTE;ALTID=1;LANGUAGE=es: ¡Hola, mundo!
 	 * NOTE;ALTID=2;LANGUAGE=de: Meine Lieblingsfarbe ist blau.
 	 * NOTE;ALTID=2;LANGUAGE=en: My favorite color is blue.
 	 * NOTE: This vCard will self-destruct in 5 seconds.
@@ -462,20 +459,18 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
+	 * @return the geo URI or null if not found
 	 * @throws IllegalStateException if the parameter value is malformed and
 	 * cannot be parsed
-	 * @return the latitude (index 0) and longitude (index 1) or null if not
-	 * present or null if the parameter value was in an incorrect format
 	 */
-	public double[] getGeo() {
+	public GeoUri getGeo() {
 		String value = first(GEO);
 		if (value == null) {
 			return null;
 		}
 
 		try {
-			GeoUri geoUri = GeoUri.parse(value);
-			return new double[] { geoUri.getCoordA(), geoUri.getCoordB() };
+			return GeoUri.parse(value);
 		} catch (IllegalArgumentException e) {
 			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, GEO), e);
 		}
@@ -490,12 +485,10 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param latitude the latitude
-	 * @param longitude the longitude
+	 * @param uri the geo URI or null to remove
 	 */
-	public void setGeo(double latitude, double longitude) {
-		GeoUri geoUri = new GeoUri.Builder(latitude, longitude).build();
-		replace(GEO, geoUri.toString());
+	public void setGeo(GeoUri uri) {
+		replace(GEO, (uri == null) ? null : uri.toString());
 	}
 
 	/**
@@ -533,11 +526,12 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 */
 	public void setSortAs(String... names) {
 		removeAll(SORT_AS);
-		if (names != null && names.length > 0) {
-			for (String name : names) {
-				put(SORT_AS, name);
-			}
+
+		if (names == null || (names.length == 1 && names[0] == null)) {
+			return;
 		}
+
+		putAll(SORT_AS, names);
 	}
 
 	/**
@@ -572,13 +566,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 	/**
 	 * <p>
 	 * Gets the MEDIATYPE parameter. This is used in properties that have a URL
-	 * as a value, such as PHOTO and SOUND. It defines the content type of the
-	 * referenced resource.
+	 * as a value, such as {@link Photo} and {@link Sound}. It defines the
+	 * content type of the referenced resource.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the media type (e.g. "image/jpeg") or null if it doesn't exist
+	 * @return the media type (e.g. "image/jpeg") or null if not found
 	 */
 	public String getMediaType() {
 		return first(MEDIATYPE);
@@ -587,8 +581,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	/**
 	 * <p>
 	 * Sets the MEDIATYPE parameter. This is used in properties that have a URL
-	 * as a value, such as PHOTO and SOUND. It defines the content type of the
-	 * referenced resource.
+	 * as a value, such as {@link Photo} and {@link Sound}. It defines the
+	 * content type of the referenced resource.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -636,14 +630,12 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * are put at the beginning of the sorted list and properties with high
 	 * index values are put at the end of the list.
 	 * </p>
-	 * 
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
+	 * @return the index or null if not found
 	 * @throws IllegalStateException if the parameter value is malformed and
 	 * cannot be parsed
-	 * @return the INDEX value or null if it doesn't exist or null if it
-	 * couldn't be parsed into a number
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
 	 */
 	public Integer getIndex() {
@@ -666,20 +658,14 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * are put at the beginning of the sorted list and properties with high
 	 * index values are put at the end of the list.
 	 * </p>
-	 * 
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param index the INDEX value (must be greater than 0) or null to remove
+	 * @param index the index (must be greater than 0) or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6715">RFC 6715</a>
-	 * @throws IllegalArgumentException if the value is not greater than 0
 	 */
 	public void setIndex(Integer index) {
-		if (index != null && index <= 0) {
-			throw Messages.INSTANCE.getIllegalArgumentException(17);
-		}
-		String value = (index == null) ? null : index.toString();
-		replace(INDEX, value);
+		replace(INDEX, (index == null) ? null : index.toString());
 	}
 
 	/**
@@ -697,6 +683,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 		 * Check for invalid characters in names and values.
 		 */
 		{
+			final int invalidCharsInParamValueCode = 25;
+			final int invalidCharsInParamNameCode = 26;
+
 			BitSet invalidValueChars = new BitSet(128);
 			invalidValueChars.set(0, 31);
 			invalidValueChars.set(127);
@@ -718,7 +707,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 				/*
 				 * Don't check LABEL for 2.1 and 3.0 because this is converted
-				 * to a property in those version.
+				 * to a property in those versions.
 				 */
 				if (version != VCardVersion.V4_0 && LABEL.equalsIgnoreCase(name)) {
 					continue;
@@ -726,7 +715,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 				//check the parameter name
 				if (!validNameChars.containsOnly(name)) {
-					warnings.add(new Warning(26, name));
+					warnings.add(new Warning(invalidCharsInParamNameCode, name));
 				}
 
 				//check the parameter value(s)
@@ -735,7 +724,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 					for (int i = 0; i < value.length(); i++) {
 						char c = value.charAt(i);
 						if (invalidValueChars.get(c)) {
-							warnings.add(new Warning(25, name, value, (int) c, i));
+							warnings.add(new Warning(invalidCharsInParamValueCode, name, value, (int) c, i));
 							break;
 						}
 					}
@@ -747,21 +736,21 @@ public class VCardParameters extends ListMultimap<String, String> {
 		 * Check for invalid or unsupported values (e.g. "ENCODING=foo").
 		 */
 		{
-			int nonStandardCode = 3;
-			int valueNotSupportedCode = 4;
+			final int nonStandardValueCode = 3;
+			final int unsupportedValueCode = 4;
 
 			String value = first(CALSCALE);
 			if (value != null && Calscale.find(value) == null) {
-				warnings.add(new Warning(nonStandardCode, CALSCALE, value, Calscale.all()));
+				warnings.add(new Warning(nonStandardValueCode, CALSCALE, value, Calscale.all()));
 			}
 
 			value = first(ENCODING);
 			if (value != null) {
 				Encoding encoding = Encoding.find(value);
 				if (encoding == null) {
-					warnings.add(new Warning(nonStandardCode, ENCODING, value, Encoding.all()));
+					warnings.add(new Warning(nonStandardValueCode, ENCODING, value, Encoding.all()));
 				} else if (!encoding.isSupportedBy(version)) {
-					warnings.add(new Warning(valueNotSupportedCode, ENCODING, value));
+					warnings.add(new Warning(unsupportedValueCode, ENCODING, value));
 				}
 			}
 
@@ -769,9 +758,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 			if (value != null) {
 				VCardDataType dataType = VCardDataType.find(value);
 				if (dataType == null) {
-					warnings.add(new Warning(nonStandardCode, VALUE, value, VCardDataType.all()));
+					warnings.add(new Warning(nonStandardValueCode, VALUE, value, VCardDataType.all()));
 				} else if (!dataType.isSupportedBy(version)) {
-					warnings.add(new Warning(valueNotSupportedCode, VALUE, value));
+					warnings.add(new Warning(unsupportedValueCode, VALUE, value));
 				}
 			}
 		}
@@ -780,31 +769,37 @@ public class VCardParameters extends ListMultimap<String, String> {
 		 * Check for parameters with malformed values.
 		 */
 		{
-			int malformedCode = 5;
+			final int malformedValueCode = 5;
 
 			try {
 				getGeo();
 			} catch (IllegalStateException e) {
-				warnings.add(new Warning(malformedCode, GEO, first(GEO)));
+				warnings.add(new Warning(malformedValueCode, GEO, first(GEO)));
 			}
 
 			try {
-				getIndex();
+				Integer index = getIndex();
+				if (index != null && index <= 0) {
+					warnings.add(new Warning(28, index));
+				}
 			} catch (IllegalStateException e) {
-				warnings.add(new Warning(malformedCode, INDEX, first(INDEX)));
+				warnings.add(new Warning(malformedValueCode, INDEX, first(INDEX)));
 			}
 
 			List<String> pids = get(PID);
 			for (String pid : pids) {
-				if (!pid.matches("\\d+(\\.\\d+)?")) {
+				if (!isPidValid(pid)) {
 					warnings.add(new Warning(27, pid));
 				}
 			}
 
 			try {
-				getPref();
+				Integer pref = getPref();
+				if (pref != null && (pref < 1 || pref > 100)) {
+					warnings.add(new Warning(29, pref));
+				}
 			} catch (IllegalStateException e) {
-				warnings.add(new Warning(malformedCode, PREF, first(PREF)));
+				warnings.add(new Warning(malformedValueCode, PREF, first(PREF)));
 			}
 		}
 
@@ -812,7 +807,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 		 * Check that each parameter is supported by the given vCard version.
 		 */
 		{
-			int paramNotSupportedCode = 6;
+			final int paramNotSupportedCode = 6;
+
 			for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
 				String name = entry.getKey();
 				String value = first(name);
@@ -832,7 +828,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 		 * supported by this JVM.
 		 */
 		{
-			int invalidCharsetCode = 22;
+			final int invalidCharsetCode = 22;
+
 			String charsetStr = getCharset();
 			if (charsetStr != null) {
 				try {
@@ -846,6 +843,32 @@ public class VCardParameters extends ListMultimap<String, String> {
 		}
 
 		return warnings;
+	}
+
+	private static boolean isPidValid(String pid) {
+		boolean dotFound = false;
+		for (int i = 0; i < pid.length(); i++) {
+			char c = pid.charAt(i);
+
+			if (c == '.') {
+				if (i == 0 || i == pid.length() - 1) {
+					return false;
+				}
+				if (dotFound) {
+					return false;
+				}
+				dotFound = true;
+				continue;
+			}
+
+			if (c >= '0' && c <= '9') {
+				continue;
+			}
+
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
