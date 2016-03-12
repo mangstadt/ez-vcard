@@ -108,8 +108,9 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 	}
 
 	/**
-	 * Gets whether properties that do not support vCard version 4.0 will be
-	 * excluded from the written vCard (defaults to true).
+	 * Gets whether properties that do not support jCard will be excluded from
+	 * the written vCard. jCard only supports properties defined in the vCard
+	 * version 4.0 specification.
 	 * @return true if the properties will be excluded, false if not (defaults
 	 * to true)
 	 */
@@ -118,8 +119,9 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 	}
 
 	/**
-	 * Sets whether properties that do not support vCard version 4.0 will be
-	 * excluded from the written vCard.
+	 * Sets whether properties that do not support jCard will be excluded from
+	 * the written vCard. jCard only supports properties defined in the vCard
+	 * version 4.0 specification.
 	 * @param versionStrict true to exclude such properties, false not to
 	 * (defaults to true)
 	 */
