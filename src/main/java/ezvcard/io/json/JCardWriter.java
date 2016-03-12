@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -125,6 +127,13 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 */
 	public JCardWriter(Writer writer, boolean wrapInArray) {
 		this.writer = new JCardRawWriter(writer, wrapInArray);
+	}
+
+	/**
+	 * @param generator the generator to write to
+	 */
+	public JCardWriter(JsonGenerator generator) {
+		this.writer = new JCardRawWriter(generator);
 	}
 
 	/**

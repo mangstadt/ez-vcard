@@ -119,8 +119,6 @@ public class JCardRawReaderTest {
 				"[\"vcard\"," +
 					"[" +
 						"[\"prop\", {}, \"text\", \"value\"]" +
-					"]," +
-					"[" +
 					"]" +
 				"]" +
 		"}";

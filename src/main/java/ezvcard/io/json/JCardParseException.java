@@ -57,6 +57,18 @@ public class JCardParseException extends IOException {
 	}
 
 	/**
+	 * Creates a jCard parse exception.
+	 * @param message the detail message
+	 * @param expected the JSON token that the parser was expecting
+	 * @param actual the actual JSON token
+	 */
+	public JCardParseException(String message, JsonToken expected, JsonToken actual) {
+		super(message);
+		this.expected = expected;
+		this.actual = actual;
+	}
+
+	/**
 	 * Gets the JSON token that the parser was expected.
 	 * @return the expected token
 	 */
