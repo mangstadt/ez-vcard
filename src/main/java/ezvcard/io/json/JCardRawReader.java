@@ -62,9 +62,11 @@ public class JCardRawReader implements Closeable {
 
 	/**
 	 * @param parser the parser to read from
-	 * @param strict ensure that the parser is pointing to the first token of a
-	 * valid jcard at the start of parsing, and that parsing consumes the final
-	 * token of that jcard before returning
+	 * @param strict true if the parser's current token is expected to be
+	 * positioned at the start of a jCard, false if not. If this is true, and
+	 * the parser is not positioned at the beginning of a jCard, a
+	 * {@link JCardParseException} will be thrown. If this if false, the parser
+	 * will consume input until it reaches the beginning of a jCard.
 	 */
 	public JCardRawReader(JsonParser parser, boolean strict) {
 		reader = null;
@@ -86,7 +88,7 @@ public class JCardRawReader implements Closeable {
 	 * @throws JCardParseException if the jCard syntax is incorrect (the JSON
 	 * syntax may be valid, but it is not in the correct jCard format).
 	 * @throws JsonParseException if the JSON syntax is incorrect
-	 * @throws IOException if there is a problem reading from the data stream
+	 * @throws IOException if there is a problem reading from the input stream
 	 */
 	public void readNext(JCardDataStreamListener listener) throws IOException {
 		if (parser == null) {

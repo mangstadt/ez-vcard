@@ -34,6 +34,9 @@ import ezvcard.VCard;
  either expressed or implied, of the FreeBSD Project.
  */
 
+/**
+ * @author Buddy Gorven
+ */
 public class NestedVCard {
 	private VCard contact;
 

@@ -41,8 +41,11 @@ import ezvcard.property.VCardProperty;
  either expressed or implied, of the FreeBSD Project.
  */
 
+/**
+ * Deserializes jCards within the jackson-databind framework.
+ * @author Buddy Gorven
+ */
 public class JCardDeserializer extends JsonDeserializer<VCard> {
-
 	private ScribeIndex index = new ScribeIndex();
 
 	@Override

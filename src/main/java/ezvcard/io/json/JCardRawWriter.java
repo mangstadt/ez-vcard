@@ -95,7 +95,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 
 	/**
 	 * Writes the beginning of a new "vcard" component.
-	 * @throws IOException if there's an I/O problem
+	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void writeStartVCard() throws IOException {
 		if (generator == null) {
@@ -118,7 +118,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * Closes the "vcard" component array.
 	 * @throws IllegalStateException if the component was never opened (
 	 * {@link #writeStartVCard} must be called first)
-	 * @throws IOException if there's an I/O problem
+	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void writeEndVCard() throws IOException {
 		if (!open) {
@@ -138,7 +138,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * @param value the property value
 	 * @throws IllegalStateException if the "vcard" component was never opened
 	 * or was just closed ({@link #writeStartVCard} must be called first)
-	 * @throws IOException if there's an I/O problem
+	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void writeProperty(String propertyName, VCardDataType dataType, JCardValue value) throws IOException {
 		writeProperty(null, propertyName, new VCardParameters(), dataType, value);
@@ -153,7 +153,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * @param value the property value
 	 * @throws IllegalStateException if the "vcard" component was never opened
 	 * or was just closed ({@link #writeStartVCard} must be called first)
-	 * @throws IOException if there's an I/O problem
+	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void writeProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType, JCardValue value) throws IOException {
 		if (!open) {
@@ -191,7 +191,8 @@ public class JCardRawWriter implements Closeable, Flushable {
 			generator.writeStringField("group", group);
 		}
 
-		generator.writeEndObject(); //end parameters object
+		//end parameters object
+		generator.writeEndObject();
 
 		//write data type
 		generator.writeString((dataType == null) ? "unknown" : dataType.getName().toLowerCase());
@@ -262,7 +263,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * Checks to see if pretty-printing is enabled, and adds indentation
 	 * whitespace if it is.
 	 * @param spaces the number of spaces to indent with
-	 * @throws IOException
+	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	private void indent(int spaces) throws IOException {
 		if (!indent) {
@@ -275,6 +276,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 
 	/**
 	 * Flushes the JSON stream.
+	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void flush() throws IOException {
 		if (generator == null) {
@@ -287,7 +289,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	/**
 	 * Finishes writing the JSON document so that it is syntactically correct.
 	 * No more data can be written once this method is called.
-	 * @throws IOException if there's a problem closing the stream
+	 * @throws IOException if there's a problem closing the output stream
 	 */
 	public void closeJsonStream() throws IOException {
 		if (generator == null) {
@@ -311,7 +313,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	/**
 	 * Finishes writing the JSON document and closes the underlying
 	 * {@link Writer}.
-	 * @throws IOException if there's a problem closing the stream
+	 * @throws IOException if there's a problem closing the output stream
 	 */
 	public void close() throws IOException {
 		if (generator == null) {

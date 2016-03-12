@@ -42,9 +42,20 @@ import ezvcard.property.VCardProperty;
  */
 
 /**
- * Module for jackson-databind with JCardSerializer and JCardDeserializer as the
- * default serializers for {@link VCard}s
- * @author buddy
+ * <p>
+ * Module for jackson-databind that serializes and deserializes jCards.
+ * </p>
+ * <p>
+ * <b>Example:</b>
+ * 
+ * <pre class="brush:java">
+ * ObjectMapper mapper = new ObjectMapper();
+ * mapper.registerModule(new JCardModule());
+ * VCard result = mapper.readValue(..., VCard.class);
+ * </pre>
+ * 
+ * </p>
+ * @author Buddy Gorven
  */
 public class JCardModule extends SimpleModule {
 	private static final long serialVersionUID = 1L;
