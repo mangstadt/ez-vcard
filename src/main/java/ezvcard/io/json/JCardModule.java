@@ -56,7 +56,7 @@ import ezvcard.property.VCardProperty;
  * @author Buddy Gorven
  */
 public class JCardModule extends SimpleModule {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6545279961222677077L;
 	private static final String MODULE_NAME = "ez-vcard-jcard";
 	private static final Version MODULE_VERSION = moduleVersion();
 

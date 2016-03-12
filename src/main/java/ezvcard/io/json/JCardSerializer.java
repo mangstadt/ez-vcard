@@ -52,8 +52,7 @@ import ezvcard.property.VCardProperty;
  */
 @JsonFormat
 public class JCardSerializer extends StdSerializer<VCard> implements ContextualSerializer {
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = -856795690626261178L;
 	private ScribeIndex index = new ScribeIndex();
 	private boolean addProdId = true;
 	private boolean versionStrict = true;
