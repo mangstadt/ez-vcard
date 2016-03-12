@@ -71,10 +71,7 @@ public class JCardModule extends SimpleModule {
 	public JCardModule() {
 		super(MODULE_NAME, MODULE_VERSION);
 
-		index = new ScribeIndex();
-		serializer.setScribeIndex(index);
-		deserializer.setScribeIndex(index);
-
+		setScribeIndex(new ScribeIndex());
 		addSerializer(serializer);
 		addDeserializer(VCard.class, deserializer);
 	}
