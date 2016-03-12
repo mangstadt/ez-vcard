@@ -346,13 +346,20 @@ public class JCardRawWriterTest {
 		String actual = sw.toString();
 		//@formatter:off
 		String expected =
-		"[" + NEWLINE +
-		"[" + NEWLINE +
-		"\"vcard\",[[" + NEWLINE +
-		"  \"prop1\",{},\"text\",\"value1\"],[" + NEWLINE +
-		"  \"prop2\",{},\"text\",\"value2\"]]],[" + NEWLINE +
-		"\"vcard\",[[" + NEWLINE +
-		"  \"prop3\",{},\"text\",\"value3\"]]]" + NEWLINE +
+		"[" + NEWLINE + 
+		"[" + NEWLINE + 
+		"  \"vcard\"," + NEWLINE + 
+		"  [" + NEWLINE + 
+		"    [ \"prop1\", { }, \"text\", \"value1\" ]," + NEWLINE + 
+		"    [ \"prop2\", { }, \"text\", \"value2\" ]" + NEWLINE + 
+		"  ]" + NEWLINE + 
+		"]," + NEWLINE + 
+		"[" + NEWLINE + 
+		"  \"vcard\"," + NEWLINE + 
+		"  [" + NEWLINE + 
+		"    [ \"prop3\", { }, \"text\", \"value3\" ]" + NEWLINE + 
+		"  ]" + NEWLINE + 
+		"]" + NEWLINE + 
 		"]";
 		//@formatter:on
 		assertEquals(expected, actual);
