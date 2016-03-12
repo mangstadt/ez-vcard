@@ -64,6 +64,7 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 
 	@Override
 	public void serialize(VCard value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+		@SuppressWarnings("resource")
 		JCardWriter writer = new JCardWriter(gen);
 		writer.setAddProdId(isAddProdId());
 		writer.setScribeIndex(getScribeIndex());

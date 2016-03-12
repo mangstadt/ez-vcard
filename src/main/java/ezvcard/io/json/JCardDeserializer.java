@@ -50,6 +50,7 @@ public class JCardDeserializer extends JsonDeserializer<VCard> {
 
 	@Override
 	public VCard deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
+		@SuppressWarnings("resource")
 		JCardReader reader = new JCardReader(parser);
 		reader.setScribeIndex(index);
 		return reader.readNext();
