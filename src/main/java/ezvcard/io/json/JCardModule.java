@@ -1,7 +1,5 @@
 package ezvcard.io.json;
 
-import static java.lang.Integer.parseInt;
-
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -59,10 +57,8 @@ import ezvcard.property.VCardProperty;
  */
 public class JCardModule extends SimpleModule {
 	private static final long serialVersionUID = 1L;
-
-	public static final String MODULE_NAME = "JCardModule";
-	private static final String[] V = Ezvcard.VERSION.split("[.-]");
-	public static final Version MODULE_VERSION = new Version(parseInt(V[0]), parseInt(V[1]), parseInt(V[2]), V.length > 3 ? V[3] : "RELEASE", "com.googlecode.ez-vcard", "ez-vcard");
+	private static final String MODULE_NAME = "ez-vcard-jcard";
+	private static final Version MODULE_VERSION = moduleVersion();
 
 	private final JCardDeserializer deserializer = new JCardDeserializer();
 	private final JCardSerializer serializer = new JCardSerializer();
@@ -81,6 +77,24 @@ public class JCardModule extends SimpleModule {
 
 		addSerializer(serializer);
 		addDeserializer(VCard.class, deserializer);
+	}
+
+	private static Version moduleVersion() {
+		String[] split = Ezvcard.VERSION.split("[.-]");
+		if (split.length < 3) {
+			/*
+			 * This can happen during development if the "ez-vcard.properties"
+			 * file has not been filtered by Maven.
+			 */
+			return new Version(0, 0, 0, "", Ezvcard.GROUP_ID, Ezvcard.ARTIFACT_ID);
+		}
+
+		int major = Integer.parseInt(split[0]);
+		int minor = Integer.parseInt(split[1]);
+		int patch = Integer.parseInt(split[2]);
+		String snapshot = (split.length > 3) ? split[3] : "RELEASE";
+
+		return new Version(major, minor, patch, snapshot, Ezvcard.GROUP_ID, Ezvcard.ARTIFACT_ID);
 	}
 
 	/**

@@ -106,6 +106,16 @@ public final class Ezvcard {
 	public static final String VERSION;
 
 	/**
+	 * The Maven group ID.
+	 */
+	public static final String GROUP_ID;
+
+	/**
+	 * The Maven artifact ID.
+	 */
+	public static final String ARTIFACT_ID;
+
+	/**
 	 * The project webpage.
 	 */
 	public static final String URL;
@@ -118,6 +128,8 @@ public final class Ezvcard {
 			props.load(in);
 
 			VERSION = props.getProperty("version");
+			GROUP_ID = props.getProperty("groupId");
+			ARTIFACT_ID = props.getProperty("artifactId");
 			URL = props.getProperty("url");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
