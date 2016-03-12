@@ -11,23 +11,24 @@ import ezvcard.VCard;
 
 /**
  * Configuration for use with JCardSerializer. The intention is for this to be
- * used in combination with &#64;JsonSerialize on getters of type VCard, for example:
- * <pre>
- * class Person { 
- *   private VCard contact;
+ * used in combination with &#64;JsonSerialize on getters of type VCard, for
+ * example:
  * 
- *   &#64;JsonSerialize(using = JCardSerializer.class)
- *   &#64;JCardOptions(addProdId = false, versionStrict = false)
- *   public VCard getContact() {
- *     return contact;
- *   }
- *   
- *   // ...
+ * <pre>
+ * class Person {
+ * 	private VCard contact;
+ * 
+ * 	&#064;JsonSerialize(using = JCardSerializer.class)
+ * 	&#064;JCardOptions(addProdId = false, versionStrict = false)
+ * 	public VCard getContact() {
+ * 		return contact;
+ * 	}
+ * 
+ * 	// ...
  * }
  * </pre>
  * 
  * @author buddy
- *
  */
 @Target({ ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

@@ -17,8 +17,7 @@ public class JCardDeserializer extends JsonDeserializer<VCard> {
 	private ScribeIndex index = new ScribeIndex();
 
 	@Override
-	public VCard deserialize(JsonParser parser, DeserializationContext context)
-			throws IOException, JsonProcessingException {
+	public VCard deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
 		JCardReader reader = new JCardReader(parser);
 		reader.setScribeIndex(index);
 		return reader.readNext();
@@ -31,9 +30,7 @@ public class JCardDeserializer extends JsonDeserializer<VCard> {
 	 * <p>
 	 * {@code getScribeIndex().register(scribe)}
 	 * </p>
-	 * 
-	 * @param scribe
-	 *            the scribe to register
+	 * @param scribe the scribe to register
 	 */
 	public void registerScribe(VCardPropertyScribe<? extends VCardProperty> scribe) {
 		index.register(scribe);
@@ -41,18 +38,15 @@ public class JCardDeserializer extends JsonDeserializer<VCard> {
 
 	/**
 	 * Gets the scribe index.
-	 * 
 	 * @return the scribe index
 	 */
 	public ScribeIndex getScribeIndex() {
-		return index ;
+		return index;
 	}
 
 	/**
 	 * Sets the scribe index.
-	 * 
-	 * @param index
-	 *            the scribe index
+	 * @param index the scribe index
 	 */
 	public void setScribeIndex(ScribeIndex index) {
 		this.index = index;

@@ -43,7 +43,6 @@ import ezvcard.parameter.VCardParameters;
 
 /**
  * Parses an vCard JSON data stream (jCard).
- * 
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
  */
@@ -55,20 +54,17 @@ public class JCardRawReader implements Closeable {
 	private boolean strict = false;
 
 	/**
-	 * @param reader
-	 *            the reader to wrap
+	 * @param reader the reader to wrap
 	 */
 	public JCardRawReader(Reader reader) {
 		this.reader = reader;
 	}
 
 	/**
-	 * @param parser
-	 *            the parser to read from
-	 * @param strict
-	 *            ensure that the parser is pointing to the first token of a
-	 *            valid jcard at the start of parsing, and that parsing consumes
-	 *            the final token of that jcard before returning
+	 * @param parser the parser to read from
+	 * @param strict ensure that the parser is pointing to the first token of a
+	 * valid jcard at the start of parsing, and that parsing consumes the final
+	 * token of that jcard before returning
 	 */
 	public JCardRawReader(JsonParser parser, boolean strict) {
 		reader = null;
@@ -78,7 +74,6 @@ public class JCardRawReader implements Closeable {
 
 	/**
 	 * Gets the current line number.
-	 * 
 	 * @return the line number
 	 */
 	public int getLineNum() {
@@ -87,16 +82,11 @@ public class JCardRawReader implements Closeable {
 
 	/**
 	 * Reads the next vCard from the jCard data stream.
-	 * 
-	 * @param listener
-	 *            handles the vCard data as it is read off the wire
-	 * @throws JCardParseException
-	 *             if the jCard syntax is incorrect (the JSON syntax may be
-	 *             valid, but it is not in the correct jCard format).
-	 * @throws JsonParseException
-	 *             if the JSON syntax is incorrect
-	 * @throws IOException
-	 *             if there is a problem reading from the data stream
+	 * @param listener handles the vCard data as it is read off the wire
+	 * @throws JCardParseException if the jCard syntax is incorrect (the JSON
+	 * syntax may be valid, but it is not in the correct jCard format).
+	 * @throws JsonParseException if the JSON syntax is incorrect
+	 * @throws IOException if there is a problem reading from the data stream
 	 */
 	public void readNext(JCardDataStreamListener listener) throws IOException {
 		if (parser == null) {
@@ -108,12 +98,11 @@ public class JCardRawReader implements Closeable {
 
 		this.listener = listener;
 
-		// find the next vCard object
+		//find the next vCard object
 		JsonToken prev = parser.getCurrentToken();
 		JsonToken cur;
 		while ((cur = parser.nextToken()) != null) {
-			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING
-					&& "vcard".equals(parser.getValueAsString())) {
+			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING && "vcard".equals(parser.getValueAsString())) {
 				break;
 			} else if (strict) {
 				if (prev != JsonToken.START_ARRAY) {
@@ -121,14 +110,13 @@ public class JCardRawReader implements Closeable {
 				} else if (cur != JsonToken.VALUE_STRING) {
 					throw new JCardParseException(JsonToken.VALUE_STRING, cur);
 				} else {
-					throw new JCardParseException("Invalid value for first token: expected \"vcard\" , was \""
-							+ parser.getValueAsString() + "\"", JsonToken.VALUE_STRING, cur);
+					throw new JCardParseException("Invalid value for first token: expected \"vcard\" , was \"" + parser.getValueAsString() + "\"", JsonToken.VALUE_STRING, cur);
 				}
 			}
 			prev = cur;
 		}
 		if (cur == null) {
-			// EOF
+			//EOF
 			eof = true;
 			return;
 		}
@@ -140,13 +128,11 @@ public class JCardRawReader implements Closeable {
 	}
 
 	private void parseProperties() throws IOException {
-		// start properties array
+		//start properties array
 		checkNext(JsonToken.START_ARRAY);
 
-		// read properties
-		while (parser.nextToken() != JsonToken.END_ARRAY) { // until we reach
-															// the end
-															// properties array
+		//read properties
+		while (parser.nextToken() != JsonToken.END_ARRAY) { //until we reach the end properties array
 			checkCurrent(JsonToken.START_ARRAY);
 			parser.nextToken();
 			parseProperty();
@@ -154,23 +140,23 @@ public class JCardRawReader implements Closeable {
 	}
 
 	private void parseProperty() throws IOException {
-		// get property name
+		//get property name
 		checkCurrent(JsonToken.VALUE_STRING);
 		String propertyName = parser.getValueAsString().toLowerCase();
 
-		// get parameters
+		//get parameters
 		VCardParameters parameters = parseParameters();
 
-		// get group
+		//get group
 		List<String> removed = parameters.removeAll("group");
 		String group = removed.isEmpty() ? null : removed.get(0);
 
-		// get data type
+		//get data type
 		checkNext(JsonToken.VALUE_STRING);
 		String dataTypeStr = parser.getText().toLowerCase();
 		VCardDataType dataType = "unknown".equals(dataTypeStr) ? null : VCardDataType.get(dataTypeStr);
 
-		// get property value(s)
+		//get property value(s)
 		List<JsonValue> values = parseValues();
 
 		JCardValue value = new JCardValue(values);
@@ -185,7 +171,7 @@ public class JCardRawReader implements Closeable {
 			String parameterName = parser.getText();
 
 			if (parser.nextToken() == JsonToken.START_ARRAY) {
-				// multi-valued parameter
+				//multi-valued parameter
 				while (parser.nextToken() != JsonToken.END_ARRAY) {
 					parameters.put(parameterName, parser.getText());
 				}
@@ -199,9 +185,7 @@ public class JCardRawReader implements Closeable {
 
 	private List<JsonValue> parseValues() throws IOException {
 		List<JsonValue> values = new ArrayList<JsonValue>();
-		while (parser.nextToken() != JsonToken.END_ARRAY) { // until we reach
-															// the end of the
-															// property array
+		while (parser.nextToken() != JsonToken.END_ARRAY) { //until we reach the end of the property array
 			JsonValue value = parseValue();
 			values.add(value);
 		}
@@ -279,7 +263,6 @@ public class JCardRawReader implements Closeable {
 
 	/**
 	 * Determines whether the end of the data stream has been reached.
-	 * 
 	 * @return true if the end has been reached, false if not
 	 */
 	public boolean eof() {
@@ -288,7 +271,6 @@ public class JCardRawReader implements Closeable {
 
 	/**
 	 * Handles the vCard data as it is read off the data stream.
-	 * 
 	 * @author Michael Angstadt
 	 */
 	public interface JCardDataStreamListener {
@@ -299,20 +281,13 @@ public class JCardRawReader implements Closeable {
 
 		/**
 		 * Called when a property is read.
-		 * 
-		 * @param group
-		 *            the group or null if there is not group
-		 * @param propertyName
-		 *            the property name (e.g. "summary")
-		 * @param parameters
-		 *            the parameters
-		 * @param dataType
-		 *            the data type or null for "unknown"
-		 * @param value
-		 *            the property value
+		 * @param group the group or null if there is not group
+		 * @param propertyName the property name (e.g. "summary")
+		 * @param parameters the parameters
+		 * @param dataType the data type or null for "unknown"
+		 * @param value the property value
 		 */
-		void readProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType,
-				JCardValue value);
+		void readProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType, JCardValue value);
 	}
 
 	/**

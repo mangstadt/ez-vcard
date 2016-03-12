@@ -21,7 +21,6 @@ import ezvcard.VCard;
 public class JCardDeserializerTest {
 	@Test
 	public void deserialize_single_vcard() throws Throwable {
-
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JCardModule());
 		VCard result = mapper.readValue(getClass().getResourceAsStream("jcard-example.json"), VCard.class);

@@ -466,9 +466,9 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(getClass().getResourceAsStream("jcard-example.json"));
 
 		VCard vcard = reader.readNext();
-		
+
 		validateExampleJCard(vcard);
-		
+
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
 	}

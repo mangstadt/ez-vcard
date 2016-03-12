@@ -21,7 +21,6 @@ import ezvcard.VCard;
  * @author Buddy Gorven
  */
 public class JCardSerializerTest {
-
 	@Test
 	public void serialize_indented() throws Throwable {
 		VCard vcard1 = new VCard();
@@ -83,7 +82,6 @@ public class JCardSerializerTest {
 
 	@Test
 	public void serialize_single_vcard() throws Throwable {
-
 		VCard example = JCardWriterTest.createExample();
 		String actual = getMapper().writeValueAsString(example);
 		JCardWriterTest.assertExample(actual, "jcard-example.json");
@@ -117,7 +115,6 @@ public class JCardSerializerTest {
 
 	@Test
 	public void serialize_multiple_vcards() throws Throwable {
-
 		List<VCard> cards = new ArrayList<VCard>();
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
