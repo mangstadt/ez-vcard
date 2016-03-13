@@ -1,0 +1,62 @@
+[
+  "vcard",
+  [
+    [ "version", { }, "text", "4.0" ],
+    [ "prodid", { }, "text", "ez-vcard 0.9.10-SNAPSHOT" ],
+    [ "fn", { }, "text", "Greg Dartmouth" ],
+    [ "n", { }, "text", [ "Dartmouth", "Greg", "", "", "" ] ],
+    [ "nickname", { }, "text", "Gman" ],
+    [ "x-phonetic-first-name", { }, "unknown", "Grregg" ],
+    [ "x-phonetic-last-name", { }, "unknown", "Dart-mowth" ],
+    [ "x-icq", { }, "unknown", "123456789" ],
+    [ "x-ablabel", {
+        "group" : "item1"
+      }, "unknown", "GRAND_CENTRAL" ],
+    [ "x-ablabel", {
+        "group" : "item2"
+      }, "unknown", "CustomAdrType" ],
+    [ "x-ablabel", {
+        "group" : "item3"
+      }, "unknown", "PROFILE" ],
+    [ "x-abdate", {
+        "group" : "item4"
+      }, "unknown", "1970-06-02" ],
+    [ "x-ablabel", {
+        "group" : "item4"
+      }, "unknown", "_$!<Anniversary>!$_" ],
+    [ "x-abrelatednames", {
+        "group" : "item5"
+      }, "unknown", "MySpouse" ],
+    [ "x-ablabel", {
+        "group" : "item5"
+      }, "unknown", "_$!<Spouse>!$_" ],
+    [ "x-abrelatednames", {
+        "group" : "item6"
+      }, "unknown", "MyCustom" ],
+    [ "x-ablabel", {
+        "group" : "item6"
+      }, "unknown", "CustomRelationship" ],
+    [ "email", {
+        "type" : "INTERNET"
+      }, "text", "gdartmouth@hotmail.com" ],
+    [ "tel", {
+        "type" : "CELL"
+      }, "text", "555 555 1111" ],
+    [ "tel", {
+        "group" : "item1"
+      }, "text", "555 555 2222" ],
+    [ "adr", {
+        "type" : "HOME"
+      }, "text", [ "", "", "123 Home St\r\nHome City, HM 12345", "", "", "", "" ] ],
+    [ "adr", {
+        "group" : "item2"
+      }, "text", [ "", "", "321 Custom St", "Custom City", "TX", "98765", "USA" ] ],
+    [ "org", { }, "text", "TheCompany" ],
+    [ "title", { }, "text", "TheJobTitle" ],
+    [ "bday", { }, "date", "1960-09-10" ],
+    [ "url", {
+        "group" : "item3"
+      }, "uri", "http://TheProfile.com" ],
+    [ "note", { }, "text", "This is GMail's note field.\r\nIt should be added as a NOTE type.\r\nACustomField: CustomField" ]
+  ]
+]

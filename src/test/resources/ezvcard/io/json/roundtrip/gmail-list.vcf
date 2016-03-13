@@ -1,0 +1,21 @@
+BEGIN:VCARD
+VERSION:4.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+FN:Arnold Smith
+N:Smith;Arnold;;;
+EMAIL;TYPE=INTERNET:asmithk@gmail.com
+END:VCARD
+BEGIN:VCARD
+VERSION:4.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+FN:Chris Beatle
+N:Beatle;Chris;;;
+EMAIL;TYPE=INTERNET:chrisy55d@yahoo.com
+END:VCARD
+BEGIN:VCARD
+VERSION:4.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+FN:Doug White
+N:White;Doug;;;
+EMAIL;TYPE=INTERNET:dwhite@gmail.com
+END:VCARD

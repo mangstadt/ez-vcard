@@ -1,0 +1,30 @@
+BEGIN:VCARD
+VERSION:4.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+FN:Greg Dartmouth
+N:Dartmouth;Greg;;;
+NICKNAME:Gman
+x-phonetic-first-name:Grregg
+x-phonetic-last-name:Dart-mowth
+x-icq:123456789
+item1.x-ablabel:GRAND_CENTRAL
+item2.x-ablabel:CustomAdrType
+item3.x-ablabel:PROFILE
+item4.x-abdate:1970-06-02
+item4.x-ablabel:_$!<Anniversary>!$_
+item5.x-abrelatednames:MySpouse
+item5.x-ablabel:_$!<Spouse>!$_
+item6.x-abrelatednames:MyCustom
+item6.x-ablabel:CustomRelationship
+EMAIL;TYPE=INTERNET:gdartmouth@hotmail.com
+TEL;TYPE=CELL:555 555 1111
+item1.TEL:555 555 2222
+ADR;TYPE=HOME:;;123 Home St\nHome City\, HM 12345;;;;
+item2.ADR:;;321 Custom St;Custom City;TX;98765;USA
+ORG:TheCompany
+TITLE:TheJobTitle
+BDAY:19600910
+item3.URL:http://TheProfile.com
+NOTE:This is GMail's note field.\nIt should be added as a NOTE type.\nACust
+ omField: CustomField
+END:VCARD
