@@ -1,7 +1,5 @@
 package ezvcard.io.json;
 
-import static ezvcard.util.StringUtils.NEWLINE;
-
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
@@ -12,11 +10,13 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter.Indenter;
 
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -55,6 +55,17 @@ public class JCardRawWriter implements Closeable, Flushable {
 	private boolean indent = false;
 	private boolean open = false;
 	private boolean closeGenerator = true;
+	private DefaultPrettyPrinter prettyPrinter;
+	private Indenter currentIndenter;
+	private static final Indenter INLINE_INDENTER = new Indenter() {
+		public void writeIndentation(JsonGenerator jg, int level) throws IOException {
+			jg.writeRaw(' ');
+		}
+
+		public boolean isInline() {
+			return false;
+		}
+	};
 
 	/**
 	 * @param writer the writer to wrap
@@ -107,7 +118,6 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		generator.writeStartArray();
-		indent(0);
 		generator.writeString("vcard");
 		generator.writeStartArray(); //start properties array
 
@@ -161,7 +171,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		generator.writeStartArray();
-		indent(2);
+		Indenter previousIndenter = replaceIndenter(INLINE_INDENTER);
 
 		//write the property name
 		generator.writeString(propertyName);
@@ -207,6 +217,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		generator.writeEndArray();
+		replaceIndenter(previousIndenter);
 	}
 
 	private void writeValue(JsonValue jsonValue) throws IOException {
@@ -259,19 +270,13 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 	}
 
-	/**
-	 * Checks to see if pretty-printing is enabled, and adds indentation
-	 * whitespace if it is.
-	 * @param spaces the number of spaces to indent with
-	 * @throws IOException if there's a problem writing to the output stream
-	 */
-	private void indent(int spaces) throws IOException {
-		if (!indent) {
-			return;
+	private Indenter replaceIndenter(Indenter indenter) {
+		Indenter previous = currentIndenter;
+		currentIndenter = indenter;
+		if (prettyPrinter != null) {
+			prettyPrinter.indentArraysWith(indenter);
 		}
-
-		generator.writeRaw(NEWLINE);
-		generator.writeRaw(StringUtils.repeat(' ', spaces));
+		return previous;
 	}
 
 	/**
@@ -301,7 +306,6 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		if (wrapInArray) {
-			indent(0);
 			generator.writeEndArray();
 		}
 
@@ -333,7 +337,12 @@ public class JCardRawWriter implements Closeable, Flushable {
 
 		if (wrapInArray) {
 			generator.writeStartArray();
-			indent(0);
+		}
+
+		if (isIndent()) {
+			this.prettyPrinter = new DefaultPrettyPrinter();
+			replaceIndenter(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+			generator.setPrettyPrinter(prettyPrinter);
 		}
 	}
 }
