@@ -124,6 +124,7 @@ Joel Orlina
 
 **Contributors**  
 amarnathr ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/16))  
+[bgorven](https://github.com/bgorven) (jackson-databind integration, jackson pretty printing)  
 Moritz Bechler (Geo URI bug fix)  
 Kiran Kumar Bhushan (quoted-printable bug)  
 Florian Brunner ([OSGi metadata](https://github.com/mangstadt/ez-vcard/issues/11))  
@@ -139,7 +140,7 @@ David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7
 Matt Siegel ([base64 property value bug](https://github.com/mangstadt/ez-vcard/issues/21), [unit test bug](https://github.com/mangstadt/ez-vcard/issues/22))  
 David Spieler ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/19))  
 Tom Vogel ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/10))  
-Eike Weyl (Wiki fix)  
+Eike Weyl (Wiki fix, Javadoc fix)  
 沈健 (plain-text vCard formatting issue)
 
 **Caffeine Suppliers**  
