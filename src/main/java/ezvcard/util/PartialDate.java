@@ -44,8 +44,8 @@ import ezvcard.Messages;
  * </p>
  * <p>
  * A <b>reduced accuracy date</b> is a date where the "lesser" components are
- * missing. For example, "12:30" is truncated because the "seconds" component is
- * missing.
+ * missing. For example, "12:30" is reduced accuracy because the "seconds"
+ * component is missing.
  * 
  * <pre class="brush:java">
  * PartialDate date = PartialDate.builder().hour(12).minute(30).build();
@@ -54,8 +54,7 @@ import ezvcard.Messages;
  * </p>
  * <p>
  * A <b>truncated date</b> is a date where the "greater" components are missing.
- * For example, "April 20" is reduced accuracy because the "year" component is
- * missing.
+ * For example, "April 20" is truncated because the "year" component is missing.
  * 
  * <pre class="brush:java">
  * PartialDate date = PartialDate.builder().month(4).date(20).build();
