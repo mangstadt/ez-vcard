@@ -1,34 +1,19 @@
 [
-  "vcard",
-  [
-    [ "version", { }, "text", "4.0" ],
-    [ "prodid", { }, "text", "ez-vcard 0.9.10-SNAPSHOT" ],
-    [ "fn", { }, "text", "Arnold Smith" ],
-    [ "n", { }, "text", [ "Smith", "Arnold", "", "", "" ] ],
-    [ "email", {
-        "type" : "INTERNET"
-      }, "text", "asmithk@gmail.com" ]
-  ]
-] [
-  "vcard",
-  [
-    [ "version", { }, "text", "4.0" ],
-    [ "prodid", { }, "text", "ez-vcard 0.9.10-SNAPSHOT" ],
-    [ "fn", { }, "text", "Chris Beatle" ],
-    [ "n", { }, "text", [ "Beatle", "Chris", "", "", "" ] ],
-    [ "email", {
-        "type" : "INTERNET"
-      }, "text", "chrisy55d@yahoo.com" ]
-  ]
-] [
-  "vcard",
-  [
-    [ "version", { }, "text", "4.0" ],
-    [ "prodid", { }, "text", "ez-vcard 0.9.10-SNAPSHOT" ],
-    [ "fn", { }, "text", "Doug White" ],
-    [ "n", { }, "text", [ "White", "Doug", "", "", "" ] ],
-    [ "email", {
-        "type" : "INTERNET"
-      }, "text", "dwhite@gmail.com" ]
-  ]
-]
+"vcard",[[
+  "version",{},"text","4.0"],[
+  "prodid",{},"text","ez-vcard 0.9.10-SNAPSHOT"],[
+  "fn",{},"text","Arnold Smith"],[
+  "n",{},"text",["Smith","Arnold","","",""]],[
+  "email",{"type":"INTERNET"},"text","asmithk@gmail.com"]]] [
+"vcard",[[
+  "version",{},"text","4.0"],[
+  "prodid",{},"text","ez-vcard 0.9.10-SNAPSHOT"],[
+  "fn",{},"text","Chris Beatle"],[
+  "n",{},"text",["Beatle","Chris","","",""]],[
+  "email",{"type":"INTERNET"},"text","chrisy55d@yahoo.com"]]] [
+"vcard",[[
+  "version",{},"text","4.0"],[
+  "prodid",{},"text","ez-vcard 0.9.10-SNAPSHOT"],[
+  "fn",{},"text","Doug White"],[
+  "n",{},"text",["White","Doug","","",""]],[
+  "email",{"type":"INTERNET"},"text","dwhite@gmail.com"]]]

@@ -3,7 +3,6 @@ package ezvcard.io.json.roundtrip;
 import static org.junit.Assert.*;
 
 import java.io.*;
-import java.nio.file.Paths;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -71,7 +70,7 @@ public class JCardRoundTripTest {
 		for (File vcf : dir) {
 			String file = vcf.getName().toString();
 			if (file.startsWith("John_Doe_EVOLUTION") || file.startsWith("John_Doe_IPHONE")
-					|| file.startsWith("John_Doe_MAC_ADDRESS_BOOK")) {
+					|| file.startsWith("John_Doe_MAC_ADDRESS_BOOK") || file.toLowerCase().contains("outlook")) {
 				continue;
 			}
 			assertEquals(file, read(file.replace(".vcf", ".json")), convertVCard(vcf));
@@ -80,7 +79,7 @@ public class JCardRoundTripTest {
 
 	@Test
 	public void convert_from_jcard() throws Throwable {
-		File input = Paths.get(JCardRoundTripTest.class.getResource("").toURI()).toFile();
+		File input = new File(JCardRoundTripTest.class.getResource("").toURI());
 		File[] dir = input.listFiles(new ExtensionFilter(".json"));
 		for (File jcard : dir) {
 			String file = jcard.getName().toString();

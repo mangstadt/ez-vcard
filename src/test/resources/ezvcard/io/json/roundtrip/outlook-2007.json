@@ -1,66 +1,32 @@
 [
-  "vcard",
-  [
-    [ "version", { }, "text", "4.0" ],
-    [ "prodid", { }, "text", "ez-vcard 0.9.10-SNAPSHOT" ],
-    [ "n", {
-        "language" : "en-us"
-      }, "text", [ "Angstadt", "Michael", "", "Mr.", "Jr." ] ],
-    [ "fn", { }, "text", "Mr. Michael Angstadt Jr." ],
-    [ "nickname", { }, "text", "Mike" ],
-    [ "org", { }, "text", [ "TheCompany", "TheDepartment" ] ],
-    [ "title", { }, "text", "TheJobTitle" ],
-    [ "note", {
-        "charset" : "us-ascii"
-      }, "text", "This is the NOTE field\t\r\nI assume it encodes this text inside a NOTE vCard type.\r\nBut I'm not sure because there's text formatting going on here.\r\nIt does not preserve the formatting" ],
-    [ "tel", {
-        "type" : [ "WORK", "VOICE" ]
-      }, "text", "(111) 555-1111" ],
-    [ "tel", {
-        "type" : [ "HOME", "VOICE" ]
-      }, "text", "(111) 555-2222" ],
-    [ "tel", {
-        "type" : [ "CELL", "VOICE" ]
-      }, "text", "(111) 555-4444" ],
-    [ "tel", {
-        "type" : [ "WORK", "FAX" ]
-      }, "text", "(111) 555-3333" ],
-    [ "x-ms-tel", {
-        "type" : [ "VOICE", "CALLBACK" ]
-      }, "unknown", "(111) 555-4444" ],
-    [ "x-ms-ol-default-postal-address", { }, "unknown", "2" ],
-    [ "x-ms-anniversary", { }, "unknown", "20120801" ],
-    [ "x-ms-imaddress", { }, "unknown", "im@aim.com" ],
-    [ "x-ms-ol-design", {
-        "charset" : "utf-8"
-      }, "unknown", "<card xmlns=\"http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards\" ver=\"1.0\" layout=\"left\" bgcolor=\"ffffff\"><img xmlns=\"\" align=\"tleft\" area=\"32\" use=\"photo\"/><fld xmlns=\"\" prop=\"name\" align=\"left\" dir=\"ltr\" style=\"b\" color=\"000000\" size=\"10\"/><fld xmlns=\"\" prop=\"org\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"title\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"dept\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"telwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Work</label></fld><fld xmlns=\"\" prop=\"telcell\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Mobile</label></fld><fld xmlns=\"\" prop=\"telhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Home</label></fld><fld xmlns=\"\" prop=\"email\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"webwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/></card>" ],
-    [ "x-ms-manager", { }, "unknown", "TheManagerName" ],
-    [ "x-ms-assistant", { }, "unknown", "TheAssistantName" ],
-    [ "x-ms-spouse", { }, "unknown", "TheSpouse" ],
-    [ "adr", {
-        "type" : "WORK",
-        "label" : "222 Broadway\r\nNew York, NY 99999\r\nUSA",
-        "pref" : "1"
-      }, "text", [ "", "TheOffice", "222 Broadway", "New York", "NY", "99999", "USA" ] ],
-    [ "url", {
-        "type" : "HOME"
-      }, "uri", "http://mikeangstadt.name" ],
-    [ "url", {
-        "type" : "WORK"
-      }, "uri", "http://mikeangstadt.name" ],
-    [ "role", { }, "text", "TheProfession" ],
-    [ "bday", { }, "date", "1922-03-10" ],
-    [ "key", {
-        "type" : "X509"
-      }, "uri", "data:application/x509;base64,MIIB/jCCAWugAwIBAgIQDdkWkvA2cqtGkw2P4zAoZDAJBgUrDgMCHQUAMBMxETAPBgNVBAMTCG1hbmdzdGFkMCAXDTExMDYxNzIwMTgwM1oYDzIxMTEwNTI0MjAxODAzWjATMREwDwYDVQQDEwhtYW5nc3RhZDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAmfYuhkT693IXf/iSESbw9cmeM3p2AWDC8oGDiCDtenNIGdITa8e/kwx9JIFl7a02cMbHtG6BmbGBINzzgepsY6lE+Pcxns4FVpgWr1hn3YVg2LKqgRkKLp+ddqL+LWCg3qvcQxnZJoooRLhpurr/T9TaE83nAr6aqoStjYh+KtECAwEAAaNZMFcwFQYDVR0lBA4wDAYKKwYBBAGCNwoDBDAzBgNVHREELDAqoCgGCisGAQQBgjcUAgOgGgwYbWFuZ3N0YWRAcGVubm11dHVhbC5jb20AMAkGA1UdEwQCMAAwCQYFKw4DAh0FAAOBgQA9/txKYVIj6/UoDRYAp23NoRjaeZ0cTqcpKtxlUi8z7TtczAROgTr4Pi+VaKR0Y+RzgVxPN8wvNoVogCWLTpVxhoe8R5geoS4L1w1O1HYwu2KlG57SOR4R/Lv5bgi6CNTlS1N4zIDBOSyypTmzxC+JPmyn/8vZleIz8CYnwmfBEg==" ],
-    [ "email", {
-        "type" : "INTERNET",
-        "pref" : "1"
-      }, "text", "mike.angstadt@gmail.com" ],
-    [ "photo", {
-        "type" : "JPEG"
-      }, "uri", "data:image/jpeg;base64,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" ],
-    [ "fburl", { }, "uri", "http://website.com/mycal" ],
-    [ "rev", { }, "timestamp", "2012-08-01T18:46:31Z" ]
-  ]
-]
+"vcard",[[
+  "version",{},"text","4.0"],[
+  "prodid",{},"text","ez-vcard 0.9.10-SNAPSHOT"],[
+  "n",{"language":"en-us"},"text",["Angstadt","Michael","","Mr.","Jr."]],[
+  "fn",{},"text","Mr. Michael Angstadt Jr."],[
+  "nickname",{},"text","Mike"],[
+  "org",{},"text",["TheCompany","TheDepartment"]],[
+  "title",{},"text","TheJobTitle"],[
+  "note",{"charset":"us-ascii"},"text","This is the NOTE field\t\r\nI assume it encodes this text inside a NOTE vCard type.\r\nBut I'm not sure because there's text formatting going on here.\r\nIt does not preserve the formatting"],[
+  "tel",{"type":["WORK","VOICE"]},"text","(111) 555-1111"],[
+  "tel",{"type":["HOME","VOICE"]},"text","(111) 555-2222"],[
+  "tel",{"type":["CELL","VOICE"]},"text","(111) 555-4444"],[
+  "tel",{"type":["WORK","FAX"]},"text","(111) 555-3333"],[
+  "x-ms-tel",{"type":["VOICE","CALLBACK"]},"unknown","(111) 555-4444"],[
+  "x-ms-ol-default-postal-address",{},"unknown","2"],[
+  "x-ms-anniversary",{},"unknown","20120801"],[
+  "x-ms-imaddress",{},"unknown","im@aim.com"],[
+  "x-ms-ol-design",{"charset":"utf-8"},"unknown","<card xmlns=\"http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards\" ver=\"1.0\" layout=\"left\" bgcolor=\"ffffff\"><img xmlns=\"\" align=\"tleft\" area=\"32\" use=\"photo\"/><fld xmlns=\"\" prop=\"name\" align=\"left\" dir=\"ltr\" style=\"b\" color=\"000000\" size=\"10\"/><fld xmlns=\"\" prop=\"org\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"title\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"dept\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"telwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Work</label></fld><fld xmlns=\"\" prop=\"telcell\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Mobile</label></fld><fld xmlns=\"\" prop=\"telhome\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"><label align=\"right\" color=\"626262\">Home</label></fld><fld xmlns=\"\" prop=\"email\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"addrwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"webwork\" align=\"left\" dir=\"ltr\" color=\"000000\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/><fld xmlns=\"\" prop=\"blank\" size=\"8\"/></card>"],[
+  "x-ms-manager",{},"unknown","TheManagerName"],[
+  "x-ms-assistant",{},"unknown","TheAssistantName"],[
+  "x-ms-spouse",{},"unknown","TheSpouse"],[
+  "adr",{"type":"WORK","label":"222 Broadway\r\nNew York, NY 99999\r\nUSA","pref":"1"},"text",["","TheOffice","222 Broadway","New York","NY","99999","USA"]],[
+  "url",{"type":"HOME"},"uri","http://mikeangstadt.name"],[
+  "url",{"type":"WORK"},"uri","http://mikeangstadt.name"],[
+  "role",{},"text","TheProfession"],[
+  "bday",{},"date","1922-03-10"],[
+  "key",{"type":"X509"},"uri","data:application/x509;base64,MIIB/jCCAWugAwIBAgIQDdkWkvA2cqtGkw2P4zAoZDAJBgUrDgMCHQUAMBMxETAPBgNVBAMTCG1hbmdzdGFkMCAXDTExMDYxNzIwMTgwM1oYDzIxMTEwNTI0MjAxODAzWjATMREwDwYDVQQDEwhtYW5nc3RhZDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAmfYuhkT693IXf/iSESbw9cmeM3p2AWDC8oGDiCDtenNIGdITa8e/kwx9JIFl7a02cMbHtG6BmbGBINzzgepsY6lE+Pcxns4FVpgWr1hn3YVg2LKqgRkKLp+ddqL+LWCg3qvcQxnZJoooRLhpurr/T9TaE83nAr6aqoStjYh+KtECAwEAAaNZMFcwFQYDVR0lBA4wDAYKKwYBBAGCNwoDBDAzBgNVHREELDAqoCgGCisGAQQBgjcUAgOgGgwYbWFuZ3N0YWRAcGVubm11dHVhbC5jb20AMAkGA1UdEwQCMAAwCQYFKw4DAh0FAAOBgQA9/txKYVIj6/UoDRYAp23NoRjaeZ0cTqcpKtxlUi8z7TtczAROgTr4Pi+VaKR0Y+RzgVxPN8wvNoVogCWLTpVxhoe8R5geoS4L1w1O1HYwu2KlG57SOR4R/Lv5bgi6CNTlS1N4zIDBOSyypTmzxC+JPmyn/8vZleIz8CYnwmfBEg=="],[
+  "email",{"type":"INTERNET","pref":"1"},"text","mike.angstadt@gmail.com"],[
+  "photo",{"type":"JPEG"},"uri","data:image/jpeg;base64,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"],[
+  "fburl",{},"uri","http://website.com/mycal"],[
+  "rev",{},"timestamp","2012-08-01T18:46:31Z"]]]
