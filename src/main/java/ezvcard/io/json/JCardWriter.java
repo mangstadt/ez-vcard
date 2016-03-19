@@ -1,24 +1,19 @@
 package ezvcard.io.json;
 
-import static ezvcard.util.IOUtils.utf8Writer;
+import static ezvcard.util.IOUtils.*;
 
-import java.io.File;
-import java.io.Flushable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
+import java.io.*;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.PrettyPrinter;
 
 import ezvcard.*;
-import ezvcard.io.EmbeddedVCardException;
-import ezvcard.io.SkipMeException;
-import ezvcard.io.StreamWriter;
+import ezvcard.io.*;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.property.TextProperty;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.JCardPrettyPrinter;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -221,20 +216,48 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	}
 
 	/**
+	 * @deprecated Since 1.9.10 use {@link #isPrettyPrint}
+	 */
+	@Deprecated
+	public boolean isIndent() {
+		return writer.isPrettyPrint();
+	}
+
+	/**
+	 * @deprecated Since 1.9.10 use {@link #setPrettyPrint}
+	 */
+	@Deprecated
+	public void setIndent(boolean indent) {
+		writer.setPrettyPrint(indent);
+	}
+
+	/**
 	 * Gets whether or not the JSON will be pretty-printed.
 	 * @return true if it will be pretty-printed, false if not (defaults to
 	 * false)
 	 */
-	public boolean isIndent() {
-		return writer.isIndent();
+	public boolean isPrettyPrint() {
+		return writer.isPrettyPrint();
 	}
 
 	/**
 	 * Sets whether or not to pretty-print the JSON.
 	 * @param indent true to pretty-print it, false not to (defaults to false)
 	 */
-	public void setIndent(boolean indent) {
-		writer.setIndent(indent);
+	public void setPrettyPrint(boolean prettyPrint) {
+		writer.setPrettyPrint(prettyPrint);
+	}
+
+	/**
+	 * Sets the pretty printer to pretty-print the JSON with. Note that this
+	 * method implicitly enables indenting, so {@code setPrettyPrint(true)} does
+	 * not also need to be called.
+	 * @param prettyPrinter the custom pretty printer (defaults to an instance
+	 * of {@link JCardPrettyPrinter}, if {@code setPrettyPrint(true)} has been
+	 * called.
+	 */
+	public void setPrettyPrinter(PrettyPrinter prettyPrinter) {
+		writer.setPrettyPrinter(prettyPrinter);
 	}
 
 	/**

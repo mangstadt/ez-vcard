@@ -129,7 +129,7 @@ public class ChainingJsonWriter extends ChainingWriter<ChainingJsonWriter> {
 
 	private void go(JCardWriter writer) throws IOException {
 		writer.setAddProdId(prodId);
-		writer.setIndent(indent);
+		writer.setPrettyPrint(indent);
 		writer.setVersionStrict(versionStrict);
 		if (index != null) {
 			writer.setScribeIndex(index);

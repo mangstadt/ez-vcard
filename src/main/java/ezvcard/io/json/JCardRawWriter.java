@@ -1,22 +1,17 @@
 package ezvcard.io.json;
 
-import java.io.Closeable;
-import java.io.Flushable;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter.Indenter;
 
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.property.VCardProperty;
+import ezvcard.util.JCardPrettyPrinter;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -45,6 +40,7 @@ import ezvcard.parameter.VCardParameters;
 
 /**
  * Writes data to an vCard JSON data stream (jCard).
+ * 
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
  */
@@ -52,19 +48,14 @@ public class JCardRawWriter implements Closeable, Flushable {
 	private final Writer writer;
 	private final boolean wrapInArray;
 	private JsonGenerator generator;
-	private boolean indent = false;
+	private boolean prettyPrint = false;
 	private boolean open = false;
 	private boolean closeGenerator = true;
-	private DefaultPrettyPrinter prettyPrinter;
-	private Indenter currentIndenter;
-	private static final Indenter INLINE_INDENTER = new Indenter() {
-		public void writeIndentation(JsonGenerator jg, int level) throws IOException {
-			jg.writeRaw(' ');
-		}
+	private PrettyPrinter prettyPrinter;
+	private final boolean ownGenerator;
 
-		public boolean isInline() {
-			return false;
-		}
+	private static final VCardProperty VCARD_PROPERTY = new VCardProperty() {
+		//Fake VcardProperty for JCardPrettyPrinter to detect
 	};
 
 	/**
@@ -75,6 +66,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	public JCardRawWriter(Writer writer, boolean wrapInArray) {
 		this.writer = writer;
 		this.wrapInArray = wrapInArray;
+		ownGenerator = true;
 	}
 
 	/**
@@ -85,6 +77,23 @@ public class JCardRawWriter implements Closeable, Flushable {
 		this.generator = generator;
 		this.closeGenerator = false;
 		this.wrapInArray = false;
+		ownGenerator = false;
+	}
+
+	/**
+	 * @deprecated Since 1.9.10 use {@link #isPrettyPrint}
+	 */
+	@Deprecated
+	public boolean isIndent() {
+		return prettyPrint;
+	}
+
+	/**
+	 * @deprecated Since 1.9.10 use {@link #setPrettyPrint}
+	 */
+	@Deprecated
+	public void setIndent(boolean indent) {
+		this.prettyPrint = indent;
 	}
 
 	/**
@@ -92,16 +101,29 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * @return true if it will be pretty-printed, false if not (defaults to
 	 * false)
 	 */
-	public boolean isIndent() {
-		return indent;
+	public boolean isPrettyPrint() {
+		return prettyPrint;
 	}
 
 	/**
 	 * Sets whether or not to pretty-print the JSON.
-	 * @param indent true to pretty-print it, false not to (defaults to false)
+	 * @param prettyPrint true to pretty-print it, false not to (defaults to false)
 	 */
-	public void setIndent(boolean indent) {
-		this.indent = indent;
+	public void setPrettyPrint(boolean prettyPrint) {
+		this.prettyPrint = prettyPrint;
+	}
+
+	/**
+	 * Sets the pretty printer to pretty-print the JSON with. Note that this
+	 * method implicitly enables indenting, so {@code setPrettyPrint(true)} does
+	 * not also need to be called.
+	 * @param prettyPrinter the custom pretty printer (defaults to an instance
+	 * of {@link JCardPrettyPrinter}, if {@code setPrettyPrint(true)} has been
+	 * called.
+	 */
+	public void setPrettyPrinter(PrettyPrinter prettyPrinter) {
+		setIndent(true);
+		this.prettyPrinter = prettyPrinter;
 	}
 
 	/**
@@ -170,8 +192,11 @@ public class JCardRawWriter implements Closeable, Flushable {
 			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(1));
 		}
 
+		if (ownGenerator) {
+			generator.setCurrentValue(VCARD_PROPERTY);
+		}
+
 		generator.writeStartArray();
-		Indenter previousIndenter = replaceIndenter(INLINE_INDENTER);
 
 		//write the property name
 		generator.writeString(propertyName);
@@ -217,7 +242,10 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		generator.writeEndArray();
-		replaceIndenter(previousIndenter);
+
+		if (ownGenerator) {
+			generator.setCurrentValue(null);
+		}
 	}
 
 	private void writeValue(JsonValue jsonValue) throws IOException {
@@ -268,15 +296,6 @@ public class JCardRawWriter implements Closeable, Flushable {
 			generator.writeEndObject();
 			return;
 		}
-	}
-
-	private Indenter replaceIndenter(Indenter indenter) {
-		Indenter previous = currentIndenter;
-		currentIndenter = indenter;
-		if (prettyPrinter != null) {
-			prettyPrinter.indentArraysWith(indenter);
-		}
-		return previous;
 	}
 
 	/**
@@ -335,14 +354,15 @@ public class JCardRawWriter implements Closeable, Flushable {
 		factory.configure(Feature.AUTO_CLOSE_TARGET, false);
 		generator = factory.createGenerator(writer);
 
-		if (wrapInArray) {
-			generator.writeStartArray();
+		if (isIndent()) {
+			if (prettyPrinter == null) {
+				prettyPrinter = new JCardPrettyPrinter();
+			}
+			generator.setPrettyPrinter(prettyPrinter);
 		}
 
-		if (isIndent()) {
-			this.prettyPrinter = new DefaultPrettyPrinter();
-			replaceIndenter(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-			generator.setPrettyPrinter(prettyPrinter);
+		if (wrapInArray) {
+			generator.writeStartArray();
 		}
 	}
 }
