@@ -11,14 +11,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
-import ezvcard.VCard;
-import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
+import ezvcard.*;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.property.TextProperty;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -78,6 +77,7 @@ import ezvcard.property.VCardProperty;
 public class JCardWriter extends StreamWriter implements Flushable {
 	private final JCardRawWriter writer;
 	private final VCardVersion targetVersion = VCardVersion.V4_0;
+	private JsonGenerator generator = null;
 
 	/**
 	 * @param out the output stream to write to (UTF-8 encoding will be used)
@@ -133,6 +133,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * @param generator the generator to write to
 	 */
 	public JCardWriter(JsonGenerator generator) {
+		this.generator  = generator;
 		this.writer = new JCardRawWriter(generator);
 	}
 
@@ -147,8 +148,14 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
+
+		Object previousValue = getCurrentValue();
+		setCurrentValue(vcard);
+
 		writer.writeStartVCard();
+		setCurrentValue(targetVersion);
 		writer.writeProperty("version", VCardDataType.TEXT, JCardValue.single(targetVersion.getVersion()));
+		setCurrentValue(vcard);
 
 		for (VCardProperty property : properties) {
 			VCardPropertyScribe scribe = index.getPropertyScribe(property);
@@ -170,10 +177,42 @@ public class JCardWriter extends StreamWriter implements Flushable {
 			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
 			VCardDataType dataType = scribe.dataType(property, targetVersion);
 
+			setCurrentValue(property);
 			writer.writeProperty(group, name, parameters, dataType, value);
+			setCurrentValue(vcard);
 		}
 
 		writer.writeEndVCard();
+
+		setCurrentValue(previousValue);
+	}
+
+	/**
+	 * If this object has a {@link JsonGenerator), and the generator has an
+	 * output context, gets the current value of the output context.
+	 * 
+	 * @return the value of the object that is currently being serialized, if
+	 *         available
+	 */
+	private Object getCurrentValue() {
+		if (generator != null) {
+			return generator.getCurrentValue();
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * If this object has a {@link JsonGenerator), and the generator has an
+	 * output context, sets the current value of the output context.
+	 * 
+	 * @param value
+	 *            the object that is currently being serialized
+	 */
+	private void setCurrentValue(Object value) {
+		if (generator != null) {
+			generator.setCurrentValue(value);
+		}
 	}
 
 	@Override

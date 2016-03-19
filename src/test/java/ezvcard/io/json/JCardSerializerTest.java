@@ -3,19 +3,23 @@ package ezvcard.io.json;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ezvcard.VCard;
+import ezvcard.VCardVersion;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -114,6 +118,42 @@ public class JCardSerializerTest {
 		VCard example = JCardWriterTest.createExample();
 		String actual = getMapper().writeValueAsString(example);
 		JCardWriterTest.assertExample(actual, "jcard-example.json");
+	}
+
+	@Test
+	public void check_context_set() throws Throwable {
+		VCard example = JCardWriterTest.createExample();
+		ObjectMapper mapper = getMapper();
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		mapper.setDefaultPrettyPrinter(new MinimalPrettyPrinter() {
+			private static final long serialVersionUID = 1L;
+
+			private boolean find(JsonStreamContext context, Class<?>... classes) {
+				if (context == null) {
+					return false;
+				} else {
+					for (Class<?> type : classes) {
+						if (type.isInstance(context.getCurrentValue())) {
+							return true;
+						}
+					}
+					return find(context.getParent(), classes);
+				}
+			}
+
+			public void writeStartObject(JsonGenerator gen) throws JsonGenerationException, IOException {
+				Assert.assertTrue("Written VCard parameter was not within a VCardProperty context",
+						find(gen.getOutputContext(), VCardProperty.class, VCardVersion.class));
+				super.writeStartObject(gen);
+			}
+
+			public void writeStartArray(JsonGenerator gen) throws JsonGenerationException, IOException {
+				Assert.assertTrue("Written value was not within a VCard context",
+						find(gen.getOutputContext(), VCard.class));
+				super.writeStartArray(gen);
+			}
+		});
+		mapper.writeValueAsString(example);
 	}
 
 	@Test
