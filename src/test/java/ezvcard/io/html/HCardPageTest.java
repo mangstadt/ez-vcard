@@ -279,7 +279,7 @@ public class HCardPageTest {
 			StructuredName a = actual.getStructuredName();
 			assertEquals(e.getFamily(), a.getFamily());
 			assertEquals(e.getGiven(), a.getGiven());
-			assertEquals(e.getAdditional(), a.getAdditional());
+			assertEquals(e.getAdditionalNames(), a.getAdditionalNames());
 			assertEquals(e.getPrefixes(), a.getPrefixes());
 			assertEquals(e.getSuffixes(), a.getSuffixes());
 			assertTrue(a.getSortAs().isEmpty());
@@ -385,11 +385,11 @@ public class HCardPageTest {
 		StructuredName n = new StructuredName();
 		n.setFamily("Claus");
 		n.setGiven("Santa");
-		n.addAdditional("Saint Nicholas");
-		n.addAdditional("Father Christmas");
-		n.addPrefix("Mr");
-		n.addPrefix("Dr");
-		n.addSuffix("M.D.");
+		n.getAdditionalNames().add("Saint Nicholas");
+		n.getAdditionalNames().add("Father Christmas");
+		n.getPrefixes().add("Mr");
+		n.getPrefixes().add("Dr");
+		n.getSuffixes().add("M.D.");
 		n.setSortAs("Claus");
 		vcard.setStructuredName(n);
 

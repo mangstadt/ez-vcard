@@ -529,8 +529,8 @@ public class VCardWriterTest {
 		StructuredName n = new StructuredName();
 		n.setFamily("Perreault");
 		n.setGiven("Simon");
-		n.addSuffix("ing. jr");
-		n.addSuffix("M.Sc.");
+		n.getSuffixes().add("ing. jr");
+		n.getSuffixes().add("M.Sc.");
 		vcard.setStructuredName(n);
 
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());

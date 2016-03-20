@@ -51,8 +51,8 @@ import ezvcard.parameter.VCardParameters;
  * StructuredName n = new StructuredName();
  * n.setFamily(&quot;House&quot;);
  * n.setGiven(&quot;Gregory&quot;);
- * n.addPrefix(&quot;Dr&quot;);
- * n.addSuffix(&quot;MD&quot;);
+ * n.getPrefixes().add(&quot;Dr&quot;);
+ * n.getSuffixes().add(&quot;MD&quot;);
  * vcard.setStructuredName(n);
  * </pre>
  * 
@@ -70,9 +70,9 @@ import ezvcard.parameter.VCardParameters;
 public class StructuredName extends VCardProperty implements HasAltId {
 	private String family;
 	private String given;
-	private List<String> additional;
-	private List<String> prefixes;
-	private List<String> suffixes;
+	private final List<String> additional;
+	private final List<String> prefixes;
+	private final List<String> suffixes;
 
 	public StructuredName() {
 		additional = new ArrayList<String>();
@@ -94,7 +94,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets the family name (aka "last name").
+	 * Gets the family name (aka "surname" or "last name").
 	 * @return the family name or null if not set
 	 */
 	public String getFamily() {
@@ -102,7 +102,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the family name (aka "last name").
+	 * Sets the family name (aka "surname" or "last name").
 	 * @param family the family name or null to remove
 	 */
 	public void setFamily(String family) {
@@ -126,51 +126,28 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets any additional names the person goes by.
-	 * @return the additional names or empty list if there are none
+	 * Gets the list that stores additional names the person goes by (for
+	 * example, a middle name).
+	 * @return the additional names
 	 */
-	public List<String> getAdditional() {
+	public List<String> getAdditionalNames() {
 		return additional;
 	}
 
 	/**
-	 * Adds an additional name the person goes by.
-	 * @param additional the additional name to add
-	 */
-	public void addAdditional(String additional) {
-		this.additional.add(additional);
-	}
-
-	/**
-	 * Gets the prefixes.
-	 * @return the prefixes (e.g. "Mr.") or empty list if there are none
+	 * Gets the list that stores the person's honorific prefixes.
+	 * @return the prefixes (e.g. "Dr.", "Mr.")
 	 */
 	public List<String> getPrefixes() {
 		return prefixes;
 	}
 
 	/**
-	 * Adds a prefix.
-	 * @param prefix the prefix to add (e.g. "Mr.")
-	 */
-	public void addPrefix(String prefix) {
-		this.prefixes.add(prefix);
-	}
-
-	/**
-	 * Gets the suffixes.
-	 * @return the suffixes (e.g. "Jr.") or empty list if there are none
+	 * Gets the list that stores the person's honorary suffixes.
+	 * @return the suffixes (e.g. "M.D.", "Jr.")
 	 */
 	public List<String> getSuffixes() {
 		return suffixes;
-	}
-
-	/**
-	 * Adds a suffix.
-	 * @param suffix the suffix to add (e.g. "Jr.")
-	 */
-	public void addSuffix(String suffix) {
-		this.suffixes.add(suffix);
 	}
 
 	/**

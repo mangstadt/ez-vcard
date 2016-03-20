@@ -77,7 +77,7 @@ public class StructuredNameAsserter extends PropertyAsserter<StructuredNameAsser
 		assertEquals(given, property.getGiven());
 		assertEquals(arrayToList(prefixes), property.getPrefixes());
 		assertEquals(arrayToList(suffixes), property.getSuffixes());
-		assertEquals(arrayToList(additional), property.getAdditional());
+		assertEquals(arrayToList(additional), property.getAdditionalNames());
 	}
 
 	@Override

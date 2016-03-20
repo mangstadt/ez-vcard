@@ -101,7 +101,7 @@ public class JohnDoeVCard {
 		StructuredName n = new StructuredName();
 		n.setFamily("Doe");
 		n.setGiven("Jonathan");
-		n.addPrefix("Mr");
+		n.getPrefixes().add("Mr");
 		vcard.setStructuredName(n);
 
 		vcard.setFormattedName("Jonathan Doe");
