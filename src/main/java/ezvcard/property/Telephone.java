@@ -82,7 +82,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 	private TelUri uri;
 	private final List<TelephoneType> types = new TypeParameterEnumList<TelephoneType>() {
 		@Override
-		protected TelephoneType _asObject(String value) throws Exception {
+		protected TelephoneType _asObject(String value) {
 			return TelephoneType.get(value);
 		}
 	};

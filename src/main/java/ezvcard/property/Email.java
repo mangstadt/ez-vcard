@@ -73,7 +73,7 @@ import ezvcard.parameter.Pid;
 public class Email extends TextProperty implements HasAltId {
 	private final List<EmailType> types = new TypeParameterEnumList<EmailType>() {
 		@Override
-		protected EmailType _asObject(String value) throws Exception {
+		protected EmailType _asObject(String value) {
 			return EmailType.get(value);
 		}
 	};

@@ -90,7 +90,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	private URI uri;
 	private final List<ImppType> types = new TypeParameterEnumList<ImppType>() {
 		@Override
-		protected ImppType _asObject(String value) throws Exception {
+		protected ImppType _asObject(String value) {
 			return ImppType.get(value);
 		}
 	};

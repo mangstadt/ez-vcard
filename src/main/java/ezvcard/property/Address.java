@@ -112,7 +112,7 @@ public class Address extends VCardProperty implements HasAltId {
 	private final List<String> countries;
 	private final List<AddressType> types = new TypeParameterEnumList<AddressType>() {
 		@Override
-		protected AddressType _asObject(String value) throws Exception {
+		protected AddressType _asObject(String value) {
 			return AddressType.get(value);
 		}
 	};

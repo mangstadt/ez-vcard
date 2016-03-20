@@ -86,7 +86,7 @@ public class Related extends VCardProperty implements HasAltId {
 	private String text;
 	private final List<RelatedType> types = new TypeParameterEnumList<RelatedType>() {
 		@Override
-		protected RelatedType _asObject(String value) throws Exception {
+		protected RelatedType _asObject(String value) {
 			return RelatedType.get(value);
 		}
 	};
