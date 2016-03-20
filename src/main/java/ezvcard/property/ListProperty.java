@@ -60,7 +60,7 @@ public class ListProperty<T> extends VCardProperty {
 	}
 
 	/**
-	 * Gest the list of values.
+	 * Gets the list of values.
 	 * @return the list of values
 	 */
 	public List<T> getValues() {
