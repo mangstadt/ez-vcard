@@ -193,7 +193,7 @@ public class HCardPageTest {
 		{
 			VCard vcard = new VCard();
 			Organization org = new Organization();
-			org.addValue("Google");
+			org.getValues().add("Google");
 			vcard.setOrganization(org);
 			Document document = generate(vcard);
 
@@ -205,8 +205,8 @@ public class HCardPageTest {
 		{
 			VCard vcard = new VCard();
 			Organization org = new Organization();
-			org.addValue("Google");
-			org.addValue("GMail Team");
+			org.getValues().add("Google");
+			org.getValues().add("GMail Team");
 			vcard.setOrganization(org);
 			Document document = generate(vcard);
 

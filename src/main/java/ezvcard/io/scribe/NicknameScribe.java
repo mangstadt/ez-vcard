@@ -42,7 +42,7 @@ public class NicknameScribe extends ListPropertyScribe<Nickname> {
 	@Override
 	protected Nickname _parseHtml(HCardElement element, List<String> warnings) {
 		Nickname property = _newInstance();
-		property.addValue(element.value());
+		property.getValues().add(element.value());
 		return property;
 	}
 

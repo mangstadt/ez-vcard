@@ -1,14 +1,13 @@
 package ezvcard.property;
 
 import static ezvcard.property.PropertySensei.assertCopy;
-import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
+import static ezvcard.util.TestUtils.assertEqualsAndHash;
+import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -52,19 +51,8 @@ public class ListPropertyTest {
 		assertValidate(zeroItems).run(8);
 
 		ListPropertyImpl oneItem = new ListPropertyImpl();
-		oneItem.addValue("one");
+		oneItem.getValues().add("one");
 		assertValidate(oneItem).run();
-	}
-
-	@Test
-	public void removeValue() {
-		ListPropertyImpl property = new ListPropertyImpl();
-		property.addValue("one");
-		property.addValue("two");
-		property.addValue("three");
-		property.removeValue("two");
-		property.removeValue("four");
-		assertEquals(Arrays.asList("one", "three"), property.getValues());
 	}
 
 	@Test
@@ -79,7 +67,7 @@ public class ListPropertyTest {
 		assertCopy(original);
 
 		original = new ListPropertyImpl();
-		original.addValue("value");
+		original.getValues().add("value");
 		assertCopy(original).notSame("getValues");
 	}
 
@@ -91,26 +79,29 @@ public class ListPropertyTest {
 		properties.add(property);
 
 		property = new ListPropertyImpl();
-		property.addValue("value");
+		property.getValues().add("value");
 		properties.add(property);
 
 		property = new ListPropertyImpl();
-		property.addValue("value2");
+		property.getValues().add("value2");
 		properties.add(property);
 
 		property = new ListPropertyImpl();
-		property.addValue("value");
-		property.addValue("value2");
+		property.getValues().add("value");
+		property.getValues().add("value2");
 		properties.add(property);
 
 		assertNothingIsEqual(properties);
 
-		//@formatter:off
-		assertEqualsMethod(ListPropertyImpl.class)
-		.constructor()
-			.test()
-			.method("addValue", new Class<?>[]{Object.class}, "value").test();
-		//@formatter:on
+		ListPropertyImpl one = new ListPropertyImpl();
+		assertEqualsMethodEssentials(one);
+
+		ListPropertyImpl two = new ListPropertyImpl();
+		assertEqualsAndHash(one, two);
+
+		one.getValues().add("value");
+		two.getValues().add("value");
+		assertEqualsAndHash(one, two);
 	}
 
 	public static class ListPropertyImpl extends ListProperty<String> {

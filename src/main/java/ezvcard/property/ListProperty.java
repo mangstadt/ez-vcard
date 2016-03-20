@@ -60,27 +60,11 @@ public class ListProperty<T> extends VCardProperty {
 	}
 
 	/**
-	 * Gets the list of values.
+	 * Gets the list that stores this property's values.
 	 * @return the list of values
 	 */
 	public List<T> getValues() {
 		return values;
-	}
-
-	/**
-	 * Adds a value to the list.
-	 * @param value the value to add
-	 */
-	public void addValue(T value) {
-		values.add(value);
-	}
-
-	/**
-	 * Removes a value from the list.
-	 * @param value the value to remove
-	 */
-	public void removeValue(T value) {
-		values.remove(value);
 	}
 
 	@Override

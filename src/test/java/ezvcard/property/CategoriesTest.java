@@ -46,7 +46,7 @@ public class CategoriesTest {
 		assertValidate(empty).versions(VCardVersion.V3_0, VCardVersion.V4_0).run(8);
 
 		Categories withValue = new Categories();
-		withValue.addValue("one");
+		withValue.getValues().add("one");
 		assertValidate(withValue).versions(VCardVersion.V2_1).run(2);
 		assertValidate(withValue).versions(VCardVersion.V3_0, VCardVersion.V4_0).run();
 	}

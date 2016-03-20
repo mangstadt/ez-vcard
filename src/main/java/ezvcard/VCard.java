@@ -1169,9 +1169,7 @@ public class VCard implements Iterable<VCardProperty> {
 		Nickname property = null;
 		if (nicknames != null && nicknames.length > 0 && nicknames[0] != null) {
 			property = new Nickname();
-			for (String nickname : nicknames) {
-				property.addValue(nickname);
-			}
+			property.getValues().addAll(Arrays.asList(nicknames));
 		}
 		setNickname(property);
 		return property;
@@ -2965,9 +2963,7 @@ public class VCard implements Iterable<VCardProperty> {
 		Organization type = null;
 		if (departments != null) {
 			type = new Organization();
-			for (String department : departments) {
-				type.addValue(department);
-			}
+			type.getValues().addAll(Arrays.asList(departments));
 		}
 		setOrganization(type);
 		return type;
@@ -3128,9 +3124,7 @@ public class VCard implements Iterable<VCardProperty> {
 		Categories type = null;
 		if (categories != null) {
 			type = new Categories();
-			for (String category : categories) {
-				type.addValue(category);
-			}
+			type.getValues().addAll(Arrays.asList(categories));
 		}
 		setCategories(type);
 		return type;
