@@ -192,7 +192,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the extended address or null if not set
 	 */
 	public String getExtendedAddressFull() {
-		return extendedAddresses.isEmpty() ? null : StringUtils.join(extendedAddresses, ",");
+		return getAddressFull(extendedAddresses);
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the street address or null if not set
 	 */
 	public String getStreetAddressFull() {
-		return streetAddresses.isEmpty() ? null : StringUtils.join(streetAddresses, ",");
+		return getAddressFull(streetAddresses);
 	}
 
 	/**
@@ -365,7 +365,7 @@ public class Address extends VCardProperty implements HasAltId {
 
 	/**
 	 * Gets the label of the address.
-	 * @return the label or null if it doesn't have one
+	 * @return the label or null if not set
 	 */
 	public String getLabel() {
 		return parameters.getLabel();
@@ -439,8 +439,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the timezone (e.g. "America/New_York") or null if it doesn't
-	 * exist
+	 * @return the timezone (e.g. "America/New_York") or null if not set
 	 */
 	public String getTimezone() {
 		return parameters.getTimezone();
@@ -527,5 +526,9 @@ public class Address extends VCardProperty implements HasAltId {
 		if (value != null) {
 			list.add(value);
 		}
+	}
+
+	private static String getAddressFull(List<String> list) {
+		return list.isEmpty() ? null : StringUtils.join(list, ",");
 	}
 }
