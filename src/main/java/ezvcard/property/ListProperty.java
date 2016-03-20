@@ -41,7 +41,7 @@ import ezvcard.Warning;
 /**
  * Represents a property whose value is a list of textual values.
  * @author Michael Angstadt
- * @param <T> the type of values sorted in the list
+ * @param <T> the type of values stored in the list
  */
 public class ListProperty<T> extends VCardProperty {
 	protected final List<T> values;
