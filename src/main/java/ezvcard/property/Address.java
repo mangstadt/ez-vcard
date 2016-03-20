@@ -61,7 +61,7 @@ import ezvcard.util.StringUtils;
  * adr.setRegion(&quot;TX&quot;);
  * adr.setPostalCode(&quot;12345&quot;);
  * adr.setCountry(&quot;USA&quot;);
- * adr.addType(AddressType.WORK);
+ * adr.getTypes().add(AddressType.WORK);
  * 
  * //optionally, set the text to print on the mailing label
  * adr.setLabel(&quot;123 Main St.\nAustin, TX 12345\nUSA&quot;);

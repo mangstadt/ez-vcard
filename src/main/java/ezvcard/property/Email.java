@@ -50,11 +50,11 @@ import ezvcard.parameter.Pid;
  * VCard vcard = new VCard();
  * 
  * Email email = new Email(&quot;johndoe@hotmail.com&quot;);
- * email.addType(EmailType.HOME);
+ * email.getTypes().add(EmailType.HOME);
  * vcard.addEmail(email);
  * 
  * email = new Email(&quot;jdoe@company.com&quot;);
- * email.addType(EmailType.WORK);
+ * email.getTypes().add(EmailType.WORK);
  * email.setPref(1); //the most preferred email
  * vcard.addEmail(email);
  * </pre>
