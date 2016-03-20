@@ -147,7 +147,7 @@ public class HCardPageTest {
 			n.setSortAs("Smith");
 			vcard.setStructuredName(n);
 			Organization org = new Organization();
-			org.setSortAs("Jones");
+			org.getSortAs().add("Jones");
 			vcard.setOrganization(org);
 			vcard.setSortString(new SortString("Doe"));
 			Document document = generate(vcard);
@@ -164,7 +164,7 @@ public class HCardPageTest {
 			n.setSortAs("Smith");
 			vcard.setStructuredName(n);
 			Organization org = new Organization();
-			org.setSortAs("Jones");
+			org.getSortAs().add("Jones");
 			vcard.setOrganization(org);
 			Document document = generate(vcard);
 
@@ -177,7 +177,7 @@ public class HCardPageTest {
 		{
 			VCard vcard = new VCard();
 			Organization org = new Organization();
-			org.setSortAs("Jones");
+			org.getSortAs().add("Jones");
 			vcard.setOrganization(org);
 			Document document = generate(vcard);
 

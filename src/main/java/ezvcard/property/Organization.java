@@ -66,6 +66,8 @@ import ezvcard.parameter.VCardParameters;
  * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
  */
 public class Organization extends TextListProperty implements HasAltId {
+	private final List<String> sortAs = new VCardStringParameterList(VCardParameters.SORT_AS);
+
 	public Organization() {
 		//empty
 	}
@@ -138,36 +140,19 @@ public class Organization extends TextListProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets the string(s) that define how to sort the vCard.
 	 * <p>
-	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING} property
-	 * instead.
+	 * Gets the list that holds string(s) which define how to sort the vCard.
+	 * </p>
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortString} property instead.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the sort string(s) or empty list if there are none
-	 * @see VCardParameters#getSortAs
+	 * @return the sort string(s)
 	 */
 	public List<String> getSortAs() {
-		return parameters.getSortAs();
-	}
-
-	/**
-	 * Sets the string(s) that define how to sort the vCard. These strings
-	 * correspond to the values that are in this property.
-	 * <p>
-	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING} property
-	 * instead.
-	 * </p>
-	 * <p>
-	 * <b>Supported versions:</b> {@code 4.0}
-	 * </p>
-	 * @param names the names or empty parameter list to remove
-	 * @see VCardParameters#setSortAs
-	 */
-	public void setSortAs(String... names) {
-		parameters.setSortAs(names);
+		return sortAs;
 	}
 
 	@Override

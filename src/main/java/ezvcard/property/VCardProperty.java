@@ -537,6 +537,32 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	/**
 	 * <p>
+	 * A list that holds the raw string values of a particular parameter.
+	 * </p>
+	 * <p>
+	 * This list is backed by the property's {@link VCardParameters} object. Any
+	 * changes made to the list will affect the property's
+	 * {@link VCardParameters} object and vice versa.
+	 * </p>
+	 */
+	protected class VCardStringParameterList extends VCardParameterList<String> {
+		public VCardStringParameterList(String parameterName) {
+			super(parameterName);
+		}
+
+		@Override
+		protected String _asString(String value) {
+			return value;
+		}
+
+		@Override
+		protected String _asObject(String value) {
+			return value;
+		}
+	};
+
+	/**
+	 * <p>
 	 * A list that holds the values of a particular parameter.
 	 * </p>
 	 * <p>
