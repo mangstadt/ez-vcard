@@ -546,6 +546,9 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * </p>
 	 */
 	protected class VCardStringParameterList extends VCardParameterList<String> {
+		/**
+		 * @param parameterName the name of the parameter (case insensitive)
+		 */
 		public VCardStringParameterList(String parameterName) {
 			super(parameterName);
 		}
