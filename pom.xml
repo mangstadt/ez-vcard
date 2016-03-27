@@ -52,12 +52,12 @@
 
 	<dependencies>
 		<!--
-		Source code of commons-codec has been included in the project to improve Android compatibility.
+		Selected portions of this library's source code have been incorporated into the ez-vcard code base to improve Android compatibility.
 		See: https://groups.google.com/forum/?fromgroups=#!topic/ez-vcard-discuss/w2TK7yetwr8
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.6</version>
+			<version>1.10</version>
 		</dependency>
 		-->
 		<dependency>
