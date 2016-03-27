@@ -460,7 +460,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @return the kind or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-25">RFC 6350
-	 * p.25</a
+	 * p.25</a>
 	 */
 	public Kind getKind() {
 		return getProperty(Kind.class);
@@ -476,7 +476,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param kind the kind or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-25">RFC 6350
-	 * p.25</a
+	 * p.25</a>
 	 */
 	public void setKind(Kind kind) {
 		setProperty(Kind.class, kind);

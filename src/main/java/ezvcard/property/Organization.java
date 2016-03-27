@@ -155,6 +155,25 @@ public class Organization extends TextListProperty implements HasAltId {
 		return sortAs;
 	}
 
+	/**
+	 * <p>
+	 * Sets the sort string for this property.
+	 * </p>
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortString} property instead.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
+	 * @param sortString the sort string or null to remove
+	 */
+	public void setSortAs(String sortString) {
+		sortAs.clear();
+		if (sortAs != null) {
+			sortAs.add(sortString);
+		}
+	}
+
 	@Override
 	public Organization copy() {
 		return new Organization(this);

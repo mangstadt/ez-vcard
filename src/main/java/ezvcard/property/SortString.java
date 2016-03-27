@@ -40,7 +40,7 @@ import ezvcard.VCardVersion;
  * 
  * <p>
  * This property is not supported in 4.0. Instead, use the
- * {@link StructuredName#setSortAs} and/or {@link Organization#setSortAs}
+ * {@link StructuredName#setSortAs(String)} and/or {@link Organization#setSortAs}
  * methods when creating version 4.0 vCards.
  * </p>
  * 
