@@ -738,7 +738,7 @@ public class EzvcardTest {
 		assertTrue(actual.startsWith("[\"vcard\",[[\""));
 
 		actual = Ezvcard.writeJson(vcard).indent(true).go();
-		assertTrue(actual.startsWith("[" + NEWLINE + "\"vcard\",[[" + NEWLINE));
+		assertTrue(actual.startsWith("[" + NEWLINE + "  \"vcard\"," + NEWLINE + "  [" + NEWLINE + "    ["));
 
 		actual = Ezvcard.writeJson(vcard).indent(false).go();
 		assertTrue(actual.startsWith("[\"vcard\",[[\""));

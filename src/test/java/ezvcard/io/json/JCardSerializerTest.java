@@ -1,21 +1,19 @@
 package ezvcard.io.json;
 
-import static ezvcard.util.StringUtils.NEWLINE;
-import static org.junit.Assert.assertEquals;
+import static ezvcard.util.StringUtils.*;
+import static org.junit.Assert.*;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ezvcard.VCard;
+import ezvcard.util.JCardPrettyPrinter;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -60,8 +58,7 @@ public class JCardSerializerTest {
 
 		ObjectMapper mapper = getMapper();
 
-		final DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
-		pp.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+		final PrettyPrinter pp = new JCardPrettyPrinter();
 		mapper.setDefaultPrettyPrinter(pp);
 		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
@@ -69,41 +66,21 @@ public class JCardSerializerTest {
 
 		//@formatter:off
 		String expected =
-		"[" + NEWLINE + 
-		"  [" + NEWLINE + 
-		"    \"vcard\"," + NEWLINE + 
-		"    [" + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"version\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"4.0\"" + NEWLINE + 
-		"      ]," + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"fn\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"John Doe\"" + NEWLINE + 
-		"      ]" + NEWLINE + 
-		"    ]" + NEWLINE + 
-		"  ]," + NEWLINE + 
-		"  [" + NEWLINE + 
-		"    \"vcard\"," + NEWLINE + 
-		"    [" + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"version\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"4.0\"" + NEWLINE + 
-		"      ]," + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"fn\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"John Doe\"" + NEWLINE + 
-		"      ]" + NEWLINE + 
-		"    ]" + NEWLINE + 
-		"  ]" + NEWLINE + 
+		"[" + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]," + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]" + NEWLINE +
 		"]";
 		//@formatter:on
 		assertEquals(expected, result);

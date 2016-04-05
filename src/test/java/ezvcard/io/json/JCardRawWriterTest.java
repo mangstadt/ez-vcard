@@ -330,7 +330,7 @@ public class JCardRawWriterTest {
 	public void indent() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardRawWriter writer = new JCardRawWriter(sw, true);
-		writer.setIndent(true);
+		writer.setPrettyPrint(true);
 
 		//@formatter:off
 		writer.writeStartVCard();
@@ -347,12 +347,19 @@ public class JCardRawWriterTest {
 		//@formatter:off
 		String expected =
 		"[" + NEWLINE +
-		"[" + NEWLINE +
-		"\"vcard\",[[" + NEWLINE +
-		"  \"prop1\",{},\"text\",\"value1\"],[" + NEWLINE +
-		"  \"prop2\",{},\"text\",\"value2\"]]],[" + NEWLINE +
-		"\"vcard\",[[" + NEWLINE +
-		"  \"prop3\",{},\"text\",\"value3\"]]]" + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"prop1\", { }, \"text\", \"value1\" ]," + NEWLINE +
+		"      [ \"prop2\", { }, \"text\", \"value2\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]," + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"prop3\", { }, \"text\", \"value3\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]" + NEWLINE +
 		"]";
 		//@formatter:on
 		assertEquals(expected, actual);
