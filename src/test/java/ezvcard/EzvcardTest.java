@@ -737,10 +737,10 @@ public class EzvcardTest {
 		String actual = Ezvcard.writeJson(vcard).go();
 		assertTrue(actual.startsWith("[\"vcard\",[[\""));
 
-		actual = Ezvcard.writeJson(vcard).indent(true).go();
-		assertTrue(actual.startsWith("[" + NEWLINE + "\"vcard\",[[" + NEWLINE));
+		actual = Ezvcard.writeJson(vcard).prettyPrint(true).go();
+		assertTrue(actual.startsWith("[" + NEWLINE + "  \"vcard\"," + NEWLINE + "  [" + NEWLINE + "    ["));
 
-		actual = Ezvcard.writeJson(vcard).indent(false).go();
+		actual = Ezvcard.writeJson(vcard).prettyPrint(false).go();
 		assertTrue(actual.startsWith("[\"vcard\",[[\""));
 	}
 

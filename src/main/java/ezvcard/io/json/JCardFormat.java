@@ -81,4 +81,9 @@ public @interface JCardFormat {
 	 * from the written vCard (defaults to true).
 	 */
 	public boolean versionStrict() default true;
+
+	/**
+	 * Sets whether or not to pretty-print the JSON (defaults to false).
+	 */
+	public boolean prettyPrint() default false;
 }

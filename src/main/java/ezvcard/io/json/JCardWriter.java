@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.PrettyPrinter;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -73,11 +74,13 @@ import ezvcard.property.VCardProperty;
  * 
  * </p>
  * @author Michael Angstadt
+ * @author Buddy Gorven
  * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
  */
 public class JCardWriter extends StreamWriter implements Flushable {
 	private final JCardRawWriter writer;
 	private final VCardVersion targetVersion = VCardVersion.V4_0;
+	private JsonGenerator generator = null;
 
 	/**
 	 * @param out the output stream to write to (UTF-8 encoding will be used)
@@ -133,6 +136,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * @param generator the generator to write to
 	 */
 	public JCardWriter(JsonGenerator generator) {
+		this.generator = generator;
 		this.writer = new JCardRawWriter(generator);
 	}
 
@@ -147,6 +151,8 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
+		Object previousValue = getCurrentValue();
+
 		writer.writeStartVCard();
 		writer.writeProperty("version", VCardDataType.TEXT, JCardValue.single(targetVersion.getVersion()));
 
@@ -174,6 +180,32 @@ public class JCardWriter extends StreamWriter implements Flushable {
 		}
 
 		writer.writeEndVCard();
+
+		setCurrentValue(previousValue);
+	}
+
+/**
+	 * If this object has a {@link JsonGenerator), and the generator has an
+	 * output context, gets the current value of the output context.
+	 * 
+	 * @return the value of the object that is currently being serialized, if
+	 *         available
+	 */
+	private Object getCurrentValue() {
+		return (generator == null) ? null : generator.getCurrentValue();
+	}
+
+/**
+	 * If this object has a {@link JsonGenerator), and the generator has an
+	 * output context, sets the current value of the output context.
+	 * 
+	 * @param value
+	 *            the object that is currently being serialized
+	 */
+	private void setCurrentValue(Object value) {
+		if (generator != null) {
+			generator.setCurrentValue(value);
+		}
 	}
 
 	@Override
@@ -186,16 +218,28 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * @return true if it will be pretty-printed, false if not (defaults to
 	 * false)
 	 */
-	public boolean isIndent() {
-		return writer.isIndent();
+	public boolean isPrettyPrint() {
+		return writer.isPrettyPrint();
 	}
 
 	/**
 	 * Sets whether or not to pretty-print the JSON.
-	 * @param indent true to pretty-print it, false not to (defaults to false)
+	 * @param prettyPrint true to pretty-print it, false not to (defaults to false)
 	 */
-	public void setIndent(boolean indent) {
-		writer.setIndent(indent);
+	public void setPrettyPrint(boolean prettyPrint) {
+		writer.setPrettyPrint(prettyPrint);
+	}
+
+	/**
+	 * Sets the pretty printer to pretty-print the JSON with. Note that this
+	 * method implicitly enables indenting, so {@code setPrettyPrint(true)} does
+	 * not also need to be called.
+	 * @param prettyPrinter the custom pretty printer (defaults to an instance
+	 * of {@link JCardPrettyPrinter}, if {@code setPrettyPrint(true)} has been
+	 * called.
+	 */
+	public void setPrettyPrinter(PrettyPrinter prettyPrinter) {
+		writer.setPrettyPrinter(prettyPrinter);
 	}
 
 	/**

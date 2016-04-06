@@ -56,6 +56,7 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 	private ScribeIndex index = new ScribeIndex();
 	private boolean addProdId = true;
 	private boolean versionStrict = true;
+	private boolean prettyPrint = false;
 
 	public JCardSerializer() {
 		super(VCard.class);
@@ -66,24 +67,29 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 		@SuppressWarnings("resource")
 		JCardWriter writer = new JCardWriter(gen);
 		writer.setAddProdId(isAddProdId());
-		writer.setScribeIndex(getScribeIndex());
 		writer.setVersionStrict(isVersionStrict());
+		writer.setPrettyPrint(isPrettyPrint());
+		writer.setScribeIndex(getScribeIndex());
+
 		writer.write(value);
 	}
 
 	public JCardSerializer createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
-		if (property != null) {
-			JCardFormat annotation = property.getAnnotation(JCardFormat.class);
-			if (annotation != null) {
-				JCardSerializer result = new JCardSerializer();
-				result.setAddProdId(annotation.addProdId());
-				result.setVersionStrict(annotation.versionStrict());
-				result.setScribeIndex(getScribeIndex());
-				return result;
-			}
+		if (property == null) {
+			return this;
 		}
 
-		return this;
+		JCardFormat annotation = property.getAnnotation(JCardFormat.class);
+		if (annotation == null) {
+			return this;
+		}
+
+		JCardSerializer result = new JCardSerializer();
+		result.setAddProdId(annotation.addProdId());
+		result.setVersionStrict(annotation.versionStrict());
+		result.setPrettyPrint(annotation.prettyPrint());
+		result.setScribeIndex(getScribeIndex());
+		return result;
 	}
 
 	/**
@@ -126,6 +132,24 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 	 */
 	public void setVersionStrict(boolean versionStrict) {
 		this.versionStrict = versionStrict;
+	}
+
+	/**
+	 * Gets whether or not the JSON will be pretty-printed.
+	 * @return true if it will be pretty-printed, false if not (defaults to
+	 * false)
+	 */
+	public boolean isPrettyPrint() {
+		return prettyPrint;
+	}
+
+	/**
+	 * Sets whether or not to pretty-print the JSON.
+	 * @param prettyPrint true to pretty-print it, false not to (defaults to
+	 * false)
+	 */
+	public void setPrettyPrint(boolean prettyPrint) {
+		this.prettyPrint = prettyPrint;
 	}
 
 	/**

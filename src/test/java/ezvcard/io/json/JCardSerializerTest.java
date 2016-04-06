@@ -10,8 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -60,8 +59,7 @@ public class JCardSerializerTest {
 
 		ObjectMapper mapper = getMapper();
 
-		final DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
-		pp.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+		final PrettyPrinter pp = new JCardPrettyPrinter();
 		mapper.setDefaultPrettyPrinter(pp);
 		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
@@ -69,41 +67,21 @@ public class JCardSerializerTest {
 
 		//@formatter:off
 		String expected =
-		"[" + NEWLINE + 
-		"  [" + NEWLINE + 
-		"    \"vcard\"," + NEWLINE + 
-		"    [" + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"version\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"4.0\"" + NEWLINE + 
-		"      ]," + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"fn\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"John Doe\"" + NEWLINE + 
-		"      ]" + NEWLINE + 
-		"    ]" + NEWLINE + 
-		"  ]," + NEWLINE + 
-		"  [" + NEWLINE + 
-		"    \"vcard\"," + NEWLINE + 
-		"    [" + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"version\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"4.0\"" + NEWLINE + 
-		"      ]," + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"fn\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"John Doe\"" + NEWLINE + 
-		"      ]" + NEWLINE + 
-		"    ]" + NEWLINE + 
-		"  ]" + NEWLINE + 
+		"[" + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]," + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]" + NEWLINE +
 		"]";
 		//@formatter:on
 		assertEquals(expected, result);

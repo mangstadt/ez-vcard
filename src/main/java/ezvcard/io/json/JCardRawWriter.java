@@ -1,7 +1,5 @@
 package ezvcard.io.json;
 
-import static ezvcard.util.StringUtils.NEWLINE;
-
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
@@ -12,11 +10,11 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
+import com.fasterxml.jackson.core.PrettyPrinter;
 
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -45,16 +43,19 @@ import ezvcard.util.StringUtils;
 
 /**
  * Writes data to an vCard JSON data stream (jCard).
+ * 
  * @author Michael Angstadt
+ * @author Buddy Gorven
  * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
  */
 public class JCardRawWriter implements Closeable, Flushable {
 	private final Writer writer;
 	private final boolean wrapInArray;
 	private JsonGenerator generator;
-	private boolean indent = false;
+	private boolean prettyPrint = false;
 	private boolean open = false;
 	private boolean closeGenerator = true;
+	private PrettyPrinter prettyPrinter;
 
 	/**
 	 * @param writer the writer to wrap
@@ -81,16 +82,30 @@ public class JCardRawWriter implements Closeable, Flushable {
 	 * @return true if it will be pretty-printed, false if not (defaults to
 	 * false)
 	 */
-	public boolean isIndent() {
-		return indent;
+	public boolean isPrettyPrint() {
+		return prettyPrint;
 	}
 
 	/**
 	 * Sets whether or not to pretty-print the JSON.
-	 * @param indent true to pretty-print it, false not to (defaults to false)
+	 * @param prettyPrint true to pretty-print it, false not to (defaults to
+	 * false)
 	 */
-	public void setIndent(boolean indent) {
-		this.indent = indent;
+	public void setPrettyPrint(boolean prettyPrint) {
+		this.prettyPrint = prettyPrint;
+	}
+
+	/**
+	 * Sets the pretty printer to pretty-print the JSON with. Note that this
+	 * method implicitly enables indenting, so {@code setPrettyPrint(true)} does
+	 * not also need to be called.
+	 * @param prettyPrinter the custom pretty printer (defaults to an instance
+	 * of {@link JCardPrettyPrinter}, if {@code setPrettyPrint(true)} has been
+	 * called)
+	 */
+	public void setPrettyPrinter(PrettyPrinter prettyPrinter) {
+		prettyPrint = true;
+		this.prettyPrinter = prettyPrinter;
 	}
 
 	/**
@@ -107,7 +122,6 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		generator.writeStartArray();
-		indent(0);
 		generator.writeString("vcard");
 		generator.writeStartArray(); //start properties array
 
@@ -160,8 +174,9 @@ public class JCardRawWriter implements Closeable, Flushable {
 			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(1));
 		}
 
+		generator.setCurrentValue(JCardPrettyPrinter.PROPERTY_VALUE);
+
 		generator.writeStartArray();
-		indent(2);
 
 		//write the property name
 		generator.writeString(propertyName);
@@ -207,6 +222,8 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		generator.writeEndArray();
+
+		generator.setCurrentValue(null);
 	}
 
 	private void writeValue(JsonValue jsonValue) throws IOException {
@@ -260,21 +277,6 @@ public class JCardRawWriter implements Closeable, Flushable {
 	}
 
 	/**
-	 * Checks to see if pretty-printing is enabled, and adds indentation
-	 * whitespace if it is.
-	 * @param spaces the number of spaces to indent with
-	 * @throws IOException if there's a problem writing to the output stream
-	 */
-	private void indent(int spaces) throws IOException {
-		if (!indent) {
-			return;
-		}
-
-		generator.writeRaw(NEWLINE);
-		generator.writeRaw(StringUtils.repeat(' ', spaces));
-	}
-
-	/**
 	 * Flushes the JSON stream.
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
@@ -301,7 +303,6 @@ public class JCardRawWriter implements Closeable, Flushable {
 		}
 
 		if (wrapInArray) {
-			indent(0);
 			generator.writeEndArray();
 		}
 
@@ -331,9 +332,15 @@ public class JCardRawWriter implements Closeable, Flushable {
 		factory.configure(Feature.AUTO_CLOSE_TARGET, false);
 		generator = factory.createGenerator(writer);
 
+		if (prettyPrint) {
+			if (prettyPrinter == null) {
+				prettyPrinter = new JCardPrettyPrinter();
+			}
+			generator.setPrettyPrinter(prettyPrinter);
+		}
+
 		if (wrapInArray) {
 			generator.writeStartArray();
-			indent(0);
 		}
 	}
 }
