@@ -8,6 +8,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,8 +18,11 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.property.Address;
+import ezvcard.property.ClientPidMap;
+import ezvcard.property.Email;
 import ezvcard.property.Organization;
 import ezvcard.property.Photo;
+import ezvcard.property.SortString;
 import ezvcard.property.Sound;
 import ezvcard.property.StructuredName;
 import ezvcard.util.CharacterBitSet;
@@ -182,7 +186,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the CHARSET parameter.
+	 * Gets the CHARSET parameter. This defines the character set that the
+	 * property value is encoded in. Typically, this is only used when the
+	 * property value uses quoted-printable encoding.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1}
@@ -195,7 +201,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the CHARSET parameter.
+	 * Sets the CHARSET parameter. This defines the character set that the
+	 * property value is encoded in. Typically, this is only used when the
+	 * property value uses quoted-printable encoding.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1}
@@ -208,12 +216,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the LANGUAGE parameter.
+	 * Gets the LANGUAGE parameter. This defines the language that the property
+	 * value is in.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the language (e.g. "en-US") or null if not set
+	 * @return the language (e.g. "en" for English) or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
 	 */
 	public String getLanguage() {
@@ -222,12 +231,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the LANGUAGE parameter.
+	 * Sets the LANGUAGE parameter. This defines the language that the property
+	 * value is in.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param language the language (e.g "en-US") or null to remove
+	 * @param language the language (e.g "en" for English) or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
 	 */
 	public void setLanguage(String language) {
@@ -236,7 +246,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the LABEL parameter.
+	 * Gets the LABEL parameter. This is used by the {@link Address} property to
+	 * define a mailing label.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -249,7 +260,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the LABEL parameter.
+	 * Sets the LABEL parameter. This is used by the {@link Address} property to
+	 * define a mailing label.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -262,7 +274,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the TZ parameter.
+	 * Gets the TZ (timezone) parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -275,7 +287,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the TZ parameter.
+	 * Sets the TZ (timezone) parameter.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
@@ -288,12 +300,27 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the first TYPE parameter.
+	 * Gets the TYPE parameters. The meaning of this parameter varies depending
+	 * on the property.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the value or null if not found.
+	 * @return the types (e.g. "HOME")
+	 */
+	public List<String> getTypes() {
+		return get(TYPE);
+	}
+
+	/**
+	 * <p>
+	 * Gets the first TYPE parameter. The meaning of this parameter varies
+	 * depending on the property.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 * </p>
+	 * @return the value (e.g. "HOME") or null if not found
 	 */
 	public String getType() {
 		return first(TYPE);
@@ -301,12 +328,41 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the TYPE parameter.
+	 * Adds a TYPE parameter. The meaning of this parameter varies depending on
+	 * the property.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param type the value or null to remove
+	 * @param type the type (e.g. "HOME")
+	 */
+	public void addType(String type) {
+		put(TYPE, type);
+	}
+
+	/**
+	 * <p>
+	 * Removes a TYPE parameter. The meaning of this parameter varies depending
+	 * on the property.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 * </p>
+	 * @param type the type to remove (e.g. "HOME")
+	 */
+	public void removeType(String type) {
+		remove(TYPE, type);
+	}
+
+	/**
+	 * <p>
+	 * Sets the TYPE parameter. The meaning of this parameter varies depending
+	 * on the property.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 * </p>
+	 * @param type the value or null to remove all values
 	 */
 	public void setType(String type) {
 		replace(TYPE, type);
@@ -453,7 +509,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	/**
 	 * <p>
 	 * Gets the GEO parameter value. This is used to associate global
-	 * positioning information with a vCard property. It can be used with the
+	 * positioning information with the property. It can be used with the
 	 * {@link Address} property.
 	 * </p>
 	 * <p>
@@ -479,7 +535,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	/**
 	 * <p>
 	 * Sets the GEO parameter value. This is used to associate global
-	 * positioning information with a vCard property. It can be used with the
+	 * positioning information with the property. It can be used with the
 	 * {@link Address} property.
 	 * </p>
 	 * <p>
@@ -493,18 +549,20 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Gets the SORT-AS parameter value(s). This contains typically two string
-	 * values which the vCard should be sorted by (family and given names). This
-	 * is useful if the person's last name (defined in the N property) starts
-	 * with characters that should be ignored during sorting. It can be used
-	 * with the {@link StructuredName} and {@link Organization} properties.
+	 * Gets the SORT-AS parameter values. This parameter defines how the vCard
+	 * should be sorted amongst other vCards. For example, this can be used if
+	 * the person's last name (defined in the {@link StructuredName} property)
+	 * starts with characters that should be ignored during sorting. It can be
+	 * used with the {@link StructuredName} and {@link Organization} properties.
+	 * </p>
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortString} property instead.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the name(s) (e.g. { "Aboville", "Christine" } if the family name
-	 * is "d'Aboville" and the given name is "Christine") or empty list of the
-	 * parameter doesn't exist
+	 * @return the sort strings (e.g. ["Aboville", "Christine"] if the family
+	 * name is "d'Aboville" and the given name is "Christine")
 	 */
 	public List<String> getSortAs() {
 		return get(SORT_AS);
@@ -512,26 +570,27 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
-	 * Sets the SORT-AS parameter value(s). This is useful with the N property
-	 * when the person's last name starts with characters that should be ignored
-	 * during sorting. It can be used with the {@link StructuredName} and
-	 * {@link Organization} properties.
+	 * Sets the SORT-AS parameter values. This parameter defines how the vCard
+	 * should be sorted amongst other vCards. For example, this can be used if
+	 * the person's last name (defined in the {@link StructuredName} property)
+	 * starts with characters that should be ignored during sorting. It can be
+	 * used with the {@link StructuredName} and {@link Organization} properties.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param names the names in the order they should be sorted in (e.g.
-	 * ["Aboville", "Christine"] if the family name is "d'Aboville" and the
-	 * given name is "Christine") or empty parameter list to remove
+	 * @param sortStrings the sort strings in the order they should be sorted in
+	 * (e.g. ["Aboville", "Christine"] if the family name is "d'Aboville" and
+	 * the given name is "Christine")
 	 */
-	public void setSortAs(String... names) {
+	public void setSortAs(String... sortStrings) {
 		removeAll(SORT_AS);
 
-		if (names == null || (names.length == 1 && names[0] == null)) {
+		if (sortStrings == null || (sortStrings.length == 1 && sortStrings[0] == null)) {
 			return;
 		}
 
-		putAll(SORT_AS, names);
+		putAll(SORT_AS, sortStrings);
 	}
 
 	/**
@@ -561,6 +620,124 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 */
 	public void setCalscale(Calscale value) {
 		replace(CALSCALE, (value == null) ? null : value.getValue());
+	}
+
+	/**
+	 * <p>
+	 * Gets the PID parameter values. PIDs can exist on any property where
+	 * multiple instances are allowed (such as {@link Email} or {@link Address},
+	 * but not {@link StructuredName} because only 1 instance of this property
+	 * is allowed per vCard).
+	 * </p>
+	 * <p>
+	 * When used in conjunction with the {@link ClientPidMap} property, it
+	 * allows an individual property instance to be uniquely identifiable. This
+	 * feature is made use of when two different versions of the same vCard have
+	 * to be merged together (called "synchronizing").
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
+	 * @return the PID parameter values
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#section-5.5">RFC 6350
+	 * Section 5.5</a>
+	 * @throws IllegalStateException if a parameter value is malformed and
+	 * cannot be parsed. If this happens, use the {@link #get(String)} method to
+	 * retrieve the parameters' raw values
+	 */
+	public List<Pid> getPids() {
+		List<String> values = get(PID);
+		List<Pid> pids = new ArrayList<Pid>(values.size());
+		for (String value : values) {
+			try {
+				pids.add(Pid.valueOf(value));
+			} catch (NumberFormatException e) {
+				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, PID), e);
+			}
+
+		}
+		return pids;
+	}
+
+	/**
+	 * <p>
+	 * Adds a PID parameter value. PIDs can exist on any property where multiple
+	 * instances are allowed (such as {@link Email} or {@link Address}, but not
+	 * {@link StructuredName} because only 1 instance of this property is
+	 * allowed per vCard).
+	 * </p>
+	 * <p>
+	 * When used in conjunction with the {@link ClientPidMap} property, it
+	 * allows an individual property instance to be uniquely identifiable. This
+	 * feature is made use of when two different versions of the same vCard have
+	 * to be merged together (called "synchronizing").
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
+	 * @param pid the PID parameter value to add
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#section-5.5">RFC 6350
+	 * Section 5.5</a>
+	 */
+	public void addPid(Pid pid) {
+		put(PID, pid.toString());
+	}
+
+	/**
+	 * <p>
+	 * Removes a PID value. PIDs can exist on any property where multiple
+	 * instances are allowed (such as {@link Email} or {@link Address}, but not
+	 * {@link StructuredName} because only 1 instance of this property is
+	 * allowed per vCard).
+	 * </p>
+	 * <p>
+	 * When used in conjunction with the {@link ClientPidMap} property, it
+	 * allows an individual property instance to be uniquely identifiable. This
+	 * feature is made use of when two different versions of the same vCard have
+	 * to be merged together (called "synchronizing").
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
+	 * @param pid the PID parameter value to remove
+	 */
+	public void removePid(Pid pid) {
+		Iterator<String> it = get(PID).iterator();
+		while (it.hasNext()) {
+			Pid cur;
+			try {
+				cur = Pid.valueOf(it.next());
+			} catch (NumberFormatException e) {
+				//skip
+				continue;
+			}
+
+			if (cur.equals(pid)) {
+				it.remove();
+				break;
+			}
+		}
+	}
+
+	/**
+	 * <p>
+	 * Removes all PID values. PIDs can exist on any property where multiple
+	 * instances are allowed (such as {@link Email} or {@link Address}, but not
+	 * {@link StructuredName} because only 1 instance of this property is
+	 * allowed per vCard).
+	 * </p>
+	 * <p>
+	 * When used in conjunction with the {@link ClientPidMap} property, it
+	 * allows an individual property instance to be uniquely identifiable. This
+	 * feature is made use of when two different versions of the same vCard have
+	 * to be merged together (called "synchronizing").
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
+	 */
+	public void removePids() {
+		removeAll(PID);
 	}
 
 	/**

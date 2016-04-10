@@ -486,26 +486,12 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 		@Override
 		protected String _asString(Pid value) {
-			Integer localId = value.getLocalId();
-			Integer clientPidMapReference = value.getClientPidMapReference();
-			return (clientPidMapReference == null) ? Integer.toString(localId) : localId + "." + clientPidMapReference;
+			return value.toString();
 		}
 
 		@Override
 		protected Pid _asObject(String value) {
-			int dot = value.indexOf('.');
-			String localIdStr, clientPidMapReferenceStr;
-			if (dot < 0) {
-				localIdStr = value;
-				clientPidMapReferenceStr = null;
-			} else {
-				localIdStr = value.substring(0, dot);
-				clientPidMapReferenceStr = (dot == value.length() - 1) ? null : value.substring(dot + 1);
-			}
-
-			Integer localId = Integer.valueOf(localIdStr);
-			Integer clientPidMapReference = (clientPidMapReferenceStr == null) ? null : Integer.valueOf(clientPidMapReferenceStr);
-			return new Pid(localId, clientPidMapReference);
+			return Pid.valueOf(value);
 		}
 	};
 
