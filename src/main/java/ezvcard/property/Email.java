@@ -96,7 +96,7 @@ public class Email extends TextProperty implements HasAltId {
 
 	/**
 	 * Gets the list that stores this property's email types (TYPE parameters).
-	 * @return the email types (e.g. "INTERNET", "WORK")
+	 * @return the email types (this list is mutable) (e.g. "INTERNET", "WORK")
 	 */
 	public List<EmailType> getTypes() {
 		return types;

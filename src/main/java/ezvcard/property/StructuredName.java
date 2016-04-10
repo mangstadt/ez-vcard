@@ -129,7 +129,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	/**
 	 * Gets the list that stores additional names the person goes by (for
 	 * example, a middle name).
-	 * @return the additional names
+	 * @return the additional names (this list is mutable)
 	 */
 	public List<String> getAdditionalNames() {
 		return additional;
@@ -137,7 +137,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 
 	/**
 	 * Gets the list that stores the person's honorific prefixes.
-	 * @return the prefixes (e.g. "Dr.", "Mr.")
+	 * @return the prefixes (e.g. "Dr.", "Mr.") (this list is mutable)
 	 */
 	public List<String> getPrefixes() {
 		return prefixes;
@@ -145,7 +145,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 
 	/**
 	 * Gets the list that stores the person's honorary suffixes.
-	 * @return the suffixes (e.g. "M.D.", "Jr.")
+	 * @return the suffixes (e.g. "M.D.", "Jr.") (this list is mutable)
 	 */
 	public List<String> getSuffixes() {
 		return suffixes;
@@ -161,9 +161,9 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the sort string(s). For example, if the family name is
-	 * "d'Aboville" and the given name is "Christine", the sort strings might be
-	 * ["Aboville", "Christine"].
+	 * @return the sort string(s) (this list is mutable). For example, if the
+	 * family name is "d'Aboville" and the given name is "Christine", the sort
+	 * strings might be ["Aboville", "Christine"].
 	 */
 	public List<String> getSortAs() {
 		return sortAs;

@@ -156,7 +156,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 	/**
 	 * Gets the list that stores this property's telephone types (TYPE
 	 * parameters).
-	 * @return the telephone types (e.g. "HOME", "WORK")
+	 * @return the telephone types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<TelephoneType> getTypes() {
 		return types;

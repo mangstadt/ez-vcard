@@ -61,7 +61,7 @@ public class ListProperty<T> extends VCardProperty {
 
 	/**
 	 * Gets the list that stores this property's values.
-	 * @return the list of values
+	 * @return the list of values (this list is mutable)
 	 */
 	public List<T> getValues() {
 		return values;

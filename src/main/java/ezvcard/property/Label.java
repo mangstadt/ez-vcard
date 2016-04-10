@@ -108,7 +108,7 @@ public class Label extends TextProperty {
 	/**
 	 * Gets the list that stores this property's address types (TYPE
 	 * parameters).
-	 * @return the address types (e.g. "HOME", "WORK")
+	 * @return the address types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<AddressType> getTypes() {
 		return types;

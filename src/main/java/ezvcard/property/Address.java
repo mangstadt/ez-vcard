@@ -154,7 +154,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the P.O. (post office) boxes that are assigned
 	 * to this address. An address is unlikely to have more than one, but it's
 	 * possible nonetheless.
-	 * @return the P.O. boxes
+	 * @return the P.O. boxes (this list is mutable)
 	 */
 	public List<String> getPoBoxes() {
 		return poBoxes;
@@ -180,7 +180,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the extended addresses that are assigned to this
 	 * address. An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the extended addresses
+	 * @return the extended addresses (this list is mutable)
 	 */
 	public List<String> getExtendedAddresses() {
 		return extendedAddresses;
@@ -216,7 +216,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the street addresses that are assigned to this
 	 * address. An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the street addresses
+	 * @return the street addresses (this list is mutable)
 	 */
 	public List<String> getStreetAddresses() {
 		return streetAddresses;
@@ -252,7 +252,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the localities that are assigned to this
 	 * address. An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the localities
+	 * @return the localities (this list is mutable)
 	 */
 	public List<String> getLocalities() {
 		return localities;
@@ -278,7 +278,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the regions that are assigned to this address.
 	 * An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the regions
+	 * @return the regions (this list is mutable)
 	 */
 	public List<String> getRegions() {
 		return regions;
@@ -304,7 +304,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the postal codes that are assigned to this
 	 * address. An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the postal codes
+	 * @return the postal codes (this list is mutable)
 	 */
 	public List<String> getPostalCodes() {
 		return postalCodes;
@@ -330,7 +330,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the countries that are assigned to this address.
 	 * An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the countries
+	 * @return the countries (this list is mutable)
 	 */
 	public List<String> getCountries() {
 		return countries;
@@ -347,7 +347,7 @@ public class Address extends VCardProperty implements HasAltId {
 	/**
 	 * Gets the list that stores this property's address types (TYPE
 	 * parameters).
-	 * @return the address types (e.g. "HOME", "WORK")
+	 * @return the address types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<AddressType> getTypes() {
 		return types;

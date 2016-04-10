@@ -149,7 +149,7 @@ public class Organization extends TextListProperty implements HasAltId {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the sort string(s)
+	 * @return the sort string(s) (this list is mutable)
 	 */
 	public List<String> getSortAs() {
 		return sortAs;

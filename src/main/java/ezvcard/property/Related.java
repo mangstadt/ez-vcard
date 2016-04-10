@@ -181,7 +181,8 @@ public class Related extends VCardProperty implements HasAltId {
 	/**
 	 * Gets the list that stores this property's relationship types (TYPE
 	 * parameters).
-	 * @return the relationship types (e.g. "child", "co-worker")
+	 * @return the relationship types (e.g. "child", "co-worker") (this list is
+	 * mutable)
 	 */
 	public List<RelatedType> getTypes() {
 		return types;
