@@ -196,10 +196,10 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
 	 * Gets all values of a parameter.
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
-	 * @return the parameter values
+	 * @return the parameter values (this list is immutable)
 	 */
 	public List<String> getParameters(String name) {
-		return parameters.get(name);
+		return Collections.unmodifiableList(parameters.get(name));
 	}
 
 	/**
@@ -375,7 +375,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the PID parameter values
+	 * @return the PID parameter values (this list is mutable)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#section-5.5">RFC 6350
 	 * Section 5.5</a>
 	 */
