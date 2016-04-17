@@ -105,18 +105,26 @@ public class JCardRawReader implements Closeable {
 		JsonToken cur;
 		while ((cur = parser.nextToken()) != null) {
 			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING && "vcard".equals(parser.getValueAsString())) {
+				//found
 				break;
-			} else if (strict) {
+			}
+
+			if (strict) {
+				//the parser was expecting the jCard to be there
 				if (prev != JsonToken.START_ARRAY) {
 					throw new JCardParseException(JsonToken.START_ARRAY, prev);
-				} else if (cur != JsonToken.VALUE_STRING) {
-					throw new JCardParseException(JsonToken.VALUE_STRING, cur);
-				} else {
-					throw new JCardParseException("Invalid value for first token: expected \"vcard\" , was \"" + parser.getValueAsString() + "\"", JsonToken.VALUE_STRING, cur);
 				}
+
+				if (cur != JsonToken.VALUE_STRING) {
+					throw new JCardParseException(JsonToken.VALUE_STRING, cur);
+				}
+
+				throw new JCardParseException("Invalid value for first token: expected \"vcard\" , was \"" + parser.getValueAsString() + "\"", JsonToken.VALUE_STRING, cur);
 			}
+
 			prev = cur;
 		}
+
 		if (cur == null) {
 			//EOF
 			eof = true;
