@@ -53,10 +53,10 @@ import ezvcard.property.VCardProperty;
 @JsonFormat
 public class JCardSerializer extends StdSerializer<VCard> implements ContextualSerializer {
 	private static final long serialVersionUID = -856795690626261178L;
+
 	private ScribeIndex index = new ScribeIndex();
 	private boolean addProdId = true;
 	private boolean versionStrict = true;
-	private boolean prettyPrint = false;
 
 	public JCardSerializer() {
 		super(VCard.class);
@@ -68,7 +68,6 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 		JCardWriter writer = new JCardWriter(gen);
 		writer.setAddProdId(isAddProdId());
 		writer.setVersionStrict(isVersionStrict());
-		writer.setPrettyPrint(isPrettyPrint());
 		writer.setScribeIndex(getScribeIndex());
 
 		writer.write(value);
@@ -87,7 +86,6 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 		JCardSerializer result = new JCardSerializer();
 		result.setAddProdId(annotation.addProdId());
 		result.setVersionStrict(annotation.versionStrict());
-		result.setPrettyPrint(annotation.prettyPrint());
 		result.setScribeIndex(getScribeIndex());
 		return result;
 	}
@@ -132,24 +130,6 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 	 */
 	public void setVersionStrict(boolean versionStrict) {
 		this.versionStrict = versionStrict;
-	}
-
-	/**
-	 * Gets whether or not the JSON will be pretty-printed.
-	 * @return true if it will be pretty-printed, false if not (defaults to
-	 * false)
-	 */
-	public boolean isPrettyPrint() {
-		return prettyPrint;
-	}
-
-	/**
-	 * Sets whether or not to pretty-print the JSON.
-	 * @param prettyPrint true to pretty-print it, false not to (defaults to
-	 * false)
-	 */
-	public void setPrettyPrint(boolean prettyPrint) {
-		this.prettyPrint = prettyPrint;
 	}
 
 	/**
