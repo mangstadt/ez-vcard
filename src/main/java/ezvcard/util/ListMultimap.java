@@ -111,7 +111,9 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @param values the values to add
 	 */
 	public void putAll(K key, V... values) {
-		putAll(key, Arrays.asList(values));
+		if (values.length > 0) {
+			putAll(key, Arrays.asList(values));
+		}
 	}
 
 	/**

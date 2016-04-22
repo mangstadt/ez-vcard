@@ -55,9 +55,12 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 		handlePrefParam(property, copy, version, vcard);
 
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
-			//remove the LABEL parameter
-			//by the time this line of code is reached, VCardWriter will have created a LABEL property from this property's LABEL parameter
-			copy.removeAll("LABEL");
+			/*
+			 * Remove the LABEL parameter. By the time this line of code is
+			 * reached, VCardWriter will have created a LABEL property from this
+			 * property's LABEL parameter
+			 */
+			copy.setLabel(null);
 		}
 	}
 
