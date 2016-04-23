@@ -54,14 +54,14 @@ import ezvcard.util.TelUri;
  * 
  * //text
  * Telephone tel = new Telephone(&quot;(123) 555-6789&quot;);
- * tel.addType(TelephoneType.HOME);
+ * tel.getTypes().add(TelephoneType.HOME);
  * tel.setPref(2); //the second-most preferred
  * vcard.addTelephoneNumber(tel);
  * 
  * //URI (vCard version 4.0 only)
  * TelUri uri = new TelUri.Builder(&quot;+1-800-555-9876&quot;).extension(&quot;111&quot;).build();
  * tel = new Telephone(uri);
- * tel.addType(TelephoneType.WORK);
+ * tel.getTypes().add(TelephoneType.WORK);
  * tel.setPref(1); //the most preferred
  * vcard.addTelephoneNumber(tel);
  * </pre>
@@ -82,7 +82,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 	private TelUri uri;
 	private final List<TelephoneType> types = new TypeParameterEnumList<TelephoneType>() {
 		@Override
-		protected TelephoneType _asObject(String value) throws Exception {
+		protected TelephoneType _asObject(String value) {
 			return TelephoneType.get(value);
 		}
 	};
@@ -156,7 +156,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 	/**
 	 * Gets the list that stores this property's telephone types (TYPE
 	 * parameters).
-	 * @return the telephone types (e.g. "HOME", "WORK")
+	 * @return the telephone types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<TelephoneType> getTypes() {
 		return types;

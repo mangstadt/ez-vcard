@@ -51,8 +51,8 @@ import ezvcard.parameter.VCardParameters;
  * StructuredName n = new StructuredName();
  * n.setFamily(&quot;House&quot;);
  * n.setGiven(&quot;Gregory&quot;);
- * n.addPrefix(&quot;Dr&quot;);
- * n.addSuffix(&quot;MD&quot;);
+ * n.getPrefixes().add(&quot;Dr&quot;);
+ * n.getSuffixes().add(&quot;MD&quot;);
  * vcard.setStructuredName(n);
  * </pre>
  * 
@@ -70,9 +70,10 @@ import ezvcard.parameter.VCardParameters;
 public class StructuredName extends VCardProperty implements HasAltId {
 	private String family;
 	private String given;
-	private List<String> additional;
-	private List<String> prefixes;
-	private List<String> suffixes;
+	private final List<String> additional;
+	private final List<String> prefixes;
+	private final List<String> suffixes;
+	private final List<String> sortAs = new VCardStringParameterList(VCardParameters.SORT_AS);
 
 	public StructuredName() {
 		additional = new ArrayList<String>();
@@ -94,7 +95,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets the family name (aka "last name").
+	 * Gets the family name (aka "surname" or "last name").
 	 * @return the family name or null if not set
 	 */
 	public String getFamily() {
@@ -102,7 +103,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the family name (aka "last name").
+	 * Sets the family name (aka "surname" or "last name").
 	 * @param family the family name or null to remove
 	 */
 	public void setFamily(String family) {
@@ -126,106 +127,86 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets any additional names the person goes by.
-	 * @return the additional names or empty list if there are none
+	 * Gets the list that stores additional names the person goes by (for
+	 * example, a middle name).
+	 * @return the additional names (this list is mutable)
 	 */
-	public List<String> getAdditional() {
+	public List<String> getAdditionalNames() {
 		return additional;
 	}
 
 	/**
-	 * Adds an additional name the person goes by.
-	 * @param additional the additional name to add
-	 */
-	public void addAdditional(String additional) {
-		this.additional.add(additional);
-	}
-
-	/**
-	 * Gets the prefixes.
-	 * @return the prefixes (e.g. "Mr.") or empty list if there are none
+	 * Gets the list that stores the person's honorific prefixes.
+	 * @return the prefixes (e.g. "Dr.", "Mr.") (this list is mutable)
 	 */
 	public List<String> getPrefixes() {
 		return prefixes;
 	}
 
 	/**
-	 * Adds a prefix.
-	 * @param prefix the prefix to add (e.g. "Mr.")
-	 */
-	public void addPrefix(String prefix) {
-		this.prefixes.add(prefix);
-	}
-
-	/**
-	 * Gets the suffixes.
-	 * @return the suffixes (e.g. "Jr.") or empty list if there are none
+	 * Gets the list that stores the person's honorary suffixes.
+	 * @return the suffixes (e.g. "M.D.", "Jr.") (this list is mutable)
 	 */
 	public List<String> getSuffixes() {
 		return suffixes;
 	}
 
 	/**
-	 * Adds a suffix.
-	 * @param suffix the suffix to add (e.g. "Jr.")
-	 */
-	public void addSuffix(String suffix) {
-		this.suffixes.add(suffix);
-	}
-
-	/**
-	 * Gets the string(s) that define how to sort the vCard.
 	 * <p>
-	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING} property
-	 * instead.
+	 * Gets the list that holds string(s) which define how to sort the vCard.
+	 * </p>
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortString} property instead.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the sort string(s) (e.g. ["Aboville", "Christine"] if the family
-	 * name is "d'Aboville" and the given name is "Christine") or empty list if
-	 * there are none
-	 * @see VCardParameters#getSortAs
+	 * @return the sort string(s) (this list is mutable). For example, if the
+	 * family name is "d'Aboville" and the given name is "Christine", the sort
+	 * strings might be ["Aboville", "Christine"].
 	 */
 	public List<String> getSortAs() {
-		return parameters.getSortAs();
+		return sortAs;
 	}
 
 	/**
-	 * Sets the string that defines how to sort the vCard.
 	 * <p>
-	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING} property
-	 * instead.
+	 * Defines a sortable version of the person's name.
+	 * </p>
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortString} property instead.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param family the sorttable family name (e.g. "Adboville" if the family
-	 * name is "d'Aboville") or null to remove
+	 * @param family the sortable version of the family name (for example,
+	 * "Adboville" if the family name is "d'Aboville") or null to remove
 	 */
 	public void setSortAs(String family) {
-		if (family == null) {
-			parameters.setSortAs();
-		} else {
-			parameters.setSortAs(family);
+		sortAs.clear();
+		if (family != null) {
+			sortAs.add(family);
 		}
 	}
 
 	/**
-	 * Sets the strings that define how to sort the vCard.
 	 * <p>
-	 * 2.1 and 3.0 vCards should use the {@link SortString SORT-STRING} property
-	 * instead.
+	 * Defines a sortable version of the person's name.
+	 * </p>
+	 * <p>
+	 * 2.1 and 3.0 vCards should use the {@link SortString} property instead.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param family the sortable family name (e.g. "Adboville" if the family
-	 * name is "d'Aboville")
-	 * @param given the sortable given name
+	 * @param family the sortable version of the family name (for example,
+	 * "Adboville" if the family name is "d'Aboville")
+	 * @param given the sortable version of the given name
 	 */
 	public void setSortAs(String family, String given) {
-		parameters.setSortAs(family, given);
+		sortAs.clear();
+		sortAs.add(family);
+		sortAs.add(given);
 	}
 
 	@Override

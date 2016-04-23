@@ -135,11 +135,11 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void setIndent() throws Throwable {
+	public void setPrettyPrint() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardWriter writer = new JCardWriter(sw, true);
 		writer.setAddProdId(false);
-		writer.setIndent(true);
+		writer.setPrettyPrint(true);
 
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
@@ -154,13 +154,59 @@ public class JCardWriterTest {
 		//@formatter:off
 		String expected =
 		"[" + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]," + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]" + NEWLINE +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void setPrettyPrinter() throws Throwable {
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw, true);
+		writer.setAddProdId(false);
+		writer.setPrettyPrinter(new JCardPrettyPrinter());
+
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
 		"[" + NEWLINE +
-		"\"vcard\",[[" + NEWLINE +
-		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
-		"  \"fn\",{},\"text\",\"John Doe\"]]],[" + NEWLINE +
-		"\"vcard\",[[" + NEWLINE +
-		"  \"version\",{},\"text\",\"4.0\"],[" + NEWLINE +
-		"  \"fn\",{},\"text\",\"John Doe\"]]]" + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]," + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]" + NEWLINE +
 		"]";
 		//@formatter:on
 		assertEquals(expected, sw.toString());
@@ -300,8 +346,8 @@ public class JCardWriterTest {
 		StructuredName n = new StructuredName();
 		n.setFamily("Perreault");
 		n.setGiven("Simon");
-		n.addSuffix("ing.jr");
-		n.addSuffix("M.Sc.");
+		n.getSuffixes().add("ing.jr");
+		n.getSuffixes().add("M.Sc.");
 		vcard.setStructuredName(n);
 
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());

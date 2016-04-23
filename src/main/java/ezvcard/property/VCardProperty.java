@@ -63,6 +63,11 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 */
 	protected VCardParameters parameters;
 
+	/**
+	 * Used with the {@link #getPids()} method.
+	 */
+	private PidParameterList pidParameterList;
+
 	public VCardProperty() {
 		parameters = new VCardParameters();
 	}
@@ -196,10 +201,10 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
 	 * Gets all values of a parameter.
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
-	 * @return the parameter values
+	 * @return the parameter values (this list is immutable)
 	 */
 	public List<String> getParameters(String name) {
-		return parameters.get(name);
+		return Collections.unmodifiableList(parameters.get(name));
 	}
 
 	/**
@@ -361,10 +366,13 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets the list that stores this property's PID parameter values. PIDs can
-	 * exist on any property where multiple instances are allowed (such as
-	 * {@link Email} or {@link Address}, but not {@link StructuredName} because
-	 * only 1 instance of this property is allowed per vCard).
+	 * Gets the list that stores this property's PID (property ID) parameter
+	 * values.
+	 * </p>
+	 * <p>
+	 * PIDs can exist on any property where multiple instances are allowed (such
+	 * as {@link Email} or {@link Address}, but not {@link StructuredName}
+	 * because only 1 instance of this property is allowed per vCard).
 	 * </p>
 	 * <p>
 	 * When used in conjunction with the {@link ClientPidMap} property, it
@@ -375,9 +383,9 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the PID parameter values
-	 * @see <a href="http://tools.ietf.org/html/rfc6350#section-5.5">RFC 6350
-	 * Section 5.5</a>
+	 * @return the PID parameter values (this list is mutable)
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-19">RFC 6350
+	 * p.19</a>
 	 */
 	List<Pid> getPids() {
 		if (pidParameterList == null) {
@@ -388,16 +396,30 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Gets the preference value. The lower the number, the more preferred this
-	 * property instance is compared with other properties in the same vCard of
+	 * Gets this property's preference value. The lower this number is, the more
+	 * "preferred" the property instance is compared with other properties of
 	 * the same type. If a property doesn't have a preference value, then it is
 	 * considered the least preferred.
 	 * </p>
 	 * <p>
+	 * In the vCard below, the {@link Address} on the second row is the most
+	 * preferred because it has the lowest PREF value.
+	 * </p>
+	 * <p>
+	 * 
+	 * <pre>
+	 * ADR;TYPE=work;PREF=2:;;1600 Amphitheatre Parkway;Mountain View;CA;94043
+	 * ADR;TYPE=work;PREF=1:;;One Microsoft Way;Redmond;WA;98052
+	 * ADR;TYPE=home:;;123 Maple St;Hometown;KS;12345
+	 * </pre>
+	 * 
+	 * </p>
+	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the preference value or null if it doesn't exist
-	 * @see VCardParameters#getPref
+	 * @return the preference value or null if not set
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-17">RFC 6350
+	 * p.17</a>
 	 */
 	Integer getPref() {
 		return parameters.getPref();
@@ -405,16 +427,30 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	/**
 	 * <p>
-	 * Sets the preference value. The lower the number, the more preferred this
-	 * property instance is compared with other properties in the same vCard of
+	 * Sets this property's preference value. The lower this number is, the more
+	 * "preferred" the property instance is compared with other properties of
 	 * the same type. If a property doesn't have a preference value, then it is
 	 * considered the least preferred.
+	 * </p>
+	 * <p>
+	 * In the vCard below, the {@link Address} on the second row is the most
+	 * preferred because it has the lowest PREF value.
+	 * </p>
+	 * <p>
+	 * 
+	 * <pre>
+	 * ADR;TYPE=work;PREF=2:;;1600 Amphitheatre Parkway;Mountain View;CA;94043
+	 * ADR;TYPE=work;PREF=1:;;One Microsoft Way;Redmond;WA;98052
+	 * ADR;TYPE=home:;;123 Maple St;Hometown;KS;12345
+	 * </pre>
+	 * 
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @param pref the preference value or null to remove
-	 * @see VCardParameters#setPref
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-17">RFC 6350
+	 * p.17</a>
 	 */
 	void setPref(Integer pref) {
 		parameters.setPref(pref);
@@ -423,7 +459,6 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
 	 * Gets the language that the property value is written in.
 	 * @return the language or null if not set
-	 * @see VCardParameters#getLanguage
 	 */
 	String getLanguage() {
 		return parameters.getLanguage();
@@ -432,37 +467,52 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	/**
 	 * Sets the language that the property value is written in.
 	 * @param language the language or null to remove
-	 * @see VCardParameters#setLanguage
 	 */
 	void setLanguage(String language) {
 		parameters.setLanguage(language);
 	}
 
 	/**
+	 * <p>
 	 * Gets the sorted position of this property when it is grouped together
 	 * with other properties of the same type. Properties with low index values
-	 * are put at the beginning of the sorted list and properties with high
-	 * index values are put at the end of the list.
+	 * are put at the beginning of the sorted list. Properties with high index
+	 * values are put at the end of the list.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
 	 * @return the index or null if not set
-	 * @see VCardParameters#setIndex
+	 * @throws IllegalStateException if the parameter value is malformed and
+	 * cannot be parsed. If this happens, you may use the
+	 * {@link VCardParameters#get(String)} method to retrieve its raw value.
+	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-7">RFC 6715
+	 * p.7</a>
 	 */
 	Integer getIndex() {
 		return parameters.getIndex();
 	}
 
 	/**
+	 * <p>
 	 * Sets the sorted position of this property when it is grouped together
 	 * with other properties of the same type. Properties with low index values
-	 * are put at the beginning of the sorted list and properties with high
-	 * index values are put at the end of the list.
+	 * are put at the beginning of the sorted list. Properties with high index
+	 * values are put at the end of the list.
+	 * </p>
+	 * <p>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
 	 * @param index the index or null to remove
-	 * @see VCardParameters#setIndex
+	 * @throws IllegalStateException if the parameter value is malformed and
+	 * cannot be parsed. If this happens, you may use the
+	 * {@link VCardParameters#get(String)} method to retrieve its raw value.
+	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-7">RFC 6715
+	 * p.7</a>
 	 */
 	void setIndex(Integer index) {
 		parameters.setIndex(index);
 	}
-
-	private PidParameterList pidParameterList;
 
 	/**
 	 * <p>
@@ -486,26 +536,12 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 		@Override
 		protected String _asString(Pid value) {
-			Integer localId = value.getLocalId();
-			Integer clientPidMapReference = value.getClientPidMapReference();
-			return (clientPidMapReference == null) ? Integer.toString(localId) : localId + "." + clientPidMapReference;
+			return value.toString();
 		}
 
 		@Override
 		protected Pid _asObject(String value) {
-			int dot = value.indexOf('.');
-			String localIdStr, clientPidMapReferenceStr;
-			if (dot < 0) {
-				localIdStr = value;
-				clientPidMapReferenceStr = null;
-			} else {
-				localIdStr = value.substring(0, dot);
-				clientPidMapReferenceStr = (dot == value.length() - 1) ? null : value.substring(dot + 1);
-			}
-
-			Integer localId = Integer.valueOf(localIdStr);
-			Integer clientPidMapReference = (clientPidMapReferenceStr == null) ? null : Integer.valueOf(clientPidMapReferenceStr);
-			return new Pid(localId, clientPidMapReference);
+			return Pid.valueOf(value);
 		}
 	};
 
@@ -534,6 +570,35 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 			return value.getValue();
 		}
 	}
+
+	/**
+	 * <p>
+	 * A list that holds the raw string values of a particular parameter.
+	 * </p>
+	 * <p>
+	 * This list is backed by the property's {@link VCardParameters} object. Any
+	 * changes made to the list will affect the property's
+	 * {@link VCardParameters} object and vice versa.
+	 * </p>
+	 */
+	protected class VCardStringParameterList extends VCardParameterList<String> {
+		/**
+		 * @param parameterName the name of the parameter (case insensitive)
+		 */
+		public VCardStringParameterList(String parameterName) {
+			super(parameterName);
+		}
+
+		@Override
+		protected String _asString(String value) {
+			return value;
+		}
+
+		@Override
+		protected String _asObject(String value) {
+			return value;
+		}
+	};
 
 	/**
 	 * <p>

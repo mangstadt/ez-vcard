@@ -50,11 +50,11 @@ import ezvcard.parameter.Pid;
  * VCard vcard = new VCard();
  * 
  * Email email = new Email(&quot;johndoe@hotmail.com&quot;);
- * email.addType(EmailType.HOME);
+ * email.getTypes().add(EmailType.HOME);
  * vcard.addEmail(email);
  * 
  * email = new Email(&quot;jdoe@company.com&quot;);
- * email.addType(EmailType.WORK);
+ * email.getTypes().add(EmailType.WORK);
  * email.setPref(1); //the most preferred email
  * vcard.addEmail(email);
  * </pre>
@@ -73,7 +73,7 @@ import ezvcard.parameter.Pid;
 public class Email extends TextProperty implements HasAltId {
 	private final List<EmailType> types = new TypeParameterEnumList<EmailType>() {
 		@Override
-		protected EmailType _asObject(String value) throws Exception {
+		protected EmailType _asObject(String value) {
 			return EmailType.get(value);
 		}
 	};
@@ -96,7 +96,7 @@ public class Email extends TextProperty implements HasAltId {
 
 	/**
 	 * Gets the list that stores this property's email types (TYPE parameters).
-	 * @return the email types (e.g. "INTERNET", "WORK")
+	 * @return the email types (this list is mutable) (e.g. "INTERNET", "WORK")
 	 */
 	public List<EmailType> getTypes() {
 		return types;

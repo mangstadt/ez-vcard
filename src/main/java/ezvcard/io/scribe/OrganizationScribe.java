@@ -60,7 +60,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 		SemiStructuredIterator it = semistructured(value);
 		while (it.hasNext()) {
-			property.addValue(it.next());
+			property.getValues().add(it.next());
 		}
 
 		return property;
@@ -89,16 +89,16 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 		String orgName = element.firstValue("organization-name");
 		if (orgName != null) {
-			property.addValue(orgName);
+			property.getValues().add(orgName);
 		}
 
 		String orgUnit = element.firstValue("organization-unit");
 		if (orgUnit != null) {
-			property.addValue(orgUnit);
+			property.getValues().add(orgUnit);
 		}
 
 		if (property.getValues().isEmpty()) {
-			property.addValue(element.value());
+			property.getValues().add(element.value());
 		}
 
 		return property;
@@ -124,7 +124,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 		StructuredIterator it = structured(value);
 		while (it.hasNext()) {
-			property.addValue(it.nextString());
+			property.getValues().add(it.nextString());
 		}
 
 		return property;

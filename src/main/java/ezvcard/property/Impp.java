@@ -90,7 +90,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	private URI uri;
 	private final List<ImppType> types = new TypeParameterEnumList<ImppType>() {
 		@Override
-		protected ImppType _asObject(String value) throws Exception {
+		protected ImppType _asObject(String value) {
 			return ImppType.get(value);
 		}
 	};
@@ -342,7 +342,7 @@ public class Impp extends VCardProperty implements HasAltId {
 
 	/**
 	 * Gets the list that stores this property's IMPP types (TYPE parameters).
-	 * @return the IMPP types (e.g. "HOME", "WORK")
+	 * @return the IMPP types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<ImppType> getTypes() {
 		return types;

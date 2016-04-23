@@ -47,7 +47,7 @@ public class CategoriesScribe extends ListPropertyScribe<Categories> {
 		}
 
 		Categories property = _newInstance();
-		property.addValue(value);
+		property.getValues().add(value);
 		return property;
 	}
 

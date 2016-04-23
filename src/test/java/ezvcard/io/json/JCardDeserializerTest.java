@@ -1,19 +1,20 @@
 package ezvcard.io.json;
 
-import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.property.asserter.PropertyAsserter.assertSimpleProperty;
-import static ezvcard.util.TestUtils.assertPropertyCount;
-import static ezvcard.util.TestUtils.assertVersion;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import ezvcard.VCard;
+import ezvcard.VCardVersion;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -46,63 +47,43 @@ import ezvcard.VCard;
 
 /**
  * @author Buddy Gorven
+ * @author Michael Angstadt
  */
 public class JCardDeserializerTest {
-	@Test
-	public void deserialize_single_vcard() throws Throwable {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JCardModule());
-		VCard result = mapper.readValue(getClass().getResourceAsStream("jcard-example.json"), VCard.class);
+	//TODO test setScribe()
 
-		JCardReaderTest.validateExampleJCard(result);
+	private ObjectMapper mapper;
+
+	@Before
+	public void before() {
+		mapper = new ObjectMapper();
 	}
 
 	@Test
-	public void read_nested() throws Throwable {
+	public void deserialize_single() throws Exception {
 		//@formatter:off
 		String json =
-		"{" +
-		  "\"contact\": "+
-		  "[" +
-		    "\"vcard\"," +
-			  "[" +
-			    "[\"version\", {}, \"text\", \"4.0\"]," +
-			    "[\"fn\", {}, \"text\", \"John Doe\"]" +
-			  "]" +
-		  "]" +
-		"}";
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"4.0\"]," +
+				"[\"fn\", {}, \"text\", \"John Doe\"]" +
+			"]" +
+		"]";
 		//@formatter:on
 
-		NestedVCard nested = new ObjectMapper().readValue(json, NestedVCard.class);
+		JCardModule module = new JCardModule();
+		mapper.registerModule(module);
 
-		VCard vcard = nested.getContact();
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(1, vcard);
+		VCard expected = new VCard();
+		expected.setVersion(VCardVersion.V4_0);
+		expected.setFormattedName("John Doe");
 
-		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
-			.value("John Doe")
-		.noMore();
-		//@formatter:on
+		VCard actual = mapper.readValue(json, VCard.class);
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void read_nested_null() throws Throwable {
-		//@formatter:off
-		String json =
-		"{" +
-		  "\"contact\": null" +
-		"}";
-		//@formatter:on
-
-		NestedVCard nested = new ObjectMapper().readValue(json, NestedVCard.class);
-
-		VCard vcard = nested.getContact();
-		assertEquals(null, vcard);
-	}
-
-	@Test
-	public void read_multiple() throws Throwable {
+	public void deserialize_multiple() throws Exception {
 		//@formatter:off
 		String json =
 		"[" +
@@ -121,31 +102,71 @@ public class JCardDeserializerTest {
 		"]";
 		//@formatter:on
 
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JCardModule());
-		List<VCard> cards = mapper.readValue(json, new TypeReference<List<VCard>>() {
+		JCardModule module = new JCardModule();
+		mapper.registerModule(module);
+
+		List<VCard> expected = new ArrayList<VCard>();
+
+		VCard vcard = new VCard();
+		vcard.setVersion(VCardVersion.V4_0);
+		vcard.setFormattedName("John Doe");
+		expected.add(vcard);
+
+		vcard = new VCard();
+		vcard.setVersion(VCardVersion.V4_0);
+		vcard.setFormattedName("Jane Doe");
+		expected.add(vcard);
+
+		List<VCard> actual = mapper.readValue(json, new TypeReference<List<VCard>>() {
 		});
+		assertEquals(expected, actual);
+	}
 
-		assertEquals(2, cards.size());
-
-		VCard vcard = cards.get(0);
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(1, vcard);
-
+	@Test
+	public void container() throws Exception {
 		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
-			.value("John Doe")
-		.noMore();
+		String json =
+		"{" +
+			"\"contact\": [\"vcard\"," +
+				"[" +
+					"[\"version\", {}, \"text\", \"4.0\"]," +
+					"[\"fn\", {}, \"text\", \"John Doe\"]" +
+				"]" +
+			"]" +
+		"}";
 		//@formatter:on
 
-		vcard = cards.get(1);
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(1, vcard);
+		Container container = mapper.readValue(json, Container.class);
 
+		VCard expected = new VCard();
+		expected.setVersion(VCardVersion.V4_0);
+		expected.setFormattedName("John Doe");
+
+		VCard actual = container.contact;
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void container_null() throws Exception {
 		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
-			.value("Jane Doe")
-		.noMore();
+		String json =
+		"{" +
+			"\"contact\": null" +
+		"}";
 		//@formatter:on
+
+		Container container = mapper.readValue(json, Container.class);
+
+		VCard actual = container.contact;
+		assertNull(actual);
+	}
+
+	private static class Container {
+		private VCard contact;
+
+		@JsonDeserialize(using = JCardDeserializer.class)
+		public void setContact(VCard contact) {
+			this.contact = contact;
+		}
 	}
 }

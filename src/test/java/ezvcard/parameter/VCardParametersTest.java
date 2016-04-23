@@ -473,14 +473,6 @@ public class VCardParametersTest {
 
 		parameters.setSortAs();
 		assertTrue(parameters.getSortAs().isEmpty());
-
-		parameters.setSortAs("one", "two");
-		parameters.setSortAs((String[]) null);
-		assertTrue(parameters.getSortAs().isEmpty());
-
-		parameters.setSortAs("one", "two");
-		parameters.setSortAs((String) null);
-		assertTrue(parameters.getSortAs().isEmpty());
 	}
 
 	@Test

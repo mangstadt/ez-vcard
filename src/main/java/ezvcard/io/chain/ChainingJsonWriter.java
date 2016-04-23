@@ -45,7 +45,7 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  */
 public class ChainingJsonWriter extends ChainingWriter<ChainingJsonWriter> {
-	private boolean indent = false;
+	private boolean prettyPrint = false;
 
 	/**
 	 * @param vcards the vCards to write
@@ -56,12 +56,12 @@ public class ChainingJsonWriter extends ChainingWriter<ChainingJsonWriter> {
 
 	/**
 	 * Sets whether or not to pretty-print the JSON.
-	 * @param indent true to pretty-print it, false not to (defaults to
+	 * @param prettyPrint true to pretty-print it, false not to (defaults to
 	 * false)
 	 * @return this
 	 */
-	public ChainingJsonWriter indent(boolean indent) {
-		this.indent = indent;
+	public ChainingJsonWriter prettyPrint(boolean prettyPrint) {
+		this.prettyPrint = prettyPrint;
 		return this;
 	}
 
@@ -129,7 +129,7 @@ public class ChainingJsonWriter extends ChainingWriter<ChainingJsonWriter> {
 
 	private void go(JCardWriter writer) throws IOException {
 		writer.setAddProdId(prodId);
-		writer.setIndent(indent);
+		writer.setPrettyPrint(prettyPrint);
 		writer.setVersionStrict(versionStrict);
 		if (index != null) {
 			writer.setScribeIndex(index);

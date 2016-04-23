@@ -349,9 +349,9 @@
 								<br />
 							</#if>
 							
-							<#if v.structuredName.additional?has_content>
+							<#if v.structuredName.additionalNames?has_content>
 								<i>Additional</i>:
-								<#list v.structuredName.additional as n>
+								<#list v.structuredName.additionalNames as n>
 									<span class="additional-name">${n}</span><#if n_has_next>, </#if>
 								</#list>
 								<br />

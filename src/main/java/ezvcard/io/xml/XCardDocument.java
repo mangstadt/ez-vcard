@@ -118,7 +118,7 @@ import ezvcard.util.XmlUtils;
 * 
 * //VCard objects can be added at any time
 * VCard vcard = ...
-* xcard.add(vcard);
+* xcard.addVCard(vcard);
 * 
 * //retrieving the raw XML DOM
 * Document document = xcard.getDocument();

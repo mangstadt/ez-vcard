@@ -47,17 +47,17 @@ public class StructuredNameScribeTest {
 	{
 		withAllValues.setGiven("Jonathan");
 		withAllValues.setFamily("Doe");
-		withAllValues.addAdditional("Joh;nny,");
-		withAllValues.addAdditional("John");
-		withAllValues.addPrefix("Mr.");
-		withAllValues.addSuffix("III");
+		withAllValues.getAdditionalNames().add("Joh;nny,");
+		withAllValues.getAdditionalNames().add("John");
+		withAllValues.getPrefixes().add("Mr.");
+		withAllValues.getSuffixes().add("III");
 	}
 	private final StructuredName withEmptyValues = new StructuredName();
 	{
 		withEmptyValues.setGiven("Jonathan");
 		withEmptyValues.setFamily(null);
-		withEmptyValues.addAdditional("Joh;nny,");
-		withEmptyValues.addAdditional("John");
+		withEmptyValues.getAdditionalNames().add("Joh;nny,");
+		withEmptyValues.getAdditionalNames().add("John");
 	}
 	private final StructuredName empty = new StructuredName();
 

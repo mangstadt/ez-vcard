@@ -5,16 +5,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
 
 /*
@@ -48,112 +48,83 @@ import ezvcard.VCard;
 
 /**
  * @author Buddy Gorven
+ * @author Michael Angstadt
  */
 public class JCardSerializerTest {
+	//TODO test setScribe()
+
+	private ObjectMapper mapper;
+
+	@Before
+	public void before() {
+		mapper = new ObjectMapper();
+	}
+
 	@Test
-	public void serialize_indented() throws Throwable {
-		VCard vcard1 = new VCard();
-		vcard1.setFormattedName("John Doe");
+	public void serialize_single() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
 
-		VCard vcard2 = new VCard();
-		vcard2.setFormattedName("John Doe");
+		JCardModule module = new JCardModule();
+		module.setAddProdId(false);
+		mapper.registerModule(module);
 
-		ObjectMapper mapper = getMapper();
-
-		final DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
-		pp.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-		mapper.setDefaultPrettyPrinter(pp);
-		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-
-		String result = mapper.writeValueAsString(Arrays.asList(vcard1, vcard2));
+		String actual = mapper.writeValueAsString(vcard);
 
 		//@formatter:off
 		String expected =
-		"[" + NEWLINE + 
-		"  [" + NEWLINE + 
-		"    \"vcard\"," + NEWLINE + 
-		"    [" + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"version\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"4.0\"" + NEWLINE + 
-		"      ]," + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"fn\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"John Doe\"" + NEWLINE + 
-		"      ]" + NEWLINE + 
-		"    ]" + NEWLINE + 
-		"  ]," + NEWLINE + 
-		"  [" + NEWLINE + 
-		"    \"vcard\"," + NEWLINE + 
-		"    [" + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"version\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"4.0\"" + NEWLINE + 
-		"      ]," + NEWLINE + 
-		"      [" + NEWLINE + 
-		"        \"fn\"," + NEWLINE + 
-		"        { }," + NEWLINE + 
-		"        \"text\"," + NEWLINE + 
-		"        \"John Doe\"" + NEWLINE + 
-		"      ]" + NEWLINE + 
-		"    ]" + NEWLINE + 
-		"  ]" + NEWLINE + 
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\",{},\"text\",\"4.0\"]," +
+				"[\"fn\",{},\"text\",\"John Doe\"]" +
+			"]" +
 		"]";
 		//@formatter:on
-		assertEquals(expected, result);
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void serialize_single_vcard() throws Throwable {
-		VCard example = JCardWriterTest.createExample();
-		String actual = getMapper().writeValueAsString(example);
-		JCardWriterTest.assertExample(actual, "jcard-example.json");
-	}
-
-	@Test
-	public void serialize_nested() throws Throwable {
-		NestedVCard nested = new NestedVCard();
-		nested.setContact(JCardWriterTest.createExample());
-
-		StringWriter result = new StringWriter();
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.writeValue(result, nested);
-		String nestedJson = result.toString();
-
-		String actual = nestedJson.substring(nestedJson.indexOf('['), nestedJson.lastIndexOf(']') + 1);
-		JCardWriterTest.assertExample(actual, "jcard-example.json");
-	}
-
-	@Test
-	public void write_nested_null() throws Throwable {
-		NestedVCard nested = new NestedVCard();
-
-		StringWriter result = new StringWriter();
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.writeValue(result, nested);
-		String nestedJson = result.toString();
-
-		assertEquals("{\"contact\":null}", nestedJson.replaceAll("\\s", ""));
-	}
-
-	@Test
-	public void serialize_multiple_vcards() throws Throwable {
-		List<VCard> cards = new ArrayList<VCard>();
+	public void serialize_single_prettyPrint() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
-		cards.add(vcard);
+
+		JCardModule module = new JCardModule();
+		module.setAddProdId(false);
+		mapper.registerModule(module);
+		mapper.setDefaultPrettyPrinter(new JCardPrettyPrinter());
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+
+		String actual = mapper.writeValueAsString(vcard);
+
+		//@formatter:off
+		String expected =
+		"[" + NEWLINE +
+		"  \"vcard\"," + NEWLINE +
+		"  [" + NEWLINE +
+		"    [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"    [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"  ]" + NEWLINE +
+		"]";
+		//@formatter:on
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void serialize_multiple() throws Exception {
+		List<VCard> vcards = new ArrayList<VCard>();
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcards.add(vcard);
 
 		vcard = new VCard();
 		vcard.setFormattedName("Jane Doe");
-		cards.add(vcard);
+		vcards.add(vcard);
 
-		String actual = getMapper().writeValueAsString(cards);
+		JCardModule module = new JCardModule();
+		module.setAddProdId(false);
+		mapper.registerModule(module);
+
+		String actual = mapper.writeValueAsString(vcards);
 
 		//@formatter:off
 		String expected =
@@ -175,11 +146,140 @@ public class JCardSerializerTest {
 		assertEquals(expected, actual);
 	}
 
-	private ObjectMapper getMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		final JCardModule module = new JCardModule();
+	@Test
+	public void serialize_multiple_prettyPrint() throws Exception {
+		List<VCard> vcards = new ArrayList<VCard>();
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcards.add(vcard);
+
+		vcard = new VCard();
+		vcard.setFormattedName("Jane Doe");
+		vcards.add(vcard);
+
+		JCardModule module = new JCardModule();
 		module.setAddProdId(false);
 		mapper.registerModule(module);
-		return mapper;
+		mapper.setDefaultPrettyPrinter(new JCardPrettyPrinter());
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+
+		String actual = mapper.writeValueAsString(vcards);
+
+		//@formatter:off
+		String expected =
+		"[" + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"John Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]," + NEWLINE +
+		"  [" + NEWLINE +
+		"    \"vcard\"," + NEWLINE +
+		"    [" + NEWLINE +
+		"      [ \"version\", { }, \"text\", \"4.0\" ]," + NEWLINE +
+		"      [ \"fn\", { }, \"text\", \"Jane Doe\" ]" + NEWLINE +
+		"    ]" + NEWLINE +
+		"  ]" + NEWLINE +
+		"]";
+		//@formatter:on
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void container() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcard.setMailer("mailer");
+		Container container = new Container(vcard);
+
+		StringWriter result = new StringWriter();
+		mapper.writeValue(result, container);
+		String actual = result.toString();
+
+		//@formatter:off
+		String expected =
+		"{" +
+			"\"contact\":[\"vcard\"," +
+				"[" +
+					"[\"version\",{},\"text\",\"4.0\"]," +
+					"[\"prodid\",{},\"text\",\"ez-vcard " + Ezvcard.VERSION + "\"]," +
+					"[\"fn\",{},\"text\",\"John Doe\"]" +
+				"]" +
+			"]" +
+		"}";
+		//@formatter:on
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void container_null() throws Exception {
+		Container container = new Container(null);
+
+		StringWriter result = new StringWriter();
+		mapper.writeValue(result, container);
+		String actual = result.toString();
+
+		//@formatter:off
+		String expected =
+		"{" +
+			"\"contact\":null"+
+		"}";
+		//@formatter:on
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void container_annotation() throws Exception {
+		VCard vcard = new VCard();
+		vcard.setFormattedName("John Doe");
+		vcard.setMailer("mailer");
+		ContainerAnnotation container = new ContainerAnnotation(vcard);
+
+		StringWriter result = new StringWriter();
+		mapper.writeValue(result, container);
+		String actual = result.toString();
+
+		//@formatter:off
+		String expected =
+		"{" +
+			"\"contact\":[\"vcard\"," +
+				"[" +
+					"[\"version\",{},\"text\",\"4.0\"]," +
+					"[\"fn\",{},\"text\",\"John Doe\"]," +
+					"[\"mailer\",{},\"text\",\"mailer\"]" +
+				"]" +
+			"]" +
+		"}";
+		//@formatter:on
+		assertEquals(expected, actual);
+	}
+
+	private static class Container {
+		private final VCard contact;
+
+		public Container(VCard contact) {
+			this.contact = contact;
+		}
+
+		@JsonSerialize(using = JCardSerializer.class)
+		public VCard getContact() {
+			return contact;
+		}
+	}
+
+	private static class ContainerAnnotation {
+		private final VCard contact;
+
+		public ContainerAnnotation(VCard contact) {
+			this.contact = contact;
+		}
+
+		@JCardFormat(addProdId = false, versionStrict = false)
+		@JsonSerialize(using = JCardSerializer.class)
+		public VCard getContact() {
+			return contact;
+		}
 	}
 }

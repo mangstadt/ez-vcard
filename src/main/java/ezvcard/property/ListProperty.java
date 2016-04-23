@@ -41,7 +41,7 @@ import ezvcard.Warning;
 /**
  * Represents a property whose value is a list of textual values.
  * @author Michael Angstadt
- * @param <T> the type of values sorted in the list
+ * @param <T> the type of values stored in the list
  */
 public class ListProperty<T> extends VCardProperty {
 	protected final List<T> values;
@@ -60,27 +60,11 @@ public class ListProperty<T> extends VCardProperty {
 	}
 
 	/**
-	 * Gest the list of values.
-	 * @return the list of values
+	 * Gets the list that stores this property's values.
+	 * @return the list of values (this list is mutable)
 	 */
 	public List<T> getValues() {
 		return values;
-	}
-
-	/**
-	 * Adds a value to the list.
-	 * @param value the value to add
-	 */
-	public void addValue(T value) {
-		values.add(value);
-	}
-
-	/**
-	 * Removes a value from the list.
-	 * @param value the value to remove
-	 */
-	public void removeValue(T value) {
-		values.remove(value);
 	}
 
 	@Override

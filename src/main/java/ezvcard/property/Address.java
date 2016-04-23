@@ -61,7 +61,7 @@ import ezvcard.util.StringUtils;
  * adr.setRegion(&quot;TX&quot;);
  * adr.setPostalCode(&quot;12345&quot;);
  * adr.setCountry(&quot;USA&quot;);
- * adr.addType(AddressType.WORK);
+ * adr.getTypes().add(AddressType.WORK);
  * 
  * //optionally, set the text to print on the mailing label
  * adr.setLabel(&quot;123 Main St.\nAustin, TX 12345\nUSA&quot;);
@@ -112,7 +112,7 @@ public class Address extends VCardProperty implements HasAltId {
 	private final List<String> countries;
 	private final List<AddressType> types = new TypeParameterEnumList<AddressType>() {
 		@Override
-		protected AddressType _asObject(String value) throws Exception {
+		protected AddressType _asObject(String value) {
 			return AddressType.get(value);
 		}
 	};
@@ -154,7 +154,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the P.O. (post office) boxes that are assigned
 	 * to this address. An address is unlikely to have more than one, but it's
 	 * possible nonetheless.
-	 * @return the P.O. boxes
+	 * @return the P.O. boxes (this list is mutable)
 	 */
 	public List<String> getPoBoxes() {
 		return poBoxes;
@@ -180,7 +180,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the extended addresses that are assigned to this
 	 * address. An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the extended addresses
+	 * @return the extended addresses (this list is mutable)
 	 */
 	public List<String> getExtendedAddresses() {
 		return extendedAddresses;
@@ -192,7 +192,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the extended address or null if not set
 	 */
 	public String getExtendedAddressFull() {
-		return extendedAddresses.isEmpty() ? null : StringUtils.join(extendedAddresses, ",");
+		return getAddressFull(extendedAddresses);
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the street addresses that are assigned to this
 	 * address. An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the street addresses
+	 * @return the street addresses (this list is mutable)
 	 */
 	public List<String> getStreetAddresses() {
 		return streetAddresses;
@@ -228,7 +228,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * @return the street address or null if not set
 	 */
 	public String getStreetAddressFull() {
-		return streetAddresses.isEmpty() ? null : StringUtils.join(streetAddresses, ",");
+		return getAddressFull(streetAddresses);
 	}
 
 	/**
@@ -252,7 +252,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the localities that are assigned to this
 	 * address. An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the localities
+	 * @return the localities (this list is mutable)
 	 */
 	public List<String> getLocalities() {
 		return localities;
@@ -278,7 +278,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the regions that are assigned to this address.
 	 * An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the regions
+	 * @return the regions (this list is mutable)
 	 */
 	public List<String> getRegions() {
 		return regions;
@@ -304,7 +304,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the postal codes that are assigned to this
 	 * address. An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the postal codes
+	 * @return the postal codes (this list is mutable)
 	 */
 	public List<String> getPostalCodes() {
 		return postalCodes;
@@ -330,7 +330,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * Gets the list that holds the countries that are assigned to this address.
 	 * An address is unlikely to have more than one, but it's possible
 	 * nonetheless.
-	 * @return the countries
+	 * @return the countries (this list is mutable)
 	 */
 	public List<String> getCountries() {
 		return countries;
@@ -347,7 +347,7 @@ public class Address extends VCardProperty implements HasAltId {
 	/**
 	 * Gets the list that stores this property's address types (TYPE
 	 * parameters).
-	 * @return the address types (e.g. "HOME", "WORK")
+	 * @return the address types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<AddressType> getTypes() {
 		return types;
@@ -365,7 +365,7 @@ public class Address extends VCardProperty implements HasAltId {
 
 	/**
 	 * Gets the label of the address.
-	 * @return the label or null if it doesn't have one
+	 * @return the label or null if not set
 	 */
 	public String getLabel() {
 		return parameters.getLabel();
@@ -439,8 +439,7 @@ public class Address extends VCardProperty implements HasAltId {
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the timezone (e.g. "America/New_York") or null if it doesn't
-	 * exist
+	 * @return the timezone (e.g. "America/New_York") or null if not set
 	 */
 	public String getTimezone() {
 		return parameters.getTimezone();
@@ -527,5 +526,9 @@ public class Address extends VCardProperty implements HasAltId {
 		if (value != null) {
 			list.add(value);
 		}
+	}
+
+	private static String getAddressFull(List<String> list) {
+		return list.isEmpty() ? null : StringUtils.join(list, ",");
 	}
 }

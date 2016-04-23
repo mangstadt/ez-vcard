@@ -53,6 +53,7 @@ import ezvcard.property.VCardProperty;
 @JsonFormat
 public class JCardSerializer extends StdSerializer<VCard> implements ContextualSerializer {
 	private static final long serialVersionUID = -856795690626261178L;
+
 	private ScribeIndex index = new ScribeIndex();
 	private boolean addProdId = true;
 	private boolean versionStrict = true;
@@ -66,24 +67,27 @@ public class JCardSerializer extends StdSerializer<VCard> implements ContextualS
 		@SuppressWarnings("resource")
 		JCardWriter writer = new JCardWriter(gen);
 		writer.setAddProdId(isAddProdId());
-		writer.setScribeIndex(getScribeIndex());
 		writer.setVersionStrict(isVersionStrict());
+		writer.setScribeIndex(getScribeIndex());
+
 		writer.write(value);
 	}
 
 	public JCardSerializer createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
-		if (property != null) {
-			JCardFormat annotation = property.getAnnotation(JCardFormat.class);
-			if (annotation != null) {
-				JCardSerializer result = new JCardSerializer();
-				result.setAddProdId(annotation.addProdId());
-				result.setVersionStrict(annotation.versionStrict());
-				result.setScribeIndex(getScribeIndex());
-				return result;
-			}
+		if (property == null) {
+			return this;
 		}
 
-		return this;
+		JCardFormat annotation = property.getAnnotation(JCardFormat.class);
+		if (annotation == null) {
+			return this;
+		}
+
+		JCardSerializer result = new JCardSerializer();
+		result.setAddProdId(annotation.addProdId());
+		result.setVersionStrict(annotation.versionStrict());
+		result.setScribeIndex(getScribeIndex());
+		return result;
 	}
 
 	/**

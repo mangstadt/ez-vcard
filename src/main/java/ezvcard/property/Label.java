@@ -84,7 +84,7 @@ import ezvcard.parameter.AddressType;
 public class Label extends TextProperty {
 	private final List<AddressType> types = new TypeParameterEnumList<AddressType>() {
 		@Override
-		protected AddressType _asObject(String value) throws Exception {
+		protected AddressType _asObject(String value) {
 			return AddressType.get(value);
 		}
 	};
@@ -108,7 +108,7 @@ public class Label extends TextProperty {
 	/**
 	 * Gets the list that stores this property's address types (TYPE
 	 * parameters).
-	 * @return the address types (e.g. "HOME", "WORK")
+	 * @return the address types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<AddressType> getTypes() {
 		return types;

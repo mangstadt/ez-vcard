@@ -48,10 +48,9 @@ public class PidParameterListTest {
 		List<Pid> pids = property.getPids();
 
 		pids.add(new Pid(1, 1));
-		pids.add(new Pid(2));
-		parameters.put(VCardParameters.PID, "3");
-		assertEquals(Arrays.asList("1.1", "2", "3"), parameters.get(VCardParameters.PID));
-		assertEquals(Arrays.asList(new Pid(1, 1), new Pid(2), new Pid(3)), pids);
+		parameters.put(VCardParameters.PID, "2");
+		assertEquals(Arrays.asList("1.1", "2"), parameters.get(VCardParameters.PID));
+		assertEquals(Arrays.asList(new Pid(1, 1), new Pid(2)), pids);
 	}
 
 	@Test
@@ -67,16 +66,6 @@ public class PidParameterListTest {
 		} catch (IllegalStateException e) {
 			assertTrue(e.getCause() instanceof NumberFormatException);
 		}
-	}
-
-	@Test
-	public void trailing_dot() {
-		PidParameterListProperty property = new PidParameterListProperty();
-		VCardParameters parameters = property.getParameters();
-		List<Pid> pids = property.getPids();
-
-		parameters.put(VCardParameters.PID, "1.");
-		assertEquals(Arrays.asList(new Pid(1)), pids);
 	}
 
 	private static class PidParameterListProperty extends VCardProperty {

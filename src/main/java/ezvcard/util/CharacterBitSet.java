@@ -93,7 +93,7 @@ public class CharacterBitSet {
 	 * Determines if the given string contains *only* the characters in this bit
 	 * set.
 	 * @param string the string
-	 * @return true if the strong contains only the specified characters, false
+	 * @return true if the string contains only the specified characters, false
 	 * if not
 	 */
 	public boolean containsOnly(String string) {
@@ -105,7 +105,7 @@ public class CharacterBitSet {
 	 * set.
 	 * @param string the string
 	 * @param startIndex the index to start at in the string
-	 * @return true if the strong contains only the specified characters, false
+	 * @return true if the string contains only the specified characters, false
 	 * if not
 	 */
 	public boolean containsOnly(String string, int startIndex) {

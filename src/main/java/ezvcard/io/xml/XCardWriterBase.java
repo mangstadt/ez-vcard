@@ -52,15 +52,20 @@ abstract class XCardWriterBase extends StreamWriter {
 	{
 		registerParameterDataType(VCardParameters.ALTID, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.CALSCALE, VCardDataType.TEXT);
+		//registerParameterDataType(VCardParameters.CHARSET, VCardDataType.TEXT); //not 4.0
+		//registerParameterDataType(VCardParameters.ENCODING, VCardDataType.TEXT); //not 4.0
 		registerParameterDataType(VCardParameters.GEO, VCardDataType.URI);
+		registerParameterDataType(VCardParameters.INDEX, VCardDataType.INTEGER);
 		registerParameterDataType(VCardParameters.LABEL, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.LANGUAGE, VCardDataType.LANGUAGE_TAG);
+		registerParameterDataType(VCardParameters.LEVEL, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.MEDIATYPE, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.PID, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.PREF, VCardDataType.INTEGER);
 		registerParameterDataType(VCardParameters.SORT_AS, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.TYPE, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.TZ, VCardDataType.URI);
+		//registerParameterDataType(VCardParameters.VALUE, VCardDataType.TEXT); //not used by xCard
 	}
 
 	@Override
