@@ -15,6 +15,7 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 	public XCardRoundTripTest() throws Exception {
 		updateSamples(VCardVersion.V4_0,
 				"outlook-2003", // &#12; in fburl is not valid xml
+				"outlook-2007", // newlines not preserved on linux
 				"android", // empty <type/> tag added to email
 				"ms_outlook", // empty <street/> tag added to home adr
 				"evolution", "mac_address_book", // string escape issue
