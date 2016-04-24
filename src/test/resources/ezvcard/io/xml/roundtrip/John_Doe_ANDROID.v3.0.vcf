@@ -1,0 +1,77 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+EMAIL;TYPE=pref:john.doe@company.com
+CATEGORIES:My Contacts
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+EMAIL;TYPE=pref:jane.doe@company.com
+CATEGORIES:My Contacts
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+N;CHARSET=UTF-8:Ñ Ñ Ñ Ñ;;;;
+FN;CHARSET=UTF-8:Ñ Ñ Ñ Ñ Ñ 
+TEL;TYPE=CELL,pref:123456789
+CATEGORIES:My Contacts
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+N;CHARSET=UTF-8:Ñ Ñ Ñ Ñ Ñ Ñ Ñ Ñ Ñ Ñ Ñ;;;;
+FN;CHARSET=UTF-8:Ñ Ñ Ñ Ñ Ñ Ñ Ñ Ñ Ñ Ñ Ñ
+TEL;TYPE=CELL,pref:123456
+TEL;TYPE=HOME:234567
+TEL;TYPE=CELL:3456789
+TEL;TYPE=HOME:45678901
+CATEGORIES:My Contacts
+NOTE;CHARSET=UTF-8:Ñ Ñ Ñ Ñ Ñ Ñ Ñ ÑÑ Ñ Ñ Ñ Ñ Ñ Ñ ÑÑ Ñ Ñ Ñ Ñ 
+NOTE;CHARSET=UTF-8:Ñ Ñ Ñ Ñ Ñ Ñ Ñ ÑÑ Ñ Ñ Ñ Ñ Ñ Ñ ÑÑ Ñ Ñ Ñ Ñ 
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+N;CHARSET=UTF-8:Ñ Ñ;Ñ Ñ Ñ;;;
+FN;CHARSET=UTF-8:Ñ Ñ Ñ Ñ 
+TEL;TYPE=CELL,pref:123456
+TEL;TYPE=WORK:123456
+TEL;TYPE=WORK,FAX:123456
+EMAIL;TYPE=WORK,pref:bob@company.com
+EMAIL;CHARSET=UTF-8:ÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+ORG;CHARSET=UTF-8:ÑÑÑÑÑÑÑÑÑÑÑÑ
+ORG;CHARSET=UTF-8:ÑÑÑÑÑÑÑÑÑÑÑÑ
+URL:www.company.com
+URL:http://www.company.com
+PHOTO;ENCODING=b;TYPE=jpeg:/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQEBAQIBAQEC
+ AgICAgQDAgICAgUEBAMEBgUGBgYFBgYGBwkIBgcJBwYGCAsICQoKCgoKBggLDAsKDAkKCgr/2w
+ BDAQICAgICAgUDAwUKBwYHCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCb2w
+ xBqZRuiZQ8z9VmhGMY/wA803yB/dr4Z8a/tiftAaX8DPhLYzeM9U0a98WeCtH0tvFv9mW839ra
+ 1qWnWcseqSLIirBYWkn2gXc8TP5L3EI8qTcNnrOp/tsa7P8AseD9prxf8N7zwesGtiwuNNi1D7
+ Tv/eFVmhuJoofOjO5VJKrh1dRu2ZM+zZKg2fO+g/8ABEP45eC/Dmn+HPBX7ZWhab/Zt29xAyfD
+ S2kWF3WRWeNXlPlsVkKkrjhn5+Yg/Xn7HPwP+PHwC+GV74L/AGiv2kLn4natc6kLm21u6077L9
+ ni8qNPJEe9wVDozgZwN5AA6n1ouMnJpkpDPk9cD+ZqnVqTiqUn6GtStiffUqnNzO+//B8zlvG/
+ wN+D3xF+IXhL4u+O/AdnqfibwFNdS+D9WuVYyaW1yiRzmIbsDesaA5B+6OlX/EXg3wH4t1fT/E
+ PizwRDqF7pyXENhczMzNCk8kbyqPRWaCIsvIOxfSttSxIKjpSPdvEyBEyd+1/xP/1qcXpyvdC5
+ tDmdH+CHwg8K/EGb4w6B8PtKs/E95pkljJrUK4nFqxhJhz0K/wCj2/H/AExX0pujfBH4TaR8Zt
+ X/AGgvDfw7tbXxd4g09LPVvXXKt9qnhQQqI3OcY220Axxwi/jxv7S/7eH7Kn7HR0lP2g/iBeaJ
+ JrOuRaVYNa6PcXXm3MymRYz5UbhV2jJY4xxz1r0fwR498K+PtGbXfCGr/a7ZJ9j7w3CvijVraD
+ xdbyWg/4lFlOVN2WP8AZ7GUhnJKv5Ifacule3Qz+QTKD3HanDUELEk9T6UKSjuVGVjxGe31HUd
+ S1/4da/8Ask6APDvgrV4W8GzHT1mi1DzhPLK8UL2IS1O9V3PE8py+Tgnnn/AmoQfD/wAeab4J8
+ F/8E3tC0qz1LTJJ9V1/RdO+zR2p8yTFviLTVWUsYYGO50+/nB2Lv+jnuoZl2S9ByOKYLrys+SP
+ 0p+0iPnP/2
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+N;CHARSET=UTF-8:ÑÑÑÑ;;;;
+FN;CHARSET=UTF-8:ÑÑÑÑ
+TEL;TYPE=CELL,pref:55556666
+EMAIL;TYPE=pref:henry@company.com
+ORG;CHARSET=UTF-8:ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+ORG;CHARSET=UTF-8:ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ�
+ORG;CHARSET=UTF-8:ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+CATEGORIES:My Contacts
+END:VCARD

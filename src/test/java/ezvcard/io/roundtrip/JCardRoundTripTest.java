@@ -45,20 +45,20 @@ import ezvcard.io.json.JCardWriter;
 public class JCardRoundTripTest extends RoundTripTestBase {
 
 	public JCardRoundTripTest() throws Throwable {
-		updateSamples(VCardVersion.V4_0,
+		updateSamples(VCardVersion.V4_0);
+	}
+
+	@Test
+	public void convert_to_jcard() throws Throwable {
+		convertAllFromVCard(VCardVersion.V4_0, true, true,
 				"evolution", "iphone", "mac_address_book", // string escape issue 
 				"outlook" // newline conversion on linux
 		);
 	}
 
 	@Test
-	public void convert_to_jcard() throws Throwable {
-		convertAllFromVCard(VCardVersion.V4_0);
-	}
-
-	@Test
 	public void convert_from_jcard() throws Throwable {
-		convertAllToVCard(VCardVersion.V4_0);
+		convertAllToVCard(VCardVersion.V4_0, true, true);
 	}
 
 	@Override

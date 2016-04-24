@@ -1,0 +1,16 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+FN:Simon Perreault
+N:Perreault;Simon;;;ing. jr,M.Sc.
+BDAY:
+ORG;TYPE=work:Viagenie
+ADR;TYPE=work:;Suite D2-630;2875 Laurier;Quebec;QC;G1V 2M2;Canada
+TEL;TYPE=work,voice,pref:+1-418-656-9254 x102
+TEL;TYPE=work,cell,voice,video,text:+1-418-262-6501
+EMAIL;TYPE=work:simon.perreault@viagenie.ca
+GEO;TYPE=work:46.772673;-71.282945
+KEY;VALUE=uri:http://www.viagenie.ca/simon.perreault/simon.asc
+TZ:-05:00
+URL;TYPE=home:http://nomis80.org
+END:VCARD

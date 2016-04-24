@@ -1,0 +1,25 @@
+[
+  "vcard",
+  [
+    [ "version", { }, "text", "4.0" ],
+    [ "prodid", { }, "text", "ez-vcard 0.9.10-SNAPSHOT" ],
+    [ "n", { }, "text", [ "Doe", "John", "", "Mr.", "III" ] ],
+    [ "fn", { }, "text", "John Doe III" ],
+    [ "nickname", { }, "text", "Joey" ],
+    [ "org", { }, "text", [ "Company, The", "TheDepartment" ] ],
+    [ "title", { }, "text", "The Job Title" ],
+    [ "note", { }, "text", "This is the note field!!\r\nSecond line\r\n\r\nThird line is empty\r\n" ],
+    [ "tel", { "type" : [ "WORK", "VOICE" ] }, "text", "BusinessPhone" ],
+    [ "tel", { "type" : [ "HOME", "VOICE" ] }, "text", "HomePhone" ],
+    [ "tel", { "type" : [ "CELL", "VOICE" ] }, "text", "MobilePhone" ],
+    [ "tel", { "type" : [ "WORK", "FAX" ] }, "text", "BusinessFaxPhone" ],
+    [ "adr", { "type" : "WORK", "label" : "TheOffice\r\n123 Main St\r\nAustin, TX 12345\r\nUnited States of America" }, "text", [ "", "TheOffice", "123 Main St", "Austin", "TX", "12345", "United States of America" ] ],
+    [ "url", { "type" : "WORK" }, "uri", "http://web-page-address.com" ],
+    [ "role", { }, "text", "TheProfession" ],
+    [ "bday", { }, "date", "1980-03-21" ],
+    [ "key", { "type" : "X509" }, "uri", "data:application/x509;base64,MIIDITCCAoqgAwIBAgIQT52W2WawmStUwpV8tBV9TTANBgkqhkiG9w0BAQUFADBMMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEWMBQGA1UEAxMNVGhhd3RlIFNHQyBDQTAeFw0xMTEwMjYwMDAwMDBaFw0xMzA5MzAyMzU5NTlaMGgxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHFA1Nb3VudGFpbiBWaWV3MRMwEQYDVQQKFApHb29nbGUgSW5jMRcwFQYDVQQDFA53d3cuZ29vZ2xlLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA3rcmQ6aZhc04pxUJuc8PycNVjIjujI0oJyRLKl6g2Bb6YRhLz21ggNM1QDJywI8S2OVOj7my9tkVXlqGMaO6hqpryNlxjMzNJxMenUJdOPanrO/6YvMYgdQkRn8Bd3zGKokUmbuYOR2oGfs5AER9G5RqeC1prcB6LPrQ2iASmNMCAwEAAaOB5zCB5DAMBgNVHRMBAf8EAjAAMDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwudGhhd3RlLmNvbS9UaGF3dGVTR0NDQS5jcmwwKAYDVR0lBCEwHwYIKwYBBQUHAwEGCCsGAQUFBwMCBglghkgBhvhCBAEwcgYIKwYBBQUHAQEEZjBkMCIGCCsGAQUFBzABhhZodHRwOi8vb2NzcC50aGF3dGUuY29tMD4GCCsGAQUFBzAChjJodHRwOi8vd3d3LnRoYXd0ZS5jb20vcmVwb3NpdG9yeS9UaGF3dGVfU0dDX0NBLmNydDANBgkqhkiG9w0BAQUFAAOBgQAhrNWuyjSJWsKrUtKyNGadeqvu5nzVfsJcKLt0AMkQH0IT/GmKHiSgAgDpulvKGQSy068Bsn5fFNum21K5mvMSf3yinDtvmX3qUA12IxL/92ZzKbeVCq3Yi7LeIOkKcGQRCMha8X2e7GmlpdWC1ycenlbN0nbVeSv3JUMcafC4+Q==" ],
+    [ "email", { "type" : "INTERNET", "pref" : "1" }, "text", "jdoe@hotmail.com" ],
+    [ "fburl", { }, "uri", "????????????????s????????????\f" ],
+    [ "rev", { }, "timestamp", "2012-10-12T21:05:25Z" ]
+  ]
+]

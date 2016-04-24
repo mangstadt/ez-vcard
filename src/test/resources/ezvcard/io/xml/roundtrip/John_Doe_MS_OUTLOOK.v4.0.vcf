@@ -1,0 +1,71 @@
+BEGIN:VCARD
+VERSION:4.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+N;LANGUAGE=en-us:Doe;John;Richter,James;Mr.;Sr.
+FN:Mr. John Richter James Doe Sr.
+NICKNAME:Johny
+ORG:IBM;Accounting
+TITLE:Money Counter
+NOTE:THIS SOFTWARE IS PROVIDED BY GEORGE EL-HADDAD ''AS IS'' AND ANY EXPRES
+ S OR IMPLIED WARRANTIES\, INCLUDING\, BUT NOT LIMITED TO\, THE IMPLIED WAR
+ RANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLA
+ IMED. IN NO EVENT SHALL GEORGE EL-HADDAD OR CONTRIBUTORS BE LIABLE FOR ANY 
+ DIRECT\, INDIRECT\, INCIDENTAL\, SPECIAL\, EXEMPLARY\, OR CONSEQUENTIAL DA
+ MAGES (INCLUDING\, BUT NOT LIMITED TO\, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ SERVICES\; LOSS OF USE\, DATA\, OR PROFITS\; OR BUSINESS INTERRUPTION) HOW
+ EVER CAUSED AND ON ANY THEORY OF LIABILITY\, WHETHER IN CONTRACT\, STRICT 
+ LIABILITY\, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
+ OUT OF THE USE OF THIS SOFTWARE\, EVEN IF ADVISED OF THE POSSIBILITY OF SU
+ CH DAMAGE.
+TEL;TYPE=WORK,VOICE:(905) 555-1234
+TEL;TYPE=HOME,VOICE:(905) 666-1234
+ADR;TYPE=WORK;LABEL="Cresent moon drive\nAlbaney, New York  12345";PREF=1:;
+ ;Cresent moon drive;Albaney;New York;12345;United States of America
+ADR;TYPE=HOME;LABEL="Silicon Alley 5,\nNew York, New York  12345":;;Silicon 
+ Alley 5;New York;New York;12345;United States of America
+X-MS-OL-DEFAULT-POSTAL-ADDRESS:2
+X-MS-ANNIVERSARY:20110113
+X-MS-IMADDRESS:johny5@aol.com
+X-MS-OL-DESIGN;CHARSET=utf-8:<card xmlns="http://schemas.microsoft.com/offi
+ ce/outlook/12/electronicbusinesscards" ver="1.0" layout="left" bgcolor="ff
+ ffff"><img xmlns="" align="tleft" area="32" use="photo"/><fld xmlns="" pro
+ p="name" align="left" dir="ltr" style="b" color="000000" size="10"/><fld x
+ mlns="" prop="org" align="left" dir="ltr" color="000000" size="8"/><fld xm
+ lns="" prop="title" align="left" dir="ltr" color="000000" size="8"/><fld x
+ mlns="" prop="dept" align="left" dir="ltr" color="000000" size="8"/><fld x
+ mlns="" prop="telwork" align="left" dir="ltr" color="000000" size="8"><lab
+ el align="right" color="626262">Work</label></fld><fld xmlns="" prop="telh
+ ome" align="left" dir="ltr" color="000000" size="8"><label align="right" c
+ olor="626262">Home</label></fld><fld xmlns="" prop="email" align="left" di
+ r="ltr" color="000000" size="8"/><fld xmlns="" prop="addrwork" align="left
+ " dir="ltr" color="000000" size="8"/><fld xmlns="" prop="addrhome" align="
+ left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="webwork" alig
+ n="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="blank" siz
+ e="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" siz
+ e="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" siz
+ e="8"/><fld xmlns="" prop="blank" size="8"/></card>
+X-MS-MANAGER:Big Blue
+X-MS-ASSISTANT:Jenny
+URL;TYPE=WORK:http://www.ibm.com
+ROLE:Counting Money
+BDAY:19800322
+EMAIL;TYPE=INTERNET;PREF=1:john.doe@ibm.cm
+PHOTO;TYPE=JPEG:data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYE
+ BQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC
+ 0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgo
+ KCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAaACADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAA
+ AAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJx
+ FDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWm
+ NkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXG
+ x8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAA
+ ECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKR
+ obHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2
+ hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK
+ 0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDzS20gtj5a1R4feMqJYn
+ QlQwDAjII4IrubPQTx8ldNYacfs6213F59sM7R0eL1Kn+nT+dZyk1sQ2zyUaBkfc/SpB4ZOPuc
+ /Su61vSo5tTfSrZySEDKWQgyFgSowSBgEDdz7Z71S8ITNB4luPD2szQvdvM4t/KYsoGNwUNgZw
+ AecCpVWLfKNO56ba2sSqpIGD0Na1vDBxwKwYifU1dhJx1NJq5m1cw/Enw9Gt6ydRbXLmNljMcU
+ W0FYgSCcYI9KXwX4EXwz4hm1STUhdM8RiCtGM4JByWz7DpXQ72/vH86idm/vH86ShZ3uNXtY/9
+ k=
+REV:20120305T131933Z
+END:VCARD

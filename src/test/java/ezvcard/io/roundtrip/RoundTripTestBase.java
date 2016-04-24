@@ -3,6 +3,7 @@ package ezvcard.io.roundtrip;
 import static org.junit.Assert.*;
 
 import java.io.*;
+import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -98,16 +99,23 @@ public abstract class RoundTripTestBase {
 	 * @param excludes source files to exclude from this test
 	 * @throws IOException
 	 */
-	public void convertAllFromVCard(VCardVersion version) throws Exception {
-		for (File vcf : listFiles(version, VCF_EXTENSION)) {
-			String file = vcf.getName().toString();
-			StringWriter sw = new StringWriter();
+	public void convertAllFromVCard(VCardVersion version, boolean equals, boolean content, String... excludes) throws Exception {
+		for (File vcf : listFiles(version, VCF_EXTENSION, excludes)) {
+			String vcardFile = vcf.getName().toString();
+			String targetFile = vcardFile.replace(VCF_EXTENSION, getTargetExtension());
+			StringWriter vcardSW = new StringWriter();
 			try {
-				convert(getVCardReader(vcf), getTargetWriter(sw), version);
+				List<VCard> vcard = convert(getVCardReader(vcf), getTargetWriter(vcardSW), version);
+				List<VCard> card = convert(getTargetReader(new File(getSampleDir(), targetFile)), null, version);
+				if (equals) {
+					assertEquals(vcardFile, card, vcard);
+				}
 			} catch (Exception e) {
-				throw new Exception("Error converting " + file, e);
+				throw new Exception("Error converting " + vcardFile, e);
 			}
-			assertEquals(file, read(file.replace(VCF_EXTENSION, getTargetExtension())), sw.toString());
+			if (content) {
+				assertEquals(vcardFile, read(targetFile), vcardSW.toString());
+			}
 		}
 	}
 
@@ -117,16 +125,23 @@ public abstract class RoundTripTestBase {
 	 * {@link #getVCardWriter(StringWriter, VCardVersion)}, and asserts that the
 	 * content matches the file with the corresponding vcard extension.
 	 */
-	public void convertAllToVCard(VCardVersion version) throws Exception {
-		for (File target : listFiles(version, getTargetExtension())) {
-			String file = target.getName().toString();
-			StringWriter sw = new StringWriter();
+	public void convertAllToVCard(VCardVersion version, boolean equals, boolean content, String... excludes) throws Exception {
+		for (File target : listFiles(version, getTargetExtension(), excludes)) {
+			String targetFile = target.getName().toString();
+			String vcardFile = targetFile.replace(getTargetExtension(), VCF_EXTENSION);
+			StringWriter targetSW = new StringWriter();
 			try {
-				convert(getTargetReader(target), getVCardWriter(sw, version), version);
+				List<VCard> card = convert(getTargetReader(target), getVCardWriter(targetSW, version), version);
+				List<VCard> vcard = convert(getVCardReader(new File(getSampleDir(), vcardFile)), null, version);
+				if (equals) {
+					assertEquals(vcardFile, vcard, card);
+				}
 			} catch (Exception e) {
-				throw new Exception("Error converting " + file, e);
+				throw new Exception("Error converting " + targetFile, e);
 			}
-			assertEquals(file, read(file.replace(getTargetExtension(), VCF_EXTENSION)), sw.toString());
+			if (content) {
+				assertEquals(targetFile, read(vcardFile), targetSW.toString());
+			}
 		}
 	}
 
@@ -165,19 +180,26 @@ public abstract class RoundTripTestBase {
 		return dir.listFiles(new Filter(extension, excludes));
 	}
 
-	private static void convert(StreamReader reader, StreamWriter writer, VCardVersion version) throws IOException {
+	private static List<VCard> convert(StreamReader reader, StreamWriter writer, VCardVersion version) throws IOException {
 		try {
-			for (VCard vcard : reader.readAll()) {
+			List<VCard> result = reader.readAll();
+			for (VCard vcard : result) {
 				// Remove any property that is not supported by the version of VCard to be round-tripped to
 				for (VCardProperty prop : vcard.getProperties()) {
 					if (!prop.isSupportedBy(version)) {
 						vcard.removeProperty(prop);
 					}
 				}
-				writer.write(vcard);
+				vcard.setVersion(version);
+				if (writer != null) {
+					writer.write(vcard);
+				}
 			}
+			return result;
 		} finally {
-			writer.close();
+			if (writer != null) {
+				writer.close();
+			}
 			reader.close();
 		}
 	}

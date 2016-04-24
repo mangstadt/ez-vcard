@@ -14,14 +14,38 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 
 	public XCardRoundTripTest() throws Exception {
 		updateSamples(VCardVersion.V4_0,
-				"outlook-2003", // &#12; in fburl is not valid xml
+				"outlook-2003" // &#12; in fburl is not valid xml
+		);
+		updateSamples(VCardVersion.V3_0);
+	}
+
+	@Test
+	public void equals_compare_vcard_4_to_xcard() throws Exception {
+		convertAllFromVCard(VCardVersion.V4_0, true, false,
+				"black_berry", // encoding parameter for image?
+				"rfc2426" // {TYPE=[INTERNET,pref]} != {TYPE=[INTERNET],PREF=[1]} ?
+		);
+	}
+
+	@Test
+	public void content_compare_vcard_4_to_xcard() throws Exception {
+		convertAllFromVCard(VCardVersion.V4_0, false, true,
 				"outlook-2007", // newlines not preserved on linux
 				"android", // empty <type/> tag added to email
 				"ms_outlook", // empty <street/> tag added to home adr
 				"evolution", "mac_address_book", // string escape issue
 				"iphone", "lotus_notes" // groups are reordered
 		);
-		updateSamples(VCardVersion.V3_0,
+	}
+
+	@Test
+	public void compare_xcard_to_vcard_4() throws Exception {
+		convertAllToVCard(VCardVersion.V4_0, true, true);
+	}
+
+	@Test
+	public void compare_vcard_3_to_xcard() throws Exception {
+		convertAllFromVCard(VCardVersion.V3_0, false, true,
 				"android", // empty <type/> tag added to email
 				"ms_outlook", // empty <street/> tag added to home adr
 				"evolution", "mac_address_book", // string escape issue
@@ -33,23 +57,8 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 	}
 
 	@Test
-	public void convert_vcard_4_to_xcard() throws Exception {
-		convertAllFromVCard(VCardVersion.V4_0);
-	}
-
-	@Test
-	public void convert_vcard_4_from_xcard() throws Exception {
-		convertAllToVCard(VCardVersion.V4_0);
-	}
-
-	@Test
-	public void convert_vcard_3_to_xcard() throws Exception {
-		convertAllFromVCard(VCardVersion.V3_0);
-	}
-
-	@Test
-	public void convert_vcard_3_from_xcard() throws Exception {
-		convertAllToVCard(VCardVersion.V3_0);
+	public void content_compare_xcard_to_vcard_3() throws Exception {
+		convertAllToVCard(VCardVersion.V3_0, false, true);
 	}
 
 	@Override

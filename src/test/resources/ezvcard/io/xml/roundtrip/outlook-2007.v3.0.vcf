@@ -1,0 +1,103 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:ez-vcard 0.9.10-SNAPSHOT
+N;LANGUAGE=en-us:Angstadt;Michael;;Mr.;Jr.
+FN:Mr. Michael Angstadt Jr.
+NICKNAME:Mike
+ORG:TheCompany;TheDepartment
+TITLE:TheJobTitle
+NOTE;CHARSET=us-ascii:This is the NOTE field	\nI assume it encodes this tex
+ t inside a NOTE vCard type.\nBut I'm not sure because there's text formatt
+ ing going on here.\nIt does not preserve the formatting
+TEL;TYPE=WORK,VOICE:(111) 555-1111
+TEL;TYPE=HOME,VOICE:(111) 555-2222
+TEL;TYPE=CELL,VOICE:(111) 555-4444
+TEL;TYPE=WORK,FAX:(111) 555-3333
+X-MS-TEL;TYPE=VOICE,CALLBACK:(111) 555-4444
+X-MS-OL-DEFAULT-POSTAL-ADDRESS:2
+X-MS-ANNIVERSARY:20120801
+X-MS-IMADDRESS:im@aim.com
+X-MS-OL-DESIGN;CHARSET=utf-8:<card xmlns="http://schemas.microsoft.com/offi
+ ce/outlook/12/electronicbusinesscards" ver="1.0" layout="left" bgcolor="ff
+ ffff"><img xmlns="" align="tleft" area="32" use="photo"/><fld xmlns="" pro
+ p="name" align="left" dir="ltr" style="b" color="000000" size="10"/><fld x
+ mlns="" prop="org" align="left" dir="ltr" color="000000" size="8"/><fld xm
+ lns="" prop="title" align="left" dir="ltr" color="000000" size="8"/><fld x
+ mlns="" prop="dept" align="left" dir="ltr" color="000000" size="8"/><fld x
+ mlns="" prop="telwork" align="left" dir="ltr" color="000000" size="8"><lab
+ el align="right" color="626262">Work</label></fld><fld xmlns="" prop="telc
+ ell" align="left" dir="ltr" color="000000" size="8"><label align="right" c
+ olor="626262">Mobile</label></fld><fld xmlns="" prop="telhome" align="left
+ " dir="ltr" color="000000" size="8"><label align="right" color="626262">Ho
+ me</label></fld><fld xmlns="" prop="email" align="left" dir="ltr" color="0
+ 00000" size="8"/><fld xmlns="" prop="addrwork" align="left" dir="ltr" colo
+ r="000000" size="8"/><fld xmlns="" prop="webwork" align="left" dir="ltr" c
+ olor="000000" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" 
+ prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" 
+ prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" 
+ prop="blank" size="8"/></card>
+X-MS-MANAGER:TheManagerName
+X-MS-ASSISTANT:TheAssistantName
+X-MS-SPOUSE:TheSpouse
+ADR;TYPE=WORK,pref:;TheOffice;222 Broadway;New York;NY;99999;USA
+LABEL;TYPE=work:222 Broadway\nNew York\, NY 99999\nUSA
+URL;TYPE=HOME:http://mikeangstadt.name
+URL;TYPE=WORK:http://mikeangstadt.name
+ROLE:TheProfession
+BDAY:1922-03-10
+KEY;ENCODING=b;TYPE=x509:MIIB/jCCAWugAwIBAgIQDdkWkvA2cqtGkw2P4zAoZDAJBgUrDg
+ MCHQUAMBMxETAPBgNVBAMTCG1hbmdzdGFkMCAXDTExMDYxNzIwMTgwM1oYDzIxMTEwNTI0MjAx
+ ODAzWjATMREwDwYDVQQDEwhtYW5nc3RhZDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAmf
+ YuhkT693IXf/iSESbw9cmeM3p2AWDC8oGDiCDtenNIGdITa8e/kwx9JIFl7a02cMbHtG6BmbGB
+ INzzgepsY6lE+Pcxns4FVpgWr1hn3YVg2LKqgRkKLp+ddqL+LWCg3qvcQxnZJoooRLhpurr/T9
+ TaE83nAr6aqoStjYh+KtECAwEAAaNZMFcwFQYDVR0lBA4wDAYKKwYBBAGCNwoDBDAzBgNVHREE
+ LDAqoCgGCisGAQQBgjcUAgOgGgwYbWFuZ3N0YWRAcGVubm11dHVhbC5jb20AMAkGA1UdEwQCMA
+ AwCQYFKw4DAh0FAAOBgQA9/txKYVIj6/UoDRYAp23NoRjaeZ0cTqcpKtxlUi8z7TtczAROgTr4
+ Pi+VaKR0Y+RzgVxPN8wvNoVogCWLTpVxhoe8R5geoS4L1w1O1HYwu2KlG57SOR4R/Lv5bgi6CN
+ TlS1N4zIDBOSyypTmzxC+JPmyn/8vZleIz8CYnwmfBEg==
+EMAIL;TYPE=INTERNET,pref:mike.angstadt@gmail.com
+PHOTO;ENCODING=b;TYPE=jpeg:/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYH
+ BwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2w
+ BDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgo
+ KCgoKCgoKCgoKCj/wAARCABWAEgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAw
+ QFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0Kx
+ wRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3
+ R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW
+ 19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQ
+ oL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAV
+ YnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eH
+ l6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna
+ 4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD6pooqlrOpQaTplxe3TBYolLH3PYUAQe
+ INe0/QLM3Op3CxJztXqzH0Arx3xN8Zb5ndNEtBDHztlkj3tx04yB/OuM8Y6zqHiXU3ubhyImbC
+ J6JnGB6cE/lXJT2rbJHaZiioSrZPIBxk/oB7UhXOsvPir4ofJbU2jyeP3axgZHqM96NP+NXiaw
+ ZGmuIruI9FnjHzDnJyMfTr2rzq7WdI2wR5YVcg+5yBWTPIjxsI8K27lD0b5hhR/ntSBH1h4H+N
+ Wg6+Y7fUz/Zt43A8w/u3Ps3b8a9UVg6hlIKkZBHevzp80oeCyyLwc9f/ANXFfS37OnxFlv2Hh3
+ V53klC/wCjO5zjH8Oadyj6BooopiCvK/jXqjbbTTI2wp/eyDHX0r1SvAvHkp1/4hG0hkGwN5e7
+ HQL1xUydlcaTk7I4o2tzds0dnA0rnPygdeO3tk/yqC/8L6skC5s5zBgAsyc4A5465J56ete22N
+ jDp9msVpGqKPTq3uT3qpqjMbYk4/GuZ130R2wwcerPm/Ura4RvKu0MaZ8xw4OCewAI5rmNSbIC
+ P8owWbjJyc8V7l4kMLRSJLGHX35ryDxHbRRXDeQDtLbwg7npjNXTrc+jM6+F9lqndHOM2X8lyB
+ Kn3HyMZ5PPrWr4Y1ObR9atL62ZlmgcMoHqOucVjSKZJJA7DzAeGHdj1/KpreTcVckZJ2tx39a2
+ OdH6FeGdUTW9AsNSi4W5hWTHoSOlFcH+zrqDX3w3tY3JJtpGiGfTqP0NFNEs9G1CcWthcTkgeX
+ GzZPsK+TPtc+o+I7q7F41p5KtNNOoyRk19TeK4TP4a1OIAsWt3AAOM8V84/B23S+vNaaYCVflR
+ twzz1rGvOysdOGp80r9iz4E1u/vtbeFNTury0U4Pnw7cfjTfir4gudPnj06znKTufvDtXfSWVr
+ pQadUVMAscKB/KvINVjj17X5p5XyfM+U1yc2p6Sg+U4+aa/eDc/iKLzmBIidTyPr0rLjW4uInj
+ umBlzlHXoa9dvtGt722WN4oYpVTZkRDp6Vx17oUGlqQpJ54FXGomZTotbnnEhJlZnG2VXKsvp9
+ KjdWS6YEYV1zx6itTXjFb6tGUPMq4YD17Gqd0jEcFTIgDjaMgV1xd1c82ceWVj6q/ZWvDN4T1G
+ 2OB5VwGA9mUf4UVl/spQSeTrNwM+QyxIAePm+Y9PoRRVrYhnumvME0W/YjIED8fga+U/hh4ntt
+ A1W5jvTstbnqcdGHevrHVE36bdr6xMP0NfBmqyG3nO5mVzJtIC8nk1zYhNtHdg2knc+g/GPjLR
+ YdInkWdLhimUVDkn8K8CsvEbnW1uLaGZWaUHyivBGaz55jLIBCHlRDmRxk7eOO3FZ812sLh4pB
+ CeTgZLD0/kaxgu51ylbbY+lNUlgXT0nUAbkz9K8c8Ta8vny/NnbnAri7vxJqw06ANf3DIzHhnO
+ MVm3FwTqPlyOxjde/XPvVQptasipWTVkSKzXDXF1cN+9dsIPat6ztlXT4Ccl8nfk5OD0rmdPR5
+ NqLkoGJGfSvafhR8M9V8YtDcTh7fRww3zNxuA6hfU9q6I7nBVd0j3H9m3THsPh1HPIuDdzNKOP
+ 4R8o/lRXpmmWMGm6fb2Vmgjt4EEaKOwFFao5ywyhlKsMgjBFfFXxd8NT6J4vuYpo2gjkuDNGV6
+ MpJIwfSvs37V+7d9nCvsrjfix4Mt/GWhNHEY01G3+aGQ/+gn2NZ1YcyuuhvQqckrPZnx9pGt32
+ kia4sJ1jEpCyBD1xkc5Hb15qjr2s3FyIZbqKAzOx5ZRxjqff/wCtVjxHot5pNpc6dcwNBNHk8q
+ QTg8/596w9ahVoE2BR5JyyA56/5Nc0Y3Z6E5tIg1Zla4tosRgL8xUdvas2QA3UzZLbVwKluiGu
+ Y5UUsWHAHOK6Lw7oB8z7RfYAJ3bD3HvWq91HO/ekeofs8eAtK8RXWNajlaPy/ORAQNwVhwfY9/
+ pX15bQRW0EcFvGkUMahVRBgKB2FfNHwf1iDSPFtm07JFbSKYSTwFyOPwzivpW2ure6TfbTxTL6
+ xuGH6VdF3RhiI2kiaiiitjnKT27CZhuHkk7yO+aoi4Ky7VXJZWGWPeiikwMPxPp8F/Z2r3ltby
+ uj4yyA8Y6dK8q8WeBtLmilNva28A9FX8aKK5anxHbQfuHkV/oiaddOgKlQeMCkB5CrwDRRSZrH
+ c2LNWYRxocMxCgmu00nUbzQZ4nsbmRHgQkkH7x9xRRVUu5liHsjv9L+LksMSLq2niUjhpIG2k+
+ +Dx/Kiiit7s5Gj/9k=
+REV:20120801T184631Z
+END:VCARD
