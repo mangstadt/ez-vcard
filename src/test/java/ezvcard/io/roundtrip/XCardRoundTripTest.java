@@ -22,6 +22,7 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 	@Test
 	public void equals_compare_vcard_4_to_xcard() throws Exception {
 		convertAllFromVCard(VCardVersion.V4_0, true, false,
+				"outlook", // newlines not preserved on linux
 				"black_berry", // encoding parameter for image?
 				"rfc2426" // {TYPE=[INTERNET,pref]} != {TYPE=[INTERNET],PREF=[1]} ?
 		);
@@ -40,7 +41,9 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 
 	@Test
 	public void compare_xcard_to_vcard_4() throws Exception {
-		convertAllToVCard(VCardVersion.V4_0, true, true);
+		convertAllToVCard(VCardVersion.V4_0, true, true, 
+				"outlook" // newline conversion on linux
+		);
 	}
 
 	@Test
