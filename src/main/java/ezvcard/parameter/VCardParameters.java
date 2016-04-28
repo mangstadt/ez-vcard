@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -1089,7 +1090,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 */
 	public void setSortAs(String... sortStrings) {
 		removeAll(SORT_AS);
-		putAll(SORT_AS, sortStrings);
+		putAll(SORT_AS, Arrays.asList(sortStrings));
 	}
 
 	/**

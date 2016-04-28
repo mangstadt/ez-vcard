@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -138,15 +139,15 @@ public class VCardRawWriterTest {
 		VCardRawWriter writer = new VCardRawWriter(sw, version);
 
 		VCardParameters parameters = new VCardParameters();
-		parameters.putAll(VCardParameters.TYPE, "one");
+		parameters.put(VCardParameters.TYPE, "one");
 		writer.writeProperty(null, "PROP", parameters, "");
 
 		parameters = new VCardParameters();
-		parameters.putAll(VCardParameters.TYPE, "one", "two");
+		parameters.putAll(VCardParameters.TYPE, Arrays.asList("one", "two"));
 		writer.writeProperty(null, "PROP", parameters, "");
 
 		parameters = new VCardParameters();
-		parameters.putAll(VCardParameters.TYPE, "one", "two", "three");
+		parameters.putAll(VCardParameters.TYPE, Arrays.asList("one", "two", "three"));
 		writer.writeProperty(null, "PROP", parameters, "");
 
 		String actual = sw.toString();
