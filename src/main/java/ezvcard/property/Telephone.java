@@ -80,12 +80,6 @@ import ezvcard.util.TelUri;
 public class Telephone extends VCardProperty implements HasAltId {
 	private String text;
 	private TelUri uri;
-	private final List<TelephoneType> types = new TypeParameterEnumList<TelephoneType>() {
-		@Override
-		protected TelephoneType _asObject(String value) {
-			return TelephoneType.get(value);
-		}
-	};
 
 	/**
 	 * Creates a telephone property.
@@ -159,7 +153,12 @@ public class Telephone extends VCardProperty implements HasAltId {
 	 * @return the telephone types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<TelephoneType> getTypes() {
-		return types;
+		return parameters.new TypeParameterList<TelephoneType>() {
+			@Override
+			protected TelephoneType _asObject(String value) {
+				return TelephoneType.get(value);
+			}
+		};
 	}
 
 	@Override

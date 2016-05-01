@@ -3,6 +3,7 @@ package ezvcard.parameter;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -852,6 +853,10 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * to be merged together (called "synchronizing").
 	 * </p>
 	 * <p>
+	 * Changes to the returned list will update the {@link VCardParameters}
+	 * object, and vice versa.
+	 * </p>
+	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the PIDs
@@ -862,16 +867,22 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * p.19</a>
 	 */
 	public List<Pid> getPids() {
-		List<String> values = get(PID);
-		List<Pid> pids = new ArrayList<Pid>(values.size());
-		for (String value : values) {
-			try {
-				pids.add(Pid.valueOf(value));
-			} catch (NumberFormatException e) {
-				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, PID), e);
+		return new VCardParameterList<Pid>(PID) {
+			@Override
+			protected String _asString(Pid value) {
+				return value.toString();
 			}
-		}
-		return pids;
+
+			@Override
+			protected Pid _asObject(String value) {
+				return Pid.valueOf(value);
+			}
+
+			@Override
+			protected IllegalStateException _exception(String value, Exception thrown) {
+				return new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, PID), thrown);
+			}
+		};
 	}
 
 	/**
@@ -1051,6 +1062,10 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * secondary sort keyword (such as the person's first name), etc.
 	 * </p>
 	 * <p>
+	 * Changes to the returned list will update the {@link VCardParameters}
+	 * object, and vice versa.
+	 * </p>
+	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the sort strings
@@ -1099,6 +1114,10 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * </p>
 	 * <p>
 	 * The meaning of this parameter varies depending on the property.
+	 * </p>
+	 * <p>
+	 * Changes to the returned list will update the {@link VCardParameters}
+	 * object, and vice versa.
 	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
@@ -1568,5 +1587,139 @@ public class VCardParameters extends ListMultimap<String, String> {
 		}
 
 		return true;
+	}
+
+	/**
+	 * <p>
+	 * A list that converts the raw string values of a TYPE parameter to the
+	 * appropriate {@link VCardParameter} object that some parameters use.
+	 * </p>
+	 * <p>
+	 * This list is backed by the {@link VCardParameters} object. Any changes
+	 * made to the list will affect the {@link VCardParameters} object and vice
+	 * versa.
+	 * </p>
+	 * @param <T> the parameter class
+	 */
+	public abstract class TypeParameterList<T extends VCardParameter> extends EnumParameterList<T> {
+		public TypeParameterList() {
+			super(TYPE);
+		}
+	}
+
+	/**
+	 * <p>
+	 * A list that converts the raw string values of a parameter to the
+	 * appropriate {@link VCardParameter} object that some parameters use.
+	 * </p>
+	 * <p>
+	 * This list is backed by the {@link VCardParameters} object. Any changes
+	 * made to the list will affect the {@link VCardParameters} object and vice
+	 * versa.
+	 * </p>
+	 * @param <T> the parameter class
+	 */
+	public abstract class EnumParameterList<T extends VCardParameter> extends VCardParameterList<T> {
+		public EnumParameterList(String parameterName) {
+			super(parameterName);
+		}
+
+		@Override
+		protected String _asString(T value) {
+			return value.getValue();
+		}
+	}
+
+	/**
+	 * <p>
+	 * A list that converts the raw string values of a parameter to another kind
+	 * of value (for example, Integers).
+	 * </p>
+	 * <p>
+	 * This list is backed by the {@link VCardParameters} object. Any changes
+	 * made to the list will affect the {@link VCardParameters} object and vice
+	 * versa.
+	 * </p>
+	 * <p>
+	 * If a String value cannot be converted to the appropriate data type, an
+	 * {@link IllegalStateException} is thrown.
+	 * </p>
+	 */
+	public abstract class VCardParameterList<T> extends AbstractList<T> {
+		protected final String parameterName;
+		protected final List<String> parameterValues;
+
+		/**
+		 * @param parameterName the name of the parameter (case insensitive)
+		 */
+		public VCardParameterList(String parameterName) {
+			this.parameterName = parameterName;
+			parameterValues = VCardParameters.this.get(parameterName);
+		}
+
+		@Override
+		public void add(int index, T value) {
+			String valueStr = _asString(value);
+			parameterValues.add(index, valueStr);
+		}
+
+		@Override
+		public T remove(int index) {
+			String removed = parameterValues.remove(index);
+			return asObject(removed);
+		}
+
+		@Override
+		public T get(int index) {
+			String value = parameterValues.get(index);
+			return asObject(value);
+		}
+
+		@Override
+		public T set(int index, T value) {
+			String valueStr = _asString(value);
+			String replaced = parameterValues.set(index, valueStr);
+			return asObject(replaced);
+		}
+
+		@Override
+		public int size() {
+			return parameterValues.size();
+		}
+
+		private T asObject(String value) {
+			try {
+				return _asObject(value);
+			} catch (Exception e) {
+				throw _exception(value, e);
+			}
+		}
+
+		/**
+		 * Converts the object to a String value for storing in the
+		 * {@link VCardParameters} object.
+		 * @param value the value
+		 * @return the string value
+		 */
+		protected abstract String _asString(T value);
+
+		/**
+		 * Converts a String value to its object form.
+		 * @param value the string value
+		 * @return the object
+		 * @throws Exception if there is a problem parsing the string
+		 */
+		protected abstract T _asObject(String value) throws Exception;
+
+		/**
+		 * Creates the exception that is thrown when the raw string value cannot
+		 * be parsed into its object form.
+		 * @param value the raw string value
+		 * @param thrown the thrown exception
+		 * @return the exception to throw
+		 */
+		protected IllegalStateException _exception(String value, Exception thrown) {
+			return new IllegalStateException(Messages.INSTANCE.getExceptionMessage(26, parameterName), thrown);
+		}
 	}
 }

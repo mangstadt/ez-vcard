@@ -3,7 +3,6 @@ package ezvcard.property;
 import java.util.List;
 
 import ezvcard.parameter.Pid;
-import ezvcard.parameter.VCardParameters;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -66,8 +65,6 @@ import ezvcard.parameter.VCardParameters;
  * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
  */
 public class Organization extends TextListProperty implements HasAltId {
-	private final List<String> sortAs = new VCardStringParameterList(VCardParameters.SORT_AS);
-
 	public Organization() {
 		//empty
 	}
@@ -152,7 +149,7 @@ public class Organization extends TextListProperty implements HasAltId {
 	 * @return the sort string(s) (this list is mutable)
 	 */
 	public List<String> getSortAs() {
-		return sortAs;
+		return parameters.getSortAs();
 	}
 
 	/**
@@ -168,10 +165,7 @@ public class Organization extends TextListProperty implements HasAltId {
 	 * @param sortString the sort string or null to remove
 	 */
 	public void setSortAs(String sortString) {
-		sortAs.clear();
-		if (sortAs != null) {
-			sortAs.add(sortString);
-		}
+		parameters.setSortAs(sortString);
 	}
 
 	@Override

@@ -84,12 +84,6 @@ import ezvcard.util.TelUri;
 public class Related extends VCardProperty implements HasAltId {
 	private String uri;
 	private String text;
-	private final List<RelatedType> types = new TypeParameterEnumList<RelatedType>() {
-		@Override
-		protected RelatedType _asObject(String value) {
-			return RelatedType.get(value);
-		}
-	};
 
 	/**
 	 * Creates a related property
@@ -185,7 +179,12 @@ public class Related extends VCardProperty implements HasAltId {
 	 * mutable)
 	 */
 	public List<RelatedType> getTypes() {
-		return types;
+		return parameters.new TypeParameterList<RelatedType>() {
+			@Override
+			protected RelatedType _asObject(String value) {
+				return RelatedType.get(value);
+			}
+		};
 	}
 
 	@Override

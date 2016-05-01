@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -111,22 +112,29 @@ import ezvcard.util.StringUtils;
  */
 public class VCard implements Iterable<VCardProperty> {
 	private VCardVersion version;
+	private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();;
 
-	private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties;
-
+	/**
+	 * Creates a new vCard set to version 3.0.
+	 */
 	public VCard() {
-		version = VCardVersion.V3_0;
-		properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
+		this(VCardVersion.V3_0);
 	}
 
 	/**
-	 * Copy constructor. Performs a deep copy of all the given vCard's
-	 * properties.
-	 * @param original the vCard to make a copy of
+	 * Creates a new vCard.
+	 * @param version the version to set it to
+	 */
+	public VCard(VCardVersion version) {
+		this.version = version;
+	}
+
+	/**
+	 * Creates a deep copy of the given vCard.
+	 * @param original the vCard to copy
 	 */
 	public VCard(VCard original) {
 		version = original.version;
-		properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>(original.properties.size());
 		for (VCardProperty property : original.getProperties()) {
 			addProperty(property.copy());
 		}
@@ -526,7 +534,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code MEMBER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the members (this list is immutable)
+	 * @return the members (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-41">RFC 6350
 	 * p.41</a>
 	 */
@@ -675,7 +684,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SOURCE} <b>Supported versions:</b>
 	 * {@code 3.0, 4.0}
 	 * </p>
-	 * @return the sources (this list is immutable)
+	 * @return the sources (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-24">RFC 6350
 	 * p.24</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
@@ -811,7 +821,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @return the formatted name properties (this list is immutable)
+	 * @return the formatted name properties (any changes made this list will
+	 * affect the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
 	 * p.28</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
@@ -961,7 +972,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @return the structured name properties (this list is immutable)
+	 * @return the structured name properties (any changes made this list will
+	 * affect the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
 	 * p.29</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
@@ -1040,7 +1052,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the nickname properties (this list is immutable)
+	 * @return the nickname properties (any changes made this list will affect
+	 * the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
 	 * p.29</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
@@ -1253,7 +1266,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TITLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the titles (this list is immutable)
+	 * @return the titles (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-17">RFC 2426
@@ -1338,7 +1352,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ROLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the roles (this list is immutable)
+	 * @return the roles (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
@@ -1424,7 +1439,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code PHOTO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the photos (this list is immutable)
+	 * @return the photos (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
 	 * p.30</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-10">RFC 2426
@@ -1487,7 +1503,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LOGO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the logos (this list is immutable)
+	 * @return the logos (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
 	 * p.40</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
@@ -1551,7 +1568,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SOUND}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the sounds (this list is immutable)
+	 * @return the sounds (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
 	 * p.45</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-23">RFC 2426
@@ -1618,7 +1636,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code BIRTHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the birthplace properties (this list is immutable)
+	 * @return the birthplace properties (any changes made this list will affect
+	 * the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-2">RFC 6474 p.2</a>
 	 */
 	public List<Birthplace> getBirthplaces() {
@@ -1687,7 +1706,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code DEATHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the deathplace properties (this list is immutable)
+	 * @return the deathplace properties (any changes made this list will affect
+	 * the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
 	 */
 	public List<Deathplace> getDeathplaces() {
@@ -1756,7 +1776,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code DEATHDATE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the death date properties (this list is immutable)
+	 * @return the death date properties (any changes made this list will affect
+	 * the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
 	 */
 	public List<Deathdate> getDeathdates() {
@@ -1828,7 +1849,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
-	 * @return the birthday properties (this list is immutable)
+	 * @return the birthday properties (any changes made this list will affect
+	 * the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
 	 * p.30</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
@@ -1915,7 +1937,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ANNIVERSARY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the anniversary properties (this list is immutable)
+	 * @return the anniversary properties (any changes made this list will
+	 * affect the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
 	 * p.31</a>
 	 */
@@ -2102,7 +2125,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ADR}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the mailing addresses (this list is immutable)
+	 * @return the mailing addresses (any changes made this list will affect the
+	 * parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
 	 * p.32</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
@@ -2167,7 +2191,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LABEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @return the orphaned labels (this list is immutable)
+	 * @return the orphaned labels (any changes made this list will affect the
+	 * parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-13">RFC 2426
 	 * p.13</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.12</a>
@@ -2204,7 +2229,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code EMAIL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the email addresses (this list is immutable)
+	 * @return the email addresses (any changes made this list will affect the
+	 * parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
 	 * p.36</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
@@ -2291,7 +2317,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the telephone numbers (this list is immutable)
+	 * @return the telephone numbers (any changes made this list will affect the
+	 * parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-34">RFC 6350
 	 * p.34</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-14">RFC 2426
@@ -2435,7 +2462,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code URL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the URLs (this list is immutable)
+	 * @return the URLs (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
 	 * p.47</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-25">RFC 2426
@@ -2530,7 +2558,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @return the timezones (this list is immutable)
+	 * @return the timezones (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
 	 * p.22</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2663,7 +2692,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @return the geo properties (this list is immutable)
+	 * @return the geo properties (any changes made this list will affect the
+	 * parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
 	 * p.38</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2821,7 +2851,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @return the organization properties (this list is immutable)
+	 * @return the organization properties (any changes made this list will
+	 * affect the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
 	 * p.40</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -2984,7 +3015,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @return the categories properties (this list is immutable)
+	 * @return the categories properties (any changes made this list will affect
+	 * the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
 	 * p.43</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -3172,7 +3204,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code NOTE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the notes (this list is immutable)
+	 * @return the notes (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
 	 * p.44</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
@@ -3295,7 +3328,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code KEY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the keys (this list is immutable)
+	 * @return the keys (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-48">RFC 6350
 	 * p.48</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
@@ -3358,7 +3392,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code IMPP}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the instant messaging handles (this list is immutable)
+	 * @return the instant messaging handles (any changes made this list will
+	 * affect the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
 	 * p.36</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc4770">RFC 4770</a>
@@ -3415,7 +3450,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code RELATED}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the person's relations (this list is immutable)
+	 * @return the person's relations (any changes made this list will affect
+	 * the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-42">RFC 6350
 	 * p.42</a>
 	 */
@@ -3468,7 +3504,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LANG}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the languages (this list is immutable)
+	 * @return the languages (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-37">RFC 6350
 	 * p.37</a>
 	 */
@@ -3540,7 +3577,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CALADRURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the calendar request URIs (this list is immutable)
+	 * @return the calendar request URIs (any changes made this list will affect
+	 * the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
 	 * p.50</a>
 	 */
@@ -3595,7 +3633,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CALURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the calendar URIs (this list is immutable)
+	 * @return the calendar URIs (any changes made this list will affect the
+	 * parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
 	 * p.50</a>
 	 */
@@ -3649,7 +3688,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code FBURL}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the free-busy URLs (this list is immutable)
+	 * @return the free-busy URLs (any changes made this list will affect the
+	 * parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-49">RFC 6350
 	 * p.49</a>
 	 */
@@ -3704,7 +3744,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CLIENTPIDMAP}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the client PID maps (this list is immutable)
+	 * @return the client PID maps (any changes made this list will affect the
+	 * parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
 	 * p.47</a>
 	 */
@@ -3743,7 +3784,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code XML}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the XML data (this list is immutable)
+	 * @return the XML data (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-27">RFC 6350
 	 * p.27</a>
 	 */
@@ -3806,7 +3848,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code EXPERTISE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the professional subject area (this list is immutable)
+	 * @return the professional subject area (any changes made this list will
+	 * affect the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-3">RFC 6715 p.3</a>
 	 */
 	public List<Expertise> getExpertise() {
@@ -3875,7 +3918,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code HOBBY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the hobbies (this list is immutable)
+	 * @return the hobbies (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-4">RFC 6715 p.4</a>
 	 */
 	public List<Hobby> getHobbies() {
@@ -3943,7 +3987,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code INTEREST}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the interests (this list is immutable)
+	 * @return the interests (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-5">RFC 6715 p.5</a>
 	 */
 	public List<Interest> getInterests() {
@@ -4011,7 +4056,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ORG-DIRECTORY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the organization directories (this list is immutable)
+	 * @return the organization directories (any changes made this list will
+	 * affect the parent {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-6">RFC 6715 p.6</a>
 	 */
 	public List<OrgDirectory> getOrgDirectories() {
@@ -4093,11 +4139,11 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Gets all properties of a given class.
 	 * @param clazz the property class
-	 * @return the properties (this list is immutable)
+	 * @return the properties (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 */
 	public <T extends VCardProperty> List<T> getProperties(Class<T> clazz) {
-		List<VCardProperty> properties = this.properties.get(clazz);
-		return castList(properties, clazz);
+		return new VCardPropertyList<T>(clazz);
 	}
 
 	/**
@@ -4105,7 +4151,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * representations of each property together (see:
 	 * {@link VCardParameters#getAltId description of ALTID})
 	 * @param clazz the property class
-	 * @return the properties
+	 * @return the properties (this list is immutable)
 	 */
 	public <T extends VCardProperty & HasAltId> List<List<T>> getPropertiesAlt(Class<T> clazz) {
 		List<T> propertiesWithoutAltIds = new ArrayList<T>();
@@ -4122,22 +4168,22 @@ public class VCard implements Iterable<VCardProperty> {
 		int size = propertiesWithoutAltIds.size() + propertiesWithAltIds.size();
 		List<List<T>> listToReturn = new ArrayList<List<T>>(size);
 		for (Map.Entry<String, List<T>> entry : propertiesWithAltIds) {
-			listToReturn.add(entry.getValue());
+			listToReturn.add(Collections.unmodifiableList(entry.getValue()));
 		}
 
 		//put properties without ALTIDs at the end
 		for (T property : propertiesWithoutAltIds) {
 			List<T> list = new ArrayList<T>(1);
 			list.add(property);
-			listToReturn.add(list);
+			listToReturn.add(Collections.unmodifiableList(list));
 		}
 
-		return listToReturn;
+		return Collections.unmodifiableList(listToReturn);
 	}
 
 	/**
 	 * Gets all the properties in this vCard.
-	 * @return the properties
+	 * @return the properties (this list is immutable)
 	 */
 	public Collection<VCardProperty> getProperties() {
 		return properties.values();
@@ -4210,7 +4256,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Gets all extended properties with a given name.
 	 * @param name the property name (e.g. "X-ALT-DESC")
-	 * @return the properties
+	 * @return the properties (this list is immutable)
 	 */
 	public List<RawProperty> getExtendedProperties(String name) {
 		List<RawProperty> properties = new ArrayList<RawProperty>();
@@ -4221,12 +4267,13 @@ public class VCard implements Iterable<VCardProperty> {
 			}
 		}
 
-		return properties;
+		return Collections.unmodifiableList(properties);
 	}
 
 	/**
 	 * Gets all extended properties.
-	 * @return the properties
+	 * @return the properties (any changes made this list will affect the parent
+	 * {@link VCard} object and vice versa)
 	 */
 	public List<RawProperty> getExtendedProperties() {
 		return getProperties(RawProperty.class);
@@ -4285,14 +4332,19 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Removes all extended properties that have the given name.
 	 * @param name the component name (e.g. "X-ALT-DESC")
-	 * @return the properties that were removed
+	 * @return the properties that were removed (this list is immutable)
 	 */
 	public List<RawProperty> removeExtendedProperty(String name) {
-		List<RawProperty> toRemove = getExtendedProperties(name);
-		for (RawProperty extendedProperty : toRemove) {
-			properties.remove(extendedProperty.getClass(), extendedProperty);
+		List<RawProperty> all = getExtendedProperties();
+		List<RawProperty> toRemove = new ArrayList<RawProperty>();
+		for (RawProperty property : all) {
+			if (property.getPropertyName().equalsIgnoreCase(name)) {
+				toRemove.add(property);
+			}
 		}
-		return toRemove;
+
+		all.removeAll(toRemove);
+		return Collections.unmodifiableList(toRemove);
 	}
 
 	/**
@@ -4478,5 +4530,60 @@ public class VCard implements Iterable<VCardProperty> {
 			altId++;
 		}
 		return Integer.toString(altId);
+	}
+
+	/**
+	 * <p>
+	 * A list that automatically casts {@link VCardProperty} instances stored in
+	 * this {@link VCard} to a given property class.
+	 * </p>
+	 * <p>
+	 * This list is backed by the {@link VCard} object. Any changes made to the
+	 * list will affect the {@link VCard} object and vice versa.
+	 * </p>
+	 */
+	private class VCardPropertyList<T extends VCardProperty> extends AbstractList<T> {
+		protected final Class<T> propertyClass;
+		protected final List<VCardProperty> properties;
+
+		/**
+		 * @param propertyClass the property class
+		 */
+		public VCardPropertyList(Class<T> propertyClass) {
+			this.propertyClass = propertyClass;
+			properties = VCard.this.properties.get(propertyClass);
+		}
+
+		@Override
+		public void add(int index, T value) {
+			properties.add(index, value);
+		}
+
+		@Override
+		public T remove(int index) {
+			VCardProperty removed = properties.remove(index);
+			return cast(removed);
+		}
+
+		@Override
+		public T get(int index) {
+			VCardProperty property = properties.get(index);
+			return cast(property);
+		}
+
+		@Override
+		public T set(int index, T value) {
+			VCardProperty replaced = properties.set(index, value);
+			return cast(replaced);
+		}
+
+		@Override
+		public int size() {
+			return properties.size();
+		}
+
+		private T cast(VCardProperty value) {
+			return propertyClass.cast(value);
+		}
 	}
 }
