@@ -57,7 +57,7 @@ public abstract class StreamReader implements Closeable {
 	 */
 	public List<VCard> readAll() throws IOException {
 		List<VCard> vcards = new ArrayList<VCard>();
-		VCard vcard = null;
+		VCard vcard;
 		while ((vcard = readNext()) != null) {
 			vcards.add(vcard);
 		}

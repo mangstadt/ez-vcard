@@ -1147,6 +1147,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 				}
 			}
 			break;
+		default:
+			break;
 		}
 	}
 

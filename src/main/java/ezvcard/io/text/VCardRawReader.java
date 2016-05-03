@@ -185,7 +185,7 @@ public class VCardRawReader implements Closeable {
 			}
 
 			if (isNewline(ch)) {
-				quotedPrintableLine = (inValue && prevChar == '=' && isQuotedPrintable(parameters));
+				quotedPrintableLine = inValue && prevChar == '=' && isQuotedPrintable(parameters);
 				if (quotedPrintableLine) {
 					/*
 					 * Remove the "=" character that some vCards put at the end

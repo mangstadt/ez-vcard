@@ -138,6 +138,10 @@ public final class Ezvcard {
 		}
 	}
 
+	private Ezvcard() {
+		//hide
+	}
+
 	/**
 	 * <p>
 	 * Parses plain text vCards.
@@ -598,7 +602,4 @@ public final class Ezvcard {
 		return new ChainingJsonWriter(vcards);
 	}
 
-	private Ezvcard() {
-		//hide
-	}
 }

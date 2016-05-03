@@ -57,6 +57,43 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	public static final String XMPP = "xmpp";
 	public static final String YAHOO = "ymsgr";
 
+	/**
+	 * List of recognized IM protocols that can be parsed from an HTML link
+	 * (hCard).
+	 */
+	private static final List<HtmlLinkFormat> htmlLinkFormats;
+	static {
+		List<HtmlLinkFormat> list = new ArrayList<HtmlLinkFormat>();
+
+		//http://en.wikipedia.org/wiki/AOL_Instant_Messenger#URI_scheme
+		list.add(new HtmlLinkFormat(AIM, "(goim|addbuddy)\\?.*?\\bscreenname=(.*?)(&|$)", 2, "goim?screenname=%s"));
+
+		//http://en.wikipedia.org/wiki/Yahoo!_Messenger#URI_scheme
+		list.add(new HtmlLinkFormat(YAHOO, "(sendim|addfriend|sendfile|call)\\?(.*)", 2, "sendim?%s"));
+
+		//http://developer.skype.com/skype-uri/skype-uri-ref-api
+		list.add(new HtmlLinkFormat(SKYPE, "(.*?)(\\?|$)", 1, "%s"));
+
+		//http://www.tech-recipes.com/rx/1157/msn-messenger-msnim-hyperlink-command-codes/
+		list.add(new HtmlLinkFormat(MSN, "(chat|add|voice|video)\\?contact=(.*?)(&|$)", 2, "chat?contact=%s"));
+
+		//http://www.tech-recipes.com/rx/1157/msn-messenger-msnim-hyperlink-command-codes/
+		list.add(new HtmlLinkFormat(XMPP, "(.*?)(\\?|$)", 1, "%s?message"));
+
+		//http://forums.miranda-im.org/showthread.php?26589-Add-support-to-quot-icq-message-uin-12345-quot-web-links
+		list.add(new HtmlLinkFormat(ICQ, "message\\?uin=(\\d+)", 1, "message?uin=%s"));
+
+		//SIP: http://en.wikipedia.org/wiki/Session_Initiation_Protocol
+		//leave as-is
+		list.add(new HtmlLinkFormat(SIP));
+
+		//IRC: http://stackoverflow.com/questions/11970897/how-do-i-open-a-query-window-using-the-irc-uri-scheme
+		//IRC handles are not globally unique, so leave as-is
+		list.add(new HtmlLinkFormat(IRC));
+
+		htmlLinkFormats = Collections.unmodifiableList(list);
+	}
+
 	public ImppScribe() {
 		super(Impp.class, "IMPP");
 	}
@@ -140,43 +177,6 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 		} catch (IllegalArgumentException e) {
 			throw new CannotParseException(15, value, e.getMessage());
 		}
-	}
-
-	/**
-	 * List of recognized IM protocols that can be parsed from an HTML link
-	 * (hCard).
-	 */
-	private static final List<HtmlLinkFormat> htmlLinkFormats;
-	static {
-		List<HtmlLinkFormat> list = new ArrayList<HtmlLinkFormat>();
-
-		//http://en.wikipedia.org/wiki/AOL_Instant_Messenger#URI_scheme
-		list.add(new HtmlLinkFormat(AIM, "(goim|addbuddy)\\?.*?\\bscreenname=(.*?)(&|$)", 2, "goim?screenname=%s"));
-
-		//http://en.wikipedia.org/wiki/Yahoo!_Messenger#URI_scheme
-		list.add(new HtmlLinkFormat(YAHOO, "(sendim|addfriend|sendfile|call)\\?(.*)", 2, "sendim?%s"));
-
-		//http://developer.skype.com/skype-uri/skype-uri-ref-api
-		list.add(new HtmlLinkFormat(SKYPE, "(.*?)(\\?|$)", 1, "%s"));
-
-		//http://www.tech-recipes.com/rx/1157/msn-messenger-msnim-hyperlink-command-codes/
-		list.add(new HtmlLinkFormat(MSN, "(chat|add|voice|video)\\?contact=(.*?)(&|$)", 2, "chat?contact=%s"));
-
-		//http://www.tech-recipes.com/rx/1157/msn-messenger-msnim-hyperlink-command-codes/
-		list.add(new HtmlLinkFormat(XMPP, "(.*?)(\\?|$)", 1, "%s?message"));
-
-		//http://forums.miranda-im.org/showthread.php?26589-Add-support-to-quot-icq-message-uin-12345-quot-web-links
-		list.add(new HtmlLinkFormat(ICQ, "message\\?uin=(\\d+)", 1, "message?uin=%s"));
-
-		//SIP: http://en.wikipedia.org/wiki/Session_Initiation_Protocol
-		//leave as-is
-		list.add(new HtmlLinkFormat(SIP));
-
-		//IRC: http://stackoverflow.com/questions/11970897/how-do-i-open-a-query-window-using-the-irc-uri-scheme
-		//IRC handles are not globally unique, so leave as-is
-		list.add(new HtmlLinkFormat(IRC));
-
-		htmlLinkFormats = Collections.unmodifiableList(list);
 	}
 
 	/**

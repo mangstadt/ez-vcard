@@ -335,7 +335,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 		 * Determine if the property value must be encoded in quoted printable
 		 * encoding. If so, then determine what charset to use for the encoding.
 		 */
-		boolean useQuotedPrintable = (parameters.getEncoding() == Encoding.QUOTED_PRINTABLE);
+		boolean useQuotedPrintable = parameters.getEncoding() == Encoding.QUOTED_PRINTABLE;
 		Charset quotedPrintableCharset = null;
 		if (useQuotedPrintable) {
 			String charsetParam = parameters.getCharset();
@@ -422,7 +422,7 @@ public class VCardRawWriter implements Closeable, Flushable {
 			return false;
 		}
 		char first = string.charAt(0);
-		return (first == ' ' || first == '\t');
+		return first == ' ' || first == '\t';
 	}
 
 	/**
