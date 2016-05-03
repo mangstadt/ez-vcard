@@ -46,7 +46,7 @@ public class JsonValue {
 		this.value = value;
 		array = null;
 		object = null;
-		isNull = (value == null);
+		isNull = value == null;
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class JsonValue {
 		this.array = array;
 		value = null;
 		object = null;
-		isNull = (array == null);
+		isNull = array == null;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class JsonValue {
 		this.object = object;
 		value = null;
 		array = null;
-		isNull = (object == null);
+		isNull = object == null;
 	}
 
 	/**

@@ -60,6 +60,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			return null;
 		case V4_0:
 			return VCardDataType.URI;
+		default:
+			break;
 		}
 		return null;
 	}
@@ -73,6 +75,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			case V3_0:
 			case V4_0:
 				return VCardDataType.URI;
+			default:
+				break;
 			}
 		}
 
@@ -83,6 +87,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 				return null;
 			case V4_0:
 				return VCardDataType.URI;
+			default:
+				break;
 			}
 		}
 
@@ -111,6 +117,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			case V4_0:
 				copy.setMediaType(contentType.getMediaType());
 				break;
+			default:
+				break;
 			}
 
 			return;
@@ -131,6 +139,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			case V4_0:
 				copy.setEncoding(null);
 				//don't null out TYPE, it could be set to "home", "work", etc
+				break;
+			default:
 				break;
 			}
 
@@ -183,7 +193,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			return _newInstance(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
 			//not a data URI
-			U mediaType = null;
+			U mediaType;
 			String type = element.attr("type");
 			if (type.length() > 0) {
 				mediaType = _mediaTypeFromMediaTypeParameter(type);
@@ -229,6 +239,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			return _newInstance(Base64.decodeBase64(value), contentType);
 		case V4_0:
 			return _newInstance(value, contentType);
+		default:
+			break;
 		}
 		return null;
 	}
@@ -258,7 +270,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 
 	protected abstract T _newInstance(String uri, U contentType);
 
-	protected abstract T _newInstance(byte data[], U contentType);
+	protected abstract T _newInstance(byte[] data, U contentType);
 
 	private U parseContentType(String value, VCardParameters parameters, VCardVersion version) {
 		switch (version) {
@@ -276,6 +288,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			if (mediaType != null) {
 				return _mediaTypeFromMediaTypeParameter(mediaType);
 			}
+			break;
+		default:
 			break;
 		}
 
@@ -315,6 +329,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 				//not a data URI
 			}
 			break;
+		default:
+			break;
 		}
 
 		return cannotUnmarshalValue(value, version, warnings, contentType);
@@ -330,7 +346,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			return url;
 		}
 
-		byte data[] = property.getData();
+		byte[] data = property.getData();
 		if (data != null) {
 			switch (version) {
 			case V2_1:
@@ -340,6 +356,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 				U contentType = property.getContentType();
 				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();
 				return new DataUri(mediaType, data).toString();
+			default:
+				break;
 			}
 		}
 

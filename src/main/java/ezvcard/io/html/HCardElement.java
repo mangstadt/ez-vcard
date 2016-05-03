@@ -159,7 +159,7 @@ public class HCardElement {
 	 */
 	public void append(String text) {
 		boolean first = true;
-		String lines[] = text.split("\\r\\n|\\n|\\r");
+		String[] lines = text.split("\\r\\n|\\n|\\r");
 		for (String line : lines) {
 			if (!first) {
 				//replace newlines with "<br>" tags

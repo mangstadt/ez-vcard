@@ -40,6 +40,8 @@ import ezvcard.property.ClientPidMap;
  * @author Michael Angstadt
  */
 public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
+	private static final String SOURCEID = "sourceid";
+
 	public ClientPidMapScribe() {
 		super(ClientPidMap.class, "CLIENTPIDMAP");
 	}
@@ -69,24 +71,24 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	@Override
 	protected void _writeXml(ClientPidMap property, XCardElement parent) {
 		Integer pid = property.getPid();
-		parent.append("sourceid", (pid == null) ? "" : pid.toString());
+		parent.append(SOURCEID, (pid == null) ? "" : pid.toString());
 
 		parent.append(VCardDataType.URI, property.getUri());
 	}
 
 	@Override
 	protected ClientPidMap _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
-		String sourceid = element.first("sourceid");
+		String sourceid = element.first(SOURCEID);
 		String uri = element.first(VCardDataType.URI);
 
 		if (uri == null && sourceid == null) {
-			throw missingXmlElements(VCardDataType.URI.getName().toLowerCase(), "sourceid");
+			throw missingXmlElements(VCardDataType.URI.getName().toLowerCase(), SOURCEID);
 		}
 		if (uri == null) {
 			throw missingXmlElements(VCardDataType.URI);
 		}
 		if (sourceid == null) {
-			throw missingXmlElements("sourceid");
+			throw missingXmlElements(SOURCEID);
 		}
 
 		return parse(sourceid, uri);
