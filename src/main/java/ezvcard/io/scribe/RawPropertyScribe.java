@@ -4,6 +4,9 @@ import java.util.List;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.html.HCardElement;
+import ezvcard.io.xml.XCardElement;
+import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.RawProperty;
 
@@ -36,6 +39,17 @@ import ezvcard.property.RawProperty;
  * Marshals {@link RawProperty} properties.
  * @author Michael Angstadt
  */
+/*
+ * Note concerning escaping and unescaping special characters:
+ * 
+ * Values are not escaped and unescaped for the following reason: If the
+ * extended property's value is a list or structured list, then the escaping
+ * must be preserved or else escaped special characters will be lost.
+ * 
+ * This is an inconvenience, considering the fact that most extended properties
+ * contain simple text values. But it is necessary in order to prevent data
+ * loss.
+ */
 public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	public RawPropertyScribe(String propertyName) {
 		super(RawProperty.class, propertyName);
@@ -62,5 +76,23 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 		RawProperty property = new RawProperty(propertyName, value);
 		property.setDataType(dataType);
 		return property;
+	}
+
+	@Override
+	protected RawProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+		XCardValue firstValue = element.firstValue();
+		VCardDataType dataType = firstValue.getDataType();
+		String value = firstValue.getValue();
+
+		RawProperty property = new RawProperty(propertyName, value);
+		property.setDataType(dataType);
+		return property;
+	}
+
+	@Override
+	protected RawProperty _parseHtml(HCardElement element, List<String> warnings) {
+		String value = element.value();
+
+		return new RawProperty(propertyName, value);
 	}
 }

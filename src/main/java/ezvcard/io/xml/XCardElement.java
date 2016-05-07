@@ -204,7 +204,78 @@ public class XCardElement {
 		return XmlUtils.toElementList(element.getChildNodes());
 	}
 
-	private String toLocalName(VCardDataType dataType) {
+	/**
+	 * Finds the first child element that has the xCard namespace and returns
+	 * its data type and value. If no such element is found, the parent
+	 * {@link XCardElement}'s text content, along with a null data type, is
+	 * returned.
+	 * @param element the parent element
+	 * @return the value and data type
+	 */
+	public XCardValue firstValue() {
+		String elementNamespace = version.getXmlNamespace();
+		for (Element child : children()) {
+			String childNamespace = child.getNamespaceURI();
+			if (elementNamespace.equals(childNamespace)) {
+				VCardDataType dataType = toDataType(child.getLocalName());
+				String value = child.getTextContent();
+				return new XCardValue(dataType, value);
+			}
+		}
+
+		return new XCardValue(null, element.getTextContent());
+	}
+
+	/**
+	 * Gets the appropriate XML local name of a {@link VCardDataType} object.
+	 * @param dataType the data type
+	 * @return the local name
+	 */
+	private static String toLocalName(VCardDataType dataType) {
 		return (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
+	}
+
+	/**
+	 * Converts an XML local name to the appropriate {@link VCardDataType}
+	 * object.
+	 * @param localName the local name (e.g. "text")
+	 * @return the data type or null for "unknown"
+	 */
+	private static VCardDataType toDataType(String localName) {
+		return "unknown".equals(localName) ? null : VCardDataType.get(localName);
+	}
+
+	/**
+	 * Represents the data type and value of a child element under an
+	 * {@link XCardElement}.
+	 */
+	public static class XCardValue {
+		private final VCardDataType dataType;
+		private final String value;
+
+		/**
+		 * @param dataType the data type or null if "unknown"
+		 * @param value the value
+		 */
+		public XCardValue(VCardDataType dataType, String value) {
+			this.dataType = dataType;
+			this.value = value;
+		}
+
+		/**
+		 * Gets the data type
+		 * @return the data type or null if "unknown"
+		 */
+		public VCardDataType getDataType() {
+			return dataType;
+		}
+
+		/**
+		 * Get the value.
+		 * @return the value
+		 */
+		public String getValue() {
+			return value;
+		}
 	}
 }

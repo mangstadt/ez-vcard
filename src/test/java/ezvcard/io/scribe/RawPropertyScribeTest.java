@@ -41,11 +41,13 @@ public class RawPropertyScribeTest {
 	private final Sensei<RawProperty> sensei = new Sensei<RawProperty>(scribe);
 
 	private final RawProperty withValue = new RawProperty("RAW", "value");
+	private final RawProperty withEscapedChar = new RawProperty("RAW", "one\\,two");
 	private final RawProperty empty = new RawProperty("RAW", null);
 
 	@Test
 	public void writeText() {
 		sensei.assertWriteText(withValue).run("value");
+		sensei.assertWriteText(withEscapedChar).run("one\\,two");
 		sensei.assertWriteText(empty).run("");
 	}
 
@@ -53,8 +55,20 @@ public class RawPropertyScribeTest {
 	public void parseText() {
 		sensei.assertParseText("value").run(has("RAW", "value", null));
 		sensei.assertParseText("value").dataType(VCardDataType.TEXT).run(has("RAW", "value", VCardDataType.TEXT));
+		sensei.assertParseText("one\\,two").run(has("RAW", "one\\,two", null));
+		sensei.assertParseText("one\\,two").dataType(VCardDataType.TEXT).run(has("RAW", "one\\,two", VCardDataType.TEXT));
 		sensei.assertParseText("").run(has("RAW", "", null));
 		sensei.assertParseText("").dataType(VCardDataType.TEXT).run(has("RAW", "", VCardDataType.TEXT));
+	}
+
+	@Test
+	public void parseXml() {
+		sensei.assertParseXml("<text>one\\,two</text>").run(has("RAW", "one\\,two", VCardDataType.TEXT));
+	}
+
+	@Test
+	public void parseHtml() {
+		sensei.assertParseHtml("<div>one\\,two</div>").run(has("RAW", "one\\,two", null));
 	}
 
 	private Check<RawProperty> has(final String name, final String value, final VCardDataType dataType) {
