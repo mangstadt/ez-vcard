@@ -2,9 +2,12 @@ package ezvcard.io.scribe;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import ezvcard.VCardDataType;
+import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.RawProperty;
 
@@ -64,6 +67,18 @@ public class RawPropertyScribeTest {
 	@Test
 	public void parseXml() {
 		sensei.assertParseXml("<text>one\\,two</text>").run(has("RAW", "one\\,two", VCardDataType.TEXT));
+	}
+
+	@Test
+	public void parseJson() {
+		JCardValue value = JCardValue.single("one\\,two");
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).run(has("RAW", "one\\,two", VCardDataType.TEXT));
+
+		value = JCardValue.multi("one", "two,three");
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).run(has("RAW", "one,two\\,three", VCardDataType.TEXT));
+
+		value = JCardValue.structured(Arrays.asList("one", "two"), Arrays.asList("three,four"));
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).run(has("RAW", "one,two;three\\,four", VCardDataType.TEXT));
 	}
 
 	@Test

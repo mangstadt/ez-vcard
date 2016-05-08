@@ -5,6 +5,8 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
+import ezvcard.io.json.JCardValue;
+import ezvcard.io.json.JsonValue;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.parameter.VCardParameters;
@@ -90,9 +92,41 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	}
 
 	@Override
+	protected RawProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+		String valueStr = jcardValueToString(value);
+
+		RawProperty property = new RawProperty(propertyName, valueStr);
+		property.setDataType(dataType);
+		return property;
+	}
+
+	@Override
 	protected RawProperty _parseHtml(HCardElement element, List<String> warnings) {
 		String value = element.value();
 
 		return new RawProperty(propertyName, value);
+	}
+
+	private static String jcardValueToString(JCardValue value) {
+		/*
+		 * VCardPropertyScribe.jcardValueToString() cannot be used because it
+		 * escapes single values.
+		 */
+		List<JsonValue> values = value.getValues();
+		if (values.size() > 1) {
+			List<String> multi = value.asMulti();
+			if (!multi.isEmpty()) {
+				return list(multi);
+			}
+		}
+
+		if (!values.isEmpty() && values.get(0).getArray() != null) {
+			List<List<String>> structured = value.asStructured();
+			if (!structured.isEmpty()) {
+				return structured(structured.toArray());
+			}
+		}
+
+		return value.asSingle();
 	}
 }
