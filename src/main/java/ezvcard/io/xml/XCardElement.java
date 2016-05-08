@@ -228,8 +228,8 @@ public class XCardElement {
 
 	/**
 	 * Gets the appropriate XML local name of a {@link VCardDataType} object.
-	 * @param dataType the data type
-	 * @return the local name
+	 * @param dataType the data type or null for "unknown"
+	 * @return the local name (e.g. "text")
 	 */
 	private static String toLocalName(VCardDataType dataType) {
 		return (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
