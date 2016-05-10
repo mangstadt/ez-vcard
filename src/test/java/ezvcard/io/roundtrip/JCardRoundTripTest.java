@@ -51,7 +51,6 @@ public class JCardRoundTripTest extends RoundTripTestBase {
 	@Test
 	public void convert_to_jcard() throws Throwable {
 		convertAllFromVCard(VCardVersion.V4_0, true, true,
-				"evolution", "iphone", "mac_address_book", // string escape issue 
 				"outlook" // newline conversion on linux
 		);
 	}

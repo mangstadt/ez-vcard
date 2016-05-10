@@ -22,10 +22,8 @@ public abstract class RoundTripTestBase {
 
 		private Filter(String extension, String... excludes) {
 			this.extension = "." + extension;
-			if (excludes != null) {
-				for (int i = 0; i < excludes.length; i++) {
-					excludes[i] = excludes[i].toLowerCase();
-				}
+			for (int i = 0; i < excludes.length; i++) {
+				excludes[i] = excludes[i].toLowerCase();
 			}
 			this.excludes = excludes;
 		}
@@ -34,7 +32,7 @@ public abstract class RoundTripTestBase {
 			name = name.toLowerCase();
 			if (!name.endsWith(extension)) {
 				return false;
-			} else if (excludes != null) {
+			} else {
 				for (String exclude : excludes) {
 					if (name.contains(exclude)) {
 						return false;

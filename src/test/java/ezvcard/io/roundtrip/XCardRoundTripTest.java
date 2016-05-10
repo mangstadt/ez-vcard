@@ -22,9 +22,7 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 	@Test
 	public void equals_compare_vcard_4_to_xcard() throws Exception {
 		convertAllFromVCard(VCardVersion.V4_0, true, false,
-				"outlook", // newlines not preserved on linux
-				"black_berry", // encoding parameter for image?
-				"rfc2426" // {TYPE=[INTERNET,pref]} != {TYPE=[INTERNET],PREF=[1]} ?
+				"outlook" // newlines not preserved on linux
 		);
 	}
 
@@ -32,16 +30,13 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 	public void content_compare_vcard_4_to_xcard() throws Exception {
 		convertAllFromVCard(VCardVersion.V4_0, false, true,
 				"outlook-2007", // newlines not preserved on linux
-				"android", // empty <type/> tag added to email
-				"ms_outlook", // empty <street/> tag added to home adr
-				"evolution", "mac_address_book", // string escape issue
 				"iphone", "lotus_notes" // groups are reordered
 		);
 	}
 
 	@Test
 	public void compare_xcard_to_vcard_4() throws Exception {
-		convertAllToVCard(VCardVersion.V4_0, true, true, 
+		convertAllToVCard(VCardVersion.V4_0, true, true,
 				"outlook" // newline conversion on linux
 		);
 	}
@@ -49,13 +44,11 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 	@Test
 	public void compare_vcard_3_to_xcard() throws Exception {
 		convertAllFromVCard(VCardVersion.V3_0, false, true,
-				"android", // empty <type/> tag added to email
+				"android", // <pref><integer>1</integer></pref> removed from the ÑÑÑÑÑÑÑÑÑÑÑÑ email
 				"ms_outlook", // empty <street/> tag added to home adr
-				"evolution", "mac_address_book", // string escape issue
 				"iphone", "lotus_notes", // groups are reordered
-				"outlook-2007", // label got lost
-				"rfc6350", // tel uri got lost
-				"outlook-2003", "thunderbird" // uppercase text got converted to lowercase
+				"outlook-2007",  "rfc6350", // tel uri cannot round trip through VCard V3 (is converted to text type)
+				"outlook-2003", "thunderbird" // TYPE parameters converted to lowercase
 		);
 	}
 
