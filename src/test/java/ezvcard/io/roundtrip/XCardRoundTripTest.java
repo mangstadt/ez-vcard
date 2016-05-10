@@ -29,7 +29,7 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 	@Test
 	public void content_compare_vcard_4_to_xcard() throws Exception {
 		convertAllFromVCard(VCardVersion.V4_0, false, true,
-				"outlook-2007", // newlines not preserved on linux
+				"outlook", // newlines not preserved on linux
 				"iphone", "lotus_notes" // groups are reordered
 		);
 	}
@@ -45,7 +45,7 @@ public class XCardRoundTripTest extends RoundTripTestBase {
 	public void compare_vcard_3_to_xcard() throws Exception {
 		convertAllFromVCard(VCardVersion.V3_0, false, true,
 				"android", // <pref><integer>1</integer></pref> removed from the ÑÑÑÑÑÑÑÑÑÑÑÑ email
-				"ms_outlook", // empty <street/> tag added to home adr
+				"ms_outlook", // newlines not preserved on linux
 				"iphone", "lotus_notes", // groups are reordered
 				"outlook-2007",  "rfc6350", // tel uri cannot round trip through VCard V3 (is converted to text type)
 				"outlook-2003", "thunderbird" // TYPE parameters converted to lowercase
