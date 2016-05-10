@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -122,6 +123,38 @@ public class XCardElementTest {
 	public void all_none() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
 		assertTrue(xcardElement.all("three").isEmpty());
+	}
+
+	@Test
+	public void firstValue() {
+		XCardElement xcardElement = build("<prop><text>one</text></prop>");
+		XCardValue child = xcardElement.firstValue();
+		assertEquals(VCardDataType.TEXT, child.getDataType());
+		assertEquals("one", child.getValue());
+	}
+
+	@Test
+	public void firstValue_unknown() {
+		XCardElement xcardElement = build("<prop><unknown>one</unknown></prop>");
+		XCardValue child = xcardElement.firstValue();
+		assertNull(child.getDataType());
+		assertEquals("one", child.getValue());
+	}
+
+	@Test
+	public void firstValue_namespace() {
+		XCardElement xcardElement = build("<prop><n:foo xmlns:n=\"http://example.com\">one</n:foo><text>two</text></prop>");
+		XCardValue child = xcardElement.firstValue();
+		assertEquals(VCardDataType.TEXT, child.getDataType());
+		assertEquals("two", child.getValue());
+	}
+
+	@Test
+	public void firstValue_no_xcard_children() {
+		XCardElement xcardElement = build("<prop><n:foo xmlns:n=\"http://example.com\">one</n:foo><n:bar xmlns:n=\"http://example.com\">two</n:bar></prop>");
+		XCardValue child = xcardElement.firstValue();
+		assertNull(child.getDataType());
+		assertEquals("onetwo", child.getValue());
 	}
 
 	@Test

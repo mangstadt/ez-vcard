@@ -1,7 +1,6 @@
 package ezvcard.property;
 
 import java.lang.reflect.Constructor;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,7 +13,6 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.Pid;
-import ezvcard.parameter.VCardParameter;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.CharacterBitSet;
 
@@ -62,11 +60,6 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * The property's parameters.
 	 */
 	protected VCardParameters parameters;
-
-	/**
-	 * Used with the {@link #getPids()} method.
-	 */
-	private PidParameterList pidParameterList;
 
 	public VCardProperty() {
 		parameters = new VCardParameters();
@@ -388,10 +381,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * p.19</a>
 	 */
 	List<Pid> getPids() {
-		if (pidParameterList == null) {
-			pidParameterList = new PidParameterList();
-		}
-		return pidParameterList;
+		return parameters.getPids();
 	}
 
 	/**
@@ -512,181 +502,5 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 */
 	void setIndex(Integer index) {
 		parameters.setIndex(index);
-	}
-
-	/**
-	 * <p>
-	 * A list that holds the values of the PID parameter.
-	 * </p>
-	 * <p>
-	 * This class automatically converts the raw parameter values (strings) to
-	 * {@link Pid} objects and vice versa. If a string value cannot be
-	 * converted, an {@link IllegalStateException} will be thrown.
-	 * </p>
-	 * <p>
-	 * This list is backed by the property's {@link VCardParameters} object. Any
-	 * changes made to it will affect the property's {@link VCardParameters}
-	 * object and vice versa.
-	 * </p>
-	 */
-	protected class PidParameterList extends VCardParameterList<Pid> {
-		public PidParameterList() {
-			super(VCardParameters.PID);
-		}
-
-		@Override
-		protected String _asString(Pid value) {
-			return value.toString();
-		}
-
-		@Override
-		protected Pid _asObject(String value) {
-			return Pid.valueOf(value);
-		}
-	};
-
-	/**
-	 * <p>
-	 * A list that holds the values of the TYPE parameter.
-	 * </p>
-	 * <p>
-	 * This class automatically converts the raw parameter values (strings) to
-	 * {@link VCardParameter} objects and vice versa.
-	 * </p>
-	 * <p>
-	 * This list is backed by the property's {@link VCardParameters} object. Any
-	 * changes made to it will affect the property's {@link VCardParameters}
-	 * object and vice versa.
-	 * </p>
-	 * @param <T> the {@link VCardParameter} class
-	 */
-	protected abstract class TypeParameterEnumList<T extends VCardParameter> extends VCardParameterList<T> {
-		public TypeParameterEnumList() {
-			super(VCardParameters.TYPE);
-		}
-
-		@Override
-		protected String _asString(T value) {
-			return value.getValue();
-		}
-	}
-
-	/**
-	 * <p>
-	 * A list that holds the raw string values of a particular parameter.
-	 * </p>
-	 * <p>
-	 * This list is backed by the property's {@link VCardParameters} object. Any
-	 * changes made to the list will affect the property's
-	 * {@link VCardParameters} object and vice versa.
-	 * </p>
-	 */
-	protected class VCardStringParameterList extends VCardParameterList<String> {
-		/**
-		 * @param parameterName the name of the parameter (case insensitive)
-		 */
-		public VCardStringParameterList(String parameterName) {
-			super(parameterName);
-		}
-
-		@Override
-		protected String _asString(String value) {
-			return value;
-		}
-
-		@Override
-		protected String _asObject(String value) {
-			return value;
-		}
-	};
-
-	/**
-	 * <p>
-	 * A list that holds the values of a particular parameter.
-	 * </p>
-	 * <p>
-	 * This list is backed by the property's {@link VCardParameters} object. Any
-	 * changes made to the list will affect the property's
-	 * {@link VCardParameters} object and vice versa.
-	 * </p>
-	 */
-	protected abstract class VCardParameterList<T> extends AbstractList<T> {
-		protected final String parameterName;
-
-		/**
-		 * @param parameterName the name of the parameter (case insensitive)
-		 */
-		public VCardParameterList(String parameterName) {
-			this.parameterName = parameterName;
-		}
-
-		@Override
-		public void add(int index, T value) {
-			String valueStr = _asString(value);
-
-			/*
-			 * Note: If a property name does not exist, then the parameters
-			 * object will return an empty list. Any objects added to this empty
-			 * list will NOT be added to the parameters object.
-			 */
-			List<String> values = values();
-			if (values.isEmpty()) {
-				parameters.put(parameterName, valueStr);
-			} else {
-				values.add(index, valueStr);
-			}
-		}
-
-		@Override
-		public T remove(int index) {
-			String removed = values().remove(index);
-			return asObject(removed);
-		}
-
-		@Override
-		public T get(int index) {
-			String value = values().get(index);
-			return asObject(value);
-		}
-
-		@Override
-		public T set(int index, T value) {
-			String valueStr = _asString(value);
-			String replaced = values().set(index, valueStr);
-			return asObject(replaced);
-		}
-
-		@Override
-		public int size() {
-			return values().size();
-		}
-
-		private T asObject(String value) {
-			try {
-				return _asObject(value);
-			} catch (Exception e) {
-				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(15, parameterName), e);
-			}
-		}
-
-		/**
-		 * Converts the object to a String value for storing in the
-		 * {@link VCardParameters} object.
-		 * @param value the value
-		 * @return the string value
-		 */
-		protected abstract String _asString(T value);
-
-		/**
-		 * Converts a String value to its object form.
-		 * @param value the string value
-		 * @return the object
-		 * @throws Exception if there is a problem parsing the string
-		 */
-		protected abstract T _asObject(String value) throws Exception;
-
-		private List<String> values() {
-			return parameters.get(parameterName);
-		}
 	}
 }

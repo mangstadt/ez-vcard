@@ -415,26 +415,25 @@ public class VCardReader extends StreamReader {
 	 * @param parameters the parameters
 	 */
 	private void processQuotedMultivaluedTypeParams(VCardParameters parameters) {
-		for (String value : parameters.get(VCardParameters.TYPE)) {
-			int comma = value.indexOf(',');
-			if (comma < 0) {
-				continue;
-			}
-
-			parameters.removeAll(VCardParameters.TYPE);
-
-			int prevComma = -1;
-			while (true) {
-				parameters.put(VCardParameters.TYPE, value.substring(prevComma + 1, comma));
-
-				prevComma = comma;
-				comma = value.indexOf(',', prevComma + 1);
-				if (comma < 0) {
-					parameters.put(VCardParameters.TYPE, value.substring(prevComma + 1));
-					break;
-				}
+		List<String> types = parameters.getTypes();
+		String valueWithComma = null;
+		for (String value : types) {
+			if (value.indexOf(',') >= 0) {
+				valueWithComma = value;
+				break;
 			}
 		}
+		if (valueWithComma == null) {
+			return;
+		}
+
+		types.clear();
+		int prev = -1, cur;
+		while ((cur = valueWithComma.indexOf(',', prev + 1)) >= 0) {
+			types.add(valueWithComma.substring(prev + 1, cur));
+			prev = cur;
+		}
+		types.add(valueWithComma.substring(prev + 1));
 	}
 
 	/**

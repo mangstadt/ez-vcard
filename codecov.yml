@@ -1,0 +1,8 @@
+comment:
+  layout: header, changes, diff
+coverage:
+  ignore:
+  - src/main/java/ezvcard/util/org/.*
+  status:
+    patch: false
+  precision: 0

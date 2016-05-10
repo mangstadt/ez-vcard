@@ -4,6 +4,11 @@ import java.util.List;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.html.HCardElement;
+import ezvcard.io.json.JCardValue;
+import ezvcard.io.json.JsonValue;
+import ezvcard.io.xml.XCardElement;
+import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.RawProperty;
 
@@ -36,6 +41,17 @@ import ezvcard.property.RawProperty;
  * Marshals {@link RawProperty} properties.
  * @author Michael Angstadt
  */
+/*
+ * Note concerning escaping and unescaping special characters:
+ * 
+ * Values are not escaped and unescaped for the following reason: If the
+ * extended property's value is a list or structured list, then the escaping
+ * must be preserved or else escaped special characters will be lost.
+ * 
+ * This is an inconvenience, considering the fact that most extended properties
+ * contain simple text values. But it is necessary in order to prevent data
+ * loss.
+ */
 public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	public RawPropertyScribe(String propertyName) {
 		super(RawProperty.class, propertyName);
@@ -62,5 +78,55 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 		RawProperty property = new RawProperty(propertyName, value);
 		property.setDataType(dataType);
 		return property;
+	}
+
+	@Override
+	protected RawProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+		XCardValue firstValue = element.firstValue();
+		VCardDataType dataType = firstValue.getDataType();
+		String value = firstValue.getValue();
+
+		RawProperty property = new RawProperty(propertyName, value);
+		property.setDataType(dataType);
+		return property;
+	}
+
+	@Override
+	protected RawProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+		String valueStr = jcardValueToString(value);
+
+		RawProperty property = new RawProperty(propertyName, valueStr);
+		property.setDataType(dataType);
+		return property;
+	}
+
+	@Override
+	protected RawProperty _parseHtml(HCardElement element, List<String> warnings) {
+		String value = element.value();
+
+		return new RawProperty(propertyName, value);
+	}
+
+	private static String jcardValueToString(JCardValue value) {
+		/*
+		 * VCardPropertyScribe.jcardValueToString() cannot be used because it
+		 * escapes single values.
+		 */
+		List<JsonValue> values = value.getValues();
+		if (values.size() > 1) {
+			List<String> multi = value.asMulti();
+			if (!multi.isEmpty()) {
+				return list(multi);
+			}
+		}
+
+		if (!values.isEmpty() && values.get(0).getArray() != null) {
+			List<List<String>> structured = value.asStructured();
+			if (!structured.isEmpty()) {
+				return structured(structured.toArray());
+			}
+		}
+
+		return value.asSingle();
 	}
 }

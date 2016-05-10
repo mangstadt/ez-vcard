@@ -71,13 +71,6 @@ import ezvcard.parameter.Pid;
  * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
  */
 public class Email extends TextProperty implements HasAltId {
-	private final List<EmailType> types = new TypeParameterEnumList<EmailType>() {
-		@Override
-		protected EmailType _asObject(String value) {
-			return EmailType.get(value);
-		}
-	};
-
 	/**
 	 * Creates an email property.
 	 * @param email the email (e.g. "johndoe@example.com")
@@ -99,7 +92,12 @@ public class Email extends TextProperty implements HasAltId {
 	 * @return the email types (this list is mutable) (e.g. "INTERNET", "WORK")
 	 */
 	public List<EmailType> getTypes() {
-		return types;
+		return parameters.new TypeParameterList<EmailType>() {
+			@Override
+			protected EmailType _asObject(String value) {
+				return EmailType.get(value);
+			}
+		};
 	}
 
 	@Override

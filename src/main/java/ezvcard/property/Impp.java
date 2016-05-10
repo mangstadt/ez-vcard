@@ -88,12 +88,6 @@ public class Impp extends VCardProperty implements HasAltId {
 	private static final String YAHOO = "ymsgr";
 
 	private URI uri;
-	private final List<ImppType> types = new TypeParameterEnumList<ImppType>() {
-		@Override
-		protected ImppType _asObject(String value) {
-			return ImppType.get(value);
-		}
-	};
 
 	/**
 	 * Creates an IMPP property. Note that this class has static factory methods
@@ -345,7 +339,12 @@ public class Impp extends VCardProperty implements HasAltId {
 	 * @return the IMPP types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<ImppType> getTypes() {
-		return types;
+		return parameters.new TypeParameterList<ImppType>() {
+			@Override
+			protected ImppType _asObject(String value) {
+				return ImppType.get(value);
+			}
+		};
 	}
 
 	/**

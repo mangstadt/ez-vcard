@@ -22,8 +22,10 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.json.JsonValue;
 import ezvcard.io.text.VCardRawWriter;
 import ezvcard.io.xml.XCardElement;
+import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Categories;
 import ezvcard.property.Organization;
@@ -31,7 +33,6 @@ import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.StringUtils.JoinCallback;
 import ezvcard.util.VCardDateFormat;
-import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -416,10 +417,11 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * This method should be overridden by child classes that wish to support
 	 * xCard. The default implementation of this method will find the first
 	 * child element with the xCard namespace. The element's name will be used
-	 * as the property's data type and its text content will be passed into the
-	 * {@link #_parseText} method. If no such child element is found, then the
-	 * parent element's text content will be passed into {@link #_parseText} and
-	 * the data type will be null.
+	 * as the property's data type and its text content (escaped for inclusion
+	 * in a text-based vCard, e.g. escaping comma characters) will be passed
+	 * into the {@link #_parseText} method. If no such child element is found,
+	 * then the parent element's text content will be passed into
+	 * {@link #_parseText} and the data type will be {@code null}.
 	 * </p>
 	 * @param element the property's XML element
 	 * @param parameters the parsed parameters. These parameters will be
@@ -436,31 +438,10 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * {@link VCard} object
 	 */
 	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
-		String value = null;
-		VCardDataType dataType = null;
-		Element rawElement = element.element();
-		VCardVersion version = element.version();
-
-		//get the text content of the first child element with the xCard namespace
-		List<Element> children = XmlUtils.toElementList(rawElement.getChildNodes());
-		for (Element child : children) {
-			String elementNamespace = version.getXmlNamespace();
-			String childNamespace = child.getNamespaceURI();
-			if (elementNamespace.equals(childNamespace)) {
-				String dataTypeStr = child.getLocalName();
-				dataType = "unknown".equals(dataTypeStr) ? null : VCardDataType.get(dataTypeStr);
-				value = child.getTextContent();
-				break;
-			}
-		}
-
-		if (dataType == null) {
-			//get the text content of the property element
-			value = rawElement.getTextContent();
-		}
-
-		value = escape(value);
-		return _parseText(value, dataType, version, parameters, warnings);
+		XCardValue firstValue = element.firstValue();
+		VCardDataType dataType = firstValue.getDataType();
+		String value = escape(firstValue.getValue());
+		return _parseText(value, dataType, element.version(), parameters, warnings);
 	}
 
 	/**
@@ -559,18 +540,26 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * {@link VCard} object
 	 */
 	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-		return _parseText(jcardValueToString(value), dataType, VCardVersion.V4_0, parameters, warnings);
+		String valueStr = jcardValueToString(value);
+		return _parseText(valueStr, dataType, VCardVersion.V4_0, parameters, warnings);
 	}
 
+	/**
+	 * Converts a jCard value to its plain-text format representation.
+	 * @param value the jCard value
+	 * @return the plain-text format representation (for example, "1,2,3" for a
+	 * list of values)
+	 */
 	private static String jcardValueToString(JCardValue value) {
-		if (value.getValues().size() > 1) {
+		List<JsonValue> values = value.getValues();
+		if (values.size() > 1) {
 			List<String> multi = value.asMulti();
 			if (!multi.isEmpty()) {
 				return list(multi);
 			}
 		}
 
-		if (!value.getValues().isEmpty() && value.getValues().get(0).getArray() != null) {
+		if (!values.isEmpty() && values.get(0).getArray() != null) {
 			List<List<String>> structured = value.asStructured();
 			if (!structured.isEmpty()) {
 				return structured(structured.toArray());

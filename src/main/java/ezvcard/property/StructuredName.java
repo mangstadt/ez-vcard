@@ -5,8 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import ezvcard.parameter.VCardParameters;
-
 /*
  Copyright (c) 2012-2016, Michael Angstadt
  All rights reserved.
@@ -73,7 +71,6 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	private final List<String> additional;
 	private final List<String> prefixes;
 	private final List<String> suffixes;
-	private final List<String> sortAs = new VCardStringParameterList(VCardParameters.SORT_AS);
 
 	public StructuredName() {
 		additional = new ArrayList<String>();
@@ -166,7 +163,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 * strings might be ["Aboville", "Christine"].
 	 */
 	public List<String> getSortAs() {
-		return sortAs;
+		return parameters.getSortAs();
 	}
 
 	/**
@@ -183,10 +180,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 * "Adboville" if the family name is "d'Aboville") or null to remove
 	 */
 	public void setSortAs(String family) {
-		sortAs.clear();
-		if (family != null) {
-			sortAs.add(family);
-		}
+		parameters.setSortAs(family);
 	}
 
 	/**
@@ -204,9 +198,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 * @param given the sortable version of the given name
 	 */
 	public void setSortAs(String family, String given) {
-		sortAs.clear();
-		sortAs.add(family);
-		sortAs.add(given);
+		parameters.setSortAs(family, given);
 	}
 
 	@Override

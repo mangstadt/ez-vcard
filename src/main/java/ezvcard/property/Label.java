@@ -82,13 +82,6 @@ import ezvcard.parameter.AddressType;
  */
 @SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
 public class Label extends TextProperty {
-	private final List<AddressType> types = new TypeParameterEnumList<AddressType>() {
-		@Override
-		protected AddressType _asObject(String value) {
-			return AddressType.get(value);
-		}
-	};
-
 	/**
 	 * Creates a label property.
 	 * @param label the label value
@@ -111,7 +104,12 @@ public class Label extends TextProperty {
 	 * @return the address types (e.g. "HOME", "WORK") (this list is mutable)
 	 */
 	public List<AddressType> getTypes() {
-		return types;
+		return parameters.new TypeParameterList<AddressType>() {
+			@Override
+			protected AddressType _asObject(String value) {
+				return AddressType.get(value);
+			}
+		};
 	}
 
 	@Override

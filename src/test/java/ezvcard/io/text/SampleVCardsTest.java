@@ -32,14 +32,22 @@ import ezvcard.parameter.ImageType;
 import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.property.Birthday;
 import ezvcard.property.Classification;
+import ezvcard.property.FormattedName;
 import ezvcard.property.Mailer;
+import ezvcard.property.Nickname;
+import ezvcard.property.Note;
+import ezvcard.property.Organization;
 import ezvcard.property.ProductId;
 import ezvcard.property.Profile;
 import ezvcard.property.Revision;
 import ezvcard.property.SortString;
 import ezvcard.property.SourceDisplayText;
+import ezvcard.property.Title;
 import ezvcard.property.Uid;
+import ezvcard.property.Url;
+import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
@@ -801,6 +809,323 @@ public class SampleVCardsTest {
 		}
 
 		assertValidate(vcard).versions(vcard.getVersion()).run();
+		assertWarnings(0, reader);
+		assertNoMoreVCards(reader);
+	}
+
+	/**
+	 * File generated on 5/7/2016.
+	 */
+	@Test
+	public void gmailSingle2() throws Throwable {
+		VCardReader reader = read("gmail-single2.vcf");
+		VCard vcard = reader.readNext();
+		VCardAsserter asserter = new VCardAsserter(vcard);
+
+		//@formatter:off
+		asserter.simpleProperty(FormattedName.class)
+			.value("VCard Test")
+		.noMore();
+		
+		asserter.structuredName()
+			.family("Test")
+			.given("VCard")
+		.noMore();
+		
+		asserter.listProperty(Nickname.class)
+			.values("TheNickname")
+		.noMore();
+		
+		asserter.email()
+			.types(EmailType.INTERNET)
+			.value("email@example.com")
+		.next()
+			.types(EmailType.INTERNET, EmailType.HOME)
+			.value("homeemail@example.com")
+		.next()
+			.types(EmailType.INTERNET, EmailType.WORK)
+			.value("workemail@example.com")
+		.next()
+			.types(EmailType.INTERNET)
+			.value("otheremail@example.com")
+		.next()
+			.types(EmailType.INTERNET)
+			.group("item1")
+			.value("customcategory@example.com")
+		.noMore();
+		
+		asserter.telephone()
+			.text("5555551111")
+		.next()
+			.types(TelephoneType.HOME)
+			.text("5555551112")
+		.next()
+			.types(TelephoneType.WORK)
+			.text("5555551113")
+		.next()
+			.text("5555551114")
+		.next()
+			.types(TelephoneType.CELL)
+			.text("5555551115")
+		.next()
+			.types(TelephoneType.get("MAIN"))
+			.text("5555551116")
+		.next()
+			.types(TelephoneType.HOME, TelephoneType.FAX)
+			.text("5555551117")
+		.next()
+			.types(TelephoneType.WORK, TelephoneType.FAX)
+			.text("5555551118")
+		.next()
+			.group("item2")
+			.text("5555551119")
+		.next()
+			.types(TelephoneType.PAGER)
+			.text("5555551120")
+		.next()
+			.group("item3")
+			.text("5555551121")
+		.noMore();
+		
+		asserter.address()
+			.streetAddress("111 Main St")
+			.locality("NY")
+			.region("New York")
+			.postalCode("10011")
+		.next()
+			.types(AddressType.HOME)
+			.streetAddress("112 Main St")
+			.locality("NY")
+			.region("New York")
+			.postalCode("10011")
+		.next()
+			.types(AddressType.WORK)
+			.streetAddress("113 Main St")
+			.locality("NY")
+			.region("New York")
+			.postalCode("10011")
+		.next()
+			.streetAddress("114 Main St")
+			.locality("NY")
+			.region("New York")
+			.postalCode("10011")
+		.next()
+			.group("item4")
+			.streetAddress("115 Main St")
+			.locality("NY")
+			.region("New York")
+			.postalCode("10011")
+		.noMore();
+		
+		asserter.listProperty(Organization.class)
+			.values("TheCompany")
+		.noMore();
+		
+		asserter.simpleProperty(Title.class)
+			.value("TheJobTitle")
+		.noMore();
+		
+		asserter.dateProperty(Birthday.class)
+			.date("1912-06-23")
+		.noMore();
+		
+		asserter.simpleProperty(Url.class)
+			.value("http://www.example1.com")
+		.next()
+			.group("item5")
+			.value("http://www.example2.com")
+		.next()
+			.group("item6")
+			.value("http://www.example3.com")
+		.next()
+			.group("item7")
+			.value("http://www.example4.com")
+		.next()
+			.param("TYPE", "WORK")
+			.value("http://www.example5.com")
+		.next()
+			.group("item8")
+			.value("http://www.example6.com")
+		.noMore();
+		
+		asserter.simpleProperty(Note.class)
+			.value("note line 1\nnote line 2\nCustomField: field value")
+		.noMore();
+		
+		asserter.rawProperty("X-PHONETIC-FIRST-NAME")
+			.value("ThePhoneticFirstName")
+		.noMore();
+		asserter.rawProperty("X-PHONETIC-LAST-NAME")
+			.value("ThePhoneticLastName")
+		.noMore();
+		
+		asserter.rawProperty("X-ABLabel")
+			.group("item1")
+			.value("CustomEmailCategory")
+		.next()
+			.group("item2")
+			.value("GRAND_CENTRAL")
+		.next()
+			.group("item3")
+			.value("CustomePhoneCategory")
+		.next()
+			.group("item4")
+			.value("CustomAddressCategory")
+		.next()
+			.group("item5")
+			.value("PROFILE")
+		.next()
+			.group("item6")
+			.value("BLOG")
+		.next()
+			.group("item7")
+			.value("_$!<HomePage>!$_")
+		.next()
+			.group("item8")
+			.value("CustomWebsiteCategory")
+		.next()
+			.group("item9")
+			.value("_$!<Anniversary>!$_")
+		.next()
+			.group("item10")
+			.value("CustomDateCategory")
+		.next()
+			.group("item11")
+			.value("_$!<Spouse>!$_")
+		.next()
+			.group("item12")
+			.value("_$!<Child>!$_")
+		.next()
+			.group("item13")
+			.value("_$!<Mother>!$_")
+		.next()
+			.group("item14")
+			.value("_$!<Father>!$_")
+		.next()
+			.group("item15")
+			.value("_$!<Parent>!$_")
+		.next()
+			.group("item16")
+			.value("_$!<Brother>!$_")
+		.next()
+			.group("item17")
+			.value("_$!<Sister>!$_")
+		.next()
+			.group("item18")
+			.value("_$!<Friend>!$_")
+		.next()
+			.group("item19")
+			.value("RELATIVE")
+		.next()
+			.group("item20")
+			.value("_$!<Manager>!$_")
+		.next()
+			.group("item21")
+			.value("_$!<Assistant>!$_")
+		.next()
+			.group("item22")
+			.value("REFERRED_BY")
+		.next()
+			.group("item23")
+			.value("_$!<Partner>!$_")
+		.next()
+			.group("item24")
+			.value("DOMESTIC_PARTNER")
+		.next()
+			.group("item25")
+			.value("CustomRelationCategory")
+		.noMore();
+		
+		asserter.rawProperty("X-GTALK")
+			.value("IM2")
+		.noMore();
+		asserter.rawProperty("X-AIM")
+			.value("IM3")
+		.noMore();
+		asserter.rawProperty("X-YAHOO")
+			.value("IM4")
+		.noMore();
+		asserter.rawProperty("X-SKYPE")
+			.value("IM5")
+		.noMore();
+		asserter.rawProperty("X-QQ")
+			.value("IM6")
+		.noMore();
+		asserter.rawProperty("X-MSN")
+			.value("IM7")
+		.noMore();
+		asserter.rawProperty("X-ICQ")
+			.value("IM8")
+		.noMore();
+		asserter.rawProperty("X-JABBER")
+			.value("IM9")
+		.noMore();
+		
+		asserter.rawProperty("X-ABDATE")
+			.group("item9")
+			.value("1930-03-20")
+		.next()
+			.value("1776-07-04")
+		.next()
+			.group("item10")
+			.value("2000-09-12")
+		.noMore();
+		
+		asserter.rawProperty("X-ABRELATEDNAMES")
+			.value("Name1")
+		.next()
+			.group("item11")
+			.value("Name2")
+		.next()
+			.group("item12")
+			.value("Name3")
+		.next()
+			.group("item13")
+			.value("Name4")
+		.next()
+			.group("item14")
+			.value("Name5")
+		.next()
+			.group("item15")
+			.value("Name6")
+		.next()
+			.group("item16")
+			.value("Name7")
+		.next()
+			.group("item17")
+			.value("Name8")
+		.next()
+			.group("item18")
+			.value("Name9")
+		.next()
+			.group("item19")
+			.value("Name10")
+		.next()
+			.group("item20")
+			.value("Name11")
+		.next()
+			.group("item21")
+			.value("Name12")
+		.next()
+			.group("item22")
+			.value("Name13")
+		.next()
+			.group("item23")
+			.value("Name14")
+		.next()
+			.group("item24")
+			.value("Name15")
+		.next()
+			.group("item25")
+			.value("Name16")
+		.noMore();
+
+		assertValidate(vcard).versions(vcard.getVersion())
+			.prop(vcard.getEmails().get(1), 9) //"TYPE=HOME" not valid in vCard 3.0 
+			.prop(vcard.getEmails().get(2), 9) //"TYPE=WORK" not valid in vCard 3.0
+		.run();
+		//@formatter:on
+
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
 	}

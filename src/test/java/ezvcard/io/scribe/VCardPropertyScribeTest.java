@@ -414,6 +414,18 @@ public class VCardPropertyScribeTest {
 				assertEquals(null, property.parsedDataType);
 			}
 		});
+		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><unknown>value</unknown>").warnings(1).run(new Check<TestProperty>() {
+			public void check(TestProperty property) {
+				assertEquals("value", property.value);
+				assertEquals(null, property.parsedDataType);
+			}
+		});
+		sensei.assertParseXml("<unknown />").warnings(1).run(new Check<TestProperty>() {
+			public void check(TestProperty property) {
+				assertEquals("", property.value);
+				assertEquals(null, property.parsedDataType);
+			}
+		});
 	}
 
 	@Test
