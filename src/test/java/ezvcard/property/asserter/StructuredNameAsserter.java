@@ -1,6 +1,6 @@
 package ezvcard.property.asserter;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Arrays.asList;
 
 import java.util.List;
 
@@ -38,51 +38,38 @@ import ezvcard.property.StructuredName;
 /**
  * @author Michael Angstadt
  */
-public class StructuredNameAsserter extends PropertyAsserter<StructuredNameAsserter, StructuredName> {
-	private String family, given;
-	private String[] prefixes, suffixes, additional;
-
-	public StructuredNameAsserter(List<StructuredName> properties) {
-		super(properties);
+public class StructuredNameAsserter extends PropertyImplAsserter<StructuredNameAsserter, StructuredName> {
+	public StructuredNameAsserter(List<StructuredName> properties, VCardAsserter asserter) {
+		super(properties, asserter);
 	}
 
 	public StructuredNameAsserter family(String family) {
-		this.family = family;
+		expected.setFamily(family);
 		return this_;
 	}
 
 	public StructuredNameAsserter given(String given) {
-		this.given = given;
+		expected.setGiven(given);
 		return this_;
 	}
 
 	public StructuredNameAsserter prefixes(String... prefixes) {
-		this.prefixes = prefixes;
+		expected.getPrefixes().addAll(asList(prefixes));
 		return this_;
 	}
 
 	public StructuredNameAsserter suffixes(String... suffixes) {
-		this.suffixes = suffixes;
+		expected.getSuffixes().addAll(asList(suffixes));
 		return this_;
 	}
 
 	public StructuredNameAsserter additional(String... additional) {
-		this.additional = additional;
+		expected.getAdditionalNames().addAll(asList(additional));
 		return this_;
 	}
 
 	@Override
-	protected void _run(StructuredName property) {
-		assertEquals(family, property.getFamily());
-		assertEquals(given, property.getGiven());
-		assertEquals(arrayToList(prefixes), property.getPrefixes());
-		assertEquals(arrayToList(suffixes), property.getSuffixes());
-		assertEquals(arrayToList(additional), property.getAdditionalNames());
-	}
-
-	@Override
-	protected void _reset() {
-		family = given = null;
-		prefixes = suffixes = additional = null;
+	protected StructuredName _newInstance() {
+		return new StructuredName();
 	}
 }

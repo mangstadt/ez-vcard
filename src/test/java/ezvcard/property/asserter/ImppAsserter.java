@@ -1,9 +1,7 @@
 package ezvcard.property.asserter;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Arrays.asList;
 
-import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 import ezvcard.parameter.ImppType;
@@ -41,33 +39,23 @@ import ezvcard.property.Impp;
 /**
  * @author Michael Angstadt
  */
-public class ImppAsserter extends PropertyAsserter<ImppAsserter, Impp> {
-	private ImppType[] types;
-	private URI uri;
-
-	public ImppAsserter(List<Impp> impps) {
-		super(impps);
+public class ImppAsserter extends PropertyImplAsserter<ImppAsserter, Impp> {
+	public ImppAsserter(List<Impp> properties, VCardAsserter asserter) {
+		super(properties, asserter);
 	}
 
 	public ImppAsserter types(ImppType... types) {
-		this.types = types;
+		expected.getTypes().addAll(asList(types));
 		return this_;
 	}
 
 	public ImppAsserter uri(String uri) {
-		this.uri = URI.create(uri);
+		expected.setUri(uri);
 		return this_;
 	}
 
 	@Override
-	protected void _run(Impp property) {
-		assertEquals(uri, property.getUri());
-		assertEquals(Arrays.asList(types), property.getTypes());
-	}
-
-	@Override
-	protected void _reset() {
-		types = new ImppType[0];
-		uri = null;
+	protected Impp _newInstance() {
+		return new Impp((String) null);
 	}
 }

@@ -7,14 +7,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import ezvcard.VCard;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.property.BinaryProperty;
-import ezvcard.property.DateOrTimeProperty;
-import ezvcard.property.ListProperty;
-import ezvcard.property.SimpleProperty;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -53,12 +47,14 @@ public abstract class PropertyAsserter<T, P extends VCardProperty> {
 	@SuppressWarnings("unchecked")
 	protected final T this_ = (T) this;
 	private final Iterator<P> it;
+	private final VCardAsserter asserter;
 
 	private String group;
 	private VCardParameters parameters;
 
-	public PropertyAsserter(List<P> list) {
+	public PropertyAsserter(List<P> list, VCardAsserter asserter) {
 		it = list.iterator();
+		this.asserter = asserter;
 		reset();
 	}
 
@@ -73,14 +69,13 @@ public abstract class PropertyAsserter<T, P extends VCardProperty> {
 	}
 
 	public T next() {
-		P property = it.next();
+		P actual = it.next();
 
-		assertEquals(group, property.getGroup());
-		for (Map.Entry<String, List<String>> entry : parameters) {
-			assertEquals(entry.getValue(), property.getParameters(entry.getKey()));
-		}
+		assertEquals(group, actual.getGroup());
+		assertEquals(parameters, actual.getParameters());
 
-		_run(property);
+		_run(actual);
+		asserter.incPropertiesChecked();
 
 		reset();
 		return this_;
@@ -97,61 +92,11 @@ public abstract class PropertyAsserter<T, P extends VCardProperty> {
 		_reset();
 	}
 
-	protected abstract void _run(P property);
+	protected abstract void _run(P actual);
 
 	protected abstract void _reset();
 
 	protected static <T> List<T> arrayToList(T[] array) {
 		return (array == null) ? Collections.<T> emptyList() : Arrays.asList(array);
-	}
-
-	public static RawPropertyAsserter assertRawProperty(String name, VCard vcard) {
-		return new RawPropertyAsserter(vcard.getExtendedProperties(name), name);
-	}
-
-	@SuppressWarnings("rawtypes")
-	public static <T extends SimpleProperty> SimplePropertyAsserter<T> assertSimpleProperty(List<T> list) {
-		return new SimplePropertyAsserter<T>(list);
-	}
-
-	public static <T extends ListProperty<String>> ListPropertyAsserter<T> assertListProperty(List<T> list) {
-		return new ListPropertyAsserter<T>(list);
-	}
-
-	public static <T extends DateOrTimeProperty> DateOrTimePropertyAsserter<T> assertDateProperty(List<T> list) {
-		return new DateOrTimePropertyAsserter<T>(list);
-	}
-
-	@SuppressWarnings("rawtypes")
-	public static <T extends BinaryProperty> BinaryPropertyAsserter<T> assertBinaryProperty(List<T> list) {
-		return new BinaryPropertyAsserter<T>(list);
-	}
-
-	public static GeoAsserter assertGeo(VCard vcard) {
-		return new GeoAsserter(vcard.getGeos());
-	}
-
-	public static TimezoneAsserter assertTimezone(VCard vcard) {
-		return new TimezoneAsserter(vcard.getTimezones());
-	}
-
-	public static EmailAsserter assertEmail(VCard vcard) {
-		return new EmailAsserter(vcard.getEmails());
-	}
-
-	public static ImppAsserter assertImpp(VCard vcard) {
-		return new ImppAsserter(vcard.getImpps());
-	}
-
-	public static AddressAsserter assertAddress(VCard vcard) {
-		return new AddressAsserter(vcard.getAddresses());
-	}
-
-	public static TelephoneAsserter assertTelephone(VCard vcard) {
-		return new TelephoneAsserter(vcard.getTelephoneNumbers());
-	}
-
-	public static StructuredNameAsserter assertStructuredName(VCard vcard) {
-		return new StructuredNameAsserter(vcard.getStructuredNames());
 	}
 }

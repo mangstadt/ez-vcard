@@ -44,8 +44,8 @@ import ezvcard.property.ListProperty;
 public class ListPropertyAsserter<T extends ListProperty> extends PropertyAsserter<ListPropertyAsserter<T>, T> {
 	private Object[] values;
 
-	public ListPropertyAsserter(List<T> properties) {
-		super(properties);
+	public ListPropertyAsserter(List<T> properties, VCardAsserter asserter) {
+		super(properties, asserter);
 	}
 
 	public ListPropertyAsserter<T> values(Object... values) {

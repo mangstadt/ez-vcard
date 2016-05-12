@@ -42,8 +42,8 @@ import ezvcard.property.SimpleProperty;
 public class SimplePropertyAsserter<T extends SimpleProperty> extends PropertyAsserter<SimplePropertyAsserter<T>, T> {
 	private Object value;
 
-	public SimplePropertyAsserter(List<T> properties) {
-		super(properties);
+	public SimplePropertyAsserter(List<T> properties, VCardAsserter asserter) {
+		super(properties, asserter);
 	}
 
 	public SimplePropertyAsserter<T> value(Object value) {

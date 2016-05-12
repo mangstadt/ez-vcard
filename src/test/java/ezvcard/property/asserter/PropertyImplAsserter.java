@@ -1,8 +1,13 @@
 package ezvcard.property.asserter;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+import java.util.Iterator;
 import java.util.List;
 
-import ezvcard.property.Geo;
+import ezvcard.property.VCardProperty;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -36,23 +41,48 @@ import ezvcard.property.Geo;
 /**
  * @author Michael Angstadt
  */
-public class GeoAsserter extends PropertyImplAsserter<GeoAsserter, Geo> {
-	public GeoAsserter(List<Geo> properties, VCardAsserter asserter) {
-		super(properties, asserter);
+public abstract class PropertyImplAsserter<T, P extends VCardProperty> {
+	@SuppressWarnings("unchecked")
+	protected final T this_ = (T) this;
+	private final Iterator<P> it;
+	private final VCardAsserter asserter;
+
+	protected P expected;
+
+	public PropertyImplAsserter(List<P> list, VCardAsserter asserter) {
+		it = list.iterator();
+		this.asserter = asserter;
+		expected = _newInstance();
 	}
 
-	public GeoAsserter latitude(Double latitude) {
-		expected.setLatitude(latitude);
+	public T expected(P expected) {
+		this.expected = expected;
 		return this_;
 	}
 
-	public GeoAsserter longitude(Double longitude) {
-		expected.setLongitude(longitude);
+	public T group(String group) {
+		expected.setGroup(group);
 		return this_;
 	}
 
-	@Override
-	protected Geo _newInstance() {
-		return new Geo(null, null);
+	public T param(String name, String... values) {
+		expected.getParameters().putAll(name, asList(values));
+		return this_;
 	}
+
+	public T next() {
+		P actual = it.next();
+		assertEquals(expected, actual);
+		asserter.incPropertiesChecked();
+
+		expected = _newInstance();
+		return this_;
+	}
+
+	public void noMore() {
+		next();
+		assertFalse(it.hasNext());
+	}
+
+	protected abstract P _newInstance();
 }

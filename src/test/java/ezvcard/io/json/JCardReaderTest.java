@@ -1,24 +1,12 @@
 package ezvcard.io.json;
 
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.property.asserter.PropertyAsserter.assertAddress;
-import static ezvcard.property.asserter.PropertyAsserter.assertBinaryProperty;
-import static ezvcard.property.asserter.PropertyAsserter.assertDateProperty;
-import static ezvcard.property.asserter.PropertyAsserter.assertEmail;
-import static ezvcard.property.asserter.PropertyAsserter.assertGeo;
-import static ezvcard.property.asserter.PropertyAsserter.assertListProperty;
-import static ezvcard.property.asserter.PropertyAsserter.assertRawProperty;
-import static ezvcard.property.asserter.PropertyAsserter.assertSimpleProperty;
-import static ezvcard.property.asserter.PropertyAsserter.assertStructuredName;
-import static ezvcard.property.asserter.PropertyAsserter.assertTelephone;
-import static ezvcard.property.asserter.PropertyAsserter.assertTimezone;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.Writer;
@@ -40,7 +28,17 @@ import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.property.Anniversary;
+import ezvcard.property.Birthday;
+import ezvcard.property.FormattedName;
+import ezvcard.property.Gender;
+import ezvcard.property.Key;
+import ezvcard.property.Language;
+import ezvcard.property.Note;
+import ezvcard.property.Organization;
+import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
+import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
@@ -97,11 +95,11 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(1, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
+		asserter.version(V4_0);
 
 		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
+		asserter.simpleProperty(FormattedName.class)
 			.value("John Doe")
 		.noMore();
 		//@formatter:on
@@ -132,29 +130,35 @@ public class JCardReaderTest {
 
 		JCardReader reader = new JCardReader(json);
 
-		VCard vcard = reader.readNext();
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(1, vcard);
+		{
+			VCard vcard = reader.readNext();
+			VCardAsserter asserter = new VCardAsserter(vcard);
+			asserter.version(V4_0);
+	
+			//@formatter:off
+			asserter.simpleProperty(FormattedName.class)
+				.value("John Doe")
+			.noMore();
+			//@formatter:on
+	
+			asserter.done();
+			assertWarnings(0, reader);
+		}
 
-		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
-			.value("John Doe")
-		.noMore();
-		//@formatter:on
-
-		assertWarnings(0, reader);
-
-		vcard = reader.readNext();
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(1, vcard);
-
-		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
-			.value("Jane Doe")
-		.noMore();
-		//@formatter:on
-
-		assertWarnings(0, reader);
+		{
+			VCard vcard = reader.readNext();
+			VCardAsserter asserter = new VCardAsserter(vcard);
+			asserter.version(V4_0);
+	
+			//@formatter:off
+			asserter.simpleProperty(FormattedName.class)
+				.value("Jane Doe")
+			.noMore();
+			//@formatter:on
+	
+			asserter.done();
+			assertWarnings(0, reader);
+		}
 
 		assertNoMoreVCards(reader);
 	}
@@ -173,15 +177,16 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertVersion(V4_0, vcard); //default to 4.0
-		assertPropertyCount(1, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
+		asserter.version(V4_0); //default to 4.0
 
 		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
+		asserter.simpleProperty(FormattedName.class)
 			.value("John Doe")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(1, reader);
 
 		assertNoMoreVCards(reader);
@@ -202,15 +207,16 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertVersion(V4_0, vcard); //should still set the version to 4.0
-		assertPropertyCount(1, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
+		asserter.version(V4_0); //should still set the version to 4.0
 
 		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
+		asserter.simpleProperty(FormattedName.class)
 			.value("John Doe")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(1, reader);
 
 		assertNoMoreVCards(reader);
@@ -229,8 +235,10 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertVersion(V4_0, vcard); //default to 4.0
-		assertPropertyCount(0, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
+		asserter.version(V4_0); //default to 4.0
+
+		asserter.done();
 		assertWarnings(1, reader); //missing VERSION property
 
 		assertNoMoreVCards(reader);
@@ -254,15 +262,23 @@ public class JCardReaderTest {
 
 		JCardReader reader = new JCardReader(json);
 
-		VCard vcard = reader.readNext();
-		assertVersion(V4_0, vcard); //default to 4.0
-		assertPropertyCount(0, vcard);
-		assertWarnings(1, reader); //missing VERSION property
+		{
+			VCard vcard = reader.readNext();
+			VCardAsserter asserter = new VCardAsserter(vcard);
+			asserter.version(V4_0); //default to 4.0
+	
+			asserter.done();
+			assertWarnings(1, reader); //missing VERSION property
+		}
 
-		vcard = reader.readNext();
-		assertVersion(V4_0, vcard); //default to 4.0
-		assertPropertyCount(0, vcard);
-		assertWarnings(1, reader); //missing VERSION property
+		{
+			VCard vcard = reader.readNext();
+			VCardAsserter asserter = new VCardAsserter(vcard);
+			asserter.version(V4_0); //default to 4.0
+	
+			asserter.done();
+			assertWarnings(1, reader); //missing VERSION property
+		}
 
 		assertNoMoreVCards(reader);
 	}
@@ -282,15 +298,17 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 
 		VCard vcard = reader.readNext();
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(1, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
+		asserter.version(V4_0);
 
 		//@formatter:off
-		assertRawProperty("x-type", vcard)
+		asserter.rawProperty("x-type")
+			.dataType(VCardDataType.TEXT)
 			.value("value")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(0, reader);
 	}
 
@@ -356,7 +374,9 @@ public class JCardReaderTest {
 		reader.registerScribe(new SkipMeScribe());
 
 		VCard vcard = reader.readNext();
+		assertVersion(V4_0, vcard);
 		assertPropertyCount(0, vcard);
+
 		assertWarnings(1, reader);
 	}
 
@@ -376,18 +396,21 @@ public class JCardReaderTest {
 		JCardReader reader = new JCardReader(json);
 		reader.registerScribe(new CannotParseScribe());
 		VCard vcard = reader.readNext();
-		assertPropertyCount(2, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
 
 		//@formatter:off
-		assertRawProperty("x-foo", vcard)
+		asserter.rawProperty("x-foo")
+			.dataType(VCardDataType.TEXT)
 			.value("value")
 		.noMore();
 		
-		assertRawProperty("cannotparse", vcard)
+		asserter.rawProperty("cannotparse")
+			.dataType(VCardDataType.TEXT)
 			.value("value")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(1, reader);
 	}
 
@@ -409,14 +432,15 @@ public class JCardReaderTest {
 
 		JCardReader reader = new JCardReader(file);
 		VCard vcard = reader.readNext();
-		assertPropertyCount(1, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
 
 		//@formatter:off
-		assertSimpleProperty(vcard.getNotes())
+		asserter.simpleProperty(Note.class)
 			.value("\u019dote")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
 	}
@@ -474,31 +498,33 @@ public class JCardReaderTest {
 	}
 
 	public static void validateExampleJCard(VCard vcard) {
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(16, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
+		asserter.version(V4_0);
 
 		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
+		asserter.simpleProperty(FormattedName.class)
 			.value("Simon Perreault")
 		.noMore();
 		
-		assertStructuredName(vcard)
+		asserter.structuredName()
 			.family("Perreault")
 			.given("Simon")
 			.suffixes("ing. jr", "M.Sc.")
 			.noMore();
 		
-		assertDateProperty(vcard.getBirthdays())
+		asserter.dateProperty(Birthday.class)
 			.partialDate(PartialDate.builder().month(2).date(3).build())
 		.noMore();
 		
-		assertDateProperty(vcard.getAnniversaries())
+		asserter.dateProperty(Anniversary.class)
 			.date("2009-08-08 19:30:00 +0000")
 		.noMore();
 		
-		assertTrue(vcard.getGender().isMale());
+		asserter.property(Gender.class)
+			.expected(Gender.male())
+		.noMore();
 		
-		assertSimpleProperty(vcard.getLanguages())
+		asserter.simpleProperty(Language.class)
 			.value("fr")
 			.param("PREF", "1")
 		.next()
@@ -506,12 +532,12 @@ public class JCardReaderTest {
 			.param("PREF", "2")
 		.noMore();
 		
-		assertListProperty(vcard.getOrganizations())
+		asserter.listProperty(Organization.class)
 			.values("Viagenie")
 			.param("TYPE", "work")
 		.noMore();
 		
-		assertAddress(vcard)
+		asserter.address()
 			.extendedAddress("Suite D2-630")
 			.streetAddress("2875 Laurier")
 			.locality("Quebec")
@@ -521,7 +547,7 @@ public class JCardReaderTest {
 			.types(AddressType.WORK)
 		.noMore();
 		
-		assertTelephone(vcard)
+		asserter.telephone()
 			.uri(new TelUri.Builder("+1-418-656-9254").extension("102").build())
 			.types(TelephoneType.WORK, TelephoneType.VOICE)
 			.param("PREF", "1")
@@ -530,32 +556,33 @@ public class JCardReaderTest {
 			.types(TelephoneType.WORK, TelephoneType.CELL, TelephoneType.VOICE, TelephoneType.VIDEO, TelephoneType.TEXT)
 		.noMore();
 		
-		assertEmail(vcard)
+		asserter.email()
 			.value("simon.perreault@viagenie.ca")
 			.types(EmailType.WORK)
 		.noMore();
 		
-		assertGeo(vcard)
+		asserter.geo()
 			.latitude(46.772673)
 			.longitude(-71.282945)
 			.param("TYPE", "work")
 		.noMore();
 		
-		assertBinaryProperty(vcard.getKeys())
+		asserter.binaryProperty(Key.class)
 			.url("http://www.viagenie.ca/simon.perreault/simon.asc")
 			.param("TYPE","work")
 		.noMore();
 		
-		assertTimezone(vcard)
+		asserter.timezone()
 			.offset(new UtcOffset(false, -5, 0))
 		.noMore();
 		
-		assertSimpleProperty(vcard.getUrls())
+		asserter.simpleProperty(Url.class)
 			.value("http://nomis80.org")
 			.param("TYPE", "home")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertValidate(vcard).versions(vcard.getVersion()).run();
 	}
 }

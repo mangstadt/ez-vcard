@@ -5,9 +5,6 @@ import static ezvcard.VCardDataType.TEXT;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.property.asserter.PropertyAsserter.assertAddress;
-import static ezvcard.property.asserter.PropertyAsserter.assertRawProperty;
-import static ezvcard.property.asserter.PropertyAsserter.assertSimpleProperty;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertPropertyCount;
@@ -39,10 +36,12 @@ import ezvcard.parameter.AddressType;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
+import ezvcard.property.FormattedName;
 import ezvcard.property.Label;
 import ezvcard.property.Note;
 import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
+import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
 
 /*
@@ -681,29 +680,20 @@ public class VCardReaderTest {
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
-
-		//@formatter:off
+		assertVersion(V3_0, vcard);
 		assertPropertyCount(2, vcard);
-		assertSimpleProperty(vcard.getFormattedNames())
-			.value("John Doe")
-		.noMore();
-		
-		VCard agent1 = vcard.getAgent().getVCard();
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		{
+			VCard agent1 = vcard.getAgent().getVCard();
+			assertVersion(V3_0, agent1);
 			assertPropertyCount(2, agent1);
-			assertSimpleProperty(agent1.getFormattedNames())
-				.value("Agent 007")
-			.noMore();
-			
-			VCard agent2 = agent1.getAgent().getVCard();
+			assertEquals("Agent 007", agent1.getFormattedName().getValue());
 			{
+				VCard agent2 = agent1.getAgent().getVCard();
 				assertPropertyCount(1, agent2);
-				assertSimpleProperty(agent2.getFormattedNames())
-					.value("Agent 009")
-				.noMore();
+				assertEquals("Agent 009", agent2.getFormattedName().getValue());
 			}
 		}
-		//@formatter:on
 
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
@@ -729,10 +719,10 @@ public class VCardReaderTest {
 
 		VCardReader reader = new VCardReader(str);
 		VCard vcard = reader.readNext();
-		assertPropertyCount(3, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
 
 		//@formatter:off
-		assertAddress(vcard)
+		asserter.address()
 			.streetAddress("123 Main St.")
 			.locality("Austin")
 			.region("TX")
@@ -749,12 +739,13 @@ public class VCardReaderTest {
 			.types(AddressType.WORK, AddressType.PARCEL)
 		.noMore();
 		
-		assertSimpleProperty(vcard.getOrphanedLabels())
+		asserter.simpleProperty(Label.class)
 			.value("200 Broadway" + NEWLINE + "New York, NY 12345" + NEWLINE + "USA")
 			.param("TYPE", "work")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
 	}
@@ -773,14 +764,15 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new SkipMeScribe());
 		VCard vcard = reader.readNext();
-		assertPropertyCount(1, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
 
 		//@formatter:off
-		assertRawProperty("X-FOO", vcard)
+		asserter.rawProperty("X-FOO")
 			.value("value")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(1, reader);
 		assertNoMoreVCards(reader);
 	}
@@ -801,14 +793,14 @@ public class VCardReaderTest {
 		reader.registerScribe(new CannotParseScribe());
 
 		VCard vcard = reader.readNext();
-		assertPropertyCount(3, vcard);
+		VCardAsserter asserter = new VCardAsserter(vcard);
 
 		//@formatter:off
-		assertRawProperty("X-FOO", vcard)
+		asserter.rawProperty("X-FOO")
 			.value("value")
 		.noMore();
 		
-		assertRawProperty("CANNOTPARSE", vcard)
+		asserter.rawProperty("CANNOTPARSE")
 			.value("value")
 		.next()
 			.group("group")
@@ -816,6 +808,7 @@ public class VCardReaderTest {
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(2, reader);
 		assertNoMoreVCards(reader);
 	}
@@ -831,8 +824,10 @@ public class VCardReaderTest {
 		//@formatter:on
 
 		VCardReader reader = new VCardReader(str);
-		reader.readNext();
+		VCard vcard = reader.readNext();
+		VCardAsserter asserter = new VCardAsserter(vcard);
 
+		asserter.done();
 		assertWarnings(1, reader);
 		assertNoMoreVCards(reader);
 	}
@@ -849,10 +844,10 @@ public class VCardReaderTest {
 
 		VCardReader reader = new VCardReader(str);
 		reader.registerScribe(new WarningsScribe());
-		reader.readNext();
+		VCard vcard = reader.readNext();
+		assertPropertyCount(1, vcard);
 
 		assertEquals(Arrays.asList("Line 3 (WARNINGS property): one"), reader.getWarnings());
-
 		assertWarnings(1, reader);
 		assertNoMoreVCards(reader);
 	}
@@ -1080,15 +1075,16 @@ public class VCardReaderTest {
 		VCardReader reader = new VCardReader(str);
 
 		VCard vcard = reader.readNext();
+		VCardAsserter asserter = new VCardAsserter(vcard);
 		assertVersion(V3_0, vcard);
-		assertPropertyCount(1, vcard);
 
 		//@formatter:off
-		assertSimpleProperty(vcard.getFormattedNames())
+		asserter.simpleProperty(FormattedName.class)
 			.value("John Doe")
 		.noMore();
 		//@formatter:on
 
+		asserter.done();
 		assertWarnings(0, reader);
 		assertNoMoreVCards(reader);
 	}

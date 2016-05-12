@@ -47,8 +47,8 @@ public class BinaryPropertyAsserter<T extends BinaryProperty> extends PropertyAs
 	private Integer dataLength;
 	private String url;
 
-	public BinaryPropertyAsserter(List<T> properties) {
-		super(properties);
+	public BinaryPropertyAsserter(List<T> properties, VCardAsserter asserter) {
+		super(properties, asserter);
 	}
 
 	public BinaryPropertyAsserter<T> contentType(MediaTypeParameter contentType) {

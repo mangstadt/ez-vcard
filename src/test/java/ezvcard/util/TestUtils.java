@@ -145,18 +145,19 @@ public class TestUtils {
 			return false;
 		}
 
-		List<Integer> actualCodes = new ArrayList<Integer>(); //don't use a Set because there can be multiple warnings with the same code
-		for (Warning warning : warnings) {
-			actualCodes.add(warning.getCode());
-		}
+		/*
+		 * Don't use a Set because there can be multiple warnings with the same
+		 * code.
+		 */
+		List<Integer> expected = new ArrayList<Integer>(Arrays.asList(expectedCodes));
 
-		for (Integer code : expectedCodes) {
-			boolean found = actualCodes.remove((Object) code);
-			if (!found) {
+		for (Warning warning : warnings) {
+			Integer code = warning.getCode();
+			boolean removed = expected.remove((Object) code);
+			if (!removed) {
 				return false;
 			}
 		}
-
 		return true;
 	}
 
@@ -206,12 +207,13 @@ public class TestUtils {
 		 */
 		public void run() {
 			for (VCardVersion version : versions) {
+				Map<VCardProperty, Integer[]> expectedPropCodes = new HashMap<VCardProperty, Integer[]>(this.expectedPropCodes);
 				ValidationWarnings warnings = vcard.validate(version);
 				for (Map.Entry<VCardProperty, List<Warning>> entry : warnings) {
 					VCardProperty property = entry.getKey();
 					List<Warning> actualWarnings = entry.getValue();
 
-					Integer[] expectedCodes = expectedPropCodes.get(property);
+					Integer[] expectedCodes = expectedPropCodes.remove(property);
 					if (expectedCodes == null) {
 						String className = (property == null) ? "vCard" : property.getClass().getSimpleName();
 						fail("For version " + version + ", " + className + " had " + actualWarnings.size() + " warnings, but none were expected.  Actual warnings:\n" + warnings);
@@ -221,6 +223,17 @@ public class TestUtils {
 					if (!passed) {
 						fail("For version " + version + ", expected validation warnings did not match actual warnings.  Actual warnings:\n" + warnings);
 					}
+				}
+
+				if (!expectedPropCodes.isEmpty()) {
+					List<String> lines = new ArrayList<String>();
+					for (Map.Entry<VCardProperty, Integer[]> entry : expectedPropCodes.entrySet()) {
+						VCardProperty property = entry.getKey();
+						String className = (property == null) ? null : property.getClass().getSimpleName();
+						Integer[] expectedCodes = entry.getValue();
+						lines.add(className + ": " + Arrays.toString(expectedCodes));
+					}
+					fail("For version " + version + ", the following validation warnings were expected, but NOT thrown:\n" + lines + "\nActual warnings:\n" + warnings);
 				}
 			}
 		}

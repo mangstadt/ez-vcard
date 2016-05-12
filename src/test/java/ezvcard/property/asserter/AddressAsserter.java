@@ -1,8 +1,7 @@
 package ezvcard.property.asserter;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Arrays.asList;
 
-import java.util.Arrays;
 import java.util.List;
 
 import ezvcard.parameter.AddressType;
@@ -40,75 +39,58 @@ import ezvcard.property.Address;
 /**
  * @author Michael Angstadt
  */
-public class AddressAsserter extends PropertyAsserter<AddressAsserter, Address> {
-	private String poBox, extendedAddress, streetAddress, locality, region, postalCode, country, label;
-	private AddressType[] types;
-
-	public AddressAsserter(List<Address> properties) {
-		super(properties);
+public class AddressAsserter extends PropertyImplAsserter<AddressAsserter, Address> {
+	public AddressAsserter(List<Address> properties, VCardAsserter asserter) {
+		super(properties, asserter);
 	}
 
 	public AddressAsserter poBox(String poBox) {
-		this.poBox = poBox;
+		expected.setPoBox(poBox);
 		return this_;
 	}
 
 	public AddressAsserter extendedAddress(String extendedAddress) {
-		this.extendedAddress = extendedAddress;
+		expected.setExtendedAddress(extendedAddress);
 		return this_;
 	}
 
-	public AddressAsserter streetAddress(String streetAddress) {
-		this.streetAddress = streetAddress;
+	public AddressAsserter streetAddress(String... streetAddress) {
+		expected.getStreetAddresses().addAll(asList(streetAddress));
 		return this_;
 	}
 
 	public AddressAsserter locality(String locality) {
-		this.locality = locality;
+		expected.setLocality(locality);
 		return this_;
 	}
 
 	public AddressAsserter region(String region) {
-		this.region = region;
+		expected.setRegion(region);
 		return this_;
 	}
 
 	public AddressAsserter postalCode(String postalCode) {
-		this.postalCode = postalCode;
+		expected.setPostalCode(postalCode);
 		return this_;
 	}
 
 	public AddressAsserter country(String country) {
-		this.country = country;
+		expected.setCountry(country);
 		return this_;
 	}
 
 	public AddressAsserter label(String label) {
-		this.label = label;
+		expected.setLabel(label);
 		return this_;
 	}
 
 	public AddressAsserter types(AddressType... types) {
-		this.types = types;
+		expected.getTypes().addAll(asList(types));
 		return this_;
 	}
 
 	@Override
-	protected void _run(Address property) {
-		assertEquals(poBox, property.getPoBox());
-		assertEquals(extendedAddress, property.getExtendedAddress());
-		assertEquals(streetAddress, property.getStreetAddress());
-		assertEquals(locality, property.getLocality());
-		assertEquals(region, property.getRegion());
-		assertEquals(postalCode, property.getPostalCode());
-		assertEquals(country, property.getCountry());
-		assertEquals(label, property.getLabel());
-		assertEquals(Arrays.asList(types), property.getTypes());
-	}
-
-	@Override
-	protected void _reset() {
-		poBox = extendedAddress = streetAddress = locality = region = postalCode = country = label = null;
-		types = new AddressType[0];
+	protected Address _newInstance() {
+		return new Address();
 	}
 }

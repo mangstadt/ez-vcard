@@ -1,7 +1,5 @@
 package ezvcard.property.asserter;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 
 import ezvcard.property.Timezone;
@@ -39,33 +37,23 @@ import ezvcard.util.UtcOffset;
 /**
  * @author Michael Angstadt
  */
-public class TimezoneAsserter extends PropertyAsserter<TimezoneAsserter, Timezone> {
-	private UtcOffset offset;
-	private String text;
-
-	public TimezoneAsserter(List<Timezone> properties) {
-		super(properties);
+public class TimezoneAsserter extends PropertyImplAsserter<TimezoneAsserter, Timezone> {
+	public TimezoneAsserter(List<Timezone> properties, VCardAsserter asserter) {
+		super(properties, asserter);
 	}
 
 	public TimezoneAsserter offset(UtcOffset offset) {
-		this.offset = offset;
+		expected.setOffset(offset);
 		return this_;
 	}
 
 	public TimezoneAsserter text(String text) {
-		this.text = text;
+		expected.setText(text);
 		return this_;
 	}
 
 	@Override
-	protected void _run(Timezone property) {
-		assertEquals(offset, property.getOffset());
-		assertEquals(text, property.getText());
-	}
-
-	@Override
-	protected void _reset() {
-		offset = null;
-		text = null;
+	protected Timezone _newInstance() {
+		return new Timezone((String) null);
 	}
 }

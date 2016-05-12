@@ -1,8 +1,14 @@
 package ezvcard.property.asserter;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+
 import java.util.List;
 
-import ezvcard.property.Geo;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import ezvcard.property.Xml;
+import ezvcard.util.XmlUtils;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -36,23 +42,26 @@ import ezvcard.property.Geo;
 /**
  * @author Michael Angstadt
  */
-public class GeoAsserter extends PropertyImplAsserter<GeoAsserter, Geo> {
-	public GeoAsserter(List<Geo> properties, VCardAsserter asserter) {
+public class XmlAsserter extends PropertyAsserter<XmlAsserter, Xml> {
+	private Document xml;
+
+	public XmlAsserter(List<Xml> properties, VCardAsserter asserter) {
 		super(properties, asserter);
 	}
 
-	public GeoAsserter latitude(Double latitude) {
-		expected.setLatitude(latitude);
-		return this_;
-	}
-
-	public GeoAsserter longitude(Double longitude) {
-		expected.setLongitude(longitude);
+	public XmlAsserter value(String xml) throws SAXException {
+		this.xml = XmlUtils.toDocument(xml);
 		return this_;
 	}
 
 	@Override
-	protected Geo _newInstance() {
-		return new Geo(null, null);
+	protected void _run(Xml actual) {
+		Document actualDoc = actual.getValue();
+		assertXMLEqual(xml, actualDoc);
+	}
+
+	@Override
+	protected void _reset() {
+		xml = null;
 	}
 }

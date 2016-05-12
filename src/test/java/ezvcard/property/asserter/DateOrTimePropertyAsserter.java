@@ -45,8 +45,8 @@ public class DateOrTimePropertyAsserter<T extends DateOrTimeProperty> extends Pr
 	private Date date;
 	private PartialDate partialDate;
 
-	public DateOrTimePropertyAsserter(List<T> properties) {
-		super(properties);
+	public DateOrTimePropertyAsserter(List<T> properties, VCardAsserter asserter) {
+		super(properties, asserter);
 	}
 
 	public DateOrTimePropertyAsserter<T> date(String dateStr) {
