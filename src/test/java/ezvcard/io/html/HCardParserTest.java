@@ -64,151 +64,111 @@ import ezvcard.util.TelUri;
  */
 public class HCardParserTest {
 	@Test
-	public void html_without_vcard() {
+	public void html_without_vcard() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body></body>" +
-		"</html>";
+		"</html>"
+		);
 		//@formatter:on
 
-		HCardParser parser = new HCardParser(html);
-		assertNoMoreVCards(parser);
-		parser.close();
+		asserter.done();
 	}
 
 	@Test
-	public void empty_vcard() {
+	public void empty_vcard() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\" />" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
 		//@formatter:on
 
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
+		asserter.next(V3_0);
+		asserter.done();
 	}
 
 	@Test
-	public void vcard_element_has_other_classes() {
+	public void vcard_element_has_other_classes() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"foo bar vcard\">" +
 					"<span class=\"fn\">John Doe</span>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void case_insensitive_property_names() {
+	public void case_insensitive_property_names() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
 					"<span class=\"fN\">John Doe</span>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			//@formatter:on);
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void single_tag_with_multiple_properties() {
+	public void single_tag_with_multiple_properties() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
 					"<a class=\"fn url\" href=\"http://johndoe.com\">John Doe</span>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+		
+		asserter.simpleProperty(Url.class)
+			.value("http://johndoe.com")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			
-			asserter.simpleProperty(Url.class)
-				.value("http://johndoe.com")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void property_tags_are_not_direct_children_of_root_tag() {
+	public void property_tags_are_not_direct_children_of_root_tag() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
@@ -225,41 +185,31 @@ public class HCardParserTest {
 					"</table>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+		
+		asserter.simpleProperty(Url.class)
+			.value("http://johndoe.com")
+		.noMore();
+		
+		asserter.telephone()
+			.text("(555) 555-1234")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			
-			asserter.simpleProperty(Url.class)
-				.value("http://johndoe.com")
-			.noMore();
-			
-			asserter.telephone()
-				.text("(555) 555-1234")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void property_tags_within_other_property_tags() {
+	public void property_tags_within_other_property_tags() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
@@ -268,37 +218,27 @@ public class HCardParserTest {
 					"</div>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.structuredName()
+			.family("Smith")
+		.noMore();
+		
+		asserter.listProperty(Organization.class)
+			.values("Smith")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.structuredName()
-				.family("Smith")
-			.noMore();
-			
-			asserter.listProperty(Organization.class)
-				.values("Smith")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void read_multiple() {
+	public void read_multiple() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
@@ -308,42 +248,21 @@ public class HCardParserTest {
 					"<span class=\"fn\">Jane Doe</span>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+
+		asserter.next(V3_0);
+		asserter.simpleProperty(FormattedName.class)
+			.value("Jane Doe")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Jane Doe")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
@@ -367,32 +286,30 @@ public class HCardParserTest {
 
 		HCardParser parser = new HCardParser(html);
 
+		VCard vcard = parser.readNext();
+		assertVersion(V3_0, vcard);
+		assertPropertyCount(2, vcard);
+		assertEquals("John Doe", vcard.getFormattedName().getValue());
 		{
-			VCard vcard = parser.readNext();
-			assertVersion(V3_0, vcard);
-			assertPropertyCount(2, vcard);
-			assertEquals("John Doe", vcard.getFormattedName().getValue());
+			VCard embedded = vcard.getAgent().getVCard();
+			assertVersion(V3_0, embedded);
+			assertPropertyCount(2, embedded);
+			assertEquals("Jane Doe", embedded.getFormattedName().getValue());
 			{
-				VCard embedded = vcard.getAgent().getVCard();
-				assertVersion(V3_0, embedded);
-				assertPropertyCount(2, embedded);
-				assertEquals("Jane Doe", embedded.getFormattedName().getValue());
-				{
-					VCard embedded2 = embedded.getAgent().getVCard();
-					assertVersion(V3_0, embedded2);
-					assertPropertyCount(1, embedded2);
-					assertEquals("Joseph Doe", embedded2.getFormattedName().getValue());
-				}
+				VCard embedded2 = embedded.getAgent().getVCard();
+				assertVersion(V3_0, embedded2);
+				assertPropertyCount(1, embedded2);
+				assertEquals("Joseph Doe", embedded2.getFormattedName().getValue());
 			}
-
-			assertWarnings(0, parser);
 		}
+
+		assertWarnings(0, parser);
 
 		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void url_of_vcard_specified() {
+	public void url_of_vcard_specified() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -402,212 +319,155 @@ public class HCardParserTest {
 				"</div>" +
 			"</body>" +
 		"</html>";
-		//@formatter:on
 
 		HCardParser parser = new HCardParser(html, "http://johndoe.com/vcard.html");
+		VCardAsserter asserter = new VCardAsserter(parser);
 
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+		asserter.next(V3_0);
 
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			
-			asserter.simpleProperty(Url.class)
-				.value("http://johndoe.com/index.html")
-			.noMore();
-			
-			asserter.simpleProperty(Source.class)
-				.value("http://johndoe.com/vcard.html")
-			.noMore();
-			//@formatter:on
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+		
+		asserter.simpleProperty(Url.class)
+			.value("http://johndoe.com/index.html")
+		.noMore();
+		
+		asserter.simpleProperty(Source.class)
+			.value("http://johndoe.com/vcard.html")
+		.noMore();
 
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
+		asserter.done();
+		//@formatter:on
 	}
 
 	@Test
-	public void convert_instant_messenging_urls_to_impp_types() {
+	public void convert_instant_messenging_urls_to_impp_types() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
 					"<a class=\"url\" href=\"aim:goim?screenname=ShoppingBuddy\">IM with the AIM ShoppingBuddy</a>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.impp()
+			.uri("aim:ShoppingBuddy")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.impp()
-				.uri("aim:ShoppingBuddy")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void convert_mailto_urls_to_email_types() {
+	public void convert_mailto_urls_to_email_types() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
 					"<a class=\"url\" href=\"mailto:jdoe@hotmail.com\">Email me</a>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.email()
+			.value("jdoe@hotmail.com")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.email()
-				.value("jdoe@hotmail.com")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void convert_tel_urls_to_tel_types() {
+	public void convert_tel_urls_to_tel_types() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
 					"<a class=\"url\" href=\"tel:+15555551234\">Call me</a>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.telephone()
+			.uri(new TelUri.Builder("+15555551234").build())
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.telephone()
-				.uri(new TelUri.Builder("+15555551234").build())
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void mailto_url_with_email_and_url_class_names() {
+	public void mailto_url_with_email_and_url_class_names() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
 					"<a class=\"email url\" href=\"mailto:jdoe@hotmail.com\">Email me</a>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(Url.class)
+			.value("mailto:jdoe@hotmail.com")
+		.noMore();
+		
+		asserter.email()
+			.value("jdoe@hotmail.com")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(Url.class)
-				.value("mailto:jdoe@hotmail.com")
-			.noMore();
-			
-			asserter.email()
-				.value("jdoe@hotmail.com")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void tel_url_with_tel_and_url_class_names() {
+	public void tel_url_with_tel_and_url_class_names() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
 					"<a class=\"tel url\" href=\"tel:+15555551234\">Call me</a>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(Url.class)
+			.value("tel:+15555551234")
+		.noMore();
+		
+		asserter.telephone()
+			.uri(new TelUri.Builder("+15555551234").build())
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(Url.class)
-				.value("tel:+15555551234")
-			.noMore();
-			
-			asserter.telephone()
-				.uri(new TelUri.Builder("+15555551234").build())
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void assign_labels_to_addresses() {
+	public void assign_labels_to_addresses() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
@@ -620,41 +480,31 @@ public class HCardParserTest {
 					"<abbr class=\"label\" title=\"456 Wall St., New York, NY 67890\"><abbr class=\"type\" title=\"work\"></abbr></abbr>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.address()
+			.streetAddress("123 Main St.")
+			.locality("Austin")
+			.region("TX")
+			.postalCode("12345")
+			.label("123 Main St. Austin, TX 12345")
+			.types(AddressType.HOME)
+		.noMore();
+		
+		asserter.simpleProperty(Label.class)
+			.value("456 Wall St., New York, NY 67890")
+			.param("TYPE", "work")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.address()
-				.streetAddress("123 Main St.")
-				.locality("Austin")
-				.region("TX")
-				.postalCode("12345")
-				.label("123 Main St. Austin, TX 12345")
-				.types(AddressType.HOME)
-			.noMore();
-			
-			asserter.simpleProperty(Label.class)
-				.value("456 Wall St., New York, NY 67890")
-				.param("TYPE", "work")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void anchor_in_url() {
+	public void anchor_in_url() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -669,34 +519,26 @@ public class HCardParserTest {
 				"</div>" +
 			"</body>" +
 		"</html>";
-		//@formatter:on
 
 		HCardParser parser = new HCardParser(html, "http://johndoe.com/vcard.html#anchor");
+		VCardAsserter asserter = new VCardAsserter(parser);
 
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+		asserter.next(V3_0);
 
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Jane Doe")
-			.noMore();
+		asserter.simpleProperty(FormattedName.class)
+			.value("Jane Doe")
+		.noMore();
 
-			asserter.simpleProperty(Source.class)
-				.value("http://johndoe.com/vcard.html#anchor")
-			.noMore();
-			//@formatter:on
+		asserter.simpleProperty(Source.class)
+			.value("http://johndoe.com/vcard.html#anchor")
+		.noMore();
 
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
+		asserter.done();
+		//@formatter:on
 	}
 
 	@Test
-	public void non_existant_anchor() {
+	public void non_existant_anchor() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -711,52 +553,38 @@ public class HCardParserTest {
 				"</div>" +
 			"</body>" +
 		"</html>";
-		//@formatter:on
 
 		HCardParser parser = new HCardParser(html, "http://johndoe.com/vcard.html#non-existant");
+		VCardAsserter asserter = new VCardAsserter(parser);
 
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+		asserter.next(V3_0);
 
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
 
-			asserter.simpleProperty(Source.class)
-				.value("http://johndoe.com/vcard.html#non-existant")
-			.noMore();
-			//@formatter:on
+		asserter.simpleProperty(Source.class)
+			.value("http://johndoe.com/vcard.html#non-existant")
+		.noMore();
 
-			asserter.done();
-		}
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+		asserter.next(V3_0);
 
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Jane Doe")
-			.noMore();
+		asserter.simpleProperty(FormattedName.class)
+			.value("Jane Doe")
+		.noMore();
 
-			asserter.simpleProperty(Source.class)
-				.value("http://johndoe.com/vcard.html#non-existant")
-			.noMore();
-			//@formatter:on
+		asserter.simpleProperty(Source.class)
+			.value("http://johndoe.com/vcard.html#non-existant")
+		.noMore();
 
-			asserter.done();
-		}
-
-		assertNoMoreVCards(parser);
+		asserter.done();
+		//@formatter:on
 	}
 
 	@Test
-	public void add_all_nicknames_to_the_same_object() {
+	public void add_all_nicknames_to_the_same_object() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
@@ -766,37 +594,27 @@ public class HCardParserTest {
 					"<span class=\"nickname\">Johnster</span>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+		
+		asserter.listProperty(Nickname.class)
+			.values("Johnny", "Johnny 5", "Johnster")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			
-			asserter.listProperty(Nickname.class)
-				.values("Johnny", "Johnny 5", "Johnster")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void add_all_categories_to_the_same_object() {
+	public void add_all_categories_to_the_same_object() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
@@ -806,37 +624,27 @@ public class HCardParserTest {
 					"<span class=\"category\" rel=\"singer\">I also sing</span>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+		
+		asserter.listProperty(Categories.class)
+			.values("programmer", "swimmer", "singer")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			
-			asserter.listProperty(Categories.class)
-				.values("programmer", "swimmer", "singer")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void complete_vcard() {
+	public void complete_vcard() throws Exception {
 		//@formatter:off
-		String html =
+		VCardAsserter asserter = readHtml(
 		"<html>" +
 			"<body>" +
 				"<div class=\"vcard\">" +
@@ -860,60 +668,50 @@ public class HCardParserTest {
 					"</div>" +
 				"</div>" +
 			"</body>" +
-		"</html>";
+		"</html>"
+		);
+
+		asserter.next(V3_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("CommerceNet")
+		.noMore();
+		
+		asserter.listProperty(Organization.class)
+			.values("CommerceNet")
+		.noMore();
+		
+		asserter.simpleProperty(Url.class)
+			.value("http://www.commerce.net/")
+		.noMore();
+		
+		asserter.address()
+			.types(AddressType.WORK)
+			.streetAddress("169 University Avenue")
+			.locality("Palo Alto")
+			.region("California")
+			.postalCode("94301")
+			.country("USA")
+		.noMore();
+		
+		asserter.telephone()
+			.types(TelephoneType.WORK)
+			.text("+1-650-289-4040")
+		.next()
+			.types(TelephoneType.FAX)
+			.text("+1-650-289-4041")
+		.noMore();
+		
+		asserter.email()
+			.value("info@commerce.net")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		HCardParser parser = new HCardParser(html);
-
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("CommerceNet")
-			.noMore();
-			
-			asserter.listProperty(Organization.class)
-				.values("CommerceNet")
-			.noMore();
-			
-			asserter.simpleProperty(Url.class)
-				.value("http://www.commerce.net/")
-			.noMore();
-			
-			asserter.address()
-				.types(AddressType.WORK)
-				.streetAddress("169 University Avenue")
-				.locality("Palo Alto")
-				.region("California")
-				.postalCode("94301")
-				.country("USA")
-			.noMore();
-			
-			asserter.telephone()
-				.types(TelephoneType.WORK)
-				.text("+1-650-289-4040")
-			.next()
-				.types(TelephoneType.FAX)
-				.text("+1-650-289-4041")
-			.noMore();
-			
-			asserter.email()
-				.value("info@commerce.net")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, parser);
-		}
-
-		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void registerExtendedProperty() {
+	public void registerExtendedProperty() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -930,28 +728,26 @@ public class HCardParserTest {
 		HCardParser parser = new HCardParser(html);
 		parser.registerScribe(new LuckyNumScribe());
 
-		{
-			VCard vcard = parser.readNext();
-			assertVersion(V3_0, vcard);
-			assertPropertyCount(3, vcard);
+		VCard vcard = parser.readNext();
+		assertVersion(V3_0, vcard);
+		assertPropertyCount(3, vcard);
 
-			//read a type that has a type class
-			List<LuckyNumProperty> luckyNumTypes = vcard.getProperties(LuckyNumProperty.class);
-			assertEquals(2, luckyNumTypes.size());
-			assertEquals(24, luckyNumTypes.get(0).luckyNum);
-			assertEquals(22, luckyNumTypes.get(1).luckyNum);
+		//read a type that has a type class
+		List<LuckyNumProperty> luckyNumTypes = vcard.getProperties(LuckyNumProperty.class);
+		assertEquals(2, luckyNumTypes.size());
+		assertEquals(24, luckyNumTypes.get(0).luckyNum);
+		assertEquals(22, luckyNumTypes.get(1).luckyNum);
 
-			//read a type without a type class
-			assertEquals("male", vcard.getExtendedProperty("X-GENDER").getValue());
+		//read a type without a type class
+		assertEquals("male", vcard.getExtendedProperty("X-GENDER").getValue());
 
-			assertWarnings(0, parser);
-		}
+		assertWarnings(0, parser);
 
 		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void registerExtendedProperty_overrides_standard_type_classes() {
+	public void registerExtendedProperty_overrides_standard_type_classes() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -966,22 +762,20 @@ public class HCardParserTest {
 		HCardParser parser = new HCardParser(html);
 		parser.registerScribe(new MyFormattedNameScribe());
 
-		{
-			VCard vcard = parser.readNext();
-			assertVersion(V3_0, vcard);
-			assertPropertyCount(1, vcard);
+		VCard vcard = parser.readNext();
+		assertVersion(V3_0, vcard);
+		assertPropertyCount(1, vcard);
 
-			//read a type that has a type class
-			assertEquals("JOHN DOE", vcard.getProperty(MyFormattedNameProperty.class).value);
+		//read a type that has a type class
+		assertEquals("JOHN DOE", vcard.getProperty(MyFormattedNameProperty.class).value);
 
-			assertWarnings(0, parser);
-		}
+		assertWarnings(0, parser);
 
 		assertNoMoreVCards(parser);
 	}
 
 	@Test
-	public void skipMeException() {
+	public void skipMeException() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -992,32 +786,24 @@ public class HCardParserTest {
 				"</div>" +
 			"</body>" +
 		"</html>";
-		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
 		parser.registerScribe(new SkipMeScribe());
+		VCardAsserter asserter = new VCardAsserter(parser);
 
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-			assertPropertyCount(1, vcard);
+		asserter.next(V3_0);
 
-			//@formatter:off
-			asserter.rawProperty("x-foo")
-				.value("value")
-			.noMore();
-			//@formatter:on
+		asserter.rawProperty("x-foo")
+			.value("value")
+		.noMore();
 
-			asserter.done();
-			assertWarnings(1, parser);
-		}
-
-		assertNoMoreVCards(parser);
+		asserter.warnings(1);
+		asserter.done();
+		//@formatter:on
 	}
 
 	@Test
-	public void cannotParseException() {
+	public void cannotParseException() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -1028,31 +814,28 @@ public class HCardParserTest {
 				"</div>" +
 			"</body>" +
 		"</html>";
-		//@formatter:on
 
 		HCardParser parser = new HCardParser(html);
 		parser.registerScribe(new CannotParseScribe());
+		VCardAsserter asserter = new VCardAsserter(parser);
 
-		{
-			VCard vcard = parser.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
-			assertPropertyCount(2, vcard);
+		asserter.next(V3_0);
 
-			//@formatter:off
-			asserter.rawProperty("x-foo")
-				.value("value")
-			.noMore();
-			
-			asserter.rawProperty("cannotparse")
-				.value("<span class=\"cannotparse\">value</span>")
-			.noMore();
-			//@formatter:on
+		asserter.rawProperty("x-foo")
+			.value("value")
+		.noMore();
+		
+		asserter.rawProperty("cannotparse")
+			.value("<span class=\"cannotparse\">value</span>")
+		.noMore();
 
-			asserter.done();
-			assertWarnings(1, parser);
-		}
+		asserter.warnings(1);
+		asserter.done();
+		//@formatter:on
+	}
 
-		assertNoMoreVCards(parser);
+	private static VCardAsserter readHtml(String html) {
+		HCardParser parser = new HCardParser(html);
+		return new VCardAsserter(parser);
 	}
 }

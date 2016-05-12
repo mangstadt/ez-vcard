@@ -3,7 +3,6 @@ package ezvcard.io.xml;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertPropertyCount;
-import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
@@ -104,7 +103,7 @@ public class XCardReaderTest {
 	@Test
 	public void read_single() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<!-- ignore -->" +
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
@@ -119,39 +118,30 @@ public class XCardReaderTest {
 					"<suffix>MD</suffix>" +
 				"</n>" +
 			"</vcard>" +
-		"</vcards>";
+		"</vcards>"
+		);
+
+		asserter.next(V4_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("Dr. Gregory House M.D.")
+		.noMore();
+		
+		asserter.structuredName()
+			.family("House")
+			.given("Gregory")
+			.prefixes("Dr", "Mr")
+			.suffixes("MD")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Dr. Gregory House M.D.")
-			.noMore();
-			
-			asserter.structuredName()
-				.family("House")
-				.given("Gregory")
-				.prefixes("Dr", "Mr")
-				.suffixes("MD")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void read_multiple() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
@@ -175,154 +165,115 @@ public class XCardReaderTest {
 					"<suffix>MD</suffix>" +
 				"</n>" +
 			"</vcard>" +
-		"</vcards>";
+		"</vcards>"
+		);
+
+		asserter.next(V4_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("Dr. Gregory House M.D.")
+		.noMore();
+		
+		asserter.structuredName()
+			.family("House")
+			.given("Gregory")
+			.prefixes("Dr", "Mr")
+			.suffixes("MD")
+		.noMore();
+
+		asserter.next(V4_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("Dr. Lisa Cuddy M.D.")
+		.noMore();
+		
+		asserter.structuredName()
+			.family("Cuddy")
+			.given("Lisa")
+			.prefixes("Dr", "Ms")
+			.suffixes("MD")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Dr. Gregory House M.D.")
-			.noMore();
-			
-			asserter.structuredName()
-				.family("House")
-				.given("Gregory")
-				.prefixes("Dr", "Mr")
-				.suffixes("MD")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Dr. Lisa Cuddy M.D.")
-			.noMore();
-			
-			asserter.structuredName()
-				.family("Cuddy")
-				.given("Lisa")
-				.prefixes("Dr", "Ms")
-				.suffixes("MD")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void read_default_namespace() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<vcards>" +
 			"<vcard>" +
 				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
 			"</vcard>" +
-		"</vcards>";
+		"</vcards>"
+		);
 		//@formatter:on
 
-		XCardReader reader = new XCardReader(xml);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void read_wrong_namespace() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"wrong\">" +
 			"<vcard>" +
 				"<fn><text>Dr. Gregory House M.D.</text></fn>" +
 			"</vcard>" +
-		"</vcards>";
+		"</vcards>"
+		);
 		//@formatter:on
 
-		XCardReader reader = new XCardReader(xml);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void read_namespace_prefix() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<v:vcards xmlns:v=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<v:vcard>" +
 				"<v:fn><x:text xmlns:x=\"" + V4_0.getXmlNamespace() + "\">Dr. Gregory House M.D.</x:text></v:fn>" +
 			"</v:vcard>" +
-		"</v:vcards>";
+		"</v:vcards>"
+		);
+		
+		asserter.next(V4_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("Dr. Gregory House M.D.")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Dr. Gregory House M.D.")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void read_preserve_whitespace() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<note><text>  This \t  is \n   a   note </text></note>" +
 			"</vcard>" +
-		"</vcards>";
+		"</vcards>"
+		);
+		
+		asserter.next(V4_0);
+
+		asserter.simpleProperty(Note.class)
+			.value("  This \t  is \n   a   note ")
+		.noMore();
+		
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(Note.class)
-				.value("  This \t  is \n   a   note ")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void read_ignore_other_namespaces() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<root>" +
 			"<ignore xmlns=\"one\" />" +
 			"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -338,35 +289,25 @@ public class XCardReaderTest {
 					"</fn>" +
 				"</vcard>" +
 			"</vcards>" +
-		"</root>";
+		"</root>"
+		);
+		
+		asserter.next(V4_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.value("Dr. Gregory House M.D.")
+			.param("PREF", "1")
+			.param("PREF", "2")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Dr. Gregory House M.D.")
-				.param("PREF", "1")
-				.param("PREF", "2")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void read_identical_element_names() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<vcard>" +
@@ -382,36 +323,26 @@ public class XCardReaderTest {
 					"</group>" +
 				"</group>" +
 			"</vcard>" +
-		"</vcards>";
+		"</vcards>"
+		);
+
+		asserter.next(V4_0);
+
+		asserter.rawProperty("VCARD")
+			.dataType(VCardDataType.get("VCARD"))
+			.value("propValue")
+			.param("PARAMETERS", "paramValue1")
+			.param("GROUP", "paramValue2")
+		.noMore();
+		
+		asserter.rawProperty("GROUP")
+			.dataType(VCardDataType.TEXT)
+			.group("grp")
+			.value("value")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.rawProperty("VCARD")
-				.dataType(VCardDataType.get("VCARD"))
-				.value("propValue")
-				.param("PARAMETERS", "paramValue1")
-				.param("GROUP", "paramValue2")
-			.noMore();
-			
-			asserter.rawProperty("GROUP")
-				.dataType(VCardDataType.TEXT)
-				.group("grp")
-				.value("value")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -441,7 +372,7 @@ public class XCardReaderTest {
 	@Test
 	public void read_multiple_vcards_elements() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<root>" +
 			"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 				"<vcard>" +
@@ -453,49 +384,27 @@ public class XCardReaderTest {
 					"<fn><text>Dr. Lisa Cuddy M.D.</text></fn>" +
 				"</vcard>" +
 			"</vcards>" +
-		"</root>";
+		"</root>"
+		);
+
+		asserter.next(V4_0);
+		asserter.simpleProperty(FormattedName.class)
+			.value("Dr. Gregory House M.D.")
+		.noMore();
+
+		asserter.next(V4_0);
+		asserter.simpleProperty(FormattedName.class)
+			.value("Dr. Lisa Cuddy M.D.")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Dr. Gregory House M.D.")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Dr. Lisa Cuddy M.D.")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
-		reader.close();
 	}
 
 	@Test
 	public void read_parameters() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				//zero params
@@ -539,50 +448,37 @@ public class XCardReaderTest {
 					"<uri>tel:+1-555-555-1234</uri>" +
 				"</tel>" +
 			"</vcard>" +
-		"</vcards>";
+		"</vcards>"
+		);
+
+		asserter.next(V4_0);
+
+		asserter.simpleProperty(Note.class)
+			.value("Note 1")
+		.next()
+			.value("Hello world!")
+			.param("ALTID", "1")
+		.next()
+			.value("Hallo Welt!")
+		.next()
+			.value("Bonjour tout le monde!")
+			.param("ALTID", "1")
+			.param("LANGUAGE", "fr")
+		.noMore();
+		
+		asserter.telephone()
+			.uri(new TelUri.Builder("+1-555-555-1234").build())
+			.types(TelephoneType.WORK, TelephoneType.VOICE)
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(Note.class)
-				.value("Note 1")
-			.next()
-				.value("Hello world!")
-				.param("ALTID", "1")
-			.next()
-				.value("Hallo Welt!")
-			.next()
-				.value("Bonjour tout le monde!")
-				.param("ALTID", "1")
-				.param("LANGUAGE", "fr")
-			.noMore();
-			
-			assertTrue(vcard.getNotes().get(2).getParameters().isEmpty());
-			
-			asserter.telephone()
-				.uri(new TelUri.Builder("+1-555-555-1234").build())
-				.types(TelephoneType.WORK, TelephoneType.VOICE)
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
-		reader.close();
 	}
 
 	@Test
 	public void read_groups() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<group name=\"item1\">" +
@@ -594,39 +490,29 @@ public class XCardReaderTest {
 				"</group>" +
 				"<note><text>A property without a group</text></note>" +
 			"</vcard>" +
-		"</vcards>";
+		"</vcards>"
+		);
+
+		asserter.next(V4_0);
+
+		asserter.simpleProperty(FormattedName.class)
+			.group("item1")
+			.value("John Doe")
+		.noMore();
+		
+		asserter.simpleProperty(Note.class)
+			.group("item1")
+			.value("Hello world!")
+		.next()
+			.value("A property without a group")
+		.noMore();
+		
+		asserter.simpleProperty(ProductId.class)
+			.value("no name attribute")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		XCardReader reader = new XCardReader(xml);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.group("item1")
-				.value("John Doe")
-			.noMore();
-			
-			asserter.simpleProperty(Note.class)
-				.group("item1")
-				.value("Hello world!")
-			.next()
-				.value("A property without a group")
-			.noMore();
-			
-			asserter.simpleProperty(ProductId.class)
-				.value("no name attribute")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
@@ -715,7 +601,7 @@ public class XCardReaderTest {
 	@Test
 	public void read_xml_property() throws Exception {
 		//@formatter:off
-		String xml =
+		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
 			"<vcard>" +
 				"<x:foo xmlns:x=\"http://example.com\">" +
@@ -728,34 +614,24 @@ public class XCardReaderTest {
 					"<x:c>text<x:child>child</x:child></x:c>" +
 				"</x:foo>" +
 			"</vcard>" +
-		"</vcards>";
-		//@formatter:on
+		"</vcards>"
+		);
+		
+		asserter.next(V4_0);
 
-		XCardReader reader = new XCardReader(xml);
+		asserter.xml()
+			.param("PREF", "1")
+			.value(
+				"<foo xmlns=\"http://example.com\">" +
+					"<a />" +
+					"<b attr=\"value\">text</b>" +
+					"<c>text<child>child</child></c>" +
+				"</foo>"
+			)
+		.noMore();
 
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.xml()
-				.param("PREF", "1")
-				.value(
-					"<foo xmlns=\"http://example.com\">" +
-						"<a />" +
-						"<b attr=\"value\">text</b>" +
-						"<c>text<child>child</child></c>" +
-					"</foo>"
-				)
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
+		asserter.done();
+		//@formatter:off
 	}
 
 	@Test
@@ -768,28 +644,21 @@ public class XCardReaderTest {
 				"<x-foo><text>value</text></x-foo>" +
 			"</vcard>" +
 		"</vcards>";
-		//@formatter:on
-
+		
 		XCardReader reader = new XCardReader(xml);
 		reader.registerScribe(new SkipMeScribe());
+		VCardAsserter asserter = new VCardAsserter(reader);
 
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
+		asserter.next(V4_0);
 
-			//@formatter:off
-			asserter.rawProperty("x-foo")
-				.dataType(VCardDataType.TEXT)
-				.value("value")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(1, reader);
-		}
-
-		assertNoMoreVCards(reader);
+		asserter.rawProperty("x-foo")
+			.dataType(VCardDataType.TEXT)
+			.value("value")
+		.noMore();
+		
+		asserter.warnings(1);
+		asserter.done();
+		//@formatter:on
 	}
 
 	@Test
@@ -805,35 +674,28 @@ public class XCardReaderTest {
 				"<x-foo><text>value</text></x-foo>" +
 			"</vcard>" +
 		"</vcards>";
-		//@formatter:on
-
+		
 		XCardReader reader = new XCardReader(xml);
 		reader.registerScribe(new CannotParseScribe());
+		VCardAsserter asserter = new VCardAsserter(reader);
 
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
+		asserter.next(V4_0);
 
-			//@formatter:off
-			asserter.rawProperty("x-foo")
-				.dataType(VCardDataType.TEXT)
-				.value("value")
-			.noMore();
-			
-			asserter.xml()
-				.group("grp")
-				.value("<cannotparse xmlns=\"" + V4_0.getXmlNamespace() + "\"><text>value1</text></cannotparse>")
-			.next()
-				.value("<cannotparse xmlns=\"" + V4_0.getXmlNamespace() + "\"><text>value2</text></cannotparse>")
-			.noMore();
-			//@formatter:on
+		asserter.rawProperty("x-foo")
+			.dataType(VCardDataType.TEXT)
+			.value("value")
+		.noMore();
+		
+		asserter.xml()
+			.group("grp")
+			.value("<cannotparse xmlns=\"" + V4_0.getXmlNamespace() + "\"><text>value1</text></cannotparse>")
+		.next()
+			.value("<cannotparse xmlns=\"" + V4_0.getXmlNamespace() + "\"><text>value2</text></cannotparse>")
+		.noMore();
 
-			asserter.done();
-			assertWarnings(2, reader);
-		}
-
-		assertNoMoreVCards(reader);
+		asserter.warnings(2);
+		asserter.done();
+		//@formatter:on
 	}
 
 	@Test
@@ -852,20 +714,11 @@ public class XCardReaderTest {
 
 		XCardReader reader = new XCardReader(xml);
 
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Dr. Gregory House M.D.")
-			.noMore();
-			//@formatter:on
-
-			asserter.done();
-			assertWarnings(0, reader);
-		}
+		VCard vcard = reader.readNext();
+		assertVersion(V4_0, vcard);
+		assertPropertyCount(1, vcard);
+		assertEquals("Dr. Gregory House M.D.", vcard.getFormattedName().getValue());
+		assertWarnings(0, reader);
 
 		reader.close();
 
@@ -882,146 +735,136 @@ public class XCardReaderTest {
 					"<note><text>\u019dote</text></note>" +
 			"</vcard>" +
 		"</vcards>";
-		//@formatter:on
+
 		File file = tempFolder.newFile();
 		Writer writer = IOUtils.utf8Writer(file);
 		writer.write(xml);
 		writer.close();
 
 		XCardReader reader = new XCardReader(file);
+		VCardAsserter asserter = new VCardAsserter(reader);
 
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
+		asserter.next(V4_0);
 
-			//@formatter:off
-			asserter.simpleProperty(Note.class)
-				.value("\u019dote")
-			.noMore();
-			//@formatter:on
+		asserter.simpleProperty(Note.class)
+			.value("\u019dote")
+		.noMore();
 
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
+		asserter.done();
+		//@formatter:on
 	}
 
 	@Test
 	public void read_empty() throws Exception {
-		String xml = "<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\" />";
-
-		XCardReader reader = new XCardReader(xml);
-		assertNoMoreVCards(reader);
+		VCardAsserter asserter = readXml("<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\" />");
+		asserter.done();
 	}
 
 	@Test
 	public void read_rfc6351_example() throws Throwable {
-		XCardReader reader = read("rfc6351-example.xml");
+		VCardAsserter asserter = read("rfc6351-example.xml");
 
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
+		asserter.next(V4_0);
 
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Simon Perreault")
-			.noMore();
-			
-			asserter.structuredName()
-				.family("Perreault")
-				.given("Simon")
-				.suffixes("ing. jr", "M.Sc.")
-			.noMore();
-			
-			asserter.dateProperty(Birthday.class)
-				.partialDate(PartialDate.builder().month(2).date(3).build())
-			.noMore();
-			
-			asserter.dateProperty(Anniversary.class)
-				.partialDate(PartialDate.builder()
-					.year(2009)
-					.month(8)
-					.date(8)
-					.hour(14)
-					.minute(30)
-					.offset(new UtcOffset(false, -5, 0))
-					.build()
-				)
-			.noMore();
-			
-			asserter.property(Gender.class)
-				.expected(Gender.male())
-			.noMore();
-			
-			asserter.simpleProperty(Language.class)
-				.value("fr")
-				.param("PREF", "1")
-			.next()
-				.value("en")
-				.param("PREF", "2")
-			.noMore();
-			
-			asserter.listProperty(Organization.class)
-				.values("Viagenie")
-				.param("TYPE", "work")
-			.noMore();
-			
-			asserter.address()
-				.streetAddress("2875 boul. Laurier, suite D2-630")
-				.locality("Quebec")
-				.region("QC")
-				.postalCode("G1V 2M2")
-				.country("Canada")
-				.label("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2")
-				.types(AddressType.WORK)
-			.noMore();
-			
-			asserter.telephone()
-				.uri(new TelUri.Builder("+1-418-656-9254").extension("102").build())
-				.types(TelephoneType.WORK, TelephoneType.VOICE)
-			.next()
-				.uri(new TelUri.Builder("+1-418-262-6501").build())
-				.types(TelephoneType.WORK, TelephoneType.TEXT, TelephoneType.VOICE, TelephoneType.CELL, TelephoneType.VIDEO)
-			.noMore();
-			
-			asserter.email()
-				.value("simon.perreault@viagenie.ca")
-				.types(EmailType.WORK)
-			.noMore();
-			
-			asserter.geo()
-				.latitude(46.766336)
-				.longitude(-71.28955)
-				.param("TYPE", "work")
-			.noMore();
-			
-			asserter.binaryProperty(Key.class)
-				.url("http://www.viagenie.ca/simon.perreault/simon.asc")
-				.param("TYPE", "work")
-			.noMore();
-			
-			asserter.timezone()
-				.text("America/Montreal")
-			.noMore();
-			
-			asserter.simpleProperty(Url.class)
-				.value("http://nomis80.org")
-				.param("TYPE", "home")
-			.noMore();
-			//@formatter:on
+		//@formatter:off
+		asserter.simpleProperty(FormattedName.class)
+			.value("Simon Perreault")
+		.noMore();
+		
+		asserter.structuredName()
+			.family("Perreault")
+			.given("Simon")
+			.suffixes("ing. jr", "M.Sc.")
+		.noMore();
+		
+		asserter.dateProperty(Birthday.class)
+			.partialDate(PartialDate.builder().month(2).date(3).build())
+		.noMore();
+		
+		asserter.dateProperty(Anniversary.class)
+			.partialDate(PartialDate.builder()
+				.year(2009)
+				.month(8)
+				.date(8)
+				.hour(14)
+				.minute(30)
+				.offset(new UtcOffset(false, -5, 0))
+				.build()
+			)
+		.noMore();
+		
+		asserter.property(Gender.class)
+			.expected(Gender.male())
+		.noMore();
+		
+		asserter.simpleProperty(Language.class)
+			.value("fr")
+			.param("PREF", "1")
+		.next()
+			.value("en")
+			.param("PREF", "2")
+		.noMore();
+		
+		asserter.listProperty(Organization.class)
+			.values("Viagenie")
+			.param("TYPE", "work")
+		.noMore();
+		
+		asserter.address()
+			.streetAddress("2875 boul. Laurier, suite D2-630")
+			.locality("Quebec")
+			.region("QC")
+			.postalCode("G1V 2M2")
+			.country("Canada")
+			.label("Simon Perreault\n2875 boul. Laurier, suite D2-630\nQuebec, QC, Canada\nG1V 2M2")
+			.types(AddressType.WORK)
+		.noMore();
+		
+		asserter.telephone()
+			.uri(new TelUri.Builder("+1-418-656-9254").extension("102").build())
+			.types(TelephoneType.WORK, TelephoneType.VOICE)
+		.next()
+			.uri(new TelUri.Builder("+1-418-262-6501").build())
+			.types(TelephoneType.WORK, TelephoneType.TEXT, TelephoneType.VOICE, TelephoneType.CELL, TelephoneType.VIDEO)
+		.noMore();
+		
+		asserter.email()
+			.value("simon.perreault@viagenie.ca")
+			.types(EmailType.WORK)
+		.noMore();
+		
+		asserter.geo()
+			.latitude(46.766336)
+			.longitude(-71.28955)
+			.param("TYPE", "work")
+		.noMore();
+		
+		asserter.binaryProperty(Key.class)
+			.url("http://www.viagenie.ca/simon.perreault/simon.asc")
+			.param("TYPE", "work")
+		.noMore();
+		
+		asserter.timezone()
+			.text("America/Montreal")
+		.noMore();
+		
+		asserter.simpleProperty(Url.class)
+			.value("http://nomis80.org")
+			.param("TYPE", "home")
+		.noMore();
+		//@formatter:on
 
-			asserter.done();
-			assertValidate(vcard).versions(vcard.getVersion()).run();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
+		asserter.validate().run();
+		asserter.done();
 	}
 
-	private static XCardReader read(String file) throws SAXException, IOException {
-		return new XCardReader(XCardReaderTest.class.getResourceAsStream(file));
+	private static VCardAsserter read(String file) throws SAXException, IOException {
+		XCardReader reader = new XCardReader(XCardReaderTest.class.getResourceAsStream(file));
+		return new VCardAsserter(reader);
+	}
+
+	private static VCardAsserter readXml(String xml) {
+		XCardReader reader = new XCardReader(xml);
+		return new VCardAsserter(reader);
 	}
 }

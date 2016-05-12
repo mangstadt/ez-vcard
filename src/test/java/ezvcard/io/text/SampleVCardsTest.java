@@ -4,9 +4,6 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
-import static ezvcard.util.TestUtils.assertNoMoreVCards;
-import static ezvcard.util.TestUtils.assertValidate;
-import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.TestUtils.utc;
 
 import org.junit.Test;
@@ -83,12 +80,10 @@ import ezvcard.util.UtcOffset;
 public class SampleVCardsTest {
 	@Test
 	public void androidVCard() throws Throwable {
-		VCardReader reader = reader("John_Doe_ANDROID.vcf");
+		VCardAsserter asserter = read("John_Doe_ANDROID.vcf");
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V2_1);
+			asserter.next(V2_1);
 
 			//@formatter:off
 			asserter.email()
@@ -100,21 +95,16 @@ public class SampleVCardsTest {
 				.values("My Contacts")
 			.noMore();
 			
-			asserter.done();
-			
-			assertValidate(vcard).versions(vcard.getVersion())
+			VCard vcard = asserter.getVCard();
+			asserter.validate()
 				.prop(null, 0) //N property required
 				.prop(vcard.getCategories(), 2) //not supported in 2.1
 			.run();
 			//@formatter:on
-
-			assertWarnings(0, reader);
 		}
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V2_1);
+			asserter.next(V2_1);
 
 			//@formatter:off
 			asserter.email()
@@ -126,21 +116,16 @@ public class SampleVCardsTest {
 				.values("My Contacts")
 			.noMore();
 			
-			asserter.done();
-			
-			assertValidate(vcard).versions(vcard.getVersion())
+			VCard vcard = asserter.getVCard();
+			asserter.validate()
 				.prop(null, 0) //N property required
 				.prop(vcard.getCategories(), 2) //not supported in 2.1
 			.run();
 			//@formatter:on
-
-			assertWarnings(0, reader);
 		}
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V2_1);
+			asserter.next(V2_1);
 
 			//@formatter:off
 			asserter.structuredName()
@@ -162,20 +147,15 @@ public class SampleVCardsTest {
 				.values("My Contacts")
 			.noMore();
 			
-			asserter.done();
-			
-			assertValidate(vcard).versions(vcard.getVersion())
+			VCard vcard = asserter.getVCard();
+			asserter.validate()
 				.prop(vcard.getCategories(), 2) //not supported in 2.1
 			.run();
 			//@formatter:on
-
-			assertWarnings(0, reader);
 		}
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V2_1);
+			asserter.next(V2_1);
 
 			//@formatter:off
 			asserter.structuredName()
@@ -214,20 +194,15 @@ public class SampleVCardsTest {
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ")
 			.noMore();
 			
-			asserter.done();
-			
-			assertValidate(vcard).versions(vcard.getVersion())
+			VCard vcard = asserter.getVCard();
+			asserter.validate()
 				.prop(vcard.getCategories(), 2) //not supported in 2.1
 			.run();
 			//@formatter:on
-
-			assertWarnings(0, reader);
 		}
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V2_1);
+			asserter.next(V2_1);
 
 			//@formatter:off
 			asserter.structuredName()
@@ -282,20 +257,15 @@ public class SampleVCardsTest {
 				.dataLength(876)
 			.noMore();
 			
-			asserter.done();
-			
-			assertValidate(vcard).versions(vcard.getVersion())
+			VCard vcard = asserter.getVCard();
+			asserter.validate()
 				.prop(vcard.getEmails().get(0), 9) //"TYPE=WORK" not valid in vCard 2.1
 			.run();
 			//@formatter:on
-
-			assertWarnings(0, reader);
 		}
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V2_1);
+			asserter.next(V2_1);
 
 			//@formatter:off
 			asserter.structuredName()
@@ -333,26 +303,20 @@ public class SampleVCardsTest {
 				.values("My Contacts")
 			.noMore();
 			
-			asserter.done();
-			
-			assertValidate(vcard).versions(vcard.getVersion())
+			VCard vcard = asserter.getVCard();
+			asserter.validate()
 				.prop(vcard.getCategories(), 2) //not supported in 2.1
 			.run();
 			//@formatter:on
-
-			assertWarnings(0, reader);
 		}
 
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void blackBerryVCard() throws Throwable {
-		VCardReader reader = reader("John_Doe_BLACK_BERRY.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V2_1);
+		VCardAsserter asserter = read("John_Doe_BLACK_BERRY.vcf");
+		asserter.next(V2_1);
 
 		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
@@ -383,19 +347,14 @@ public class SampleVCardsTest {
 		.noMore();
 		//@formatter:on
 
+		asserter.validate().run();
 		asserter.done();
-		assertValidate(vcard).versions(vcard.getVersion()).run();
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void evolutionVCard() throws Throwable {
-		VCardReader reader = reader("John_Doe_EVOLUTION.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V3_0);
+		VCardAsserter asserter = read("John_Doe_EVOLUTION.vcf");
+		asserter.next(V3_0);
 
 		//@formatter:off
 		asserter.simpleProperty(Url.class)
@@ -503,24 +462,19 @@ public class SampleVCardsTest {
 			.value("1980-03-22")
 		.noMore();
 		
-		asserter.done();
-		
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getEmails().get(0), 9) //"TYPE=WORK" not valid in vCard 3.0
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void gmailVCard() throws Throwable {
-		VCardReader reader = reader("John_Doe_GMAIL.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V3_0);
+		VCardAsserter asserter = read("John_Doe_GMAIL.vcf");
+		asserter.next(V3_0);
 
 		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
@@ -600,25 +554,21 @@ public class SampleVCardsTest {
 			.value("Jenny")
 		.noMore();
 		
-		asserter.done();
-		
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getEmails().get(0), 9) //"TYPE=WORK" not valid in vCard 3.0
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void gmailList() throws Throwable {
-		VCardReader reader = reader("gmail-list.vcf");
+		VCardAsserter asserter = read("gmail-list.vcf");
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+			asserter.next(V3_0);
 
 			//@formatter:off
 			asserter.simpleProperty(FormattedName.class)
@@ -636,15 +586,11 @@ public class SampleVCardsTest {
 			.noMore();
 			//@formatter:on
 
-			asserter.done();
-			assertValidate(vcard).versions(vcard.getVersion()).run();
-			assertWarnings(0, reader);
+			asserter.validate().run();
 		}
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+			asserter.next(V3_0);
 
 			//@formatter:off
 			asserter.simpleProperty(FormattedName.class)
@@ -662,15 +608,11 @@ public class SampleVCardsTest {
 			.noMore();
 			//@formatter:on
 
-			asserter.done();
-			assertValidate(vcard).versions(vcard.getVersion()).run();
-			assertWarnings(0, reader);
+			asserter.validate().run();
 		}
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+			asserter.next(V3_0);
 
 			//@formatter:off
 			asserter.simpleProperty(FormattedName.class)
@@ -688,21 +630,16 @@ public class SampleVCardsTest {
 			.noMore();
 			//@formatter:on
 
-			asserter.done();
-			assertValidate(vcard).versions(vcard.getVersion()).run();
-			assertWarnings(0, reader);
+			asserter.validate().run();
 		}
 
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void gmailSingle() throws Throwable {
-		VCardReader reader = reader("gmail-single.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V3_0);
+		VCardAsserter asserter = read("gmail-single.vcf");
+		asserter.next(V3_0);
 
 		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
@@ -810,10 +747,8 @@ public class SampleVCardsTest {
 		.noMore();
 		//@formatter:on
 
+		asserter.validate().run();
 		asserter.done();
-		assertValidate(vcard).versions(vcard.getVersion()).run();
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
 	}
 
 	/**
@@ -821,10 +756,9 @@ public class SampleVCardsTest {
 	 */
 	@Test
 	public void gmailSingle2() throws Throwable {
-		VCardReader reader = reader("gmail-single2.vcf");
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-
+		VCardAsserter asserter = read("gmail-single2.vcf");
+		asserter.next(V3_0);
+		
 		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
 			.value("VCard Test")
@@ -1122,26 +1056,21 @@ public class SampleVCardsTest {
 			.group("item25")
 			.value("Name16")
 		.noMore();
-		
-		asserter.done();
 
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getEmails().get(1), 9) //"TYPE=HOME" not valid in vCard 3.0 
 			.prop(vcard.getEmails().get(2), 9) //"TYPE=WORK" not valid in vCard 3.0
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void iPhoneVCard() throws Throwable {
-		VCardReader reader = reader("John_Doe_IPHONE.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V3_0);
+		VCardAsserter asserter = read("John_Doe_IPHONE.vcf");
+		asserter.next(V3_0);
 
 		//@formatter:off
 		asserter.simpleProperty(ProductId.class)
@@ -1252,19 +1181,14 @@ public class SampleVCardsTest {
 		.noMore();
 		//@formatter:on
 
+		asserter.validate().run();
 		asserter.done();
-		assertValidate(vcard).versions(vcard.getVersion()).run();
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void lotusNotesVCard() throws Throwable {
-		VCardReader reader = reader("John_Doe_LOTUS_NOTES.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V3_0);
+		VCardAsserter asserter = read("John_Doe_LOTUS_NOTES.vcf");
+		asserter.next(V3_0);
 
 		//@formatter:off
 		asserter.simpleProperty(ProductId.class)
@@ -1407,25 +1331,20 @@ public class SampleVCardsTest {
 			.value("12345678901234567890123456789012345678901234567890123456789012 34567890123456789012345678901234567890")
 		.noMore();
 		
-		asserter.done();
-		
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getEmails().get(0), 9) //"TYPE=WORK" not valid in vCard 3.0
 			.prop(vcard.getEmails().get(1), 9) //"TYPE=WORK" not valid in vCard 3.0
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void msOutlookVCard() throws Throwable {
-		VCardReader reader = reader("John_Doe_MS_OUTLOOK.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V2_1);
+		VCardAsserter asserter = read("John_Doe_MS_OUTLOOK.vcf");
+		asserter.next(V2_1);
 
 		//@formatter:off
 		asserter.structuredName()
@@ -1537,24 +1456,19 @@ public class SampleVCardsTest {
 			.value("Jenny")
 		.noMore();
 		
-		asserter.done();
-		
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getNickname(), 2) //not supported in 2.1
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void outlook2007VCard() throws Throwable {
-		VCardReader reader = reader("outlook-2007.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V2_1);
+		VCardAsserter asserter = read("outlook-2007.vcf");
+		asserter.next(V2_1);
 
 		//@formatter:off
 		asserter.structuredName()
@@ -1689,25 +1603,20 @@ public class SampleVCardsTest {
 			.value("TheSpouse")
 		.noMore();
 		
-		asserter.done();
-		
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getNickname(), 2) //not supported in 2.1
 			.prop(vcard.getFbUrls().get(0), 2) //not supported in 2.1
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void macAddressBookVCard() throws Throwable {
-		VCardReader reader = reader("John_Doe_MAC_ADDRESS_BOOK.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V3_0);
+		VCardAsserter asserter = read("John_Doe_MAC_ADDRESS_BOOK.vcf");
+		asserter.next(V3_0);
 
 		//@formatter:off
 		asserter.structuredName()
@@ -1835,25 +1744,20 @@ public class SampleVCardsTest {
 			.value("6B29A774-D124-4822-B8D0-2780EC117F60\\:ABPerson")
 		.noMore();
 		
-		asserter.done();
-		
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getEmails().get(0), 9) //"TYPE=WORK" not valid in vCard 3.0
 			.prop(vcard.getPhotos().get(0), 4) //"BASE64" not valid parameter
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void outlook2003VCard() throws Throwable {
-		VCardReader reader = reader("outlook-2003.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V2_1);
+		VCardAsserter asserter = read("outlook-2003.vcf");
+		asserter.next(V2_1);
 
 		//@formatter:off
 		asserter.structuredName()
@@ -1945,25 +1849,20 @@ public class SampleVCardsTest {
 			.value(utc("2012-10-12 21:05:25"))
 		.noMore();
 		
-		asserter.done();
-		
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getNickname(), 2) //not supported in 2.1
 			.prop(vcard.getFbUrls().get(0), 2) //not supported in 2.1
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void thunderbird() throws Throwable {
-		VCardReader reader = reader("thunderbird-MoreFunctionsForAddressBook-extension.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V3_0);
+		VCardAsserter asserter = read("thunderbird-MoreFunctionsForAddressBook-extension.vcf");
+		asserter.next(V3_0);
 
 		//@formatter:off
 		asserter.structuredName()
@@ -2082,10 +1981,9 @@ public class SampleVCardsTest {
 		asserter.rawProperty("X-ANNIVERSARY")
 			.value("1990-04-30")
 		.noMore();
-		
-		asserter.done();
 
-		assertValidate(vcard).versions(vcard.getVersion())
+		VCard vcard = asserter.getVCard();
+		asserter.validate()
 			.prop(vcard.getStructuredName(), 6) //CHARSET not supported in 3.0
 			.prop(vcard.getFormattedName(), 6) //CHARSET not supported in 3.0
 			.prop(vcard.getOrganization(), 6) //CHARSET not supported in 3.0
@@ -2098,17 +1996,13 @@ public class SampleVCardsTest {
 		.run();
 		//@formatter:on
 
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
 	@Test
 	public void rfc6350_example() throws Throwable {
-		VCardReader reader = reader("rfc6350-example.vcf");
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V4_0);
+		VCardAsserter asserter = read("rfc6350-example.vcf");
+		asserter.next(V4_0);
 
 		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
@@ -2191,20 +2085,16 @@ public class SampleVCardsTest {
 		.noMore();
 		//@formatter:on
 
+		asserter.validate().run();
 		asserter.done();
-		assertValidate(vcard).versions(vcard.getVersion()).run();
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void rfc2426_example() throws Throwable {
-		VCardReader reader = reader("rfc2426-example.vcf");
+		VCardAsserter asserter = read("rfc2426-example.vcf");
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+			asserter.next(V3_0);
 
 			//@formatter:off
 			asserter.simpleProperty(FormattedName.class)
@@ -2244,20 +2134,14 @@ public class SampleVCardsTest {
 				.value("http://home.earthlink.net/~fdawson")
 			.noMore();
 			
-			asserter.done();
-			
-			assertValidate(vcard).versions(vcard.getVersion())
+			asserter.validate()
 				.prop(null, 0) //N property required
 			.run();
 			//@formatter:on
-
-			assertWarnings(0, reader);
 		}
 
 		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V3_0);
+			asserter.next(V3_0);
 
 			//@formatter:off
 			asserter.simpleProperty(FormattedName.class)
@@ -2290,20 +2174,17 @@ public class SampleVCardsTest {
 				.value("howes@netscape.com")
 			.noMore();
 			
-			asserter.done();
-			
-			assertValidate(vcard).versions(vcard.getVersion())
+			asserter.validate()
 				.prop(null, 0) //N property required
 			.run();
 			//@formatter:on
-
-			assertWarnings(0, reader);
 		}
 
-		assertNoMoreVCards(reader);
+		asserter.done();
 	}
 
-	private static VCardReader reader(String filename) {
-		return new VCardReader(SampleVCardsTest.class.getResourceAsStream(filename));
+	private static VCardAsserter read(String filename) {
+		VCardReader reader = new VCardReader(SampleVCardsTest.class.getResourceAsStream(filename));
+		return new VCardAsserter(reader);
 	}
 }

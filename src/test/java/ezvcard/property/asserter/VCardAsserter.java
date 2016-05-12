@@ -1,8 +1,15 @@
 package ezvcard.property.asserter;
 
+import static ezvcard.util.TestUtils.assertValidate;
+import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
+
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
+import ezvcard.io.StreamReader;
 import ezvcard.property.Address;
 import ezvcard.property.BinaryProperty;
 import ezvcard.property.DateOrTimeProperty;
@@ -17,6 +24,7 @@ import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
+import ezvcard.util.TestUtils.VCardValidateChecker;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -48,24 +56,58 @@ import ezvcard.property.Xml;
  */
 
 /**
- * Helper class used to assert the contents of a {@link VCard} object.
+ * Helper class used to assert the contents of the {@link VCard} objects
+ * produced by a {@link StreamReader}.
  * @author Michael Angstadt
  */
 public class VCardAsserter {
-	private final VCard vcard;
-	private int propertiesChecked = 0;
+	private final StreamReader reader;
 
-	public VCardAsserter(VCard vcard) {
-		this.vcard = vcard;
+	private VCard vcard;
+	private boolean first = true;
+	private boolean warningsChecked = false;
+	private int propertiesChecked;
+
+	public VCardAsserter(StreamReader reader) {
+		this.reader = reader;
 	}
 
 	/**
-	 * Asserts the version of the vCard.
-	 * @param expected the expected version
+	 * Reads the next vCard object. Also checks to make sure all the properties
+	 * from the previous vCard were verified.
+	 * @param expectedVersion the expected version of the next vCard
+	 * @return the vCard
+	 * @throws IOException if there's a problem reading from the data stream
 	 */
-	public void version(VCardVersion expected) {
-		VCardVersion actual = vcard.getVersion();
-		assertEquals(expected, actual);
+	public VCard next(VCardVersion expectedVersion) throws IOException {
+		if (first) {
+			first = false;
+		} else {
+			if (!warningsChecked) {
+				warnings(0);
+			}
+
+			int total = vcard.getProperties().size();
+			assertEquals("The vCard has " + total + " properties, but only " + propertiesChecked + " were checked.", propertiesChecked, total);
+		}
+
+		vcard = reader.readNext();
+		propertiesChecked = 0;
+		warningsChecked = false;
+
+		if (vcard != null) {
+			assertEquals(expectedVersion, vcard.getVersion());
+		}
+
+		return vcard;
+	}
+
+	/**
+	 * Gets the current vCard.
+	 * @return the vCard
+	 */
+	public VCard getVCard() {
+		return vcard;
 	}
 
 	/**
@@ -193,13 +235,23 @@ public class VCardAsserter {
 		return new RawPropertyAsserter(vcard.getExtendedProperties(name), name, this);
 	}
 
+	public void warnings(int expected) {
+		assertWarnings(expected, reader);
+		warningsChecked = true;
+	}
+
+	public VCardValidateChecker validate() {
+		return assertValidate(vcard).versions(vcard.getVersion());
+	}
+
 	/**
-	 * This should be called when you are done asserting the contents of the
-	 * vCard. It makes sure that no properties were skipped.
+	 * Asserts that there are no more vCards in the data stream.
+	 * @throws IOException if there's a problem reading from the data stream
 	 */
-	public void done() {
-		int total = vcard.getProperties().size();
-		assertEquals("The vCard has " + total + " properties, but only " + propertiesChecked + " were checked.", propertiesChecked, total);
+	public void done() throws IOException {
+		next(null);
+		assertNull(vcard);
+		reader.close();
 	}
 
 	void incPropertiesChecked() {

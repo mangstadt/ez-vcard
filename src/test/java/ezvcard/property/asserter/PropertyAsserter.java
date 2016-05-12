@@ -1,9 +1,9 @@
 package ezvcard.property.asserter;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -63,8 +63,8 @@ public abstract class PropertyAsserter<T, P extends VCardProperty> {
 		return this_;
 	}
 
-	public T param(String name, String value) {
-		parameters.put(name, value);
+	public T param(String name, String... values) {
+		parameters.putAll(name, asList(values));
 		return this_;
 	}
 
@@ -97,6 +97,6 @@ public abstract class PropertyAsserter<T, P extends VCardProperty> {
 	protected abstract void _reset();
 
 	protected static <T> List<T> arrayToList(T[] array) {
-		return (array == null) ? Collections.<T> emptyList() : Arrays.asList(array);
+		return (array == null) ? Collections.<T> emptyList() : asList(array);
 	}
 }

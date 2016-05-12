@@ -3,7 +3,6 @@ package ezvcard.io.json;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertPropertyCount;
-import static ezvcard.util.TestUtils.assertValidate;
 import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
@@ -83,245 +82,179 @@ public class JCardReaderTest {
 	@Test
 	public void read_single() throws Throwable {
 		//@formatter:off
-		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
-		    "]" +
-		  "]";
-		//@formatter:on
+		VCardAsserter asserter = readJson(
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"4.0\"]," +
+				"[\"fn\", {}, \"text\", \"John Doe\"]" +
+			"]" +
+		"]"
+		);
 
-		JCardReader reader = new JCardReader(json);
+		asserter.next(V4_0);
 
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V4_0);
-
-		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
 			.value("John Doe")
 		.noMore();
+		
+		asserter.done();
 		//@formatter:on
-
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void read_multiple() throws Throwable {
 		//@formatter:off
-		String json =
+		VCardAsserter asserter = readJson(
 		"[" +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
-		    "]" +
-		  "]," +
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"fn\", {}, \"text\", \"Jane Doe\"]" +
-		    "]" +
-		  "]" +
-		"]";
+			"[\"vcard\"," +
+				"[" +
+					"[\"version\", {}, \"text\", \"4.0\"]," +
+					"[\"fn\", {}, \"text\", \"John Doe\"]" +
+				"]" +
+			"]," +
+			"[\"vcard\"," +
+				"[" +
+					"[\"version\", {}, \"text\", \"4.0\"]," +
+					"[\"fn\", {}, \"text\", \"Jane Doe\"]" +
+				"]" +
+			"]" +
+		"]"
+		);
+
+		asserter.next(V4_0);
+		asserter.simpleProperty(FormattedName.class)
+			.value("John Doe")
+		.noMore();
+
+		asserter.next(V4_0);
+		asserter.simpleProperty(FormattedName.class)
+			.value("Jane Doe")
+		.noMore();
+
+		asserter.done();
 		//@formatter:on
-
-		JCardReader reader = new JCardReader(json);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-	
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("John Doe")
-			.noMore();
-			//@formatter:on
-	
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0);
-	
-			//@formatter:off
-			asserter.simpleProperty(FormattedName.class)
-				.value("Jane Doe")
-			.noMore();
-			//@formatter:on
-	
-			asserter.done();
-			assertWarnings(0, reader);
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void no_version() throws Exception {
 		//@formatter:off
-		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
-		    "]" +
-		  "]";
-		//@formatter:on
+		VCardAsserter asserter = readJson(
+		"[\"vcard\"," +
+			"[" +
+				"[\"fn\", {}, \"text\", \"John Doe\"]" +
+			"]" +
+		"]"
+		);
 
-		JCardReader reader = new JCardReader(json);
+		asserter.next(V4_0); //default to 4.0
 
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V4_0); //default to 4.0
-
-		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
 			.value("John Doe")
 		.noMore();
-		//@formatter:on
-
+		
+		asserter.warnings(1);
 		asserter.done();
-		assertWarnings(1, reader);
-
-		assertNoMoreVCards(reader);
+		//@formatter:on
 	}
 
 	@Test
 	public void invalid_version() throws Exception {
 		//@formatter:off
-		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"3.0\"]," +
-		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
-		    "]" +
-		  "]";
-		//@formatter:on
+		VCardAsserter asserter = readJson(
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"3.0\"]," +
+				"[\"fn\", {}, \"text\", \"John Doe\"]" +
+			"]" +
+		"]"
+		);
 
-		JCardReader reader = new JCardReader(json);
+		asserter.next(V4_0); //should still set the version to 4.0
 
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V4_0); //should still set the version to 4.0
-
-		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
 			.value("John Doe")
 		.noMore();
-		//@formatter:on
 
+		asserter.warnings(1);
 		asserter.done();
-		assertWarnings(1, reader);
-
-		assertNoMoreVCards(reader);
+		//@formatter:on
 	}
 
 	@Test
 	public void no_properties() throws Throwable {
 		//@formatter:off
-		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		    "]" +
-		  "]";
-		//@formatter:on
+		VCardAsserter asserter = readJson(
+		"[\"vcard\"," +
+			"[" +
+			"]" +
+		"]"
+		);
 
-		JCardReader reader = new JCardReader(json);
-
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V4_0); //default to 4.0
-
+		asserter.next(V4_0); //default to 4.0
+		asserter.warnings(1); //missing VERSION property
 		asserter.done();
-		assertWarnings(1, reader); //missing VERSION property
-
-		assertNoMoreVCards(reader);
+		//@formatter:on
 	}
 
 	@Test
 	public void no_properties_multiple() throws Throwable {
 		//@formatter:off
-		String json =
-		  "[" +
-		    "[\"vcard\"," +
-		      "[" +
-		      "]" +
-		    "]," +
-		    "[\"vcard\"," +
-		      "[" +
-		      "]" +
-		    "]" +
-		  "]";
+		VCardAsserter asserter = readJson(
+		"[" +
+			"[\"vcard\"," +
+				"[" +
+				"]" +
+			"]," +
+			"[\"vcard\"," +
+				"[" +
+				"]" +
+			"]" +
+		"]"
+		);
+
+		asserter.next(V4_0); //default to 4.0
+		asserter.warnings(1); //missing VERSION property
+
+		asserter.next(V4_0); //default to 4.0
+		asserter.warnings(1); //missing VERSION property
+
+		asserter.done();
 		//@formatter:on
-
-		JCardReader reader = new JCardReader(json);
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0); //default to 4.0
-	
-			asserter.done();
-			assertWarnings(1, reader); //missing VERSION property
-		}
-
-		{
-			VCard vcard = reader.readNext();
-			VCardAsserter asserter = new VCardAsserter(vcard);
-			asserter.version(V4_0); //default to 4.0
-	
-			asserter.done();
-			assertWarnings(1, reader); //missing VERSION property
-		}
-
-		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void extendedType() throws Throwable {
 		//@formatter:off
-		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"x-type\", {}, \"text\", \"value\"]" +
-		    "]" +
-		  "]";
-		//@formatter:on
+		VCardAsserter asserter = readJson(
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"4.0\"]," +
+				"[\"x-type\", {}, \"text\", \"value\"]" +
+			"]" +
+		"]"
+		);
 
-		JCardReader reader = new JCardReader(json);
+		asserter.next(V4_0);
 
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V4_0);
-
-		//@formatter:off
 		asserter.rawProperty("x-type")
 			.dataType(VCardDataType.TEXT)
 			.value("value")
 		.noMore();
-		//@formatter:on
 
 		asserter.done();
-		assertWarnings(0, reader);
+		//@formatter:on
 	}
 
 	@Test
 	public void registerExtendedType() throws Throwable {
 		//@formatter:off
 		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"x-type\", {}, \"text\", \"value\"]" +
-		    "]" +
-		  "]";
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"4.0\"]," +
+				"[\"x-type\", {}, \"text\", \"value\"]" +
+			"]" +
+		"]";
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
@@ -330,75 +263,79 @@ public class JCardReaderTest {
 		VCard vcard = reader.readNext();
 		assertVersion(V4_0, vcard);
 		assertPropertyCount(1, vcard);
+
 		TypeForTesting prop = vcard.getProperty(TypeForTesting.class);
 		assertEquals("value", prop.value.asSingle());
+
 		assertWarnings(0, reader);
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void readExtendedType_override_standard_type_classes() throws Throwable {
 		//@formatter:off
 		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"fn\", {}, \"text\", \"John Doe\"]" +
-		    "]" +
-		  "]";
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"4.0\"]," +
+				"[\"fn\", {}, \"text\", \"John Doe\"]" +
+			"]" +
+		"]";
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
 		reader.registerScribe(new MyFormattedNameScribe());
+
 		VCard vcard = reader.readNext();
 		assertPropertyCount(1, vcard);
 		assertVersion(V4_0, vcard);
 
 		MyFormattedNameProperty prop = vcard.getProperty(MyFormattedNameProperty.class);
 		assertEquals("JOHN DOE", prop.value);
+
 		assertWarnings(0, reader);
+		assertNoMoreVCards(reader);
 	}
 
 	@Test
 	public void skipMeException() throws Throwable {
 		//@formatter:off
 		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"skipme\", {}, \"text\", \"value\"]" +
-		    "]" +
-		  "]";
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"4.0\"]," +
+				"[\"skipme\", {}, \"text\", \"value\"]" +
+			"]" +
+		"]";
 		//@formatter:on
 
 		JCardReader reader = new JCardReader(json);
 		reader.registerScribe(new SkipMeScribe());
+		VCardAsserter asserter = new VCardAsserter(reader);
 
-		VCard vcard = reader.readNext();
-		assertVersion(V4_0, vcard);
-		assertPropertyCount(0, vcard);
-
-		assertWarnings(1, reader);
+		asserter.next(V4_0);
+		asserter.warnings(1);
+		asserter.done();
 	}
 
 	@Test
 	public void cannotParseException() throws Throwable {
 		//@formatter:off
 		String json =
-		  "[\"vcard\"," +
-		    "[" +
-		      "[\"version\", {}, \"text\", \"4.0\"]," +
-		      "[\"cannotparse\", {}, \"text\", \"value\"]," +
-		      "[\"x-foo\", {}, \"text\", \"value\"]" +
-		    "]" +
-		  "]";
-		//@formatter:on
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\", {}, \"text\", \"4.0\"]," +
+				"[\"cannotparse\", {}, \"text\", \"value\"]," +
+				"[\"x-foo\", {}, \"text\", \"value\"]" +
+			"]" +
+		"]";
 
 		JCardReader reader = new JCardReader(json);
 		reader.registerScribe(new CannotParseScribe());
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
+		VCardAsserter asserter = new VCardAsserter(reader);
+		
+		asserter.next(V4_0);
 
-		//@formatter:off
 		asserter.rawProperty("x-foo")
 			.dataType(VCardDataType.TEXT)
 			.value("value")
@@ -408,10 +345,10 @@ public class JCardReaderTest {
 			.dataType(VCardDataType.TEXT)
 			.value("value")
 		.noMore();
-		//@formatter:on
 
+		asserter.warnings(1);
 		asserter.done();
-		assertWarnings(1, reader);
+		//@formatter:on
 	}
 
 	@Test
@@ -424,25 +361,23 @@ public class JCardReaderTest {
 				"[\"note\", {}, \"text\", \"\u019dote\"]" +
 			"]" +
 		"]";
-		//@formatter:on
+
 		File file = tempFolder.newFile();
 		Writer writer = IOUtils.utf8Writer(file);
 		writer.write(json);
 		writer.close();
 
 		JCardReader reader = new JCardReader(file);
-		VCard vcard = reader.readNext();
-		VCardAsserter asserter = new VCardAsserter(vcard);
+		VCardAsserter asserter = new VCardAsserter(reader);
+		
+		asserter.next(V4_0);
 
-		//@formatter:off
 		asserter.simpleProperty(Note.class)
 			.value("\u019dote")
 		.noMore();
-		//@formatter:on
 
 		asserter.done();
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
+		//@formatter:on
 	}
 
 	private static class TypeForTesting extends VCardProperty {
@@ -488,18 +423,9 @@ public class JCardReaderTest {
 	@Test
 	public void jcard_example() throws Throwable {
 		JCardReader reader = new JCardReader(getClass().getResourceAsStream("jcard-example.json"));
+		VCardAsserter asserter = new VCardAsserter(reader);
 
-		VCard vcard = reader.readNext();
-
-		validateExampleJCard(vcard);
-
-		assertWarnings(0, reader);
-		assertNoMoreVCards(reader);
-	}
-
-	public static void validateExampleJCard(VCard vcard) {
-		VCardAsserter asserter = new VCardAsserter(vcard);
-		asserter.version(V4_0);
+		asserter.next(V4_0);
 
 		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
@@ -582,7 +508,12 @@ public class JCardReaderTest {
 		.noMore();
 		//@formatter:on
 
+		asserter.validate().run();
 		asserter.done();
-		assertValidate(vcard).versions(vcard.getVersion()).run();
+	}
+
+	private static VCardAsserter readJson(String json) {
+		JCardReader reader = new JCardReader(json);
+		return new VCardAsserter(reader);
 	}
 }
