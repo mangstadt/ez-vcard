@@ -366,5 +366,28 @@
 				</plugins>
 			</build>
 		</profile>
+
+		<!--
+		Disables DocLint, a Java 8 feature that fails the build if it detects errors in the javadocs.
+		See: http://stackoverflow.com/a/22296107/13379
+		-->
+		<profile>
+			<id>doclint-java8-disable</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+	
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<additionalparam>-Xdoclint:none</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>
