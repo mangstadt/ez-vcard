@@ -129,6 +129,9 @@ public final class PartialDate {
 	/**
 	 * Parses a partial date from a string.
 	 * @param string the string (e.g. "--0420T15")
+	 * @return the parsed date
+	 * @throws IllegalArgumentException if there's a problem parsing the date
+	 * string
 	 */
 	public static PartialDate parse(String string) {
 		int t = string.indexOf('T');

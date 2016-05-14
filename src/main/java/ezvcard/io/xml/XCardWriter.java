@@ -142,7 +142,7 @@ public class XCardWriter extends XCardWriterBase {
 	/**
 	 * @param out the output stream to write to (UTF-8 encoding will be used)
 	 * @param outputProperties properties to assign to the JAXP transformer (see
-	 * {@link Transformer#setOutputProperty}) >xalan</a> to your project)
+	 * {@link Transformer#setOutputProperty})
 	 */
 	public XCardWriter(OutputStream out, Map<String, String> outputProperties) {
 		this(utf8Writer(out), outputProperties);

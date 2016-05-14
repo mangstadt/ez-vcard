@@ -209,7 +209,6 @@ public class XCardElement {
 	 * its data type and value. If no such element is found, the parent
 	 * {@link XCardElement}'s text content, along with a null data type, is
 	 * returned.
-	 * @param element the parent element
 	 * @return the value and data type
 	 */
 	public XCardValue firstValue() {

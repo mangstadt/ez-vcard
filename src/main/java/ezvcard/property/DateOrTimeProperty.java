@@ -122,8 +122,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * Gets the reduced accuracy or truncated date. This is only supported by
 	 * vCard 4.0.
 	 * @return the reduced accuracy or truncated date or null if not set
-	 * @see "<a href="
-	 * http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.12-14 for examples"
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 p.12-14</a>
 	 */
 	public PartialDate getPartialDate() {
 		return partialDate;
@@ -140,8 +139,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * bday.setPartialDate(PartialDate.date(null, 4, 20)); //April 20
 	 * </pre>
 	 * @param partialDate the reduced accuracy or truncated date
-	 * @see "<a href="
-	 * http://tools.ietf.org/html/rfc6350">RFC 6350</a> p.12-14 for examples"
+	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 p.12-14</a>
 	 */
 	public void setPartialDate(PartialDate partialDate) {
 		this.partialDate = partialDate;

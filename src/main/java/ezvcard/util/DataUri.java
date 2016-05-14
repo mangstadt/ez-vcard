@@ -92,6 +92,7 @@ public final class DataUri {
 	/**
 	 * Parses a data URI string.
 	 * @param uri the URI string (e.g. "data:image/jpeg;base64,[base64 string]")
+	 * @return the parsed data URI
 	 * @throws IllegalArgumentException if the string is not a valid data URI or
 	 * it cannot be parsed
 	 */

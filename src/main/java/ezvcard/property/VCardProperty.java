@@ -475,7 +475,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @return the index or null if not set
 	 * @throws IllegalStateException if the parameter value is malformed and
 	 * cannot be parsed. If this happens, you may use the
-	 * {@link VCardParameters#get(String)} method to retrieve its raw value.
+	 * {@link #getParameter(String)} method to retrieve its raw value.
 	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-7">RFC 6715
 	 * p.7</a>
 	 */
@@ -496,7 +496,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @param index the index or null to remove
 	 * @throws IllegalStateException if the parameter value is malformed and
 	 * cannot be parsed. If this happens, you may use the
-	 * {@link VCardParameters#get(String)} method to retrieve its raw value.
+	 * {@link #getParameter(String)} method to retrieve its raw value.
 	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-7">RFC 6715
 	 * p.7</a>
 	 */

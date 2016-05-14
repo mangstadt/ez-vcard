@@ -214,6 +214,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 * @param version the version of the vCard
 	 * @param warnings the warnings
 	 * @param contentType the content type of the resource of null if unknown
+	 * @return the unmarshalled property object or null if it cannot be
+	 * unmarshalled
 	 */
 	protected T cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, U contentType) {
 		switch (version) {

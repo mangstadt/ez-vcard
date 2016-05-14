@@ -587,7 +587,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @return the geo URI or null if not set
 	 * @throws IllegalStateException if the parameter value is malformed and
 	 * cannot be parsed into a geo URI. If this happens, you may use the
-	 * {@link #get(String)} method to retrieve its raw value.
+	 * {@link ListMultimap#get(Object) get()} method to retrieve its raw value.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
 	 * p.22</a>
 	 */
@@ -638,8 +638,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * </p>
 	 * @return the index or null if not set
 	 * @throws IllegalStateException if the parameter value is malformed and
-	 * cannot be parsed. If this happens, you may use the {@link #get(String)}
-	 * method to retrieve its raw value.
+	 * cannot be parsed. If this happens, you may use the
+	 * {@link ListMultimap#get(Object) get()} method to retrieve its raw value.
 	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-7">RFC 6715
 	 * p.7</a>
 	 */
@@ -862,7 +862,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @return the PIDs
 	 * @throws IllegalStateException if one or more parameter values are
 	 * malformed and cannot be parsed. If this happens, you may use the
-	 * {@link #get(String)} method to retrieve its raw values.
+	 * {@link ListMultimap#get(Object) get()} method to retrieve its raw values.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-19">RFC 6350
 	 * p.19</a>
 	 */
@@ -990,8 +990,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * </p>
 	 * @return the preference value or null if not set
 	 * @throws IllegalStateException if the parameter value is malformed and
-	 * cannot be parsed. If this happens, you may use the {@link #get(String)}
-	 * method to retrieve its raw value.
+	 * cannot be parsed. If this happens, you may use the
+	 * {@link ListMultimap#get(Object) get()} method to retrieve its raw value.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-17">RFC 6350
 	 * p.17</a>
 	 */

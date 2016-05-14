@@ -458,6 +458,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param warnings allows the programmer to alert the user to any
 	 * note-worthy (but non-critical) issues that occurred during the
 	 * unmarshalling process
+	 * @return the unmarshalled property object
 	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws SkipMeException if this property should NOT be added to the
 	 * {@link VCard} object
