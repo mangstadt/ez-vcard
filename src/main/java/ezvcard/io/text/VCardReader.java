@@ -70,6 +70,7 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * File file = new File("vcards.vcf");
@@ -84,8 +85,6 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  *   if (reader != null) reader.close();
  * }
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
  * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>

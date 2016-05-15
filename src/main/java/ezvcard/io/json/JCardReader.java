@@ -62,6 +62,7 @@ import ezvcard.property.VCardProperty;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * File file = new File("vcards.json");
@@ -76,8 +77,6 @@ import ezvcard.property.VCardProperty;
  *   if (reader != null) reader.close();
  * }
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
  */

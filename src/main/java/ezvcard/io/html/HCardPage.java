@@ -58,6 +58,7 @@ import freemarker.template.TemplateException;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard1 = ...
@@ -70,8 +71,6 @@ import freemarker.template.TemplateException;
  * File file = new File("hcard.html");
  * page.write(file);
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>

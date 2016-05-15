@@ -71,6 +71,7 @@ import ezvcard.util.IOUtils;
  * 
  * 
  * <table class="simpleTable">
+ * <caption>Classes used by this class</caption>
  * <tr>
  * <th></th>
  * <th>Reading</th>

@@ -49,17 +49,15 @@ import ezvcard.Messages;
  * This class is immutable. Use the {@link Builder} object to construct a new
  * instance, or the {@link #parse} method to parse a geo URI string.
  * </p>
- * 
  * <p>
  * <b>Examples:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * GeoUri uri = new GeoUri.Builder(40.714623, -74.006605).coordC(1.1).build();
  * GeoUri uri = GeoUri.parse(&quot;geo:40.714623,-74.006605,1.1&quot;);
  * GeoUri copy = new GeoUri.Builder(original).coordC(2.1).build();
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc5870">RFC 5870</a>
  */

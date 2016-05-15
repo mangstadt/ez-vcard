@@ -45,6 +45,7 @@ import ezvcard.property.Xml;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * //init the index
@@ -70,8 +71,6 @@ import ezvcard.property.Xml;
  * }
  * jcardWriter.close();
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  */
 public class ScribeIndex {

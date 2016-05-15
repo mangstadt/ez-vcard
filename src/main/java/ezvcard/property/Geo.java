@@ -47,9 +47,10 @@ import ezvcard.util.GeoUri;
  * </p>
  * 
  * <table class="simpleTable">
+ * <caption>{@link Geo} meanings by {@link Kind} value</caption>
  * <tr>
- * <th>KIND value</th>
- * <th>GEO meaning</th>
+ * <th>{@link Kind} value</th>
+ * <th>{@link Geo} meaning</th>
  * </tr>
  * <tr>
  * <td>"individual"</td>

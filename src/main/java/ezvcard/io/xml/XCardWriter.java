@@ -80,6 +80,7 @@ import ezvcard.util.XmlUtils;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard1 = ...
@@ -94,8 +95,6 @@ import ezvcard.util.XmlUtils;
  *   if (writer != null) writer.close();
  * }
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */

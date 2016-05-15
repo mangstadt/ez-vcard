@@ -343,7 +343,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	/**
 	 * <p>
 	 * Marshals a property's value to an XML element (xCard).
-	 * <p>
+	 * </p>
 	 * <p>
 	 * This method should be overridden by child classes that wish to support
 	 * xCard. The default implementation of this method will append one child
@@ -798,6 +798,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param values the values to write (the {@code toString()} method is
 	 * invoked on each object, null objects are ignored, e.g. ["one", "two",
 	 * "three,four"])
+	 * @param <T> the property value class
 	 * @return the property value (e.g. "one,two,three\,four")
 	 */
 	protected static <T> String list(Collection<T> values) {

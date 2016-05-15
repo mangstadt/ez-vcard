@@ -117,6 +117,7 @@ public final class StringUtils {
 	 * Joins a collection of values into a delimited list.
 	 * @param collection the collection of values
 	 * @param delimiter the delimiter (e.g. ",")
+	 * @param <T> the value class
 	 * @return the final string
 	 */
 	public static <T> String join(Collection<T> collection, String delimiter) {
@@ -130,6 +131,7 @@ public final class StringUtils {
 	 * @param collection the collection of values
 	 * @param delimiter the delimiter (e.g. ",")
 	 * @param sb the string builder to append onto
+	 * @param <T> the value class
 	 */
 	public static <T> void join(Collection<T> collection, String delimiter, StringBuilder sb) {
 		join(collection, delimiter, sb, new JoinCallback<T>() {
@@ -144,6 +146,7 @@ public final class StringUtils {
 	 * @param collection the collection of values
 	 * @param delimiter the delimiter (e.g. ",")
 	 * @param join callback function to call on every element in the collection
+	 * @param <T> the value class
 	 * @return the final string
 	 */
 	public static <T> String join(Collection<T> collection, String delimiter, JoinCallback<T> join) {
@@ -158,6 +161,7 @@ public final class StringUtils {
 	 * @param delimiter the delimiter (e.g. ",")
 	 * @param sb the string builder to append onto
 	 * @param join callback function to call on every element in the collection
+	 * @param <T> the value class
 	 */
 	public static <T> void join(Collection<T> collection, String delimiter, StringBuilder sb, JoinCallback<T> join) {
 		boolean first = true;
@@ -176,6 +180,8 @@ public final class StringUtils {
 	 * @param map the map
 	 * @param delimiter the delimiter (e.g. ",")
 	 * @param join callback function to call on every element in the collection
+	 * @param <K> the key class
+	 * @param <V> the value class
 	 * @return the final string
 	 */
 	public static <K, V> String join(Map<K, V> map, String delimiter, final JoinMapCallback<K, V> join) {
@@ -189,7 +195,7 @@ public final class StringUtils {
 	/**
 	 * Callback interface used with various {@code StringUtils.join()} methods.
 	 * @author Michael Angstadt
-	 * @param <T> the value type
+	 * @param <T> the value class
 	 */
 	public interface JoinCallback<T> {
 		void handle(StringBuilder sb, T value);

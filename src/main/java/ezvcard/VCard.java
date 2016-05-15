@@ -2206,8 +2206,10 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Adds a mailing label which is not associated with an {@link Address}
 	 * property.
 	 * </p>
-	 * </p>Use of this method is strongly discouraged. To add a mailing label to
-	 * an address, use the {@link Address#setLabel} method.</p>
+	 * <p>
+	 * Use of this method is strongly discouraged. To add a mailing label to an
+	 * address, use the {@link Address#setLabel} method.
+	 * </p>
 	 * <p>
 	 * <b>Property name:</b> {@code LABEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
@@ -4130,6 +4132,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Gets the first property of a given class.
 	 * @param clazz the property class
+	 * @param <T> the property class
 	 * @return the property or null if not found
 	 */
 	public <T extends VCardProperty> T getProperty(Class<T> clazz) {
@@ -4139,6 +4142,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Gets all properties of a given class.
 	 * @param clazz the property class
+	 * @param <T> the property class
 	 * @return the properties (any changes made this list will affect the parent
 	 * {@link VCard} object and vice versa)
 	 */
@@ -4151,6 +4155,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * representations of each property together (see:
 	 * {@link VCardParameters#getAltId description of ALTID})
 	 * @param clazz the property class
+	 * @param <T> the property class
 	 * @return the properties (this list is immutable)
 	 */
 	public <T extends VCardProperty & HasAltId> List<List<T>> getPropertiesAlt(Class<T> clazz) {
@@ -4213,6 +4218,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * of that property will be removed.
 	 * @param clazz the property class (e.g. "Note.class")
 	 * @param property the property or null to remove
+	 * @param <T> the property class
 	 * @return the properties that were replaced (this list is immutable)
 	 */
 	public <T extends VCardProperty> List<T> setProperty(Class<T> clazz, T property) {
@@ -4232,6 +4238,7 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * Removes all properties of a given class.
 	 * @param clazz the class of the properties to remove (e.g. "Note.class")
+	 * @param <T> the property class
 	 * @return the properties that were removed (this list is immutable)
 	 */
 	public <T extends VCardProperty> List<T> removeProperties(Class<T> clazz) {
@@ -4355,6 +4362,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
+	 * @param <T> the property class
 	 */
 	public <T extends VCardProperty & HasAltId> void addPropertyAlt(Class<T> propertyClass, T... altRepresentations) {
 		addPropertyAlt(propertyClass, Arrays.asList(altRepresentations));
@@ -4368,6 +4376,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
+	 * @param <T> the property class
 	 */
 	public <T extends VCardProperty & HasAltId> void addPropertyAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
 		String altId = generateAltId(getProperties(propertyClass));
@@ -4385,6 +4394,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
+	 * @param <T> the property class
 	 * @return the properties that were replaced
 	 */
 	public <T extends VCardProperty & HasAltId> List<T> setPropertyAlt(Class<T> propertyClass, T... altRepresentations) {
@@ -4399,6 +4409,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param propertyClass the property class
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
+	 * @param <T> the property class
 	 * @return the properties that were replaced
 	 */
 	public <T extends VCardProperty & HasAltId> List<T> setPropertyAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
@@ -4412,6 +4423,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * objects to a new list.
 	 * @param list the list to cast
 	 * @param castTo the class to cast to
+	 * @param <T> the class to cast to
 	 * @return the new list (immutable)
 	 */
 	private static <T> List<T> castList(List<?> list, Class<T> castTo) {
@@ -4514,6 +4526,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Generates a unique ALTID parameter value.
 	 * @param properties the collection of properties under which the ALTID must
 	 * be unique
+	 * @param <T> the property class
 	 * @return a unique ALTID
 	 */
 	static <T extends HasAltId> String generateAltId(Collection<T> properties) {
@@ -4541,6 +4554,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * This list is backed by the {@link VCard} object. Any changes made to the
 	 * list will affect the {@link VCard} object and vice versa.
 	 * </p>
+	 * @param <T> the property class
 	 */
 	private class VCardPropertyList<T extends VCardProperty> extends AbstractList<T> {
 		protected final Class<T> propertyClass;

@@ -395,7 +395,6 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * In the vCard below, the {@link Address} on the second row is the most
 	 * preferred because it has the lowest PREF value.
 	 * </p>
-	 * <p>
 	 * 
 	 * <pre>
 	 * ADR;TYPE=work;PREF=2:;;1600 Amphitheatre Parkway;Mountain View;CA;94043
@@ -403,7 +402,6 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * ADR;TYPE=home:;;123 Maple St;Hometown;KS;12345
 	 * </pre>
 	 * 
-	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
@@ -426,7 +424,6 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * In the vCard below, the {@link Address} on the second row is the most
 	 * preferred because it has the lowest PREF value.
 	 * </p>
-	 * <p>
 	 * 
 	 * <pre>
 	 * ADR;TYPE=work;PREF=2:;;1600 Amphitheatre Parkway;Mountain View;CA;94043
@@ -434,7 +431,6 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * ADR;TYPE=home:;;123 Maple St;Hometown;KS;12345
 	 * </pre>
 	 * 
-	 * </p>
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>

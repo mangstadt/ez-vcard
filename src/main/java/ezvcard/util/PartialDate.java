@@ -46,21 +46,20 @@ import ezvcard.Messages;
  * A <b>reduced accuracy date</b> is a date where the "lesser" components are
  * missing. For example, "12:30" is reduced accuracy because the "seconds"
  * component is missing.
+ * </p>
  * 
  * <pre class="brush:java">
  * PartialDate date = PartialDate.builder().hour(12).minute(30).build();
  * </pre>
  * 
- * </p>
  * <p>
  * A <b>truncated date</b> is a date where the "greater" components are missing.
  * For example, "April 20" is truncated because the "year" component is missing.
+ * </p>
  * 
  * <pre class="brush:java">
  * PartialDate date = PartialDate.builder().month(4).date(20).build();
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  */
 public final class PartialDate {
@@ -491,12 +490,20 @@ public final class PartialDate {
 			offset = original.offset;
 		}
 
+		/**
+		 * Sets the year component.
+		 * @param year the year
+		 * @return this
+		 */
 		public Builder year(Integer year) {
 			components[YEAR] = year;
 			return this;
 		}
 
 		/**
+		 * Sets the month component.
+		 * @param month the month (1-12)
+		 * @return this
 		 * @throws IllegalArgumentException if the month is not between 1 and 12
 		 * inclusive
 		 */
@@ -510,6 +517,9 @@ public final class PartialDate {
 		}
 
 		/**
+		 * Sets the date component.
+		 * @param date the date
+		 * @return this
 		 * @throws IllegalArgumentException if the date is not between 1 and 31
 		 * inclusive
 		 */
@@ -523,7 +533,10 @@ public final class PartialDate {
 		}
 
 		/**
-		 * @throws IllegalArgumentException if the hour is not between 1 and 23
+		 * Sets the hour component.
+		 * @param hour the hour
+		 * @return this
+		 * @throws IllegalArgumentException if the hour is not between 0 and 23
 		 * inclusive
 		 */
 		public Builder hour(Integer hour) {
@@ -536,6 +549,9 @@ public final class PartialDate {
 		}
 
 		/**
+		 * Sets the minute component.
+		 * @param minute the minute
+		 * @return this
 		 * @throws IllegalArgumentException if the minute is not between 0 and
 		 * 59 inclusive
 		 */
@@ -549,6 +565,9 @@ public final class PartialDate {
 		}
 
 		/**
+		 * Sets the second component.
+		 * @param second the second
+		 * @return this
 		 * @throws IllegalArgumentException if the second is not between 0 and
 		 * 59 inclusive
 		 */
@@ -561,11 +580,23 @@ public final class PartialDate {
 			return this;
 		}
 
+		/**
+		 * Sets the timezone offset.
+		 * @param offset the timezone offset
+		 * @return this
+		 */
 		public Builder offset(UtcOffset offset) {
 			this.offset = offset;
 			return this;
 		}
 
+		/**
+		 * Builds the {@link PartialDate} object.
+		 * @return the {@link PartialDate} object
+		 * @throws IllegalArgumentException if the year and date are defined,
+		 * but the month is not, or if the hour and second are defined, but the
+		 * minute is not
+		 */
 		public PartialDate build() {
 			if (components[YEAR] != null && components[MONTH] == null && components[DATE] != null) {
 				throw Messages.INSTANCE.getIllegalArgumentException(38);

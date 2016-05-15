@@ -57,6 +57,7 @@ import ezvcard.property.VCardProperty;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard1 = ...
@@ -71,8 +72,6 @@ import ezvcard.property.VCardProperty;
  *   if (writer != null) writer.close();
  * }
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  * @author Buddy Gorven
  * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
@@ -224,7 +223,8 @@ public class JCardWriter extends StreamWriter implements Flushable {
 
 	/**
 	 * Sets whether or not to pretty-print the JSON.
-	 * @param prettyPrint true to pretty-print it, false not to (defaults to false)
+	 * @param prettyPrint true to pretty-print it, false not to (defaults to
+	 * false)
 	 */
 	public void setPrettyPrint(boolean prettyPrint) {
 		writer.setPrettyPrint(prettyPrint);

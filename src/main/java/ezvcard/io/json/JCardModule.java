@@ -45,14 +45,13 @@ import ezvcard.property.VCardProperty;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * ObjectMapper mapper = new ObjectMapper();
  * mapper.registerModule(new JCardModule());
  * VCard result = mapper.readValue(..., VCard.class);
  * </pre>
- * 
- * </p>
  * @author Buddy Gorven
  */
 public class JCardModule extends SimpleModule {

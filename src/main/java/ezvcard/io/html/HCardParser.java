@@ -73,14 +73,13 @@ import ezvcard.util.IOUtils;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * URL url = new URL(&quot;http://example.com&quot;);
  * HCardParser parser = new HCardParser(url);
  * List&lt;VCard&gt; vcards = parser.parseAll();
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>

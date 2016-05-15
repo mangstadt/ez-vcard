@@ -99,10 +99,10 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 	/**
 	 * Provides a list object that any parser warnings will be put into.
 	 * @param warnings the list object that will be populated with the warnings
-	 * of each parsed vCard. Each element in the list is a list of
-	 * warnings for one parsed vCard. Therefore, the size of this
-	 * list will be equal to the number of parsed vCards. If a vCard does not
-	 * have any warnings, then its warning list will be empty.
+	 * of each parsed vCard. Each element in the list is a list of warnings for
+	 * one parsed vCard. Therefore, the size of this list will be equal to the
+	 * number of parsed vCards. If a vCard does not have any warnings, then its
+	 * warning list will be empty.
 	 * @return this
 	 */
 	public T warnings(List<List<String>> warnings) {
@@ -114,7 +114,6 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 	 * Reads the first vCard from the stream.
 	 * @return the vCard or null if there are no vCards
 	 * @throws IOException if there's an I/O problem
-	 * @throws Exception allows implementations to throw other exceptions
 	 */
 	public VCard first() throws IOException {
 		StreamReader reader = constructReader();
@@ -139,7 +138,6 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 	 * Reads all vCards from the stream.
 	 * @return the parsed vCards
 	 * @throws IOException if there's an I/O problem
-	 * @throws Exception allows implementations to throw other exceptions
 	 */
 	public List<VCard> all() throws IOException {
 		StreamReader reader = constructReader();

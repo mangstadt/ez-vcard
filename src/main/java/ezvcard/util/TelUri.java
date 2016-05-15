@@ -48,9 +48,9 @@ import ezvcard.Messages;
  * This class is immutable. Use the {@link Builder} class to construct a new
  * instance, or the {@link #parse} method to parse a tel URI string.
  * </p>
- * 
  * <p>
  * <b>Examples:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * TelUri uri = new TelUri.Builder(&quot;+1-212-555-0101&quot;).extension(&quot;123&quot;).build();
@@ -389,6 +389,7 @@ public final class TelUri {
 		 * </p>
 		 * <p>
 		 * Global telephone numbers must:
+		 * </p>
 		 * <ol>
 		 * <li>Start with "+"</li>
 		 * <li>Contain at least 1 digit</li>
@@ -402,7 +403,6 @@ public final class TelUri {
 		 * </ul>
 		 * </li>
 		 * </ol>
-		 * </p>
 		 * @param globalNumber the telephone number (e.g. "+1-212-555-0101")
 		 * @throws IllegalArgumentException if the given telephone number does
 		 * not adhere to the above rules
@@ -419,6 +419,7 @@ public final class TelUri {
 		 * </p>
 		 * <p>
 		 * Local telephone numbers must:
+		 * </p>
 		 * <ol>
 		 * <li>Contain at least 1 of the following characters:
 		 * <ul>
@@ -439,7 +440,6 @@ public final class TelUri {
 		 * </ul>
 		 * </li>
 		 * </ol>
-		 * </p>
 		 * @param localNumber the telephone number (e.g. "7042")
 		 * @param phoneContext the context under which the local number is valid
 		 * (e.g. "example.com")
@@ -469,6 +469,7 @@ public final class TelUri {
 		 * </p>
 		 * <p>
 		 * Global telephone numbers must:
+		 * </p>
 		 * <ol>
 		 * <li>Start with "+"</li>
 		 * <li>Contain at least 1 digit</li>
@@ -482,7 +483,6 @@ public final class TelUri {
 		 * </ul>
 		 * </li>
 		 * </ol>
-		 * </p>
 		 * @param globalNumber the telephone number (e.g. "+1-212-555-0101")
 		 * @return this
 		 * @throws IllegalArgumentException if the given telephone number does
@@ -515,6 +515,7 @@ public final class TelUri {
 		 * </p>
 		 * <p>
 		 * Local telephone numbers must:
+		 * </p>
 		 * <ol>
 		 * <li>Contain at least 1 of the following characters:
 		 * <ul>
@@ -535,7 +536,6 @@ public final class TelUri {
 		 * </ul>
 		 * </li>
 		 * </ol>
-		 * </p>
 		 * @param localNumber the telephone number (e.g. "7042")
 		 * @param phoneContext the context under which the local number is valid
 		 * (e.g. "example.com")

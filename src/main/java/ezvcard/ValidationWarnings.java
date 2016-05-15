@@ -43,6 +43,7 @@ import ezvcard.util.StringUtils;
  * </p>
  * <p>
  * <b>Examples:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * //validate a vCard object according to the rules of a specific version
@@ -79,7 +80,6 @@ import ezvcard.util.StringUtils;
  * List&lt;Warnings&gt; telWarnings = warnings.getByProperty(Telephone.class);
  * </pre>
  * 
- * </p>
  * @author Michael Angstadt
  * @see VCard#validate
  */

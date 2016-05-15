@@ -60,6 +60,7 @@ import ezvcard.util.IOUtils;
  * </p>
  * <p>
  * <b>Example:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * VCard vcard1 = ...
@@ -75,10 +76,9 @@ import ezvcard.util.IOUtils;
  * }
  * </pre>
  * 
- * </p>
- * 
  * <p>
  * <b>Changing the line folding settings:</b>
+ * </p>
  * 
  * <pre class="brush:java">
  * VCardWriter writer = new VCardWriter(...);
@@ -95,8 +95,6 @@ import ezvcard.util.IOUtils;
  * //change newline character
  * writer.getRawWriter().getFoldedLineWriter().setNewline("**");
  * </pre>
- * 
- * </p>
  * @author Michael Angstadt
  * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
  * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
