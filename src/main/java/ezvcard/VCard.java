@@ -18,7 +18,10 @@ import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
+import ezvcard.io.html.HCardPage;
+import ezvcard.io.json.JCardWriter;
 import ezvcard.io.text.VCardWriter;
+import ezvcard.io.xml.XCardWriter;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.parameter.VCardParameters;
@@ -123,7 +126,7 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * Creates a new vCard.
-	 * @param version the version to set it to
+	 * @param version the version to assign to the vCard
 	 */
 	public VCard(VCardVersion version) {
 		this.version = version;
@@ -145,16 +148,16 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its text representation.
 	 * </p>
 	 * <p>
-	 * The vCard will be marshalled to whatever version is attached to this
-	 * VCard object (see {@link #setVersion(VCardVersion)}). If no version is
+	 * The vCard will be marshalled to whatever vCard version is assigned to
+	 * this object (see {@link #setVersion(VCardVersion)}). If no version is
 	 * set, then it will be marshalled to 3.0.
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link VCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @return the vCard string
-	 * @see Ezvcard
+	 * @see VCardWriter
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
@@ -168,17 +171,17 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its text representation.
 	 * </p>
 	 * <p>
-	 * The vCard will be marshalled to whatever version is attached to this
-	 * VCard object (see {@link #setVersion(VCardVersion)}). If no version is
+	 * The vCard will be marshalled to whatever vCard version is assigned to
+	 * this object (see {@link #setVersion(VCardVersion)}). If no version is
 	 * set, then it will be marshalled to 3.0.
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link VCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem writing to the file
-	 * @see Ezvcard
+	 * @see VCardWriter
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
@@ -192,16 +195,16 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its text representation.
 	 * </p>
 	 * <p>
-	 * The vCard will be marshalled to whatever version is attached to this
-	 * VCard object (see {@link #setVersion(VCardVersion)}). If no version is
+	 * The vCard will be marshalled to whatever vCard version is assigned to
+	 * this object (see {@link #setVersion(VCardVersion)}). If no version is
 	 * set, then it will be marshalled to 3.0.
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link VCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param out the output stream to write the vCard to
-	 * @see Ezvcard
+	 * @see VCardWriter
 	 * @throws IOException if there's a problem writing to the output stream
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
@@ -216,17 +219,17 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its text representation.
 	 * </p>
 	 * <p>
-	 * The vCard will be marshalled to whatever version is attached to this
-	 * VCard object (see {@link #setVersion(VCardVersion)}). If no version is
+	 * The vCard will be marshalled to whatever vCard version is assigned to
+	 * this object (see {@link #setVersion(VCardVersion)}). If no version is
 	 * set, then it will be marshalled to 3.0.
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link VCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param writer the writer to write the vCard to
 	 * @throws IOException if there's a problem writing to the writer
-	 * @see Ezvcard
+	 * @see VCardWriter
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
@@ -240,11 +243,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link XCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @return the vCard XML document
-	 * @see Ezvcard
+	 * @see XCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public String writeXml() {
@@ -256,13 +259,13 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link XCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
 	 * @throws TransformerException if there's a problem writing the vCard
-	 * @see Ezvcard
+	 * @see XCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(File file) throws IOException, TransformerException {
@@ -274,13 +277,13 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link XCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param out the output stream to write the vCard to
 	 * @throws TransformerException if there's a problem writing to the output
 	 * stream
-	 * @see Ezvcard
+	 * @see XCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(OutputStream out) throws TransformerException {
@@ -292,12 +295,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link XCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param writer the writer to write the vCard to
 	 * @throws TransformerException if there's a problem writing to the writer
-	 * @see Ezvcard
+	 * @see XCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public void writeXml(Writer writer) throws TransformerException {
@@ -309,11 +312,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link HCardPage} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @return the HTML page
-	 * @see Ezvcard
+	 * @see HCardPage
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public String writeHtml() {
@@ -325,12 +328,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link HCardPage} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
-	 * @see Ezvcard
+	 * @see HCardPage
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(File file) throws IOException {
@@ -342,12 +345,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link HCardPage} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param out the output stream to write to
 	 * @throws IOException if there's a problem writing to the output stream
-	 * @see Ezvcard
+	 * @see HCardPage
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(OutputStream out) throws IOException {
@@ -359,12 +362,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link HCardPage} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param writer the writer to write to
 	 * @throws IOException if there's a problem writing to the writer
-	 * @see Ezvcard
+	 * @see HCardPage
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(Writer writer) throws IOException {
@@ -376,11 +379,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its JSON representation (jCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link JCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @return the JSON string
-	 * @see Ezvcard
+	 * @see JCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public String writeJson() {
@@ -392,12 +395,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its JSON representation (jCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link JCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param file the file to write the vCard to
 	 * @throws IOException if there's a problem writing to the file
-	 * @see Ezvcard
+	 * @see JCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public void writeJson(File file) throws IOException {
@@ -409,11 +412,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its JSON representation (jCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link JCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param out the output stream to write the vCard to
-	 * @see Ezvcard
+	 * @see JCardWriter
 	 * @throws IOException if there's a problem writing to the output stream
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
@@ -426,12 +429,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its JSON representation (jCard).
 	 * </p>
 	 * <p>
-	 * Use the {@link Ezvcard} class to customize the marshalling process and to
-	 * write multiple vCards to the same stream.
+	 * Use the {@link JCardWriter} class for more control over the marshalling
+	 * process and to write multiple vCards to the same stream.
 	 * </p>
 	 * @param writer the writer to write the vCard to
 	 * @throws IOException if there's a problem writing to the writer
-	 * @see Ezvcard
+	 * @see JCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public void writeJson(Writer writer) throws IOException {
@@ -447,11 +450,15 @@ public class VCard implements Iterable<VCardProperty> {
 	}
 
 	/**
-	 * Sets the version of this vCard. When marshalling a vCard with the
-	 * {@link VCardWriter} class, use the {@link VCardWriter#setTargetVersion
-	 * setTargetVersion} method to define what version the vCard should be
-	 * marshalled as. {@link VCardWriter} <b>does not</b> look at the version
-	 * that is set on the VCard object.
+	 * <p>
+	 * Sets the version of this vCard.
+	 * </p>
+	 * <p>
+	 * When marshalling a vCard with the {@link VCardWriter} class, use the
+	 * {@link VCardWriter#setTargetVersion setTargetVersion} method to define
+	 * what version the vCard should be marshalled as. {@link VCardWriter}
+	 * <b>does not</b> look at the version that is set on the VCard object.
+	 * </p>
 	 * @param version the vCard version
 	 */
 	public void setVersion(VCardVersion version) {
@@ -466,7 +473,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code KIND}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the kind or null if not set
+	 * @return the kind property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-25">RFC 6350
 	 * p.25</a>
 	 */
@@ -482,7 +489,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code KIND}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param kind the kind or null to remove
+	 * @param kind the kind property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-25">RFC 6350
 	 * p.25</a>
 	 */
@@ -498,7 +505,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code GENDER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the gender or null if not set
+	 * @return the gender property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
 	 * p.32</a>
 	 */
@@ -514,7 +521,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code GENDER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param gender the gender or null to remove
+	 * @param gender the gender property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
 	 * p.32</a>
 	 */
@@ -534,8 +541,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code MEMBER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the members (any changes made this list will affect the parent
-	 * {@link VCard} object and vice versa)
+	 * @return the members properties (any changes made this list will affect
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-41">RFC 6350
 	 * p.41</a>
 	 */
@@ -555,7 +562,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code MEMBER}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param member the member to add
+	 * @param member the member property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-41">RFC 6350
 	 * p.41</a>
 	 */
@@ -597,7 +604,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code PROFILE}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @return the profile or null if not set
+	 * @return the profile property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public Profile getProfile() {
@@ -614,7 +621,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
-	 * @param profile the profile or null to remove
+	 * @param profile the profile property or null to remove
 	 */
 	public void setProfile(Profile profile) {
 		setProperty(Profile.class, profile);
@@ -629,7 +636,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CLASS}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @return the classification or null if not set
+	 * @return the classification property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
 	 * p.26</a>
 	 */
@@ -646,7 +653,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CLASS}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @param classification the classification or null to remove
+	 * @param classification the classification property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
 	 * p.26</a>
 	 */
@@ -684,7 +691,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SOURCE} <b>Supported versions:</b>
 	 * {@code 3.0, 4.0}
 	 * </p>
-	 * @return the sources (any changes made this list will affect the parent
+	 * @return the source properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-24">RFC 6350
 	 * p.24</a>
@@ -703,7 +710,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SOURCE} <b>Supported versions:</b>
 	 * {@code 3.0, 4.0}
 	 * </p>
-	 * @param source the source
+	 * @param source the source property
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-24">RFC 6350
 	 * p.24</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
@@ -764,7 +771,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code NAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @return a textual representation of the vCard source or null if not set
+	 * @return the property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public SourceDisplayText getSourceDisplayText() {
@@ -779,8 +786,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code NAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @param sourceDisplayText a textual representation of the vCard source or
-	 * null to remove
+	 * @param sourceDisplayText the property null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-5">RFC 2426 p.5</a>
 	 */
 	public void setSourceDisplayText(SourceDisplayText sourceDisplayText) {
@@ -822,7 +828,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the formatted name properties (any changes made this list will
-	 * affect the parent {@link VCard} object and vice versa)
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
 	 * p.28</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
@@ -840,7 +846,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code FN}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the full name or null if not set
+	 * @return the first formatted name property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-28">RFC 6350
 	 * p.28</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-8">RFC 2426 p.8</a>
@@ -973,7 +979,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @return the structured name properties (any changes made this list will
-	 * affect the parent {@link VCard} object and vice versa)
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
 	 * p.29</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
@@ -991,7 +997,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code N}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the components of the person's name or null if not set
+	 * @return the first structured name property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
 	 * p.29</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
@@ -1031,8 +1037,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code N}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param structuredName the components of the person's name or null to
-	 * remove
+	 * @param structuredName the structured name property or null to remove
 	 */
 	public void setStructuredName(StructuredName structuredName) {
 		setProperty(StructuredName.class, structuredName);
@@ -1053,7 +1058,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
 	 * @return the nickname properties (any changes made this list will affect
-	 * the parent {@link VCard} object and vice versa)
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
 	 * p.29</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
@@ -1070,7 +1075,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the person's nicknames or null if not set
+	 * @return the nickname property (may contain multiple values) or null if
+	 * not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
 	 * p.29</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
@@ -1133,7 +1139,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code NICKNAME}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param nickname the nickname property or null to remove
+	 * @param nickname the nickname property (may contain multiple values) or
+	 * null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
 	 * p.29</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
@@ -1155,7 +1162,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @param nickname the nickname property
+	 * @param nickname the nickname property (may contain multiple values)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-29">RFC 6350
 	 * p.29</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-9">RFC 2426 p.9</a>
@@ -1202,7 +1209,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SORT-STRING}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @return the sort string or null if not set
+	 * @return the sort string property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
 	 * p.22</a>
 	 */
@@ -1224,7 +1231,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SORT-STRING}<br>
 	 * <b>Supported versions:</b> {@code 3.0}
 	 * </p>
-	 * @param sortString the sort string or null to remove
+	 * @param sortString the sort string property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
 	 * p.22</a>
 	 */
@@ -1266,7 +1273,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TITLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the titles (any changes made this list will affect the parent
+	 * @return the title properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
@@ -1286,7 +1293,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TITLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param title the title
+	 * @param title the title property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-17">RFC 2426
@@ -1305,7 +1312,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TITLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param title the title (e.g. "V.P. Research and Development")
+	 * @param title the title to add (e.g. "V.P. Research and Development")
 	 * @return the property object that was created
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
@@ -1352,7 +1359,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ROLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the roles (any changes made this list will affect the parent
+	 * @return the role properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
@@ -1372,7 +1379,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ROLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param role the role
+	 * @param role the role property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
@@ -1391,7 +1398,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ROLE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param role the role (e.g. "Executive")
+	 * @param role the role to add (e.g. "Executive")
 	 * @return the property object that was created
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
@@ -1420,7 +1427,6 @@ public class VCard implements Iterable<VCardProperty> {
 	 * this description of the ALTID parameter} for more information. Note that
 	 * this method automatically assigns an appropriate ALTID parameter to each
 	 * property.
-	 * 
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-39">RFC 6350
 	 * p.39</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
@@ -1439,7 +1445,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code PHOTO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the photos (any changes made this list will affect the parent
+	 * @return the photo properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
 	 * p.30</a>
@@ -1459,7 +1465,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code PHOTO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param photo the photo to add
+	 * @param photo the photo property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
 	 * p.30</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-10">RFC 2426
@@ -1503,7 +1509,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LOGO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the logos (any changes made this list will affect the parent
+	 * @return the logo properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
 	 * p.40</a>
@@ -1523,7 +1529,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LOGO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param logo the logo to add
+	 * @param logo the logo property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
 	 * p.40</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-18">RFC 2426
@@ -1568,7 +1574,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SOUND}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the sounds (any changes made this list will affect the parent
+	 * @return the sound properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
 	 * p.45</a>
@@ -1588,7 +1594,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code SOUND}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param sound the sound to add
+	 * @param sound the sound property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
 	 * p.45</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-23">RFC 2426
@@ -1637,7 +1643,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the birthplace properties (any changes made this list will affect
-	 * the parent {@link VCard} object and vice versa)
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-2">RFC 6474 p.2</a>
 	 */
 	public List<Birthplace> getBirthplaces() {
@@ -1652,7 +1658,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code BIRTHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the birthplace or null if not set
+	 * @return the first birthplace property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-2">RFC 6474 p.2</a>
 	 */
 	public Birthplace getBirthplace() {
@@ -1687,7 +1693,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code BIRTHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param birthplace the birthplace or null to remove
+	 * @param birthplace the birthplace property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-2">RFC 6474 p.2</a>
 	 */
 	public void setBirthplace(Birthplace birthplace) {
@@ -1707,7 +1713,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the deathplace properties (any changes made this list will affect
-	 * the parent {@link VCard} object and vice versa)
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
 	 */
 	public List<Deathplace> getDeathplaces() {
@@ -1722,7 +1728,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code DEATHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the deathplace or null if not set
+	 * @return the first deathplace property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
 	 */
 	public Deathplace getDeathplace() {
@@ -1757,7 +1763,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code DEATHPLACE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param deathplace the deathplace or null to remove
+	 * @param deathplace the deathplace property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-3">RFC 6474 p.3</a>
 	 */
 	public void setDeathplace(Deathplace deathplace) {
@@ -1777,7 +1783,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the death date properties (any changes made this list will affect
-	 * the parent {@link VCard} object and vice versa)
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
 	 */
 	public List<Deathdate> getDeathdates() {
@@ -1792,7 +1798,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code DEATHDATE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the time of death or null if not set
+	 * @return the first death date property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
 	 */
@@ -1828,7 +1834,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code DEATHDATE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param deathdate the time of death or null to remove
+	 * @param deathdate the death date property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
 	 */
@@ -1850,7 +1856,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <i>* Only 4.0 supports alternative representations</i>
 	 * </p>
 	 * @return the birthday properties (any changes made this list will affect
-	 * the parent {@link VCard} object and vice versa)
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
 	 * p.30</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
@@ -1869,7 +1875,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code BDAY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the birthday or null if not set
+	 * @return the first birthday property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
 	 * p.30</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
@@ -1938,7 +1944,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the anniversary properties (any changes made this list will
-	 * affect the parent {@link VCard} object and vice versa)
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
 	 * p.31</a>
 	 */
@@ -1954,7 +1960,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ANNIVERSARY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the anniversary or null if not set
+	 * @return the first anniversary property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
 	 * p.31</a>
 	 */
@@ -1991,7 +1997,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ANNIVERSARY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param anniversary the anniversary or null to remove
+	 * @param anniversary the anniversary property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
 	 * p.31</a>
 	 */
@@ -2005,7 +2011,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code REV}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the last modified time or null if not set
+	 * @return the revision property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
 	 * p.45</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
@@ -2024,15 +2030,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code REV}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param rev the last modified time or null to remove
+	 * @param revision the revision property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
 	 * p.45</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-22">RFC 2426
 	 * p.22</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
-	public void setRevision(Revision rev) {
-		setProperty(Revision.class, rev);
+	public void setRevision(Revision revision) {
+		setProperty(Revision.class, revision);
 	}
 
 	/**
@@ -2066,7 +2072,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code PRODID}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the product ID or null if not set
+	 * @return the product ID property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
 	 * p.44</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
@@ -2085,7 +2091,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code PRODID}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param productId the product ID or null to remove
+	 * @param productId the product ID property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
 	 * p.44</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
@@ -2125,8 +2131,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ADR}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the mailing addresses (any changes made this list will affect the
-	 * parent {@link VCard} object and vice versa)
+	 * @return the mailing address properties (any changes made this list will
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
 	 * p.32</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
@@ -2145,7 +2151,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ADR}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param address the mailing address to add
+	 * @param address the mailing address property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-32">RFC 6350
 	 * p.32</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
@@ -2191,8 +2197,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LABEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @return the orphaned labels (any changes made this list will affect the
-	 * parent {@link VCard} object and vice versa)
+	 * @return the orphaned label properties (any changes made this list will
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-13">RFC 2426
 	 * p.13</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.12</a>
@@ -2214,7 +2220,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LABEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @param label the orphaned label to add
+	 * @param label the orphaned label property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-13">RFC 2426
 	 * p.13</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.12</a>
@@ -2231,8 +2237,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code EMAIL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the email addresses (any changes made this list will affect the
-	 * parent {@link VCard} object and vice versa)
+	 * @return the email address properties (any changes made this list will
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
 	 * p.36</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
@@ -2251,7 +2257,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code EMAIL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param email the email address to add
+	 * @param email the email address property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
 	 * p.36</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
@@ -2319,8 +2325,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the telephone numbers (any changes made this list will affect the
-	 * parent {@link VCard} object and vice versa)
+	 * @return the telephone number properties (any changes made this list will
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-34">RFC 6350
 	 * p.34</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-14">RFC 2426
@@ -2339,7 +2345,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param telephoneNumber the telephone number to add
+	 * @param telephoneNumber the telephone number property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-34">RFC 6350
 	 * p.34</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-14">RFC 2426
@@ -2409,7 +2415,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code MAILER}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @return the email client or null if not set
+	 * @return the mailer property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
 	 * p.15</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
@@ -2426,7 +2432,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code MAILER}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @param mailer the email client or null to remove
+	 * @param mailer the mailer property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-15">RFC 2426
 	 * p.15</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.15</a>
@@ -2464,7 +2470,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code URL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the URLs (any changes made this list will affect the parent
+	 * @return the URL properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
 	 * p.47</a>
@@ -2485,7 +2491,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code URL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param url the URL to add
+	 * @param url the URL property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
 	 * p.47</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-25">RFC 2426
@@ -2560,8 +2566,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @return the timezones (any changes made this list will affect the parent
-	 * {@link VCard} object and vice versa)
+	 * @return the timezone properties (any changes made this list will affect
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
 	 * p.22</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2580,7 +2586,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TZ}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the timezone or null if not set
+	 * @return the first timezone property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
 	 * p.22</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2649,7 +2655,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TZ}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param timezone the timezone or null to remove
+	 * @param timezone the timezone property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
 	 * p.22</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2669,7 +2675,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @param timezone the timezone or null to remove
+	 * @param timezone the timezone property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
 	 * p.22</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2695,7 +2701,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the geo properties (any changes made this list will affect the
-	 * parent {@link VCard} object and vice versa)
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
 	 * p.38</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2714,7 +2720,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the geographical position or null if not set
+	 * @return the first geo property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
 	 * p.38</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2783,7 +2789,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code GEO}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param geo the geographical position or null to remove
+	 * @param geo the geo property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
 	 * p.38</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2804,7 +2810,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @param geo the geographical position
+	 * @param geo the geo property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-38">RFC 6350
 	 * p.38</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-16">RFC 2426
@@ -2854,7 +2860,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the organization properties (any changes made this list will
-	 * affect the parent {@link VCard} object and vice versa)
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
 	 * p.40</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -2873,7 +2879,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ORG}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the department(s) or null if not set
+	 * @return the first organization property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
 	 * p.40</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -2963,7 +2969,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @param organization the organization property
+	 * @param organization the organization property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
 	 * p.40</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -2984,7 +2990,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * </p>
 	 * @param departments the ordered list of department(s), starting with the
 	 * broadest and ending with the most specific (e.g. "Google", "Gmail Team",
-	 * "Spam Detection Squad") or null to remove
+	 * "Spam Detection Squad") or an empty arguments list to remove
 	 * @return the property object that was created
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-40">RFC 6350
 	 * p.40</a>
@@ -2994,7 +3000,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 */
 	public Organization setOrganization(String... departments) {
 		Organization type = null;
-		if (departments != null) {
+		if (departments.length > 0) {
 			type = new Organization();
 			type.getValues().addAll(Arrays.asList(departments));
 		}
@@ -3018,7 +3024,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
 	 * @return the categories properties (any changes made this list will affect
-	 * the parent {@link VCard} object and vice versa)
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
 	 * p.43</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -3037,7 +3043,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the categories or null if not set
+	 * @return the first categories property (can contain multiple values) or
+	 * null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
 	 * p.43</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -3106,7 +3113,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param categories the categories or null to remove
+	 * @param categories the categories property (can contain multiple values)
+	 * or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
 	 * p.43</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -3127,8 +3135,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0*}<br>
 	 * <i>* Only 4.0 supports multiple instances</i>
 	 * </p>
-	 * @param categories the categories (note: multiple categories may be added
-	 * to this object)
+	 * @param categories the categories property to add (can contain multiple
+	 * values)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
 	 * p.43</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-20">RFC 2426
@@ -3147,7 +3155,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CATEGORIES}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param categories the categories (e.g. "swimmer", "biker", "knitter")
+	 * @param categories the categories (e.g. "swimmer", "biker", "knitter") or
+	 * an empty arguments list to remove
 	 * @return the property object that was created
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-43">RFC 6350
 	 * p.43</a>
@@ -3156,7 +3165,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 */
 	public Categories setCategories(String... categories) {
 		Categories type = null;
-		if (categories != null) {
+		if (categories.length > 0) {
 			type = new Categories();
 			type.getValues().addAll(Arrays.asList(categories));
 		}
@@ -3172,7 +3181,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code AGENT}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @return the agent information or null if not set
+	 * @return the agent property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-19">RFC 2426
 	 * p.19</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.18</a>
@@ -3189,7 +3198,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code AGENT}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0}
 	 * </p>
-	 * @param agent the agent information or null to remove
+	 * @param agent the agent property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-19">RFC 2426
 	 * p.19</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.18</a>
@@ -3206,7 +3215,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code NOTE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the notes (any changes made this list will affect the parent
+	 * @return the note properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
 	 * p.44</a>
@@ -3226,7 +3235,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code NOTE}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param note the note to add
+	 * @param note the note property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-44">RFC 6350
 	 * p.44</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-21">RFC 2426
@@ -3292,7 +3301,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code UID}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the unique identifier or null if not set
+	 * @return the unique identifier property or null if not set
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-46">RFC 6350
 	 * p.46</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-24">RFC 2426
@@ -3311,7 +3320,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code UID}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param uid the unique identifier or null to remove
+	 * @param uid the unique identifier property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-46">RFC 6350
 	 * p.46</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-24">RFC 2426
@@ -3330,7 +3339,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code KEY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @return the keys (any changes made this list will affect the parent
+	 * @return the key properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-48">RFC 6350
 	 * p.48</a>
@@ -3350,7 +3359,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code KEY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param key the key to add
+	 * @param key the key property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-48">RFC 6350
 	 * p.48</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-26">RFC 2426
@@ -3394,8 +3403,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code IMPP}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @return the instant messaging handles (any changes made this list will
-	 * affect the parent {@link VCard} object and vice versa)
+	 * @return the IMPP properties (any changes made this list will affect the
+	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
 	 * p.36</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc4770">RFC 4770</a>
@@ -3412,7 +3421,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code IMPP}<br>
 	 * <b>Supported versions:</b> {@code 3.0, 4.0}
 	 * </p>
-	 * @param impp the instant messaging handle to add
+	 * @param impp the IMPP property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-36">RFC 6350
 	 * p.36</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc4770">RFC 4770</a>
@@ -3452,8 +3461,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code RELATED}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the person's relations (any changes made this list will affect
-	 * the parent {@link VCard} object and vice versa)
+	 * @return the relation properties (any changes made this list will affect
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-42">RFC 6350
 	 * p.42</a>
 	 */
@@ -3469,7 +3478,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code RELATED}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param related the relation to add
+	 * @param related the relation property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-42">RFC 6350
 	 * p.42</a>
 	 */
@@ -3506,8 +3515,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LANG}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the languages (any changes made this list will affect the parent
-	 * {@link VCard} object and vice versa)
+	 * @return the language properties (any changes made this list will affect
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-37">RFC 6350
 	 * p.37</a>
 	 */
@@ -3523,7 +3532,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code LANG}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param language the language to add
+	 * @param language the language property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-37">RFC 6350
 	 * p.37</a>
 	 */
@@ -3579,8 +3588,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CALADRURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the calendar request URIs (any changes made this list will affect
-	 * the parent {@link VCard} object and vice versa)
+	 * @return the calendar request URI properties (any changes made this list
+	 * will affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
 	 * p.50</a>
 	 */
@@ -3597,7 +3606,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CALADRURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param calendarRequestUri the calendar request URI to add
+	 * @param calendarRequestUri the calendar request URI property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
 	 * p.50</a>
 	 */
@@ -3635,8 +3644,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CALURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the calendar URIs (any changes made this list will affect the
-	 * parent {@link VCard} object and vice versa)
+	 * @return the calendar URI properties (any changes made this list will
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
 	 * p.50</a>
 	 */
@@ -3652,7 +3661,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CALURI}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param calendarUri the calendar URI to add
+	 * @param calendarUri the calendar URI property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-50">RFC 6350
 	 * p.50</a>
 	 */
@@ -3690,8 +3699,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code FBURL}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the free-busy URLs (any changes made this list will affect the
-	 * parent {@link VCard} object and vice versa)
+	 * @return the free-busy URL properties (any changes made this list will
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-49">RFC 6350
 	 * p.49</a>
 	 */
@@ -3707,7 +3716,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code FBURL}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param fbUrl the free-busy URL to add
+	 * @param fbUrl the free-busy URL property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-49">RFC 6350
 	 * p.49</a>
 	 */
@@ -3746,8 +3755,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CLIENTPIDMAP}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the client PID maps (any changes made this list will affect the
-	 * parent {@link VCard} object and vice versa)
+	 * @return the client PID map properties (any changes made this list will
+	 * affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
 	 * p.47</a>
 	 */
@@ -3765,7 +3774,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code CLIENTPIDMAP}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param clientPidMap the client PID map to add
+	 * @param clientPidMap the client PID map property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-47">RFC 6350
 	 * p.47</a>
 	 */
@@ -3786,7 +3795,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code XML}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the XML data (any changes made this list will affect the parent
+	 * @return the XML properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-27">RFC 6350
 	 * p.27</a>
@@ -3808,7 +3817,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code XML}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param xml the XML data to add
+	 * @param xml the XML property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-27">RFC 6350
 	 * p.27</a>
 	 */
@@ -3850,8 +3859,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code EXPERTISE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the professional subject area (any changes made this list will
-	 * affect the parent {@link VCard} object and vice versa)
+	 * @return the expertise properties (any changes made this list will affect
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-3">RFC 6715 p.3</a>
 	 */
 	public List<Expertise> getExpertise() {
@@ -3866,7 +3875,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code EXPERTISE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param expertise the professional subject area to add
+	 * @param expertise the expertise property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-3">RFC 6715 p.3</a>
 	 */
 	public void addExpertise(Expertise expertise) {
@@ -3920,7 +3929,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code HOBBY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the hobbies (any changes made this list will affect the parent
+	 * @return the hobby properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-4">RFC 6715 p.4</a>
 	 */
@@ -3936,7 +3945,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code HOBBY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param hobby the hobby to add
+	 * @param hobby the hobby property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-4">RFC 6715 p.4</a>
 	 */
 	public void addHobby(Hobby hobby) {
@@ -3989,8 +3998,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code INTEREST}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the interests (any changes made this list will affect the parent
-	 * {@link VCard} object and vice versa)
+	 * @return the interest properties (any changes made this list will affect
+	 * the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-5">RFC 6715 p.5</a>
 	 */
 	public List<Interest> getInterests() {
@@ -4005,7 +4014,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code INTEREST}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param interest the interest to add
+	 * @param interest the interest property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-5">RFC 6715 p.5</a>
 	 */
 	public void addInterest(Interest interest) {
@@ -4058,8 +4067,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ORG-DIRECTORY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @return the organization directories (any changes made this list will
-	 * affect the parent {@link VCard} object and vice versa)
+	 * @return the organization directory properties (any changes made this list
+	 * will affect the {@link VCard} object and vice versa)
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-6">RFC 6715 p.6</a>
 	 */
 	public List<OrgDirectory> getOrgDirectories() {
@@ -4074,7 +4083,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code ORG-DIRECTORY}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
-	 * @param orgDirectory the organization directory to add
+	 * @param orgDirectory the organization directory property to add
 	 * @see <a href="http://tools.ietf.org/html/rfc6715#page-6">RFC 6715 p.6</a>
 	 */
 	public void addOrgDirectory(OrgDirectory orgDirectory) {
@@ -4143,7 +4152,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Gets all properties of a given class.
 	 * @param clazz the property class
 	 * @param <T> the property class
-	 * @return the properties (any changes made this list will affect the parent
+	 * @return the properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 */
 	public <T extends VCardProperty> List<T> getProperties(Class<T> clazz) {
@@ -4206,7 +4215,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Replaces all existing properties of the given property instance's class
 	 * with the given property instance.
 	 * @param property the property
-	 * @return the properties that were replaced
+	 * @return the properties that were replaced (this list is immutable)
 	 */
 	public List<VCardProperty> setProperty(VCardProperty property) {
 		return properties.replace(property.getClass(), property);
@@ -4279,7 +4288,7 @@ public class VCard implements Iterable<VCardProperty> {
 
 	/**
 	 * Gets all extended properties.
-	 * @return the properties (any changes made this list will affect the parent
+	 * @return the properties (any changes made this list will affect the
 	 * {@link VCard} object and vice versa)
 	 */
 	public List<RawProperty> getExtendedProperties() {
@@ -4395,7 +4404,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
 	 * @param <T> the property class
-	 * @return the properties that were replaced
+	 * @return the properties that were replaced (this list is immutable)
 	 */
 	public <T extends VCardProperty & HasAltId> List<T> setPropertyAlt(Class<T> propertyClass, T... altRepresentations) {
 		return setPropertyAlt(propertyClass, Arrays.asList(altRepresentations));
@@ -4410,7 +4419,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param altRepresentations the alternative representations of the property
 	 * to add
 	 * @param <T> the property class
-	 * @return the properties that were replaced
+	 * @return the properties that were replaced (this list is immutable)
 	 */
 	public <T extends VCardProperty & HasAltId> List<T> setPropertyAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
 		List<T> removed = removeProperties(propertyClass);
@@ -4424,7 +4433,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @param list the list to cast
 	 * @param castTo the class to cast to
 	 * @param <T> the class to cast to
-	 * @return the new list (immutable)
+	 * @return the new list (this list is immutable)
 	 */
 	private static <T> List<T> castList(List<?> list, Class<T> castTo) {
 		List<T> casted = new ArrayList<T>(list.size());
@@ -4441,8 +4450,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * consuming application. These problems can largely be avoided by reading
 	 * the Javadocs of the property classes, or by being familiar with the vCard
 	 * standard.
-	 * @param version the version to check the vCard against (use 4.0 for xCard
-	 * and jCard)
+	 * @param version the version to check the vCard against (use
+	 * {@link VCardVersion#V4_0} for xCard and jCard)
 	 * @return the validation warnings
 	 */
 	public ValidationWarnings validate(VCardVersion version) {
