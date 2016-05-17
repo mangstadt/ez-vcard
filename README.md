@@ -124,13 +124,14 @@ Joel Orlina
 
 **Contributors**  
 amarnathr ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/16))  
-[bgorven](https://github.com/bgorven) (jackson-databind integration, jackson pretty printing)  
+[bgorven](https://github.com/bgorven) (jackson-databind integration, jackson pretty printing, [round-trip testing](https://github.com/mangstadt/ez-vcard/pull/49))  
 Moritz Bechler (Geo URI bug fix)  
 Kiran Kumar Bhushan (quoted-printable bug)  
 Florian Brunner ([OSGi metadata](https://github.com/mangstadt/ez-vcard/issues/11))  
 Pratyush Chandra ([ez-vcard-android](http://github.com/mangstadt/ez-vcard-android))  
 Lívio Cipriano ([Issue 35](https://github.com/mangstadt/ez-vcard/issues/35))  
 [cmargenau](https://github.com/cmargenau) ([XML 1.1 support](https://github.com/mangstadt/ez-vcard/issues/29))  
+[DerBlade](https://github.com/DerBlade) ([missing parameter method](https://github.com/mangstadt/ez-vcard/issues/52))  
 Juliane Dombrowski ([quoted-printable line folding](https://github.com/mangstadt/ez-vcard/issues/9))  
 F. Gaffron ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/12))  
 knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](https://github.com/mangstadt/ez-vcard/issues/2))  
