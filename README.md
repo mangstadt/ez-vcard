@@ -53,6 +53,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
+**May 17, 2016**
+
+[Version 0.9.10](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a number of improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
 **February 6, 2016**
 
 [Version 0.9.9](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a number of improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
@@ -60,14 +64,6 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 **November 14, 2015**
 
 [Version 0.9.8](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes a few miscellaneous bugs.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
-**September 13, 2015**
-
-[Version 0.9.7](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes a few miscellaneous bugs.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
-**March 21, 2015**
-
-Due to the [impending shutdown of Google Code](http://google-opensource.blogspot.com/2015/03/farewell-to-google-code.html), ez-vcard has moved to Github!  Please bear with me as I work out the kinks. :)
 
 [Old News](https://github.com/mangstadt/ez-vcard/wiki/Old-News)
 
@@ -77,7 +73,7 @@ Due to the [impending shutdown of Google Code](http://google-opensource.blogspot
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.9.9</version>
+   <version>0.9.10</version>
 </dependency>
 ```
 
