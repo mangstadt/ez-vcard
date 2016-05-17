@@ -145,16 +145,6 @@ public class Deathdate extends DateOrTimeProperty {
 	}
 
 	@Override
-	public String getLanguage() {
-		return super.getLanguage();
-	}
-
-	@Override
-	public void setLanguage(String language) {
-		super.setLanguage(language);
-	}
-
-	@Override
 	public Deathdate copy() {
 		return new Deathdate(this);
 	}

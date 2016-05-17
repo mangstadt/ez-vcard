@@ -208,6 +208,16 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 		parameters.setCalscale(calscale);
 	}
 
+	@Override
+	public String getLanguage() {
+		return super.getLanguage();
+	}
+
+	@Override
+	public void setLanguage(String language) {
+		super.setLanguage(language);
+	}
+
 	//@Override
 	public String getAltId() {
 		return parameters.getAltId();
