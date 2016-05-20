@@ -48,9 +48,9 @@ import ezvcard.parameter.Pid;
  * VCard vcard = new VCard();
  * 
  * Categories categories = new Categories();
- * categories.addValue(&quot;Developer&quot;);
- * categories.addValue(&quot;Java coder&quot;);
- * categories.addValue(&quot;Ladies' man&quot;);
+ * categories.getValues().add(&quot;Developer&quot;);
+ * categories.getValues().add(&quot;Java coder&quot;);
+ * categories.getValues().add(&quot;Ladies' man&quot;);
  * vcard.setCategories(categories);
  * </pre>
  * 

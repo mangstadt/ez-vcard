@@ -47,9 +47,9 @@ import ezvcard.parameter.Pid;
  * VCard vcard = new VCard();
  * 
  * Organization org = new Organization();
- * org.addValue(&quot;Google&quot;);
- * org.addValue(&quot;GMail Team&quot;);
- * org.addValue(&quot;Spam Detection Team&quot;);
+ * org.getValues().add(&quot;Google&quot;);
+ * org.getValues().add(&quot;GMail Team&quot;);
+ * org.getValues().add(&quot;Spam Detection Team&quot;);
  * vcard.setOrganization(org);
  * </pre>
  * 
