@@ -151,6 +151,7 @@ public final class XmlUtils {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		factory.setIgnoringComments(true);
+		applyXXEProtection(factory);
 
 		DocumentBuilder builder;
 		try {
@@ -161,6 +162,63 @@ public final class XmlUtils {
 		}
 
 		return builder.parse(in);
+	}
+
+	/**
+	 * Configures a {@link DocumentBuilderFactory} to protect it against XML
+	 * External Entity attacks.
+	 * @param factory the factory
+	 * @see <a href=
+	 * "https://www.owasp.org/index.php/XML_External_Entity_%28XXE%29_Prevention_Cheat_Sheet#Java">
+	 * XXE Cheat Sheet</a>
+	 */
+	public static void applyXXEProtection(DocumentBuilderFactory factory) {
+		Map<String, Boolean> features = new HashMap<String, Boolean>();
+		features.put("http://apache.org/xml/features/disallow-doctype-decl", true);
+		features.put("http://xml.org/sax/features/external-general-entities", false);
+		features.put("http://xml.org/sax/features/external-parameter-entities", false);
+		features.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+		for (Map.Entry<String, Boolean> entry : features.entrySet()) {
+			String feature = entry.getKey();
+			Boolean value = entry.getValue();
+			try {
+				factory.setFeature(feature, value);
+			} catch (ParserConfigurationException e) {
+				//feature is not supported by the local XML engine, skip it
+			}
+		}
+
+		factory.setXIncludeAware(false);
+		factory.setExpandEntityReferences(false);
+	}
+
+	/**
+	 * Configures a {@link TransformerFactory} to protect it against XML
+	 * External Entity attacks.
+	 * @param factory the factory
+	 * @see <a href=
+	 * "https://www.owasp.org/index.php/XML_External_Entity_%28XXE%29_Prevention_Cheat_Sheet#Java">
+	 * XXE Cheat Sheet</a>
+	 */
+	public static void applyXXEProtection(TransformerFactory factory) {
+		//@formatter:off
+		String[] attributes = {
+			//XMLConstants.ACCESS_EXTERNAL_DTD (Java 7 only)
+			"http://javax.xml.XMLConstants/property/accessExternalDTD",
+
+			//XMLConstants.ACCESS_EXTERNAL_STYLESHEET (Java 7 only)
+			"http://javax.xml.XMLConstants/property/accessExternalStylesheet"
+		};
+		//@formatter:on
+
+		for (String attribute : attributes) {
+			try {
+				factory.setAttribute(attribute, "");
+			} catch (IllegalArgumentException e) {
+				//attribute is not supported by the local XML engine, skip it
+			}
+		}
 	}
 
 	/**

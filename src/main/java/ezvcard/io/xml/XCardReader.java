@@ -101,6 +101,7 @@ import ezvcard.util.XmlUtils;
  *   if (reader != null) reader.close();
  * }
  * </pre>
+ * 
  * @author Michael Angstadt
  * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
  */
@@ -201,7 +202,10 @@ public class XCardReader extends StreamReader {
 
 			//create the transformer
 			try {
-				transformer = TransformerFactory.newInstance().newTransformer();
+				TransformerFactory factory = TransformerFactory.newInstance();
+				XmlUtils.applyXXEProtection(factory);
+
+				transformer = factory.newTransformer();
 			} catch (TransformerConfigurationException e) {
 				//shouldn't be thrown because it's a simple configuration
 				throw new RuntimeException(e);
