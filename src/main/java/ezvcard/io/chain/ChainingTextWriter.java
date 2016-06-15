@@ -11,6 +11,7 @@ import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.text.TargetApplication;
 import ezvcard.io.text.VCardWriter;
 import ezvcard.property.VCardProperty;
 
@@ -48,7 +49,7 @@ import ezvcard.property.VCardProperty;
 public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	private VCardVersion version;
 	private boolean caretEncoding = false;
-	private boolean outlook = false;
+	private TargetApplication targetApplication;
 
 	/**
 	 * @param vcards the vCards to write
@@ -91,25 +92,19 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 
 	/**
 	 * <p>
-	 * Sets whether the vCards should be fully compatible with Microsoft Outlook
-	 * mail clients. This setting is disabled by default.
+	 * Sets the application that the vCards will be targeted for.
 	 * </p>
 	 * <p>
-	 * Enabling this setting may make the vCards incompatible with other vCard
-	 * consumers.
+	 * Some vCard consumers do not completely adhere to the vCard specifications
+	 * and require their vCards to be formatted in a specific way. See the
+	 * {@link TargetApplication} class for a list of these applications.
 	 * </p>
-	 * <p>
-	 * Enabling this setting adds an empty line after all base64-encoded
-	 * property values for vCards with versions 2.1 and 3.0. This setting has no
-	 * effect on 4.0 vCards, or on vCards that do not have any properties with
-	 * base64-encoded values.
-	 * </p>
-	 * @param enable true to enable, false to disable (defaults to false).
-	 * @return this
-	 * @see VCardWriter#setOutlookCompatibility(boolean)
+	 * @param targetApplication the target application or null if the vCards do
+	 * not require any special processing (defaults to null)
+	 * @see VCardWriter#setTargetApplication(TargetApplication)
 	 */
-	public ChainingTextWriter outlook(boolean enable) {
-		this.outlook = enable;
+	public ChainingTextWriter targetApplication(TargetApplication targetApplication) {
+		this.targetApplication = targetApplication;
 		return this;
 	}
 
@@ -190,7 +185,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 		writer.setAddProdId(prodId);
 		writer.setCaretEncodingEnabled(caretEncoding);
 		writer.setVersionStrict(versionStrict);
-		writer.setOutlookCompatibility(outlook);
+		writer.setTargetApplication(targetApplication);
 		if (index != null) {
 			writer.setScribeIndex(index);
 		}

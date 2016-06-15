@@ -26,6 +26,7 @@ import org.w3c.dom.NodeList;
 
 import ezvcard.io.LuckyNumProperty;
 import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
+import ezvcard.io.text.TargetApplication;
 import ezvcard.io.xml.XCardNamespaceContext;
 import ezvcard.parameter.ImageType;
 import ezvcard.property.FormattedName;
@@ -468,12 +469,12 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_outlook() throws Exception {
+	public void write_targetApplication() throws Exception {
 		byte data[] = "data".getBytes();
 		VCard vcard = new VCard();
 		vcard.addPhoto(new Photo(data, ImageType.JPEG));
 
-		//default
+		//default value (null)
 		{
 			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).go();
 
@@ -488,9 +489,9 @@ public class EzvcardTest {
 			assertEquals(expected, actual);
 		}
 
-		//true
+		//with value
 		{
-			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).outlook(true).go();
+			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).targetApplication(TargetApplication.OUTLOOK).go();
 
 			//@formatter:off
 			String expected =
@@ -498,21 +499,6 @@ public class EzvcardTest {
 				"VERSION:2.1\r\n" +
 				"PHOTO;ENCODING=base64;JPEG:ZGF0YQ==\r\n" +
 				"\r\n" +
-			"END:VCARD\r\n";
-			//@formatter:on
-
-			assertEquals(expected, actual);
-		}
-
-		//false
-		{
-			String actual = Ezvcard.write(vcard).prodId(false).version(VCardVersion.V2_1).outlook(false).go();
-
-			//@formatter:off
-			String expected =
-			"BEGIN:VCARD\r\n" +
-				"VERSION:2.1\r\n" +
-				"PHOTO;ENCODING=base64;JPEG:ZGF0YQ==\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 

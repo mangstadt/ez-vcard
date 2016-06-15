@@ -19,6 +19,7 @@ import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.ImageType;
 import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
@@ -27,6 +28,7 @@ import ezvcard.property.Address;
 import ezvcard.property.Agent;
 import ezvcard.property.Anniversary;
 import ezvcard.property.Birthday;
+import ezvcard.property.FormattedName;
 import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
@@ -414,7 +416,52 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void outlookCompatibility() throws Throwable {
+	public void setTargetApplication_iCloud() throws Throwable {
+		VCard vcard = new VCard();
+		StructuredName n = new StructuredName();
+		n.setFamily("Family");
+		vcard.setStructuredName(n);
+
+		StringWriter sw = new StringWriter();
+		VCardWriter writer = new VCardWriter(sw, VCardVersion.V2_1);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.setTargetApplication(TargetApplication.ICLOUD);
+		writer.write(vcard);
+
+		n.setFamily(null);
+		writer.setTargetApplication(null);
+		writer.write(vcard);
+		writer.setTargetApplication(TargetApplication.ICLOUD);
+		writer.write(vcard);
+
+		String actual = sw.toString();
+
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"N:Family;;;;\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"N:Family\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"N:;;;;\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"N:\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void setTargetApplication_outlook() throws Throwable {
 		VCard vcard = new VCard();
 		byte data[] = "foobar".getBytes();
 		vcard.addKey(new Key(data, KeyType.X509));
@@ -427,7 +474,7 @@ public class VCardWriterTest {
 			VCardWriter writer = new VCardWriter(sw, VCardVersion.V2_1);
 			writer.setAddProdId(false);
 			writer.write(vcard);
-			writer.setOutlookCompatibility(true);
+			writer.setTargetApplication(TargetApplication.OUTLOOK);
 			writer.write(vcard);
 
 			String actual = sw.toString();
@@ -460,7 +507,7 @@ public class VCardWriterTest {
 			VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0);
 			writer.setAddProdId(false);
 			writer.write(vcard);
-			writer.setOutlookCompatibility(true);
+			writer.setTargetApplication(TargetApplication.OUTLOOK);
 			writer.write(vcard);
 
 			String actual = sw.toString();
@@ -493,7 +540,7 @@ public class VCardWriterTest {
 			VCardWriter writer = new VCardWriter(sw, VCardVersion.V4_0);
 			writer.setAddProdId(false);
 			writer.write(vcard);
-			writer.setOutlookCompatibility(true);
+			writer.setTargetApplication(TargetApplication.OUTLOOK);
 			writer.write(vcard);
 
 			String actual = sw.toString();
@@ -518,6 +565,39 @@ public class VCardWriterTest {
 
 			assertEquals(actual, expected);
 		}
+	}
+
+	@Test
+	public void setTargetApplication_windows10Contacts() throws Throwable {
+		VCard vcard = new VCard();
+		FormattedName fn = vcard.setFormattedName("Dipl. Päd. Konsovkow");
+		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
+		vcard.addNote("one\ntwo");
+
+		StringWriter sw = new StringWriter();
+		VCardWriter writer = new VCardWriter(sw, VCardVersion.V2_1);
+		writer.setAddProdId(false);
+		writer.write(vcard);
+		writer.setTargetApplication(TargetApplication.WINDOWS_10_CONTACTS);
+		writer.write(vcard);
+
+		String actual = sw.toString();
+
+		//@formatter:off
+		String expected =
+		"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"FN;ENCODING=quoted-printable;CHARSET=UTF-8:Dipl. P=C3=A4d. Konsovkow\r\n" +
+			"NOTE;ENCODING=quoted-printable;CHARSET=UTF-8:one=0Atwo\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"FN;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:Dipl. P=C3=A4d. Konsovkow\r\n" +
+			"NOTE;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:one=0Atwo\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		assertEquals(actual, expected);
 	}
 
 	@Test
