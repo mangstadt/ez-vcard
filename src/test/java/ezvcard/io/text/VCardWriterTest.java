@@ -422,29 +422,101 @@ public class VCardWriterTest {
 		n.setFamily("Family");
 		vcard.setStructuredName(n);
 
-		StringWriter sw = new StringWriter();
-		VCardWriter writer = new VCardWriter(sw, VCardVersion.V2_1);
-		writer.setAddProdId(false);
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter writer = new VCardWriter(sw, VCardVersion.V2_1);
+			writer.setAddProdId(false);
 
-		writer.write(vcard);
-		writer.setIncludeTrailingSemicolons(true);
-		writer.write(vcard);
+			writer.write(vcard);
+			writer.setIncludeTrailingSemicolons(true);
+			writer.write(vcard);
+			writer.setIncludeTrailingSemicolons(false);
+			writer.write(vcard);
 
-		String actual = sw.toString();
+			String actual = sw.toString();
 
-		//@formatter:off
-		String expected =
-		"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"N:Family\r\n" +
-		"END:VCARD\r\n" +
-		"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"N:Family;;;;\r\n" +
-		"END:VCARD\r\n";
-		//@formatter:on
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"N:Family\r\n" +
+			"END:VCARD\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"N:Family;;;;\r\n" +
+			"END:VCARD\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:2.1\r\n" +
+				"N:Family\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
 
-		assertEquals(expected, actual);
+			assertEquals(expected, actual);
+		}
+
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0);
+			writer.setAddProdId(false);
+
+			writer.write(vcard);
+			writer.setIncludeTrailingSemicolons(true);
+			writer.write(vcard);
+			writer.setIncludeTrailingSemicolons(false);
+			writer.write(vcard);
+
+			String actual = sw.toString();
+
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+				"VERSION:3.0\r\n" +
+				"N:Family\r\n" +
+			"END:VCARD\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:3.0\r\n" +
+				"N:Family;;;;\r\n" +
+			"END:VCARD\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:3.0\r\n" +
+				"N:Family\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(expected, actual);
+		}
+
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter writer = new VCardWriter(sw, VCardVersion.V4_0);
+			writer.setAddProdId(false);
+
+			writer.write(vcard);
+			writer.setIncludeTrailingSemicolons(true);
+			writer.write(vcard);
+			writer.setIncludeTrailingSemicolons(false);
+			writer.write(vcard);
+
+			String actual = sw.toString();
+
+			//@formatter:off
+			String expected =
+			"BEGIN:VCARD\r\n" +
+				"VERSION:4.0\r\n" +
+				"N:Family;;;;\r\n" +
+			"END:VCARD\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:4.0\r\n" +
+				"N:Family;;;;\r\n" +
+			"END:VCARD\r\n" +
+			"BEGIN:VCARD\r\n" +
+				"VERSION:4.0\r\n" +
+				"N:Family\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			assertEquals(expected, actual);
+		}
 	}
 
 	@Test

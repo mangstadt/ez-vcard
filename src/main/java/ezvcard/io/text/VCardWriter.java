@@ -105,7 +105,7 @@ import ezvcard.util.IOUtils;
 public class VCardWriter extends StreamWriter implements Flushable {
 	private final VCardRawWriter writer;
 	private final LinkedList<Boolean> prodIdStack = new LinkedList<Boolean>();
-	private boolean includeTrailingSemicolons = false;
+	private Boolean includeTrailingSemicolons;
 
 	/**
 	 * @param out the output stream to write to
@@ -214,12 +214,13 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * This setting exists for compatibility reasons and should not make a
 	 * difference to consumers that correctly implement the vCard grammar.
 	 * </p>
-	 * @return true to include the trailing semicolons, false not to (defaults
-	 * to false)
+	 * @return true to include the trailing semicolons, false not to, null to
+	 * use the default behavior (defaults to false for vCard versions 2.1 and
+	 * 3.0 and true for vCard version 4.0)
 	 * @see <a href="https://github.com/mangstadt/ez-vcard/issues/57">Issue
 	 * 57</a>
 	 */
-	public boolean isIncludeTrailingSemicolons() {
+	public Boolean isIncludeTrailingSemicolons() {
 		return includeTrailingSemicolons;
 	}
 
@@ -234,12 +235,13 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * This setting exists for compatibility reasons and should not make a
 	 * difference to consumers that correctly implement the vCard grammar.
 	 * </p>
-	 * @param include true to include the trailing semicolons, false not to
-	 * (defaults to false)
+	 * @param include true to include the trailing semicolons, false not to,
+	 * null to use the default behavior (defaults to false for vCard versions
+	 * 2.1 and 3.0 and true for vCard version 4.0)
 	 * @see <a href="https://github.com/mangstadt/ez-vcard/issues/57">Issue
 	 * 57</a>
 	 */
-	public void setIncludeTrailingSemicolons(boolean include) {
+	public void setIncludeTrailingSemicolons(Boolean include) {
 		includeTrailingSemicolons = include;
 	}
 
@@ -285,6 +287,12 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void _write(VCard vcard, List<VCardProperty> propertiesToAdd) throws IOException {
 		VCardVersion targetVersion = getTargetVersion();
+
+		Boolean includeTrailingSemicolons = this.includeTrailingSemicolons;
+		if (includeTrailingSemicolons == null) {
+			includeTrailingSemicolons = (targetVersion == VCardVersion.V4_0);
+		}
+
 		WriteContext context = new WriteContext(targetVersion, getTargetApplication(), includeTrailingSemicolons);
 
 		writer.writeBeginComponent("VCARD");

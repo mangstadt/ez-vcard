@@ -50,7 +50,8 @@ import ezvcard.property.VCardProperty;
  */
 public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	private VCardVersion version;
-	private boolean caretEncoding = false, includeTrailingSemicolons = false;
+	private boolean caretEncoding = false;
+	private Boolean includeTrailingSemicolons;
 	private TargetApplication targetApplication;
 
 	/**
@@ -103,12 +104,13 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * This setting exists for compatibility reasons and should not make a
 	 * difference to consumers that correctly implement the vCard grammar.
 	 * </p>
-	 * @param include true to include the trailing semicolons, false not to
-	 * (defaults to false)
+	 * @param include true to include the trailing semicolons, false not to,
+	 * null to use the default behavior (defaults to false for vCard versions
+	 * 2.1 and 3.0 and true for vCard version 4.0)
 	 * @see <a href="https://github.com/mangstadt/ez-vcard/issues/57">Issue
 	 * 57</a>
 	 */
-	public ChainingTextWriter includeTrailingSemicolons(boolean include) {
+	public ChainingTextWriter includeTrailingSemicolons(Boolean include) {
 		this.includeTrailingSemicolons = include;
 		return this;
 	}
